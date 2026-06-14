@@ -1,54 +1,54 @@
 import React from 'react';
-import { useSubscription } from '@/hooks/useSubscription';
-import { Lock } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { useNavigate } from 'react-router-dom';
+import { useSubscription} from '@/hooks/useSubscription';
+import { Lock} from 'lucide-react';
+import { cn} from '@/lib/utils';
+import { useNavigate} from 'react-router-dom';
 
 export default function FeatureGate({ 
-  featureName, 
-  children, 
-  fallback, 
-  showOverlay = false 
+ featureName, 
+ children, 
+ fallback, 
+ showOverlay = false 
 }) {
-  const { hasFeature, isLoading } = useSubscription();
-  const navigate = useNavigate();
+ const { hasFeature, isLoading} = useSubscription();
+ const navigate = useNavigate();
 
-  if (isLoading) {
-    return <div className="animate-pulse bg-muted rounded-md h-full w-full min-h-[40px]"></div>;
-  }
+ if (isLoading) {
+ return <div className="animate-pulse bg-muted rounded-md h-full w-full min-h-[40px]"></div>;
+}
 
-  const isAllowed = featureName ? hasFeature(featureName) : true;
+ const isAllowed = featureName ? hasFeature(featureName) : true;
 
-  if (isAllowed) {
-    return <>{children}</>;
-  }
+ if (isAllowed) {
+ return <>{children}</>;
+}
 
-  if (showOverlay) {
-    return (
-      <div className="relative group">
-        <div className="opacity-30 pointer-events-none select-none blur-[1px] grayscale">
-          {children}
-        </div>
-        <div className="absolute inset-0 flex flex-col items-center justify-center p-4 bg-background/40 backdrop-blur-sm z-10 rounded-xl border border-border opacity-0 group-hover:opacity-100 transition-opacity">
-          <div className="bg-card shadow-lg p-4 rounded-xl border border-border text-center max-w-[250px]">
-            <Lock className="w-6 h-6 text-amber-500 mx-auto mb-2" />
-            <h4 className="font-bold text-sm mb-1">Upgrade Required</h4>
-            <p className="text-xs text-muted-foreground mb-3">This feature is not available on your current plan.</p>
-            <button 
-              onClick={() => navigate('/settings/billing')} 
-              className="bg-primary text-white text-xs font-bold px-4 py-1.5 rounded-md hover:bg-primary/90"
-            >
-              View Plans
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+ if (showOverlay) {
+ return (
+ <div className="relative group">
+ <div className="opacity-30 pointer-events-none select-none blur-[1px] grayscale">
+ {children}
+ </div>
+ <div className="absolute inset-0 flex flex-col items-center justify-center p-4 bg-background/40 backdrop-blur-sm z-10 rounded-xl border border-border opacity-0 group-hover:opacity-100 transition-opacity">
+ <div className="bg-card p-4 rounded-xl border border-border text-center max-w-[250px]">
+ <Lock className="w-6 h-6 text-amber-500 mx-auto mb-2" />
+ <h4 className="font-bold text-sm mb-1">Upgrade Required</h4>
+ <p className="text-xs text-muted-foreground mb-3">This feature is not available on your current plan.</p>
+ <button 
+ onClick={() => navigate('/settings/billing')} 
+ className="bg-primary text-white text-xs font-bold px-4 py-1.5 rounded-md hover:bg-primary/90"
+ >
+ View Plans
+ </button>
+ </div>
+ </div>
+ </div>
+ );
+}
 
-  if (fallback) {
-    return <>{fallback}</>;
-  }
+ if (fallback) {
+ return <>{fallback}</>;
+}
 
-  return null;
+ return null;
 }

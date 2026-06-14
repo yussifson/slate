@@ -97,10 +97,10 @@
 
 @layer utilities {
   .glass {
-    @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)];
+    @apply bg-white/5 backdrop-blur-md border border-white/10;
   }
   .glass-card {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.1)];
+    @apply bg-white/5 backdrop-blur-xl border border-white/10;
   }
   
   .bg-noise {
@@ -152,7 +152,7 @@
     @apply relative overflow-hidden transition-all duration-300 ease-out;
   }
   .stat-card-premium:hover {
-    @apply -translate-y-1.5 shadow-[0_20px_40px_-15px_rgba(var(--primary),0.2)] border-primary/30 z-10;
+    @apply -translate-y-1.5 border-primary/30 z-10;
   }
   .stat-card-premium::before {
     content: '';
@@ -199,7 +199,7 @@
     @apply w-full border-collapse border-spacing-0;
   }
   thead {
-    @apply bg-muted/40 backdrop-blur-md sticky top-0 z-20 shadow-sm;
+    @apply bg-muted/40 backdrop-blur-md sticky top-0 z-20;
   }
   th {
     @apply px-6 py-4 text-left text-[11px] uppercase tracking-[0.1em] font-bold text-muted-foreground border-b border-border;
@@ -208,7 +208,7 @@
     @apply px-6 py-4 border-b border-border/40 text-sm align-middle transition-colors duration-200;
   }
   tbody tr {
-    @apply transition-all duration-300 hover:bg-primary/5 hover:shadow-sm relative z-0 hover:z-10 bg-card;
+    @apply transition-all duration-300 hover:bg-primary/5 relative z-0 hover:z-10 bg-card;
   }
   
   /* Global Input and Button Google/Material Reskin */
@@ -220,7 +220,7 @@
     @apply rounded-full;
   }
   button[class*="bg-primary"], button[class*="bg-blue"] {
-    @apply shadow-[0_2px_8px_-2px_rgba(var(--primary),0.4)] hover:shadow-[0_6px_16px_-4px_rgba(var(--primary),0.6)] hover:-translate-y-0.5;
+    @apply hover:-translate-y-0.5;
   }
   input, select, textarea {
     @apply transition-all duration-200 ease-out hover:border-primary/40 focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl;

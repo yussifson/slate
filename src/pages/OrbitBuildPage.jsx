@@ -1,10 +1,10 @@
-import { supabase } from '@/api/supabaseClient';
+import { supabase} from '@/api/supabaseClient';
 import React from 'react';
-import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { powerSync } from "@/api/PowerSyncConnector";
-import { useCompanyId } from '@/hooks/useCompanyId';
-import { Loader2 } from 'lucide-react';
+import { useParams} from 'react-router-dom';
+import { useQuery} from '@tanstack/react-query';
+import { powerSync} from "@/api/PowerSyncConnector";
+import { useCompanyId} from '@/hooks/useCompanyId';
+import { Loader2} from 'lucide-react';
 
 // Lazy-load universal components to prevent bloat
 const DynamicTable = React.lazy(() => import("@/components/ui/DynamicTable"));
@@ -239,741 +239,741 @@ const UnivApprovalEngine = React.lazy(() => import("@/components/universal/UnivA
 
 // Basic dummy data generator for these components since they might not be hooked to real tables yet if they are purely UI templates in OrbitBuild
 const DUMMY_DATA = Array(5).fill(0).map((_, i) => ({
-  id: `id-${i}`,
-  data: {
-    name: `Sample Record ${i + 1}`,
-    status: i % 2 === 0 ? 'Active' : 'Pending',
-    date: new Date().toISOString().split('T')[0]
-  }
+ id: `id-${i}`,
+ data: {
+ name: `Sample Record ${i + 1}`,
+ status: i % 2 === 0 ? 'Active' : 'Pending',
+ date: new Date().toISOString().split('T')[0]
+}
 }));
 
 const DUMMY_FIELDS = [
-  { name: 'name', field_type: 'text', order_index: 0 },
-  { name: 'status', field_type: 'select', order_index: 1 },
-  { name: 'date', field_type: 'date', order_index: 2 }
+ { name: 'name', field_type: 'text', order_index: 0},
+ { name: 'status', field_type: 'select', order_index: 1},
+ { name: 'date', field_type: 'date', order_index: 2}
 ];
 
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient} from '@tanstack/react-query';
 import { 
-  Layout, 
-  Table, 
-  Kanban as KanbanIcon, 
-  Calendar as CalendarIcon, 
-  Clock, 
-  Image as GalleryIcon, 
-  BarChart3, 
-  FileText as FormIcon,
-  Search,
-  Plus
+ Layout, 
+ Table, 
+ Kanban as KanbanIcon, 
+ Calendar as CalendarIcon, 
+ Clock, 
+ Image as GalleryIcon, 
+ BarChart3, 
+ FileText as FormIcon,
+ Search,
+ Plus
 } from 'lucide-react';
-import { toast } from 'react-hot-toast';
+import { toast} from 'react-hot-toast';
 
 // Dynamic Gallery View component for visual card representation
-function DynamicGalleryView({ companyId, pageDef, cleanId, tableName }) {
-  const [records, setRecords] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
-  const [search, setSearch] = React.useState('');
+function DynamicGalleryView({ companyId, pageDef, cleanId, tableName}) {
+ const [records, setRecords] = React.useState([]);
+ const [loading, setLoading] = React.useState(true);
+ const [search, setSearch] = React.useState('');
 
-  React.useEffect(() => {
-    const fetchRecords = async () => {
-      setLoading(true);
-      try {
-        const { data, error } = await supabase
-          .from(tableName)
-          .select('*')
-          .eq('company_id', companyId);
-        
-        if (error && error.code !== '42P01') throw error;
-        setRecords(data || []);
-      } catch (err) {
-        console.error("Failed to load gallery data:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (companyId) fetchRecords();
-  }, [companyId, tableName]);
+ React.useEffect(() => {
+ const fetchRecords = async () => {
+ setLoading(true);
+ try {
+ const { data, error} = await supabase
+ .from(tableName)
+ .select('*')
+ .eq('company_id', companyId);
+ 
+ if (error && error.code !== '42P01') throw error;
+ setRecords(data || []);
+} catch (err) {
+ console.error("Failed to load gallery data:", err);
+} finally {
+ setLoading(false);
+}
+};
+ if (companyId) fetchRecords();
+}, [companyId, tableName]);
 
-  const filtered = records.filter(r => 
-    Object.values(r).some(val => 
-      String(val).toLowerCase().includes(search.toLowerCase())
-    )
-  );
+ const filtered = records.filter(r => 
+ Object.values(r).some(val => 
+ String(val).toLowerCase().includes(search.toLowerCase())
+ )
+ );
 
-  if (loading) {
-    return <div className="flex h-40 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
-  }
+ if (loading) {
+ return <div className="flex h-40 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
+}
 
-  return (
-    <div className="flex flex-col gap-4 w-full">
-      <div className="flex justify-between items-center gap-4 shrink-0">
-        <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <input 
-            type="text" 
-            placeholder="Search gallery..." 
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="w-full h-10 pl-9 pr-4 bg-card border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"
-          />
-        </div>
-      </div>
+ return (
+ <div className="flex flex-col gap-4 w-full">
+ <div className="flex justify-between items-center gap-4 shrink-0">
+ <div className="relative flex-1 max-w-md">
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+ <input 
+ type="text" 
+ placeholder="Search gallery..." 
+ value={search}
+ onChange={e => setSearch(e.target.value)}
+ className="w-full h-10 pl-9 pr-4 bg-card border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"
+ />
+ </div>
+ </div>
 
-      {filtered.length === 0 ? (
-        <div className="p-12 text-center text-muted-foreground border border-dashed border-border rounded-2xl bg-card/50">
-          <GalleryIcon className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" />
-          <p className="font-medium">No items found in visual gallery.</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {filtered.map((item) => (
-            <div key={item.id} className="bg-card border border-border rounded-2xl p-5 shadow-sm hover:border-primary/40 hover:shadow-md transition-all flex flex-col justify-between min-h-[160px]">
-              <div>
-                <div className="flex justify-between items-start mb-2">
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
-                    {item.status || item.type || item.category || 'Record'}
-                  </span>
-                </div>
-                <h4 className="font-bold text-foreground text-base line-clamp-1">
-                  {item.name || item.title || item.employee_name || item.client_name || item.room_number || item.id.slice(0, 8)}
-                </h4>
-                <p className="text-xs text-muted-foreground mt-1 line-clamp-3">
-                  {item.description || item.notes || item.reason || item.amenities || item.email || item.job_title || 'No additional details available.'}
-                </p>
-              </div>
-              <div className="border-t border-border/50 pt-3 mt-3 flex justify-between items-center text-xs text-muted-foreground">
-                <span>{item.date || item.created_at?.split('T')[0] || 'N/A'}</span>
-                {item.price_per_night && <span className="font-black text-foreground">${item.price_per_night}/nt</span>}
-                {item.net_pay && <span className="font-black text-foreground">${item.net_pay}</span>}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+ {filtered.length === 0 ? (
+ <div className="p-12 text-center text-muted-foreground border border-dashed border-border rounded-2xl bg-card/50">
+ <GalleryIcon className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" />
+ <p className="font-medium">No items found in visual gallery.</p>
+ </div>
+ ) : (
+ <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+ {filtered.map((item) => (
+ <div key={item.id} className="bg-card border border-border rounded-2xl p-5 hover:border-primary/40 transition-all flex flex-col justify-between min-h-[160px]">
+ <div>
+ <div className="flex justify-between items-start mb-2">
+ <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+ {item.status || item.type || item.category || 'Record'}
+ </span>
+ </div>
+ <h4 className="font-bold text-foreground text-base line-clamp-1">
+ {item.name || item.title || item.employee_name || item.client_name || item.room_number || item.id.slice(0, 8)}
+ </h4>
+ <p className="text-xs text-muted-foreground mt-1 line-clamp-3">
+ {item.description || item.notes || item.reason || item.amenities || item.email || item.job_title || 'No additional details available.'}
+ </p>
+ </div>
+ <div className="border-t border-border/50 pt-3 mt-3 flex justify-between items-center text-xs text-muted-foreground">
+ <span>{item.date || item.created_at?.split('T')[0] || 'N/A'}</span>
+ {item.price_per_night && <span className="font-black text-foreground">${item.price_per_night}/nt</span>}
+ {item.net_pay && <span className="font-black text-foreground">${item.net_pay}</span>}
+ </div>
+ </div>
+ ))}
+ </div>
+ )}
+ </div>
+ );
 }
 
 export default function OrbitBuildPage() {
-  const { pageName } = useParams();
-  const companyId = useCompanyId();
-  const queryClient = useQueryClient();
+ const { pageName} = useParams();
+ const companyId = useCompanyId();
+ const queryClient = useQueryClient();
 
-  const { data: config, isLoading } = useQuery({
-    queryKey: ['orbit_build_config', companyId],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from('industry_records')
-        .select('data')
-        .eq('company_id', companyId)
-        .eq('industry', 'orbit_build')
-        .eq('record_type', 'workspace_config')
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      return data?.data || null;
-    },
-    enabled: !!companyId
-  });
+ const { data: config, isLoading} = useQuery({
+ queryKey: ['orbit_build_config', companyId],
+ queryFn: async () => {
+ const { data} = await supabase
+ .from('industry_records')
+ .select('data')
+ .eq('company_id', companyId)
+ .eq('industry', 'orbit_build')
+ .eq('record_type', 'workspace_config')
+ .order('created_at', { ascending: false})
+ .limit(1)
+ .maybeSingle();
+ return data?.data || null;
+},
+ enabled: !!companyId
+});
 
-  // Query to fetch user-toggled viewpoints for all pages
-  const { data: viewpoints = {}, refetch: refetchViewpoints } = useQuery({
-    queryKey: ['ui_viewpoints', companyId],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from('industry_records')
-        .select('data')
-        .eq('company_id', companyId)
-        .eq('record_type', 'ui_viewpoints')
-        .maybeSingle();
-      return data?.data?.page_viewpoints || {};
-    },
-    enabled: !!companyId
-  });
+ // Query to fetch user-toggled viewpoints for all pages
+ const { data: viewpoints = {}, refetch: refetchViewpoints} = useQuery({
+ queryKey: ['ui_viewpoints', companyId],
+ queryFn: async () => {
+ const { data} = await supabase
+ .from('industry_records')
+ .select('data')
+ .eq('company_id', companyId)
+ .eq('record_type', 'ui_viewpoints')
+ .maybeSingle();
+ return data?.data?.page_viewpoints || {};
+},
+ enabled: !!companyId
+});
 
-  // Compute cleanId and tableName here (before any early returns) to satisfy React's Rules of Hooks
-  const rawComponentId = config?.pages?.find(
-    p => p.page_name.toLowerCase().replace(/[^a-z0-9]+/g, '-') === pageName
-  )?.component_id || '';
+ // Compute cleanId and tableName here (before any early returns) to satisfy React's Rules of Hooks
+ const rawComponentId = config?.pages?.find(
+ p => p.page_name.toLowerCase().replace(/[^a-z0-9]+/g, '-') === pageName
+ )?.component_id || '';
 
-  const cleanId = rawComponentId
-    .toLowerCase()
-    .trim()
-    .replace(/^univ_/, '')
-    .replace(/^univ/, '')
-    .replace(/[^a-z0-9]/g, '');
+ const cleanId = rawComponentId
+ .toLowerCase()
+ .trim()
+ .replace(/^univ_/, '')
+ .replace(/^univ/, '')
+ .replace(/[^a-z0-9]/g, '');
 
-  const tableName = React.useMemo(() => {
-    if (cleanId === 'hremployee' || cleanId === 'employee' || cleanId === 'staff') return 'univ_hr_employees';
-    if (cleanId === 'studentrecords' || cleanId === 'student') return 'univ_students';
-    if (cleanId === 'patientrecords' || cleanId === 'patient') return 'univ_patients';
-    if (cleanId === 'leavemanagement') return 'univ_leaves';
-    if (cleanId === 'assetmanagement') return 'univ_assets';
-    if (!cleanId) return 'industry_records';
-    return `univ_${cleanId}s`;
-  }, [cleanId]);
+ const tableName = React.useMemo(() => {
+ if (cleanId === 'hremployee' || cleanId === 'employee' || cleanId === 'staff') return 'univ_hr_employees';
+ if (cleanId === 'studentrecords' || cleanId === 'student') return 'univ_students';
+ if (cleanId === 'patientrecords' || cleanId === 'patient') return 'univ_patients';
+ if (cleanId === 'leavemanagement') return 'univ_leaves';
+ if (cleanId === 'assetmanagement') return 'univ_assets';
+ if (!cleanId) return 'industry_records';
+ return `univ_${cleanId}s`;
+}, [cleanId]);
 
-  if (isLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
-  }
+ if (isLoading) {
+ return (
+ <div className="flex h-screen items-center justify-center">
+ <Loader2 className="w-8 h-8 animate-spin text-primary" />
+ </div>
+ );
+}
 
-  // Find the page in config (pageDef was already used above for cleanId/tableName derivation)
-  const pageDef = config?.pages?.find(p => p.page_name.toLowerCase().replace(/[^a-z0-9]+/g, '-') === pageName);
+ // Find the page in config (pageDef was already used above for cleanId/tableName derivation)
+ const pageDef = config?.pages?.find(p => p.page_name.toLowerCase().replace(/[^a-z0-9]+/g, '-') === pageName);
 
-  if (!pageDef) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full text-slate-500 space-y-4">
-        <h2 className="text-xl font-bold text-slate-900">Page Not Found</h2>
-        <p>This OrbitBuild page could not be found in your configuration.</p>
-      </div>
-    );
-  }
+ if (!pageDef) {
+ return (
+ <div className="flex flex-col items-center justify-center h-full text-slate-500 space-y-4">
+ <h2 className="text-xl font-bold text-slate-900">Page Not Found</h2>
+ <p>This OrbitBuild page could not be found in your configuration.</p>
+ </div>
+ );
+}
 
-  const currentViewpoint = viewpoints[pageName] || 'default';
+ const currentViewpoint = viewpoints[pageName] || 'default';
 
-  const changeViewpoint = async (newView) => {
-    const updatedViewpoints = { ...viewpoints, [pageName]: newView };
-    queryClient.setQueryData(['ui_viewpoints', companyId], updatedViewpoints);
+ const changeViewpoint = async (newView) => {
+ const updatedViewpoints = { ...viewpoints, [pageName]: newView};
+ queryClient.setQueryData(['ui_viewpoints', companyId], updatedViewpoints);
 
-    try {
-      const { data: existing } = await supabase
-        .from('industry_records')
-        .select('id')
-        .eq('company_id', companyId)
-        .eq('record_type', 'ui_viewpoints')
-        .maybeSingle();
+ try {
+ const { data: existing} = await supabase
+ .from('industry_records')
+ .select('id')
+ .eq('company_id', companyId)
+ .eq('record_type', 'ui_viewpoints')
+ .maybeSingle();
 
-      const recordId = existing?.id || crypto.randomUUID();
+ const recordId = existing?.id || crypto.randomUUID();
 
-      await (async () => {
-        const _p = {
-        id: recordId,
-        company_id: companyId,
-        industry: 'core',
-        record_type: 'ui_viewpoints',
-        data: { page_viewpoints: updatedViewpoints },
-        created_at: new Date().toISOString()
-      };
-        const _k = Object.keys(_p);
-        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-        await powerSync.execute(`INSERT INTO industry_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_k.map(k=>k+' = excluded.'+k).join(', ')}`, _v);
-      })();
-      toast.success(`Switched to ${newView} view`);
-      refetchViewpoints();
-    } catch (e) {
-      console.error("Failed to save viewpoint:", e);
-      toast.error("Failed to persist viewpoint preference");
-    }
-  };
+ await (async () => {
+ const _p = {
+ id: recordId,
+ company_id: companyId,
+ industry: 'core',
+ record_type: 'ui_viewpoints',
+ data: { page_viewpoints: updatedViewpoints},
+ created_at: new Date().toISOString()
+};
+ const _k = Object.keys(_p);
+ const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`INSERT INTO industry_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_k.map(k=>k+' = excluded.'+k).join(', ')}`, _v);
+})();
+ toast.success(`Switched to ${newView} view`);
+ refetchViewpoints();
+} catch (e) {
+ console.error("Failed to save viewpoint:", e);
+ toast.error("Failed to persist viewpoint preference");
+}
+};
 
-  // Map the component_id to the actual universal component, respecting the currentViewpoint override
-  const renderComponent = () => {
-    // Intercept with user-toggled viewpoint overrides
-    if (currentViewpoint === 'grid') {
-      return <UnivDataGrid title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-    }
-    if (currentViewpoint === 'kanban') {
-      return <UnivKanban companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} tableName={tableName} />;
-    }
-    if (currentViewpoint === 'calendar') {
-      return <UnivCalendar companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} tableName={tableName} />;
-    }
-    if (currentViewpoint === 'timeline') {
-      return <UnivTimeline companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-    }
-    if (currentViewpoint === 'gallery') {
-      return <DynamicGalleryView companyId={companyId} pageDef={pageDef} cleanId={cleanId} tableName={tableName} />;
-    }
-    if (currentViewpoint === 'analytics') {
-      return <UnivAnalytics companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} tableName={tableName} />;
-    }
-    if (currentViewpoint === 'form') {
-      return <UnivForm companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-    }
+ // Map the component_id to the actual universal component, respecting the currentViewpoint override
+ const renderComponent = () => {
+ // Intercept with user-toggled viewpoint overrides
+ if (currentViewpoint === 'grid') {
+ return <UnivDataGrid title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+}
+ if (currentViewpoint === 'kanban') {
+ return <UnivKanban companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} tableName={tableName} />;
+}
+ if (currentViewpoint === 'calendar') {
+ return <UnivCalendar companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} tableName={tableName} />;
+}
+ if (currentViewpoint === 'timeline') {
+ return <UnivTimeline companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+}
+ if (currentViewpoint === 'gallery') {
+ return <DynamicGalleryView companyId={companyId} pageDef={pageDef} cleanId={cleanId} tableName={tableName} />;
+}
+ if (currentViewpoint === 'analytics') {
+ return <UnivAnalytics companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} tableName={tableName} />;
+}
+ if (currentViewpoint === 'form') {
+ return <UnivForm companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+}
 
-    // Default matching case
-    switch (cleanId) {
-      case 'crm':
-      case 'leads':
-        return <UnivCRM />;
-      case 'invoice':
-      case 'invoices':
-        return <UnivInvoice />;
-      case 'appointment':
-      case 'appointments':
-        return <UnivAppointments />;
-      case 'inventory':
-        return <UnivInventory />;
-      case 'hremployee':
-      case 'employee':
-      case 'employees':
-      case 'staff':
-        return <UnivHREmployee />;
-      case 'datagrid':
-      case 'grid':
-      case 'table':
-        return <UnivDataGrid title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} />;
-      case 'kanban':
-      case 'tasks':
-      case 'board':
-        return <UnivKanban companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} />;
-      case 'calendar':
-        return <UnivCalendar companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} />;
-      case 'dashboard':
-      case 'dashboardwidgets':
-        return <UnivDashboard companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} />;
-      case 'analytics':
-      case 'reports':
-        return <UnivAnalytics companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} />;
-      case 'formwizard':
-      case 'form':
-      case 'approval':
-        return <UnivForm />;
-      case 'search':
-        return <UnivSearch />;
-      case 'globalsearch':
-        return <UnivGlobalSearch title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-      case 'commandpalette':
-      case 'command':
-      case 'palette':
-        // Note: UnivCommandPalette is ideally mounted app-wide but can be here too
-        return <UnivCommandPalette companyId={companyId} workspaceConfig={{ pages: [pageDef] }} />;
-      case 'knowledgebase':
-      case 'knowledge':
-      case 'kb':
-      case 'wiki':
-        return <UnivKnowledgeBase title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-      case 'clientportal':
-      case 'portal':
-        return <UnivClientPortal title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-      case 'timeline':
-        return <UnivTimeline />;
-      case 'documentmanager':
-      case 'document':
-      case 'documents':
-      case 'filemanager':
-        return <UnivDocument companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} />;
-      case 'chat':
-      case 'internalchat':
-      case 'messages':
-        return <UnivChat title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-      case 'messaging':
-        return <UnivMessaging />;
-      case 'booking':
-      case 'bookings':
-      case 'reservations':
-        return <UnivBooking title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-      case 'appointments':
-      case 'scheduling':
-      case 'schedule':
-        return <UnivAppointments title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-      case 'assetmanagement':
-      case 'assets':
-      case 'inventory':
-      case 'equipment':
-        return <UnivAssetManagement title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-      case 'supportticket':
-      case 'support':
-      case 'tickets':
-      case 'helpdesk':
-        return <UnivSupportTicket title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-      case 'sop':
-      case 'sops':
-      case 'procedures':
-      case 'manuals':
-        return <UnivSOP title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-      case 'budgeting':
-      case 'budgets':
-      case 'finance':
-        return <UnivBudgeting title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-      case 'riskmanagement':
-      case 'risks':
-      case 'risk':
-        return <UnivRiskManagement title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-      case 'vendormanagement':
-      case 'vendors':
-      case 'suppliers':
-        return <UnivVendorManagement title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-      case 'compliance':
-      case 'certifications':
-      case 'audit':
-        return <UnivCompliance title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-      case 'auditlog':
-      case 'logs':
-      case 'systemlogs':
-        return <UnivAuditLog title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-      case 'goals':
-      case 'okrs':
-      case 'goaltracker':
-        return <UnivGoalTracker title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-      case 'time':
-      case 'timetracking':
-      case 'timesheets':
-        return <UnivTimeTracking title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-      case 'resources':
-      case 'capacity':
-      case 'resourceallocation':
-        return <UnivResourceAllocation title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-      case 'surveys':
-      case 'feedback':
-      case 'pulse':
-        return <UnivSurvey title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-      case 'events':
-      case 'webinars':
-      case 'eventmanagement':
-        return <UnivEventManagement title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-      case 'billing':
-      case 'subscription':
-      case 'plans':
-        return <UnivBilling title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} />;
-      case 'superadminbilling':
-      case 'revenue':
-        return <SuperAdminBilling title={pageDef.page_name} />;
-      case 'notification':
-      case 'notifications':
-        return <UnivNotification />;
-      case 'contactmanagement':
-      case 'contacts':
-        return <UnivContactManagement />;
-      case 'payment':
-      case 'payments':
-      case 'billing':
-        return <UnivPayment />;
-      case 'subscription':
-      case 'purchasing':
-        return <UnivProcurement />;
-      case 'pos':
-      case 'pointofsale':
-        return <UnivPOS />;
-      case 'attendance':
-      case 'timetracking':
-        return <UnivAttendance />;
-      case 'payroll':
-      case 'salaries':
-        return <UnivPayroll />;
-      case 'recruitment':
-      case 'hiring':
-      case 'applicants':
-        return <UnivRecruitment />;
-      case 'leavemanagement':
-      case 'leaves':
-      case 'timeoff':
-        return <UnivLeaveManagement />;
-      case 'studentrecords':
-      case 'student':
-      case 'students':
-        return <UnivStudent />;
-      case 'faculty':
-      case 'teachers':
-        return <UnivFaculty />;
-      case 'course':
-      case 'courses':
-      case 'subjects':
-      case 'classes':
-        return <UnivCourse />;
-      case 'gradebook':
-      case 'grades':
-      case 'results':
-        return <UnivGradebook />;
-      case 'classattendance':
-        return <UnivClassAttendance />;
-      case 'lms':
-      case 'lessons':
-      case 'assignments':
-        return <UnivLMS />;
-      case 'parentportal':
-      case 'guardians':
-        return <UnivParentPortal />;
-      case 'patientrecords':
-      case 'patient':
-      case 'patients':
-        return <UnivPatient />;
-      case 'emr':
-      case 'medicalrecords':
-      case 'clinicalnotes':
-        return <UnivEMR />;
-      case 'prescription':
-      case 'prescriptions':
-      case 'medications':
-      case 'pharmacy':
-        return <UnivPrescription />;
-      case 'labresults':
-      case 'lab':
-      case 'labs':
-      case 'diagnostics':
-        return <UnivLab />;
-      case 'wardmanagement':
-      case 'ward':
-      case 'wards':
-      case 'beds':
-        return <UnivWard />;
-      case 'telemedicine':
-      case 'videoconsult':
-      case 'virtualvisit':
-        return <UnivTelemedicine />;
-      case 'booking':
-      case 'bookings':
-      case 'reservation':
-      case 'reservations':
-        return <UnivBooking />;
-      case 'room':
-      case 'rooms':
-      case 'roominventory':
-        return <UnivRoom />;
-      case 'housekeeping':
-      case 'cleaning':
-        return <UnivHousekeeping />;
-      case 'menu':
-      case 'restaurantmenu':
-        return <UnivMenu />;
-      case 'diningorders':
-      case 'dining':
-      case 'restaurantorders':
-      case 'posorders':
-        return <UnivDining />;
-      case 'fleet':
-      case 'vehicles':
-        return <UnivFleet />;
-      case 'dispatch':
-      case 'driverdispatch':
-        return <UnivDispatch />;
-      case 'routeplanning':
-      case 'route':
-      case 'routes':
-        return <UnivRoute />;
-      case 'delivery':
-      case 'deliveries':
-      case 'deliverytracking':
-        return <UnivDelivery />;
-      case 'warehouse':
-      case 'storage':
-        return <UnivWarehouse />;
-      case 'project':
-      case 'projects':
-      case 'constructionprojects':
-        return <UnivProject />;
-      case 'boq':
-      case 'billofquantities':
-        return <UnivBOQ />;
-      case 'siteinspections':
-      case 'siteinspection':
-      case 'snaglist':
-        return <UnivSiteInspection />;
-      case 'safety':
-      case 'incidents':
-        return <UnivSafety />;
-      case 'contractor':
-      case 'contractors':
-      case 'subcontractors':
-        return <UnivContractor />;
-      case 'case':
-      case 'cases':
-      case 'casemanagement':
-        return <UnivCaseManagement />;
-      case 'legaldocuments':
-      case 'legaldocument':
-      case 'contracts':
-        return <UnivLegalDocument />;
-      case 'courtcalendar':
-      case 'court':
-      case 'hearings':
-        return <UnivCourtCalendar />;
-      case 'clientportal':
-      case 'clientaccess':
-        return <UnivClientPortal />;
-      case 'production':
-      case 'manufacturing':
-      case 'productionruns':
-        return <UnivProduction />;
-      case 'bom':
-      case 'billofmaterials':
-        return <UnivBOM />;
-      case 'machine':
-      case 'machines':
-      case 'equipmentmaintenance':
-        return <UnivMachine />;
-      case 'qualitycontrol':
-      case 'qc':
-      case 'inspections':
-        return <UnivQualityControl />;
+ // Default matching case
+ switch (cleanId) {
+ case 'crm':
+ case 'leads':
+ return <UnivCRM />;
+ case 'invoice':
+ case 'invoices':
+ return <UnivInvoice />;
+ case 'appointment':
+ case 'appointments':
+ return <UnivAppointments />;
+ case 'inventory':
+ return <UnivInventory />;
+ case 'hremployee':
+ case 'employee':
+ case 'employees':
+ case 'staff':
+ return <UnivHREmployee />;
+ case 'datagrid':
+ case 'grid':
+ case 'table':
+ return <UnivDataGrid title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} />;
+ case 'kanban':
+ case 'tasks':
+ case 'board':
+ return <UnivKanban companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} />;
+ case 'calendar':
+ return <UnivCalendar companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} />;
+ case 'dashboard':
+ case 'dashboardwidgets':
+ return <UnivDashboard companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} />;
+ case 'analytics':
+ case 'reports':
+ return <UnivAnalytics companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} />;
+ case 'formwizard':
+ case 'form':
+ case 'approval':
+ return <UnivForm />;
+ case 'search':
+ return <UnivSearch />;
+ case 'globalsearch':
+ return <UnivGlobalSearch title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+ case 'commandpalette':
+ case 'command':
+ case 'palette':
+ // Note: UnivCommandPalette is ideally mounted app-wide but can be here too
+ return <UnivCommandPalette companyId={companyId} workspaceConfig={{ pages: [pageDef]}} />;
+ case 'knowledgebase':
+ case 'knowledge':
+ case 'kb':
+ case 'wiki':
+ return <UnivKnowledgeBase title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+ case 'clientportal':
+ case 'portal':
+ return <UnivClientPortal title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+ case 'timeline':
+ return <UnivTimeline />;
+ case 'documentmanager':
+ case 'document':
+ case 'documents':
+ case 'filemanager':
+ return <UnivDocument companyId={companyId} pageName={pageDef.page_name} title={pageDef.page_name} />;
+ case 'chat':
+ case 'internalchat':
+ case 'messages':
+ return <UnivChat title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+ case 'messaging':
+ return <UnivMessaging />;
+ case 'booking':
+ case 'bookings':
+ case 'reservations':
+ return <UnivBooking title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+ case 'appointments':
+ case 'scheduling':
+ case 'schedule':
+ return <UnivAppointments title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+ case 'assetmanagement':
+ case 'assets':
+ case 'inventory':
+ case 'equipment':
+ return <UnivAssetManagement title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+ case 'supportticket':
+ case 'support':
+ case 'tickets':
+ case 'helpdesk':
+ return <UnivSupportTicket title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+ case 'sop':
+ case 'sops':
+ case 'procedures':
+ case 'manuals':
+ return <UnivSOP title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+ case 'budgeting':
+ case 'budgets':
+ case 'finance':
+ return <UnivBudgeting title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+ case 'riskmanagement':
+ case 'risks':
+ case 'risk':
+ return <UnivRiskManagement title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+ case 'vendormanagement':
+ case 'vendors':
+ case 'suppliers':
+ return <UnivVendorManagement title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+ case 'compliance':
+ case 'certifications':
+ case 'audit':
+ return <UnivCompliance title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+ case 'auditlog':
+ case 'logs':
+ case 'systemlogs':
+ return <UnivAuditLog title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+ case 'goals':
+ case 'okrs':
+ case 'goaltracker':
+ return <UnivGoalTracker title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+ case 'time':
+ case 'timetracking':
+ case 'timesheets':
+ return <UnivTimeTracking title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+ case 'resources':
+ case 'capacity':
+ case 'resourceallocation':
+ return <UnivResourceAllocation title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+ case 'surveys':
+ case 'feedback':
+ case 'pulse':
+ return <UnivSurvey title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+ case 'events':
+ case 'webinars':
+ case 'eventmanagement':
+ return <UnivEventManagement title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+ case 'billing':
+ case 'subscription':
+ case 'plans':
+ return <UnivBilling title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} />;
+ case 'superadminbilling':
+ case 'revenue':
+ return <SuperAdminBilling title={pageDef.page_name} />;
+ case 'notification':
+ case 'notifications':
+ return <UnivNotification />;
+ case 'contactmanagement':
+ case 'contacts':
+ return <UnivContactManagement />;
+ case 'payment':
+ case 'payments':
+ case 'billing':
+ return <UnivPayment />;
+ case 'subscription':
+ case 'purchasing':
+ return <UnivProcurement />;
+ case 'pos':
+ case 'pointofsale':
+ return <UnivPOS />;
+ case 'attendance':
+ case 'timetracking':
+ return <UnivAttendance />;
+ case 'payroll':
+ case 'salaries':
+ return <UnivPayroll />;
+ case 'recruitment':
+ case 'hiring':
+ case 'applicants':
+ return <UnivRecruitment />;
+ case 'leavemanagement':
+ case 'leaves':
+ case 'timeoff':
+ return <UnivLeaveManagement />;
+ case 'studentrecords':
+ case 'student':
+ case 'students':
+ return <UnivStudent />;
+ case 'faculty':
+ case 'teachers':
+ return <UnivFaculty />;
+ case 'course':
+ case 'courses':
+ case 'subjects':
+ case 'classes':
+ return <UnivCourse />;
+ case 'gradebook':
+ case 'grades':
+ case 'results':
+ return <UnivGradebook />;
+ case 'classattendance':
+ return <UnivClassAttendance />;
+ case 'lms':
+ case 'lessons':
+ case 'assignments':
+ return <UnivLMS />;
+ case 'parentportal':
+ case 'guardians':
+ return <UnivParentPortal />;
+ case 'patientrecords':
+ case 'patient':
+ case 'patients':
+ return <UnivPatient />;
+ case 'emr':
+ case 'medicalrecords':
+ case 'clinicalnotes':
+ return <UnivEMR />;
+ case 'prescription':
+ case 'prescriptions':
+ case 'medications':
+ case 'pharmacy':
+ return <UnivPrescription />;
+ case 'labresults':
+ case 'lab':
+ case 'labs':
+ case 'diagnostics':
+ return <UnivLab />;
+ case 'wardmanagement':
+ case 'ward':
+ case 'wards':
+ case 'beds':
+ return <UnivWard />;
+ case 'telemedicine':
+ case 'videoconsult':
+ case 'virtualvisit':
+ return <UnivTelemedicine />;
+ case 'booking':
+ case 'bookings':
+ case 'reservation':
+ case 'reservations':
+ return <UnivBooking />;
+ case 'room':
+ case 'rooms':
+ case 'roominventory':
+ return <UnivRoom />;
+ case 'housekeeping':
+ case 'cleaning':
+ return <UnivHousekeeping />;
+ case 'menu':
+ case 'restaurantmenu':
+ return <UnivMenu />;
+ case 'diningorders':
+ case 'dining':
+ case 'restaurantorders':
+ case 'posorders':
+ return <UnivDining />;
+ case 'fleet':
+ case 'vehicles':
+ return <UnivFleet />;
+ case 'dispatch':
+ case 'driverdispatch':
+ return <UnivDispatch />;
+ case 'routeplanning':
+ case 'route':
+ case 'routes':
+ return <UnivRoute />;
+ case 'delivery':
+ case 'deliveries':
+ case 'deliverytracking':
+ return <UnivDelivery />;
+ case 'warehouse':
+ case 'storage':
+ return <UnivWarehouse />;
+ case 'project':
+ case 'projects':
+ case 'constructionprojects':
+ return <UnivProject />;
+ case 'boq':
+ case 'billofquantities':
+ return <UnivBOQ />;
+ case 'siteinspections':
+ case 'siteinspection':
+ case 'snaglist':
+ return <UnivSiteInspection />;
+ case 'safety':
+ case 'incidents':
+ return <UnivSafety />;
+ case 'contractor':
+ case 'contractors':
+ case 'subcontractors':
+ return <UnivContractor />;
+ case 'case':
+ case 'cases':
+ case 'casemanagement':
+ return <UnivCaseManagement />;
+ case 'legaldocuments':
+ case 'legaldocument':
+ case 'contracts':
+ return <UnivLegalDocument />;
+ case 'courtcalendar':
+ case 'court':
+ case 'hearings':
+ return <UnivCourtCalendar />;
+ case 'clientportal':
+ case 'clientaccess':
+ return <UnivClientPortal />;
+ case 'production':
+ case 'manufacturing':
+ case 'productionruns':
+ return <UnivProduction />;
+ case 'bom':
+ case 'billofmaterials':
+ return <UnivBOM />;
+ case 'machine':
+ case 'machines':
+ case 'equipmentmaintenance':
+ return <UnivMachine />;
+ case 'qualitycontrol':
+ case 'qc':
+ case 'inspections':
+ return <UnivQualityControl />;
 
-      // Legal Services Suite
-      case 'consultation': return <UnivConsultation />;
-      case 'retainer': return <UnivRetainer />;
-      case 'escrow': return <UnivEscrow />;
-      case 'timebilling': return <UnivTimebilling />;
-      case 'conflictcheck': return <UnivConflictcheck />;
-      case 'arbitration': return <UnivArbitration />;
-      case 'trademark': return <UnivTrademark />;
-      case 'clientledger': return <UnivClientledger />;
-      case 'expertwitness': return <UnivExpertwitness />;
-      case 'briefs': return <UnivBriefs />;
+ // Legal Services Suite
+ case 'consultation': return <UnivConsultation />;
+ case 'retainer': return <UnivRetainer />;
+ case 'escrow': return <UnivEscrow />;
+ case 'timebilling': return <UnivTimebilling />;
+ case 'conflictcheck': return <UnivConflictcheck />;
+ case 'arbitration': return <UnivArbitration />;
+ case 'trademark': return <UnivTrademark />;
+ case 'clientledger': return <UnivClientledger />;
+ case 'expertwitness': return <UnivExpertwitness />;
+ case 'briefs': return <UnivBriefs />;
 
-      // Property Management Suite
-      case 'property': return <UnivProperty />;
-      case 'tenant': case 'tenants': return <UnivTenant />;
-      case 'lease': case 'leases': return <UnivLease />;
-      case 'maintenancerequest': case 'maintenance': return <UnivMaintenancerequest />;
-      case 'propertyinspection': return <UnivPropertyinspection />;
-      case 'listing': case 'listings': return <UnivListing />;
-      case 'agentcommission': return <UnivAgentcommission />;
-      case 'hoa': return <UnivHoa />;
-      case 'utilitybill': case 'utilities': return <UnivUtilitybill />;
+ // Property Management Suite
+ case 'property': return <UnivProperty />;
+ case 'tenant': case 'tenants': return <UnivTenant />;
+ case 'lease': case 'leases': return <UnivLease />;
+ case 'maintenancerequest': case 'maintenance': return <UnivMaintenancerequest />;
+ case 'propertyinspection': return <UnivPropertyinspection />;
+ case 'listing': case 'listings': return <UnivListing />;
+ case 'agentcommission': return <UnivAgentcommission />;
+ case 'hoa': return <UnivHoa />;
+ case 'utilitybill': case 'utilities': return <UnivUtilitybill />;
 
-      // Retail & E-commerce Suite
-      case 'productcatalog': case 'products': return <UnivProductCatalog />;
-      case 'orderregistry': case 'orders': return <UnivOrderRegistry />;
-      case 'discount': case 'coupons': return <UnivDiscount />;
-      case 'customerreview': case 'reviews': return <UnivCustomerReview />;
-      case 'supplierdirectory': case 'suppliers': return <UnivSupplierDirectory />;
-      case 'returnrefund': case 'returns': return <UnivReturnRefund />;
-      case 'giftcard': case 'giftcards': return <UnivGiftCard />;
-      case 'wishlist': case 'wishlists': return <UnivWishlist />;
-      case 'loyaltypoint': case 'loyalty': return <UnivLoyaltyPoint />;
+ // Retail & E-commerce Suite
+ case 'productcatalog': case 'products': return <UnivProductCatalog />;
+ case 'orderregistry': case 'orders': return <UnivOrderRegistry />;
+ case 'discount': case 'coupons': return <UnivDiscount />;
+ case 'customerreview': case 'reviews': return <UnivCustomerReview />;
+ case 'supplierdirectory': case 'suppliers': return <UnivSupplierDirectory />;
+ case 'returnrefund': case 'returns': return <UnivReturnRefund />;
+ case 'giftcard': case 'giftcards': return <UnivGiftCard />;
+ case 'wishlist': case 'wishlists': return <UnivWishlist />;
+ case 'loyaltypoint': case 'loyalty': return <UnivLoyaltyPoint />;
 
-      // Finance & Accounting Suite
-      case 'generalledger': case 'ledger': return <UnivGeneralLedger />;
-      case 'expensereport': case 'expenses': return <UnivExpenseReport />;
-      case 'taxfiling': case 'tax': return <UnivTaxFiling />;
-      case 'audittrail': case 'audit': return <UnivAuditTrail />;
+ // Finance & Accounting Suite
+ case 'generalledger': case 'ledger': return <UnivGeneralLedger />;
+ case 'expensereport': case 'expenses': return <UnivExpenseReport />;
+ case 'taxfiling': case 'tax': return <UnivTaxFiling />;
+ case 'audittrail': case 'audit': return <UnivAuditTrail />;
 
-      // Events, Travel & Hospitality Extended
-      case 'eventplanner': case 'events': return <UnivEventPlanner />;
-      case 'ticketsales': case 'tickets': return <UnivTicketSales />;
-      case 'carrental': case 'cars': return <UnivCarRental />;
-      case 'tourpackage': case 'tours': return <UnivTourPackage />;
-      case 'luggageclaim': return <UnivLuggageClaim />;
-      case 'feedbacksurvey': case 'surveys': return <UnivFeedbackSurvey />;
-      case 'tablereservation': return <UnivTableReservation />;
-      case 'hotelreview': return <UnivHotelReview />;
+ // Events, Travel & Hospitality Extended
+ case 'eventplanner': case 'events': return <UnivEventPlanner />;
+ case 'ticketsales': case 'tickets': return <UnivTicketSales />;
+ case 'carrental': case 'cars': return <UnivCarRental />;
+ case 'tourpackage': case 'tours': return <UnivTourPackage />;
+ case 'luggageclaim': return <UnivLuggageClaim />;
+ case 'feedbacksurvey': case 'surveys': return <UnivFeedbackSurvey />;
+ case 'tablereservation': return <UnivTableReservation />;
+ case 'hotelreview': return <UnivHotelReview />;
 
-      // Logistics Extended
-      case 'pallettracker': case 'pallets': return <UnivPalletTracker />;
+ // Logistics Extended
+ case 'pallettracker': case 'pallets': return <UnivPalletTracker />;
 
-      // Nonprofit & HR Extended Suite
-      case 'donorprofile': case 'donors': return <UnivDonorProfile />;
-      case 'donationlog': case 'donations': return <UnivDonationLog />;
-      case 'volunteerroster': case 'volunteers': return <UnivVolunteerRoster />;
-      case 'campaignmetric': return <UnivCampaignMetric />;
-      case 'beneficiarylist': case 'beneficiaries': return <UnivBeneficiaryList />;
-      case 'pledge': case 'pledges': return <UnivPledge />;
-      case 'sponsorship': case 'sponsorships': return <UnivSponsorship />;
-      case 'advocacy': return <UnivAdvocacy />;
-      case 'inkinddonation': return <UnivInKindDonation />;
-      case 'expenseclaim': return <UnivExpenseClaim />;
-      case 'timesheet': return <UnivTimeSheet />;
-      case 'orgchart': return <UnivOrgChart />;
-      case 'disciplinary': return <UnivDisciplinary />;
-      case 'onboardingtask': case 'onboarding': return <UnivOnboardingTask />;
-      case 'exitinterview': return <UnivExitInterview />;
-      case 'benefitelection': return <UnivBenefitElection />;
+ // Nonprofit & HR Extended Suite
+ case 'donorprofile': case 'donors': return <UnivDonorProfile />;
+ case 'donationlog': case 'donations': return <UnivDonationLog />;
+ case 'volunteerroster': case 'volunteers': return <UnivVolunteerRoster />;
+ case 'campaignmetric': return <UnivCampaignMetric />;
+ case 'beneficiarylist': case 'beneficiaries': return <UnivBeneficiaryList />;
+ case 'pledge': case 'pledges': return <UnivPledge />;
+ case 'sponsorship': case 'sponsorships': return <UnivSponsorship />;
+ case 'advocacy': return <UnivAdvocacy />;
+ case 'inkinddonation': return <UnivInKindDonation />;
+ case 'expenseclaim': return <UnivExpenseClaim />;
+ case 'timesheet': return <UnivTimeSheet />;
+ case 'orgchart': return <UnivOrgChart />;
+ case 'disciplinary': return <UnivDisciplinary />;
+ case 'onboardingtask': case 'onboarding': return <UnivOnboardingTask />;
+ case 'exitinterview': return <UnivExitInterview />;
+ case 'benefitelection': return <UnivBenefitElection />;
 
-      // Marketing Suite
-      case 'commissionstructure': return <UnivCommissionStructure />;
-      case 'campaignschedule': return <UnivCampaignSchedule />;
-      case 'adspend': return <UnivAdSpend />;
-      case 'newsletter': case 'newsletters': return <UnivNewsletter />;
-      case 'competitorprice': return <UnivCompetitorPrice />;
-      case 'leadmagnet': return <UnivLeadMagnet />;
+ // Marketing Suite
+ case 'commissionstructure': return <UnivCommissionStructure />;
+ case 'campaignschedule': return <UnivCampaignSchedule />;
+ case 'adspend': return <UnivAdSpend />;
+ case 'newsletter': case 'newsletters': return <UnivNewsletter />;
+ case 'competitorprice': return <UnivCompetitorPrice />;
+ case 'leadmagnet': return <UnivLeadMagnet />;
 
-      // Customer Success & Support Suite
-      case 'supportticket': case 'helpdesk': return <UnivSupportTicket />;
-      case 'kbarticle': case 'knowledgebase': return <UnivKbArticle />;
-      case 'slaagreement': case 'sla': return <UnivSlaAgreement />;
-      case 'churnrisk': return <UnivChurnRisk />;
-      case 'featurerequest': return <UnivFeatureRequest />;
-      case 'chattranscript': return <UnivChatTranscript />;
-      case 'customerjourney': return <UnivCustomerJourney />;
-      case 'calllog': return <UnivCallLog />;
-      case 'incidentreport': return <UnivIncidentReport />;
+ // Customer Success & Support Suite
+ case 'supportticket': case 'helpdesk': return <UnivSupportTicket />;
+ case 'kbarticle': case 'knowledgebase': return <UnivKbArticle />;
+ case 'slaagreement': case 'sla': return <UnivSlaAgreement />;
+ case 'churnrisk': return <UnivChurnRisk />;
+ case 'featurerequest': return <UnivFeatureRequest />;
+ case 'chattranscript': return <UnivChatTranscript />;
+ case 'customerjourney': return <UnivCustomerJourney />;
+ case 'calllog': return <UnivCallLog />;
+ case 'incidentreport': return <UnivIncidentReport />;
 
-      // IT & Security Suite
-      case 'servermetric': case 'servers': return <UnivServerMetric />;
-      case 'ipaddress': return <UnivIpAddress />;
-      case 'accesscontrol': return <UnivAccessControl />;
-      case 'sslcertificate': case 'ssl': return <UnivSslCertificate />;
-      case 'gdprrequest': case 'gdpr': return <UnivGdprRequest />;
-      case 'softwarelicense': case 'licenses': return <UnivSoftwareLicense />;
-      case 'vulnerability': case 'vulnerabilities': return <UnivVulnerability />;
-      case 'databackup': case 'backups': return <UnivDataBackup />;
+ // IT & Security Suite
+ case 'servermetric': case 'servers': return <UnivServerMetric />;
+ case 'ipaddress': return <UnivIpAddress />;
+ case 'accesscontrol': return <UnivAccessControl />;
+ case 'sslcertificate': case 'ssl': return <UnivSslCertificate />;
+ case 'gdprrequest': case 'gdpr': return <UnivGdprRequest />;
+ case 'softwarelicense': case 'licenses': return <UnivSoftwareLicense />;
+ case 'vulnerability': case 'vulnerabilities': return <UnivVulnerability />;
+ case 'databackup': case 'backups': return <UnivDataBackup />;
 
-      // Final 15 Extended Enterprise Suite
-      case 'riskregister': case 'risks': return <UnivRiskRegister />;
-      case 'contractmanagement': case 'contracts': return <UnivContractManagement />;
-      case 'meetingminutes': case 'meetings': return <UnivMeetingMinutes />;
-      case 'kpitracker': case 'kpis': return <UnivKpiTracker />;
-      case 'budgetforecast': case 'budgets': return <UnivBudgetForecast />;
-      case 'changerequest': case 'changes': return <UnivChangeRequest />;
-      case 'projectmilestone': case 'milestones': return <UnivProjectMilestone />;
-      case 'employeeperformance': case 'performance': return <UnivEmployeePerformance />;
-      case 'trainingrecord': case 'training': return <UnivTrainingRecord />;
-      case 'healthsafety': case 'safety': return <UnivHealthSafety />;
-      case 'salestarget': case 'targets': return <UnivSalesTarget />;
-      case 'productionschedule': case 'production': return <UnivProductionSchedule />;
-      case 'customersegment': case 'segments': return <UnivCustomerSegment />;
-      case 'digitalasset': case 'assets': return <UnivDigitalAsset />;
-      case 'apiintegration': case 'integrations': return <UnivApiIntegration />;
-      
-      // Batch 1 Specialized
-      case 'workflowbuilder': case 'workflows': return <UnivWorkflowBuilder companyId={companyId} />;
-      case 'approvalengine': case 'approvals': return <UnivApprovalEngine companyId={companyId} />;
+ // Final 15 Extended Enterprise Suite
+ case 'riskregister': case 'risks': return <UnivRiskRegister />;
+ case 'contractmanagement': case 'contracts': return <UnivContractManagement />;
+ case 'meetingminutes': case 'meetings': return <UnivMeetingMinutes />;
+ case 'kpitracker': case 'kpis': return <UnivKpiTracker />;
+ case 'budgetforecast': case 'budgets': return <UnivBudgetForecast />;
+ case 'changerequest': case 'changes': return <UnivChangeRequest />;
+ case 'projectmilestone': case 'milestones': return <UnivProjectMilestone />;
+ case 'employeeperformance': case 'performance': return <UnivEmployeePerformance />;
+ case 'trainingrecord': case 'training': return <UnivTrainingRecord />;
+ case 'healthsafety': case 'safety': return <UnivHealthSafety />;
+ case 'salestarget': case 'targets': return <UnivSalesTarget />;
+ case 'productionschedule': case 'production': return <UnivProductionSchedule />;
+ case 'customersegment': case 'segments': return <UnivCustomerSegment />;
+ case 'digitalasset': case 'assets': return <UnivDigitalAsset />;
+ case 'apiintegration': case 'integrations': return <UnivApiIntegration />;
+ 
+ // Batch 1 Specialized
+ case 'workflowbuilder': case 'workflows': return <UnivWorkflowBuilder companyId={companyId} />;
+ case 'approvalengine': case 'approvals': return <UnivApprovalEngine companyId={companyId} />;
 
-      default:
-        return <UnivDataGrid title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
-    }
-  };
+ default:
+ return <UnivDataGrid title={pageDef.page_name} companyId={companyId} pageName={pageDef.page_name} tableName={tableName} />;
+}
+};
 
-  const toolbarViews = [
-    { id: 'default', label: 'Default Layout', icon: <Layout className="w-4 h-4" /> },
-    { id: 'grid', label: 'Grid View', icon: <Table className="w-4 h-4" /> },
-    { id: 'kanban', label: 'Kanban Board', icon: <KanbanIcon className="w-4 h-4" /> },
-    { id: 'calendar', label: 'Calendar Scheduler', icon: <CalendarIcon className="w-4 h-4" /> },
-    { id: 'timeline', label: 'Timeline roadmap', icon: <Clock className="w-4 h-4" /> },
-    { id: 'gallery', label: 'Gallery Grid', icon: <GalleryIcon className="w-4 h-4" /> },
-    { id: 'analytics', label: 'Analytics Chart', icon: <BarChart3 className="w-4 h-4" /> },
-    { id: 'form', label: 'Form Questionnaire', icon: <FormIcon className="w-4 h-4" /> },
-  ];
+ const toolbarViews = [
+ { id: 'default', label: 'Default Layout', icon: <Layout className="w-4 h-4" />},
+ { id: 'grid', label: 'Grid View', icon: <Table className="w-4 h-4" />},
+ { id: 'kanban', label: 'Kanban Board', icon: <KanbanIcon className="w-4 h-4" />},
+ { id: 'calendar', label: 'Calendar Scheduler', icon: <CalendarIcon className="w-4 h-4" />},
+ { id: 'timeline', label: 'Timeline roadmap', icon: <Clock className="w-4 h-4" />},
+ { id: 'gallery', label: 'Gallery Grid', icon: <GalleryIcon className="w-4 h-4" />},
+ { id: 'analytics', label: 'Analytics Chart', icon: <BarChart3 className="w-4 h-4" />},
+ { id: 'form', label: 'Form Questionnaire', icon: <FormIcon className="w-4 h-4" />},
+ ];
 
-  const hideViewpointSwitcher = ['analytics', 'reports', 'workflowbuilder', 'workflows', 'approvalengine', 'approvals'].includes(cleanId);
+ const hideViewpointSwitcher = ['analytics', 'reports', 'workflowbuilder', 'workflows', 'approvalengine', 'approvals'].includes(cleanId);
 
-  return (
-    <div className="w-full min-h-[calc(100vh-4rem)] p-6 bg-background flex flex-col gap-4">
-      {/* Viewpoint persistence switcher control */}
-      {!hideViewpointSwitcher && (
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-card/60 border border-border/80 backdrop-blur-md rounded-2xl gap-3 shadow-sm shrink-0">
-          <div className="px-2">
-            <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider block">Active Viewpoint</span>
-            <span className="text-sm font-bold text-foreground capitalize">{currentViewpoint} View</span>
-          </div>
-        <div className="flex flex-wrap items-center bg-muted/40 p-1 rounded-xl border border-border/50">
-          {toolbarViews.map((view) => (
-            <button
-              key={view.id}
-              onClick={() => changeViewpoint(view.id)}
-              title={view.label}
-              className={`p-2 rounded-lg transition-all flex items-center justify-center gap-1.5 text-xs font-semibold ${
-                currentViewpoint === view.id
-                  ? 'bg-primary text-white shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/80'
-              }`}
-            >
-              {view.icon}
-              <span className="hidden md:inline">{view.id === 'default' ? 'Default' : view.id}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-      )}
+ return (
+ <div className="w-full min-h-[calc(100vh-4rem)] p-6 bg-background flex flex-col gap-4">
+ {/* Viewpoint persistence switcher control */}
+ {!hideViewpointSwitcher && (
+ <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-card/60 border border-border/80 backdrop-blur-md rounded-2xl gap-3 shrink-0">
+ <div className="px-2">
+ <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider block">Active Viewpoint</span>
+ <span className="text-sm font-bold text-foreground capitalize">{currentViewpoint} View</span>
+ </div>
+ <div className="flex flex-wrap items-center bg-muted/40 p-1 rounded-xl border border-border/50">
+ {toolbarViews.map((view) => (
+ <button
+ key={view.id}
+ onClick={() => changeViewpoint(view.id)}
+ title={view.label}
+ className={`p-2 rounded-lg transition-all flex items-center justify-center gap-1.5 text-xs font-semibold ${
+ currentViewpoint === view.id
+ ? 'bg-primary text-white '
+ : 'text-muted-foreground hover:text-foreground hover:bg-muted/80'
+}`}
+ >
+ {view.icon}
+ <span className="hidden md:inline">{view.id === 'default' ? 'Default' : view.id}</span>
+ </button>
+ ))}
+ </div>
+ </div>
+ )}
 
-      <div className="flex-1">
-        <React.Suspense fallback={<div className="p-8 text-center flex justify-center items-center min-h-[50vh]"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>}>
-          {renderComponent()}
-        </React.Suspense>
-      </div>
-    </div>
-  );
+ <div className="flex-1">
+ <React.Suspense fallback={<div className="p-8 text-center flex justify-center items-center min-h-[50vh]"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>}>
+ {renderComponent()}
+ </React.Suspense>
+ </div>
+ </div>
+ );
 }
