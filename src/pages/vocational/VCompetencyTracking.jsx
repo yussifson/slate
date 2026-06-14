@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 import { Search, Download, ChevronRight, Sparkles, Filter, BarChart3 } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { toast } from 'react-hot-toast';
 
-const F = { display: "'Barlow Condensed', sans-serif", body: "'IBM Plex Sans', sans-serif", mono: "'IBM Plex Mono', monospace", label: "'Barlow Semi Condensed', sans-serif" };
-const C = { forge: '#0D1117', carbon: '#161B22', steel: '#21262D', galv: '#30363D', alloy: '#484F58', chrome: '#8B949E', titanium: '#C9D1D9', white: '#F0F6FC', volt: '#F6C90E', plasma: '#FF6B2C', signal: '#00C896', circuit: '#4493F8', arc: '#BF8FFF' };
-const levelColors = ['#484F58', '#484F58', '#F6C90E', '#4493F8', '#00C896', '#BF8FFF'];
+const levelColors = ['#94a3b8', '#cbd5e1', '#fcd34d', '#60a5fa', '#34d399', '#c084fc'];
 const levelLabels = ['None', 'Novice', 'Developing', 'Proficient', 'Advanced', 'Master'];
 
 export default function VCompetencyTracking() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [competencies, setCompetencies] = useState([]);
   const [trainees, setTrainees] = useState([]);
@@ -55,71 +59,80 @@ export default function VCompetencyTracking() {
   const allCompetencies = domains.flatMap(d => d.competencies);
   const traineeNames = trainees.length > 0 ? trainees.map(t => t.title || 'Trainee') : ['Boateng', 'Mensah', 'Owusu', 'Ali', 'Darko', 'Amoah', 'Asante', 'Kusi'];
   
-  // Generate heatmap data
+  // Deterministic fallback generator for visual demo (avoid hydration mismatch)
+  const getLevel = (ti, ci) => {
+    return (ti * 7 + ci * 3) % 6;
+  };
+
   const heatmapData = traineeNames.map((name, ti) =>
-    allCompetencies.map((_, ci) => Math.floor(Math.random() * 6))
+    allCompetencies.map((_, ci) => getLevel(ti, ci))
   );
 
   return (
-    <div className="min-h-screen bg-[#0D1117] text-[#C9D1D9] p-4 md:p-6" style={{ fontFamily: F.body }}>
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-[28px] font-bold tracking-tight text-[#F0F6FC]" style={{ fontFamily: F.display }}>COMPETENCY TRACKING</h1>
-          <p className="text-[13px] text-[#8B949E] mt-0.5" style={{ fontFamily: F.mono }}>{competencies.length} competency records · {trainees.length} trainees tracked</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            {t('competency_tracking', 'Competency Tracking')}
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm font-medium">
+            {competencies.length} competency records • {trainees.length} trainees tracked
+          </p>
         </div>
-        <div className="flex gap-2">
-          <div className="flex bg-[#161B22] border border-[#30363D]">
-            {['heatmap', 'framework', 'analytics'].map(v => (
-              <button key={v} onClick={() => setView(v)} className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider transition-colors"
-                style={{ fontFamily: F.label, background: view === v ? `${C.volt}15` : 'transparent', color: view === v ? C.volt : C.chrome }}>
-                {v.charAt(0).toUpperCase() + v.slice(1)}
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex bg-card border border-primary/20 rounded-xl overflow-hidden shadow-none">
+            {['heatmap', 'framework'].map(v => (
+              <button key={v} onClick={() => setView(v)} className={`px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-colors ${view === v ? 'bg-primary/10 text-primary' : 'hover:bg-primary/5 text-muted-foreground'}`}>
+                {v}
               </button>
             ))}
           </div>
-          <button className="px-3 py-1.5 bg-[#161B22] border border-[#30363D] text-[11px] font-semibold uppercase tracking-wider hover:bg-[#21262D] transition-colors flex items-center gap-1.5" style={{ fontFamily: F.label, color: C.chrome }}><Download className="w-3.5 h-3.5" /> Export</button>
-          <button className="px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider flex items-center gap-1.5 hover:opacity-90" style={{ fontFamily: F.label, background: C.arc, color: '#fff' }}>
-            <Sparkles className="w-3.5 h-3.5" /> Identify Gaps
-          </button>
+          <Button variant="outline" className="rounded-xl border border-primary/40 text-primary shadow-none hover:bg-primary/5">
+            <Download className="w-4 h-4 mr-2" /> Export
+          </Button>
+          <Button className="rounded-xl bg-primary text-white hover:bg-primary/90 shadow-none">
+            <Sparkles className="w-4 h-4 mr-2" /> Identify Gaps
+          </Button>
         </div>
       </div>
 
       {/* ── HEATMAP VIEW ── */}
       {view === 'heatmap' && (
-        <div className="bg-[#161B22] border border-[#30363D] overflow-hidden" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.4)' }}>
+        <Card className="rounded-2xl border border-primary/40 bg-card shadow-none overflow-hidden">
           {/* Legend */}
-          <div className="px-4 py-3 border-b border-[#30363D] flex items-center justify-between bg-[#0D1117]/60">
-            <h2 className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#F0F6FC]" style={{ fontFamily: F.label }}>Cohort Competency Matrix</h2>
-            <div className="flex items-center gap-3">
+          <div className="px-6 py-4 border-b border-primary/10 flex items-center justify-between bg-primary/5">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">Cohort Competency Matrix</h2>
+            <div className="flex flex-wrap items-center gap-4">
               {levelLabels.map((l, i) => (
-                <div key={i} className="flex items-center gap-1">
-                  <div className="w-3 h-3 rounded-sm" style={{ background: levelColors[i] }} />
-                  <span className="text-[9px] text-[#484F58]" style={{ fontFamily: F.label }}>{i}={l}</span>
+                <div key={i} className="flex items-center gap-1.5">
+                  <div className="w-4 h-4 rounded shadow-sm" style={{ background: levelColors[i] }} />
+                  <span className="text-xs font-medium text-muted-foreground">{i}={l}</span>
                 </div>
               ))}
             </div>
           </div>
           
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse min-w-[800px]">
+            <table className="w-full border-collapse min-w-[900px]">
               <thead>
                 <tr>
-                  <th className="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-wider bg-[#0D1117] sticky left-0 z-10 border-b border-[#30363D]" style={{ fontFamily: F.label, color: C.alloy, minWidth: 120 }}>Trainee</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider bg-card sticky left-0 z-10 border-b border-primary/10 text-muted-foreground" style={{ minWidth: 160 }}>Trainee</th>
                   {allCompetencies.map(c => (
-                    <th key={c.code} className="px-1 py-2 text-center text-[8px] font-semibold uppercase tracking-wider border-b border-l border-[#21262D] bg-[#0D1117]" style={{ fontFamily: F.label, color: C.alloy, minWidth: 50 }}>
-                      <div className="truncate">{c.name}</div>
+                    <th key={c.code} className="px-2 py-4 text-center text-[10px] font-bold uppercase tracking-wider border-b border-l border-primary/10 bg-primary/5 text-muted-foreground" style={{ minWidth: 60 }}>
+                      <div className="truncate w-full max-w-[80px] mx-auto" title={c.name}>{c.name}</div>
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {traineeNames.map((name, ti) => (
-                  <tr key={ti} className="hover:bg-[#21262D]/30 transition-colors">
-                    <td className="px-4 py-2 text-[12px] font-medium text-[#F0F6FC] sticky left-0 bg-[#161B22] border-b border-[#21262D] z-10">{name}</td>
+                  <tr key={ti} className="hover:bg-primary/5 transition-colors group border-b border-primary/5 last:border-0">
+                    <td className="px-6 py-3 text-sm font-semibold text-slate-900 dark:text-white sticky left-0 bg-card border-r border-primary/10 z-10 group-hover:bg-primary/5">{name}</td>
                     {heatmapData[ti].map((level, ci) => (
-                      <td key={ci} className="px-1 py-2 text-center border-b border-l border-[#21262D]/50 cursor-pointer hover:ring-1 hover:ring-[#F6C90E] transition-all" title={`${name} — ${allCompetencies[ci].name}: Level ${level} (${levelLabels[level]})`}>
-                        <div className="w-7 h-7 rounded-sm mx-auto flex items-center justify-center text-[11px] font-bold transition-transform hover:scale-110"
-                          style={{ background: `${levelColors[level]}25`, color: levelColors[level] }}>
+                      <td key={ci} className="px-2 py-3 text-center border-l border-primary/5 cursor-pointer hover:bg-primary/10 transition-colors" title={`${name} — ${allCompetencies[ci].name}: Level ${level} (${levelLabels[level]})`}>
+                        <div className="w-8 h-8 rounded-lg mx-auto flex items-center justify-center text-xs font-bold shadow-sm"
+                          style={{ background: levelColors[level], color: level > 1 ? '#000' : '#fff' }}>
                           {level}
                         </div>
                       </td>
@@ -129,90 +142,80 @@ export default function VCompetencyTracking() {
               </tbody>
             </table>
           </div>
-        </div>
+        </Card>
       )}
 
       {/* ── FRAMEWORK VIEW ── */}
       {view === 'framework' && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          <div className="lg:col-span-5 bg-[#161B22] border border-[#30363D]">
-            <div className="px-4 py-3 border-b border-[#30363D] bg-[#0D1117]/60">
-              <h2 className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#F0F6FC]" style={{ fontFamily: F.label }}>Competency Framework</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <Card className="lg:col-span-4 rounded-2xl border border-primary/40 bg-card shadow-none overflow-hidden h-[calc(100vh-250px)] flex flex-col">
+            <div className="px-6 py-4 border-b border-primary/10 bg-primary/5">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">Competency Framework</h2>
             </div>
-            <div className="p-3">
+            <div className="p-4 overflow-y-auto flex-1">
               {domains.map((d, di) => (
                 <div key={di} className="mb-2">
                   <button onClick={() => setSelectedDomain(selectedDomain === di ? null : di)}
-                    className="w-full text-left px-3 py-2 flex items-center gap-2 hover:bg-[#21262D] transition-colors"
-                    style={{ background: selectedDomain === di ? C.steel : 'transparent' }}>
-                    <ChevronRight className="w-3 h-3 text-[#484F58] transition-transform" style={{ transform: selectedDomain === di ? 'rotate(90deg)' : '' }} />
-                    <span className="text-[12px] font-bold uppercase tracking-wider text-[#F0F6FC]" style={{ fontFamily: F.label }}>{d.name}</span>
-                    <span className="ml-auto text-[10px] text-[#484F58] font-mono">{d.competencies.length}</span>
+                    className={`w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 transition-colors ${selectedDomain === di ? 'bg-primary/10 text-primary' : 'hover:bg-primary/5 text-foreground'}`}>
+                    <ChevronRight className={`w-4 h-4 transition-transform ${selectedDomain === di ? 'rotate-90' : ''}`} />
+                    <span className="text-sm font-bold uppercase tracking-wider flex-1">{d.name}</span>
+                    <Badge variant="outline" className="border-primary/40 bg-card text-primary shadow-none">{d.competencies.length}</Badge>
                   </button>
-                  {selectedDomain === di && d.competencies.map((c, ci) => (
-                    <div key={ci} className="pl-8 pr-3 py-2 text-[12px] text-[#8B949E] hover:text-[#C9D1D9] hover:bg-[#21262D]/50 cursor-pointer transition-colors flex items-center gap-2">
-                      <span className="text-[10px] font-mono text-[#484F58]">[{c.code}]</span>
-                      <span>{c.name}</span>
+                  {selectedDomain === di && (
+                    <div className="pl-6 pr-2 py-2 space-y-1">
+                      {d.competencies.map((c, ci) => (
+                        <div key={ci} className="px-4 py-2 rounded-lg text-sm text-muted-foreground hover:text-primary hover:bg-primary/5 cursor-pointer transition-colors flex items-center gap-3">
+                          <span className="text-xs font-mono font-bold opacity-70">[{c.code}]</span>
+                          <span className="font-medium">{c.name}</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
                 </div>
               ))}
             </div>
-          </div>
+          </Card>
 
-          <div className="lg:col-span-7 bg-[#161B22] border border-[#30363D]">
-            <div className="px-4 py-3 border-b border-[#30363D] bg-[#0D1117]/60">
-              <h2 className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#F0F6FC]" style={{ fontFamily: F.label }}>
+          <Card className="lg:col-span-8 rounded-2xl border border-primary/40 bg-card shadow-none overflow-hidden h-[calc(100vh-250px)] flex flex-col">
+            <div className="px-6 py-4 border-b border-primary/10 bg-primary/5">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">
                 {selectedDomain !== null ? domains[selectedDomain].name : 'Select a Domain'}
               </h2>
             </div>
-            <div className="p-4">
+            <div className="p-6 overflow-y-auto flex-1 bg-card">
               {selectedDomain !== null ? (
                 <div className="space-y-4">
                   {domains[selectedDomain].competencies.map((c, ci) => (
-                    <div key={ci} className="p-4 bg-[#0D1117] border border-[#21262D]">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-[10px] font-mono px-1.5 py-0.5 bg-[#21262D] text-[#8B949E]">{c.code}</span>
-                        <span className="text-[14px] font-semibold text-[#F0F6FC]">{c.name}</span>
+                    <div key={ci} className="p-5 rounded-2xl bg-primary/5 border border-primary/10 transition-all hover:border-primary/30">
+                      <div className="flex items-center gap-3 mb-3">
+                        <Badge variant="outline" className="font-mono bg-card border-primary/40 text-primary">{c.code}</Badge>
+                        <span className="text-lg font-bold text-slate-900 dark:text-white">{c.name}</span>
                       </div>
-                      <p className="text-[12px] text-[#8B949E] mb-3">Demonstrates competency in {c.name.toLowerCase()} techniques and safety procedures.</p>
-                      <div className="flex gap-1">
-                        {levelLabels.slice(1).map((l, li) => (
-                          <div key={li} className="flex-1 py-1.5 text-center text-[9px] font-semibold uppercase tracking-wider" style={{ fontFamily: F.label, background: `${levelColors[li + 1]}15`, color: levelColors[li + 1] }}>{l}</div>
-                        ))}
+                      <p className="text-sm text-muted-foreground mb-4">Demonstrates competency in {c.name.toLowerCase()} techniques and safety procedures.</p>
+                      
+                      <div className="space-y-2">
+                        <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Progression Levels</div>
+                        <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                          {levelLabels.slice(1).map((l, li) => (
+                            <div key={li} className="p-2 rounded-xl text-center border border-primary/10 bg-card" style={{ borderTop: `3px solid ${levelColors[li + 1]}` }}>
+                              <div className="text-xs font-bold text-slate-900 dark:text-white">{l}</div>
+                              <div className="text-[10px] text-muted-foreground mt-1">Level {li + 1}</div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-16 text-[#484F58]">Select a domain from the framework tree to view competency details.</div>
+                <div className="h-full flex flex-col items-center justify-center text-muted-foreground">
+                  <BarChart3 className="w-16 h-16 opacity-20 mb-4 text-primary" />
+                  <p className="text-lg font-semibold text-slate-900 dark:text-white">No Domain Selected</p>
+                  <p className="text-sm">Select a domain from the left panel to view its competencies.</p>
+                </div>
               )}
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── ANALYTICS VIEW ── */}
-      {view === 'analytics' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {domains.map((d, di) => (
-            <div key={di} className="bg-[#161B22] border border-[#30363D] p-4">
-              <h3 className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#F0F6FC] mb-4" style={{ fontFamily: F.label }}>{d.name}</h3>
-              {d.competencies.map((c, ci) => {
-                const avg = (Math.random() * 3 + 1.5).toFixed(1);
-                const pct = (parseFloat(avg) / 5) * 100;
-                return (
-                  <div key={ci} className="flex items-center gap-3 mb-2.5">
-                    <span className="w-28 text-[11px] text-[#8B949E] truncate">{c.name}</span>
-                    <div className="flex-1 h-2 bg-[#0D1117] rounded-full overflow-hidden">
-                      <div className="h-full rounded-full" style={{ width: `${pct}%`, background: pct > 70 ? C.signal : pct > 40 ? C.volt : C.plasma }} />
-                    </div>
-                    <span className="w-8 text-right text-[12px] font-bold" style={{ fontFamily: F.display, color: pct > 70 ? C.signal : pct > 40 ? C.volt : C.plasma }}>{avg}</span>
-                  </div>
-                );
-              })}
-            </div>
-          ))}
+          </Card>
         </div>
       )}
     </div>
