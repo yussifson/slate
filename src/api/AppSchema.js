@@ -614,6 +614,7 @@ export const AppSchema = new Schema({
         industry_type: column.text,
         status: column.text,
         is_active: column.text,
+        shared_with: column.text,
     }),
     field_definitions: new Table({
         id: column.text,

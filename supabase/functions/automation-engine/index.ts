@@ -71,10 +71,29 @@ serve(async (req) => {
             .insert({
               title: rule.action_payload.title.replace('{{record_id}}', record.id),
               description: rule.action_payload.description,
-              status: 'pending'
+              status: 'pending',
+              company_id: record.company_id || null
             })
           
           executedActions.push({ rule_id: rule.id, action: 'create_task', status: insertError ? 'failed' : 'success' })
+        }
+        else if (rule.action_type === 'create_record') {
+          // Insert dynamic record
+          let payloadStr = JSON.stringify(rule.action_payload.payload || {});
+          payloadStr = payloadStr.replace(/\{\{(.*?)\}\}/g, (match, key) => {
+            const val = record[key.trim()];
+            return val !== undefined ? val : match;
+          });
+          const parsedPayload = JSON.parse(payloadStr);
+          parsedPayload.company_id = record.company_id || null;
+
+          const targetTable = rule.action_payload.table_name || 'industry_records';
+          
+          const { error: insertError } = await supabaseClient
+            .from(targetTable)
+            .insert(parsedPayload);
+          
+          executedActions.push({ rule_id: rule.id, action: 'create_record', status: insertError ? 'failed' : 'success' })
         }
       }
     }

@@ -15,6 +15,18 @@ export const SCHEMA_COLUMNS = {
     "ip_address",
     "severity"
   ],
+  "automation_rules": [
+    "id",
+    "created_date",
+    "updated_date",
+    "created_by",
+    "company_id",
+    "table_name",
+    "is_active",
+    "conditions",
+    "action_type",
+    "action_payload"
+  ],
   "case_emails": [
     "id",
     "created_date",

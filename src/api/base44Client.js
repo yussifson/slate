@@ -17,7 +17,8 @@ const TABLE_MAP = {
     StaffRecord: 'staff_records',
     IndustryRecord: 'industry_records',
     Notification: 'notifications',
-    TimeEntry: 'time_entries'
+    TimeEntry: 'time_entries',
+    AutomationRule: 'automation_rules'
 };
 
 
