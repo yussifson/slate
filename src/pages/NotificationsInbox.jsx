@@ -127,6 +127,23 @@ export default function NotificationsInbox() {
                 <CheckSquare className="w-4 h-4" /> Mark All Read
               </Button>
             )}
+            <Button 
+              variant="outline" 
+              onClick={async () => {
+                const { NotificationService } = await import('@/services/NotificationService');
+                await NotificationService.emit({
+                  companyId: user?.company_id,
+                  recipientEmail: user?.email,
+                  title: 'Test Novu Alert',
+                  message: 'This is a test notification to verify your Novu email pipeline is working!',
+                  type: 'system'
+                });
+                toast({ title: 'Test alert dispatched' });
+              }} 
+              className="gap-2 bg-primary text-white hover:bg-primary/90"
+            >
+              <Bell className="w-4 h-4" /> Send Test Ping
+            </Button>
             <Button variant="outline" onClick={clearAll} className="gap-2 text-red-500 hover:text-red-600 hover:bg-red-50">
               <Trash2 className="w-4 h-4" /> Clear Inbox
             </Button>
