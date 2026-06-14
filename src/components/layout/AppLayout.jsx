@@ -106,9 +106,7 @@ export default function AppLayout() {
  search_text: user.email,
  data: { isAIOpen: newState}
 };
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO industry_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_k.map(k=>k+' = excluded.'+k).join(', ')}`, _v);
+  await supabase.from('industry_records').upsert(_p);
 })();
 } catch (e) {
  console.error("Failed to save UI prefs", e);
