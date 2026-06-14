@@ -1,132 +1,150 @@
-import React, { useState} from 'react';
-import { useTranslation} from 'react-i18next';
-import { Trophy, Star, Shield, Zap, Medal, Gift, BookOpen} from 'lucide-react';
-import { Button} from '@/components/ui/button';
-import { useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
-import { base44} from "@/api/base44Client";
-import { useCompanyId} from "@/hooks/useCompanyId";
-import { useAuth} from "@/lib/AuthContext";
-import { toast} from "react-hot-toast";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Trophy, Star, Shield, Zap, Medal, Gift, BookOpen } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { useAuth } from "@/lib/AuthContext";
+import { toast } from "react-hot-toast";
+import { motion } from 'framer-motion';
 
 export default function Gamification() {
- const { t} = useTranslation();
- const companyId = useCompanyId();
- const { session, user} = useAuth();
- const queryClient = useQueryClient();
+  const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const { session, user } = useAuth();
+  const queryClient = useQueryClient();
 
- const { data: xpData = { total: 0, level: 1}} = useQuery({
- queryKey: ['school_student_xp', companyId],
- queryFn: async () => {
- const all = await base44.getEntities('school_student_xp', companyId);
- const myXp = all.find(x => x.client_id === session?.user?.id);
- return myXp?.data || { total: 0, level: 1};
-},
- enabled: !!companyId && !!session?.user?.id
-});
+  const { data: xpData = { total: 0, level: 1 } } = useQuery({
+    queryKey: ['school_student_xp', companyId],
+    queryFn: async () => {
+      const all = await base44.getEntities('school_student_xp', companyId);
+      const myXp = all.find(x => x.client_id === session?.user?.id);
+      return myXp?.data || { total: 0, level: 1 };
+    },
+    enabled: !!companyId && !!session?.user?.id
+  });
 
- const { data: leaderboard = []} = useQuery({
- queryKey: ['school_student_xp_leaderboard', companyId],
- queryFn: async () => {
- const all = await base44.getEntities('school_student_xp', companyId);
- return all
- .sort((a, b) => (b.data?.total || 0) - (a.data?.total || 0))
- .map(x => ({
- name: x.title && x.title !== 'Student XP' ? x.title : 'Student',
- total: x.data?.total || 0,
- clientId: x.client_id
-}))
- .slice(0, 10);
-},
- enabled: !!companyId
-});
+  const { data: leaderboard = [] } = useQuery({
+    queryKey: ['school_student_xp_leaderboard', companyId],
+    queryFn: async () => {
+      const all = await base44.getEntities('school_student_xp', companyId);
+      return all
+        .sort((a, b) => (b.data?.total || 0) - (a.data?.total || 0))
+        .map(x => ({
+          name: x.title && x.title !== 'Student XP' ? x.title : 'Student',
+          total: x.data?.total || 0,
+          clientId: x.client_id
+        }))
+        .slice(0, 10);
+    },
+    enabled: !!companyId
+  });
 
- const claimDailyXP = useMutation({
- mutationFn: async () => {
- const all = await base44.getEntities('school_student_xp', companyId);
- let myXp = all.find(x => x.client_id === session?.user?.id);
- if (myXp) {
- return base44.updateEntity(myXp.id, {
- data: { ...myXp.data, total: (myXp.data.total || 0) + 50}
-});
-} else {
- return base44.createEntity({
- company_id: companyId,
- case_type: 'school_student_xp',
- client_id: session?.user?.id,
- title: user?.full_name || 'Student XP',
- status: 'active',
- data: { total: 50, level: 1}
-});
-}
-},
- onSuccess: () => {
- queryClient.invalidateQueries({ queryKey: ['school_student_xp', companyId]});
- toast.success("50 XP Claimed! Keep up the good work.");
-}
-});
+  const claimDailyXP = useMutation({
+    mutationFn: async () => {
+      const all = await base44.getEntities('school_student_xp', companyId);
+      let myXp = all.find(x => x.client_id === session?.user?.id);
+      if (myXp) {
+        return base44.updateEntity(myXp.id, {
+          data: { ...myXp.data, total: (myXp.data.total || 0) + 50 }
+        });
+      } else {
+        return base44.createEntity({
+          company_id: companyId,
+          case_type: 'school_student_xp',
+          client_id: session?.user?.id,
+          title: user?.full_name || 'Student XP',
+          status: 'active',
+          data: { total: 50, level: 1 }
+        });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['school_student_xp', companyId] });
+      toast.success("50 XP Claimed! Keep up the good work.");
+    }
+  });
 
- return (
- <div className="space-y-8 pb-20 max-w-6xl mx-auto">
- <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-6">
- <div className="flex items-center gap-4">
- <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center border border-primary/40 ">
- <Trophy className="w-8 h-8 text-primary dark:text-primary/70" />
- </div>
- <div>
- <h1 className="text-2xl school-heading font-extrabold tracking-tight">{user?.full_name || "Student"}</h1>
- <p className="text-sm text-muted-foreground flex items-center gap-2">
- <Star className="w-4 h-4 text-primary fill-primary" /> {xpData.total} Total XP • LVL {xpData.level}
- </p>
- </div>
- </div>
- 
- <Button onClick={() => claimDailyXP.mutate()} className="bg-primary hover:bg-primary text-white -[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold font-bold rounded-xl transition-all">
- <Zap className="w-4 h-4 mr-2" /> Claim Daily 50 XP
- </Button>
- </div>
+  return (
+    <div className="space-y-8 pb-20 font-dmsans max-w-6xl mx-auto">
+      <div className="bg-emerald-600 rounded-3xl p-10 text-white flex flex-col md:flex-row items-center justify-between gap-8 border-b-4 border-emerald-700 shadow-none">
+        <div className="flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
+          <div className="w-24 h-24 rounded-3xl bg-white text-emerald-600 flex items-center justify-center border-4 border-emerald-400">
+            <Trophy className="w-12 h-12" />
+          </div>
+          <div>
+            <h1 className="text-4xl font-extrabold tracking-tight mb-2">{user?.full_name || "Student Leader"}</h1>
+            <div className="flex flex-wrap justify-center md:justify-start items-center gap-3 bg-emerald-800/40 px-5 py-2.5 rounded-2xl">
+              <Star className="w-6 h-6 text-yellow-300 fill-yellow-300" /> 
+              <span className="font-extrabold text-xl">{xpData.total} XP</span> 
+              <span className="w-2 h-2 rounded-full bg-emerald-400 mx-2"></span>
+              <span className="font-extrabold text-emerald-100 text-lg">LEVEL {xpData.level}</span>
+            </div>
+          </div>
+        </div>
+        
+        <Button 
+          onClick={() => claimDailyXP.mutate()} 
+          className="bg-white text-emerald-700 hover:bg-emerald-50 rounded-2xl font-extrabold h-16 px-8 text-lg w-full md:w-auto shadow-none"
+        >
+          <Zap className="w-6 h-6 mr-3 text-yellow-500 fill-yellow-500" /> Claim Daily 50 XP
+        </Button>
+      </div>
 
- <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
- {[
- { title: "Academic Scholar", desc: "Straight A's this semester", icon: BookOpen},
- { title: "Perfect Attendance", desc: "No days missed in 3 months", icon: Shield},
- { title: "Helping Hand", desc: "Tutor 5 students", icon: Gift},
- { title: "Math Wizard", desc: "Win the math olympiad", icon: Zap}
- ].map((badge, i) => (
- <div key={i} className="bg-card rounded-xl p-6 border border-primary/40 text-center group cursor-pointer hover:border-primary/30 transition-colors duration-300">
- <div className={`w-16 h-16 mx-auto rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 flex items-center justify-center mb-4 `}>
- <badge.icon className="w-8 h-8 text-primary dark:text-primary/70" />
- </div>
- <h3 className="font-bold text-lg text-card-foreground mb-1">{badge.title}</h3>
- <p className="text-sm font-medium text-muted-foreground">{badge.desc}</p>
- </div>
- ))}
- </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { title: "Academic Scholar", desc: "Straight A's this semester", icon: BookOpen },
+          { title: "Perfect Attendance", desc: "No days missed in 3 months", icon: Shield },
+          { title: "Helping Hand", desc: "Tutor 5 students", icon: Gift },
+          { title: "Math Wizard", desc: "Win the math olympiad", icon: Zap }
+        ].map((badge, i) => (
+          <motion.div 
+            whileHover={{ scale: 1.05 }}
+            key={i} 
+            className="bg-white rounded-3xl p-8 border-2 border-emerald-100 text-center flex flex-col items-center justify-center h-56 shadow-none"
+          >
+            <div className={`w-20 h-20 rounded-2xl bg-emerald-100 flex items-center justify-center mb-6`}>
+              <badge.icon className="w-10 h-10 text-emerald-600" />
+            </div>
+            <h3 className="font-extrabold text-xl text-emerald-900 mb-2 leading-tight">{badge.title}</h3>
+            <p className="text-md font-bold text-emerald-500">{badge.desc}</p>
+          </motion.div>
+        ))}
+      </div>
 
- <div className="bg-card rounded-xl border border-primary/40 p-6 ">
- <h3 className="text-xl font-bold mb-6 text-card-foreground flex items-center gap-2">
- <Medal className="text-primary w-5 h-5" /> Leaderboard
- </h3>
- <div className="space-y-3">
- {leaderboard.length === 0 ? (
- <div className="text-center text-muted-foreground py-8">No leaderboard data yet.</div>
- ) : (
- leaderboard.map((student, i) => {
- const isMe = student.clientId === session?.user?.id;
- return (
- <div key={i} className={`flex items-center justify-between p-4 rounded-lg border ${isMe ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 dark:bg-slate-100 border-primary/20' : 'bg-background border-primary/40'} `}>
- <div className="flex items-center gap-4">
- <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${i === 0 ? 'bg-slate-100 text-primary dark:text-primary/70' : i === 1 ? 'bg-muted text-muted-foreground' : i === 2 ? 'bg-muted text-muted-foreground' : 'bg-transparent text-muted-foreground'}`}>
- #{i + 1}
- </div>
- <div className="font-bold text-foreground">{isMe ? 'You' : student.name}</div>
- </div>
- <div className="font-bold text-primary dark:text-primary/70 dark:text-primary">{student.total} XP</div>
- </div>
- );
-})
- )}
- </div>
- </div>
- </div>
- );
+      <div className="bg-white rounded-3xl border-2 border-emerald-100 p-10 mt-8 shadow-none">
+        <h3 className="text-3xl font-extrabold mb-10 text-emerald-900 flex items-center gap-4">
+          <div className="bg-emerald-100 p-3 rounded-2xl">
+            <Medal className="text-emerald-600 w-8 h-8" />
+          </div>
+          Hall of Fame Leaderboard
+        </h3>
+        <div className="space-y-4">
+          {leaderboard.length === 0 ? (
+            <div className="text-center text-emerald-400 py-16 text-xl font-bold bg-emerald-50 rounded-3xl border border-emerald-100 border-dashed">No leaderboard data yet.</div>
+          ) : (
+            leaderboard.map((student, i) => {
+              const isMe = student.clientId === session?.user?.id;
+              return (
+                <motion.div 
+                  whileHover={{ x: 5 }}
+                  key={i} 
+                  className={`flex items-center justify-between p-6 rounded-2xl border-2 ${isMe ? 'bg-emerald-50 border-emerald-400' : 'bg-white border-emerald-100'} transition-all shadow-none`}
+                >
+                  <div className="flex items-center gap-6">
+                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-extrabold text-2xl ${i === 0 ? 'bg-yellow-100 text-yellow-600' : i === 1 ? 'bg-slate-100 text-slate-500' : i === 2 ? 'bg-orange-100 text-orange-600' : 'bg-emerald-50 text-emerald-600'}`}>
+                      #{i + 1}
+                    </div>
+                    <div className="font-extrabold text-2xl text-emerald-900">{isMe ? 'You' : student.name}</div>
+                  </div>
+                  <div className="font-extrabold text-2xl text-emerald-600 bg-emerald-100 px-6 py-2 rounded-xl">{student.total} XP</div>
+                </motion.div>
+              );
+            })
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }

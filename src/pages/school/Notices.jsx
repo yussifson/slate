@@ -1,161 +1,189 @@
-import { useTranslation} from "react-i18next";
-import { useState} from 'react';
-import { Megaphone, Search, Plus, Calendar, MoreVertical} from 'lucide-react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
-import { Button} from '@/components/ui/button';
-import { Input} from '@/components/ui/input';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
-import { toast} from 'react-hot-toast';
-import { format} from "date-fns";
+import { useTranslation } from "react-i18next";
+import { useState } from 'react';
+import { Megaphone, Search, Plus, Calendar, MoreVertical, Edit2, Trash2, Inbox } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { toast } from 'react-hot-toast';
+import { format } from "date-fns";
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Notices() {
- const { t} = useTranslation();
- const [search, setSearch] = useState('');
- const [showModal, setShowModal] = useState(false);
- const [editingId, setEditingId] = useState(null);
+  const { t } = useTranslation();
+  const [search, setSearch] = useState('');
+  const [selectedId, setSelectedId] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  
+  const { data: records = [], isLoading } = useIndustryRecords('notice');
+  const mutateRecord = useMutateIndustryRecord();
+  const deleteRecord = useDeleteIndustryRecord();
 
- const { data: records = [], isLoading} = useIndustryRecords('notice');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+  const [formData, setFormData] = useState({ title: '', audience: 'All', content: '' });
 
- const [formData, setFormData] = useState({
- title: '', audience: 'All', content: ''
-});
+  const notices = records.map(r => ({ id: r.id, ...r.data }));
+  const filtered = notices.filter(n => n.title?.toLowerCase().includes(search.toLowerCase()));
 
- const notices = records.map(r => ({
- id: r.id,
- ...r.data
-}));
+  const handleSave = () => {
+    if (!formData.title || !formData.content) return toast.error("Title and content are required");
+    
+    const payload = {
+      title: formData.title,
+      audience: formData.audience,
+      content: formData.content,
+      datePublished: new Date().toISOString(),
+      status: 'Published'
+    };
 
- const filtered = notices.filter(n =>
- n.title?.toLowerCase().includes(search.toLowerCase())
- );
+    if (selectedId && isEditing) {
+      mutateRecord.mutate({
+        id: selectedId, recordType: 'notice', payload, status: 'active',
+        searchText: `${formData.title} ${formData.audience}`
+      }, {
+        onSuccess: () => { toast.success("Notice updated"); setIsEditing(false); }
+      });
+    } else {
+      mutateRecord.mutate({
+        recordType: 'notice', payload, status: 'active',
+        searchText: `${formData.title} ${formData.audience}`
+      }, {
+        onSuccess: () => { toast.success("Notice published"); setIsEditing(false); }
+      });
+    }
+  };
 
- const handleSave = () => {
- if (!formData.title || !formData.content) return toast.error("Title and content are required");
- 
- const payload = {
- title: formData.title,
- audience: formData.audience,
- content: formData.content,
- datePublished: new Date().toISOString(),
- status: 'Published'
-};
+  const selectedNotice = notices.find(n => n.id === selectedId);
 
- if (editingId) {
- mutateRecord.mutate({
- id: editingId, recordType: 'notice', payload, status: 'active',
- searchText: `${formData.title} ${formData.audience}`
-}, {
- onSuccess: () => { toast.success("Notice updated"); setShowModal(false); setEditingId(null);}
-});
-} else {
- mutateRecord.mutate({
- recordType: 'notice', payload, status: 'active',
- searchText: `${formData.title} ${formData.audience}`
-}, {
- onSuccess: () => { toast.success("Notice published"); setShowModal(false);}
-});
-}
-};
+  return (
+    <div className="h-[calc(100vh-80px)] flex flex-col font-dmsans bg-emerald-50 rounded-3xl overflow-hidden border border-emerald-100 max-w-7xl mx-auto">
+      <div className="bg-emerald-600 text-white p-6 md:p-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight">{t("noticeboard", "Noticeboard")}</h1>
+          <p className="text-emerald-100 mt-1">{t("manage_announcements", "Manage school announcements and communications")}</p>
+        </div>
+        <Button 
+          onClick={() => { setSelectedId(null); setIsEditing(true); setFormData({title: '', audience: 'All', content: ''}); }} 
+          className="bg-emerald-500 hover:bg-emerald-400 text-white border border-emerald-400 rounded-xl px-6 h-12 text-lg font-bold transition-all"
+        >
+          <Plus className="w-5 h-5 mr-2" /> {t("new_notice", "New Notice")}
+        </Button>
+      </div>
 
- return (
- <div className="space-y-6 school-page-enter font-dmsans">
- <div className="flex items-center justify-between">
- <div>
- <h1 className="text-2xl school-heading font-extrabold tracking-tight">{t("noticeboard", "Noticeboard")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t("manage_announcements", "Manage school announcements and communications")}</p>
- </div>
- <Button onClick={() => { setFormData({title: '', audience: 'All', content: ''}); setShowModal(true);}} className="gap-2 bg-primary hover:bg-primary text-white -[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
- <Plus className="w-4 h-4" /> {t("new_notice", "New Notice")}
- </Button>
- </div>
- 
- <div className="school-card p-5">
- <div className="relative w-full max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search notices..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
- </div>
- </div>
+      <div className="flex flex-1 overflow-hidden">
+        <div className="w-full md:w-1/3 bg-white border-r border-emerald-100 flex flex-col">
+          <div className="p-4 border-b border-emerald-100 bg-emerald-50/50">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-600" />
+              <Input 
+                placeholder="Search notices..." 
+                value={search} 
+                onChange={e => setSearch(e.target.value)} 
+                className="pl-12 bg-white border-emerald-200 focus-visible:ring-emerald-500 rounded-2xl h-12 text-md" 
+              />
+            </div>
+          </div>
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
+            {isLoading ? (
+              <div className="p-4 text-center text-emerald-600 font-bold">{t("loading", "Loading...")}</div>
+            ) : filtered.length === 0 ? (
+              <div className="p-10 text-center text-emerald-400">
+                <Inbox className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                <p className="font-bold text-lg">{t("no_notices", "No notices published")}</p>
+              </div>
+            ) : (
+              filtered.map(n => (
+                <motion.div 
+                  whileHover={{ scale: 1.02 }}
+                  key={n.id} 
+                  onClick={() => { setSelectedId(n.id); setIsEditing(false); }}
+                  className={`p-5 rounded-2xl cursor-pointer border-2 transition-all ${selectedId === n.id ? 'bg-emerald-50 border-emerald-400' : 'bg-white border-emerald-100 hover:bg-emerald-50'}`}
+                >
+                  <h3 className="font-extrabold text-emerald-900 line-clamp-1 text-lg">{n.title}</h3>
+                  <p className="text-xs font-bold text-emerald-600 mt-2 uppercase tracking-wider">{t("audience", "Audience:")} {n.audience}</p>
+                  <p className="text-sm text-emerald-500 mt-2 line-clamp-2 font-medium">{n.content}</p>
+                </motion.div>
+              ))
+            )}
+          </div>
+        </div>
 
- {isLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading", "Loading...")}</div>
- ) : filtered.length === 0 ? (
- <div className="text-center py-12 school-card">
- <Megaphone className="w-12 h-12 mx-auto mb-3 opacity-20 text-primary" />
- <p className="font-semibold text-lg text-card-foreground">{t("no_notices", "No notices published")}</p>
- </div>
- ) : (
- <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
- {filtered.map(n => (
- <div key={n.id} className="bg-card rounded-xl border border-primary/40 p-5 transition-all group relative">
- <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
- <DropdownMenu>
- <DropdownMenuTrigger asChild>
- <Button variant="ghost" className="h-8 w-8 p-0">
- <MoreVertical className="h-4 w-4 text-muted-foreground" />
- </Button>
- </DropdownMenuTrigger>
- <DropdownMenuContent align="end">
- <DropdownMenuItem onClick={() => {
- setEditingId(n.id);
- setFormData({ title: n.title, audience: n.audience, content: n.content});
- setShowModal(true);
-}}>{t("edit", "Edit")}</DropdownMenuItem>
- <DropdownMenuItem className="text-red-600" onClick={() => deleteRecord.mutate({ id: n.id, recordType: 'notice'})}>{t("delete", "Delete")}</DropdownMenuItem>
- </DropdownMenuContent>
- </DropdownMenu>
- </div>
- <div className="flex items-center gap-3 mb-4">
- <div className="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center">
- <Megaphone className="w-5 h-5" />
- </div>
- <div>
- <h3 className="font-bold text-card-foreground line-clamp-1">{n.title}</h3>
- <p className="text-xs font-semibold text-orange-600">{t("audience", "Audience:")} {n.audience}</p>
- </div>
- </div>
- <p className="text-sm text-muted-foreground line-clamp-3 mb-4 whitespace-pre-wrap">{n.content}</p>
- <div className="flex items-center justify-between pt-4 border-t border-primary/40 mt-auto">
- <span className="text-xs font-medium flex items-center gap-1 text-muted-foreground">
- <Calendar className="w-3.5 h-3.5" /> {n.datePublished ? format(new Date(n.datePublished), 'MMM d, yyyy') : 'No Date'}
- </span>
- <span className="bg-slate-50 dark:bg-slate-800/50 text-primary/90 text-xs font-bold px-2 py-1 rounded-md">{n.status}</span>
- </div>
- </div>
- ))}
- </div>
- )}
-
- {showModal && (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-md p-4">
- <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-primary/40 max-h-[90vh] overflow-y-auto custom-scrollbar">
- <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Notice' : 'Publish Notice'}</h2>
- <div className="space-y-3">
- <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("title", "Title")}</label><Input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="mt-1" /></div>
- <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("audience", "Audience")}</label>
- <select value={formData.audience} onChange={e => setFormData({...formData, audience: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
- <option>All</option>
- <option>Students Only</option>
- <option>Parents Only</option>
- <option>Staff Only</option>
- </select>
- </div>
- <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("content", "Content")}</label>
- <textarea value={formData.content} onChange={e => setFormData({...formData, content: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground resize-none h-32" />
- </div>
- </div>
- <div className="flex gap-3 pt-2">
- <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
- <Button className="flex-1 bg-primary hover:bg-primary text-white -[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleSave}>
- {mutateRecord.isPending ? 'Publishing...' : 'Publish'}
- </Button>
- </div>
- </div>
- </div>
- )}
- </div>
- );
+        <div className="hidden md:flex flex-1 bg-emerald-50 p-8 overflow-y-auto relative">
+          <AnimatePresence mode="wait">
+            {isEditing ? (
+              <motion.div 
+                key="edit"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="bg-white rounded-3xl border border-emerald-200 p-10 max-w-3xl mx-auto w-full shadow-none"
+              >
+                <h2 className="text-3xl font-extrabold text-emerald-900 mb-8">{selectedId ? 'Edit Notice' : 'Compose Notice'}</h2>
+                <div className="space-y-6">
+                  <div>
+                    <label className="text-sm font-bold text-emerald-700 uppercase tracking-wide">Title</label>
+                    <Input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="mt-2 border-emerald-200 focus-visible:ring-emerald-500 rounded-xl h-12 text-lg" placeholder="Enter notice title..." />
+                  </div>
+                  <div>
+                    <label className="text-sm font-bold text-emerald-700 uppercase tracking-wide">Audience</label>
+                    <select value={formData.audience} onChange={e => setFormData({...formData, audience: e.target.value})} className="mt-2 w-full rounded-xl border border-emerald-200 bg-white px-4 py-3 text-lg text-emerald-900 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                      <option>All</option>
+                      <option>Students Only</option>
+                      <option>Parents Only</option>
+                      <option>Staff Only</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-sm font-bold text-emerald-700 uppercase tracking-wide">Content</label>
+                    <textarea value={formData.content} onChange={e => setFormData({...formData, content: e.target.value})} className="mt-2 w-full rounded-xl border border-emerald-200 bg-white p-4 text-lg text-emerald-900 resize-none h-64 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Type your message here..." />
+                  </div>
+                </div>
+                <div className="flex gap-4 mt-10">
+                  <Button variant="outline" className="flex-1 border-emerald-200 text-emerald-700 hover:bg-emerald-50 rounded-xl h-14 text-lg font-bold" onClick={() => setIsEditing(false)}>Cancel</Button>
+                  <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl h-14 text-lg font-bold" onClick={handleSave}>
+                    {mutateRecord.isPending ? 'Publishing...' : 'Publish Notice'}
+                  </Button>
+                </div>
+              </motion.div>
+            ) : selectedNotice ? (
+              <motion.div 
+                key="view"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="bg-white rounded-3xl border border-emerald-200 p-10 max-w-3xl mx-auto w-full shadow-none"
+              >
+                <div className="flex justify-between items-start mb-8 pb-8 border-b border-emerald-100">
+                  <div>
+                    <h2 className="text-4xl font-extrabold text-emerald-900 leading-tight">{selectedNotice.title}</h2>
+                    <div className="flex items-center gap-4 mt-4">
+                      <span className="text-sm font-bold bg-emerald-100 text-emerald-800 px-4 py-1.5 rounded-full uppercase tracking-wider">{selectedNotice.audience}</span>
+                      <span className="text-sm font-bold text-emerald-500 flex items-center gap-2"><Calendar className="w-4 h-4" /> {selectedNotice.datePublished ? format(new Date(selectedNotice.datePublished), 'MMMM d, yyyy') : 'No Date'}</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 shrink-0">
+                    <Button variant="outline" size="icon" className="h-12 w-12 border-emerald-200 text-emerald-700 hover:bg-emerald-50 rounded-xl" onClick={() => { setFormData({ title: selectedNotice.title, audience: selectedNotice.audience, content: selectedNotice.content }); setIsEditing(true); }}>
+                      <Edit2 className="w-5 h-5" />
+                    </Button>
+                    <Button variant="outline" size="icon" className="h-12 w-12 border-red-200 text-red-600 hover:bg-red-50 rounded-xl" onClick={() => { if(window.confirm('Delete this notice?')) deleteRecord.mutate({ id: selectedNotice.id, recordType: 'notice' }, { onSuccess: () => setSelectedId(null) }); }}>
+                      <Trash2 className="w-5 h-5" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="prose prose-emerald prose-lg max-w-none">
+                  <p className="text-emerald-800 whitespace-pre-wrap leading-relaxed font-medium">{selectedNotice.content}</p>
+                </div>
+              </motion.div>
+            ) : (
+              <div className="h-full w-full flex flex-col items-center justify-center text-emerald-400">
+                <div className="bg-emerald-100 p-8 rounded-full mb-6">
+                  <Megaphone className="w-20 h-20 text-emerald-500" />
+                </div>
+                <p className="text-2xl font-extrabold text-emerald-700">Select a notice to read</p>
+                <p className="text-emerald-500 font-medium mt-2">Or compose a new one from the top right</p>
+              </div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+    </div>
+  );
 }

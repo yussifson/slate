@@ -1,522 +1,278 @@
-import { useTranslation} from "react-i18next";
-import { useState, useMemo} from 'react';
-import { Book, Search, Plus, BookOpen, Trash2, Clock, AlertCircle, MoreVertical} from 'lucide-react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription} from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import { Link} from 'react-router-dom';
-import { Button} from '@/components/ui/button';
-import { Input} from '@/components/ui/input';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
-import { toast} from 'react-hot-toast';
-import ConfirmationModal from '@/components/ConfirmationModal';
-import AddOptionInline from "@/components/shared/AddOptionInline";
-import { ViewModeToggle, BookGridCard} from '@/components/school/SchoolViewKit';
+import { useTranslation } from "react-i18next";
+import { useState, useMemo } from 'react';
+import { Book, Search, Plus, BookOpen, Trash2, Clock, AlertCircle, MoreVertical, Edit2 } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { toast } from 'react-hot-toast';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Library() {
- const { t} = useTranslation();
- // Supabase Real-time Sync Hooks
- const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('book');
- const { data: categoryRecords = []} = useIndustryRecords('library_category');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+  const { t } = useTranslation();
+  
+  const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('book');
+  const { data: categoryRecords = [] } = useIndustryRecords('library_category');
+  const mutateRecord = useMutateIndustryRecord();
+  const deleteRecord = useDeleteIndustryRecord();
 
- const DEFAULT_CATEGORIES = ['Science', 'Literature', 'Mathematics', 'History', 'Technology', 'Geography'];
- const categories = useMemo(() => {
- const custom = categoryRecords.map((r) => r.data?.name || r.search_text).filter(Boolean);
- return [...new Set([...DEFAULT_CATEGORIES, ...custom])];
-}, [categoryRecords]);
+  const DEFAULT_CATEGORIES = ['Science', 'Literature', 'Mathematics', 'History', 'Technology', 'Geography'];
+  const categories = useMemo(() => {
+    const custom = categoryRecords.map((r) => r.data?.name || r.search_text).filter(Boolean);
+    return [...new Set([...DEFAULT_CATEGORIES, ...custom])];
+  }, [categoryRecords]);
 
- const books = dbRecords.map(r => ({
- id: r.id,
- status: r.status || 'Active',
- ...r.data
-}));
+  const books = dbRecords.map(r => ({ id: r.id, status: r.status || 'Active', ...r.data }));
 
- const [search, setSearch] = useState('');
- const [showModal, setShowModal] = useState(false);
- const [deleteTargetId, setDeleteTargetId] = useState(null);
- const [editingId, setEditingId] = useState(null);
- const [viewDetails, setViewDetails] = useState(null);
+  const [search, setSearch] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [issueBookTarget, setIssueBookTarget] = useState(null);
+  const [borrowerName, setBorrowerName] = useState('');
 
- // New Issue Book State
- const [issueBookTarget, setIssueBookTarget] = useState(null);
- const [borrowerName, setBorrowerName] = useState('');
- const [viewMode, setViewMode] = useState('grid');
+  const [formData, setFormData] = useState({ title: '', author: '', isbn: '', category: 'Science', total: 10, cover_url: '', ebook_url: '' });
 
- // Form State
- const [formData, setFormData] = useState({
- title: '', author: '', isbn: '', category: 'Science', total: 10, cover_url: '', ebook_url: ''
-});
+  const handleCreateBook = () => {
+    if (!formData.title.trim() || !formData.author.trim() || !formData.isbn.trim()) {
+      return toast.error("Please enter book title, author, and ISBN number");
+    }
 
- const handleCreateBook = () => {
- if (!formData.title.trim() || !formData.author.trim() || !formData.isbn.trim()) {
- return toast.error("Please enter book title, author, and ISBN number");
-}
+    const payload = {
+      title: formData.title,
+      author: formData.author,
+      isbn: formData.isbn,
+      category: formData.category,
+      total: parseInt(formData.total) || 1,
+      available: parseInt(formData.total) || 1,
+      borrowed: 0,
+      cover_url: formData.cover_url,
+      ebook_url: formData.ebook_url
+    };
 
- const payload = {
- title: formData.title,
- author: formData.author,
- isbn: formData.isbn,
- category: formData.category,
- total: parseInt(formData.total) || 1,
- available: parseInt(formData.total) || 1,
- borrowed: 0,
- cover_url: formData.cover_url,
- ebook_url: formData.ebook_url
-};
+    if (editingId) {
+      mutateRecord.mutate({
+        id: editingId,
+        recordType: 'book',
+        payload: {
+          ...payload,
+          available: payload.total - (books.find(b => b.id === editingId)?.borrowed || 0),
+          borrowed: books.find(b => b.id === editingId)?.borrowed || 0
+        },
+        status: 'active',
+        searchText: `${formData.title} ${formData.author} ${formData.isbn}`
+      }, {
+        onSuccess: () => { toast.success('Book updated successfully!'); setShowModal(false); setEditingId(null); }
+      });
+    } else {
+      mutateRecord.mutate({
+        recordType: 'book', payload, status: 'active', searchText: `${formData.title} ${formData.author} ${formData.isbn}`
+      }, {
+        onSuccess: () => { toast.success('Book cataloged successfully!'); setShowModal(false); }
+      });
+    }
+  };
 
- if (editingId) {
- mutateRecord.mutate({
- id: editingId,
- recordType: 'book',
- payload: {
- ...payload,
- available: payload.total - (books.find(b => b.id === editingId)?.borrowed || 0),
- borrowed: books.find(b => b.id === editingId)?.borrowed || 0
-},
- status: 'active',
- searchText: `${formData.title} ${formData.author} ${formData.isbn}`
-}, {
- onSuccess: () => {
- toast.success('Book updated successfully!');
- setShowModal(false);
- setEditingId(null);
- setFormData({ title: '', author: '', isbn: '', category: 'Science', total: 10, cover_url: '', ebook_url: ''});
-},
- onError: (err) => {
- toast.error('Failed to update book: ' + err.message);
-}
-});
-} else {
- mutateRecord.mutate({
- recordType: 'book',
- payload,
- status: 'active',
- searchText: `${formData.title} ${formData.author} ${formData.isbn}`
-}, {
- onSuccess: () => {
- toast.success('Book cataloged successfully!');
- setShowModal(false);
- setFormData({ title: '', author: '', isbn: '', category: 'Science', total: 10, cover_url: '', ebook_url: ''});
-},
- onError: (err) => {
- toast.error('Failed to catalog book: ' + err.message);
-}
-});
-}
-};
+  const submitIssueBook = () => {
+    if (!borrowerName.trim()) return toast.error("Please enter the borrower's name.");
+    if (issueBookTarget.available <= 0) return toast.error("No copies available for checkout.");
 
- const submitIssueBook = () => {
- if (!borrowerName.trim()) return toast.error("Please enter the borrower's name.");
- if (issueBookTarget.available <= 0) return toast.error("No copies available for checkout.");
+    const updatedPayload = {
+      ...issueBookTarget,
+      available: issueBookTarget.available - 1,
+      borrowed: issueBookTarget.borrowed + 1,
+      current_borrower: borrowerName.trim(),
+      issued_at: new Date().toISOString(),
+    };
+    delete updatedPayload.id;
+    delete updatedPayload.status;
 
- const updatedPayload = {
- ...issueBookTarget,
- available: issueBookTarget.available - 1,
- borrowed: issueBookTarget.borrowed + 1,
- current_borrower: borrowerName.trim(),
- issued_at: new Date().toISOString(),
-};
- delete updatedPayload.id;
- delete updatedPayload.status;
+    mutateRecord.mutate({
+      id: issueBookTarget.id, recordType: 'book', payload: updatedPayload, status: issueBookTarget.status, searchText: `${issueBookTarget.title} ${issueBookTarget.author}`
+    }, {
+      onSuccess: () => { toast.success(`Issued "${issueBookTarget.title}" to ${borrowerName}!`); setIssueBookTarget(null); setBorrowerName(''); }
+    });
+  };
 
- mutateRecord.mutate({
- id: issueBookTarget.id,
- recordType: 'book',
- payload: updatedPayload,
- status: issueBookTarget.status,
- searchText: `${issueBookTarget.title} ${issueBookTarget.author}`
-}, {
- onSuccess: () => {
- toast.success(`Issued "${issueBookTarget.title}" to ${borrowerName}!`);
- setIssueBookTarget(null);
- setBorrowerName('');
-}
-});
-};
+  const filtered = books.filter(b => b.title?.toLowerCase().includes(search.toLowerCase()) || b.author?.toLowerCase().includes(search.toLowerCase()));
 
- const handleDeleteBook = () => {
- if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'book'}, {
- onSuccess: () => {
- toast.success('Book catalog index removed!');
- setDeleteTargetId(null);
-},
- onError: (err) => {
- toast.error('Failed to remove catalog item: ' + err.message);
- setDeleteTargetId(null);
-}
-});
-};
+  const totalCopies = books.reduce((acc, b) => acc + (b.total || 0), 0);
+  const totalAvailable = books.reduce((acc, b) => acc + (b.available || 0), 0);
+  const totalBorrowed = books.reduce((acc, b) => acc + (b.borrowed || 0), 0);
 
- const filtered = books.filter(b =>
- b.title?.toLowerCase().includes(search.toLowerCase()) ||
- b.author?.toLowerCase().includes(search.toLowerCase())
- );
+  return (
+    <div className="space-y-8 font-dmsans max-w-7xl mx-auto pb-20">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <h1 className="text-4xl font-extrabold tracking-tight text-emerald-900">{t("library_catalog", "Library Catalog")}</h1>
+          <p className="text-lg text-emerald-600 font-medium mt-1">{t("manage_school_library_books_an", "Manage school library books and inventory")}</p>
+        </div>
+        <Button onClick={() => { setFormData({ title: '', author: '', isbn: '', category: 'Science', total: 10, cover_url: '', ebook_url: '' }); setEditingId(null); setShowModal(true); }} className="gap-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl h-14 px-8 text-lg font-bold">
+          <Plus className="w-6 h-6" /> {t("add_book", "Add Book")}
+        </Button>
+      </div>
 
- const totalCopies = books.reduce((acc, b) => acc + (b.total || 0), 0);
- const totalAvailable = books.reduce((acc, b) => acc + (b.available || 0), 0);
- const totalBorrowed = books.reduce((acc, b) => acc + (b.borrowed || 0), 0);
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-emerald-50 border-2 border-emerald-100 rounded-3xl p-8 flex items-center gap-6 shadow-none">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-200 flex items-center justify-center text-emerald-700">
+            <Book className="w-8 h-8" />
+          </div>
+          <div>
+            <p className="text-4xl font-extrabold text-emerald-900">{totalCopies}</p>
+            <p className="text-sm font-bold uppercase tracking-wider text-emerald-600">{t("total_books", "Total Books")}</p>
+          </div>
+        </div>
+        <div className="bg-white border-2 border-emerald-100 rounded-3xl p-8 flex items-center gap-6 shadow-none">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-600">
+            <BookOpen className="w-8 h-8" />
+          </div>
+          <div>
+            <p className="text-4xl font-extrabold text-emerald-900">{totalAvailable}</p>
+            <p className="text-sm font-bold uppercase tracking-wider text-emerald-600">{t("available", "Available")}</p>
+          </div>
+        </div>
+        <div className="bg-orange-50 border-2 border-orange-100 rounded-3xl p-8 flex items-center gap-6 shadow-none">
+          <div className="w-16 h-16 rounded-2xl bg-orange-200 flex items-center justify-center text-orange-700">
+            <Clock className="w-8 h-8" />
+          </div>
+          <div>
+            <p className="text-4xl font-extrabold text-orange-900">{totalBorrowed}</p>
+            <p className="text-sm font-bold uppercase tracking-wider text-orange-600">{t("borrowed", "Borrowed")}</p>
+          </div>
+        </div>
+      </div>
 
- return (
- <div className="space-y-6 school-page-enter font-dmsans">
- <div className="flex items-center justify-between">
- <div>
- <h1 className="text-2xl school-heading font-extrabold tracking-tight">{t("library_catalog", "Library Catalog")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t(
- "manage_school_library_books_an",
- "Manage school library books and inventory"
- )}</p>
- </div>
- <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary text-white -[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
- <Plus className="w-4 h-4" /> {t("add_book", "Add Book")}
- </Button>
- </div>
- <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
- <div className="stat-card-premium school-card p-5 flex items-center gap-4">
- <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30">
- <Book className="w-5 h-5" />
- </div>
- <div>
- <p className="text-2xl school-heading font-extrabold tracking-tight">{totalCopies}</p>
- <p className="text-xs text-muted-foreground">{t("total_books", "Total Books")}</p>
- </div>
- </div>
- <div className="stat-card-premium school-card p-5 flex items-center gap-4">
- <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
- <BookOpen className="w-5 h-5" />
- </div>
- <div>
- <p className="text-2xl school-heading font-extrabold tracking-tight">{totalAvailable}</p>
- <p className="text-xs text-muted-foreground">{t("available", "Available")}</p>
- </div>
- </div>
- <div className="stat-card-premium school-card p-5 flex items-center gap-4">
- <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center text-orange-600">
- <Clock className="w-5 h-5" />
- </div>
- <div>
- <p className="text-2xl school-heading font-extrabold tracking-tight">{totalBorrowed}</p>
- <p className="text-xs text-muted-foreground">{t("borrowed", "Borrowed")}</p>
- </div>
- </div>
- </div>
- <div className="school-card p-5 flex items-center justify-between flex-wrap gap-4">
- <div className="relative flex-1 min-w-[200px]">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search catalog title, author or ISBN..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white dark:bg-slate-900/40/80 dark:bg-slate-800/50 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary" />
- </div>
- <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
- </div>
- <div className="overflow-x-auto">
- {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_catalog", "Loading catalog...")}</div>
- ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground bg-card">
- <Book className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary dark:text-primary/70" />
- <p className="font-semibold text-lg text-card-foreground">{t("library_catalog_is_empty", "Library catalog is empty")}</p>
- <p className="text-xs mt-1 font-medium">{t(
- "record_textbooks_reference_dic",
- "Record textbooks, reference dictionaries, or science manuals using the button above."
- )}</p>
- </div>
- ) : viewMode === 'grid' ? (
- <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
- {filtered.map(b => (
- <BookGridCard
- key={b.id}
- book={b}
- onView={() => setViewDetails(b)}
- onIssue={() => setIssueBookTarget(b)}
- onEdit={() => {
- setEditingId(b.id);
- setFormData({
- title: b.title,
- author: b.author,
- isbn: b.isbn,
- category: b.category,
- total: b.total,
- cover_url: b.cover_url || '',
- ebook_url: b.ebook_url || ''
-});
- setShowModal(true);
-}}
- onDelete={() => setDeleteTargetId(b.id)}
- />
- ))}
- </div>
- ) : (
- <div className="school-card overflow-hidden mt-4">
- <div className="overflow-x-auto">
- <table className="w-full text-sm">
- <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-primary/40 dark:border-primary/40">
- <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("book_title", "Book Title")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("author", "Author")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("category", "Category")}</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("total_copies", "Total Copies")}</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("available", "Available")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("action", "Action")}</th>
- </tr>
- </thead>
- <tbody className="divide-y divide-border">
- {filtered.map(b => (
- <tr key={b.id} className="hover:bg-muted/50 transition-colors">
- <td className="px-6 py-4">
- <p className="font-semibold text-card-foreground">{b.title}</p>
- <p className="text-xs text-muted-foreground font-mono">{t("isbn", "ISBN:")} {b.isbn}</p>
- </td>
- <td className="px-6 py-4 text-muted-foreground">{b.author}</td>
- <td className="px-6 py-4">
- <span className="bg-muted text-muted-foreground px-2.5 py-1 rounded-md text-xs font-medium">
- {b.category}
- </span>
- </td>
- <td className="px-6 py-4 text-center text-foreground font-medium">{b.total}</td>
- <td className="px-6 py-4 text-center">
- <span className={`font-bold px-2.5 py-1 rounded-full text-xs ${b.available > 0 ? 'bg-slate-100 text-primary/90' : 'bg-red-100 text-red-700'}`}>
- {b.available}
- </span>
- </td>
- <td className="px-6 py-4 text-right">
- <DropdownMenu>
- <DropdownMenuTrigger asChild>
- <Button variant="ghost" className="h-8 w-8 p-0">
- <MoreVertical className="h-4 w-4 text-muted-foreground" />
- </Button>
- </DropdownMenuTrigger>
- <DropdownMenuContent align="end" className="w-40">
- <DropdownMenuItem onClick={() => setViewDetails(b)}>{t("view_details", "View Details")}</DropdownMenuItem>
- <DropdownMenuItem onClick={() => setIssueBookTarget(b)} disabled={b.available === 0}>{t("issue_book", "Issue Book")}</DropdownMenuItem>
- <DropdownMenuItem onClick={() => {
- setEditingId(b.id);
- setFormData({
- title: b.title,
- author: b.author,
- isbn: b.isbn,
- category: b.category,
- total: b.total,
- cover_url: b.cover_url || '',
- ebook_url: b.ebook_url || ''
-});
- setShowModal(true);
-}}>{t("edit", "Edit")}</DropdownMenuItem>
- <DropdownMenuItem className="text-red-600 font-medium" onClick={() => setDeleteTargetId(b.id)}>{t("delete", "Delete")}</DropdownMenuItem>
- </DropdownMenuContent>
- </DropdownMenu>
- </td>
- </tr>
- ))}
- </tbody>
- </table>
- </div>
- </div>
- )}
- </div>
- 
- {/* Add/Edit Modal */}
- {showModal && (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-md p-4">
- <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-primary/40 max-h-[90vh] overflow-y-auto custom-scrollbar">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
- <Plus className="w-5 h-5 text-primary dark:text-primary/70" /> {editingId ? 'Edit Book' : 'Catalog Textbook'}
- </h2>
- <div className="space-y-3">
- <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("book_title", "Book Title")}</label>
- <Input
- value={formData.title}
- onChange={e => setFormData({ ...formData, title: e.target.value})}
- className="mt-1"
- placeholder="e.g. Introduction to Algorithms"
- />
- </div>
- <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("author", "Author")}</label>
- <Input
- value={formData.author}
- onChange={e => setFormData({ ...formData, author: e.target.value})}
- className="mt-1"
- placeholder="e.g. Thomas H. Cormen"
- />
- </div>
- <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("isbn_number", "ISBN Number")}</label>
- <Input
- value={formData.isbn}
- onChange={e => setFormData({ ...formData, isbn: e.target.value})}
- className="mt-1"
- placeholder="e.g. 978-0262033848"
- />
- </div>
- <div className="grid grid-cols-2 gap-4">
- <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("category", "Category")}</label>
- <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v})}>
- <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
- <SelectContent>
- {categories.map(c => (
- <SelectItem key={c} value={c}>{c}</SelectItem>
- ))}
- <AddOptionInline
- onAdd={(v) => {
- mutateRecord.mutate({
- recordType: 'library_category',
- payload: { name: v},
- searchText: v,
- status: 'active',
-});
- setFormData({ ...formData, category: v});
-}}
- placeholder="New category..."
- />
- </SelectContent>
- </Select>
- </div>
- <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("total_copies_stocked", "Total Copies Stocked")}</label>
- <Input
- type="number"
- value={formData.total}
- onChange={e => setFormData({ ...formData, total: e.target.value})}
- className="mt-1"
- placeholder="10"
- />
- </div>
- </div>
- <div className="grid grid-cols-2 gap-4">
- <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("cover_image_url", "Cover Image URL")}</label>
- <Input
- value={formData.cover_url}
- onChange={e => setFormData({ ...formData, cover_url: e.target.value})}
- className="mt-1"
- placeholder="e.g. https://example.com/cover.jpg"
- />
- </div>
- <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("e_book_url", "E-Book / PDF Link")}</label>
- <Input
- value={formData.ebook_url}
- onChange={e => setFormData({ ...formData, ebook_url: e.target.value})}
- className="mt-1"
- placeholder="e.g. https://drive.google.com/..."
- />
- </div>
- </div>
- </div>
- <div className="flex gap-3 pt-4">
- <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingId(null); setFormData({ title: '', author: '', isbn: '', category: 'Science', total: 10, cover_url: '', ebook_url: ''});}}>{t("cancel", "Cancel")}</Button>
- <Button className="flex-1 bg-primary hover:bg-primary text-white -[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleCreateBook}>{editingId ? 'Save Changes' : 'Catalog Book'}</Button>
- </div>
- </div>
- </div>
- )}
+      <div className="bg-white rounded-3xl border border-emerald-100 p-8 shadow-none">
+        <div className="relative w-full max-w-lg mb-8">
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-emerald-400" />
+          <Input 
+            placeholder="Search catalog title, author or ISBN..." 
+            value={search} 
+            onChange={e => setSearch(e.target.value)} 
+            className="pl-16 h-16 bg-emerald-50/50 border-emerald-200 text-lg rounded-2xl focus-visible:ring-emerald-400" 
+          />
+        </div>
 
- {/* Issue Book Modal */}
- <Dialog open={!!issueBookTarget} onOpenChange={(open) => !open && setIssueBookTarget(null)}>
- <DialogContent aria-describedby={undefined}>
- <DialogHeader>
- <DialogTitle>Issue Book</DialogTitle>
- <DialogDescription>Assign a book to a student or staff member.</DialogDescription>
- </DialogHeader>
- <div className="space-y-4 py-2">
- <div>
- <p className="text-sm font-semibold">{issueBookTarget?.title}</p>
- <p className="text-xs text-muted-foreground">Available copies: {issueBookTarget?.available}</p>
- </div>
- <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">Borrower Name (Student/Staff)</label>
- <Input
- value={borrowerName}
- onChange={e => setBorrowerName(e.target.value)}
- className="mt-1"
- placeholder="e.g. Jane Doe"
- autoFocus
- />
- </div>
- </div>
- <div className="flex justify-end gap-2">
- <Button variant="outline" onClick={() => setIssueBookTarget(null)}>Cancel</Button>
- <Button onClick={submitIssueBook} disabled={!borrowerName.trim()}>Issue Book</Button>
- </div>
- </DialogContent>
- </Dialog>
+        {isDbLoading ? (
+          <div className="py-20 text-center text-emerald-600 font-bold text-xl">{t("loading_catalog", "Loading catalog...")}</div>
+        ) : filtered.length === 0 ? (
+          <div className="py-20 text-center text-emerald-500 bg-emerald-50 rounded-3xl border border-emerald-100 border-dashed">
+            <Book className="w-16 h-16 mx-auto mb-4 opacity-50" />
+            <p className="font-extrabold text-2xl text-emerald-800">{t("library_catalog_is_empty", "Library catalog is empty")}</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filtered.map(b => (
+              <motion.div 
+                whileHover={{ y: -5 }}
+                key={b.id} 
+                className="bg-white border-2 border-emerald-100 rounded-3xl p-6 flex flex-col h-full hover:border-emerald-300 transition-colors shadow-none"
+              >
+                <div className="w-full aspect-[3/4] bg-emerald-50 rounded-2xl mb-6 flex items-center justify-center overflow-hidden relative">
+                  {b.cover_url ? (
+                    <img src={b.cover_url} alt={b.title} className="w-full h-full object-cover" />
+                  ) : (
+                    <Book className="w-16 h-16 text-emerald-200" />
+                  )}
+                  <div className="absolute top-3 right-3 flex gap-2">
+                    <Button variant="secondary" size="icon" className="h-10 w-10 bg-white/90 hover:bg-white text-emerald-700 rounded-xl" onClick={() => {
+                      setEditingId(b.id);
+                      setFormData({ title: b.title, author: b.author, isbn: b.isbn, category: b.category, total: b.total, cover_url: b.cover_url || '', ebook_url: b.ebook_url || '' });
+                      setShowModal(true);
+                    }}>
+                      <Edit2 className="w-4 h-4" />
+                    </Button>
+                    <Button variant="secondary" size="icon" className="h-10 w-10 bg-white/90 hover:bg-white text-red-600 rounded-xl" onClick={() => {
+                      if(window.confirm('Delete this book?')) deleteRecord.mutate({ id: b.id, recordType: 'book' });
+                    }}>
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+                
+                <div className="flex-1">
+                  <h3 className="font-extrabold text-xl text-emerald-900 leading-tight mb-2 line-clamp-2">{b.title}</h3>
+                  <p className="text-emerald-600 font-medium mb-4">{b.author}</p>
+                </div>
 
- <ConfirmationModal
- isOpen={deleteTargetId !== null}
- onClose={() => setDeleteTargetId(null)}
- onConfirm={handleDeleteBook}
- title="Retract Library Book"
- message="Are you sure you want to completely remove this book from the catalog listing? All dynamic counts will adjust immediately."
- />
- <Sheet open={!!viewDetails} onOpenChange={(open) => !open && setViewDetails(null)}>
- <SheetContent className="overflow-y-auto w-full sm:max-w-md">
- <SheetHeader>
- <SheetTitle>{t("book_details", "Book Details")}</SheetTitle>
- <SheetDescription>{t(
- "detailed_catalog_information_f",
- "Detailed catalog information for this book."
- )}</SheetDescription>
- </SheetHeader>
- {viewDetails && (
- <div className="mt-6 space-y-6">
- <div className="flex items-center gap-4">
- <div className="w-16 h-20 shrink-0 rounded-md bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 overflow-hidden flex items-center justify-center text-primary dark:text-primary/70 font-bold text-xl border border-primary/40">
- {viewDetails.cover_url ? (
- <img src={viewDetails.cover_url} alt="Cover" className="w-full h-full object-cover" />
- ) : (
- <Book className="w-8 h-8" />
- )}
- </div>
- <div className="flex-1">
- <h3 className="text-xl school-heading font-bold tracking-tight">{viewDetails.title}</h3>
- <p className="text-sm font-medium text-muted-foreground">{viewDetails.author}</p>
- </div>
- </div>
+                <div className="pt-4 border-t border-emerald-100 mt-auto">
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="text-xs font-bold uppercase tracking-wider text-emerald-500">{b.category}</span>
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${b.available > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
+                      {b.available} Avail
+                    </span>
+                  </div>
+                  <Button 
+                    className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-12" 
+                    disabled={b.available === 0} 
+                    onClick={() => setIssueBookTarget(b)}
+                  >
+                    Issue Book
+                  </Button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </div>
 
- <div className="grid grid-cols-2 gap-4">
- <div className="bg-muted/50 p-3 rounded-lg">
- <p className="text-xs text-muted-foreground uppercase font-semibold">{t("isbn", "ISBN")}</p>
- <p className="font-mono text-sm text-foreground mt-1">{viewDetails.isbn}</p>
- </div>
- <div className="bg-muted/50 p-3 rounded-lg">
- <p className="text-xs text-muted-foreground uppercase font-semibold">{t("category", "Category")}</p>
- <p className="font-medium text-foreground mt-1">{viewDetails.category}</p>
- </div>
- <div className="bg-muted/50 p-3 rounded-lg">
- <p className="text-xs text-muted-foreground uppercase font-semibold">{t("total_copies", "Total Copies")}</p>
- <p className="font-medium text-foreground mt-1">{viewDetails.total}</p>
- </div>
- <div className="bg-muted/50 p-3 rounded-lg">
- <p className="text-xs text-muted-foreground uppercase font-semibold">{t("status", "Status")}</p>
- <span className={`inline-block mt-1 font-bold px-2.5 py-0.5 rounded-full text-xs ${viewDetails.available > 0 ? 'bg-slate-100 text-primary/90' : 'bg-red-100 text-red-700'}`}>
- {viewDetails.available > 0 ? 'Available' : 'Out of Stock'}
- </span>
- </div>
- <div className="bg-muted/50 p-3 rounded-lg flex flex-col justify-center">
- <p className="text-xs text-muted-foreground uppercase font-semibold">{t("available_copies", "Available Copies")}</p>
- <p className="font-bold text-2xl text-primary mt-1">{viewDetails.available}</p>
- </div>
- <div className="bg-muted/50 p-3 rounded-lg flex flex-col justify-center">
- <p className="text-xs text-muted-foreground uppercase font-semibold">{t("borrowed", "Borrowed")}</p>
- <p className="font-bold text-2xl text-orange-600 mt-1">{viewDetails.borrowed}</p>
- </div>
- </div>
- {viewDetails.ebook_url && (
- <div className="pt-2 border-t border-primary/40 mt-4">
- <a href={viewDetails.ebook_url} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary dark:text-primary/30 hover:bg-slate-100 font-bold py-3 rounded-xl transition-colors">
- <Book className="w-5 h-5" />
- {t("read_e_book_now", "Read E-Book Now")}
- </a>
- </div>
- )}
- </div>
- )}
- </SheetContent>
- </Sheet>
- </div>
- );
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-emerald-900/40 backdrop-blur-sm p-4">
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white rounded-3xl w-full max-w-xl p-10 space-y-6 border border-emerald-200 max-h-[90vh] overflow-y-auto shadow-none">
+            <h2 className="text-3xl font-extrabold text-emerald-900 flex items-center gap-3">
+              <Plus className="w-8 h-8 text-emerald-600" /> {editingId ? 'Edit Book' : 'Catalog Textbook'}
+            </h2>
+            <div className="space-y-5">
+              <div>
+                <label className="text-sm font-bold text-emerald-700 uppercase tracking-wide">Book Title</label>
+                <Input value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} className="mt-2 h-14 text-lg border-emerald-200 focus-visible:ring-emerald-500 rounded-xl bg-emerald-50/50" />
+              </div>
+              <div>
+                <label className="text-sm font-bold text-emerald-700 uppercase tracking-wide">Author</label>
+                <Input value={formData.author} onChange={e => setFormData({ ...formData, author: e.target.value })} className="mt-2 h-14 text-lg border-emerald-200 focus-visible:ring-emerald-500 rounded-xl bg-emerald-50/50" />
+              </div>
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <label className="text-sm font-bold text-emerald-700 uppercase tracking-wide">Category</label>
+                  <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })}>
+                    <SelectTrigger className="mt-2 h-14 text-lg border-emerald-200 rounded-xl bg-emerald-50/50"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-sm font-bold text-emerald-700 uppercase tracking-wide">Total Copies</label>
+                  <Input type="number" value={formData.total} onChange={e => setFormData({ ...formData, total: e.target.value })} className="mt-2 h-14 text-lg border-emerald-200 focus-visible:ring-emerald-500 rounded-xl bg-emerald-50/50" />
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-4 pt-6 mt-6 border-t border-emerald-100">
+              <Button variant="outline" className="flex-1 h-14 text-lg font-bold border-emerald-200 text-emerald-700 hover:bg-emerald-50 rounded-xl" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button className="flex-1 h-14 text-lg font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl" onClick={handleCreateBook}>{editingId ? 'Save Changes' : 'Catalog Book'}</Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      <Dialog open={!!issueBookTarget} onOpenChange={(open) => !open && setIssueBookTarget(null)}>
+        <DialogContent className="rounded-3xl border border-emerald-200 p-8 shadow-none bg-white">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-extrabold text-emerald-900">Issue Book</DialogTitle>
+            <DialogDescription className="text-emerald-600 text-lg font-medium">Assign "{issueBookTarget?.title}" to a student.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-6 py-4">
+            <div>
+              <label className="text-sm font-bold text-emerald-700 uppercase tracking-wide">Borrower Name (Student/Staff)</label>
+              <Input value={borrowerName} onChange={e => setBorrowerName(e.target.value)} className="mt-2 h-14 text-lg border-emerald-200 focus-visible:ring-emerald-500 rounded-xl bg-emerald-50/50" placeholder="e.g. Jane Doe" autoFocus />
+            </div>
+          </div>
+          <div className="flex justify-end gap-4 mt-4">
+            <Button variant="outline" onClick={() => setIssueBookTarget(null)} className="h-12 px-6 rounded-xl border-emerald-200 text-emerald-700 hover:bg-emerald-50 font-bold">Cancel</Button>
+            <Button onClick={submitIssueBook} disabled={!borrowerName.trim()} className="h-12 px-8 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold">Confirm Issue</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
 }
