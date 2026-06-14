@@ -1,47 +1,89 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
-import { Search, Plus, Clock, Users, CheckCircle2, AlertTriangle, Camera, FileText, ChevronLeft, ChevronRight, Star, Timer, Save, X } from 'lucide-react';
-
-const F = { display: "'Barlow Condensed', sans-serif", body: "'IBM Plex Sans', sans-serif", mono: "'IBM Plex Mono', monospace", label: "'Barlow Semi Condensed', sans-serif" };
-const C = { forge: '#0D1117', carbon: '#161B22', steel: '#21262D', galv: '#30363D', alloy: '#484F58', chrome: '#8B949E', titanium: '#C9D1D9', white: '#F0F6FC', volt: '#F6C90E', plasma: '#FF6B2C', signal: '#00C896', circuit: '#4493F8', arc: '#BF8FFF' };
+import { Search, Plus, Clock, Users, CheckCircle2, FileText, Timer, Save, X, Target } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { toast } from 'react-hot-toast';
+import { Badge } from '@/components/ui/badge';
 
 export default function VPracticalExams() {
+  const { t } = useTranslation();
   const { user } = useAuth();
+  
   const [exams, setExams] = useState([]);
+  const [trainees, setTrainees] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState('dashboard');
+  
+  const [view, setView] = useState('dashboard'); // dashboard or conduct
   const [activeExam, setActiveExam] = useState(null);
   const [activeTraineeIdx, setActiveTraineeIdx] = useState(0);
   const [scores, setScores] = useState({});
-  const [tab, setTab] = useState('today');
+  const [tab, setTab] = useState('upcoming');
+
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [newExam, setNewExam] = useState({ title: '', room: '', time: '', assessor: '' });
+
+  const fetchData = async () => {
+    if (!user?.company_id) return;
+    setLoading(true);
+    try {
+      const [eData, tData] = await Promise.all([
+        base44.getEntities('voc_exam', user.company_id),
+        base44.getEntities('voc_trainee', user.company_id)
+      ]);
+      setExams(eData);
+      setTrainees(tData);
+    } catch (e) {
+      console.error(e);
+      toast.error('Failed to load data');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (!user?.company_id) return;
-    (async () => {
-      setLoading(true);
-      try { setExams(await base44.getEntities('voc_exam', user.company_id)); }
-      catch (e) { console.error(e); }
-      finally { setLoading(false); }
-    })();
+    fetchData();
   }, [user]);
 
+  const handleCreateExam = async () => {
+    if (!newExam.title) return;
+    try {
+      await base44.createEntity('voc_exam', {
+        title: newExam.title,
+        status: 'scheduled',
+        data: {
+          room: newExam.room,
+          time: newExam.time,
+          assessor: newExam.assessor,
+          trainees: trainees.length > 0 ? trainees.slice(0, 5).map(t => t.id) : [] // randomly assign first 5 for now
+        }
+      }, user.company_id);
+      toast.success('Exam created');
+      setIsCreateOpen(false);
+      fetchData();
+    } catch (e) {
+      console.error(e);
+      toast.error('Failed to create exam');
+    }
+  };
+
   const metrics = [
-    { label: 'Pending Review', value: Math.ceil(exams.length * 0.3) || 14, color: C.volt },
-    { label: 'Scheduled', value: Math.ceil(exams.length * 0.4) || 23, color: C.circuit },
-    { label: 'In Progress', value: Math.ceil(exams.length * 0.1) || 3, color: C.signal },
-    { label: 'Completed', value: Math.ceil(exams.length * 0.5) || 67, color: C.chrome },
-    { label: 'Pass Rate', value: '84%', color: C.signal },
+    { label: 'Pending Review', value: exams.filter(e => e.status === 'review').length || 0 },
+    { label: 'Scheduled', value: exams.filter(e => e.status === 'scheduled').length || 0 },
+    { label: 'In Progress', value: exams.filter(e => e.status === 'progress').length || 0 },
+    { label: 'Completed', value: exams.filter(e => e.status === 'completed').length || 0 },
   ];
 
-  const sampleTrainees = ['John Boateng', 'Akua Mensah', 'Ibrahim Ali', 'Fatima Owusu', 'Kwame Darko', 'Ama Amoah', 'Yaw Asante', 'Kofi Kusi'];
   const criteria = [
     { name: 'PPE correctly worn', weight: 20, maxScore: 5 },
     { name: 'Isolation procedure', weight: 25, maxScore: 5 },
-    { name: 'Voltage testing technique', weight: 20, maxScore: 5 },
+    { name: 'Task execution speed', weight: 20, maxScore: 5 },
     { name: 'Documentation completed', weight: 15, maxScore: 5 },
-    { name: 'Safety signage used', weight: 10, maxScore: 5 },
-    { name: 'Clean-up & reinstatement', weight: 10, maxScore: 5 },
+    { name: 'Clean-up', weight: 20, maxScore: 5 },
   ];
 
   const startExam = (exam) => {
@@ -51,17 +93,6 @@ export default function VPracticalExams() {
     setView('conduct');
   };
 
-  const getTraineeScore = (tIdx) => {
-    const ts = scores[tIdx] || {};
-    let total = 0, maxTotal = 0;
-    criteria.forEach((c, ci) => {
-      const s = ts[ci] || 0;
-      total += (s / c.maxScore) * c.weight;
-      maxTotal += c.weight;
-    });
-    return Math.round(total);
-  };
-
   const setScore = (criterionIdx, value) => {
     setScores(prev => ({
       ...prev,
@@ -69,183 +100,244 @@ export default function VPracticalExams() {
     }));
   };
 
+  const getTraineeScore = (tIdx) => {
+    const ts = scores[tIdx] || {};
+    let total = 0;
+    criteria.forEach((c, ci) => {
+      const s = ts[ci] || 0;
+      total += (s / c.maxScore) * c.weight;
+    });
+    return Math.round(total);
+  };
+
+  const saveExamScores = async () => {
+    try {
+      // Typically we'd save this to voc_assessment for each trainee, 
+      // but for now we'll just mark the exam completed
+      await base44.updateEntity('voc_exam', activeExam.id, {
+        status: 'completed',
+        data: { ...activeExam.data, scores }
+      }, user.company_id);
+      toast.success('Exam scores saved and finalized');
+      setView('dashboard');
+      fetchData();
+    } catch (e) {
+      console.error(e);
+      toast.error('Failed to save scores');
+    }
+  };
+
+  // Get active trainees for the exam
+  const examTrainees = activeExam?.data?.trainees 
+    ? trainees.filter(t => activeExam.data.trainees.includes(t.id))
+    : trainees.slice(0, 5);
+
   return (
-    <div className="min-h-screen bg-[#0D1117] text-[#C9D1D9]" style={{ fontFamily: F.body }}>
+    <div className="space-y-6">
       {/* ── DASHBOARD VIEW ── */}
       {view === 'dashboard' && (
-        <div className="p-4 md:p-6">
-          <div className="flex justify-between items-center mb-6">
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-[28px] font-bold tracking-tight text-[#F0F6FC]" style={{ fontFamily: F.display }}>PRACTICAL ASSESSMENTS</h1>
-              <p className="text-[13px] text-[#8B949E] mt-0.5" style={{ fontFamily: F.mono }}>{exams.length} assessments registered</p>
+              <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                {t('practical_assessments', 'Practical Assessments')}
+              </h1>
+              <p className="text-muted-foreground mt-1 text-sm font-medium">
+                {exams.length} {t('assessments_registered', 'assessments registered')}
+              </p>
             </div>
-            <button className="px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider flex items-center gap-1.5 hover:opacity-90" style={{ fontFamily: F.label, background: C.volt, color: C.forge }}>
-              <Plus className="w-4 h-4" /> Create Assessment
-            </button>
+            <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+              <DialogTrigger asChild>
+                <Button className="bg-primary hover:bg-primary/90 text-white rounded-xl shadow-none">
+                  <Plus className="w-4 h-4 mr-2" /> {t('create_assessment', 'Create Assessment')}
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px] rounded-2xl border-primary/40 shadow-none bg-card">
+                <DialogHeader>
+                  <DialogTitle>{t('schedule_exam', 'Schedule Practical Exam')}</DialogTitle>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Title</label>
+                    <Input placeholder="e.g. Arc Welding Final" value={newExam.title} onChange={e => setNewExam({...newExam, title: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Room / Bay</label>
+                    <Input placeholder="e.g. Workshop C" value={newExam.room} onChange={e => setNewExam({...newExam, room: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Time Slot</label>
+                    <Input placeholder="e.g. 14:00 - 17:00" value={newExam.time} onChange={e => setNewExam({...newExam, time: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Assessor</label>
+                    <Input placeholder="e.g. M. Asante" value={newExam.assessor} onChange={e => setNewExam({...newExam, assessor: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setIsCreateOpen(false)} className="rounded-xl shadow-none border-primary/40">Cancel</Button>
+                  <Button onClick={handleCreateExam} className="rounded-xl shadow-none bg-primary text-white hover:bg-primary/90">Save</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
 
           {/* Metrics Row */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {metrics.map(m => (
-              <div key={m.label} className="bg-[#161B22] border border-[#30363D] p-4 text-center">
-                <div className="text-[24px] font-bold" style={{ fontFamily: F.display, color: m.color }}>{m.value}</div>
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-[#484F58] mt-1" style={{ fontFamily: F.label }}>{m.label}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Tabs */}
-          <div className="flex gap-1 mb-4">
-            {['today', 'week', 'upcoming', 'review', 'archives'].map(t => (
-              <button key={t} onClick={() => setTab(t)} className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider transition-colors"
-                style={{ fontFamily: F.label, background: tab === t ? `${C.volt}15` : 'transparent', color: tab === t ? C.volt : C.chrome, borderBottom: tab === t ? `2px solid ${C.volt}` : '2px solid transparent' }}>
-                {t === 'today' ? 'Due Today' : t === 'week' ? 'This Week' : t.charAt(0).toUpperCase() + t.slice(1)}
-              </button>
+              <Card key={m.label} className="rounded-2xl border border-primary/40 bg-card shadow-none">
+                <CardContent className="p-6 text-center">
+                  <div className="text-3xl font-bold text-primary">{m.value}</div>
+                  <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mt-2">{m.label}</div>
+                </CardContent>
+              </Card>
             ))}
           </div>
 
           {/* Assessment List */}
-          <div className="space-y-2">
-            {exams.length === 0 && !loading && (
-              <div className="text-center py-16 text-[#484F58]">No assessments found. Create your first practical assessment.</div>
-            )}
-            {(exams.length > 0 ? exams : [
-              { id: 1, title: 'Electrical Safety Practical — Level 2', data: { trainees: 8, room: 'Workshop C', time: '14:00–17:00', assessor: 'M. Asante' } },
-              { id: 2, title: 'MIG Welding Proficiency Test', data: { trainees: 6, room: 'Bay 4', time: '09:00–12:00', assessor: 'J. Mensah' } },
-              { id: 3, title: 'Plumbing Installation Assessment', data: { trainees: 10, room: 'Workshop B', time: '10:00–13:00', assessor: 'K. Owusu' } },
-            ]).map((exam, i) => (
-              <div key={exam.id} className="bg-[#161B22] border border-[#30363D] p-4 flex items-center gap-4 hover:border-[#484F58] transition-colors group cursor-pointer"
-                style={{ borderLeft: `4px solid ${i === 0 ? C.plasma : i === 1 ? C.volt : C.circuit}` }}>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    {i === 0 && <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5" style={{ fontFamily: F.label, background: `${C.plasma}20`, color: C.plasma }}>⚠ DUE TODAY</span>}
-                    <span className="text-[14px] font-semibold text-[#F0F6FC]">{exam.title || `Assessment ${i + 1}`}</span>
-                  </div>
-                  <div className="text-[11px] text-[#8B949E] flex items-center gap-3" style={{ fontFamily: F.mono }}>
-                    <span><Users className="w-3 h-3 inline mr-1" />{exam.data?.trainees || 8} trainees</span>
-                    <span>{exam.data?.room || 'Workshop C'}</span>
-                    <span>{exam.data?.time || '14:00–17:00'}</span>
-                    <span>Assessor: {exam.data?.assessor || 'TBD'}</span>
-                  </div>
+          <Card className="rounded-2xl border border-primary/40 bg-card shadow-none overflow-hidden">
+            <div className="flex gap-1 p-4 border-b border-primary/10">
+              {['upcoming', 'completed'].map(t => (
+                <Button key={t} onClick={() => setTab(t)} variant={tab === t ? 'default' : 'ghost'} className={`rounded-xl shadow-none ${tab === t ? 'bg-primary/10 text-primary hover:bg-primary/20' : 'text-muted-foreground'}`}>
+                  {t.charAt(0).toUpperCase() + t.slice(1)}
+                </Button>
+              ))}
+            </div>
+            
+            <div className="divide-y divide-primary/5">
+              {exams.length === 0 ? (
+                <div className="text-center py-16 text-muted-foreground flex flex-col items-center">
+                  <FileText className="w-12 h-12 mb-4 opacity-20" />
+                  <p>No practical assessments found.</p>
                 </div>
-                <div className="flex gap-2">
-                  <button className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider border border-[#30363D] text-[#C9D1D9] hover:bg-[#21262D]" style={{ fontFamily: F.label }}>View</button>
-                  <button onClick={() => startExam(exam)} className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider hover:opacity-90" style={{ fontFamily: F.label, background: C.signal, color: C.forge }}>Start</button>
-                </div>
-              </div>
-            ))}
-          </div>
+              ) : (
+                exams.filter(e => tab === 'upcoming' ? e.status !== 'completed' : e.status === 'completed').map((exam) => (
+                  <div key={exam.id} className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-primary/5 transition-colors">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        {exam.status === 'scheduled' && <Badge variant="outline" className="border-primary bg-primary/10 text-primary">Scheduled</Badge>}
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">{exam.title}</h3>
+                      </div>
+                      <div className="text-sm text-muted-foreground flex items-center gap-4">
+                        <span className="flex items-center gap-1"><Users className="w-4 h-4" /> {exam.data?.trainees?.length || 0} trainees</span>
+                        <span>{exam.data?.room || 'TBD'}</span>
+                        <span>{exam.data?.time || 'TBD'}</span>
+                        <span>Assessor: {exam.data?.assessor || 'TBD'}</span>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 shrink-0">
+                      <Button variant="outline" className="rounded-xl border-primary/40 text-primary hover:bg-primary/5 shadow-none">View Details</Button>
+                      {exam.status !== 'completed' && (
+                        <Button onClick={() => startExam(exam)} className="rounded-xl bg-primary text-white hover:bg-primary/90 shadow-none">Conduct Exam</Button>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </Card>
         </div>
       )}
 
       {/* ── CONDUCT VIEW (Full-Screen Assessor) ── */}
       {view === 'conduct' && (
-        <div className="h-screen flex flex-col">
+        <div className="h-[calc(100vh-100px)] flex flex-col rounded-2xl border border-primary/40 bg-card overflow-hidden shadow-none">
           {/* Top bar */}
-          <div className="px-4 py-3 bg-[#161B22] border-b border-[#30363D] flex items-center justify-between shrink-0">
-            <div className="flex items-center gap-3">
-              <button onClick={() => setView('dashboard')} className="text-[11px] text-[#8B949E] hover:text-[#F0F6FC] flex items-center gap-1" style={{ fontFamily: F.label }}><X className="w-3.5 h-3.5" /> Exit</button>
-              <div className="w-px h-5 bg-[#30363D]" />
-              <span className="text-[14px] font-bold text-[#F0F6FC]" style={{ fontFamily: F.display }}>ASSESSMENT: {activeExam?.title || 'Practical Exam'}</span>
+          <div className="px-6 py-4 bg-primary/5 border-b border-primary/10 flex items-center justify-between shrink-0">
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="sm" onClick={() => setView('dashboard')} className="text-muted-foreground hover:text-primary rounded-xl">
+                <X className="w-4 h-4 mr-1" /> Exit
+              </Button>
+              <div className="w-px h-5 bg-primary/20" />
+              <span className="font-bold text-lg text-slate-900 dark:text-white">EXAM: {activeExam?.title}</span>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1.5 px-3 py-1 bg-[#0D1117] border border-[#30363D]">
-                <Timer className="w-3.5 h-3.5 text-[#F6C90E]" />
-                <span className="text-[13px] font-mono text-[#F0F6FC]">02:45:12</span>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-card border border-primary/20 rounded-xl">
+                <Timer className="w-4 h-4 text-primary" />
+                <span className="text-sm font-mono font-bold">00:00:00</span>
               </div>
-              <span className="text-[11px] text-[#8B949E]" style={{ fontFamily: F.mono }}>{sampleTrainees.length} trainees</span>
+              <Button onClick={saveExamScores} className="rounded-xl bg-primary text-white hover:bg-primary/90 shadow-none">
+                <Save className="w-4 h-4 mr-2" /> Complete & Save
+              </Button>
             </div>
           </div>
 
           {/* 2-Panel Layout */}
           <div className="flex-1 flex overflow-hidden">
             {/* Left: Trainee List */}
-            <div className="w-[200px] shrink-0 bg-[#0D1117] border-r border-[#30363D] overflow-y-auto">
-              <div className="p-3 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#484F58]" style={{ fontFamily: F.label }}>Trainees</div>
-              {sampleTrainees.map((name, i) => {
-                const scored = scores[i] && Object.keys(scores[i]).length === criteria.length;
-                return (
-                  <button key={i} onClick={() => setActiveTraineeIdx(i)}
-                    className="w-full text-left px-3 py-2.5 flex items-center gap-2 transition-colors"
-                    style={{ background: activeTraineeIdx === i ? C.steel : 'transparent', borderLeft: activeTraineeIdx === i ? `3px solid ${C.volt}` : '3px solid transparent' }}>
-                    {scored ? <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: C.signal }} /> : <Clock className="w-4 h-4 shrink-0 text-[#484F58]" />}
-                    <span className="text-[12px] truncate" style={{ color: activeTraineeIdx === i ? C.white : C.chrome }}>{name}</span>
-                  </button>
-                );
-              })}
+            <div className="w-[250px] shrink-0 bg-card border-r border-primary/10 overflow-y-auto">
+              <div className="p-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground border-b border-primary/10">
+                Trainees ({examTrainees.length})
+              </div>
+              <div className="p-2 space-y-1">
+                {examTrainees.map((trainee, i) => {
+                  const scored = scores[i] && Object.keys(scores[i]).length === criteria.length;
+                  return (
+                    <Button 
+                      key={i} 
+                      variant={activeTraineeIdx === i ? 'default' : 'ghost'}
+                      onClick={() => setActiveTraineeIdx(i)}
+                      className={`w-full justify-start rounded-xl shadow-none ${activeTraineeIdx === i ? 'bg-primary text-white' : 'text-foreground hover:bg-primary/5'}`}
+                    >
+                      {scored ? <CheckCircle2 className="w-4 h-4 mr-2" /> : <Clock className="w-4 h-4 mr-2 opacity-50" />}
+                      <span className="truncate">{trainee.title}</span>
+                    </Button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Right: Scoring Panel */}
-            <div className="flex-1 overflow-y-auto p-6 bg-[#0D1117]">
-              <div className="max-w-3xl mx-auto">
-                <h2 className="text-[18px] font-bold text-[#F0F6FC] mb-1" style={{ fontFamily: F.display }}>Trainee: {sampleTrainees[activeTraineeIdx]}</h2>
-                <div className="h-px bg-[#30363D] my-4" />
-
-                {/* Criteria Scoring Table */}
-                <div className="bg-[#161B22] border border-[#30363D]">
-                  <div className="grid grid-cols-[1fr_80px_60px] gap-px bg-[#30363D] border-b border-[#30363D]">
-                    <div className="bg-[#0D1117] px-4 py-2 text-[10px] font-semibold uppercase tracking-wider text-[#484F58]" style={{ fontFamily: F.label }}>Criterion</div>
-                    <div className="bg-[#0D1117] px-4 py-2 text-[10px] font-semibold uppercase tracking-wider text-[#484F58] text-center" style={{ fontFamily: F.label }}>Score</div>
-                    <div className="bg-[#0D1117] px-4 py-2 text-[10px] font-semibold uppercase tracking-wider text-[#484F58] text-center" style={{ fontFamily: F.label }}>Weight</div>
+            <div className="flex-1 overflow-y-auto p-8 bg-card">
+              <div className="max-w-3xl mx-auto space-y-8">
+                <div className="flex items-center justify-between border-b border-primary/10 pb-4">
+                  <div>
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{examTrainees[activeTraineeIdx]?.title || 'Unknown Trainee'}</h2>
+                    <p className="text-muted-foreground">ID: {examTrainees[activeTraineeIdx]?.case_number || 'TR-000'}</p>
                   </div>
+                  <div className="text-right">
+                    <div className="text-sm text-muted-foreground uppercase tracking-wider font-semibold mb-1">Current Score</div>
+                    <div className="text-4xl font-bold text-primary">{getTraineeScore(activeTraineeIdx)}<span className="text-lg text-muted-foreground">/100</span></div>
+                  </div>
+                </div>
+
+                <div className="space-y-6">
                   {criteria.map((c, ci) => {
-                    const currentScore = scores[activeTraineeIdx]?.[ci] || 0;
+                    const currentVal = (scores[activeTraineeIdx] || {})[ci] || 0;
                     return (
-                      <div key={ci} className="grid grid-cols-[1fr_80px_60px] gap-px bg-[#21262D]/30 border-b border-[#21262D] last:border-0">
-                        <div className="bg-[#161B22] px-4 py-3">
-                          <span className="text-[13px] text-[#C9D1D9]">{c.name}</span>
+                      <div key={ci} className="p-5 rounded-2xl border border-primary/20 bg-primary/5">
+                        <div className="flex justify-between items-center mb-4">
+                          <h4 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <Target className="w-4 h-4 text-primary" /> {c.name}
+                          </h4>
+                          <Badge variant="outline" className="border-primary/40 bg-card text-primary font-mono">Weight: {c.weight}%</Badge>
                         </div>
-                        <div className="bg-[#161B22] px-2 py-3 flex items-center justify-center gap-0.5">
-                          {[1, 2, 3, 4, 5].map(s => (
-                            <button key={s} onClick={() => setScore(ci, s)}
-                              className="w-6 h-6 rounded-sm text-[11px] font-bold transition-all"
-                              style={{ background: currentScore >= s ? C.volt : C.steel, color: currentScore >= s ? C.forge : C.alloy }}>
-                              {s}
-                            </button>
+                        <div className="flex gap-2">
+                          {[0, 1, 2, 3, 4, 5].map(val => (
+                            <Button
+                              key={val}
+                              onClick={() => setScore(ci, val)}
+                              className={`flex-1 h-12 rounded-xl text-lg font-bold shadow-none ${currentVal === val ? 'bg-primary text-white border-primary' : 'bg-card text-foreground border border-primary/20 hover:border-primary hover:bg-primary/10'}`}
+                            >
+                              {val}
+                            </Button>
                           ))}
                         </div>
-                        <div className="bg-[#161B22] px-4 py-3 text-center">
-                          <span className="text-[12px] text-[#8B949E]" style={{ fontFamily: F.mono }}>{c.weight}%</span>
+                        <div className="flex justify-between mt-2 text-xs text-muted-foreground font-medium px-1">
+                          <span>0 = Fail</span>
+                          <span>5 = Perfect</span>
                         </div>
                       </div>
                     );
                   })}
                 </div>
-
-                {/* Weighted Score */}
-                <div className="mt-4 p-4 bg-[#161B22] border border-[#30363D] flex items-center justify-between">
-                  <span className="text-[14px] font-semibold text-[#F0F6FC]">Weighted Score</span>
-                  <div className="flex items-center gap-3">
-                    <span className="text-[28px] font-bold" style={{ fontFamily: F.display, color: getTraineeScore(activeTraineeIdx) >= 50 ? C.signal : C.plasma }}>{getTraineeScore(activeTraineeIdx)}/100</span>
-                    <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider" style={{ fontFamily: F.label, background: getTraineeScore(activeTraineeIdx) >= 50 ? `${C.signal}20` : `${C.plasma}20`, color: getTraineeScore(activeTraineeIdx) >= 50 ? C.signal : C.plasma }}>
-                      {getTraineeScore(activeTraineeIdx) >= 50 ? '● PASS' : '● FAIL'}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Evidence */}
-                <div className="mt-4 p-4 bg-[#161B22] border border-[#30363D]">
-                  <h3 className="text-[11px] font-semibold uppercase tracking-wider text-[#484F58] mb-3" style={{ fontFamily: F.label }}>Evidence</h3>
-                  <div className="flex gap-2 mb-4">
-                    {[{ icon: Camera, label: 'Add Photo' }, { icon: FileText, label: 'Add Note' }].map(e => (
-                      <button key={e.label} className="px-3 py-2 border border-dashed border-[#30363D] text-[11px] text-[#8B949E] hover:border-[#F6C90E] hover:text-[#F6C90E] transition-colors flex items-center gap-1.5" style={{ fontFamily: F.label }}>
-                        <e.icon className="w-3.5 h-3.5" /> {e.label}
-                      </button>
-                    ))}
-                  </div>
-                  <textarea placeholder="Observer notes..." className="w-full px-4 py-3 bg-[#0D1117] border border-[#30363D] text-[13px] text-[#C9D1D9] placeholder-[#484F58] outline-none focus:border-[#F6C90E] resize-none h-24" style={{ fontFamily: F.body }} />
-                </div>
-
-                {/* Nav buttons */}
-                <div className="mt-4 flex justify-between">
-                  <button disabled={activeTraineeIdx === 0} onClick={() => setActiveTraineeIdx(i => i - 1)}
-                    className="px-5 py-2 text-[12px] font-semibold uppercase tracking-wider border border-[#30363D] text-[#C9D1D9] disabled:opacity-30 hover:bg-[#21262D] transition-colors flex items-center gap-1" style={{ fontFamily: F.label }}>
-                    <ChevronLeft className="w-4 h-4" /> Prev Trainee
-                  </button>
-                  <button onClick={() => { if (activeTraineeIdx < sampleTrainees.length - 1) setActiveTraineeIdx(i => i + 1); }}
-                    className="px-5 py-2 text-[12px] font-semibold uppercase tracking-wider flex items-center gap-1 hover:opacity-90" style={{ fontFamily: F.label, background: C.volt, color: C.forge }}>
-                    <Save className="w-4 h-4" /> Save & Next <ChevronRight className="w-4 h-4" />
-                  </button>
+                
+                <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+                  <label className="text-sm font-bold block mb-2">Assessor Remarks</label>
+                  <textarea 
+                    className="w-full h-24 p-3 rounded-xl border border-primary/40 bg-card shadow-none resize-none"
+                    placeholder="Add observations, safety violations, or commendations here..."
+                  ></textarea>
                 </div>
               </div>
             </div>
