@@ -386,7 +386,6 @@ import Careers from './pages/marketing/Careers';
 import Partners from './pages/marketing/Partners';
 import LegalDocs from './pages/marketing/LegalDocs';
 import OnboardingWizard from './pages/OnboardingWizard';
-import AppIntegrations from './pages/Integrations';
 import GenericModulePage from './pages/GenericModulePage';
 import CreateModulePage from './pages/CreateModulePage';
 import Marketplace from './pages/Marketplace';
