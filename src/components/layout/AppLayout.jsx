@@ -267,11 +267,12 @@ export default function AppLayout() {
  isBoltOpen={isBoltOpen}
  toggleBolt={toggleBolt}
  />
- <div className="flex-1 relative flex flex-col overflow-hidden">
+ <div className="flex-1 relative flex overflow-hidden">
   <main className="flex-1 w-full mx-auto px-6 md:px-8 lg:px-10 pt-6 pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-6 overflow-y-auto">
     <Outlet />
   </main>
- <GlobalVideoOverlay />
+  <div id="right-docked-panel-portal" className="flex shrink-0 h-full empty:hidden z-40 relative bg-card shadow-[-4px_0_24px_rgba(0,0,0,0.02)]"></div>
+  <GlobalVideoOverlay />
  </div>
  </div>
  <MobileBottomNav />

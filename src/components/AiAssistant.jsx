@@ -1,6 +1,7 @@
 import { supabase} from '@/api/supabaseClient';
 import { useTranslation} from "react-i18next";
 import React, { useState, useRef, useEffect, useCallback} from 'react';
+import { createPortal } from 'react-dom';
 import { useLocation, useNavigate} from 'react-router-dom';
 import { Sparkles, MessageSquare, X, Send, Bot, User, Maximize2, Minimize2, Plus, Clock, Mic, MicOff, Paperclip, Trash2, FileText, Image, Square} from 'lucide-react';
 import { Button} from '@/components/ui/button';
@@ -755,7 +756,7 @@ RULES FOR MULTI-STEP REASONING:
  const ctx = PAGE_CONTEXT[location.pathname];
 
  // Render 
- return (
+ const content = (
  <>
  {/* Mobile Backdrop */}
  {isOpen && (

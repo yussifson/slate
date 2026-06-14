@@ -246,7 +246,7 @@ export default function OrbitBoltPagesWorkspace({ onClose, onApplySchema}) {
 };
 
  const workspaceContent = (
- <div className="fixed top-0 right-0 bottom-0 z-[9999] flex h-full shrink-0 border-l-[3px] border-l-amber-500 bg-card transition-all duration-300 w-[400px]">
+ <div className="max-md:fixed z-[9999] bg-card transition-all duration-300 overflow-hidden flex max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-t-[32px] max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] md:relative md:h-full md:shrink-0 md:border-l-[3px] md:border-l-amber-500 md:w-[400px]">
  
  {/* History Sidebar */}
  <AnimatePresence>
@@ -402,5 +402,5 @@ export default function OrbitBoltPagesWorkspace({ onClose, onApplySchema}) {
  </div>
  );
 
- return createPortal(workspaceContent, document.body);
+ return createPortal(workspaceContent, document.getElementById('right-docked-panel-portal') || document.body);
 }

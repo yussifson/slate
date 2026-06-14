@@ -255,7 +255,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  {/* Mobile Backdrop */}
  <div className="md:hidden fixed inset-0 z-[9998] bg-slate-900/50 backdrop-blur-[2px] transition-opacity" onClick={onClose} />
  
- <div className={`fixed z-[9999] bg-card transition-all duration-300 overflow-hidden flex max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-t-[32px] max-md: max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] md:top-0 md:right-0 md:bottom-0 md:h-full md:shrink-0 md:border-l-[3px] md:border-l-primary md:w-[400px]`}>
+ <div className={`max-md:fixed z-[9999] bg-card transition-all duration-300 overflow-hidden flex max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-t-[32px] max-md: max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] md:relative md:h-full md:shrink-0 md:border-l-[3px] md:border-l-primary md:w-[400px]`}>
  
  {/* Mobile Drag Handle */}
  <div className="md:hidden flex justify-center pt-3 pb-1 shrink-0">
@@ -419,5 +419,5 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  </>
  );
 
- return createPortal(workspaceContent, document.body);
+ return createPortal(workspaceContent, document.getElementById('right-docked-panel-portal') || document.body);
 }
