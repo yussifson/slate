@@ -127,8 +127,14 @@ export const powerSync = new PowerSyncDatabase({
   schema: AppSchema
 });
 
-export const initPowerSync = async () => {
-  const connector = new SupabaseConnector();
-  await powerSync.init();
-  await powerSync.connect(connector);
+let initPromise = null;
+export const initPowerSync = () => {
+  if (!initPromise) {
+    initPromise = (async () => {
+      const connector = new SupabaseConnector();
+      await powerSync.init();
+      await powerSync.connect(connector);
+    })();
+  }
+  return initPromise;
 };

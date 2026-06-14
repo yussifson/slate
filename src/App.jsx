@@ -495,6 +495,13 @@ function PlatformRoutes() {
 
       {/* School Routes */}
       <Route path="/students" element={<SchoolStudents />} />
+      <Route path="/students/:id" element={<StudentProfile />} />
+      <Route path="/parents" element={<SchoolParents />} />
+      <Route path="/teachers" element={<SchoolTeachers />} />
+      <Route path="/complaints" element={<SchoolComplaints />} />
+      <Route path="/support-center" element={<SchoolSupportCenter />} />
+      <Route path="/marketplace" element={<SchoolCampusMarketplace />} />
+      <Route path="/institution-settings" element={<SchoolInstitutionSettings />} />
       <Route path="/o/learner/:id" element={<LearnerProfile />} />
       <Route path="/o/notes" element={<NotesCenter />} />
       <Route path="/o/assessments" element={<OnlineAssessments />} />
