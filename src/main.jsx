@@ -26,7 +26,13 @@ window.addEventListener('vite:preloadError', (event) => {
 
 window.addEventListener('unhandledrejection', async (event) => {
   if (event.reason && event.reason.message && event.reason.message.includes('importScripts') && event.reason.message.includes('workbox')) {
-    console.warn('Workbox importScripts failed. Forcing service worker unregistration and reload.');
+    console.warn('Workbox importScripts failed.');
+    // CAUTION: Do not unregister the service worker if offline, as reloading will show the Dinosaur error.
+    if (!navigator.onLine) {
+      console.log('Currently offline, ignoring Workbox update failure.');
+      return;
+    }
+    console.warn('Forcing service worker unregistration and reload.');
     if ('serviceWorker' in navigator) {
       const registrations = await navigator.serviceWorker.getRegistrations();
       for (const registration of registrations) {
