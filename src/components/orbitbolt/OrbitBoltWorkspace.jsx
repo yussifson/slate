@@ -15,7 +15,7 @@ import clsx from 'clsx';
 import { useNavigate} from 'react-router-dom';
 import { UNIVERSAL_COMPONENTS} from '@/config/universal_components';
 
-const SYSTEM_PROMPT = `You are OrbitBolt, an elite AI System Architect for Workslate.
+const SYSTEM_PROMPT = `You are OrbitBuild, an elite AI System Architect for Workslate.
 You converse naturally with the user to help them build any feature, app, or system they need.
 
 CRITICAL: If the user is just saying "Hi" or chatting normally WITHOUT asking to build/create a system, you MUST NOT output special tags. Just reply conversationally.
@@ -26,7 +26,7 @@ PRIORITY 1: ASSEMBLE UNIVERSAL PRIMITIVES (Best for standard data management)
 If the user's request maps to standard business management (e.g. Employee Tracker, Inventory System), output EXACTLY this tag format at the very end of your response to assemble a standard module:
 <UNIVERSAL>{"component_id": "UnivDataGrid", "name": "Employee List"}</UNIVERSAL>
 
-AVAILABLE PRIMITIVES:
+AVAILABLE PRIMITIVES & UNIVERSAL COMPONENTS:
 ${UNIVERSAL_COMPONENTS.map(c => `- ${c.id} : ${c.label}`).join('\n')}
 
 PRIORITY 2: GENERATE ADVANCED CUSTOM UI (SERVER-DRIVEN UI)
@@ -54,11 +54,14 @@ The JSON inside <SCHEMA> powers our DynamicRenderer and MUST follow this strict 
 
 Available Component Types for Schema: Page, Container, StatCard, Chart, Form, Input, Table.
 
+CONTEXT AWARENESS:
+If the user provides a "CURRENT_SCHEMA" context block, it means they are actively editing an existing Slate or Page. You must analyze the CURRENT_SCHEMA and output a NEW modified <SCHEMA>...</SCHEMA> that reflects the user's requested edits (like changing colors, moving elements, adding new fields).
+
 CRITICAL RULE: DO NOT mention the JSON schema, the <SCHEMA> tags, the <UNIVERSAL> tags, or your underlying architecture in your conversational response to the user. This is an invisible background system. Just say "I have generated the system" and put the tags at the very end.
 `;
 
-// OrbitBolt AI Panel - Works exactly like OrbitFlow right panel
-export default function OrbitBoltWorkspace({ onClose, onApplySchema}) {
+// OrbitBuild AI Panel
+export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSchema }) {
  const { user} = useAuth();
  const companyId = useCompanyId();
  const navigate = useNavigate();
@@ -166,6 +169,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema}) {
  try {
  const aiMessages = [
  { role: 'system', content: SYSTEM_PROMPT},
+ ...(currentSchema ? [{ role: 'system', content: `CURRENT_SCHEMA Context:\n${JSON.stringify(currentSchema, null, 2)}\n\nAnalyze this schema to understand the current layout. If the user asks for edits (e.g. changing colors, moving elements), output a NEW <SCHEMA>...</SCHEMA> based on this layout but with their requested modifications.` }] : []),
  ...updatedMsgs.map(m => {
  if (m.role === 'assistant') {
  return { role: 'assistant', content: m.raw_json ? JSON.stringify(m.raw_json) : m.content};

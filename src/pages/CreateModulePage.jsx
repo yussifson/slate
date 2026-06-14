@@ -15,6 +15,7 @@ import { IconPicker} from "@/components/ui/IconPicker";
 import DynamicDashboard from "@/components/ui/DynamicDashboard";
 import DynamicKanbanView from "@/components/ui/DynamicKanbanView";
 import { useUndoableState} from "@/hooks/useUndoableState";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import OrbitBoltWorkspace from "@/components/orbitbolt/OrbitBoltWorkspace";
 import SecureSandbox from "@/components/orbitbolt/SecureSandbox";
 
@@ -81,6 +82,14 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
 
  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
  const [isSubmitting, setIsSubmitting] = useState(false);
+
+ const onDragEnd = (result) => {
+   if (!result.destination) return;
+   const newFields = Array.from(state.fields);
+   const [reorderedItem] = newFields.splice(result.source.index, 1);
+   newFields.splice(result.destination.index, 0, reorderedItem);
+   setState({ ...state, fields: newFields });
+ };
 
  React.useEffect(() => {
  if (isEditing && id) {
@@ -363,9 +372,19 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  {/* Fields */}
  <div className="space-y-4">
  <h3 className="font-semibold text-foreground border-b border-border pb-2 mt-6">Data Fields</h3>
- <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
+ <DragDropContext onDragEnd={onDragEnd}>
+ <Droppable droppableId="fieldsList">
+ {(provided) => (
+ <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2" {...provided.droppableProps} ref={provided.innerRef}>
  {fields.map((f, i) => (
- <div key={i} className="bg-muted border border-border rounded-lg p-3 relative group">
+ <Draggable key={`field-${i}`} draggableId={`field-${i}`} index={i}>
+ {(provided, snapshot) => (
+ <div 
+ ref={provided.innerRef} 
+ {...provided.draggableProps} 
+ {...provided.dragHandleProps} 
+ className={`bg-muted border border-border rounded-lg p-3 relative group ${snapshot.isDragging ? 'shadow-lg ring-1 ring-primary' : ''}`}
+ >
  <button
  type="button"
  onClick={() => handleRemoveField(i)}
@@ -414,8 +433,14 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  Required Field
  </label>
  </div>
+ )}
+ </Draggable>
  ))}
+ {provided.placeholder}
  </div>
+ )}
+ </Droppable>
+ </DragDropContext>
  <Button type="button" variant="outline" size="sm" onClick={handleAddField} className="w-full mt-2 h-8 text-xs gap-1">
  <Plus className="w-3 h-3" /> Add New Field
  </Button>
@@ -595,6 +620,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  <OrbitBoltWorkspace
  onClose={() => setIsBoltOpen(false)}
  onApplySchema={handleApplyBoltSchema}
+ currentSchema={state}
  />
  )}
  </div>
