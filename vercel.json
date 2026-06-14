@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/api/ai/:model*",
-      "destination": "https://api.cloudflare.com/client/v4/accounts/bf5126510c1f8f2759cc81c4e7d795ef/ai/run/:model*"
+      "source": "/api/ai/:account/:model*",
+      "destination": "https://api.cloudflare.com/client/v4/accounts/:account/ai/run/:model*"
     },
     {
       "source": "/(.*)",

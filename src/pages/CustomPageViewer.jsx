@@ -108,7 +108,7 @@ export default function CustomPageViewer() {
  <h2 className="text-xl font-bold text-card-foreground">Page Not Found</h2>
  <p className="text-muted-foreground mt-2 max-w-md">The custom page "{pageId}" does not exist. Use Orbit Bolt to generate it.</p>
  <Button onClick={() => setIsOrbitBoltOpen(true)} className="mt-6 gap-2 bg-primary hover:bg-primary/90 text-white">
- <Sparkles className="w-4 h-4" /> Generate with OrbitBolt
+ <Sparkles className="w-4 h-4" /> Generate with OrbitBuild
  </Button>
  {isOrbitBoltOpen && (
  <OrbitBoltPagesWorkspace 
@@ -147,7 +147,7 @@ export default function CustomPageViewer() {
  <PageHeader title={schema.pageTitle} subtitle={`Dynamic Route: /pages/${pageId}`} />
  <div className="flex gap-2">
  <Button onClick={() => setIsOrbitBoltOpen(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white -[0_0_15px_rgba(79,70,229,0.4)]">
- <Sparkles className="w-4 h-4" /> OrbitBolt AI
+ <Sparkles className="w-4 h-4" /> OrbitBuild AI
  </Button>
  {!isEditMode ? (
  <Button onClick={() => setIsEditMode(true)} variant="outline" className="gap-2">

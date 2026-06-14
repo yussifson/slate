@@ -188,7 +188,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  fields: mappedFields
 });
 
- toast({ title: "⚡ OrbitBolt Schema Applied!", description: "Review and customize your slate, then publish."});
+ toast({ title: "⚡ OrbitBuild Schema Applied!", description: "Review and customize your slate, then publish."});
 };
 
  const saveModule = async (status = 'published') => {
@@ -300,7 +300,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  : 'bg-gradient-to-r from-primary to-primary text-white hover:from-primary/90 hover:to-primary/90'
 }`}
  >
- {isBoltOpen ? 'Close OrbitBolt' : 'Build with OrbitBolt'}
+ {isBoltOpen ? 'Close OrbitBuild' : 'Build with OrbitBuild'}
  </Button>
  </div>
  </div>
@@ -600,12 +600,12 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  ) : (
  <div className="h-full flex flex-col items-center justify-center text-muted-foreground">
  <Zap className="w-12 h-12 mb-4 opacity-20 text-primary" />
- <p className="font-medium">Add fields or use OrbitBolt to generate your slate</p>
+ <p className="font-medium">Add fields or use OrbitBuild to generate your slate</p>
  <button
  onClick={() => setIsBoltOpen(true)}
  className="mt-4 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary text-white text-sm font-bold hover:from-primary/90 hover:to-primary/90 transition-all -emerald-500/30"
  >
- ⚡ Launch OrbitBolt
+ ⚡ Launch OrbitBuild
  </button>
  </div>
  )}

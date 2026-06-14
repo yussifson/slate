@@ -329,7 +329,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
  </Button>
  {isAdmin && (
  <Button onClick={() => setIsBoltOpen(true)} variant="outline" size="sm" className="gap-1.5 border-primary/30 text-primary hover:bg-slate-100">
- <Sparkles className="w-4 h-4" /> OrbitBolt
+ <Sparkles className="w-4 h-4" /> OrbitBuild
  </Button>
  )}
  <Button onClick={() => setIsAddModalOpen(true)} size="sm" className={`gap-1.5 text-white ${themeConfig === 'primary' ? 'bg-primary hover:bg-primary/90' : `bg-${themeConfig}-600 hover:bg-${themeConfig}-700`}`}>
