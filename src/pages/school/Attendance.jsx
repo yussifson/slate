@@ -1,411 +1,160 @@
-import { useTranslation} from "react-i18next";
-import { useState} from 'react';
-import { CalendarDays, CheckCircle2, XCircle, Clock, Users, ClipboardList, Plus, MoreVertical} from 'lucide-react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
-import { Link} from 'react-router-dom';
-import { Button} from '@/components/ui/button';
-import { Input} from '@/components/ui/input';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
-import { toast} from 'react-hot-toast';
-import ConfirmationModal from '@/components/ConfirmationModal';
-import { useQuery} from '@tanstack/react-query';
-import { base44} from '@/api/base44Client';
-import { useCompanyId} from '@/hooks/useCompanyId';
+import { useTranslation } from "react-i18next";
+import { useState } from 'react';
+import { CalendarDays, Check, X, Clock, Users, ClipboardList } from 'lucide-react';
+import { useIndustryRecords, useMutateIndustryRecord } from '@/hooks/useIndustryData';
+import { toast } from 'react-hot-toast';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { motion } from 'framer-motion';
 
 const CLASS_LIST = ['Grade 7B', 'Grade 8C', 'Grade 9A', 'Grade 9B', 'Grade 10A', 'Grade 10B', 'Grade 11A', 'Grade 12A'];
 
 export default function Attendance() {
- const { t} = useTranslation();
- const companyId = useCompanyId();
- const today = new Date().toISOString().split('T')[0];
- const [selectedClass, setSelectedClass] = useState('Grade 9A');
- const [date, setDate] = useState(today);
- const [takenBy, setTakenBy] = useState('');
- // Local per-student status map: { studentId: 'Present'|'Absent'|'Late'}
- const [statusMap, setStatusMap] = useState({});
- const [deleteTargetId, setDeleteTargetId] = useState(null);
- const [viewDetails, setViewDetails] = useState(null);
- const [editingId, setEditingId] = useState(null);
+  const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const today = new Date().toISOString().split('T')[0];
+  const [selectedClass, setSelectedClass] = useState('Grade 9A');
+  const [date, setDate] = useState(today);
+  const [statusMap, setStatusMap] = useState({});
 
- // Fetch student list for populating the sheet
- const { data: studentRecords = []} = useQuery({
- queryKey: ['clients', companyId],
- queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'student'}),
- enabled: !!companyId
-});
- // Fetch saved attendance records
- const { data: attendanceRecords = [], isLoading} = useIndustryRecords('attendance');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+  const { data: studentRecords = [] } = useQuery({
+    queryKey: ['clients', companyId],
+    queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'student' }),
+    enabled: !!companyId
+  });
+  
+  const { data: attendanceRecords = [] } = useIndustryRecords('attendance');
+  const mutateRecord = useMutateIndustryRecord();
 
- // Students in selected class
- const classStudents = studentRecords
- .filter(r => {
- let extra = {};
- try { extra = JSON.parse(r.notes || '{}');} catch(e) {}
- return extra.class === selectedClass;
-})
- .map(r => ({ id: r.id, name: r.name || 'Unknown', studentId: r.id_number || ''}));
+  const classStudents = studentRecords
+    .filter(r => {
+      let extra = {};
+      try { extra = JSON.parse(r.notes || '{}'); } catch(e) {}
+      return extra.class === selectedClass;
+    })
+    .map(r => ({ id: r.id, name: r.name || 'Unknown', studentId: r.id_number || '' }));
 
- // Attendance records for this class/date combo
- const savedAttendance = attendanceRecords.map(r => ({
- id: r.id,
- status: r.status || 'Active',
- ...r.data,
-}));
- const filteredSaved = savedAttendance.filter(
- a => a.className === selectedClass && a.date === date
- );
+  const savedAttendance = attendanceRecords.map(r => ({ id: r.id, ...r.data }));
+  const existingRecord = savedAttendance.find(a => a.className === selectedClass && a.date === date);
 
- // Live stats from statusMap
- const markedCount = Object.keys(statusMap).length;
- const presentCount = Object.values(statusMap).filter(v => v === 'Present').length;
- const absentCount = Object.values(statusMap).filter(v => v === 'Absent').length;
- const lateCount = Object.values(statusMap).filter(v => v === 'Late').length;
- const presentPct = markedCount > 0 ? Math.round((presentCount / markedCount) * 100) : 0;
+  // Initialize statusMap if existing record found
+  if (existingRecord && Object.keys(statusMap).length === 0 && classStudents.length > 0) {
+    const newMap = {};
+    if (Array.isArray(existingRecord.records)) {
+      existingRecord.records.forEach(r => { newMap[r.studentId] = r.status; });
+    }
+    setStatusMap(newMap);
+  }
 
- const handleStatusChange = (studentId, status) => {
- setStatusMap(prev => ({ ...prev, [studentId]: status}));
-};
+  const handleToggle = (studentId, currentStatus) => {
+    const sequence = ['Present', 'Absent', 'Late'];
+    let nextIdx = sequence.indexOf(currentStatus) + 1;
+    if (nextIdx >= sequence.length) nextIdx = 0;
+    setStatusMap(prev => ({ ...prev, [studentId]: sequence[nextIdx] }));
+  };
 
- const handleSubmit = () => {
- if (Object.keys(statusMap).length === 0) {
- return toast.error('Please mark attendance for at least one student.');
-}
+  const handleBulkMark = (status) => {
+    const newMap = { ...statusMap };
+    classStudents.forEach(s => newMap[s.id] = status);
+    setStatusMap(newMap);
+  };
 
- const records = classStudents.map(s => ({
- studentId: s.studentId,
- studentName: s.name,
- status: statusMap[s.id] || 'Absent',
-}));
+  const handleSubmit = () => {
+    if (Object.keys(statusMap).length === 0) return toast.error('Mark attendance first.');
 
- mutateRecord.mutate({
- recordType: 'attendance',
- payload: {
- date,
- className: selectedClass,
- takenBy: takenBy || 'Staff',
- records,
-},
- status: 'active',
- searchText: `${selectedClass} ${date} ${takenBy}`,
-}, {
- onSuccess: () => {
- toast.success(editingId ? 'Attendance updated successfully!' : 'Attendance submitted successfully!');
- setStatusMap({});
- setTakenBy('');
- setEditingId(null);
-},
- onError: (err) => toast.error('Failed to save: ' + err.message),
-});
-};
+    const records = classStudents.map(s => ({
+      studentId: s.studentId,
+      studentName: s.name,
+      status: statusMap[s.id] || 'Present',
+    }));
 
- const handleEdit = (rec) => {
- setEditingId(rec.id);
- setDate(rec.date);
- setSelectedClass(rec.className);
- setTakenBy(rec.takenBy || '');
- const newStatusMap = {};
- if (Array.isArray(rec.records)) {
- rec.records.forEach(r => {
- newStatusMap[r.studentId] = r.status;
-});
-}
- setStatusMap(newStatusMap);
- window.scrollTo({ top: 0, behavior: 'smooth'});
-};
+    mutateRecord.mutate({
+      id: existingRecord?.id,
+      recordType: 'attendance',
+      payload: { date, className: selectedClass, takenBy: 'Staff', records },
+      status: 'active',
+      searchText: `${selectedClass} ${date}`
+    }, {
+      onSuccess: () => toast.success('Attendance saved!'),
+      onError: (err) => toast.error('Failed: ' + err.message)
+    });
+  };
 
- const handleDeleteRecord = () => {
- if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'attendance'}, {
- onSuccess: () => { toast.success('Attendance record deleted.'); setDeleteTargetId(null);},
- onError: (err) => { toast.error('Failed: ' + err.message); setDeleteTargetId(null);},
-});
-};
+  return (
+    <div className="space-y-6 font-dmsans max-w-5xl mx-auto">
+      <div className="flex flex-col md:flex-row justify-between items-end gap-4 bg-green-500 p-6 text-white border-2 border-green-600">
+        <div>
+          <h1 className="text-3xl font-black tracking-tight uppercase">Daily Roster</h1>
+          <p className="font-medium text-green-100">Bulk toggle attendance records rapidly</p>
+        </div>
+        <div className="flex gap-3">
+          <input 
+            type="date" 
+            value={date} 
+            onChange={e => { setDate(e.target.value); setStatusMap({}); }} 
+            className="bg-white text-green-900 border-2 border-green-800 px-3 py-2 font-bold focus:outline-none"
+          />
+          <select 
+            value={selectedClass} 
+            onChange={e => { setSelectedClass(e.target.value); setStatusMap({}); }} 
+            className="bg-white text-green-900 border-2 border-green-800 px-3 py-2 font-bold focus:outline-none"
+          >
+            {CLASS_LIST.map(c => <option key={c}>{c}</option>)}
+          </select>
+        </div>
+      </div>
 
- return (
- <div className="space-y-6 school-page-enter font-dmsans">
- {/* Header */}
- <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
- <div>
- <h1 className="text-2xl school-heading font-extrabold tracking-tight">{t("attendance", "Attendance")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t("daily_class_attendance_registe", "Daily class attendance register")}</p>
- </div>
- <div className="flex flex-wrap items-center gap-3">
- <Input
- type="date"
- value={date}
- onChange={e => { setDate(e.target.value); setStatusMap({});}}
- className="w-auto"
- />
- <select
- value={selectedClass}
- onChange={e => { setSelectedClass(e.target.value); setStatusMap({});}}
- className="rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
- >
- {CLASS_LIST.map(c => {
- return <option key={c}>{c}</option>;
-})}
- </select>
- </div>
- </div>
- {/* Stats Cards */}
- <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="stat-card-premium school-card p-5 flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
- <Users className="w-5 h-5 text-white" />
- </div>
- <div>
- <p className="text-2xl school-heading font-extrabold tracking-tight">{classStudents.length}</p>
- <p className="text-xs text-muted-foreground">{t("total_students", "Total Students")}</p>
- </div>
- </div>
- <div className="stat-card-premium bg-card rounded-xl border border-primary/40 border-l-4 border-l-green-500 p-4 flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
- <CheckCircle2 className="w-5 h-5 text-primary" />
- </div>
- <div>
- <p className="text-2xl font-bold text-primary">{presentCount}</p>
- <p className="text-xs text-muted-foreground">{t("present", "Present (")}{presentPct}%)</p>
- </div>
- </div>
- <div className="stat-card-premium bg-card rounded-xl border border-primary/40 border-l-4 border-l-red-500 p-4 flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
- <XCircle className="w-5 h-5 text-red-600" />
- </div>
- <div>
- <p className="text-2xl font-bold text-red-600">{absentCount}</p>
- <p className="text-xs text-muted-foreground">{t("absent", "Absent")}</p>
- </div>
- </div>
- <div className="stat-card-premium bg-card rounded-xl border border-primary/40 border-l-4 border-l-amber-500 p-4 flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
- <Clock className="w-5 h-5 text-amber-600" />
- </div>
- <div>
- <p className="text-2xl font-bold text-amber-600">{lateCount}</p>
- <p className="text-xs text-muted-foreground">{t("late", "Late")}</p>
- </div>
- </div>
- </div>
- {/* Attendance Sheet */}
- <div className="school-card overflow-hidden">
- <div className="p-4 border-b border-primary/40 bg-muted/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
- <div className="flex items-center gap-2 text-card-foreground font-semibold">
- <ClipboardList className="w-5 h-5 text-primary dark:text-primary/70" />
- <span>{selectedClass} — {new Date(date + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}</span>
- </div>
- <div className="flex items-center gap-2">
- <label className="text-xs font-bold text-muted-foreground uppercase whitespace-nowrap">{t("taken_by", "Taken by")}</label>
- <Input
- value={takenBy}
- onChange={e => setTakenBy(e.target.value)}
- placeholder="Teacher name..."
- className="h-8 text-sm w-40 bg-background"
- />
- </div>
- </div>
+      <div className="bg-white border-2 border-green-800 p-4 flex gap-4 overflow-x-auto">
+        <button onClick={() => handleBulkMark('Present')} className="flex-1 py-3 bg-green-100 border-2 border-green-500 text-green-800 font-bold hover:bg-green-200 transition-colors uppercase tracking-widest text-sm flex items-center justify-center gap-2"><Check className="w-4 h-4"/> Mark All Present</button>
+        <button onClick={() => handleBulkMark('Absent')} className="flex-1 py-3 bg-red-100 border-2 border-red-500 text-red-800 font-bold hover:bg-red-200 transition-colors uppercase tracking-widest text-sm flex items-center justify-center gap-2"><X className="w-4 h-4"/> Mark All Absent</button>
+        <button onClick={() => handleBulkMark('Late')} className="flex-1 py-3 bg-amber-100 border-2 border-amber-500 text-amber-800 font-bold hover:bg-amber-200 transition-colors uppercase tracking-widest text-sm flex items-center justify-center gap-2"><Clock className="w-4 h-4"/> Mark All Late</button>
+      </div>
 
- <div className="overflow-x-auto">
- <table className="w-full text-sm">
- <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-primary/40 dark:border-primary/40">
- <tr>
- <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("student", "Student")}</th>
- <th className="px-4 py-3 text-center text-xs font-bold text-primary uppercase tracking-wide">{t("present", "Present")}</th>
- <th className="px-4 py-3 text-center text-xs font-bold text-red-600 uppercase tracking-wide">{t("absent", "Absent")}</th>
- <th className="px-4 py-3 text-center text-xs font-bold text-amber-600 uppercase tracking-wide">{t("late", "Late")}</th>
- </tr>
- </thead>
- <tbody className="divide-y divide-border">
- {classStudents.map(student => {
- return (
- <tr key={student.id} className="hover:bg-muted/40 transition-colors">
- <td className="px-6 py-3">
- <div className="flex items-center gap-3">
- <div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 font-bold text-xs shrink-0">
- {student.name.substring(0, 2).toUpperCase()}
- </div>
- <div>
- <p className="font-semibold text-card-foreground">{student.name}</p>
- <p className="text-xs text-muted-foreground font-mono">{student.studentId}</p>
- </div>
- </div>
- </td>
- {['Present', 'Absent', 'Late'].map(status => {
- return (
- <td key={status} className="px-4 py-3 text-center">
- <label className="inline-flex items-center cursor-pointer">
- <input
- type="radio"
- name={`att-${student.id}`}
- checked={statusMap[student.id] === status}
- onChange={() => handleStatusChange(student.id, status)}
- className={`w-5 h-5 cursor-pointer ${
- status === 'Present' ? 'accent-primary' :
- status === 'Absent' ? 'accent-red-600' : 'accent-amber-500'
-}`}
- />
- </label>
- </td>
- );
-})}
- </tr>
- );
-})}
- {classStudents.length === 0 && (
- <tr>
- <td colSpan={4} className="text-center py-12 text-muted-foreground">
- <Users className="w-10 h-10 mx-auto mb-3 opacity-20 text-primary" />
- <p className="font-medium">{t("no_students_enrolled_in", "No students enrolled in")} {selectedClass}</p>
- <p className="text-xs mt-1">{t(
- "enroll_students_in_the_student",
- "Enroll students in the Students page first."
- )}</p>
- </td>
- </tr>
- )}
- </tbody>
- </table>
- </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {classStudents.map(student => {
+          const status = statusMap[student.id] || 'Present';
+          return (
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              key={student.id}
+              onClick={() => handleToggle(student.id, status)}
+              className={`p-4 border-2 text-left flex flex-col justify-between h-32 transition-colors ${
+                status === 'Present' ? 'bg-green-50 border-green-500' :
+                status === 'Absent' ? 'bg-red-50 border-red-500' :
+                'bg-amber-50 border-amber-500'
+              }`}
+            >
+              <div>
+                <p className="font-bold text-lg text-slate-900 leading-tight">{student.name}</p>
+                <p className="text-xs font-mono font-bold text-slate-500 mt-1">{student.studentId}</p>
+              </div>
+              <div className="flex justify-between items-end">
+                <span className={`text-xs font-black uppercase tracking-widest px-2 py-1 border-2 ${
+                  status === 'Present' ? 'bg-green-200 border-green-600 text-green-900' :
+                  status === 'Absent' ? 'bg-red-200 border-red-600 text-red-900' :
+                  'bg-amber-200 border-amber-600 text-amber-900'
+                }`}>
+                  {status}
+                </span>
+                {status === 'Present' && <Check className="w-6 h-6 text-green-600 stroke-[3]" />}
+                {status === 'Absent' && <X className="w-6 h-6 text-red-600 stroke-[3]" />}
+                {status === 'Late' && <Clock className="w-6 h-6 text-amber-600 stroke-[3]" />}
+              </div>
+            </motion.button>
+          );
+        })}
+      </div>
 
- {classStudents.length > 0 && (
- <div className="p-4 border-t border-primary/40 bg-muted/30 flex justify-end">
- <Button
- onClick={handleSubmit}
- disabled={mutateRecord.isPending || Object.keys(statusMap).length === 0}
- className="bg-primary hover:bg-primary text-white -[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold gap-2"
- >
- <Plus className="w-4 h-4" />
- {mutateRecord.isPending ? 'Submitting...' : `Submit Attendance (${markedCount}/${classStudents.length})`}
- </Button>
- </div>
- )}
- </div>
- {/* Saved Attendance Records */}
- <div className="school-card overflow-hidden">
- <div className="p-4 border-b border-primary/40 bg-muted/50">
- <h3 className="font-bold text-card-foreground flex items-center gap-2">
- <CalendarDays className="w-5 h-5 text-primary dark:text-primary/70" />
- {t("saved_records", "Saved Records —")} {selectedClass} {t("on", "on")} {date}
- </h3>
- </div>
-
- {isLoading ? (
- <div className="py-10 text-center text-muted-foreground">{t("loading_records", "Loading records...")}</div>
- ) : filteredSaved.length === 0 ? (
- <div className="py-10 text-center text-muted-foreground">
- <ClipboardList className="w-10 h-10 mx-auto mb-2 opacity-30 text-primary" />
- <p>{t(
- "no_attendance_saved_for_this_d",
- "No attendance saved for this date and class yet."
- )}</p>
- </div>
- ) : (
- <div className="overflow-x-auto">
- <table className="w-full text-sm">
- <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-primary/40 dark:border-primary/40">
- <tr>
- <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("date", "Date")}</th>
- <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("class", "Class")}</th>
- <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("taken_by", "Taken By")}</th>
- <th className="px-6 py-3 text-center text-xs font-bold text-muted-foreground uppercase">{t("present", "Present")}</th>
- <th className="px-6 py-3 text-center text-xs font-bold text-muted-foreground uppercase">{t("absent", "Absent")}</th>
- <th className="px-6 py-3 text-center text-xs font-bold text-muted-foreground uppercase">{t("late", "Late")}</th>
- <th className="px-4 py-3"></th>
- </tr>
- </thead>
- <tbody className="divide-y divide-border">
- {filteredSaved.map(rec => {
- const recs = Array.isArray(rec.records) ? rec.records : [];
- const p = recs.filter(r => r.status === 'Present').length;
- const a = recs.filter(r => r.status === 'Absent').length;
- const l = recs.filter(r => r.status === 'Late').length;
- return (
- <tr key={rec.id} className="hover:bg-muted/40 transition-colors">
- <td className="px-6 py-3 text-foreground font-medium">{rec.date}</td>
- <td className="px-6 py-3"><Link to="/classes" className="bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary dark:text-primary/30 text-xs font-semibold px-2 py-1 rounded-md hover:underline">{rec.className}</Link></td>
- <td className="px-6 py-3 text-muted-foreground">{rec.takenBy || '—'}</td>
- <td className="px-6 py-3 text-center font-bold text-primary">{p}</td>
- <td className="px-6 py-3 text-center font-bold text-red-600">{a}</td>
- <td className="px-6 py-3 text-center font-bold text-amber-600">{l}</td>
- <td className="px-4 py-3 text-right">
- <DropdownMenu>
- <DropdownMenuTrigger asChild>
- <Button variant="ghost" className="h-8 w-8 p-0">
- <MoreVertical className="h-4 w-4 text-muted-foreground" />
- </Button>
- </DropdownMenuTrigger>
- <DropdownMenuContent align="end" className="w-40">
- <DropdownMenuItem onClick={() => setViewDetails(rec)}>{t("view_details", "View Details")}</DropdownMenuItem>
- <DropdownMenuItem onClick={() => handleEdit(rec)}>{t("edit", "Edit")}</DropdownMenuItem>
- <DropdownMenuItem className="text-red-600 font-medium" onClick={() => setDeleteTargetId(rec.id)}>{t("delete", "Delete")}</DropdownMenuItem>
- </DropdownMenuContent>
- </DropdownMenu>
- </td>
- </tr>
- );
-})}
- </tbody>
- </table>
- </div>
- )}
- </div>
- <ConfirmationModal
- isOpen={deleteTargetId !== null}
- onClose={() => setDeleteTargetId(null)}
- onConfirm={handleDeleteRecord}
- title="Delete Attendance Record"
- message="Are you sure you want to permanently delete this attendance record? This cannot be undone."
- />
- <Sheet open={!!viewDetails} onOpenChange={(open) => !open && setViewDetails(null)}>
- <SheetContent className="overflow-y-auto w-full sm:max-w-md">
- <SheetHeader>
- <SheetTitle>{t("attendance_details", "Attendance Details")}</SheetTitle>
- <SheetDescription>{t(
- "view_attendance_records_for_th",
- "View attendance records for this class session."
- )}</SheetDescription>
- </SheetHeader>
- {viewDetails && (
- <div className="mt-6 space-y-6">
- <div className="grid grid-cols-2 gap-4">
- <div className="bg-muted/50 p-3 rounded-lg">
- <p className="text-xs text-muted-foreground uppercase font-semibold">{t("class", "Class")}</p>
- <Link to="/classes" className="text-primary hover:underline font-medium">{viewDetails.className}</Link>
- </div>
- <div className="bg-muted/50 p-3 rounded-lg">
- <p className="text-xs text-muted-foreground uppercase font-semibold">{t("date", "Date")}</p>
- <p className="font-medium text-foreground">{viewDetails.date}</p>
- </div>
- <div className="bg-muted/50 p-3 rounded-lg">
- <p className="text-xs text-muted-foreground uppercase font-semibold">{t("taken_by", "Taken By")}</p>
- <p className="font-medium text-foreground">{viewDetails.takenBy || '—'}</p>
- </div>
- </div>
-
- <div className="space-y-3">
- <h4 className="text-sm font-bold text-foreground">{t("student_roster", "Student Roster")}</h4>
- <div className="space-y-2">
- {viewDetails.records && viewDetails.records.map((r, i) => {
- return (
- <div key={i} className="flex items-center justify-between p-2 rounded-md border border-primary/40 bg-card">
- <span className="text-sm font-medium">{r.studentName}</span>
- <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
- r.status === 'Present' ? 'bg-slate-100 text-primary/90' :
- r.status === 'Absent' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
-}`}>
- {r.status}
- </span>
- </div>
- );
-})}
- </div>
- </div>
- </div>
- )}
- </SheetContent>
- </Sheet>
- </div>
- );
+      {classStudents.length > 0 && (
+        <button 
+          onClick={handleSubmit} 
+          disabled={mutateRecord.isPending}
+          className="w-full py-4 bg-green-600 text-white font-black text-xl tracking-widest uppercase border-4 border-green-900 hover:bg-green-500 transition-colors disabled:opacity-50"
+        >
+          {mutateRecord.isPending ? 'Saving...' : 'Save Register'}
+        </button>
+      )}
+    </div>
+  );
 }

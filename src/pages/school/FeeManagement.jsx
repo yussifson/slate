@@ -1,374 +1,402 @@
-import { useTranslation} from "react-i18next";
-import { useState} from 'react';
-import { Receipt, Search, CreditCard, DollarSign, AlertCircle, FileText, CheckCircle, Trash2, MoreVertical, Plus} from 'lucide-react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
-import { Link} from 'react-router-dom';
-import { Button} from '@/components/ui/button';
-import { Input} from '@/components/ui/input';
-import { useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
-import { base44} from "@/api/base44Client";
-import { usePayment} from '@/hooks/integrations/usePayment';
-import { useNotifications} from '@/hooks/integrations/useNotifications';
-import { toast} from 'react-hot-toast';
+import { useTranslation } from "react-i18next";
+import { useState } from 'react';
+import { Receipt, Search, CreditCard, DollarSign, AlertCircle, FileText, CheckCircle, Trash2, MoreVertical, Plus, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
+import { usePayment } from '@/hooks/integrations/usePayment';
+import { useNotifications } from '@/hooks/integrations/useNotifications';
+import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
-import { useCompanyId} from "@/hooks/useCompanyId";
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function FeeManagement() {
- const { t} = useTranslation();
- const companyId = useCompanyId();
- const { processPayment, isProcessing} = usePayment();
- const { notifyTeam} = useNotifications();
- const queryClient = useQueryClient();
- const { data: dbRecords = [], isLoading: isDbLoading} = useQuery({ 
- queryKey: ["clients", companyId], 
- queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'student'}), 
- enabled: !!companyId 
-});
- 
- const mutateRecord = useMutation({
- mutationFn: (data) => data.id ? base44.entities.Client.update(data.id, data) : base44.entities.Client.create(data),
- onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clients", companyId]})
-});
+  const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const { processPayment, isProcessing } = usePayment();
+  const { notifyTeam } = useNotifications();
+  const queryClient = useQueryClient();
+  
+  const { data: dbRecords = [], isLoading: isDbLoading } = useQuery({ 
+    queryKey: ["clients", companyId], 
+    queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'student' }), 
+    enabled: !!companyId 
+  });
+  
+  const mutateRecord = useMutation({
+    mutationFn: (data) => data.id ? base44.entities.Client.update(data.id, data) : base44.entities.Client.create(data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clients", companyId] })
+  });
 
- // Map student records to fee listings
- const studentsFees = dbRecords.map(r => {
- let extra = {};
- try { extra = JSON.parse(r.notes || '{}');} catch(e) {}
- 
- const feeStatus = extra.feeStatus || 'Owing';
- const totalDue = feeStatus === 'Paid' ? 1200 : (feeStatus === 'Partial' ? 1200 : 1200);
- const paid = feeStatus === 'Paid' ? 1200 : (feeStatus === 'Partial' ? 400 : 0);
- return {
- id: r.id,
- student: r.name || 'Unknown Student',
- studentId: r.id_number || 'STU-000',
- class: extra.class || 'Grade 7B',
- totalDue,
- paid,
- balance: totalDue - paid,
- status: feeStatus,
- rawRecord: r
-};
-});
+  const studentsFees = dbRecords.map(r => {
+    let extra = {};
+    try { extra = JSON.parse(r.notes || '{}'); } catch(e) {}
+    
+    const feeStatus = extra.feeStatus || 'Owing';
+    const totalDue = feeStatus === 'Paid' ? 1200 : (feeStatus === 'Partial' ? 1200 : 1200);
+    const paid = feeStatus === 'Paid' ? 1200 : (feeStatus === 'Partial' ? 400 : 0);
+    return {
+      id: r.id,
+      student: r.name || 'Unknown Student',
+      studentId: r.id_number || 'STU-000',
+      class: extra.class || 'Grade 7B',
+      totalDue,
+      paid,
+      balance: totalDue - paid,
+      status: feeStatus,
+      rawRecord: r
+    };
+  });
 
- const [search, setSearch] = useState('');
- const [showPaymentModal, setShowPaymentModal] = useState(false);
- const [showEnrollModal, setShowEnrollModal] = useState(false);
- const [enrollName, setEnrollName] = useState('');
- const [selectedStudent, setSelectedStudent] = useState(null);
- const [paymentAmount, setPaymentAmount] = useState(0);
- const [viewDetails, setViewDetails] = useState(null);
+  const [search, setSearch] = useState('');
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showEnrollModal, setShowEnrollModal] = useState(false);
+  const [enrollName, setEnrollName] = useState('');
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [paymentAmount, setPaymentAmount] = useState(0);
+  const [viewDetails, setViewDetails] = useState(null);
 
- const filtered = studentsFees.filter(f =>
- f.student.toLowerCase().includes(search.toLowerCase()) ||
- f.studentId.includes(search)
- );
+  const filtered = studentsFees.filter(f =>
+    f.student.toLowerCase().includes(search.toLowerCase()) ||
+    f.studentId.includes(search)
+  );
 
- const totalCollected = studentsFees.reduce((sum, f) => sum + f.paid, 0);
- const totalOutstanding = studentsFees.reduce((sum, f) => sum + f.balance, 0);
- const fullyPaidCount = studentsFees.filter(f => f.status === 'Paid').length;
+  const totalCollected = studentsFees.reduce((sum, f) => sum + f.paid, 0);
+  const totalOutstanding = studentsFees.reduce((sum, f) => sum + f.balance, 0);
+  const fullyPaidCount = studentsFees.filter(f => f.status === 'Paid').length;
 
- const handlePay = (student) => {
- setSelectedStudent(student);
- setPaymentAmount(student.balance);
- setShowPaymentModal(true);
-};
+  const handlePay = (student) => {
+    setSelectedStudent(student);
+    setPaymentAmount(student.balance);
+    setShowPaymentModal(true);
+  };
 
- const handleConfirmPayment = async () => {
- if (!selectedStudent || paymentAmount <= 0) return;
+  const handleConfirmPayment = async () => {
+    if (!selectedStudent || paymentAmount <= 0) return;
+    try {
+      const paymentResult = await processPayment({
+        amount: paymentAmount,
+        currency: 'USD',
+        description: `Tuition payment for ${selectedStudent.student}`,
+        customerName: selectedStudent.student
+      });
 
- try {
- const paymentResult = await processPayment({
- amount: paymentAmount,
- currency: 'USD',
- description: `Tuition payment for ${selectedStudent.student}`,
- customerName: selectedStudent.student
-});
+      if (paymentResult.success) {
+        const currentRaw = selectedStudent.rawRecord;
+        const isFull = paymentAmount >= selectedStudent.balance;
+        const nextStatus = isFull ? 'Paid' : 'Partial';
 
- if (paymentResult.success) {
- const currentRaw = selectedStudent.rawRecord;
- const isFull = paymentAmount >= selectedStudent.balance;
- const nextStatus = isFull ? 'Paid' : 'Partial';
+        let extra = {};
+        try { extra = JSON.parse(currentRaw.notes || '{}'); } catch(e) {}
+        extra.feeStatus = nextStatus;
 
- let extra = {};
- try { extra = JSON.parse(currentRaw.notes || '{}');} catch(e) {}
- extra.feeStatus = nextStatus;
+        mutateRecord.mutate({
+          id: currentRaw.id,
+          notes: JSON.stringify(extra)
+        }, {
+          onSuccess: () => {
+            toast.success(`Recorded payment of $${paymentAmount} for ${selectedStudent.student}`);
+            if (paymentAmount >= 500) {
+              notifyTeam({
+                companyId,
+                provider: 'slack',
+                channel: 'general',
+                message: `💰 *Major Fee Collection:* $${paymentAmount} received from ${selectedStudent.student}.`
+              });
+            }
+            setShowPaymentModal(false);
+            setSelectedStudent(null);
+          },
+          onError: (err) => {
+            toast.error('Failed to log payment: ' + err.message);
+          }
+        });
+      }
+    } catch (err) {
+      toast.error('Payment processing failed: ' + err.message);
+    }
+  };
 
- mutateRecord.mutate({
- id: currentRaw.id,
- notes: JSON.stringify(extra)
-}, {
- onSuccess: () => {
- toast.success(`Recorded payment of $${paymentAmount} for ${selectedStudent.student}`);
- if (paymentAmount >= 500) {
- notifyTeam({
- companyId,
- provider: 'slack',
- channel: 'general',
- message: `💰 *Major Fee Collection:* $${paymentAmount} received from ${selectedStudent.student}.`
-});
-}
- setShowPaymentModal(false);
- setSelectedStudent(null);
-},
- onError: (err) => {
- toast.error('Failed to log payment: ' + err.message);
-}
-});
-}
-} catch (err) {
- toast.error('Payment processing failed: ' + err.message);
-}
-};
+  return (
+    <div className="space-y-8 font-dmsans p-4 md:p-8 bg-[#f4fdf8] min-h-screen text-slate-900">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-4xl font-black text-emerald-900 tracking-tight uppercase">{t("fee_management", "Financial Ledger")}</h1>
+          <p className="text-emerald-700 font-medium text-lg mt-1">{t("track_student_tuition_and_paym", "Track student tuition, arrears, and payments")}</p>
+        </div>
+        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+          <Button onClick={() => setShowEnrollModal(true)} className="gap-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-none border-2 border-emerald-900 font-bold px-6 py-6 text-lg transition-colors">
+            <Plus className="w-6 h-6" /> {t("quick_enroll", "Quick Enroll")}
+          </Button>
+        </motion.div>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-emerald-100 border-2 border-emerald-900 p-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4 opacity-20">
+            <DollarSign className="w-24 h-24 text-emerald-900" />
+          </div>
+          <div className="flex items-center gap-3 mb-4 relative z-10">
+            <div className="w-12 h-12 bg-emerald-900 flex items-center justify-center text-emerald-100">
+              <ArrowUpRight className="w-6 h-6" />
+            </div>
+            <h3 className="font-bold text-emerald-900 text-lg uppercase">{t("total_collected", "Collected")}</h3>
+          </div>
+          <p className="text-5xl font-black text-emerald-900 relative z-10">${totalCollected.toLocaleString()}</p>
+        </motion.div>
+        
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-red-100 border-2 border-red-900 p-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4 opacity-20">
+            <AlertCircle className="w-24 h-24 text-red-900" />
+          </div>
+          <div className="flex items-center gap-3 mb-4 relative z-10">
+            <div className="w-12 h-12 bg-red-900 flex items-center justify-center text-red-100">
+              <ArrowDownRight className="w-6 h-6" />
+            </div>
+            <h3 className="font-bold text-red-900 text-lg uppercase">{t("outstanding_arrears", "Arrears")}</h3>
+          </div>
+          <p className="text-5xl font-black text-red-900 relative z-10">${totalOutstanding.toLocaleString()}</p>
+        </motion.div>
+        
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-lime-200 border-2 border-lime-900 p-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4 opacity-20">
+            <CheckCircle className="w-24 h-24 text-lime-900" />
+          </div>
+          <div className="flex items-center gap-3 mb-4 relative z-10">
+            <div className="w-12 h-12 bg-lime-900 flex items-center justify-center text-lime-100">
+              <Receipt className="w-6 h-6" />
+            </div>
+            <h3 className="font-bold text-lime-900 text-lg uppercase">{t("fully_paid_students", "Cleared")}</h3>
+          </div>
+          <p className="text-5xl font-black text-lime-900 relative z-10">{fullyPaidCount} <span className="text-xl font-bold text-lime-800">/ {studentsFees.length}</span></p>
+        </motion.div>
+      </div>
 
- return (
- <div className="space-y-6 school-page-enter font-dmsans">
- <div className="flex items-center justify-between">
- <div>
- <h1 className="text-2xl school-heading font-extrabold tracking-tight">{t("fee_management", "Fee Management")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t("track_student_tuition_and_paym", "Track student tuition and payments")}</p>
- </div>
- <Button onClick={() => setShowEnrollModal(true)} className="gap-2 bg-primary hover:bg-primary text-white -[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold">
- <Plus className="w-4 h-4" /> {t("quick_enroll", "Quick Enroll")}
- </Button>
- </div>
- <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- <div className="bg-card rounded-xl border border-primary/40 p-5 ">
- <div className="flex items-center gap-3 mb-2">
- <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
- <DollarSign className="w-4 h-4" />
- </div>
- <h3 className="font-semibold text-foreground text-sm">{t("total_collected", "Total Collected")}</h3>
- </div>
- <p className="text-3xl font-bold text-card-foreground">${totalCollected.toLocaleString()}</p>
- </div>
- <div className="bg-card rounded-xl border border-primary/40 p-5 ">
- <div className="flex items-center gap-3 mb-2">
- <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-950/50 flex items-center justify-center text-red-600 dark:text-red-400">
- <AlertCircle className="w-4 h-4" />
- </div>
- <h3 className="font-semibold text-foreground text-sm">{t("outstanding_arrears", "Outstanding Arrears")}</h3>
- </div>
- <p className="text-3xl font-bold text-card-foreground">${totalOutstanding.toLocaleString()}</p>
- </div>
- <div className="bg-card rounded-xl border border-primary/40 p-5 ">
- <div className="flex items-center gap-3 mb-2">
- <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70 dark:text-primary/70">
- <CheckCircle className="w-4 h-4" />
- </div>
- <h3 className="font-semibold text-foreground text-sm">{t("fully_paid_students", "Fully Paid Students")}</h3>
- </div>
- <p className="text-3xl font-bold text-card-foreground">{fullyPaidCount} <span className="text-sm font-medium text-muted-foreground">/ {studentsFees.length}</span></p>
- </div>
- </div>
- <div className="school-card overflow-hidden">
- <div className="p-4 border-b border-primary/40 bg-muted/50">
- <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search student tuition listings..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white dark:bg-slate-900/40/80 dark:bg-slate-800/50 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary" />
- </div>
- </div>
- <div className="overflow-x-auto">
- {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_fee_ledger", "Loading fee ledger...")}</div>
- ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground">
- <AlertCircle className="w-12 h-12 mx-auto mb-3 opacity-20 text-primary" />
- <p className="font-semibold text-lg text-card-foreground">{t("no_students_enrolled", "No students enrolled")}</p>
- <p className="text-xs mt-1">{t(
- "tuition_bills_are_automaticall",
- "Tuition bills are automatically configured upon enrolling students in the directory."
- )}</p>
- </div>
- ) : (
- <table className="w-full text-sm">
- <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-primary/40 dark:border-primary/40">
- <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("student", "Student")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("class", "Class")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("total_due", "Total Due")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("paid", "Paid")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("balance", "Balance")}</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("status", "Status")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("actions", "Actions")}</th>
- </tr>
- </thead>
- <tbody className="divide-y divide-border">
- {filtered.map(f => {
- return (
- <tr key={f.id} className="hover:bg-muted/50 transition-colors">
- <td className="px-6 py-4">
- <Link to={`/students`} className="font-semibold text-primary hover:underline">{f.student}</Link>
- <p className="text-xs text-muted-foreground font-mono mt-0.5">{f.studentId}</p>
- </td>
- <td className="px-6 py-4 text-muted-foreground"><Link to="/classes" className="hover:underline text-primary dark:text-primary/70">{f.class}</Link></td>
- <td className="px-6 py-4 text-right font-medium text-foreground">${f.totalDue}</td>
- <td className="px-6 py-4 text-right font-medium text-primary">${f.paid}</td>
- <td className="px-6 py-4 text-right font-bold text-red-600">${f.balance}</td>
- <td className="px-6 py-4 text-center">
- <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
- f.status === 'Paid' ? 'bg-slate-100 dark:bg-primary/30 text-primary/90 dark:text-primary/70' :
- f.status === 'Owing' ? 'bg-red-100 dark:bg-red-950/30 text-red-700 dark:text-red-400' : 'bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400'
-}`}>
- {f.status}
- </span>
- </td>
- <td className="px-6 py-4 text-right">
- <DropdownMenu>
- <DropdownMenuTrigger asChild>
- <Button variant="ghost" className="h-8 w-8 p-0">
- <MoreVertical className="h-4 w-4 text-muted-foreground" />
- </Button>
- </DropdownMenuTrigger>
- <DropdownMenuContent align="end" className="w-40">
- <DropdownMenuItem onClick={() => setViewDetails(f)}>{t("view_details", "View Details")}</DropdownMenuItem>
- {f.balance > 0 ? (
- <DropdownMenuItem onClick={() => handlePay(f)}>{t("record_payment", "Record Payment")}</DropdownMenuItem>
- ) : (
- <DropdownMenuItem>{t("generate_receipt", "Generate Receipt")}</DropdownMenuItem>
- )}
- </DropdownMenuContent>
- </DropdownMenu>
- </td>
- </tr>
- );
-})}
- </tbody>
- </table>
- )}
- </div>
- </div>
- {showPaymentModal && selectedStudent && (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-md p-4">
- <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-primary/40 max-h-[90vh] overflow-y-auto custom-scrollbar">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><CreditCard className="w-5 h-5 text-primary dark:text-primary/70" /> {t("record_payment", "Record Payment")}</h2>
- <div className="bg-muted dark:bg-muted/30 p-3 rounded-lg border border-primary/40 text-sm mb-4">
- <p className="text-muted-foreground">{t("student", "Student:")} <strong className="text-card-foreground">{selectedStudent.student}</strong></p>
- <p className="text-muted-foreground">{t("current_balance", "Current Balance:")} <strong className="text-red-600">${selectedStudent.balance}</strong></p>
- </div>
- <div className="space-y-3">
- <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("amount_paying", "Amount Paying ($)")}</label>
- <Input
- className="mt-1 text-lg font-bold"
- type="number"
- value={paymentAmount}
- onChange={e => setPaymentAmount(parseFloat(e.target.value) || 0)}
- />
- </div>
- <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("payment_method", "Payment Method")}</label>
- <select className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
- <option>{t("cash", "Cash")}</option>
- <option>{t("bank_transfer", "Bank Transfer")}</option>
- <option>{t("mobile_money", "Mobile Money")}</option>
- <option>{t("cheque", "Cheque")}</option>
- </select>
- </div>
- </div>
- <div className="flex gap-3 pt-4">
- <Button variant="outline" className="flex-1" onClick={() => setShowPaymentModal(false)}>{t("cancel", "Cancel")}</Button>
- <Button className="flex-1 bg-primary hover:bg-primary text-white -[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={handleConfirmPayment}>{t("confirm_payment", "Confirm Payment")}</Button>
- </div>
- </div>
- </div>
- )}
- {showEnrollModal && (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-md p-4">
- <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-primary/40 max-h-[90vh] overflow-y-auto custom-scrollbar">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Plus className="w-5 h-5 text-primary dark:text-primary/70" /> {t("quick_enroll", "Quick Enroll Student")}</h2>
- <p className="text-sm text-muted-foreground">{t("quickly_register_a_student_to_", "Quickly register a student to generate their tuition billing profile.")}</p>
- <div className="space-y-3">
- <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("student_full_name", "Student Full Name")}</label>
- <Input
- className="mt-1"
- value={enrollName}
- onChange={e => setEnrollName(e.target.value)}
- placeholder="e.g. Kwame Mensah"
- autoFocus
- />
- </div>
- </div>
- <div className="flex gap-3 pt-4">
- <Button variant="outline" className="flex-1" onClick={() => setShowEnrollModal(false)}>{t("cancel", "Cancel")}</Button>
- <Button className="flex-1 bg-primary hover:bg-primary text-white -[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={() => {
- if (!enrollName.trim()) return toast.error("Enter student name");
- const studentId = `STU-${Math.floor(1000 + Math.random() * 9000)}`;
- mutateRecord.mutate({
- company_id: companyId,
- type: 'student',
- name: enrollName.trim(),
- id_number: studentId,
- status: 'active',
- notes: JSON.stringify({ feeStatus: 'Owing', class: 'Grade 7B', avatar: enrollName.trim().substring(0,2).toUpperCase()})
-}, {
- onSuccess: () => {
- toast.success(`Enrolled ${enrollName} successfully!`);
- setShowEnrollModal(false);
- setEnrollName('');
-}
-});
-}}>{t("enroll_bill", "Enroll & Bill")}</Button>
- </div>
- </div>
- </div>
- )}
- <Sheet open={!!viewDetails} onOpenChange={(open) => !open && setViewDetails(null)}>
- <SheetContent className="overflow-y-auto w-full sm:max-w-md">
- <SheetHeader>
- <SheetTitle>{t("fee_details", "Fee Details")}</SheetTitle>
- <SheetDescription>{t(
- "read_only_overview_of_student_",
- "Read-only overview of student tuition and arrears."
- )}</SheetDescription>
- </SheetHeader>
- {viewDetails && (
- <div className="mt-6 space-y-6">
- <div className="flex items-center gap-4">
- <div className="w-16 h-16 rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70 font-bold text-xl">
- {viewDetails.student.substring(0, 2).toUpperCase()}
- </div>
- <div>
- <h3 className="text-xl school-heading font-bold tracking-tight">
- <Link to="/students" className="hover:underline">{viewDetails.student}</Link>
- </h3>
- <p className="text-sm text-muted-foreground">{viewDetails.studentId}</p>
- </div>
- </div>
+      <div className="border-2 border-emerald-900 bg-white">
+        <div className="p-4 border-b-2 border-emerald-900 bg-emerald-50">
+          <div className="relative max-w-xl">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-700" />
+            <Input placeholder="Search student tuition listings..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 bg-white border-2 border-emerald-900 rounded-none h-14 text-lg font-medium focus-visible:ring-0 focus-visible:border-emerald-600 placeholder:text-emerald-300" />
+          </div>
+        </div>
+        
+        <div className="overflow-x-auto">
+          {isDbLoading ? (
+            <div className="py-20 text-center text-emerald-600 font-bold text-xl uppercase animate-pulse">{t("loading_fee_ledger", "Loading ledger...")}</div>
+          ) : filtered.length === 0 ? (
+            <div className="py-20 text-center text-emerald-800">
+              <FileText className="w-16 h-16 mx-auto mb-4 opacity-50" />
+              <p className="font-black text-2xl uppercase">{t("no_students_enrolled", "No Records Found")}</p>
+            </div>
+          ) : (
+            <table className="w-full text-left border-collapse">
+              <thead className="bg-emerald-900 text-emerald-50">
+                <tr>
+                  <th className="px-6 py-5 text-sm font-black uppercase tracking-widest">{t("student", "Student")}</th>
+                  <th className="px-6 py-5 text-sm font-black uppercase tracking-widest">{t("class", "Class")}</th>
+                  <th className="px-6 py-5 text-sm font-black uppercase tracking-widest text-right">{t("total_due", "Total Due")}</th>
+                  <th className="px-6 py-5 text-sm font-black uppercase tracking-widest text-right">{t("paid", "Paid")}</th>
+                  <th className="px-6 py-5 text-sm font-black uppercase tracking-widest text-right">{t("balance", "Balance")}</th>
+                  <th className="px-6 py-5 text-sm font-black uppercase tracking-widest text-center">{t("status", "Status")}</th>
+                  <th className="px-6 py-5 text-sm font-black uppercase tracking-widest text-right">{t("actions", "Actions")}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y-2 divide-emerald-100">
+                <AnimatePresence>
+                  {filtered.map(f => (
+                    <motion.tr initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} key={f.id} className="hover:bg-emerald-50 transition-colors group">
+                      <td className="px-6 py-5">
+                        <Link to={`/students`} className="font-black text-emerald-900 text-lg hover:text-emerald-600 transition-colors">{f.student}</Link>
+                        <p className="text-sm text-emerald-600 font-bold uppercase tracking-wider">{f.studentId}</p>
+                      </td>
+                      <td className="px-6 py-5 text-emerald-800 font-bold">{f.class}</td>
+                      <td className="px-6 py-5 text-right font-black text-emerald-900 text-lg">${f.totalDue}</td>
+                      <td className="px-6 py-5 text-right font-black text-emerald-600 text-lg">${f.paid}</td>
+                      <td className="px-6 py-5 text-right font-black text-red-600 text-lg">${f.balance}</td>
+                      <td className="px-6 py-5 text-center">
+                        <span className={`inline-block px-4 py-1.5 text-xs font-black uppercase tracking-widest border-2 ${
+                          f.status === 'Paid' ? 'bg-lime-200 border-lime-900 text-lime-900' :
+                          f.status === 'Owing' ? 'bg-red-200 border-red-900 text-red-900' : 'bg-amber-200 border-amber-900 text-amber-900'
+                        }`}>
+                          {f.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-5 text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-10 w-10 p-0 border-2 border-transparent group-hover:border-emerald-900 group-hover:bg-emerald-100 rounded-none transition-all">
+                              <MoreVertical className="h-5 w-5 text-emerald-900" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48 border-2 border-emerald-900 rounded-none p-0 bg-white">
+                            <DropdownMenuItem className="font-bold cursor-pointer rounded-none focus:bg-emerald-100 focus:text-emerald-900 p-3" onClick={() => setViewDetails(f)}>{t("view_details", "View Details")}</DropdownMenuItem>
+                            {f.balance > 0 ? (
+                              <DropdownMenuItem className="font-bold cursor-pointer rounded-none focus:bg-emerald-100 focus:text-emerald-900 p-3" onClick={() => handlePay(f)}>{t("record_payment", "Record Payment")}</DropdownMenuItem>
+                            ) : (
+                              <DropdownMenuItem className="font-bold cursor-pointer rounded-none focus:bg-emerald-100 focus:text-emerald-900 p-3">{t("generate_receipt", "Generate Receipt")}</DropdownMenuItem>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
+                    </motion.tr>
+                  ))}
+                </AnimatePresence>
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
 
- <div className="grid grid-cols-2 gap-4">
- <div className="bg-muted/50 p-3 rounded-lg">
- <p className="text-xs text-muted-foreground uppercase font-semibold">{t("class", "Class")}</p>
- <Link to="/classes" className="text-primary hover:underline font-medium">{viewDetails.class}</Link>
- </div>
- <div className="bg-muted/50 p-3 rounded-lg">
- <p className="text-xs text-muted-foreground uppercase font-semibold">{t("status", "Status")}</p>
- <span className={`inline-block mt-1 text-xs font-bold px-2.5 py-0.5 rounded-full ${
- viewDetails.status === 'Paid' ? 'bg-slate-100 text-primary/90' :
- viewDetails.status === 'Owing' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
-}`}>
- {viewDetails.status}
- </span>
- </div>
- <div className="bg-muted/50 p-3 rounded-lg">
- <p className="text-xs text-muted-foreground uppercase font-semibold">{t("total_due", "Total Due")}</p>
- <p className="font-medium text-foreground">${viewDetails.totalDue}</p>
- </div>
- <div className="bg-muted/50 p-3 rounded-lg">
- <p className="text-xs text-muted-foreground uppercase font-semibold">{t("paid", "Paid")}</p>
- <p className="font-medium text-primary">${viewDetails.paid}</p>
- </div>
- <div className="bg-muted/50 p-3 rounded-lg col-span-2">
- <p className="text-xs text-muted-foreground uppercase font-semibold">{t("outstanding_balance", "Outstanding Balance")}</p>
- <p className="font-bold text-red-600 mt-1 text-lg">${viewDetails.balance}</p>
- </div>
- </div>
- </div>
- )}
- </SheetContent>
- </Sheet>
- </div>
- );
+      {showPaymentModal && selectedStudent && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-emerald-900/60 backdrop-blur-sm p-4">
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white border-4 border-emerald-900 w-full max-w-lg p-8 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-2xl font-black text-emerald-900 flex items-center gap-3 mb-6 uppercase"><CreditCard className="w-8 h-8 text-emerald-600" /> {t("record_payment", "Record Payment")}</h2>
+            
+            <div className="bg-emerald-50 p-4 border-2 border-emerald-900 mb-6">
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-bold text-emerald-700 uppercase text-xs tracking-widest">{t("student", "Student")}</span>
+                <span className="font-black text-emerald-900 text-lg">{selectedStudent.student}</span>
+              </div>
+              <div className="flex justify-between items-center border-t-2 border-emerald-900/20 pt-2 mt-2">
+                <span className="font-bold text-emerald-700 uppercase text-xs tracking-widest">{t("current_balance", "Balance")}</span>
+                <span className="font-black text-red-600 text-2xl">${selectedStudent.balance}</span>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <label className="text-sm font-black text-emerald-900 uppercase tracking-widest block mb-2">{t("amount_paying", "Amount Paying ($)")}</label>
+                <Input
+                  className="h-14 text-2xl font-black border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-emerald-50"
+                  type="number"
+                  value={paymentAmount}
+                  onChange={e => setPaymentAmount(parseFloat(e.target.value) || 0)}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-black text-emerald-900 uppercase tracking-widest block mb-2">{t("payment_method", "Payment Method")}</label>
+                <select className="w-full h-14 border-2 border-emerald-900 bg-emerald-50 px-4 font-bold text-emerald-900 focus:outline-none focus:border-emerald-500 rounded-none appearance-none">
+                  <option>{t("cash", "Cash")}</option>
+                  <option>{t("bank_transfer", "Bank Transfer")}</option>
+                  <option>{t("mobile_money", "Mobile Money")}</option>
+                  <option>{t("cheque", "Cheque")}</option>
+                </select>
+              </div>
+            </div>
+            
+            <div className="flex gap-4 pt-8">
+              <Button variant="outline" className="flex-1 h-14 border-2 border-emerald-900 text-emerald-900 font-black uppercase tracking-widest rounded-none hover:bg-emerald-100" onClick={() => setShowPaymentModal(false)}>{t("cancel", "Cancel")}</Button>
+              <Button className="flex-1 h-14 bg-emerald-600 hover:bg-emerald-700 text-white border-2 border-emerald-900 font-black uppercase tracking-widest rounded-none transition-colors" onClick={handleConfirmPayment}>
+                {isProcessing ? 'Processing...' : t("confirm_payment", "Confirm")}
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {showEnrollModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-emerald-900/60 backdrop-blur-sm p-4">
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white border-4 border-emerald-900 w-full max-w-lg p-8 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-2xl font-black text-emerald-900 flex items-center gap-3 mb-2 uppercase"><Plus className="w-8 h-8 text-emerald-600" /> {t("quick_enroll", "Quick Enroll")}</h2>
+            <p className="text-emerald-700 font-medium mb-6">{t("quickly_register_a_student_to_", "Register a student to generate their billing profile.")}</p>
+            
+            <div className="space-y-6">
+              <div>
+                <label className="text-sm font-black text-emerald-900 uppercase tracking-widest block mb-2">{t("student_full_name", "Student Full Name")}</label>
+                <Input
+                  className="h-14 text-lg font-bold border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-emerald-50"
+                  value={enrollName}
+                  onChange={e => setEnrollName(e.target.value)}
+                  placeholder="e.g. Kwame Mensah"
+                  autoFocus
+                />
+              </div>
+            </div>
+            
+            <div className="flex gap-4 pt-8">
+              <Button variant="outline" className="flex-1 h-14 border-2 border-emerald-900 text-emerald-900 font-black uppercase tracking-widest rounded-none hover:bg-emerald-100" onClick={() => setShowEnrollModal(false)}>{t("cancel", "Cancel")}</Button>
+              <Button className="flex-1 h-14 bg-emerald-600 hover:bg-emerald-700 text-white border-2 border-emerald-900 font-black uppercase tracking-widest rounded-none transition-colors" onClick={() => {
+                if (!enrollName.trim()) return toast.error("Enter student name");
+                const studentId = `STU-${Math.floor(1000 + Math.random() * 9000)}`;
+                mutateRecord.mutate({
+                  company_id: companyId,
+                  type: 'student',
+                  name: enrollName.trim(),
+                  id_number: studentId,
+                  status: 'active',
+                  notes: JSON.stringify({ feeStatus: 'Owing', class: 'Grade 7B', avatar: enrollName.trim().substring(0,2).toUpperCase() })
+                }, {
+                  onSuccess: () => {
+                    toast.success(`Enrolled ${enrollName} successfully!`);
+                    setShowEnrollModal(false);
+                    setEnrollName('');
+                  }
+                });
+              }}>{t("enroll_bill", "Enroll & Bill")}</Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      <Sheet open={!!viewDetails} onOpenChange={(open) => !open && setViewDetails(null)}>
+        <SheetContent className="overflow-y-auto w-full sm:max-w-md border-l-4 border-emerald-900 bg-white p-0">
+          <div className="p-8 bg-emerald-900 text-white">
+            <SheetHeader>
+              <SheetTitle className="text-3xl font-black text-white uppercase tracking-tight">{t("fee_details", "Fee Details")}</SheetTitle>
+              <SheetDescription className="text-emerald-200 font-medium">{t("read_only_overview_of_student_", "Student tuition and arrears overview.")}</SheetDescription>
+            </SheetHeader>
+          </div>
+          
+          {viewDetails && (
+            <div className="p-8 space-y-8">
+              <div className="flex items-center gap-6 pb-6 border-b-2 border-emerald-100">
+                <div className="w-20 h-20 bg-emerald-100 border-2 border-emerald-900 flex items-center justify-center text-emerald-900 font-black text-3xl">
+                  {viewDetails.student.substring(0, 2).toUpperCase()}
+                </div>
+                <div>
+                  <h3 className="text-2xl font-black text-emerald-900 uppercase tracking-tight">
+                    <Link to="/students" className="hover:text-emerald-600 transition-colors">{viewDetails.student}</Link>
+                  </h3>
+                  <p className="text-lg text-emerald-600 font-bold">{viewDetails.studentId}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-emerald-50 border-2 border-emerald-900 p-4">
+                  <p className="text-xs text-emerald-700 uppercase font-black tracking-widest mb-1">{t("class", "Class")}</p>
+                  <Link to="/classes" className="text-emerald-900 hover:text-emerald-600 font-black text-lg transition-colors">{viewDetails.class}</Link>
+                </div>
+                <div className="bg-emerald-50 border-2 border-emerald-900 p-4">
+                  <p className="text-xs text-emerald-700 uppercase font-black tracking-widest mb-2">{t("status", "Status")}</p>
+                  <span className={`inline-block px-3 py-1 text-xs font-black uppercase tracking-widest border-2 ${
+                    viewDetails.status === 'Paid' ? 'bg-lime-200 border-lime-900 text-lime-900' :
+                    viewDetails.status === 'Owing' ? 'bg-red-200 border-red-900 text-red-900' : 'bg-amber-200 border-amber-900 text-amber-900'
+                  }`}>
+                    {viewDetails.status}
+                  </span>
+                </div>
+                <div className="bg-emerald-50 border-2 border-emerald-900 p-4">
+                  <p className="text-xs text-emerald-700 uppercase font-black tracking-widest mb-1">{t("total_due", "Total Due")}</p>
+                  <p className="font-black text-emerald-900 text-2xl">${viewDetails.totalDue}</p>
+                </div>
+                <div className="bg-emerald-50 border-2 border-emerald-900 p-4">
+                  <p className="text-xs text-emerald-700 uppercase font-black tracking-widest mb-1">{t("paid", "Paid")}</p>
+                  <p className="font-black text-emerald-600 text-2xl">${viewDetails.paid}</p>
+                </div>
+                <div className="bg-red-50 border-2 border-red-900 p-6 col-span-2">
+                  <p className="text-sm text-red-800 uppercase font-black tracking-widest mb-2">{t("outstanding_balance", "Outstanding Balance")}</p>
+                  <p className="font-black text-red-600 text-5xl">${viewDetails.balance}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
+    </div>
+  );
 }
