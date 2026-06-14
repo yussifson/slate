@@ -358,7 +358,9 @@ export const AuthProvider = ({ children }) => {
                    
                    // Override profile
                    profile.company_id = targetCompanyId;
-                   profile.role = accessRecord?.role || staffRecordAlt?.role || 'lawyer';
+                   if (!['super_admin', 'admin'].includes(profile.role)) {
+                       profile.role = accessRecord?.role || staffRecordAlt?.role || 'lawyer';
+                   }
                    profile.company_name = tComp.name;
 
                    // Override companyData

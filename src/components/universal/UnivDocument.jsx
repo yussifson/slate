@@ -47,9 +47,13 @@ export default function UnivDocument() {
     }, 200);
     setTimeout(() => {
       clearInterval(interval);
-      setUploading(false);
-      setForm({ ...form, name: file.name || form.name, file_url: URL.createObjectURL(file) });
-      toast.success('File attached successfully (mock)');
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setForm({ ...form, name: file.name || form.name, file_url: e.target.result });
+        setUploading(false);
+        toast.success('File attached successfully for offline sync');
+      };
+      reader.readAsDataURL(file);
     }, 1500);
   };
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
