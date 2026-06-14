@@ -23,25 +23,54 @@ serve(async (req) => {
       })
     }
 
-    // Initialize Novu with the provided API key
-    const novuApiKey = "217619c1ae4338c49414e02df010bce3";
-    const novu = new Novu(novuApiKey);
+    console.log("Received Webhook Trigger!");
+    console.log("Record Data:", JSON.stringify({ recipient: record.recipient_email, type: record.type, title: record.title }));
 
-    // Trigger Novu workflow named 'in-app-notification'
-    await novu.trigger('in-app-notification', {
-      to: { 
-        subscriberId: record.recipient_email,
-        email: record.recipient_email 
-      },
-      payload: {
-        title: record.title,
-        message: record.message,
-        type: record.type,
-        link: record.related_id
+    // Array of Novu API Keys for fallback (Add more keys here to stack 10k limits)
+    const novuApiKeys = [
+      "09ce520feae0cc9d84fab4ab83b7c13c", // Account 1 (Primary)
+      // "YOUR_SECOND_NOVU_API_KEY_HERE", // Account 2 (Fallback)
+      // "YOUR_THIRD_NOVU_API_KEY_HERE",  // Account 3 (Fallback)
+    ];
+
+    let lastError = null;
+    let novuResponse = null;
+    let successfulKeyIndex = -1;
+
+    for (let i = 0; i < novuApiKeys.length; i++) {
+      try {
+        console.log(`Attempting to trigger Novu using API Key ${i + 1}...`);
+        const novu = new Novu(novuApiKeys[i]);
+
+        novuResponse = await novu.trigger('in-app-notification', {
+          to: { 
+            subscriberId: record.recipient_email,
+            email: record.recipient_email 
+          },
+          payload: {
+            title: record.title,
+            message: record.message,
+            type: record.type,
+            link: record.related_id
+          }
+        });
+
+        console.log(`Novu Trigger Success with Key ${i + 1}!`);
+        successfulKeyIndex = i + 1;
+        lastError = null;
+        break; // Success! Break out of the fallback loop
+      } catch (err) {
+        console.warn(`Failed to send with Novu API Key ${i + 1}. Error:`, err.message);
+        lastError = err;
+        // The loop will automatically continue to the next API key in the array
       }
-    });
+    }
 
-    return new Response(JSON.stringify({ success: true }), {
+    if (lastError) {
+      throw new Error(`All Novu API keys failed. Exhausted fallback limit. Last error: ${lastError.message}`);
+    }
+
+    return new Response(JSON.stringify({ success: true, novu: novuResponse.data }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
 
