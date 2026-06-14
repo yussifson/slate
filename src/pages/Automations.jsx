@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { OrbitIcon } from '@/components/ui/OrbitIcon';
 import { useQuery } from '@tanstack/react-query';
+import { getTerm } from '@/config/industries';
 
 // React Flow Imports
 import {
@@ -160,12 +161,14 @@ export default function Automations() {
     enabled: !!companyId
   });
 
+  const industry = user?.company_industry || "law";
+
   const CORE_TRIGGERS = [
     { label: "New Lead Created", value: "leads" },
     { label: "New Task Assigned", value: "tasks" },
     { label: "Invoice Generated", value: "invoices" },
-    { label: "New Client Registered", value: "clients" },
-    { label: "Case Opened", value: "legal_cases" },
+    { label: `New ${getTerm(industry, "client")} Registered`, value: "clients" },
+    { label: `New ${getTerm(industry, "case")} Created`, value: "legal_cases" },
   ];
 
   useEffect(() => {
