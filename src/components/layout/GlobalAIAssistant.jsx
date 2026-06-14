@@ -422,6 +422,16 @@ export default function GlobalAIAssistant({ onClose}) {
  setTimeout(() => window.location.href = `/slate/BOLT`, 1500);
  return;
 }
+ break;
+ case 'generate_visual_automation':
+ window.dispatchEvent(new CustomEvent('orbit:preview-automation', {
+ detail: { trigger: action.trigger, actions: action.actions }
+}));
+ results.push(`Success: I have generated the visual automation and loaded it onto your canvas for preview.`);
+ if (location.pathname !== '/automations') {
+ setTimeout(() => navigate('/automations'), 200);
+}
+ break;
  default:
  results.push(`Error: unknown tool ${action.tool}`);
  break;
@@ -570,6 +580,7 @@ AGENT POWERS (return EXACTLY this JSON format inline to act):
 - Create: <AGENT_ACTION>{"tool":"create_record","recordType":"patient","payload":{"name":"John Doe","age":30,"status":"active"}}</AGENT_ACTION>
 - Update: <AGENT_ACTION>{"tool":"update_record","recordType":"patient","id":"uuid","payload":{"status":"discharged"}}</AGENT_ACTION>
 - Delete: <AGENT_ACTION>{"tool":"delete_record","recordType":"patient","id":"uuid"}</AGENT_ACTION>
+- Build Visual Automation: <AGENT_ACTION>{"tool":"generate_visual_automation","trigger":{"table":"custom_leads"},"actions":[{"type":"send_notification","payload":{"recipient":"{{email}}","message":"Welcome!"}}]}</AGENT_ACTION>
 - Toast: <AGENT_ACTION>{"tool":"show_toast","message":"Done!"}</AGENT_ACTION>
 - Remember: <AGENT_ACTION>{"tool":"remember","fact":"User prefers dark mode"}</AGENT_ACTION>
 - Search Memory: <AGENT_ACTION>{"tool":"search_memory","query":"preferences"}</AGENT_ACTION>
@@ -581,15 +592,9 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  3. When asked to CREATE a record, create the record and STOP. DO NOT use navigate_to to show the record.
  4. If asked to create an ENTIRE NEW MODULE, custom feature, or a page that does NOT exist in the ROUTE MAP, you MUST use navigate_to to route the user to "/slate/BOLT" AND use show_toast to tell them: "I can help you build this! Just click 'Generate with AI' on this page."
  5. ONLY use navigate_to for routes that EXACTLY appear in the ROUTE MAP above, plus "/slate/BOLT".
- 6. To create an AUTOMATION, use the create_record tool with recordType "automation_rule". The payload must include:
-    - table_name: the table that triggers it (e.g., "clients", "leads", "tasks", "industry_records")
-    - action_type: "create_task", "create_record", "update_record", "delete_record", or "http_request"
-    - action_payload: This depends on the action_type:
-      - For create_task/create_record: Provide the payload to insert (e.g., {"title": "Welcome {{name}}!"})
-      - For update_record: Provide {"table_name": "...", "id": "...", "payload": {"status": "paid", "price": 0}}. You MUST provide the id (often "{{id}}").
-      - For delete_record: Provide {"table_name": "...", "id": "..."}.
-      - For http_request: Provide {"url": "https://api.stripe.com/v1/...", "method": "POST", "headers": {"Authorization": "Bearer ..."}, "body": {"amount": "{{price}}"}}.
-    - Example: <AGENT_ACTION>{"tool":"create_record","recordType":"automation_rule","payload":{"table_name":"industry_records","action_type":"http_request","action_payload":{"url":"https://api.example.com/pay","method":"POST","body":{"customer":"{{name}}"}}}}</AGENT_ACTION>
+ 6. To BUILD a VISUAL AUTOMATION FLOW, you MUST use the generate_visual_automation tool. DO NOT use create_record.
+    Format: <AGENT_ACTION>{"tool":"generate_visual_automation","trigger":{"table":"custom_leads"},"actions":[{"type":"send_notification","payload":{"recipient":"{{email}}","message":"Welcome!"}}]}</AGENT_ACTION>
+    The actions array can contain "send_notification", "create_task", or "webhook". You must deduce the payload variables like {{email}} from the context.
  7. For 'case' records, use 'title' instead of 'name'.
  9. If the user's input has a typo, is ambiguous, or if you are unsure which page they mean, ALWAYS use the 'ask_confirmation' tool first.
  10. If the user asks for multiple distinct actions (e.g. "create a task and a lead"), ensure you output an <AGENT_ACTION> block for EACH request before summarizing.

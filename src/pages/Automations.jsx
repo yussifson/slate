@@ -155,6 +155,58 @@ export default function Automations() {
     if (companyId) loadAutomations();
   }, [companyId]);
 
+  useEffect(() => {
+    const handleAIPreview = (e) => {
+      const { trigger, actions } = e.detail;
+      
+      const newNodes = [];
+      const newEdges = [];
+
+      const triggerId = `node_${Date.now()}_trigger`;
+      newNodes.push({
+        id: triggerId,
+        type: 'triggerNode',
+        position: { x: 100, y: 150 },
+        data: { 
+          label: `On Insert: ${trigger.table}`,
+          config: { tableName: trigger.table }
+        }
+      });
+
+      let prevId = triggerId;
+      actions.forEach((act, idx) => {
+        const actionId = `node_${Date.now()}_act_${idx}`;
+        newNodes.push({
+          id: actionId,
+          type: 'actionNode',
+          position: { x: 450 + (idx * 300), y: 150 },
+          data: {
+            label: act.type.replace('_', ' ').toUpperCase(),
+            actionType: act.type,
+            config: { payload: act.payload, actionTitle: act.type }
+          }
+        });
+
+        newEdges.push({
+          id: `edge_${prevId}_${actionId}`,
+          source: prevId,
+          target: actionId,
+          animated: true,
+          style: { stroke: '#10b981', strokeWidth: 2 }
+        });
+
+        prevId = actionId;
+      });
+
+      setNodes(newNodes);
+      setEdges(newEdges);
+      setMode('builder');
+    };
+
+    window.addEventListener('orbit:preview-automation', handleAIPreview);
+    return () => window.removeEventListener('orbit:preview-automation', handleAIPreview);
+  }, [setNodes, setEdges]);
+
   const loadAutomations = async () => {
     try {
       setIsLoading(true);
