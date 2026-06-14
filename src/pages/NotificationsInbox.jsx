@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@powersync/react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from '@/lib/AuthContext';
 import { cn } from '@/lib/utils';
@@ -22,11 +23,10 @@ export default function NotificationsInbox() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('all'); // all, unread, archived
 
-  const { data: rawNotifications = [], isLoading } = useQuery({
-    queryKey: ["notifications", user?.email],
-    queryFn: () => base44.entities.Notification.filter({ recipient_email: user?.email }),
-    enabled: !!user?.email,
-  });
+  const { data: rawNotifications = [], isLoading } = useQuery(
+    user?.email ? `SELECT * FROM notifications WHERE recipient_email = ?` : `SELECT * FROM notifications WHERE 1=0`,
+    user?.email ? [user?.email] : []
+  );
 
   // Sort descending by created_at
   const notifications = [...rawNotifications].sort((a, b) => {

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@powersync/react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from '@/lib/AuthContext';
 import { 
@@ -22,36 +23,29 @@ export default function UnivNotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('all'); // all, unread
 
-  const { data: rawNotifications = [] } = useQuery({
-    queryKey: ["notifications", user?.email],
-    queryFn: () => base44.entities.Notification.filter({ recipient_email: user?.email }),
-    enabled: !!user?.email,
-  });
+  const { data: rawNotifications = [] } = useQuery(
+    user?.email ? `SELECT * FROM notifications WHERE recipient_email = ?` : `SELECT * FROM notifications WHERE 1=0`,
+    user?.email ? [user?.email] : []
+  );
 
   // Sort descending by created_at
   const notifications = [...rawNotifications].sort((a, b) => {
     return new Date(b.created_at || b.created_date || 0) - new Date(a.created_at || a.created_date || 0);
   });
 
-  // Real-time subscription to notifications
+  // Real-time toast notification listener via PowerSync reactivity
+  const prevCount = React.useRef(0);
+  const currentUnreadCount = rawNotifications.filter(n => n.is_read !== 'true').length;
+
   useEffect(() => {
-    if (!user?.email) return;
-
-    const unsubscribe = base44.entities.Notification.subscribe(({ type, data }) => {
-      if (type === "create" && data.recipient_email === user?.email) {
-        queryClient.invalidateQueries({ queryKey: ["notifications", user?.email] });
-        // Show push notification toast
-        toast({
-          title: data.title || "New Notification",
-          description: data.message,
-        });
-      }
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, [user?.email, queryClient, toast]);
+    if (currentUnreadCount > prevCount.current && prevCount.current !== 0) {
+      toast({
+        title: "New Notification",
+        description: "You have a new notification in your inbox.",
+      });
+    }
+    prevCount.current = currentUnreadCount;
+  }, [currentUnreadCount, toast]);
 
   const markReadMutation = useMutation({
     mutationFn: (id) => base44.entities.Notification.update(id, { is_read: 'true' }),
@@ -191,7 +185,7 @@ export default function UnivNotificationCenter() {
                     return (
                       <div 
                         key={notification.id}
-                        onClick={() => { markAsRead(notification.id); if(notification.related_id) window.location.href = notification.related_id; }}
+                        onClick={() => { markAsRead(notification.id); window.location.href = '/notifications'; }}
                         className={cn(
                           "group p-3 rounded-lg flex gap-3 cursor-pointer transition-all",
                           isRead ? "hover:bg-muted/50" : "bg-primary/5 hover:bg-primary/10"
