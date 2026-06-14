@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { OrbitIcon } from '@/components/ui/OrbitIcon';
+import { useQuery } from '@tanstack/react-query';
 
 // React Flow Imports
 import {
@@ -39,9 +40,8 @@ const TriggerNode = ({ data }) => {
       </div>
       <div className="p-4 flex flex-col gap-2">
         <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
-          {data.label || 'Select a Table'}
+          {data.label || 'Select an Event'}
         </span>
-        <span className="text-xs text-muted-foreground">Fires on new record insert</span>
       </div>
       <Handle type="source" position={Position.Right} className="w-3 h-3 bg-indigo-500 border-2 border-white" />
     </div>
@@ -151,6 +151,23 @@ export default function Automations() {
   // Configuration Panel State
   const [selectedNode, setSelectedNode] = useState(null);
 
+  const { data: customModels = [] } = useQuery({
+    queryKey: ["custom-models", companyId],
+    queryFn: async () => {
+      const records = await base44.entities.IndustryRecord.filter({ company_id: companyId });
+      return [...new Set(records.map(r => r.record_type).filter(Boolean))];
+    },
+    enabled: !!companyId
+  });
+
+  const CORE_TRIGGERS = [
+    { label: "New Lead Created", value: "leads" },
+    { label: "New Task Assigned", value: "tasks" },
+    { label: "Invoice Generated", value: "invoices" },
+    { label: "New Client Registered", value: "clients" },
+    { label: "Case Opened", value: "legal_cases" },
+  ];
+
   useEffect(() => {
     if (companyId) loadAutomations();
   }, [companyId]);
@@ -168,7 +185,7 @@ export default function Automations() {
         type: 'triggerNode',
         position: { x: 100, y: 150 },
         data: { 
-          label: `On Insert: ${trigger.table}`,
+          label: CORE_TRIGGERS.find(t => t.value === trigger.table)?.label || `New Record in ${trigger.table}`,
           config: { tableName: trigger.table }
         }
       });
@@ -273,7 +290,8 @@ export default function Automations() {
           const newData = { ...n.data, config: { ...n.data.config, [key]: value } };
           // Auto-update label based on config
           if (n.type === 'triggerNode' && key === 'tableName') {
-            newData.label = value ? `On Insert: ${value}` : 'Select Table...';
+            const foundCore = CORE_TRIGGERS.find(t => t.value === value);
+            newData.label = foundCore ? foundCore.label : (value ? `New Record in ${value.replace(/_/g, ' ')}` : 'Select an Event');
           }
           if (n.type === 'actionNode' && key === 'actionTitle') {
              newData.label = value || 'Configure Action...';
@@ -510,13 +528,23 @@ export default function Automations() {
                           
                           {selectedNode.type === 'triggerNode' && (
                             <div className="space-y-2">
-                              <label className="text-xs font-semibold text-muted-foreground">Orbit Database Table</label>
-                              <Input 
-                                placeholder="e.g. custom_shipments" 
+                              <label className="text-xs font-semibold text-muted-foreground">When this happens...</label>
+                              <select 
+                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
                                 value={selectedNode.data.config?.tableName || ''}
                                 onChange={(e) => handleUpdateNodeConfig('tableName', e.target.value)}
-                              />
-                              <p className="text-[10px] text-muted-foreground">The automation runs when a row is inserted here.</p>
+                              >
+                                <option value="" disabled>Select an Event</option>
+                                <optgroup label="Core Events">
+                                  {CORE_TRIGGERS.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                                </optgroup>
+                                {customModels.length > 0 && (
+                                  <optgroup label="Custom Apps">
+                                    {customModels.map(m => <option key={m} value={m}>New Record in {m.replace(/_/g, ' ')}</option>)}
+                                  </optgroup>
+                                )}
+                              </select>
+                              <p className="text-[10px] text-muted-foreground">The automation will run automatically when this event occurs.</p>
                             </div>
                           )}
 
@@ -531,28 +559,65 @@ export default function Automations() {
                                 />
                               </div>
                               
-                              <div className="space-y-2 pt-2 border-t mt-4">
-                                <label className="text-xs font-semibold text-muted-foreground">Payload Data (JSON)</label>
-                                <textarea 
-                                  className="w-full h-40 p-3 bg-slate-50 dark:bg-slate-950 border rounded-md font-mono text-xs"
-                                  placeholder='{\n  "recipient": "{{email}}",\n  "message": "Welcome!"\n}'
-                                  value={
-                                    typeof selectedNode.data.config?.payload === 'object' 
-                                      ? JSON.stringify(selectedNode.data.config?.payload, null, 2) 
-                                      : selectedNode.data.config?.payload || ''
-                                  }
-                                  onChange={(e) => {
-                                    try {
-                                      // attempt parse if valid json
-                                      const p = JSON.parse(e.target.value);
-                                      handleUpdateNodeConfig('payload', p);
-                                    } catch(err) {
-                                      // keep as string while typing
-                                      handleUpdateNodeConfig('payload', e.target.value);
-                                    }
-                                  }}
-                                />
-                                <p className="text-[10px] text-primary font-medium">Use {'{{column_name}}'} to inject variables from the triggered row.</p>
+                              <div className="space-y-4 pt-4 border-t mt-4">
+                                {selectedNode.data.actionType === 'send_notification' && (
+                                  <>
+                                    <div className="space-y-1">
+                                      <label className="text-xs font-semibold text-foreground">Recipient Email</label>
+                                      <Input 
+                                        placeholder="e.g. {{email}}" 
+                                        value={selectedNode.data.config?.payload?.recipient || ''}
+                                        onChange={(e) => handleUpdateNodeConfig('payload', { ...(selectedNode.data.config.payload || {}), recipient: e.target.value })}
+                                      />
+                                    </div>
+                                    <div className="space-y-1">
+                                      <label className="text-xs font-semibold text-foreground">Message</label>
+                                      <textarea 
+                                        className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm h-24 resize-none"
+                                        placeholder="Welcome to our platform!" 
+                                        value={selectedNode.data.config?.payload?.message || ''}
+                                        onChange={(e) => handleUpdateNodeConfig('payload', { ...(selectedNode.data.config.payload || {}), message: e.target.value })}
+                                      />
+                                    </div>
+                                  </>
+                                )}
+
+                                {selectedNode.data.actionType === 'create_task' && (
+                                  <>
+                                    <div className="space-y-1">
+                                      <label className="text-xs font-semibold text-foreground">Task Title</label>
+                                      <Input 
+                                        placeholder="e.g. Call new lead {{full_name}}" 
+                                        value={selectedNode.data.config?.payload?.title || ''}
+                                        onChange={(e) => handleUpdateNodeConfig('payload', { ...(selectedNode.data.config.payload || {}), title: e.target.value })}
+                                      />
+                                    </div>
+                                    <div className="space-y-1">
+                                      <label className="text-xs font-semibold text-foreground">Task Description</label>
+                                      <textarea 
+                                        className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm h-24 resize-none"
+                                        placeholder="Details about the task..." 
+                                        value={selectedNode.data.config?.payload?.description || ''}
+                                        onChange={(e) => handleUpdateNodeConfig('payload', { ...(selectedNode.data.config.payload || {}), description: e.target.value })}
+                                      />
+                                    </div>
+                                  </>
+                                )}
+
+                                {selectedNode.data.actionType === 'webhook' && (
+                                  <>
+                                    <div className="space-y-1">
+                                      <label className="text-xs font-semibold text-foreground">Webhook URL</label>
+                                      <Input 
+                                        placeholder="https://api.example.com/webhook" 
+                                        value={selectedNode.data.config?.payload?.url || ''}
+                                        onChange={(e) => handleUpdateNodeConfig('payload', { ...(selectedNode.data.config.payload || {}), url: e.target.value })}
+                                      />
+                                    </div>
+                                  </>
+                                )}
+
+                                <p className="text-[10px] text-primary font-medium bg-primary/10 p-2 rounded">Tip: You can use {'{{column_name}}'} to inject variables from the triggered row.</p>
                               </div>
                             </>
                           )}

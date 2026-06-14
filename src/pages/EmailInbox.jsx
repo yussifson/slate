@@ -4,6 +4,7 @@ import { base44} from "@/api/base44Client";
 import { powerSync} from "@/api/PowerSyncConnector";
 import { useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
 import { useAuth} from "@/lib/AuthContext";
+import { supabase} from "@/api/supabaseClient";
 import {
  Mail, Send, Star, Inbox, Trash2, ArrowLeft, MoreVertical,
  Reply, CornerUpRight, Paperclip, Search, X, Minimize2,
@@ -473,10 +474,28 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
  finally { setIsUploading(false);}
 };
 
- const handleSubmit = e => {
+ const handleSubmit = async e => {
  e.preventDefault();
- let recipients = staff.filter(s => selectedStaffIds.includes(s.id)).map(s => s.user_email || s.email).filter(Boolean);
- if (externalEmails) recipients = [...recipients, ...externalEmails.split(",").map(e => e.trim()).filter(Boolean)];
+ let recipients = [];
+ if (recipientType === "internal" || recipientType === "both") {
+ recipients = staff.filter(s => selectedStaffIds.includes(s.id)).map(s => s.user_email || s.email).filter(Boolean);
+ }
+ if (recipientType === "external" || recipientType === "both") {
+ recipients = [...recipients, ...externalEmails.split(",").map(e => e.trim()).filter(Boolean)];
+ }
+ 
+ if (recipientType === "external" || recipientType === "both") {
+ try {
+ const { error} = await supabase.functions.invoke('send-external-email', {
+ body: { to: recipients, subject, message}
+ });
+ if (error) throw error;
+ } catch (err) {
+ alert("Failed to send external email: " + err.message);
+ return;
+ }
+ }
+
  onSubmit({ subject, recipient_email: recipients.join(", "), body_preview: message, received_date: new Date().toISOString(), attachments: attachments.length ? JSON.stringify(attachments) : null});
 };
 
@@ -524,17 +543,35 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
  {!isMinimized && (
  <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
 
+ {/* Internal / External Toggle */}
+ <div className="px-4 py-2 flex items-center gap-2 border-b border-primary/40 bg-muted/20">
+ <button 
+ type="button" 
+ onClick={() => setRecipientType("internal")} 
+ className={cn("px-3 py-1 rounded-md text-xs font-semibold transition-colors", recipientType === "internal" || recipientType === "both" ? "bg-primary text-white" : "bg-muted text-muted-foreground hover:bg-muted/80")}
+ >
+ Internal Staff
+ </button>
+ <button 
+ type="button" 
+ onClick={() => setRecipientType("external")} 
+ className={cn("px-3 py-1 rounded-md text-xs font-semibold transition-colors flex items-center gap-1", recipientType === "external" ? "bg-primary text-white" : "bg-muted text-muted-foreground hover:bg-muted/80")}
+ >
+ External Email
+ </button>
+ </div>
+
  {/* To */}
  <div className="px-4 py-2.5 border-b border-primary/40 flex items-start gap-2 text-sm relative">
  <span className="text-muted-foreground w-8 shrink-0 pt-1">To</span>
  <div className="flex-1 flex flex-wrap gap-1.5 items-center relative min-w-0">
- {staff.filter(s => selectedStaffIds.includes(s.id)).map(s => (
+ {(recipientType === "internal" || recipientType === "both") && staff.filter(s => selectedStaffIds.includes(s.id)).map(s => (
  <div key={s.id} className="flex items-center gap-1 bg-primary/10 text-primary px-2 py-0.5 rounded-full text-xs">
  {s.full_name || s.email}
  <X className="w-3 h-3 cursor-pointer hover:opacity-70" onClick={() => toggleStaff(s.id)} />
  </div>
  ))}
- {externalEmails.split(",").map(e => e.trim()).filter(Boolean).map(email => (
+ {(recipientType === "external" || recipientType === "both") && externalEmails.split(",").map(e => e.trim()).filter(Boolean).map(email => (
  <div key={email} className="flex items-center gap-1 bg-primary/10 text-primary px-2 py-0.5 rounded-full text-xs">
  {email}
  <X className="w-3 h-3 cursor-pointer hover:opacity-70" onClick={() => setExternalEmails(prev => prev.split(",").map(e => e.trim()).filter(e => e !== email).join(", "))} />
@@ -542,24 +579,24 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
  ))}
  <input
  type="text"
- placeholder="Search or type email…"
- className="flex-1 min-w-[140px] outline-none border-none text-sm bg-transparent text-foreground placeholder:text-muted-foreground"
+ placeholder={recipientType === "external" ? "Type external email and hit Enter..." : "Search staff or type email..."}
+ className="flex-1 min-w-[180px] outline-none border-none text-sm bg-transparent text-foreground placeholder:text-muted-foreground"
  value={recipientQuery}
  onChange={e => setRecipientQuery(e.target.value)}
  onKeyDown={e => {
  if (e.key === "Enter" && recipientQuery.includes("@")) {
  e.preventDefault();
  setExternalEmails(prev => prev ? `${prev}, ${recipientQuery}` : recipientQuery);
- setRecipientType("both");
+ if (recipientType === "internal") setRecipientType("both");
  setRecipientQuery("");
  setRecipientPickerOpen(false);
-}
-}}
+ }
+ }}
  onFocus={() => setRecipientPickerOpen(true)}
  onBlur={() => setTimeout(() => setRecipientPickerOpen(false), 200)}
  />
- {recipientPickerOpen && dropdownStaff.length > 0 && (
- <div className="absolute top-full left-0 w-full max-h-44 overflow-y-auto bg-popover border border-primary/40 rounded-lg mt-1 z-30">
+ {recipientPickerOpen && (recipientType === "internal" || recipientType === "both") && dropdownStaff.length > 0 && (
+ <div className="absolute top-full left-0 w-full max-h-44 overflow-y-auto bg-popover border border-primary/40 rounded-lg mt-1 z-30 shadow-xl">
  {dropdownStaff.map(m => (
  <div key={m.id} className="flex items-center gap-3 px-3 py-2 hover:bg-muted cursor-pointer"
  onMouseDown={() => { toggleStaff(m.id); setRecipientQuery("");}}>
