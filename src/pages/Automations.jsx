@@ -5,7 +5,7 @@ import {
   Settings, Play, Bot, AlertTriangle, ArrowRight,
   Database, Network, Webhook, CheckSquare
 } from 'lucide-react';
-import { useAuth } from '@/components/AuthProvider';
+import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 import { generateText } from '@/lib/cloudflareAI';
 import { toast } from 'react-hot-toast';
