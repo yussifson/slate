@@ -34,11 +34,9 @@ export default function UnivDispatch() {
   const fetchDispatch = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('univ_dispatch')
-        .select('*').eq('company_id', companyId)
-        .eq('company_id', companyId)
-        .order('driver_name', { ascending: true });
+      const __res = await powerSync.execute(`SELECT * FROM univ_dispatch WHERE company_id = ? ORDER BY driver_name ASC`, [companyId]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
       if (error && error.code !== '42P01') throw error;
       setDispatch(data || []);
     } catch (err) {
@@ -61,8 +59,7 @@ export default function UnivDispatch() {
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         const _pl = _k.map(()=>'?').join(', ');
-        await powerSync.execute(`INSERT INTO univ_dispatch (${_k.join(', ')}) VALUES (${_pl})`, _v);
-      })();
+        await powerSync.execute(`INSERT INTO univ_dispatch (${_k.join(', ')}) VALUES (${_pl})`, _v); return { error: null }; })();
       if (error) throw error;
       toast.success('Driver assigned');
     } catch (err) {

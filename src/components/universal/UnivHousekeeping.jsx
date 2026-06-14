@@ -19,6 +19,15 @@ export default function UnivHousekeeping() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [form, setForm] = useState({
+    room_id: '',
+    task_type: 'Routine Cleaning',
+    status: 'Pending',
+    priority: 'Medium',
+    notes: ''
+  });
 
   useEffect(() => {
     if (companyId) {
@@ -34,11 +43,9 @@ export default function UnivHousekeeping() {
   const fetchTasks = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('univ_housekeeping')
-        .select('*').eq('company_id', companyId)
-        .eq('company_id', companyId)
-        .order('created_at', { ascending: false });
+      const __res = await powerSync.execute(`SELECT * FROM univ_housekeeping WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
       if (error && error.code !== '42P01') throw error;
       setTasks(data || []);
     } catch (err) {
@@ -48,31 +55,60 @@ export default function UnivHousekeeping() {
     }
   };
 
-  const handleAddTask = async () => {
-    const newTask = {
-      company_id: companyId,
-      room_id: '00000000-0000-0000-0000-000000000000',
-      task_type: 'Routine Cleaning',
-      status: 'Pending',
-      priority: 'Medium',
-      notes: 'Room: temp-room-id'
-    };
+  const handleSave = async (e) => {
+    e.preventDefault();
     try {
-      const { error } = await (async () => {
-        const _p = newTask;
-        const _k = Object.keys(_p);
-        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-        const _pl = _k.map(()=>'?').join(', ');
-        await powerSync.execute(`INSERT INTO univ_housekeeping (${_k.join(', ')}) VALUES (${_pl})`, _v);
-      })();
-      if (error) throw error;
-      toast.success('Task created');
+      const payload = { ...form, company_id: companyId };
+      if (editingId) {
+        const { error } = await (async () => { const _p = payload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_housekeeping SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]); return { error: null }; })();
+        if (error) throw error;
+        toast.success('Task updated');
+      } else {
+        const { error } = await (async () => {
+          const _p = { ...payload, id: crypto.randomUUID() };
+          const _k = Object.keys(_p);
+          const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          const _pl = _k.map(()=>'?').join(', ');
+          await powerSync.execute(`INSERT INTO univ_housekeeping (${_k.join(', ')}) VALUES (${_pl})`, _v);
+          return { error: null };
+        })();
+        if (error) throw error;
+        toast.success('Task created');
+      }
+      setIsModalOpen(false);
+      setEditingId(null);
+      setForm({ room_id: '', task_type: 'Routine Cleaning', status: 'Pending', priority: 'Medium', notes: '' });
+      fetchTasks();
     } catch (err) {
-      if (err.code === '42P01') toast.error("Database table not initialized yet.");
-      else toast.error('Failed to create task');
+      toast.error('Failed to save task');
     }
   };
 
+  const openModal = (t = null) => {
+    if (t) {
+      setEditingId(t.id);
+      setForm({
+        room_id: t.room_id || '',
+        task_type: t.task_type || 'Routine Cleaning',
+        status: t.status || 'Pending',
+        priority: t.priority || 'Medium',
+        notes: t.notes || ''
+      });
+    } else {
+      setEditingId(null);
+      setForm({ room_id: '', task_type: 'Routine Cleaning', status: 'Pending', priority: 'Medium', notes: '' });
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Delete this task?')) return;
+    try {
+      await powerSync.execute(`DELETE FROM univ_housekeeping WHERE id = ?`, [id]);
+      toast.success('Deleted');
+      fetchTasks();
+    } catch(err) { toast.error('Failed to delete'); }
+  };
   const filtered = tasks.filter(t => 
     `${t.room_id} ${t.task_type} ${t.status}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -116,7 +152,7 @@ export default function UnivHousekeeping() {
           Export CSV
         </button>
 
-        <button onClick={handleAddTask} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
+        <button onClick={() => openModal()} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20">
             <Plus className="w-4 h-4" /> Add Task
           </button>
       </div>
@@ -187,7 +223,7 @@ export default function UnivHousekeeping() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.02 }}
                   key={t.id} 
-                  className="hover:bg-muted/30 transition-colors group cursor-pointer"
+                  className="hover:bg-muted/30 transition-colors group cursor-pointer" onClick={() => openModal(t)}
                 >
                   <td className="p-4 font-bold text-foreground">
                     Room {t.notes?.includes('Room: ') ? t.notes.split('Room: ')[1] : (t.room_id?.replace('R-', '') || 'Unknown')}
@@ -227,6 +263,60 @@ export default function UnivHousekeeping() {
           </table>
         </div>
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-background border border-border rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+            <div className="flex justify-between items-center p-4 border-b border-border bg-muted/30">
+              <h3 className="font-bold text-foreground">{editingId ? 'Edit Task' : 'New Task'}</h3>
+              <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:text-foreground"><AlertTriangle className="w-5 h-5 hidden"/>Close</button>
+            </div>
+            <form onSubmit={handleSave} className="p-4 space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Room ID</label>
+                <input required value={form.room_id} onChange={e => setForm({...form, room_id: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">Task Type</label>
+                  <select value={form.task_type} onChange={e => setForm({...form, task_type: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm">
+                    <option>Routine Cleaning</option>
+                    <option>Deep Cleaning</option>
+                    <option>Maintenance Request</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">Status</label>
+                  <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm">
+                    <option>Pending</option>
+                    <option>In Progress</option>
+                    <option>Completed</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Priority</label>
+                <select value={form.priority} onChange={e => setForm({...form, priority: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm">
+                  <option>Low</option>
+                  <option>Medium</option>
+                  <option>High</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Notes</label>
+                <textarea rows="2" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+              </div>
+              <div className="flex justify-between gap-2 pt-4">
+                {editingId ? <button type="button" onClick={() => handleDelete(editingId)} className="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-xl">Delete</button> : <div/>}
+                <div className="flex gap-2">
+                  <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted rounded-xl">Cancel</button>
+                  <button type="submit" className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-xl">Save Task</button>
+                </div>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,13 +1,20 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
 
-const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
-const supabaseServiceKey = Deno.env.get('SERVICE_ROLE_KEY') || ''
+const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? Deno.env.get('SERVICE_ROLE_KEY') ?? ''
 
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+let _adminClient: any = null;
+function getSupabaseAdmin() {
+  if (!_adminClient) {
+    _adminClient = createClient(supabaseUrl, supabaseServiceKey);
+  }
+  return _adminClient;
+}
+
 
 export async function getValidAccessToken(companyId: string, provider: string): Promise<string | null> {
   // Fetch current tokens
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await getSupabaseAdmin()
     .from('connected_apps')
     .select('*')
     .eq('company_id', companyId)
@@ -83,7 +90,7 @@ async function refreshAccessToken(companyId: string, provider: string, refreshTo
   } catch (error) {
     console.error(`Refresh token error for ${provider}:`, error.message)
     // Mark connection as error if refresh fails completely
-    await supabaseAdmin
+    await getSupabaseAdmin()
       .from('connected_apps')
       .update({ status: 'error' })
       .eq('company_id', companyId)
@@ -107,7 +114,7 @@ async function handleRefreshResponse(response: Response, companyId: string, prov
   expiresAt.setSeconds(expiresAt.getSeconds() + expiresIn)
 
   // Save new tokens to DB
-  await supabaseAdmin
+  await getSupabaseAdmin()
     .from('connected_apps')
     .update({
       access_token: newAccessToken,

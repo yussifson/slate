@@ -47,8 +47,7 @@ export default function UnivOnboardingTask() {
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         const _pl = _k.map(()=>'?').join(', ');
-        await powerSync.execute(`INSERT INTO univ_onboardingtask (${_k.join(', ')}) VALUES (${_pl})`, _v);
-      })();
+        await powerSync.execute(`INSERT INTO univ_onboardingtask (${_k.join(', ')}) VALUES (${_pl})`, _v); return { error: null }; })();
     if (!error) {
       setShowForm(false);
       setFormData({ employee_name: '', task_name: '', due_date: '', status: '', assigned_to: '' });

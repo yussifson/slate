@@ -347,8 +347,7 @@ function TemplatesPanel({ companyId }) {
       const _p = { id: crypto.randomUUID(), company_id: companyId, name: form.name.trim(), steps: form.steps, created_at: new Date().toISOString() };
       const _k = Object.keys(_p);
       const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-      await powerSync.execute(`INSERT INTO TEMPLATES_TABLE (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);
-    })();
+      await powerSync.execute(`INSERT INTO TEMPLATES_TABLE (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v); return { error: null }; })();
     const error = null;
     setSaving(false);
     if (error) { toast.error('Failed to save template: ' + error.message); return; }
@@ -772,8 +771,7 @@ export function useApprovalEngine() {
       const _p = payload;
       const _k = Object.keys(_p);
       const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-      await powerSync.execute(`INSERT INTO TABLE (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);
-    })();
+      await powerSync.execute(`INSERT INTO TABLE (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v); return { error: null }; })();
     const data = payload;
     const error = null;
 

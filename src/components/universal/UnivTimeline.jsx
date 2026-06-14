@@ -104,8 +104,7 @@ export default function UnivTimeline({
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         const _pl = _k.map(()=>'?').join(', ');
-        await powerSync.execute(`INSERT INTO targetTable (${_k.join(', ')}) VALUES (${_pl})`, _v);
-      })();
+        await powerSync.execute(`INSERT INTO ${targetTable} (${_k.join(', ')}) VALUES (${_pl})`, _v); return { error: null }; })();
       if (error) throw error;
       toast.success('Milestone added');
       setIsModalOpen(false);
@@ -118,7 +117,7 @@ export default function UnivTimeline({
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this milestone?')) return;
     try {
-      await powerSync.execute(`DELETE FROM targetTable WHERE id = ?`, [id]);
+      await powerSync.execute(`DELETE FROM ${targetTable} WHERE id = ?`, [id]);
       const error = null;
       if (error) throw error;
       toast.success('Milestone deleted');

@@ -68,8 +68,7 @@ export default function UnivInventory() {
           delete _p.status;
           const _k = Object.keys(_p);
           const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-          await powerSync.execute(`INSERT INTO univ_inventory (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);
-        })();
+          await powerSync.execute(`INSERT INTO univ_inventory (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v); return { error: null }; })();
         const error = null;
         if (error) throw error;
         toast.success('Item added!');

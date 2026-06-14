@@ -46,11 +46,9 @@ export default function UnivRoom() {
   const fetchRooms = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('univ_rooms')
-        .select('*').eq('company_id', companyId)
-        .eq('company_id', companyId)
-        .order('room_number', { ascending: true });
+      const __res = await powerSync.execute(`SELECT * FROM univ_rooms WHERE company_id = ? ORDER BY room_number ASC`, [companyId]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
       if (error && error.code !== '42P01') throw error;
       setRooms(data || []);
     } catch (err) {
@@ -96,10 +94,7 @@ export default function UnivRoom() {
       };
 
       if (editingId) {
-        const { error } = await supabase
-          .from('univ_rooms')
-          .update(payload)
-          .eq('id', editingId);
+        const { error } = await (async () => { const _p = payload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_rooms SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]); return { error: null }; })();
         if (error) throw error;
         toast.success('Room updated');
       } else {
@@ -108,8 +103,7 @@ export default function UnivRoom() {
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         const _pl = _k.map(()=>'?').join(', ');
-        await powerSync.execute(`INSERT INTO univ_rooms (${_k.join(', ')}) VALUES (${_pl})`, _v);
-      })();
+        await powerSync.execute(`INSERT INTO univ_rooms (${_k.join(', ')}) VALUES (${_pl})`, _v); return { error: null }; })();
         if (error) throw error;
         toast.success('Room added');
       }

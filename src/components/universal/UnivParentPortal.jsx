@@ -87,8 +87,7 @@ export default function UnivParentPortal() {
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         const _pl = _k.map(()=>'?').join(', ');
-        await powerSync.execute(`INSERT INTO univ_parent_portal_access (${_k.join(', ')}) VALUES (${_pl})`, _v);
-      })();
+        await powerSync.execute(`INSERT INTO univ_parent_portal_access (${_k.join(', ')}) VALUES (${_pl})`, _v); return { error: null }; })();
       if (error) throw error;
       toast.success('Access code generated');
       fetchAccesses();

@@ -51,8 +51,7 @@ export default function UnivNewsletter() {
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         const _pl = _k.map(()=>'?').join(', ');
-        await powerSync.execute(`INSERT INTO univ_newsletter (${_k.join(', ')}) VALUES (${_pl})`, _v);
-      })();
+        await powerSync.execute(`INSERT INTO univ_newsletter (${_k.join(', ')}) VALUES (${_pl})`, _v); return { error: null }; })();
     }
     setFormData({ subject_line: '', send_date: '', recipient_count: '', open_rate: '', click_rate: '' });
     setIsEditing(false);

@@ -34,11 +34,9 @@ export default function UnivCaseManagement() {
   const fetchCases = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('univ_cases')
-        .select('*').eq('company_id', companyId)
-        .eq('company_id', companyId)
-        .order('filed_date', { ascending: false });
+      const __res = await powerSync.execute(`SELECT * FROM univ_cases WHERE company_id = ? ORDER BY filed_date DESC`, [companyId]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
       if (error && error.code !== '42P01') throw error;
       setCases(data || []);
     } catch (err) {
@@ -65,8 +63,7 @@ export default function UnivCaseManagement() {
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         const _pl = _k.map(()=>'?').join(', ');
-        await powerSync.execute(`INSERT INTO univ_cases (${_k.join(', ')}) VALUES (${_pl})`, _v);
-      })();
+        await powerSync.execute(`INSERT INTO univ_cases (${_k.join(', ')}) VALUES (${_pl})`, _v); return { error: null }; })();
       if (error) throw error;
       toast.success('Case added');
     } catch (err) {

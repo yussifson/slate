@@ -32,11 +32,9 @@ export default function UnivNotification() {
   const fetchNotifications = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('univ_notifications')
-        .select('*').eq('company_id', companyId)
-        .eq('company_id', companyId)
-        .order('created_at', { ascending: false });
+      const __res = await powerSync.execute(`SELECT * FROM univ_notifications WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      const error = null;
       if (error && error.code !== '42P01') throw error;
       setNotifications(data || []);
     } catch (err) {

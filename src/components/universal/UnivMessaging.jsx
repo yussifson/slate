@@ -141,8 +141,7 @@ export default function UnivMessaging() {
       const _p = { room_type: 'direct', id: crypto.randomUUID(), company_id: companyId, created_by: currentUser.id }; window.__tmpRoomId = _p.id;
       const _k = Object.keys(_p);
       const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-      await powerSync.execute(`INSERT INTO chat_rooms (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);
-    })();
+      await powerSync.execute(`INSERT INTO chat_rooms (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v); return { error: null }; })();
     const newRoom = { id: window.__tmpRoomId };
     const roomError = null;
       
@@ -185,8 +184,7 @@ export default function UnivMessaging() {
         const _p = { room_id: activeRoomId, sender_id: currentUser.id, content: textToSend };
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-        await powerSync.execute(`INSERT INTO chat_messages (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v);
-      })();
+        await powerSync.execute(`INSERT INTO chat_messages (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v); return { error: null }; })();
       const error = null;
       if (error) throw error;
       

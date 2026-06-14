@@ -95,12 +95,11 @@ export default function UnivResourceAllocation({
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         const _pl = _k.map(()=>'?').join(', ');
-        await powerSync.execute(`INSERT INTO targetTable (${_k.join(', ')}) VALUES (${_pl})`, _v);
-      })();
+        await powerSync.execute(`INSERT INTO ${targetTable} (${_k.join(', ')}) VALUES (${_pl})`, _v); return { error: null }; })();
         if (error) throw error;
       } else {
         const updatePayload = targetTable === 'industry_records' ? { data: payloadData } : payloadData;
-        await (async () => { const _p = updatePayload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE targetTable SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, payloadData.id]); })();
+        await (async () => { const _p = updatePayload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${targetTable} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, payloadData.id]); })();
       const error = null; const data = [];
         if (error) throw error;
       }
@@ -114,7 +113,7 @@ export default function UnivResourceAllocation({
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      await powerSync.execute(`DELETE FROM targetTable WHERE id = ?`, [id]);
+      await powerSync.execute(`DELETE FROM ${targetTable} WHERE id = ?`, [id]);
       const error = null;
       if (error) throw error;
     },

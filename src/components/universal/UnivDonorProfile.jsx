@@ -47,8 +47,7 @@ export default function UnivDonorProfile() {
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         const _pl = _k.map(()=>'?').join(', ');
-        await powerSync.execute(`INSERT INTO univ_donorprofile (${_k.join(', ')}) VALUES (${_pl})`, _v);
-      })();
+        await powerSync.execute(`INSERT INTO univ_donorprofile (${_k.join(', ')}) VALUES (${_pl})`, _v); return { error: null }; })();
     if (!error) {
       setShowForm(false);
       setFormData({ name: '', email: '', phone: '', total_donated: '', donor_status: '' });

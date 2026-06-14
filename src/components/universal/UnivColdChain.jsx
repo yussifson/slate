@@ -58,8 +58,7 @@ const UnivColdChain = () => {
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         const _pl = _k.map(()=>'?').join(', ');
-        await powerSync.execute(`INSERT INTO  (${_k.join(', ')}) VALUES (${_pl})`, _v);
-      })();
+        await powerSync.execute(`INSERT INTO  (${_k.join(', ')}) VALUES (${_pl})`, _v); return { error: null }; })();
       if (error) console.error('Error inserting:', error);
     }
     setFormData({sensor_id: '', temperature: '', location: '', status: ''});

@@ -50,8 +50,7 @@ export default function UnivCommissionStructure() {
         const _k = Object.keys(_p);
         const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         const _pl = _k.map(()=>'?').join(', ');
-        await powerSync.execute(`INSERT INTO univ_commissionstructure (${_k.join(', ')}) VALUES (${_pl})`, _v);
-      })();
+        await powerSync.execute(`INSERT INTO univ_commissionstructure (${_k.join(', ')}) VALUES (${_pl})`, _v); return { error: null }; })();
     }
     setFormData({ role_name: '', base_rate: '', quota_amount: '', bonus_percentage: '' });
     setIsEditing(false);
