@@ -14,7 +14,8 @@ import { Badge } from '@/components/ui/badge';
 import { OrbitIcon } from '@/components/ui/OrbitIcon';
 
 export default function Automations() {
-  const { companyId } = useAuth();
+  const { user } = useAuth();
+  const companyId = user?.company_id;
   const [automations, setAutomations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   
