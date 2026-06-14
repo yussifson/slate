@@ -95,6 +95,66 @@ serve(async (req) => {
           
           executedActions.push({ rule_id: rule.id, action: 'create_record', status: insertError ? 'failed' : 'success' })
         }
+        else if (rule.action_type === 'update_record') {
+          // Update record dynamically
+          let payloadStr = JSON.stringify(rule.action_payload.payload || {});
+          payloadStr = payloadStr.replace(/\{\{(.*?)\}\}/g, (match, key) => {
+            const val = record[key.trim()];
+            return val !== undefined ? val : match;
+          });
+          const parsedPayload = JSON.parse(payloadStr);
+
+          const targetTable = rule.action_payload.table_name || 'industry_records';
+          const targetIdStr = String(rule.action_payload.id).replace(/\{\{(.*?)\}\}/g, (match, key) => {
+            const val = record[key.trim()];
+            return val !== undefined ? val : match;
+          });
+          
+          const { error: updateError } = await supabaseClient
+            .from(targetTable)
+            .update(parsedPayload)
+            .eq('id', targetIdStr);
+            
+          executedActions.push({ rule_id: rule.id, action: 'update_record', status: updateError ? 'failed' : 'success' })
+        }
+        else if (rule.action_type === 'delete_record') {
+          // Delete record dynamically
+          const targetTable = rule.action_payload.table_name || 'industry_records';
+          const targetIdStr = String(rule.action_payload.id).replace(/\{\{(.*?)\}\}/g, (match, key) => {
+            const val = record[key.trim()];
+            return val !== undefined ? val : match;
+          });
+          
+          const { error: deleteError } = await supabaseClient
+            .from(targetTable)
+            .delete()
+            .eq('id', targetIdStr);
+            
+          executedActions.push({ rule_id: rule.id, action: 'delete_record', status: deleteError ? 'failed' : 'success' })
+        }
+        else if (rule.action_type === 'http_request') {
+          // External API request
+          let urlStr = (rule.action_payload.url || '').replace(/\{\{(.*?)\}\}/g, (match, key) => {
+            const val = record[key.trim()];
+            return val !== undefined ? String(val) : match;
+          });
+          let bodyStr = JSON.stringify(rule.action_payload.body || {});
+          bodyStr = bodyStr.replace(/\{\{(.*?)\}\}/g, (match, key) => {
+            const val = record[key.trim()];
+            return val !== undefined ? val : match;
+          });
+          
+          try {
+            const response = await fetch(urlStr, {
+              method: rule.action_payload.method || 'POST',
+              headers: rule.action_payload.headers || { 'Content-Type': 'application/json' },
+              body: (rule.action_payload.method === 'GET' || rule.action_payload.method === 'HEAD') ? undefined : bodyStr
+            });
+            executedActions.push({ rule_id: rule.id, action: 'http_request', status: response.ok ? 'success' : 'failed' })
+          } catch (err) {
+            executedActions.push({ rule_id: rule.id, action: 'http_request', status: 'failed', error: err.message })
+          }
+        }
       }
     }
 

@@ -583,11 +583,14 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  5. ONLY use navigate_to for routes that EXACTLY appear in the ROUTE MAP above, plus "/slate/BOLT".
  6. To create an AUTOMATION, use the create_record tool with recordType "automation_rule". The payload must include:
     - table_name: the table that triggers it (e.g., "clients", "leads", "tasks", "industry_records")
-    - action_type: "create_task" or "create_record"
-    - action_payload: For create_task, include {"title": "...", "description": "..."}. You can use variables like {{name}} or {{id}} which will be replaced by the record's data!
-    - Example: <AGENT_ACTION>{"tool":"create_record","recordType":"automation_rule","payload":{"table_name":"clients","action_type":"create_task","action_payload":{"title":"Welcome {{full_name}}!","description":"Call the new client"}}}</AGENT_ACTION>
- 7. DO NOT HALLUCINATE AUTOMATION CAPABILITIES. You can ONLY create automations that trigger "create_task" or "create_record". If the user asks for an automation that modifies data, applies discounts, processes payments, or sends external signals, you MUST politely explain that the engine currently only supports triggering new tasks or records. Do NOT output invalid actions like <AGENT_ACTION=>.
- 8. For 'case' records, use 'title' instead of 'name'.
+    - action_type: "create_task", "create_record", "update_record", "delete_record", or "http_request"
+    - action_payload: This depends on the action_type:
+      - For create_task/create_record: Provide the payload to insert (e.g., {"title": "Welcome {{name}}!"})
+      - For update_record: Provide {"table_name": "...", "id": "...", "payload": {"status": "paid", "price": 0}}. You MUST provide the id (often "{{id}}").
+      - For delete_record: Provide {"table_name": "...", "id": "..."}.
+      - For http_request: Provide {"url": "https://api.stripe.com/v1/...", "method": "POST", "headers": {"Authorization": "Bearer ..."}, "body": {"amount": "{{price}}"}}.
+    - Example: <AGENT_ACTION>{"tool":"create_record","recordType":"automation_rule","payload":{"table_name":"industry_records","action_type":"http_request","action_payload":{"url":"https://api.example.com/pay","method":"POST","body":{"customer":"{{name}}"}}}}</AGENT_ACTION>
+ 7. For 'case' records, use 'title' instead of 'name'.
  9. If the user's input has a typo, is ambiguous, or if you are unsure which page they mean, ALWAYS use the 'ask_confirmation' tool first.
  10. If the user asks for multiple distinct actions (e.g. "create a task and a lead"), ensure you output an <AGENT_ACTION> block for EACH request before summarizing.
  11. Sound friendly and entertaining in your text response!`;
