@@ -275,26 +275,24 @@ export default function GlobalAIAssistant({ onClose}) {
  try {
  switch (action.tool) {
  case 'search_records': {
- const rt = (action.recordType || '').toLowerCase();
- const entityMap = { 'case': 'LegalCase', 'client': 'Client', 'lead': 'Lead', 'staff': 'StaffRecord', 'invoice': 'Invoice', 'task': 'Task'};
- const entityName = entityMap[rt];
- const q = (action.query || '').toLowerCase();
- if (entityName) {
- const records = await base44.entities[entityName].list();
- const found = records.filter(r => JSON.stringify(r).toLowerCase().includes(q)).slice(0, 5);
- const simplified = found.map(r => ({ id: r.id, title: r.title, name: r.name, email: r.email, case_number: r.case_number}));
- results.push(`Search results for ${rt} matching "${q}":\n` + JSON.stringify(simplified));
-} else {
- const { data: records} = await supabase
- .from('industry_records')
- .select('id, data, status')
- .eq('company_id', companyId)
- .eq('record_type', rt);
- const found = (records || []).filter(r => JSON.stringify(r).toLowerCase().includes(q)).slice(0, 5);
- results.push(`Search results for ${rt} matching "${q}":\n` + JSON.stringify(found));
-}
- break;
-}
+  const rt = (action.recordType || '').toLowerCase();
+  const entityMap = { 'case': 'LegalCase', 'client': 'Client', 'lead': 'Lead', 'staff': 'StaffRecord', 'invoice': 'Invoice', 'task': 'Task', 'automation_rule': 'AutomationRule'};
+  const entityName = entityMap[rt];
+  const q = (action.query || '').toLowerCase();
+  if (entityName) {
+  const records = await base44.entities[entityName].list();
+  const found = records.filter(r => JSON.stringify(r).toLowerCase().includes(q)).slice(0, 10);
+  const simplified = found.map(r => ({ "**ID_REQUIRED_FOR_UPDATES**": r.id, ...r}));
+  results.push(`Search results for ${rt} matching "${q}":\n` + JSON.stringify(simplified));
+ } else {
+  const records = await powerSync.getAll(`SELECT * FROM industry_records WHERE company_id = ? AND record_type = ?`, [companyId, rt]);
+  const parsedRecords = records.map(r => ({ id: r.id, status: r.status, ...JSON.parse(r.data || '{}') }));
+  const found = parsedRecords.filter(r => JSON.stringify(r).toLowerCase().includes(q)).slice(0, 10);
+  const simplified = found.map(r => ({ "**ID_REQUIRED_FOR_UPDATES**": r.id, ...r}));
+  results.push(`Search results for ${rt} matching "${q}":\n` + JSON.stringify(simplified));
+ }
+  break;
+ }
  case 'remember': {
  if (action.fact) {
  await mutateRecord.mutateAsync({
@@ -363,18 +361,22 @@ export default function GlobalAIAssistant({ onClose}) {
  break;
  case 'create_record':
  case 'update_record': {
- if (action.recordType && action.payload) {
- const rt = action.recordType?.toLowerCase() || '';
- const isCore = ['case', 'client', 'lead', 'staff', 'invoice', 'task'].includes(rt);
- if (isCore) {
- const entityMap = { 'case': 'LegalCase', 'client': 'Client', 'lead': 'Lead', 'staff': 'StaffRecord', 'invoice': 'Invoice', 'task': 'Task'};
- const entityName = entityMap[rt];
- const p = { ...action.payload, company_id: companyId};
- if (action.tool === 'create_record' && !p.status) p.status = 'open';
+  if (action.tool === 'update_record' && !action.id) {
+    results.push(`Error: update_record requires an 'id'. You MUST use 'search_records' first to find the ID of the record you want to update.`);
+    break;
+  }
+  if (action.recordType && action.payload) {
+  const rt = action.recordType?.toLowerCase() || '';
+  const isCore = ['case', 'client', 'lead', 'staff', 'invoice', 'task', 'automation_rule'].includes(rt);
+  if (isCore) {
+  const entityMap = { 'case': 'LegalCase', 'client': 'Client', 'lead': 'Lead', 'staff': 'StaffRecord', 'invoice': 'Invoice', 'task': 'Task', 'automation_rule': 'AutomationRule'};
+  const entityName = entityMap[rt];
+  const p = { ...action.payload, company_id: companyId};
+  if (action.tool === 'create_record' && !p.status) p.status = 'open';
 
- const res = action.id || action.tool === 'update_record'
- ? await base44.entities[entityName].update(action.id, p)
- : await base44.entities[entityName].create(p);
+  const res = action.tool === 'update_record'
+  ? await base44.entities[entityName].update(action.id, p)
+  : await base44.entities[entityName].create(p);
 
  queryClient.invalidateQueries({ queryKey: [rt + 's']});
  queryClient.invalidateQueries({ queryKey: ['cases']});
@@ -393,9 +395,13 @@ export default function GlobalAIAssistant({ onClose}) {
  break;
 }
  case 'delete_record': {
- if (action.id && action.recordType) {
- const rt = action.recordType?.toLowerCase() || '';
- const isCore = ['case', 'client', 'lead', 'staff', 'invoice', 'task'].includes(rt);
+  if (!action.id) {
+    results.push(`Error: delete_record requires an 'id'. You MUST use 'search_records' first to find the ID of the record you want to delete.`);
+    break;
+  }
+  if (action.id && action.recordType) {
+  const rt = action.recordType?.toLowerCase() || '';
+  const isCore = ['case', 'client', 'lead', 'staff', 'invoice', 'task', 'automation_rule'].includes(rt);
  if (isCore) {
  const entityMap = { 'case': 'LegalCase', 'client': 'Client', 'lead': 'Lead', 'staff': 'StaffRecord', 'invoice': 'Invoice', 'task': 'Task', 'automation_rule': 'AutomationRule'};
  const entityName = entityMap[rt];
@@ -571,18 +577,20 @@ AGENT POWERS (return EXACTLY this JSON format inline to act):
 
 RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  1. NEVER explain how the user can do something. YOU MUST do it for them.
- 2. When asked to CREATE a record, create the record and STOP. DO NOT use navigate_to to show the record.
- 3. If asked to create an ENTIRE NEW MODULE, custom feature, or a page that does NOT exist in the ROUTE MAP, you MUST use navigate_to to route the user to "/slate/BOLT" AND use show_toast to tell them: "I can help you build this! Just click 'Generate with AI' on this page."
- 4. ONLY use navigate_to for routes that EXACTLY appear in the ROUTE MAP above, plus "/slate/BOLT".
- 5. To create an AUTOMATION, use the create_record tool with recordType "automation_rule". The payload must include:
-    - table_name: the table that triggers it (e.g., "clients", "leads", "tasks")
+ 2. THE UPDATE PROTOCOL: If you are asked to edit/update a record (like a product price), you MUST first output a search_records tool call. Read the search results, extract the "**ID_REQUIRED_FOR_UPDATES**", and then output the update_record tool call using that exact ID. NEVER call update_record without searching first!
+ 3. When asked to CREATE a record, create the record and STOP. DO NOT use navigate_to to show the record.
+ 4. If asked to create an ENTIRE NEW MODULE, custom feature, or a page that does NOT exist in the ROUTE MAP, you MUST use navigate_to to route the user to "/slate/BOLT" AND use show_toast to tell them: "I can help you build this! Just click 'Generate with AI' on this page."
+ 5. ONLY use navigate_to for routes that EXACTLY appear in the ROUTE MAP above, plus "/slate/BOLT".
+ 6. To create an AUTOMATION, use the create_record tool with recordType "automation_rule". The payload must include:
+    - table_name: the table that triggers it (e.g., "clients", "leads", "tasks", "industry_records")
     - action_type: "create_task" or "create_record"
     - action_payload: For create_task, include {"title": "...", "description": "..."}. You can use variables like {{name}} or {{id}} which will be replaced by the record's data!
     - Example: <AGENT_ACTION>{"tool":"create_record","recordType":"automation_rule","payload":{"table_name":"clients","action_type":"create_task","action_payload":{"title":"Welcome {{full_name}}!","description":"Call the new client"}}}</AGENT_ACTION>
- 6. For 'case' records, use 'title' instead of 'name'.
- 7. If the user's input has a typo, is ambiguous, or if you are unsure which page they mean, ALWAYS use the 'ask_confirmation' tool first.
- 8. If the user asks for multiple distinct actions (e.g. "create a task and a lead"), ensure you output an <AGENT_ACTION> block for EACH request before summarizing.
- 9. Sound friendly and entertaining in your text response!`;
+ 7. DO NOT HALLUCINATE AUTOMATION CAPABILITIES. You can ONLY create automations that trigger "create_task" or "create_record". If the user asks for an automation that modifies data, applies discounts, processes payments, or sends external signals, you MUST politely explain that the engine currently only supports triggering new tasks or records. Do NOT output invalid actions like <AGENT_ACTION=>.
+ 8. For 'case' records, use 'title' instead of 'name'.
+ 9. If the user's input has a typo, is ambiguous, or if you are unsure which page they mean, ALWAYS use the 'ask_confirmation' tool first.
+ 10. If the user asks for multiple distinct actions (e.g. "create a task and a lead"), ensure you output an <AGENT_ACTION> block for EACH request before summarizing.
+ 11. Sound friendly and entertaining in your text response!`;
 
  const sessionMessages = currentSessions.find(s => s.id === sid)?.messages || [];
  const allMessages = [...sessionMessages, { role: 'user', content: userContent}];
