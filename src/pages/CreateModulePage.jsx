@@ -68,19 +68,35 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  const { impersonatedCompany} = useImpersonation();
  const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
 
-  const initialState = {
-    name: "",
-    description: "",
-    icon: "Blocks",
-    layout: "table",
-    theme: "primary",
-    moduleType: "data_module",
-    fields: [{ name: "name", field_type: "text", is_required: true, options: ""}],
-    customConfig: null
+  const getInitialState = () => {
+    if (!isEditing) {
+      try {
+        const cached = sessionStorage.getItem('orbitbolt_draft_slate');
+        if (cached) {
+          return JSON.parse(cached);
+        }
+      } catch (e) {}
+    }
+    return {
+      name: "",
+      description: "",
+      icon: "Blocks",
+      layout: "table",
+      theme: "primary",
+      moduleType: "data_module",
+      fields: [{ name: "name", field_type: "text", is_required: true, options: ""}],
+      customConfig: null
+    };
   };
 
- const [state, setState, undo, redo, canUndo, canRedo, setWithoutHistory] = useUndoableState(initialState);
- const { name, description, icon, layout, theme, moduleType, fields} = state;
+  const [state, setState, undo, redo, canUndo, canRedo, setWithoutHistory] = useUndoableState(getInitialState());
+  const { name, description, icon, layout, theme, moduleType, fields} = state;
+
+  React.useEffect(() => {
+    if (!isEditing) {
+      sessionStorage.setItem('orbitbolt_draft_slate', JSON.stringify(state));
+    }
+  }, [state, isEditing]);
 
  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
  const [isSubmitting, setIsSubmitting] = useState(false);
@@ -301,8 +317,11 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  description: `'${name}' is ready. Redirecting...`,
 });
 
- const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
- navigate(`/m/${slug}`);
+      if (!isEditing) {
+        sessionStorage.removeItem('orbitbolt_draft_slate');
+      }
+      const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      navigate(`/m/${slug}`);
 } catch (err) {
  console.error(err);
  toast({ title: "Error", description: err.message || "Failed to save slate.", variant: "destructive"});

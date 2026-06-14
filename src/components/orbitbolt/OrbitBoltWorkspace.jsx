@@ -2,7 +2,7 @@ import { powerSync} from '@/api/PowerSyncConnector';
 import React, { useState, useRef, useEffect} from 'react';
 import { createPortal} from 'react-dom';
 import { motion, AnimatePresence} from 'framer-motion';
-import { Sparkles, Send, X, CheckCircle, RefreshCw, Layers, MessageSquarePlus, Search, MessageSquare, Clock, Trash2, Zap, LayoutGrid} from 'lucide-react';
+import { Sparkles, Send, X, CheckCircle, RefreshCw, Layers, MessageSquarePlus, Search, MessageSquare, Clock, Trash2, Zap, LayoutGrid, Mic, MicOff} from 'lucide-react';
 import { Button} from '@/components/ui/button';
 import { useAuth} from '@/lib/AuthContext';
 import { useCompanyId} from '@/hooks/useCompanyId';
@@ -14,6 +14,7 @@ import remarkGfm from 'remark-gfm';
 import clsx from 'clsx';
 import { useNavigate} from 'react-router-dom';
 import { UNIVERSAL_COMPONENTS} from '@/config/universal_components';
+import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 
 const SYSTEM_PROMPT = `You are OrbitBuild, an elite AI System Architect for Workslate.
 You converse naturally with the user to help them build any feature, app, or system they need.
@@ -96,6 +97,20 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  const [input, setInput] = useState('');
  const [isGenerating, setIsGenerating] = useState(false);
  const [showHistory, setShowHistory] = useState(false);
+ const [originalInputBeforeVoice, setOriginalInputBeforeVoice] = useState('');
+
+ const { isListening, hasSupport, toggleListening, stopListening } = useSpeechRecognition({
+   onTranscript: (transcript) => {
+     setInput(originalInputBeforeVoice + ' ' + transcript);
+   }
+ });
+
+ const handleMicToggle = () => {
+   if (!isListening) {
+     setOriginalInputBeforeVoice(input.trim());
+   }
+   toggleListening();
+ };
  
  const messagesEndRef = useRef(null);
 
@@ -424,15 +439,34 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  disabled={isGenerating}
  />
  <div className="flex items-center justify-between px-2 pb-2 pt-1">
- <span className="text-[10px] text-muted-foreground font-medium px-1">Enter to send</span>
- <Button 
- type="submit" 
- size="icon"
- disabled={!input.trim() || isGenerating}
- className="h-8 w-8 rounded-lg bg-primary hover:bg-primary/90 text-white disabled:opacity-40 transition-transform active:scale-95"
- >
- <Send className="w-3.5 h-3.5" />
- </Button>
+   <span className="text-[10px] text-muted-foreground font-medium px-1">Enter to send</span>
+   <div className="flex items-center gap-1">
+     {hasSupport && (
+       <Button
+         type="button"
+         size="icon"
+         onClick={handleMicToggle}
+         className={clsx(
+           "h-8 w-8 rounded-lg transition-transform active:scale-95",
+           isListening ? "bg-red-500 hover:bg-red-600 text-white animate-pulse" : "bg-muted text-muted-foreground hover:text-foreground"
+         )}
+         title="Voice Dictation"
+       >
+         {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
+       </Button>
+     )}
+     <Button 
+       type="submit" 
+       size="icon"
+       disabled={!input.trim() || isGenerating}
+       onClick={() => {
+         if (isListening) stopListening();
+       }}
+       className="h-8 w-8 rounded-lg bg-primary hover:bg-primary/90 text-white disabled:opacity-40 transition-transform active:scale-95"
+     >
+       <Send className="w-3.5 h-3.5" />
+     </Button>
+   </div>
  </div>
  </div>
  </form>

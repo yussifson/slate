@@ -310,7 +310,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  label: m.name,
  icon: m.icon || "Sparkles",
  status: m.status || "published",
- path: `/m/${m.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`,
+ path: `/m/${(m.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`,
  isDynamic: true
 }));
 
@@ -318,7 +318,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  if (isAdmin) return true;
  if (!univAccessData?.permissions) return true;
  
- const normalizedItemName = item.label.toLowerCase().replace(/\s/g, '');
+ const normalizedItemName = (item.label || '').toLowerCase().replace(/\s/g, '');
  for (const [feat, perms] of Object.entries(univAccessData.permissions)) {
  if (perms.read) {
  const normalizedFeat = feat.toLowerCase().replace(/\s/g, '');
@@ -360,7 +360,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  id: p.page_name,
  label: p.page_name,
  icon: p.icon || "LayoutDashboard",
- path: `/ob/${p.page_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+ path: `/ob/${(p.page_name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
  isDynamic: true,
  component_id: p.component_id
 };
@@ -371,7 +371,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  if (isAdmin) return true;
  if (!univAccessData?.permissions) return true; // fallback if no role found
  
- const normalizedItemName = item.label.toLowerCase().replace(/\s/g, '');
+ const normalizedItemName = (item.label || '').toLowerCase().replace(/\s/g, '');
  for (const [feat, perms] of Object.entries(univAccessData.permissions)) {
  if (perms.read) {
  const normalizedFeat = feat.toLowerCase().replace(/\s/g, '');

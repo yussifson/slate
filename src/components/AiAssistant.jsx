@@ -15,6 +15,7 @@ import { powerSync} from "@/api/PowerSyncConnector";
 import { OrbitIcon} from '@/components/ui/OrbitIcon';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { useAuth} from '@/lib/AuthContext';
 
 // Page Context Map 
@@ -163,15 +164,26 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
  const [input, setInput] = useState('');
  const [isLoading, setIsLoading] = useState(false);
  const [streamingText, setStreamingText] = useState('');
- const [isRecording, setIsRecording] = useState(false);
  const [isExpanded, setIsExpanded] = useState(false);
  const [uploadedFile, setUploadedFile] = useState(null);
  const [pendingHiddenContext, setPendingHiddenContext] = useState(null);
 
+ const [originalInputBeforeVoice, setOriginalInputBeforeVoice] = useState('');
  const messagesEndRef = useRef(null);
  const fileInputRef = useRef(null);
- const recognitionRef = useRef(null);
- const manualStopRef = useRef(false);
+
+ const { isListening: isRecording, hasSupport, toggleListening, stopListening } = useSpeechRecognition({
+   onTranscript: (transcript) => {
+     setInput(originalInputBeforeVoice + ' ' + transcript);
+   }
+ });
+
+ const handleMicToggle = () => {
+   if (!isRecording) {
+     setOriginalInputBeforeVoice(input.trim());
+   }
+   toggleListening();
+ };
 
  useEffect(() => {
  if (!companyId || !user?.email || isInitialized) return;
@@ -642,58 +654,6 @@ RULES FOR MULTI-STEP REASONING:
  addMessages(activeId, [{ role: 'user', content: "I cancelled that action."}]);
 };
 
- // Voice 
- const toggleVoice = () => {
- const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
- if (!SR) { toast.error('Voice not supported. Please use Chrome or Edge.'); return;}
- 
- if (isRecording) { 
- manualStopRef.current = true;
- recognitionRef.current?.stop(); 
- setIsRecording(false); 
- return; 
-}
- 
- manualStopRef.current = false;
- const r = new SR();
- r.continuous = true;
- r.interimResults = false;
- r.lang = 'en-US';
- 
- r.onresult = e => {
- let t = '';
- for (let i = e.resultIndex; i < e.results.length; ++i) {
- if (e.results[i].isFinal) {
- t += e.results[i][0].transcript;
-}
-}
- if (t) {
- setInput(prev => prev ? `${prev} ${t}` : t);
-}
-};
- 
- r.onerror = (e) => { 
- if (e.error !== 'no-speech') {
- manualStopRef.current = true;
- setIsRecording(false); 
- toast.error('Voice error: ' + e.error); 
-}
-};
- 
- r.onend = () => {
- if (!manualStopRef.current) {
- try { r.start();} catch (err) { setIsRecording(false);}
-} else {
- setIsRecording(false);
-}
-};
- 
- recognitionRef.current = r;
- r.start();
- setIsRecording(true);
- toast('Listening continuously...', { icon: '≡ƒÄñ', duration: 2000});
-};
-
  // File Upload 
  const handleFileUpload = async e => {
  const file = e.target.files?.[0];
@@ -982,7 +942,7 @@ RULES FOR MULTI-STEP REASONING:
  </button>
  <button
  type="button"
- onClick={toggleVoice}
+ onClick={handleMicToggle}
  className={`p-1.5 rounded-md transition-colors ${
  isRecording
  ? 'text-red-500 bg-red-50 dark:bg-red-950/30 animate-pulse'

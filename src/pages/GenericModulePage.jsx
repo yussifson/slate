@@ -60,19 +60,19 @@ export default function GenericModulePage({ title: propTitle, description: propD
  const companyId = user?.company_id;
  if (!companyId || !slug) return;
 
- // Fetch all active modules for this company directly from Supabase
- const { data: allModules} = await supabase
- .from('module_definitions')
- .select('*')
- .eq('is_active', true)
- .or(`company_id.eq.${companyId},shared_with.ilike.%${companyId}%`);
+      // Fetch all active modules for this company directly from PowerSync (local DB)
+      // This ensures we can see modules we just created before they sync to the cloud.
+      const allModules = await powerSync.getAll(`SELECT * FROM module_definitions WHERE is_active = 1 AND (company_id = ? OR shared_with LIKE ?)`, [companyId, `%${companyId}%`]);
 
  const matched = (allModules || []).find(
- m => m.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') === slug
+ m => (m.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') === slug
  );
 
  const mod = matched || (allModules && allModules[0]);
  if (!mod) return;
+ if (typeof mod.config === 'string') {
+   try { mod.config = JSON.parse(mod.config); } catch(e) {}
+ }
  
  // Enforce industry isolation — redirect on mismatch (prevents URL forgery)
  if (mod.industry_type && mod.industry_type !== activeIndustry) {
@@ -85,18 +85,10 @@ export default function GenericModulePage({ title: propTitle, description: propD
  setVisibility(mod.visibility || 'private');
  setSharedWith(mod.shared_with || '');
 
- const { data: fields} = await supabase
- .from('field_definitions')
- .select('*')
- .eq('module_id', mod.id)
- .order('order_index', { ascending: true});
+ const fields = await powerSync.getAll(`SELECT * FROM field_definitions WHERE module_id = ? ORDER BY order_index ASC`, [mod.id]);
  setFieldDefs(fields || []);
 
- const { data: recs} = await supabase
- .from('dynamic_records')
- .select('*')
- .eq('module_id', mod.id)
- .order('created_at', { ascending: false});
+ const recs = await powerSync.getAll(`SELECT * FROM dynamic_records WHERE module_id = ? ORDER BY created_at DESC`, [mod.id]);
  const parsedRecords = (recs || []).map(r => ({ ...r, data: typeof r.data === 'string' ? JSON.parse(r.data || '{}') : (r.data || {})}));
  setRecords(parsedRecords);
 } catch (err) {
