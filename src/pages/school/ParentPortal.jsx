@@ -1,5 +1,5 @@
+import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
-import { useState } from 'react';
 import { Calendar, Bell, FileText, CheckCircle, Clock, BookOpen, User, CreditCard, Download, LayoutDashboard, GraduationCap, ArrowRight, Upload } from 'lucide-react';
 import { useIndustryRecords } from '@/hooks/useIndustryData';
 import { Link } from 'react-router-dom';
@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { toast } from 'react-hot-toast';
 import { format } from "date-fns";
 import { useAuth } from '@/lib/AuthContext';
-import { motion } from 'framer-motion';
 
 export default function ParentPortal() {
   const { t } = useTranslation();
@@ -87,15 +86,15 @@ export default function ParentPortal() {
   })).slice(0, 3);
 
   if (isStudentsLoading && companyId) {
-    return <div className="py-12 flex justify-center"><div className="text-emerald-500 font-black animate-pulse text-xl uppercase tracking-widest">{t("loading", "Loading Family Data...")}</div></div>;
+    return <div className="py-12 flex justify-center"><div className="text-[var(--primary)] font-semibold animate-pulse text-lg">{t("loading", "Loading Family Data...")}</div></div>;
   }
 
   if (mappedStudents.length === 0) {
     return (
-      <div className="py-16 text-center max-w-lg mx-auto bg-emerald-50 border-4 border-emerald-950 p-8">
-        <User className="w-16 h-16 mx-auto mb-4 text-emerald-300" />
-        <p className="font-black text-2xl text-emerald-950 uppercase tracking-widest mb-2">No Profiles Linked</p>
-        <p className="font-bold text-emerald-700">Ensure your email is linked to a student in the directory.</p>
+      <div className="py-16 text-center max-w-lg mx-auto bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-8">
+        <User className="w-16 h-16 mx-auto mb-4 text-[var(--color-text-tertiary)]" />
+        <p className="font-display font-semibold text-2xl text-[var(--color-text-primary)] mb-2 tracking-tight">No Profiles Linked</p>
+        <p className="font-medium text-[var(--color-text-secondary)] text-sm">Ensure your email is linked to a student in the directory.</p>
       </div>
     );
   }
@@ -132,23 +131,23 @@ export default function ParentPortal() {
   }
 
   return (
-    <div className="space-y-8 max-w-6xl mx-auto font-sans">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl mx-auto">
       {/* Header & Nav */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 border-b-4 border-emerald-950 pb-6">
+      <div className="border-b border-primary/40 pb-4 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-4xl md:text-5xl font-black text-emerald-950 tracking-tight leading-none mb-2 uppercase">
-            Family <span className="text-emerald-500">Portal</span>
+          <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">
+            Family <span className="text-[var(--primary)]">Portal</span>
           </h1>
-          <p className="text-sm font-bold text-emerald-700 uppercase tracking-widest">Managing records for your dependents.</p>
+          <p className="text-[var(--color-text-secondary)] font-medium mt-1 text-sm">Managing records for your dependents.</p>
         </div>
-        <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0">
+        <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
           {['dashboard', 'academics', 'finance', 'communications'].map((tab) => (
-            <button key={tab} onClick={() => setActiveTab(tab)} className={`flex items-center gap-2 px-5 py-3 font-black uppercase tracking-widest text-xs transition-colors border-4 whitespace-nowrap ${activeTab === tab ? 'bg-emerald-500 border-emerald-950 text-emerald-950' : 'bg-transparent border-transparent text-emerald-700 hover:bg-emerald-100 hover:border-emerald-300'}`}>
+            <button key={tab} onClick={() => setActiveTab(tab)} className={`flex items-center gap-2 px-5 py-2.5 font-semibold text-sm transition-colors rounded-full whitespace-nowrap ${activeTab === tab ? 'bg-[var(--primary)] text-white' : 'bg-transparent text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--primary)]'}`}>
               {tab === 'dashboard' && <LayoutDashboard className="w-4 h-4" />}
               {tab === 'academics' && <GraduationCap className="w-4 h-4" />}
               {tab === 'finance' && <CreditCard className="w-4 h-4" />}
               {tab === 'communications' && <Bell className="w-4 h-4" />}
-              {tab}
+              <span className="capitalize">{tab}</span>
             </button>
           ))}
         </div>
@@ -156,17 +155,17 @@ export default function ParentPortal() {
 
       {/* Child Selector */}
       {myChildren.length > 1 && (
-        <div className="flex items-center gap-4 overflow-x-auto pb-2">
-          <span className="text-xs font-black text-emerald-950 uppercase tracking-widest whitespace-nowrap bg-emerald-200 px-3 py-2 border-2 border-emerald-950">Viewing:</span>
+        <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
+          <span className="text-xs font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] whitespace-nowrap px-2">Viewing:</span>
           {myChildren.map(child => (
             <button
               key={child.id}
               onClick={() => setSelectedChildId(child.id)}
-              className={`flex items-center gap-3 px-4 py-2 font-black uppercase tracking-widest text-sm transition-colors border-4 whitespace-nowrap ${
-                activeStudent?.id === child.id ? 'bg-emerald-950 border-emerald-950 text-emerald-50' : 'bg-white border-emerald-950 text-emerald-950 hover:bg-emerald-100'
+              className={`flex items-center gap-2 px-4 py-2 font-medium text-sm transition-colors rounded-full whitespace-nowrap border ${
+                activeStudent?.id === child.id ? 'bg-[var(--primary)]/10 border-[var(--primary)] text-[var(--primary)]' : 'bg-[var(--color-surface-0)] border-primary/20 text-[var(--color-text-secondary)] hover:border-primary/40'
               }`}
             >
-              <div className={`w-6 h-6 flex items-center justify-center text-[10px] ${activeStudent?.id === child.id ? 'bg-emerald-500 text-emerald-950' : 'bg-emerald-950 text-emerald-50'}`}>
+              <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${activeStudent?.id === child.id ? 'bg-[var(--primary)] text-white' : 'bg-[var(--color-surface-2)] text-[var(--color-text-tertiary)]'}`}>
                 {child.name.substring(0,2).toUpperCase()}
               </div>
               {child.name}
@@ -176,89 +175,99 @@ export default function ParentPortal() {
       )}
 
       {/* Child Profile Card */}
-      <div className="bg-emerald-400 border-4 border-emerald-950 p-8 flex flex-col md:flex-row items-center md:items-start gap-8 relative overflow-hidden">
-        <User className="absolute -right-8 -top-8 w-48 h-48 text-emerald-950 opacity-10 pointer-events-none" />
-        <div className="w-32 h-32 bg-emerald-950 flex items-center justify-center text-emerald-400 text-5xl font-black shrink-0 border-4 border-emerald-200 relative z-10">
+      <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-8 flex flex-col md:flex-row items-center md:items-start gap-8 relative overflow-hidden">
+        <User className="absolute -right-8 -top-8 w-48 h-48 text-[var(--primary)] opacity-5 pointer-events-none" />
+        <div className="w-24 h-24 rounded-full bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] text-3xl font-bold shrink-0 border border-[var(--primary)]/20 relative z-10">
           {activeStudent.name?.substring(0, 2).toUpperCase()}
         </div>
         <div className="text-center md:text-left flex-1 relative z-10">
-          <h2 className="text-4xl font-black text-emerald-950 tracking-tight mb-4">{activeStudent.name}</h2>
+          <h2 className="text-3xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight mb-3">{activeStudent.name}</h2>
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
-            <span className="bg-emerald-950 text-emerald-50 px-4 py-2 text-sm font-black uppercase tracking-widest border-2 border-emerald-900">{activeStudent.class}</span>
-            <span className="bg-emerald-100 text-emerald-950 px-4 py-2 text-sm font-black uppercase tracking-widest border-2 border-emerald-950">ID: {activeStudent.studentId}</span>
+            <span className="bg-[var(--primary)]/10 text-[var(--primary)] px-3 py-1 text-xs font-semibold uppercase tracking-[var(--tracking-widest)] rounded-full">{activeStudent.class}</span>
+            <span className="bg-[var(--color-surface-2)] text-[var(--color-text-secondary)] px-3 py-1 text-xs font-semibold uppercase tracking-[var(--tracking-widest)] rounded-full border border-primary/10">ID: {activeStudent.studentId}</span>
           </div>
         </div>
-        <div className="shrink-0 flex flex-col items-center md:items-end gap-2 bg-emerald-950 p-6 border-4 border-emerald-200 w-full md:w-auto relative z-10">
-          <span className="text-xs font-black text-emerald-400 uppercase tracking-widest">Term Balance</span>
-          <div className="text-4xl font-black text-emerald-50 mb-1">${balance.toLocaleString()}</div>
-          <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 border-2 ${
-            feeStatus === 'Paid' ? 'bg-emerald-500 text-emerald-950 border-emerald-500' :
-            feeStatus === 'Partial' ? 'bg-yellow-400 text-yellow-950 border-yellow-400' : 'bg-red-500 text-white border-red-500'
+        <div className="shrink-0 flex flex-col items-center md:items-end gap-2 bg-[var(--color-surface-1)] p-5 rounded-[var(--radius-lg)] border border-primary/20 w-full md:w-auto relative z-10">
+          <span className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Term Balance</span>
+          <div className="text-3xl font-display font-semibold text-[var(--color-text-primary)] mb-1">${balance.toLocaleString()}</div>
+          <span className={`text-[10px] font-bold uppercase tracking-[var(--tracking-widest)] px-2.5 py-1 rounded-full ${
+            feeStatus === 'Paid' ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' :
+            feeStatus === 'Partial' ? 'bg-[var(--color-warning)]/10 text-[var(--color-warning)]' : 'bg-[var(--color-destructive)]/10 text-[var(--color-destructive)]'
           }`}>{feeStatus}</span>
         </div>
       </div>
 
       {activeTab === 'dashboard' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="col-span-1 lg:col-span-2 space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="col-span-1 lg:col-span-2 space-y-6">
             <div className="grid grid-cols-2 gap-6">
-              <div className="bg-white border-4 border-emerald-950 p-6 flex flex-col justify-center">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 bg-emerald-500 border-2 border-emerald-950 flex items-center justify-center text-emerald-950"><CheckCircle className="w-6 h-6" /></div>
-                  <h3 className="font-black text-emerald-950 text-sm uppercase tracking-widest">Attendance</h3>
+              <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 flex flex-col justify-center relative overflow-hidden stat-card-premium">
+                <div className="flex items-center gap-3 mb-4 relative z-10">
+                  <div className="w-12 h-12 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--primary) 15%, transparent)' }}>
+                    <CheckCircle className="w-6 h-6 text-[var(--primary)]" />
+                  </div>
+                  <h3 className="font-semibold text-[var(--color-text-primary)] text-sm">{t("attendance", "Attendance")}</h3>
                 </div>
-                <p className="text-5xl font-black text-emerald-950 mb-1">{attendancePct}%</p>
-                <p className="text-sm font-bold text-emerald-600 uppercase tracking-widest">Present for the term</p>
+                <p className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mb-1 relative z-10 tracking-tight">{attendancePct}%</p>
+                <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] relative z-10">Present for the term</p>
               </div>
               
-              <div className="bg-white border-4 border-emerald-950 p-6 flex flex-col justify-center">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 bg-emerald-500 border-2 border-emerald-950 flex items-center justify-center text-emerald-950"><BookOpen className="w-6 h-6" /></div>
-                  <h3 className="font-black text-emerald-950 text-sm uppercase tracking-widest">Performance</h3>
+              <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 flex flex-col justify-center relative overflow-hidden stat-card-premium">
+                <div className="flex items-center gap-3 mb-4 relative z-10">
+                  <div className="w-12 h-12 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--color-info) 15%, transparent)' }}>
+                    <BookOpen className="w-6 h-6 text-[var(--color-info)]" />
+                  </div>
+                  <h3 className="font-semibold text-[var(--color-text-primary)] text-sm">{t("performance", "Performance")}</h3>
                 </div>
-                <p className="text-5xl font-black text-emerald-500 mb-1">{averageGrade}</p>
-                <p className="text-sm font-bold text-emerald-600 uppercase tracking-widest">Term Report Card</p>
+                <p className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-info)] mb-1 relative z-10 tracking-tight">{averageGrade}</p>
+                <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] relative z-10">Term Report Card</p>
               </div>
             </div>
 
-            <div className="bg-white border-4 border-emerald-950">
-              <div className="p-5 border-b-4 border-emerald-950 bg-emerald-50">
-                <h3 className="font-black text-emerald-950 uppercase tracking-widest flex items-center gap-3"><Calendar className="w-5 h-5 text-emerald-500" /> Upcoming Scheduled Exams</h3>
+            <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+              <div className="p-5 border-b border-primary/20 bg-[var(--color-surface-1)]">
+                <h3 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-[var(--primary)]" /> Upcoming Scheduled Exams
+                </h3>
               </div>
-              <div className="divide-y-4 divide-emerald-100 p-0">
+              <div className="divide-y divide-primary/10">
                 {mappedExams.map((item, i) => (
-                  <div key={i} className="flex items-center gap-6 p-5 hover:bg-emerald-50 transition-colors">
-                    <div className="w-24 shrink-0 text-center font-black text-emerald-950 bg-emerald-200 border-2 border-emerald-950 py-2 uppercase tracking-widest text-xs">{item.time}</div>
+                  <div key={i} className="flex items-center gap-4 p-5 hover:bg-[var(--color-surface-2)] transition-colors">
+                    <div className="w-20 shrink-0 text-center font-bold text-[var(--primary)] bg-[var(--primary)]/10 rounded-[var(--radius-md)] py-1.5 text-xs">
+                      {item.time}
+                    </div>
                     <div className="flex-1">
-                      <p className="font-black text-emerald-950 text-lg uppercase tracking-wider">{item.subject}</p>
-                      <p className="text-sm font-bold text-emerald-600">{item.venue}</p>
+                      <p className="font-semibold text-[var(--color-text-primary)]">{item.subject}</p>
+                      <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">{item.venue}</p>
                     </div>
                   </div>
                 ))}
-                {mappedExams.length === 0 && <div className="py-8 text-center font-bold text-emerald-600 uppercase tracking-widest">No exams scheduled.</div>}
+                {mappedExams.length === 0 && <div className="py-8 text-center text-sm text-[var(--color-text-secondary)]">No exams scheduled.</div>}
               </div>
             </div>
           </div>
 
-          <div className="col-span-1 space-y-8">
-            <div className="bg-emerald-950 border-4 border-emerald-950">
-              <div className="p-5 border-b-4 border-emerald-800 bg-emerald-900 flex justify-between items-center">
-                <h3 className="font-black text-emerald-50 uppercase tracking-widest flex items-center gap-3"><FileText className="w-5 h-5 text-emerald-400" /> Documents</h3>
-                <button className="bg-emerald-500 text-emerald-950 px-3 py-1.5 font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-emerald-400 transition-colors" onClick={() => setShowUpload(true)}>
-                  <Upload className="w-3.5 h-3.5" /> Upload
-                </button>
+          <div className="col-span-1 space-y-6">
+            <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+              <div className="p-5 border-b border-primary/20 bg-[var(--color-surface-1)] flex justify-between items-center">
+                <h3 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-[var(--primary)]" /> Documents
+                </h3>
+                <Button variant="outline" size="sm" className="h-8 rounded-full border-primary/30 text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white" onClick={() => setShowUpload(true)}>
+                  <Upload className="w-3.5 h-3.5 mr-1.5" /> Upload
+                </Button>
               </div>
-              <div className="divide-y-2 divide-emerald-800 p-2">
+              <div className="divide-y divide-primary/10">
                 {documents.length === 0 ? (
-                  <div className="py-8 text-center font-bold text-emerald-500 uppercase tracking-widest text-xs">No documents found.</div>
+                  <div className="py-8 text-center text-sm text-[var(--color-text-secondary)]">No documents found.</div>
                 ) : documents.map(doc => (
-                  <div key={doc.id} className="p-4 flex items-center justify-between hover:bg-emerald-800 transition-colors">
+                  <div key={doc.id} className="p-4 flex items-center justify-between hover:bg-[var(--color-surface-2)] transition-colors">
                     <div>
-                      <p className="font-bold text-emerald-50 mb-1">{doc.name}</p>
-                      <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">{format(new Date(doc.created_date), "MMM d, yyyy")} • {doc.category?.replace('_', ' ')}</p>
+                      <p className="font-medium text-[var(--color-text-primary)] text-sm mb-0.5">{doc.name}</p>
+                      <p className="text-xs text-[var(--color-text-secondary)]">{format(new Date(doc.created_date), "MMM d, yyyy")} • {doc.category?.replace('_', ' ')}</p>
                     </div>
                     {doc.file_url && (
-                      <a href={doc.file_url} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-emerald-500 flex items-center justify-center text-emerald-950 hover:bg-emerald-400 transition-colors border-2 border-transparent hover:border-emerald-50">
+                      <a href={doc.file_url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-[var(--radius-md)] bg-[var(--color-surface-1)] flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors border border-primary/20">
                         <Download className="w-4 h-4" />
                       </a>
                     )}
@@ -267,37 +276,37 @@ export default function ParentPortal() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
 
       {activeTab === 'academics' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white border-4 border-emerald-950">
-          <div className="p-6 border-b-4 border-emerald-950 bg-emerald-400">
-            <h3 className="text-2xl font-black text-emerald-950 uppercase tracking-tight">Academic Transcript</h3>
+        <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+          <div className="p-6 border-b border-primary/20 bg-[var(--color-surface-1)]">
+            <h3 className="text-xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight">Academic Transcript</h3>
           </div>
           {studentGrades.length === 0 ? (
-             <div className="py-16 text-center font-black text-emerald-400 uppercase tracking-widest text-xl">No grades recorded yet.</div>
+             <div className="py-16 text-center text-[var(--color-text-secondary)] text-sm">No grades recorded yet.</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-emerald-50 border-b-4 border-emerald-950">
+                <thead className="bg-[var(--color-surface-1)]/50 border-b border-primary/20">
                   <tr>
-                    <th className="px-6 py-4 text-left font-black text-emerald-950 uppercase tracking-widest">Exam/Assignment</th>
-                    <th className="px-6 py-4 text-left font-black text-emerald-950 uppercase tracking-widest">Subject</th>
-                    <th className="px-6 py-4 text-right font-black text-emerald-950 uppercase tracking-widest">Score</th>
+                    <th className="px-6 py-4 text-left text-[11px] uppercase tracking-[var(--tracking-widest)] font-semibold text-[var(--color-text-tertiary)]">Exam/Assignment</th>
+                    <th className="px-6 py-4 text-left text-[11px] uppercase tracking-[var(--tracking-widest)] font-semibold text-[var(--color-text-tertiary)]">Subject</th>
+                    <th className="px-6 py-4 text-right text-[11px] uppercase tracking-[var(--tracking-widest)] font-semibold text-[var(--color-text-tertiary)]">Score</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y-2 divide-emerald-100">
+                <tbody className="divide-y divide-primary/10">
                   {studentGrades.map(g => {
                     const score = g.data?.score || 0;
                     const max = g.data?.maxScore || 100;
                     const pct = Math.round((score/max)*100);
                     return (
-                      <tr key={g.id} className="hover:bg-emerald-50/50 transition-colors">
-                        <td className="px-6 py-5 font-black text-emerald-950 text-base">{g.data?.examName}</td>
-                        <td className="px-6 py-5 font-bold text-emerald-700">{g.data?.subject}</td>
-                        <td className="px-6 py-5 text-right">
-                          <span className={`font-black text-lg px-3 py-1 border-2 ${pct >= 50 ? 'bg-emerald-100 border-emerald-500 text-emerald-800' : 'bg-red-100 border-red-500 text-red-800'}`}>
+                      <tr key={g.id} className="hover:bg-[var(--color-surface-2)] transition-colors">
+                        <td className="px-6 py-4 font-medium text-[var(--color-text-primary)]">{g.data?.examName}</td>
+                        <td className="px-6 py-4 text-[var(--color-text-secondary)]">{g.data?.subject}</td>
+                        <td className="px-6 py-4 text-right">
+                          <span className={`inline-flex items-center font-semibold text-xs px-2.5 py-1 rounded-full ${pct >= 50 ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' : 'bg-[var(--color-destructive)]/10 text-[var(--color-destructive)]'}`}>
                             {score} / {max} ({pct}%)
                           </span>
                         </td>
@@ -308,31 +317,39 @@ export default function ParentPortal() {
               </table>
             </div>
           )}
-        </motion.div>
+        </div>
       )}
 
       {activeTab === 'finance' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white border-4 border-emerald-950 p-16 text-center">
-          <CreditCard className="w-20 h-20 mx-auto mb-6 text-emerald-300" />
-          <h3 className="text-3xl font-black text-emerald-950 uppercase tracking-tight mb-2">Fee Statements</h3>
-          <p className="font-bold text-emerald-600 mb-8">No recent transactions or invoices found.</p>
+        <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-16 text-center">
+          <div className="w-20 h-20 mx-auto rounded-full bg-[var(--primary)]/10 flex items-center justify-center mb-6">
+            <CreditCard className="w-10 h-10 text-[var(--primary)]" />
+          </div>
+          <h3 className="text-2xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight mb-2">Fee Statements</h3>
+          <p className="text-[var(--color-text-secondary)] text-sm mb-8">No recent transactions or invoices found.</p>
           {balance > 0 && (
-            <div className="mt-8 p-8 border-4 border-red-600 bg-red-50 max-w-md mx-auto">
-              <p className="text-sm font-black text-red-800 uppercase tracking-widest mb-2">Outstanding Balance</p>
-              <p className="text-5xl font-black text-red-600 mb-6">${balance.toLocaleString()}</p>
-              <button className="w-full bg-red-600 hover:bg-red-700 text-white font-black uppercase tracking-widest py-4 border-4 border-red-900 transition-colors">Pay Now <ArrowRight className="inline w-5 h-5 ml-2"/></button>
+            <div className="mt-8 p-8 border border-[var(--color-destructive)]/30 rounded-[var(--radius-xl)] bg-[var(--color-destructive)]/5 max-w-md mx-auto">
+              <p className="text-[11px] font-semibold text-[var(--color-destructive)] uppercase tracking-[var(--tracking-widest)] mb-2">Outstanding Balance</p>
+              <p className="text-4xl font-display font-semibold text-[var(--color-destructive)] mb-6">${balance.toLocaleString()}</p>
+              <Button className="w-full bg-[var(--color-destructive)] hover:bg-[var(--color-destructive)]/90 text-white rounded-full">
+                Pay Now <ArrowRight className="w-4 h-4 ml-2"/>
+              </Button>
             </div>
           )}
-        </motion.div>
+        </div>
       )}
 
       {activeTab === 'communications' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white border-4 border-emerald-950 p-16 text-center">
-          <Bell className="w-20 h-20 mx-auto mb-6 text-emerald-300" />
-          <h3 className="text-3xl font-black text-emerald-950 uppercase tracking-tight mb-2">Announcements</h3>
-          <p className="font-bold text-emerald-600 mb-8">You have no new messages from administration.</p>
-          <button className="bg-emerald-950 hover:bg-emerald-800 text-emerald-50 font-black uppercase tracking-widest px-8 py-4 border-4 border-transparent transition-colors">Contact Office</button>
-        </motion.div>
+        <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-16 text-center">
+          <div className="w-20 h-20 mx-auto rounded-full bg-[var(--primary)]/10 flex items-center justify-center mb-6">
+            <Bell className="w-10 h-10 text-[var(--primary)]" />
+          </div>
+          <h3 className="text-2xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight mb-2">Announcements</h3>
+          <p className="text-[var(--color-text-secondary)] text-sm mb-8">You have no new messages from administration.</p>
+          <Button variant="outline" className="border-primary/40 text-[var(--primary)] rounded-full hover:bg-[var(--primary)] hover:text-white px-8">
+            Contact Office
+          </Button>
+        </div>
       )}
 
       {showUpload && (

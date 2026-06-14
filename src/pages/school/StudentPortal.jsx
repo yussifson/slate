@@ -1,5 +1,5 @@
+import React, { useState, useMemo } from 'react';
 import { useTranslation } from "react-i18next";
-import { useState } from 'react';
 import { Calendar, BookOpen, CheckCircle, Clock, User, Download, FileText, ClipboardList, GraduationCap, LayoutDashboard, Zap, Target, ArrowRight } from 'lucide-react';
 import { useIndustryRecords, useMutateIndustryRecord } from '@/hooks/useIndustryData';
 import { Link } from 'react-router-dom';
@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { useAuth } from '@/lib/AuthContext';
 import { toast } from 'react-hot-toast';
-import { motion } from 'framer-motion';
 
 export default function StudentPortal() {
   const { t } = useTranslation();
@@ -122,95 +121,132 @@ export default function StudentPortal() {
 
   const studentAssignments = assignmentRecords.filter(a => a.data?.className === activeStudent?.class || a.data?.className === 'All');
   
-  if (isStudentsLoading) return <div className="py-12 flex justify-center"><div className="text-emerald-500 font-black animate-pulse text-xl uppercase tracking-widest">{t("loading", "Loading Portal...")}</div></div>;
-  if (!activeStudent) return <div className="py-12 text-center font-black text-2xl text-emerald-900">No student profile found.</div>;
+  if (isStudentsLoading) return <div className="py-12 flex justify-center"><div className="text-[var(--primary)] font-semibold animate-pulse text-lg">{t("loading", "Loading Portal...")}</div></div>;
+  if (!activeStudent) return <div className="py-12 text-center font-semibold text-lg text-[var(--color-text-secondary)]">No student profile found.</div>;
 
   return (
-    <div className="space-y-8 max-w-6xl mx-auto font-sans">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Header & Nav */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 border-b-4 border-emerald-950 pb-6">
+      <div className="border-b border-primary/40 pb-4 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-4xl md:text-5xl font-black text-emerald-950 tracking-tight leading-none mb-2 uppercase">
-            {t("welcome_back", "Welcome")}, <span className="text-emerald-500">{user?.user_metadata?.full_name || activeStudent.name.split(' ')[0]}</span>
+          <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">
+            {t("welcome_back", "Welcome")}, <span className="text-[var(--primary)]">{user?.user_metadata?.full_name || activeStudent.name.split(' ')[0]}</span>
           </h1>
-          <div className="flex items-center gap-3">
-            <span className="bg-emerald-950 text-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-widest">{activeStudent.studentId}</span>
-            <span className="text-emerald-700 font-black uppercase text-sm tracking-widest">{activeStudent.class}</span>
+          <div className="flex items-center gap-3 mt-2">
+            <span className="bg-[var(--primary)] text-[var(--color-surface-0)] px-3 py-1 text-[11px] font-bold uppercase tracking-[var(--tracking-widest)] rounded-full">{activeStudent.studentId}</span>
+            <span className="text-[var(--color-text-secondary)] font-semibold text-sm">{activeStudent.class}</span>
           </div>
         </div>
-        <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0">
+        <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
           {['dashboard', 'courses', 'grades', 'assignments'].map((tab) => (
-            <button key={tab} onClick={() => setActiveTab(tab)} className={`flex items-center gap-2 px-5 py-3 font-black uppercase tracking-widest text-xs transition-colors border-4 whitespace-nowrap ${activeTab === tab ? 'bg-emerald-500 border-emerald-950 text-emerald-950' : 'bg-transparent border-transparent text-emerald-700 hover:bg-emerald-100 hover:border-emerald-300'}`}>
+            <button key={tab} onClick={() => setActiveTab(tab)} className={`flex items-center gap-2 px-5 py-2.5 font-semibold text-sm transition-colors rounded-full whitespace-nowrap ${activeTab === tab ? 'bg-[var(--primary)] text-white' : 'bg-transparent text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--primary)]'}`}>
               {tab === 'dashboard' && <LayoutDashboard className="w-4 h-4" />}
               {tab === 'courses' && <BookOpen className="w-4 h-4" />}
               {tab === 'grades' && <GraduationCap className="w-4 h-4" />}
               {tab === 'assignments' && <ClipboardList className="w-4 h-4" />}
-              {tab}
+              <span className="capitalize">{tab}</span>
             </button>
           ))}
         </div>
       </div>
 
       {activeTab === 'dashboard' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="col-span-1 lg:col-span-2 space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="col-span-1 lg:col-span-2 space-y-6">
             <div className="grid grid-cols-2 gap-6">
-              <div className="bg-emerald-400 border-4 border-emerald-950 p-6 flex flex-col justify-center relative overflow-hidden">
-                <Target className="absolute -right-4 -bottom-4 w-32 h-32 text-emerald-950 opacity-10" />
+              <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 flex flex-col justify-center relative overflow-hidden stat-card-premium">
+                <Target className="absolute -right-4 -bottom-4 w-32 h-32 text-[var(--primary)] opacity-5" />
                 <div className="flex items-center gap-3 mb-4 relative z-10">
-                  <div className="w-12 h-12 bg-emerald-950 flex items-center justify-center text-emerald-400"><CheckCircle className="w-6 h-6" /></div>
-                  <h3 className="font-black text-emerald-950 text-sm uppercase tracking-widest">{t("attendance", "Attendance")}</h3>
+                  <div className="w-12 h-12 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--primary) 15%, transparent)' }}>
+                    <CheckCircle className="w-6 h-6 text-[var(--primary)]" />
+                  </div>
+                  <h3 className="font-semibold text-[var(--color-text-primary)] text-sm">{t("attendance", "Attendance")}</h3>
                 </div>
-                <p className="text-5xl font-black text-emerald-950 mb-1 relative z-10">{attendancePct}%</p>
-                <p className="text-sm font-bold text-emerald-800 uppercase tracking-widest relative z-10">{t("present_for_the_term", "Present this term")}</p>
+                <p className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mb-1 relative z-10 tracking-tight">{attendancePct}%</p>
+                <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] relative z-10">{t("present_for_the_term", "Present this term")}</p>
               </div>
               
-              <div className="bg-white border-4 border-emerald-950 p-6 flex flex-col justify-center relative overflow-hidden">
-                <Zap className="absolute -right-4 -top-4 w-32 h-32 text-emerald-100 opacity-50" />
+              <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 flex flex-col justify-center relative overflow-hidden stat-card-premium">
+                <Zap className="absolute -right-4 -top-4 w-32 h-32 text-[var(--color-info)] opacity-5" />
                 <div className="flex items-center gap-3 mb-4 relative z-10">
-                  <div className="w-12 h-12 bg-emerald-500 border-2 border-emerald-950 flex items-center justify-center text-emerald-950"><GraduationCap className="w-6 h-6" /></div>
-                  <h3 className="font-black text-emerald-950 text-sm uppercase tracking-widest">{t("performance", "Performance")}</h3>
+                  <div className="w-12 h-12 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--color-info) 15%, transparent)' }}>
+                    <GraduationCap className="w-6 h-6 text-[var(--color-info)]" />
+                  </div>
+                  <h3 className="font-semibold text-[var(--color-text-primary)] text-sm">{t("performance", "Performance")}</h3>
                 </div>
-                <p className="text-5xl font-black text-emerald-500 mb-1 relative z-10">{averageGrade}</p>
-                <p className="text-sm font-bold text-emerald-400 uppercase tracking-widest relative z-10">{t("term_report_card", "Term Average")}</p>
+                <p className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-info)] mb-1 relative z-10 tracking-tight">{averageGrade}</p>
+                <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] relative z-10">{t("term_report_card", "Term Average")}</p>
               </div>
             </div>
 
-            <div className="bg-white border-4 border-emerald-950">
-              <div className="p-5 border-b-4 border-emerald-950 bg-emerald-50 flex justify-between items-center">
-                <h3 className="font-black text-emerald-950 uppercase tracking-widest flex items-center gap-3"><Calendar className="w-5 h-5 text-emerald-500" /> Upcoming Exams</h3>
+            <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+              <div className="p-5 border-b border-primary/20 bg-[var(--color-surface-1)] flex justify-between items-center">
+                <h3 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-[var(--primary)]" /> Upcoming Exams
+                </h3>
               </div>
-              <div className="divide-y-4 divide-emerald-100 p-0">
+              <div className="divide-y divide-primary/10">
                 {exams.slice(0,3).map((item, i) => (
-                  <div key={i} className="flex items-center gap-6 p-5 hover:bg-emerald-50 transition-colors">
-                    <div className="w-24 shrink-0 text-center font-black text-emerald-950 bg-emerald-200 border-2 border-emerald-950 py-2 uppercase tracking-widest text-xs">{item.data?.time}</div>
+                  <div key={i} className="flex items-center gap-4 p-5 hover:bg-[var(--color-surface-2)] transition-colors">
+                    <div className="w-20 shrink-0 text-center font-bold text-[var(--primary)] bg-[var(--primary)]/10 rounded-[var(--radius-md)] py-1.5 text-xs">
+                      {item.data?.time}
+                    </div>
                     <div className="flex-1">
-                      <p className="font-black text-emerald-950 text-lg uppercase tracking-wider">{item.data?.subject}</p>
-                      <p className="text-sm font-bold text-emerald-600">{item.data?.venue}</p>
+                      <p className="font-semibold text-[var(--color-text-primary)]">{item.data?.subject}</p>
+                      <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">{item.data?.venue}</p>
                     </div>
                   </div>
                 ))}
-                {exams.length === 0 && <div className="py-8 text-center font-bold text-emerald-600 uppercase tracking-widest">No exams scheduled.</div>}
+                {exams.length === 0 && <div className="py-8 text-center text-sm text-[var(--color-text-secondary)]">No exams scheduled.</div>}
               </div>
             </div>
           </div>
 
-          <div className="col-span-1 space-y-8">
-            <div className="bg-emerald-950 border-4 border-emerald-950">
-              <div className="p-5 border-b-4 border-emerald-800 bg-emerald-900">
-                <h3 className="font-black text-emerald-50 uppercase tracking-widest flex items-center gap-3"><FileText className="w-5 h-5 text-emerald-400" /> My Documents</h3>
+          <div className="col-span-1 space-y-6">
+            <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+              <div className="p-5 border-b border-primary/20 bg-[var(--color-surface-1)]">
+                <h3 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-[var(--primary)]" /> Today's Schedule
+                </h3>
               </div>
-              <div className="divide-y-2 divide-emerald-800 p-2">
+              <div className="p-5">
+                <div className="space-y-4">
+                  <div className="relative pl-6 border-l-2 border-[var(--primary)]/30 pb-4">
+                    <div className="absolute w-3 h-3 bg-[var(--primary)] rounded-full -left-[7px] top-1"></div>
+                    <p className="font-semibold text-[var(--color-text-primary)] text-sm">08:00 AM - Mathematics</p>
+                    <p className="text-xs text-[var(--color-text-secondary)] mt-1">Room 101 • Mr. Smith</p>
+                  </div>
+                  <div className="relative pl-6 border-l-2 border-[var(--primary)] pb-4">
+                    <div className="absolute w-3 h-3 bg-[var(--primary)] rounded-full -left-[7px] top-1"></div>
+                    <p className="font-semibold text-[var(--color-text-primary)] text-sm">10:00 AM - Physics</p>
+                    <p className="text-xs text-[var(--color-text-secondary)] mt-1">Lab A • Mrs. Jones</p>
+                  </div>
+                  <div className="relative pl-6 border-l-2 border-transparent">
+                    <div className="absolute w-3 h-3 bg-[var(--color-surface-2)] border-2 border-[var(--primary)]/50 rounded-full -left-[7px] top-1"></div>
+                    <p className="font-semibold text-[var(--color-text-primary)] text-sm">01:00 PM - Literature</p>
+                    <p className="text-xs text-[var(--color-text-secondary)] mt-1">Room 205 • Ms. Davis</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+              <div className="p-5 border-b border-primary/20 bg-[var(--color-surface-1)]">
+                <h3 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-[var(--primary)]" /> My Documents
+                </h3>
+              </div>
+              <div className="divide-y divide-primary/10">
                 {documents.length === 0 ? (
-                  <div className="py-8 text-center font-bold text-emerald-500 uppercase tracking-widest text-xs">No documents.</div>
+                  <div className="py-8 text-center text-sm text-[var(--color-text-secondary)]">No documents.</div>
                 ) : documents.map(doc => (
-                  <div key={doc.id} className="p-4 flex items-center justify-between hover:bg-emerald-800 transition-colors">
+                  <div key={doc.id} className="p-4 flex items-center justify-between hover:bg-[var(--color-surface-2)] transition-colors">
                     <div>
-                      <p className="font-bold text-emerald-50 mb-1 truncate max-w-[150px]">{doc.name}</p>
-                      <p className="text-xs font-bold text-emerald-400 uppercase tracking-widest">{format(new Date(doc.created_date), "MMM d")}</p>
+                      <p className="font-medium text-[var(--color-text-primary)] text-sm mb-0.5 truncate max-w-[150px]">{doc.name}</p>
+                      <p className="text-xs text-[var(--color-text-secondary)]">{format(new Date(doc.created_date), "MMM d")}</p>
                     </div>
                     {doc.file_url && (
-                      <a href={doc.file_url} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-emerald-500 flex items-center justify-center text-emerald-950 hover:bg-emerald-400 transition-colors border-2 border-transparent hover:border-emerald-50">
+                      <a href={doc.file_url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-[var(--radius-md)] bg-[var(--color-surface-1)] flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors border border-primary/20">
                         <Download className="w-4 h-4" />
                       </a>
                     )}
@@ -219,78 +255,76 @@ export default function StudentPortal() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
 
       {activeTab === 'courses' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-          <div className="bg-white border-4 border-emerald-950 p-8">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-              <div>
-                <h3 className="text-2xl font-black text-emerald-950 uppercase tracking-tight">Course Registration</h3>
-                <p className="text-emerald-600 font-bold mt-1">Manage your enrolled courses for the semester.</p>
-              </div>
-              {classConfig.allowSelfRegistration && myRegisteredCourses.length === 0 && (
-                <button onClick={handleRegisterCourses} className="px-6 py-3 bg-emerald-500 text-emerald-950 font-black uppercase tracking-widest border-4 border-emerald-950 hover:bg-emerald-400 transition-colors flex items-center gap-2">
-                  Register All <ArrowRight className="w-4 h-4" />
-                </button>
-              )}
+        <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div>
+              <h3 className="text-xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight">Course Registration</h3>
+              <p className="text-[var(--color-text-secondary)] text-sm mt-1">Manage your enrolled courses for the semester.</p>
             </div>
-            
-            {myRegisteredCourses.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {myRegisteredCourses.map((c, i) => (
-                  <div key={i} className="p-6 border-4 border-emerald-950 bg-emerald-50 flex items-center gap-4 hover:bg-emerald-100 transition-colors">
-                    <div className="w-12 h-12 bg-emerald-500 border-2 border-emerald-950 flex items-center justify-center text-emerald-950 shrink-0">
-                      <BookOpen className="w-6 h-6" />
-                    </div>
-                    <span className="font-black text-emerald-950 uppercase tracking-wider text-lg">{c}</span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-16 bg-emerald-50 border-4 border-emerald-200 border-dashed">
-                <BookOpen className="w-16 h-16 mx-auto text-emerald-300 mb-4" />
-                <p className="font-black text-xl text-emerald-900 uppercase tracking-wider">No Courses Registered</p>
-                {classConfig.allowSelfRegistration ? (
-                  <p className="font-bold text-emerald-600 mt-2">Click the button above to register for {availableCourses.join(', ')}.</p>
-                ) : (
-                  <p className="font-bold text-emerald-600 mt-2">Registration is disabled. Contact admin.</p>
-                )}
-              </div>
+            {classConfig.allowSelfRegistration && myRegisteredCourses.length === 0 && (
+              <Button onClick={handleRegisterCourses} className="bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white rounded-full">
+                Register All <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
             )}
           </div>
-        </motion.div>
+          
+          {myRegisteredCourses.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {myRegisteredCourses.map((c, i) => (
+                <div key={i} className="p-4 border border-primary/20 rounded-[var(--radius-lg)] bg-[var(--color-surface-1)] flex items-center gap-3 hover:border-[var(--primary)]/50 transition-colors">
+                  <div className="w-10 h-10 rounded-[var(--radius-md)] bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] shrink-0">
+                    <BookOpen className="w-5 h-5" />
+                  </div>
+                  <span className="font-semibold text-[var(--color-text-primary)] text-sm">{c}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16 border border-dashed border-primary/30 rounded-[var(--radius-xl)] bg-[var(--color-surface-1)]">
+              <BookOpen className="w-12 h-12 mx-auto text-[var(--color-text-tertiary)] mb-4" />
+              <p className="font-semibold text-base text-[var(--color-text-primary)]">No Courses Registered</p>
+              {classConfig.allowSelfRegistration ? (
+                <p className="text-sm text-[var(--color-text-secondary)] mt-2">Click the button above to register for {availableCourses.join(', ')}.</p>
+              ) : (
+                <p className="text-sm text-[var(--color-text-secondary)] mt-2">Registration is disabled. Contact admin.</p>
+              )}
+            </div>
+          )}
+        </div>
       )}
 
       {activeTab === 'grades' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white border-4 border-emerald-950">
-          <div className="p-6 border-b-4 border-emerald-950 bg-emerald-400">
-            <h3 className="text-2xl font-black text-emerald-950 uppercase tracking-tight">Academic Transcript</h3>
+        <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+          <div className="p-6 border-b border-primary/20 bg-[var(--color-surface-1)]">
+            <h3 className="text-xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight">Academic Transcript</h3>
           </div>
           {studentGrades.length === 0 ? (
-            <div className="py-16 text-center font-black text-emerald-400 uppercase tracking-widest text-xl">No grades recorded yet.</div>
+            <div className="py-16 text-center text-[var(--color-text-secondary)] text-sm">No grades recorded yet.</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-emerald-50 border-b-4 border-emerald-950">
+                <thead className="bg-[var(--color-surface-1)]/50 border-b border-primary/20">
                   <tr>
-                    <th className="px-6 py-4 text-left font-black text-emerald-950 uppercase tracking-widest">Exam/Assignment</th>
-                    <th className="px-6 py-4 text-left font-black text-emerald-950 uppercase tracking-widest">Subject</th>
-                    <th className="px-6 py-4 text-right font-black text-emerald-950 uppercase tracking-widest">Score</th>
+                    <th className="px-6 py-4 text-left text-[11px] uppercase tracking-[var(--tracking-widest)] font-semibold text-[var(--color-text-tertiary)]">Exam/Assignment</th>
+                    <th className="px-6 py-4 text-left text-[11px] uppercase tracking-[var(--tracking-widest)] font-semibold text-[var(--color-text-tertiary)]">Subject</th>
+                    <th className="px-6 py-4 text-right text-[11px] uppercase tracking-[var(--tracking-widest)] font-semibold text-[var(--color-text-tertiary)]">Score</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y-2 divide-emerald-100">
+                <tbody className="divide-y divide-primary/10">
                   {studentGrades.map(g => {
                     const score = g.data?.score || 0;
                     const max = g.data?.maxScore || 100;
                     const pct = Math.round((score/max)*100);
                     return (
-                      <tr key={g.id} className="hover:bg-emerald-50/50 transition-colors">
-                        <td className="px-6 py-5 font-black text-emerald-950 text-base">{g.data?.examName}</td>
-                        <td className="px-6 py-5 font-bold text-emerald-700">{g.data?.subject}</td>
-                        <td className="px-6 py-5 text-right">
-                          <span className={`font-black text-lg px-3 py-1 border-2 ${pct >= 50 ? 'bg-emerald-100 border-emerald-500 text-emerald-800' : 'bg-red-100 border-red-500 text-red-800'}`}>
+                      <tr key={g.id} className="hover:bg-[var(--color-surface-2)] transition-colors">
+                        <td className="px-6 py-4 font-medium text-[var(--color-text-primary)]">{g.data?.examName}</td>
+                        <td className="px-6 py-4 text-[var(--color-text-secondary)]">{g.data?.subject}</td>
+                        <td className="px-6 py-4 text-right">
+                          <span className={`inline-flex items-center font-semibold text-xs px-2.5 py-1 rounded-full ${pct >= 50 ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' : 'bg-[var(--color-destructive)]/10 text-[var(--color-destructive)]'}`}>
                             {score} / {max} ({pct}%)
                           </span>
                         </td>
@@ -301,40 +335,42 @@ export default function StudentPortal() {
               </table>
             </div>
           )}
-        </motion.div>
+        </div>
       )}
 
       {activeTab === 'assignments' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white border-4 border-emerald-950">
-          <div className="p-6 border-b-4 border-emerald-950 bg-emerald-400">
-            <h3 className="text-2xl font-black text-emerald-950 uppercase tracking-tight">My Assignments</h3>
+        <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+          <div className="p-6 border-b border-primary/20 bg-[var(--color-surface-1)]">
+            <h3 className="text-xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight">My Assignments</h3>
           </div>
           {studentAssignments.length === 0 ? (
-            <div className="py-16 text-center font-black text-emerald-400 uppercase tracking-widest text-xl">No active assignments.</div>
+            <div className="py-16 text-center text-[var(--color-text-secondary)] text-sm">No active assignments.</div>
           ) : (
-            <div className="divide-y-4 divide-emerald-950">
+            <div className="divide-y divide-primary/10">
               {studentAssignments.map(a => (
-                <div key={a.id} className="p-6 hover:bg-emerald-50 flex flex-col md:flex-row justify-between md:items-center gap-6 transition-colors">
+                <div key={a.id} className="p-6 hover:bg-[var(--color-surface-2)] flex flex-col md:flex-row justify-between gap-6 transition-colors">
                   <div className="max-w-2xl">
-                    <h4 className="font-black text-emerald-950 text-2xl mb-2">{a.data?.title}</h4>
-                    <div className="flex gap-3 mb-4">
-                      <span className="bg-emerald-950 text-emerald-50 px-2 py-1 text-xs font-bold uppercase tracking-widest">{a.data?.subject}</span>
-                      <span className="bg-emerald-200 text-emerald-950 px-2 py-1 text-xs font-bold uppercase tracking-widest border border-emerald-950">{a.data?.teacher}</span>
+                    <h4 className="font-semibold text-[var(--color-text-primary)] text-lg mb-1">{a.data?.title}</h4>
+                    <div className="flex gap-2 mb-3">
+                      <span className="bg-[var(--primary)]/10 text-[var(--primary)] px-2 py-0.5 rounded text-xs font-medium">{a.data?.subject}</span>
+                      <span className="bg-[var(--color-surface-3)] text-[var(--color-text-secondary)] px-2 py-0.5 rounded text-xs font-medium">{a.data?.teacher}</span>
                     </div>
-                    <p className="font-medium text-emerald-800">{a.data?.description}</p>
+                    <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">{a.data?.description}</p>
                   </div>
-                  <div className="text-left md:text-right shrink-0 bg-emerald-100 p-4 border-2 border-emerald-950">
-                    <p className="text-xs font-black text-emerald-950 uppercase tracking-widest mb-2">Due Date</p>
-                    <p className="font-black text-red-600 bg-red-50 border-2 border-red-600 px-4 py-2 uppercase tracking-widest inline-block">{a.data?.dueDate}</p>
-                    <div className="mt-4">
-                      <button className="w-full bg-emerald-950 text-emerald-50 font-black uppercase tracking-widest text-xs py-3 px-4 hover:bg-emerald-800 transition-colors">Upload Work</button>
+                  <div className="text-left md:text-right shrink-0 bg-[var(--color-surface-1)] p-4 rounded-[var(--radius-lg)] border border-primary/10 flex flex-col justify-between">
+                    <div>
+                      <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] mb-1">Due Date</p>
+                      <p className="font-medium text-[var(--color-destructive)] text-sm">{a.data?.dueDate}</p>
                     </div>
+                    <Button variant="outline" className="w-full mt-4 text-xs font-medium border-primary/30 text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white rounded-full">
+                      Upload Work
+                    </Button>
                   </div>
                 </div>
               ))}
             </div>
           )}
-        </motion.div>
+        </div>
       )}
     </div>
   );

@@ -1,5 +1,5 @@
+import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
-import { useState } from 'react';
 import { Users, Search, Plus, Mail, Phone, MoreVertical, Briefcase, GraduationCap, Calendar, CheckSquare, ListTodo, ClipboardCheck } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,6 @@ import { base44 } from "@/api/base44Client";
 import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { registerSchoolUser } from '@/api/authUtils';
-import { motion } from 'framer-motion';
 
 export default function Teachers() {
   const { t } = useTranslation();
@@ -19,7 +18,6 @@ export default function Teachers() {
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [viewMode, setViewMode] = useState('grid');
   const [activeTab, setActiveTab] = useState('directory'); // directory or command_center
 
   const { data: records = [], isLoading } = useQuery({ 
@@ -113,218 +111,228 @@ export default function Teachers() {
   };
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto font-sans">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-7xl mx-auto">
       {/* Header & Nav */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 border-b-4 border-emerald-950 pb-6">
+      <div className="border-b border-primary/40 pb-4 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-4xl md:text-5xl font-black text-emerald-950 tracking-tight leading-none mb-2 uppercase">
-            Faculty <span className="text-emerald-500">Hub</span>
+          <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">
+            Faculty <span className="text-[var(--primary)]">Hub</span>
           </h1>
-          <p className="text-sm font-bold text-emerald-700 uppercase tracking-widest">Manage staff records & daily command center.</p>
+          <p className="text-[var(--color-text-secondary)] font-medium mt-1 text-sm">Manage staff records & daily command center.</p>
         </div>
-        <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0">
+        <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
           {['command_center', 'directory'].map((tab) => (
-            <button key={tab} onClick={() => setActiveTab(tab)} className={`flex items-center gap-2 px-5 py-3 font-black uppercase tracking-widest text-xs transition-colors border-4 whitespace-nowrap ${activeTab === tab ? 'bg-emerald-500 border-emerald-950 text-emerald-950' : 'bg-transparent border-transparent text-emerald-700 hover:bg-emerald-100 hover:border-emerald-300'}`}>
+            <button key={tab} onClick={() => setActiveTab(tab)} className={`flex items-center gap-2 px-5 py-2.5 font-semibold text-sm transition-colors rounded-full whitespace-nowrap ${activeTab === tab ? 'bg-[var(--primary)] text-white' : 'bg-transparent text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--primary)]'}`}>
               {tab === 'command_center' ? <ClipboardCheck className="w-4 h-4" /> : <Users className="w-4 h-4" />}
-              {tab.replace('_', ' ')}
+              <span className="capitalize">{tab.replace('_', ' ')}</span>
             </button>
           ))}
         </div>
       </div>
 
       {activeTab === 'command_center' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-emerald-400 border-4 border-emerald-950 p-6 flex flex-col justify-center">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-emerald-950 flex items-center justify-center text-emerald-400"><Calendar className="w-6 h-6" /></div>
-                <h3 className="font-black text-emerald-950 text-sm uppercase tracking-widest">Today's Classes</h3>
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 flex flex-col justify-center relative overflow-hidden stat-card-premium">
+              <div className="flex items-center gap-3 mb-4 relative z-10">
+                <div className="w-12 h-12 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--primary) 15%, transparent)' }}>
+                  <Calendar className="w-6 h-6 text-[var(--primary)]" />
+                </div>
+                <h3 className="font-semibold text-[var(--color-text-primary)] text-sm">Today's Classes</h3>
               </div>
-              <p className="text-5xl font-black text-emerald-950 mb-1">4</p>
-              <p className="text-sm font-bold text-emerald-800 uppercase tracking-widest">Periods Scheduled</p>
+              <p className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mb-1 relative z-10 tracking-tight">4</p>
+              <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] relative z-10">Periods Scheduled</p>
             </div>
             
-            <div className="bg-white border-4 border-emerald-950 p-6 flex flex-col justify-center">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-emerald-500 border-2 border-emerald-950 flex items-center justify-center text-emerald-950"><CheckSquare className="w-6 h-6" /></div>
-                <h3 className="font-black text-emerald-950 text-sm uppercase tracking-widest">Pending Grading</h3>
+            <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 flex flex-col justify-center relative overflow-hidden stat-card-premium">
+              <div className="flex items-center gap-3 mb-4 relative z-10">
+                <div className="w-12 h-12 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--color-warning) 15%, transparent)' }}>
+                  <CheckSquare className="w-6 h-6 text-[var(--color-warning)]" />
+                </div>
+                <h3 className="font-semibold text-[var(--color-text-primary)] text-sm">Pending Grading</h3>
               </div>
-              <p className="text-5xl font-black text-emerald-500 mb-1">12</p>
-              <p className="text-sm font-bold text-emerald-600 uppercase tracking-widest">Assignments to review</p>
+              <p className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-warning)] mb-1 relative z-10 tracking-tight">12</p>
+              <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] relative z-10">Assignments to review</p>
             </div>
 
-            <div className="bg-emerald-950 border-4 border-emerald-950 p-6 flex flex-col justify-center">
+            <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 flex flex-col justify-center">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-emerald-500 border-2 border-emerald-950 flex items-center justify-center text-emerald-950"><ListTodo className="w-6 h-6" /></div>
-                <h3 className="font-black text-emerald-50 text-sm uppercase tracking-widest">Action Items</h3>
+                <div className="w-12 h-12 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--color-info) 15%, transparent)' }}>
+                  <ListTodo className="w-6 h-6 text-[var(--color-info)]" />
+                </div>
+                <h3 className="font-semibold text-[var(--color-text-primary)] text-sm">Action Items</h3>
               </div>
               <div className="space-y-3 mt-2">
-                <button className="w-full bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-black uppercase tracking-widest py-3 border-2 border-emerald-950 transition-colors">Take Attendance</button>
-                <button className="w-full bg-transparent hover:bg-emerald-800 text-emerald-50 font-black uppercase tracking-widest py-3 border-2 border-emerald-500 transition-colors">Post Notice</button>
+                <Button className="w-full bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white rounded-full">Take Attendance</Button>
+                <Button variant="outline" className="w-full border-primary/40 text-[var(--primary)] rounded-full hover:bg-[var(--primary)] hover:text-white">Post Notice</Button>
               </div>
             </div>
           </div>
 
-          <div className="bg-white border-4 border-emerald-950">
-            <div className="p-6 border-b-4 border-emerald-950 bg-emerald-50">
-              <h3 className="font-black text-emerald-950 uppercase tracking-widest flex items-center gap-3"><Calendar className="w-5 h-5 text-emerald-500" /> Today's Timetable</h3>
+          <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+            <div className="p-6 border-b border-primary/20 bg-[var(--color-surface-1)]">
+              <h3 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-[var(--primary)]" /> Today's Timetable
+              </h3>
             </div>
-            <div className="divide-y-4 divide-emerald-100 p-0">
+            <div className="divide-y divide-primary/10">
               {[
                 { time: '08:00 AM', subject: 'Mathematics (Grade 10)', room: 'Room 302' },
                 { time: '10:30 AM', subject: 'Advanced Calculus', room: 'Lab 4' },
                 { time: '01:00 PM', subject: 'Physics 101', room: 'Room 305' }
               ].map((item, i) => (
-                <div key={i} className="flex items-center gap-6 p-6 hover:bg-emerald-50 transition-colors">
-                  <div className="w-32 shrink-0 text-center font-black text-emerald-950 bg-emerald-200 border-2 border-emerald-950 py-3 uppercase tracking-widest text-sm">{item.time}</div>
-                  <div className="flex-1">
-                    <p className="font-black text-emerald-950 text-xl uppercase tracking-wider">{item.subject}</p>
-                    <p className="text-base font-bold text-emerald-600">{item.room}</p>
+                <div key={i} className="flex items-center gap-4 p-5 hover:bg-[var(--color-surface-2)] transition-colors">
+                  <div className="w-24 shrink-0 text-center font-bold text-[var(--primary)] bg-[var(--primary)]/10 rounded-[var(--radius-md)] py-1.5 text-xs">
+                    {item.time}
                   </div>
-                  <button className="px-6 py-2 bg-emerald-950 text-emerald-50 font-black uppercase tracking-widest text-xs hover:bg-emerald-800 transition-colors">Start</button>
+                  <div className="flex-1">
+                    <p className="font-semibold text-[var(--color-text-primary)]">{item.subject}</p>
+                    <p className="text-sm text-[var(--color-text-secondary)] mt-0.5">{item.room}</p>
+                  </div>
+                  <Button variant="outline" size="sm" className="rounded-full border-primary/30 text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white">Start</Button>
                 </div>
               ))}
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
 
       {activeTab === 'directory' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+        <div className="space-y-6">
           {/* Search & Filter */}
-          <div className="bg-white border-4 border-emerald-950 p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="relative flex-1 w-full max-w-md">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-600 font-black" />
-              <input placeholder="Search directory..." value={search} onChange={e => setSearch(e.target.value)} className="w-full pl-12 pr-4 py-3 bg-emerald-50 border-2 border-emerald-950 font-bold text-emerald-950 placeholder-emerald-400 focus:outline-none focus:ring-4 focus:ring-emerald-200 uppercase tracking-wider" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-secondary)]" />
+              <Input placeholder="Search directory..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 rounded-full border-primary/30 bg-[var(--color-surface-1)] h-11" />
             </div>
             <div className="flex items-center gap-4 w-full md:w-auto">
-              <div className="flex bg-emerald-100 p-1 border-2 border-emerald-950 overflow-x-auto">
+              <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
                 {departments.map(d => (
                   <button
                     key={d}
                     onClick={() => setDepartmentFilter(d)}
-                    className={`px-4 py-2 text-xs font-black uppercase tracking-widest whitespace-nowrap transition-colors ${departmentFilter === d ? 'bg-emerald-950 text-emerald-50' : 'text-emerald-700 hover:bg-emerald-200'}`}
+                    className={`px-4 py-2 text-xs font-semibold whitespace-nowrap transition-colors rounded-full ${departmentFilter === d ? 'bg-[var(--primary)]/10 text-[var(--primary)]' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-2)]'}`}
                   >
                     {d}
                   </button>
                 ))}
               </div>
-              <button onClick={() => { setEditingId(null); setFormData({ full_name: '', email: '', phone: '', department: 'Academics', position: 'Teacher', qualifications: '', subjects: '', defaultPassword: ''}); setShowModal(true); }} className="px-6 py-3 bg-emerald-500 text-emerald-950 font-black uppercase tracking-widest border-4 border-emerald-950 hover:bg-emerald-400 transition-colors flex items-center gap-2 shrink-0">
-                <Plus className="w-4 h-4" /> Add
-              </button>
+              <Button onClick={() => { setEditingId(null); setFormData({ full_name: '', email: '', phone: '', department: 'Academics', position: 'Teacher', qualifications: '', subjects: '', defaultPassword: ''}); setShowModal(true); }} className="bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white rounded-full shrink-0">
+                <Plus className="w-4 h-4 mr-2" /> Add Staff
+              </Button>
             </div>
           </div>
 
           {isLoading ? (
-            <div className="py-12 flex justify-center"><div className="text-emerald-500 font-black animate-pulse text-xl uppercase tracking-widest">{t("loading", "Loading Staff...")}</div></div>
+            <div className="py-12 flex justify-center"><div className="text-[var(--primary)] font-semibold animate-pulse text-lg">{t("loading", "Loading Staff...")}</div></div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-16 bg-emerald-50 border-4 border-emerald-950 border-dashed">
-              <Briefcase className="w-16 h-16 mx-auto mb-4 text-emerald-300" />
-              <p className="font-black text-2xl text-emerald-950 uppercase tracking-widest mb-2">No Staff Found</p>
+            <div className="text-center py-16 bg-[var(--color-surface-1)] border border-dashed border-primary/30 rounded-[var(--radius-xl)]">
+              <Briefcase className="w-12 h-12 mx-auto mb-4 text-[var(--color-text-tertiary)]" />
+              <p className="font-semibold text-[var(--color-text-primary)] text-lg mb-2">No Staff Found</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {filtered.map(teacher => (
-                <div key={teacher.id} className="bg-white border-4 border-emerald-950 p-6 flex flex-col items-center text-center relative hover:bg-emerald-50 transition-colors">
+                <div key={teacher.id} className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 flex flex-col items-center text-center relative hover:border-[var(--primary)]/50 transition-colors">
                   <div className="absolute top-4 right-4">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <button className="h-10 w-10 flex items-center justify-center bg-emerald-100 hover:bg-emerald-200 text-emerald-950 border-2 border-emerald-950 transition-colors">
-                          <MoreVertical className="h-5 w-5" />
+                        <button className="h-8 w-8 rounded-full flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-2)] transition-colors">
+                          <MoreVertical className="h-4 w-4" />
                         </button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="border-4 border-emerald-950 rounded-none bg-white font-bold uppercase tracking-widest text-xs p-2">
+                      <DropdownMenuContent align="end" className="rounded-[var(--radius-lg)] bg-[var(--color-surface-0)] border border-primary/20">
                         <DropdownMenuItem onClick={() => {
                           setEditingId(teacher.id);
                           setFormData({ full_name: teacher.name, phone: teacher.phone, email: teacher.email, position: teacher.position, qualifications: teacher.qualifications, subjects: teacher.subjects, department: teacher.department });
                           setShowModal(true);
-                        }} className="focus:bg-emerald-100 focus:text-emerald-950 cursor-pointer p-3 mb-1">Edit</DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600 focus:bg-red-50 focus:text-red-700 cursor-pointer p-3" onClick={() => {
+                        }} className="cursor-pointer">Edit</DropdownMenuItem>
+                        <DropdownMenuItem className="text-[var(--color-destructive)] focus:text-[var(--color-destructive)] cursor-pointer" onClick={() => {
                           if (window.confirm("Are you sure?")) deleteTeacher.mutate(teacher.id);
                         }}>Delete</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
                   
-                  <div className="w-24 h-24 bg-emerald-500 border-4 border-emerald-950 flex items-center justify-center text-emerald-950 font-black text-3xl mb-6">
+                  <div className="w-20 h-20 rounded-full bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] font-bold text-2xl mb-4 border border-[var(--primary)]/20">
                     {teacher.avatar}
                   </div>
-                  <h3 className="font-black text-emerald-950 text-2xl tracking-tight mb-1">{teacher.name}</h3>
-                  <p className="text-xs font-black text-emerald-500 uppercase tracking-widest mb-6">{teacher.position}</p>
+                  <h3 className="font-display font-semibold text-[var(--color-text-primary)] text-xl tracking-tight mb-1">{teacher.name}</h3>
+                  <p className="text-[11px] font-semibold text-[var(--color-text-secondary)] uppercase tracking-[var(--tracking-widest)] mb-6">{teacher.position}</p>
                   
-                  <div className="w-full space-y-3 mt-auto">
-                    <div className="flex items-center gap-3 bg-emerald-50 border-2 border-emerald-200 p-3">
-                      <div className="w-8 h-8 bg-emerald-950 flex items-center justify-center shrink-0"><GraduationCap className="w-4 h-4 text-emerald-400" /></div>
-                      <span className="truncate font-bold text-emerald-800 text-sm">{teacher.qualifications || 'N/A'}</span>
+                  <div className="w-full space-y-2 mt-auto">
+                    <div className="flex items-center gap-3 bg-[var(--color-surface-1)] border border-primary/10 rounded-[var(--radius-lg)] p-2.5">
+                      <div className="w-8 h-8 rounded-[var(--radius-md)] bg-[var(--primary)]/10 flex items-center justify-center shrink-0"><GraduationCap className="w-4 h-4 text-[var(--primary)]" /></div>
+                      <span className="truncate font-medium text-[var(--color-text-secondary)] text-sm">{teacher.qualifications || 'N/A'}</span>
                     </div>
-                    <div className="flex items-center gap-3 bg-emerald-50 border-2 border-emerald-200 p-3">
-                      <div className="w-8 h-8 bg-emerald-950 flex items-center justify-center shrink-0"><Briefcase className="w-4 h-4 text-emerald-400" /></div>
-                      <span className="truncate font-bold text-emerald-800 text-sm">{teacher.subjects || 'N/A'}</span>
+                    <div className="flex items-center gap-3 bg-[var(--color-surface-1)] border border-primary/10 rounded-[var(--radius-lg)] p-2.5">
+                      <div className="w-8 h-8 rounded-[var(--radius-md)] bg-[var(--primary)]/10 flex items-center justify-center shrink-0"><Briefcase className="w-4 h-4 text-[var(--primary)]" /></div>
+                      <span className="truncate font-medium text-[var(--color-text-secondary)] text-sm">{teacher.subjects || 'N/A'}</span>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
           )}
-        </motion.div>
+        </div>
       )}
 
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-emerald-950/80 backdrop-blur-sm p-4 font-sans">
-          <div className="bg-white border-4 border-emerald-950 w-full max-w-lg p-8 space-y-6 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-3xl font-black text-emerald-950 uppercase tracking-tight">{editingId ? 'Edit Staff' : 'Add Staff'}</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 font-sans">
+          <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] w-full max-w-lg p-6 space-y-6 max-h-[90vh] overflow-y-auto shadow-xl">
+            <h2 className="text-xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight">{editingId ? 'Edit Staff' : 'Add Staff'}</h2>
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-black text-emerald-700 uppercase tracking-widest block mb-2">Full Name</label>
-                <input value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} className="w-full px-4 py-3 bg-emerald-50 border-2 border-emerald-950 font-bold text-emerald-950 focus:outline-none focus:ring-4 focus:ring-emerald-200" />
+                <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5">Full Name</label>
+                <Input value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} className="rounded-[var(--radius-lg)]" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-black text-emerald-700 uppercase tracking-widest block mb-2">Email *</label>
-                  <input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full px-4 py-3 bg-emerald-50 border-2 border-emerald-950 font-bold text-emerald-950 focus:outline-none focus:ring-4 focus:ring-emerald-200" />
+                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5">Email *</label>
+                  <Input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="rounded-[var(--radius-lg)]" />
                 </div>
                 <div>
-                  <label className="text-xs font-black text-emerald-700 uppercase tracking-widest block mb-2">Phone</label>
-                  <input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-emerald-50 border-2 border-emerald-950 font-bold text-emerald-950 focus:outline-none focus:ring-4 focus:ring-emerald-200" />
+                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5">Phone</label>
+                  <Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="rounded-[var(--radius-lg)]" />
                 </div>
               </div>
               {!editingId && (
                 <div>
-                  <label className="text-xs font-black text-emerald-700 uppercase tracking-widest block mb-2">Login Password *</label>
-                  <input value={formData.defaultPassword} placeholder="Required for staff login" onChange={e => setFormData({...formData, defaultPassword: e.target.value})} className="w-full px-4 py-3 bg-emerald-50 border-2 border-emerald-950 font-bold text-emerald-950 focus:outline-none focus:ring-4 focus:ring-emerald-200" />
+                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5">Login Password *</label>
+                  <Input value={formData.defaultPassword} placeholder="Required for staff login" onChange={e => setFormData({...formData, defaultPassword: e.target.value})} className="rounded-[var(--radius-lg)]" />
                 </div>
               )}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-black text-emerald-700 uppercase tracking-widest block mb-2">Department</label>
-                  <select value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} className="w-full px-4 py-3 bg-emerald-50 border-2 border-emerald-950 font-bold text-emerald-950 focus:outline-none focus:ring-4 focus:ring-emerald-200">
+                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5">Department</label>
+                  <select value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} className="w-full flex h-10 w-full rounded-[var(--radius-lg)] border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-out hover:border-primary/40 focus:border-primary focus:ring-4 focus:ring-primary/10">
                     {departments.filter(d => d !== 'All').map(d => <option key={d}>{d}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-black text-emerald-700 uppercase tracking-widest block mb-2">Role / Title</label>
-                  <input value={formData.position} onChange={e => setFormData({...formData, position: e.target.value})} className="w-full px-4 py-3 bg-emerald-50 border-2 border-emerald-950 font-bold text-emerald-950 focus:outline-none focus:ring-4 focus:ring-emerald-200" placeholder="e.g. Math Teacher" />
+                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5">Role / Title</label>
+                  <Input value={formData.position} onChange={e => setFormData({...formData, position: e.target.value})} className="rounded-[var(--radius-lg)]" placeholder="e.g. Math Teacher" />
                 </div>
               </div>
               
               {formData.department === 'Academics' && (
                 <>
                   <div>
-                    <label className="text-xs font-black text-emerald-700 uppercase tracking-widest block mb-2">Qualifications</label>
-                    <input value={formData.qualifications} onChange={e => setFormData({...formData, qualifications: e.target.value})} className="w-full px-4 py-3 bg-emerald-50 border-2 border-emerald-950 font-bold text-emerald-950 focus:outline-none focus:ring-4 focus:ring-emerald-200" placeholder="B.Ed Mathematics" />
+                    <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5">Qualifications</label>
+                    <Input value={formData.qualifications} onChange={e => setFormData({...formData, qualifications: e.target.value})} className="rounded-[var(--radius-lg)]" placeholder="B.Ed Mathematics" />
                   </div>
                   <div>
-                    <label className="text-xs font-black text-emerald-700 uppercase tracking-widest block mb-2">Subjects Taught</label>
-                    <input value={formData.subjects} onChange={e => setFormData({...formData, subjects: e.target.value})} className="w-full px-4 py-3 bg-emerald-50 border-2 border-emerald-950 font-bold text-emerald-950 focus:outline-none focus:ring-4 focus:ring-emerald-200" placeholder="Math, Physics" />
+                    <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5">Subjects Taught</label>
+                    <Input value={formData.subjects} onChange={e => setFormData({...formData, subjects: e.target.value})} className="rounded-[var(--radius-lg)]" placeholder="Math, Physics" />
                   </div>
                 </>
               )}
             </div>
-            <div className="flex gap-4 pt-4">
-              <button className="flex-1 bg-white text-emerald-950 font-black uppercase tracking-widest py-4 border-4 border-emerald-950 hover:bg-emerald-50 transition-colors" onClick={() => setShowModal(false)} disabled={mutateTeacher.isPending}>Cancel</button>
-              <button className="flex-1 bg-emerald-500 text-emerald-950 font-black uppercase tracking-widest py-4 border-4 border-emerald-950 hover:bg-emerald-400 transition-colors" onClick={handleSave} disabled={mutateTeacher.isPending}>
+            <div className="flex gap-3 pt-4">
+              <Button variant="outline" className="flex-1 rounded-full border-primary/30" onClick={() => setShowModal(false)} disabled={mutateTeacher.isPending}>Cancel</Button>
+              <Button className="flex-1 rounded-full bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white" onClick={handleSave} disabled={mutateTeacher.isPending}>
                 {mutateTeacher.isPending ? 'Saving...' : 'Save'}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

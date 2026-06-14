@@ -397,9 +397,7 @@ import AdminUsers from './pages/admin/AdminUsers';
 import AdminBilling from './pages/admin/AdminBilling';
 import AdminSecurity from './pages/admin/AdminSecurity';
 import AdminBroadcasts from './pages/admin/AdminBroadcasts';
-import Automations from './pages/Automations';
 import NotificationsInbox from './pages/NotificationsInbox';
-import ClientPortal from './pages/ClientPortal';
 
 function PlatformRoutes() {
   return (
