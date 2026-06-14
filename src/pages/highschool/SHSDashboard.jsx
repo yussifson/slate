@@ -60,7 +60,7 @@ export default function SHSDashboard() {
  
  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
  {stats.map((stat, i) => (
- <Card key={i} className="border-slate-200 dark:border-slate-700 transition-">
+ <Card key={i} className="border-primary/40 dark:border-primary/40 transition-">
  <CardContent className="p-5 flex items-center justify-between">
  <div>
  <p className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wide">{stat.title}</p>
@@ -75,7 +75,7 @@ export default function SHSDashboard() {
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
- <Card className="lg:col-span-2 border-slate-200 dark:border-slate-700 ">
+ <Card className="lg:col-span-2 border-primary/40 dark:border-primary/40 ">
  <CardContent className="p-6">
  <div className="flex items-center justify-between mb-6">
  <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
@@ -98,7 +98,7 @@ export default function SHSDashboard() {
  </CardContent>
  </Card>
 
- <Card className="border-slate-200 dark:border-slate-700 ">
+ <Card className="border-primary/40 dark:border-primary/40 ">
  <CardContent className="p-6">
  <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 mb-6">
  <Clock className="w-5 h-5 text-amber-500" /> Recent Activities

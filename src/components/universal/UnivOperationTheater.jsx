@@ -97,31 +97,31 @@ const UnivOperationTheater = () => {
       </motion.div>
 
       <div className="grid lg:grid-cols-3 gap-8">
-        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-1 bg-slate-800 p-6 rounded-2xl border border-slate-700">
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-1 bg-slate-800 p-6 rounded-2xl border border-primary/40">
           <h2 className="text-xl font-semibold mb-6 flex items-center gap-2 text-teal-400">
             <Settings className="w-5 h-5" /> Schedule Procedure
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-1">Patient Name</label>
-              <input type="text" name="patient_name" value={formData.patient_name} onChange={handleChange} required className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg focus:border-teal-500 outline-none text-white" />
+              <input type="text" name="patient_name" value={formData.patient_name} onChange={handleChange} required className="w-full p-2.5 bg-slate-900 border border-primary/40 rounded-lg focus:border-teal-500 outline-none text-white" />
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-1">Procedure</label>
-              <input type="text" name="procedure_name" value={formData.procedure_name} onChange={handleChange} required className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg focus:border-teal-500 outline-none text-white" />
+              <input type="text" name="procedure_name" value={formData.procedure_name} onChange={handleChange} required className="w-full p-2.5 bg-slate-900 border border-primary/40 rounded-lg focus:border-teal-500 outline-none text-white" />
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-1">Surgeon</label>
-              <input type="text" name="surgeon" value={formData.surgeon} onChange={handleChange} required className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg focus:border-teal-500 outline-none text-white" />
+              <input type="text" name="surgeon" value={formData.surgeon} onChange={handleChange} required className="w-full p-2.5 bg-slate-900 border border-primary/40 rounded-lg focus:border-teal-500 outline-none text-white" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-1">Operating Room</label>
-                <input type="text" name="operating_room" value={formData.operating_room} onChange={handleChange} required className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg focus:border-teal-500 outline-none text-white" />
+                <input type="text" name="operating_room" value={formData.operating_room} onChange={handleChange} required className="w-full p-2.5 bg-slate-900 border border-primary/40 rounded-lg focus:border-teal-500 outline-none text-white" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-1">Status</label>
-                <select name="status" value={formData.status} onChange={handleChange} className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg focus:border-teal-500 outline-none text-white">
+                <select name="status" value={formData.status} onChange={handleChange} className="w-full p-2.5 bg-slate-900 border border-primary/40 rounded-lg focus:border-teal-500 outline-none text-white">
                   <option value="Scheduled">Scheduled</option>
                   <option value="In Progress">In Progress</option>
                   <option value="Completed">Completed</option>
@@ -132,11 +132,11 @@ const UnivOperationTheater = () => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-1">Start Time</label>
-                <input type="datetime-local" name="start_time" value={formData.start_time} onChange={handleChange} className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg focus:border-teal-500 outline-none text-white text-sm" />
+                <input type="datetime-local" name="start_time" value={formData.start_time} onChange={handleChange} className="w-full p-2.5 bg-slate-900 border border-primary/40 rounded-lg focus:border-teal-500 outline-none text-white text-sm" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-1">End Time</label>
-                <input type="datetime-local" name="end_time" value={formData.end_time} onChange={handleChange} className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg focus:border-teal-500 outline-none text-white text-sm" />
+                <input type="datetime-local" name="end_time" value={formData.end_time} onChange={handleChange} className="w-full p-2.5 bg-slate-900 border border-primary/40 rounded-lg focus:border-teal-500 outline-none text-white text-sm" />
               </div>
             </div>
             <button type="submit" className="w-full bg-teal-600 hover:bg-teal-500 text-white font-medium py-3 rounded-lg transition-colors mt-4">
@@ -149,11 +149,11 @@ const UnivOperationTheater = () => {
           {loading ? (
             <div className="text-center py-20"><Activity className="w-10 h-10 text-teal-500 animate-spin mx-auto" /></div>
           ) : operations.length === 0 ? (
-            <div className="text-center py-20 bg-slate-800 rounded-2xl border border-slate-700 text-muted-foreground">No operations scheduled.</div>
+            <div className="text-center py-20 bg-slate-800 rounded-2xl border border-primary/40 text-muted-foreground">No operations scheduled.</div>
           ) : (
             <div className="grid md:grid-cols-2 gap-4">
               {operations.map((op, index) => (
-                <motion.div key={op.id || index} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }} className="bg-slate-800 p-5 rounded-2xl border border-slate-700 flex flex-col h-full relative overflow-hidden">
+                <motion.div key={op.id || index} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }} className="bg-slate-800 p-5 rounded-2xl border border-primary/40 flex flex-col h-full relative overflow-hidden">
                   <div className={`absolute top-0 right-0 px-3 py-1 text-xs font-bold rounded-bl-lg ${getStatusColor(op.status)}`}>
                     {op.status}
                   </div>
@@ -169,7 +169,7 @@ const UnivOperationTheater = () => {
                       <span className="flex items-center gap-2"><Settings className="w-4 h-4" /> OR:</span>
                       <span className="text-slate-200">{op.operating_room}</span>
                     </div>
-                    <div className="flex items-center justify-between pt-2 border-t border-slate-700/50">
+                    <div className="flex items-center justify-between pt-2 border-t border-primary/40">
                       <span className="flex items-center gap-2 text-teal-400"><Clock className="w-4 h-4" /> Time:</span>
                       <span className="text-slate-200">
                         {new Date(op.start_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) || 'TBD'} - 

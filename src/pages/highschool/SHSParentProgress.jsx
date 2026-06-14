@@ -88,7 +88,7 @@ export default function SHSParentProgress() {
  className={`w-full p-4 rounded-2xl border text-left transition-all duration-300 flex items-center gap-4 ${
  selectedWardId === ward.id 
  ? 'bg-primary dark:bg-primary border-primary dark:border-primary text-white -emerald-500/20 scale-100' 
- : 'bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:border-primary dark:border-slate-200 scale-95'
+ : 'bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:border-primary dark:border-primary/40 scale-95'
 }`}
  >
  <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shrink-0 ${
@@ -122,7 +122,7 @@ export default function SHSParentProgress() {
  </Card>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100">
- <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50">
  <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <BookOpen className="w-5 h-5 text-primary dark:text-primary/70" /> Published Report Cards
  </CardTitle>

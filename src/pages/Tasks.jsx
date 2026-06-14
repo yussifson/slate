@@ -134,7 +134,7 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2">
               <Label className="block mb-1.5">{t("assign_to_multiple_team_member", "Assign To (Multiple Team Members)")}</Label>
-              <div className="border border-border rounded-lg p-3 max-h-36 overflow-y-auto space-y-2 bg-card">
+              <div className="border border-primary/40 rounded-lg p-3 max-h-36 overflow-y-auto space-y-2 bg-card">
                 {staff.map(s => {
                   const isChecked = form.assignees?.some(a => a.id === s.id);
                   return (
@@ -143,7 +143,7 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
                         type="checkbox"
                         checked={isChecked}
                         onChange={(e) => handleStaffChange(s, e.target.checked)}
-                        className="rounded text-primary focus:ring-primary border-border"
+                        className="rounded text-primary focus:ring-primary border-primary/40"
                       />
                       <span>{s.full_name} ({s.role})</span>
                     </label>
@@ -340,7 +340,7 @@ export default function Tasks() {
           { label: "Completed", value: stats.completed, icon: CheckCircle2, color: "text-primary bg-slate-50" },
         ].map(({ label, value, icon: Icon, color }) => {
           return (
-            <div key={label} className="bg-card rounded-xl border border-border p-4 flex items-center gap-3">
+            <div key={label} className="bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-3">
               <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${color}`}>
                 <Icon className="w-4 h-4" />
               </div>

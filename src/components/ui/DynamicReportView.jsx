@@ -60,13 +60,13 @@ function HorizontalBarChart({ title, data, icon: Icon, maxVal}) {
  const total = data.reduce((sum, d) => sum + d.value, 0);
 
  return (
- <div className="bg-card rounded-2xl border border-border overflow-hidden transition-all duration-300 ">
+ <div className="bg-card rounded-2xl border border-primary/40 overflow-hidden transition-all duration-300 ">
  <button
  onClick={() => setCollapsed(!collapsed)}
  className="w-full flex items-center justify-between p-5 pb-4 hover:bg-muted/50/50 transition-colors"
  >
  <div className="flex items-center gap-3">
- <div className="p-2 rounded-xl bg-gradient-to-br from-primary/5 to-primary/5 border border-border">
+ <div className="p-2 rounded-xl bg-gradient-to-br from-primary/5 to-primary/5 border border-primary/40">
  <Icon className="w-4 h-4 text-primary" />
  </div>
  <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
@@ -126,9 +126,9 @@ function HorizontalBarChart({ title, data, icon: Icon, maxVal}) {
 function NumberAggCard({ fieldName, stats}) {
  const label = fieldName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
  return (
- <div className="bg-card rounded-2xl border border-border p-5 transition-all duration-300 ">
+ <div className="bg-card rounded-2xl border border-primary/40 p-5 transition-all duration-300 ">
  <div className="flex items-center gap-3 mb-4">
- <div className="p-2 rounded-xl bg-gradient-to-br from-primary/5 to-primary/5 border border-border">
+ <div className="p-2 rounded-xl bg-gradient-to-br from-primary/5 to-primary/5 border border-primary/40">
  <Hash className="w-4 h-4 text-primary" />
  </div>
  <h3 className="text-sm font-semibold text-slate-800">{label}</h3>
@@ -142,7 +142,7 @@ function NumberAggCard({ fieldName, stats}) {
  ].map(({ k, v, icon: Ic, color}) => (
  <div
  key={k}
- className="flex items-center gap-2.5 p-3 rounded-xl bg-muted/50/80 border border-border"
+ className="flex items-center gap-2.5 p-3 rounded-xl bg-muted/50/80 border border-primary/40"
  >
  <div className={`p-1.5 rounded-lg ${color}`}>
  <Ic className="w-3.5 h-3.5" />
@@ -295,7 +295,7 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
  if (!data || data.length === 0) {
  return (
  <div className="flex flex-col items-center justify-center py-20 text-center">
- <div className="p-5 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 border border-border mb-5">
+ <div className="p-5 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 border border-primary/40 mb-5">
  <BarChart3 className="w-12 h-12 text-slate-300" />
  </div>
  <h3 className="text-lg font-semibold text-foreground mb-2">No Data to Analyze</h3>
@@ -331,7 +331,7 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
  <Button
  variant="outline"
  onClick={handlePrint}
- className="gap-2 text-muted-foreground border-border hover:bg-muted/50 "
+ className="gap-2 text-muted-foreground border-primary/40 hover:bg-muted/50 "
  >
  <Printer className="w-4 h-4" />
  Print Report

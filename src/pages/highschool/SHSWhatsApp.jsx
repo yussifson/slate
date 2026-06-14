@@ -134,7 +134,7 @@ export default function SHSWhatsapp() {
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
- <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
  <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
@@ -146,7 +146,7 @@ export default function SHSWhatsapp() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search campaigns..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -175,7 +175,7 @@ export default function SHSWhatsapp() {
  <Badge variant="secondary" className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-none">
  {camp.data?.targetGroup}
  </Badge>
- <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 flex items-center gap-1 border-l pl-2 border-slate-200 dark:border-slate-700">
+ <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 flex items-center gap-1 border-l pl-2 border-primary/40 dark:border-primary/40">
  <Users className="w-3 h-3" /> {camp.data?.successfulDeliveries} / {camp.data?.recipientCount} Delivered
  </span>
  </div>
@@ -210,12 +210,12 @@ export default function SHSWhatsapp() {
  
  <div className="p-6 bg-[#EFEAE2] space-y-4"> {/* WA background color */}
  
- <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-4 rounded-2xl space-y-4 border border-slate-100 dark:border-slate-800 dark:border-slate-800">
+ <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-4 rounded-2xl space-y-4 border border-primary/40 dark:border-primary/40 dark:border-primary/40">
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Campaign Name</label>
  <Input 
  placeholder="e.g. End of Term Grades Notification"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
  value={newCampaign.campaignName}
  onChange={e => setNewCampaign({...newCampaign, campaignName: e.target.value})}
  />
@@ -224,7 +224,7 @@ export default function SHSWhatsapp() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Target Audience</label>
  <select 
- className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
+ className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
  value={newCampaign.targetGroup}
  onChange={e => setNewCampaign({...newCampaign, targetGroup: e.target.value})}
  >
@@ -238,7 +238,7 @@ export default function SHSWhatsapp() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Approved WA Template</label>
  <select 
- className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary"
+ className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary"
  value={newCampaign.templateId}
  onChange={e => setNewCampaign({...newCampaign, templateId: e.target.value})}
  >
@@ -253,7 +253,7 @@ export default function SHSWhatsapp() {
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Message Content (Variables)</label>
  <textarea 
  placeholder="Hello {{1}}, this is to inform you that..."
- className="w-full h-32 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary resize-none text-sm"
+ className="w-full h-32 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary resize-none text-sm"
  value={newCampaign.customMessage}
  onChange={e => setNewCampaign({...newCampaign, customMessage: e.target.value})}
  />
@@ -262,7 +262,7 @@ export default function SHSWhatsapp() {
  
  </div>
  
- <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end gap-3">
+ <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3">
  <Button variant="outline" onClick={() => setIsSendModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
  Cancel
  </Button>

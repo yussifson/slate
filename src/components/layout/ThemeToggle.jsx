@@ -34,7 +34,7 @@ export default function ThemeToggle() {
  <button
  onClick={() => setIsOpen(!isOpen)}
  className={cn(
- "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-border bg-card hover:bg-muted/50 transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-primary/40",
+ "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-primary/40 bg-card hover:bg-muted/50 transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-primary/40",
  isOpen && "bg-muted border-primary/30 ring-1 ring-primary/40"
  )}
  title="Switch theme"
@@ -50,7 +50,7 @@ export default function ThemeToggle() {
 
  {/* Floating Glassmorphism Dropdown */}
  {isOpen && (
- <div className="absolute right-0 mt-2 w-36 rounded-xl border border-border/80 bg-card/85 backdrop-blur-md p-1.5 animate-in fade-in zoom-in-95 duration-150 z-50">
+ <div className="absolute right-0 mt-2 w-36 rounded-xl border border-primary/40 bg-card/85 backdrop-blur-md p-1.5 animate-in fade-in zoom-in-95 duration-150 z-50">
  <div className="space-y-1">
  {themeOptions.map((option) => {
  const isSelected = option.value === theme;

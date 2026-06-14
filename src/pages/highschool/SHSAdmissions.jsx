@@ -150,7 +150,7 @@ export default function SHSAdmissions() {
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
- <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
  <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Applications List</CardTitle>
@@ -160,7 +160,7 @@ export default function SHSAdmissions() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search name or ID..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -202,7 +202,7 @@ export default function SHSAdmissions() {
  {applicant.case_number}
  </td>
  <td className="px-6 py-4">
- <Badge variant="outline" className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 dark:text-slate-200 font-bold">
+ <Badge variant="outline" className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 text-slate-700 dark:text-slate-300 dark:text-slate-200 font-bold">
  {applicant.data?.beceAggregate}
  </Badge>
  </td>
@@ -250,7 +250,7 @@ export default function SHSAdmissions() {
  <div className="space-y-6">
  
  <div className="space-y-4">
- <h4 className="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-2">
+ <h4 className="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 border-b border-primary/40 dark:border-primary/40 pb-2">
  <span className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70 flex items-center justify-center text-xs">1</span>
  Personal Details
  </h4>
@@ -258,7 +258,7 @@ export default function SHSAdmissions() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">First Name</label>
  <Input 
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
  value={newApplicant.firstName}
  onChange={e => setNewApplicant({...newApplicant, firstName: e.target.value})}
  />
@@ -266,7 +266,7 @@ export default function SHSAdmissions() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Last Name</label>
  <Input 
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
  value={newApplicant.lastName}
  onChange={e => setNewApplicant({...newApplicant, lastName: e.target.value})}
  />
@@ -275,7 +275,7 @@ export default function SHSAdmissions() {
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Date of Birth</label>
  <Input 
  type="date"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
  value={newApplicant.dob}
  onChange={e => setNewApplicant({...newApplicant, dob: e.target.value})}
  />
@@ -283,7 +283,7 @@ export default function SHSAdmissions() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Gender</label>
  <select 
- className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-10 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
  value={newApplicant.gender}
  onChange={e => setNewApplicant({...newApplicant, gender: e.target.value})}
  >
@@ -295,7 +295,7 @@ export default function SHSAdmissions() {
  </div>
 
  <div className="space-y-4">
- <h4 className="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-2">
+ <h4 className="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 border-b border-primary/40 dark:border-primary/40 pb-2">
  <span className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70 flex items-center justify-center text-xs">2</span>
  Academic & Programme
  </h4>
@@ -303,7 +303,7 @@ export default function SHSAdmissions() {
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">JHS Attended</label>
  <Input 
  placeholder="e.g. Ridge Religion School"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
  value={newApplicant.jhsAttended}
  onChange={e => setNewApplicant({...newApplicant, jhsAttended: e.target.value})}
  />
@@ -314,7 +314,7 @@ export default function SHSAdmissions() {
  <Input 
  type="number"
  placeholder="e.g. 06"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
  value={newApplicant.beceAggregate}
  onChange={e => setNewApplicant({...newApplicant, beceAggregate: e.target.value})}
  />
@@ -322,7 +322,7 @@ export default function SHSAdmissions() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Status</label>
  <select 
- className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-10 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
  value={newApplicant.status}
  onChange={e => setNewApplicant({...newApplicant, status: e.target.value})}
  >
@@ -337,7 +337,7 @@ export default function SHSAdmissions() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">1st Choice</label>
  <select 
- className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-10 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
  value={newApplicant.programChoice1}
  onChange={e => setNewApplicant({...newApplicant, programChoice1: e.target.value})}
  >
@@ -352,7 +352,7 @@ export default function SHSAdmissions() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">2nd Choice</label>
  <select 
- className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-10 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
  value={newApplicant.programChoice2}
  onChange={e => setNewApplicant({...newApplicant, programChoice2: e.target.value})}
  >
@@ -370,7 +370,7 @@ export default function SHSAdmissions() {
  </div>
  </ScrollArea>
  
- <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end gap-3">
+ <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3">
  <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
  Cancel
  </Button>

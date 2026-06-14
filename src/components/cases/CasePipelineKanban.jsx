@@ -92,9 +92,9 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
 };
 
  return (
- <div className="bg-card rounded-xl border border-border overflow-hidden">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
  {/* Header */}
- <div className="p-4 border-b border-border flex items-center justify-between gap-3 flex-wrap">
+ <div className="p-4 border-b border-primary/40 flex items-center justify-between gap-3 flex-wrap">
  <div className="flex items-center gap-2">
  <CheckCircle className="w-4 h-4 text-primary" />
  <span className="text-sm font-semibold">{t("case_board", "Case Board")}</span>
@@ -146,7 +146,7 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
  ref={provided.innerRef}
  {...provided.draggableProps}
  className={`bg-card border rounded-lg p-2.5 text-xs space-y-1.5 ${
- snapshot.isDragging ? " border-primary/40 rotate-1" : "border-border"
+ snapshot.isDragging ? " border-primary/40 rotate-1" : "border-primary/40"
 }`}
  >
  <div className="flex items-start gap-1.5">
@@ -173,7 +173,7 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
 })}
  {provided.placeholder}
  {(stageCards[stage.id]?.length === 0) && !snapshot.isDraggingOver && (
- <div className="h-12 rounded-lg border border-dashed border-primary/50 flex items-center justify-center">
+ <div className="h-12 rounded-lg border border-dashed border-primary/40 flex items-center justify-center">
  <span className="text-[10px] text-muted-foreground">{t("drop_here", "Drop here")}</span>
  </div>
  )}
@@ -196,7 +196,7 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
  <div className="space-y-2 bg-muted/10 rounded-lg p-2 min-h-[120px]">
  {untrackedCases.slice(0, 8).map(c => {
  return (
- <div key={c.id} className="bg-card border border-dashed border-primary/50 rounded-lg p-2.5 text-xs">
+ <div key={c.id} className="bg-card border border-dashed border-primary/40 rounded-lg p-2.5 text-xs">
  <p className="font-medium line-clamp-2 text-muted-foreground mb-1">{c.title}</p>
  <Button
  size="sm"

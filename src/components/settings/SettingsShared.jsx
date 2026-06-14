@@ -5,7 +5,7 @@ import { Loader2, Save} from "lucide-react";
 
 export function SectionCard({ title, subtitle, onSave, saving, children}) {
  return (
- <div className="space-y-8 pb-12 border-b border-border/40 last:border-0 last:pb-0">
+ <div className="space-y-8 pb-12 border-b border-primary/40 last:border-0 last:pb-0">
  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
  <div className="space-y-2">
  <h2 className="text-xl font-bold tracking-tight text-foreground">{title}</h2>

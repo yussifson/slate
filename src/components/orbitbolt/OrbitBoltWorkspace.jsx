@@ -270,9 +270,9 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  initial={{ width: 0, opacity: 0}}
  animate={{ width: 208, opacity: 1}}
  exit={{ width: 0, opacity: 0}}
- className="shrink-0 border-r border-border bg-muted/20 flex flex-col overflow-hidden"
+ className="shrink-0 border-r border-primary/40 bg-muted/20 flex flex-col overflow-hidden"
  >
- <div className="px-3 py-2.5 border-b border-border flex items-center justify-between whitespace-nowrap">
+ <div className="px-3 py-2.5 border-b border-primary/40 flex items-center justify-between whitespace-nowrap">
  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Workslates</span>
  <div className="flex items-center gap-1">
  <button onClick={startNewSession} className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-primary transition-colors" title="New slate">
@@ -318,7 +318,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  {/* Main Panel */}
  <div className="flex-1 flex flex-col min-w-0 w-[400px]">
  {/* Header */}
- <div className="flex items-center gap-2 px-3 py-2.5 border-b border-border bg-gradient-to-r from-primary/10 to-primary/5 shrink-0">
+ <div className="flex items-center gap-2 px-3 py-2.5 border-b border-primary/40 bg-gradient-to-r from-primary/10 to-primary/5 shrink-0">
  <button
  onClick={() => setShowHistory(prev => !prev)}
  className={clsx(
@@ -361,7 +361,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  "max-w-[88%] text-[13px] leading-relaxed",
  m.role === 'user'
  ? 'rounded-2xl rounded-tr-sm px-4 py-2.5 bg-primary text-white '
- : 'rounded-2xl rounded-tl-sm px-4 py-3 bg-muted ring-1 ring-border/50 text-foreground prose prose-sm dark:prose-invert max-w-none prose-p:my-1.5 prose-pre:bg-card prose-pre:border prose-pre:border-border prose-pre:rounded-lg prose-code:text-primary/90 dark:prose-code:text-primary/80 prose-code:before:content-none prose-code:after:content-none'
+ : 'rounded-2xl rounded-tl-sm px-4 py-3 bg-muted ring-1 ring-border/50 text-foreground prose prose-sm dark:prose-invert max-w-none prose-p:my-1.5 prose-pre:bg-card prose-pre:border prose-pre:border-primary/40 prose-pre:rounded-lg prose-code:text-primary/90 dark:prose-code:text-primary/80 prose-code:before:content-none prose-code:after:content-none'
  )}>
  <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
  </div>
@@ -382,7 +382,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  </div>
 
  {/* Input Area */}
- <div className="p-3 shrink-0 border-t border-border bg-card">
+ <div className="p-3 shrink-0 border-t border-primary/40 bg-card">
  <form onSubmit={handleSend}>
  <div className="relative rounded-xl overflow-hidden flex flex-col bg-background ring-1 ring-border focus-within:ring-2 focus-within:ring-primary/50 transition-all ">
  <textarea

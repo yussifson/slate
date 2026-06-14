@@ -181,7 +181,7 @@ export default function Leave() {
  </Button>
  </div>
  <div className="grid grid-cols-3 gap-4">
- <div className="stat-card-premium bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+ <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
  <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
  <CalendarDays className="w-5 h-5" />
  </div>
@@ -190,7 +190,7 @@ export default function Leave() {
  <p className="text-xs text-muted-foreground">{t("total_requests", "Total Requests")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+ <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
  <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600">
  <CalendarOff className="w-5 h-5" />
  </div>
@@ -199,7 +199,7 @@ export default function Leave() {
  <p className="text-xs text-muted-foreground">{t("pending_review", "Pending Review")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+ <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
  <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
  <Check className="w-5 h-5" />
  </div>
@@ -224,7 +224,7 @@ export default function Leave() {
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  {requests.map(req => {
  return (
- <div key={req.id} className="bg-card rounded-xl border border-border overflow-hidden flex flex-col relative group">
+ <div key={req.id} className="bg-card rounded-xl border border-primary/40 overflow-hidden flex flex-col relative group">
  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
@@ -260,7 +260,7 @@ export default function Leave() {
 }`}>{req.status}</span>
  </div>
  
- <div className="bg-muted rounded-lg p-3 border border-border mb-4">
+ <div className="bg-muted rounded-lg p-3 border border-primary/40 mb-4">
  <div className="flex items-center gap-2 mb-2 text-foreground font-bold"><CalendarOff className="w-4 h-4"/> {req.leaveType} {t("leave", "Leave")}</div>
  <div className="text-sm text-muted-foreground font-medium">
  {req.startDate} {t("to", "to")} {req.endDate} <span className="text-muted-foreground font-normal">({req.days} {t("days", "days)")}</span>
@@ -269,11 +269,11 @@ export default function Leave() {
  
  <div className="text-sm">
  <span className="text-muted-foreground font-medium block mb-1">{t("reason", "Reason:")}</span>
- <p className="text-card-foreground bg-muted p-2 rounded border border-border">"{req.reason}"</p>
+ <p className="text-card-foreground bg-muted p-2 rounded border border-primary/40">"{req.reason}"</p>
  </div>
  </div>
  {req.status === 'Pending' && (
- <div className="p-4 bg-muted border-t border-border grid grid-cols-2 gap-3 mt-auto">
+ <div className="p-4 bg-muted border-t border-primary/40 grid grid-cols-2 gap-3 mt-auto">
  <Button onClick={() => handleUpdateStatus(req, 'Rejected')} variant="outline" className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 gap-2"><X className="w-4 h-4"/> {t("reject", "Reject")}</Button>
  <Button onClick={() => handleUpdateStatus(req, 'Approved')} className="w-full bg-primary hover:bg-primary/90 text-white gap-2"><Check className="w-4 h-4"/> {t("approve", "Approve")}</Button>
  </div>
@@ -285,7 +285,7 @@ export default function Leave() {
  )}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-border">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
  <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Leave Request' : 'New Leave Request'}</h2>
  <div className="space-y-3">
  <div>

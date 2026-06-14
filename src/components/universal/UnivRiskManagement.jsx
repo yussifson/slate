@@ -171,7 +171,7 @@ export default function UnivRiskManagement({
  <div className="flex flex-col h-full bg-background font-sans">
  
  {/* Header */}
- <div className="border-b border-border bg-card px-6 sm:px-8 py-6 shrink-0 z-10 relative">
+ <div className="border-b border-primary/40 bg-card px-6 sm:px-8 py-6 shrink-0 z-10 relative">
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-2xl font-extrabold text-foreground tracking-tight flex items-center gap-2">
@@ -202,10 +202,10 @@ export default function UnivRiskManagement({
  placeholder="Search risks..."
  value={searchQuery}
  onChange={e => setSearchQuery(e.target.value)}
- className="w-full h-10 pl-9 pr-4 bg-muted/50 border border-border rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+ className="w-full h-10 pl-9 pr-4 bg-muted/50 border border-primary/40 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
  />
  </div>
- <button className="h-10 px-4 bg-background border border-border rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-muted transition-colors ">
+ <button className="h-10 px-4 bg-background border border-primary/40 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-muted transition-colors ">
  <Filter className="w-4 h-4 text-muted-foreground" /> Filter
  </button>
  </div>
@@ -224,9 +224,9 @@ export default function UnivRiskManagement({
  <p className="text-sm mt-1">Add risks to build your register.</p>
  </div>
  ) : (
- <div className="bg-card border border-border rounded-2xl overflow-hidden">
+ <div className="bg-card border border-primary/40 rounded-2xl overflow-hidden">
  <table className="w-full text-sm text-left">
- <thead className="bg-muted/50 border-b border-border text-xs uppercase tracking-wider text-muted-foreground">
+ <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-muted-foreground">
  <tr>
  <th className="px-6 py-4 font-semibold">Risk Title & Category</th>
  <th className="px-6 py-4 font-semibold text-center">Score (I × L)</th>
@@ -285,7 +285,7 @@ export default function UnivRiskManagement({
  )
  ) : (
  // MATRIX VIEW
- <div className="bg-card border border-border rounded-2xl p-6 sm:p-10">
+ <div className="bg-card border border-primary/40 rounded-2xl p-6 sm:p-10">
  <div className="flex justify-between items-end mb-8">
  <div>
  <h2 className="text-xl font-bold text-foreground">Risk Heatmap</h2>
@@ -355,9 +355,9 @@ export default function UnivRiskManagement({
  initial={{ opacity: 0, scale: 0.95, y: 20}}
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: 20}}
- className="relative w-full max-w-2xl bg-card border border-border rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
+ className="relative w-full max-w-2xl bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
  >
- <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-muted/20">
+ <div className="px-6 py-4 border-b border-primary/40 flex items-center justify-between bg-muted/20">
  <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
  <AlertTriangle className="w-5 h-5 text-primary" />
  {editingRisk ? 'Edit Risk Record' : 'Log New Risk'}
@@ -369,11 +369,11 @@ export default function UnivRiskManagement({
  <div className="grid grid-cols-2 gap-4">
  <div className="col-span-2">
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Risk Title *</label>
- <input required type="text" value={formState.title} onChange={e => setFormState({...formState, title: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input required type="text" value={formState.title} onChange={e => setFormState({...formState, title: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Category</label>
- <select value={formState.category} onChange={e => setFormState({...formState, category: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none">
+ <select value={formState.category} onChange={e => setFormState({...formState, category: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none">
  <option>Operational</option>
  <option>Financial</option>
  <option>Strategic</option>
@@ -384,11 +384,11 @@ export default function UnivRiskManagement({
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Owner</label>
- <input type="text" value={formState.owner} onChange={e => setFormState({...formState, owner: e.target.value})} placeholder="Person/Team responsible" className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input type="text" value={formState.owner} onChange={e => setFormState({...formState, owner: e.target.value})} placeholder="Person/Team responsible" className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  </div>
 
- <div className="bg-muted/30 border border-border rounded-xl p-4 grid grid-cols-2 gap-6">
+ <div className="bg-muted/30 border border-primary/40 rounded-xl p-4 grid grid-cols-2 gap-6">
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-3">Impact (Severity)</label>
  <input type="range" min="1" max="5" value={formState.impact} onChange={e => setFormState({...formState, impact: parseInt(e.target.value)})} className="w-full accent-primary" />
@@ -405,7 +405,7 @@ export default function UnivRiskManagement({
  <span>5: Almost Certain</span>
  </div>
  </div>
- <div className="col-span-2 flex items-center justify-between bg-card border border-border rounded-lg p-3">
+ <div className="col-span-2 flex items-center justify-between bg-card border border-primary/40 rounded-lg p-3">
  <span className="text-sm font-bold text-foreground">Calculated Risk Score:</span>
  <div className="flex items-center gap-2">
  <span className="font-mono font-black text-xl">{formState.impact * formState.likelihood}</span>
@@ -418,21 +418,21 @@ export default function UnivRiskManagement({
 
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Mitigation Plan</label>
- <textarea value={formState.mitigation_plan} onChange={e => setFormState({...formState, mitigation_plan: e.target.value})} placeholder="Steps taken to reduce probability or impact..." className="w-full h-24 p-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none resize-none" />
+ <textarea value={formState.mitigation_plan} onChange={e => setFormState({...formState, mitigation_plan: e.target.value})} placeholder="Steps taken to reduce probability or impact..." className="w-full h-24 p-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none resize-none" />
  </div>
 
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Status</label>
  <div className="flex gap-2">
- <button type="button" onClick={() => setFormState({...formState, status: 'Open'})} className={cn("flex-1 h-10 rounded-lg text-sm font-bold uppercase tracking-wider transition-colors border", formState.status === 'Open' ? "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/40 dark:text-amber-400 dark:border-amber-800" : "bg-background text-muted-foreground border-border")}>Open</button>
- <button type="button" onClick={() => setFormState({...formState, status: 'Closed/Mitigated'})} className={cn("flex-1 h-10 rounded-lg text-sm font-bold uppercase tracking-wider transition-colors border", formState.status === 'Closed/Mitigated' ? "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-400 dark:border-emerald-800" : "bg-background text-muted-foreground border-border")}>Closed / Mitigated</button>
+ <button type="button" onClick={() => setFormState({...formState, status: 'Open'})} className={cn("flex-1 h-10 rounded-lg text-sm font-bold uppercase tracking-wider transition-colors border", formState.status === 'Open' ? "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/40 dark:text-amber-400 dark:border-amber-800" : "bg-background text-muted-foreground border-primary/40")}>Open</button>
+ <button type="button" onClick={() => setFormState({...formState, status: 'Closed/Mitigated'})} className={cn("flex-1 h-10 rounded-lg text-sm font-bold uppercase tracking-wider transition-colors border", formState.status === 'Closed/Mitigated' ? "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-400 dark:border-emerald-800" : "bg-background text-muted-foreground border-primary/40")}>Closed / Mitigated</button>
  </div>
  </div>
 
  </form>
  </div>
  
- <div className="px-6 py-4 border-t border-border bg-muted/20 flex justify-end gap-3">
+ <div className="px-6 py-4 border-t border-primary/40 bg-muted/20 flex justify-end gap-3">
  <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors">Cancel</button>
  <button type="submit" form="risk-form" disabled={saveMutation.isPending} className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors disabled:opacity-50">
  {saveMutation.isPending ? 'Saving...' : 'Save Risk'}

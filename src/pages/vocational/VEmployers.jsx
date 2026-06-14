@@ -62,12 +62,12 @@ export default function VEmployers() {
 
  <div className="flex-1 flex gap-6 overflow-hidden">
  <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
- <div className="p-4 border-b border-primary/5 dark:border-slate-800">
+ <div className="p-4 border-b border-primary/5 dark:border-primary/40">
  <div className="relative">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
  <Input 
  placeholder="Search employers..." 
- className="pl-9 h-10 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
+ className="pl-9 h-10 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -139,7 +139,7 @@ export default function VEmployers() {
 
  <div className="mt-8">
  <Tabs defaultValue="overview" className="w-full">
- <TabsList className="bg-slate-500 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-slate-200 dark:border-slate-700">
+ <TabsList className="bg-slate-500 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-primary/40 dark:border-primary/40">
  <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-primary">Overview</TabsTrigger>
  <TabsTrigger value="contacts" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-primary">Key Contacts</TabsTrigger>
  <TabsTrigger value="placements" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-primary">Placements</TabsTrigger>
@@ -148,7 +148,7 @@ export default function VEmployers() {
  <div className="mt-6">
  <TabsContent value="overview" className="space-y-6 outline-none">
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
- <div className="p-6 rounded-2xl bg-primary/30 border border-slate-200 dark:border-slate-700 space-y-4">
+ <div className="p-6 rounded-2xl bg-primary/30 border border-primary/40 dark:border-primary/40 space-y-4">
  <h3 className="text-sm font-bold text-primary uppercase tracking-wider">Company Info</h3>
  <div className="space-y-4">
  <div>
@@ -162,7 +162,7 @@ export default function VEmployers() {
  </div>
  </div>
  
- <div className="p-6 rounded-2xl bg-primary/30 border border-slate-200 dark:border-slate-700 space-y-4">
+ <div className="p-6 rounded-2xl bg-primary/30 border border-primary/40 dark:border-primary/40 space-y-4">
  <h3 className="text-sm font-bold text-primary uppercase tracking-wider">Partnership Details</h3>
  <div className="grid grid-cols-2 gap-4">
  <div>
@@ -187,7 +187,7 @@ export default function VEmployers() {
  </TabsContent>
  
  <TabsContent value="contacts" className="outline-none">
- <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-800 dark:border-slate-700">
+ <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/30 border border-primary/40 dark:border-primary/40 dark:border-primary/40">
  <h3 className="text-sm font-bold text-primary uppercase tracking-wider mb-4">Primary Contact</h3>
  <div className="flex flex-col gap-3">
  <div className="flex items-center gap-3">
@@ -200,11 +200,11 @@ export default function VEmployers() {
  </div>
  </div>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
- <div className="flex items-center gap-2 p-3 rounded-xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 dark:border-slate-800">
+ <div className="flex items-center gap-2 p-3 rounded-xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 border border-primary/40 dark:border-primary/40 dark:border-primary/40">
  <Mail className="w-4 h-4 text-primary" />
  <span className="text-sm text-slate-700 dark:text-slate-300 dark:text-slate-300">{selectedEmployer.data?.contactEmail || 'No email provided'}</span>
  </div>
- <div className="flex items-center gap-2 p-3 rounded-xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 dark:border-slate-800">
+ <div className="flex items-center gap-2 p-3 rounded-xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 border border-primary/40 dark:border-primary/40 dark:border-primary/40">
  <Phone className="w-4 h-4 text-primary" />
  <span className="text-sm text-slate-700 dark:text-slate-300 dark:text-slate-300">{selectedEmployer.data?.contactPhone || 'No phone provided'}</span>
  </div>
@@ -214,7 +214,7 @@ export default function VEmployers() {
  </TabsContent>
 
  <TabsContent value="placements" className="outline-none">
- <div className="p-8 text-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl">
+ <div className="p-8 text-center border-2 border-dashed border-primary/40 dark:border-primary/40 rounded-2xl">
  <h4 className="text-slate-700 dark:text-slate-300 dark:text-slate-200 font-bold mb-2">Recent Placements</h4>
  <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">View the history of trainees placed at this organization.</p>
  <Button variant="outline" className="border-primary/20 text-primary hover:bg-slate-50 dark:bg-slate-800/50 rounded-xl">

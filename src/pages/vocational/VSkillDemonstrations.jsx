@@ -56,12 +56,12 @@ export default function VSkillDemonstrations() {
 
  <div className="flex-1 flex gap-6 overflow-hidden">
  <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
- <div className="p-4 border-b border-primary/5 dark:border-slate-800">
+ <div className="p-4 border-b border-primary/5 dark:border-primary/40">
  <div className="relative">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
  <Input 
  placeholder="Search demonstrations..." 
- className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
+ className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -120,7 +120,7 @@ export default function VSkillDemonstrations() {
  <div className="flex-1 mt-4 sm:mt-12">
  <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">{selectedDemo.title}</h2>
  <div className="flex items-center gap-3 mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium">
- <span className="flex items-center gap-1.5"><Badge variant="outline" className="border-primary/20 dark:border-slate-600 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary">{selectedDemo.data?.skill_name}</Badge></span>
+ <span className="flex items-center gap-1.5"><Badge variant="outline" className="border-primary/20 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary">{selectedDemo.data?.skill_name}</Badge></span>
  <span>•</span>
  <span className="flex items-center gap-1.5">Trainee: {selectedDemo.data?.trainee_name || 'N/A'}</span>
  <span>•</span>
@@ -133,7 +133,7 @@ export default function VSkillDemonstrations() {
 
  <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
  <div className="space-y-4">
- <div className="bg-slate-900 rounded-2xl aspect-video flex items-center justify-center text-slate-500 dark:text-slate-400 border-4 border-slate-800 relative overflow-hidden">
+ <div className="bg-slate-900 rounded-2xl aspect-video flex items-center justify-center text-slate-500 dark:text-slate-400 border-4 border-primary/40 relative overflow-hidden">
  {selectedDemo.data?.video_url ? (
  <div className="absolute inset-0 flex flex-col items-center justify-center text-white bg-slate-800/80">
  <PlayCircle className="w-16 h-16 text-primary/70 mb-2" />
@@ -153,7 +153,7 @@ export default function VSkillDemonstrations() {
  </div>
 
  <div className="space-y-6">
- <Card className="border-slate-200 dark:border-slate-700 ">
+ <Card className="border-primary/40 dark:border-primary/40 ">
  <CardHeader className="pb-3">
  <CardTitle className="text-lg flex items-center gap-2"><CheckSquare className="w-5 h-5 text-primary" /> Assessment Checklist</CardTitle>
  </CardHeader>
@@ -179,7 +179,7 @@ export default function VSkillDemonstrations() {
  </CardContent>
  </Card>
 
- <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+ <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 p-4 rounded-xl border border-primary/40 dark:border-primary/40">
  <h4 className="text-sm font-bold text-primary/90 dark:text-primary/70 mb-2">Evaluator Remarks</h4>
  <p className="text-sm text-slate-700 dark:text-slate-300 dark:text-slate-300">
  {selectedDemo.data?.remarks || 'No remarks provided for this demonstration.'}

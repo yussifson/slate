@@ -31,7 +31,7 @@ export default function DocumentPreviewModal({ fileUrl, fileName, open, onClose}
  <iframe
  src={`${fileUrl}#toolbar=0`}
  title={fileName}
- className="w-full h-[60vh] border border-border rounded-lg "
+ className="w-full h-[60vh] border border-primary/40 rounded-lg "
  />
  );
 } else if (isText) {
@@ -40,7 +40,7 @@ export default function DocumentPreviewModal({ fileUrl, fileName, open, onClose}
  <iframe
  src={fileUrl}
  title={fileName}
- className="w-full h-[60vh] border border-border rounded-lg bg-card p-4 text-sm font-mono "
+ className="w-full h-[60vh] border border-primary/40 rounded-lg bg-card p-4 text-sm font-mono "
  />
  );
 } else {
@@ -50,7 +50,7 @@ export default function DocumentPreviewModal({ fileUrl, fileName, open, onClose}
  <iframe
  src={googleViewerUrl}
  title={fileName}
- className="w-full h-[60vh] border border-border rounded-lg "
+ className="w-full h-[60vh] border border-primary/40 rounded-lg "
  />
  );
 }
@@ -58,7 +58,7 @@ export default function DocumentPreviewModal({ fileUrl, fileName, open, onClose}
  return (
  <Dialog open={open} onOpenChange={onClose}>
  <DialogContent className="max-w-3xl max-h-[85vh] p-6 font-sans">
- <DialogHeader className="border-b border-border pb-3 flex flex-row items-center justify-between gap-4">
+ <DialogHeader className="border-b border-primary/40 pb-3 flex flex-row items-center justify-between gap-4">
  <div>
  <DialogTitle className="text-sm font-bold flex items-center gap-2">
  <FileText className="w-4 h-4 text-primary" />

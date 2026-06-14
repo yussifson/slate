@@ -93,7 +93,7 @@ export default function Assignments() {
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {filtered.map(a => (
- <div key={a.id} className="bg-card/60 backdrop-blur-md rounded-3xl border border-border/60 p-6 hover:-translate-y-1.5 transition-all duration-300 group relative overflow-hidden flex flex-col">
+ <div key={a.id} className="bg-card/60 backdrop-blur-md rounded-3xl border border-primary/40 p-6 hover:-translate-y-1.5 transition-all duration-300 group relative overflow-hidden flex flex-col">
  <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-transparent to-transparent dark:from-primary/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
  <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity pointer-events-none transform translate-x-1/4 -translate-y-1/4 scale-150 z-0">
  <FileText className="w-32 h-32 text-primary dark:text-primary/70" />
@@ -126,11 +126,11 @@ export default function Assignments() {
  </div>
  </div>
  
- <div className="bg-slate-50/50 dark:bg-transparent dark:bg-slate-900/50 border border-border/50 p-4 rounded-xl mb-5 relative z-10 flex-1">
+ <div className="bg-slate-50/50 dark:bg-transparent dark:bg-slate-900/50 border border-primary/40 p-4 rounded-xl mb-5 relative z-10 flex-1">
  <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">{a.description}</p>
  </div>
  
- <div className="flex items-center justify-between pt-4 border-t border-border/50 mt-auto relative z-10">
+ <div className="flex items-center justify-between pt-4 border-t border-primary/40 mt-auto relative z-10">
  <span className="text-xs font-bold flex items-center gap-2 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
  <Calendar className="w-4 h-4 text-primary" /> Due: {a.dueDate ? format(new Date(a.dueDate), 'MMM d, yyyy') : 'No Date'}
  </span>
@@ -143,7 +143,7 @@ export default function Assignments() {
 
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
- <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+ <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-primary/40 max-h-[90vh] overflow-y-auto custom-scrollbar">
  <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Assignment' : 'Create Assignment'}</h2>
  <div className="space-y-3">
  <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("title", "Title")}</label><Input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="mt-1" /></div>

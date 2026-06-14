@@ -98,7 +98,7 @@ export default function UnivRoute() {
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Kanban","Dashboard"].map(v => (
  <button 
  key={v} 
@@ -121,8 +121,8 @@ export default function UnivRoute() {
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -130,7 +130,7 @@ export default function UnivRoute() {
  placeholder="Search routes..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -143,7 +143,7 @@ export default function UnivRoute() {
  animate={{ opacity: 1, scale: 1}}
  transition={{ delay: idx * 0.05}}
  key={r.id} 
- className="bg-background border border-border rounded-2xl p-5 hover:border-primary/40 transition-colors flex flex-col h-full group"
+ className="bg-background border border-primary/40 rounded-2xl p-5 hover:border-primary/40 transition-colors flex flex-col h-full group"
  >
  <div className="flex justify-between items-start mb-4">
  <div className="flex items-center gap-3">
@@ -155,7 +155,7 @@ export default function UnivRoute() {
  <span className={`px-2 py-0.5 mt-1 text-[10px] uppercase tracking-wider font-bold rounded-md border inline-flex w-fit ${
  r.status === 'Active' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
  r.status === 'Completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
- 'bg-background text-foreground border-border'
+ 'bg-background text-foreground border-primary/40'
 }`}>
  {r.status}
  </span>
@@ -164,8 +164,8 @@ export default function UnivRoute() {
  <button className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-primary"><MoreHorizontal className="w-4 h-4" /></button>
  </div>
 
- <div className="flex-1 bg-muted/30 rounded-xl p-4 border border-border/50 relative">
- <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-border z-0"></div>
+ <div className="flex-1 bg-muted/30 rounded-xl p-4 border border-primary/40 relative">
+ <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-primary/40 z-0"></div>
  
  <div className="flex items-start gap-3 relative z-10 mb-6">
  <div className="w-4 h-4 rounded-full bg-background border-2 border-primary flex-shrink-0 mt-0.5"></div>
@@ -186,7 +186,7 @@ export default function UnivRoute() {
  </div>
  </div>
 
- <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground pt-4 border-t border-border">
+ <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground pt-4 border-t border-primary/40">
  <div className="flex items-center gap-1.5"><Navigation className="w-4 h-4" /> {r.estimated_distance} mi</div>
  <div className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> {r.estimated_duration}</div>
  </div>

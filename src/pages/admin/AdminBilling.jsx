@@ -67,7 +67,7 @@ export default function AdminBilling() {
 }
  />
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- <Card className="bg-gradient-to-br from-primary/5 to-white border-slate-200 rounded-2xl">
+ <Card className="bg-gradient-to-br from-primary/5 to-white border-primary/40 rounded-2xl">
  <CardContent className="p-6">
  <div className="flex justify-between items-start">
  <div>
@@ -118,8 +118,8 @@ export default function AdminBilling() {
  </CardContent>
  </Card>
  </div>
- <Card className="border-border rounded-2xl overflow-hidden">
- <CardHeader className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 flex flex-row items-center justify-between py-4">
+ <Card className="border-primary/40 rounded-2xl overflow-hidden">
+ <CardHeader className="bg-slate-50 dark:bg-slate-800/50 border-b border-primary/40 dark:border-primary/40 flex flex-row items-center justify-between py-4">
  <CardTitle className="text-lg font-bold text-slate-800">{t("global_invoices", "Global Invoices")}</CardTitle>
  <div className="relative w-64">
  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -128,14 +128,14 @@ export default function AdminBilling() {
  placeholder="Search firm or status..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="pl-9 pr-4 py-2 w-full border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+ className="pl-9 pr-4 py-2 w-full border border-primary/40 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
  />
  </div>
  </CardHeader>
  <CardContent className="p-0">
  <div className="overflow-x-auto">
  <table className="w-full text-sm text-left">
- <thead className="bg-slate-50/50 dark:bg-transparent text-slate-500 dark:text-slate-400 font-medium border-b border-slate-100 dark:border-slate-800">
+ <thead className="bg-slate-50/50 dark:bg-transparent text-slate-500 dark:text-slate-400 font-medium border-b border-primary/40 dark:border-primary/40">
  <tr>
  <th className="px-6 py-4">{t("firm_company", "Firm / Company")}</th>
  <th className="px-6 py-4">{t("amount", "Amount")}</th>

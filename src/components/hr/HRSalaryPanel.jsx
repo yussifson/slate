@@ -41,8 +41,8 @@ export default function HRSalaryPanel({ companyId, staff, currency, isAdmin }) {
           <p className="text-2xl font-bold text-primary">{formatCurrency(totalPayroll, currency)}</p>
         </div>
       </div>
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
-        <div className="px-4 py-2.5 bg-muted/30 border-b border-border grid grid-cols-12 gap-2 text-xs font-semibold uppercase text-muted-foreground">
+      <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
+        <div className="px-4 py-2.5 bg-muted/30 border-b border-primary/40 grid grid-cols-12 gap-2 text-xs font-semibold uppercase text-muted-foreground">
           <span className="col-span-5">{t("staff_member", "Staff Member")}</span>
           <span className="col-span-3">{t("role", "Role")}</span>
           <span className="col-span-3 text-right">{t("monthly_salary", "Monthly Salary")}</span>

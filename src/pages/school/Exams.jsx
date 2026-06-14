@@ -170,7 +170,7 @@ export default function Exams() {
  {isDbLoading ? (
  <div className="py-12 text-center text-muted-foreground">{t("loading_calendar", "Loading calendar...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
+ <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-primary/40">
  <FileText className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary dark:text-primary/70" />
  <p className="font-semibold text-lg text-card-foreground">{t("no_exams_scheduled", "No exams scheduled")}</p>
  <p className="text-sm mt-1 max-w-md mx-auto">{t(
@@ -206,7 +206,7 @@ export default function Exams() {
  <div className="school-card overflow-hidden mt-4">
  <div className="overflow-x-auto">
  <table className="w-full text-sm">
- <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-700">
+ <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-primary/40 dark:border-primary/40">
  <tr>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("subject", "Subject")}</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("class", "Class")}</th>
@@ -270,7 +270,7 @@ export default function Exams() {
  )}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
- <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+ <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-primary/40 max-h-[90vh] overflow-y-auto custom-scrollbar">
  <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
  <Plus className="w-5 h-5 text-primary dark:text-primary/70" /> {editingId ? 'Edit Examination' : 'Schedule Examination'}
  </h2>

@@ -71,11 +71,11 @@ export default function CampusMarketplace() {
  <div className="space-y-4">
  <div>
  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Item Name</label>
- <Input value={newItemName} onChange={e => setNewItemName(e.target.value)} placeholder="e.g. Physics Textbook" className="mt-1 bg-white dark:bg-slate-900/40/50 dark:bg-background/50 border-slate-200 dark:border-slate-800 rounded-xl" />
+ <Input value={newItemName} onChange={e => setNewItemName(e.target.value)} placeholder="e.g. Physics Textbook" className="mt-1 bg-white dark:bg-slate-900/40/50 dark:bg-background/50 border-primary/40 dark:border-primary/40 rounded-xl" />
  </div>
  <div>
  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Price ($)</label>
- <Input type="number" value={newItemPrice} onChange={e => setNewItemPrice(e.target.value)} placeholder="0.00" className="mt-1 bg-white dark:bg-slate-900/40/50 dark:bg-background/50 border-slate-200 dark:border-slate-800 rounded-xl" />
+ <Input type="number" value={newItemPrice} onChange={e => setNewItemPrice(e.target.value)} placeholder="0.00" className="mt-1 bg-white dark:bg-slate-900/40/50 dark:bg-background/50 border-primary/40 dark:border-primary/40 rounded-xl" />
  </div>
  <Button onClick={() => listItem.mutate()} disabled={listItem.isPending} className="w-full h-12 rounded-xl bg-primary hover:bg-primary text-white -[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold font-bold -emerald-600/20 mt-4">
  <Plus className="w-4 h-4 mr-2" /> List Item
@@ -99,7 +99,7 @@ export default function CampusMarketplace() {
  <h3 className="font-extrabold text-lg text-slate-900 dark:text-slate-100 dark:text-white mb-1 line-clamp-2">{item.title}</h3>
  <p className="text-xs font-bold text-primary dark:text-primary/70 uppercase tracking-wider mb-4">{item.status}</p>
  </div>
- <Button variant="outline" className="w-full rounded-xl border-slate-200 dark:border-slate-800 font-bold hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 hover:text-primary dark:text-primary/70 hover:border-primary/20 dark:hover:bg-primary/20 dark:hover:border-primary/80">
+ <Button variant="outline" className="w-full rounded-xl border-primary/40 dark:border-primary/40 font-bold hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 hover:text-primary dark:text-primary/70 hover:border-primary/20 dark:hover:bg-primary/20 dark:hover:border-primary/80">
  <MessageCircle className="w-4 h-4 mr-2" /> Contact Seller
  </Button>
  </div>

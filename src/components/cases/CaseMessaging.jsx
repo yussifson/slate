@@ -148,9 +148,9 @@ export default function CaseMessaging({ caseData, user}) {
  const getColor = (email) => AVATAR_COLORS[(email?.charCodeAt(0) || 0) % AVATAR_COLORS.length];
 
  return (
- <div className="flex flex-col h-[600px] bg-card rounded-xl border border-border overflow-hidden">
+ <div className="flex flex-col h-[600px] bg-card rounded-xl border border-primary/40 overflow-hidden">
  {/* Header */}
- <div className="px-4 py-3 border-b border-border flex items-center justify-between bg-muted/30">
+ <div className="px-4 py-3 border-b border-primary/40 flex items-center justify-between bg-muted/30">
  <div className="flex items-center gap-2">
  <MessageSquare className="w-4 h-4 text-primary" />
  <span className="text-sm font-semibold">{t("case_discussion", "Case Discussion")}</span>
@@ -173,9 +173,9 @@ export default function CaseMessaging({ caseData, user}) {
  return (
  <div key={date}>
  <div className="flex items-center gap-2 my-3">
- <div className="flex-1 h-px bg-border" />
+ <div className="flex-1 h-px bg-primary/40" />
  <span className="text-[10px] text-muted-foreground px-2 font-medium">{date}</span>
- <div className="flex-1 h-px bg-border" />
+ <div className="flex-1 h-px bg-primary/40" />
  </div>
  <div className="space-y-3">
  {msgs.map((msg) => {
@@ -227,7 +227,7 @@ export default function CaseMessaging({ caseData, user}) {
  </div>
  {/* Doc attachment preview */}
  {linkedDocs.length > 0 && (
- <div className="px-4 py-2 border-t border-border flex flex-wrap gap-1.5 bg-muted/20">
+ <div className="px-4 py-2 border-t border-primary/40 flex flex-wrap gap-1.5 bg-muted/20">
  {linkedDocs.map((d, i) => {
  return (
  <div key={i} className="flex items-center gap-1 bg-slate-100 text-primary rounded-full px-2.5 py-1 text-[11px]">
@@ -243,8 +243,8 @@ export default function CaseMessaging({ caseData, user}) {
  )}
  {/* Tag menu */}
  {showTagMenu && (
- <div className="mx-4 border border-border rounded-lg bg-popover mb-0 overflow-hidden max-h-36 overflow-y-auto">
- <div className="p-2 border-b border-border">
+ <div className="mx-4 border border-primary/40 rounded-lg bg-popover mb-0 overflow-hidden max-h-36 overflow-y-auto">
+ <div className="p-2 border-b border-primary/40">
  <input
  autoFocus
  className="w-full text-xs outline-none bg-transparent placeholder:text-muted-foreground"
@@ -265,15 +265,15 @@ export default function CaseMessaging({ caseData, user}) {
  </button>
  );
 })}
- <button onClick={() => setShowTagMenu(false)} className="w-full text-xs text-muted-foreground hover:bg-muted py-1.5 px-3 text-left border-t border-border">
+ <button onClick={() => setShowTagMenu(false)} className="w-full text-xs text-muted-foreground hover:bg-muted py-1.5 px-3 text-left border-t border-primary/40">
  {t("close", "Close")}
  </button>
  </div>
  )}
  {/* Doc picker */}
  {showDocPicker && (
- <div className="mx-4 border border-border rounded-lg bg-popover mb-0 overflow-hidden max-h-36 overflow-y-auto">
- <div className="p-2 border-b border-border text-xs font-semibold text-muted-foreground">{t("attach_document_link", "Attach document link")}</div>
+ <div className="mx-4 border border-primary/40 rounded-lg bg-popover mb-0 overflow-hidden max-h-36 overflow-y-auto">
+ <div className="p-2 border-b border-primary/40 text-xs font-semibold text-muted-foreground">{t("attach_document_link", "Attach document link")}</div>
  {documents.length === 0 && <p className="text-xs text-muted-foreground p-3">{t("no_documents_in_this_case", "No documents in this case")}</p>}
  {documents.map(d => {
  return (
@@ -284,13 +284,13 @@ export default function CaseMessaging({ caseData, user}) {
  </button>
  );
 })}
- <button onClick={() => setShowDocPicker(false)} className="w-full text-xs text-muted-foreground hover:bg-muted py-1.5 px-3 text-left border-t border-border">
+ <button onClick={() => setShowDocPicker(false)} className="w-full text-xs text-muted-foreground hover:bg-muted py-1.5 px-3 text-left border-t border-primary/40">
  {t("close", "Close")}
  </button>
  </div>
  )}
  {/* Input area */}
- <div className="px-4 py-3 border-t border-border bg-background">
+ <div className="px-4 py-3 border-t border-primary/40 bg-background">
  {selectedTags.length > 0 && (
  <div className="flex flex-wrap gap-1 mb-2">
  {selectedTags.map(e => {
@@ -305,7 +305,7 @@ export default function CaseMessaging({ caseData, user}) {
  </div>
  )}
  <div className="flex items-end gap-2">
- <div className="flex-1 flex items-end gap-1 bg-muted/50 rounded-xl px-3 py-2 border border-border focus-within:border-slate-200 focus-within:bg-background transition-colors">
+ <div className="flex-1 flex items-end gap-1 bg-muted/50 rounded-xl px-3 py-2 border border-primary/40 focus-within:border-primary/40 focus-within:bg-background transition-colors">
  <textarea
  ref={inputRef}
  rows={1}

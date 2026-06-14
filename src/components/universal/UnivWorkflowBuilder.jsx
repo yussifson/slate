@@ -176,7 +176,7 @@ function WorkflowNode({
  userSelect: 'none',
 }}
  className={cn(
- 'rounded-xl border border-border border-l-4 bg-card transition- duration-150',
+ 'rounded-xl border border-primary/40 border-l-4 bg-card transition- duration-150',
  def.borderClass,
  selected && ' ring-2 ring-primary ring-offset-1',
  'group'
@@ -227,7 +227,7 @@ function WorkflowNode({
  title="Input port"
  className={cn(
  'absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2',
- 'w-3.5 h-3.5 rounded-full border-2 border-border bg-background',
+ 'w-3.5 h-3.5 rounded-full border-2 border-primary/40 bg-background',
  'hover:border-primary hover:bg-primary/20 transition-colors cursor-crosshair',
  connecting?.targetId === node.id && 'border-primary bg-primary/30'
  )}
@@ -270,10 +270,10 @@ function ConfigPanel({ node, onUpdate, onClose}) {
  animate={{ x: 0, opacity: 1}}
  exit={{ x: 40, opacity: 0}}
  transition={{ duration: 0.18}}
- className="w-72 shrink-0 border-l border-border bg-card flex flex-col overflow-hidden"
+ className="w-72 shrink-0 border-l border-primary/40 bg-card flex flex-col overflow-hidden"
  >
  {/* Panel header */}
- <div className={cn('flex items-center gap-2 px-4 py-3 border-b border-border', def.bgClass)}>
+ <div className={cn('flex items-center gap-2 px-4 py-3 border-b border-primary/40', def.bgClass)}>
  <def.icon className="w-4 h-4" />
  <span className="text-sm font-bold flex-1">{def.label} Config</span>
  <button onClick={onClose} className="p-1 rounded-lg hover:bg-black/5 text-muted-foreground">
@@ -292,7 +292,7 @@ function ConfigPanel({ node, onUpdate, onClose}) {
  value={cfg.label || ''}
  onChange={(e) => commit({ label: e.target.value})}
  placeholder={def.description}
- className="w-full h-9 px-3 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"
+ className="w-full h-9 px-3 bg-background border border-primary/40 rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"
  />
  </div>
 
@@ -305,7 +305,7 @@ function ConfigPanel({ node, onUpdate, onClose}) {
  <select
  value={cfg.option || ''}
  onChange={(e) => commit({ option: e.target.value})}
- className="w-full h-9 px-3 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"
+ className="w-full h-9 px-3 bg-background border border-primary/40 rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"
  >
  <option value="">— Select —</option>
  {def.options.map((o) => (
@@ -326,7 +326,7 @@ function ConfigPanel({ node, onUpdate, onClose}) {
  value={cfg.value || ''}
  onChange={(e) => commit({ value: e.target.value})}
  placeholder="Enter value..."
- className="w-full h-9 px-3 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"
+ className="w-full h-9 px-3 bg-background border border-primary/40 rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"
  />
  </div>
  )}
@@ -342,7 +342,7 @@ function ConfigPanel({ node, onUpdate, onClose}) {
  value={cfg.assignee || ''}
  onChange={(e) => commit({ assignee: e.target.value})}
  placeholder="john@example.com"
- className="w-full h-9 px-3 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"
+ className="w-full h-9 px-3 bg-background border border-primary/40 rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"
  />
  </div>
  )}
@@ -358,7 +358,7 @@ function ConfigPanel({ node, onUpdate, onClose}) {
  value={cfg.emailSubject || ''}
  onChange={(e) => commit({ emailSubject: e.target.value})}
  placeholder="Subject..."
- className="w-full h-9 px-3 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none mb-2"
+ className="w-full h-9 px-3 bg-background border border-primary/40 rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none mb-2"
  />
  <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
  Email Body
@@ -368,7 +368,7 @@ function ConfigPanel({ node, onUpdate, onClose}) {
  value={cfg.emailBody || ''}
  onChange={(e) => commit({ emailBody: e.target.value})}
  placeholder="Email content..."
- className="w-full p-3 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none resize-none"
+ className="w-full p-3 bg-background border border-primary/40 rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none resize-none"
  />
  </div>
  )}
@@ -383,7 +383,7 @@ function ConfigPanel({ node, onUpdate, onClose}) {
  value={cfg.notes || ''}
  onChange={(e) => commit({ notes: e.target.value})}
  placeholder="Add a note..."
- className="w-full p-3 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none resize-none"
+ className="w-full p-3 bg-background border border-primary/40 rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none resize-none"
  />
  </div>
  </div>
@@ -610,7 +610,7 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  return (
  <div className="h-full flex flex-col bg-background overflow-hidden">
  {/* ── Toolbar ── */}
- <div className="shrink-0 h-14 border-b border-border bg-card flex items-center gap-3 px-4">
+ <div className="shrink-0 h-14 border-b border-primary/40 bg-card flex items-center gap-3 px-4">
  <div className="flex items-center gap-2">
  <Workflow className="w-5 h-5 text-primary" />
  {editingName ? (
@@ -680,7 +680,7 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  {/* ── Main area ── */}
  <div className="flex-1 flex min-h-0 overflow-hidden">
  {/* ── Left Palette ── */}
- <div className="shrink-0 w-52 border-r border-border bg-card flex flex-col">
+ <div className="shrink-0 w-52 border-r border-primary/40 bg-card flex flex-col">
  <div className="px-3 pt-4 pb-2">
  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
  Node Types
@@ -694,7 +694,7 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  key={type}
  onClick={() => addNodeFromPalette(type)}
  className={cn(
- 'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-border text-left',
+ 'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-primary/40 text-left',
  'hover:border-primary/40 transition-all duration-150',
  'bg-background group'
  )}
@@ -714,7 +714,7 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  </div>
 
  {/* Legend */}
- <div className="border-t border-border px-3 py-3">
+ <div className="border-t border-primary/40 px-3 py-3">
  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2">
  How to connect
  </p>
@@ -724,7 +724,7 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  <span>Click right port to start</span>
  </div>
  <div className="flex items-center gap-2">
- <Circle className="w-2.5 h-2.5 border border-border shrink-0" />
+ <Circle className="w-2.5 h-2.5 border border-primary/40 shrink-0" />
  <span>Click left port to connect</span>
  </div>
  <div className="flex items-center gap-2">
@@ -751,7 +751,7 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  >
  {isLoading && (
  <div className="absolute inset-0 flex items-center justify-center bg-background/60 z-20">
- <div className="flex items-center gap-3 bg-card border border-border rounded-2xl px-6 py-4 ">
+ <div className="flex items-center gap-3 bg-card border border-primary/40 rounded-2xl px-6 py-4 ">
  <RefreshCw className="w-5 h-5 text-primary animate-spin" />
  <span className="text-sm font-bold">Loading workflow…</span>
  </div>

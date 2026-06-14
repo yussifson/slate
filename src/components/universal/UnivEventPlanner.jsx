@@ -95,7 +95,7 @@ const UnivEventPlanner = () => {
  </motion.div>
 
  <div className="view-header grid lg:grid-cols-12 gap-8">
- <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="lg:col-span-4 bg-card p-6 rounded-3xl border border-border">
+ <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="lg:col-span-4 bg-card p-6 rounded-3xl border border-primary/40">
  <h2 className="text-2xl font-bold mb-6 text-foreground">New Event</h2>
  <form onSubmit={handleSubmit} className="space-y-4">
  <div>
@@ -152,11 +152,11 @@ const UnivEventPlanner = () => {
  {loading ? (
  <div className="flex justify-center py-20"><CalendarDays className="w-12 h-12 text-fuchsia-300 animate-bounce" /></div>
  ) : events.length === 0 ? (
- <div className="text-center py-20 bg-card rounded-3xl border border-border text-muted-foreground">No events planned yet. Let's get started!</div>
+ <div className="text-center py-20 bg-card rounded-3xl border border-primary/40 text-muted-foreground">No events planned yet. Let's get started!</div>
  ) : (
  <div className="grid md:grid-cols-2 gap-6">
  {events.map((event, index) => (
- <motion.div key={event.id || index} initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className="bg-card p-6 rounded-3xl border border-border transition-all group">
+ <motion.div key={event.id || index} initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className="bg-card p-6 rounded-3xl border border-primary/40 transition-all group">
  <div className="flex justify-between items-start mb-4">
  <h3 className="text-xl font-bold text-foreground leading-tight pr-4">{event.event_name}</h3>
  <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(event.status)}`}>{event.status}</span>
@@ -181,9 +181,9 @@ const UnivEventPlanner = () => {
  <p className="text-xs text-muted-foreground font-semibold uppercase mb-1">Budget</p>
  <p className="font-bold text-emerald-600">${event.budget || '0'}</p>
  </div>
- <div className="col-span-2 border-t border-border pt-3 flex justify-between items-center">
+ <div className="col-span-2 border-t border-primary/40 pt-3 flex justify-between items-center">
  <span className="text-xs text-muted-foreground font-semibold uppercase">Est. Attendance</span>
- <span className="font-bold text-foreground flex items-center bg-card px-3 py-1 rounded-full border border-border ">
+ <span className="font-bold text-foreground flex items-center bg-card px-3 py-1 rounded-full border border-primary/40 ">
  <Users className="w-4 h-4 mr-1 text-muted-foreground" /> {event.expected_attendees || '0'}
  </span>
  </div>

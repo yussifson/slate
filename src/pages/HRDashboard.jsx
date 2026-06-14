@@ -23,7 +23,7 @@ import HRPayrollPanel from "@/components/hr/HRPayrollPanel";
 
 function MetricCard({ icon: Icon, label, value, color }) {
   return (
-    <div className="bg-card border border-border rounded-xl p-4 flex items-center gap-3">
+    <div className="bg-card border border-primary/40 rounded-xl p-4 flex items-center gap-3">
       <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center shrink-0", color)}>
         <Icon className="w-5 h-5" />
       </div>

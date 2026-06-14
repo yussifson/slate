@@ -111,7 +111,7 @@ export default function VEquipmentInventory() {
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input 
  placeholder="Search equipment..." 
- className="pl-9 w-[250px] bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus-visible:ring-primary rounded-xl"
+ className="pl-9 w-[250px] bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 focus-visible:ring-primary rounded-xl"
  value={searchQuery}
  onChange={e => setSearchQuery(e.target.value)}
  />

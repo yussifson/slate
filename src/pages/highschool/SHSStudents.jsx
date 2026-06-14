@@ -86,7 +86,7 @@ export default function SHSStudents() {
  </div>
  
  <div className="flex items-center gap-3">
- <Button variant="outline" size="sm" onClick={fetchStudents} className="h-9 gap-2 rounded-xl border-primary/20 dark:border-slate-600 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 hover:text-primary/80 dark:text-primary/20">
+ <Button variant="outline" size="sm" onClick={fetchStudents} className="h-9 gap-2 rounded-xl border-primary/20 dark:border-primary/40 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 hover:text-primary/80 dark:text-primary/20">
  <RefreshCw className="w-4 h-4" /> Sync
  </Button>
  <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20">
@@ -151,7 +151,7 @@ export default function SHSStudents() {
 
  {/* Main Table Area */}
  <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
- <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
  <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Enrolled Roster</CardTitle>
@@ -163,12 +163,12 @@ export default function SHSStudents() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search name or ID..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
  </div>
- <Button variant="outline" size="icon" className="h-9 w-9 rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900">
+ <Button variant="outline" size="icon" className="h-9 w-9 rounded-xl border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900">
  <Filter className="w-4 h-4 text-slate-600 dark:text-slate-300" />
  </Button>
  </div>
@@ -218,9 +218,9 @@ export default function SHSStudents() {
  <td className="px-6 py-4 text-slate-600 dark:text-slate-300">{student.data?.gender}</td>
  <td className="px-6 py-4">
  <Badge variant="outline" className={
- student.status === 'Active' ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary/80 dark:text-primary/20 border-primary/20 dark:border-slate-600' :
+ student.status === 'Active' ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary/80 dark:text-primary/20 border-primary/20 dark:border-primary/40' :
  student.status === 'On Leave' ? 'bg-amber-50 text-amber-700 border-amber-200' :
- 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200 border-slate-200 dark:border-slate-700'
+ 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200 border-primary/40 dark:border-primary/40'
 }>
  {student.status}
  </Badge>
@@ -259,7 +259,7 @@ export default function SHSStudents() {
  value={newStudent.firstName} 
  onChange={e => setNewStudent({...newStudent, firstName: e.target.value})} 
  placeholder="e.g. John"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 focus-visible:ring-primary rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 focus-visible:ring-primary rounded-xl"
  />
  </div>
  <div className="space-y-2">
@@ -268,7 +268,7 @@ export default function SHSStudents() {
  value={newStudent.lastName} 
  onChange={e => setNewStudent({...newStudent, lastName: e.target.value})} 
  placeholder="e.g. Doe"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 focus-visible:ring-primary rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 focus-visible:ring-primary rounded-xl"
  />
  </div>
  <div className="space-y-2">
@@ -277,13 +277,13 @@ export default function SHSStudents() {
  value={newStudent.studentId} 
  onChange={e => setNewStudent({...newStudent, studentId: e.target.value})} 
  placeholder="e.g. SHS-2026-001"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 focus-visible:ring-primary rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 focus-visible:ring-primary rounded-xl"
  />
  </div>
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Gender</label>
  <select 
- className="flex h-10 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+ className="flex h-10 w-full rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
  value={newStudent.gender}
  onChange={e => setNewStudent({...newStudent, gender: e.target.value})}
  >
@@ -294,7 +294,7 @@ export default function SHSStudents() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Form / Grade</label>
  <select 
- className="flex h-10 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+ className="flex h-10 w-full rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
  value={newStudent.grade}
  onChange={e => setNewStudent({...newStudent, grade: e.target.value})}
  >
@@ -307,7 +307,7 @@ export default function SHSStudents() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Programme</label>
  <select 
- className="flex h-10 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+ className="flex h-10 w-full rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
  value={newStudent.program}
  onChange={e => setNewStudent({...newStudent, program: e.target.value})}
  >
@@ -322,7 +322,7 @@ export default function SHSStudents() {
  </div>
  </ScrollArea>
  
- <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end gap-3">
+ <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3">
  <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
  Cancel
  </Button>

@@ -245,16 +245,16 @@ export default function PurchaseOrders() {
  placeholder={t("search_pos", "Search by PO number or supplier...")} 
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="pl-9 bg-background border-border "
+ className="pl-9 bg-background border-primary/40 "
  />
  </div>
  </div>
 
  {/* Table */}
- <div className="bg-card border border-border rounded-xl overflow-hidden">
+ <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
  <div className="overflow-x-auto">
  <table className="w-full text-sm text-left">
- <thead className="bg-muted/50 text-muted-foreground text-xs uppercase font-semibold border-b border-border">
+ <thead className="bg-muted/50 text-muted-foreground text-xs uppercase font-semibold border-b border-primary/40">
  <tr>
  <th className="px-6 py-4">{t("po_number", "PO Number")}</th>
  <th className="px-6 py-4">{t("supplier", "Supplier")}</th>

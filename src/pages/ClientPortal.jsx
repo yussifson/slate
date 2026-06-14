@@ -21,7 +21,7 @@ import PaymentModal from "@/components/portal/PaymentModal";
 
 function StatCard({ icon: IconComp, label, value, color }) {
   return (
-    <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+    <div className="bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${color}`}>
         <IconComp className="w-5 h-5" />
       </div>
@@ -191,7 +191,7 @@ export default function ClientPortal() {
 
         {/* Cases tab */}
         <TabsContent value="cases" className="mt-4">
-          <div className="bg-card rounded-xl border border-border divide-y divide-border">
+          <div className="bg-card rounded-xl border border-primary/40 divide-y divide-border">
             {cases.length === 0 ? (
               <div className="p-10 text-center text-sm text-muted-foreground">{t("no", "No")} {getTerm(user?.company_industry, 'cases').toLowerCase()} {t("found", "found")}</div>
             ) : cases.map(c => {
@@ -227,7 +227,7 @@ export default function ClientPortal() {
 
         {/* Hearings tab */}
         <TabsContent value="hearings" className="mt-4">
-          <div className="bg-card rounded-xl border border-border divide-y divide-border">
+          <div className="bg-card rounded-xl border border-primary/40 divide-y divide-border">
             {upcomingHearings.length === 0 ? (
               <div className="p-10 text-center text-sm text-muted-foreground">{t("no_upcoming_appointments", "No upcoming appointments")}</div>
             ) : upcomingHearings.map(h => {
@@ -256,7 +256,7 @@ export default function ClientPortal() {
               <Upload className="w-4 h-4" /> {t("upload_document", "Upload Document")}
             </Button>
           </div>
-          <div className="bg-card rounded-xl border border-border divide-y divide-border">
+          <div className="bg-card rounded-xl border border-primary/40 divide-y divide-border">
             {sharedDocs.length === 0 ? (
               <div className="p-10 text-center text-sm text-muted-foreground">{t("no_documents_shared_with_you_y", "No documents shared with you yet")}</div>
             ) : sharedDocs.map(doc => {
@@ -286,7 +286,7 @@ export default function ClientPortal() {
 
         {/* Invoices tab */}
         <TabsContent value="invoices" className="mt-4">
-          <div className="bg-card rounded-xl border border-border divide-y divide-border">
+          <div className="bg-card rounded-xl border border-primary/40 divide-y divide-border">
             {invoices.length === 0 ? (
               <div className="p-10 text-center text-sm text-muted-foreground">{t("no_invoices_found", "No invoices found")}</div>
             ) : invoices.map(inv => {
@@ -331,7 +331,7 @@ export default function ClientPortal() {
         {/* Messages tab */}
         <TabsContent value="messages" className="mt-4">
           {cases.length === 0 ? (
-            <div className="bg-card rounded-xl border border-border p-10 text-center text-sm text-muted-foreground">
+            <div className="bg-card rounded-xl border border-primary/40 p-10 text-center text-sm text-muted-foreground">
               {t("no", "No")} {getTerm(user?.company_industry, 'cases').toLowerCase()} {t("found_to_message_about", "found to message about")}
             </div>
           ) : (
@@ -347,7 +347,7 @@ export default function ClientPortal() {
                           "text-xs px-3 py-1.5 rounded-full border transition-colors",
                           selectedCase?.id === c.id || (!selectedCase && c.id === cases[0].id)
                             ? "bg-primary text-white border-primary"
-                            : "bg-card border-border text-foreground hover:bg-muted"
+                            : "bg-card border-primary/40 text-foreground hover:bg-muted"
                         )}
                       >
                         {c.title}

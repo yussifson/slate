@@ -129,10 +129,10 @@ export function SecuritySettings() {
  <SectionCard title="Access Security" subtitle="Update account authorization credentials" onSave={handleUpdatePassword} saving={saving}>
  <FormRow>
  <Field label="New Secure Password">
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="password" value={form.new_password} onChange={e => setForm({ ...form, new_password: e.target.value})} placeholder="Enter new password" />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" type="password" value={form.new_password} onChange={e => setForm({ ...form, new_password: e.target.value})} placeholder="Enter new password" />
  </Field>
  <Field label="Confirm Security Password">
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="password" value={form.confirm_password} onChange={e => setForm({ ...form, confirm_password: e.target.value})} placeholder="Confirm new password" />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" type="password" value={form.confirm_password} onChange={e => setForm({ ...form, confirm_password: e.target.value})} placeholder="Confirm new password" />
  </Field>
  </FormRow>
  </SectionCard>
@@ -140,7 +140,7 @@ export function SecuritySettings() {
  <div className="space-y-4">
  <Field label="Secure Encryption Passphrase" full>
  <Input 
- className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" 
+ className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" 
  type="password" 
  value={passphrase} 
  onChange={e => setPassphrase(e.target.value)} 
@@ -201,14 +201,14 @@ export function BillingSettings({ company, activeIndustry}) {
  <div className="space-y-6">
  <SectionCard title="Active Subscription" subtitle="Verify allocations, check quota summaries, or change plan models">
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
- <div className="bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-900/40 dark:to-slate-900/10 border border-border/80 rounded-2xl p-5 space-y-4">
+ <div className="bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-900/40 dark:to-slate-900/10 border border-primary/40 rounded-2xl p-5 space-y-4">
  <div>
  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block">{t("firm_plan_level", (getTerm(activeIndustry, "venue") || "Firm") + " Plan Level")}</span>
  <h3 className="font-extrabold text-2xl text-foreground capitalize flex items-center gap-2 mt-1">
  {currentPlan} {t("model", "Model")}
  <span className={`text-[10px] font-extrabold uppercase py-0.5 px-2.5 rounded-full border tracking-wider ${
  currentStatus === 'active' 
- ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 border-slate-200' 
+ ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 border-primary/40' 
  : 'bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-amber-200/50 animate-pulse'
 }`}>
  {currentStatus}
@@ -223,7 +223,7 @@ export function BillingSettings({ company, activeIndustry}) {
  </p>
  </div>
 
- <div className="bg-card/30 border border-border/70 rounded-2xl p-5 space-y-4 ">
+ <div className="bg-card/30 border border-primary/40 rounded-2xl p-5 space-y-4 ">
  <h4 className="font-bold text-sm text-foreground">{t("quota_utilization", "Quota Utilization")}</h4>
  
  <div className="space-y-2">
@@ -245,7 +245,7 @@ export function BillingSettings({ company, activeIndustry}) {
  </div>
  </SectionCard>
  
- <div className="bg-card/45 backdrop-blur-xl rounded-3xl border border-border/60 p-8 space-y-6 -black/5 hover:border-border/80 transition-colors">
+ <div className="bg-card/45 backdrop-blur-xl rounded-3xl border border-primary/40 p-8 space-y-6 -black/5 hover:border-primary/40 transition-colors">
  <div>
  <h2 className="text-xl font-extrabold text-foreground">{t("upgrade_platform_model", "Upgrade Platform Model")}</h2>
  <p className="text-sm text-muted-foreground mt-1.5">{t(
@@ -253,7 +253,7 @@ export function BillingSettings({ company, activeIndustry}) {
  "Scale up features, team counts, and client space instantly."
  )}</p>
  </div>
- <div className="pt-4 border-t border-border/50">
+ <div className="pt-4 border-t border-primary/40">
  <Button 
  onClick={() => window.location.href = '/pricing'} 
  className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-bold px-8 h-12 rounded-xl text-sm transition-transform hover:-translate-y-0.5"
@@ -263,7 +263,7 @@ export function BillingSettings({ company, activeIndustry}) {
  </div>
  </div>
  
- <div className="bg-card/45 backdrop-blur-xl rounded-3xl border border-border/60 p-8 space-y-6 -black/5 hover:border-border/80 transition-colors">
+ <div className="bg-card/45 backdrop-blur-xl rounded-3xl border border-primary/40 p-8 space-y-6 -black/5 hover:border-primary/40 transition-colors">
  <div>
  <h2 className="text-xl font-extrabold text-foreground">{t("invoice_ledger", "Invoice Ledger")}</h2>
  <p className="text-sm text-muted-foreground mt-1.5">{t(
@@ -273,14 +273,14 @@ export function BillingSettings({ company, activeIndustry}) {
  </div>
 
  {invoices.length === 0 ? (
- <div className="text-center py-10 text-sm text-muted-foreground font-semibold bg-muted/10 rounded-2xl border border-dashed border-primary/50">
+ <div className="text-center py-10 text-sm text-muted-foreground font-semibold bg-muted/10 rounded-2xl border border-dashed border-primary/40">
  {t("no_service_invoices_recorded", "No service invoices recorded.")}
  </div>
  ) : (
- <div className="overflow-x-auto rounded-xl border border-border/85 ">
+ <div className="overflow-x-auto rounded-xl border border-primary/40 ">
  <table className="w-full text-sm text-left border-collapse bg-card/10">
  <thead>
- <tr className="bg-muted/40 border-b border-border/85 text-muted-foreground font-bold text-xs uppercase tracking-wider select-none">
+ <tr className="bg-muted/40 border-b border-primary/40 text-muted-foreground font-bold text-xs uppercase tracking-wider select-none">
  <th className="px-5 py-3.5">{t("settlement_date", "Settlement Date")}</th>
  <th className="px-5 py-3.5">{t("plan_tier", "Plan tier")}</th>
  <th className="px-5 py-3.5">{t("amount", "Amount")}</th>
@@ -299,7 +299,7 @@ export function BillingSettings({ company, activeIndustry}) {
  <td className="px-5 py-3.5 font-extrabold text-foreground">${inv.amount}</td>
  <td className="px-5 py-3.5 font-mono text-xs text-muted-foreground/80">{inv.paystack_ref}</td>
  <td className="px-5 py-3.5">
- <span className="inline-flex py-0.5 px-2.5 rounded-full text-[10px] font-bold bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 border border-slate-200 uppercase select-none">
+ <span className="inline-flex py-0.5 px-2.5 rounded-full text-[10px] font-bold bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 border border-primary/40 uppercase select-none">
  {inv.status}
  </span>
  </td>

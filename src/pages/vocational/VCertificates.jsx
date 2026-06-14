@@ -66,7 +66,7 @@ export default function VCertificates() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-rose-500" />
  <Input 
  placeholder="Search by student or ID..." 
- className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-rose-100 dark:border-slate-700 rounded-xl focus-visible:ring-rose-600"
+ className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-rose-100 dark:border-primary/40 rounded-xl focus-visible:ring-rose-600"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -119,14 +119,14 @@ export default function VCertificates() {
  
  <ScrollArea className="flex-1 -mt-16">
  <div className="px-8 pb-8">
- <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 rounded-3xl p-8 border border-slate-100 dark:border-slate-800 dark:border-slate-800 relative z-10 text-center max-w-2xl mx-auto mt-4">
+ <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 rounded-3xl p-8 border border-primary/40 dark:border-primary/40 dark:border-primary/40 relative z-10 text-center max-w-2xl mx-auto mt-4">
  <ShieldCheck className="w-16 h-16 text-rose-500 mx-auto mb-6" />
  <h2 className="text-sm font-bold text-slate-400 tracking-widest uppercase mb-2">Certificate of Completion</h2>
  <h1 className="text-4xl font-serif text-slate-800 dark:text-slate-100 mb-6">{selectedCert.data?.student_name || selectedCert.title}</h1>
  <p className="text-slate-600 mb-6">has successfully completed the requirements for the</p>
  <h3 className="text-2xl font-bold text-rose-600 mb-8">{selectedCert.data?.qualification_name || 'Vocational Training Program'}</h3>
  
- <div className="flex justify-between items-end border-t border-slate-100 dark:border-slate-800 pt-8 mt-8">
+ <div className="flex justify-between items-end border-t border-primary/40 dark:border-primary/40 pt-8 mt-8">
  <div className="text-left">
  <p className="font-bold text-slate-800">{selectedCert.data?.issue_date || new Date(selectedCert.created_date).toLocaleDateString()}</p>
  <p className="text-xs text-slate-500 dark:text-slate-400">Date of Issue</p>

@@ -143,7 +143,7 @@ export default function UnivMenu() {
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Calendar","Dashboard"].map(v => (
  <button 
  key={v} 
@@ -166,8 +166,8 @@ export default function UnivMenu() {
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -175,7 +175,7 @@ export default function UnivMenu() {
  placeholder="Search menu items..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -191,7 +191,7 @@ export default function UnivMenu() {
  animate={{ opacity: 1, y: 0}}
  transition={{ delay: idx * 0.05}}
  key={m.id} 
- className="bg-background border border-border rounded-2xl p-5 hover:border-primary/40 transition-colors relative group flex flex-col h-full"
+ className="bg-background border border-primary/40 rounded-2xl p-5 hover:border-primary/40 transition-colors relative group flex flex-col h-full"
  >
  <div className="flex justify-between items-start mb-2">
  <div className="bg-primary/10 text-primary p-2 rounded-xl">
@@ -216,7 +216,7 @@ export default function UnivMenu() {
  </div>
  )}
  
- <div className="mt-auto pt-4 border-t border-border flex justify-between items-center">
+ <div className="mt-auto pt-4 border-t border-primary/40 flex justify-between items-center">
  <span className="text-xl font-black text-foreground">${Number(m.price).toFixed(2)}</span>
  <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border flex items-center gap-1 ${
  m.is_available ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-700 border-red-200'
@@ -241,7 +241,7 @@ export default function UnivMenu() {
  {isModalOpen && (
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
  <div className="bg-card w-full max-w-lg rounded-2xl flex flex-col max-h-[90vh]">
- <div className="p-5 border-b border-border flex justify-between items-center shrink-0">
+ <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0">
  <h2 className="text-xl font-bold">{editingId ? 'Edit Menu Item' : 'Add Menu Item'}</h2>
  <button onClick={closeModal} className="p-2 bg-muted rounded-full text-muted-foreground"><XCircle className="w-5 h-5" /></button>
  </div>
@@ -249,32 +249,32 @@ export default function UnivMenu() {
  <div className="space-y-4">
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Item Name *</label>
- <input required type="text" value={form.item_name} onChange={e => setForm({...form, item_name: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+ <input required type="text" value={form.item_name} onChange={e => setForm({...form, item_name: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Category *</label>
- <select required value={form.category} onChange={e => setForm({...form, category: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">
+ <select required value={form.category} onChange={e => setForm({...form, category: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">
  {CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
  </select>
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Price ($) *</label>
- <input required type="number" step="0.01" min="0" value={form.price} onChange={e => setForm({...form, price: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+ <input required type="number" step="0.01" min="0" value={form.price} onChange={e => setForm({...form, price: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Dietary Info</label>
- <input type="text" placeholder="e.g. Gluten-Free, Vegan" value={form.dietary_info || ''} onChange={e => setForm({...form, dietary_info: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+ <input type="text" placeholder="e.g. Gluten-Free, Vegan" value={form.dietary_info || ''} onChange={e => setForm({...form, dietary_info: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Description</label>
- <textarea rows="3" value={form.description || ''} onChange={e => setForm({...form, description: e.target.value})} className="w-full p-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none" />
+ <textarea rows="3" value={form.description || ''} onChange={e => setForm({...form, description: e.target.value})} className="w-full p-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none" />
  </div>
  <div className="flex items-center gap-2 pt-2">
- <input type="checkbox" id="is_available" checked={form.is_available} onChange={e => setForm({...form, is_available: e.target.checked})} className="w-4 h-4 text-primary border-border rounded focus:ring-primary" />
+ <input type="checkbox" id="is_available" checked={form.is_available} onChange={e => setForm({...form, is_available: e.target.checked})} className="w-4 h-4 text-primary border-primary/40 rounded focus:ring-primary" />
  <label htmlFor="is_available" className="text-sm font-medium text-foreground select-none">Available for order</label>
  </div>
  </div>
- <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-border">
+ <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-primary/40">
  <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button>
  <button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold ">{editingId ? 'Update' : 'Add'}</button>
  </div>

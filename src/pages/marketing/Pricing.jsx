@@ -70,9 +70,9 @@ export default function Pricing() {
  </Helmet>
 
  {/* ── HERO ── */}
- <section className="pt-8 pb-10 md:pt-16 md:pb-14 bg-white border-b border-slate-100">
+ <section className="pt-8 pb-10 md:pt-16 md:pb-14 bg-white border-b border-primary/40">
  <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
- <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-600 mb-6 uppercase tracking-widest ">
+ <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-50 border border-primary/40 text-xs font-semibold text-slate-600 mb-6 uppercase tracking-widest ">
  {t('technology_for_everyone', 'Technology For Everyone')}
  </div>
  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 mb-6 leading-tight">
@@ -84,7 +84,7 @@ export default function Pricing() {
  </p>
 
  {/* Billing Toggle */}
- <div className="flex items-center justify-center gap-4 text-sm md:text-base font-bold text-slate-700 bg-slate-50 inline-flex mx-auto p-1.5 rounded-full border border-slate-200 ">
+ <div className="flex items-center justify-center gap-4 text-sm md:text-base font-bold text-slate-700 bg-slate-50 inline-flex mx-auto p-1.5 rounded-full border border-primary/40 ">
  <button
  onClick={() => setBillingCycle('monthly')}
  className={`px-5 py-2.5 rounded-full transition-colors ${billingCycle === 'monthly' ? 'bg-white text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
@@ -121,7 +121,7 @@ export default function Pricing() {
  className={`relative flex flex-col bg-white rounded-3xl border transition-all duration-300 p-8 ${
  meta.highlight
  ? 'border-primary -primary/5 md:-translate-y-2'
- : 'border-slate-200 hover:border-slate-300'
+ : 'border-primary/40 hover:border-primary/40'
 }`}
  >
  {meta.popular && (
@@ -130,7 +130,7 @@ export default function Pricing() {
  </div>
  )}
 
- <div className="mb-6 pb-6 border-b border-slate-100">
+ <div className="mb-6 pb-6 border-b border-primary/40">
  <h3 className="font-bold text-2xl text-slate-900 mb-2 tracking-tight">{meta.name}</h3>
  <p className="text-sm text-slate-500 font-medium">{meta.tagline}</p>
  </div>
@@ -152,7 +152,7 @@ export default function Pricing() {
  )}
  </div>
 
- <div className="bg-slate-50/80 rounded-2xl p-5 border border-slate-100 mb-8 space-y-3">
+ <div className="bg-slate-50/80 rounded-2xl p-5 border border-primary/40 mb-8 space-y-3">
  <div className="flex justify-between items-center text-sm font-semibold">
  <span className="text-slate-500">{t('internal_users', 'Users')}</span>
  <span className="text-slate-900 text-right">{meta.quota}</span>
@@ -211,10 +211,10 @@ export default function Pricing() {
 
  {/* Paystack badge */}
  <div className="mt-12 flex flex-wrap items-center justify-center gap-4 text-xs text-slate-500">
- <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-full px-4 py-2 font-medium ">
+ <div className="flex items-center gap-2 bg-white border border-primary/40 rounded-full px-4 py-2 font-medium ">
  <Shield className="w-4 h-4 text-primary" /> Secured by Paystack
  </div>
- <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-full px-4 py-2 font-medium ">
+ <div className="flex items-center gap-2 bg-white border border-primary/40 rounded-full px-4 py-2 font-medium ">
  <Zap className="w-4 h-4 text-amber-500" /> Cards, Bank Transfer, Mobile Money
  </div>
  </div>
@@ -222,7 +222,7 @@ export default function Pricing() {
  </section>
 
  {/* ── COMPARISON TABLE ── */}
- <section className="py-16 md:py-24 bg-white border-t border-slate-100 overflow-hidden">
+ <section className="py-16 md:py-24 bg-white border-t border-primary/40 overflow-hidden">
  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
  <div className="text-center mb-12">
  <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">{t('compare_plans', 'Compare Plans')}</h2>
@@ -232,10 +232,10 @@ export default function Pricing() {
  </div>
 
  <div className="overflow-x-auto pb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
- <div className="min-w-[800px] border border-slate-200 rounded-3xl overflow-hidden bg-white ">
+ <div className="min-w-[800px] border border-primary/40 rounded-3xl overflow-hidden bg-white ">
  <table className="w-full text-left border-collapse">
  <thead>
- <tr className="bg-slate-50 border-b border-slate-200">
+ <tr className="bg-slate-50 border-b border-primary/40">
  <th className="py-5 px-6 font-bold text-slate-900 text-sm w-1/3">Features</th>
  <th className="py-5 px-6 font-bold text-slate-900 text-center text-sm w-1/6">Starter</th>
  <th className="py-5 px-6 font-bold text-slate-900 text-center text-sm w-1/6">Professional</th>
@@ -246,23 +246,23 @@ export default function Pricing() {
  <tbody className="text-sm">
  {/* Core Features */}
  <tr className="bg-slate-50/50">
- <td colSpan="5" className="py-3 px-6 font-bold text-xs text-slate-500 uppercase tracking-widest bg-slate-100/50 border-y border-slate-200">Core Capabilities</td>
+ <td colSpan="5" className="py-3 px-6 font-bold text-xs text-slate-500 uppercase tracking-widest bg-slate-100/50 border-y border-primary/40">Core Capabilities</td>
  </tr>
- <tr className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+ <tr className="border-b border-primary/40 hover:bg-slate-50/50 transition-colors">
  <td className="py-4 px-6 font-medium text-slate-700">All 14 Work Slate Modules</td>
  <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
  <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
  <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
  <td className="py-4 px-6 text-center"><Check className="w-5 h-5 text-primary mx-auto" /></td>
  </tr>
- <tr className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+ <tr className="border-b border-primary/40 hover:bg-slate-50/50 transition-colors">
  <td className="py-4 px-6 font-medium text-slate-700">Internal Users (Staff)</td>
  <td className="py-4 px-6 text-center text-slate-600 font-semibold">5</td>
  <td className="py-4 px-6 text-center text-slate-600 font-semibold">50</td>
  <td className="py-4 px-6 text-center text-slate-600 font-semibold">Unlimited</td>
  <td className="py-4 px-6 text-center text-slate-600 font-semibold">Unlimited</td>
  </tr>
- <tr className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+ <tr className="border-b border-primary/40 hover:bg-slate-50/50 transition-colors">
  <td className="py-4 px-6 font-medium text-slate-700">External Users (Clients/Students)</td>
  <td className="py-4 px-6 text-center text-slate-600 font-semibold">Unlimited</td>
  <td className="py-4 px-6 text-center text-slate-600 font-semibold">Unlimited</td>
@@ -272,23 +272,23 @@ export default function Pricing() {
  
  {/* Infrastructure & Support */}
  <tr>
- <td colSpan="5" className="py-3 px-6 font-bold text-xs text-slate-500 uppercase tracking-widest bg-slate-100/50 border-y border-slate-200">Infrastructure & Support</td>
+ <td colSpan="5" className="py-3 px-6 font-bold text-xs text-slate-500 uppercase tracking-widest bg-slate-100/50 border-y border-primary/40">Infrastructure & Support</td>
  </tr>
- <tr className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+ <tr className="border-b border-primary/40 hover:bg-slate-50/50 transition-colors">
  <td className="py-4 px-6 font-medium text-slate-700">Storage Capacity</td>
  <td className="py-4 px-6 text-center text-slate-600 font-semibold">10 GB</td>
  <td className="py-4 px-6 text-center text-slate-600 font-semibold">500 GB</td>
  <td className="py-4 px-6 text-center text-slate-600 font-semibold">5 TB</td>
  <td className="py-4 px-6 text-center text-slate-600 font-semibold">Custom</td>
  </tr>
- <tr className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+ <tr className="border-b border-primary/40 hover:bg-slate-50/50 transition-colors">
  <td className="py-4 px-6 font-medium text-slate-700">AI Tokens / mo</td>
  <td className="py-4 px-6 text-center text-slate-400 font-medium">—</td>
  <td className="py-4 px-6 text-center text-slate-600 font-semibold">10,000</td>
  <td className="py-4 px-6 text-center text-slate-600 font-semibold">Unlimited</td>
  <td className="py-4 px-6 text-center text-slate-600 font-semibold">Unlimited</td>
  </tr>
- <tr className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+ <tr className="border-b border-primary/40 hover:bg-slate-50/50 transition-colors">
  <td className="py-4 px-6 font-medium text-slate-700">Support Level</td>
  <td className="py-4 px-6 text-center text-slate-600 font-semibold">Community</td>
  <td className="py-4 px-6 text-center text-slate-600 font-semibold">Standard</td>
@@ -298,9 +298,9 @@ export default function Pricing() {
  
  {/* Security & Deployment */}
  <tr>
- <td colSpan="5" className="py-3 px-6 font-bold text-xs text-slate-500 uppercase tracking-widest bg-slate-100/50 border-y border-slate-200">Security & Deployment</td>
+ <td colSpan="5" className="py-3 px-6 font-bold text-xs text-slate-500 uppercase tracking-widest bg-slate-100/50 border-y border-primary/40">Security & Deployment</td>
  </tr>
- <tr className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+ <tr className="border-b border-primary/40 hover:bg-slate-50/50 transition-colors">
  <td className="py-4 px-6 font-medium text-slate-700">SSO & Advanced Security</td>
  <td className="py-4 px-6 text-center text-slate-400 font-medium">—</td>
  <td className="py-4 px-6 text-center text-slate-400 font-medium">—</td>
@@ -321,11 +321,11 @@ export default function Pricing() {
  </div>
  </section>
 \n{/* ── OFF-CLOUD ENTERPRISE ── */}
- <section className="py-16 md:py-20 bg-white border-t border-slate-100">
+ <section className="py-16 md:py-20 bg-white border-t border-primary/40">
  <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
- <div className="bg-slate-50 border border-slate-200 rounded-[2rem] p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-10 hover:border-slate-300 transition-colors">
+ <div className="bg-slate-50 border border-primary/40 rounded-[2rem] p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-10 hover:border-primary/40 transition-colors">
  <div className="flex-1">
- <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-bold text-slate-600 mb-6 uppercase tracking-wider ">
+ <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-primary/40 text-xs font-bold text-slate-600 mb-6 uppercase tracking-wider ">
  <Server className="w-4 h-4" /> High Security
  </div>
  <h3 className="font-bold text-3xl md:text-4xl text-slate-900 mb-4 tracking-tight">{t('off_cloud_on_premise', 'Off-Cloud Enterprise')}</h3>
@@ -335,7 +335,7 @@ export default function Pricing() {
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
  {['Self-hosted deployment','Air-gapped network support','Custom database integration','Dedicated solution engineer'].map((f, i) => (
  <div key={i} className="flex items-center gap-3 text-sm text-slate-700 font-medium">
- <div className="shrink-0 rounded-full bg-white border border-slate-200 flex items-center justify-center p-1.5 ">
+ <div className="shrink-0 rounded-full bg-white border border-primary/40 flex items-center justify-center p-1.5 ">
  <Check className="w-3.5 h-3.5 text-primary" strokeWidth={3} />
  </div>
  {f}
@@ -343,7 +343,7 @@ export default function Pricing() {
  ))}
  </div>
  </div>
- <div className="w-full md:w-80 shrink-0 flex flex-col items-center bg-white rounded-3xl p-8 border border-slate-200 ">
+ <div className="w-full md:w-80 shrink-0 flex flex-col items-center bg-white rounded-3xl p-8 border border-primary/40 ">
  <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Starting At</span>
  <span className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tighter">$15,500<span className="text-xl text-slate-500 font-medium tracking-normal">/yr</span></span>
  <Button
@@ -359,8 +359,8 @@ export default function Pricing() {
 
  {/* ── OFF-CLOUD DIALOG ── */}
  <Dialog open={showOffCloudDialog} onOpenChange={setShowOffCloudDialog}>
- <DialogContent className="sm:max-w-[680px] p-0 overflow-hidden bg-white border border-slate-200 rounded-3xl flex flex-col max-h-[85vh]">
- <div className="bg-slate-50 border-b border-slate-100 px-8 py-8 shrink-0 text-center">
+ <DialogContent className="sm:max-w-[680px] p-0 overflow-hidden bg-white border border-primary/40 rounded-3xl flex flex-col max-h-[85vh]">
+ <div className="bg-slate-50 border-b border-primary/40 px-8 py-8 shrink-0 text-center">
  <DialogTitle className="text-2xl font-bold text-slate-900 mb-3 tracking-tight">{t('off_cloud_enterprise', 'Off-Cloud Enterprise')}</DialogTitle>
  <DialogDescription className="text-slate-600 text-sm max-w-md mx-auto leading-relaxed font-medium">
  Deploy Slate securely on your own private infrastructure. Starting at $15,500 USD / year.
@@ -369,7 +369,7 @@ export default function Pricing() {
  <div className="px-8 py-8 overflow-y-auto bg-white flex-1">
  <div className="space-y-8">
  <div>
- <h4 className="font-bold text-slate-900 mb-5 uppercase tracking-widest text-xs border-b border-slate-100 pb-3">Deployment Details</h4>
+ <h4 className="font-bold text-slate-900 mb-5 uppercase tracking-widest text-xs border-b border-primary/40 pb-3">Deployment Details</h4>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  {[{icon: Server, title:'Self-Hosted / On-Premise', body:'Deploy to internal bare-metal servers or private AWS/Azure VPCs.'},
  {icon: Shield, title:'Air-Gapped Operation', body:'Full offline operation without external API dependencies.'},
@@ -377,7 +377,7 @@ export default function Pricing() {
  {icon: Headphones, title:'Dedicated Engineer', body:'A dedicated engineer for deployment, white-labelling, and maintenance.'},
  ].map(({icon: Icon, title, body}) => (
  <div key={title} className="flex gap-4">
- <div className="w-10 h-10 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0 ">
+ <div className="w-10 h-10 rounded-2xl bg-slate-50 border border-primary/40 flex items-center justify-center shrink-0 ">
  <Icon className="w-4.5 h-4.5 text-slate-700" />
  </div>
  <div>
@@ -390,7 +390,7 @@ export default function Pricing() {
  </div>
  </div>
  </div>
- <DialogFooter className="p-6 bg-slate-50 border-t border-slate-200 sm:justify-between items-center flex-col sm:flex-row gap-4 shrink-0">
+ <DialogFooter className="p-6 bg-slate-50 border-t border-primary/40 sm:justify-between items-center flex-col sm:flex-row gap-4 shrink-0">
  <Button variant="ghost" onClick={() => setShowOffCloudDialog(false)} className="w-full sm:w-auto font-bold text-slate-600 hover:bg-slate-200">
  {t('close', 'Close')}
  </Button>
@@ -404,14 +404,14 @@ export default function Pricing() {
  </Dialog>
 
  {/* ── FAQ ── */}
- <section className="bg-slate-50 py-16 md:py-24 border-t border-slate-200">
+ <section className="bg-slate-50 py-16 md:py-24 border-t border-primary/40">
  <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
  <div className="text-center mb-12">
  <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">{t('frequently_asked_questions', 'Frequently Asked Questions')}</h2>
  </div>
  <div className="space-y-4">
  {faqs.map((faq, i) => (
- <div key={i} className="bg-white rounded-2xl border border-slate-200 overflow-hidden transition-all">
+ <div key={i} className="bg-white rounded-2xl border border-primary/40 overflow-hidden transition-all">
  <button
  id={`faq-${i}`}
  onClick={() => setOpenFaq(openFaq === i ? null : i)}

@@ -160,14 +160,14 @@ export default function Teachers() {
  {isLoading ? (
  <div className="py-12 text-center text-muted-foreground">{t("loading", "Loading...")}</div>
  ) : filtered.length === 0 ? (
- <div className="text-center py-12 bg-card rounded-xl border border-border">
+ <div className="text-center py-12 bg-card rounded-xl border border-primary/40">
  <Briefcase className="w-12 h-12 mx-auto mb-3 opacity-20 text-primary" />
  <p className="font-semibold text-lg text-card-foreground">{t("no_teachers_found", "No teachers found")}</p>
  </div>
  ) : viewMode === 'grid' ? (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
  {filtered.map(teacher => (
- <div key={teacher.id} className="bg-card/60 backdrop-blur-md rounded-3xl border border-border/60 p-6 hover:-translate-y-1.5 transition-all duration-300 group relative overflow-hidden flex flex-col items-center text-center">
+ <div key={teacher.id} className="bg-card/60 backdrop-blur-md rounded-3xl border border-primary/40 p-6 hover:-translate-y-1.5 transition-all duration-300 group relative overflow-hidden flex flex-col items-center text-center">
  <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-transparent to-transparent dark:from-primary/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
  <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity z-10">
  <DropdownMenu>
@@ -196,11 +196,11 @@ export default function Teachers() {
  <p className="text-xs font-bold text-primary dark:text-primary/70 dark:text-primary/70 uppercase tracking-widest mb-4 opacity-90 relative z-10">{teacher.position}</p>
  
  <div className="w-full space-y-2 mt-auto relative z-10">
- <div className="flex items-center gap-3 text-xs text-muted-foreground bg-slate-50/50 dark:bg-transparent dark:bg-slate-900/50 border border-border/50 p-2.5 rounded-xl ">
+ <div className="flex items-center gap-3 text-xs text-muted-foreground bg-slate-50/50 dark:bg-transparent dark:bg-slate-900/50 border border-primary/40 p-2.5 rounded-xl ">
  <div className="w-6 h-6 rounded-md bg-white dark:bg-slate-900/40 dark:bg-slate-800 flex items-center justify-center shrink-0"><GraduationCap className="w-3.5 h-3.5 text-primary" /></div>
  <span className="truncate font-medium">{teacher.qualifications}</span>
  </div>
- <div className="flex items-center gap-3 text-xs text-muted-foreground bg-slate-50/50 dark:bg-transparent dark:bg-slate-900/50 border border-border/50 p-2.5 rounded-xl ">
+ <div className="flex items-center gap-3 text-xs text-muted-foreground bg-slate-50/50 dark:bg-transparent dark:bg-slate-900/50 border border-primary/40 p-2.5 rounded-xl ">
  <div className="w-6 h-6 rounded-md bg-white dark:bg-slate-900/40 dark:bg-slate-800 flex items-center justify-center shrink-0"><Briefcase className="w-3.5 h-3.5 text-primary" /></div>
  <span className="truncate font-medium">{teacher.subjects}</span>
  </div>
@@ -212,7 +212,7 @@ export default function Teachers() {
  <div className="school-card overflow-hidden">
  <div className="overflow-x-auto">
  <table className="w-full text-sm">
- <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-700">
+ <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-primary/40 dark:border-primary/40">
  <tr>
  <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Name</th>
  <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Subjects</th>
@@ -268,7 +268,7 @@ export default function Teachers() {
 
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
- <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+ <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-primary/40 max-h-[90vh] overflow-y-auto custom-scrollbar">
  <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Staff' : 'Add Staff'}</h2>
  <div className="space-y-3">
  <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("full_name", "Full Name")}</label><Input value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} className="mt-1" /></div>

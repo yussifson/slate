@@ -181,12 +181,12 @@ export default function Appointments() {
  </div>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
  {/* Sidebar Calendar List */}
- <div className="col-span-1 bg-card rounded-xl border border-border p-4 h-[600px] overflow-y-auto space-y-4">
- <h3 className="font-bold text-card-foreground flex items-center gap-2 border-b border-border pb-3"><CalendarIcon className="w-4 h-4 text-primary"/> {t("scheduled_visits", "Scheduled Visits (")}{filteredAppts.length})</h3>
+ <div className="col-span-1 bg-card rounded-xl border border-primary/40 p-4 h-[600px] overflow-y-auto space-y-4">
+ <h3 className="font-bold text-card-foreground flex items-center gap-2 border-b border-primary/40 pb-3"><CalendarIcon className="w-4 h-4 text-primary"/> {t("scheduled_visits", "Scheduled Visits (")}{filteredAppts.length})</h3>
  <div className="space-y-3">
  {filteredAppts.map(appt => {
  return (
- <div key={appt.id} onClick={() => setSelectedAppt(appt)} className={`p-3 rounded-lg border cursor-pointer transition-all flex flex-col gap-2 ${selectedAppt?.id === appt.id ? 'ring-2 ring-primary border-transparent bg-primary/20' : 'border-border'}`}>
+ <div key={appt.id} onClick={() => setSelectedAppt(appt)} className={`p-3 rounded-lg border cursor-pointer transition-all flex flex-col gap-2 ${selectedAppt?.id === appt.id ? 'ring-2 ring-primary border-transparent bg-primary/20' : 'border-primary/40'}`}>
  <div className="flex justify-between items-start">
  <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${typeColors[appt.type]}`}>{appt.type}</span>
  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded border ${statusColors[appt.status]}`}>{appt.status}</span>
@@ -195,7 +195,7 @@ export default function Appointments() {
  <Link to="/hospital/patients" className="font-bold text-sm text-primary hover:underline">{appt.patient}</Link>
  <p className="text-xs text-muted-foreground font-medium">{appt.doctor}</p>
  </div>
- <div className="flex items-center justify-between gap-1 text-xs text-muted-foreground mt-1 border-t border-dashed border-primary/50 pt-2">
+ <div className="flex items-center justify-between gap-1 text-xs text-muted-foreground mt-1 border-t border-dashed border-primary/40 pt-2">
  <div className="flex items-center gap-1">
  <Clock className="w-3.5 h-3.5 text-muted-foreground" /> <span>{appt.time}</span>
  </div>
@@ -218,7 +218,7 @@ export default function Appointments() {
  {/* Main Details Area */}
  <div className="col-span-1 md:col-span-2 space-y-6">
  {selectedAppt ? (
- <div className="bg-card rounded-xl border border-border p-6 space-y-6">
+ <div className="bg-card rounded-xl border border-primary/40 p-6 space-y-6">
  <div className="flex justify-between items-start">
  <div>
  <Link to="/hospital/patients" className="text-xl font-bold text-primary hover:underline">{selectedAppt.patient}</Link>
@@ -227,7 +227,7 @@ export default function Appointments() {
  <span className={`text-xs font-bold px-3 py-1 rounded-full border ${statusColors[selectedAppt.status]}`}>{selectedAppt.status}</span>
  </div>
 
- <div className="grid grid-cols-2 gap-4 border-y border-border py-4 my-4">
+ <div className="grid grid-cols-2 gap-4 border-y border-primary/40 py-4 my-4">
  <div>
  <p className="text-xs text-muted-foreground uppercase font-bold">{t("appointment_type", "Appointment Type")}</p>
  <p className="font-semibold text-foreground">{selectedAppt.type}</p>
@@ -263,7 +263,7 @@ export default function Appointments() {
  </div>
  </div>
  ) : (
- <div className="bg-card rounded-xl border border-border p-6 flex flex-col items-center justify-center min-h-[300px] text-center">
+ <div className="bg-card rounded-xl border border-primary/40 p-6 flex flex-col items-center justify-center min-h-[300px] text-center">
  <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
  <Stethoscope className="w-8 h-8 text-primary" />
  </div>
@@ -312,7 +312,7 @@ export default function Appointments() {
  </select>
  </div>
  </div>
- <div className="flex flex-col gap-2 p-3 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800">
+ <div className="flex flex-col gap-2 p-3 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900 rounded-lg border border-primary/40 dark:border-primary/40">
  <div className="flex items-center space-x-2">
  <Checkbox id="generateZoom" checked={generateZoom} onCheckedChange={setGenerateZoom} />
  <label htmlFor="generateZoom" className="text-sm font-medium leading-none cursor-pointer">

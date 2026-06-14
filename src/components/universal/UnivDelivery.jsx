@@ -87,8 +87,8 @@ export default function UnivDelivery() {
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -96,7 +96,7 @@ export default function UnivDelivery() {
  placeholder="Search tracking numbers..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -125,7 +125,7 @@ export default function UnivDelivery() {
  <td className="p-4">
  <div className="flex items-center gap-2">
  <Package className="w-4 h-4 text-primary" />
- <code className="bg-muted px-2 py-0.5 rounded font-mono font-bold tracking-wider text-xs border border-border">{d.tracking_number}</code>
+ <code className="bg-muted px-2 py-0.5 rounded font-mono font-bold tracking-wider text-xs border border-primary/40">{d.tracking_number}</code>
  </div>
  </td>
  <td className="p-4 font-semibold text-foreground">
@@ -138,7 +138,7 @@ export default function UnivDelivery() {
  <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border flex items-center gap-1 w-fit ${
  d.status === 'Delivered' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
  d.status === 'In Transit' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
- 'bg-background text-foreground border-border'
+ 'bg-background text-foreground border-primary/40'
 }`}>
  {d.status === 'Delivered' && <CheckCircle2 className="w-3 h-3" />}
  {d.status === 'In Transit' && <Truck className="w-3 h-3" />}

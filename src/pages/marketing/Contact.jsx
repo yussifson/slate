@@ -55,7 +55,7 @@ export default function Contact() {
  <div className="absolute inset-0 bg-slate-50 pointer-events-none" />
  
  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
- <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-semibold text-slate-600 mb-8 ">
+ <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-primary/40 text-xs font-semibold text-slate-600 mb-8 ">
  <span className="flex h-2 w-2 rounded-full bg-primary" />
  {t("get_in_touch", "Get in Touch")}
  </div>
@@ -83,10 +83,10 @@ export default function Contact() {
  
  {/* Left Column — Contact Form */}
  <div className="lg:col-span-7">
- <div className="bg-white rounded-[2rem] border border-slate-200/60 p-8 md:p-12 -slate-200/40 -emerald-900/5 transition-all duration-300">
+ <div className="bg-white rounded-[2rem] border border-primary/40 p-8 md:p-12 -slate-200/40 -emerald-900/5 transition-all duration-300">
  {formSubmitted ? (
  <div className="text-center py-20 space-y-6">
- <div className="w-20 h-20 rounded-full bg-slate-50 text-primary flex items-center justify-center mx-auto border-8 border-slate-200 ">
+ <div className="w-20 h-20 rounded-full bg-slate-50 text-primary flex items-center justify-center mx-auto border-8 border-primary/40 ">
  <CheckCircle className="w-10 h-10" />
  </div>
  <h3 className="text-4xl font-extrabold text-slate-900 tracking-tight">
@@ -128,7 +128,7 @@ export default function Contact() {
  value={formData.name}
  onChange={handleInputChange}
  placeholder="Jane Doe"
- className="w-full h-14 bg-slate-50 border-slate-200 rounded-xl px-4 font-medium focus:bg-white transition-colors"
+ className="w-full h-14 bg-slate-50 border-primary/40 rounded-xl px-4 font-medium focus:bg-white transition-colors"
  required
  />
  </div>
@@ -143,7 +143,7 @@ export default function Contact() {
  value={formData.email}
  onChange={handleInputChange}
  placeholder="jane@company.com"
- className="w-full h-14 bg-slate-50 border-slate-200 rounded-xl px-4 font-medium focus:bg-white transition-colors"
+ className="w-full h-14 bg-slate-50 border-primary/40 rounded-xl px-4 font-medium focus:bg-white transition-colors"
  required
  />
  </div>
@@ -161,7 +161,7 @@ export default function Contact() {
  value={formData.company}
  onChange={handleInputChange}
  placeholder="Acme Corp"
- className="w-full h-14 bg-slate-50 border-slate-200 rounded-xl px-4 font-medium focus:bg-white transition-colors"
+ className="w-full h-14 bg-slate-50 border-primary/40 rounded-xl px-4 font-medium focus:bg-white transition-colors"
  />
  </div>
  <div className="space-y-2">
@@ -175,7 +175,7 @@ export default function Contact() {
  value={formData.phone}
  onChange={handleInputChange}
  placeholder="+1 (555) 000-0000"
- className="w-full h-14 bg-slate-50 border-slate-200 rounded-xl px-4 font-medium focus:bg-white transition-colors"
+ className="w-full h-14 bg-slate-50 border-primary/40 rounded-xl px-4 font-medium focus:bg-white transition-colors"
  />
  </div>
  </div>
@@ -191,7 +191,7 @@ export default function Contact() {
  value={formData.message}
  onChange={handleInputChange}
  placeholder="Tell us about your project or inquiry..."
- className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-medium text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent focus:bg-white resize-none transition-colors"
+ className="w-full bg-slate-50 border border-primary/40 rounded-xl p-4 font-medium text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent focus:bg-white resize-none transition-colors"
  required
  ></textarea>
  </div>
@@ -206,7 +206,7 @@ export default function Contact() {
 
  {/* Right Column — Contact Info */}
  <div className="lg:col-span-5 space-y-8 lg:pl-4">
- <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 flex items-start gap-4">
+ <div className="bg-slate-50 border border-primary/40 rounded-3xl p-8 flex items-start gap-4">
  <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-white shrink-0 mt-1 -emerald-600/20">
  <Clock className="w-6 h-6" />
  </div>
@@ -232,7 +232,7 @@ export default function Contact() {
  return (
  <div
  key={idx}
- className="group rounded-3xl p-6 bg-white border border-slate-100 hover:border-primary/20 hover:bg-primary/30 transition-colors duration-300 flex items-start gap-5"
+ className="group rounded-3xl p-6 bg-white border border-primary/40 hover:border-primary/20 hover:bg-primary/30 transition-colors duration-300 flex items-start gap-5"
  >
  <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-slate-100 flex items-center justify-center text-slate-500 group-hover:text-primary shrink-0 transition-colors">
  <MapPin className="w-5 h-5" />

@@ -167,8 +167,8 @@ export default function UnivChat({
  <div className="flex h-full w-full bg-background font-sans overflow-hidden">
  
  {/* Sidebar - Channels */}
- <div className="w-64 bg-slate-50 dark:bg-slate-900 border-r border-border flex flex-col shrink-0">
- <div className="h-14 px-4 flex items-center justify-between border-b border-border bg-card z-10">
+ <div className="w-64 bg-slate-50 dark:bg-slate-900 border-r border-primary/40 flex flex-col shrink-0">
+ <div className="h-14 px-4 flex items-center justify-between border-b border-primary/40 bg-card z-10">
  <h2 className="font-bold text-foreground flex items-center gap-2">
  <MessageSquare className="w-5 h-5 text-primary" /> {title}
  </h2>
@@ -198,7 +198,7 @@ export default function UnivChat({
  if (e.key === 'Enter' && newChannelName.trim()) createChannelMutation.mutate(newChannelName);
  if (e.key === 'Escape') setIsCreatingChannel(false);
 }}
- className="w-full h-8 px-2 text-sm bg-background border border-border rounded focus:outline-none focus:border-primary"
+ className="w-full h-8 px-2 text-sm bg-background border border-primary/40 rounded focus:outline-none focus:border-primary"
  />
  </div>
  )}
@@ -227,7 +227,7 @@ export default function UnivChat({
  </div>
  
  {/* Current User footer */}
- <div className="p-3 border-t border-border bg-card">
+ <div className="p-3 border-t border-primary/40 bg-card">
  <div className="flex items-center gap-2 px-2">
  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-xs relative">
  {currentUser?.email?.charAt(0).toUpperCase() || 'U'}
@@ -246,7 +246,7 @@ export default function UnivChat({
  {activeChannelId ? (
  <>
  {/* Header */}
- <div className="h-14 px-6 flex items-center justify-between border-b border-border shrink-0 bg-card/80 backdrop-blur-md z-10">
+ <div className="h-14 px-6 flex items-center justify-between border-b border-primary/40 shrink-0 bg-card/80 backdrop-blur-md z-10">
  <div className="flex items-center gap-2">
  <Hash className="w-5 h-5 text-muted-foreground" />
  <h3 className="font-bold text-foreground">{activeChannel?.name || 'general'}</h3>
@@ -300,7 +300,7 @@ export default function UnivChat({
  </div>
 
  {/* Quick Actions (Hover) */}
- <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-background border border-border rounded-lg px-1 py-1 h-8 self-start -mt-3 relative z-10">
+ <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-background border border-primary/40 rounded-lg px-1 py-1 h-8 self-start -mt-3 relative z-10">
  <button className="p-1.5 hover:bg-muted rounded text-muted-foreground hover:text-foreground"><Smile className="w-4 h-4" /></button>
  <button className="p-1.5 hover:bg-muted rounded text-muted-foreground hover:text-foreground"><Reply className="w-4 h-4" /></button>
  </div>
@@ -314,7 +314,7 @@ export default function UnivChat({
  <div className="p-4 bg-background shrink-0 pb-6">
  <form 
  onSubmit={handleSendMessage}
- className="bg-card border border-border rounded-xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden"
+ className="bg-card border border-primary/40 rounded-xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden"
  >
  <div className="px-4 py-3">
  <textarea
@@ -331,7 +331,7 @@ export default function UnivChat({
  rows="1"
  />
  </div>
- <div className="bg-muted/30 px-3 py-2 flex items-center justify-between border-t border-border/50">
+ <div className="bg-muted/30 px-3 py-2 flex items-center justify-between border-t border-primary/40">
  <div className="flex items-center gap-1 text-muted-foreground">
  <button type="button" className="p-1.5 hover:bg-muted rounded hover:text-foreground transition-colors"><Plus className="w-4 h-4" /></button>
  <button type="button" className="p-1.5 hover:bg-muted rounded hover:text-foreground transition-colors"><Smile className="w-4 h-4" /></button>

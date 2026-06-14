@@ -90,10 +90,10 @@ function ConfirmActionDialog({ open, action, item, onClose, onConfirm}) {
  >
  <motion.div
  initial={{ scale: 0.95, opacity: 0}} animate={{ scale: 1, opacity: 1}} exit={{ scale: 0.95, opacity: 0}}
- className="bg-card border border-border w-full max-w-md rounded-2xl "
+ className="bg-card border border-primary/40 w-full max-w-md rounded-2xl "
  onClick={e => e.stopPropagation()}
  >
- <div className="p-5 border-b border-border flex justify-between items-center">
+ <div className="p-5 border-b border-primary/40 flex justify-between items-center">
  <h2 className="text-lg font-bold text-foreground">{m.title}</h2>
  <button onClick={onClose} className="p-1.5 rounded-full hover:bg-muted">
  <XCircle className="w-5 h-5 text-muted-foreground" />
@@ -113,7 +113,7 @@ function ConfirmActionDialog({ open, action, item, onClose, onConfirm}) {
  onChange={e => setComment(e.target.value)}
  rows={3}
  placeholder="Add a note for the requestor..."
- className="w-full px-3 py-2 bg-background border border-border rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full px-3 py-2 bg-background border border-primary/40 rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  <div className="flex justify-end gap-3 pt-1">
@@ -149,7 +149,7 @@ function ApprovalChain({ steps = [], currentStep = 0}) {
  'w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all',
  isComplete ? 'bg-emerald-500 border-emerald-500 text-white' :
  isCurrent ? 'bg-primary border-primary text-white animate-pulse' :
- 'bg-muted border-border text-muted-foreground'
+ 'bg-muted border-primary/40 text-muted-foreground'
  )}>
  {isComplete ? <CheckCheck className="w-4 h-4" /> : idx + 1}
  </div>
@@ -168,7 +168,7 @@ function ApprovalChain({ steps = [], currentStep = 0}) {
  {idx < steps.length - 1 && (
  <div className={cn(
  'h-0.5 w-8 mx-1 rounded-full transition-all',
- idx < currentStep ? 'bg-emerald-400' : 'bg-border'
+ idx < currentStep ? 'bg-emerald-400' : 'bg-primary/40'
  )} />
  )}
  </div>
@@ -187,7 +187,7 @@ function InboxCard({ item, onAction}) {
  <motion.div
  initial={{ opacity: 0, y: 10}}
  animate={{ opacity: 1, y: 0}}
- className="bg-card border border-border rounded-2xl p-4 transition-"
+ className="bg-card border border-primary/40 rounded-2xl p-4 transition-"
  >
  <div className="flex items-start gap-3">
  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
@@ -224,7 +224,7 @@ function InboxCard({ item, onAction}) {
  </div>
 
  {item.status === 'pending' && (
- <div className="flex gap-2 mt-4 pt-3 border-t border-border">
+ <div className="flex gap-2 mt-4 pt-3 border-t border-primary/40">
  <button
  onClick={() => onAction('approve', item)}
  className="flex-1 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-emerald-500/20 transition-colors border border-emerald-200 dark:border-emerald-800"
@@ -255,7 +255,7 @@ function AllRequestsRow({ item, expanded, onToggle}) {
  return (
  <>
  <tr
- className="border-b border-border/50 hover:bg-muted/20 cursor-pointer transition-colors"
+ className="border-b border-primary/40 hover:bg-muted/20 cursor-pointer transition-colors"
  onClick={onToggle}
  >
  <td className="px-4 py-3">
@@ -296,7 +296,7 @@ function AllRequestsRow({ item, expanded, onToggle}) {
  exit={{ opacity: 0, height: 0}}
  className="overflow-hidden"
  >
- <div className="px-6 py-4 bg-muted/30 border-b border-border">
+ <div className="px-6 py-4 bg-muted/30 border-b border-primary/40">
  <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Approval Chain</p>
  {steps.length > 0 ? (
  <ApprovalChain steps={steps} currentStep={item.current_step || 0} />
@@ -366,7 +366,7 @@ function TemplatesPanel({ companyId}) {
  return (
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
  {/* Create form */}
- <div className="bg-card border border-border rounded-2xl p-5 ">
+ <div className="bg-card border border-primary/40 rounded-2xl p-5 ">
  <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
  <Plus className="w-4 h-4 text-primary" /> New Template
  </h3>
@@ -377,7 +377,7 @@ function TemplatesPanel({ companyId}) {
  value={form.name}
  onChange={e => setForm(f => ({ ...f, name: e.target.value}))}
  placeholder="e.g. Leave Approval"
- className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  <div>
@@ -397,13 +397,13 @@ function TemplatesPanel({ companyId}) {
  value={step.stepName}
  onChange={e => updateStep(i, 'stepName', e.target.value)}
  placeholder="Step name (e.g. Line Manager)"
- className="flex-1 h-9 px-3 bg-background border border-border rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="flex-1 h-9 px-3 bg-background border border-primary/40 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  <input
  value={step.role}
  onChange={e => updateStep(i, 'role', e.target.value)}
  placeholder="Role (e.g. manager)"
- className="flex-1 h-9 px-3 bg-background border border-border rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="flex-1 h-9 px-3 bg-background border border-primary/40 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  {form.steps.length > 1 && (
  <button type="button" onClick={() => removeStep(i)} className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg">
@@ -432,7 +432,7 @@ function TemplatesPanel({ companyId}) {
  {isLoading ? (
  <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
  ) : templates.length === 0 ? (
- <div className="bg-card border border-dashed border-primary/50 rounded-2xl p-10 text-center">
+ <div className="bg-card border border-dashed border-primary/40 rounded-2xl p-10 text-center">
  <LayoutTemplate className="w-10 h-10 text-muted-foreground mx-auto mb-2 opacity-40" />
  <p className="text-sm text-muted-foreground">No templates yet. Create your first one.</p>
  </div>
@@ -442,7 +442,7 @@ function TemplatesPanel({ companyId}) {
  key={t.id}
  initial={{ opacity: 0, y: 8}}
  animate={{ opacity: 1, y: 0}}
- className="bg-card border border-border rounded-2xl p-4 "
+ className="bg-card border border-primary/40 rounded-2xl p-4 "
  >
  <div className="flex items-center justify-between mb-3">
  <h4 className="text-sm font-bold text-foreground">{t.name}</h4>
@@ -580,7 +580,7 @@ export default function UnivApprovalEngine() {
  return (
  <div className="h-full flex flex-col bg-background overflow-auto">
  {/* ── Header ── */}
- <div className="px-6 pt-6 pb-0 border-b border-border bg-card/60 backdrop-blur-sm shrink-0">
+ <div className="px-6 pt-6 pb-0 border-b border-primary/40 bg-card/60 backdrop-blur-sm shrink-0">
  <div className="flex items-center justify-between mb-4">
  <div>
  <h1 className="text-2xl font-black text-foreground flex items-center gap-2.5">
@@ -666,7 +666,7 @@ export default function UnivApprovalEngine() {
  value={search}
  onChange={e => setSearch(e.target.value)}
  placeholder="Search requests..."
- className="w-full h-10 pl-9 pr-4 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-9 pr-4 bg-card border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
 
@@ -675,9 +675,9 @@ export default function UnivApprovalEngine() {
  <Loader2 className="w-8 h-8 animate-spin text-primary" />
  </div>
  ) : (
- <div className="overflow-auto rounded-2xl border border-border bg-card ">
+ <div className="overflow-auto rounded-2xl border border-primary/40 bg-card ">
  <table className="w-full text-sm min-w-[700px]">
- <thead className="border-b border-border bg-muted/40 sticky top-0">
+ <thead className="border-b border-primary/40 bg-muted/40 sticky top-0">
  <tr>
  {['Title', 'Type', 'Requestor', 'Current Step', 'Status', 'Last Action', 'Date'].map(col => (
  <th key={col} className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">

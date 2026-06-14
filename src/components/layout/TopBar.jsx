@@ -133,7 +133,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  return (
  <>
  {/* ── NATIVE MOBILE TOP BAR ── */}
- <div className="md:hidden sticky top-0 z-[60] h-[52px] bg-background/80 backdrop-blur-xl border-b border-border/50 flex items-center justify-between px-4 w-full pt-[env(safe-area-inset-top)]">
+ <div className="md:hidden sticky top-0 z-[60] h-[52px] bg-background/80 backdrop-blur-xl border-b border-primary/40 flex items-center justify-between px-4 w-full pt-[env(safe-area-inset-top)]">
  {/* Left: Avatar */}
  <button onClick={() => setShowAvatarDialog(true)} className="relative w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden active:scale-95 transition-transform">
  {user?.avatar_url ? (
@@ -163,7 +163,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  </div>
 
  {/* ── DESKTOP TOP BAR ── */}
- <div className="hidden md:flex h-12 border-t-[3px] border-t-primary border-b border-border bg-card relative z-30 items-center pl-4 pr-5 lg:px-5 gap-3 shrink-0 w-full">
+ <div className="hidden md:flex h-12 border-t-[3px] border-t-primary border-b border-primary/40 bg-card relative z-30 items-center pl-4 pr-5 lg:px-5 gap-3 shrink-0 w-full">
  {/* Sidebar Toggle & Breadcrumb */}
  <div className="flex items-center gap-2 sm:gap-3 text-sm flex-1 min-w-0">
  <button 
@@ -173,7 +173,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  >
  <PanelLeft className="w-5 h-5" />
  </button>
- <div className="h-4 w-px bg-border hidden lg:block mx-1"></div>
+ <div className="h-4 w-px bg-primary/40 hidden lg:block mx-1"></div>
  <LayoutDashboard className="w-4 h-4 text-muted-foreground shrink-0" />
  <span className="font-bold sm:font-medium text-foreground truncate max-w-[100px] sm:max-w-none text-base sm:text-sm">{title}</span>
  </div>
@@ -220,7 +220,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
 
  {/* Workspace Switcher */}
  {user?.available_companies?.length > 1 && (
- <div className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-foreground border border-border rounded-md px-2.5 py-1 hover:bg-muted/50 bg-card ">
+ <div className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-foreground border border-primary/40 rounded-md px-2.5 py-1 hover:bg-muted/50 bg-card ">
  <Layers className="w-3.5 h-3.5 text-primary" />
  <select
  value={user.company_id}
@@ -237,7 +237,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  )}
 
  {/* Language Switcher */}
- <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground border border-border rounded-md px-2.5 py-1 hover:bg-muted/50 bg-card">
+ <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground border border-primary/40 rounded-md px-2.5 py-1 hover:bg-muted/50 bg-card">
  <Globe className="w-3.5 h-3.5" />
  <select 
  value={i18n.language?.split('-')[0] || 'en'} 
@@ -262,7 +262,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  className={`relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-bold rounded-lg border transition-all duration-300 ${
  isBoltOpen
  ? "bg-gradient-to-r from-primary/80 to-primary text-white border-primary -[0_0_15px_rgba(var(--primary),0.5)] scale-95"
- : "bg-card text-foreground border-border hover:border-primary/50 hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/10 hover:text-primary -[0_0_10px_rgba(var(--primary),0.15)]"
+ : "bg-card text-foreground border-primary/40 hover:border-primary/50 hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/10 hover:text-primary -[0_0_10px_rgba(var(--primary),0.15)]"
 }`}
  >
  <span className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/10 opacity-0 hover:opacity-100 transition-opacity duration-300" />
@@ -278,7 +278,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  className={`relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-bold rounded-lg border transition-all duration-300 ${
  isAIOpen
  ? "bg-gradient-to-r from-primary to-primary text-white border-primary -[0_0_15px_rgba(59,130,246,0.5)] scale-95"
- : "bg-card text-foreground border-border hover:border-slate-200 hover:bg-gradient-to-r hover:from-primary/50 hover:to-primary/50 hover:text-primary -[0_0_10px_rgba(59,130,246,0.15)]"
+ : "bg-card text-foreground border-primary/40 hover:border-primary/40 hover:bg-gradient-to-r hover:from-primary/50 hover:to-primary/50 hover:text-primary -[0_0_10px_rgba(59,130,246,0.15)]"
 }`}
  >
  <span className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/10 opacity-0 hover:opacity-100 transition-opacity duration-300" />
@@ -298,7 +298,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  className={`relative overflow-hidden sm:w-auto sm:px-3 sm:py-1.5 text-xs font-bold rounded-lg border transition-all duration-300 ${
  isChatOpen
  ? "bg-primary text-white border-primary -[0_0_15px_rgba(59,130,246,0.5)] scale-95"
- : "bg-card text-foreground border-border hover:border-slate-200 hover:bg-slate-50 hover:text-primary dark:hover:bg-slate-100 -[0_0_10px_rgba(59,130,246,0.15)]"
+ : "bg-card text-foreground border-primary/40 hover:border-primary/40 hover:bg-slate-50 hover:text-primary dark:hover:bg-slate-100 -[0_0_10px_rgba(59,130,246,0.15)]"
 }`}
  >
  <span className="absolute inset-0 bg-slate-100 opacity-0 hover:opacity-100 transition-opacity duration-300" />

@@ -22,7 +22,7 @@ export default function AdminSecurity() {
  subtitle="Global monitoring for impersonation events, access logs, and system alerts." 
  />
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- <Card className="bg-gradient-to-br from-primary/5 to-white border-slate-200 rounded-2xl">
+ <Card className="bg-gradient-to-br from-primary/5 to-white border-primary/40 rounded-2xl">
  <CardContent className="p-6">
  <div className="flex justify-between items-start">
  <div>
@@ -56,7 +56,7 @@ export default function AdminSecurity() {
  </CardContent>
  </Card>
 
- <Card className="bg-gradient-to-br from-primary/5 to-white border-slate-200 rounded-2xl">
+ <Card className="bg-gradient-to-br from-primary/5 to-white border-primary/40 rounded-2xl">
  <CardContent className="p-6">
  <div className="flex justify-between items-start">
  <div>
@@ -73,8 +73,8 @@ export default function AdminSecurity() {
  </CardContent>
  </Card>
  </div>
- <Card className="border-border rounded-2xl overflow-hidden">
- <CardHeader className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
+ <Card className="border-primary/40 rounded-2xl overflow-hidden">
+ <CardHeader className="bg-slate-50 dark:bg-slate-800/50 border-b border-primary/40 dark:border-primary/40">
  <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2">
  <Lock className="w-4 h-4 text-primary" /> {t("global_audit_trail", "Global Audit Trail")}
  </CardTitle>
@@ -83,7 +83,7 @@ export default function AdminSecurity() {
  <div className="divide-y divide-slate-50 overflow-x-auto">
  <table className="w-full text-sm text-left font-sans">
  <thead>
- <tr className="bg-slate-50/50 dark:bg-transparent border-b border-slate-100 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px]">
+ <tr className="bg-slate-50/50 dark:bg-transparent border-b border-primary/40 dark:border-primary/40 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px]">
  <th className="px-6 py-4">{t("event_type", "Event Type")}</th>
  <th className="px-6 py-4">{t("actor_origin", "Actor / Origin")}</th>
  <th className="px-6 py-4">{t("target_detail", "Target / Detail")}</th>

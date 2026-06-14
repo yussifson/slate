@@ -94,8 +94,8 @@ export default function DynamicKanbanView({ data, records, moduleDef, fieldDefin
  <div className="flex gap-6 overflow-x-auto pb-4 h-[650px] items-start pt-2 px-1">
  <DragDropContext onDragEnd={onDragEnd}>
  {Object.entries(columns).map(([colId, colRecords]) => (
- <div key={colId} className="w-[300px] flex-shrink-0 bg-muted/80 rounded-xl flex flex-col max-h-full border border-border/60">
- <div className="p-3 border-b border-border/80 flex items-center justify-between bg-muted rounded-t-xl">
+ <div key={colId} className="w-[300px] flex-shrink-0 bg-muted/80 rounded-xl flex flex-col max-h-full border border-primary/40">
+ <div className="p-3 border-b border-primary/40 flex items-center justify-between bg-muted rounded-t-xl">
  <h3 className="font-semibold text-foreground text-sm">{colId}</h3>
  <span className="bg-muted text-muted-foreground text-xs font-medium px-2 py-0.5 rounded-full">
  {colRecords.length}
@@ -117,7 +117,7 @@ export default function DynamicKanbanView({ data, records, moduleDef, fieldDefin
  ref={provided.innerRef}
  {...provided.draggableProps}
  {...provided.dragHandleProps}
- className={`bg-card p-3 rounded-lg border border-border group transition-all
+ className={`bg-card p-3 rounded-lg border border-primary/40 group transition-all
  ${snapshot.isDragging ? ' ring-2 ring-primary/20 rotate-2' : 'hover:border-primary/30'}
  `}
  >
@@ -149,7 +149,7 @@ export default function DynamicKanbanView({ data, records, moduleDef, fieldDefin
  </div>
  )}
  </Droppable>
- <div className="p-2 border-t border-border/80 bg-muted/50/50 rounded-b-xl">
+ <div className="p-2 border-t border-primary/40 bg-muted/50/50 rounded-b-xl">
  <button className="w-full flex items-center justify-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-primary transition-colors py-1.5 rounded-lg hover:bg-muted">
  <Plus className="w-3.5 h-3.5" /> Add card
  </button>

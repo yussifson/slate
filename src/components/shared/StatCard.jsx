@@ -5,7 +5,7 @@ import { cn} from "@/lib/utils";
 export default function StatCard({ title, value, subtitle, icon: Icon, trend, trendUp, className}) {
  const { t} = useTranslation();
  return (
- <div className={cn("bg-card rounded-xl border border-border p-5 transition-", className)}>
+ <div className={cn("bg-card rounded-xl border border-primary/40 p-5 transition-", className)}>
  <div className="flex items-start justify-between">
  <div className="space-y-1">
  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{title}</p>

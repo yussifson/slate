@@ -194,7 +194,7 @@ export default function CaseTimeTracker({ caseData, user }) {
   return (
     <div className="space-y-4">
       {/* Timer card */}
-      <div className="bg-card rounded-xl border border-border p-5">
+      <div className="bg-card rounded-xl border border-primary/40 p-5">
         <div className="flex flex-col sm:flex-row sm:items-end gap-4">
           <div className="flex-1 space-y-3">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -255,8 +255,8 @@ export default function CaseTimeTracker({ caseData, user }) {
         </div>
       )}
       {/* Entries list */}
-      <div className="bg-card rounded-xl border border-border overflow-hidden">
-        <div className="px-5 py-3 border-b border-border bg-muted/30 flex items-center gap-2">
+      <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+        <div className="px-5 py-3 border-b border-primary/40 bg-muted/30 flex items-center gap-2">
           <Clock className="w-4 h-4 text-muted-foreground" />
           <span className="text-sm font-medium">{t("time_entries", "Time Entries (")}{entries.length})</span>
         </div>
@@ -294,7 +294,7 @@ export default function CaseTimeTracker({ caseData, user }) {
           </div>
         )}
         {entries.length > 0 && (
-          <div className="px-5 py-3 border-t border-border bg-muted/20 flex justify-between text-sm">
+          <div className="px-5 py-3 border-t border-primary/40 bg-muted/20 flex justify-between text-sm">
             <span className="text-muted-foreground">{t("total_logged", "Total logged")}</span>
             <span className="font-semibold">{formatDuration(entries.reduce((s, e) => s + (e.duration_minutes || 0), 0))} · {formatCurrency(entries.reduce((s, e) => s + (e.billable_amount || 0), 0), currency)}</span>
           </div>

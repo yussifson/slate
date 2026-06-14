@@ -112,7 +112,7 @@ export default function CaseExpenses({ caseData, user }) {
           { label: "Expenses Count", value: expenses.length, color: "text-foreground" },
         ].map(s => {
           return (
-            <div key={s.label} className="bg-card rounded-xl border border-border p-3 text-center">
+            <div key={s.label} className="bg-card rounded-xl border border-primary/40 p-3 text-center">
               <p className={`text-lg font-bold ${s.color}`}>{s.value}</p>
               <p className="text-xs text-muted-foreground">{s.label}</p>
             </div>
@@ -137,7 +137,7 @@ export default function CaseExpenses({ caseData, user }) {
       {isLoading ? (
         <div className="p-8 text-center text-sm text-muted-foreground">{t("loading", "Loading...")}</div>
       ) : expenses.length === 0 ? (
-        <div className="bg-card rounded-xl border border-border p-10 text-center">
+        <div className="bg-card rounded-xl border border-primary/40 p-10 text-center">
           <Receipt className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
           <p className="text-sm font-medium">{t("no_expenses_logged_yet", "No expenses logged yet")}</p>
           <p className="text-xs text-muted-foreground mt-1">{t(
@@ -149,7 +149,7 @@ export default function CaseExpenses({ caseData, user }) {
         <div className="space-y-2">
           {expenses.map(exp => {
             return (
-              <div key={exp.id} className="bg-card rounded-xl border border-border px-4 py-3 flex items-center gap-3">
+              <div key={exp.id} className="bg-card rounded-xl border border-primary/40 px-4 py-3 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
                   <Receipt className="w-4 h-4 text-amber-600" />
                 </div>
@@ -260,7 +260,7 @@ function ExpenseFormDialog({ open, onClose, onSubmit, currency }) {
           </div>
           <div>
             <Label>{t("receipt_optional", "Receipt (optional)")}</Label>
-            <div className="mt-1 border-2 border-dashed border-primary/50 rounded-lg p-3 text-center">
+            <div className="mt-1 border-2 border-dashed border-primary/40 rounded-lg p-3 text-center">
               <input type="file" id="receipt-upload" className="hidden" onChange={handleReceiptUpload} accept="image/*,.pdf" />
               <label htmlFor="receipt-upload" className="text-sm text-primary cursor-pointer hover:underline">
                 {uploadingReceipt ? "Uploading..." : form.receipt_url ? "✓ Receipt uploaded" : "Upload receipt"}
@@ -271,7 +271,7 @@ function ExpenseFormDialog({ open, onClose, onSubmit, currency }) {
             <Label>{t("notes_optional", "Notes (optional)")}</Label>
             <Input value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} placeholder="Any additional details..." />
           </div>
-          <div className="flex items-center justify-between rounded-lg border border-border p-3">
+          <div className="flex items-center justify-between rounded-lg border border-primary/40 p-3">
             <div>
               <p className="text-sm font-medium">{t("billable_to_client", "Billable to client")}</p>
               <p className="text-xs text-muted-foreground">{t("include_this_in_client_invoice", "Include this in client invoice")}</p>

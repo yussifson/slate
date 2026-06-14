@@ -32,7 +32,7 @@ const statusColors = {
  Arriving: 'bg-slate-50 dark:bg-slate-800/50 border-primary/30 text-primary/80 hover:bg-slate-100',
  Reserved: 'bg-slate-50 dark:bg-slate-800/50 border-primary/30 text-primary/80 hover:bg-slate-100',
  Cleaning: 'bg-yellow-50 border-yellow-300 text-yellow-800 hover:bg-yellow-100',
- Maintenance:'bg-slate-100 border-slate-300 text-slate-700 dark:text-slate-300 hover:bg-slate-200',
+ Maintenance:'bg-slate-100 border-primary/40 text-slate-700 dark:text-slate-300 hover:bg-slate-200',
 };
 
 const statusIcons = {
@@ -127,7 +127,7 @@ export default function FrontDesk() {
  </div>
  {/* Stats */}
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-xl border border-border p-4 border-l-4 border-l-violet-500">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 border-l-4 border-l-violet-500">
  <div className="flex items-center gap-3">
  <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
  <TrendingUp className="w-5 h-5 text-primary" />
@@ -138,7 +138,7 @@ export default function FrontDesk() {
  </div>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-border p-4 border-l-4 border-l-green-500">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 border-l-4 border-l-green-500">
  <div className="flex items-center gap-3">
  <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
  <LogIn className="w-5 h-5 text-primary" />
@@ -149,7 +149,7 @@ export default function FrontDesk() {
  </div>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-border p-4 border-l-4 border-l-red-500">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 border-l-4 border-l-red-500">
  <div className="flex items-center gap-3">
  <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
  <LogOut className="w-5 h-5 text-red-600" />
@@ -160,7 +160,7 @@ export default function FrontDesk() {
  </div>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-border p-4 border-l-4 border-l-violet-500">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 border-l-4 border-l-violet-500">
  <div className="flex items-center gap-3">
  <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
  <Users className="w-5 h-5 text-primary" />
@@ -216,9 +216,9 @@ export default function FrontDesk() {
  {/* Main Grid + Panel */}
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
  {/* Room Grid */}
- <div className="lg:col-span-2 bg-card rounded-xl border border-border p-6">
+ <div className="lg:col-span-2 bg-card rounded-xl border border-primary/40 p-6">
  {/* Legend */}
- <div className="flex flex-wrap items-center gap-4 mb-6 pb-4 border-b border-border">
+ <div className="flex flex-wrap items-center gap-4 mb-6 pb-4 border-b border-primary/40">
  {Object.entries(statusColors).map(([s]) => {
  return (
  <div key={s} className="flex items-center gap-1.5">
@@ -264,7 +264,7 @@ export default function FrontDesk() {
  </div>
 
  {/* Side Panel */}
- <div className="bg-card rounded-xl border border-border p-6 flex flex-col min-h-[400px]">
+ <div className="bg-card rounded-xl border border-primary/40 p-6 flex flex-col min-h-[400px]">
  {selectedRoom && selectedRoomInfo ? (
  <div className="space-y-5">
  <div className="flex items-center justify-between">
@@ -287,7 +287,7 @@ export default function FrontDesk() {
  {selectedRoomInfo.reservation.guestPhone && (
  <p className="text-sm text-muted-foreground">{selectedRoomInfo.reservation.guestPhone}</p>
  )}
- <div className="pt-2 border-t border-border grid grid-cols-2 gap-2 text-xs">
+ <div className="pt-2 border-t border-primary/40 grid grid-cols-2 gap-2 text-xs">
  <div>
  <span className="text-muted-foreground block">{t("check_in", "Check-in")}</span>
  <span className="font-bold">{selectedRoomInfo.reservation.checkIn}</span>

@@ -21,7 +21,7 @@ const URGENCY_COLORS = {
 const IMPORTANCE_COLORS = {
   high: "bg-red-50 border-red-200 text-red-800",
   medium: "bg-slate-50 border-primary/20 text-primary/80",
-  low: "bg-gray-50 border-gray-200 text-gray-700",
+  low: "bg-gray-50 border-primary/40 text-gray-700",
 };
 
 const DATE_TYPE_COLORS = {
@@ -36,7 +36,7 @@ const DATE_TYPE_COLORS = {
 function SectionCard({ icon: Icon, title, count, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="bg-card border border-border rounded-xl overflow-hidden">
+    <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-4 py-3 hover:bg-muted/40 transition-colors"
@@ -73,7 +73,7 @@ function CalendarView({ dates, deadlines }) {
         const d = parseISO(event.date);
         const isPast = isBefore(d, today);
         return (
-          <div key={i} className={cn("flex items-center gap-3 p-3 rounded-lg border", isPast ? "opacity-60 bg-muted/30 border-border" : "bg-card border-border")}>
+          <div key={i} className={cn("flex items-center gap-3 p-3 rounded-lg border", isPast ? "opacity-60 bg-muted/30 border-primary/40" : "bg-card border-primary/40")}>
             <div className={cn("w-12 h-12 rounded-xl flex flex-col items-center justify-center shrink-0 text-white", isPast ? "bg-muted-foreground" : "bg-primary")}>
               <span className="text-[9px] font-bold leading-none">{format(d, "MMM").toUpperCase()}</span>
               <span className="text-lg font-bold leading-none">{format(d, "d")}</span>
@@ -208,7 +208,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
         onDragOver={(e) => e.preventDefault()}
         className={cn(
           "border-2 border-dashed rounded-xl p-8 text-center transition-colors",
-          file ? "border-primary bg-slate-50" : "border-border hover:border-slate-200 hover:bg-muted/30"
+          file ? "border-primary bg-slate-50" : "border-primary/40 hover:border-primary/40 hover:bg-muted/30"
         )}
       >
         {file ? (

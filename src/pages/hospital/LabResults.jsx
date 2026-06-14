@@ -137,21 +137,21 @@ export default function LabResults() {
  </div>
  </div>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- <div className="bg-card rounded-xl border border-border p-5 border-l-4 border-l-amber-500">
+ <div className="bg-card rounded-xl border border-primary/40 p-5 border-l-4 border-l-amber-500">
  <h3 className="font-semibold text-foreground">{t("pending_tests", "Pending Tests")}</h3>
  <p className="text-3xl font-bold text-amber-600 mt-1">{labResults.filter(r => r.status === 'Pending').length}</p>
  </div>
- <div className="bg-card rounded-xl border border-border p-5 border-l-4 border-l-green-500">
+ <div className="bg-card rounded-xl border border-primary/40 p-5 border-l-4 border-l-green-500">
  <h3 className="font-semibold text-foreground">{t("completed", "Completed")}</h3>
  <p className="text-3xl font-bold text-primary mt-1">{labResults.filter(r => r.status === 'Completed').length}</p>
  </div>
- <div className="bg-card rounded-xl border border-border p-5 border-l-4 border-l-red-500">
+ <div className="bg-card rounded-xl border border-primary/40 p-5 border-l-4 border-l-red-500">
  <h3 className="font-semibold text-foreground">{t("critical_abnormal", "Critical / Abnormal")}</h3>
  <p className="text-3xl font-bold text-red-600 mt-1">{labResults.filter(r => r.status === 'Abnormal').length}</p>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input placeholder="Search patient or test ID..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
@@ -159,7 +159,7 @@ export default function LabResults() {
  </div>
  <div className="overflow-x-auto">
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-border">
+ <thead className="bg-card border-b border-primary/40">
  <tr>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("test_id", "Test ID")}</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("patient", "Patient")}</th>

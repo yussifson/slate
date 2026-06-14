@@ -107,7 +107,7 @@ export default function SHSEmailComms() {
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
- <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
  <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
@@ -119,7 +119,7 @@ export default function SHSEmailComms() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search subjects..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -148,7 +148,7 @@ export default function SHSEmailComms() {
  <Badge variant="secondary" className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-none">
  {email.data?.targetGroup}
  </Badge>
- <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 flex items-center gap-1 border-l pl-2 border-slate-200 dark:border-slate-700">
+ <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 flex items-center gap-1 border-l pl-2 border-primary/40 dark:border-primary/40">
  <Users className="w-3 h-3" /> {email.data?.recipientCount} Recipients
  </span>
  </div>
@@ -163,7 +163,7 @@ export default function SHSEmailComms() {
  </div>
  </div>
  
- <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-800 dark:border-slate-800 text-sm text-slate-700 dark:text-slate-300 dark:text-slate-200 mt-3 line-clamp-2 overflow-hidden text-ellipsis whitespace-pre-wrap">
+ <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 p-4 rounded-xl border border-primary/40 dark:border-primary/40 dark:border-primary/40 text-sm text-slate-700 dark:text-slate-300 dark:text-slate-200 mt-3 line-clamp-2 overflow-hidden text-ellipsis whitespace-pre-wrap">
  {email.data?.bodyText}
  </div>
  </div>
@@ -189,7 +189,7 @@ export default function SHSEmailComms() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Target Audience</label>
  <select 
- className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
+ className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
  value={newEmail.targetGroup}
  onChange={e => setNewEmail({...newEmail, targetGroup: e.target.value})}
  >
@@ -205,7 +205,7 @@ export default function SHSEmailComms() {
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Subject Line</label>
  <Input 
  placeholder="e.g. End of Term Newsletter"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl font-bold"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl font-bold"
  value={newEmail.subject}
  onChange={e => setNewEmail({...newEmail, subject: e.target.value})}
  />
@@ -213,8 +213,8 @@ export default function SHSEmailComms() {
 
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Message Body</label>
- <div className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-primary">
- <div className="bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-2 flex gap-2">
+ <div className="border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-primary">
+ <div className="bg-slate-100 dark:bg-slate-800 border-b border-primary/40 dark:border-primary/40 p-2 flex gap-2">
  <div className="h-6 w-6 bg-slate-200 dark:bg-slate-700 rounded flex items-center justify-center text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">B</div>
  <div className="h-6 w-6 bg-slate-200 dark:bg-slate-700 rounded flex items-center justify-center text-xs italic text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">I</div>
  <div className="h-6 w-6 bg-slate-200 dark:bg-slate-700 rounded flex items-center justify-center text-xs underline text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">U</div>
@@ -230,7 +230,7 @@ export default function SHSEmailComms() {
  
  </div>
  
- <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end gap-3">
+ <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3">
  <Button variant="outline" onClick={() => setIsSendModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
  Cancel
  </Button>

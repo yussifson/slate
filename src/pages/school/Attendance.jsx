@@ -161,7 +161,7 @@ export default function Attendance() {
  <p className="text-xs text-muted-foreground">{t("total_students", "Total Students")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-border border-l-4 border-l-green-500 p-4 flex items-center gap-3">
+ <div className="stat-card-premium bg-card rounded-xl border border-primary/40 border-l-4 border-l-green-500 p-4 flex items-center gap-3">
  <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
  <CheckCircle2 className="w-5 h-5 text-primary" />
  </div>
@@ -170,7 +170,7 @@ export default function Attendance() {
  <p className="text-xs text-muted-foreground">{t("present", "Present (")}{presentPct}%)</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-border border-l-4 border-l-red-500 p-4 flex items-center gap-3">
+ <div className="stat-card-premium bg-card rounded-xl border border-primary/40 border-l-4 border-l-red-500 p-4 flex items-center gap-3">
  <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
  <XCircle className="w-5 h-5 text-red-600" />
  </div>
@@ -179,7 +179,7 @@ export default function Attendance() {
  <p className="text-xs text-muted-foreground">{t("absent", "Absent")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-border border-l-4 border-l-amber-500 p-4 flex items-center gap-3">
+ <div className="stat-card-premium bg-card rounded-xl border border-primary/40 border-l-4 border-l-amber-500 p-4 flex items-center gap-3">
  <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
  <Clock className="w-5 h-5 text-amber-600" />
  </div>
@@ -191,7 +191,7 @@ export default function Attendance() {
  </div>
  {/* Attendance Sheet */}
  <div className="school-card overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+ <div className="p-4 border-b border-primary/40 bg-muted/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
  <div className="flex items-center gap-2 text-card-foreground font-semibold">
  <ClipboardList className="w-5 h-5 text-primary dark:text-primary/70" />
  <span>{selectedClass} — {new Date(date + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}</span>
@@ -209,7 +209,7 @@ export default function Attendance() {
 
  <div className="overflow-x-auto">
  <table className="w-full text-sm">
- <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-700">
+ <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-primary/40 dark:border-primary/40">
  <tr>
  <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{t("student", "Student")}</th>
  <th className="px-4 py-3 text-center text-xs font-bold text-primary uppercase tracking-wide">{t("present", "Present")}</th>
@@ -270,7 +270,7 @@ export default function Attendance() {
  </div>
 
  {classStudents.length > 0 && (
- <div className="p-4 border-t border-border bg-muted/30 flex justify-end">
+ <div className="p-4 border-t border-primary/40 bg-muted/30 flex justify-end">
  <Button
  onClick={handleSubmit}
  disabled={mutateRecord.isPending || Object.keys(statusMap).length === 0}
@@ -284,7 +284,7 @@ export default function Attendance() {
  </div>
  {/* Saved Attendance Records */}
  <div className="school-card overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <h3 className="font-bold text-card-foreground flex items-center gap-2">
  <CalendarDays className="w-5 h-5 text-primary dark:text-primary/70" />
  {t("saved_records", "Saved Records —")} {selectedClass} {t("on", "on")} {date}
@@ -304,7 +304,7 @@ export default function Attendance() {
  ) : (
  <div className="overflow-x-auto">
  <table className="w-full text-sm">
- <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-700">
+ <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-primary/40 dark:border-primary/40">
  <tr>
  <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("date", "Date")}</th>
  <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("class", "Class")}</th>
@@ -389,7 +389,7 @@ export default function Attendance() {
  <div className="space-y-2">
  {viewDetails.records && viewDetails.records.map((r, i) => {
  return (
- <div key={i} className="flex items-center justify-between p-2 rounded-md border border-border bg-card">
+ <div key={i} className="flex items-center justify-between p-2 rounded-md border border-primary/40 bg-card">
  <span className="text-sm font-medium">{r.studentName}</span>
  <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
  r.status === 'Present' ? 'bg-slate-100 text-primary/90' :

@@ -181,7 +181,7 @@ export default function Board() {
  
  {/* Left Column: Active / Scheduled */}
  <div className="lg:col-span-2 space-y-6">
- <div className="bg-card border border-border rounded-xl p-5">
+ <div className="bg-card border border-primary/40 rounded-xl p-5">
  <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
  <Clock className="w-5 h-5 text-muted-foreground" /> Recent & Active Meetings
  </h2>
@@ -190,7 +190,7 @@ export default function Board() {
  <div className="flex justify-center p-8"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>
  ) : rooms.length > 0 ? (
  rooms.map(room => (
- <div key={room.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-lg border border-border bg-background hover:border-primary/30 transition-colors">
+ <div key={room.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-lg border border-primary/40 bg-background hover:border-primary/30 transition-colors">
  <div className="flex items-start gap-3">
  <div className="mt-0.5">
  {room.status === 'active' ? (
@@ -244,14 +244,14 @@ export default function Board() {
  </ul>
  </div>
  
- <div className="bg-card border border-border rounded-xl p-5">
+ <div className="bg-card border border-primary/40 rounded-xl p-5">
  <h3 className="font-semibold mb-3">Quick Connect</h3>
  <p className="text-sm text-muted-foreground mb-4">Invite external clients or guests instantly without them needing an account.</p>
  <div className="flex gap-2">
  <input 
  type="email" 
  placeholder="guest@email.com" 
- className="flex-1 bg-background border border-border rounded-md px-3 text-sm focus:outline-none focus:border-primary"
+ className="flex-1 bg-background border border-primary/40 rounded-md px-3 text-sm focus:outline-none focus:border-primary"
  value={quickConnectEmail}
  onChange={(e) => setQuickConnectEmail(e.target.value)}
  onKeyDown={(e) => e.key === 'Enter' && handleQuickConnect()}

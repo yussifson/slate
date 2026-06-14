@@ -337,7 +337,7 @@ const suites = [
  className={`flex-none flex items-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm whitespace-nowrap transition-all duration-300 transform ${
  isActive
  ? 'bg-primary text-white -primary/30 scale-105'
- : 'bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-slate-200'
+ : 'bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-primary/40'
 }`}
  >
  {suite.name.replace(' WorkSlate', '')}
@@ -348,13 +348,13 @@ const suites = [
 
  <div className="max-w-5xl mx-auto relative items-start">
  {/* Content Container */}
- <div className="bg-white border border-slate-200/60 rounded-[2.5rem] p-8 md:p-14 -[0_20px_60px_-15px_rgba(0,0,0,0.05)] relative overflow-hidden">
+ <div className="bg-white border border-primary/40 rounded-[2.5rem] p-8 md:p-14 -[0_20px_60px_-15px_rgba(0,0,0,0.05)] relative overflow-hidden">
  <div className="relative z-10">
  <FadeIn key={activeSuite.id}>
  <div className="flex flex-col md:flex-row gap-10 items-start">
  <div className="flex-1">
  <div className="flex flex-wrap items-center gap-3 mb-6">
- <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-primary border border-slate-200">
+ <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-primary border border-primary/40">
  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
  <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
  </svg>
@@ -362,7 +362,7 @@ const suites = [
  <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold uppercase tracking-widest">
  {activeSuite.name}
  </div>
- <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-primary/90 text-xs font-bold uppercase tracking-widest">
+ <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 border border-primary/40 text-primary/90 text-xs font-bold uppercase tracking-widest">
  <Sparkles className="w-3.5 h-3.5" /> {t("orbit_ai_powered", "Orbit AI Powered")}
  </div>
  </div>
@@ -379,7 +379,7 @@ const suites = [
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
  {activeSuite.features.map((feat, idx) => {
  return (
- <div key={idx} className="flex items-start gap-3 bg-white border border-slate-100 p-4 rounded-xl hover:border-slate-200 transition-all">
+ <div key={idx} className="flex items-start gap-3 bg-white border border-primary/40 p-4 rounded-xl hover:border-primary/40 transition-all">
  <div className="mt-0.5 w-6 h-6 rounded-full bg-slate-50 flex items-center justify-center text-primary shrink-0">
  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -391,7 +391,7 @@ const suites = [
 })}
  </div>
  
- <div className="mt-12 pt-8 border-t border-slate-100 flex items-center">
+ <div className="mt-12 pt-8 border-t border-primary/40 flex items-center">
  <Button 
  onClick={() => setIsModalOpen(true)}
  className="bg-primary text-white hover:bg-primary/90 font-bold py-6 px-10 rounded-full -emerald-600/20 transition-all hover:-translate-y-0.5"
@@ -417,7 +417,7 @@ const suites = [
  
  <div className="relative bg-white w-full max-w-4xl max-h-[90vh] rounded-[2rem] overflow-hidden flex flex-col transform transition-all animate-in fade-in zoom-in-95 duration-200">
  {/* Header */}
- <div className="flex-none p-6 sm:p-8 border-b border-slate-100 flex justify-between items-start bg-slate-50/50">
+ <div className="flex-none p-6 sm:p-8 border-b border-primary/40 flex justify-between items-start bg-slate-50/50">
  <div>
  <div className="inline-flex items-center px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-[10px] font-bold uppercase tracking-widest mb-3">
  {t("workslate_module", "WorkSlate Slate")}
@@ -450,7 +450,7 @@ const suites = [
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
  {activeSuite.features.map((feat, idx) => {
  return (
- <div key={idx} className="bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:border-slate-200 transition-colors">
+ <div key={idx} className="bg-slate-50 rounded-2xl p-6 border border-primary/40 hover:border-primary/40 transition-colors">
  <h5 className="font-bold text-slate-900 text-lg mb-2">{feat}</h5>
  <p className="text-slate-500 text-sm leading-relaxed font-medium">
  {t(
@@ -556,7 +556,7 @@ return (
  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
  {/* Badge */}
  <FadeIn>
- <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-semibold text-slate-600 mb-8 ">
+ <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-primary/40 text-xs font-semibold text-slate-600 mb-8 ">
  <span className="flex h-2 w-2 rounded-full bg-primary" />
  {t("trusted_by_500_enterprise_team", "Trusted by 500+ Enterprise Teams  •")} <span className="font-bold text-primary flex items-center gap-1"><Sparkles className="w-3 h-3"/> {t("powered_by_orbit_ai", "Powered by Orbit AI")}</span>
  </div>
@@ -613,7 +613,7 @@ return (
  setShowFirmAlert(false);
 }}
  placeholder="Can't find your industry template? Describe your dream workspace... (e.g. I need a CRM for my logistics company to manage delivery drivers and track client invoices.)"
- className="w-full h-32 bg-slate-50/50 rounded-2xl p-4 text-slate-800 placeholder-slate-400 font-medium text-lg border border-slate-200 focus:bg-white focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20 outline-none resize-none transition-all"
+ className="w-full h-32 bg-slate-50/50 rounded-2xl p-4 text-slate-800 placeholder-slate-400 font-medium text-lg border border-primary/40 focus:bg-white focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20 outline-none resize-none transition-all"
  />
  <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest hidden sm:block">Powered by Optavel Engine</span>
@@ -633,7 +633,7 @@ return (
  {orbitStage === "building" && (
  <div className="w-full relative">
  <div className="absolute -inset-1 bg-gradient-to-r from-emerald-400 to-orange-400 rounded-3xl blur opacity-40 animate-pulse"></div>
- <div className="relative bg-white rounded-3xl p-12 border border-slate-100 flex flex-col items-center justify-center min-h-[300px]">
+ <div className="relative bg-white rounded-3xl p-12 border border-primary/40 flex flex-col items-center justify-center min-h-[300px]">
  <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mb-6">
  <Sparkles className="w-8 h-8 text-emerald-500 animate-spin-slow" />
  </div>
@@ -648,7 +648,7 @@ return (
 
  {orbitStage === "success" && (
  <div className="w-full relative">
- <div className="relative bg-white rounded-3xl p-12 border border-slate-200 flex flex-col items-center justify-center min-h-[300px] transition-all duration-300 ">
+ <div className="relative bg-white rounded-3xl p-12 border border-primary/40 flex flex-col items-center justify-center min-h-[300px] transition-all duration-300 ">
  <div className="w-20 h-20 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center text-white mb-6 -emerald-500/30 transform scale-110">
  <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
  </div>
@@ -678,18 +678,18 @@ return (
  <FadeIn delay="delay-300">
  <div className="flex flex-col items-center justify-center mb-16">
  <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
- <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 ">{t("project_profitability", "Project Profitability")}</div>
- <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 ">{t("billing_invoicing", "Billing & Invoicing")}</div>
- <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 ">{t("client_portal", "Client Portal")}</div>
- <div className="bg-white border border-slate-100 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 ">{t("hr_payroll", "HR & Payroll")}</div>
- <div className="bg-slate-50 border border-slate-200 text-primary px-6 py-2.5 rounded-xl text-sm font-semibold ">{t("all_features", "All Features")}</div>
+ <div className="bg-white border border-primary/40 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 ">{t("project_profitability", "Project Profitability")}</div>
+ <div className="bg-white border border-primary/40 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 ">{t("billing_invoicing", "Billing & Invoicing")}</div>
+ <div className="bg-white border border-primary/40 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 ">{t("client_portal", "Client Portal")}</div>
+ <div className="bg-white border border-primary/40 px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-800 ">{t("hr_payroll", "HR & Payroll")}</div>
+ <div className="bg-slate-50 border border-primary/40 text-primary px-6 py-2.5 rounded-xl text-sm font-semibold ">{t("all_features", "All Features")}</div>
  </div>
  </div>
  </FadeIn>
 
  {/* Dashboard mockup */}
  <FadeIn delay="delay-500">
- <div className="relative w-full max-w-6xl mx-auto rounded-2xl border border-slate-200/80 bg-slate-50 overflow-hidden flex items-center justify-center">
+ <div className="relative w-full max-w-6xl mx-auto rounded-2xl border border-primary/40 bg-slate-50 overflow-hidden flex items-center justify-center">
  <img src="/images/hero_dashboard_ui.png" alt="Slate Dashboard Mockup" className="w-full h-auto object-contain" />
  </div>
  </FadeIn>
@@ -698,13 +698,13 @@ return (
  {/* ============================================================ */}
  {/* ORBIT AI HERO (INTERACTIVE DEMO) */}
  {/* ============================================================ */}
- <section className="py-20 md:py-24 bg-white text-slate-900 relative overflow-hidden border-t border-slate-100">
+ <section className="py-20 md:py-24 bg-white text-slate-900 relative overflow-hidden border-t border-primary/40">
  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
  
  <FadeIn>
  <div>
- <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-primary/90 text-xs font-bold uppercase tracking-widest mb-6">
+ <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 border border-primary/40 text-primary/90 text-xs font-bold uppercase tracking-widest mb-6">
  <Sparkles className="w-3.5 h-3.5" />
  {t("your_intelligent_agent", "Your Intelligent Agent")}
  </div>
@@ -732,7 +732,7 @@ return (
  </FadeIn>
 
  <FadeIn delay="delay-200">
- <div className="relative rounded-2xl border border-slate-200/60 bg-white overflow-hidden transform rotate-1 hover:rotate-0 transition-transform duration-500 group">
+ <div className="relative rounded-2xl border border-primary/40 bg-white overflow-hidden transform rotate-1 hover:rotate-0 transition-transform duration-500 group">
  <img 
  src="/images/orbit_dashboard_mockup.png" 
  alt="Slate Dashboard featuring Orbit AI Panel" 
@@ -753,10 +753,10 @@ return (
  {/* ============================================================ */}
  {/* HOW IT WORKS */}
  {/* ============================================================ */}
- <section className="py-16 md:py-24 lg:py-32 bg-slate-50 border-t border-slate-100">
+ <section className="py-16 md:py-24 lg:py-32 bg-slate-50 border-t border-primary/40">
  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
  <div className="text-center max-w-3xl mx-auto mb-16 md:mb-24">
- <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 ">
+ <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-primary/40 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 ">
  {t("workflow", "Workflow")}
  </span>
  <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 mb-6">
@@ -796,7 +796,7 @@ return (
  ].map((step, i) => {
  return (
  <FadeIn key={i} delay={`delay-${(i + 1) * 100}`}>
- <div className="relative bg-white rounded-3xl p-8 border border-slate-100 text-center z-10 group transition-">
+ <div className="relative bg-white rounded-3xl p-8 border border-primary/40 text-center z-10 group transition-">
  <div className="w-16 h-16 mx-auto bg-slate-50 text-primary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 ">
  <step.icon className="w-8 h-8" />
  </div>
@@ -862,7 +862,7 @@ return (
  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
  <FadeIn>
  <div className="text-center max-w-2xl mx-auto mb-20">
- <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-primary/90 text-xs font-bold uppercase tracking-widest mb-6">
+ <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-50 border border-primary/40 text-primary/90 text-xs font-bold uppercase tracking-widest mb-6">
  {t("client_success", "Client Success")}
  </span>
  <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
@@ -875,7 +875,7 @@ return (
  {testimonials.map((item, idx) => {
  return (
  <FadeIn key={idx} delay={`delay-[${idx * 120}ms]`}>
- <div className="bg-white border border-slate-200 rounded-[2rem] p-10 flex flex-col justify-between hover:border-primary/30 -emerald-900/5 transition-all duration-300 h-full group relative overflow-hidden">
+ <div className="bg-white border border-primary/40 rounded-[2rem] p-10 flex flex-col justify-between hover:border-primary/30 -emerald-900/5 transition-all duration-300 h-full group relative overflow-hidden">
  <div className="absolute top-0 right-0 p-8 opacity-5 text-[8rem] font-serif leading-none font-black text-primary/70 group-hover:text-primary group-hover:opacity-10 transition-colors duration-500">"</div>
  
  <div className="relative z-10">
@@ -894,7 +894,7 @@ return (
  </blockquote>
  </div>
 
- <div className="flex items-center gap-4 pt-6 border-t border-slate-100 relative z-10">
+ <div className="flex items-center gap-4 pt-6 border-t border-primary/40 relative z-10">
  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center text-primary/90 font-bold text-lg ">
  {item.author
  .split(' ')

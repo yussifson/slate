@@ -14,7 +14,7 @@ export const SCHOOL_BRAND = {
 
 export function ViewModeToggle({ viewMode, onChange, className}) {
  return (
- <div className={cn("bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-slate-200 dark:border-slate-700 p-1 rounded-xl flex items-center ", className)}>
+ <div className={cn("bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-primary/40 dark:border-primary/40 p-1 rounded-xl flex items-center ", className)}>
  <button
  type="button"
  onClick={() => onChange("list")}
@@ -45,17 +45,17 @@ function CardActions({ onEdit, onDelete, onView}) {
  return (
  <div className="absolute top-3 right-3 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
  {onView && (
- <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 hover:text-primary rounded-xl border border-slate-100 dark:border-slate-700" onClick={onView}>
+ <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 hover:text-primary rounded-xl border border-primary/40 dark:border-primary/40" onClick={onView}>
  <Eye className="w-3.5 h-3.5" />
  </Button>
  )}
  {onEdit && (
- <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 hover:text-primary rounded-xl border border-slate-100 dark:border-slate-700" onClick={onEdit}>
+ <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 hover:text-primary rounded-xl border border-primary/40 dark:border-primary/40" onClick={onEdit}>
  <Edit className="w-3.5 h-3.5" />
  </Button>
  )}
  {onDelete && (
- <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl border border-slate-100 dark:border-slate-700" onClick={onDelete}>
+ <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl border border-primary/40 dark:border-primary/40" onClick={onDelete}>
  <Trash2 className="w-3.5 h-3.5" />
  </Button>
  )}
@@ -72,7 +72,7 @@ export function StudentGridCard({ student, onEdit, onDelete, onView}) {
 
  const statusStyles = {
  Active: "bg-slate-100 text-primary border-primary/20 dark:bg-primary/20 dark:text-primary dark:border-primary/30",
- Suspended: "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
+ Suspended: "bg-slate-100 text-slate-700 border-primary/40 dark:bg-slate-800 dark:text-slate-300 dark:border-primary/40",
  Graduated: "bg-slate-50 text-primary/90 border-primary/20 dark:bg-primary/30 dark:text-primary/30 dark:border-primary/80"
 };
 
@@ -81,7 +81,7 @@ export function StudentGridCard({ student, onEdit, onDelete, onView}) {
  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent dark:from-primary/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-2xl" />
  <CardActions onView={onView} onEdit={onEdit} onDelete={onDelete} />
  
- <div className="w-24 h-24 mx-auto rounded-[1.5rem] bg-gradient-to-br from-primary/5 to-primary/15 dark:from-primary/20 dark:to-primary/30 border border-slate-200 dark:border-primary/20 flex items-center justify-center text-4xl font-black text-primary dark:text-primary mb-5 shrink-0 relative overflow-hidden transform group-hover:scale-105 transition-transform duration-300">
+ <div className="w-24 h-24 mx-auto rounded-[1.5rem] bg-gradient-to-br from-primary/5 to-primary/15 dark:from-primary/20 dark:to-primary/30 border border-primary/40 dark:border-primary/20 flex items-center justify-center text-4xl font-black text-primary dark:text-primary mb-5 shrink-0 relative overflow-hidden transform group-hover:scale-105 transition-transform duration-300">
  {student.avatar || student.name?.[0]?.toUpperCase()}
  </div>
  
@@ -89,18 +89,18 @@ export function StudentGridCard({ student, onEdit, onDelete, onView}) {
  <h3 className="school-heading font-extrabold text-xl line-clamp-1 tracking-tight group-hover:text-primary transition-colors">{student.name}</h3>
  <p className="text-xs text-muted-foreground font-semibold tracking-widest mt-1 opacity-70 font-dmsans">{student.studentId}</p>
  <div className="mt-4 flex items-center justify-center gap-2">
- <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary border border-slate-200 dark:border-primary/20">{student.class}</span>
+ <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary border border-primary/40 dark:border-primary/20">{student.class}</span>
  </div>
  </div>
  
- <div className="mt-auto grid grid-cols-2 gap-4 pt-5 border-t border-slate-100 dark:border-slate-800 relative z-10">
+ <div className="mt-auto grid grid-cols-2 gap-4 pt-5 border-t border-primary/40 dark:border-primary/40 relative z-10">
  <div className="text-center">
  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5 opacity-60">Status</p>
  <span className={cn("text-[10px] font-bold px-2.5 py-1 rounded-md border uppercase tracking-wide", statusStyles[student.status] || "bg-muted text-muted-foreground")}>
  {student.status}
  </span>
  </div>
- <div className="text-center border-l border-slate-100 dark:border-slate-800">
+ <div className="text-center border-l border-primary/40 dark:border-primary/40">
  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5 opacity-60">Fee Status</p>
  <span className={cn("text-[10px] font-bold px-2.5 py-1 rounded-md border uppercase tracking-wide", feeStyles[student.feeStatus] || "bg-muted text-muted-foreground")}>
  {student.feeStatus}
@@ -119,7 +119,7 @@ export function ClassGridCard({ classInfo, onEdit, onDelete, onView}) {
  </div>
  
  <div className="flex justify-between items-start mb-5 relative z-10">
- <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/15 dark:from-primary/20 dark:to-primary/30 border border-slate-200 dark:border-primary/20 text-primary dark:text-primary flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+ <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/15 dark:from-primary/20 dark:to-primary/30 border border-primary/40 dark:border-primary/20 text-primary dark:text-primary flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
  <BookOpen className="w-6 h-6" />
  </div>
  <CardActions onView={onView} onEdit={onEdit} onDelete={onDelete} />
@@ -130,16 +130,16 @@ export function ClassGridCard({ classInfo, onEdit, onDelete, onView}) {
  <p className="text-sm font-semibold text-muted-foreground/80 mt-1 tracking-wide uppercase">{classInfo.subject}</p>
  </div>
 
- <div className="space-y-3 mt-auto relative z-10 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-primary/5 dark:border-slate-700">
+ <div className="space-y-3 mt-auto relative z-10 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-primary/5 dark:border-primary/40">
  <div className="flex justify-between text-sm items-center">
  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Teacher</span>
  <span className="font-bold text-foreground text-right">{classInfo.teacher}</span>
  </div>
  <div className="flex justify-between text-sm items-center">
  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Enrolled</span>
- <span className="font-bold text-foreground bg-white dark:bg-slate-800 px-2.5 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 ">{classInfo.students}</span>
+ <span className="font-bold text-foreground bg-white dark:bg-slate-800 px-2.5 py-0.5 rounded-md border border-primary/40 dark:border-primary/40 ">{classInfo.students}</span>
  </div>
- <div className="flex justify-between text-sm items-center pt-2 border-t border-primary/5 dark:border-slate-700">
+ <div className="flex justify-between text-sm items-center pt-2 border-t border-primary/5 dark:border-primary/40">
  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Schedule</span>
  <span className="font-medium text-foreground text-right truncate max-w-[120px] text-xs">{classInfo.schedule}</span>
  </div>
@@ -153,11 +153,11 @@ export function BookGridCard({ book, onEdit, onDelete, onView, onIssue}) {
  
  return (
  <article className="school-card group relative overflow-hidden flex flex-col min-h-[300px]">
- <div className="h-40 bg-gradient-to-br from-primary/5 to-primary/15 dark:from-slate-800 dark:to-slate-900 border-b border-primary/5 dark:border-slate-700 flex items-center justify-center relative p-4">
+ <div className="h-40 bg-gradient-to-br from-primary/5 to-primary/15 dark:from-slate-800 dark:to-slate-900 border-b border-primary/5 dark:border-primary/40 flex items-center justify-center relative p-4">
  {book.cover_url ? (
  <img src={book.cover_url} alt="Cover" className="h-full object-contain rounded-sm" />
  ) : (
- <div className="w-24 h-32 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg flex items-center justify-center text-primary dark:text-slate-500">
+ <div className="w-24 h-32 bg-white dark:bg-slate-800 border border-primary/40 dark:border-primary/40 rounded-lg flex items-center justify-center text-primary dark:text-slate-500">
  <BookOpen className="w-8 h-8" />
  </div>
  )}
@@ -234,7 +234,7 @@ export function ExamGridCard({ exam, onEdit, onDelete, onView, onStatusChange}) 
  <span className="text-xs font-bold px-2 py-1 bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary rounded-lg">{exam.class}</span>
  </div>
 
- <div className="space-y-3 mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 text-sm text-muted-foreground">
+ <div className="space-y-3 mt-auto pt-4 border-t border-primary/40 dark:border-primary/40 text-sm text-muted-foreground">
  <div className="flex items-center gap-3">
  <Calendar className="w-4 h-4 text-primary" />
  <span className="font-medium text-foreground">{new Date(exam.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'})}</span>

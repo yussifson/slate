@@ -115,12 +115,12 @@ export default function VTrades() {
  <div className="flex-1 flex gap-6 overflow-hidden">
  {/* Left Panel: Trade List */}
  <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
- <div className="p-4 border-b border-primary/5 dark:border-slate-800">
+ <div className="p-4 border-b border-primary/5 dark:border-primary/40">
  <div className="relative">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
  <Input 
  placeholder="Search trades..." 
- className="pl-9 h-10 bg-slate-500 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
+ className="pl-9 h-10 bg-slate-500 dark:bg-slate-800/50 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -197,7 +197,7 @@ export default function VTrades() {
  </div>
 
  <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
- <div className="p-6 rounded-2xl bg-slate-500 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+ <div className="p-6 rounded-2xl bg-slate-500 dark:bg-slate-800/50 border border-primary/40 dark:border-primary/40">
  <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
  <FileText className="w-5 h-5 text-primary" /> Description
  </h3>
@@ -206,16 +206,16 @@ export default function VTrades() {
  </p>
  </div>
 
- <div className="p-6 rounded-2xl bg-slate-500 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+ <div className="p-6 rounded-2xl bg-slate-500 dark:bg-slate-800/50 border border-primary/40 dark:border-primary/40">
  <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
  <Users className="w-5 h-5 text-primary" /> Trainee Stats
  </h3>
  <div className="space-y-4">
- <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-slate-700">
+ <div className="flex justify-between items-center pb-2 border-b border-primary/40 dark:border-primary/40">
  <span className="text-slate-600 dark:text-slate-400 text-sm">Active Trainees</span>
  <span className="font-bold text-slate-800 dark:text-slate-100">--</span>
  </div>
- <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-slate-700">
+ <div className="flex justify-between items-center pb-2 border-b border-primary/40 dark:border-primary/40">
  <span className="text-slate-600 dark:text-slate-400 text-sm">Graduates</span>
  <span className="font-bold text-slate-800 dark:text-slate-100">--</span>
  </div>

@@ -17,7 +17,7 @@ import { UploadCloud} from 'lucide-react';
 const segmentColors = {
  VIP: 'bg-primary/15 text-primary border-primary/25',
  Regular: 'bg-slate-100 text-primary border-primary/20',
- New: 'bg-muted text-muted-foreground border-border',
+ New: 'bg-muted text-muted-foreground border-primary/40',
 };
 
 export default function Customers() {
@@ -166,8 +166,8 @@ export default function Customers() {
  <RetailStatCard label={t("vip_members", "VIP Members")} value={stats.vipCount} icon={Star} />
  </div>
 
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input placeholder="Search name or email..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
@@ -197,7 +197,7 @@ export default function Customers() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-border">
+ <thead className="bg-card border-b border-primary/40">
  <tr>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("customer_name", "Customer Name")}</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("contact_info", "Contact Info")}</th>

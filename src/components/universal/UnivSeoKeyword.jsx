@@ -102,7 +102,7 @@ export default function UnivSeoKeyword() {
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Calendar","Dashboard"].map(v => (
  <button 
  key={v} 

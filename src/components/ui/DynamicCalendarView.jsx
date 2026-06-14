@@ -164,7 +164,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
 
  if (!data || data.length === 0) {
  return (
- <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border border-border/60">
+ <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border border-primary/40">
  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 -emerald-500/20">
  <CalendarIcon className="w-8 h-8 text-white" />
  </div>
@@ -178,7 +178,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
 
  return (
  <>
- <div className="bg-card rounded-2xl border border-border/60 overflow-hidden">
+ <div className="bg-card rounded-2xl border border-primary/40 overflow-hidden">
  {/* Calendar Header */}
  <div className="bg-gradient-to-r from-primary via-primary to-primary px-6 py-5">
  <div className="flex items-center justify-between">
@@ -222,7 +222,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
  </div>
 
  {/* Day Headers */}
- <div className="grid grid-cols-7 border-b border-border/60 bg-muted/50/80">
+ <div className="grid grid-cols-7 border-b border-primary/40 bg-muted/50/80">
  {DAYS_OF_WEEK.map((day) => (
  <div key={day} className="px-2 py-3 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider">
  {day}
@@ -240,7 +240,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
  key={idx}
  onClick={() => hasEvents && setSelectedDay(cell)}
  className={`
- min-h-[100px] p-2 border-b border-r border-border relative transition-all duration-150
+ min-h-[100px] p-2 border-b border-r border-primary/40 relative transition-all duration-150
  ${cell.inMonth ? 'bg-card' : 'bg-muted/50/50'}
  ${hasEvents ? 'cursor-pointer hover:bg-muted/500 ' : ''}
  ${isToday ? 'ring-2 ring-inset ring-primary/40 bg-primary/30' : ''}
@@ -293,7 +293,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
 
  {/* Date field legend */}
  {dateFields.length > 0 && (
- <div className="px-6 py-3 bg-muted/50/80 border-t border-border/60 flex items-center gap-4 flex-wrap">
+ <div className="px-6 py-3 bg-muted/50/80 border-t border-primary/40 flex items-center gap-4 flex-wrap">
  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Fields:</span>
  {dateFields.map((df, idx) => {
  const color = EVENT_COLORS[idx % EVENT_COLORS.length];
@@ -328,7 +328,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
  return (
  <div
  key={idx}
- className={`p-4 rounded-xl border border-border bg-card transition-all group ring-1 ${color.ring}`}
+ className={`p-4 rounded-xl border border-primary/40 bg-card transition-all group ring-1 ${color.ring}`}
  >
  <div className="flex items-start justify-between">
  <div className="flex-1 min-w-0">
@@ -386,7 +386,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
  {viewRecord && (
  <div className="mt-2 space-y-2">
  {fieldDefinitions.map((f) => (
- <div key={f.name} className="flex justify-between items-center py-2 border-b border-border last:border-0">
+ <div key={f.name} className="flex justify-between items-center py-2 border-b border-primary/40 last:border-0">
  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{f.name.replace(/_/g, ' ')}</span>
  <span className="text-sm font-medium text-foreground max-w-[60%] text-right break-words">
  {f.field_type === 'boolean' ? (viewRecord.data[f.name] ? 'Yes' : 'No') :
@@ -420,9 +420,9 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
  const val = editData[f.name] ?? '';
  if (f.field_type === 'boolean') {
  return (
- <div key={f.name} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+ <div key={f.name} className="flex items-center justify-between py-2 border-b border-primary/40 last:border-0">
  <label className="text-sm font-medium text-foreground">{label}</label>
- <input type="checkbox" checked={!!val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.checked})} className="h-4 w-4 rounded border-border" />
+ <input type="checkbox" checked={!!val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.checked})} className="h-4 w-4 rounded border-primary/40" />
  </div>
  );
 }
@@ -432,7 +432,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
  return (
  <div key={f.name} className="space-y-1">
  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</label>
- <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value})} className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+ <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value})} className="w-full rounded-lg border border-primary/40 bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
  <option value="">Select...</option>
  {options.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
  </select>
@@ -447,7 +447,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
  );
 })}
  </div>
- <DialogFooter className="mt-6 pt-4 border-t border-border">
+ <DialogFooter className="mt-6 pt-4 border-t border-primary/40">
  <Button variant="outline" onClick={() => setEditRecord(null)}>Cancel</Button>
  <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-primary hover:bg-primary/90 text-white">
  {isSaving ? 'Saving...' : 'Save Changes'}

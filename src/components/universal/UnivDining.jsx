@@ -111,8 +111,8 @@ export default function UnivDining() {
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -120,7 +120,7 @@ export default function UnivDining() {
  placeholder="Search orders..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -133,9 +133,9 @@ export default function UnivDining() {
  animate={{ opacity: 1, scale: 1}}
  transition={{ delay: idx * 0.05}}
  key={o.id} 
- className="bg-background border border-border rounded-2xl p-5 hover:border-primary/40 transition-colors flex flex-col h-full group cursor-pointer"
+ className="bg-background border border-primary/40 rounded-2xl p-5 hover:border-primary/40 transition-colors flex flex-col h-full group cursor-pointer"
  >
- <div className="flex justify-between items-start mb-4 border-b border-border pb-4">
+ <div className="flex justify-between items-start mb-4 border-b border-primary/40 pb-4">
  <div>
  <h3 className="font-bold text-lg text-foreground flex items-center gap-2">
  <Receipt className="w-4 h-4 text-primary" /> {o.order_number}
@@ -169,7 +169,7 @@ export default function UnivDining() {
  </ul>
  </div>
 
- <div className="mt-auto pt-4 border-t border-border flex justify-between items-center">
+ <div className="mt-auto pt-4 border-t border-primary/40 flex justify-between items-center">
  <span className="text-xl font-black text-foreground">${Number(o.total_amount).toFixed(2)}</span>
  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
  <button className="px-3 py-1.5 bg-muted text-muted-foreground text-xs font-bold rounded hover:bg-primary hover:text-white transition-colors">Update</button>

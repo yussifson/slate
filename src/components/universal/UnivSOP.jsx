@@ -147,8 +147,8 @@ export default function UnivSOP({
  <div className="flex h-full w-full bg-background font-sans overflow-hidden">
  
  {/* Sidebar - SOP Library */}
- <div className="w-80 border-r border-border bg-card flex flex-col shrink-0 hidden md:flex">
- <div className="p-4 border-b border-border">
+ <div className="w-80 border-r border-primary/40 bg-card flex flex-col shrink-0 hidden md:flex">
+ <div className="p-4 border-b border-primary/40">
  <div className="flex items-center justify-between mb-4">
  <h1 className="text-lg font-bold text-foreground flex items-center gap-2">
  <BookOpen className="w-5 h-5 text-primary" /> {title}
@@ -167,7 +167,7 @@ export default function UnivSOP({
  placeholder="Search procedures..."
  value={searchQuery}
  onChange={e => setSearchQuery(e.target.value)}
- className="w-full h-9 pl-9 pr-3 bg-muted/50 border border-border rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+ className="w-full h-9 pl-9 pr-3 bg-muted/50 border border-primary/40 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
  />
  </div>
  </div>
@@ -216,19 +216,19 @@ export default function UnivSOP({
  </div>
  </div>
 
- <div className="bg-card border border-border rounded-2xl p-6 space-y-4">
+ <div className="bg-card border border-primary/40 rounded-2xl p-6 space-y-4">
  <div className="grid grid-cols-2 gap-4">
  <div className="col-span-2">
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Procedure Title</label>
- <input type="text" value={editingSOP.title} onChange={e => setEditingSOP({...editingSOP, title: e.target.value})} className="w-full h-11 px-3 rounded-xl border border-border bg-background text-sm focus:border-primary outline-none" />
+ <input type="text" value={editingSOP.title} onChange={e => setEditingSOP({...editingSOP, title: e.target.value})} className="w-full h-11 px-3 rounded-xl border border-primary/40 bg-background text-sm focus:border-primary outline-none" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Department</label>
- <input type="text" value={editingSOP.department} onChange={e => setEditingSOP({...editingSOP, department: e.target.value})} className="w-full h-11 px-3 rounded-xl border border-border bg-background text-sm focus:border-primary outline-none" />
+ <input type="text" value={editingSOP.department} onChange={e => setEditingSOP({...editingSOP, department: e.target.value})} className="w-full h-11 px-3 rounded-xl border border-primary/40 bg-background text-sm focus:border-primary outline-none" />
  </div>
  <div className="col-span-2">
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Description / Goal</label>
- <textarea value={editingSOP.description} onChange={e => setEditingSOP({...editingSOP, description: e.target.value})} className="w-full h-20 p-3 rounded-xl border border-border bg-background text-sm focus:border-primary outline-none resize-none" />
+ <textarea value={editingSOP.description} onChange={e => setEditingSOP({...editingSOP, description: e.target.value})} className="w-full h-20 p-3 rounded-xl border border-primary/40 bg-background text-sm focus:border-primary outline-none resize-none" />
  </div>
  </div>
  </div>
@@ -242,7 +242,7 @@ export default function UnivSOP({
  </h3>
  
  {(editingSOP.steps || []).map((step, idx) => (
- <div key={idx} className="bg-card border border-border rounded-xl p-4 flex gap-4">
+ <div key={idx} className="bg-card border border-primary/40 rounded-xl p-4 flex gap-4">
  <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center font-bold text-muted-foreground shrink-0">{idx + 1}</div>
  <div className="flex-1 space-y-3">
  <input 
@@ -261,7 +261,7 @@ export default function UnivSOP({
  newSteps[idx].content = e.target.value;
  setEditingSOP({...editingSOP, steps: newSteps});
 }} 
- className="w-full h-20 bg-muted/30 border border-border rounded-lg p-2 text-sm outline-none focus:border-primary resize-y" 
+ className="w-full h-20 bg-muted/30 border border-primary/40 rounded-lg p-2 text-sm outline-none focus:border-primary resize-y" 
  />
  </div>
  <button 
@@ -282,7 +282,7 @@ export default function UnivSOP({
  // EXECUTION MODE
  <div className="flex-1 overflow-y-auto flex flex-col">
  {/* Header */}
- <div className="border-b border-border bg-card px-8 py-6 shrink-0 flex items-start justify-between">
+ <div className="border-b border-primary/40 bg-card px-8 py-6 shrink-0 flex items-start justify-between">
  <div>
  <div className="flex items-center gap-2 text-primary font-semibold text-sm mb-2">
  <FileText className="w-4 h-4" /> {activeSOP.department}
@@ -291,8 +291,8 @@ export default function UnivSOP({
  <p className="text-muted-foreground mt-2 max-w-2xl">{activeSOP.description}</p>
  </div>
  <div className="flex items-center gap-2">
- <button onClick={handleEdit} className="p-2 border border-border bg-background rounded-lg hover:bg-muted text-muted-foreground transition-colors"><Edit3 className="w-4 h-4" /></button>
- <button onClick={() => { if(window.confirm('Delete SOP?')) deleteMutation.mutate(activeSOP.id);}} className="p-2 border border-border bg-background rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 text-muted-foreground transition-colors"><Trash2 className="w-4 h-4" /></button>
+ <button onClick={handleEdit} className="p-2 border border-primary/40 bg-background rounded-lg hover:bg-muted text-muted-foreground transition-colors"><Edit3 className="w-4 h-4" /></button>
+ <button onClick={() => { if(window.confirm('Delete SOP?')) deleteMutation.mutate(activeSOP.id);}} className="p-2 border border-primary/40 bg-background rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 text-muted-foreground transition-colors"><Trash2 className="w-4 h-4" /></button>
  </div>
  </div>
 
@@ -302,7 +302,7 @@ export default function UnivSOP({
  
  {/* Progress Sidebar */}
  <div className="w-64 shrink-0 hidden lg:block">
- <div className="sticky top-0 bg-card border border-border rounded-2xl p-5 ">
+ <div className="sticky top-0 bg-card border border-primary/40 rounded-2xl p-5 ">
  <div className="flex items-center justify-between mb-4">
  <h3 className="font-bold text-foreground">Progress</h3>
  <button onClick={resetExecution} className="text-muted-foreground hover:text-foreground"><RefreshCw className="w-4 h-4" /></button>
@@ -343,7 +343,7 @@ export default function UnivSOP({
  key={idx} 
  className={cn(
  "rounded-2xl border transition-all duration-300",
- isActive ? "bg-card border-primary/50 ring-1 ring-primary/20 scale-[1.02]" : "bg-card/50 border-border opacity-70 hover:opacity-100 cursor-pointer"
+ isActive ? "bg-card border-primary/50 ring-1 ring-primary/20 scale-[1.02]" : "bg-card/50 border-primary/40 opacity-70 hover:opacity-100 cursor-pointer"
  )}
  onClick={() => { if (!isActive) setActiveStepIndex(idx);}}
  >
@@ -358,7 +358,7 @@ export default function UnivSOP({
  "flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all ",
  isDone 
  ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800"
- : "bg-background border border-border hover:border-primary hover:text-primary"
+ : "bg-background border border-primary/40 hover:border-primary hover:text-primary"
  )}
  >
  {isDone ? <><CheckCircle2 className="w-4 h-4" /> Completed</> : <><Circle className="w-4 h-4" /> Mark Complete</>}

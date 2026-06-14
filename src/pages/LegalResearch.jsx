@@ -21,7 +21,7 @@ const CONFIDENCE_COLORS = { high: "bg-slate-100 text-primary/90", medium: "bg-ye
 function Section({ icon: Icon, title, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="bg-card border border-border rounded-xl overflow-hidden">
+    <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
       <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between px-4 py-3 hover:bg-muted/30 transition-colors">
         <div className="flex items-center gap-2"><Icon className="w-4 h-4 text-primary" /><span className="text-sm font-semibold">{title}</span></div>
         {open ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
@@ -93,7 +93,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Query Panel */}
         <div className="lg:col-span-1 space-y-4">
-          <div className="bg-card border border-border rounded-xl p-4 space-y-4">
+          <div className="bg-card border border-primary/40 rounded-xl p-4 space-y-4">
             <div className="flex items-center gap-2 mb-1">
               <Sparkles className="w-4 h-4 text-primary" />
               <h2 className="text-sm font-semibold">{t("ask_a_legal_question", "Ask a Legal Question")}</h2>
@@ -139,12 +139,12 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
 
           {/* History */}
           {history.length > 0 && (
-            <div className="bg-card border border-border rounded-xl p-4 space-y-2">
+            <div className="bg-card border border-primary/40 rounded-xl p-4 space-y-2">
               <div className="flex items-center gap-2 mb-2"><Clock className="w-4 h-4 text-primary" /><h3 className="text-sm font-semibold">{t("recent_queries", "Recent Queries")}</h3></div>
               {history.map((h, i) => {
                 return (
                   <button key={i} onClick={() => { setQuestion(h.question); setResult(h.result); }}
-                    className="w-full text-left p-2.5 rounded-lg hover:bg-muted/40 border border-border transition-colors">
+                    className="w-full text-left p-2.5 rounded-lg hover:bg-muted/40 border border-primary/40 transition-colors">
                     <p className="text-xs font-medium truncate">{h.question}</p>
                     <p className="text-[10px] text-muted-foreground mt-0.5">{h.jurisdiction} · {format(h.timestamp, "h:mm a")}</p>
                   </button>
@@ -163,7 +163,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
           )}
 
           {!result && !loading && !error && (
-            <div className="bg-card border border-border rounded-xl p-12 text-center">
+            <div className="bg-card border border-primary/40 rounded-xl p-12 text-center">
               <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4"><BookOpen className="w-7 h-7 text-primary" /></div>
               <h3 className="text-sm font-semibold mb-1">{t("ask_your_first_question", "Ask your first question")}</h3>
               <p className="text-xs text-muted-foreground max-w-xs mx-auto">{t(

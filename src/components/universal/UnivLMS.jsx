@@ -103,8 +103,8 @@ export default function UnivLMS() {
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -112,7 +112,7 @@ export default function UnivLMS() {
  placeholder="Search content..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -155,7 +155,7 @@ export default function UnivLMS() {
  <td className="p-4">
  <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border ${
  l.status === 'Published' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
- l.status === 'Archived' ? 'bg-background text-foreground border-border' : 
+ l.status === 'Archived' ? 'bg-background text-foreground border-primary/40' : 
  'bg-orange-50 text-orange-700 border-orange-200'
 }`}>
  {l.status}

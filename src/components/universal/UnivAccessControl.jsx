@@ -198,7 +198,7 @@ export default function UnivAccessControl() {
  </div>
  
  {/* Custom Tabs */}
- <div className="flex bg-muted p-1 rounded-xl border border-border ">
+ <div className="flex bg-muted p-1 rounded-xl border border-primary/40 ">
  <button 
  onClick={() => setActiveTab('users')} 
  className={`px-6 py-2 text-sm font-bold rounded-lg transition-all flex items-center gap-2 ${activeTab === 'users' ? 'bg-background text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
@@ -214,9 +214,9 @@ export default function UnivAccessControl() {
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
  {/* Sub-header for Tabs */}
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <h2 className="font-bold text-foreground flex items-center gap-2">
  {activeTab === 'users' ? 'User Directory' : 'Defined Roles'}
  </h2>
@@ -233,7 +233,7 @@ export default function UnivAccessControl() {
  ) : activeTab === 'users' ? (
  <div className="flex-1 overflow-auto custom-scrollbar">
  <table className="w-full text-sm">
- <thead className="bg-muted/50 border-b border-border sticky top-0">
+ <thead className="bg-muted/50 border-b border-primary/40 sticky top-0">
  <tr>
  <th className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">User</th>
  <th className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">Assigned Role</th>
@@ -272,7 +272,7 @@ export default function UnivAccessControl() {
  <div className="flex-1 overflow-auto custom-scrollbar p-6">
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {roles.map(r => (
- <div key={r.id} className="bg-background border border-border rounded-2xl p-5 relative group hover:border-primary/50 transition-colors">
+ <div key={r.id} className="bg-background border border-primary/40 rounded-2xl p-5 relative group hover:border-primary/50 transition-colors">
  <div className="flex justify-between items-start mb-4">
  <div className="flex items-center gap-2">
  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white ">
@@ -296,7 +296,7 @@ export default function UnivAccessControl() {
  </div>
  </div>
  ))}
- {roles.length === 0 && <div className="col-span-full py-12 text-center text-muted-foreground border-2 border-dashed border-primary/50 rounded-2xl">No roles defined. Create your first Role!</div>}
+ {roles.length === 0 && <div className="col-span-full py-12 text-center text-muted-foreground border-2 border-dashed border-primary/40 rounded-2xl">No roles defined. Create your first Role!</div>}
  </div>
  </div>
  )}
@@ -306,23 +306,23 @@ export default function UnivAccessControl() {
  {userModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
  <div className="bg-card w-full max-w-md rounded-2xl flex flex-col">
- <div className="p-5 border-b border-border flex justify-between items-center">
+ <div className="p-5 border-b border-primary/40 flex justify-between items-center">
  <h2 className="text-xl font-black">{editingUserId ? 'Edit User' : 'Add User'}</h2>
  <button onClick={() => setUserModal(false)} className="p-2 hover:bg-muted rounded-full"><XCircle className="w-5 h-5" /></button>
  </div>
  <form onSubmit={saveUser} className="p-5 flex flex-col gap-4">
- <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1">User Name</label><input required type="text" value={userForm.user_name} onChange={e => setUserForm({...userForm, user_name: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" /></div>
- <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Email</label><input required type="email" value={userForm.email} onChange={e => setUserForm({...userForm, email: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" /></div>
+ <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1">User Name</label><input required type="text" value={userForm.user_name} onChange={e => setUserForm({...userForm, user_name: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" /></div>
+ <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Email</label><input required type="email" value={userForm.email} onChange={e => setUserForm({...userForm, email: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" /></div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Assign Role</label>
- <select required value={userForm.role} onChange={e => setUserForm({...userForm, role: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
+ <select required value={userForm.role} onChange={e => setUserForm({...userForm, role: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
  <option value="">Select a role...</option>
  {roles.map(r => <option key={r.id} value={r.role_name}>{r.role_name}</option>)}
  </select>
  </div>
  <div className="grid grid-cols-2 gap-4">
- <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Status</label><select value={userForm.status} onChange={e => setUserForm({...userForm, status: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"><option>Active</option><option>Suspended</option></select></div>
- <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Default Password</label><input type="text" value={userForm.default_password} onChange={e => setUserForm({...userForm, default_password: e.target.value})} placeholder="e.g. Temp123!" className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" /></div>
+ <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Status</label><select value={userForm.status} onChange={e => setUserForm({...userForm, status: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"><option>Active</option><option>Suspended</option></select></div>
+ <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Default Password</label><input type="text" value={userForm.default_password} onChange={e => setUserForm({...userForm, default_password: e.target.value})} placeholder="e.g. Temp123!" className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" /></div>
  </div>
  <div className="flex justify-end gap-3 mt-4"><button type="button" onClick={() => setUserModal(false)} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button><button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold ">{editingUserId ? 'Update' : 'Add User'}</button></div>
  </form>
@@ -334,21 +334,21 @@ export default function UnivAccessControl() {
  {roleModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
  <div className="bg-card w-full max-w-4xl rounded-2xl flex flex-col max-h-[90vh]">
- <div className="p-5 border-b border-border flex justify-between items-center shrink-0">
+ <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0">
  <h2 className="text-xl font-black flex items-center gap-2"><Key className="w-5 h-5 text-primary" /> {editingRoleId ? 'Edit Role Permissions' : 'Define New Role'}</h2>
  <button onClick={() => setRoleModal(false)} className="p-2 hover:bg-muted rounded-full"><XCircle className="w-5 h-5" /></button>
  </div>
  
- <div className="p-6 shrink-0 bg-muted/10 border-b border-border">
+ <div className="p-6 shrink-0 bg-muted/10 border-b border-primary/40">
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Role Name</label>
- <input required type="text" value={roleForm.role_name} onChange={e => setRoleForm({...roleForm, role_name: e.target.value})} placeholder="e.g. Regional Manager, HR Admin" className="w-full max-w-md h-12 px-4 bg-background border border-border rounded-xl text-base font-bold focus:ring-2 focus:ring-primary/40 focus:outline-none " />
+ <input required type="text" value={roleForm.role_name} onChange={e => setRoleForm({...roleForm, role_name: e.target.value})} placeholder="e.g. Regional Manager, HR Admin" className="w-full max-w-md h-12 px-4 bg-background border border-primary/40 rounded-xl text-base font-bold focus:ring-2 focus:ring-primary/40 focus:outline-none " />
  </div>
 
  <div className="flex-1 overflow-auto custom-scrollbar p-6">
  <h3 className="font-bold text-foreground mb-4 flex items-center gap-2"><Shield className="w-4 h-4" /> Granular Permission Matrix</h3>
- <div className="border border-border rounded-xl overflow-hidden ">
+ <div className="border border-primary/40 rounded-xl overflow-hidden ">
  <table className="w-full text-sm">
- <thead className="bg-muted/50 border-b border-border">
+ <thead className="bg-muted/50 border-b border-primary/40">
  <tr>
  <th className="px-4 py-3 text-left font-bold text-muted-foreground">Feature / Slate</th>
  <th className="px-4 py-3 text-center font-bold text-muted-foreground">Read Access</th>
@@ -366,7 +366,7 @@ export default function UnivAccessControl() {
  <td key={level} className="px-4 py-3 text-center">
  <button 
  onClick={() => togglePermission(feat, level)}
- className={`w-6 h-6 rounded flex items-center justify-center mx-auto transition-colors ${isChecked ? 'bg-primary text-white ' : 'bg-muted border border-border text-transparent hover:bg-muted/80'}`}
+ className={`w-6 h-6 rounded flex items-center justify-center mx-auto transition-colors ${isChecked ? 'bg-primary text-white ' : 'bg-muted border border-primary/40 text-transparent hover:bg-muted/80'}`}
  >
  <Check className="w-4 h-4" />
  </button>
@@ -380,7 +380,7 @@ export default function UnivAccessControl() {
  </div>
  </div>
 
- <div className="p-5 border-t border-border flex justify-end gap-3 shrink-0 bg-background">
+ <div className="p-5 border-t border-primary/40 flex justify-end gap-3 shrink-0 bg-background">
  <button onClick={() => setRoleModal(false)} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium hover:bg-muted/80">Cancel</button>
  <button onClick={saveRole} disabled={!roleForm.role_name} className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 disabled:opacity-50">Save Role</button>
  </div>

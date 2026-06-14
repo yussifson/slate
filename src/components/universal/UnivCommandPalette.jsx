@@ -114,10 +114,10 @@ export default function UnivCommandPalette({ companyId, workspaceConfig}) {
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: -20}}
  transition={{ duration: 0.2, ease: "easeOut"}}
- className="relative w-full max-w-2xl bg-card/95 backdrop-blur-xl border border-border/50 rounded-2xl overflow-hidden flex flex-col max-h-[70vh]"
+ className="relative w-full max-w-2xl bg-card/95 backdrop-blur-xl border border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[70vh]"
  >
  {/* Search Input */}
- <div className="relative border-b border-border/50 shrink-0">
+ <div className="relative border-b border-primary/40 shrink-0">
  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
  <input
  ref={inputRef}
@@ -164,7 +164,7 @@ export default function UnivCommandPalette({ companyId, workspaceConfig}) {
  isActive ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted/50"
  )}
  >
- <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center bg-background border ", isActive ? "border-primary/30 text-primary" : "border-border text-muted-foreground")}>
+ <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center bg-background border ", isActive ? "border-primary/30 text-primary" : "border-primary/40 text-muted-foreground")}>
  <Icon className="w-4 h-4" />
  </div>
  <span className="flex-1 font-medium text-sm">{item.label}</span>
@@ -180,7 +180,7 @@ export default function UnivCommandPalette({ companyId, workspaceConfig}) {
  </div>
  
  {/* Footer */}
- <div className="bg-muted/30 border-t border-border/50 px-4 py-3 text-xs flex items-center justify-between shrink-0">
+ <div className="bg-muted/30 border-t border-primary/40 px-4 py-3 text-xs flex items-center justify-between shrink-0">
  <span className="text-muted-foreground flex items-center gap-2">
  <span className="font-semibold text-foreground">Slate Command</span> by Airflake
  </span>

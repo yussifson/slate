@@ -182,7 +182,7 @@ export default function SignUp() {
  
  <form className="space-y-3" onSubmit={handleSignUp}>
  {error && <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border border-red-100 font-medium">{error}</div>}
- {success && <div className="rounded-xl bg-slate-50 p-3 text-xs text-primary border border-slate-200 font-medium">{success}</div>}
+ {success && <div className="rounded-xl bg-slate-50 p-3 text-xs text-primary border border-primary/40 font-medium">{success}</div>}
  
  <div className="space-y-4">
  <div>
@@ -192,7 +192,7 @@ export default function SignUp() {
  placeholder="John Doe"
  value={username}
  onChange={(e) => setUsername(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
+ className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
  />
  </div>
 
@@ -204,7 +204,7 @@ export default function SignUp() {
  placeholder="john@example.com"
  value={email}
  onChange={(e) => setEmail(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
+ className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
  />
  </div>
 
@@ -218,7 +218,7 @@ export default function SignUp() {
  placeholder="Acme Corp"
  value={companyName}
  onChange={(e) => setCompanyName(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
+ className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
  />
  </div>
 
@@ -231,7 +231,7 @@ export default function SignUp() {
  placeholder="acmecorp"
  value={subdomain}
  onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
- className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
+ className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
  />
  </div>
  </div>
@@ -245,7 +245,7 @@ export default function SignUp() {
  placeholder="••••••••••••"
  value={password}
  onChange={(e) => setPassword(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
+ className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
  />
  </div>
  <div>
@@ -256,7 +256,7 @@ export default function SignUp() {
  placeholder="••••••••••••"
  value={confirmPassword}
  onChange={(e) => setConfirmPassword(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
+ className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
  />
  </div>
  </div>
@@ -284,9 +284,9 @@ export default function SignUp() {
  {/* Abstract Pattern Background */}
  <div className="absolute inset-0 bg-slate-900/5 mix-blend-overlay"></div>
 
- <div className="relative z-10 w-full max-w-2xl bg-white rounded-[2rem] border border-slate-200/60 -[0_20px_60px_-15px_rgba(0,0,0,0.05)] p-12 lg:p-16 flex flex-col justify-between">
+ <div className="relative z-10 w-full max-w-2xl bg-white rounded-[2rem] border border-primary/40 -[0_20px_60px_-15px_rgba(0,0,0,0.05)] p-12 lg:p-16 flex flex-col justify-between">
  <div>
- <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-xs font-semibold text-primary/90 mb-8 uppercase tracking-[0.2em]">
+ <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-50 border border-primary/40 text-xs font-semibold text-primary/90 mb-8 uppercase tracking-[0.2em]">
  <span className="flex h-1.5 w-1.5 rounded-full bg-primary" />
  {t("universal_os", "Universal Operating System")}
  </div>
@@ -305,9 +305,9 @@ export default function SignUp() {
  </p>
  </div>
 
- <div className="grid grid-cols-2 gap-8 mt-16 border-t border-slate-100 pt-10">
+ <div className="grid grid-cols-2 gap-8 mt-16 border-t border-primary/40 pt-10">
  <div>
- <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-primary mb-5 ">
+ <div className="w-10 h-10 rounded-xl bg-slate-50 border border-primary/40 flex items-center justify-center text-primary mb-5 ">
  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
  </div>
  <h4 className="text-lg font-bold text-slate-900 mb-2 tracking-wide">{t("set_up_in_seconds", "Instant Provisioning")}</h4>
@@ -318,7 +318,7 @@ export default function SignUp() {
  </div>
  
  <div>
- <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-primary mb-5 ">
+ <div className="w-10 h-10 rounded-xl bg-slate-50 border border-primary/40 flex items-center justify-center text-primary mb-5 ">
  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
  </div>
  <h4 className="text-lg font-bold text-slate-900 mb-2 tracking-wide">{t("bank_grade_security", "Enterprise Security")}</h4>

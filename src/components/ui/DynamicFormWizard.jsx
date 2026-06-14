@@ -124,7 +124,7 @@ export default function DynamicFormWizard({ fieldDefinitions = [], onRefresh, mo
  <div className="flex items-center gap-2">
  <input
  type="checkbox"
- className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+ className="h-4 w-4 rounded border-primary/40 text-primary focus:ring-primary"
  checked={!!formData[field.name]}
  onChange={e => handleChange(field.name, e.target.checked)}
  />

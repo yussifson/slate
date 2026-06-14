@@ -151,7 +151,7 @@ const UnivInsurancePolicy = () => {
  {policies.map((policy, index) => {
  const expired = isExpired(policy.end_date);
  return (
- <motion.div key={policy.id || index} initial={{ opacity: 0, scale: 0.9}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className={`relative bg-gradient-to-br ${expired ? 'from-slate-50 to-slate-100 border-border' : 'from-blue-600 to-blue-800 text-white border-transparent'} p-6 rounded-3xl border overflow-hidden`}>
+ <motion.div key={policy.id || index} initial={{ opacity: 0, scale: 0.9}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className={`relative bg-gradient-to-br ${expired ? 'from-slate-50 to-slate-100 border-primary/40' : 'from-blue-600 to-blue-800 text-white border-transparent'} p-6 rounded-3xl border overflow-hidden`}>
  {/* Background decoration */}
  <div className="absolute -right-6 -top-6 opacity-10">
  <Shield className="w-32 h-32" />

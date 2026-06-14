@@ -12,7 +12,7 @@ import { Users, Plus, Search, Trash2, Edit2, Loader2, XCircle, Mail, Phone, Buil
 import { toast} from 'react-hot-toast';
 
 const EMPTY_FORM = { name: '', email: '', phone: '', company: '', type: 'Client', address: '', notes: ''};
-const TYPE_COLORS = { Client: 'bg-blue-50 text-blue-700 border-blue-200', Vendor: 'bg-violet-50 text-violet-700 border-violet-200', Partner: 'bg-emerald-50 text-emerald-700 border-emerald-200', Other: 'bg-muted text-muted-foreground border-border'};
+const TYPE_COLORS = { Client: 'bg-blue-50 text-blue-700 border-blue-200', Vendor: 'bg-violet-50 text-violet-700 border-violet-200', Partner: 'bg-emerald-50 text-emerald-700 border-emerald-200', Other: 'bg-muted text-muted-foreground border-primary/40'};
 
 export default function UnivContactManagement() {
  const companyId = useCompanyId();
@@ -125,7 +125,7 @@ export default function UnivContactManagement() {
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Calendar","Dashboard"].map(v => (
  <button 
  key={v} 
@@ -146,12 +146,12 @@ export default function UnivContactManagement() {
  </div>
 
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 shrink-0">
- {['Client','Vendor','Partner','Other'].map(t => <div key={t} className="bg-card border border-border p-4 rounded-2xl "><p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">{t}s</p><p className="text-2xl font-black text-foreground">{records.filter(r => r.type === t).length}</p></div>)}
+ {['Client','Vendor','Partner','Other'].map(t => <div key={t} className="bg-card border border-primary/40 p-4 rounded-2xl "><p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">{t}s</p><p className="text-2xl font-black text-foreground">{records.filter(r => r.type === t).length}</p></div>)}
  </div>
 
  <div className="flex gap-3 shrink-0">
- <div className="relative flex-1"><Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search contacts..." className="w-full h-11 pl-10 pr-4 bg-card border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm " /></div>
- <div className="flex bg-card border border-border rounded-xl p-1 gap-1">
+ <div className="relative flex-1"><Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search contacts..." className="w-full h-11 pl-10 pr-4 bg-card border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm " /></div>
+ <div className="flex bg-card border border-primary/40 rounded-xl p-1 gap-1">
  <button onClick={() => setViewMode('list')} className={`px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1.5 ${viewMode === 'list' ? 'bg-primary text-white' : 'text-muted-foreground'}`}><List className="w-4 h-4" /></button>
  <button onClick={() => setViewMode('grid')} className={`px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1.5 ${viewMode === 'grid' ? 'bg-primary text-white' : 'text-muted-foreground'}`}><LayoutGrid className="w-4 h-4" /></button>
  </div>
@@ -162,12 +162,12 @@ export default function UnivContactManagement() {
  : viewMode === 'grid' ? (
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-8">
  {filtered.map(r => (
- <div key={r.id} onClick={() => setSelected(r)} className="bg-card border border-border rounded-2xl p-5 transition-all group cursor-pointer">
+ <div key={r.id} onClick={() => setSelected(r)} className="bg-card border border-primary/40 rounded-2xl p-5 transition-all group cursor-pointer">
  <div className="flex flex-col items-center text-center">
  <div className={`w-14 h-14 rounded-full bg-gradient-to-br ${grad(r.name)} flex items-center justify-center text-white text-xl font-black mb-3`}>{(r.name || '?').charAt(0).toUpperCase()}</div>
  <h3 className="font-bold text-base text-foreground">{r.name}</h3>
  <p className="text-xs text-muted-foreground mt-0.5">{r.company || '—'}</p>
- <span className={`mt-2 px-2 py-0.5 text-[10px] font-bold uppercase border rounded-md ${TYPE_COLORS[r.type] || 'bg-muted border-border text-muted-foreground'}`}>{r.type}</span>
+ <span className={`mt-2 px-2 py-0.5 text-[10px] font-bold uppercase border rounded-md ${TYPE_COLORS[r.type] || 'bg-muted border-primary/40 text-muted-foreground'}`}>{r.type}</span>
  <div className="flex gap-1 mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
  <button onClick={e => { e.stopPropagation(); openModal(r);}} className="p-1.5 bg-muted rounded-md text-muted-foreground hover:text-primary"><Edit2 className="w-3 h-3" /></button>
  <button onClick={e => { e.stopPropagation(); remove(r.id);}} className="p-1.5 bg-red-50 rounded-md text-red-400 hover:text-red-600"><Trash2 className="w-3 h-3" /></button>
@@ -175,12 +175,12 @@ export default function UnivContactManagement() {
  </div>
  </div>
  ))}
- {filtered.length === 0 && <div className="col-span-full py-20 text-center text-muted-foreground border-2 border-dashed border-primary/50 rounded-2xl"><Users className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" /><p className="font-medium">No contacts found.</p></div>}
+ {filtered.length === 0 && <div className="col-span-full py-20 text-center text-muted-foreground border-2 border-dashed border-primary/40 rounded-2xl"><Users className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" /><p className="font-medium">No contacts found.</p></div>}
  </div>
  ) : (
- <div className="bg-card border border-border rounded-2xl overflow-hidden ">
+ <div className="bg-card border border-primary/40 rounded-2xl overflow-hidden ">
  <table className="w-full text-sm">
- <thead className="bg-muted/50 border-b border-border"><tr>{['Contact','Company','Type','Phone','Actions'].map(h => <th key={h} className="p-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">{h}</th>)}</tr></thead>
+ <thead className="bg-muted/50 border-b border-primary/40"><tr>{['Contact','Company','Type','Phone','Actions'].map(h => <th key={h} className="p-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">{h}</th>)}</tr></thead>
  <tbody className="divide-y divide-border">
  {filtered.map(r => (
  <tr key={r.id} onClick={() => setSelected(r)} className="hover:bg-muted/30 transition-colors group cursor-pointer">
@@ -200,8 +200,8 @@ export default function UnivContactManagement() {
 
  {selected && (
  <div className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm" onClick={() => setSelected(null)}>
- <div className="absolute right-0 top-0 bottom-0 w-80 bg-card border-l border-border flex flex-col" onClick={e => e.stopPropagation()}>
- <div className="p-5 border-b border-border flex justify-between items-center"><h3 className="font-black text-lg">Contact</h3><button onClick={() => setSelected(null)} className="p-1.5 bg-muted rounded-full"><XCircle className="w-4 h-4 text-muted-foreground" /></button></div>
+ <div className="absolute right-0 top-0 bottom-0 w-80 bg-card border-l border-primary/40 flex flex-col" onClick={e => e.stopPropagation()}>
+ <div className="p-5 border-b border-primary/40 flex justify-between items-center"><h3 className="font-black text-lg">Contact</h3><button onClick={() => setSelected(null)} className="p-1.5 bg-muted rounded-full"><XCircle className="w-4 h-4 text-muted-foreground" /></button></div>
  <div className="flex-1 overflow-y-auto p-5 custom-scrollbar">
  <div className="flex flex-col items-center text-center mb-5">
  <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${grad(selected.name)} flex items-center justify-center text-white text-2xl font-black mb-3`}>{(selected.name||'?').charAt(0).toUpperCase()}</div>
@@ -213,7 +213,7 @@ export default function UnivContactManagement() {
  {selected.notes && <div className="p-3 bg-muted/40 rounded-xl"><p className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Notes</p><p className="text-sm">{selected.notes}</p></div>}
  </div>
  </div>
- <div className="p-5 border-t border-border flex gap-2">
+ <div className="p-5 border-t border-primary/40 flex gap-2">
  <button onClick={()=>{openModal(selected);setSelected(null);}} className="flex-1 h-9 bg-primary text-white rounded-xl text-sm font-bold flex items-center justify-center gap-1"><Edit2 className="w-3.5 h-3.5"/>Edit</button>
  <button onClick={()=>remove(selected.id)} className="flex-1 h-9 bg-red-50 text-red-600 border border-red-200 rounded-xl text-sm font-bold flex items-center justify-center gap-1 hover:bg-red-100"><Trash2 className="w-3.5 h-3.5"/>Delete</button>
  </div>
@@ -224,17 +224,17 @@ export default function UnivContactManagement() {
  {isModalOpen && (
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
  <div className="bg-card w-full max-w-lg rounded-2xl flex flex-col max-h-[90vh]">
- <div className="p-5 border-b border-border flex justify-between items-center shrink-0"><h2 className="text-xl font-black">{editingId?'Edit Contact':'Add Contact'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-full text-muted-foreground"><XCircle className="w-5 h-5" /></button></div>
+ <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0"><h2 className="text-xl font-black">{editingId?'Edit Contact':'Add Contact'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-full text-muted-foreground"><XCircle className="w-5 h-5" /></button></div>
  <form onSubmit={save} className="p-5 overflow-y-auto flex-1 custom-scrollbar">
  <div className="grid grid-cols-2 gap-4">
- <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Full Name *</label><input required type="text" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Email</label><input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Phone</label><input type="tel" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Company</label><input type="text" value={form.company} onChange={e=>setForm({...form,company:e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Type</label><select value={form.type} onChange={e=>setForm({...form,type:e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(TYPE_COLORS).map(t=><option key={t}>{t}</option>)}</select></div>
- <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Notes</label><textarea rows="2" value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})} className="w-full p-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none"/></div>
+ <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Full Name *</label><input required type="text" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Email</label><input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Phone</label><input type="tel" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Company</label><input type="text" value={form.company} onChange={e=>setForm({...form,company:e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Type</label><select value={form.type} onChange={e=>setForm({...form,type:e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(TYPE_COLORS).map(t=><option key={t}>{t}</option>)}</select></div>
+ <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Notes</label><textarea rows="2" value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})} className="w-full p-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none"/></div>
  </div>
- <div className="flex justify-end gap-3 mt-5 pt-5 border-t border-border">
+ <div className="flex justify-end gap-3 mt-5 pt-5 border-t border-primary/40">
  <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button>
  <button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold ">{editingId?'Update':'Add Contact'}</button>
  </div>

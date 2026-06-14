@@ -108,7 +108,7 @@ export default function Sermons() {
  <Upload className="w-4 h-4" /> {t("upload_sermon", "Upload Sermon")}
  </Button>
  </div>
- <div className="bg-card rounded-xl border border-border p-4">
+ <div className="bg-card rounded-xl border border-primary/40 p-4">
  <div className="relative">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input placeholder="Search by title, preacher, or series..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-muted" />
@@ -117,7 +117,7 @@ export default function Sermons() {
  {isDbLoading ? (
  <div className="py-12 text-center text-muted-foreground">{t("loading_archives", "Loading archives...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
+ <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-primary/40">
  <PlayCircle className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
  <p className="font-semibold text-lg text-card-foreground">{t("no_sermons_in_library", "No sermons in library")}</p>
  <p className="text-sm mt-1 max-w-md mx-auto">{t(
@@ -129,7 +129,7 @@ export default function Sermons() {
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {filtered.map(sermon => {
  return (
- <div key={sermon.id} className="bg-card rounded-xl border border-border overflow-hidden transition-all group relative flex flex-col justify-between">
+ <div key={sermon.id} className="bg-card rounded-xl border border-primary/40 overflow-hidden transition-all group relative flex flex-col justify-between">
  <div>
  <div className="h-40 bg-muted dark:bg-muted/50 relative flex items-center justify-center group-hover:bg-slate-100 dark:group-hover:bg-primary/20 transition-colors cursor-pointer">
  <PlayCircle className="w-16 h-16 text-primary dark:text-primary/70 opacity-80 group-hover:scale-110 transition-transform" />
@@ -158,7 +158,7 @@ export default function Sermons() {
  <h3 className="text-lg font-bold text-card-foreground mb-1 leading-tight">{sermon.title}</h3>
  <p className="text-sm text-muted-foreground mb-4"><Link to="/religion/members" className="hover:underline text-primary">{sermon.preacher}</Link> • {sermon.date}</p>
 
- <div className="flex items-center gap-2 bg-muted dark:bg-muted/30 p-2.5 rounded-lg border border-border mb-4">
+ <div className="flex items-center gap-2 bg-muted dark:bg-muted/30 p-2.5 rounded-lg border border-primary/40 mb-4">
  <BookOpen className="w-4 h-4 text-muted-foreground" />
  <span className="text-xs font-medium text-foreground">{sermon.scripture}</span>
  </div>
@@ -175,7 +175,7 @@ export default function Sermons() {
  )}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-border">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
  <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
  <Upload className="w-5 h-5 text-primary" /> {t("log_sermon_media", "Log Sermon Media")}
  </h2>
@@ -251,7 +251,7 @@ export default function Sermons() {
  <div className="mt-6 space-y-4">
  {viewRecord && Object.entries(viewRecord).filter(([k]) => k !== 'id' && k !== 'status').map(([key, value]) => {
  return (
- <div key={key} className="border-b border-border pb-2">
+ <div key={key} className="border-b border-primary/40 pb-2">
  <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
  <p className="mt-1 text-base text-foreground font-semibold">
  {key === 'preacher' ? (

@@ -115,12 +115,12 @@ export default function VPracticalModules() {
  <div className="flex-1 flex gap-6 overflow-hidden">
  {/* Left Panel */}
  <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-rose-100/50">
- <div className="p-4 border-b border-rose-50 dark:border-slate-800">
+ <div className="p-4 border-b border-rose-50 dark:border-primary/40">
  <div className="relative">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-rose-500" />
  <Input 
  placeholder="Search slates..." 
- className="pl-9 h-10 bg-rose-50/50 dark:bg-slate-800/50 border-rose-100 dark:border-slate-700 rounded-xl focus-visible:ring-rose-600"
+ className="pl-9 h-10 bg-rose-50/50 dark:bg-slate-800/50 border-rose-100 dark:border-primary/40 rounded-xl focus-visible:ring-rose-600"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -194,7 +194,7 @@ export default function VPracticalModules() {
  </div>
 
  <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
- <Card className="bg-rose-50/30 dark:bg-slate-800/30 border-rose-100 dark:border-slate-700 ">
+ <Card className="bg-rose-50/30 dark:bg-slate-800/30 border-rose-100 dark:border-primary/40 ">
  <CardHeader className="pb-2">
  <CardTitle className="text-lg flex items-center gap-2">
  <Target className="w-5 h-5 text-rose-500" /> Objectives
@@ -207,7 +207,7 @@ export default function VPracticalModules() {
  </CardContent>
  </Card>
 
- <Card className="bg-primary/30 dark:bg-slate-800/30 border-slate-200 dark:border-slate-700 ">
+ <Card className="bg-primary/30 dark:bg-slate-800/30 border-primary/40 dark:border-primary/40 ">
  <CardHeader className="pb-2">
  <CardTitle className="text-lg flex items-center gap-2">
  <CheckSquare className="w-5 h-5 text-primary" /> Assessment Criteria

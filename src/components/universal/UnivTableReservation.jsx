@@ -76,7 +76,7 @@ const UnivTableReservation = () => {
  const getStatusColor = (status) => {
  switch (status) {
  case 'Seated': return 'bg-emerald-100 text-emerald-800 border-emerald-200';
- case 'Completed': return 'bg-muted text-foreground border-border';
+ case 'Completed': return 'bg-muted text-foreground border-primary/40';
  case 'Cancelled': return 'bg-red-100 text-red-800 border-red-200';
  default: return 'bg-amber-100 text-amber-800 border-amber-200';
 }

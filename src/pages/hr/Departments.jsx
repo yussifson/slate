@@ -136,7 +136,7 @@ export default function Departments() {
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- <div className="stat-card-premium bg-card rounded-xl border border-border p-6 flex items-center justify-between">
+ <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-6 flex items-center justify-between">
  <div>
  <p className="text-sm text-muted-foreground mb-1">{t("total_departments", "Total Departments")}</p>
  <h2 className="text-3xl font-bold text-card-foreground">{departments.length}</h2>
@@ -145,7 +145,7 @@ export default function Departments() {
  <Building2 className="w-6 h-6" />
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-border p-6 flex items-center justify-between">
+ <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-6 flex items-center justify-between">
  <div>
  <p className="text-sm text-muted-foreground mb-1">{t("total_employees", "Total Employees")}</p>
  <h2 className="text-3xl font-bold text-card-foreground">{departments.reduce((sum, d) => sum + d.staffCount, 0)}</h2>
@@ -154,7 +154,7 @@ export default function Departments() {
  <Users className="w-6 h-6" />
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-border p-6 flex items-center justify-between">
+ <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-6 flex items-center justify-between">
  <div>
  <p className="text-sm text-muted-foreground mb-1">{t("total_budget", "Total Budget")}</p>
  <h2 className="text-3xl font-bold text-card-foreground">${departments.reduce((sum, d) => sum + d.budget, 0).toLocaleString()}</h2>
@@ -165,8 +165,8 @@ export default function Departments() {
  </div>
  </div>
 
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input placeholder="Search departments..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
@@ -183,7 +183,7 @@ export default function Departments() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-border">
+ <thead className="bg-card border-b border-primary/40">
  <tr>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("department", "Department")}</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("manager", "Manager")}</th>
@@ -247,7 +247,7 @@ export default function Departments() {
 
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-border">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
  <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Department' : 'New Department'}</h2>
  <div className="space-y-4">
  <div>
@@ -300,7 +300,7 @@ export default function Departments() {
  <div><span className="font-semibold text-muted-foreground">{t("manager", "Manager:")}</span> <p className="font-medium text-primary"><Link to="/employees" className="hover:underline">{dept.managerName}</Link></p></div>
  <div><span className="font-semibold text-muted-foreground">{t("staff_count", "Staff Count:")}</span> <p className="font-medium">{dept.staffCount} employees</p></div>
  <div><span className="font-semibold text-muted-foreground">{t("salary_budget", "Salary Budget:")}</span> <p className="font-medium text-primary font-bold">${dept.budget.toLocaleString()} / mo</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("description", "Description:")}</span> <p className="font-medium bg-muted p-3 rounded-lg border border-border mt-1">{dept.description || 'No description provided.'}</p></div>
+ <div><span className="font-semibold text-muted-foreground">{t("description", "Description:")}</span> <p className="font-medium bg-muted p-3 rounded-lg border border-primary/40 mt-1">{dept.description || 'No description provided.'}</p></div>
  </div>
  );
 })()}

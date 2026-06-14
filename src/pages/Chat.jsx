@@ -233,7 +233,7 @@ export default function Chat() {
  const activeRoom = rooms.find(r => r.id === activeRoomId);
 
  return (
- <div className="h-[calc(100vh-140px)] md:h-[calc(100vh-100px)] -mt-4 -mb-6 md:-mb-0 md:-mt-0 md:rounded-xl overflow-hidden bg-background border border-border flex flex-col md:flex-row">
+ <div className="h-[calc(100vh-140px)] md:h-[calc(100vh-100px)] -mt-4 -mb-6 md:-mb-0 md:-mt-0 md:rounded-xl overflow-hidden bg-background border border-primary/40 flex flex-col md:flex-row">
  <AddChatDialog 
  open={isAddChatOpen} 
  onOpenChange={setIsAddChatOpen} 
@@ -244,8 +244,8 @@ export default function Chat() {
  />
  
  {/* Sidebar - Channels & DMs */}
- <div className="w-full md:w-80 lg:w-96 flex-shrink-0 border-r border-border bg-[#f0f2f5] dark:bg-[#202c33] flex flex-col h-[40%] md:h-full z-10 relative">
- <div className="p-4 bg-background dark:bg-[#202c33] border-b border-border flex items-center justify-between">
+ <div className="w-full md:w-80 lg:w-96 flex-shrink-0 border-r border-primary/40 bg-[#f0f2f5] dark:bg-[#202c33] flex flex-col h-[40%] md:h-full z-10 relative">
+ <div className="p-4 bg-background dark:bg-[#202c33] border-b border-primary/40 flex items-center justify-between">
  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden">
  {user?.avatar_url ? <img src={user.avatar_url} className="w-full h-full object-cover"/> : <MessageSquare className="w-5 h-5 text-primary" />}
  </div>
@@ -259,7 +259,7 @@ export default function Chat() {
  </div>
  </div>
  
- <div className="p-3 bg-background dark:bg-[#111b21] border-b border-border">
+ <div className="p-3 bg-background dark:bg-[#111b21] border-b border-primary/40">
  <div className="relative">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -293,7 +293,7 @@ export default function Chat() {
  </div>
  )}
  </div>
- <div className="flex-1 min-w-0 border-b border-border/50 group-last:border-none pb-3">
+ <div className="flex-1 min-w-0 border-b border-primary/40 group-last:border-none pb-3">
  <div className="flex justify-between items-baseline mb-0.5">
  <p className="text-base text-foreground truncate">{room.name || 'Direct Chat'}</p>
  <p className="text-xs text-muted-foreground">{format(new Date(room.updated_at), 'h:mm a')}</p>
@@ -318,7 +318,7 @@ export default function Chat() {
  {activeRoom ? (
  <>
  {/* Chat Header */}
- <div className="px-4 py-3 border-b border-border flex items-center justify-between bg-[#f0f2f5] dark:bg-[#202c33] z-10 ">
+ <div className="px-4 py-3 border-b border-primary/40 flex items-center justify-between bg-[#f0f2f5] dark:bg-[#202c33] z-10 ">
  <div className="flex items-center gap-3">
  {activeRoom.room_type === "group" ? (
  <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center">
@@ -479,7 +479,7 @@ export default function Chat() {
  </div>
 
  {(replyTo || editingMsg) && (
- <div className="px-4 py-2 bg-[#f0f2f5] dark:bg-[#202c33] border-t border-border flex items-center justify-between z-10 text-sm">
+ <div className="px-4 py-2 bg-[#f0f2f5] dark:bg-[#202c33] border-t border-primary/40 flex items-center justify-between z-10 text-sm">
  <div className="flex-1 min-w-0 border-l-4 border-primary pl-3">
  <p className="font-semibold text-primary">{editingMsg ? "Editing Message" : `Replying to ${participantProfiles[replyTo?.sender_id]?.full_name || 'User'}`}</p>
  <p className="text-muted-foreground truncate">{editingMsg ? editingMsg.content : replyTo?.content}</p>
@@ -491,7 +491,7 @@ export default function Chat() {
  )}
 
  {/* Input Area */}
- <div className="px-4 py-3 bg-[#f0f2f5] dark:bg-[#202c33] z-10 flex items-center gap-2 border-t border-border">
+ <div className="px-4 py-3 bg-[#f0f2f5] dark:bg-[#202c33] z-10 flex items-center gap-2 border-t border-primary/40">
  <input type="file" ref={fileInputRef} className="hidden" onChange={(e) => handleFileUpload(e, 'file')} />
  <input type="file" accept="image/*" id="chat-image-upload" className="hidden" onChange={(e) => handleFileUpload(e, 'image')} />
  <input type="file" accept=".pdf,.doc,.docx,.txt" id="chat-doc-upload" className="hidden" onChange={(e) => handleFileUpload(e, 'doc')} />

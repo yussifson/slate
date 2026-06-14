@@ -115,7 +115,7 @@ export default function UnivBilling({
  <p className="text-muted-foreground mt-1">Manage your subscription, billing details, and view your usage.</p>
  </div>
 
- <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+ <div className="bg-card border border-primary/40 rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
  <div>
  <div className="flex items-center gap-3 mb-2">
  <h2 className="text-2xl font-bold text-foreground">Current Plan: {plan?.name || 'Free'}</h2>
@@ -160,7 +160,7 @@ export default function UnivBilling({
  return (
  <div key={p.id} className={cn(
  "bg-card rounded-2xl p-6 sm:p-8 flex flex-col relative transition-all",
- isCurrent ? "border-2 border-primary " : "border border-border hover:border-primary/50"
+ isCurrent ? "border-2 border-primary " : "border border-primary/40 hover:border-primary/50"
  )}>
  {isCurrent && (
  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">
@@ -211,7 +211,7 @@ export default function UnivBilling({
  </div>
 
  {/* Transaction History */}
- <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 ">
+ <div className="bg-card border border-primary/40 rounded-2xl p-6 sm:p-8 ">
  <div className="flex items-center justify-between mb-6">
  <h3 className="text-xl font-bold text-foreground flex items-center gap-2">
  <History className="w-5 h-5 text-primary" /> Billing History

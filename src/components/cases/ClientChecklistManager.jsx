@@ -105,7 +105,7 @@ export default function ClientChecklistManager({ caseData, client, user }) {
           {items.map(item => {
             const Icon = STATUS_ICONS[item.status] || Square;
             return (
-              <div key={item.id} className="bg-card border border-border rounded-lg px-3 py-2.5 flex items-start gap-2.5">
+              <div key={item.id} className="bg-card border border-primary/40 rounded-lg px-3 py-2.5 flex items-start gap-2.5">
                 <Icon className={cn("w-4 h-4 mt-0.5 shrink-0", item.status === "completed" ? "text-primary" : "text-muted-foreground")} />
                 <div className="flex-1 min-w-0">
                   <p className={cn("text-sm font-medium", item.status === "completed" && "line-through text-muted-foreground")}>{item.title}</p>
@@ -151,7 +151,7 @@ export default function ClientChecklistManager({ caseData, client, user }) {
                     <button
                       key={item}
                       onClick={() => setForm(f => ({ ...f, title: t }))}
-                      className="text-[11px] px-2 py-1 rounded-full border border-border bg-muted hover:bg-muted/80 text-muted-foreground transition-colors"
+                      className="text-[11px] px-2 py-1 rounded-full border border-primary/40 bg-muted hover:bg-muted/80 text-muted-foreground transition-colors"
                     >
                       {t}
                     </button>

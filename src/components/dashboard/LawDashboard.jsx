@@ -20,7 +20,7 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tool
 
 function MetricCard({ title, value, icon: Icon, iconBg, iconColor, subtitle, subtitleColor}) {
  return (
- <div className="bg-card rounded-xl border border-border p-4 sm:p-5 flex items-center justify-between ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 sm:p-5 flex items-center justify-between ">
  <div>
  <p className="text-xs text-muted-foreground mb-1 font-medium">{title}</p>
  <p className="text-xl sm:text-2xl font-bold text-foreground leading-tight">{value}</p>
@@ -152,10 +152,10 @@ export default function LawDashboard({ companyId, company, isAdmin}) {
  {/* Analytics Charts */}
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
  {/* Revenue Area Chart */}
- <div className="bg-card rounded-xl border border-border p-4 space-y-4">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 space-y-4">
  <div className="flex justify-between items-center">
  <h3 className="text-sm font-semibold text-slate-800">{t("revenue_growth_curve", "Revenue Growth Curve (")}{currency})</h3>
- <span className="text-[10px] bg-slate-50 text-primary/90 py-0.5 px-2 rounded-full font-bold border border-slate-200 uppercase">{t("paid_invoices", "Paid Invoices")}</span>
+ <span className="text-[10px] bg-slate-50 text-primary/90 py-0.5 px-2 rounded-full font-bold border border-primary/40 uppercase">{t("paid_invoices", "Paid Invoices")}</span>
  </div>
  <div className="h-64 w-full">
  <ResponsiveContainer width="100%" height="100%">
@@ -177,10 +177,10 @@ export default function LawDashboard({ companyId, company, isAdmin}) {
  </div>
 
  {/* Case Distribution Bar Chart */}
- <div className="bg-card rounded-xl border border-border p-4 space-y-4">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 space-y-4">
  <div className="flex justify-between items-center">
  <h3 className="text-sm font-semibold text-slate-800">{caseTerm} {t("distribution_by_stage", "Distribution by Stage")}</h3>
- <span className="text-[10px] bg-orange-50 text-orange-700 py-0.5 px-2 rounded-full font-bold border border-slate-200 uppercase">{t("active_pipelines", "Active Pipelines")}</span>
+ <span className="text-[10px] bg-orange-50 text-orange-700 py-0.5 px-2 rounded-full font-bold border border-primary/40 uppercase">{t("active_pipelines", "Active Pipelines")}</span>
  </div>
  <div className="h-64 w-full">
  <ResponsiveContainer width="100%" height="100%">
@@ -198,8 +198,8 @@ export default function LawDashboard({ companyId, company, isAdmin}) {
  {/* Bottom grid */}
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
  {/* Upcoming Hearings */}
- <div className="bg-card rounded-xl border border-border">
- <div className="p-4 border-b border-border flex items-center justify-between">
+ <div className="bg-card rounded-xl border border-primary/40">
+ <div className="p-4 border-b border-primary/40 flex items-center justify-between">
  <div className="flex items-center gap-2">
  <Calendar className="w-4 h-4 text-primary" />
  <h3 className="text-sm font-semibold">{t("upcoming", "Upcoming")} {hearingsTermPlural}</h3>
@@ -235,8 +235,8 @@ export default function LawDashboard({ companyId, company, isAdmin}) {
  </div>
 
  {/* Plan Status */}
- <div className="bg-card rounded-xl border border-border">
- <div className="p-4 border-b border-border flex items-center justify-between">
+ <div className="bg-card rounded-xl border border-primary/40">
+ <div className="p-4 border-b border-primary/40 flex items-center justify-between">
  <h3 className="text-sm font-semibold">{t("plan_status", "Plan Status")}</h3>
  <span className="text-xs font-medium text-muted-foreground capitalize">{plan.name}</span>
  </div>
@@ -246,7 +246,7 @@ export default function LawDashboard({ companyId, company, isAdmin}) {
  <UsageRow label="Cases" used={activeCases.length} max={plan.maxCases} />
  <UsageRow label="Clients" used={clients.length} max={plan.maxClients} />
  </div>
- <div className="px-4 pb-4 border-t border-border pt-3">
+ <div className="px-4 pb-4 border-t border-primary/40 pt-3">
  <div className="flex items-center justify-between mb-2">
  <p className="text-sm font-semibold">{t("plan_details", "Plan Details")}</p>
  <p className="text-sm font-semibold">{formatCurrency(plan.price || 0, currency)}{t("mo", "/mo")}</p>

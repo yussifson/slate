@@ -66,7 +66,7 @@ export default function VQualificationTracking() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
  <Input 
  placeholder="Search qualifications..." 
- className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
+ className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -140,12 +140,12 @@ export default function VQualificationTracking() {
 
  <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
  <div className="md:col-span-2 space-y-6">
- <div className="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800 ">
+ <div className="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-primary/40 dark:border-primary/40 ">
  <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 flex items-center gap-2"><BookCheck className="w-4 h-4 text-primary" /> Core Slates</h3>
  <div className="space-y-3">
  {selectedQual.data?.modules?.length > 0 ? (
  selectedQual.data.modules.map((mod, idx) => (
- <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+ <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-primary/40 dark:border-primary/40">
  <div className="flex items-center gap-3">
  <div className="w-8 h-8 rounded-full bg-slate-100 text-primary flex items-center justify-center font-bold text-xs">{idx + 1}</div>
  <span className="font-medium text-slate-700 dark:text-slate-300">{mod.name || 'Slate Name'}</span>
@@ -154,7 +154,7 @@ export default function VQualificationTracking() {
  </div>
  ))
  ) : (
- <div className="text-center py-6 border-2 border-dashed border-slate-200 rounded-xl">
+ <div className="text-center py-6 border-2 border-dashed border-primary/40 rounded-xl">
  <p className="text-slate-500 dark:text-slate-400 text-sm">No slates defined for this qualification.</p>
  <Button variant="link" className="text-primary h-auto p-0 mt-2">Add Slate</Button>
  </div>
@@ -164,14 +164,14 @@ export default function VQualificationTracking() {
  </div>
  
  <div className="space-y-6">
- <div className="p-6 rounded-2xl bg-slate-500 border border-slate-200 text-center">
+ <div className="p-6 rounded-2xl bg-slate-500 border border-primary/40 text-center">
  <LineChart className="w-8 h-8 text-primary mx-auto mb-2" />
  <h3 className="text-slate-800 font-bold mb-1">Enrolled Students</h3>
  <p className="text-3xl font-black text-primary">{selectedQual.data?.enrolled_count || 0}</p>
  <Button variant="outline" className="w-full mt-4 bg-white dark:bg-slate-900/40 rounded-xl">View Roster</Button>
  </div>
 
- <div className="p-6 rounded-2xl bg-slate-500 border border-slate-200 text-center">
+ <div className="p-6 rounded-2xl bg-slate-500 border border-primary/40 text-center">
  <CheckCircle className="w-8 h-8 text-primary mx-auto mb-2" />
  <h3 className="text-slate-800 font-bold mb-1">Completion Rate</h3>
  <p className="text-3xl font-black text-primary">{selectedQual.data?.completion_rate || '0%'}</p>

@@ -172,7 +172,7 @@ export default function AdminFirms() {
  placeholder="Search subdomain or email..." 
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- className="pl-9 h-10 rounded-lg border-slate-200"
+ className="pl-9 h-10 rounded-lg border-primary/40"
  />
  </div>
 }
@@ -182,7 +182,7 @@ export default function AdminFirms() {
  <Loader2 className="w-8 h-8 animate-spin text-primary" />
  </div>
  ) : (
- <div className="bg-card rounded-xl border border-border overflow-hidden">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
  {filteredCompanies.length === 0 ? (
  <div className="text-center py-12 text-slate-400 text-sm font-semibold">
  {t("no_firms_found_matching_query", "No firms found matching query.")}
@@ -191,7 +191,7 @@ export default function AdminFirms() {
  <div className="overflow-x-auto">
  <table className="w-full text-sm text-left border-collapse bg-white dark:bg-slate-900/40 font-sans">
  <thead>
- <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-150 text-slate-600 font-semibold uppercase tracking-wider text-xs">
+ <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-primary/40 text-slate-600 font-semibold uppercase tracking-wider text-xs">
  <th className="px-5 py-4">{t("firm_domain", "Firm / Domain")}</th>
  <th className="px-5 py-4">{t("plan_status", "Plan & Status")}</th>
  <th className="px-5 py-4">{t("state", "State")}</th>
@@ -222,7 +222,7 @@ export default function AdminFirms() {
  <td className="px-5 py-4">
  <span className={`inline-flex py-1 px-2.5 rounded-full text-[10px] font-bold uppercase ${
  c.status === 'active' 
- ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border border-slate-200' 
+ ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border border-primary/40' 
  : 'bg-red-50 text-red-700 border border-red-100'
 }`}>
  {c.status}
@@ -261,7 +261,7 @@ export default function AdminFirms() {
  variant="outline" 
  size="sm" 
  onClick={() => handleOpenEditDialog(c)}
- className="h-8 text-xs gap-1.5 px-3 rounded-lg border-slate-200"
+ className="h-8 text-xs gap-1.5 px-3 rounded-lg border-primary/40"
  >
  <Edit2 className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" /> {t("quota", "Quota")}
  </Button>
@@ -294,7 +294,7 @@ export default function AdminFirms() {
  )}
  {/* Message Dialog */}
  <Dialog open={messageDialogOpen} onOpenChange={setMessageDialogOpen}>
- <DialogContent className="max-w-md rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-6 font-sans">
+ <DialogContent className="max-w-md rounded-2xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 p-6 font-sans">
  <DialogHeader>
  <DialogTitle className="text-slate-900 dark:text-slate-100 font-extrabold text-base flex items-center gap-1.5">
  <MessageSquare className="w-4 h-4 text-primary" />
@@ -309,7 +309,7 @@ export default function AdminFirms() {
  onChange={(e) => setMessageContent(e.target.value)}
  rows={4}
  placeholder="Type your message to the firm administrator here..."
- className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm resize-none"
+ className="w-full p-3 border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm resize-none"
  />
  </div>
  </div>
@@ -317,7 +317,7 @@ export default function AdminFirms() {
  <Button 
  variant="outline"
  onClick={() => setMessageDialogOpen(false)}
- className="flex-1 rounded-xl text-slate-700 dark:text-slate-300 border-slate-200 h-11"
+ className="flex-1 rounded-xl text-slate-700 dark:text-slate-300 border-primary/40 h-11"
  >
  {t("cancel", "Cancel")}
  </Button>
@@ -337,7 +337,7 @@ export default function AdminFirms() {
  </Dialog>
  {/* Edit Quota & Plans Dialog */}
  <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
- <DialogContent className="max-w-md rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-6 font-sans">
+ <DialogContent className="max-w-md rounded-2xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 p-6 font-sans">
  <DialogHeader>
  <DialogTitle className="text-slate-900 dark:text-slate-100 font-extrabold text-base flex items-center gap-1.5">
  <Edit2 className="w-4 h-4 text-primary" />
@@ -351,7 +351,7 @@ export default function AdminFirms() {
  <select 
  value={subPlan} 
  onChange={(e) => setSubPlan(e.target.value)}
- className="w-full p-2.5 border border-slate-200 rounded-xl focus:ring-1 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm"
+ className="w-full p-2.5 border border-primary/40 rounded-xl focus:ring-1 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm"
  >
  <option value="starter">{t("starter_plan_29_mo", "Starter Plan ($29/mo)")}</option>
  <option value="professional">{t("professional_plan_79_mo", "Professional Plan ($79/mo)")}</option>
@@ -364,7 +364,7 @@ export default function AdminFirms() {
  <select 
  value={subStatus} 
  onChange={(e) => setSubStatus(e.target.value)}
- className="w-full p-2.5 border border-slate-200 rounded-xl focus:ring-1 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm"
+ className="w-full p-2.5 border border-primary/40 rounded-xl focus:ring-1 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm"
  >
  <option value="trial">{t("trialing", "Trialing")}</option>
  <option value="active">{t("active_paid", "Active (Paid)")}</option>
@@ -380,7 +380,7 @@ export default function AdminFirms() {
  type="number"
  value={maxUsers}
  onChange={(e) => setMaxUsers(parseInt(e.target.value) || 0)}
- className="rounded-xl border-slate-200"
+ className="rounded-xl border-primary/40"
  />
  </div>
  <div className="space-y-1.5">
@@ -389,7 +389,7 @@ export default function AdminFirms() {
  type="number"
  value={maxCases}
  onChange={(e) => setMaxCases(parseInt(e.target.value) || 0)}
- className="rounded-xl border-slate-200"
+ className="rounded-xl border-primary/40"
  />
  </div>
  </div>
@@ -399,7 +399,7 @@ export default function AdminFirms() {
  <Button 
  variant="outline"
  onClick={() => setEditDialogOpen(false)}
- className="flex-1 rounded-xl text-slate-700 dark:text-slate-300 border-slate-200 h-11"
+ className="flex-1 rounded-xl text-slate-700 dark:text-slate-300 border-primary/40 h-11"
  >
  {t("cancel", "Cancel")}
  </Button>

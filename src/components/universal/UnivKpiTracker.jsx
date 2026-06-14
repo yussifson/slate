@@ -133,7 +133,7 @@ export default function UnivKpiTracker() {
  value={search}
  onChange={e => setSearch(e.target.value)}
  placeholder="Search kpi tracker..."
- className="w-full h-10 pl-9 pr-4 bg-card border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none transition-"
+ className="w-full h-10 pl-9 pr-4 bg-card border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none transition-"
  />
  </div>
 
@@ -143,9 +143,9 @@ export default function UnivKpiTracker() {
  <Loader2 className="w-8 h-8 animate-spin text-primary" />
  </div>
  ) : (
- <div className="flex-1 overflow-auto rounded-2xl border border-border bg-card ">
+ <div className="flex-1 overflow-auto rounded-2xl border border-primary/40 bg-card ">
  <table className="w-full text-sm min-w-[700px]">
- <thead className="border-b border-border bg-muted/40 sticky top-0 z-10">
+ <thead className="border-b border-primary/40 bg-muted/40 sticky top-0 z-10">
  <tr><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Kpi Name</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Category</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Target Value</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Actual Value</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Unit</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Period</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Status</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap"></th></tr>
  </thead>
  <tbody>
@@ -154,7 +154,7 @@ export default function UnivKpiTracker() {
  key={r.id}
  initial={{ opacity: 0, y: 4}}
  animate={{ opacity: 1, y: 0}}
- className="border-b border-border/50 hover:bg-muted/20 transition-colors group"
+ className="border-b border-primary/40 hover:bg-muted/20 transition-colors group"
  >
  <td className="px-4 py-3 font-semibold text-foreground">{r.kpi_name}</td>
  <td className="px-4 py-3 text-muted-foreground">{r.category}</td>
@@ -200,7 +200,7 @@ export default function UnivKpiTracker() {
  <span className="bg-card/40 rounded-full px-1.5">{count}</span>
  </div>
  ))}
- <div className="px-4 py-2 rounded-xl border border-border bg-card text-xs font-bold text-muted-foreground flex items-center gap-2">
+ <div className="px-4 py-2 rounded-xl border border-primary/40 bg-card text-xs font-bold text-muted-foreground flex items-center gap-2">
  Total <span className="text-foreground">{records.length}</span>
  </div>
  </div>
@@ -221,9 +221,9 @@ export default function UnivKpiTracker() {
  animate={{ scale: 1, opacity: 1, y: 0}}
  exit={{ scale: 0.95, opacity: 0, y: 10}}
  transition={{ type: 'spring', stiffness: 300, damping: 25}}
- className="bg-card w-full max-w-xl rounded-2xl border border-border max-h-[90vh] flex flex-col"
+ className="bg-card w-full max-w-xl rounded-2xl border border-primary/40 max-h-[90vh] flex flex-col"
  >
- <div className="p-5 border-b border-border flex justify-between items-center shrink-0">
+ <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0">
  <h2 className="text-xl font-black flex items-center gap-2">
  <Target className="w-5 h-5 text-primary" />
  {editId ? 'Edit Record' : 'Add KPI Tracker'}
@@ -235,44 +235,44 @@ export default function UnivKpiTracker() {
  <form onSubmit={handleSave} className="p-5 grid grid-cols-2 gap-4 overflow-y-auto flex-1">
  <div className="col-span-2">
  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">KPI Name</label>
- <input required type="text" value={form.kpi_name || ''} onChange={e => setForm(p => ({ ...p, kpi_name: e.target.value}))} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input required type="text" value={form.kpi_name || ''} onChange={e => setForm(p => ({ ...p, kpi_name: e.target.value}))} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div className="">
  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Category</label>
- <input type="text" value={form.category || ''} onChange={e => setForm(p => ({ ...p, category: e.target.value}))} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="text" value={form.category || ''} onChange={e => setForm(p => ({ ...p, category: e.target.value}))} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div className="">
  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Target Value</label>
- <input type="number" value={form.target_value || ''} onChange={e => setForm(p => ({ ...p, target_value: e.target.value}))} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="number" value={form.target_value || ''} onChange={e => setForm(p => ({ ...p, target_value: e.target.value}))} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div className="">
  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Actual Value</label>
- <input type="number" value={form.actual_value || ''} onChange={e => setForm(p => ({ ...p, actual_value: e.target.value}))} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="number" value={form.actual_value || ''} onChange={e => setForm(p => ({ ...p, actual_value: e.target.value}))} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div className="">
  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Unit (e.g. %, $, count)</label>
- <input type="text" value={form.unit || ''} onChange={e => setForm(p => ({ ...p, unit: e.target.value}))} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="text" value={form.unit || ''} onChange={e => setForm(p => ({ ...p, unit: e.target.value}))} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div className="">
  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Period (e.g. Q1 2025)</label>
- <input type="text" value={form.period || ''} onChange={e => setForm(p => ({ ...p, period: e.target.value}))} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="text" value={form.period || ''} onChange={e => setForm(p => ({ ...p, period: e.target.value}))} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div className="">
  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Owner</label>
- <input type="text" value={form.owner || ''} onChange={e => setForm(p => ({ ...p, owner: e.target.value}))} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="text" value={form.owner || ''} onChange={e => setForm(p => ({ ...p, owner: e.target.value}))} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div className="col-span-2">
  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Notes</label>
- <input type="text" value={form.notes || ''} onChange={e => setForm(p => ({ ...p, notes: e.target.value}))} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="text" value={form.notes || ''} onChange={e => setForm(p => ({ ...p, notes: e.target.value}))} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
 
  <div className="col-span-2">
  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Status</label>
- <select value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value}))} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
+ <select value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value}))} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
  {["On Track","At Risk","Off Track","Achieved"].map(s => <option key={s}>{s}</option>)}
  </select>
  </div>
- <div className="col-span-2 flex justify-end gap-3 pt-4 border-t border-border shrink-0">
+ <div className="col-span-2 flex justify-end gap-3 pt-4 border-t border-primary/40 shrink-0">
  <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-semibold hover:bg-muted/80 transition-colors">
  Cancel
  </button>

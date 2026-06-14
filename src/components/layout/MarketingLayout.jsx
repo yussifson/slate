@@ -205,7 +205,7 @@ export default function MarketingLayout({ children}) {
  <div className="relative">
  <button
  onClick={() => setLangDropdownOpen(!langDropdownOpen)}
- className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-all select-none border border-slate-200 bg-white/80 "
+ className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-all select-none border border-primary/40 bg-white/80 "
  >
  <Globe className="w-4 h-4 text-primary" />
  <span>{currentLanguage.flag}</span>
@@ -216,7 +216,7 @@ export default function MarketingLayout({ children}) {
  </button>
  
  {langDropdownOpen && (
- <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-2xl py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
+ <div className="absolute right-0 mt-2 w-48 bg-white border border-primary/40 rounded-2xl py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
  {languages.map((lang) => (
  <button
  key={lang.code}
@@ -262,7 +262,7 @@ export default function MarketingLayout({ children}) {
  <div className="flex lg:hidden items-center gap-1.5">
  <button
  onClick={() => setLangDropdownOpen(!langDropdownOpen)}
- className="p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors bg-white/50 border border-slate-200/50 backdrop-blur-md"
+ className="p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors bg-white/50 border border-primary/40 backdrop-blur-md"
  >
  <Globe className="w-4 h-4 text-primary" />
  </button>
@@ -289,10 +289,10 @@ export default function MarketingLayout({ children}) {
  {mobileMenuOpen && (
  <div className="fixed inset-0 top-[60px] z-40 bg-white/95 backdrop-blur-md overflow-y-auto pb-24">
  <nav className="flex flex-col p-4">
- <hr className="border-border/60 my-2" />
+ <hr className="border-primary/40 my-2" />
 
  {/* Mobile Language Selector */}
- <div className="flex flex-col gap-2 my-2 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+ <div className="flex flex-col gap-2 my-2 bg-slate-50 p-4 rounded-2xl border border-primary/40">
  <span className="text-xs font-bold text-slate-500 flex items-center gap-1.5 px-1 uppercase tracking-wider">
  <Globe className="w-3.5 h-3.5 text-primary" />
  {t("choose_language", "Choose Language")}
@@ -302,7 +302,7 @@ export default function MarketingLayout({ children}) {
  <button
  key={lang.code}
  onClick={() => handleLanguageChange(lang.code)}
- className={`text-left px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border ${currentLanguage.code === lang.code ? 'text-primary bg-slate-50 border-primary/20' : 'text-slate-700 bg-white border-slate-200'}`}
+ className={`text-left px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border ${currentLanguage.code === lang.code ? 'text-primary bg-slate-50 border-primary/20' : 'text-slate-700 bg-white border-primary/40'}`}
  >
  <span>{lang.flag}</span>
  <span>{lang.name}</span>
@@ -324,7 +324,7 @@ export default function MarketingLayout({ children}) {
  ) : (
  <>
  <Link to="/login" className="w-full">
- <Button variant="outline" className="w-full font-medium border-border hover:bg-muted/50 text-foreground h-11 rounded-xl">
+ <Button variant="outline" className="w-full font-medium border-primary/40 hover:bg-muted/50 text-foreground h-11 rounded-xl">
  {t("sign_in", "Sign In")}
  </Button>
  </Link>
@@ -344,7 +344,7 @@ export default function MarketingLayout({ children}) {
  {children}
  </main>
  {/* ========== MOBILE BOTTOM NAVIGATION ========== */}
- <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:backdrop-blur-2xl border-t border-slate-200/50 pb-[env(safe-area-inset-bottom)] -[0_-10px_40px_rgba(0,0,0,0.03)]">
+ <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:backdrop-blur-2xl border-t border-primary/40 pb-[env(safe-area-inset-bottom)] -[0_-10px_40px_rgba(0,0,0,0.03)]">
  <div className="flex items-center justify-around h-[68px] px-1">
  {navItems.map((item) => {
  const isActive = location.pathname === item.path;
@@ -370,7 +370,7 @@ export default function MarketingLayout({ children}) {
  </div>
  </nav>
  {/* ========== PREMIUM FOOTER (LIGHT THEME) ========== */}
- <footer className="bg-slate-50 text-slate-600 pt-20 md:pt-28 pb-24 md:pb-12 border-t border-slate-200 relative overflow-hidden">
+ <footer className="bg-slate-50 text-slate-600 pt-20 md:pt-28 pb-24 md:pb-12 border-t border-primary/40 relative overflow-hidden">
  {/* Subtle background glow */}
  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-full bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.05)_0%,transparent_70%)] pointer-events-none"></div>
 
@@ -393,10 +393,10 @@ export default function MarketingLayout({ children}) {
  </p>
  
  <div className="flex items-center gap-4 mt-2">
- <a href="#" className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-primary hover:border-primary hover:bg-slate-50 transition-all">
+ <a href="#" className="w-10 h-10 rounded-full bg-white border border-primary/40 flex items-center justify-center text-slate-500 hover:text-primary hover:border-primary hover:bg-slate-50 transition-all">
  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
  </a>
- <a href="#" className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-primary hover:border-primary hover:bg-slate-50 transition-all">
+ <a href="#" className="w-10 h-10 rounded-full bg-white border border-primary/40 flex items-center justify-center text-slate-500 hover:text-primary hover:border-primary hover:bg-slate-50 transition-all">
  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
  </a>
  </div>
@@ -446,13 +446,13 @@ export default function MarketingLayout({ children}) {
  </div>
  </div>
 
- <div className="pt-8 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-6">
+ <div className="pt-8 border-t border-primary/40 flex flex-col md:flex-row items-center justify-between gap-6">
  <div className="flex items-center gap-6">
  <div className="flex -space-x-2">
- <div className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center">
+ <div className="w-8 h-8 rounded-full bg-white border border-primary/40 flex items-center justify-center">
  <Shield className="w-3.5 h-3.5 text-slate-600" />
  </div>
- <div className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center">
+ <div className="w-8 h-8 rounded-full bg-white border border-primary/40 flex items-center justify-center">
  <Clock className="w-3.5 h-3.5 text-slate-600" />
  </div>
  </div>
@@ -480,7 +480,7 @@ export default function MarketingLayout({ children}) {
  {/* Geolocation Language Recommendation Modal */}
  {geoPopup && (
  <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
- <div className="relative bg-white w-full max-w-md rounded-[2rem] p-8 sm:p-10 border border-slate-100 flex flex-col items-center text-center transform transition-all animate-in zoom-in-95 duration-200">
+ <div className="relative bg-white w-full max-w-md rounded-[2rem] p-8 sm:p-10 border border-primary/40 flex flex-col items-center text-center transform transition-all animate-in zoom-in-95 duration-200">
  <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center text-primary mb-6 ">
  <Globe className="w-8 h-8 animate-pulse" />
  </div>
@@ -512,7 +512,7 @@ export default function MarketingLayout({ children}) {
  setGeoPopup(null);
 }}
  variant="outline"
- className="border-slate-200 hover:bg-slate-50 text-slate-600 font-bold py-6 rounded-xl transition-all w-full bg-transparent"
+ className="border-primary/40 hover:bg-slate-50 text-slate-600 font-bold py-6 rounded-xl transition-all w-full bg-transparent"
  >
  Continue in English
  </Button>

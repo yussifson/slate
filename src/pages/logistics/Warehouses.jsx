@@ -188,7 +188,7 @@ export default function Warehouses() {
  {isLoading ? (
  <div className="py-16 text-center text-muted-foreground">{t("loading_warehouses", "Loading warehouses...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-16 text-center text-muted-foreground bg-card rounded-xl border border-border">
+ <div className="py-16 text-center text-muted-foreground bg-card rounded-xl border border-primary/40">
  <Warehouse className="w-12 h-12 mx-auto mb-3 opacity-30" />
  <p className="font-semibold">{t("no_warehouses_found", "No warehouses found.")}</p>
  <p className="text-xs mt-1">{t(
@@ -208,7 +208,7 @@ export default function Warehouses() {
  const cats = wh.categories ? wh.categories.split(',').map(c => c.trim()).filter(Boolean) : [];
 
  return (
- <div key={wh.id} className="bg-card rounded-xl border border-border transition- p-5 space-y-4">
+ <div key={wh.id} className="bg-card rounded-xl border border-primary/40 transition- p-5 space-y-4">
  {/* Card Header */}
  <div className="flex items-start justify-between">
  <div className="flex items-center gap-3">
@@ -279,7 +279,7 @@ export default function Warehouses() {
  </div>
  )}
  {/* Actions */}
- <div className="flex justify-end pt-1 border-t border-border mt-auto">
+ <div className="flex justify-end pt-1 border-t border-primary/40 mt-auto">
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
  <Button variant="ghost" className="h-8 w-8 p-0">
@@ -307,7 +307,7 @@ export default function Warehouses() {
  {/* Add/Edit Modal */}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-5 border border-border max-h-[90vh] overflow-y-auto">
+ <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-5 border border-primary/40 max-h-[90vh] overflow-y-auto">
  <div className="flex items-center justify-between">
  <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
  <Warehouse className="w-5 h-5 text-primary" />

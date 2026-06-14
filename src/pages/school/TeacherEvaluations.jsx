@@ -58,7 +58,7 @@ export default function TeacherEvaluations() {
  </div>
  </div>
 
- <div className="bg-card rounded-xl border border-border p-6 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-6 ">
  <h3 className="text-xl font-extrabold mb-6 text-slate-900 dark:text-slate-100 dark:text-white flex items-center gap-2">
  <Award className="text-amber-500" /> Pending Evaluations
  </h3>
@@ -66,7 +66,7 @@ export default function TeacherEvaluations() {
  {teachers.map((teacher, i) => {
  const done = hasEvaluated(teacher);
  return (
- <div key={i} className={`p-6 rounded-3xl border ${done ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 dark:border-slate-800' : 'bg-white dark:bg-slate-900/40 dark:bg-background border-slate-200 dark:border-slate-700 '} flex flex-col md:flex-row items-center justify-between gap-4 transition-all`}>
+ <div key={i} className={`p-6 rounded-3xl border ${done ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900/50 border-primary/40 dark:border-primary/40 dark:border-primary/40' : 'bg-white dark:bg-slate-900/40 dark:bg-background border-primary/40 dark:border-primary/40 '} flex flex-col md:flex-row items-center justify-between gap-4 transition-all`}>
  <div className="font-bold text-lg text-slate-900 dark:text-slate-100 dark:text-white">{teacher}</div>
  
  {done ? (

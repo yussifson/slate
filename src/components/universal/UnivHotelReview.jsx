@@ -92,20 +92,20 @@ const UnivHotelReview = () => {
  </motion.div>
 
  <div className="view-header grid lg:grid-cols-3 gap-8">
- <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="lg:col-span-1 bg-card p-8 rounded-none border border-border -[8px_8px_0px_0px_rgba(245,158,11,0.2)] h-fit">
+ <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="lg:col-span-1 bg-card p-8 rounded-none border border-primary/40 -[8px_8px_0px_0px_rgba(245,158,11,0.2)] h-fit">
  <h2 className="text-lg font-serif font-bold mb-6 text-foreground border-b-2 border-amber-100 pb-2">Submit Feedback</h2>
  <form onSubmit={handleSubmit} className="space-y-5">
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Guest Name</label>
  <div className="relative">
  <User className="w-4 h-4 absolute left-3 top-2.5 text-muted-foreground" />
- <input type="text" name="guest_name" value={formData.guest_name} onChange={handleChange} required className="w-full pl-9 p-2 bg-background border border-border focus:ring-1 focus:ring-amber-500 outline-none" />
+ <input type="text" name="guest_name" value={formData.guest_name} onChange={handleChange} required className="w-full pl-9 p-2 bg-background border border-primary/40 focus:ring-1 focus:ring-amber-500 outline-none" />
  </div>
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Room Type</label>
- <select name="room_type" value={formData.room_type} onChange={handleChange} className="w-full p-2 bg-background border border-border focus:ring-1 focus:ring-amber-500 outline-none">
+ <select name="room_type" value={formData.room_type} onChange={handleChange} className="w-full p-2 bg-background border border-primary/40 focus:ring-1 focus:ring-amber-500 outline-none">
  <option value="Standard">Standard</option>
  <option value="Deluxe">Deluxe</option>
  <option value="Suite">Suite</option>
@@ -114,11 +114,11 @@ const UnivHotelReview = () => {
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Stay Date</label>
- <input type="month" name="stay_date" value={formData.stay_date} onChange={handleChange} required className="w-full p-2 bg-background border border-border focus:ring-1 focus:ring-amber-500 outline-none text-sm" />
+ <input type="month" name="stay_date" value={formData.stay_date} onChange={handleChange} required className="w-full p-2 bg-background border border-primary/40 focus:ring-1 focus:ring-amber-500 outline-none text-sm" />
  </div>
  </div>
  
- <div className="bg-background p-4 border border-border space-y-4">
+ <div className="bg-background p-4 border border-primary/40 space-y-4">
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1 flex justify-between">Overall Rating <span>{formData.rating}/5</span></label>
  <input type="range" min="1" max="5" name="rating" value={formData.rating} onChange={handleChange} className="w-full accent-amber-500" />
@@ -135,7 +135,7 @@ const UnivHotelReview = () => {
 
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Review Text</label>
- <textarea name="review_text" value={formData.review_text} onChange={handleChange} required rows="3" className="w-full p-3 bg-background border border-border focus:ring-1 focus:ring-amber-500 outline-none"></textarea>
+ <textarea name="review_text" value={formData.review_text} onChange={handleChange} required rows="3" className="w-full p-3 bg-background border border-primary/40 focus:ring-1 focus:ring-amber-500 outline-none"></textarea>
  </div>
  <button type="submit" className="w-full bg-slate-800 hover:bg-amber-600 text-white font-bold py-3 uppercase tracking-widest text-xs transition-colors">
  Post Review
@@ -147,11 +147,11 @@ const UnivHotelReview = () => {
  {loading ? (
  <div className="flex justify-center py-20"><Sparkles className="w-10 h-10 text-amber-400 animate-spin" /></div>
  ) : reviews.length === 0 ? (
- <div className="text-center py-20 bg-card border border-border text-muted-foreground font-serif">No reviews inscribed yet.</div>
+ <div className="text-center py-20 bg-card border border-primary/40 text-muted-foreground font-serif">No reviews inscribed yet.</div>
  ) : (
  <div className="space-y-6">
  {reviews.map((rev, index) => (
- <motion.div key={rev.id || index} initial={{ opacity: 0, y: 20}} animate={{ opacity: 1, y: 0}} transition={{ delay: index * 0.1}} className="bg-card p-6 border border-border relative">
+ <motion.div key={rev.id || index} initial={{ opacity: 0, y: 20}} animate={{ opacity: 1, y: 0}} transition={{ delay: index * 0.1}} className="bg-card p-6 border border-primary/40 relative">
  <div className="absolute top-0 left-0 w-1 h-full bg-amber-500"></div>
  
  <div className="flex justify-between items-start mb-4">
@@ -168,9 +168,9 @@ const UnivHotelReview = () => {
  </div>
  </div>
 
- <p className="text-foreground font-serif italic text-lg leading-relaxed border-l-2 border-border pl-4 my-4 text-muted-foreground">"{rev.review_text}"</p>
+ <p className="text-foreground font-serif italic text-lg leading-relaxed border-l-2 border-primary/40 pl-4 my-4 text-muted-foreground">"{rev.review_text}"</p>
 
- <div className="grid grid-cols-2 gap-4 mt-6 pt-4 border-t border-border">
+ <div className="grid grid-cols-2 gap-4 mt-6 pt-4 border-t border-primary/40">
  <div className="flex items-center gap-3">
  <div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 font-bold text-xs">{rev.cleanliness_score}</div>
  <span className="text-xs font-bold text-muted-foreground uppercase">Cleanliness</span>

@@ -39,7 +39,7 @@ export default function ClientBillingReport({ invoices = [], expenses = [], curr
   return (
     <div className="space-y-4">
       {/* Month Navigator */}
-      <div className="flex items-center justify-between bg-card border border-border rounded-xl px-4 py-3">
+      <div className="flex items-center justify-between bg-card border border-primary/40 rounded-xl px-4 py-3">
         <Button variant="ghost" size="icon" onClick={() => setMonthOffset(o => o + 1)} className="h-8 w-8">
           <ChevronLeft className="w-4 h-4" />
         </Button>
@@ -67,8 +67,8 @@ export default function ClientBillingReport({ invoices = [], expenses = [], curr
         })}
       </div>
       {/* Invoices */}
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
-        <div className="px-4 py-3 border-b border-border flex items-center gap-2">
+      <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
+        <div className="px-4 py-3 border-b border-primary/40 flex items-center gap-2">
           <Receipt className="w-4 h-4 text-primary" />
           <p className="text-sm font-semibold">{t("invoices", "Invoices")}</p>
           <span className="ml-auto text-xs text-muted-foreground">{monthInvoices.length} {t("invoice", "invoice")}{monthInvoices.length !== 1 ? "s" : ""}</span>
@@ -98,8 +98,8 @@ export default function ClientBillingReport({ invoices = [], expenses = [], curr
       </div>
       {/* Expenses */}
       {monthExpenses.length > 0 && (
-        <div className="bg-card border border-border rounded-xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-border flex items-center gap-2">
+        <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
+          <div className="px-4 py-3 border-b border-primary/40 flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-amber-500" />
             <p className="text-sm font-semibold">{t("case_expenses", "Case Expenses")}</p>
             <span className="ml-auto text-xs text-muted-foreground">{formatAmt(totalExpenses, currency)} {t("billable", "billable")}</span>

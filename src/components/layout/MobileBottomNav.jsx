@@ -26,7 +26,7 @@ export default function MobileBottomNav() {
 
  return (
  <>
- <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[60] bg-background/95 backdrop-blur-xl border-t border-border -[0_-4px_20px_rgba(0,0,0,0.06)] pb-[env(safe-area-inset-bottom)]">
+ <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[60] bg-background/95 backdrop-blur-xl border-t border-primary/40 -[0_-4px_20px_rgba(0,0,0,0.06)] pb-[env(safe-area-inset-bottom)]">
  <div className="flex items-center justify-around h-16 px-1">
  {bottomNavItems.map((item) => {
  const isActive = location.pathname === item.path || (item.path !== "/" && location.pathname.startsWith(item.path));
@@ -80,7 +80,7 @@ export default function MobileBottomNav() {
  <div className="relative w-full rounded-t-[32px] max-h-[85vh] bg-white dark:bg-slate-950 transition-transform animate-in slide-in-from-bottom-full overflow-hidden flex flex-col">
  
  {/* Drag Handle & Header */}
- <div className="flex flex-col items-center pt-3 pb-2 border-b border-slate-100 dark:border-slate-800">
+ <div className="flex flex-col items-center pt-3 pb-2 border-b border-primary/40 dark:border-primary/40">
  <div className="w-12 h-1.5 rounded-full bg-slate-200 dark:bg-slate-800 mb-4" />
  <div className="w-full flex items-center justify-between px-6">
  <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">{t('menu', 'Menu')}</h2>
@@ -95,7 +95,7 @@ export default function MobileBottomNav() {
 
  {/* Native Scrollable List */}
  <div className="flex-1 overflow-y-auto px-4 py-4 pb-[env(safe-area-inset-bottom)]">
- <div className="bg-slate-50 dark:bg-slate-900/50 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800/50 ">
+ <div className="bg-slate-50 dark:bg-slate-900/50 rounded-2xl overflow-hidden border border-primary/40 dark:border-primary/40 divide-y divide-slate-100 dark:divide-slate-800/50 ">
  {overflowItems.map((item, index) => {
  const isActive = location.pathname === item.path || (item.path !== "/" && location.pathname.startsWith(item.path));
  const IconComp = typeof item.icon === 'string' ? ICON_MAP[item.icon] || LayoutDashboard : item.icon;

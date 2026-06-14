@@ -111,7 +111,7 @@ export default function FirmStaffManager({ firm, onClose }) {
   return (
     <Dialog open={!!firm} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col gap-0 p-0">
-        <DialogHeader className="px-6 pt-5 pb-4 border-b border-border">
+        <DialogHeader className="px-6 pt-5 pb-4 border-b border-primary/40">
           <DialogTitle className="flex items-center gap-2">
             <UserCog className="w-4 h-4" />
             {t("team", "Team —")} {firm.name}
@@ -123,7 +123,7 @@ export default function FirmStaffManager({ firm, onClose }) {
         </DialogHeader>
 
         {/* Invite Section */}
-        <div className="px-6 py-4 bg-muted/30 border-b border-border space-y-3">
+        <div className="px-6 py-4 bg-muted/30 border-b border-primary/40 space-y-3">
           <p className="text-xs font-semibold text-foreground flex items-center gap-1.5"><UserPlus className="w-3.5 h-3.5" />{t("invite_new_team_member", "Invite New Team Member")}</p>
           <div className="grid grid-cols-2 gap-2">
             <div>
@@ -204,7 +204,7 @@ export default function FirmStaffManager({ firm, onClose }) {
             )}</div>
           ) : staffRecords.map(staff => {
             return (
-              <div key={staff.id} className="flex items-center gap-3 p-3 bg-card rounded-lg border border-border">
+              <div key={staff.id} className="flex items-center gap-3 p-3 bg-card rounded-lg border border-primary/40">
                 <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
                   <span className="text-xs font-bold text-primary">{staff.full_name?.[0]?.toUpperCase() || "?"}</span>
                 </div>
@@ -243,7 +243,7 @@ export default function FirmStaffManager({ firm, onClose }) {
           })}
         </div>
 
-        <div className="flex justify-end px-6 pb-5 pt-3 border-t border-border">
+        <div className="flex justify-end px-6 pb-5 pt-3 border-t border-primary/40">
           <Button variant="outline" onClick={onClose}>{t("close", "Close")}</Button>
         </div>
       </DialogContent>

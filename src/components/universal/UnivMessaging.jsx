@@ -203,18 +203,18 @@ export default function UnivMessaging() {
 
  if (loadingContacts) {
  return (
- <div className="flex h-full items-center justify-center bg-background border border-border rounded-2xl ${view !== 'Default' ? 'hide-default' : ''}">
+ <div className="flex h-full items-center justify-center bg-background border border-primary/40 rounded-2xl ${view !== 'Default' ? 'hide-default' : ''}">
  <Loader2 className="w-8 h-8 animate-spin text-primary" />
  </div>
  );
 }
 
  return (
- <div className="view-header flex h-full bg-background overflow-hidden border border-border rounded-2xl ">
+ <div className="view-header flex h-full bg-background overflow-hidden border border-primary/40 rounded-2xl ">
  
  {/* Sidebar - Contacts List */}
- <div className="w-80 border-r border-border bg-card flex flex-col shrink-0 hidden md:flex">
- <div className="p-4 border-b border-border">
+ <div className="w-80 border-r border-primary/40 bg-card flex flex-col shrink-0 hidden md:flex">
+ <div className="p-4 border-b border-primary/40">
  <h2 className="text-lg font-bold text-foreground">Messages</h2>
  <div className="relative mt-3">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
@@ -223,7 +223,7 @@ export default function UnivMessaging() {
  placeholder="Search chats..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-9 pl-9 pr-3 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-9 pl-9 pr-3 bg-muted border border-primary/40 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -258,7 +258,7 @@ export default function UnivMessaging() {
  {activeContact ? (
  <>
  {/* Chat Header */}
- <div className="h-16 border-b border-border bg-card/50 backdrop-blur-md flex items-center justify-between px-6 shrink-0 sticky top-0 z-10">
+ <div className="h-16 border-b border-primary/40 bg-card/50 backdrop-blur-md flex items-center justify-between px-6 shrink-0 sticky top-0 z-10">
  <div className="flex items-center gap-3">
  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center font-bold text-primary">
  {(activeContact.email || 'U').charAt(0).toUpperCase()}
@@ -271,7 +271,7 @@ export default function UnivMessaging() {
  <div className="flex items-center gap-3 text-muted-foreground">
  <button className="p-2 hover:bg-muted rounded-lg transition-colors"><Phone className="w-4 h-4" /></button>
  <button className="p-2 hover:bg-muted rounded-lg transition-colors"><Video className="w-4 h-4" /></button>
- <div className="w-px h-6 bg-border mx-1"></div>
+ <div className="w-px h-6 bg-primary/40 mx-1"></div>
  <button className="p-2 hover:bg-muted rounded-lg transition-colors"><Info className="w-4 h-4" /></button>
  </div>
  </div>
@@ -297,7 +297,7 @@ export default function UnivMessaging() {
  {msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit'}) : ''}
  </span>
  </div>
- <div className={`p-3.5 rounded-2xl text-sm ${isMe ? 'bg-primary text-white rounded-br-none' : 'bg-card border border-border text-foreground rounded-bl-none'}`}>
+ <div className={`p-3.5 rounded-2xl text-sm ${isMe ? 'bg-primary text-white rounded-br-none' : 'bg-card border border-primary/40 text-foreground rounded-bl-none'}`}>
  {msg.content}
  </div>
  </motion.div>
@@ -310,8 +310,8 @@ export default function UnivMessaging() {
  </div>
 
  {/* Input Area */}
- <form onSubmit={handleSend} className="p-4 border-t border-border bg-card shrink-0">
- <div className="flex items-center gap-2 bg-muted/50 border border-border rounded-xl p-2 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+ <form onSubmit={handleSend} className="p-4 border-t border-primary/40 bg-card shrink-0">
+ <div className="flex items-center gap-2 bg-muted/50 border border-primary/40 rounded-xl p-2 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
  <button type="button" className="p-2 text-muted-foreground hover:text-foreground transition-colors"><Paperclip className="w-5 h-5" /></button>
  <input 
  type="text" 

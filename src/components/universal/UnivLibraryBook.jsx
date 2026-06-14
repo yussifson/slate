@@ -135,7 +135,7 @@ export default function UnivLibraryBook() {
  placeholder="Search..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="pl-10 pr-4 py-2 bg-card dark:bg-slate-800 border border-border dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none w-full md:w-64"
+ className="pl-10 pr-4 py-2 bg-card dark:bg-slate-800 border border-primary/40 dark:border-primary/40 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none w-full md:w-64"
  />
  </div>
  <div className="flex items-center gap-2">
@@ -149,7 +149,7 @@ export default function UnivLibraryBook() {
 
  <button 
  onClick={fetchData}
- className="p-2 bg-card dark:bg-slate-800 border border-border dark:border-slate-700 rounded-lg hover:bg-background dark:hover:bg-slate-700 transition-colors"
+ className="p-2 bg-card dark:bg-slate-800 border border-primary/40 dark:border-primary/40 rounded-lg hover:bg-background dark:hover:bg-slate-700 transition-colors"
  >
  <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
  </button>
@@ -171,11 +171,11 @@ export default function UnivLibraryBook() {
  </div>
  </div>
 
- <div className="bg-card dark:bg-slate-800 rounded-xl border border-border dark:border-slate-700 overflow-hidden">
+ <div className="bg-card dark:bg-slate-800 rounded-xl border border-primary/40 dark:border-primary/40 overflow-hidden">
  <div className="overflow-x-auto">
  <table className="w-full text-left border-collapse">
  <thead>
- <tr className="bg-background dark:bg-slate-800/50 border-b border-border dark:border-slate-700">
+ <tr className="bg-background dark:bg-slate-800/50 border-b border-primary/40 dark:border-primary/40">
  <th className="p-4 font-medium text-muted-foreground dark:text-muted-foreground">Title</th>
  <th className="p-4 font-medium text-muted-foreground dark:text-muted-foreground">Author</th>
  <th className="p-4 font-medium text-muted-foreground dark:text-muted-foreground">ISBN</th>
@@ -206,7 +206,7 @@ export default function UnivLibraryBook() {
  exit={{ opacity: 0}}
  transition={{ delay: idx * 0.05}}
  key={item.id}
- className="border-b border-border dark:border-slate-700/50 hover:bg-background dark:hover:bg-slate-700/20 transition-colors"
+ className="border-b border-primary/40 dark:border-primary/40 hover:bg-background dark:hover:bg-slate-700/20 transition-colors"
  >
  <td className="p-4">{item.title}</td>
  <td className="p-4">{item.author}</td>
@@ -249,9 +249,9 @@ export default function UnivLibraryBook() {
  initial={{ scale: 0.95, opacity: 0}}
  animate={{ scale: 1, opacity: 1}}
  exit={{ scale: 0.95, opacity: 0}}
- className="bg-card dark:bg-slate-800 rounded-2xl w-full max-w-md overflow-hidden border border-border dark:border-slate-700"
+ className="bg-card dark:bg-slate-800 rounded-2xl w-full max-w-md overflow-hidden border border-primary/40 dark:border-primary/40"
  >
- <div className="flex items-center justify-between p-6 border-b border-border dark:border-slate-700">
+ <div className="flex items-center justify-between p-6 border-b border-primary/40 dark:border-primary/40">
  <h2 className="text-xl font-semibold">
  {editingId ? 'Edit Record' : 'Add New Record'}
  </h2>
@@ -271,7 +271,7 @@ export default function UnivLibraryBook() {
  name="title"
  value={formData.title}
  onChange={handleInputChange}
- className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border border-border dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+ className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border border-primary/40 dark:border-primary/40 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
  required
  />
  </div>
@@ -282,7 +282,7 @@ export default function UnivLibraryBook() {
  name="author"
  value={formData.author}
  onChange={handleInputChange}
- className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border border-border dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+ className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border border-primary/40 dark:border-primary/40 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
  required
  />
  </div>
@@ -293,7 +293,7 @@ export default function UnivLibraryBook() {
  name="isbn"
  value={formData.isbn}
  onChange={handleInputChange}
- className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border border-border dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+ className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border border-primary/40 dark:border-primary/40 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
  required
  />
  </div>
@@ -304,7 +304,7 @@ export default function UnivLibraryBook() {
  name="status"
  value={formData.status}
  onChange={handleInputChange}
- className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border border-border dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+ className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border border-primary/40 dark:border-primary/40 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
  required
  />
  </div>
@@ -314,7 +314,7 @@ export default function UnivLibraryBook() {
  <button 
  type="button"
  onClick={() => setIsModalOpen(false)}
- className="flex-1 px-4 py-2 border border-border dark:border-slate-700 text-muted-foreground dark:text-slate-300 rounded-lg hover:bg-background dark:hover:bg-slate-700 transition-colors"
+ className="flex-1 px-4 py-2 border border-primary/40 dark:border-primary/40 text-muted-foreground dark:text-slate-300 rounded-lg hover:bg-background dark:hover:bg-slate-700 transition-colors"
  >
  Cancel
  </button>

@@ -20,7 +20,7 @@ const RISK_CONFIG = {
 },
  LOW: {
  label: 'Low Risk',
- classes: 'bg-orange-100 text-orange-700 border-primary/20 dark:bg-primary/30 dark:text-primary/70 dark:border-slate-200',
+ classes: 'bg-orange-100 text-orange-700 border-primary/20 dark:bg-primary/30 dark:text-primary/70 dark:border-primary/40',
  badgeClasses: 'bg-primary text-white',
  icon: Info,
 },
@@ -74,10 +74,10 @@ export default function AIRiskAnalyzer({ records = [], recordType = 'record', on
 
  return (
  <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-2xl border border-border flex flex-col max-h-[85vh]">
+ <div className="bg-card rounded-2xl w-full max-w-2xl border border-primary/40 flex flex-col max-h-[85vh]">
 
  {/* Header */}
- <div className="flex items-center justify-between p-5 border-b border-border bg-gradient-to-r from-amber-500/10 to-red-500/10 rounded-t-2xl">
+ <div className="flex items-center justify-between p-5 border-b border-primary/40 bg-gradient-to-r from-amber-500/10 to-red-500/10 rounded-t-2xl">
  <div className="flex items-center gap-3">
  <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/50 flex items-center justify-center text-amber-600">
  <ShieldAlert className="w-5 h-5" />
@@ -180,7 +180,7 @@ export default function AIRiskAnalyzer({ records = [], recordType = 'record', on
  </div>
 
  {/* Footer */}
- <div className="p-4 border-t border-border bg-muted/20 rounded-b-2xl flex justify-end">
+ <div className="p-4 border-t border-primary/40 bg-muted/20 rounded-b-2xl flex justify-end">
  <Button variant="outline" onClick={onClose}>{t("close", "Close")}</Button>
  </div>
  </div>

@@ -175,25 +175,25 @@ export default function Premiums() {
  </Button>
  </div>
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-xl border border-border p-4 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 ">
  <div className="flex items-center gap-2 mb-2 text-primary"><CheckCircle className="w-4 h-4"/> {t("collected", "Collected")}</div>
  <p className="text-2xl font-bold text-card-foreground">${totalCollected.toLocaleString()}</p>
  </div>
- <div className="bg-card rounded-xl border border-border p-4 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 ">
  <div className="flex items-center gap-2 mb-2 text-muted-foreground"><DollarSign className="w-4 h-4"/> {t("total_payments", "Total Payments")}</div>
  <p className="text-2xl font-bold text-card-foreground">{premiums.length}</p>
  </div>
- <div className="bg-card rounded-xl border border-border p-4 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 ">
  <div className="flex items-center gap-2 mb-2 text-amber-600"><Clock className="w-4 h-4"/> {t("pending", "Pending")}</div>
  <p className="text-2xl font-bold text-card-foreground">{premiums.filter(p => p.status === 'Pending').length}</p>
  </div>
- <div className="bg-card rounded-xl border border-border p-4 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 ">
  <div className="flex items-center gap-2 mb-2 text-red-600"><AlertCircle className="w-4 h-4"/> {t("overdue", "Overdue")}</div>
  <p className="text-2xl font-bold text-card-foreground">{premiums.filter(p => p.status === 'Overdue').length}</p>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input placeholder="Search receipt, policy or holder..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
@@ -210,7 +210,7 @@ export default function Premiums() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-border">
+ <thead className="bg-card border-b border-primary/40">
  <tr>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("receipt_info", "Receipt Info")}</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("policy_info", "Policy Info")}</th>
@@ -278,7 +278,7 @@ export default function Premiums() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-border">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
  <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Premium Payment' : 'Record Premium Payment'}</h2>
  <div className="space-y-3">
  <div>

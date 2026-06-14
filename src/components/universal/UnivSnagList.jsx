@@ -97,7 +97,7 @@ const UnivSnagList = () => {
  <motion.div 
  initial={{ opacity: 0, y: -20}}
  animate={{ opacity: 1, y: 0}}
- className="flex items-center justify-between mb-8 bg-card p-6 rounded-2xl border border-border"
+ className="flex items-center justify-between mb-8 bg-card p-6 rounded-2xl border border-primary/40"
  >
  <div className="view-header flex items-center gap-4">
  <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
@@ -131,7 +131,7 @@ const UnivSnagList = () => {
  <motion.div 
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
- className="mb-8 bg-card p-6 rounded-2xl border border-border"
+ className="mb-8 bg-card p-6 rounded-2xl border border-primary/40"
  >
  <h2 className="text-lg font-semibold text-foreground mb-4">
  {editId ? 'Edit Record' : 'Create New Record'}
@@ -145,7 +145,7 @@ const UnivSnagList = () => {
  name="issue_desc"
  value={formData.issue_desc}
  onChange={handleInputChange}
- className="p-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+ className="p-2.5 border border-primary/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
  placeholder="Enter issue description"
  required
  />
@@ -157,7 +157,7 @@ const UnivSnagList = () => {
  name="location"
  value={formData.location}
  onChange={handleInputChange}
- className="p-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+ className="p-2.5 border border-primary/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
  placeholder="Enter location"
  required
  />
@@ -168,7 +168,7 @@ const UnivSnagList = () => {
  name="priority"
  value={formData.priority}
  onChange={handleInputChange}
- className="p-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-card"
+ className="p-2.5 border border-primary/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-card"
  required
  >
  <option value="">Select Priority...</option>
@@ -181,7 +181,7 @@ const UnivSnagList = () => {
  name="status"
  value={formData.status}
  onChange={handleInputChange}
- className="p-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-card"
+ className="p-2.5 border border-primary/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-card"
  required
  >
  <option value="">Select Status...</option>
@@ -207,8 +207,8 @@ const UnivSnagList = () => {
  </motion.div>
  )}
 
- <div className="bg-card rounded-2xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border flex justify-between items-center bg-background/50">
+ <div className="bg-card rounded-2xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-background/50">
  <h3 className="font-semibold text-foreground">Recent Records</h3>
  <button onClick={fetchData} className="text-muted-foreground hover:text-blue-600 transition-colors p-2 rounded-lg hover:bg-blue-50">
  <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />

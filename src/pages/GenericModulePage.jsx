@@ -199,7 +199,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
  const renderModuleContent = () => {
  if (isLoading) {
  return (
- <div className="h-64 flex flex-col items-center justify-center text-muted-foreground bg-card rounded-xl border border-border mt-6">
+ <div className="h-64 flex flex-col items-center justify-center text-muted-foreground bg-card rounded-xl border border-primary/40 mt-6">
  <RefreshCw className="w-8 h-8 animate-spin mb-4" />
  <p>Loading slate definitions...</p>
  </div>
@@ -207,7 +207,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
 }
  if (!moduleDef) {
  return (
- <div className="h-64 flex flex-col items-center justify-center text-muted-foreground bg-card rounded-xl border border-border mt-6">
+ <div className="h-64 flex flex-col items-center justify-center text-muted-foreground bg-card rounded-xl border border-primary/40 mt-6">
  <Sparkles className="w-12 h-12 text-muted-foreground/50 mb-4" />
  <p className="font-medium text-foreground text-lg">No Dynamic Slates Found</p>
  <p className="text-sm mt-1">Use the AI Assistant to generate a new slate.</p>
@@ -224,7 +224,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
 };
 
  const suspenseFallback = (
- <div className="h-64 flex flex-col items-center justify-center text-muted-foreground bg-card rounded-xl border border-border">
+ <div className="h-64 flex flex-col items-center justify-center text-muted-foreground bg-card rounded-xl border border-primary/40">
  <RefreshCw className="w-6 h-6 animate-spin mb-3" />
  <p className="text-sm">Loading view...</p>
  </div>
@@ -252,7 +252,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
 
  case 'kanban':
  return (
- <div className="mt-6 bg-card rounded-xl border border-border p-4 overflow-hidden">
+ <div className="mt-6 bg-card rounded-xl border border-primary/40 p-4 overflow-hidden">
  <DynamicKanbanView 
  records={records} 
  moduleDef={moduleDef} 
@@ -306,7 +306,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
  case 'document_manager':
  default:
  return (
- <div className={`${layoutConfig === 'table' ? 'bg-card rounded-xl border border-border overflow-hidden p-6' : ''} mt-6`}>
+ <div className={`${layoutConfig === 'table' ? 'bg-card rounded-xl border border-primary/40 overflow-hidden p-6' : ''} mt-6`}>
  {layoutConfig === 'table' ? (
  <DynamicTable data={records} fieldDefinitions={fieldDefs} moduleDef={moduleDef} onRefresh={fetchDynamicData} />
  ) : (
@@ -340,7 +340,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
  />
 
  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
- <div className="bg-card rounded-xl border border-border p-5 flex items-center justify-between ">
+ <div className="bg-card rounded-xl border border-primary/40 p-5 flex items-center justify-between ">
  <div>
  <p className="text-xs text-muted-foreground mb-1">Total Records</p>
  <p className="text-2xl font-bold text-foreground">{records.length}</p>
@@ -350,7 +350,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
  </div>
  </div>
 
- <div className="bg-card rounded-xl border border-border p-5 flex items-center justify-between ">
+ <div className="bg-card rounded-xl border border-primary/40 p-5 flex items-center justify-between ">
  <div>
  <p className="text-xs text-muted-foreground mb-1">Slate Status</p>
  <p className="text-2xl font-bold text-foreground">Active</p>
@@ -360,7 +360,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
  </div>
  </div>
 
- <div className="bg-card rounded-xl border border-border p-5 flex items-center justify-between ">
+ <div className="bg-card rounded-xl border border-primary/40 p-5 flex items-center justify-between ">
  <div>
  <p className="text-xs text-muted-foreground mb-1">Custom Fields</p>
  <p className="text-2xl font-bold text-foreground">{fieldDefs.length}</p>
@@ -374,7 +374,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
  
  {/* 10 Views Switcher */}
  {moduleDef && (
- <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide border-b border-border">
+ <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide border-b border-primary/40">
  {[
  { id: 'default', label: 'Default', icon: Sparkles},
  { id: 'table', label: 'Table', icon: Table},
@@ -477,11 +477,11 @@ export default function GenericModulePage({ title: propTitle, description: propD
  )}
 
  {isAdmin && (
- <div className="mt-4 p-3 bg-muted rounded-lg border border-border">
+ <div className="mt-4 p-3 bg-muted rounded-lg border border-primary/40">
  <p className="text-xs font-semibold text-foreground mb-1">Your Secure WorkSlate ID</p>
  <p className="text-xs text-muted-foreground mb-2">Give this ID to other workslates so they can share slates with you.</p>
  <div className="flex gap-2">
- <code className="flex-1 bg-background px-2 py-1.5 rounded border border-border text-xs select-all">{user?.company_id || "No ID available"}</code>
+ <code className="flex-1 bg-background px-2 py-1.5 rounded border border-primary/40 text-xs select-all">{user?.company_id || "No ID available"}</code>
  <Button variant="outline" size="sm" className="h-auto py-1" onClick={() => { navigator.clipboard.writeText(user?.company_id); toast({title:"Copied!", description:"Workslate ID copied to clipboard."})}}>Copy</Button>
  </div>
  </div>

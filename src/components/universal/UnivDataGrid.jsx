@@ -516,7 +516,7 @@ export default function UnivDataGrid({
  animate={{ opacity: 1, y: 0}}
  transition={{ delay: Math.min(idx * 0.03, 0.3)}}
  className={cn(
- 'group transition-colors border-b border-border/60',
+ 'group transition-colors border-b border-primary/40',
  isSelected ? 'bg-primary/5 dark:bg-primary/10' : 'hover:bg-muted/30'
  )}
  >
@@ -612,7 +612,7 @@ export default function UnivDataGrid({
  value={newRecordName}
  onChange={e => setNewRecordName(e.target.value)}
  placeholder="Enter record name..."
- className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"
+ className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"
  />
  </div>
  <Button type="button" variant="outline" onClick={() => setIsAdding(false)} className="h-10 rounded-xl">Cancel</Button>
@@ -626,10 +626,10 @@ export default function UnivDataGrid({
  </AnimatePresence>
 
  {/* Main card */}
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col min-h-0">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col min-h-0">
 
  {/* Saved Views tabs */}
- <div className="px-4 pt-3 pb-0 border-b border-border flex items-center gap-1 flex-wrap">
+ <div className="px-4 pt-3 pb-0 border-b border-primary/40 flex items-center gap-1 flex-wrap">
  <button
  onClick={() => handleActivateView(-1)}
  className={cn(
@@ -672,7 +672,7 @@ export default function UnivDataGrid({
  onChange={e => setViewNameInput(e.target.value)}
  onKeyDown={e => { if (e.key === 'Enter') handleSaveView(); if (e.key === 'Escape') setShowSaveView(false);}}
  placeholder="View name…"
- className="h-6 px-2 text-xs bg-background border border-border rounded focus:outline-none focus:ring-1 focus:ring-primary/40"
+ className="h-6 px-2 text-xs bg-background border border-primary/40 rounded focus:outline-none focus:ring-1 focus:ring-primary/40"
  />
  <button onClick={handleSaveView} className="text-primary hover:text-primary/80 text-xs font-semibold">
  <Save className="w-3.5 h-3.5" />
@@ -693,7 +693,7 @@ export default function UnivDataGrid({
  </div>
 
  {/* Toolbar */}
- <div className="px-4 py-3 flex flex-wrap items-center justify-between gap-3 bg-muted/10 border-b border-border">
+ <div className="px-4 py-3 flex flex-wrap items-center justify-between gap-3 bg-muted/10 border-b border-primary/40">
  {/* Search */}
  <div className="relative flex items-center">
  <Search className="w-4 h-4 absolute left-3 text-muted-foreground pointer-events-none" />
@@ -702,7 +702,7 @@ export default function UnivDataGrid({
  placeholder={searchPlaceholder}
  value={searchTerm}
  onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1); setActiveViewIdx(-1);}}
- className="h-9 pl-10 pr-4 w-64 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="h-9 pl-10 pr-4 w-64 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  {searchTerm && (
  <span className="absolute right-3 text-xs text-muted-foreground font-medium">
@@ -718,7 +718,7 @@ export default function UnivDataGrid({
  <select
  value={groupByCol || ''}
  onChange={e => { setGroupByCol(e.target.value || null); setCollapsedGroups(new Set());}}
- className="h-9 pl-2 pr-6 bg-background border border-border rounded-xl text-xs text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 appearance-none cursor-pointer"
+ className="h-9 pl-2 pr-6 bg-background border border-primary/40 rounded-xl text-xs text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 appearance-none cursor-pointer"
  >
  <option value="">Group by…</option>
  {displayColumns.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
@@ -797,7 +797,7 @@ export default function UnivDataGrid({
  )}
 
  <table className="w-full text-sm text-left whitespace-nowrap min-w-max border-collapse">
- <thead className="sticky top-0 z-10 bg-muted/70 backdrop-blur border-b border-border text-xs text-muted-foreground uppercase">
+ <thead className="sticky top-0 z-10 bg-muted/70 backdrop-blur border-b border-primary/40 text-xs text-muted-foreground uppercase">
  <tr>
  {/* Checkbox header */}
  <th className="sticky left-0 z-20 bg-muted/70 w-10 px-3 py-3.5">
@@ -838,7 +838,7 @@ export default function UnivDataGrid({
  return (
  <React.Fragment key={groupKey}>
  {/* Group header row */}
- <tr className="bg-muted/40 border-y border-border/50">
+ <tr className="bg-muted/40 border-y border-primary/40">
  <td colSpan={displayColumns.length + 2} className="px-4 py-2">
  <button
  onClick={() => toggleGroup(groupKey)}
@@ -889,7 +889,7 @@ export default function UnivDataGrid({
  </div>
 
  {/* Pagination Footer */}
- <div className="px-4 py-3 border-t border-border flex items-center justify-between text-sm text-muted-foreground bg-muted/10 shrink-0 flex-wrap gap-2">
+ <div className="px-4 py-3 border-t border-primary/40 flex items-center justify-between text-sm text-muted-foreground bg-muted/10 shrink-0 flex-wrap gap-2">
  <div className="text-xs">
  {groupByCol ? (
  <span>Showing all {filteredData.length} records (grouped)</span>
@@ -904,7 +904,7 @@ export default function UnivDataGrid({
  <button
  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
  disabled={currentPage === 1}
- className="px-3 py-1.5 border border-border rounded-lg text-xs hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+ className="px-3 py-1.5 border border-primary/40 rounded-lg text-xs hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
  >
  Previous
  </button>
@@ -923,7 +923,7 @@ export default function UnivDataGrid({
  'w-8 h-8 rounded-lg text-xs font-medium transition-colors',
  currentPage === page
  ? 'bg-primary text-white border border-primary'
- : 'border border-border hover:bg-muted'
+ : 'border border-primary/40 hover:bg-muted'
  )}
  >
  {page}
@@ -933,7 +933,7 @@ export default function UnivDataGrid({
  <button
  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
  disabled={currentPage === totalPages}
- className="px-3 py-1.5 border border-border rounded-lg text-xs hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+ className="px-3 py-1.5 border border-primary/40 rounded-lg text-xs hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
  >
  Next
  </button>

@@ -108,10 +108,10 @@ export default function UnivNotificationCenter() {
  animate={{ opacity: 1, y: 0, scale: 1}}
  exit={{ opacity: 0, y: 10, scale: 0.95}}
  transition={{ duration: 0.15}}
- className="absolute right-0 mt-2 w-80 sm:w-96 bg-card border border-border rounded-xl z-50 overflow-hidden flex flex-col max-h-[80vh]"
+ className="absolute right-0 mt-2 w-80 sm:w-96 bg-card border border-primary/40 rounded-xl z-50 overflow-hidden flex flex-col max-h-[80vh]"
  >
  {/* Header */}
- <div className="p-4 border-b border-border flex items-center justify-between bg-muted/30">
+ <div className="p-4 border-b border-primary/40 flex items-center justify-between bg-muted/30">
  <h3 className="font-bold text-foreground">Notifications</h3>
  <div className="flex items-center gap-2">
  {unreadCount > 0 && (
@@ -129,7 +129,7 @@ export default function UnivNotificationCenter() {
  </div>
 
  {/* Tabs */}
- <div className="flex px-4 pt-2 border-b border-border bg-card">
+ <div className="flex px-4 pt-2 border-b border-primary/40 bg-card">
  <button 
  onClick={() => setActiveTab('all')}
  className={cn("px-4 py-2 text-sm font-semibold border-b-2 transition-colors", activeTab === 'all' ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground")}
@@ -196,7 +196,7 @@ export default function UnivNotificationCenter() {
  </div>
 
  {/* Footer */}
- <div className="p-3 border-t border-border bg-muted/10 text-center">
+ <div className="p-3 border-t border-primary/40 bg-muted/10 text-center">
  <a href="/notifications" className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors">
  View full history
  </a>

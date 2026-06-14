@@ -114,7 +114,7 @@ export default function SHSElectives() {
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
- <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
  <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Elective Packages</CardTitle>
@@ -124,7 +124,7 @@ export default function SHSElectives() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search groups..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -145,7 +145,7 @@ export default function SHSElectives() {
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
  {filteredElectives.map(group => (
- <div key={group.id} className="group p-5 rounded-2xl border border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:border-primary dark:border-primary/30 -purple-500/5 transition-all duration-300">
+ <div key={group.id} className="group p-5 rounded-2xl border border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:border-primary dark:border-primary/30 -purple-500/5 transition-all duration-300">
  <div className="flex items-start justify-between mb-4">
  <div className="flex items-center gap-3">
  <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
@@ -193,7 +193,7 @@ export default function SHSElectives() {
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Group Name</label>
  <Input 
  placeholder="e.g. Science Package A"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
  value={newElective.name}
  onChange={e => setNewElective({...newElective, name: e.target.value})}
  />
@@ -202,7 +202,7 @@ export default function SHSElectives() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Target Programme</label>
  <select 
- className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
  value={newElective.programmeId}
  onChange={e => setNewElective({...newElective, programmeId: e.target.value})}
  >
@@ -229,8 +229,8 @@ export default function SHSElectives() {
  onClick={() => handleToggleSubject(sub.id)}
  className={`p-3 rounded-xl text-sm font-medium text-left transition-all border ${
  isSelected 
- ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/20 dark:border-slate-600 text-primary dark:text-primary/70' 
- : 'bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-primary/20 dark:border-slate-600'
+ ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/20 dark:border-primary/40 text-primary dark:text-primary/70' 
+ : 'bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 text-slate-600 dark:text-slate-300 hover:border-primary/20 dark:border-primary/40'
 }`}
  >
  <div className="flex items-center justify-between">
@@ -246,7 +246,7 @@ export default function SHSElectives() {
  </div>
  </ScrollArea>
  
- <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end gap-3">
+ <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3">
  <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
  Cancel
  </Button>

@@ -80,7 +80,7 @@ export default function SHSApplicantReview() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary dark:text-primary" />
  <Input 
  placeholder="Search applicants..." 
- className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+ className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -128,11 +128,11 @@ export default function SHSApplicantReview() {
  <div className="p-8 max-w-3xl mx-auto space-y-8">
  
  {/* Header */}
- <div className="flex justify-between items-start border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 pb-6">
+ <div className="flex justify-between items-start border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 pb-6">
  <div>
  <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">{selectedApplicant.title}</h2>
  <div className="flex items-center gap-3 mt-2 text-sm font-medium">
- <Badge variant="outline" className="border-primary/20 dark:border-slate-600 text-primary dark:text-primary/70 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">{selectedApplicant.case_number}</Badge>
+ <Badge variant="outline" className="border-primary/20 dark:border-primary/40 text-primary dark:text-primary/70 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">{selectedApplicant.case_number}</Badge>
  <span className="text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Applied: {new Date(selectedApplicant.created_date).toLocaleDateString()}</span>
  </div>
  </div>
@@ -150,7 +150,7 @@ export default function SHSApplicantReview() {
  <h3 className="font-bold text-primary dark:text-primary/70 flex items-center gap-2">
  <FileText className="w-4 h-4" /> Applicant Details
  </h3>
- <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border border-slate-100 dark:border-slate-800 dark:border-slate-800 space-y-4">
+ <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border border-primary/40 dark:border-primary/40 dark:border-primary/40 space-y-4">
  <div>
  <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Gender</p>
  <p className="font-medium text-slate-800 dark:text-slate-100">{selectedApplicant.data?.gender || 'N/A'}</p>
@@ -170,12 +170,12 @@ export default function SHSApplicantReview() {
  <h3 className="font-bold text-primary flex items-center gap-2">
  <Target className="w-4 h-4" /> Programme Choices
  </h3>
- <div className="p-5 rounded-2xl bg-slate-500 border border-slate-200 space-y-4">
+ <div className="p-5 rounded-2xl bg-slate-500 border border-primary/40 space-y-4">
  <div>
  <p className="text-xs text-primary/70 font-bold uppercase tracking-wider">1st Choice</p>
  <p className="font-bold text-primary/70 text-lg">{selectedApplicant.data?.programChoice1 || 'None'}</p>
  </div>
- <div className="pt-3 border-t border-slate-200">
+ <div className="pt-3 border-t border-primary/40">
  <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">2nd Choice</p>
  <p className="font-medium text-slate-700 dark:text-slate-300 dark:text-slate-200">{selectedApplicant.data?.programChoice2 || 'None'}</p>
  </div>
@@ -184,7 +184,7 @@ export default function SHSApplicantReview() {
  </div>
 
  {/* Decision Zone */}
- <div className="mt-8 p-6 rounded-2xl border-2 border-dashed border-primary/20 dark:border-slate-600 bg-primary/30 dark:bg-slate-800/30">
+ <div className="mt-8 p-6 rounded-2xl border-2 border-dashed border-primary/20 dark:border-primary/40 bg-primary/30 dark:bg-slate-800/30">
  <h3 className="font-bold text-slate-800 dark:text-slate-100 text-center mb-6">Make Admission Decision</h3>
  <div className="flex flex-col sm:flex-row gap-4 justify-center">
  <Button 

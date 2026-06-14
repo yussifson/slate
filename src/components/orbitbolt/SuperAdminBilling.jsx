@@ -28,7 +28,7 @@ export default function SuperAdminBilling({ title = 'Super Admin Billing Center'
  <div className="flex h-full bg-background font-sans overflow-hidden">
  
  {/* Sidebar Navigation */}
- <div className="w-64 bg-card border-r border-border shrink-0 flex flex-col p-4 space-y-2 overflow-y-auto">
+ <div className="w-64 bg-card border-r border-primary/40 shrink-0 flex flex-col p-4 space-y-2 overflow-y-auto">
  <h2 className="text-sm font-black uppercase tracking-widest text-muted-foreground px-4 mb-4 mt-2">Billing Engine</h2>
  
  <NavButton active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon={<LayoutDashboard className="w-4 h-4" />} label="Financial Dashboard" />
@@ -91,7 +91,7 @@ function TabDashboard({ stats}) {
  <StatCard title="Failed Payments" value={stats.failedPayments} icon={<XCircle className="w-5 h-5 text-red-500" />} trend="Requires attention" alert />
  </div>
  
- <div className="bg-card border border-border rounded-xl p-8 h-64 flex items-center justify-center text-muted-foreground">
+ <div className="bg-card border border-primary/40 rounded-xl p-8 h-64 flex items-center justify-center text-muted-foreground">
  <BarChart3 className="w-8 h-8 mr-3 opacity-20" /> MRR Chart Visualization Area (Requires Recharts or similar library)
  </div>
  </div>
@@ -100,7 +100,7 @@ function TabDashboard({ stats}) {
 
 function StatCard({ title, value, icon, trend, alert}) {
  return (
- <div className={cn("bg-card border rounded-xl p-5 ", alert ? "border-red-200 dark:border-red-900" : "border-border")}>
+ <div className={cn("bg-card border rounded-xl p-5 ", alert ? "border-red-200 dark:border-red-900" : "border-primary/40")}>
  <div className="flex justify-between items-start mb-2">
  <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{title}</div>
  {icon}
@@ -176,7 +176,7 @@ function TabPlanManager({ queryClient, toast}) {
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="flex justify-between items-center bg-card border border-border p-4 rounded-xl ">
+ <div className="flex justify-between items-center bg-card border border-primary/40 p-4 rounded-xl ">
  <p className="text-sm text-muted-foreground">Manage pricing tiers. The <strong>Paystack Plan Code</strong> is critical for synchronization.</p>
  <button onClick={handleAddNew} className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary/90">Add New Plan</button>
  </div>
@@ -190,7 +190,7 @@ function TabPlanManager({ queryClient, toast}) {
  editingId === p.id ? (
  <PlanEditor key={p.id} plan={editForm} setPlan={setEditForm} onSave={handleSave} onCancel={() => setEditingId(null)} isSaving={saveMutation.isPending} />
  ) : (
- <div key={p.id} className="bg-card border border-border rounded-xl p-6 flex flex-col relative group">
+ <div key={p.id} className="bg-card border border-primary/40 rounded-xl p-6 flex flex-col relative group">
  <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
  <button onClick={() => handleEdit(p)} className="p-1.5 bg-muted text-foreground rounded-md hover:bg-primary hover:text-white transition-colors"><Edit3 className="w-4 h-4" /></button>
  </div>
@@ -204,7 +204,7 @@ function TabPlanManager({ queryClient, toast}) {
  <div className="text-sm font-mono bg-muted px-3 py-1.5 rounded-md text-muted-foreground mb-4 truncate flex items-center gap-2">
  <LinkIcon className="w-3 h-3" /> {p.paystack_plan_code || 'No Paystack Code'}
  </div>
- <div className="grid grid-cols-2 gap-2 text-sm border-t border-border pt-4">
+ <div className="grid grid-cols-2 gap-2 text-sm border-t border-primary/40 pt-4">
  <div className="text-muted-foreground">Users Limit:</div><div className="font-bold text-right">{p.limits?.users || 'Unlmt'}</div>
  <div className="text-muted-foreground">AI Credits:</div><div className="font-bold text-right">{p.limits?.ai_credits_monthly || 0}</div>
  </div>
@@ -263,15 +263,15 @@ function PlanEditor({ plan, setPlan, onSave, onCancel, isSaving}) {
 function TabCustomerSubscriptions() {
  return (
  <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="bg-card border border-border rounded-xl p-4 flex gap-4">
+ <div className="bg-card border border-primary/40 rounded-xl p-4 flex gap-4">
  <div className="relative flex-1">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <input type="text" placeholder="Search by company name, ID, or Paystack customer code..." className="w-full h-10 pl-9 pr-4 bg-muted/50 border border-border rounded-lg text-sm focus:outline-none focus:border-primary transition-colors" />
+ <input type="text" placeholder="Search by company name, ID, or Paystack customer code..." className="w-full h-10 pl-9 pr-4 bg-muted/50 border border-primary/40 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors" />
  </div>
  </div>
- <div className="bg-card border border-border rounded-xl overflow-hidden">
+ <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
  <table className="w-full text-sm text-left">
- <thead className="bg-muted/50 border-b border-border text-xs uppercase tracking-wider text-muted-foreground">
+ <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-muted-foreground">
  <tr>
  <th className="px-6 py-4">Company</th>
  <th className="px-6 py-4">Current Plan</th>
@@ -308,7 +308,7 @@ function TabCustomerSubscriptions() {
 // ----------------------------------------------------
 function TabManualOverrides() {
  return (
- <div className="bg-card border border-border rounded-xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-2xl mx-auto">
+ <div className="bg-card border border-primary/40 rounded-xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-2xl mx-auto">
  <h3 className="text-xl font-bold mb-4 flex items-center gap-2"><ShieldAlert className="w-5 h-5 text-amber-500" /> Administrative Overrides</h3>
  <p className="text-sm text-muted-foreground mb-6">Manually adjust a company's subscription status or inject bonus AI credits without charging them via Paystack.</p>
  
@@ -345,9 +345,9 @@ function TabManualOverrides() {
 function TabTransactions() {
  return (
  <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="bg-card border border-border rounded-xl overflow-hidden">
+ <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
  <table className="w-full text-sm text-left font-mono">
- <thead className="bg-muted/50 border-b border-border text-xs uppercase tracking-wider text-muted-foreground font-sans">
+ <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-muted-foreground font-sans">
  <tr>
  <th className="px-6 py-4">Date</th>
  <th className="px-6 py-4">Company</th>
@@ -384,7 +384,7 @@ function TabTransactions() {
 function TabUsageMonitor() {
  return (
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="bg-card border border-border rounded-xl p-6 ">
+ <div className="bg-card border border-primary/40 rounded-xl p-6 ">
  <h3 className="text-lg font-bold mb-4 flex items-center gap-2"><Activity className="w-5 h-5 text-primary" /> High Usage Companies</h3>
  <p className="text-sm text-muted-foreground mb-4">Companies approaching their AI credit limits (Upsell opportunities).</p>
  <div className="space-y-4">
@@ -408,7 +408,7 @@ function TabUsageMonitor() {
 function TabWebhooks() {
  return (
  <div className="bg-slate-950 text-slate-300 rounded-xl p-6 font-mono text-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="flex items-center justify-between mb-6 border-b border-slate-800 pb-4">
+ <div className="flex items-center justify-between mb-6 border-b border-primary/40 pb-4">
  <h3 className="text-emerald-400 font-bold flex items-center gap-2"><Plug className="w-5 h-5" /> Webhook Listener Status</h3>
  <span className="px-2 py-1 bg-emerald-900 text-emerald-400 rounded-md text-xs">LISTENING : PORT 54321</span>
  </div>

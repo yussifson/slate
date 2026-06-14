@@ -156,7 +156,7 @@ export default function CaseCommunications({ caseData, client, user }) {
   };
 
   return (
-    <div className="bg-card rounded-xl border border-border p-5 space-y-4">
+    <div className="bg-card rounded-xl border border-primary/40 p-5 space-y-4">
       <h3 className="font-semibold text-sm">{t("external_communications", "External Communications")}</h3>
       <p className="text-xs text-muted-foreground">{t("send_updates_directly_to", "Send updates directly to")} {client?.name || "the client"}</p>
       <div className="flex gap-2 mb-4">

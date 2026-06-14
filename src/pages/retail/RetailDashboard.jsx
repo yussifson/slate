@@ -70,7 +70,7 @@ export default function RetailDashboard() {
 
  {/* Metrics Grid */}
  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
- <Card className=" border-border/50">
+ <Card className=" border-primary/40">
  <CardHeader className="flex flex-row items-center justify-between pb-2">
  <CardTitle className="text-sm font-medium text-muted-foreground">{t("today_revenue", "Today's Revenue")}</CardTitle>
  <DollarSign className="w-4 h-4 text-primary" />
@@ -84,7 +84,7 @@ export default function RetailDashboard() {
  </CardContent>
  </Card>
  
- <Card className=" border-border/50">
+ <Card className=" border-primary/40">
  <CardHeader className="flex flex-row items-center justify-between pb-2">
  <CardTitle className="text-sm font-medium text-muted-foreground">{t("total_products", "Total Products")}</CardTitle>
  <Package className="w-4 h-4 text-orange-500" />
@@ -97,7 +97,7 @@ export default function RetailDashboard() {
  </CardContent>
  </Card>
  
- <Card className=" border-border/50">
+ <Card className=" border-primary/40">
  <CardHeader className="flex flex-row items-center justify-between pb-2">
  <CardTitle className="text-sm font-medium text-muted-foreground">{t("low_stock", "Low Stock Alerts")}</CardTitle>
  <AlertCircle className="w-4 h-4 text-red-500" />
@@ -110,7 +110,7 @@ export default function RetailDashboard() {
  </CardContent>
  </Card>
 
- <Card className=" border-border/50">
+ <Card className=" border-primary/40">
  <CardHeader className="flex flex-row items-center justify-between pb-2">
  <CardTitle className="text-sm font-medium text-muted-foreground">{t("active_shifts", "Active Shifts")}</CardTitle>
  <Users className="w-4 h-4 text-orange-500" />
@@ -126,7 +126,7 @@ export default function RetailDashboard() {
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
  {/* Revenue Chart */}
- <Card className="col-span-2 border-border/50">
+ <Card className="col-span-2 border-primary/40">
  <CardHeader>
  <CardTitle>{t("revenue_last_7_days", "Revenue (Last 7 Days)")}</CardTitle>
  </CardHeader>
@@ -150,7 +150,7 @@ export default function RetailDashboard() {
 
  <div className="space-y-6">
  {/* Low Stock Widget */}
- <Card className=" border-border/50">
+ <Card className=" border-primary/40">
  <CardHeader>
  <CardTitle className="text-base flex items-center">
  <AlertCircle className="w-4 h-4 text-red-500 mr-2" />
@@ -163,7 +163,7 @@ export default function RetailDashboard() {
  <p className="text-sm text-muted-foreground text-center py-4">No low stock items</p>
  ) : (
  lowStockProducts.slice(0, 5).map(p => (
- <div key={p.id} className="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+ <div key={p.id} className="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-primary/40 dark:border-primary/40">
  <div>
  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{p.data?.name}</p>
  <p className="text-xs text-slate-500 dark:text-slate-400">SKU: {p.data?.sku || 'N/A'}</p>
@@ -179,7 +179,7 @@ export default function RetailDashboard() {
  </Card>
  
  {/* Recent Orders Widget */}
- <Card className=" border-border/50">
+ <Card className=" border-primary/40">
  <CardHeader>
  <CardTitle className="text-base flex items-center">
  <ShoppingCart className="w-4 h-4 text-orange-500 mr-2" />
@@ -192,7 +192,7 @@ export default function RetailDashboard() {
  <p className="text-sm text-muted-foreground text-center py-4">No recent orders</p>
  ) : (
  orders.slice().sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5).map(o => (
- <div key={o.id} className="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+ <div key={o.id} className="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-primary/40 dark:border-primary/40">
  <div>
  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{o.data?.orderNumber || 'ORD'}</p>
  <p className="text-xs text-slate-500 dark:text-slate-400">

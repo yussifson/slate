@@ -158,7 +158,7 @@ View in App: ${window.location.origin}/leads`,
  )}</p>
  </div>
 
- <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900/40 rounded-2xl border border-border p-6 space-y-5">
+ <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900/40 rounded-2xl border border-primary/40 p-6 space-y-5">
  {/* Personal Info */}
  <div>
  <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
@@ -184,7 +184,7 @@ View in App: ${window.location.origin}/leads`,
  </div>
  </div>
 
- <hr className="border-border" />
+ <hr className="border-primary/40" />
 
  {/* Case Info */}
  <div>
@@ -230,7 +230,7 @@ View in App: ${window.location.origin}/leads`,
  </div>
  </div>
 
- <hr className="border-border" />
+ <hr className="border-primary/40" />
 
  {/* Contact preference */}
  <div>
@@ -244,7 +244,7 @@ View in App: ${window.location.origin}/leads`,
  type="button"
  key={val}
  onClick={() => setForm({ ...form, preferred_contact: val})}
- className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${form.preferred_contact === val ? "bg-primary text-white border-primary" : "border-border text-muted-foreground hover:border-slate-200"}`}
+ className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${form.preferred_contact === val ? "bg-primary text-white border-primary" : "border-primary/40 text-muted-foreground hover:border-primary/40"}`}
  >
  <IconComp className="w-3.5 h-3.5" /> {label}
  </button>

@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 function SectionHeader({ icon: Icon, label, color }) {
   return (
-    <div className={`flex items-center gap-2 px-4 py-2.5 border-b border-border ${color}`}>
+    <div className={`flex items-center gap-2 px-4 py-2.5 border-b border-primary/40 ${color}`}>
       <Icon className="w-4 h-4" />
       <span className="text-sm font-semibold">{label}</span>
     </div>
@@ -52,7 +52,7 @@ export default function ClientAtAGlance({ hearings = [], signatureRequests = [],
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
       {/* Upcoming Hearings */}
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
+      <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
         <SectionHeader icon={Calendar} label={`Upcoming Hearings (${upcomingHearings.length})`} color="bg-primary/60 text-primary/90" />
         {upcomingHearings.length === 0 ? (
           <div className="px-4 py-5 text-center">
@@ -92,7 +92,7 @@ export default function ClientAtAGlance({ hearings = [], signatureRequests = [],
         )}
       </div>
       {/* Pending Signatures */}
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
+      <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
         <SectionHeader icon={PenTool} label={`Pending Signatures (${pendingSignatures.length})`} color="bg-amber-50/60 text-amber-700" />
         {pendingSignatures.length === 0 ? (
           <div className="px-4 py-5 text-center">
@@ -128,7 +128,7 @@ export default function ClientAtAGlance({ hearings = [], signatureRequests = [],
         )}
       </div>
       {/* Outstanding Invoices */}
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
+      <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
         <SectionHeader icon={Receipt} label={`Outstanding Invoices (${outstandingInvoices.length})`} color="bg-red-50/60 text-red-700" />
         {outstandingInvoices.length === 0 ? (
           <div className="px-4 py-5 text-center">
@@ -157,7 +157,7 @@ export default function ClientAtAGlance({ hearings = [], signatureRequests = [],
                 );
               })}
             </div>
-            <div className="px-4 py-3 border-t border-border bg-muted/30 flex items-center justify-between">
+            <div className="px-4 py-3 border-t border-primary/40 bg-muted/30 flex items-center justify-between">
               <span className="text-xs text-muted-foreground">{t("total_outstanding", "Total outstanding")}</span>
               <span className="text-sm font-bold text-red-600">{currencySymbol}{totalOutstanding.toLocaleString()}</span>
             </div>

@@ -110,7 +110,7 @@ export default function CustomFields() {
  </div>
  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
  {/* Sidebar */}
- <div className="bg-card border border-border rounded-xl p-4 h-fit">
+ <div className="bg-card border border-primary/40 rounded-xl p-4 h-fit">
  <h3 className="text-xs font-bold text-muted-foreground uppercase mb-3">{t("record_types", "Record Types")}</h3>
  <div className="space-y-1">
  {RECORD_TYPES.map(type => {
@@ -133,7 +133,7 @@ export default function CustomFields() {
 
  {/* Main Content */}
  <div className="md:col-span-3 space-y-4">
- <div className="flex items-center justify-between bg-card border border-border p-4 rounded-xl ">
+ <div className="flex items-center justify-between bg-card border border-primary/40 p-4 rounded-xl ">
  <div>
  <h2 className="text-lg font-bold text-card-foreground">
  {t("fields_for", "Fields for")} {RECORD_TYPES.find(item => item.id === selectedType)?.label}
@@ -148,7 +148,7 @@ export default function CustomFields() {
  </Button>
  </div>
 
- <div className="bg-card border border-border rounded-xl overflow-hidden">
+ <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
  {isLoading ? (
  <div className="p-8 text-center text-muted-foreground">{t("loading_custom_schema", "Loading custom schema...")}</div>
  ) : fields.length === 0 ? (
@@ -162,7 +162,7 @@ export default function CustomFields() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-muted/50 border-b border-border text-left">
+ <thead className="bg-muted/50 border-b border-primary/40 text-left">
  <tr>
  <th className="px-6 py-4 text-xs font-bold text-muted-foreground uppercase">{t("field_info", "Field Info")}</th>
  <th className="px-6 py-4 text-xs font-bold text-muted-foreground uppercase">{t("internal_key", "Internal Key")}</th>
@@ -207,7 +207,7 @@ export default function CustomFields() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-border">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
  <h2 className="text-lg font-bold text-card-foreground">{editingField ? 'Edit Custom Field' : 'New Custom Field'}</h2>
  
  <div className="space-y-4">
@@ -285,7 +285,7 @@ export default function CustomFields() {
  )}
  </div>
 
- <div className="flex gap-3 pt-4 border-t border-border mt-6">
+ <div className="flex gap-3 pt-4 border-t border-primary/40 mt-6">
  <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
  <Button className="flex-1 bg-primary text-primary-foreground" onClick={handleSave}>{t("save_schema", "Save Schema")}</Button>
  </div>

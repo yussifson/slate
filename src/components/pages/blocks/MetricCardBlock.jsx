@@ -30,7 +30,7 @@ export default function MetricCardBlock({ dataConfig, styleConfig}) {
  const IconComponent = ICON_MAP[icon] || Activity;
 
  // Basic styling interpretations from JSON
- const bgClass = theme === 'dark' ? 'bg-slate-900 text-white border-slate-800' : 'bg-card text-card-foreground border-border';
+ const bgClass = theme === 'dark' ? 'bg-slate-900 text-white border-primary/40' : 'bg-card text-card-foreground border-primary/40';
  const padClass = padding || 'p-5';
 
  return (

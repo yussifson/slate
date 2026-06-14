@@ -157,8 +157,8 @@ export default function UnivMachine() {
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -166,7 +166,7 @@ export default function UnivMachine() {
  placeholder="Search machines..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -182,15 +182,15 @@ export default function UnivMachine() {
  animate={{ opacity: 1, scale: 1}}
  transition={{ delay: idx * 0.05}}
  key={m.id} 
- className="bg-background border border-border rounded-2xl p-5 hover:border-primary/40 transition-colors flex flex-col h-full group"
+ className="bg-background border border-primary/40 rounded-2xl p-5 hover:border-primary/40 transition-colors flex flex-col h-full group"
  >
- <div className="flex justify-between items-start mb-4 border-b border-border pb-4">
+ <div className="flex justify-between items-start mb-4 border-b border-primary/40 pb-4">
  <div>
  <h3 className="font-bold text-lg text-foreground flex items-center gap-2">
  <MonitorSpeaker className="w-5 h-5 text-primary" /> <span className="line-clamp-1">{m.machine_name}</span>
  </h3>
  {m.serial_number && (
- <code className="text-xs font-mono font-bold bg-muted px-1.5 py-0.5 rounded border border-border mt-2 inline-block">
+ <code className="text-xs font-mono font-bold bg-muted px-1.5 py-0.5 rounded border border-primary/40 mt-2 inline-block">
  {m.serial_number}
  </code>
  )}
@@ -222,7 +222,7 @@ export default function UnivMachine() {
  </div>
  </div>
 
- <div className="pt-4 border-t border-border flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+ <div className="pt-4 border-t border-primary/40 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
  <button onClick={() => openModal(m)} className="p-1.5 bg-muted rounded-md text-muted-foreground hover:text-primary transition-colors">
  <Edit2 className="w-4 h-4" />
  </button>
@@ -247,7 +247,7 @@ export default function UnivMachine() {
  {isModalOpen && (
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
  <div className="bg-card w-full max-w-lg rounded-2xl flex flex-col max-h-[90vh]">
- <div className="p-5 border-b border-border flex justify-between items-center shrink-0">
+ <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0">
  <h2 className="text-xl font-bold">{editingId ? 'Edit Machine' : 'Add Machine'}</h2>
  <button onClick={closeModal} className="p-2 bg-muted rounded-full text-muted-foreground"><XCircle className="w-5 h-5" /></button>
  </div>
@@ -255,32 +255,32 @@ export default function UnivMachine() {
  <div className="space-y-4">
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Machine Name *</label>
- <input required type="text" value={form.machine_name} onChange={e => setForm({...form, machine_name: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+ <input required type="text" value={form.machine_name} onChange={e => setForm({...form, machine_name: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Serial Number</label>
- <input type="text" value={form.serial_number || ''} onChange={e => setForm({...form, serial_number: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+ <input type="text" value={form.serial_number || ''} onChange={e => setForm({...form, serial_number: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Location</label>
- <input type="text" value={form.location || ''} onChange={e => setForm({...form, location: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+ <input type="text" value={form.location || ''} onChange={e => setForm({...form, location: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Status</label>
- <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">
+ <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">
  {Object.keys(STATUS_COLORS).map(s => <option key={s} value={s}>{s}</option>)}
  </select>
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Last Maintenance Date</label>
- <input type="date" value={form.last_maintenance || ''} onChange={e => setForm({...form, last_maintenance: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+ <input type="date" value={form.last_maintenance || ''} onChange={e => setForm({...form, last_maintenance: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Next Maintenance Date</label>
- <input type="date" value={form.next_maintenance || ''} onChange={e => setForm({...form, next_maintenance: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
+ <input type="date" value={form.next_maintenance || ''} onChange={e => setForm({...form, next_maintenance: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" />
  </div>
  </div>
- <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-border">
+ <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-primary/40">
  <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button>
  <button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold ">{editingId ? 'Update' : 'Add'}</button>
  </div>

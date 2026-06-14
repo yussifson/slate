@@ -304,7 +304,7 @@ export default function Students() {
  ) : (
  <div className="overflow-x-auto">
  <table className="w-full text-sm">
- <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-700">
+ <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-primary/40 dark:border-primary/40">
  <tr>
  {['Student', 'ID', 'Class', 'Age', 'Parent / Guardian', 'Fee Status', 'Status', 'Actions'].map(h => {
  return (<th key={h} className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wide">{h}</th>);
@@ -384,10 +384,10 @@ export default function Students() {
  {/* Tabbed Wizard Modal */}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
- <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-lg overflow-hidden border border-border flex flex-col max-h-[90vh]">
- <div className="p-6 border-b border-border">
+ <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-lg overflow-hidden border border-primary/40 flex flex-col max-h-[90vh]">
+ <div className="p-6 border-b border-primary/40">
  <h2 className="text-xl school-heading font-bold tracking-tight">{editingId ? 'Edit Student' : 'Enroll Student'}</h2>
- <div className="flex gap-4 mt-4 border-b border-border">
+ <div className="flex gap-4 mt-4 border-b border-primary/40">
  {['personal', 'academic', 'parent'].map(tab => (
  <button
  key={tab}
@@ -405,7 +405,7 @@ export default function Students() {
  <div className="p-6 overflow-y-auto space-y-4">
  {activeTab === 'personal' && (
  <div className="space-y-4 animate-in fade-in zoom-in duration-200">
- <div className="bg-slate-50/50 dark:bg-transparent dark:bg-slate-100 p-3 rounded-xl border border-slate-200 dark:border-primary/80">
+ <div className="bg-slate-50/50 dark:bg-transparent dark:bg-slate-100 p-3 rounded-xl border border-primary/40 dark:border-primary/80">
  <label className="text-[10px] font-bold text-primary dark:text-primary/70 uppercase tracking-widest">{t("student_id", "Student ID")}</label>
  <Input 
  value={formData.studentId || "Auto-generated on save"} 
@@ -477,7 +477,7 @@ export default function Students() {
 
  {activeTab === 'parent' && (
  <div className="space-y-4 animate-in fade-in zoom-in duration-200">
- <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20/50 dark:bg-slate-100 p-3 rounded-xl border border-slate-200 dark:border-primary/30">
+ <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20/50 dark:bg-slate-100 p-3 rounded-xl border border-primary/40 dark:border-primary/30">
  <label className="text-[10px] font-bold text-primary dark:text-primary/70 uppercase tracking-widest">{t("parent_id", "Parent ID")}</label>
  <Input 
  value={formData.parentId || "Auto-generated on save"} 
@@ -503,7 +503,7 @@ export default function Students() {
  )}
  </div>
 
- <div className="p-6 border-t border-border bg-muted/30 flex gap-3">
+ <div className="p-6 border-t border-primary/40 bg-muted/30 flex gap-3">
  <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setActiveTab('personal');}} disabled={isEnrolling}>{t("cancel", "Cancel")}</Button>
  {activeTab !== 'parent' ? (
  <Button className="flex-1 bg-primary hover:bg-primary text-white -[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={() => setActiveTab(activeTab === 'personal' ? 'academic' : 'parent')}>{t("next", "Next")}</Button>
@@ -559,7 +559,7 @@ export default function Students() {
  </div>
  </div>
 
- <div className="bg-muted/30 p-4 rounded-xl border border-border">
+ <div className="bg-muted/30 p-4 rounded-xl border border-primary/40">
  <h4 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2"><Phone className="w-4 h-4"/> {t("guardian_info", "Guardian Info")}</h4>
  <div className="space-y-2 text-sm">
  <p><span className="text-muted-foreground">{t("name", "Name:")}</span> {viewDetails.parent}</p>

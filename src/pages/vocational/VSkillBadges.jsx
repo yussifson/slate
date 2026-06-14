@@ -66,7 +66,7 @@ export default function VSkillBadges() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
  <Input 
  placeholder="Search badges..." 
- className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
+ className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -86,7 +86,7 @@ export default function VSkillBadges() {
  className={`text-center p-4 rounded-2xl transition-all duration-200 flex flex-col items-center gap-2 ${
  selectedBadge?.id === badge.id 
  ? 'bg-primary text-white -fuchsia-500/20' 
- : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200 border border-slate-200'
+ : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200 border border-primary/40'
 }`}
  >
  <Hexagon className={`w-10 h-10 ${selectedBadge?.id === badge.id ? 'text-primary/20 fill-primary' : 'text-primary/30 fill-primary/5'}`} />
@@ -125,7 +125,7 @@ export default function VSkillBadges() {
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
- <div className="p-6 rounded-2xl bg-primary/30 border border-slate-200">
+ <div className="p-6 rounded-2xl bg-primary/30 border border-primary/40">
  <h3 className="text-sm font-bold text-primary uppercase tracking-wider mb-4 flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Criteria for Awarding</h3>
  <ul className="space-y-3">
  {selectedBadge.data?.criteria?.length > 0 ? (
@@ -141,7 +141,7 @@ export default function VSkillBadges() {
  </ul>
  </div>
 
- <div className="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center text-center">
+ <div className="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-primary/40 dark:border-primary/40 flex flex-col items-center justify-center text-center">
  <Shield className="w-12 h-12 text-slate-200 mb-3" />
  <h3 className="font-bold text-slate-800">Recipients</h3>
  <p className="text-3xl font-black text-primary my-2">{selectedBadge.data?.recipient_count || 0}</p>

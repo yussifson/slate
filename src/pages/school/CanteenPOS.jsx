@@ -80,7 +80,7 @@ export default function CanteenPOS() {
 
  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
  {menu.map(item => (
- <div key={item.id} onClick={() => addToCart(item.id)} className="bg-card rounded-xl border border-border p-6 cursor-pointer hover:border-primary/30 transition-colors group select-none">
+ <div key={item.id} onClick={() => addToCart(item.id)} className="bg-card rounded-xl border border-primary/40 p-6 cursor-pointer hover:border-primary/30 transition-colors group select-none">
  <div className={`w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary dark:text-primary/30 flex items-center justify-center mb-4`}>
  <item.icon className="w-6 h-6" />
  </div>
@@ -96,11 +96,11 @@ export default function CanteenPOS() {
  </div>
 
  {orderHistory.length > 0 && (
- <div className="bg-card rounded-xl border border-border p-6 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-6 ">
  <h3 className="text-lg font-bold mb-4 flex items-center gap-2"><Clock className="w-4 h-4 text-muted-foreground" /> Recent Orders</h3>
  <div className="space-y-3">
  {orderHistory.slice(0, 3).map(o => (
- <div key={o.id} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg border border-border">
+ <div key={o.id} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg border border-primary/40">
  <div className="font-medium text-sm">{o.title}</div>
  <div className="text-xs text-muted-foreground">{new Date(o.created_at).toLocaleDateString()}</div>
  </div>
@@ -111,7 +111,7 @@ export default function CanteenPOS() {
  </div>
 
  <div className="w-full lg:w-96 shrink-0">
- <div className="bg-card rounded-xl border border-border p-6 sticky top-6">
+ <div className="bg-card rounded-xl border border-primary/40 p-6 sticky top-6">
  <div className="flex items-center gap-3 mb-6">
  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
  <ShoppingCart className="w-5 h-5 text-muted-foreground" />
@@ -135,7 +135,7 @@ export default function CanteenPOS() {
  <div className="font-bold text-sm">{item.name}</div>
  <div className="text-xs text-primary dark:text-primary/70 font-bold">${(item.price * qty).toFixed(2)}</div>
  </div>
- <div className="flex items-center gap-3 bg-background rounded-full p-1 border border-border ">
+ <div className="flex items-center gap-3 bg-background rounded-full p-1 border border-primary/40 ">
  <button onClick={() => removeFromCart(id)} className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-muted"><Minus className="w-3 h-3" /></button>
  <span className="font-bold text-sm w-4 text-center">{qty}</span>
  <button onClick={() => addToCart(id)} className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-muted"><Plus className="w-3 h-3" /></button>
@@ -146,7 +146,7 @@ export default function CanteenPOS() {
  )}
  </div>
 
- <div className="border-t border-border pt-6">
+ <div className="border-t border-primary/40 pt-6">
  <div className="flex justify-between items-center mb-6">
  <span className="text-muted-foreground font-bold">Total</span>
  <span className="text-2xl font-bold text-foreground">${total.toFixed(2)}</span>

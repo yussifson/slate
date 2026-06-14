@@ -97,7 +97,7 @@ export default function UnivExpenseClaim() {
  </div>
 
  {showForm && (
- <motion.div initial={{ opacity: 0, y: -20}} animate={{ opacity: 1, y: 0}} className="bg-card p-6 rounded-xl border border-border mb-8 relative">
+ <motion.div initial={{ opacity: 0, y: -20}} animate={{ opacity: 1, y: 0}} className="bg-card p-6 rounded-xl border border-primary/40 mb-8 relative">
  <button onClick={() => setShowForm(false)} className="absolute top-4 right-4 text-muted-foreground hover:text-muted-foreground">
  <X size={20} />
  </button>
@@ -110,7 +110,7 @@ export default function UnivExpenseClaim() {
  type="text"
  value={formData.employee_name}
  onChange={(e) => setFormData({ ...formData, employee_name: e.target.value})}
- className="border border-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+ className="border border-primary/40 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
  placeholder={`Enter employee name`}
  />
  </div>
@@ -120,7 +120,7 @@ export default function UnivExpenseClaim() {
  type="number"
  value={formData.amount}
  onChange={(e) => setFormData({ ...formData, amount: e.target.value})}
- className="border border-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+ className="border border-primary/40 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
  placeholder={`Enter amount`}
  />
  </div>
@@ -130,7 +130,7 @@ export default function UnivExpenseClaim() {
  type="text"
  value={formData.category}
  onChange={(e) => setFormData({ ...formData, category: e.target.value})}
- className="border border-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+ className="border border-primary/40 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
  placeholder={`Enter category`}
  />
  </div>
@@ -140,7 +140,7 @@ export default function UnivExpenseClaim() {
  type="date"
  value={formData.date}
  onChange={(e) => setFormData({ ...formData, date: e.target.value})}
- className="border border-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+ className="border border-primary/40 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
  placeholder={`Enter date`}
  />
  </div>
@@ -150,7 +150,7 @@ export default function UnivExpenseClaim() {
  type="text"
  value={formData.status}
  onChange={(e) => setFormData({ ...formData, status: e.target.value})}
- className="border border-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+ className="border border-primary/40 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
  placeholder={`Enter status`}
  />
  </div>
@@ -163,7 +163,7 @@ export default function UnivExpenseClaim() {
 
  <div className="grid gap-4">
  {items.map((item) => (
- <motion.div key={item.id} initial={{ opacity: 0}} animate={{ opacity: 1}} className="bg-card p-5 rounded-xl border border-border transition-">
+ <motion.div key={item.id} initial={{ opacity: 0}} animate={{ opacity: 1}} className="bg-card p-5 rounded-xl border border-primary/40 transition-">
  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
  
  <div>
@@ -190,7 +190,7 @@ export default function UnivExpenseClaim() {
  </motion.div>
  ))}
  {items.length === 0 && !loading && (
- <div className="text-center py-12 text-muted-foreground bg-background rounded-xl border border-dashed border-primary/50">
+ <div className="text-center py-12 text-muted-foreground bg-background rounded-xl border border-dashed border-primary/40">
  <p>No expense claim records found. Create one to get started.</p>
  </div>
  )}

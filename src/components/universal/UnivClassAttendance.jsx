@@ -116,8 +116,8 @@ export default function UnivClassAttendance() {
  </button>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -125,10 +125,10 @@ export default function UnivClassAttendance() {
  placeholder="Search students, courses..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
- <div className="flex items-center gap-2 text-sm text-muted-foreground bg-background border border-border px-3 py-2 rounded-xl">
+ <div className="flex items-center gap-2 text-sm text-muted-foreground bg-background border border-primary/40 px-3 py-2 rounded-xl">
  <CalendarDays className="w-4 h-4" /> {new Date().toLocaleDateString()}
  </div>
  </div>

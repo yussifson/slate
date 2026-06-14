@@ -50,7 +50,7 @@ export default function PaymentModal({ open, onClose, invoice, onSuccess}) {
  </div>
  ) : (
  <>
- <div className="bg-slate-50 p-6 border-b border-border text-center">
+ <div className="bg-slate-50 p-6 border-b border-primary/40 text-center">
  <DialogTitle className="text-xl font-bold mb-1">{t("pay_invoice", "Pay Invoice")}</DialogTitle>
  <DialogDescription className="text-slate-500 mb-4">{invoice.invoice_number}</DialogDescription>
  <div className="text-4xl font-black text-slate-900 tracking-tight">

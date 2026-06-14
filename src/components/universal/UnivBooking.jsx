@@ -169,8 +169,8 @@ export default function UnivBooking({
  <div className="flex h-full w-full bg-background overflow-hidden font-sans">
  
  {/* Sidebar Overview */}
- <div className="w-80 border-r border-border bg-card flex flex-col shrink-0 hidden md:flex">
- <div className="p-6 border-b border-border">
+ <div className="w-80 border-r border-primary/40 bg-card flex flex-col shrink-0 hidden md:flex">
+ <div className="p-6 border-b border-primary/40">
  <h2 className="text-xl font-bold text-foreground">{title}</h2>
  <p className="text-sm text-muted-foreground mt-1">Select a service and reserve your spot.</p>
  </div>
@@ -198,7 +198,7 @@ export default function UnivBooking({
 
  {/* Booking Summary (if selections made) */}
  {selectedService && (
- <div className="bg-muted/30 rounded-xl p-4 border border-border space-y-3 animate-in fade-in slide-in-from-bottom-4">
+ <div className="bg-muted/30 rounded-xl p-4 border border-primary/40 space-y-3 animate-in fade-in slide-in-from-bottom-4">
  <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Booking Summary</h3>
  <div className="flex items-start gap-2">
  <Tag className="w-4 h-4 text-primary shrink-0 mt-0.5" />
@@ -214,7 +214,7 @@ export default function UnivBooking({
  </div>
  )}
  {selectedService.price > 0 && (
- <div className="flex items-start gap-2 pt-2 border-t border-border mt-2">
+ <div className="flex items-start gap-2 pt-2 border-t border-primary/40 mt-2">
  <CreditCard className="w-4 h-4 text-primary shrink-0 mt-0.5" />
  <div className="text-sm font-bold text-foreground">${selectedService.price}</div>
  </div>
@@ -250,7 +250,7 @@ export default function UnivBooking({
  <button
  key={srv.id}
  onClick={() => { setSelectedService(srv); setStep(2);}}
- className="flex items-center text-left gap-4 p-5 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all group"
+ className="flex items-center text-left gap-4 p-5 rounded-2xl bg-card border border-primary/40 hover:border-primary/50 transition-all group"
  >
  <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ", srv.color)}>
  <Icon className="w-6 h-6 text-white" />
@@ -285,7 +285,7 @@ export default function UnivBooking({
  </button>
  </div>
 
- <div className="bg-card border border-border rounded-2xl p-6 ">
+ <div className="bg-card border border-primary/40 rounded-2xl p-6 ">
  {/* Calendar Week Nav */}
  <div className="flex items-center justify-between mb-6">
  <button onClick={handlePrevWeek} className="p-2 hover:bg-muted rounded-full transition-colors"><ChevronLeft className="w-5 h-5" /></button>
@@ -307,7 +307,7 @@ export default function UnivBooking({
  onClick={() => { setSelectedDate(formatDate(d)); setSelectedSlot(null);}}
  className={cn(
  "flex flex-col items-center justify-center p-3 rounded-xl border transition-all",
- isSelected ? "bg-primary text-white border-primary " : "bg-muted/30 border-transparent hover:border-border",
+ isSelected ? "bg-primary text-white border-primary " : "bg-muted/30 border-transparent hover:border-primary/40",
  isPast && "opacity-30 cursor-not-allowed"
  )}
  >
@@ -339,7 +339,7 @@ export default function UnivBooking({
  "py-2.5 rounded-lg border text-sm font-medium transition-all text-center",
  selectedSlot === slot 
  ? "bg-primary/10 border-primary text-primary " 
- : "bg-background border-border text-foreground hover:border-primary/50"
+ : "bg-background border-primary/40 text-foreground hover:border-primary/50"
  )}
  >
  {slot}
@@ -381,7 +381,7 @@ export default function UnivBooking({
  </button>
  </div>
 
- <div className="bg-card border border-border rounded-2xl p-6 space-y-4">
+ <div className="bg-card border border-primary/40 rounded-2xl p-6 space-y-4">
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Full Name *</label>
@@ -390,7 +390,7 @@ export default function UnivBooking({
  required
  value={customerForm.name}
  onChange={e => setCustomerForm({...customerForm, name: e.target.value})}
- className="w-full h-11 px-3 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary" 
+ className="w-full h-11 px-3 rounded-xl border border-primary/40 bg-background text-sm focus:outline-none focus:border-primary" 
  />
  </div>
  <div>
@@ -400,7 +400,7 @@ export default function UnivBooking({
  required
  value={customerForm.email}
  onChange={e => setCustomerForm({...customerForm, email: e.target.value})}
- className="w-full h-11 px-3 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary" 
+ className="w-full h-11 px-3 rounded-xl border border-primary/40 bg-background text-sm focus:outline-none focus:border-primary" 
  />
  </div>
  </div>
@@ -410,7 +410,7 @@ export default function UnivBooking({
  type="tel" 
  value={customerForm.phone}
  onChange={e => setCustomerForm({...customerForm, phone: e.target.value})}
- className="w-full h-11 px-3 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary" 
+ className="w-full h-11 px-3 rounded-xl border border-primary/40 bg-background text-sm focus:outline-none focus:border-primary" 
  />
  </div>
  <div>
@@ -418,7 +418,7 @@ export default function UnivBooking({
  <textarea 
  value={customerForm.notes}
  onChange={e => setCustomerForm({...customerForm, notes: e.target.value})}
- className="w-full min-h-[100px] p-3 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary resize-y" 
+ className="w-full min-h-[100px] p-3 rounded-xl border border-primary/40 bg-background text-sm focus:outline-none focus:border-primary resize-y" 
  />
  </div>
  </div>

@@ -62,7 +62,7 @@ export default function AdminOverview() {
  subtitle="Global metrics and MRR across the Slate ecosystem." 
  />
  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
- <div className="bg-card border border-border p-6 rounded-2xl flex items-center justify-between ">
+ <div className="bg-card border border-primary/40 p-6 rounded-2xl flex items-center justify-between ">
  <div>
  <p className="text-sm text-muted-foreground mb-1">{t("total_mrr", "Total MRR")}</p>
  <p className="text-3xl font-black text-slate-900 dark:text-slate-100">${mrr}</p>
@@ -73,7 +73,7 @@ export default function AdminOverview() {
  </div>
  </div>
 
- <div className="bg-card border border-border p-6 rounded-2xl flex items-center justify-between ">
+ <div className="bg-card border border-primary/40 p-6 rounded-2xl flex items-center justify-between ">
  <div>
  <p className="text-sm text-muted-foreground mb-1">{t("total_firms", "Total Firms")}</p>
  <p className="text-3xl font-black text-slate-900 dark:text-slate-100">{companies.length}</p>
@@ -84,7 +84,7 @@ export default function AdminOverview() {
  </div>
  </div>
 
- <div className="bg-card border border-border p-6 rounded-2xl flex items-center justify-between ">
+ <div className="bg-card border border-primary/40 p-6 rounded-2xl flex items-center justify-between ">
  <div>
  <p className="text-sm text-muted-foreground mb-1">{t("total_users", "Total Users")}</p>
  <p className="text-3xl font-black text-slate-900 dark:text-slate-100">{totalUsersCount}</p>
@@ -95,7 +95,7 @@ export default function AdminOverview() {
  </div>
  </div>
 
- <div className="bg-card border border-border p-6 rounded-2xl flex items-center justify-between ">
+ <div className="bg-card border border-primary/40 p-6 rounded-2xl flex items-center justify-between ">
  <div>
  <p className="text-sm text-muted-foreground mb-1">{t("total_cases", "Total Cases")}</p>
  <p className="text-3xl font-black text-slate-900 dark:text-slate-100">{totalCasesCount}</p>
@@ -107,7 +107,7 @@ export default function AdminOverview() {
  </div>
  </div>
  
- <div className="mt-8 pt-8 border-t border-border">
+ <div className="mt-8 pt-8 border-t border-primary/40">
  <Companies />
  </div>
  </div>

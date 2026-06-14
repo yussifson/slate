@@ -236,8 +236,8 @@ export default function Orders() {
  <RetailStatCard label="Total Revenue" value={`$${orders.reduce((a, b) => a + b.total, 0).toFixed(2)}`} icon={TrendingUp} />
  </div>
 
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input placeholder="Search orders..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
@@ -262,7 +262,7 @@ export default function Orders() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-border">
+ <thead className="bg-card border-b border-primary/40">
  <tr>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Order ID</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Customer</th>

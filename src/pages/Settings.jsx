@@ -102,7 +102,7 @@ export default function Settings() {
  case "currency": return <CurrencySettings activeIndustry={activeIndustry} company={company} onSave={company ? d => updateCompany({ currency: d.currency}) : fakeSuccess} saving={saving} />;
  case "security": return <SecuritySettings />;
  case "permissions": return (
- <div className="bg-card rounded-2xl border border-border p-8 space-y-6 ">
+ <div className="bg-card rounded-2xl border border-primary/40 p-8 space-y-6 ">
  <div>
  <h2 className="text-2xl font-semibold text-foreground tracking-tight">{t("staff_access_controls", "Staff Access Controls")}</h2>
  <p className="text-sm text-muted-foreground mt-2">{t(
@@ -110,7 +110,7 @@ export default function Settings() {
  "Maintain granular security permissions across internal groups"
  )}</p>
  </div>
- <div className="pt-6 border-t border-border">
+ <div className="pt-6 border-t border-primary/40">
  <StaffPermissionsSettings />
  </div>
  </div>
@@ -122,10 +122,10 @@ export default function Settings() {
  const categories = ["General", "Security & Access", "Billing"];
 
  return (
- <div className="flex flex-col h-full bg-background md:flex-row rounded-tl-2xl overflow-hidden border-t border-l border-border/50">
+ <div className="flex flex-col h-full bg-background md:flex-row rounded-tl-2xl overflow-hidden border-t border-l border-primary/40">
  
  {/* Sidebar Navigation */}
- <div className="w-full md:w-64 lg:w-72 shrink-0 border-r border-border/60 bg-muted/30 overflow-y-auto hidden md:block">
+ <div className="w-full md:w-64 lg:w-72 shrink-0 border-r border-primary/40 bg-muted/30 overflow-y-auto hidden md:block">
  <div className="p-8 pb-6">
  <h1 className="text-2xl font-bold tracking-tight text-foreground">Settings</h1>
  </div>
@@ -166,7 +166,7 @@ export default function Settings() {
  </div>
 
  {/* Mobile Nav Select (Fallback) */}
- <div className="md:hidden p-4 border-b border-border w-full bg-background sticky top-0 z-10">
+ <div className="md:hidden p-4 border-b border-primary/40 w-full bg-background sticky top-0 z-10">
  <h1 className="text-xl font-bold mb-4">Settings</h1>
  <select 
  value={activeSection}

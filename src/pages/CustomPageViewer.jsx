@@ -177,7 +177,7 @@ export default function CustomPageViewer() {
 
  {/* Editing Sidebar */}
  {isEditMode && (
- <div className="w-80 shrink-0 border-l border-border bg-card p-5 overflow-y-auto h-full ml-4 rounded-l-2xl">
+ <div className="w-80 shrink-0 border-l border-primary/40 bg-card p-5 overflow-y-auto h-full ml-4 rounded-l-2xl">
  <div className="flex items-center gap-2 mb-6">
  <Settings2 className="w-5 h-5 text-primary" />
  <h3 className="font-bold text-lg">Properties</h3>
@@ -194,7 +194,7 @@ export default function CustomPageViewer() {
  <div className="mt-1 font-medium bg-muted p-2 rounded-md">{selectedBlock?.component}</div>
  </div>
 
- <div className="space-y-4 border-t border-border pt-4">
+ <div className="space-y-4 border-t border-primary/40 pt-4">
  <h4 className="font-semibold text-sm">Appearance</h4>
  
  <div>
@@ -232,7 +232,7 @@ export default function CustomPageViewer() {
  </div>
  </div>
 
- <div className="space-y-4 border-t border-border pt-4">
+ <div className="space-y-4 border-t border-primary/40 pt-4">
  <h4 className="font-semibold text-sm">Data Binding (Read Only)</h4>
  <div className="text-xs bg-slate-900 text-primary/70 p-3 rounded-lg font-mono overflow-x-auto whitespace-pre-wrap break-all">
  {JSON.stringify(selectedBlock?.dataConfig, null, 2)}

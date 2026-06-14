@@ -174,25 +174,25 @@ export default function Recruitment() {
  </Button>
  </div>
  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-xl border border-border p-4 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 ">
  <p className="text-xs text-muted-foreground mb-1">{t("total_applicants", "Total Applicants")}</p>
  <h2 className="text-2xl font-bold text-card-foreground">{candidates.length}</h2>
  </div>
- <div className="bg-card rounded-xl border border-border p-4 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 ">
  <p className="text-xs text-muted-foreground mb-1">{t("in_screening", "In Screening")}</p>
  <h2 className="text-2xl font-bold text-card-foreground">{candidates.filter(c => c.stage === 'Screening').length}</h2>
  </div>
- <div className="bg-card rounded-xl border border-border p-4 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 ">
  <p className="text-xs text-muted-foreground mb-1">{t("interviews", "Interviews")}</p>
  <h2 className="text-2xl font-bold text-card-foreground">{candidates.filter(c => c.stage === 'Interview').length}</h2>
  </div>
- <div className="bg-card rounded-xl border border-border p-4 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 ">
  <p className="text-xs text-muted-foreground mb-1">{t("offers", "Offers")}</p>
  <h2 className="text-2xl font-bold text-card-foreground">{candidates.filter(c => c.stage === 'Offer').length}</h2>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-border overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border bg-muted/50 flex gap-4 items-center">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 bg-muted/50 flex gap-4 items-center">
  <div className="relative flex-1 max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input placeholder="Search candidates..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
@@ -209,7 +209,7 @@ export default function Recruitment() {
  </div>
  ) : filtered.map(cand => {
  return (
- <div key={cand.id} className="border border-border rounded-lg p-4 flex items-center justify-between transition- bg-background group">
+ <div key={cand.id} className="border border-primary/40 rounded-lg p-4 flex items-center justify-between transition- bg-background group">
  <div className="flex items-center gap-4">
  <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-primary font-bold">
  {cand.name.charAt(0)}
@@ -251,7 +251,7 @@ export default function Recruitment() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-border">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
  <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Candidate' : 'Add Candidate'}</h2>
  <div className="space-y-3">
  <div>

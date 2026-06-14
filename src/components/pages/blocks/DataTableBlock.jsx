@@ -18,7 +18,7 @@ export default function DataTableBlock({ dataConfig, styleConfig}) {
  enabled: !!table
 });
 
- const bgClass = theme === 'dark' ? 'bg-slate-900 text-white border-slate-800' : 'bg-card text-card-foreground border-border';
+ const bgClass = theme === 'dark' ? 'bg-slate-900 text-white border-primary/40' : 'bg-card text-card-foreground border-primary/40';
  const padClass = padding || 'p-0';
 
  return (
@@ -26,7 +26,7 @@ export default function DataTableBlock({ dataConfig, styleConfig}) {
  <div className="overflow-x-auto">
  <Table>
  <TableHeader>
- <TableRow className={theme === 'dark' ? 'border-slate-800 hover:bg-slate-800/50' : ''}>
+ <TableRow className={theme === 'dark' ? 'border-primary/40 hover:bg-slate-800/50' : ''}>
  {columns.map((col, i) => (
  <TableHead key={i} className="font-bold whitespace-nowrap">
  {col.label || col.field}
@@ -49,7 +49,7 @@ export default function DataTableBlock({ dataConfig, styleConfig}) {
  </TableRow>
  ) : (
  data.map((row, i) => (
- <TableRow key={row.id || i} className={theme === 'dark' ? 'border-slate-800 hover:bg-slate-800/50' : ''}>
+ <TableRow key={row.id || i} className={theme === 'dark' ? 'border-primary/40 hover:bg-slate-800/50' : ''}>
  {columns.map((col, j) => (
  <TableCell key={j}>
  {row[col.field]}

@@ -61,7 +61,7 @@ export default function PatientPortal() {
 
  if (mappedPatients.length === 0) {
  return (
- <div className="py-12 text-center max-w-md mx-auto bg-card rounded-xl border border-border p-6 ">
+ <div className="py-12 text-center max-w-md mx-auto bg-card rounded-xl border border-primary/40 p-6 ">
  <Activity className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary animate-pulse" />
  <p className="font-semibold text-lg text-card-foreground">{t("no_health_profile_found", "No health profile found")}</p>
  <p className="text-sm text-muted-foreground mt-1 mb-4">{t(
@@ -88,7 +88,7 @@ export default function PatientPortal() {
  </div>
  </div>
  {/* Patient Profile Card */}
- <div className="bg-card rounded-2xl border border-border p-6 flex flex-col md:flex-row items-center md:items-start gap-6">
+ <div className="bg-card rounded-2xl border border-primary/40 p-6 flex flex-col md:flex-row items-center md:items-start gap-6">
  <div className="w-24 h-24 rounded-full bg-slate-100 flex items-center justify-center text-primary/90 text-3xl font-bold shrink-0 uppercase">
  {activePatient.name?.substring(0, 2)}
  </div>
@@ -106,7 +106,7 @@ export default function PatientPortal() {
  {/* Left Column (Stats & Appts) */}
  <div className="col-span-1 lg:col-span-2 space-y-6">
  <div className="grid grid-cols-2 gap-4">
- <div className="bg-card rounded-xl border border-border p-5 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-5 ">
  <div className="flex items-center gap-3 mb-3">
  <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-primary/20 flex items-center justify-center text-primary"><Pill className="w-4 h-4" /></div>
  <h3 className="font-bold text-foreground">{t("active_prescriptions", "Active Prescriptions")}</h3>
@@ -115,7 +115,7 @@ export default function PatientPortal() {
  <p className="text-xs text-muted-foreground">{t("medications", "Medications")}</p>
  </div>
  
- <div className="bg-card rounded-xl border border-border p-5 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-5 ">
  <div className="flex items-center gap-3 mb-3">
  <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-primary/20 flex items-center justify-center text-primary"><Beaker className="w-4 h-4" /></div>
  <h3 className="font-bold text-foreground">{t("lab_results", "Lab Results")}</h3>
@@ -125,8 +125,8 @@ export default function PatientPortal() {
  </div>
  </div>
 
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 md:p-5 border-b border-border bg-muted/50 flex justify-between items-center">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 md:p-5 border-b border-primary/40 bg-muted/50 flex justify-between items-center">
  <h3 className="font-bold text-card-foreground flex items-center gap-2"><Calendar className="w-5 h-5 text-muted-foreground" /> {t("upcoming_appointments", "Upcoming Appointments")}</h3>
  </div>
  <div className="divide-y divide-border p-2">
@@ -154,8 +154,8 @@ export default function PatientPortal() {
 
  {/* Right Column (Documents & Lab Results) */}
  <div className="space-y-6">
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50 flex justify-between items-center">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50 flex justify-between items-center">
  <h3 className="font-bold text-card-foreground flex items-center gap-2"><FileText className="w-5 h-5 text-muted-foreground" /> {t("medical_records_labs", "Medical Records & Labs")}</h3>
  <Button size="sm" variant="outline" className="h-8 gap-1" onClick={() => setShowUpload(true)}>
  <Plus className="w-3.5 h-3.5" /> {t("upload", "Upload")}

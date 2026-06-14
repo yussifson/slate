@@ -63,12 +63,12 @@ export default function VPlacementReports() {
 
  <div className="flex-1 flex gap-6 overflow-hidden">
  <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-amber-100/50">
- <div className="p-4 border-b border-amber-50 dark:border-slate-800">
+ <div className="p-4 border-b border-amber-50 dark:border-primary/40">
  <div className="relative">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-amber-500" />
  <Input 
  placeholder="Search trainees or employers..." 
- className="pl-9 h-10 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900 border-amber-100 dark:border-slate-700 rounded-xl focus-visible:ring-amber-600"
+ className="pl-9 h-10 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900 border-amber-100 dark:border-primary/40 rounded-xl focus-visible:ring-amber-600"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -140,7 +140,7 @@ export default function VPlacementReports() {
 
  <div className="mt-8">
  <Tabs defaultValue="overview" className="w-full">
- <TabsList className="bg-amber-50/50 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-amber-100 dark:border-slate-700">
+ <TabsList className="bg-amber-50/50 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-amber-100 dark:border-primary/40">
  <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-amber-600">Placement Details</TabsTrigger>
  <TabsTrigger value="employer-feedback" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-amber-600">Employer Feedback</TabsTrigger>
  <TabsTrigger value="trainee-feedback" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-amber-600">Trainee Feedback</TabsTrigger>
@@ -149,7 +149,7 @@ export default function VPlacementReports() {
  <div className="mt-6">
  <TabsContent value="overview" className="space-y-6 outline-none">
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
- <div className="p-6 rounded-2xl bg-amber-50/30 border border-amber-100 dark:border-slate-700 space-y-4">
+ <div className="p-6 rounded-2xl bg-amber-50/30 border border-amber-100 dark:border-primary/40 space-y-4">
  <h3 className="text-sm font-bold text-amber-600 uppercase tracking-wider">Job Information</h3>
  <div className="space-y-4">
  <div>
@@ -167,7 +167,7 @@ export default function VPlacementReports() {
  </div>
  </div>
  
- <div className="p-6 rounded-2xl bg-amber-50/30 border border-amber-100 dark:border-slate-700 space-y-4">
+ <div className="p-6 rounded-2xl bg-amber-50/30 border border-amber-100 dark:border-primary/40 space-y-4">
  <h3 className="text-sm font-bold text-amber-600 uppercase tracking-wider">Compensation</h3>
  <div className="flex flex-col h-full justify-center pb-6">
  <div className="flex items-center gap-3 mb-2">
@@ -186,10 +186,10 @@ export default function VPlacementReports() {
  </TabsContent>
  
  <TabsContent value="employer-feedback" className="outline-none">
- <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-800 dark:border-slate-700">
+ <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/30 border border-primary/40 dark:border-primary/40 dark:border-primary/40">
  <h3 className="text-sm font-bold text-amber-600 uppercase tracking-wider mb-4 flex items-center gap-2"><MessageSquare className="w-4 h-4"/> Supervisor Evaluation</h3>
  <div className="space-y-4">
- <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 dark:border-slate-700 ">
+ <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-4 rounded-xl border border-primary/40 dark:border-primary/40 dark:border-primary/40 ">
  <div className="flex justify-between items-center mb-2">
  <p className="font-bold text-slate-800 dark:text-slate-200">Overall Performance</p>
  <Badge className="bg-slate-100 text-primary/90 hover:bg-primary/20 border-none">{selectedReport.data?.employerRating || 'Excellent'}</Badge>
@@ -203,10 +203,10 @@ export default function VPlacementReports() {
  </TabsContent>
 
  <TabsContent value="trainee-feedback" className="outline-none">
- <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-800 dark:border-slate-700">
+ <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/30 border border-primary/40 dark:border-primary/40 dark:border-primary/40">
  <h3 className="text-sm font-bold text-amber-600 uppercase tracking-wider mb-4 flex items-center gap-2"><MessageSquare className="w-4 h-4"/> Graduate Experience</h3>
  <div className="space-y-4">
- <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 dark:border-slate-700 ">
+ <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-4 rounded-xl border border-primary/40 dark:border-primary/40 dark:border-primary/40 ">
  <div className="flex justify-between items-center mb-2">
  <p className="font-bold text-slate-800 dark:text-slate-200">Training Relevance</p>
  <Badge className="bg-orange-100 text-orange-700 hover:bg-primary/20 border-none">{selectedReport.data?.trainingRelevanceRating || 'Highly Relevant'}</Badge>

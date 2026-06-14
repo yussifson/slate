@@ -169,7 +169,7 @@ export default function EnterpriseContact() {
  <SelectTrigger className="h-14 rounded-2xl border-white bg-white backdrop-blur-md focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all">
  <SelectValue placeholder="Select user count" />
  </SelectTrigger>
- <SelectContent className="rounded-2xl border-slate-100">
+ <SelectContent className="rounded-2xl border-primary/40">
  <SelectItem value="10-50" className="rounded-xl focus:bg-slate-50">{t("10_50_users", "10 - 50 Users")}</SelectItem>
  <SelectItem value="50-100" className="rounded-xl focus:bg-slate-50">{t("50_100_users", "50 - 100 Users")}</SelectItem>
  <SelectItem value="100-500" className="rounded-xl focus:bg-slate-50">{t("100_500_users", "100 - 500 Users")}</SelectItem>
@@ -182,7 +182,7 @@ export default function EnterpriseContact() {
  <div>
  <Label className="text-sm font-bold text-slate-900 mb-4 block">{t("enterprise_add_ons", "Enterprise Add-ons")}</Label>
  <div className="space-y-4">
- <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white backdrop-blur-md hover:border-slate-200 transition-colors">
+ <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white backdrop-blur-md hover:border-primary/40 transition-colors">
  <div className="space-y-1">
  <Label className="text-base font-bold text-slate-900 cursor-pointer" onClick={() => handleChange('needsMigration', !formData.needsMigration)}>{t("legacy_data_migration", "Legacy Data Migration")}</Label>
  <p className="text-xs text-slate-500 font-medium">{t(
@@ -193,7 +193,7 @@ export default function EnterpriseContact() {
  <Switch checked={formData.needsMigration} onCheckedChange={(c) => handleChange('needsMigration', c)} />
  </div>
  
- <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white backdrop-blur-md hover:border-slate-200 transition-colors">
+ <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white backdrop-blur-md hover:border-primary/40 transition-colors">
  <div className="space-y-1">
  <Label className="text-base font-bold text-slate-900 cursor-pointer" onClick={() => handleChange('needsWhitelabel', !formData.needsWhitelabel)}>{t("full_white_labeling", "Full White-Labeling")}</Label>
  <p className="text-xs text-slate-500 font-medium">{t(
@@ -204,7 +204,7 @@ export default function EnterpriseContact() {
  <Switch checked={formData.needsWhitelabel} onCheckedChange={(c) => handleChange('needsWhitelabel', c)} />
  </div>
 
- <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white backdrop-blur-md hover:border-slate-200 transition-colors">
+ <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white backdrop-blur-md hover:border-primary/40 transition-colors">
  <div className="space-y-1">
  <Label className="text-base font-bold text-slate-900 cursor-pointer" onClick={() => handleChange('needsCompliance', !formData.needsCompliance)}>{t("compliance_audit_package", "Compliance Audit Package")}</Label>
  <p className="text-xs text-slate-500 font-medium">{t(
@@ -259,7 +259,7 @@ export default function EnterpriseContact() {
  <SelectTrigger className="h-14 rounded-2xl border-white bg-white backdrop-blur-md focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium">
  <SelectValue placeholder="Select industry" />
  </SelectTrigger>
- <SelectContent className="rounded-2xl border-slate-100">
+ <SelectContent className="rounded-2xl border-primary/40">
  <SelectItem value="law" className="rounded-xl focus:bg-slate-50">{t("law_firm", "Law Firm")}</SelectItem>
  <SelectItem value="healthcare" className="rounded-xl focus:bg-slate-50">{t("healthcare_hospital", "Healthcare / Hospital")}</SelectItem>
  <SelectItem value="education" className="rounded-xl focus:bg-slate-50">{t("education", "Education")}</SelectItem>
@@ -295,7 +295,7 @@ export default function EnterpriseContact() {
 
  {step === 3 && (
  <div className="text-center py-12 animate-in fade-in zoom-in-95 duration-500 h-full flex flex-col items-center justify-center">
- <div className="w-24 h-24 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border border-slate-200">
+ <div className="w-24 h-24 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border border-primary/40">
  <Check className="w-12 h-12 text-primary" strokeWidth={3} />
  </div>
  <h3 className="text-3xl font-extrabold text-slate-900 mb-4">{t("request_sent_successfully", "Request Sent Successfully!")}</h3>
@@ -305,7 +305,7 @@ export default function EnterpriseContact() {
  ". Our Enterprise Solution team will review your deployment requirements and be in touch within 24 hours to schedule a discovery call."
  )}
  </p>
- <Button onClick={() => window.location.href = '/'} variant="outline" className="rounded-2xl font-bold px-10 py-6 h-auto border-slate-300 text-slate-700 hover:bg-slate-100 transition-colors">
+ <Button onClick={() => window.location.href = '/'} variant="outline" className="rounded-2xl font-bold px-10 py-6 h-auto border-primary/40 text-slate-700 hover:bg-slate-100 transition-colors">
  {t("return_to_home", "Return to Home")}
  </Button>
  </div>

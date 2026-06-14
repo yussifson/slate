@@ -248,7 +248,7 @@ export default function UnivCRM() {
 
  {/* KPI Cards */}
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 shrink-0 px-1">
- <div className="bg-card border border-border rounded-2xl p-5 flex items-center justify-between">
+ <div className="bg-card border border-primary/40 rounded-2xl p-5 flex items-center justify-between">
  <div>
  <p className="text-sm font-medium text-muted-foreground">Total Active Leads</p>
  <h3 className="text-3xl font-black text-foreground mt-1">{leads.length}</h3>
@@ -257,7 +257,7 @@ export default function UnivCRM() {
  <User className="w-6 h-6" />
  </div>
  </div>
- <div className="bg-card border border-border rounded-2xl p-5 flex items-center justify-between">
+ <div className="bg-card border border-primary/40 rounded-2xl p-5 flex items-center justify-between">
  <div>
  <p className="text-sm font-medium text-muted-foreground">Pipeline Value</p>
  <h3 className="text-3xl font-black text-foreground mt-1">${totalValue.toLocaleString()}</h3>
@@ -266,7 +266,7 @@ export default function UnivCRM() {
  <DollarSign className="w-6 h-6" />
  </div>
  </div>
- <div className="bg-card border border-border rounded-2xl p-5 flex items-center justify-between">
+ <div className="bg-card border border-primary/40 rounded-2xl p-5 flex items-center justify-between">
  <div>
  <p className="text-sm font-medium text-muted-foreground">Overall Win Rate</p>
  <h3 className="text-3xl font-black text-foreground mt-1">{winRate}%</h3>
@@ -285,7 +285,7 @@ export default function UnivCRM() {
  placeholder="Search by name, email, phone, or source..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-11 pl-11 pr-4 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition- "
+ className="w-full h-11 pl-11 pr-4 bg-card border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition- "
  />
  </div>
 
@@ -302,10 +302,10 @@ export default function UnivCRM() {
  {stages.map(stage => {
  const stageLeads = filteredLeads.filter(l => l.status === stage);
  return (
- <div key={stage} className="flex-shrink-0 w-[320px] max-w-[85vw] bg-muted/40 border border-border rounded-2xl flex flex-col snap-center h-full">
- <div className="p-4 border-b border-border/50 flex justify-between items-center bg-card/60 rounded-t-2xl shrink-0">
+ <div key={stage} className="flex-shrink-0 w-[320px] max-w-[85vw] bg-muted/40 border border-primary/40 rounded-2xl flex flex-col snap-center h-full">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-card/60 rounded-t-2xl shrink-0">
  <h3 className="font-bold text-sm text-foreground tracking-tight">{stage}</h3>
- <span className="px-2.5 py-0.5 rounded-full bg-background border border-border text-xs font-bold text-muted-foreground ">
+ <span className="px-2.5 py-0.5 rounded-full bg-background border border-primary/40 text-xs font-bold text-muted-foreground ">
  {stageLeads.length}
  </span>
  </div>
@@ -324,7 +324,7 @@ export default function UnivCRM() {
  {...provided.draggableProps}
  {...provided.dragHandleProps}
  onClick={() => setViewingLead(lead)}
- className={`bg-card border border-border p-4 rounded-xl transition-all group cursor-pointer relative overflow-hidden ${snapshot.isDragging ? ' ring-2 ring-primary scale-105 z-50' : ' '}`}
+ className={`bg-card border border-primary/40 p-4 rounded-xl transition-all group cursor-pointer relative overflow-hidden ${snapshot.isDragging ? ' ring-2 ring-primary scale-105 z-50' : ' '}`}
  style={provided.draggableProps.style}
  >
  <div className={`absolute top-0 left-0 w-1.5 h-full transition-colors ${stage === 'Won' ? 'bg-emerald-500' : stage === 'Lost' ? 'bg-red-500' : 'bg-primary/40 group-hover:bg-primary'}`}></div>
@@ -363,7 +363,7 @@ export default function UnivCRM() {
  ))}
  {provided.placeholder}
  {stageLeads.length === 0 && !snapshot.isDraggingOver && (
- <div className="h-24 flex items-center justify-center border-2 border-dashed border-primary/50 rounded-xl text-xs text-muted-foreground font-medium bg-card/20">
+ <div className="h-24 flex items-center justify-center border-2 border-dashed border-primary/40 rounded-xl text-xs text-muted-foreground font-medium bg-card/20">
  Drop leads here
  </div>
  )}
@@ -374,13 +374,13 @@ export default function UnivCRM() {
  );
 })}
  {/* Add Stage Column */}
- <div className="flex-shrink-0 w-[320px] max-w-[85vw] h-[150px] rounded-2xl flex flex-col snap-center border-2 border-dashed border-primary/50 hover:border-border transition-colors bg-card/30">
+ <div className="flex-shrink-0 w-[320px] max-w-[85vw] h-[150px] rounded-2xl flex flex-col snap-center border-2 border-dashed border-primary/40 hover:border-primary/40 transition-colors bg-card/30">
  {isAddingStage ? (
  <form onSubmit={handleAddStage} className="p-4 flex flex-col gap-3 h-full justify-center">
- <input autoFocus type="text" value={newStageName} onChange={e=>setNewStageName(e.target.value)} placeholder="Stage Name..." className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm " />
+ <input autoFocus type="text" value={newStageName} onChange={e=>setNewStageName(e.target.value)} placeholder="Stage Name..." className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm " />
  <div className="flex gap-2">
  <button type="submit" className="flex-1 h-9 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 -primary/20">Save</button>
- <button type="button" onClick={()=>setIsAddingStage(false)} className="flex-1 h-9 bg-muted text-foreground rounded-lg text-sm font-medium hover:bg-muted/80 border border-border">Cancel</button>
+ <button type="button" onClick={()=>setIsAddingStage(false)} className="flex-1 h-9 bg-muted text-foreground rounded-lg text-sm font-medium hover:bg-muted/80 border border-primary/40">Cancel</button>
  </div>
  </form>
  ) : (
@@ -397,10 +397,10 @@ export default function UnivCRM() {
  </div>
  </DragDropContext>
  ) : (
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col mx-1">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col mx-1">
  <div className="overflow-x-auto flex-1">
  <table className="w-full text-left text-sm whitespace-nowrap">
- <thead className="bg-muted/50 text-muted-foreground text-xs uppercase font-bold tracking-wider border-b border-border sticky top-0 z-10">
+ <thead className="bg-muted/50 text-muted-foreground text-xs uppercase font-bold tracking-wider border-b border-primary/40 sticky top-0 z-10">
  <tr>
  <th className="px-6 py-4">Lead Name</th>
  <th className="px-6 py-4">Contact Info</th>
@@ -469,8 +469,8 @@ export default function UnivCRM() {
  {/* Add / Edit Modal (Tailwind CSS Modal to ensure zero dependency issues) */}
  {isModalOpen && (
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
- <div className="bg-card border border-border rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
- <div className="flex justify-between items-center p-5 sm:p-6 border-b border-border bg-muted/30 shrink-0">
+ <div className="bg-card border border-primary/40 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+ <div className="flex justify-between items-center p-5 sm:p-6 border-b border-primary/40 bg-muted/30 shrink-0">
  <h2 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2">
  {editingLeadId ? <Edit2 className="w-5 h-5 text-primary" /> : <Plus className="w-5 h-5 text-primary" />}
  {editingLeadId ? 'Edit Lead' : 'Add New Lead'}
@@ -484,40 +484,40 @@ export default function UnivCRM() {
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-6">
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">First Name *</label>
- <input required autoFocus type="text" value={formData.first_name} onChange={e => setFormData({...formData, first_name: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="John" />
+ <input required autoFocus type="text" value={formData.first_name} onChange={e => setFormData({...formData, first_name: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="John" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Last Name</label>
- <input type="text" value={formData.last_name} onChange={e => setFormData({...formData, last_name: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="Doe" />
+ <input type="text" value={formData.last_name} onChange={e => setFormData({...formData, last_name: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="Doe" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Email Address</label>
- <input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="john@example.com" />
+ <input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="john@example.com" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Phone Number</label>
- <input type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="+1 (555) 000-0000" />
+ <input type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="+1 (555) 000-0000" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Company / Source</label>
- <input type="text" value={formData.source} onChange={e => setFormData({...formData, source: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="Acme Corp" />
+ <input type="text" value={formData.source} onChange={e => setFormData({...formData, source: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="Acme Corp" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Expected Value ($)</label>
- <input type="number" step="0.01" value={formData.value} onChange={e => setFormData({...formData, value: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="5000" />
+ <input type="number" step="0.01" value={formData.value} onChange={e => setFormData({...formData, value: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="5000" />
  </div>
  <div className="sm:col-span-2">
  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Pipeline Stage</label>
- <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">
+ <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">
  {stages.map(s => <option key={s} value={s}>{s}</option>)}
  </select>
  </div>
  <div className="sm:col-span-2">
  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Notes</label>
- <textarea rows="3" value={formData.notes} onChange={e => setFormData({...formData, notes: e.target.value})} className="w-full p-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none" placeholder="Add any background info here..."></textarea>
+ <textarea rows="3" value={formData.notes} onChange={e => setFormData({...formData, notes: e.target.value})} className="w-full p-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none" placeholder="Add any background info here..."></textarea>
  </div>
  </div>
- <div className="flex items-center justify-end gap-3 pt-4 mt-auto border-t border-border">
+ <div className="flex items-center justify-end gap-3 pt-4 mt-auto border-t border-primary/40">
  <button type="button" onClick={() => setIsModalOpen(false)} className="h-10 px-5 bg-muted text-foreground rounded-xl text-sm font-medium hover:bg-muted/80 transition-colors">Cancel</button>
  <button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 transition-colors -primary/20">
  {editingLeadId ? 'Save Changes' : 'Create Lead'}
@@ -530,8 +530,8 @@ export default function UnivCRM() {
 
  {/* Lead Info Sheet */}
  <Sheet open={!!viewingLead} onOpenChange={(open) => !open && setViewingLead(null)}>
- <SheetContent className="overflow-y-auto w-full sm:max-w-md border-l border-border ">
- <SheetHeader className="pb-6 border-b border-border">
+ <SheetContent className="overflow-y-auto w-full sm:max-w-md border-l border-primary/40 ">
+ <SheetHeader className="pb-6 border-b border-primary/40">
  <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-black text-2xl mb-4">
  {viewingLead?.first_name?.[0]}{viewingLead?.last_name?.[0]}
  </div>
@@ -551,7 +551,7 @@ export default function UnivCRM() {
  {viewingLead && (
  <div className="mt-6 space-y-6">
  
- <div className="bg-muted/30 p-4 rounded-2xl border border-border space-y-4">
+ <div className="bg-muted/30 p-4 rounded-2xl border border-primary/40 space-y-4">
  <div className="flex items-start gap-3">
  <Building2 className="w-4 h-4 text-muted-foreground mt-0.5" />
  <div>
@@ -585,12 +585,12 @@ export default function UnivCRM() {
 
  <div>
  <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-2">Notes & Context</p>
- <div className="bg-muted/30 p-4 rounded-2xl border border-border text-sm text-foreground whitespace-pre-wrap min-h-[100px]">
+ <div className="bg-muted/30 p-4 rounded-2xl border border-primary/40 text-sm text-foreground whitespace-pre-wrap min-h-[100px]">
  {viewingLead.notes || <span className="text-muted-foreground italic">No notes added to this lead yet.</span>}
  </div>
  </div>
 
- <div className="pt-6 border-t border-border flex gap-3">
+ <div className="pt-6 border-t border-primary/40 flex gap-3">
  <button 
  onClick={() => { handleOpenModal(viewingLead); setViewingLead(null);}}
  className="flex-1 flex items-center justify-center gap-2 h-11 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 transition-colors "

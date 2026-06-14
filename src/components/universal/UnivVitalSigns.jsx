@@ -93,34 +93,34 @@ const UnivVitalSigns = () => {
  <form onSubmit={handleSubmit} className="space-y-4">
  <div>
  <label className="block text-sm font-medium text-foreground mb-1">Patient Name</label>
- <input type="text" name="patient_name" value={formData.patient_name} onChange={handleChange} required className="w-full p-2.5 border border-border rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" />
+ <input type="text" name="patient_name" value={formData.patient_name} onChange={handleChange} required className="w-full p-2.5 border border-primary/40 rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" />
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-sm font-medium text-foreground mb-1">Heart Rate (bpm)</label>
  <div className="relative">
  <Activity className="w-4 h-4 absolute left-3 top-3 text-rose-400" />
- <input type="number" name="heart_rate" value={formData.heart_rate} onChange={handleChange} className="w-full pl-9 p-2.5 border border-border rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" />
+ <input type="number" name="heart_rate" value={formData.heart_rate} onChange={handleChange} className="w-full pl-9 p-2.5 border border-primary/40 rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" />
  </div>
  </div>
  <div>
  <label className="block text-sm font-medium text-foreground mb-1">Temp (°C/°F)</label>
  <div className="relative">
  <Thermometer className="w-4 h-4 absolute left-3 top-3 text-orange-400" />
- <input type="text" name="temperature" value={formData.temperature} onChange={handleChange} className="w-full pl-9 p-2.5 border border-border rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" />
+ <input type="text" name="temperature" value={formData.temperature} onChange={handleChange} className="w-full pl-9 p-2.5 border border-primary/40 rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" />
  </div>
  </div>
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-sm font-medium text-foreground mb-1">BP (mmHg)</label>
- <input type="text" name="blood_pressure" value={formData.blood_pressure} onChange={handleChange} placeholder="120/80" className="w-full p-2.5 border border-border rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" />
+ <input type="text" name="blood_pressure" value={formData.blood_pressure} onChange={handleChange} placeholder="120/80" className="w-full p-2.5 border border-primary/40 rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" />
  </div>
  <div>
  <label className="block text-sm font-medium text-foreground mb-1">SpO2 (%)</label>
  <div className="relative">
  <Droplets className="w-4 h-4 absolute left-3 top-3 text-blue-400" />
- <input type="number" name="oxygen_saturation" value={formData.oxygen_saturation} onChange={handleChange} className="w-full pl-9 p-2.5 border border-border rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" />
+ <input type="number" name="oxygen_saturation" value={formData.oxygen_saturation} onChange={handleChange} className="w-full pl-9 p-2.5 border border-primary/40 rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" />
  </div>
  </div>
  </div>
@@ -128,12 +128,12 @@ const UnivVitalSigns = () => {
  <label className="block text-sm font-medium text-foreground mb-1">Respiratory Rate</label>
  <div className="relative">
  <Wind className="w-4 h-4 absolute left-3 top-3 text-teal-400" />
- <input type="number" name="respiratory_rate" value={formData.respiratory_rate} onChange={handleChange} className="w-full pl-9 p-2.5 border border-border rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" />
+ <input type="number" name="respiratory_rate" value={formData.respiratory_rate} onChange={handleChange} className="w-full pl-9 p-2.5 border border-primary/40 rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" />
  </div>
  </div>
  <div>
  <label className="block text-sm font-medium text-foreground mb-1">Time</label>
- <input type="datetime-local" name="recorded_at" value={formData.recorded_at} onChange={handleChange} required className="w-full p-2.5 border border-border rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" />
+ <input type="datetime-local" name="recorded_at" value={formData.recorded_at} onChange={handleChange} required className="w-full p-2.5 border border-primary/40 rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" />
  </div>
  <button type="submit" className="w-full bg-rose-500 hover:bg-rose-600 text-white font-medium py-3 rounded-lg transition-colors mt-2">
  Save Vitals
@@ -145,11 +145,11 @@ const UnivVitalSigns = () => {
  {loading ? (
  <div className="text-center py-20"><Activity className="w-10 h-10 text-rose-500 animate-spin mx-auto" /></div>
  ) : vitals.length === 0 ? (
- <div className="text-center py-20 bg-card rounded-2xl border border-border text-muted-foreground">No vitals recorded yet.</div>
+ <div className="text-center py-20 bg-card rounded-2xl border border-primary/40 text-muted-foreground">No vitals recorded yet.</div>
  ) : (
  <div className="grid sm:grid-cols-2 gap-4">
  {vitals.map((record, index) => (
- <motion.div key={record.id || index} initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className="bg-card p-5 rounded-2xl border border-border hover:border-rose-200 transition-colors">
+ <motion.div key={record.id || index} initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className="bg-card p-5 rounded-2xl border border-primary/40 hover:border-rose-200 transition-colors">
  <div className="flex justify-between items-start mb-4">
  <div>
  <h3 className="font-bold text-foreground">{record.patient_name}</h3>
@@ -170,7 +170,7 @@ const UnivVitalSigns = () => {
  <span className="text-muted-foreground text-xs mb-1 flex items-center gap-1"><Thermometer className="w-3 h-3 text-orange-400" /> Temp</span>
  <span className="font-bold text-foreground">{record.temperature || '-'}</span>
  </div>
- <div className="bg-background p-2 rounded-lg flex flex-col items-center justify-center border border-border">
+ <div className="bg-background p-2 rounded-lg flex flex-col items-center justify-center border border-primary/40">
  <span className="text-muted-foreground text-xs mb-1">BP</span>
  <span className="font-bold text-foreground">{record.blood_pressure || '-'}</span>
  </div>

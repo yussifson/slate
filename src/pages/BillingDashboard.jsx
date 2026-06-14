@@ -34,7 +34,7 @@ const SUB_STATUS_ICONS = { pending: Clock, sent: Send, paid: CheckCircle, overdu
 
 function MetricCard({ icon: IconComp, label, value, color }) {
   return (
-    <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+    <div className="bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
       <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${color}`}>
         <IconComp className="w-5 h-5" />
       </div>
@@ -300,7 +300,7 @@ function CompanyBilling({ companyId }) {
           {isLoading ? (
             <div className="text-center py-12 text-sm text-muted-foreground">{t("loading", "Loading...")}</div>
           ) : Object.keys(grouped).length === 0 ? (
-            <div className="bg-card rounded-xl border border-border p-12 text-center text-sm text-muted-foreground">
+            <div className="bg-card rounded-xl border border-primary/40 p-12 text-center text-sm text-muted-foreground">
               {t(
                 "no_invoices_found_create_your_",
                 "No invoices found. Create your first invoice to get started."
@@ -311,8 +311,8 @@ function CompanyBilling({ companyId }) {
               {Object.entries(grouped).map(([key, group]) => {
                 const groupTotal = group.invoices.reduce((s, i) => s + (i.total_amount || 0), 0);
                 return (
-                  <div key={key} className="bg-card rounded-xl border border-border overflow-hidden">
-                    <div className="px-4 py-3 bg-muted/30 border-b border-border flex items-center justify-between">
+                  <div key={key} className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+                    <div className="px-4 py-3 bg-muted/30 border-b border-primary/40 flex items-center justify-between">
                       <p className="text-sm font-semibold">{group.label}</p>
                       <span className="text-xs font-medium text-muted-foreground">{formatCurrency(groupTotal, currency)} {t("total", "total")}</span>
                     </div>
@@ -378,14 +378,14 @@ function CompanyBilling({ companyId }) {
           {expensesLoading ? (
             <div className="text-center py-12 text-sm text-muted-foreground">{t("loading", "Loading...")}</div>
           ) : expenses.length === 0 ? (
-            <div className="bg-card rounded-xl border border-border p-12 text-center text-sm text-muted-foreground">
+            <div className="bg-card rounded-xl border border-primary/40 p-12 text-center text-sm text-muted-foreground">
               {t(
                 "no_expenses_logged_yet_click_l",
                 "No expenses logged yet. Click \"Log Expense\" to add one."
               )}
             </div>
           ) : (
-            <div className="bg-card rounded-xl border border-border overflow-hidden">
+            <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
               <div className="divide-y divide-border">
                 {expenses.map(exp => {
                   return (
@@ -528,8 +528,8 @@ function SuperAdminBilling() {
         <MetricCard icon={AlertCircle} label="Overdue Invoices" value={overdueCount} color="bg-red-50 text-red-600" />
         <MetricCard icon={CreditCard} label="Total Invoices" value={invoices.length} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
       </div>
-      <div className="bg-card rounded-xl border border-border overflow-hidden">
-        <div className="p-4 border-b border-border flex items-center justify-between gap-3 flex-wrap">
+      <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+        <div className="p-4 border-b border-primary/40 flex items-center justify-between gap-3 flex-wrap">
           <h2 className="text-sm font-semibold">{t("subscription_invoices", "Subscription Invoices")}</h2>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>

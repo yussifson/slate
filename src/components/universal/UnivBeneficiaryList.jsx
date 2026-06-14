@@ -80,7 +80,7 @@ export default function UnivBeneficiaryList() {
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Kanban","Dashboard"].map(v => (
  <button 
  key={v} 
@@ -107,7 +107,7 @@ export default function UnivBeneficiaryList() {
  </div>
 
  {showForm && (
- <motion.div initial={{ opacity: 0, y: -20}} animate={{ opacity: 1, y: 0}} className="bg-card p-6 rounded-xl border border-border mb-8 relative">
+ <motion.div initial={{ opacity: 0, y: -20}} animate={{ opacity: 1, y: 0}} className="bg-card p-6 rounded-xl border border-primary/40 mb-8 relative">
  <button onClick={() => setShowForm(false)} className="absolute top-4 right-4 text-muted-foreground hover:text-muted-foreground">
  <X size={20} />
  </button>
@@ -120,7 +120,7 @@ export default function UnivBeneficiaryList() {
  type="text"
  value={formData.beneficiary_name}
  onChange={(e) => setFormData({ ...formData, beneficiary_name: e.target.value})}
- className="border border-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+ className="border border-primary/40 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
  placeholder={`Enter beneficiary name`}
  />
  </div>
@@ -130,7 +130,7 @@ export default function UnivBeneficiaryList() {
  type="text"
  value={formData.contact_info}
  onChange={(e) => setFormData({ ...formData, contact_info: e.target.value})}
- className="border border-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+ className="border border-primary/40 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
  placeholder={`Enter contact info`}
  />
  </div>
@@ -140,7 +140,7 @@ export default function UnivBeneficiaryList() {
  type="text"
  value={formData.needs}
  onChange={(e) => setFormData({ ...formData, needs: e.target.value})}
- className="border border-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+ className="border border-primary/40 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
  placeholder={`Enter needs`}
  />
  </div>
@@ -150,7 +150,7 @@ export default function UnivBeneficiaryList() {
  type="text"
  value={formData.status}
  onChange={(e) => setFormData({ ...formData, status: e.target.value})}
- className="border border-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+ className="border border-primary/40 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
  placeholder={`Enter status`}
  />
  </div>
@@ -160,7 +160,7 @@ export default function UnivBeneficiaryList() {
  type="text"
  value={formData.assigned_to}
  onChange={(e) => setFormData({ ...formData, assigned_to: e.target.value})}
- className="border border-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+ className="border border-primary/40 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
  placeholder={`Enter assigned to`}
  />
  </div>
@@ -173,7 +173,7 @@ export default function UnivBeneficiaryList() {
 
  <div className="grid gap-4">
  {items.map((item) => (
- <motion.div key={item.id} initial={{ opacity: 0}} animate={{ opacity: 1}} className="bg-card p-5 rounded-xl border border-border transition-">
+ <motion.div key={item.id} initial={{ opacity: 0}} animate={{ opacity: 1}} className="bg-card p-5 rounded-xl border border-primary/40 transition-">
  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
  
  <div>
@@ -200,7 +200,7 @@ export default function UnivBeneficiaryList() {
  </motion.div>
  ))}
  {items.length === 0 && !loading && (
- <div className="text-center py-12 text-muted-foreground bg-background rounded-xl border border-dashed border-primary/50">
+ <div className="text-center py-12 text-muted-foreground bg-background rounded-xl border border-dashed border-primary/40">
  <p>No beneficiary list records found. Create one to get started.</p>
  </div>
  )}

@@ -100,13 +100,13 @@ const UnivTicketSales = () => {
  <form onSubmit={handleSubmit} className="space-y-4">
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Event Name</label>
- <input type="text" name="event_name" value={formData.event_name} onChange={handleChange} required className="w-full p-2.5 bg-background rounded-xl border border-border focus:ring-2 focus:ring-violet-500 outline-none" />
+ <input type="text" name="event_name" value={formData.event_name} onChange={handleChange} required className="w-full p-2.5 bg-background rounded-xl border border-primary/40 focus:ring-2 focus:ring-violet-500 outline-none" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Ticket Type</label>
  <div className="relative">
  <Tag className="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
- <select name="ticket_type" value={formData.ticket_type} onChange={handleChange} className="w-full pl-9 p-2.5 bg-background rounded-xl border border-border focus:ring-2 focus:ring-violet-500 outline-none font-medium">
+ <select name="ticket_type" value={formData.ticket_type} onChange={handleChange} className="w-full pl-9 p-2.5 bg-background rounded-xl border border-primary/40 focus:ring-2 focus:ring-violet-500 outline-none font-medium">
  <option value="General Admission">General Admission</option>
  <option value="VIP">VIP</option>
  <option value="Early Bird">Early Bird</option>
@@ -120,22 +120,22 @@ const UnivTicketSales = () => {
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Price ($)</label>
  <div className="relative">
  <DollarSign className="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
- <input type="number" step="0.01" name="price" value={formData.price} onChange={handleChange} required className="w-full pl-9 p-2.5 bg-background rounded-xl border border-border focus:ring-2 focus:ring-violet-500 outline-none" />
+ <input type="number" step="0.01" name="price" value={formData.price} onChange={handleChange} required className="w-full pl-9 p-2.5 bg-background rounded-xl border border-primary/40 focus:ring-2 focus:ring-violet-500 outline-none" />
  </div>
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Quantity</label>
- <input type="number" name="quantity_available" value={formData.quantity_available} onChange={handleChange} required className="w-full p-2.5 bg-background rounded-xl border border-border focus:ring-2 focus:ring-violet-500 outline-none" />
+ <input type="number" name="quantity_available" value={formData.quantity_available} onChange={handleChange} required className="w-full p-2.5 bg-background rounded-xl border border-primary/40 focus:ring-2 focus:ring-violet-500 outline-none" />
  </div>
  </div>
  <div className="grid grid-cols-2 gap-3">
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Sale Starts</label>
- <input type="date" name="sale_start_date" value={formData.sale_start_date} onChange={handleChange} required className="w-full p-2.5 bg-background rounded-xl border border-border focus:ring-2 focus:ring-violet-500 outline-none text-sm" />
+ <input type="date" name="sale_start_date" value={formData.sale_start_date} onChange={handleChange} required className="w-full p-2.5 bg-background rounded-xl border border-primary/40 focus:ring-2 focus:ring-violet-500 outline-none text-sm" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Sale Ends</label>
- <input type="date" name="sale_end_date" value={formData.sale_end_date} onChange={handleChange} required className="w-full p-2.5 bg-background rounded-xl border border-border focus:ring-2 focus:ring-violet-500 outline-none text-sm" />
+ <input type="date" name="sale_end_date" value={formData.sale_end_date} onChange={handleChange} required className="w-full p-2.5 bg-background rounded-xl border border-primary/40 focus:ring-2 focus:ring-violet-500 outline-none text-sm" />
  </div>
  </div>
  <button type="submit" className="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3 rounded-xl transition-all mt-2">
@@ -148,7 +148,7 @@ const UnivTicketSales = () => {
  {loading ? (
  <div className="flex justify-center py-20"><BarChart3 className="w-10 h-10 text-violet-400 animate-pulse" /></div>
  ) : tickets.length === 0 ? (
- <div className="text-center py-20 bg-card rounded-3xl border border-border text-muted-foreground">No ticket tiers created yet.</div>
+ <div className="text-center py-20 bg-card rounded-3xl border border-primary/40 text-muted-foreground">No ticket tiers created yet.</div>
  ) : (
  <div className="grid sm:grid-cols-2 gap-4">
  {tickets.map((ticket, index) => {
@@ -156,8 +156,8 @@ const UnivTicketSales = () => {
  const isSoldOut = progress >= 100;
  
  return (
- <motion.div key={ticket.id || index} initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className="bg-card rounded-3xl border border-border overflow-hidden relative group">
- <div className="p-5 border-b border-slate-50 bg-gradient-to-r from-slate-50 to-white">
+ <motion.div key={ticket.id || index} initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className="bg-card rounded-3xl border border-primary/40 overflow-hidden relative group">
+ <div className="p-5 border-b border-primary/40 bg-gradient-to-r from-slate-50 to-white">
  <div className="flex justify-between items-start mb-2">
  <h3 className="font-bold text-foreground truncate pr-2">{ticket.event_name}</h3>
  <span className={`px-2 py-1 text-[10px] font-black uppercase rounded bg-violet-100 text-violet-700 whitespace-nowrap`}>

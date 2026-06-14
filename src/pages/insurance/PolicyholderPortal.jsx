@@ -77,8 +77,8 @@ export default function PolicyholderPortal() {
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
  {/* Left Column (Policies) */}
  <div className="col-span-1 lg:col-span-2 space-y-6">
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 md:p-5 border-b border-border bg-muted/50 flex justify-between items-center">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 md:p-5 border-b border-primary/40 bg-muted/50 flex justify-between items-center">
  <h3 className="font-bold text-card-foreground flex items-center gap-2"><Shield className="w-5 h-5 text-primary" /> {t("active_policies", "Active Policies")}</h3>
  </div>
  <div className="p-0">
@@ -123,8 +123,8 @@ export default function PolicyholderPortal() {
 
  {/* Right Column (Claims Info) */}
  <div className="space-y-6">
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <h3 className="font-bold text-card-foreground flex items-center gap-2"><FileWarning className="w-5 h-5 text-amber-600" /> {t("claim_center", "Claim Center")}</h3>
  </div>
  <div className="p-4 space-y-4">
@@ -140,7 +140,7 @@ export default function PolicyholderPortal() {
  <div className="space-y-3">
  {claims.slice(0, 4).map(claim => {
  return (
- <div key={claim.id} className="flex justify-between items-center p-3 rounded-lg border border-border hover:border-primary/20 transition-colors bg-card">
+ <div key={claim.id} className="flex justify-between items-center p-3 rounded-lg border border-primary/40 hover:border-primary/20 transition-colors bg-card">
  <div>
  <p className="font-bold text-sm text-foreground">{claim.claimType} {t("claim", "Claim")}</p>
  <p className="text-[10px] text-muted-foreground mt-0.5">{claim.incidentDate}</p>
@@ -160,7 +160,7 @@ export default function PolicyholderPortal() {
  </div>
  </div>
  
- <div className="bg-gradient-to-br from-card to-muted rounded-xl border border-border p-5 text-center">
+ <div className="bg-gradient-to-br from-card to-muted rounded-xl border border-primary/40 p-5 text-center">
  <CreditCard className="w-8 h-8 text-primary mx-auto mb-2" />
  <h4 className="font-bold text-sm">{t("need_to_pay_your_premium", "Need to pay your premium?")}</h4>
  <p className="text-xs text-muted-foreground mt-1 mb-3">{t(

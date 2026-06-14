@@ -451,7 +451,7 @@ export default function CasePDFGenerator({ caseData, user }) {
             <button
               key={item.id}
               onClick={() => setTemplateId(item.id)}
-              className={`text-left p-4 rounded-xl border-2 transition-all ${templateId === item.id ? "border-primary bg-slate-50" : "border-border hover:border-primary/40 bg-card"}`}
+              className={`text-left p-4 rounded-xl border-2 transition-all ${templateId === item.id ? "border-primary bg-slate-50" : "border-primary/40 hover:border-primary/40 bg-card"}`}
             >
               <div className={`w-8 h-8 rounded-lg flex items-center justify-center mb-2 ${templateId === item.id ? "bg-primary text-white" : "bg-muted text-muted-foreground"}`}>
                 <FileText className="w-4 h-4" />
@@ -463,7 +463,7 @@ export default function CasePDFGenerator({ caseData, user }) {
         })}
       </div>
       {/* Case data preview */}
-      <div className="bg-card rounded-xl border border-border p-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
+      <div className="bg-card rounded-xl border border-primary/40 p-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
         <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("case", "Case")}</p><p className="text-sm font-medium">{caseData.title}</p></div>
         <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("client", "Client")}</p><p className="text-sm font-medium">{client?.name || caseData.client_name || "—"}</p></div>
         <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("case", "Case #")}</p><p className="text-sm font-medium">{caseData.case_number || "—"}</p></div>

@@ -62,12 +62,12 @@ export default function VCertificationRates() {
 
  <div className="flex-1 flex gap-6 overflow-hidden">
  <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
- <div className="p-4 border-b border-primary/5 dark:border-slate-800">
+ <div className="p-4 border-b border-primary/5 dark:border-primary/40">
  <div className="relative">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
  <Input 
  placeholder="Search programs..." 
- className="pl-9 h-10 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
+ className="pl-9 h-10 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -140,7 +140,7 @@ export default function VCertificationRates() {
 
  <div className="mt-8">
  <Tabs defaultValue="overview" className="w-full">
- <TabsList className="bg-slate-500 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-slate-200 dark:border-slate-700">
+ <TabsList className="bg-slate-500 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-primary/40 dark:border-primary/40">
  <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-primary">Overview Stats</TabsTrigger>
  <TabsTrigger value="breakdown" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-primary">Cohort Breakdown</TabsTrigger>
  </TabsList>
@@ -148,7 +148,7 @@ export default function VCertificationRates() {
  <div className="mt-6">
  <TabsContent value="overview" className="space-y-6 outline-none">
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- <Card className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 dark:border-slate-800 rounded-2xl">
+ <Card className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border border-primary/40 dark:border-primary/40 dark:border-primary/40 rounded-2xl">
  <CardContent className="p-6 flex flex-col items-center text-center">
  <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-full flex items-center justify-center mb-4">
  <BarChart3 className="w-6 h-6" />
@@ -157,7 +157,7 @@ export default function VCertificationRates() {
  <p className="text-3xl font-black text-slate-800 dark:text-slate-100 mt-1">{selectedRate.data?.totalEnrolled || 0}</p>
  </CardContent>
  </Card>
- <Card className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 dark:border-slate-800 rounded-2xl">
+ <Card className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border border-primary/40 dark:border-primary/40 dark:border-primary/40 rounded-2xl">
  <CardContent className="p-6 flex flex-col items-center text-center">
  <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-full flex items-center justify-center mb-4">
  <ShieldCheck className="w-6 h-6" />
@@ -182,7 +182,7 @@ export default function VCertificationRates() {
  </TabsContent>
  
  <TabsContent value="breakdown" className="outline-none">
- <div className="p-8 text-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl">
+ <div className="p-8 text-center border-2 border-dashed border-primary/40 dark:border-primary/40 rounded-2xl">
  <h4 className="text-slate-700 dark:text-slate-300 dark:text-slate-200 font-bold mb-2">Demographic Breakdown</h4>
  <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">Detailed view of certification rates by demographic groups and cohorts is not available yet.</p>
  <Button variant="outline" className="border-primary/20 text-primary hover:bg-slate-50 dark:bg-slate-800/50 rounded-xl">

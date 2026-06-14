@@ -106,7 +106,7 @@ export default function AdminUsers() {
  placeholder="Search by name, email or firm..." 
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- className="pl-9 h-10 rounded-lg border-slate-200"
+ className="pl-9 h-10 rounded-lg border-primary/40"
  />
  </div>
 }
@@ -116,11 +116,11 @@ export default function AdminUsers() {
  <Loader2 className="w-8 h-8 animate-spin text-primary" />
  </div>
  ) : (
- <div className="bg-card rounded-2xl border border-border overflow-hidden">
+ <div className="bg-card rounded-2xl border border-primary/40 overflow-hidden">
  <div className="overflow-x-auto">
  <table className="w-full text-sm text-left border-collapse bg-white dark:bg-slate-900/40 font-sans">
  <thead>
- <tr className="bg-slate-50/80 border-b border-slate-100 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px]">
+ <tr className="bg-slate-50/80 border-b border-primary/40 dark:border-primary/40 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px]">
  <th className="px-6 py-4">{t("identity", "Identity")}</th>
  <th className="px-6 py-4">{t("organization", "Organization")}</th>
  <th className="px-6 py-4">{t("role", "Role")}</th>
@@ -167,7 +167,7 @@ export default function AdminUsers() {
  variant="outline" 
  size="sm"
  onClick={() => handleForceOnboarding(user)}
- className="h-8 px-3 rounded-lg border-slate-200 text-slate-600 hover:text-slate-900 dark:text-slate-100"
+ className="h-8 px-3 rounded-lg border-primary/40 text-slate-600 hover:text-slate-900 dark:text-slate-100"
  >
  <RefreshCcw className="w-3.5 h-3.5 mr-1.5" /> {t("force_onboarding", "Force Onboard")}
  </Button>
@@ -175,7 +175,7 @@ export default function AdminUsers() {
  variant="outline" 
  size="sm"
  onClick={() => handleResetPassword(user.email)}
- className="h-8 px-3 rounded-lg border-slate-200 text-slate-600 hover:text-slate-900 dark:text-slate-100"
+ className="h-8 px-3 rounded-lg border-primary/40 text-slate-600 hover:text-slate-900 dark:text-slate-100"
  >
  <KeyRound className="w-3.5 h-3.5 mr-1.5" /> {t("reset", "Reset")}
  </Button>

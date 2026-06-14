@@ -79,10 +79,10 @@ export default function CSVImportModal({ isOpen, onClose, recordType, onComplete
 
  return (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-2xl border border-border flex flex-col">
+ <div className="bg-card rounded-2xl w-full max-w-2xl border border-primary/40 flex flex-col">
  
  {/* Header */}
- <div className="flex items-center justify-between p-5 border-b border-border">
+ <div className="flex items-center justify-between p-5 border-b border-primary/40">
  <div>
  <h2 className="text-xl font-bold text-card-foreground">{t("import", "Import")} {recordType}s</h2>
  <p className="text-sm text-muted-foreground mt-1">{t(
@@ -98,7 +98,7 @@ export default function CSVImportModal({ isOpen, onClose, recordType, onComplete
  {/* Body */}
  <div className="p-6">
  {step === 1 && (
- <div className="border-2 border-dashed border-primary/50 rounded-xl p-12 text-center hover:bg-muted/30 transition-colors">
+ <div className="border-2 border-dashed border-primary/40 rounded-xl p-12 text-center hover:bg-muted/30 transition-colors">
  <UploadCloud className="w-12 h-12 mx-auto text-primary mb-4" />
  <h3 className="text-lg font-bold mb-2">{t("drag_and_drop_your_csv_here", "Drag and drop your CSV here")}</h3>
  <p className="text-sm text-muted-foreground mb-6">{t("or_click_to_browse_your_files", "Or click to browse your files")}</p>
@@ -111,12 +111,12 @@ export default function CSVImportModal({ isOpen, onClose, recordType, onComplete
 
  {step === 2 && (
  <div className="space-y-6">
- <div className="flex items-center gap-3 bg-slate-50 dark:bg-primary/30 text-primary/90 dark:text-primary/70 p-3 rounded-lg border border-primary/20 dark:border-slate-200">
+ <div className="flex items-center gap-3 bg-slate-50 dark:bg-primary/30 text-primary/90 dark:text-primary/70 p-3 rounded-lg border border-primary/20 dark:border-primary/40">
  <CheckCircle className="w-5 h-5" />
  <span className="text-sm font-medium">{t("successfully_loaded", "Successfully loaded")} <strong>{data.length}</strong> {t("rows_map_the_columns_below", "rows. Map the columns below.")}</span>
  </div>
 
- <div className="bg-muted/30 rounded-lg border border-border overflow-hidden">
+ <div className="bg-muted/30 rounded-lg border border-primary/40 overflow-hidden">
  <table className="w-full text-sm">
  <thead className="bg-muted text-muted-foreground">
  <tr>

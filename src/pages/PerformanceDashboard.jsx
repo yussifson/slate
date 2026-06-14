@@ -119,7 +119,7 @@ export default function PerformanceDashboard() {
       )}
       {/* Chart */}
       {chartData.length > 0 && (
-        <div className="bg-card border border-border rounded-xl p-5">
+        <div className="bg-card border border-primary/40 rounded-xl p-5">
           <h3 className="text-sm font-semibold mb-4">{t("hours_logged_by_lawyer", "Hours Logged by Lawyer")}</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={chartData}>
@@ -136,7 +136,7 @@ export default function PerformanceDashboard() {
       <div className="space-y-3">
         {lawyerMetrics.map((lawyer, idx) => {
           return (
-            <div key={lawyer.id} className="bg-card border border-border rounded-xl p-4">
+            <div key={lawyer.id} className="bg-card border border-primary/40 rounded-xl p-4">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
                   <span className="text-sm font-bold text-primary">{lawyer.full_name?.[0]}</span>
@@ -173,7 +173,7 @@ export default function PerformanceDashboard() {
           );
         })}
         {lawyerMetrics.length === 0 && (
-          <div className="bg-card border border-border rounded-xl p-10 text-center text-sm text-muted-foreground">{t("no_lawyer_records_found", "No lawyer records found")}</div>
+          <div className="bg-card border border-primary/40 rounded-xl p-10 text-center text-sm text-muted-foreground">{t("no_lawyer_records_found", "No lawyer records found")}</div>
         )}
       </div>
     </div>

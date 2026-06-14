@@ -147,7 +147,7 @@ export default function UnivBudgeting({
  <div className="flex flex-col h-full bg-background font-sans">
  
  {/* Header */}
- <div className="border-b border-border bg-card px-6 sm:px-8 py-6 shrink-0 z-10 relative">
+ <div className="border-b border-primary/40 bg-card px-6 sm:px-8 py-6 shrink-0 z-10 relative">
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-2xl font-extrabold text-foreground tracking-tight flex items-center gap-2">
@@ -167,25 +167,25 @@ export default function UnivBudgeting({
 
  {/* Global Stats */}
  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
- <div className="bg-card border border-border rounded-xl p-4 ">
+ <div className="bg-card border border-primary/40 rounded-xl p-4 ">
  <div className="flex items-center gap-2 text-muted-foreground mb-1">
  <DollarSign className="w-4 h-4" /> <span className="text-xs font-bold uppercase tracking-wider">Total Allocated</span>
  </div>
  <div className="text-2xl font-bold text-foreground">${totalAllocated.toLocaleString()}</div>
  </div>
- <div className="bg-card border border-border rounded-xl p-4 ">
+ <div className="bg-card border border-primary/40 rounded-xl p-4 ">
  <div className="flex items-center gap-2 text-muted-foreground mb-1">
  <TrendingUp className="w-4 h-4 text-red-500" /> <span className="text-xs font-bold uppercase tracking-wider">Total Spent</span>
  </div>
  <div className="text-2xl font-bold text-foreground">${totalSpent.toLocaleString()}</div>
  </div>
- <div className="bg-card border border-border rounded-xl p-4 ">
+ <div className="bg-card border border-primary/40 rounded-xl p-4 ">
  <div className="flex items-center gap-2 text-muted-foreground mb-1">
  <Wallet className="w-4 h-4 text-emerald-500" /> <span className="text-xs font-bold uppercase tracking-wider">Remaining</span>
  </div>
  <div className="text-2xl font-bold text-foreground">${totalRemaining.toLocaleString()}</div>
  </div>
- <div className="bg-card border border-border rounded-xl p-4 flex flex-col justify-center">
+ <div className="bg-card border border-primary/40 rounded-xl p-4 flex flex-col justify-center">
  <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
  <span>Overall Usage</span>
  <span className={overallUsagePct > 90 ? "text-red-500" : "text-emerald-500"}>{overallUsagePct.toFixed(1)}%</span>
@@ -208,10 +208,10 @@ export default function UnivBudgeting({
  placeholder="Search departments..."
  value={searchQuery}
  onChange={e => setSearchQuery(e.target.value)}
- className="w-full h-10 pl-9 pr-4 bg-muted/50 border border-border rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+ className="w-full h-10 pl-9 pr-4 bg-muted/50 border border-primary/40 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
  />
  </div>
- <button className="h-10 px-4 bg-background border border-border rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-muted transition-colors ">
+ <button className="h-10 px-4 bg-background border border-primary/40 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-muted transition-colors ">
  <Filter className="w-4 h-4 text-muted-foreground" /> Filter
  </button>
  </div>
@@ -237,7 +237,7 @@ export default function UnivBudgeting({
  const isWarning = pct > 85 && !isOver;
 
  return (
- <div key={budget.id} className="bg-card border border-border rounded-2xl p-6 transition- group relative overflow-hidden">
+ <div key={budget.id} className="bg-card border border-primary/40 rounded-2xl p-6 transition- group relative overflow-hidden">
  {/* Background Progress Bar */}
  <div 
  className={cn("absolute inset-0 opacity-[0.03] pointer-events-none transition-all duration-1000", isOver ? "bg-red-500" : isWarning ? "bg-amber-500" : "bg-emerald-500")} 
@@ -306,9 +306,9 @@ export default function UnivBudgeting({
  initial={{ opacity: 0, scale: 0.95, y: 20}}
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: 20}}
- className="relative w-full max-w-lg bg-card border border-border rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
+ className="relative w-full max-w-lg bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
  >
- <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-muted/20">
+ <div className="px-6 py-4 border-b border-primary/40 flex items-center justify-between bg-muted/20">
  <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
  <Wallet className="w-5 h-5 text-primary" />
  {editingBudget ? 'Edit Budget' : 'New Budget'}
@@ -320,12 +320,12 @@ export default function UnivBudgeting({
  <form id="budget-form" onSubmit={handleSave} className="space-y-4">
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Department / Team *</label>
- <input required type="text" value={formState.department} onChange={e => setFormState({...formState, department: e.target.value})} placeholder="e.g. Engineering, Marketing" className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input required type="text" value={formState.department} onChange={e => setFormState({...formState, department: e.target.value})} placeholder="e.g. Engineering, Marketing" className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Category</label>
- <select value={formState.category} onChange={e => setFormState({...formState, category: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none">
+ <select value={formState.category} onChange={e => setFormState({...formState, category: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none">
  <option>Operations</option>
  <option>Payroll</option>
  <option>Marketing</option>
@@ -335,27 +335,27 @@ export default function UnivBudgeting({
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Financial Period</label>
- <input type="text" value={formState.period} onChange={e => setFormState({...formState, period: e.target.value})} placeholder="e.g. 2024, Q3 2024" className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input type="text" value={formState.period} onChange={e => setFormState({...formState, period: e.target.value})} placeholder="e.g. 2024, Q3 2024" className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Allocated Amount ($) *</label>
- <input required type="number" min="0" step="0.01" value={formState.allocated_amount} onChange={e => setFormState({...formState, allocated_amount: parseFloat(e.target.value)})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm font-mono focus:border-primary focus:outline-none" />
+ <input required type="number" min="0" step="0.01" value={formState.allocated_amount} onChange={e => setFormState({...formState, allocated_amount: parseFloat(e.target.value)})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm font-mono focus:border-primary focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Spent Amount ($)</label>
- <input type="number" min="0" step="0.01" value={formState.spent_amount} onChange={e => setFormState({...formState, spent_amount: parseFloat(e.target.value)})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm font-mono focus:border-primary focus:outline-none" />
+ <input type="number" min="0" step="0.01" value={formState.spent_amount} onChange={e => setFormState({...formState, spent_amount: parseFloat(e.target.value)})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm font-mono focus:border-primary focus:outline-none" />
  </div>
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Notes</label>
- <textarea value={formState.notes} onChange={e => setFormState({...formState, notes: e.target.value})} className="w-full h-24 p-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none resize-none" />
+ <textarea value={formState.notes} onChange={e => setFormState({...formState, notes: e.target.value})} className="w-full h-24 p-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none resize-none" />
  </div>
  </form>
  </div>
  
- <div className="px-6 py-4 border-t border-border bg-muted/20 flex justify-end gap-3">
+ <div className="px-6 py-4 border-t border-primary/40 bg-muted/20 flex justify-end gap-3">
  <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors">Cancel</button>
  <button type="submit" form="budget-form" disabled={saveMutation.isPending} className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors disabled:opacity-50">
  {saveMutation.isPending ? 'Saving...' : 'Save Budget'}

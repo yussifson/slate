@@ -497,7 +497,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
  <nav className="flex-1 px-3 pb-3 space-y-1 overflow-y-auto overflow-x-hidden scrollbar-hide">
  {isOrbitMode && !collapsed && dynamicNavItems.length === 0 && orbitBuildNavItems.length === 0 && (
- <div className="mx-1 my-3 p-3 rounded-xl bg-slate-50 border border-slate-200 text-center">
+ <div className="mx-1 my-3 p-3 rounded-xl bg-slate-50 border border-primary/40 text-center">
  <div className="text-2xl mb-1">⚡</div>
  <p className="text-xs font-bold text-primary/90 mb-1">Orbit Mode Active</p>
  <p className="text-[11px] text-primary leading-snug mb-2">Use the Slate Builder to create your custom pages with AI.</p>

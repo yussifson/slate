@@ -159,7 +159,7 @@ export default function SHSMedicalRecords() {
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
- <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
  <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Clinic Log</CardTitle>
@@ -169,7 +169,7 @@ export default function SHSMedicalRecords() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search visits or students..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -213,7 +213,7 @@ export default function SHSMedicalRecords() {
  <Badge variant="outline" className={
  record.data?.visitType === 'Emergency' ? 'bg-rose-50 text-rose-700 border-rose-200' :
  record.data?.visitType === 'Routine' ? 'bg-orange-50 text-orange-700 border-primary/20' :
- 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary/80 dark:text-primary/20 border-primary/20 dark:border-slate-600'
+ 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary/80 dark:text-primary/20 border-primary/20 dark:border-primary/40'
 }>
  {record.data?.visitType}
  </Badge>
@@ -228,7 +228,7 @@ export default function SHSMedicalRecords() {
  <Badge variant="outline" className={
  record.status === 'Treated' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20' :
  record.status === 'Admitted' ? 'bg-amber-50 text-amber-700 border-amber-200' :
- 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200 border-slate-200 dark:border-slate-700'
+ 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200 border-primary/40 dark:border-primary/40'
 }>
  {record.status}
  </Badge>
@@ -258,7 +258,7 @@ export default function SHSMedicalRecords() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Patient (Student)</label>
  <select 
- className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-10 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
  value={newRecord.studentId}
  onChange={e => setNewRecord({...newRecord, studentId: e.target.value})}
  >
@@ -274,7 +274,7 @@ export default function SHSMedicalRecords() {
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Date of Visit</label>
  <Input 
  type="date"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
  value={newRecord.date}
  onChange={e => setNewRecord({...newRecord, date: e.target.value})}
  />
@@ -282,7 +282,7 @@ export default function SHSMedicalRecords() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Visit Type</label>
  <select 
- className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-10 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
  value={newRecord.visitType}
  onChange={e => setNewRecord({...newRecord, visitType: e.target.value})}
  >
@@ -297,7 +297,7 @@ export default function SHSMedicalRecords() {
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Presenting Symptoms</label>
  <Input 
  placeholder="e.g. Headache, Fever, Stomach pain"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
  value={newRecord.symptoms}
  onChange={e => setNewRecord({...newRecord, symptoms: e.target.value})}
  />
@@ -307,7 +307,7 @@ export default function SHSMedicalRecords() {
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Diagnosis</label>
  <Input 
  placeholder="e.g. Malaria, Common Cold"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
  value={newRecord.diagnosis}
  onChange={e => setNewRecord({...newRecord, diagnosis: e.target.value})}
  />
@@ -317,7 +317,7 @@ export default function SHSMedicalRecords() {
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Treatment Given</label>
  <Input 
  placeholder="e.g. Paracetamol, Rest in ward"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
  value={newRecord.treatment}
  onChange={e => setNewRecord({...newRecord, treatment: e.target.value})}
  />
@@ -326,7 +326,7 @@ export default function SHSMedicalRecords() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Outcome / Status</label>
  <select 
- className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-10 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
  value={newRecord.status}
  onChange={e => setNewRecord({...newRecord, status: e.target.value})}
  >
@@ -338,7 +338,7 @@ export default function SHSMedicalRecords() {
  </div>
  </ScrollArea>
  
- <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end gap-3">
+ <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3">
  <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
  Cancel
  </Button>

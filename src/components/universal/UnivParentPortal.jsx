@@ -118,8 +118,8 @@ export default function UnivParentPortal() {
  </button>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -127,7 +127,7 @@ export default function UnivParentPortal() {
  placeholder="Search parents, students..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -167,7 +167,7 @@ export default function UnivParentPortal() {
  </td>
  <td className="p-4">
  <div className="flex items-center gap-2">
- <code className="bg-muted px-2 py-1 rounded text-xs font-mono font-bold tracking-wider border border-border/50">{a.access_code}</code>
+ <code className="bg-muted px-2 py-1 rounded text-xs font-mono font-bold tracking-wider border border-primary/40">{a.access_code}</code>
  <button onClick={() => copyCode(a.access_code)} className="text-muted-foreground hover:text-foreground transition-colors"><Copy className="w-3.5 h-3.5" /></button>
  </div>
  </td>

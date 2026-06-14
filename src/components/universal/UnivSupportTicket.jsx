@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 
 const PRIORITY_COLORS = {
- 'Low': 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700',
+ 'Low': 'bg-slate-100 text-slate-700 border-primary/40 dark:bg-slate-800 dark:text-slate-400 dark:border-primary/40',
  'Medium': 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/40 dark:text-blue-400 dark:border-blue-800',
  'High': 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/40 dark:text-amber-400 dark:border-amber-800',
  'Urgent': 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/40 dark:text-red-400 dark:border-red-800'
@@ -23,8 +23,8 @@ const STATUS_COLORS = {
  'Open': 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-400 dark:border-emerald-800',
  'In Progress': 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/40 dark:text-blue-400 dark:border-blue-800',
  'Waiting on Customer': 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/40 dark:text-amber-400 dark:border-amber-800',
- 'Resolved': 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700',
- 'Closed': 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'
+ 'Resolved': 'bg-slate-100 text-slate-700 border-primary/40 dark:bg-slate-800 dark:text-slate-400 dark:border-primary/40',
+ 'Closed': 'bg-slate-100 text-slate-700 border-primary/40 dark:bg-slate-800 dark:text-slate-400 dark:border-primary/40'
 };
 
 export default function UnivSupportTicket({
@@ -150,8 +150,8 @@ export default function UnivSupportTicket({
  <div className="flex h-full w-full bg-background font-sans overflow-hidden">
  
  {/* Sidebar - Ticket List */}
- <div className="w-80 md:w-96 border-r border-border bg-card flex flex-col shrink-0">
- <div className="p-4 border-b border-border z-10">
+ <div className="w-80 md:w-96 border-r border-primary/40 bg-card flex flex-col shrink-0">
+ <div className="p-4 border-b border-primary/40 z-10">
  <div className="flex items-center justify-between mb-4">
  <h1 className="text-xl font-bold text-foreground flex items-center gap-2">
  <LifeBuoy className="w-5 h-5 text-primary" /> {title}
@@ -170,7 +170,7 @@ export default function UnivSupportTicket({
  placeholder="Search tickets..."
  value={searchQuery}
  onChange={e => setSearchQuery(e.target.value)}
- className="w-full h-9 pl-9 pr-3 bg-muted/50 border border-border rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+ className="w-full h-9 pl-9 pr-3 bg-muted/50 border border-primary/40 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
  />
  </div>
  </div>
@@ -218,7 +218,7 @@ export default function UnivSupportTicket({
  <div className="flex-1 flex flex-col bg-muted/10 relative">
  {activeTicket ? (
  <>
- <div className="border-b border-border bg-card px-6 py-4 z-10 shrink-0">
+ <div className="border-b border-primary/40 bg-card px-6 py-4 z-10 shrink-0">
  <div className="flex items-start justify-between gap-4">
  <div>
  <div className="flex items-center gap-3 mb-1">
@@ -243,7 +243,7 @@ export default function UnivSupportTicket({
  <option value="Resolved">Resolved</option>
  <option value="Closed">Closed</option>
  </select>
- <button className="p-2 border border-border bg-background rounded-lg hover:bg-muted text-muted-foreground transition-colors">
+ <button className="p-2 border border-primary/40 bg-background rounded-lg hover:bg-muted text-muted-foreground transition-colors">
  <MoreHorizontal className="w-4 h-4" />
  </button>
  </div>
@@ -263,7 +263,7 @@ export default function UnivSupportTicket({
  <span className="font-semibold text-sm text-foreground">{msg.sender}</span>
  <span className="text-xs text-muted-foreground">{new Date(msg.timestamp).toLocaleString(undefined, {hour: '2-digit', minute:'2-digit'})}</span>
  </div>
- <div className={cn("px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ", isAgent ? "bg-primary text-white rounded-tr-none" : "bg-card border border-border text-foreground rounded-tl-none")}>
+ <div className={cn("px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ", isAgent ? "bg-primary text-white rounded-tr-none" : "bg-card border border-primary/40 text-foreground rounded-tl-none")}>
  {msg.content}
  </div>
  </div>
@@ -272,15 +272,15 @@ export default function UnivSupportTicket({
 })}
  </div>
 
- <div className="p-4 bg-card border-t border-border shrink-0">
- <div className="bg-background border border-border rounded-xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden">
+ <div className="p-4 bg-card border-t border-primary/40 shrink-0">
+ <div className="bg-background border border-primary/40 rounded-xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden">
  <textarea
  value={replyInput}
  onChange={e => setReplyInput(e.target.value)}
  placeholder="Type your reply to the customer..."
  className="w-full p-4 bg-transparent border-none outline-none text-foreground resize-none min-h-[100px] focus:ring-0"
  />
- <div className="bg-muted/30 px-3 py-2 flex items-center justify-between border-t border-border/50">
+ <div className="bg-muted/30 px-3 py-2 flex items-center justify-between border-t border-primary/40">
  <div className="flex items-center gap-1 text-muted-foreground">
  <button className="p-1.5 hover:bg-muted rounded hover:text-foreground transition-colors"><Paperclip className="w-4 h-4" /></button>
  </div>
@@ -313,9 +313,9 @@ export default function UnivSupportTicket({
  initial={{ opacity: 0, scale: 0.95, y: 20}}
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: 20}}
- className="relative w-full max-w-lg bg-card border border-border rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
+ className="relative w-full max-w-lg bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
  >
- <div className="px-6 py-4 border-b border-border bg-muted/20">
+ <div className="px-6 py-4 border-b border-primary/40 bg-muted/20">
  <h2 className="text-lg font-bold text-foreground">Create New Ticket</h2>
  </div>
  
@@ -323,16 +323,16 @@ export default function UnivSupportTicket({
  <form id="new-ticket-form" onSubmit={handleCreate} className="space-y-4">
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Subject *</label>
- <input required type="text" value={formState.subject} onChange={e => setFormState({...formState, subject: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input required type="text" value={formState.subject} onChange={e => setFormState({...formState, subject: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Requester Email *</label>
- <input required type="email" value={formState.requester} onChange={e => setFormState({...formState, requester: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input required type="email" value={formState.requester} onChange={e => setFormState({...formState, requester: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Priority</label>
- <select value={formState.priority} onChange={e => setFormState({...formState, priority: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none">
+ <select value={formState.priority} onChange={e => setFormState({...formState, priority: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none">
  <option>Low</option>
  <option>Medium</option>
  <option>High</option>
@@ -342,7 +342,7 @@ export default function UnivSupportTicket({
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Department</label>
- <select value={formState.department} onChange={e => setFormState({...formState, department: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none">
+ <select value={formState.department} onChange={e => setFormState({...formState, department: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none">
  <option>IT Support</option>
  <option>Billing</option>
  <option>Sales</option>
@@ -351,12 +351,12 @@ export default function UnivSupportTicket({
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Initial Description</label>
- <textarea required value={formState.description} onChange={e => setFormState({...formState, description: e.target.value})} className="w-full h-32 p-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none resize-none" />
+ <textarea required value={formState.description} onChange={e => setFormState({...formState, description: e.target.value})} className="w-full h-32 p-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none resize-none" />
  </div>
  </form>
  </div>
  
- <div className="px-6 py-4 border-t border-border bg-muted/20 flex justify-end gap-3">
+ <div className="px-6 py-4 border-t border-primary/40 bg-muted/20 flex justify-end gap-3">
  <button type="button" onClick={() => setIsNewTicketOpen(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors">Cancel</button>
  <button type="submit" form="new-ticket-form" disabled={saveMutation.isPending} className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors disabled:opacity-50">
  {saveMutation.isPending ? 'Creating...' : 'Create Ticket'}

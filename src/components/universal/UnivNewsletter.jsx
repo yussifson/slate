@@ -102,7 +102,7 @@ export default function UnivNewsletter() {
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Calendar","Dashboard"].map(v => (
  <button 
  key={v} 
@@ -135,7 +135,7 @@ export default function UnivNewsletter() {
  initial={{ opacity: 0, y: -20}}
  animate={{ opacity: 1, y: 0}}
  exit={{ opacity: 0, y: -20}}
- className="bg-card p-6 rounded-xl border border-border mb-8"
+ className="bg-card p-6 rounded-xl border border-primary/40 mb-8"
  >
  <h2 className="text-xl font-semibold mb-4 text-foreground">
  {editingId ? 'Edit Newsletter' : 'Record Newsletter'}
@@ -232,7 +232,7 @@ export default function UnivNewsletter() {
  key={item.id}
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
- className="bg-card rounded-xl border border-border overflow-hidden transition- flex flex-col"
+ className="bg-card rounded-xl border border-primary/40 overflow-hidden transition- flex flex-col"
  >
  <div className="p-5 flex-grow">
  <div className="flex justify-between items-start mb-3">
@@ -268,7 +268,7 @@ export default function UnivNewsletter() {
  </motion.div>
  ))}
  {data.length === 0 && !isEditing && (
- <div className="col-span-full py-12 text-center bg-card rounded-xl border border-dashed border-primary/50">
+ <div className="col-span-full py-12 text-center bg-card rounded-xl border border-dashed border-primary/40">
  <Mail className="w-12 h-12 text-gray-300 mx-auto mb-3" />
  <p className="text-muted-foreground">No newsletter data available.</p>
  </div>

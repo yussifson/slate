@@ -129,14 +129,14 @@ export default function SHSFinancialAnalytics() {
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
- <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
  <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <BarChart className="w-5 h-5 text-primary dark:text-primary/70" /> Cash Flow Visualization
  </CardTitle>
  </CardHeader>
  <CardContent className="p-16 flex items-center justify-center min-h-[300px]">
  <div className="text-center space-y-4">
- <div className="w-20 h-20 rounded-3xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center border border-slate-100 dark:border-slate-800 dark:border-slate-800">
+ <div className="w-20 h-20 rounded-3xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center border border-primary/40 dark:border-primary/40 dark:border-primary/40">
  <BarChart className="w-10 h-10 text-slate-300" />
  </div>
  <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-medium">Interactive charts are enabled when connecting to a Charting provider.</p>

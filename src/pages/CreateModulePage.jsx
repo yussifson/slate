@@ -289,7 +289,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  <Button variant="ghost" size="icon" onClick={redo} disabled={!canRedo} title="Redo">
  <Redo2 className="w-4 h-4" />
  </Button>
- <div className="w-px h-8 bg-border mx-1" />
+ <div className="w-px h-8 bg-primary/40 mx-1" />
  <Button
  onClick={() => setIsBoltOpen(!isBoltOpen)}
  className={`gap-2 font-bold transition-all ${
@@ -309,10 +309,10 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  <div className={`grid grid-cols-1 ${isSidebarOpen && !isBoltOpen ? 'xl:grid-cols-3' : ''} gap-6 transition-all duration-300`}>
  {isSidebarOpen && (
  <div className="xl:col-span-1 space-y-6 animate-in slide-in-from-left duration-300">
- <div className="bg-card rounded-xl border border-border p-5 space-y-6">
+ <div className="bg-card rounded-xl border border-primary/40 p-5 space-y-6">
  {/* Slate Details */}
  <div className="space-y-4">
- <h3 className="font-semibold text-foreground border-b border-border pb-2">Slate Details</h3>
+ <h3 className="font-semibold text-foreground border-b border-primary/40 pb-2">Slate Details</h3>
  <div>
  <label className="block text-sm font-medium text-foreground mb-1">Slate Name</label>
  <input
@@ -371,7 +371,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
 
  {/* Fields */}
  <div className="space-y-4">
- <h3 className="font-semibold text-foreground border-b border-border pb-2 mt-6">Data Fields</h3>
+ <h3 className="font-semibold text-foreground border-b border-primary/40 pb-2 mt-6">Data Fields</h3>
  <DragDropContext onDragEnd={onDragEnd}>
  <Droppable droppableId="fieldsList">
  {(provided) => (
@@ -383,7 +383,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  ref={provided.innerRef} 
  {...provided.draggableProps} 
  {...provided.dragHandleProps} 
- className={`bg-muted border border-border rounded-lg p-3 relative group ${snapshot.isDragging ? 'shadow-lg ring-1 ring-primary' : ''}`}
+ className={`bg-muted border border-primary/40 rounded-lg p-3 relative group ${snapshot.isDragging ? 'shadow-lg ring-1 ring-primary' : ''}`}
  >
  <button
  type="button"
@@ -448,7 +448,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
 
  {/* Design & Layout */}
  <div className="space-y-4">
- <h3 className="font-semibold text-foreground border-b border-border pb-2 mt-6">Design & Layout</h3>
+ <h3 className="font-semibold text-foreground border-b border-primary/40 pb-2 mt-6">Design & Layout</h3>
  <div>
  <label className="block text-sm font-medium text-foreground mb-1">Layout Style</label>
  <div className="grid grid-cols-2 gap-3">
@@ -459,7 +459,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  setState({ ...state, layout: "table"});
 });
 }}
- className={`flex flex-col items-center justify-center p-3 rounded-lg border text-sm font-medium transition-all ${layout === 'table' ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:bg-muted'}`}
+ className={`flex flex-col items-center justify-center p-3 rounded-lg border text-sm font-medium transition-all ${layout === 'table' ? 'border-primary bg-primary/10 text-primary' : 'border-primary/40 bg-card text-muted-foreground hover:bg-muted'}`}
  >
  <svg className="w-6 h-6 mb-2 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
  Table View
@@ -471,7 +471,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  setState({ ...state, layout: "grid"});
 });
 }}
- className={`flex flex-col items-center justify-center p-3 rounded-lg border text-sm font-medium transition-all ${layout === 'grid' ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:bg-muted'}`}
+ className={`flex flex-col items-center justify-center p-3 rounded-lg border text-sm font-medium transition-all ${layout === 'grid' ? 'border-primary bg-primary/10 text-primary' : 'border-primary/40 bg-card text-muted-foreground hover:bg-muted'}`}
  >
  <svg className="w-6 h-6 mb-2 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
  Grid / Cards
@@ -506,7 +506,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  </div>
 
  {/* Save Buttons */}
- <div className="pt-6 border-t border-border flex justify-end gap-3 mt-6">
+ <div className="pt-6 border-t border-primary/40 flex justify-end gap-3 mt-6">
  <Button type="button" variant="outline" onClick={() => saveModule('draft')} disabled={isSubmitting} className="flex-1">
  {isSubmitting ? "Saving..." : "Save Draft"}
  </Button>
@@ -520,12 +520,12 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
 
  {/* Preview Panel */}
  <div className={isSidebarOpen && !isBoltOpen ? "xl:col-span-2" : isSidebarOpen ? "lg:col-span-2 xl:col-span-1" : "xl:col-span-1 h-full"}>
- <div className="bg-card rounded-xl border border-border overflow-hidden h-full flex flex-col transition-all duration-300">
- <div className="p-4 border-b border-border flex items-center justify-between bg-muted/30">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden h-full flex flex-col transition-all duration-300">
+ <div className="p-4 border-b border-primary/40 flex items-center justify-between bg-muted/30">
  <div className="flex items-center gap-3 text-foreground font-medium">
  <button
  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
- className="p-1.5 rounded-md hover:bg-background border border-transparent hover:border-border transition-colors text-muted-foreground hover:text-foreground"
+ className="p-1.5 rounded-md hover:bg-background border border-transparent hover:border-primary/40 transition-colors text-muted-foreground hover:text-foreground"
  title={isSidebarOpen ? "Collapse Configuration" : "Expand Configuration"}
  >
  {isSidebarOpen ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
@@ -535,7 +535,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  Live Preview
  </div>
  </div>
- <div className="text-xs text-muted-foreground px-2 py-1 bg-background border border-border rounded-md">
+ <div className="text-xs text-muted-foreground px-2 py-1 bg-background border border-primary/40 rounded-md">
  Interactive Environment
  </div>
  </div>

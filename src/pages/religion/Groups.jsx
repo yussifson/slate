@@ -135,7 +135,7 @@ export default function Groups() {
  {isDbLoading ? (
  <div className="py-12 text-center text-muted-foreground">{t("loading_departments", "Loading departments...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
+ <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-primary/40">
  <HeartHandshake className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
  <p className="font-semibold text-lg text-card-foreground">{t("no_groups_configured", "No groups configured")}</p>
  <p className="text-sm mt-1 max-w-md mx-auto">{t(
@@ -147,9 +147,9 @@ export default function Groups() {
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {filtered.map(min => {
  return (
- <div key={min.id} className="bg-card rounded-xl border border-border p-6 transition- relative group">
+ <div key={min.id} className="bg-card rounded-xl border border-primary/40 p-6 transition- relative group">
  <div className="flex justify-between items-start mb-4">
- <div className={`w-14 h-14 rounded-full border-2 flex items-center justify-center ${min.color || 'border-border bg-muted'}`}>
+ <div className={`w-14 h-14 rounded-full border-2 flex items-center justify-center ${min.color || 'border-primary/40 bg-muted'}`}>
  {getIcon(min.iconType)}
  </div>
  <DropdownMenu>
@@ -174,11 +174,11 @@ export default function Groups() {
  <h3 className="text-xl font-bold text-card-foreground mb-1">{min.name}</h3>
  <p className="text-sm text-muted-foreground mb-4">{t("leader", "Leader:")} <Link to="/religion/members" className="font-bold text-primary hover:underline">{min.leader}</Link></p>
  <div className="space-y-2 text-sm text-muted-foreground">
- <div className="flex justify-between items-center py-2 border-t border-border">
+ <div className="flex justify-between items-center py-2 border-t border-primary/40">
  <span>{t("members", "Members")}</span>
  <span className="font-bold bg-muted px-2.5 py-0.5 rounded-full text-card-foreground">{min.members}</span>
  </div>
- <div className="flex justify-between items-center py-2 border-t border-border">
+ <div className="flex justify-between items-center py-2 border-t border-primary/40">
  <span>{t("meetings", "Meetings")}</span>
  <span className="font-medium text-card-foreground text-right">{min.schedule}</span>
  </div>
@@ -190,7 +190,7 @@ export default function Groups() {
  )}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-border">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
  <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
  <HeartHandshake className="w-5 h-5 text-primary" /> {t("create_group_dept", "Create Group")}
  </h2>
@@ -270,7 +270,7 @@ export default function Groups() {
  <div className="mt-6 space-y-4">
  {viewRecord && Object.entries(viewRecord).filter(([k]) => k !== 'id' && k !== 'status').map(([key, value]) => {
  return (
- <div key={key} className="border-b border-border pb-2">
+ <div key={key} className="border-b border-primary/40 pb-2">
  <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
  <p className="mt-1 text-base text-foreground font-semibold">
  {key === 'leader' ? (

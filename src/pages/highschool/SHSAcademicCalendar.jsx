@@ -111,7 +111,7 @@ export default function SHSAcademicCalendar() {
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
- <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
  <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Event Schedule</CardTitle>
@@ -121,7 +121,7 @@ export default function SHSAcademicCalendar() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search events..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -141,7 +141,7 @@ export default function SHSAcademicCalendar() {
  </div>
  ) : (
  <div className="p-6">
- <div className="relative border-l-2 border-slate-200 dark:border-slate-700 ml-4 md:ml-6 space-y-8 pb-8">
+ <div className="relative border-l-2 border-primary/40 dark:border-primary/40 ml-4 md:ml-6 space-y-8 pb-8">
  {filteredEvents.map((evt) => {
  const startDate = new Date(evt.data?.startDate);
  const isPast = startDate < new Date();
@@ -159,7 +159,7 @@ export default function SHSAcademicCalendar() {
  </div>
  <h4 className="text-lg font-bold text-slate-800 dark:text-slate-100">{evt.title}</h4>
  </div>
- <div className="flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-800 dark:border-slate-800 shrink-0">
+ <div className="flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-primary/40 dark:border-primary/40 dark:border-primary/40 shrink-0">
  {getEventIcon(evt.data?.type)}
  <span>
  {new Date(evt.data?.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric'})}
@@ -198,7 +198,7 @@ export default function SHSAcademicCalendar() {
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Event Title</label>
  <Input 
  placeholder="e.g. First Term Begins"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
  value={newEvent.title}
  onChange={e => setNewEvent({...newEvent, title: e.target.value})}
  />
@@ -207,7 +207,7 @@ export default function SHSAcademicCalendar() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Event Type</label>
  <select 
- className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
  value={newEvent.type}
  onChange={e => setNewEvent({...newEvent, type: e.target.value})}
  >
@@ -223,7 +223,7 @@ export default function SHSAcademicCalendar() {
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Start Date</label>
  <Input 
  type="date"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
  value={newEvent.startDate}
  onChange={e => setNewEvent({...newEvent, startDate: e.target.value})}
  />
@@ -232,7 +232,7 @@ export default function SHSAcademicCalendar() {
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">End Date (Optional)</label>
  <Input 
  type="date"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
  value={newEvent.endDate}
  onChange={e => setNewEvent({...newEvent, endDate: e.target.value})}
  />
@@ -242,7 +242,7 @@ export default function SHSAcademicCalendar() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Description</label>
  <textarea 
- className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm"
+ className="w-full h-24 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm"
  placeholder="Optional details..."
  value={newEvent.description}
  onChange={e => setNewEvent({...newEvent, description: e.target.value})}
@@ -250,7 +250,7 @@ export default function SHSAcademicCalendar() {
  </div>
  </div>
  
- <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end gap-3">
+ <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3">
  <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
  Cancel
  </Button>

@@ -128,11 +128,11 @@ export default function SpotlightSearch() {
  onClick={(e) => { if (e.target === e.currentTarget) setIsOpen(false);}}
  >
  <div
- className="w-full max-w-2xl bg-background border border-border rounded-2xl -[0_32px_64px_rgba(0,0,0,0.15)] flex flex-col max-h-[65vh] overflow-hidden animate-in slide-in-from-top-4 duration-200"
+ className="w-full max-w-2xl bg-background border border-primary/40 rounded-2xl -[0_32px_64px_rgba(0,0,0,0.15)] flex flex-col max-h-[65vh] overflow-hidden animate-in slide-in-from-top-4 duration-200"
  onKeyDown={handleKeyNavigation}
  >
  {/* Search Input Bar */}
- <div className="flex items-center gap-3 px-5 py-4 border-b border-border">
+ <div className="flex items-center gap-3 px-5 py-4 border-b border-primary/40">
  <Search className="w-5 h-5 text-primary shrink-0" />
  <input
  ref={inputRef}
@@ -143,7 +143,7 @@ export default function SpotlightSearch() {
  onChange={(e) => setQuery(e.target.value)}
  />
  <div className="flex items-center gap-2 shrink-0 select-none">
- <kbd className="text-[10px] bg-muted text-muted-foreground border border-border rounded-md px-1.5 py-0.5 font-semibold">{t("esc", "ESC")}</kbd>
+ <kbd className="text-[10px] bg-muted text-muted-foreground border border-primary/40 rounded-md px-1.5 py-0.5 font-semibold">{t("esc", "ESC")}</kbd>
  <button
  onClick={() => setIsOpen(false)}
  className="p-1.5 hover:bg-muted rounded-lg transition-colors"
@@ -267,7 +267,7 @@ export default function SpotlightSearch() {
  </div>
 
  {/* Footer */}
- <div className="px-5 py-2.5 bg-muted/30 border-t border-border text-[10px] text-muted-foreground flex items-center justify-between select-none">
+ <div className="px-5 py-2.5 bg-muted/30 border-t border-primary/40 text-[10px] text-muted-foreground flex items-center justify-between select-none">
  <div className="flex items-center gap-3">
  <span className="flex items-center gap-1">↑↓ <span className="text-foreground/60">{t("navigate", "navigate")}</span></span>
  <span>·</span>

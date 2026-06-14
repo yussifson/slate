@@ -48,20 +48,20 @@ export default function UniFinance() {
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="flex items-end justify-between border-b border-[var(--color-border-subtle)] pb-4">
+ <div className="flex items-end justify-between border-b border-primary/40 pb-4">
  <div>
  <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Financial Management</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Track tuition payments, grants, and operational expenses.</p>
  </div>
- <div className="flex items-center bg-[var(--color-surface-2)] p-1 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+ <div className="flex items-center bg-[var(--color-surface-2)] p-1 rounded-[var(--radius-lg)] border border-primary/40">
  {[{ id: 'ledger', label: 'Ledger'}, { id: 'tuition', label: 'Tuition Billing'}, { id: 'add', label: 'New Record'}].map(tab => (
- <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={cn("px-4 py-1.5 text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-all", activeTab === tab.id ? "bg-[var(--color-surface-0)] text-[var(--color-text-primary)] border border-[var(--color-border-subtle)]" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border border-transparent")}>{tab.label}</button>
+ <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={cn("px-4 py-1.5 text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-all", activeTab === tab.id ? "bg-[var(--color-surface-0)] text-[var(--color-text-primary)] border border-primary/40" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border border-transparent")}>{tab.label}</button>
  ))}
  </div>
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
  <div className="flex items-center justify-between">
  <div>
  <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Total Revenue</p>
@@ -73,7 +73,7 @@ export default function UniFinance() {
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
  <div className="flex items-center justify-between">
  <div>
  <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Total Expenses</p>
@@ -114,7 +114,7 @@ export default function UniFinance() {
  )}
  
  {activeTab === 'add' && (
- <div className="max-w-xl mx-auto bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-8 ">
+ <div className="max-w-xl mx-auto bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-8 ">
  <h2 className="font-display text-[var(--text-2xl)] font-semibold tracking-tight text-[var(--color-text-primary)] mb-6">Log Transaction</h2>
  <div className="p-4 bg-[var(--color-info-subtle)] border border-[var(--color-info)] text-[var(--color-info)] rounded-[var(--radius-md)] text-sm mb-6 flex gap-2">
  <Wallet className="w-4 h-4 shrink-0 mt-0.5" />

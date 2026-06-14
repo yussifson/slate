@@ -99,7 +99,7 @@ export default function SHSStudentPromotion() {
 
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
  <Card className="col-span-1 rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
- <CardHeader className="bg-slate-500 dark:bg-slate-800/50 rounded-t-3xl border-b border-slate-200 dark:border-slate-700">
+ <CardHeader className="bg-slate-500 dark:bg-slate-800/50 rounded-t-3xl border-b border-primary/40 dark:border-primary/40">
  <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Promotion Rules</CardTitle>
  <CardDescription>Select the source and target forms</CardDescription>
  </CardHeader>
@@ -107,7 +107,7 @@ export default function SHSStudentPromotion() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-primary dark:text-primary/70 uppercase tracking-wider">Current Level (From)</label>
  <select 
- className="w-full h-11 rounded-xl border border-primary/20 dark:border-slate-600 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary transition-all"
+ className="w-full h-11 rounded-xl border border-primary/20 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary transition-all"
  value={sourceGrade}
  onChange={(e) => {
  setSourceGrade(e.target.value);
@@ -166,10 +166,10 @@ export default function SHSStudentPromotion() {
  </CardHeader>
  
  <div className="flex-1 overflow-hidden flex flex-col">
- <div className="px-6 py-3 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 flex items-center gap-4 border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+ <div className="px-6 py-3 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 flex items-center gap-4 border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider">
  <input 
  type="checkbox" 
- className="w-4 h-4 rounded text-primary dark:text-primary/70 focus:ring-primary dark:focus:ring-primary border-slate-300"
+ className="w-4 h-4 rounded text-primary dark:text-primary/70 focus:ring-primary dark:focus:ring-primary border-primary/40"
  checked={eligibleStudents.length > 0 && selectedStudentIds.size === eligibleStudents.length}
  onChange={toggleAll}
  />
@@ -194,7 +194,7 @@ export default function SHSStudentPromotion() {
  <div key={student.id} className={`px-6 py-3 flex items-center gap-4 transition-colors ${selectedStudentIds.has(student.id) ? 'bg-slate-500 dark:bg-slate-800/50' : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800'}`}>
  <input 
  type="checkbox" 
- className="w-4 h-4 rounded text-primary dark:text-primary/70 focus:ring-primary dark:focus:ring-primary border-slate-300"
+ className="w-4 h-4 rounded text-primary dark:text-primary/70 focus:ring-primary dark:focus:ring-primary border-primary/40"
  checked={selectedStudentIds.has(student.id)}
  onChange={() => toggleStudent(student.id)}
  />
@@ -216,7 +216,7 @@ export default function SHSStudentPromotion() {
  </ScrollArea>
  </div>
  
- <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 rounded-b-3xl flex items-center justify-between">
+ <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 rounded-b-3xl flex items-center justify-between">
  <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">
  <span className="text-primary dark:text-primary/70 font-black">{selectedStudentIds.size}</span> students selected
  </p>

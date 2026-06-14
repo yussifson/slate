@@ -53,7 +53,7 @@ export default function GuestPortal() {
 
  if (!activeRes) {
  return (
- <div className="py-12 text-center max-w-md mx-auto bg-card rounded-xl border border-border p-6 " style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
+ <div className="py-12 text-center max-w-md mx-auto bg-card rounded-xl border border-primary/40 p-6 " style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
  <Key className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary animate-pulse" />
  <p className="font-semibold text-lg text-card-foreground">{t("no_active_reservations", "No Active Reservations")}</p>
  <p className="text-sm text-muted-foreground mt-1">{t(
@@ -82,8 +82,8 @@ export default function GuestPortal() {
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
  {/* Left Column (Reservation Details) */}
  <div className="col-span-1 lg:col-span-2 space-y-6">
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 md:p-5 border-b border-border bg-muted/50 flex justify-between items-center">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 md:p-5 border-b border-primary/40 bg-muted/50 flex justify-between items-center">
  <h3 className="font-bold text-card-foreground flex items-center gap-2"><Calendar className="w-5 h-5 text-muted-foreground" /> {t("your_stay_details", "Your Stay Details")}</h3>
  <Badge variant="outline" className={`${activeRes.status === 'Checked-in' ? 'bg-slate-100 text-primary/90 border-primary/20' : 'bg-slate-100 text-primary/90 border-primary/20'}`}>{activeRes.status}</Badge>
  </div>
@@ -105,7 +105,7 @@ export default function GuestPortal() {
  <p className="font-semibold text-lg">{activeRes.guestsCount} {t("guest_s", "Guest(s)")}</p>
  </div>
  </div>
- <div className="bg-muted/30 p-5 border-t border-border flex justify-between items-center">
+ <div className="bg-muted/30 p-5 border-t border-primary/40 flex justify-between items-center">
  <div>
  <p className="text-sm font-medium">{t("reservation_id", "Reservation ID")}</p>
  <p className="font-mono text-muted-foreground text-sm">{activeRes.resId}</p>
@@ -115,7 +115,7 @@ export default function GuestPortal() {
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
- <div onClick={() => { setRequestData({ ...requestData, type: 'Room Service'}); setShowRequestModal(true);}} className="bg-card hover:bg-muted/50 cursor-pointer transition-colors rounded-xl border border-border p-5 flex items-center gap-4">
+ <div onClick={() => { setRequestData({ ...requestData, type: 'Room Service'}); setShowRequestModal(true);}} className="bg-card hover:bg-muted/50 cursor-pointer transition-colors rounded-xl border border-primary/40 p-5 flex items-center gap-4">
  <div className="w-12 h-12 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
  <Coffee className="w-6 h-6" />
  </div>
@@ -125,7 +125,7 @@ export default function GuestPortal() {
  </div>
  </div>
 
- <div onClick={() => { setRequestData({ ...requestData, type: 'Housekeeping'}); setShowRequestModal(true);}} className="bg-card hover:bg-muted/50 cursor-pointer transition-colors rounded-xl border border-border p-5 flex items-center gap-4">
+ <div onClick={() => { setRequestData({ ...requestData, type: 'Housekeeping'}); setShowRequestModal(true);}} className="bg-card hover:bg-muted/50 cursor-pointer transition-colors rounded-xl border border-primary/40 p-5 flex items-center gap-4">
  <div className="w-12 h-12 rounded-full bg-slate-100 text-primary flex items-center justify-center shrink-0">
  <Bell className="w-6 h-6" />
  </div>
@@ -139,8 +139,8 @@ export default function GuestPortal() {
 
  {/* Right Column (Billing info) */}
  <div className="space-y-6">
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <h3 className="font-bold text-card-foreground">{t("current_bill", "Current Bill")}</h3>
  </div>
  <div className="p-4 space-y-3">
@@ -152,7 +152,7 @@ export default function GuestPortal() {
  <span className="text-muted-foreground">{t("taxes_fees", "Taxes & Fees")}</span>
  <span className="font-medium">${(activeRes.total * 0.1).toFixed(2)}</span>
  </div>
- <div className="border-t border-border pt-3 mt-3 flex justify-between items-center">
+ <div className="border-t border-primary/40 pt-3 mt-3 flex justify-between items-center">
  <span className="font-bold">{t("total_estimated", "Total Estimated")}</span>
  <span className="text-xl font-bold text-primary">${(activeRes.total * 1.1).toFixed(2)}</span>
  </div>

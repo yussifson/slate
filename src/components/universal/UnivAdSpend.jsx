@@ -102,7 +102,7 @@ export default function UnivAdSpend() {
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Calendar","Dashboard"].map(v => (
  <button 
  key={v} 
@@ -135,7 +135,7 @@ export default function UnivAdSpend() {
  initial={{ opacity: 0, y: -20}}
  animate={{ opacity: 1, y: 0}}
  exit={{ opacity: 0, y: -20}}
- className="bg-card p-6 rounded-xl border border-border mb-8"
+ className="bg-card p-6 rounded-xl border border-primary/40 mb-8"
  >
  <h2 className="text-xl font-semibold mb-4 text-foreground">
  {editingId ? 'Edit Ad Spend Record' : 'Log Ad Spend'}
@@ -226,7 +226,7 @@ export default function UnivAdSpend() {
  key={item.id}
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
- className="bg-card rounded-xl border border-border overflow-hidden transition- relative"
+ className="bg-card rounded-xl border border-primary/40 overflow-hidden transition- relative"
  >
  <div className="absolute top-0 right-0 p-3 flex gap-2">
  <button onClick={() => handleEdit(item)} className="p-1.5 bg-card/80 text-muted-foreground hover:text-emerald-600 rounded-full hover:bg-emerald-50 transition-colors">
@@ -239,7 +239,7 @@ export default function UnivAdSpend() {
  <div className="p-6">
  <h3 className="font-bold text-xl text-foreground mb-4">{item.platform}</h3>
  <div className="space-y-4">
- <div className="bg-background p-3 rounded-lg border border-border">
+ <div className="bg-background p-3 rounded-lg border border-primary/40">
  <span className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Spend</span>
  <span className="text-2xl font-bold text-foreground">${Number(item.amount_spent).toLocaleString()}</span>
  </div>
@@ -253,7 +253,7 @@ export default function UnivAdSpend() {
  <span className="font-medium text-foreground">{Number(item.conversions).toLocaleString()}</span>
  </div>
  </div>
- <div className="pt-3 border-t border-border flex justify-between items-center">
+ <div className="pt-3 border-t border-primary/40 flex justify-between items-center">
  <span className="text-sm font-medium text-muted-foreground">ROAS</span>
  <span className="text-lg font-bold text-emerald-600">{Number(item.roas).toFixed(2)}x</span>
  </div>
@@ -262,7 +262,7 @@ export default function UnivAdSpend() {
  </motion.div>
  ))}
  {data.length === 0 && !isEditing && (
- <div className="col-span-full py-12 text-center bg-card rounded-xl border border-dashed border-primary/50">
+ <div className="col-span-full py-12 text-center bg-card rounded-xl border border-dashed border-primary/40">
  <TrendingUp className="w-12 h-12 text-gray-300 mx-auto mb-3" />
  <p className="text-muted-foreground">No ad spend data available.</p>
  </div>

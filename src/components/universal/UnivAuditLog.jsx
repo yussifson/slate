@@ -102,7 +102,7 @@ export default function UnivAuditLog({
  <div className="flex flex-col h-full bg-background font-sans">
  
  {/* Header */}
- <div className="border-b border-border bg-card px-6 sm:px-8 py-6 shrink-0 z-10 relative">
+ <div className="border-b border-primary/40 bg-card px-6 sm:px-8 py-6 shrink-0 z-10 relative">
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-2xl font-extrabold text-foreground tracking-tight flex items-center gap-2">
@@ -126,13 +126,13 @@ export default function UnivAuditLog({
  placeholder="Search by user, resource, or ID..."
  value={searchQuery}
  onChange={e => setSearchQuery(e.target.value)}
- className="w-full h-10 pl-9 pr-4 bg-muted/50 border border-border rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+ className="w-full h-10 pl-9 pr-4 bg-muted/50 border border-primary/40 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
  />
  </div>
  <select 
  value={filterAction}
  onChange={e => setFilterAction(e.target.value)}
- className="h-10 px-3 bg-background border border-border rounded-lg text-sm font-medium focus:border-primary focus:outline-none"
+ className="h-10 px-3 bg-background border border-primary/40 rounded-lg text-sm font-medium focus:border-primary focus:outline-none"
  >
  <option value="ALL">All Actions</option>
  <option value="CREATE">Create</option>
@@ -154,9 +154,9 @@ export default function UnivAuditLog({
  <p className="text-sm mt-1">Adjust your filters or search query.</p>
  </div>
  ) : (
- <div className="bg-card border border-border rounded-2xl overflow-hidden">
+ <div className="bg-card border border-primary/40 rounded-2xl overflow-hidden">
  <table className="w-full text-sm text-left">
- <thead className="bg-muted/50 border-b border-border text-xs uppercase tracking-wider text-muted-foreground">
+ <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-muted-foreground">
  <tr>
  <th className="px-6 py-4 font-semibold w-48">Timestamp</th>
  <th className="px-6 py-4 font-semibold">Action</th>

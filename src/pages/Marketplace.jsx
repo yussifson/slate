@@ -205,7 +205,7 @@ export default function Marketplace() {
  </div>
 
  {/* Filter Bar */}
- <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-slate-900/50 dark:backdrop-blur-xl rounded-2xl border border-slate-200 dark:border-slate-800 p-4 flex flex-col md:flex-row gap-4 items-center justify-between">
+ <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-slate-900/50 dark:backdrop-blur-xl rounded-2xl border border-primary/40 dark:border-primary/40 p-4 flex flex-col md:flex-row gap-4 items-center justify-between">
  <div className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 hide-scrollbar">
  {categories.map(cat => (
  <button
@@ -214,7 +214,7 @@ export default function Marketplace() {
  className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
  activeCategory === cat
  ? 'bg-primary text-white -emerald-600/20'
- : 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
+ : 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 border border-primary/40 dark:border-primary/40 hover:bg-slate-100 dark:hover:bg-slate-700'
 }`}
  >
  {cat}
@@ -227,7 +227,7 @@ export default function Marketplace() {
  placeholder="Search slates..."
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- className="pl-10 h-11 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white placeholder:text-slate-400 rounded-xl w-full focus:bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:focus:bg-slate-800 transition-colors"
+ className="pl-10 h-11 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 border-primary/40 dark:border-primary/40 text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white placeholder:text-slate-400 rounded-xl w-full focus:bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:focus:bg-slate-800 transition-colors"
  />
  </div>
  </div>
@@ -238,8 +238,8 @@ export default function Marketplace() {
  <Loader2 className="w-8 h-8 animate-spin text-primary" />
  </div>
  ) : filteredModules.length === 0 ? (
- <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 rounded-2xl border border-slate-200 border-dashed">
- <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-5 border border-slate-100 dark:border-slate-800 dark:border-slate-800">
+ <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 rounded-2xl border border-primary/40 border-dashed">
+ <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-5 border border-primary/40 dark:border-primary/40 dark:border-primary/40">
  <Blocks className="w-8 h-8 text-slate-400" />
  </div>
  <h3 className="text-xl font-extrabold text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white mb-2">No slates found</h3>
@@ -264,12 +264,12 @@ export default function Marketplace() {
  className={`bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-slate-900 rounded-2xl border transition-all duration-300 flex flex-col overflow-hidden ${
  isInstalled || isOwned
  ? 'border-primary -emerald-500/10 ring-1 ring-primary/20'
- : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:-translate-y-1'
+ : 'border-primary/40 dark:border-primary/40 hover:border-primary/40 dark:hover:border-primary/40 hover:-translate-y-1'
 }`}
  >
  <div className="p-6 sm:p-7 flex-1">
  <div className="flex justify-between items-start mb-6">
- <div className="w-16 h-16 rounded-2xl bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-700 flex items-center justify-center p-3 ">
+ <div className="w-16 h-16 rounded-2xl bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 border border-primary/40 dark:border-primary/40 flex items-center justify-center p-3 ">
  <IconComp className="w-8 h-8 text-primary" />
  </div>
 
@@ -294,13 +294,13 @@ export default function Marketplace() {
  </div>
 
  {/* Card Footer */}
- <div className="px-6 py-5 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/50 flex items-center justify-between">
+ <div className="px-6 py-5 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50/80 dark:bg-slate-900/50 flex items-center justify-between">
  <span className="text-sm font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-400">
  {mod.fields_count ? `${mod.fields_count} fields` : 'Custom module'}
  </span>
 
  {isOwned ? (
- <Badge variant="outline" className="font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 border-slate-200 px-4 py-2 rounded-xl">
+ <Badge variant="outline" className="font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 border-primary/40 px-4 py-2 rounded-xl">
  Your Module
  </Badge>
  ) : isInstalled ? (

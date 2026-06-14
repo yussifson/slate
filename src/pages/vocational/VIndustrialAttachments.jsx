@@ -68,7 +68,7 @@ export default function VIndustrialAttachments() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-amber-500" />
  <Input 
  placeholder="Search trainees or orgs..." 
- className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-amber-100 dark:border-slate-700 rounded-xl focus-visible:ring-amber-600"
+ className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-amber-100 dark:border-primary/40 rounded-xl focus-visible:ring-amber-600"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -140,7 +140,7 @@ export default function VIndustrialAttachments() {
 
  <div className="mt-8">
  <Tabs defaultValue="overview" className="w-full">
- <TabsList className="bg-amber-50/50 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-amber-100 dark:border-slate-700">
+ <TabsList className="bg-amber-50/50 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-amber-100 dark:border-primary/40">
  <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-amber-600">Details</TabsTrigger>
  <TabsTrigger value="attendance" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-amber-600">Attendance</TabsTrigger>
  <TabsTrigger value="tasks" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-amber-600">Tasks & Skills</TabsTrigger>

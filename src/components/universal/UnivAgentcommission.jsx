@@ -105,22 +105,22 @@ export default function UnivAgentCommission() {
 
  <div className="grid grid-cols-3 gap-4">
  {[{ label: 'Total', value: totalCommissions, color: 'text-primary'}, { label: 'Paid Out', value: paid, color: 'text-emerald-600'}, { label: 'Pending', value: totalCommissions - paid, color: 'text-amber-600'}].map(s => (
- <div key={s.label} className="bg-card border border-border rounded-2xl p-4 ">
+ <div key={s.label} className="bg-card border border-primary/40 rounded-2xl p-4 ">
  <p className="text-xs font-bold text-muted-foreground uppercase">{s.label}</p>
  <p className={`text-2xl font-black mt-1 ${s.color}`}>${s.value.toFixed(2)}</p>
  </div>
  ))}
  </div>
 
- <div className="relative max-w-sm"><Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search agents..." className="w-full h-10 pl-9 pr-4 bg-card border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" /></div>
+ <div className="relative max-w-sm"><Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search agents..." className="w-full h-10 pl-9 pr-4 bg-card border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" /></div>
 
  {loading ? <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div> : (
- <div className="flex-1 overflow-auto rounded-2xl border border-border bg-card ">
+ <div className="flex-1 overflow-auto rounded-2xl border border-primary/40 bg-card ">
  <table className="w-full text-sm">
- <thead className="border-b border-border bg-muted/40"><tr>{['Agent', 'Sale Amount', 'Rate %', 'Commission', 'Date', 'Status', ''].map(h => <th key={h} className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{h}</th>)}</tr></thead>
+ <thead className="border-b border-primary/40 bg-muted/40"><tr>{['Agent', 'Sale Amount', 'Rate %', 'Commission', 'Date', 'Status', ''].map(h => <th key={h} className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{h}</th>)}</tr></thead>
  <tbody>
  {filtered.map(r => (
- <motion.tr key={r.id} initial={{ opacity: 0}} animate={{ opacity: 1}} className="border-b border-border/50 hover:bg-muted/20">
+ <motion.tr key={r.id} initial={{ opacity: 0}} animate={{ opacity: 1}} className="border-b border-primary/40 hover:bg-muted/20">
  <td className="px-4 py-3 font-semibold">{r.agent_name}</td>
  <td className="px-4 py-3">${parseFloat(r.sale_amount || 0).toFixed(2)}</td>
  <td className="px-4 py-3">{r.commission_rate}%</td>
@@ -140,19 +140,19 @@ export default function UnivAgentCommission() {
  {modal && (
  <motion.div initial={{ opacity: 0}} animate={{ opacity: 1}} exit={{ opacity: 0}} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
  <motion.div initial={{ scale: 0.95, opacity: 0}} animate={{ scale: 1, opacity: 1}} exit={{ scale: 0.95, opacity: 0}} className="bg-card w-full max-w-lg rounded-2xl ">
- <div className="p-5 border-b border-border flex justify-between items-center"><h2 className="text-xl font-black">{editId ? 'Edit Commission' : 'Add Commission'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-full"><XCircle className="w-5 h-5 text-muted-foreground" /></button></div>
+ <div className="p-5 border-b border-primary/40 flex justify-between items-center"><h2 className="text-xl font-black">{editId ? 'Edit Commission' : 'Add Commission'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-full"><XCircle className="w-5 h-5 text-muted-foreground" /></button></div>
  <form onSubmit={save} className="p-5 grid grid-cols-2 gap-4">
  {[['agent_name', 'Agent Name', 'text', 'full'], ['sale_amount', 'Sale Amount ($)', 'number', ''], ['commission_rate', 'Commission Rate (%)', 'number', ''], ['commission_amount', 'Commission Amount ($)', 'number', ''], ['sale_date', 'Sale Date', 'date', ''], ['notes', 'Notes', 'text', 'full']].map(([k, l, t, span]) => (
  <div key={k} className={span === 'full' ? 'col-span-2' : ''}>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">{l}</label>
- <input required={k === 'agent_name'} type={t} value={form[k]} onChange={e => setForm({ ...form, [k]: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input required={k === 'agent_name'} type={t} value={form[k]} onChange={e => setForm({ ...form, [k]: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  ))}
  <div className="col-span-2">
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Status</label>
- <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">{STATUSES.map(s => <option key={s}>{s}</option>)}</select>
+ <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">{STATUSES.map(s => <option key={s}>{s}</option>)}</select>
  </div>
- <div className="col-span-2 flex justify-end gap-3 pt-2 border-t border-border"><button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button><button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold">{editId ? 'Update' : 'Add'}</button></div>
+ <div className="col-span-2 flex justify-end gap-3 pt-2 border-t border-primary/40"><button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button><button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold">{editId ? 'Update' : 'Add'}</button></div>
  </form>
  </motion.div>
  </motion.div>

@@ -91,7 +91,7 @@ export default function Discipline() {
  <div className="school-card overflow-hidden">
  <div className="overflow-x-auto">
  <table className="w-full text-sm">
- <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-700">
+ <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-primary/40 dark:border-primary/40">
  <tr>
  <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Student Name</th>
  <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Type</th>
@@ -140,7 +140,7 @@ export default function Discipline() {
 
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
- <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+ <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-primary/40 max-h-[90vh] overflow-y-auto custom-scrollbar">
  <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Record' : 'Add Disciplinary Record'}</h2>
  <div className="space-y-3">
  <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("student_name", "Student Name")}</label><Input value={formData.studentName} onChange={e => setFormData({...formData, studentName: e.target.value})} className="mt-1" /></div>

@@ -99,7 +99,7 @@ export default function UnivEMR() {
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Calendar","Dashboard"].map(v => (
  <button 
  key={v} 
@@ -122,8 +122,8 @@ export default function UnivEMR() {
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -131,7 +131,7 @@ export default function UnivEMR() {
  placeholder="Search EMR..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -143,7 +143,7 @@ export default function UnivEMR() {
  animate={{ opacity: 1, y: 0}}
  transition={{ delay: idx * 0.05}}
  key={r.id} 
- className="bg-background border border-border rounded-2xl p-5 hover:border-primary/30 transition-colors group"
+ className="bg-background border border-primary/40 rounded-2xl p-5 hover:border-primary/30 transition-colors group"
  >
  <div className="flex justify-between items-start mb-4">
  <div className="flex items-center gap-3">
@@ -153,7 +153,7 @@ export default function UnivEMR() {
  <div>
  <h3 className="font-bold text-foreground text-lg flex items-center gap-2">
  {r.patient_name || 'Unknown Patient'} 
- <span className="text-xs font-normal text-muted-foreground bg-muted px-2 py-0.5 rounded-full border border-border">
+ <span className="text-xs font-normal text-muted-foreground bg-muted px-2 py-0.5 rounded-full border border-primary/40">
  {new Date(r.visit_date).toLocaleDateString()}
  </span>
  </h3>
@@ -168,7 +168,7 @@ export default function UnivEMR() {
  </div>
  </div>
 
- <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted/30 rounded-xl border border-border/50">
+ <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted/30 rounded-xl border border-primary/40">
  <div>
  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Diagnosis</p>
  <p className="text-sm font-semibold text-foreground">{r.diagnosis || '—'}</p>

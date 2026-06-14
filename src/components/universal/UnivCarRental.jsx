@@ -95,7 +95,7 @@ const UnivCarRental = () => {
  </motion.div>
 
  <div className="view-header grid lg:grid-cols-12 gap-8">
- <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="lg:col-span-4 bg-card p-6 rounded-3xl -slate-200/50 border border-border">
+ <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="lg:col-span-4 bg-card p-6 rounded-3xl -slate-200/50 border border-primary/40">
  <h2 className="text-xl font-bold mb-6 text-foreground flex items-center gap-2 border-b pb-4">
  <Settings className="w-5 h-5 text-blue-500" /> New Booking
  </h2>
@@ -104,37 +104,37 @@ const UnivCarRental = () => {
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Customer Name</label>
  <div className="relative">
  <User className="w-4 h-4 absolute left-3 top-3.5 text-muted-foreground" />
- <input type="text" name="customer_name" value={formData.customer_name} onChange={handleChange} required className="w-full pl-10 p-3 bg-background rounded-xl border border-border focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
+ <input type="text" name="customer_name" value={formData.customer_name} onChange={handleChange} required className="w-full pl-10 p-3 bg-background rounded-xl border border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
  </div>
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Vehicle Model</label>
- <input type="text" name="vehicle_model" value={formData.vehicle_model} onChange={handleChange} required className="w-full p-3 bg-background rounded-xl border border-border focus:ring-2 focus:ring-blue-500 outline-none" />
+ <input type="text" name="vehicle_model" value={formData.vehicle_model} onChange={handleChange} required className="w-full p-3 bg-background rounded-xl border border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">License Plate</label>
- <input type="text" name="license_plate" value={formData.license_plate} onChange={handleChange} required className="w-full p-3 bg-background rounded-xl border border-border focus:ring-2 focus:ring-blue-500 outline-none font-mono uppercase" />
+ <input type="text" name="license_plate" value={formData.license_plate} onChange={handleChange} required className="w-full p-3 bg-background rounded-xl border border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none font-mono uppercase" />
  </div>
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Pick-up</label>
- <input type="date" name="rental_start_date" value={formData.rental_start_date} onChange={handleChange} required className="w-full p-3 bg-background rounded-xl border border-border focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
+ <input type="date" name="rental_start_date" value={formData.rental_start_date} onChange={handleChange} required className="w-full p-3 bg-background rounded-xl border border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Drop-off</label>
- <input type="date" name="rental_end_date" value={formData.rental_end_date} onChange={handleChange} required className="w-full p-3 bg-background rounded-xl border border-border focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
+ <input type="date" name="rental_end_date" value={formData.rental_end_date} onChange={handleChange} required className="w-full p-3 bg-background rounded-xl border border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
  </div>
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Daily Rate ($)</label>
- <input type="number" step="0.01" name="daily_rate" value={formData.daily_rate} onChange={handleChange} required className="w-full p-3 bg-background rounded-xl border border-border focus:ring-2 focus:ring-blue-500 outline-none" />
+ <input type="number" step="0.01" name="daily_rate" value={formData.daily_rate} onChange={handleChange} required className="w-full p-3 bg-background rounded-xl border border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Status</label>
- <select name="status" value={formData.status} onChange={handleChange} className="w-full p-3 bg-background rounded-xl border border-border focus:ring-2 focus:ring-blue-500 outline-none font-medium">
+ <select name="status" value={formData.status} onChange={handleChange} className="w-full p-3 bg-background rounded-xl border border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none font-medium">
  <option value="Reserved">Reserved</option>
  <option value="Active">Active</option>
  <option value="Completed">Completed</option>
@@ -152,15 +152,15 @@ const UnivCarRental = () => {
  {loading ? (
  <div className="flex justify-center py-20"><Car className="w-12 h-12 text-blue-400 animate-bounce" /></div>
  ) : rentals.length === 0 ? (
- <div className="text-center py-20 bg-card rounded-3xl border border-border text-muted-foreground ">No rentals recorded.</div>
+ <div className="text-center py-20 bg-card rounded-3xl border border-primary/40 text-muted-foreground ">No rentals recorded.</div>
  ) : (
  <div className="grid sm:grid-cols-2 gap-6">
  {rentals.map((rental, index) => (
- <motion.div key={rental.id || index} initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className="bg-card rounded-3xl border border-border overflow-hidden transition-">
- <div className="p-5 border-b border-border flex justify-between items-start">
+ <motion.div key={rental.id || index} initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className="bg-card rounded-3xl border border-primary/40 overflow-hidden transition-">
+ <div className="p-5 border-b border-primary/40 flex justify-between items-start">
  <div>
  <h3 className="font-bold text-lg text-foreground">{rental.vehicle_model}</h3>
- <div className="bg-muted px-2 py-0.5 rounded font-mono text-xs font-bold text-muted-foreground inline-block mt-1 border border-border">
+ <div className="bg-muted px-2 py-0.5 rounded font-mono text-xs font-bold text-muted-foreground inline-block mt-1 border border-primary/40">
  {rental.license_plate}
  </div>
  </div>
@@ -189,7 +189,7 @@ const UnivCarRental = () => {
  </div>
  </div>
 
- <div className="flex justify-between items-center pt-2 border-t border-border">
+ <div className="flex justify-between items-center pt-2 border-t border-primary/40">
  <span className="text-sm font-medium text-muted-foreground">Rate</span>
  <span className="font-black text-foreground">${rental.daily_rate}<span className="text-xs font-normal text-muted-foreground">/day</span></span>
  </div>

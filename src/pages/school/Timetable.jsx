@@ -244,7 +244,7 @@ export default function Timetable() {
  <div className="school-card overflow-hidden overflow-x-auto">
  <div className="min-w-[720px]">
  {/* Day Headers */}
- <div className="grid grid-cols-6 divide-x divide-border border-b border-border bg-muted">
+ <div className="grid grid-cols-6 divide-x divide-border border-b border-primary/40 bg-muted">
  <div className="p-4 flex items-center justify-center">
  <Clock className="w-5 h-5 text-muted-foreground" />
  </div>
@@ -322,7 +322,7 @@ export default function Timetable() {
  setFormData({ ...defaultForm, className: selectedClass, day, period: String(period)});
  setShowModal(true);
 }}
- className="w-full h-full min-h-[56px] rounded-lg border-2 border-dashed border-primary/50 text-muted-foreground/40 hover:border-primary/70 hover:text-primary transition-colors flex items-center justify-center"
+ className="w-full h-full min-h-[56px] rounded-lg border-2 border-dashed border-primary/40 text-muted-foreground/40 hover:border-primary/70 hover:text-primary transition-colors flex items-center justify-center"
  >
  <Plus className="w-4 h-4" />
  </button>
@@ -339,7 +339,7 @@ export default function Timetable() {
  {/* Add Slot Modal */}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
- <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto">
+ <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-primary/40 max-h-[90vh] overflow-y-auto">
  <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
  <Plus className="w-5 h-5 text-primary dark:text-primary/70" /> {editingId ? 'Edit Timetable Slot' : 'Add Timetable Slot'}
  </h2>

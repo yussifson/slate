@@ -171,7 +171,7 @@ export default function Employees() {
  </Button>
  </div>
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="stat-card-premium bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+ <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
  <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
  <Users className="w-5 h-5" />
  </div>
@@ -180,7 +180,7 @@ export default function Employees() {
  <p className="text-xs text-muted-foreground">{t("total_staff", "Total Staff")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+ <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
  <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
  <Users className="w-5 h-5" />
  </div>
@@ -189,7 +189,7 @@ export default function Employees() {
  <p className="text-xs text-muted-foreground">{t("active_staff", "Active Staff")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+ <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
  <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600">
  <Users className="w-5 h-5" />
  </div>
@@ -198,7 +198,7 @@ export default function Employees() {
  <p className="text-xs text-muted-foreground">{t("on_leave", "On Leave")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+ <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
  <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
  <Briefcase className="w-5 h-5" />
  </div>
@@ -208,8 +208,8 @@ export default function Employees() {
  </div>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input placeholder="Search employee name or department..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
@@ -229,7 +229,7 @@ export default function Employees() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-border">
+ <thead className="bg-card border-b border-primary/40">
  <tr>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("employee", "Employee")}</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("role_department", "Role & Department")}</th>
@@ -302,7 +302,7 @@ export default function Employees() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-border">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
  <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Employee' : 'Add Employee'}</h2>
  <div className="space-y-3">
  <div>

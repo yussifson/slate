@@ -193,8 +193,8 @@ export default function Wards() {
  const isCritical = occupancyRate >= 90;
 
  return (
- <div key={wIdx} className={`bg-card rounded-xl border overflow-hidden transition-colors ${isCritical ? 'border-red-300' : 'border-border'}`}>
- <div className={`p-4 border-b flex items-center justify-between transition-colors ${isCritical ? 'bg-red-50/80 border-red-200' : 'bg-muted/50 border-border'}`}>
+ <div key={wIdx} className={`bg-card rounded-xl border overflow-hidden transition-colors ${isCritical ? 'border-red-300' : 'border-primary/40'}`}>
+ <div className={`p-4 border-b flex items-center justify-between transition-colors ${isCritical ? 'bg-red-50/80 border-red-200' : 'bg-muted/50 border-primary/40'}`}>
  <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
  <BedDouble className={`w-5 h-5 ${isCritical ? 'text-red-500' : 'text-primary'}`}/> 
  {ward.name}

@@ -124,7 +124,7 @@ export default function SHSProgrammes() {
  {prog.data?.description || 'No description provided.'}
  </p>
  
- <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end gap-2">
+ <div className="mt-6 pt-4 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-2">
  <Button variant="ghost" size="sm" className="text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 font-semibold w-full">
  View Details
  </Button>
@@ -151,7 +151,7 @@ export default function SHSProgrammes() {
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Programme Name</label>
  <Input 
  placeholder="e.g. General Science"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
  value={newProgramme.name}
  onChange={e => setNewProgramme({...newProgramme, name: e.target.value})}
  />
@@ -162,7 +162,7 @@ export default function SHSProgrammes() {
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Code</label>
  <Input 
  placeholder="e.g. SCI"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
  value={newProgramme.code}
  onChange={e => setNewProgramme({...newProgramme, code: e.target.value})}
  />
@@ -171,7 +171,7 @@ export default function SHSProgrammes() {
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Department</label>
  <Input 
  placeholder="e.g. Sciences"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
  value={newProgramme.department}
  onChange={e => setNewProgramme({...newProgramme, department: e.target.value})}
  />
@@ -181,7 +181,7 @@ export default function SHSProgrammes() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Description</label>
  <textarea 
- className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm"
+ className="w-full h-24 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm"
  placeholder="Brief description of this programme..."
  value={newProgramme.description}
  onChange={e => setNewProgramme({...newProgramme, description: e.target.value})}
@@ -189,7 +189,7 @@ export default function SHSProgrammes() {
  </div>
  </div>
  
- <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end gap-3">
+ <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3">
  <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
  Cancel
  </Button>

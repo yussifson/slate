@@ -314,20 +314,20 @@ function DynamicGalleryView({ companyId, pageDef, cleanId, tableName}) {
  placeholder="Search gallery..." 
  value={search}
  onChange={e => setSearch(e.target.value)}
- className="w-full h-10 pl-9 pr-4 bg-card border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"
+ className="w-full h-10 pl-9 pr-4 bg-card border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"
  />
  </div>
  </div>
 
  {filtered.length === 0 ? (
- <div className="p-12 text-center text-muted-foreground border border-dashed border-primary/50 rounded-2xl bg-card/50">
+ <div className="p-12 text-center text-muted-foreground border border-dashed border-primary/40 rounded-2xl bg-card/50">
  <GalleryIcon className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" />
  <p className="font-medium">No items found in visual gallery.</p>
  </div>
  ) : (
  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
  {filtered.map((item) => (
- <div key={item.id} className="bg-card border border-border rounded-2xl p-5 hover:border-primary/40 transition-all flex flex-col justify-between min-h-[160px]">
+ <div key={item.id} className="bg-card border border-primary/40 rounded-2xl p-5 hover:border-primary/40 transition-all flex flex-col justify-between min-h-[160px]">
  <div>
  <div className="flex justify-between items-start mb-2">
  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
@@ -341,7 +341,7 @@ function DynamicGalleryView({ companyId, pageDef, cleanId, tableName}) {
  {item.description || item.notes || item.reason || item.amenities || item.email || item.job_title || 'No additional details available.'}
  </p>
  </div>
- <div className="border-t border-border/50 pt-3 mt-3 flex justify-between items-center text-xs text-muted-foreground">
+ <div className="border-t border-primary/40 pt-3 mt-3 flex justify-between items-center text-xs text-muted-foreground">
  <span>{item.date || item.created_at?.split('T')[0] || 'N/A'}</span>
  {item.price_per_night && <span className="font-black text-foreground">${item.price_per_night}/nt</span>}
  {item.net_pay && <span className="font-black text-foreground">${item.net_pay}</span>}
@@ -944,12 +944,12 @@ export default function OrbitBuildPage() {
  <div className="w-full min-h-[calc(100vh-4rem)] p-6 bg-background flex flex-col gap-4">
  {/* Viewpoint persistence switcher control */}
  {!hideViewpointSwitcher && (
- <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-card/60 border border-border/80 backdrop-blur-md rounded-2xl gap-3 shrink-0">
+ <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-card/60 border border-primary/40 backdrop-blur-md rounded-2xl gap-3 shrink-0">
  <div className="px-2">
  <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider block">Active Viewpoint</span>
  <span className="text-sm font-bold text-foreground capitalize">{currentViewpoint} View</span>
  </div>
- <div className="flex flex-wrap items-center bg-muted/40 p-1 rounded-xl border border-border/50">
+ <div className="flex flex-wrap items-center bg-muted/40 p-1 rounded-xl border border-primary/40">
  {toolbarViews.map((view) => (
  <button
  key={view.id}

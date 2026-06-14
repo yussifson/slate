@@ -120,13 +120,13 @@ export default function SHSSMS() {
  <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">{smsBalance.toLocaleString()}</h3>
  </div>
  </div>
- <Button variant="outline" size="sm" className="rounded-lg h-8 border-slate-200 dark:border-slate-700">Top Up</Button>
+ <Button variant="outline" size="sm" className="rounded-lg h-8 border-primary/40 dark:border-primary/40">Top Up</Button>
  </CardContent>
  </Card>
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
- <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
  <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
@@ -138,7 +138,7 @@ export default function SHSSMS() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search message content..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -173,7 +173,7 @@ export default function SHSSMS() {
  {new Date(msg.data?.sentDate).toLocaleString()}
  </span>
  </div>
- <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-800 dark:border-slate-800 text-sm text-slate-700 dark:text-slate-300 dark:text-slate-200 whitespace-pre-wrap">
+ <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 p-4 rounded-xl border border-primary/40 dark:border-primary/40 dark:border-primary/40 text-sm text-slate-700 dark:text-slate-300 dark:text-slate-200 whitespace-pre-wrap">
  {msg.data?.messageText}
  </div>
  <div className="mt-3 flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">
@@ -204,7 +204,7 @@ export default function SHSSMS() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Target Group</label>
  <select 
- className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
+ className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
  value={newSms.targetGroup}
  onChange={e => setNewSms({...newSms, targetGroup: e.target.value})}
  >
@@ -222,7 +222,7 @@ export default function SHSSMS() {
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Custom Numbers (Comma separated)</label>
  <textarea 
  placeholder="e.g. 0241234567, 0501234567"
- className="w-full h-20 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm font-mono"
+ className="w-full h-20 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm font-mono"
  value={newSms.customNumbers}
  onChange={e => setNewSms({...newSms, customNumbers: e.target.value})}
  />
@@ -238,13 +238,13 @@ export default function SHSSMS() {
  </div>
  <textarea 
  placeholder="Type your message here..."
- className="w-full h-32 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm"
+ className="w-full h-32 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm"
  value={newSms.messageText}
  onChange={e => setNewSms({...newSms, messageText: e.target.value})}
  />
  </div>
  
- <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-start gap-3">
+ <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border border-primary/40 dark:border-primary/40 flex items-start gap-3">
  <MessageSquare className="w-5 h-5 text-primary dark:text-primary/70 shrink-0 mt-0.5" />
  <p className="text-xs text-primary/70 dark:text-primary/10 leading-relaxed">
  Messages exceeding 160 characters will be charged as multiple SMS units per recipient. Estimated cost for this blast will be calculated before sending.
@@ -252,7 +252,7 @@ export default function SHSSMS() {
  </div>
  </div>
  
- <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end gap-3">
+ <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3">
  <Button variant="outline" onClick={() => setIsSendModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
  Cancel
  </Button>

@@ -158,7 +158,7 @@ export default function Policies() {
  </Button>
  </div>
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="stat-card-premium bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+ <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
  <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
  <FileText className="w-5 h-5" />
  </div>
@@ -167,7 +167,7 @@ export default function Policies() {
  <p className="text-xs text-muted-foreground">{t("total_policies", "Total Policies")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+ <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
  <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
  <CheckCircle className="w-5 h-5" />
  </div>
@@ -176,7 +176,7 @@ export default function Policies() {
  <p className="text-xs text-muted-foreground">{t("active", "Active")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+ <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
  <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center text-red-600">
  <Shield className="w-5 h-5" />
  </div>
@@ -185,7 +185,7 @@ export default function Policies() {
  <p className="text-xs text-muted-foreground">{t("lapsed", "Lapsed")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+ <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
  <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
  <span className="font-bold text-lg">$</span>
  </div>
@@ -195,8 +195,8 @@ export default function Policies() {
  </div>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input placeholder="Search policy number or holder..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
@@ -213,7 +213,7 @@ export default function Policies() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-border">
+ <thead className="bg-card border-b border-primary/40">
  <tr>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("policy_no", "Policy No.")}</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("holder_type", "Holder & Type")}</th>
@@ -280,7 +280,7 @@ export default function Policies() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-border">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
  <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Policy' : 'New Policy'}</h2>
  <div className="space-y-3">
  <div>

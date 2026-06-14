@@ -88,7 +88,7 @@ export default function Notices() {
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {filtered.map(n => (
- <div key={n.id} className="bg-card rounded-xl border border-border p-5 transition-all group relative">
+ <div key={n.id} className="bg-card rounded-xl border border-primary/40 p-5 transition-all group relative">
  <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
@@ -116,7 +116,7 @@ export default function Notices() {
  </div>
  </div>
  <p className="text-sm text-muted-foreground line-clamp-3 mb-4 whitespace-pre-wrap">{n.content}</p>
- <div className="flex items-center justify-between pt-4 border-t border-border mt-auto">
+ <div className="flex items-center justify-between pt-4 border-t border-primary/40 mt-auto">
  <span className="text-xs font-medium flex items-center gap-1 text-muted-foreground">
  <Calendar className="w-3.5 h-3.5" /> {n.datePublished ? format(new Date(n.datePublished), 'MMM d, yyyy') : 'No Date'}
  </span>
@@ -129,7 +129,7 @@ export default function Notices() {
 
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
- <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+ <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-primary/40 max-h-[90vh] overflow-y-auto custom-scrollbar">
  <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Notice' : 'Publish Notice'}</h2>
  <div className="space-y-3">
  <div><label className="text-xs font-bold text-muted-foreground uppercase">{t("title", "Title")}</label><Input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="mt-1" /></div>

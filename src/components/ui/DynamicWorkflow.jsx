@@ -34,7 +34,7 @@ export default function DynamicWorkflow({ record, moduleDef, onStatusChange}) {
 };
 
  return (
- <div className="bg-muted/50 border border-border rounded-lg p-4 my-4 flex items-center justify-between ">
+ <div className="bg-muted/50 border border-primary/40 rounded-lg p-4 my-4 flex items-center justify-between ">
  <div className="flex items-center space-x-2">
  {workflow.map((step, idx) => {
  const isCompleted = idx < currentIndex;

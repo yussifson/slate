@@ -107,10 +107,10 @@ export default function EmailInbox() {
  ];
 
  return (
- <div className="flex h-[calc(100vh-100px)] overflow-hidden rounded-xl border border-border bg-card ">
+ <div className="flex h-[calc(100vh-100px)] overflow-hidden rounded-xl border border-primary/40 bg-card ">
 
  {/* ── Left Sidebar ── */}
- <aside className="w-56 shrink-0 flex flex-col border-r border-border bg-muted/30 dark:bg-slate-900/60">
+ <aside className="w-56 shrink-0 flex flex-col border-r border-primary/40 bg-muted/30 dark:bg-slate-900/60">
  {/* Compose Button */}
  <div className="p-4">
  <Button
@@ -152,7 +152,7 @@ export default function EmailInbox() {
  </nav>
 
  {/* Storage indicator */}
- <div className="p-4 border-t border-border">
+ <div className="p-4 border-t border-primary/40">
  <p className="text-[11px] text-muted-foreground font-medium mb-1.5">Storage</p>
  <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
  <div className="h-full w-1/4 bg-primary rounded-full" />
@@ -163,11 +163,11 @@ export default function EmailInbox() {
 
  {/* ── Middle Pane: Email List ── */}
  <div className={cn(
- "flex flex-col border-r border-border bg-background transition-all",
+ "flex flex-col border-r border-primary/40 bg-background transition-all",
  selectedEmail ? "hidden lg:flex w-[340px] shrink-0" : "flex-1"
  )}>
  {/* Search Header */}
- <div className="h-[57px] border-b border-border flex items-center px-4 gap-3 shrink-0 bg-background">
+ <div className="h-[57px] border-b border-primary/40 flex items-center px-4 gap-3 shrink-0 bg-background">
  <div className="relative flex-1">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <input
@@ -288,7 +288,7 @@ function EmailRow({ email, isSelected, onClick, isStarred, onToggleStar}) {
  : "border-transparent hover:bg-muted/50"
  )}
  >
- <img src={avatarUrl} alt={senderName} className="w-9 h-9 rounded-full shrink-0 mt-0.5 object-cover border border-border" />
+ <img src={avatarUrl} alt={senderName} className="w-9 h-9 rounded-full shrink-0 mt-0.5 object-cover border border-primary/40" />
  <div className="flex-1 min-w-0">
  <div className="flex items-center justify-between gap-2 mb-0.5">
  <span className="text-sm font-semibold text-foreground truncate">{senderName}</span>
@@ -317,7 +317,7 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
  return (
  <div className="flex flex-col h-full bg-background">
  {/* Toolbar */}
- <div className="h-[57px] border-b border-border flex items-center px-4 gap-1 shrink-0">
+ <div className="h-[57px] border-b border-primary/40 flex items-center px-4 gap-1 shrink-0">
  <button onClick={onBack} className="lg:hidden p-2 hover:bg-muted rounded-lg text-muted-foreground mr-1">
  <ArrowLeft className="w-4 h-4" />
  </button>
@@ -327,7 +327,7 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
  <ActionBtn icon={CornerUpRight} label="Forward" onClick={onForward} />
  </div>
 
- <div className="w-px h-5 bg-border mx-2" />
+ <div className="w-px h-5 bg-primary/40 mx-2" />
 
  <ActionBtn icon={Trash2} label="Delete" onClick={onDelete} danger />
 
@@ -350,8 +350,8 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
  </div>
 
  {/* Sender card */}
- <div className="flex items-start gap-3 p-4 rounded-xl bg-muted/40 border border-border mb-7">
- <img src={avatarUrl} alt={senderName} className="w-10 h-10 rounded-full shrink-0 object-cover border border-border" />
+ <div className="flex items-start gap-3 p-4 rounded-xl bg-muted/40 border border-primary/40 mb-7">
+ <img src={avatarUrl} alt={senderName} className="w-10 h-10 rounded-full shrink-0 object-cover border border-primary/40" />
  <div className="flex-1 min-w-0">
  <div className="flex items-start justify-between gap-4">
  <div>
@@ -376,14 +376,14 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
  try {
  const atts = typeof email.attachments === "string" ? JSON.parse(email.attachments) : email.attachments;
  return (
- <div className="border-t border-border pt-5">
+ <div className="border-t border-primary/40 pt-5">
  <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-1.5">
  <Paperclip className="w-3.5 h-3.5" /> {atts.length} Attachment{atts.length !== 1 ? "s" : ""}
  </h4>
  <div className="flex flex-wrap gap-3">
  {atts.map((att, i) => (
  <a key={i} href={att.url} target="_blank" rel="noopener noreferrer"
- className="flex items-center gap-3 p-3 rounded-xl border border-border hover:bg-muted/50 transition-colors max-w-xs group">
+ className="flex items-center gap-3 p-3 rounded-xl border border-primary/40 hover:bg-muted/50 transition-colors max-w-xs group">
  <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
  <Paperclip className="w-4 h-4" />
  </div>
@@ -501,13 +501,13 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
 
  return (
  <div className={cn(
- "fixed right-6 bottom-0 z-50 flex flex-col rounded-t-xl overflow-hidden border border-border transition-all duration-200",
+ "fixed right-6 bottom-0 z-50 flex flex-col rounded-t-xl overflow-hidden border border-primary/40 transition-all duration-200",
  "bg-card dark:bg-slate-900",
  isMinimized ? "w-72 h-12" : "w-[520px] h-[560px] max-h-[85vh]"
  )}>
  {/* Compose Header */}
  <div
- className="h-12 flex items-center justify-between px-4 bg-muted/60 dark:bg-slate-800 border-b border-border cursor-pointer shrink-0"
+ className="h-12 flex items-center justify-between px-4 bg-muted/60 dark:bg-slate-800 border-b border-primary/40 cursor-pointer shrink-0"
  onClick={onToggleMinimize}
  >
  <span className="text-sm font-semibold text-foreground">New Message</span>
@@ -525,7 +525,7 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
  <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
 
  {/* To */}
- <div className="px-4 py-2.5 border-b border-border flex items-start gap-2 text-sm relative">
+ <div className="px-4 py-2.5 border-b border-primary/40 flex items-start gap-2 text-sm relative">
  <span className="text-muted-foreground w-8 shrink-0 pt-1">To</span>
  <div className="flex-1 flex flex-wrap gap-1.5 items-center relative min-w-0">
  {staff.filter(s => selectedStaffIds.includes(s.id)).map(s => (
@@ -559,7 +559,7 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
  onBlur={() => setTimeout(() => setRecipientPickerOpen(false), 200)}
  />
  {recipientPickerOpen && dropdownStaff.length > 0 && (
- <div className="absolute top-full left-0 w-full max-h-44 overflow-y-auto bg-popover border border-border rounded-lg mt-1 z-30">
+ <div className="absolute top-full left-0 w-full max-h-44 overflow-y-auto bg-popover border border-primary/40 rounded-lg mt-1 z-30">
  {dropdownStaff.map(m => (
  <div key={m.id} className="flex items-center gap-3 px-3 py-2 hover:bg-muted cursor-pointer"
  onMouseDown={() => { toggleStaff(m.id); setRecipientQuery("");}}>
@@ -580,14 +580,14 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
 
  {/* Cc */}
  {showCc && (
- <div className="px-4 py-2.5 border-b border-border flex items-center gap-2 text-sm">
+ <div className="px-4 py-2.5 border-b border-primary/40 flex items-center gap-2 text-sm">
  <span className="text-muted-foreground w-8 shrink-0">Cc</span>
  <input type="text" className="flex-1 outline-none text-sm bg-transparent text-foreground" />
  </div>
  )}
 
  {/* Subject */}
- <div className="px-4 py-2.5 border-b border-border">
+ <div className="px-4 py-2.5 border-b border-primary/40">
  <input
  type="text"
  placeholder="Subject"
@@ -611,7 +611,7 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
  </div>
 
  {/* Footer */}
- <div className="px-4 py-3 border-t border-border flex items-center justify-between bg-muted/30 dark:bg-slate-900/60 shrink-0">
+ <div className="px-4 py-3 border-t border-primary/40 flex items-center justify-between bg-muted/30 dark:bg-slate-900/60 shrink-0">
  <div className="flex items-center gap-2">
  <Button type="submit" disabled={isLoading || isUploading}
  className="bg-primary hover:bg-primary/90 text-white px-5 rounded-lg font-semibold h-8 text-sm">

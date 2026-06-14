@@ -156,7 +156,7 @@ export default function UnivQualityControl() {
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Calendar","Dashboard"].map(v => (
  <button 
  key={v} 
@@ -179,8 +179,8 @@ export default function UnivQualityControl() {
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -188,7 +188,7 @@ export default function UnivQualityControl() {
  placeholder="Search batches, inspectors..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -201,10 +201,10 @@ export default function UnivQualityControl() {
  animate={{ opacity: 1, scale: 1}}
  transition={{ delay: idx * 0.05}}
  key={i.id} 
- className="bg-background border border-border rounded-2xl p-5 hover:border-primary/40 transition-colors flex flex-col h-full justify-between group relative"
+ className="bg-background border border-primary/40 rounded-2xl p-5 hover:border-primary/40 transition-colors flex flex-col h-full justify-between group relative"
  >
  <div>
- <div className="flex justify-between items-start mb-4 border-b border-border pb-4">
+ <div className="flex justify-between items-start mb-4 border-b border-primary/40 pb-4">
  <div>
  <h3 className="font-bold text-lg text-foreground flex items-center gap-2">
  <ClipboardList className="w-5 h-5 text-primary" /> <span className="line-clamp-1">{i.batch_number}</span>
@@ -221,7 +221,7 @@ export default function UnivQualityControl() {
  i.result === 'Pass' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
  i.result === 'Fail' ? 'bg-red-50 text-red-700 border-red-200' : 
  i.result === 'Rework' ? 'bg-orange-50 text-orange-700 border-orange-200' : 
- 'bg-background text-foreground border-border'
+ 'bg-background text-foreground border-primary/40'
 }`}>
  {i.result === 'Pass' && <CheckCircle2 className="w-4 h-4" />}
  {i.result === 'Fail' && <XCircle className="w-4 h-4" />}
@@ -231,7 +231,7 @@ export default function UnivQualityControl() {
  </span>
  </div>
  
- <div className="text-sm text-foreground bg-muted/30 p-3 rounded-lg border border-border/50">
+ <div className="text-sm text-foreground bg-muted/30 p-3 rounded-lg border border-primary/40">
  <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Notes</div>
  {i.notes || <span className="text-muted-foreground italic">No notes provided.</span>}
  </div>
@@ -239,7 +239,7 @@ export default function UnivQualityControl() {
  </div>
 
  <div>
- <div className="pt-4 border-t border-border flex justify-between items-center text-sm mb-2">
+ <div className="pt-4 border-t border-primary/40 flex justify-between items-center text-sm mb-2">
  <span className="text-muted-foreground">Date:</span>
  <span className="font-semibold text-foreground">{i.inspection_date || '—'}</span>
  </div>
@@ -272,9 +272,9 @@ export default function UnivQualityControl() {
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
  exit={{ opacity: 0, scale: 0.95}}
- className="bg-card border border-border rounded-2xl w-full max-w-md overflow-hidden"
+ className="bg-card border border-primary/40 rounded-2xl w-full max-w-md overflow-hidden"
  >
- <div className="flex items-center justify-between p-4 border-b border-border">
+ <div className="flex items-center justify-between p-4 border-b border-primary/40">
  <h3 className="font-semibold text-foreground">{editingId ? 'Edit QA Inspection' : 'New QA Inspection'}</h3>
  <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:text-foreground">
  <CloseIcon className="w-5 h-5" />
@@ -284,11 +284,11 @@ export default function UnivQualityControl() {
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Batch Number</label>
- <input required value={form.batch_number} onChange={e => setForm({...form, batch_number: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+ <input required value={form.batch_number} onChange={e => setForm({...form, batch_number: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
  </div>
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Result</label>
- <select value={form.result} onChange={e => setForm({...form, result: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm">
+ <select value={form.result} onChange={e => setForm({...form, result: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm">
  <option value="Pending">Pending</option>
  <option value="Pass">Pass</option>
  <option value="Fail">Fail</option>
@@ -300,17 +300,17 @@ export default function UnivQualityControl() {
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Inspector Name</label>
- <input value={form.inspector_name} onChange={e => setForm({...form, inspector_name: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+ <input value={form.inspector_name} onChange={e => setForm({...form, inspector_name: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
  </div>
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Inspection Date</label>
- <input type="date" value={form.inspection_date} onChange={e => setForm({...form, inspection_date: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+ <input type="date" value={form.inspection_date} onChange={e => setForm({...form, inspection_date: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
  </div>
  </div>
 
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Notes / Remarks</label>
- <textarea rows={3} value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" placeholder="Details of inspection findings..." />
+ <textarea rows={3} value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" placeholder="Details of inspection findings..." />
  </div>
 
  <div className="pt-4 flex justify-end gap-2">

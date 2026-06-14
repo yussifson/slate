@@ -62,7 +62,7 @@ export default function AdminBroadcasts() {
  title="System Broadcasts" 
  subtitle="Push release notes, maintenance alerts, or notifications to all tenants." 
  />
- <div className="bg-card border border-border rounded-2xl p-8 space-y-6 ">
+ <div className="bg-card border border-primary/40 rounded-2xl p-8 space-y-6 ">
  <div className="flex items-center gap-3 mb-2">
  <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800/50 text-primary flex items-center justify-center">
  <Bell className="w-6 h-6" />
@@ -76,7 +76,7 @@ export default function AdminBroadcasts() {
  </div>
  </div>
  
- <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+ <div className="space-y-4 pt-4 border-t border-primary/40 dark:border-primary/40">
  <div>
  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">{t("message_body", "Message Body")}</label>
  <textarea
@@ -84,7 +84,7 @@ export default function AdminBroadcasts() {
  onChange={(e) => setAnnouncementText(e.target.value)}
  placeholder="e.g. Scheduled maintenance this Saturday at 2:00 AM UTC. Expect 15 minutes of downtime."
  rows={6}
- className="w-full p-4 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-slate-50/50 dark:bg-transparent hover:bg-slate-50 dark:bg-slate-800/50 transition-colors resize-none"
+ className="w-full p-4 border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-slate-50/50 dark:bg-transparent hover:bg-slate-50 dark:bg-slate-800/50 transition-colors resize-none"
  />
  </div>
  

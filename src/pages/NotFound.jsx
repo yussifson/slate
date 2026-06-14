@@ -8,7 +8,7 @@ export default function NotFound() {
  const { t} = useTranslation();
  return (
  <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-800/50 p-6 font-sans">
- <div className="max-w-md w-full bg-white dark:bg-slate-900/40 border border-slate-200 rounded-3xl p-10 text-center -slate-200/50">
+ <div className="max-w-md w-full bg-white dark:bg-slate-900/40 border border-primary/40 rounded-3xl p-10 text-center -slate-200/50">
  <div className="w-24 h-24 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-8 ">
  <FileQuestion className="w-12 h-12" strokeWidth={1.5} />
  </div>

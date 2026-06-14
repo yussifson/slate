@@ -115,7 +115,7 @@ function OverviewPanel({ record, onSave}) {
  {editing[key] ? (
  <input
  autoFocus
- className="w-full text-sm bg-muted/60 border border-border rounded-md px-3 py-1.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+ className="w-full text-sm bg-muted/60 border border-primary/40 rounded-md px-3 py-1.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
  value={String(values[key] ?? "")}
  onChange={(e) => handleChange(key, e.target.value)}
  onBlur={() => handleBlur(key)}
@@ -134,7 +134,7 @@ function OverviewPanel({ record, onSave}) {
  </div>
  </div>
  {dirty && (
- <div className="border-t border-border px-6 py-3 flex justify-end">
+ <div className="border-t border-primary/40 px-6 py-3 flex justify-end">
  <Button size="sm" onClick={handleSave} className="gap-2">
  <Save className="w-4 h-4" />
  Save Changes
@@ -197,7 +197,7 @@ function NotesPanel({ recordId}) {
  placeholder="Add a note…"
  value={draft}
  onChange={(e) => setDraft(e.target.value)}
- className="w-full text-sm bg-muted/60 border border-border rounded-lg px-3 py-2.5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+ className="w-full text-sm bg-muted/60 border border-primary/40 rounded-lg px-3 py-2.5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
  />
  <div className="flex justify-end">
  <Button size="sm" disabled={!draft.trim()} onClick={handleAdd} className="gap-2">
@@ -217,7 +217,7 @@ function NotesPanel({ recordId}) {
  notes.map((note) => (
  <div
  key={note.id}
- className="rounded-lg border border-border bg-muted/30 px-4 py-3 space-y-1"
+ className="rounded-lg border border-primary/40 bg-muted/30 px-4 py-3 space-y-1"
  >
  <p className="text-sm text-foreground whitespace-pre-wrap">{note.text}</p>
  <p className="text-[11px] text-muted-foreground">
@@ -280,7 +280,7 @@ function TimelinePanel({ record}) {
  <div className="p-6 overflow-y-auto">
  <div className="relative ml-4">
  {/* Vertical line */}
- <div className="absolute left-3 top-2 bottom-2 w-px bg-border" />
+ <div className="absolute left-3 top-2 bottom-2 w-px bg-primary/40" />
 
  <div className="space-y-8">
  {milestones.map((m, i) => (
@@ -381,9 +381,9 @@ export default function RecordWorkspace({
  className="fixed inset-y-0 right-0 z-50 flex w-full max-w-5xl "
  >
  {/* ── Left sidebar ── */}
- <div className="w-[280px] flex-shrink-0 flex flex-col bg-card border-r border-border overflow-y-auto">
+ <div className="w-[280px] flex-shrink-0 flex flex-col bg-card border-r border-primary/40 overflow-y-auto">
  {/* Header */}
- <div className="flex items-center justify-between px-4 py-4 border-b border-border">
+ <div className="flex items-center justify-between px-4 py-4 border-b border-primary/40">
  <button
  onClick={onClose}
  className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
@@ -400,7 +400,7 @@ export default function RecordWorkspace({
  </div>
 
  {/* Title & context */}
- <div className="px-4 pt-5 pb-4 border-b border-border space-y-2">
+ <div className="px-4 pt-5 pb-4 border-b border-primary/40 space-y-2">
  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
  {tableName || "Record"}
  </p>
@@ -433,7 +433,7 @@ export default function RecordWorkspace({
 
  {/* Footer: record ID */}
  {record?.id && (
- <div className="px-4 py-3 border-t border-border">
+ <div className="px-4 py-3 border-t border-primary/40">
  <p className="text-[10px] font-mono text-muted-foreground/50 truncate">
  id: {record.id}
  </p>
@@ -444,7 +444,7 @@ export default function RecordWorkspace({
  {/* ── Right panel ── */}
  <div className="flex-1 flex flex-col bg-background min-w-0">
  {/* Tab bar */}
- <div className="flex items-center gap-1 px-4 border-b border-border bg-card overflow-x-auto">
+ <div className="flex items-center gap-1 px-4 border-b border-primary/40 bg-card overflow-x-auto">
  {TABS.map(({ id, label, icon: Icon}) => (
  <button
  key={id}
@@ -453,7 +453,7 @@ export default function RecordWorkspace({
  "flex items-center gap-2 px-4 py-3.5 text-sm font-medium transition-colors border-b-2 whitespace-nowrap",
  activeTab === id
  ? "border-primary text-primary"
- : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
+ : "border-transparent text-muted-foreground hover:text-foreground hover:border-primary/40"
  )}
  >
  <Icon className="w-4 h-4" />

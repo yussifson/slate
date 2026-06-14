@@ -381,10 +381,10 @@ export default function OnboardingWizard() {
  <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-primary/20 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
  {/* Main Container */}
- <div className="w-full h-[100dvh] sm:h-auto sm:max-w-3xl bg-card sm:rounded-3xl sm:-[0_20px_50px_-12px_rgba(0,0,0,0.1)] sm:border border-border relative z-10 flex flex-col sm:my-10">
+ <div className="w-full h-[100dvh] sm:h-auto sm:max-w-3xl bg-card sm:rounded-3xl sm:-[0_20px_50px_-12px_rgba(0,0,0,0.1)] sm:border border-primary/40 relative z-10 flex flex-col sm:my-10">
  
  {/* Header Section */}
- <div className="px-5 sm:px-8 pt-6 sm:pt-8 pb-6 border-b border-border shrink-0">
+ <div className="px-5 sm:px-8 pt-6 sm:pt-8 pb-6 border-b border-primary/40 shrink-0">
  <div className="flex items-center justify-between mb-8">
  <div className="flex items-center gap-3">
  <img src="/slate-logo.svg" alt="Slate" className="h-10" />
@@ -410,7 +410,7 @@ export default function OnboardingWizard() {
  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ring-4 ring-background
  ${isCompleted ? 'bg-primary text-white ' : 
  isCurrent ? 'bg-card border-2 border-primary text-primary ' : 
- 'bg-muted text-muted-foreground border-2 border-border'}`}
+ 'bg-muted text-muted-foreground border-2 border-primary/40'}`}
  >
  {isCompleted ? <Check className="w-4 h-4" /> : s.num}
  </div>
@@ -442,13 +442,13 @@ export default function OnboardingWizard() {
 
  <div className="space-y-4">
  {(setupMode === 'template' || setupMode === 'custom') && (
- <div className="space-y-3 p-5 rounded-2xl bg-slate-50 border border-slate-200">
+ <div className="space-y-3 p-5 rounded-2xl bg-slate-50 border border-primary/40">
  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("industry", "Workslate")}</label>
  <Select value={industry} onValueChange={setIndustry}>
- <SelectTrigger className="h-12 bg-card border-border rounded-xl text-slate-900 focus:ring-primary">
+ <SelectTrigger className="h-12 bg-card border-primary/40 rounded-xl text-slate-900 focus:ring-primary">
  <SelectValue />
  </SelectTrigger>
- <SelectContent className="bg-card text-slate-900 border-border">
+ <SelectContent className="bg-card text-slate-900 border-primary/40">
  <SelectItem value="law">{t("law_firm", "Law Firm")}</SelectItem>
  <SelectItem value="retail">{t("retail_pos", "Retail / POS")}</SelectItem>
  <SelectItem value="school">{t("school_education", "School & Education")}</SelectItem>
@@ -465,10 +465,10 @@ export default function OnboardingWizard() {
  <div className="space-y-2 mt-4">
  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Education Level</label>
  <Select value={educationLevel} onValueChange={setEducationLevel}>
- <SelectTrigger className="w-full h-12 bg-card border-border rounded-xl text-slate-900 focus:ring-primary">
+ <SelectTrigger className="w-full h-12 bg-card border-primary/40 rounded-xl text-slate-900 focus:ring-primary">
  <SelectValue placeholder="Select level" />
  </SelectTrigger>
- <SelectContent className="bg-card text-slate-900 border-border">
+ <SelectContent className="bg-card text-slate-900 border-primary/40">
  <SelectItem value="basic">Basic</SelectItem>
  <SelectItem value="highschool">High School</SelectItem>
  <SelectItem value="university">University</SelectItem>
@@ -483,7 +483,7 @@ export default function OnboardingWizard() {
  )}
 
  {/* Template Option */}
- <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'template' ? 'border-primary bg-primary/5 ' : 'border-border hover:border-primary/30 bg-card'}`}>
+ <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'template' ? 'border-primary bg-primary/5 ' : 'border-primary/40 hover:border-primary/30 bg-card'}`}>
  <input 
  type="radio" 
  name="setupMode" 
@@ -493,7 +493,7 @@ export default function OnboardingWizard() {
  className="sr-only" 
  />
  <div className="flex items-start gap-4">
- <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'template' ? 'border-primary bg-primary' : 'border-slate-300'}`}>
+ <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'template' ? 'border-primary bg-primary' : 'border-primary/40'}`}>
  {setupMode === 'template' && <div className="w-2 h-2 rounded-full bg-card"></div>}
  </div>
  <div>
@@ -504,7 +504,7 @@ export default function OnboardingWizard() {
  </label>
  
  {/* Orbit Option */}
- <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'orbit' ? 'border-primary bg-primary/5 ' : 'border-border hover:border-primary/30 bg-card'}`}>
+ <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'orbit' ? 'border-primary bg-primary/5 ' : 'border-primary/40 hover:border-primary/30 bg-card'}`}>
  <input 
  type="radio" 
  name="setupMode" 
@@ -514,7 +514,7 @@ export default function OnboardingWizard() {
  className="sr-only" 
  />
  <div className="flex items-start gap-4">
- <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'orbit' ? 'border-primary bg-primary' : 'border-slate-300'}`}>
+ <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'orbit' ? 'border-primary bg-primary' : 'border-primary/40'}`}>
  {setupMode === 'orbit' && <div className="w-2 h-2 rounded-full bg-card"></div>}
  </div>
  <div>
@@ -528,7 +528,7 @@ export default function OnboardingWizard() {
  </label>
 
  {/* Custom Option */}
- <div className={`relative p-5 rounded-2xl border-2 transition-all duration-200 ${setupMode === 'custom' ? 'border-primary bg-primary/5' : 'border-border hover:border-slate-300 bg-card'}`}>
+ <div className={`relative p-5 rounded-2xl border-2 transition-all duration-200 ${setupMode === 'custom' ? 'border-primary bg-primary/5' : 'border-primary/40 hover:border-primary/40 bg-card'}`}>
  <label className="flex items-start gap-4 cursor-pointer">
  <input 
  type="radio" 
@@ -538,7 +538,7 @@ export default function OnboardingWizard() {
  onChange={() => setSetupMode('custom')} 
  className="sr-only" 
  />
- <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'custom' ? 'border-primary bg-primary' : 'border-slate-300'}`}>
+ <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'custom' ? 'border-primary bg-primary' : 'border-primary/40'}`}>
  {setupMode === 'custom' && <div className="w-2 h-2 rounded-full bg-card"></div>}
  </div>
  <div>
@@ -548,10 +548,10 @@ export default function OnboardingWizard() {
  </label>
  
  {setupMode === 'custom' && (
- <div className="mt-5 pt-5 border-t border-border pl-9">
+ <div className="mt-5 pt-5 border-t border-primary/40 pl-9">
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
  {INDUSTRIES[industry]?.nav?.filter(n => !['/', '/settings', '/integrations', '/admin'].includes(n.path)).map((navItem) => (
- <label key={navItem.path} className="flex items-center space-x-3 p-3 bg-card border border-border rounded-xl cursor-pointer hover:border-slate-400 transition-colors group">
+ <label key={navItem.path} className="flex items-center space-x-3 p-3 bg-card border border-primary/40 rounded-xl cursor-pointer hover:border-primary/40 transition-colors group">
  <div className="relative flex items-center justify-center">
  <input 
  type="checkbox" 
@@ -562,7 +562,7 @@ export default function OnboardingWizard() {
 }}
  className="peer sr-only"
  />
- <div className="w-5 h-5 border-2 border-slate-300 rounded peer-checked:bg-slate-800 peer-checked:border-slate-800 transition-colors"></div>
+ <div className="w-5 h-5 border-2 border-primary/40 rounded peer-checked:bg-slate-800 peer-checked:border-primary/40 transition-colors"></div>
  <Check className="absolute w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" strokeWidth={3} />
  </div>
  <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">{navItem.label}</span>
@@ -645,10 +645,10 @@ export default function OnboardingWizard() {
  <Select value={country} onValueChange={(v) => {
  setCountry(v);
 }}>
- <SelectTrigger className="h-12 bg-card border-border rounded-xl text-slate-900 focus:ring-primary">
+ <SelectTrigger className="h-12 bg-card border-primary/40 rounded-xl text-slate-900 focus:ring-primary">
  <SelectValue />
  </SelectTrigger>
- <SelectContent className="bg-card text-slate-900 border-border">
+ <SelectContent className="bg-card text-slate-900 border-primary/40">
  {COUNTRIES_CURRENCIES.map((c) => (
  <SelectItem key={c.country} value={c.country}>{c.country}</SelectItem>
  ))}
@@ -659,10 +659,10 @@ export default function OnboardingWizard() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{t("currency", "Currency")}</label>
  <Select value={currency} onValueChange={setCurrency}>
- <SelectTrigger className="h-12 bg-card border-border rounded-xl text-slate-900 focus:ring-primary">
+ <SelectTrigger className="h-12 bg-card border-primary/40 rounded-xl text-slate-900 focus:ring-primary">
  <SelectValue />
  </SelectTrigger>
- <SelectContent className="bg-card text-slate-900 border-border">
+ <SelectContent className="bg-card text-slate-900 border-primary/40">
  {Array.from(new Set(COUNTRIES_CURRENCIES.map(c => c.currency))).sort().map(curr => (
  <SelectItem key={curr} value={curr}>{curr}</SelectItem>
  ))}
@@ -689,7 +689,7 @@ export default function OnboardingWizard() {
  </p>
  </div>
 
- <div className="bg-muted/30 rounded-2xl p-5 border border-border space-y-4">
+ <div className="bg-muted/30 rounded-2xl p-5 border border-primary/40 space-y-4">
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Full Name</label>
@@ -698,7 +698,7 @@ export default function OnboardingWizard() {
  placeholder="e.g. Jane Doe"
  value={staffName}
  onChange={(e) => setStaffName(e.target.value)}
- className="h-11 bg-card border-border focus:bg-card focus-visible:bg-card text-slate-900 rounded-xl"
+ className="h-11 bg-card border-primary/40 focus:bg-card focus-visible:bg-card text-slate-900 rounded-xl"
  />
  </div>
  <div className="space-y-2">
@@ -708,7 +708,7 @@ export default function OnboardingWizard() {
  placeholder="jane@example.com"
  value={staffEmail}
  onChange={(e) => setStaffEmail(e.target.value)}
- className="h-11 bg-card border-border focus:bg-card focus-visible:bg-card text-slate-900 rounded-xl"
+ className="h-11 bg-card border-primary/40 focus:bg-card focus-visible:bg-card text-slate-900 rounded-xl"
  />
  </div>
  </div>
@@ -717,10 +717,10 @@ export default function OnboardingWizard() {
  <div className="flex-1 space-y-2">
  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Role</label>
  <Select value={staffRole} onValueChange={setStaffRole}>
- <SelectTrigger className="h-11 bg-card border-border rounded-xl text-slate-900">
+ <SelectTrigger className="h-11 bg-card border-primary/40 rounded-xl text-slate-900">
  <SelectValue placeholder="Select a role" />
  </SelectTrigger>
- <SelectContent className="bg-card text-slate-900 border-border ">
+ <SelectContent className="bg-card text-slate-900 border-primary/40 ">
  {(INDUSTRIES[industry]?.roles || INDUSTRIES.law.roles)
  .filter(r => r.value !== 'company_admin')
  .map((r) => (
@@ -741,8 +741,8 @@ export default function OnboardingWizard() {
 
  {/* Invited List */}
  {invitedStaff.length > 0 ? (
- <div className="border border-border rounded-2xl overflow-hidden bg-card ">
- <div className="bg-muted/30 px-4 py-2 border-b border-border">
+ <div className="border border-primary/40 rounded-2xl overflow-hidden bg-card ">
+ <div className="bg-muted/30 px-4 py-2 border-b border-primary/40">
  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Pending Invites ({invitedStaff.length})</h4>
  </div>
  <div className="divide-y divide-slate-100 max-h-48 overflow-y-auto">
@@ -772,7 +772,7 @@ export default function OnboardingWizard() {
  </div>
  </div>
  ) : (
- <div className="border-2 border-dashed border-primary/50 rounded-2xl p-8 text-center bg-muted/30">
+ <div className="border-2 border-dashed border-primary/40 rounded-2xl p-8 text-center bg-muted/30">
  <Users className="w-8 h-8 text-slate-300 mx-auto mb-3" />
  <p className="text-sm text-slate-500 font-medium">No team members added yet.</p>
  <p className="text-xs text-slate-400 mt-1">You can always invite them later from settings.</p>
@@ -793,7 +793,7 @@ export default function OnboardingWizard() {
  </p>
  </div>
 
- <div className="bg-muted/300 border border-border rounded-2xl p-6 space-y-5">
+ <div className="bg-muted/300 border border-primary/40 rounded-2xl p-6 space-y-5">
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'case')} {t("title", "Title")}</label>
  <Input 
@@ -835,13 +835,13 @@ export default function OnboardingWizard() {
  </div>
 
  {/* Footer Navigation */}
- <div className="px-5 sm:px-8 py-4 sm:py-5 border-t border-border bg-muted/30 sm:rounded-b-3xl shrink-0">
+ <div className="px-5 sm:px-8 py-4 sm:py-5 border-t border-primary/40 bg-muted/30 sm:rounded-b-3xl shrink-0">
  <div className="flex justify-between items-center gap-4">
  {step > 1 ? (
  <Button 
  variant="outline"
  onClick={() => setStep(step - 1)}
- className="h-12 px-6 rounded-xl text-slate-700 border-border bg-card hover:bg-muted/30 transition-colors"
+ className="h-12 px-6 rounded-xl text-slate-700 border-primary/40 bg-card hover:bg-muted/30 transition-colors"
  >
  <ArrowLeft className="w-4 h-4 mr-2" /> {t("back", "Back")}
  </Button>
@@ -903,7 +903,7 @@ function Badge({ role, industry}) {
  const label = roleDef ? roleDef.label : role;
  
  return (
- <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-orange-50 text-orange-700 border border-border">
+ <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-orange-50 text-orange-700 border border-primary/40">
  {label}
  </span>
  );

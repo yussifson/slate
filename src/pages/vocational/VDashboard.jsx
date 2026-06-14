@@ -64,7 +64,7 @@ export default function VDashboard() {
 
  {/* Top Stat Cards */}
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- <Card className="rounded-3xl border-none bg-gradient-to-br from-primary to-primary/90 text-slate-900 dark:text-white overflow-hidden relative">
+ <Card className="rounded-3xl border-none bg-gradient-to-br from-primary to-primary/90 text-slate-900 dark:text-slate-900 dark:text-white overflow-hidden relative">
  <div className="absolute right-0 top-0 opacity-10 translate-x-4 -translate-y-4">
  <Users className="w-32 h-32" />
  </div>
@@ -85,7 +85,7 @@ export default function VDashboard() {
  </CardContent>
  </Card>
 
- <Card className="rounded-3xl border-none bg-gradient-to-br from-primary to-primary/90 text-slate-900 dark:text-white overflow-hidden relative">
+ <Card className="rounded-3xl border-none bg-gradient-to-br from-primary to-primary/90 text-slate-900 dark:text-slate-900 dark:text-white overflow-hidden relative">
  <div className="absolute right-0 top-0 opacity-10 translate-x-4 -translate-y-4">
  <Briefcase className="w-32 h-32" />
  </div>
@@ -106,7 +106,7 @@ export default function VDashboard() {
  </CardContent>
  </Card>
 
- <Card className="rounded-3xl border-none bg-gradient-to-br from-primary to-primary/90 text-slate-900 dark:text-white overflow-hidden relative">
+ <Card className="rounded-3xl border-none bg-gradient-to-br from-primary to-primary/90 text-slate-900 dark:text-slate-900 dark:text-white overflow-hidden relative">
  <div className="absolute right-0 top-0 opacity-10 translate-x-4 -translate-y-4">
  <Building2 className="w-32 h-32" />
  </div>

@@ -86,17 +86,17 @@ export default function CaseTimeline({ caseData, user}) {
  <Plus className="w-4 h-4" /> {t("add_entry", "Add Entry")}
  </Button>
  </div>
- <div className="relative border-l border-border ml-3 pl-6 space-y-8">
+ <div className="relative border-l border-primary/40 ml-3 pl-6 space-y-8">
  {timeline.length === 0 ? (
  <div className="text-sm text-muted-foreground italic py-4">{t("no_timeline_events_recorded_ye", "No timeline events recorded yet.")}</div>
  ) : (
  timeline.map(entry => {
  return (
  <div key={entry.id} className="relative">
- <span className="absolute -left-10 w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center shrink-0 z-10 ">
+ <span className="absolute -left-10 w-8 h-8 rounded-full bg-background border border-primary/40 flex items-center justify-center shrink-0 z-10 ">
  {ACTIVITY_ICONS[entry.activity_type] || ACTIVITY_ICONS.other}
  </span>
- <div className="bg-card border border-border/50 rounded-xl p-4 ">
+ <div className="bg-card border border-primary/40 rounded-xl p-4 ">
  <div className="flex items-start justify-between gap-4 mb-2">
  <div>
  <h4 className="font-semibold text-foreground text-base">{entry.title}</h4>
@@ -109,7 +109,7 @@ export default function CaseTimeline({ caseData, user}) {
  </div>
  </div>
  {entry.description && (
- <p className="text-sm text-muted-foreground whitespace-pre-wrap mt-3 bg-muted/30 p-3 rounded-lg border border-border/40">
+ <p className="text-sm text-muted-foreground whitespace-pre-wrap mt-3 bg-muted/30 p-3 rounded-lg border border-primary/40">
  {entry.description}
  </p>
  )}

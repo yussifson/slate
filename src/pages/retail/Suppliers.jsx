@@ -148,8 +148,8 @@ export default function Suppliers() {
  <RetailStatCard label={t("active_suppliers", "Active Suppliers")} value={suppliers.filter(s => s.status === 'Active').length} icon={Star} />
  </div>
 
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input placeholder="Search supplier or category..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
@@ -181,7 +181,7 @@ export default function Suppliers() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-border">
+ <thead className="bg-card border-b border-primary/40">
  <tr>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("supplier", "Supplier")}</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("contact_person", "Contact Person")}</th>

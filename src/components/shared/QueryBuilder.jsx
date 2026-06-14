@@ -61,7 +61,7 @@ export default function QueryBuilder({ fields = [], onApply, onClear}) {
  className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-all duration-200 ${
  activeCount > 0
  ? 'border-primary bg-slate-100 text-primary'
- : 'border-border bg-card text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+ : 'border-primary/40 bg-card text-muted-foreground hover:bg-muted/50 hover:text-foreground'
 }`}
  >
  <SlidersHorizontal className="w-4 h-4" />
@@ -75,7 +75,7 @@ export default function QueryBuilder({ fields = [], onApply, onClear}) {
  </button>
  {/* Panel */}
  {isOpen && (
- <div className="absolute top-full mt-2 left-0 z-30 w-[480px] max-w-[calc(100vw-2rem)] bg-card border border-border rounded-xl p-4 animate-in fade-in slide-in-from-top-2 duration-200">
+ <div className="absolute top-full mt-2 left-0 z-30 w-[480px] max-w-[calc(100vw-2rem)] bg-card border border-primary/40 rounded-xl p-4 animate-in fade-in slide-in-from-top-2 duration-200">
  {/* Header */}
  <div className="flex items-center justify-between mb-4">
  <h3 className="text-sm font-bold text-card-foreground flex items-center gap-2">
@@ -173,7 +173,7 @@ export default function QueryBuilder({ fields = [], onApply, onClear}) {
  </button>
 
  {/* Footer actions */}
- <div className="flex gap-2 mt-4 pt-3 border-t border-border">
+ <div className="flex gap-2 mt-4 pt-3 border-t border-primary/40">
  <Button variant="outline" size="sm" onClick={handleClear} className="flex-1">{t("clear_all", "Clear All")}</Button>
  <Button size="sm" onClick={handleApply} className="flex-1 bg-primary text-primary-foreground">
  {t("apply_filters", "Apply Filters")}

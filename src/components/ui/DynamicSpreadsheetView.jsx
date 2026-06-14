@@ -237,7 +237,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
 
  if (!data || data.length === 0) {
  return (
- <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border border-border/60">
+ <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border border-primary/40">
  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 -green-500/20">
  <Table2 className="w-8 h-8 text-white" />
  </div>
@@ -290,14 +290,14 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  </div>
 
  {/* Spreadsheet */}
- <div className="rounded-xl border border-border bg-card overflow-hidden">
+ <div className="rounded-xl border border-primary/40 bg-card overflow-hidden">
  <div className="overflow-x-auto">
  <table className="w-full text-sm border-collapse">
  {/* Header */}
  <thead>
- <tr className="bg-gradient-to-r from-slate-50 to-slate-100/80 border-b border-border">
+ <tr className="bg-gradient-to-r from-slate-50 to-slate-100/80 border-b border-primary/40">
  {/* Checkbox column */}
- <th className="w-12 px-3 py-3 text-center border-r border-border/60 sticky left-0 bg-muted/50 z-10">
+ <th className="w-12 px-3 py-3 text-center border-r border-primary/40 sticky left-0 bg-muted/50 z-10">
  <button
  onClick={toggleSelectAll}
  className="text-muted-foreground hover:text-muted-foreground transition-colors"
@@ -312,14 +312,14 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  </button>
  </th>
  {/* Row number */}
- <th className="w-12 px-3 py-3 text-center text-[10px] font-bold text-muted-foreground uppercase tracking-wider border-r border-border/60">
+ <th className="w-12 px-3 py-3 text-center text-[10px] font-bold text-muted-foreground uppercase tracking-wider border-r border-primary/40">
  #
  </th>
  {/* Field columns */}
  {fieldDefinitions.map((field) => (
  <th
  key={field.name}
- className="px-4 py-3 text-left border-r border-border/60 last:border-r-0"
+ className="px-4 py-3 text-left border-r border-primary/40 last:border-r-0"
  >
  <button
  onClick={() => toggleSort(field.name)}
@@ -357,7 +357,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  return (
  <tr
  key={record.id}
- className={`border-b border-border transition-colors ${
+ className={`border-b border-primary/40 transition-colors ${
  isSelected
  ? 'bg-muted/500'
  : rowIdx % 2 === 0
@@ -366,7 +366,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
 } hover:bg-primary/40`}
  >
  {/* Checkbox */}
- <td className="px-3 py-2 text-center border-r border-border/60 sticky left-0 bg-inherit z-10">
+ <td className="px-3 py-2 text-center border-r border-primary/40 sticky left-0 bg-inherit z-10">
  <button onClick={() => toggleSelect(record.id)} className="text-muted-foreground hover:text-muted-foreground">
  {isSelected ? (
  <CheckSquare className="w-4 h-4 text-primary" />
@@ -376,7 +376,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  </button>
  </td>
  {/* Row number */}
- <td className="px-3 py-2 text-center text-xs text-muted-foreground font-mono border-r border-border/60">
+ <td className="px-3 py-2 text-center text-xs text-muted-foreground font-mono border-r border-primary/40">
  {rowIdx + 1}
  </td>
  {/* Field cells */}
@@ -387,7 +387,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  return (
  <td
  key={field.name}
- className={`px-1 py-1 border-r border-border/60 last:border-r-0 ${
+ className={`px-1 py-1 border-r border-primary/40 last:border-r-0 ${
  isEditing ? 'bg-muted/50 ring-2 ring-inset ring-primary/70' : ''
 }`}
  >
@@ -472,7 +472,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  </div>
 
  {/* Footer */}
- <div className="px-4 py-3 bg-muted/50/80 border-t border-border/60 flex items-center justify-between">
+ <div className="px-4 py-3 bg-muted/50/80 border-t border-primary/40 flex items-center justify-between">
  <div className="text-xs text-muted-foreground">
  {sortedData.length} row{sortedData.length !== 1 ? 's' : ''} · Click any cell to edit
  </div>

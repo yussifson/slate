@@ -115,7 +115,7 @@ export default function UnivBOQ() {
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Kanban","Dashboard"].map(v => (
  <button 
  key={v} 
@@ -138,8 +138,8 @@ export default function UnivBOQ() {
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -147,7 +147,7 @@ export default function UnivBOQ() {
  placeholder="Search descriptions..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -212,9 +212,9 @@ export default function UnivBOQ() {
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
  exit={{ opacity: 0, scale: 0.95}}
- className="bg-card border border-border rounded-2xl w-full max-w-md overflow-hidden"
+ className="bg-card border border-primary/40 rounded-2xl w-full max-w-md overflow-hidden"
  >
- <div className="flex items-center justify-between p-4 border-b border-border">
+ <div className="flex items-center justify-between p-4 border-b border-primary/40">
  <h3 className="font-semibold text-foreground">Add BOQ Item</h3>
  <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:text-foreground">
  <XCircle className="w-5 h-5" />
@@ -223,30 +223,30 @@ export default function UnivBOQ() {
  <form onSubmit={handleSave} className="p-4 space-y-4">
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Project Name</label>
- <input required value={form.project_name} onChange={e => setForm({...form, project_name: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+ <input required value={form.project_name} onChange={e => setForm({...form, project_name: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
  </div>
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Item Description</label>
- <input required value={form.item_description} onChange={e => setForm({...form, item_description: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+ <input required value={form.item_description} onChange={e => setForm({...form, item_description: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Quantity</label>
- <input type="number" step="any" required value={form.quantity} onChange={e => setForm({...form, quantity: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+ <input type="number" step="any" required value={form.quantity} onChange={e => setForm({...form, quantity: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
  </div>
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Unit</label>
- <input required value={form.unit} onChange={e => setForm({...form, unit: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+ <input required value={form.unit} onChange={e => setForm({...form, unit: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
  </div>
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Unit Rate</label>
- <input type="number" step="any" required value={form.unit_rate} onChange={e => setForm({...form, unit_rate: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+ <input type="number" step="any" required value={form.unit_rate} onChange={e => setForm({...form, unit_rate: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
  </div>
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Status</label>
- <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm">
+ <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm">
  <option>Draft</option>
  <option>Approved</option>
  <option>Procuring</option>

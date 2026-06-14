@@ -111,7 +111,7 @@ export default function SuperAdminDashboard() {
  </div>
  </div>
  {company ? (
- <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+ <div className="bg-card border border-primary/40 rounded-xl p-5 space-y-4">
  <div className="flex items-center gap-4">
  <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
  <span className="text-lg font-bold text-primary">{company.name?.[0]?.toUpperCase()}</span>
@@ -155,7 +155,7 @@ export default function SuperAdminDashboard() {
  </div>
  </div>
  ) : (
- <div className="bg-card border border-dashed border-primary/50 rounded-xl p-10 text-center space-y-3">
+ <div className="bg-card border border-dashed border-primary/40 rounded-xl p-10 text-center space-y-3">
  <Building2 className="w-10 h-10 text-muted-foreground/40 mx-auto" />
  <p className="text-sm text-muted-foreground">{t("no_firm_configured_yet", "No " + (getTerm(activeIndustry, "venue") || "firm").toLowerCase() + " configured yet.")}</p>
  <Button onClick={() => setShowForm(true)} size="sm">{t("setup_your_firm", "Setup Your " + (getTerm(activeIndustry, "venue") || "Firm"))}</Button>

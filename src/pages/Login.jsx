@@ -276,7 +276,7 @@ export default function Login() {
  <div className="flex min-h-screen items-center justify-center bg-background p-4 relative">
  <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
  </div>
- <div className="w-full max-w-md space-y-6 rounded-xl bg-card p-8 text-center border border-border">
+ <div className="w-full max-w-md space-y-6 rounded-xl bg-card p-8 text-center border border-primary/40">
  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10">
  <AlertCircle className="h-8 w-8 text-red-500" />
  </div>
@@ -289,7 +289,7 @@ export default function Login() {
  )} <span className="font-semibold text-foreground">"{currentSubdomain}"</span>.
  </p>
  </div>
- <div className="pt-4 border-t border-border">
+ <div className="pt-4 border-t border-primary/40">
  <Button onClick={() => window.location.href = mainUrl} variant="outline" className="w-full">
  {t("go_to_main_login_portal", "Go to Main Login Portal")}
  </Button>
@@ -326,7 +326,7 @@ export default function Login() {
  placeholder="john@example.com"
  value={email}
  onChange={(e) => setEmail(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
+ className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
  />
  </div>
  <div>
@@ -340,7 +340,7 @@ export default function Login() {
  placeholder="••••••••••••"
  value={password}
  onChange={(e) => setPassword(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
+ className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
  />
  </div>
  </div>
@@ -363,7 +363,7 @@ export default function Login() {
  {/* Abstract Pattern Background */}
  <div className="absolute inset-0 bg-slate-900/5 mix-blend-overlay"></div>
 
- <div className="relative z-10 w-full max-w-2xl bg-white rounded-[2rem] border border-slate-200/60 -[0_20px_60px_-15px_rgba(0,0,0,0.05)] p-12 lg:p-16 flex flex-col justify-center relative group">
+ <div className="relative z-10 w-full max-w-2xl bg-white rounded-[2rem] border border-primary/40 -[0_20px_60px_-15px_rgba(0,0,0,0.05)] p-12 lg:p-16 flex flex-col justify-center relative group">
  <div className="absolute top-0 right-0 p-8 opacity-[0.03] text-[10rem] font-serif leading-none font-black text-primary/70 group-hover:text-primary group-hover:opacity-10 transition-colors duration-700 pointer-events-none">"</div>
  
  <div className="relative z-10">

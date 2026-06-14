@@ -16,7 +16,7 @@ const STATUS_COLORS = {
  Scheduled: 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/40 dark:text-blue-400 dark:border-blue-800',
  Completed: 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-400 dark:border-emerald-800',
  Cancelled: 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/40 dark:text-red-400 dark:border-red-800',
- 'No Show': 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'
+ 'No Show': 'bg-slate-100 text-slate-700 border-primary/40 dark:bg-slate-800 dark:text-slate-400 dark:border-primary/40'
 };
 
 export default function UnivAppointments({
@@ -155,7 +155,7 @@ export default function UnivAppointments({
  <div className="flex flex-col h-full bg-background font-sans">
  
  {/* Header */}
- <div className="border-b border-border bg-card px-6 sm:px-8 py-5 shrink-0">
+ <div className="border-b border-primary/40 bg-card px-6 sm:px-8 py-5 shrink-0">
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-2xl font-extrabold text-foreground tracking-tight">{title}</h1>
@@ -195,10 +195,10 @@ export default function UnivAppointments({
  placeholder="Search appointments..."
  value={searchQuery}
  onChange={e => setSearchQuery(e.target.value)}
- className="w-full h-10 pl-9 pr-4 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-primary "
+ className="w-full h-10 pl-9 pr-4 bg-background border border-primary/40 rounded-lg text-sm focus:outline-none focus:border-primary "
  />
  </div>
- <button className="h-10 px-4 bg-background border border-border rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-muted transition-colors ">
+ <button className="h-10 px-4 bg-background border border-primary/40 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-muted transition-colors ">
  <Filter className="w-4 h-4 text-muted-foreground" /> Filter
  </button>
  </div>
@@ -217,9 +217,9 @@ export default function UnivAppointments({
  <p className="text-sm mt-1">Create a new appointment to get started.</p>
  </div>
  ) : (
- <div className="bg-card border border-border rounded-2xl overflow-hidden">
+ <div className="bg-card border border-primary/40 rounded-2xl overflow-hidden">
  <table className="w-full text-sm text-left">
- <thead className="bg-muted/50 border-b border-border text-xs uppercase tracking-wider text-muted-foreground">
+ <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-muted-foreground">
  <tr>
  <th className="px-6 py-4 font-semibold">Client & Service</th>
  <th className="px-6 py-4 font-semibold">Date & Time</th>
@@ -277,7 +277,7 @@ export default function UnivAppointments({
  )}
 
  {view === 'calendar' && (
- <div className="max-w-6xl mx-auto bg-card border border-border rounded-2xl p-8 text-center text-muted-foreground">
+ <div className="max-w-6xl mx-auto bg-card border border-primary/40 rounded-2xl p-8 text-center text-muted-foreground">
  <CalendarIcon className="w-16 h-16 mx-auto mb-4 opacity-20" />
  <h3 className="text-xl font-bold text-foreground mb-2">Calendar View</h3>
  <p>Full calendar grid implementation goes here. Switch to List view to manage appointments.</p>
@@ -295,9 +295,9 @@ export default function UnivAppointments({
  initial={{ opacity: 0, scale: 0.95, y: 20}}
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: 20}}
- className="relative w-full max-w-lg bg-card border border-border rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
+ className="relative w-full max-w-lg bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
  >
- <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-muted/20">
+ <div className="px-6 py-4 border-b border-primary/40 flex items-center justify-between bg-muted/20">
  <h2 className="text-lg font-bold text-foreground">{editingApt ? 'Edit Appointment' : 'New Appointment'}</h2>
  <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:text-foreground"><MoreHorizontal className="w-5 h-5" /></button>
  </div>
@@ -307,31 +307,31 @@ export default function UnivAppointments({
  <div className="grid grid-cols-2 gap-4">
  <div className="col-span-2">
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Client Name *</label>
- <input required type="text" value={formState.client_name} onChange={e => setFormState({...formState, client_name: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input required type="text" value={formState.client_name} onChange={e => setFormState({...formState, client_name: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Service Title</label>
- <input type="text" value={formState.title} onChange={e => setFormState({...formState, title: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input type="text" value={formState.title} onChange={e => setFormState({...formState, title: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Staff Member</label>
- <input type="text" value={formState.staff_name} onChange={e => setFormState({...formState, staff_name: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input type="text" value={formState.staff_name} onChange={e => setFormState({...formState, staff_name: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Date *</label>
- <input required type="date" value={formState.date} onChange={e => setFormState({...formState, date: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input required type="date" value={formState.date} onChange={e => setFormState({...formState, date: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Time *</label>
- <input required type="time" value={formState.time} onChange={e => setFormState({...formState, time: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input required type="time" value={formState.time} onChange={e => setFormState({...formState, time: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Duration (mins)</label>
- <input type="number" value={formState.duration} onChange={e => setFormState({...formState, duration: parseInt(e.target.value)})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input type="number" value={formState.duration} onChange={e => setFormState({...formState, duration: parseInt(e.target.value)})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Type</label>
- <select value={formState.type} onChange={e => setFormState({...formState, type: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none">
+ <select value={formState.type} onChange={e => setFormState({...formState, type: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none">
  <option>In-Person</option>
  <option>Virtual</option>
  <option>Phone</option>
@@ -344,7 +344,7 @@ export default function UnivAppointments({
  <button 
  key={s} type="button"
  onClick={() => setFormState({...formState, status: s})}
- className={cn("px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors border", formState.status === s ? STATUS_COLORS[s] : "bg-background text-muted-foreground border-border")}
+ className={cn("px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors border", formState.status === s ? STATUS_COLORS[s] : "bg-background text-muted-foreground border-primary/40")}
  >
  {s}
  </button>
@@ -353,13 +353,13 @@ export default function UnivAppointments({
  </div>
  <div className="col-span-2">
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Notes</label>
- <textarea value={formState.notes} onChange={e => setFormState({...formState, notes: e.target.value})} className="w-full h-24 p-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none resize-none" />
+ <textarea value={formState.notes} onChange={e => setFormState({...formState, notes: e.target.value})} className="w-full h-24 p-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none resize-none" />
  </div>
  </div>
  </form>
  </div>
  
- <div className="px-6 py-4 border-t border-border bg-muted/20 flex justify-end gap-3">
+ <div className="px-6 py-4 border-t border-primary/40 bg-muted/20 flex justify-end gap-3">
  <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors">Cancel</button>
  <button type="submit" form="apt-form" disabled={saveMutation.isPending} className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors disabled:opacity-50">
  {saveMutation.isPending ? 'Saving...' : 'Save Appointment'}

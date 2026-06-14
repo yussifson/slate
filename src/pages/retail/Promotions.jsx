@@ -117,8 +117,8 @@ export default function Promotions() {
  <RetailStatCard label={t("active_promos", "Active Promotions")} value={activeCount} icon={Percent} />
  </div>
 
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50 flex flex-wrap gap-3 items-center justify-between">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50 flex flex-wrap gap-3 items-center justify-between">
  <div className="relative flex-1 max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input
@@ -149,7 +149,7 @@ export default function Promotions() {
  ) : (
  <div className="overflow-x-auto">
  <table className="w-full text-sm">
- <thead className="bg-muted/30 border-b border-border">
+ <thead className="bg-muted/30 border-b border-primary/40">
  <tr>
  <th className="px-6 py-4 text-left text-xs font-bold text-primary uppercase">{t("promo_code", "Code")}</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-primary uppercase">{t("type", "Type")}</th>

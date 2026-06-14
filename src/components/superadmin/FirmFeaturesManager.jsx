@@ -114,7 +114,7 @@ export default function FirmFeaturesManager({ firm, onClose}) {
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
  <div className="bg-card w-full max-w-4xl rounded-2xl flex flex-col max-h-[90vh]">
  
- <div className="p-5 border-b border-border flex justify-between items-center bg-muted/20 shrink-0">
+ <div className="p-5 border-b border-primary/40 flex justify-between items-center bg-muted/20 shrink-0">
  <div>
  <h2 className="text-xl font-black flex items-center gap-2">
  <Layers className="w-5 h-5 text-primary" /> Manage Firm Features
@@ -126,7 +126,7 @@ export default function FirmFeaturesManager({ firm, onClose}) {
  </button>
  </div>
 
- <div className="p-5 border-b border-border shrink-0">
+ <div className="p-5 border-b border-primary/40 shrink-0">
  <div className="relative">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input 
@@ -155,7 +155,7 @@ export default function FirmFeaturesManager({ firm, onClose}) {
  className={`flex items-start gap-3 p-3 rounded-xl border text-left transition-all ${
  isAssigned 
  ? 'bg-primary/5 border-primary/40 ' 
- : 'bg-background border-border hover:border-primary/30 hover:bg-muted/30'
+ : 'bg-background border-primary/40 hover:border-primary/30 hover:bg-muted/30'
 }`}
  >
  <div className={`mt-0.5 w-4 h-4 rounded-[4px] border flex items-center justify-center shrink-0 transition-colors ${
@@ -183,7 +183,7 @@ export default function FirmFeaturesManager({ firm, onClose}) {
  )}
  </div>
 
- <div className="p-5 border-t border-border flex justify-between items-center bg-background shrink-0 rounded-b-2xl">
+ <div className="p-5 border-t border-primary/40 flex justify-between items-center bg-background shrink-0 rounded-b-2xl">
  <p className="text-sm text-muted-foreground font-medium">
  <strong className="text-foreground">{assignedFeatures.length}</strong> features assigned
  </p>

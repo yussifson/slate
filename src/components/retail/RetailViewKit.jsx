@@ -13,7 +13,7 @@ export const RETAIL_BRAND = {
 
 export function ViewModeToggle({ viewMode, onChange, className}) {
  return (
- <div className={cn("bg-card border border-border p-1 rounded-lg flex items-center ", className)}>
+ <div className={cn("bg-card border border-primary/40 p-1 rounded-lg flex items-center ", className)}>
  <button
  type="button"
  onClick={() => onChange("list")}
@@ -48,7 +48,7 @@ export function RetailStatCard({ label, value, icon: Icon, hint, variant = "defa
  success: "bg-slate-100 text-primary",
 };
  return (
- <div className="bg-card rounded-xl border border-border p-5 flex items-center gap-4 min-h-[88px]">
+ <div className="bg-card rounded-xl border border-primary/40 p-5 flex items-center gap-4 min-h-[88px]">
  <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center shrink-0", variants[variant])}>
  <Icon className="w-6 h-6" />
  </div>
@@ -111,9 +111,9 @@ export function ProductGridCard({ product, onEdit, onDelete, suppliers = []}) {
  const supplierName = suppliers.find((s) => s.id === product.supplierId)?.name;
  const inStock = product.stock > 0;
  return (
- <article className="group relative bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/30 transition-all flex flex-col min-h-[320px]">
- <div className="h-40 bg-gradient-to-br from-primary/5 to-primary/10 border-b border-border flex items-center justify-center relative">
- <div className="w-20 h-20 rounded-2xl bg-background border border-border flex items-center justify-center text-primary/40">
+ <article className="group relative bg-card border border-primary/40 rounded-2xl overflow-hidden hover:border-primary/30 transition-all flex flex-col min-h-[320px]">
+ <div className="h-40 bg-gradient-to-br from-primary/5 to-primary/10 border-b border-primary/40 flex items-center justify-center relative">
+ <div className="w-20 h-20 rounded-2xl bg-background border border-primary/40 flex items-center justify-center text-primary/40">
  {product.image ? (
  <img src={product.image} alt="" className="w-full h-full object-cover rounded-2xl" />
  ) : (
@@ -135,7 +135,7 @@ export function ProductGridCard({ product, onEdit, onDelete, suppliers = []}) {
  <h3 className="font-bold text-lg text-foreground leading-snug line-clamp-2">{product.name}</h3>
  <p className="text-xs text-muted-foreground font-mono mt-1">{product.sku}</p>
  {supplierName && <p className="text-xs text-muted-foreground mt-2">Supplier: {supplierName}</p>}
- <div className="mt-auto pt-4 border-t border-border flex items-end justify-between">
+ <div className="mt-auto pt-4 border-t border-primary/40 flex items-end justify-between">
  <p className="text-2xl font-extrabold text-primary">${Number(product.price || 0).toFixed(2)}</p>
  </div>
  </div>
@@ -149,7 +149,7 @@ export function PromotionGridCard({ promo, onEdit, onDelete}) {
  const value = promo.discountValue ?? promo.data?.discountValue ?? 0;
  const code = promo.code || promo.data?.code || "PROMO";
  return (
- <article className="group relative bg-card border border-dashed border-primary/50 rounded-2xl overflow-hidden hover:border-solid hover:border-primary/40 transition-all flex flex-col min-h-[220px]">
+ <article className="group relative bg-card border border-dashed border-primary/40 rounded-2xl overflow-hidden hover:border-solid hover:border-primary/40 transition-all flex flex-col min-h-[220px]">
  <div className="flex-1 p-6 relative">
  <div className="flex justify-between items-start mb-6">
  <div className="bg-slate-100 text-primary text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest inline-flex items-center gap-1.5">
@@ -165,9 +165,9 @@ export function PromotionGridCard({ promo, onEdit, onDelete}) {
  </div>
  </div>
  
- <div className="h-16 bg-muted/40 border-t border-dashed border-primary/50 px-6 flex items-center justify-between relative overflow-hidden">
- <div className="absolute -left-3 -top-3 w-6 h-6 rounded-full bg-background border border-primary/50 border-dashed z-10" />
- <div className="absolute -right-3 -top-3 w-6 h-6 rounded-full bg-background border border-primary/50 border-dashed z-10" />
+ <div className="h-16 bg-muted/40 border-t border-dashed border-primary/40 px-6 flex items-center justify-between relative overflow-hidden">
+ <div className="absolute -left-3 -top-3 w-6 h-6 rounded-full bg-background border border-primary/40 border-dashed z-10" />
+ <div className="absolute -right-3 -top-3 w-6 h-6 rounded-full bg-background border border-primary/40 border-dashed z-10" />
  
  <p className="font-mono text-lg font-bold text-primary tracking-widest">{code}</p>
  <p className="text-xs text-muted-foreground uppercase">{type}</p>
@@ -178,7 +178,7 @@ export function PromotionGridCard({ promo, onEdit, onDelete}) {
 
 export function CustomerGridCard({ customer, onEdit, onDelete, onView, segmentColors = {}}) {
  return (
- <article className="group relative bg-card border border-border rounded-2xl p-6 hover:-translate-y-1 transition-all flex flex-col min-h-[260px] text-center">
+ <article className="group relative bg-card border border-primary/40 rounded-2xl p-6 hover:-translate-y-1 transition-all flex flex-col min-h-[260px] text-center">
  <div className="absolute top-3 right-3">
  <CardActions onView={onView} onEdit={onEdit} onDelete={onDelete} />
  </div>
@@ -198,12 +198,12 @@ export function CustomerGridCard({ customer, onEdit, onDelete, onView, segmentCo
  <p className="text-sm text-primary/80 truncate mt-2 bg-slate-50 inline-block px-3 py-1 rounded-full">{customer.email}</p>
  </div>
  
- <div className="mt-auto grid grid-cols-2 gap-4 pt-4 border-t border-border">
+ <div className="mt-auto grid grid-cols-2 gap-4 pt-4 border-t border-primary/40">
  <div className="text-center">
  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Lifetime</p>
  <p className="text-lg font-extrabold text-foreground">${Number(customer.totalSpent || 0).toFixed(2)}</p>
  </div>
- <div className="text-center border-l border-border">
+ <div className="text-center border-l border-primary/40">
  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Orders</p>
  <p className="text-lg font-extrabold text-foreground">{customer.orders || 0}</p>
  </div>
@@ -220,8 +220,8 @@ export function OrderGridCard({ order, onEdit, onDelete}) {
  Processing: "bg-slate-100 text-primary/90",
 };
  return (
- <article className="group relative bg-card border border-border rounded-xl p-0 transition-all flex flex-col min-h-[220px] overflow-hidden">
- <div className="bg-muted/30 p-5 border-b border-border flex justify-between items-start relative">
+ <article className="group relative bg-card border border-primary/40 rounded-xl p-0 transition-all flex flex-col min-h-[220px] overflow-hidden">
+ <div className="bg-muted/30 p-5 border-b border-primary/40 flex justify-between items-start relative">
  <div>
  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Receipt No.</p>
  <p className="text-lg font-mono font-bold text-foreground">{order.orderId}</p>
@@ -235,7 +235,7 @@ export function OrderGridCard({ order, onEdit, onDelete}) {
  <p className="text-xs text-muted-foreground font-mono">{order.date}</p>
  </div>
  
- <div className="mt-auto pt-4 border-t border-dashed border-primary/50 flex items-end justify-between">
+ <div className="mt-auto pt-4 border-t border-dashed border-primary/40 flex items-end justify-between">
  <div>
  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Amount Due</p>
  <p className="text-3xl font-extrabold text-primary">${Number(order.total || 0).toFixed(2)}</p>
@@ -256,8 +256,8 @@ export function InventoryGridCard({ item, onEdit, onDelete, onView}) {
  "Out of Stock": "bg-red-500/10 text-red-700 border-red-200",
 };
  return (
- <article className="group relative bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/30 transition-all flex flex-col min-h-[280px]">
- <div className="h-32 bg-muted/30 border-b border-border flex items-center justify-center relative">
+ <article className="group relative bg-card border border-primary/40 rounded-2xl overflow-hidden hover:border-primary/30 transition-all flex flex-col min-h-[280px]">
+ <div className="h-32 bg-muted/30 border-b border-primary/40 flex items-center justify-center relative">
  <span className="text-5xl font-black text-primary/20">{item.name?.[0]}</span>
  <span className={cn("absolute top-3 left-3 text-[10px] font-bold px-2.5 py-1 rounded-full border uppercase", statusClass[item.status])}>
  {item.status}
@@ -268,7 +268,7 @@ export function InventoryGridCard({ item, onEdit, onDelete, onView}) {
  <p className="text-xs font-semibold text-primary">{item.category}</p>
  <h3 className="font-bold text-lg leading-tight mt-1 line-clamp-2">{item.name}</h3>
  <p className="text-xs font-mono text-muted-foreground mt-1">{item.sku}</p>
- <div className="mt-auto pt-4 border-t border-border grid grid-cols-2 gap-2 text-sm">
+ <div className="mt-auto pt-4 border-t border-primary/40 grid grid-cols-2 gap-2 text-sm">
  <div>
  <p className="text-[10px] text-muted-foreground uppercase">Price</p>
  <p className="font-bold text-primary">${item.price?.toFixed(2)}</p>
@@ -285,7 +285,7 @@ export function InventoryGridCard({ item, onEdit, onDelete, onView}) {
 
 export function SupplierGridCard({ supplier, onEdit, onDelete, onView}) {
  return (
- <article className="group relative bg-card border border-border rounded-2xl p-6 hover:border-primary/30 transition-all flex flex-col min-h-[220px]">
+ <article className="group relative bg-card border border-primary/40 rounded-2xl p-6 hover:border-primary/30 transition-all flex flex-col min-h-[220px]">
  <div className="flex items-start gap-4">
  <div className="w-14 h-14 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center shrink-0">
  <span className="text-xl font-bold">{supplier.name?.[0]}</span>
@@ -300,7 +300,7 @@ export function SupplierGridCard({ supplier, onEdit, onDelete, onView}) {
  <p className="truncate">{supplier.contact}</p>
  <p className="truncate">{supplier.email}</p>
  </div>
- <div className="mt-auto pt-4 border-t border-border flex items-center justify-between">
+ <div className="mt-auto pt-4 border-t border-primary/40 flex items-center justify-between">
  <span className="text-xs text-muted-foreground">Rating</span>
  <span className="font-bold text-primary">{supplier.rating || 5}/5</span>
  </div>
@@ -316,7 +316,7 @@ export function LoyaltyGridCard({ member, onEdit, onDelete}) {
  Platinum: "bg-slate-100 text-primary/70",
 };
  return (
- <article className="group relative bg-card border border-border rounded-2xl p-6 hover:border-primary/30 transition-all min-h-[180px] flex flex-col">
+ <article className="group relative bg-card border border-primary/40 rounded-2xl p-6 hover:border-primary/30 transition-all min-h-[180px] flex flex-col">
  <div className="flex justify-between items-start">
  <div>
  <p className="text-xs font-bold text-primary uppercase">{member.memberId}</p>

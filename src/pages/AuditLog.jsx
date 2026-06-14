@@ -94,7 +94,7 @@ export default function AuditLog() {
  </div>
  </div>
 
- <div className="bg-card rounded-xl border border-border overflow-hidden">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
  <DataTable
  columns={columns}
  data={filteredLogs}

@@ -87,7 +87,7 @@ export default function LeaveManagement() {
           { label: "Days Remaining", value: myBalance.remaining, color: "bg-slate-50 dark:bg-slate-800/50 text-primary" },
         ].map(s => {
           return (
-            <div key={s.label} className="bg-card border border-border rounded-xl p-4 flex items-center gap-3">
+            <div key={s.label} className="bg-card border border-primary/40 rounded-xl p-4 flex items-center gap-3">
               <div className={cn("w-9 h-9 rounded-lg flex items-center justify-center", s.color)}><Calendar className="w-4 h-4" /></div>
               <div><p className="text-xl font-bold">{s.value}</p><p className="text-xs text-muted-foreground">{s.label}</p></div>
             </div>
@@ -109,7 +109,7 @@ export default function LeaveManagement() {
         </TabsContent>
         {isAdmin && (
           <TabsContent value="balances" className="mt-4">
-            <div className="bg-card border border-border rounded-xl divide-y divide-border">
+            <div className="bg-card border border-primary/40 rounded-xl divide-y divide-border">
               {staffRecords.map(s => {
                 const bal = getStaffLeaveBalance(s.user_email);
                 const pct = Math.min((bal.used / bal.total) * 100, 100);
@@ -151,13 +151,13 @@ export default function LeaveManagement() {
 function LeaveList({ leaves, isAdmin, onApprove, onReject }) {
   const { t } = useTranslation();
   if (leaves.length === 0) return (
-    <div className="bg-card border border-border rounded-xl p-10 text-center">
+    <div className="bg-card border border-primary/40 rounded-xl p-10 text-center">
       <Calendar className="w-10 h-10 text-muted-foreground mx-auto mb-2" />
       <p className="text-sm text-muted-foreground">{t("no_leave_requests_found", "No leave requests found")}</p>
     </div>
   );
   return (
-    <div className="bg-card border border-border rounded-xl divide-y divide-border">
+    <div className="bg-card border border-primary/40 rounded-xl divide-y divide-border">
       {leaves.map(leave => {
         return (
           <div key={leave.id} className="px-4 py-3 flex items-center gap-3">

@@ -50,7 +50,7 @@ export default function DynamicRenderer({ schema }) {
 
         return (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} key={index} className={props.className || (layout === 'Dashboard' ? 'col-span-1 md:col-span-3' : '')}>
-            <Card className={design === 'glassmorphism' ? 'bg-background/60 backdrop-blur-md border-border/50' : ''}>
+            <Card className={design === 'glassmorphism' ? 'bg-background/60 backdrop-blur-md border-primary/40' : ''}>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>

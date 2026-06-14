@@ -46,14 +46,14 @@ export default function UniGraduationStats() {
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="border-b border-[var(--color-border-subtle)] pb-4">
+ <div className="border-b border-primary/40 pb-4">
  <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Graduation & Alumni Statistics</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Yearly graduation rates, student degree classifications, and post-graduation outcomes.</p>
  </div>
 
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  {stats.map((stat, i) => (
- <div key={i} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">
+ <div key={i} className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
  <div className="flex items-center justify-between">
  <div>
  <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">{stat.label}</p>
@@ -68,7 +68,7 @@ export default function UniGraduationStats() {
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 col-span-1">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 col-span-1">
  <h2 className="font-semibold text-[var(--color-text-primary)] mb-1">Class Honors Distribution</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-6">Degree class ratios for the graduating cohort.</p>
  <div className="flex flex-col items-center">
@@ -105,7 +105,7 @@ export default function UniGraduationStats() {
  </div>
  </div>
 
- <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 ">
+ <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 ">
  <h2 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2 mb-1">
  <Trophy className="w-5 h-5 text-[var(--color-warning)]" /> Post-Graduation Employment Sectors
  </h2>

@@ -119,7 +119,7 @@ export default function Sales() {
  </div>
  </div>
  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-xl border border-border p-5 col-span-1 md:col-span-2 bg-gradient-to-br from-orange-600 to-orange-800 text-white relative overflow-hidden">
+ <div className="bg-card rounded-xl border border-primary/40 p-5 col-span-1 md:col-span-2 bg-gradient-to-br from-orange-600 to-orange-800 text-white relative overflow-hidden">
  <div className="relative z-10">
  <p className="text-sm font-bold text-orange-200 uppercase tracking-wider mb-2">{t("today_s_sales", "Today's Sales")}</p>
  <h2 className="text-4xl font-black mb-1">${stats.totalSales.toFixed(2)}</h2>
@@ -128,20 +128,20 @@ export default function Sales() {
  <TrendingUp className="absolute right-[-20px] bottom-[-20px] w-48 h-48 opacity-10 text-white" />
  </div>
  
- <div className="bg-card rounded-xl border border-border p-5 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-5 ">
  <p className="text-sm font-bold text-muted-foreground uppercase mb-2">{t("transactions", "Transactions")}</p>
  <h3 className="text-3xl font-black text-card-foreground">{stats.transactions}</h3>
  <p className="text-xs text-muted-foreground mt-2 font-medium">{t("total_receipts_registered", "Total receipts registered")}</p>
  </div>
  
- <div className="bg-card rounded-xl border border-border p-5 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-5 ">
  <p className="text-sm font-bold text-muted-foreground uppercase mb-2">{t("avg_order_value", "Avg. Order Value")}</p>
  <h3 className="text-3xl font-black text-card-foreground">${stats.avgValue.toFixed(2)}</h3>
  <p className="text-xs text-muted-foreground mt-2 font-medium">{t("per_transaction", "Per transaction")}</p>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50 flex flex-col sm:flex-row gap-4 justify-between">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50 flex flex-col sm:flex-row gap-4 justify-between">
  <div className="relative max-w-md w-full">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input placeholder="Search receipt ID..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
@@ -161,7 +161,7 @@ export default function Sales() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-border">
+ <thead className="bg-card border-b border-primary/40">
  <tr>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("receipt_no", "Receipt No.")}</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("date_time", "Date & Time")}</th>

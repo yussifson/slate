@@ -116,7 +116,7 @@ export default function UnivBOM() {
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Kanban","Dashboard"].map(v => (
  <button 
  key={v} 
@@ -139,8 +139,8 @@ export default function UnivBOM() {
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -148,7 +148,7 @@ export default function UnivBOM() {
  placeholder="Search assemblies or materials..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -210,9 +210,9 @@ export default function UnivBOM() {
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
  exit={{ opacity: 0, scale: 0.95}}
- className="bg-card border border-border rounded-2xl w-full max-w-md overflow-hidden"
+ className="bg-card border border-primary/40 rounded-2xl w-full max-w-md overflow-hidden"
  >
- <div className="flex items-center justify-between p-4 border-b border-border">
+ <div className="flex items-center justify-between p-4 border-b border-primary/40">
  <h3 className="font-semibold text-foreground">Add Component</h3>
  <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:text-foreground">
  <XCircle className="w-5 h-5" />
@@ -221,30 +221,30 @@ export default function UnivBOM() {
  <form onSubmit={handleSave} className="p-4 space-y-4">
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Product Name</label>
- <input required value={form.product_name} onChange={e => setForm({...form, product_name: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+ <input required value={form.product_name} onChange={e => setForm({...form, product_name: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
  </div>
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Material Name</label>
- <input required value={form.material_name} onChange={e => setForm({...form, material_name: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+ <input required value={form.material_name} onChange={e => setForm({...form, material_name: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Quantity</label>
- <input type="number" step="any" required value={form.quantity_required} onChange={e => setForm({...form, quantity_required: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+ <input type="number" step="any" required value={form.quantity_required} onChange={e => setForm({...form, quantity_required: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
  </div>
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Unit</label>
- <input required value={form.unit} onChange={e => setForm({...form, unit: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+ <input required value={form.unit} onChange={e => setForm({...form, unit: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
  </div>
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Cost per Unit</label>
- <input type="number" step="any" required value={form.cost_per_unit} onChange={e => setForm({...form, cost_per_unit: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+ <input type="number" step="any" required value={form.cost_per_unit} onChange={e => setForm({...form, cost_per_unit: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
  </div>
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Status</label>
- <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm">
+ <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm">
  <option>Active</option>
  <option>Inactive</option>
  </select>

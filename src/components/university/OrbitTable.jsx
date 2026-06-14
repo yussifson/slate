@@ -26,10 +26,10 @@ export default function OrbitTable({
 };
 
  return (
- <div className="w-full flex flex-col bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] overflow-hidden">
+ <div className="w-full flex flex-col bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-lg)] overflow-hidden">
  
  {showToolbar && (
- <div className="p-4 border-b border-[var(--color-border-subtle)] bg-[var(--color-surface-0)] flex items-center justify-between">
+ <div className="p-4 border-b border-primary/40 bg-[var(--color-surface-0)] flex items-center justify-between">
  <div className="flex items-center gap-4">
  {title && <h3 className="font-semibold text-[var(--color-text-primary)]">{title}</h3>}
  <div className="relative group">
@@ -39,7 +39,7 @@ export default function OrbitTable({
  placeholder="Search..." 
  value={search}
  onChange={(e) => setSearch(e.target.value)}
- className="w-64 focus:w-80 transition-all duration-200 bg-[var(--color-surface-2)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] pl-9 pr-3 py-1.5 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-accent-primary)] focus:ring-1 focus:ring-[var(--color-accent-primary)] font-body"
+ className="w-64 focus:w-80 transition-all duration-200 bg-[var(--color-surface-2)] border border-primary/40 rounded-[var(--radius-md)] pl-9 pr-3 py-1.5 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-accent-primary)] focus:ring-1 focus:ring-[var(--color-accent-primary)] font-body"
  />
  </div>
  </div>
@@ -58,7 +58,7 @@ export default function OrbitTable({
  <div className="overflow-x-auto custom-scrollbar">
  <table className="w-full text-left border-collapse">
  <thead>
- <tr className="bg-[var(--color-surface-0)] sticky top-0 z-10 border-b border-[var(--color-border-subtle)]">
+ <tr className="bg-[var(--color-surface-0)] sticky top-0 z-10 border-b border-primary/40">
  {columns.map((col, idx) => (
  <th 
  key={col.id || idx}
@@ -99,7 +99,7 @@ export default function OrbitTable({
  key={row.id || rIdx}
  onClick={() => onRowClick && onRowClick(row)}
  className={cn(
- "group border-b border-[var(--color-border-subtle)] last:border-0 hover:bg-[var(--color-surface-3)] transition-colors duration-100",
+ "group border-b border-primary/40 last:border-0 hover:bg-[var(--color-surface-3)] transition-colors duration-100",
  onRowClick && "cursor-pointer"
  )}
  >
@@ -127,7 +127,7 @@ export default function OrbitTable({
  </div>
  
  {/* Pagination Footer */}
- <div className="p-3 border-t border-[var(--color-border-subtle)] bg-[var(--color-surface-0)] flex items-center justify-between text-xs text-[var(--color-text-tertiary)]">
+ <div className="p-3 border-t border-primary/40 bg-[var(--color-surface-0)] flex items-center justify-between text-xs text-[var(--color-text-tertiary)]">
  <span>Showing {data.length > 0 ? 1 : 0} to {data.length} of {data.length} results</span>
  <div className="flex items-center gap-1">
  <button className="px-2 py-1 rounded hover:bg-[var(--color-surface-3)] disabled:opacity-50 transition-colors" disabled>Previous</button>

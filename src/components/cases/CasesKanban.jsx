@@ -12,7 +12,7 @@ const COLUMNS = [
  { id: "in_progress", label: "In Progress", color: "bg-amber-500", light: "bg-amber-50 border-amber-200"},
  { id: "pending_hearing", label: "Pending Hearing", color: "bg-primary", light: "bg-slate-50 border-primary/20"},
  { id: "closed", label: "Closed", color: "bg-primary", light: "bg-slate-50 border-primary/20"},
- { id: "archived", label: "Archived", color: "bg-gray-400", light: "bg-gray-50 border-gray-200"},
+ { id: "archived", label: "Archived", color: "bg-gray-400", light: "bg-gray-50 border-primary/40"},
 ];
 
 export default function CasesKanban({ cases, onStatusChange}) {
@@ -56,7 +56,7 @@ export default function CasesKanban({ cases, onStatusChange}) {
  ref={provided.innerRef}
  {...provided.droppableProps}
  className={`min-h-[200px] rounded-xl border-2 border-dashed p-2 transition-colors space-y-2 ${
- snapshot.isDraggingOver ? `${col.light}` : "border-border bg-muted/30"
+ snapshot.isDraggingOver ? `${col.light}` : "border-primary/40 bg-muted/30"
 }`}
  >
  {(grouped[col.id] || []).map((c, index) => {
@@ -69,7 +69,7 @@ export default function CasesKanban({ cases, onStatusChange}) {
  {...provided.draggableProps}
  {...provided.dragHandleProps}
  onClick={() => navigate(`/cases/${c.id}`, { state: { caseData: c}})}
- className={`bg-card rounded-lg border border-border p-3 cursor-pointer space-y-2 transition-all ${
+ className={`bg-card rounded-lg border border-primary/40 p-3 cursor-pointer space-y-2 transition-all ${
  snapshot.isDragging ? " rotate-1 opacity-90" : " hover:border-primary/30"
 }`}
  >

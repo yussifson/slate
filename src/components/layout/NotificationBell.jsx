@@ -88,8 +88,8 @@ export default function NotificationBell({ user}) {
  )}
  </button>
  </PopoverTrigger>
- <PopoverContent className="w-80 p-0 mr-4 mt-2 bg-card border border-border rounded-xl overflow-hidden font-sans">
- <div className="px-4 py-3 border-b border-border bg-muted/30 flex items-center justify-between">
+ <PopoverContent className="w-80 p-0 mr-4 mt-2 bg-card border border-primary/40 rounded-xl overflow-hidden font-sans">
+ <div className="px-4 py-3 border-b border-primary/40 bg-muted/30 flex items-center justify-between">
  <span className="font-semibold text-sm">{t("notifications", "Notifications")}</span>
  {unreadCount > 0 && (
  <Button variant="ghost" size="sm" className="h-7 text-xs px-2 gap-1 text-primary hover:text-primary/90" onClick={markAllRead}>

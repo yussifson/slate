@@ -9,7 +9,7 @@ export default function ConfirmationModal({ isOpen, onClose, onConfirm, title = 
 
  return (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md p-4 animate-in fade-in duration-300">
- <div className="bg-card border border-border/60 rounded-2xl -[0_30px_60px_-15px_rgba(0,0,0,0.5)] w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-300 ease-out">
+ <div className="bg-card border border-primary/40 rounded-2xl -[0_30px_60px_-15px_rgba(0,0,0,0.5)] w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-300 ease-out">
  <div className="p-5 space-y-4">
  <div className="flex justify-between items-start">
  <div className="w-10 h-10 rounded-full bg-red-50 dark:bg-red-950/20 flex items-center justify-center text-red-600 dark:text-red-400 shrink-0">
@@ -26,7 +26,7 @@ export default function ConfirmationModal({ isOpen, onClose, onConfirm, title = 
  </div>
  </div>
 
- <div className="bg-muted/50 p-4 border-t border-border flex gap-3 justify-end">
+ <div className="bg-muted/50 p-4 border-t border-primary/40 flex gap-3 justify-end">
  <Button variant="outline" size="sm" onClick={onClose} className="h-9 px-4 rounded-xl text-xs font-semibold">
  {t("cancel", "Cancel")}
  </Button>

@@ -198,7 +198,7 @@ export default function DataExport() {
           const count = counts[config.key];
           const isExporting = exporting === config.key;
           return (
-            <div key={config.key} className="bg-card border border-border rounded-xl p-5 flex flex-col gap-4">
+            <div key={config.key} className="bg-card border border-primary/40 rounded-xl p-5 flex flex-col gap-4">
               <div className="flex items-start gap-3">
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${config.color}`}>
                   <Icon className="w-5 h-5" />

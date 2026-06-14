@@ -45,14 +45,14 @@ export default function UniCareerAlumni() {
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="border-b border-[var(--color-border-subtle)] pb-4">
+ <div className="border-b border-primary/40 pb-4">
  <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Career Services & Alumni Hub</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage internship pipelines, view corporate job postings, access the alumni database, and track donor contributions.</p>
  </div>
 
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  {stats.map((stat, i) => (
- <div key={i} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">
+ <div key={i} className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
  <div className="flex items-center justify-between">
  <div>
  <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">{stat.label}</p>
@@ -67,8 +67,8 @@ export default function UniCareerAlumni() {
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
- <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden ">
- <div className="p-6 border-b border-[var(--color-border-subtle)]">
+ <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden ">
+ <div className="p-6 border-b border-primary/40">
  <h2 className="font-semibold text-[var(--color-text-primary)]">Active Job Board & Placements</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Browse active listings uploaded by vetted partners.</p>
  </div>
@@ -82,7 +82,7 @@ export default function UniCareerAlumni() {
  />
  ) : (
  jobs.map((job, idx) => (
- <div key={idx} className="p-4 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] flex justify-between items-center text-[var(--text-xs)] hover:border-[var(--primary)] transition-colors">
+ <div key={idx} className="p-4 bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-lg)] flex justify-between items-center text-[var(--text-xs)] hover:border-[var(--primary)] transition-colors">
  <div>
  <h4 className="font-bold text-[var(--text-sm)] text-[var(--color-text-primary)]">{job.title}</h4>
  <p className="text-[var(--color-text-secondary)] mt-1">Employer: {job.employer} · {job.location}</p>
@@ -96,7 +96,7 @@ export default function UniCareerAlumni() {
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 h-fit ">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 h-fit ">
  <h2 className="font-semibold text-[var(--color-text-primary)] mb-1">Alumni Relations & Events</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-4">Keep in touch with graduating classes.</p>
  <div className="space-y-4">

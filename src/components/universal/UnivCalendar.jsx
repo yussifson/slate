@@ -133,9 +133,9 @@ export default function UnivCalendar({
 });
 
  return (
- <div className="flex flex-col h-full bg-background rounded-2xl overflow-hidden border border-border ">
+ <div className="flex flex-col h-full bg-background rounded-2xl overflow-hidden border border-primary/40 ">
  {/* Header */}
- <div className="p-5 border-b border-border bg-card flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 shrink-0">
+ <div className="p-5 border-b border-primary/40 bg-card flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 shrink-0">
  <div className="flex items-center gap-4">
  <div className="p-2.5 bg-primary/10 text-primary rounded-xl hidden sm:block">
  <CalendarIcon className="w-6 h-6" />
@@ -146,7 +146,7 @@ export default function UnivCalendar({
  </div>
  </div>
  <div className="flex items-center gap-3">
- <div className="flex bg-muted p-1 rounded-lg border border-border">
+ <div className="flex bg-muted p-1 rounded-lg border border-primary/40">
  {['Month', 'Week', 'Day'].map(v => (
  <button 
  key={v} 
@@ -169,7 +169,7 @@ export default function UnivCalendar({
  </div>
 
  {isAdding && (
- <div className="p-4 bg-card border-b border-border shrink-0">
+ <div className="p-4 bg-card border-b border-primary/40 shrink-0">
  <form onSubmit={handleAdd} className="flex items-end gap-4 max-w-2xl">
  <div className="flex-1">
  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Event Title</label>
@@ -179,7 +179,7 @@ export default function UnivCalendar({
  value={newEventTitle} 
  onChange={e => setNewEventTitle(e.target.value)} 
  placeholder="Enter event title..." 
- className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" 
+ className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" 
  />
  </div>
  <Button type="button" variant="outline" onClick={() => setIsAdding(false)} className="h-10 rounded-xl">Cancel</Button>
@@ -200,9 +200,9 @@ export default function UnivCalendar({
  ) : view === 'Month' && (
  <div className="flex-1 flex flex-col min-w-[600px]">
  {/* Days of week header */}
- <div className="grid grid-cols-7 border-b border-border bg-muted/30 shrink-0">
+ <div className="grid grid-cols-7 border-b border-primary/40 bg-muted/30 shrink-0">
  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
- <div key={day} className="py-2 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider border-r border-border last:border-r-0">
+ <div key={day} className="py-2 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider border-r border-primary/40 last:border-r-0">
  {day}
  </div>
  ))}
@@ -212,7 +212,7 @@ export default function UnivCalendar({
  {days.map((d, i) => {
  const dayEvents = displayEvents.filter(ev => (ev.day || 10) === d.day);
  return (
- <div key={i} className={`border-r border-b border-border p-2 ${d.inactive ? 'bg-muted/10' : 'bg-card hover:bg-muted/5'} transition-colors relative min-h-[100px]`}>
+ <div key={i} className={`border-r border-b border-primary/40 p-2 ${d.inactive ? 'bg-muted/10' : 'bg-card hover:bg-muted/5'} transition-colors relative min-h-[100px]`}>
  {d.day && (
  <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-semibold ${d.isToday ? 'bg-primary text-white ' : 'text-foreground dark:text-slate-300'}`}>
  {d.day}
@@ -250,13 +250,13 @@ export default function UnivCalendar({
  </div>
 
  {/* Sidebar Schedule (Upcoming) */}
- <div className="w-72 border-l border-border bg-muted/20 hidden xl:flex flex-col">
- <div className="p-4 border-b border-border/50 bg-card/50 backdrop-blur-sm sticky top-0">
+ <div className="w-72 border-l border-primary/40 bg-muted/20 hidden xl:flex flex-col">
+ <div className="p-4 border-b border-primary/40 bg-card/50 backdrop-blur-sm sticky top-0">
  <h3 className="font-bold text-sm text-foreground">Upcoming Today</h3>
  </div>
  <div className="p-4 space-y-4 overflow-y-auto custom-scrollbar">
  {displayEvents.filter(ev => (ev.day || 10) === 10).map((ev, i) => (
- <div key={ev.id} className="bg-card border border-border p-3 rounded-xl hover:border-primary/30 transition-colors group cursor-pointer relative">
+ <div key={ev.id} className="bg-card border border-primary/40 p-3 rounded-xl hover:border-primary/30 transition-colors group cursor-pointer relative">
  <button onClick={() => deleteMutation.mutate(ev.id)} className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-red-500">
  <Trash2 className="w-4 h-4" />
  </button>

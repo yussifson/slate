@@ -29,8 +29,8 @@ export default function FeatureGate({
  <div className="opacity-30 pointer-events-none select-none blur-[1px] grayscale">
  {children}
  </div>
- <div className="absolute inset-0 flex flex-col items-center justify-center p-4 bg-background/40 backdrop-blur-sm z-10 rounded-xl border border-border opacity-0 group-hover:opacity-100 transition-opacity">
- <div className="bg-card p-4 rounded-xl border border-border text-center max-w-[250px]">
+ <div className="absolute inset-0 flex flex-col items-center justify-center p-4 bg-background/40 backdrop-blur-sm z-10 rounded-xl border border-primary/40 opacity-0 group-hover:opacity-100 transition-opacity">
+ <div className="bg-card p-4 rounded-xl border border-primary/40 text-center max-w-[250px]">
  <Lock className="w-6 h-6 text-amber-500 mx-auto mb-2" />
  <h4 className="font-bold text-sm mb-1">Upgrade Required</h4>
  <p className="text-xs text-muted-foreground mb-3">This feature is not available on your current plan.</p>

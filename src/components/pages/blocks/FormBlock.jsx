@@ -33,7 +33,7 @@ export default function FormBlock({ dataConfig, styleConfig}) {
  mutation.mutate(formData);
 };
 
- const bgClass = theme === 'dark' ? 'bg-slate-900 text-white border-slate-800' : 'bg-card text-card-foreground border-border';
+ const bgClass = theme === 'dark' ? 'bg-slate-900 text-white border-primary/40' : 'bg-card text-card-foreground border-primary/40';
  const padClass = padding || 'p-6';
 
  return (
@@ -48,7 +48,7 @@ export default function FormBlock({ dataConfig, styleConfig}) {
  value={formData[f.name] || ''} 
  onChange={(e) => setFormData(prev => ({ ...prev, [f.name]: e.target.value}))}
  required={f.required}
- className={theme === 'dark' ? 'bg-slate-800 border-slate-700' : ''}
+ className={theme === 'dark' ? 'bg-slate-800 border-primary/40' : ''}
  placeholder={f.placeholder || `Enter ${f.label || f.name}`}
  />
  </div>

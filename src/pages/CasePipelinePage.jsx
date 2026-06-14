@@ -28,8 +28,8 @@ function PipelineCard({ pipeline, onEdit, onDelete, caseStates}) {
  const activeCases = caseStates.filter(cs => cs.pipeline_id === pipeline.id).length;
 
  return (
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border flex items-start justify-between gap-3">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 flex items-start justify-between gap-3">
  <div>
  <div className="flex items-center gap-2 flex-wrap">
  <h3 className="text-sm font-semibold">{pipeline.name}</h3>
@@ -72,7 +72,7 @@ function PipelineCard({ pipeline, onEdit, onDelete, caseStates}) {
  )}
  </div>
  {idx < pipeline.stages.length - 1 && (
- <div className="w-4 h-px bg-border shrink-0 mx-0.5" />
+ <div className="w-4 h-px bg-primary/40 shrink-0 mx-0.5" />
  )}
  </React.Fragment>
  );
@@ -140,7 +140,7 @@ function PipelineEditor({ pipeline, onClose, onSave}) {
  </div>
  </div>
 
- <div className="border-t border-border pt-4">
+ <div className="border-t border-primary/40 pt-4">
  <div className="flex items-center justify-between mb-3">
  <Label>{t("pipeline_stages", "Pipeline Stages")}</Label>
  <span className="text-xs text-muted-foreground">{form.stages.length} {t("stages", "stages")}</span>
@@ -164,7 +164,7 @@ function PipelineEditor({ pipeline, onClose, onSave}) {
  {form.stages.sort((a, b) => a.order - b.order).map((stage, idx) => {
 
  return (
- <div key={stage.id} className="flex items-center gap-2 p-2.5 bg-muted/30 rounded-lg border border-border">
+ <div key={stage.id} className="flex items-center gap-2 p-2.5 bg-muted/30 rounded-lg border border-primary/40">
  <GripVertical className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
  <div
  className="w-4 h-4 rounded-full shrink-0 border-2 border-white cursor-pointer"
@@ -205,7 +205,7 @@ function PipelineEditor({ pipeline, onClose, onSave}) {
  </div>
  </div>
 
- <div className="flex justify-end gap-2 border-t border-border pt-3">
+ <div className="flex justify-end gap-2 border-t border-primary/40 pt-3">
  <Button variant="outline" onClick={onClose}>{t("cancel", "Cancel")}</Button>
  <Button onClick={() => onSave(form)} className="gap-1.5">
  <Save className="w-3.5 h-3.5" /> {t("save_pipeline", "Save Pipeline")}
@@ -279,7 +279,7 @@ export default function CasePipelinePage() {
  {isLoading ? (
  <div className="text-center text-sm text-muted-foreground py-8">{t("loading_pipelines", "Loading pipelines...")}</div>
  ) : pipelines.length === 0 ? (
- <div className="bg-card rounded-xl border border-dashed border-primary/50 p-12 text-center">
+ <div className="bg-card rounded-xl border border-dashed border-primary/40 p-12 text-center">
  <GitBranch className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
  <p className="text-sm font-medium">{t("no_pipelines_yet", "No pipelines yet")}</p>
  <p className="text-xs text-muted-foreground mt-1 mb-4">{t(

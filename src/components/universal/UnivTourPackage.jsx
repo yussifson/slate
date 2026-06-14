@@ -178,14 +178,14 @@ const UnivTourPackage = () => {
  <p className="text-xs font-bold text-muted-foreground uppercase mb-2 flex items-center gap-1"><Info className="w-3 h-3"/> Highlights</p>
  <div className="flex flex-wrap gap-2">
  {pkg.inclusions ? pkg.inclusions.split(',').map((inc, i) => (
- <span key={i} className="text-xs font-medium text-muted-foreground bg-muted px-2 py-1 rounded-md flex items-center gap-1 border border-border">
+ <span key={i} className="text-xs font-medium text-muted-foreground bg-muted px-2 py-1 rounded-md flex items-center gap-1 border border-primary/40">
  <Check className="w-3 h-3 text-emerald-500" /> {inc.trim()}
  </span>
  )) : <span className="text-xs text-muted-foreground">None specified</span>}
  </div>
  </div>
 
- <div className="pt-4 border-t border-border flex justify-between items-center text-sm">
+ <div className="pt-4 border-t border-primary/40 flex justify-between items-center text-sm">
  <span className="text-muted-foreground font-medium">Departure</span>
  <span className="font-bold text-foreground">{new Date(pkg.start_date).toLocaleDateString()}</span>
  </div>

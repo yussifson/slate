@@ -86,20 +86,20 @@ export default function UniCourses() {
  { id: 'status', header: 'Status', render: (_, row) => <OrbitStatusBadge status={row.status} />}
  ];
 
- const inputClass = "w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body";
+ const inputClass = "w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body";
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="flex items-end justify-between border-b border-[var(--color-border-subtle)] pb-4">
+ <div className="flex items-end justify-between border-b border-primary/40 pb-4">
  <div>
  <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Course Catalog</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage academic courses, credit hours, prerequisites, and faculty assignments.</p>
  </div>
- <div className="flex items-center bg-[var(--color-surface-2)] p-1 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+ <div className="flex items-center bg-[var(--color-surface-2)] p-1 rounded-[var(--radius-lg)] border border-primary/40">
  {[{ id: 'directory', label: 'Catalog'}, { id: 'add', label: 'Add Course'}].map(tab => (
  <button key={tab.id} onClick={() => setActiveTab(tab.id)}
  className={cn("px-4 py-1.5 text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-all",
- activeTab === tab.id ? "bg-[var(--color-surface-0)] text-[var(--color-text-primary)] border border-[var(--color-border-subtle)]" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border border-transparent"
+ activeTab === tab.id ? "bg-[var(--color-surface-0)] text-[var(--color-text-primary)] border border-primary/40" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border border-transparent"
  )}>{tab.label}</button>
  ))}
  </div>
@@ -115,7 +115,7 @@ export default function UniCourses() {
  )}
 
  {activeTab === 'add' && (
- <div className="max-w-2xl mx-auto bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-8 ">
+ <div className="max-w-2xl mx-auto bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-8 ">
  <div className="mb-8">
  <h2 className="font-display text-[var(--text-2xl)] font-semibold tracking-tight text-[var(--color-text-primary)]">Create Academic Course</h2>
  <p className="text-[var(--color-text-secondary)] mt-2">Input curricular information, credit values, prerequisites, and lecturer details.</p>
@@ -165,8 +165,8 @@ export default function UniCourses() {
  </select>
  </div>
  </div>
- <div className="pt-4 border-t border-[var(--color-border-subtle)] flex justify-end gap-3">
- <button type="button" onClick={() => setActiveTab('directory')} className="px-5 py-2 border border-[var(--color-border-default)] text-[var(--color-text-primary)] rounded-[var(--radius-md)] font-medium hover:bg-[var(--color-surface-3)] transition-colors">Cancel</button>
+ <div className="pt-4 border-t border-primary/40 flex justify-end gap-3">
+ <button type="button" onClick={() => setActiveTab('directory')} className="px-5 py-2 border border-primary/40 text-[var(--color-text-primary)] rounded-[var(--radius-md)] font-medium hover:bg-[var(--color-surface-3)] transition-colors">Cancel</button>
  <button type="submit" className="flex items-center gap-2 px-6 py-2.5 bg-[var(--primary)] hover:opacity-90 text-white rounded-[var(--radius-md)] font-medium transition-all ">
  <Plus className="w-4 h-4" /> Create Course
  </button>

@@ -188,8 +188,8 @@ export default function Drivers() {
 })}
  </div>
  {/* Table */}
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/40">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/40">
  <div className="relative max-w-sm w-full">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input
@@ -215,7 +215,7 @@ export default function Drivers() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-muted/30 border-b border-border">
+ <thead className="bg-muted/30 border-b border-primary/40">
  <tr>
  {['Driver', 'License', 'Contact', 'Vehicle Assigned', 'Total Trips', 'Status', 'Actions'].map(h => {
  return (
@@ -329,7 +329,7 @@ export default function Drivers() {
  {/* Add/Edit Modal */}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-5 border border-border max-h-[90vh] overflow-y-auto">
+ <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-5 border border-primary/40 max-h-[90vh] overflow-y-auto">
  <div className="flex items-center justify-between">
  <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
  <User className="w-5 h-5 text-primary" />

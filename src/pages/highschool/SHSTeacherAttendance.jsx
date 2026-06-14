@@ -153,7 +153,7 @@ export default function SHSTeacherAttendance() {
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
- <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
  <div className="flex flex-col md:flex-row justify-between gap-6">
  <div className="flex-1 flex flex-col sm:flex-row gap-4">
  <div className="space-y-2 flex-1 max-w-xs">
@@ -162,7 +162,7 @@ export default function SHSTeacherAttendance() {
  </label>
  <Input 
  type="date"
- className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
+ className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
  value={selectedDate}
  onChange={(e) => setSelectedDate(e.target.value)}
  max={new Date().toISOString().split('T')[0]}
@@ -175,7 +175,7 @@ export default function SHSTeacherAttendance() {
  </label>
  <Input 
  placeholder="Name or ID..."
- className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -183,7 +183,7 @@ export default function SHSTeacherAttendance() {
  </div>
 
  <div className="flex items-end pb-1">
- <div className="flex gap-4 p-4 rounded-2xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 dark:border-slate-800 ">
+ <div className="flex gap-4 p-4 rounded-2xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 border border-primary/40 dark:border-primary/40 dark:border-primary/40 ">
  <div className="text-center">
  <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total</p>
  <p className="text-xl font-black text-slate-700 dark:text-slate-300 dark:text-slate-200">{teachers.length}</p>
@@ -218,7 +218,7 @@ export default function SHSTeacherAttendance() {
  </div>
  ) : (
  <div>
- <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 p-3 flex justify-between items-center border-b border-slate-100 dark:border-slate-800 dark:border-slate-800">
+ <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 p-3 flex justify-between items-center border-b border-primary/40 dark:border-primary/40 dark:border-primary/40">
  <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 pl-3">Quick Actions:</p>
  <div className="flex gap-2 pr-3">
  <Button variant="outline" size="sm" onClick={() => handleMarkAll('Present')} className="h-8 text-xs font-semibold text-primary border-primary/20 hover:bg-slate-50">
@@ -239,7 +239,7 @@ export default function SHSTeacherAttendance() {
  <div>
  <p className="font-bold text-slate-800 dark:text-slate-100">{teacher.title}</p>
  <div className="flex items-center gap-2 mt-0.5">
- <Badge variant="outline" className="text-[10px] bg-white dark:bg-slate-900/40 dark:bg-slate-900 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 py-0">{teacher.case_number}</Badge>
+ <Badge variant="outline" className="text-[10px] bg-white dark:bg-slate-900/40 dark:bg-slate-900 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 border-primary/40 dark:border-primary/40 py-0">{teacher.case_number}</Badge>
  <span className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">{teacher.data?.department || 'General'}</span>
  </div>
  </div>
@@ -295,7 +295,7 @@ export default function SHSTeacherAttendance() {
  )}
  </div>
  
- <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex items-center justify-between">
+ <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex items-center justify-between">
  <div>
  {saveSuccess && (
  <Badge className="bg-slate-100 text-primary/90 border-none px-3 py-1 text-sm font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">

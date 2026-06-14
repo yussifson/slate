@@ -72,8 +72,8 @@ export default function MemberPortal() {
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
  {/* Left Column (Events & Prayers) */}
  <div className="col-span-1 lg:col-span-2 space-y-6">
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 md:p-5 border-b border-border bg-muted/50 flex justify-between items-center">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 md:p-5 border-b border-primary/40 bg-muted/50 flex justify-between items-center">
  <h3 className="font-bold text-card-foreground flex items-center gap-2"><Calendar className="w-5 h-5 text-primary" /> {t("upcoming_gatherings", "Upcoming Gatherings")}</h3>
  </div>
  <div className="p-0">
@@ -100,13 +100,13 @@ export default function MemberPortal() {
  )}
  </div>
  {events.length > 3 && (
- <div className="p-3 border-t border-border text-center">
+ <div className="p-3 border-t border-primary/40 text-center">
  <Button variant="ghost" className="w-full text-primary">{t("view_all_events", "View All Events")}</Button>
  </div>
  )}
  </div>
 
- <div className="bg-card rounded-xl border border-border p-5 flex flex-col items-center justify-center text-center">
+ <div className="bg-card rounded-xl border border-primary/40 p-5 flex flex-col items-center justify-center text-center">
  <Heart className="w-10 h-10 text-rose-500 mb-3" />
  <h3 className="font-bold text-lg text-foreground mb-2">{t("need_prayer", "Need Prayer?")}</h3>
  <p className="text-sm text-muted-foreground mb-4 max-w-sm">{t(
@@ -119,11 +119,11 @@ export default function MemberPortal() {
 
  {/* Right Column (Giving Info) */}
  <div className="space-y-6">
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <h3 className="font-bold text-card-foreground flex items-center gap-2"><DollarSign className="w-5 h-5 text-primary" /> {t("my_giving", "My Giving")}</h3>
  </div>
- <div className="p-5 flex flex-col items-center border-b border-border">
+ <div className="p-5 flex flex-col items-center border-b border-primary/40">
  <p className="text-sm text-muted-foreground mb-1">{t("total_contributions", "Total Contributions")}</p>
  <p className="text-3xl font-black text-primary">${totalGiven.toLocaleString(undefined, { minimumFractionDigits: 2})}</p>
  </div>

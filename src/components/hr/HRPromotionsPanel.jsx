@@ -42,12 +42,12 @@ export default function HRPromotionsPanel({ companyId, promotions, staff, curren
         </div>
       )}
       {promotions.length === 0 ? (
-        <div className="bg-card border border-border rounded-xl p-10 text-center">
+        <div className="bg-card border border-primary/40 rounded-xl p-10 text-center">
           <ArrowUpCircle className="w-10 h-10 text-muted-foreground mx-auto mb-2" />
           <p className="text-sm text-muted-foreground">{t("no_promotions_recorded_yet", "No promotions recorded yet")}</p>
         </div>
       ) : (
-        <div className="bg-card border border-border rounded-xl divide-y divide-border">
+        <div className="bg-card border border-primary/40 rounded-xl divide-y divide-border">
           {promotions.map(p => {
             return (
               <div key={p.id} className="px-4 py-3 flex items-center gap-4">

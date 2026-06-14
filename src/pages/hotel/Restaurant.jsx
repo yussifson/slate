@@ -133,7 +133,7 @@ export default function Restaurant() {
  <div className="flex flex-col lg:flex-row gap-6">
  {/* Left: Menu & POS */}
  <div className="flex-1 space-y-4">
- <div className="bg-card p-4 rounded-xl border border-border flex gap-4">
+ <div className="bg-card p-4 rounded-xl border border-primary/40 flex gap-4">
  <div className="relative flex-1">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input placeholder="Search menu items..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-muted" />
@@ -154,7 +154,7 @@ export default function Restaurant() {
  {isMenuLoading ? (
  <div className="py-12 text-center text-muted-foreground">{t("loading_menu", "Loading menu...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
+ <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-primary/40">
  <Utensils className="w-12 h-12 mx-auto mb-3 opacity-30" />
  <p className="font-semibold">{t("no_menu_items_found", "No menu items found.")}</p>
  <p className="text-xs mt-1">{t(
@@ -166,7 +166,7 @@ export default function Restaurant() {
  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
  {filtered.map(item => {
  return (
- <div key={item.id} className="group bg-card p-4 rounded-xl border border-border hover:border-primary/20 cursor-pointer transition-all flex flex-col justify-between h-32 relative">
+ <div key={item.id} className="group bg-card p-4 rounded-xl border border-primary/40 hover:border-primary/20 cursor-pointer transition-all flex flex-col justify-between h-32 relative">
  <button 
  onClick={(e) => { e.stopPropagation(); handleDeleteMenu(item.id);}} 
  className="absolute top-2 right-2 p-1 text-muted-foreground hover:text-red-500 rounded opacity-0 group-hover:opacity-100 transition-opacity"
@@ -189,7 +189,7 @@ export default function Restaurant() {
  </div>
 
  {/* Right: Current Order */}
- <div className="w-full lg:w-96 bg-card rounded-xl border border-border flex flex-col h-[600px] overflow-hidden">
+ <div className="w-full lg:w-96 bg-card rounded-xl border border-primary/40 flex flex-col h-[600px] overflow-hidden">
  <div className="p-4 bg-primary text-white flex items-center justify-between">
  <h3 className="font-bold flex items-center gap-2"><ShoppingCart className="w-5 h-5"/> {t("current_order", "Current Order")}</h3>
  <Input value={roomNumber} onChange={e => setRoomNumber(e.target.value)} className="w-24 h-8 bg-primary/90 border-none text-white text-xs font-bold text-center" />
@@ -217,7 +217,7 @@ export default function Restaurant() {
 })
  )}
  </div>
- <div className="p-4 border-t border-border bg-muted space-y-4">
+ <div className="p-4 border-t border-primary/40 bg-muted space-y-4">
  <div className="flex justify-between items-center text-sm">
  <span className="text-muted-foreground">{t("subtotal", "Subtotal")}</span>
  <span className="font-bold text-card-foreground">${total.toFixed(2)}</span>
@@ -226,7 +226,7 @@ export default function Restaurant() {
  <span className="text-muted-foreground">{t("tax_10", "Tax (10%)")}</span>
  <span className="font-bold text-card-foreground">${(total * 0.1).toFixed(2)}</span>
  </div>
- <div className="flex justify-between items-center text-lg pt-2 border-t border-border">
+ <div className="flex justify-between items-center text-lg pt-2 border-t border-primary/40">
  <span className="font-bold text-card-foreground">{t("total", "Total")}</span>
  <span className="font-bold text-primary">${(total * 1.1).toFixed(2)}</span>
  </div>

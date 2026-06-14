@@ -237,8 +237,8 @@ export default function UnivPrescription() {
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -246,7 +246,7 @@ export default function UnivPrescription() {
  placeholder="Search medications, patients..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -293,7 +293,7 @@ export default function UnivPrescription() {
  <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border flex items-center gap-1 w-fit ${
  p.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
  p.status === 'Completed' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
- 'bg-background text-foreground border-border'
+ 'bg-background text-foreground border-primary/40'
 }`}>
  {p.status === 'Active' && <Activity className="w-3 h-3" />}
  {p.status === 'Completed' && <CheckCircle2 className="w-3 h-3" />}
@@ -331,9 +331,9 @@ export default function UnivPrescription() {
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
  exit={{ opacity: 0, scale: 0.95}}
- className="bg-card border border-border rounded-2xl w-full max-w-md overflow-hidden"
+ className="bg-card border border-primary/40 rounded-2xl w-full max-w-md overflow-hidden"
  >
- <div className="flex items-center justify-between p-4 border-b border-border">
+ <div className="flex items-center justify-between p-4 border-b border-primary/40">
  <h3 className="font-semibold text-foreground">{editingId ? 'Edit Prescription' : 'New Prescription'}</h3>
  <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:text-foreground">
  <XCircle className="w-5 h-5" />
@@ -360,7 +360,7 @@ export default function UnivPrescription() {
  required
  value={form.patient_id} 
  onChange={e => setForm({...form, patient_id: e.target.value})}
- className="w-full p-2 bg-background border border-border rounded-lg text-sm"
+ className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm"
  >
  <option value="" disabled>-- Select Patient --</option>
  {patients.map(pt => (
@@ -377,7 +377,7 @@ export default function UnivPrescription() {
  required
  value={form.new_patient_first}
  onChange={e => setForm({...form, new_patient_first: e.target.value})}
- className="w-full p-2 bg-background border border-border rounded-lg text-sm" 
+ className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" 
  />
  <input 
  type="text" 
@@ -385,7 +385,7 @@ export default function UnivPrescription() {
  required
  value={form.new_patient_last}
  onChange={e => setForm({...form, new_patient_last: e.target.value})}
- className="w-full p-2 bg-background border border-border rounded-lg text-sm" 
+ className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" 
  />
  </div>
  )}
@@ -394,28 +394,28 @@ export default function UnivPrescription() {
 
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Medication</label>
- <input required value={form.medication} onChange={e => setForm({...form, medication: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" placeholder="e.g. Amoxicillin" />
+ <input required value={form.medication} onChange={e => setForm({...form, medication: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" placeholder="e.g. Amoxicillin" />
  </div>
  
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Dosage</label>
- <input required value={form.dosage} onChange={e => setForm({...form, dosage: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" placeholder="e.g. 500mg" />
+ <input required value={form.dosage} onChange={e => setForm({...form, dosage: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" placeholder="e.g. 500mg" />
  </div>
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Frequency</label>
- <input required value={form.frequency} onChange={e => setForm({...form, frequency: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" placeholder="e.g. Twice Daily" />
+ <input required value={form.frequency} onChange={e => setForm({...form, frequency: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" placeholder="e.g. Twice Daily" />
  </div>
  </div>
 
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Duration</label>
- <input required value={form.duration} onChange={e => setForm({...form, duration: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" placeholder="e.g. 7 Days" />
+ <input required value={form.duration} onChange={e => setForm({...form, duration: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" placeholder="e.g. 7 Days" />
  </div>
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Status</label>
- <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm">
+ <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm">
  <option value="Active">Active</option>
  <option value="Completed">Completed</option>
  <option value="Cancelled">Cancelled</option>
@@ -425,7 +425,7 @@ export default function UnivPrescription() {
 
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Doctor ID (UUID - Optional)</label>
- <input value={form.doctor_id} onChange={e => setForm({...form, doctor_id: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm font-mono" placeholder="Optional Doctor UUID" />
+ <input value={form.doctor_id} onChange={e => setForm({...form, doctor_id: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm font-mono" placeholder="Optional Doctor UUID" />
  </div>
 
  <div className="pt-4 flex justify-end gap-2">

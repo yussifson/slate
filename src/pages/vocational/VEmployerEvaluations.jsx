@@ -67,7 +67,7 @@ export default function VEmployerEvaluations() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
  <Input 
  placeholder="Search evaluations..." 
- className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
+ className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -135,7 +135,7 @@ export default function VEmployerEvaluations() {
 
  <div className="mt-8 space-y-6">
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- <div className="p-6 rounded-2xl bg-slate-500 border border-slate-200 flex flex-col items-center justify-center text-center">
+ <div className="p-6 rounded-2xl bg-slate-500 border border-primary/40 flex flex-col items-center justify-center text-center">
  <p className="text-sm font-semibold text-primary uppercase mb-2">Overall Rating</p>
  <div className="flex items-center gap-1 text-amber-400">
  <Star className="w-8 h-8 fill-current" />
@@ -143,7 +143,7 @@ export default function VEmployerEvaluations() {
  </div>
  </div>
  
- <div className="md:col-span-2 p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800 ">
+ <div className="md:col-span-2 p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-primary/40 dark:border-primary/40 ">
  <h3 className="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2"><MessageSquare className="w-4 h-4 text-primary" /> Supervisor Feedback</h3>
  <p className="text-slate-600 italic">
  "{selectedEval.data?.feedback || 'No written feedback provided for this evaluation.'}"
@@ -151,7 +151,7 @@ export default function VEmployerEvaluations() {
  </div>
  </div>
  
- <div className="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800 space-y-4">
+ <div className="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-primary/40 dark:border-primary/40 space-y-4">
  <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">Skill Assessment breakdown</h3>
  <div className="space-y-4">
  {['Technical Skills', 'Punctuality', 'Teamwork', 'Problem Solving'].map(skill => (

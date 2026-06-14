@@ -204,21 +204,21 @@ export default function UnivWard() {
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 shrink-0">
- <div className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between ">
+ <div className="bg-card border border-primary/40 rounded-2xl p-4 flex items-center justify-between ">
  <div>
  <p className="text-sm text-muted-foreground font-medium">Total Beds</p>
  <h3 className="text-2xl font-bold text-foreground mt-1">{wards.length}</h3>
  </div>
  <div className="p-3 bg-blue-100 dark:bg-blue-500/10 text-blue-600 rounded-xl"><Bed className="w-5 h-5" /></div>
  </div>
- <div className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between ">
+ <div className="bg-card border border-primary/40 rounded-2xl p-4 flex items-center justify-between ">
  <div>
  <p className="text-sm text-muted-foreground font-medium">Available</p>
  <h3 className="text-2xl font-bold text-foreground mt-1">{wards.filter(w => w.status === 'Available').length}</h3>
  </div>
  <div className="p-3 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 rounded-xl"><CheckCircle2 className="w-5 h-5" /></div>
  </div>
- <div className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between ">
+ <div className="bg-card border border-primary/40 rounded-2xl p-4 flex items-center justify-between ">
  <div>
  <p className="text-sm text-muted-foreground font-medium">Occupied</p>
  <h3 className="text-2xl font-bold text-foreground mt-1">{wards.filter(w => w.status === 'Occupied').length}</h3>
@@ -227,8 +227,8 @@ export default function UnivWard() {
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -236,7 +236,7 @@ export default function UnivWard() {
  placeholder="Search wards, beds, patients..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -315,7 +315,7 @@ export default function UnivWard() {
  <motion.div 
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
- className="bg-card border border-border rounded-2xl max-w-md w-full p-6 relative"
+ className="bg-card border border-primary/40 rounded-2xl max-w-md w-full p-6 relative"
  >
  <button 
  onClick={() => setIsModalOpen(false)}
@@ -337,7 +337,7 @@ export default function UnivWard() {
  onChange={(e) => setForm({ ...form, ward_name: e.target.value})}
  placeholder="e.g. ICU Wing"
  required
- className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
@@ -349,7 +349,7 @@ export default function UnivWard() {
  onChange={(e) => setForm({ ...form, bed_number: e.target.value})}
  placeholder="e.g. Bed-104"
  required
- className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
@@ -359,7 +359,7 @@ export default function UnivWard() {
  <select 
  value={form.status}
  onChange={(e) => setForm({ ...form, status: e.target.value})}
- className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  >
  <option value="Available">Available</option>
  <option value="Occupied">Occupied</option>
@@ -373,7 +373,7 @@ export default function UnivWard() {
  <select 
  value={form.patient_id}
  onChange={(e) => setForm({ ...form, patient_id: e.target.value})}
- className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  >
  <option value="">-- None --</option>
  {patients.map(p => (
@@ -393,7 +393,7 @@ export default function UnivWard() {
  type="datetime-local" 
  value={form.admission_date}
  onChange={(e) => setForm({ ...form, admission_date: e.target.value})}
- className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
  <div>
@@ -402,7 +402,7 @@ export default function UnivWard() {
  type="datetime-local" 
  value={form.expected_discharge}
  onChange={(e) => setForm({ ...form, expected_discharge: e.target.value})}
- className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
  </div>
@@ -411,7 +411,7 @@ export default function UnivWard() {
  <button 
  type="button" 
  onClick={() => setIsModalOpen(false)}
- className="px-4 py-2 border border-border text-foreground hover:bg-muted/50 rounded-xl text-sm font-medium transition-colors"
+ className="px-4 py-2 border border-primary/40 text-foreground hover:bg-muted/50 rounded-xl text-sm font-medium transition-colors"
  >
  Cancel
  </button>

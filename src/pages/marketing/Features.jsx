@@ -168,9 +168,9 @@ export default function Features() {
  return (
  <div className="overflow-x-hidden bg-white">
  {/* ── Hero Header ── */}
- <section className="relative pt-8 pb-10 md:pt-14 md:pb-20 bg-slate-50 border-b border-slate-100">
+ <section className="relative pt-8 pb-10 md:pt-14 md:pb-20 bg-slate-50 border-b border-primary/40">
  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
- <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 ">
+ <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-primary/40 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 ">
  {t("core_features", "Core Features")}
  </span>
  <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold tracking-tight text-slate-900 mb-6 max-w-4xl mx-auto leading-[1.1]">
@@ -233,7 +233,7 @@ export default function Features() {
  </div>
  {/* Stylized UI Mockup */}
  <div className="flex-1 w-full">
- <div className="w-full aspect-[4/3] rounded-2xl border border-slate-200/80 overflow-hidden relative group bg-white">
+ <div className="w-full aspect-[4/3] rounded-2xl border border-primary/40 overflow-hidden relative group bg-white">
  <img 
  src={feature.image} 
  alt={`${feature.badge} Interface`} 
@@ -247,10 +247,10 @@ export default function Features() {
  </div>
  </section>
  {/* ── Additional Capabilities Grid ── */}
- <section className="py-20 md:py-28 bg-slate-50 border-t border-slate-100">
+ <section className="py-20 md:py-28 bg-slate-50 border-t border-primary/40">
  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
  <div className="text-center max-w-2xl mx-auto mb-16">
- <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 ">
+ <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-primary/40 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 ">
  {t("even_more_capabilities", "Even More Capabilities")}
  </span>
  <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900">
@@ -267,7 +267,7 @@ export default function Features() {
  return (
  <div
  key={index}
- className="rounded-3xl border border-slate-100 bg-white p-8 space-y-5 transition- duration-300"
+ className="rounded-3xl border border-primary/40 bg-white p-8 space-y-5 transition- duration-300"
  >
  <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-primary">
  <FeatIcon className="w-6 h-6" />

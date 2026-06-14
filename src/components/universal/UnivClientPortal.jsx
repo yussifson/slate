@@ -147,7 +147,7 @@ export default function UnivClientPortal({
  </div>
 
  {/* Navigation */}
- <div className="bg-card border-b border-border shrink-0">
+ <div className="bg-card border-b border-primary/40 shrink-0">
  <div className="max-w-6xl mx-auto px-4 sm:px-8 flex gap-1 overflow-x-auto custom-scrollbar pt-4 pb-0">
  {TABS.map(tab => (
  <button
@@ -181,7 +181,7 @@ export default function UnivClientPortal({
  className="grid grid-cols-1 md:grid-cols-3 gap-6"
  >
  <div className="md:col-span-2 space-y-6">
- <div className="bg-card border border-border rounded-2xl p-6 ">
+ <div className="bg-card border border-primary/40 rounded-2xl p-6 ">
  <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
  <CreditCard className="w-5 h-5 text-primary" /> Recent Invoices
  </h3>
@@ -210,7 +210,7 @@ export default function UnivClientPortal({
  )}
  </div>
  
- <div className="bg-card border border-border rounded-2xl p-6 ">
+ <div className="bg-card border border-primary/40 rounded-2xl p-6 ">
  <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
  <FileText className="w-5 h-5 text-primary" /> Shared Documents
  </h3>
@@ -219,7 +219,7 @@ export default function UnivClientPortal({
  ) : (
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
  {documents.slice(0, 4).map(doc => (
- <div key={doc.id} className="flex items-start gap-3 p-3 rounded-xl border border-border hover:border-primary/30 transition-colors bg-muted/10">
+ <div key={doc.id} className="flex items-start gap-3 p-3 rounded-xl border border-primary/40 hover:border-primary/30 transition-colors bg-muted/10">
  <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0">
  <FileText className="w-4 h-4" />
  </div>
@@ -236,7 +236,7 @@ export default function UnivClientPortal({
  </div>
 
  <div className="space-y-6">
- <div className="bg-card border border-border rounded-2xl p-6 relative overflow-hidden group">
+ <div className="bg-card border border-primary/40 rounded-2xl p-6 relative overflow-hidden group">
  <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-10 group-hover:bg-primary/10 transition-colors"></div>
  <h3 className="text-lg font-bold mb-2">Need Support?</h3>
  <p className="text-sm text-muted-foreground mb-6">Our team is here to help with any questions or issues.</p>
@@ -248,7 +248,7 @@ export default function UnivClientPortal({
  </button>
  </div>
  
- <div className="bg-card border border-border rounded-2xl p-6 ">
+ <div className="bg-card border border-primary/40 rounded-2xl p-6 ">
  <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4">Quick Links</h3>
  <div className="space-y-2">
  <a href="#" className="flex items-center justify-between text-sm p-2 hover:bg-muted rounded-lg text-foreground transition-colors">
@@ -267,8 +267,8 @@ export default function UnivClientPortal({
  )}
 
  {activeTab === 'invoices' && (
- <motion.div key="invoices" initial={{ opacity: 0}} animate={{ opacity: 1}} className="bg-card border border-border rounded-2xl overflow-hidden">
- <div className="p-6 border-b border-border flex justify-between items-center bg-muted/20">
+ <motion.div key="invoices" initial={{ opacity: 0}} animate={{ opacity: 1}} className="bg-card border border-primary/40 rounded-2xl overflow-hidden">
+ <div className="p-6 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div>
  <h2 className="text-xl font-bold">Invoices & Billing</h2>
  <p className="text-sm text-muted-foreground mt-1">Manage your payments and billing history</p>
@@ -281,7 +281,7 @@ export default function UnivClientPortal({
  </div>
  <div className="overflow-x-auto">
  <table className="w-full text-sm text-left">
- <thead className="text-xs text-muted-foreground uppercase bg-muted/50 border-b border-border">
+ <thead className="text-xs text-muted-foreground uppercase bg-muted/50 border-b border-primary/40">
  <tr>
  <th className="px-6 py-4 font-medium">Invoice</th>
  <th className="px-6 py-4 font-medium">Date</th>
@@ -296,7 +296,7 @@ export default function UnivClientPortal({
  <tr><td colSpan="6" className="px-6 py-12 text-center text-muted-foreground">No invoices found</td></tr>
  ) : (
  invoices.map(inv => (
- <tr key={inv.id} className="border-b border-border hover:bg-muted/30">
+ <tr key={inv.id} className="border-b border-primary/40 hover:bg-muted/30">
  <td className="px-6 py-4 font-medium text-foreground">{inv.invoice_number || 'INV-000'}</td>
  <td className="px-6 py-4 text-muted-foreground">{inv.date || 'N/A'}</td>
  <td className="px-6 py-4 text-muted-foreground">{inv.due_date || 'N/A'}</td>
@@ -329,20 +329,20 @@ export default function UnivClientPortal({
  <div className="lg:col-span-2 space-y-4">
  <h2 className="text-xl font-bold mb-4">Support History</h2>
  {tickets.length === 0 ? (
- <div className="bg-card border border-border rounded-2xl p-12 text-center ">
+ <div className="bg-card border border-primary/40 rounded-2xl p-12 text-center ">
  <MessageSquare className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
  <h3 className="text-lg font-bold text-foreground">No Tickets</h3>
  <p className="text-muted-foreground text-sm mt-1">You haven't submitted any support requests yet.</p>
  </div>
  ) : (
  tickets.map(ticket => (
- <div key={ticket.id} className="bg-card border border-border rounded-2xl p-5 hover:border-primary/30 transition-colors">
+ <div key={ticket.id} className="bg-card border border-primary/40 rounded-2xl p-5 hover:border-primary/30 transition-colors">
  <div className="flex justify-between items-start mb-2">
  <h4 className="font-bold text-foreground text-lg">{ticket.subject || 'Support Request'}</h4>
  <span className={cn("text-xs font-bold px-2.5 py-1 rounded-full border", 
  ticket.status === 'Open' ? 'bg-amber-50 text-amber-600 border-amber-200' : 
  ticket.status === 'Resolved' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 
- 'bg-muted text-muted-foreground border-border'
+ 'bg-muted text-muted-foreground border-primary/40'
  )}>
  {ticket.status || 'Open'}
  </span>
@@ -356,8 +356,8 @@ export default function UnivClientPortal({
  )}
  </div>
  
- <div className="bg-card border border-border rounded-2xl overflow-hidden h-fit">
- <div className="p-5 border-b border-border bg-muted/20">
+ <div className="bg-card border border-primary/40 rounded-2xl overflow-hidden h-fit">
+ <div className="p-5 border-b border-primary/40 bg-muted/20">
  <h3 className="font-bold">New Ticket</h3>
  <p className="text-xs text-muted-foreground mt-1">Submit a new request to our team</p>
  </div>
@@ -375,7 +375,7 @@ export default function UnivClientPortal({
  type="text" 
  value={ticketForm.subject}
  onChange={e => setTicketForm({...ticketForm, subject: e.target.value})}
- className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:outline-none focus:border-primary" 
+ className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:outline-none focus:border-primary" 
  placeholder="Brief summary of issue..."
  />
  </div>
@@ -385,7 +385,7 @@ export default function UnivClientPortal({
  required
  value={ticketForm.message}
  onChange={e => setTicketForm({...ticketForm, message: e.target.value})}
- className="w-full min-h-[120px] p-3 rounded-lg border border-border bg-background text-sm focus:outline-none focus:border-primary resize-y" 
+ className="w-full min-h-[120px] p-3 rounded-lg border border-primary/40 bg-background text-sm focus:outline-none focus:border-primary resize-y" 
  placeholder="Please describe the details..."
  />
  </div>
@@ -403,7 +403,7 @@ export default function UnivClientPortal({
 
  {/* Placeholder for Documents/Profile to keep code concise */}
  {(activeTab === 'documents' || activeTab === 'profile') && (
- <motion.div initial={{ opacity: 0}} animate={{ opacity: 1}} className="bg-card border border-border rounded-2xl p-12 text-center ">
+ <motion.div initial={{ opacity: 0}} animate={{ opacity: 1}} className="bg-card border border-primary/40 rounded-2xl p-12 text-center ">
  <Settings className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
  <h3 className="text-lg font-bold text-foreground capitalize">{activeTab}</h3>
  <p className="text-muted-foreground text-sm mt-1">This module is part of the premium workspace expansion.</p>

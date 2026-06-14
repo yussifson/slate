@@ -151,14 +151,14 @@ export default function UnivPayment() {
  <div className="flex gap-3 shrink-0">
  <div className="relative flex-1">
  <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
- <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search payments..." className="w-full h-11 pl-10 pr-4 bg-card border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm " />
+ <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search payments..." className="w-full h-11 pl-10 pr-4 bg-card border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm " />
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col min-h-0">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col min-h-0">
  <div className="overflow-auto flex-1 custom-scrollbar">
  <table className="w-full text-sm">
- <thead className="bg-muted/50 border-b border-border sticky top-0 z-10">
+ <thead className="bg-muted/50 border-b border-primary/40 sticky top-0 z-10">
  <tr>
  {['Customer', 'Amount', 'Method', 'Reference', 'Status', 'Date', 'Actions'].map((h, i) => (
  <th key={i} className="p-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">{h}</th>
@@ -204,22 +204,22 @@ export default function UnivPayment() {
  {isModalOpen && (
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
  <div className="bg-card w-full max-w-md rounded-2xl flex flex-col overflow-hidden">
- <div className="p-5 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="p-5 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <h2 className="text-xl font-black text-foreground flex items-center gap-2"><DollarSign className="w-5 h-5 text-primary" /> {editingId ? 'Edit Payment' : 'New Payment'}</h2>
  <button onClick={closeModal} className="p-2 hover:bg-muted rounded-full text-muted-foreground transition-colors"><XCircle className="w-5 h-5" /></button>
  </div>
  <form onSubmit={saveRecord} className="p-5 flex flex-col gap-4">
- <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Customer Name *</label><div className="relative"><Building2 className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><input required type="text" value={form.customer_name} onChange={e => setForm({...form, customer_name: e.target.value})} className="w-full h-10 pl-9 pr-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div></div>
+ <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Customer Name *</label><div className="relative"><Building2 className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><input required type="text" value={form.customer_name} onChange={e => setForm({...form, customer_name: e.target.value})} className="w-full h-10 pl-9 pr-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div></div>
  <div className="grid grid-cols-2 gap-4">
- <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Amount *</label><input required type="number" step="0.01" value={form.amount} onChange={e => setForm({...form, amount: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
- <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Method</label><select value={form.method} onChange={e => setForm({...form, method: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"><option>Credit Card</option><option>Bank Transfer</option><option>Cash</option><option>Cheque</option></select></div>
+ <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Amount *</label><input required type="number" step="0.01" value={form.amount} onChange={e => setForm({...form, amount: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div>
+ <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Method</label><select value={form.method} onChange={e => setForm({...form, method: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"><option>Credit Card</option><option>Bank Transfer</option><option>Cash</option><option>Cheque</option></select></div>
  </div>
  <div className="grid grid-cols-2 gap-4">
- <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Reference ID</label><div className="relative"><CreditCard className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><input type="text" value={form.reference_id} onChange={e => setForm({...form, reference_id: e.target.value})} className="w-full h-10 pl-9 pr-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div></div>
- <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Status</label><select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(STATUS_COLORS).map(s => <option key={s} value={s}>{s}</option>)}</select></div>
+ <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Reference ID</label><div className="relative"><CreditCard className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><input type="text" value={form.reference_id} onChange={e => setForm({...form, reference_id: e.target.value})} className="w-full h-10 pl-9 pr-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" /></div></div>
+ <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Status</label><select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(STATUS_COLORS).map(s => <option key={s} value={s}>{s}</option>)}</select></div>
  </div>
  
- <div className="flex justify-end gap-3 mt-2 pt-5 border-t border-border">
+ <div className="flex justify-end gap-3 mt-2 pt-5 border-t border-primary/40">
  <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium hover:bg-muted/80 transition-colors">Cancel</button>
  <button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 transition-colors">{editingId ? 'Update' : 'Save Payment'}</button>
  </div>

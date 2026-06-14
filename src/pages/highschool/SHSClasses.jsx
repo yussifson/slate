@@ -129,7 +129,7 @@ export default function SHSClasses() {
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
- <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
  <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Classes Directory</CardTitle>
@@ -139,7 +139,7 @@ export default function SHSClasses() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search class name or program..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -160,18 +160,18 @@ export default function SHSClasses() {
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
  {filteredClasses.map(cls => (
- <div key={cls.id} className="group p-5 rounded-2xl border border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:border-primary dark:border-primary/30 -purple-500/5 transition-all duration-300">
+ <div key={cls.id} className="group p-5 rounded-2xl border border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:border-primary dark:border-primary/30 -purple-500/5 transition-all duration-300">
  <div className="flex items-start justify-between mb-4">
  <div>
  <h4 className="font-black text-xl text-slate-800 dark:text-slate-100 group-hover:text-primary dark:text-primary/70 transition-colors">{cls.title}</h4>
- <Badge variant="outline" className="mt-1 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary dark:text-primary/70 border-primary/20 dark:border-slate-600">
+ <Badge variant="outline" className="mt-1 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary dark:text-primary/70 border-primary/20 dark:border-primary/40">
  {cls.data?.grade} • {cls.data?.program}
  </Badge>
  </div>
  </div>
  
  <div className="space-y-3 mt-4 text-sm">
- <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 p-2 rounded-xl border border-slate-100 dark:border-slate-800 dark:border-slate-800">
+ <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 p-2 rounded-xl border border-primary/40 dark:border-primary/40 dark:border-primary/40">
  <div className="w-8 h-8 rounded-lg bg-slate-100 text-primary flex items-center justify-center shrink-0">
  <UserCheck className="w-4 h-4" />
  </div>
@@ -182,18 +182,18 @@ export default function SHSClasses() {
  </div>
  
  <div className="grid grid-cols-2 gap-2">
- <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 p-2 rounded-xl border border-slate-100 dark:border-slate-800 dark:border-slate-800 text-center">
+ <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 p-2 rounded-xl border border-primary/40 dark:border-primary/40 dark:border-primary/40 text-center">
  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 dark:text-slate-400">Room</p>
  <p className="font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">{cls.data?.room || 'TBA'}</p>
  </div>
- <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 p-2 rounded-xl border border-slate-100 dark:border-slate-800 dark:border-slate-800 text-center">
+ <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 p-2 rounded-xl border border-primary/40 dark:border-primary/40 dark:border-primary/40 text-center">
  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 dark:text-slate-400">Capacity</p>
  <p className="font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">{cls.data?.capacity || 40}</p>
  </div>
  </div>
  </div>
  
- <div className="mt-5 pt-4 border-t border-slate-50 flex justify-end gap-2">
+ <div className="mt-5 pt-4 border-t border-primary/40 flex justify-end gap-2">
  <Button variant="ghost" size="sm" className="w-full rounded-xl text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 font-semibold">
  View Students <Users className="w-4 h-4 ml-2" />
  </Button>
@@ -222,7 +222,7 @@ export default function SHSClasses() {
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Class Name</label>
  <Input 
  placeholder="e.g. 1 Sci A"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
  value={newClass.className}
  onChange={e => setNewClass({...newClass, className: e.target.value})}
  />
@@ -232,7 +232,7 @@ export default function SHSClasses() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Form / Grade</label>
  <select 
- className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-10 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
  value={newClass.grade}
  onChange={e => setNewClass({...newClass, grade: e.target.value})}
  >
@@ -244,7 +244,7 @@ export default function SHSClasses() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Programme</label>
  <select 
- className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-10 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
  value={newClass.program}
  onChange={e => setNewClass({...newClass, program: e.target.value})}
  >
@@ -260,7 +260,7 @@ export default function SHSClasses() {
  <div className="space-y-2">
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Class Teacher</label>
  <select 
- className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-10 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
  value={newClass.classTeacherId}
  onChange={e => setNewClass({...newClass, classTeacherId: e.target.value})}
  >
@@ -276,7 +276,7 @@ export default function SHSClasses() {
  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Room</label>
  <Input 
  placeholder="e.g. Block A, Rm 1"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
  value={newClass.room}
  onChange={e => setNewClass({...newClass, room: e.target.value})}
  />
@@ -286,7 +286,7 @@ export default function SHSClasses() {
  <Input 
  type="number"
  min="1"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
  value={newClass.capacity}
  onChange={e => setNewClass({...newClass, parseInt: e.target.value})}
  />
@@ -296,7 +296,7 @@ export default function SHSClasses() {
  </div>
  </ScrollArea>
  
- <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end gap-3">
+ <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3">
  <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
  Cancel
  </Button>

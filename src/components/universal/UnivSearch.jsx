@@ -141,7 +141,7 @@ export default function UnivSearch() {
 
  {/* Search Input */}
  <div className="w-full max-w-2xl relative">
- <div className={`relative flex items-center bg-card border-2 rounded-2xl transition-all duration-300 ${isFocused ? 'border-primary ring-4 ring-primary/10 ' : 'border-border hover:border-border/80'}`}>
+ <div className={`relative flex items-center bg-card border-2 rounded-2xl transition-all duration-300 ${isFocused ? 'border-primary ring-4 ring-primary/10 ' : 'border-primary/40 hover:border-primary/40'}`}>
  <Search className={`w-6 h-6 absolute left-4 ${isFocused ? 'text-primary' : 'text-muted-foreground'} transition-colors`} />
  <input 
  type="text"
@@ -157,7 +157,7 @@ export default function UnivSearch() {
  <X className="w-5 h-5" />
  </button>
  )}
- <div className="absolute right-4 text-xs font-semibold text-muted-foreground border border-border rounded px-1.5 py-0.5 bg-muted hidden sm:block">⌘K</div>
+ <div className="absolute right-4 text-xs font-semibold text-muted-foreground border border-primary/40 rounded px-1.5 py-0.5 bg-muted hidden sm:block">⌘K</div>
  </div>
 
  {/* Dropdown Results */}
@@ -168,7 +168,7 @@ export default function UnivSearch() {
  animate={{ opacity: 1, y: 0}}
  exit={{ opacity: 0, y: 10}}
  transition={{ duration: 0.2}}
- className="absolute top-full left-0 w-full mt-3 bg-card border border-border rounded-2xl overflow-hidden z-50 flex flex-col"
+ className="absolute top-full left-0 w-full mt-3 bg-card border border-primary/40 rounded-2xl overflow-hidden z-50 flex flex-col"
  >
  {!query ? (
  <div className="p-4">
@@ -221,8 +221,8 @@ export default function UnivSearch() {
  )}
  
  {/* Search Footer */}
- <div className="p-3 bg-muted/50 border-t border-border flex justify-between items-center text-xs text-muted-foreground font-medium">
- <span>Press <kbd className="border border-border bg-card px-1 rounded mx-1 font-sans">Enter</kbd> to view all results</span>
+ <div className="p-3 bg-muted/50 border-t border-primary/40 flex justify-between items-center text-xs text-muted-foreground font-medium">
+ <span>Press <kbd className="border border-primary/40 bg-card px-1 rounded mx-1 font-sans">Enter</kbd> to view all results</span>
  <button className="flex items-center gap-1 hover:text-foreground transition-colors"><Filter className="w-3.5 h-3.5" /> Advanced Filters</button>
  </div>
  </motion.div>
@@ -233,7 +233,7 @@ export default function UnivSearch() {
  {/* Quick Filters */}
  <div className="flex gap-2 mt-6 overflow-x-auto max-w-2xl w-full pb-2 hide-scrollbar justify-center">
  {['All', 'Contacts', 'Invoices', 'Files', 'Projects'].map(filter => (
- <button key={filter} className="px-4 py-1.5 rounded-full border border-border bg-card text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors whitespace-nowrap">
+ <button key={filter} className="px-4 py-1.5 rounded-full border border-primary/40 bg-card text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors whitespace-nowrap">
  {filter}
  </button>
  ))}

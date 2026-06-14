@@ -92,7 +92,7 @@ export default function ParentPortal() {
 
  if (mappedStudents.length === 0) {
  return (
- <div className="py-12 text-center max-w-md mx-auto bg-card rounded-xl border border-border p-6 ">
+ <div className="py-12 text-center max-w-md mx-auto bg-card rounded-xl border border-primary/40 p-6 ">
  <User className="w-12 h-12 mx-auto mb-3 opacity-20 text-primary animate-pulse" />
  <p className="font-semibold text-lg text-card-foreground">No child profiles found</p>
  <p className="text-sm text-muted-foreground mt-1 mb-4">Enroll a student in the student directory first to activate the Parent Portal view.</p>
@@ -141,7 +141,7 @@ export default function ParentPortal() {
  <h1 className="text-2xl school-heading font-extrabold tracking-tight">Welcome back, {user?.user_metadata?.full_name || 'Guardian'}</h1>
  <p className="text-sm text-muted-foreground mt-0.5">Managing records for your dependents.</p>
  </div>
- <div className="flex gap-1 overflow-x-auto pb-2 md:pb-0 hide-scrollbar bg-muted p-1 rounded-xl border border-border">
+ <div className="flex gap-1 overflow-x-auto pb-2 md:pb-0 hide-scrollbar bg-muted p-1 rounded-xl border border-primary/40">
  <button onClick={() => setActiveTab('dashboard')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'dashboard' ? 'bg-background text-foreground ' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'}`}>
  <LayoutDashboard className="w-4 h-4" /> Dashboard
  </button>
@@ -166,7 +166,7 @@ export default function ParentPortal() {
  key={child.id}
  onClick={() => setSelectedChildId(child.id)}
  className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-colors border ${
- activeStudent?.id === child.id ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 border-primary/20 text-primary dark:text-primary/70' : 'bg-card border-border text-muted-foreground hover:bg-muted'
+ activeStudent?.id === child.id ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 border-primary/20 text-primary dark:text-primary/70' : 'bg-card border-primary/40 text-muted-foreground hover:bg-muted'
 }`}
  >
  <div className="w-5 h-5 rounded-full bg-slate-100 text-primary dark:text-primary/70 flex items-center justify-center text-[10px] font-bold">
@@ -179,7 +179,7 @@ export default function ParentPortal() {
  )}
 
  {/* Child Profile Card */}
- <div className="bg-card rounded-2xl border border-border p-6 flex flex-col md:flex-row items-center md:items-start gap-6">
+ <div className="bg-card rounded-2xl border border-primary/40 p-6 flex flex-col md:flex-row items-center md:items-start gap-6">
  <div className="w-24 h-24 rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/30 flex items-center justify-center text-primary dark:text-primary/30 text-3xl font-bold shrink-0 uppercase">
  {activeStudent.name?.substring(0, 2)}
  </div>
@@ -188,10 +188,10 @@ export default function ParentPortal() {
  <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-sm text-muted-foreground font-medium">
  <span className="bg-muted px-3 py-1 rounded-full text-foreground">{activeStudent.class}</span>
  <span>Student ID: {activeStudent.studentId}</span>
- <span className="text-primary font-bold bg-slate-50 dark:bg-slate-800/50 px-3 py-1 rounded-full border border-slate-200">Active</span>
+ <span className="text-primary font-bold bg-slate-50 dark:bg-slate-800/50 px-3 py-1 rounded-full border border-primary/40">Active</span>
  </div>
  </div>
- <div className="shrink-0 flex flex-col items-center md:items-end gap-2 border-t md:border-t-0 md:border-l border-border pt-4 md:pt-0 md:pl-6 w-full md:w-auto">
+ <div className="shrink-0 flex flex-col items-center md:items-end gap-2 border-t md:border-t-0 md:border-l border-primary/40 pt-4 md:pt-0 md:pl-6 w-full md:w-auto">
  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wide">Term Balance</span>
  <div className="text-3xl font-bold text-card-foreground">${balance.toLocaleString()}</div>
  <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm border ${
@@ -205,7 +205,7 @@ export default function ParentPortal() {
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in fade-in">
  <div className="col-span-1 lg:col-span-2 space-y-6">
  <div className="grid grid-cols-2 gap-4">
- <div className="bg-card rounded-xl border border-border p-4 flex flex-col justify-center ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 flex flex-col justify-center ">
  <div className="flex items-center gap-3 mb-2">
  <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white "><CheckCircle className="w-5 h-5" /></div>
  <h3 className="font-bold text-muted-foreground text-sm">Attendance</h3>
@@ -214,7 +214,7 @@ export default function ParentPortal() {
  <p className="text-xs text-muted-foreground">Present for the term</p>
  </div>
  
- <div className="bg-card rounded-xl border border-border p-4 flex flex-col justify-center ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 flex flex-col justify-center ">
  <div className="flex items-center gap-3 mb-2">
  <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white "><BookOpen className="w-5 h-5" /></div>
  <h3 className="font-bold text-muted-foreground text-sm">Performance</h3>
@@ -225,7 +225,7 @@ export default function ParentPortal() {
  </div>
 
  <div className="school-card overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <h3 className="font-bold text-card-foreground flex items-center gap-2"><Calendar className="w-5 h-5 text-muted-foreground" /> Upcoming Scheduled Exams</h3>
  </div>
  <div className="divide-y divide-border p-2">
@@ -245,7 +245,7 @@ export default function ParentPortal() {
 
  <div className="col-span-1 space-y-6">
  <div className="school-card overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50 flex justify-between items-center">
+ <div className="p-4 border-b border-primary/40 bg-muted/50 flex justify-between items-center">
  <h3 className="font-bold text-card-foreground flex items-center gap-2"><FileText className="w-5 h-5 text-muted-foreground" /> Documents</h3>
  <Button size="sm" variant="outline" className="h-8 gap-1" onClick={() => setShowUpload(true)}>
  <CheckCircle className="w-3.5 h-3.5" /> Upload Form
@@ -277,14 +277,14 @@ export default function ParentPortal() {
 
  {activeTab === 'academics' && (
  <div className="school-card overflow-hidden animate-in fade-in">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <h3 className="font-bold text-card-foreground">Academic Transcript</h3>
  </div>
  {studentGrades.length === 0 ? (
  <div className="py-12 text-center text-muted-foreground">No grades recorded yet.</div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-muted/30 border-b border-border">
+ <thead className="bg-muted/30 border-b border-primary/40">
  <tr>
  <th className="px-6 py-3 text-left font-bold text-muted-foreground uppercase">Exam/Assignment</th>
  <th className="px-6 py-3 text-left font-bold text-muted-foreground uppercase">Subject</th>

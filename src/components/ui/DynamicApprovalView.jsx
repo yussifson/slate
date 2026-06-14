@@ -69,7 +69,7 @@ const FALLBACK_CONFIG = {
  icon: FileText,
  color: 'text-muted-foreground',
  bg: 'bg-muted/50',
- border: 'border-border',
+ border: 'border-primary/40',
  gradient: 'from-slate-500 to-slate-600',
  badgeCls: 'bg-muted text-muted-foreground',
  ring: 'ring-slate-200',
@@ -103,7 +103,7 @@ function ProgressionBar({ currentStatus, statuses}) {
  ? `bg-gradient-to-br ${config.gradient} ring-2 ${config.ring} ring-offset-1`
  : isPast
  ? `bg-gradient-to-br ${config.gradient} opacity-60`
- : 'bg-muted border border-border'
+ : 'bg-muted border border-primary/40'
 }`}
  >
  <StatusIcon
@@ -198,7 +198,7 @@ function ApprovalCard({ record, fieldDefinitions, statusFieldName, statuses, onA
  </div>
 
  {/* Progression Bar */}
- <div className="bg-card rounded-xl p-3 border border-border mb-4">
+ <div className="bg-card rounded-xl p-3 border border-primary/40 mb-4">
  <ProgressionBar currentStatus={status} statuses={statuses} />
  </div>
 
@@ -227,7 +227,7 @@ function ApprovalCard({ record, fieldDefinitions, statusFieldName, statuses, onA
  size="sm"
  variant="outline"
  onClick={() => onAction(record, 'Submitted')}
- className="text-muted-foreground border-border hover:bg-muted/50 text-xs h-8 gap-1.5"
+ className="text-muted-foreground border-primary/40 hover:bg-muted/50 text-xs h-8 gap-1.5"
  >
  <RotateCcw className="w-3.5 h-3.5" />
  Return
@@ -346,7 +346,7 @@ export default function DynamicApprovalView({ data = [], fieldDefinitions = [], 
  if (!data || data.length === 0) {
  return (
  <div className="flex flex-col items-center justify-center py-20 text-center">
- <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-border mb-5">
+ <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-primary/40 mb-5">
  <Inbox className="w-12 h-12 text-primary/30" />
  </div>
  <h3 className="text-lg font-semibold text-foreground mb-2">No Approval Items</h3>
@@ -483,7 +483,7 @@ export default function DynamicApprovalView({ data = [], fieldDefinitions = [], 
  {fieldDefinitions.map(f => (
  <div
  key={f.name}
- className="flex justify-between items-center py-2.5 border-b border-border last:border-0"
+ className="flex justify-between items-center py-2.5 border-b border-primary/40 last:border-0"
  >
  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
  {f.name.replace(/_/g, ' ')}

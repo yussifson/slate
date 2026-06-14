@@ -86,8 +86,8 @@ export default function SHSParentAttendance() {
  case 'Absent': return 'bg-rose-50 text-rose-700 border-rose-200';
  case 'Late': return 'bg-amber-50 text-amber-700 border-amber-200';
  case 'Excused': return 'bg-orange-50 text-orange-700 border-primary/20';
- case 'Exeat': return 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary/80 dark:text-primary/20 border-primary/20 dark:border-slate-600';
- default: return 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200 border-slate-200 dark:border-slate-700';
+ case 'Exeat': return 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary/80 dark:text-primary/20 border-primary/20 dark:border-primary/40';
+ default: return 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200 border-primary/40 dark:border-primary/40';
 }
 };
 
@@ -131,7 +131,7 @@ export default function SHSParentAttendance() {
  className={`w-full p-4 rounded-2xl border text-left transition-all duration-300 flex items-center gap-4 ${
  selectedWardId === ward.id 
  ? 'bg-primary dark:bg-primary border-primary dark:border-primary text-white -emerald-500/20 scale-100' 
- : 'bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:border-primary dark:border-slate-200 scale-95'
+ : 'bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:border-primary dark:border-primary/40 scale-95'
 }`}
  >
  <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shrink-0 ${
@@ -151,7 +151,7 @@ export default function SHSParentAttendance() {
 
  <div className="lg:col-span-3 space-y-6">
  <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100">
- <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50">
  <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <CalendarIcon className="w-5 h-5 text-primary dark:text-primary/70" /> Recent Attendance Log
  </CardTitle>

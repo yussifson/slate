@@ -211,14 +211,14 @@ export default function SHSGrades() {
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
- <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
  <div className="flex flex-col md:flex-row gap-6">
  <div className="space-y-2 flex-1">
  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2">
  <FileText className="w-4 h-4 text-primary dark:text-primary/70" /> Select Exam Cycle
  </label>
  <select 
- className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
+ className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
  value={selectedExamId}
  onChange={(e) => setSelectedExamId(e.target.value)}
  >
@@ -234,7 +234,7 @@ export default function SHSGrades() {
  <GraduationCap className="w-4 h-4 text-primary" /> Class
  </label>
  <select 
- className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
+ className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
  value={selectedClassId}
  onChange={(e) => setSelectedClassId(e.target.value)}
  disabled={!selectedExamId}
@@ -251,7 +251,7 @@ export default function SHSGrades() {
  <BookOpen className="w-4 h-4 text-amber-600" /> Subject
  </label>
  <select 
- className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500 font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
+ className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500 font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
  value={selectedSubjectId}
  onChange={(e) => setSelectedSubjectId(e.target.value)}
  disabled={!selectedClassId}
@@ -315,7 +315,7 @@ export default function SHSGrades() {
  type="number"
  min="0"
  max="30"
- className="h-10 text-center font-semibold bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-primary dark:focus-visible:ring-primary focus-visible:bg-white dark:bg-slate-900/40 dark:bg-slate-900 transition-colors"
+ className="h-10 text-center font-semibold bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary focus-visible:bg-white dark:bg-slate-900/40 dark:bg-slate-900 transition-colors"
  value={grades[student.id]?.classScore}
  onChange={(e) => handleGradeChange(student.id, 'classScore', e.target.value)}
  />
@@ -325,7 +325,7 @@ export default function SHSGrades() {
  type="number"
  min="0"
  max="70"
- className="h-10 text-center font-semibold bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-primary dark:focus-visible:ring-primary focus-visible:bg-white dark:bg-slate-900/40 dark:bg-slate-900 transition-colors"
+ className="h-10 text-center font-semibold bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary focus-visible:bg-white dark:bg-slate-900/40 dark:bg-slate-900 transition-colors"
  value={grades[student.id]?.examScore}
  onChange={(e) => handleGradeChange(student.id, 'examScore', e.target.value)}
  />
@@ -359,7 +359,7 @@ export default function SHSGrades() {
  </table>
  </div>
  
- <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex items-center justify-between">
+ <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex items-center justify-between">
  <div>
  {saveSuccess && (
  <Badge className="bg-slate-100 text-primary/90 border-none px-3 py-1 text-sm font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
@@ -369,7 +369,7 @@ export default function SHSGrades() {
  </div>
  
  <div className="flex gap-3">
- <Button variant="outline" className="h-12 px-6 rounded-xl border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-semibold hover:bg-white dark:bg-slate-900/40 dark:bg-slate-900 hidden sm:flex">
+ <Button variant="outline" className="h-12 px-6 rounded-xl border-primary/40 dark:border-primary/40 text-slate-600 dark:text-slate-300 font-semibold hover:bg-white dark:bg-slate-900/40 dark:bg-slate-900 hidden sm:flex">
  <FileSpreadsheet className="w-5 h-5 mr-2" /> Import CSV
  </Button>
  <Button 

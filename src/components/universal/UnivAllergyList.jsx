@@ -92,7 +92,7 @@ const UnivAllergyList = () => {
  </motion.div>
 
  <div className="view-header grid md:grid-cols-3 gap-8">
- <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="md:col-span-1 bg-card p-6 rounded-2xl border border-border">
+ <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="md:col-span-1 bg-card p-6 rounded-2xl border border-primary/40">
  <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
  <Plus className="w-5 h-5 text-red-500" /> Log Allergy
  </h2>
@@ -101,16 +101,16 @@ const UnivAllergyList = () => {
  <label className="block text-sm font-medium text-foreground mb-1">Patient Name</label>
  <div className="relative">
  <User className="w-5 h-5 absolute left-3 top-2.5 text-muted-foreground" />
- <input type="text" name="patient_name" value={formData.patient_name} onChange={handleChange} required className="w-full pl-10 p-2.5 border border-border rounded-lg focus:ring-2 focus:ring-red-500 outline-none" />
+ <input type="text" name="patient_name" value={formData.patient_name} onChange={handleChange} required className="w-full pl-10 p-2.5 border border-primary/40 rounded-lg focus:ring-2 focus:ring-red-500 outline-none" />
  </div>
  </div>
  <div>
  <label className="block text-sm font-medium text-foreground mb-1">Allergen</label>
- <input type="text" name="allergen" value={formData.allergen} onChange={handleChange} required className="w-full p-2.5 border border-border rounded-lg focus:ring-2 focus:ring-red-500 outline-none" />
+ <input type="text" name="allergen" value={formData.allergen} onChange={handleChange} required className="w-full p-2.5 border border-primary/40 rounded-lg focus:ring-2 focus:ring-red-500 outline-none" />
  </div>
  <div>
  <label className="block text-sm font-medium text-foreground mb-1">Severity</label>
- <select name="reaction_severity" value={formData.reaction_severity} onChange={handleChange} className="w-full p-2.5 border border-border rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
+ <select name="reaction_severity" value={formData.reaction_severity} onChange={handleChange} className="w-full p-2.5 border border-primary/40 rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
  <option value="Mild">Mild</option>
  <option value="Moderate">Moderate</option>
  <option value="Severe">Severe</option>
@@ -118,15 +118,15 @@ const UnivAllergyList = () => {
  </div>
  <div>
  <label className="block text-sm font-medium text-foreground mb-1">Diagnosed Date</label>
- <input type="date" name="diagnosed_date" value={formData.diagnosed_date} onChange={handleChange} className="w-full p-2.5 border border-border rounded-lg focus:ring-2 focus:ring-red-500 outline-none" />
+ <input type="date" name="diagnosed_date" value={formData.diagnosed_date} onChange={handleChange} className="w-full p-2.5 border border-primary/40 rounded-lg focus:ring-2 focus:ring-red-500 outline-none" />
  </div>
  <div>
  <label className="block text-sm font-medium text-foreground mb-1">Medications/Treatment</label>
- <input type="text" name="medications" value={formData.medications} onChange={handleChange} className="w-full p-2.5 border border-border rounded-lg focus:ring-2 focus:ring-red-500 outline-none" />
+ <input type="text" name="medications" value={formData.medications} onChange={handleChange} className="w-full p-2.5 border border-primary/40 rounded-lg focus:ring-2 focus:ring-red-500 outline-none" />
  </div>
  <div>
  <label className="block text-sm font-medium text-foreground mb-1">Notes</label>
- <textarea name="notes" value={formData.notes} onChange={handleChange} className="w-full p-2.5 border border-border rounded-lg focus:ring-2 focus:ring-red-500 outline-none h-20"></textarea>
+ <textarea name="notes" value={formData.notes} onChange={handleChange} className="w-full p-2.5 border border-primary/40 rounded-lg focus:ring-2 focus:ring-red-500 outline-none h-20"></textarea>
  </div>
  <button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 rounded-lg transition-colors flex justify-center items-center gap-2">
  <ShieldAlert className="w-5 h-5" /> Save Entry
@@ -138,10 +138,10 @@ const UnivAllergyList = () => {
  {loading ? (
  <div className="text-center py-10"><AlertCircle className="w-8 h-8 text-red-500 animate-spin mx-auto" /></div>
  ) : allergies.length === 0 ? (
- <div className="text-center py-10 bg-card rounded-2xl border border-border text-muted-foreground">No allergy records found.</div>
+ <div className="text-center py-10 bg-card rounded-2xl border border-primary/40 text-muted-foreground">No allergy records found.</div>
  ) : (
  allergies.map((record, index) => (
- <motion.div key={record.id || index} initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className="bg-card p-5 rounded-2xl border border-border flex flex-col sm:flex-row gap-4 transition-">
+ <motion.div key={record.id || index} initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className="bg-card p-5 rounded-2xl border border-primary/40 flex flex-col sm:flex-row gap-4 transition-">
  <div className={`p-3 rounded-xl border flex-shrink-0 self-start ${getSeverityColor(record.reaction_severity)}`}>
  <AlertTriangle className="w-6 h-6" />
  </div>
@@ -156,7 +156,7 @@ const UnivAllergyList = () => {
  {record.diagnosed_date && <div className="flex items-center gap-2"><Calendar className="w-4 h-4 text-muted-foreground" /> {record.diagnosed_date}</div>}
  {record.medications && <div className="flex items-center gap-2"><Pill className="w-4 h-4 text-muted-foreground" /> {record.medications}</div>}
  </div>
- {record.notes && <p className="text-sm text-muted-foreground mt-3 italic border-l-2 border-border pl-3">"{record.notes}"</p>}
+ {record.notes && <p className="text-sm text-muted-foreground mt-3 italic border-l-2 border-primary/40 pl-3">"{record.notes}"</p>}
  </div>
  </motion.div>
  ))

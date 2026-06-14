@@ -111,8 +111,8 @@ export default function UnivSiteInspection() {
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -120,7 +120,7 @@ export default function UnivSiteInspection() {
  placeholder="Search inspections..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -133,7 +133,7 @@ export default function UnivSiteInspection() {
  animate={{ opacity: 1, y: 0}}
  transition={{ delay: idx * 0.05}}
  key={insp.id} 
- className="bg-background border border-border rounded-2xl p-5 hover:border-primary/40 transition-colors group"
+ className="bg-background border border-primary/40 rounded-2xl p-5 hover:border-primary/40 transition-colors group"
  >
  <div className="flex justify-between items-start mb-4">
  <div className="flex items-center gap-4">
@@ -164,11 +164,11 @@ export default function UnivSiteInspection() {
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
- <div className="bg-muted/30 rounded-xl p-4 border border-border/50">
+ <div className="bg-muted/30 rounded-xl p-4 border border-primary/40">
  <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5"><AlertCircle className="w-3.5 h-3.5" /> Findings</h4>
  <p className="text-sm text-foreground">{insp.findings || 'No specific findings recorded.'}</p>
  </div>
- <div className="bg-muted/30 rounded-xl p-4 border border-border/50">
+ <div className="bg-muted/30 rounded-xl p-4 border border-primary/40">
  <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Snag List</h4>
  <p className="text-sm text-foreground">{insp.snag_list || 'None'}</p>
  </div>

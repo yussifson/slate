@@ -36,9 +36,9 @@ export default function Workflows() {
  <div className="space-y-4">
  {rules.map(rule => {
  return (
- <div key={rule.id} className="bg-card rounded-xl border border-border p-5 space-y-4">
+ <div key={rule.id} className="bg-card rounded-xl border border-primary/40 p-5 space-y-4">
  {/* Header */}
- <div className="flex justify-between items-center border-b border-border pb-3">
+ <div className="flex justify-between items-center border-b border-primary/40 pb-3">
  <div className="flex items-center gap-2">
  <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary">
  <Zap className="w-4 h-4" />
@@ -52,7 +52,7 @@ export default function Workflows() {
  </div>
  {/* Trigger Setup */}
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- <div className="md:col-span-1 p-4 bg-muted/30 rounded-lg border border-border">
+ <div className="md:col-span-1 p-4 bg-muted/30 rounded-lg border border-primary/40">
  <h4 className="text-xs font-bold uppercase text-muted-foreground mb-3">{t("1_when_this_happens", "1. When this happens...")}</h4>
  <div className="space-y-3 text-sm">
  <div>
@@ -85,7 +85,7 @@ export default function Workflows() {
  </div>
 
  {/* Condition Setup */}
- <div className="md:col-span-1 p-4 bg-muted/30 rounded-lg border border-border">
+ <div className="md:col-span-1 p-4 bg-muted/30 rounded-lg border border-primary/40">
  <h4 className="text-xs font-bold uppercase text-muted-foreground mb-3">{t("2_if_conditions_match", "2. If conditions match...")}</h4>
  {rule.conditions.map((cond, i) => {
  return (
@@ -105,7 +105,7 @@ export default function Workflows() {
  </div>
  </div>
  {/* Action Setup */}
- <div className="p-4 bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 rounded-lg border border-slate-200 dark:border-primary/30">
+ <div className="p-4 bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 rounded-lg border border-primary/40 dark:border-primary/30">
  <h4 className="text-xs font-bold uppercase text-primary dark:text-primary/70 mb-3">{t("3_then_do_this", "3. Then do this...")}</h4>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
  <div>

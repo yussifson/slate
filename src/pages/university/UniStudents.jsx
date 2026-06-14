@@ -118,13 +118,13 @@ export default function UniStudents() {
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
  
  {/* Slate Header */}
- <div className="flex items-end justify-between border-b border-[var(--color-border-subtle)] pb-4">
+ <div className="flex items-end justify-between border-b border-primary/40 pb-4">
  <div>
  <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Student Population</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage enrollments, academic standing, and student records.</p>
  </div>
  
- <div className="flex items-center bg-[var(--color-surface-2)] p-1 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+ <div className="flex items-center bg-[var(--color-surface-2)] p-1 rounded-[var(--radius-lg)] border border-primary/40">
  {[
  { id: 'directory', label: 'Directory'},
  { id: 'standing', label: 'Academic Standing'},
@@ -136,7 +136,7 @@ export default function UniStudents() {
  className={cn(
  "px-4 py-1.5 text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-all",
  activeTab === tab.id 
- ? "bg-[var(--color-surface-0)] text-[var(--color-text-primary)] border border-[var(--color-border-subtle)]" 
+ ? "bg-[var(--color-surface-0)] text-[var(--color-text-primary)] border border-primary/40" 
  : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border border-transparent"
  )}
  >
@@ -170,8 +170,8 @@ export default function UniStudents() {
  )}
 
  {activeTab === 'directory' && selectedStudent && (
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden ">
- <div className="bg-[var(--color-surface-2)] p-6 md:p-8 flex items-center justify-between border-b border-[var(--color-border-subtle)]">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden ">
+ <div className="bg-[var(--color-surface-2)] p-6 md:p-8 flex items-center justify-between border-b border-primary/40">
  <div className="flex items-center gap-6">
  <div className="w-20 h-20 rounded-full bg-[var(--primary)] text-white flex items-center justify-center font-display text-[var(--text-3xl)] -glow-sm -[var(--primary)]">
  {selectedStudent.name?.substring(0, 2).toUpperCase()}
@@ -187,7 +187,7 @@ export default function UniStudents() {
  </div>
  <button 
  onClick={() => setSelectedStudent(null)}
- className="px-4 py-2 bg-[var(--color-surface-0)] border border-[var(--color-border-default)] hover:bg-[var(--color-surface-3)] text-[var(--color-text-primary)] text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-colors"
+ className="px-4 py-2 bg-[var(--color-surface-0)] border border-primary/40 hover:bg-[var(--color-surface-3)] text-[var(--color-text-primary)] text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-colors"
  >
  Back to Directory
  </button>
@@ -195,7 +195,7 @@ export default function UniStudents() {
  
  <div className="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8 bg-[var(--color-surface-1)]">
  <div className="lg:col-span-2 space-y-6">
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] p-6">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-lg)] p-6">
  <h3 className="font-semibold text-[var(--color-text-primary)] mb-6 flex items-center gap-2">
  <Calendar className="w-4 h-4 text-[var(--primary)]" /> Academic History & Transcript
  </h3>
@@ -216,18 +216,18 @@ export default function UniStudents() {
  </div>
  
  <div className="space-y-6">
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] p-6">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-lg)] p-6">
  <h3 className="font-semibold text-[var(--color-text-primary)] mb-4">Current Standing</h3>
  <div className="space-y-4">
- <div className="flex justify-between items-center py-2 border-b border-[var(--color-border-subtle)]">
+ <div className="flex justify-between items-center py-2 border-b border-primary/40">
  <span className="text-[var(--color-text-secondary)] text-[var(--text-sm)]">Year</span>
  <span className="font-medium text-[var(--color-text-primary)]">{selectedStudent.year}</span>
  </div>
- <div className="flex justify-between items-center py-2 border-b border-[var(--color-border-subtle)]">
+ <div className="flex justify-between items-center py-2 border-b border-primary/40">
  <span className="text-[var(--color-text-secondary)] text-[var(--text-sm)]">CGPA</span>
  <span className="font-mono font-bold text-[var(--color-text-primary)]">{selectedStudent.gpa}</span>
  </div>
- <div className="flex justify-between items-center py-2 border-b border-[var(--color-border-subtle)]">
+ <div className="flex justify-between items-center py-2 border-b border-primary/40">
  <span className="text-[var(--color-text-secondary)] text-[var(--text-sm)]">Status</span>
  <OrbitStatusBadge status={selectedStudent.status} />
  </div>
@@ -279,7 +279,7 @@ export default function UniStudents() {
  )}
 
  {activeTab === 'add' && (
- <div className="max-w-2xl mx-auto bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-8 ">
+ <div className="max-w-2xl mx-auto bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-8 ">
  <div className="mb-8">
  <h2 className="font-display text-[var(--text-2xl)] font-semibold tracking-tight text-[var(--color-text-primary)]">Enroll New Undergraduate</h2>
  <p className="text-[var(--color-text-secondary)] mt-2">Register a fresh student profile with institutional metadata into the system.</p>
@@ -294,7 +294,7 @@ export default function UniStudents() {
  value={formData.name} 
  onChange={e => setFormData({ ...formData, name: e.target.value})} 
  placeholder="e.g. Marie Curie" 
- className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
+ className="w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
  required
  />
  </div>
@@ -305,7 +305,7 @@ export default function UniStudents() {
  value={formData.email} 
  onChange={e => setFormData({ ...formData, email: e.target.value})} 
  placeholder="e.g. mcurie@university.edu" 
- className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
+ className="w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
  />
  </div>
  <div className="space-y-2">
@@ -313,7 +313,7 @@ export default function UniStudents() {
  <select 
  value={formData.major} 
  onChange={e => setFormData({ ...formData, major: e.target.value})}
- className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
+ className="w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
  >
  <option value="Computer Science">Computer Science</option>
  <option value="Software Engineering">Software Engineering</option>
@@ -327,7 +327,7 @@ export default function UniStudents() {
  <select 
  value={formData.year} 
  onChange={e => setFormData({ ...formData, year: e.target.value})}
- className="w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
+ className="w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
  >
  <option value="Freshman">Freshman</option>
  <option value="Sophomore">Sophomore</option>
@@ -337,7 +337,7 @@ export default function UniStudents() {
  </div>
  </div>
  
- <div className="pt-4 border-t border-[var(--color-border-subtle)] flex justify-end">
+ <div className="pt-4 border-t border-primary/40 flex justify-end">
  <button 
  type="submit" 
  disabled={createStudentMutation.isPending}

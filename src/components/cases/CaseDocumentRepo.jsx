@@ -155,7 +155,7 @@ export default function CaseDocumentRepo({ caseData, user }) {
       {isLoading ? (
         <div className="p-8 text-center text-sm text-muted-foreground">{t("loading_documents", "Loading documents...")}</div>
       ) : filtered.length === 0 ? (
-        <div className="bg-card rounded-xl border border-dashed border-primary/50 p-12 text-center">
+        <div className="bg-card rounded-xl border border-dashed border-primary/40 p-12 text-center">
           <FolderOpen className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
           <p className="text-sm font-medium">{t("no_documents_yet", "No documents yet")}</p>
           <p className="text-xs text-muted-foreground mt-1 mb-4">{t(
@@ -271,7 +271,7 @@ function DocRow({ doc, canManage, onDelete, onToggleShare, onPreview, highlighte
   return (
     <div className={cn(
       "bg-card rounded-xl border px-4 py-3 flex items-center gap-3 hover:bg-muted/20 transition-colors",
-      highlighted ? "border-red-200" : "border-border"
+      highlighted ? "border-red-200" : "border-primary/40"
     )}>
       <div className={cn(
         "w-9 h-9 rounded-lg flex items-center justify-center shrink-0",
@@ -390,7 +390,7 @@ export function UploadDocumentDialog({ onClose, onSubmit, isUploading: saving, c
           <div
             className={cn(
               "border-2 border-dashed rounded-xl p-6 text-center transition-colors cursor-pointer",
-              dragOver ? "border-primary bg-slate-50" : "border-border hover:border-primary/40"
+              dragOver ? "border-primary bg-slate-50" : "border-primary/40 hover:border-primary/40"
             )}
             onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
             onDragLeave={() => setDragOver(false)}
@@ -451,7 +451,7 @@ export function UploadDocumentDialog({ onClose, onSubmit, isUploading: saving, c
             <Input value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} placeholder="Brief description..." className="mt-1" />
           </div>
 
-          <div className="flex items-center justify-between rounded-lg border border-border p-3">
+          <div className="flex items-center justify-between rounded-lg border border-primary/40 p-3">
             <div>
               <p className="text-sm font-medium">{t("share_with_client_portal", "Share with client portal")}</p>
               <p className="text-xs text-muted-foreground">{t("client_can_view_this_in_their_", "Client can view this in their portal")}</p>

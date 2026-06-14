@@ -40,7 +40,7 @@ export default function ClientChecklistPanel({ clientId }) {
 
   if (items.length === 0) {
     return (
-      <div className="bg-card border border-border rounded-xl p-10 text-center">
+      <div className="bg-card border border-primary/40 rounded-xl p-10 text-center">
         <CheckSquare className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
         <p className="text-sm text-muted-foreground">{t("no_checklist_items_assigned_ye", "No checklist items assigned yet")}</p>
       </div>
@@ -50,7 +50,7 @@ export default function ClientChecklistPanel({ clientId }) {
   return (
     <div className="space-y-4">
       {/* Progress */}
-      <div className="bg-card border border-border rounded-xl p-4">
+      <div className="bg-card border border-primary/40 rounded-xl p-4">
         <div className="flex justify-between items-center mb-2">
           <p className="text-sm font-semibold">{t("your_action_items", "Your Action Items")}</p>
           <span className="text-xs text-muted-foreground">{done.length}/{items.length} {t("completed", "completed")}</span>
@@ -64,8 +64,8 @@ export default function ClientChecklistPanel({ clientId }) {
       </div>
       {/* Pending items */}
       {pending.length > 0 && (
-        <div className="bg-card border border-border rounded-xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-border">
+        <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
+          <div className="px-4 py-3 border-b border-primary/40">
             <p className="text-sm font-semibold">{t("pending", "Pending (")}{pending.length})</p>
           </div>
           <div className="divide-y divide-border">
@@ -105,8 +105,8 @@ export default function ClientChecklistPanel({ clientId }) {
       )}
       {/* Completed items */}
       {done.length > 0 && (
-        <div className="bg-card border border-border rounded-xl overflow-hidden opacity-70">
-          <div className="px-4 py-3 border-b border-border">
+        <div className="bg-card border border-primary/40 rounded-xl overflow-hidden opacity-70">
+          <div className="px-4 py-3 border-b border-primary/40">
             <p className="text-sm font-semibold text-muted-foreground">{t("completed", "Completed (")}{done.length})</p>
           </div>
           <div className="divide-y divide-border">

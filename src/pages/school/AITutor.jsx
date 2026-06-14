@@ -86,7 +86,7 @@ export default function AITutor() {
  </div>
  </div>
 
- <div className="flex-1 bg-card rounded-2xl border border-border flex flex-col overflow-hidden">
+ <div className="flex-1 bg-card rounded-2xl border border-primary/40 flex flex-col overflow-hidden">
  <div className="flex-1 p-6 overflow-y-auto space-y-6 custom-scrollbar flex flex-col">
  {messages.map((msg, i) => (
  <div key={i} className={`flex gap-4 ${msg.role === 'user' ? 'self-end flex-row-reverse' : 'self-start'}`}>
@@ -100,7 +100,7 @@ export default function AITutor() {
  ))}
  </div>
  
- <div className="p-4 bg-background border-t border-border">
+ <div className="p-4 bg-background border-t border-primary/40">
  <div className="flex gap-2">
  <Button variant="outline" size="icon" className="shrink-0"><BookOpen className="w-4 h-4" /></Button>
  <Input 
@@ -108,7 +108,7 @@ export default function AITutor() {
  onChange={e => setInput(e.target.value)} 
  onKeyDown={e => e.key === 'Enter' && handleSend()}
  placeholder="Ask a question about math, science, history..." 
- className="flex-1 bg-card border-slate-300"
+ className="flex-1 bg-card border-primary/40"
  />
  <Button onClick={handleSend} className="bg-primary hover:bg-primary/90 text-white gap-2 px-6">
  <Send className="w-4 h-4" /> Send

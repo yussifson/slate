@@ -67,7 +67,7 @@ export default function SHSStudentProfiles() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary dark:text-primary" />
  <Input 
  placeholder="Search students..." 
- className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+ className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -129,7 +129,7 @@ export default function SHSStudentProfiles() {
  <div className="flex-1 mt-4 sm:mt-12">
  <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">{selectedStudent.title}</h2>
  <div className="flex items-center gap-3 mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium">
- <span className="flex items-center gap-1.5"><Badge variant="outline" className="border-primary/20 dark:border-slate-600 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary dark:text-primary/70">{selectedStudent.case_number}</Badge></span>
+ <span className="flex items-center gap-1.5"><Badge variant="outline" className="border-primary/20 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary dark:text-primary/70">{selectedStudent.case_number}</Badge></span>
  <span>•</span>
  <span className="flex items-center gap-1.5"><GraduationCap className="w-4 h-4 text-primary dark:text-primary" /> {selectedStudent.data?.program}</span>
  <span>•</span>
@@ -140,7 +140,7 @@ export default function SHSStudentProfiles() {
 
  <div className="mt-8">
  <Tabs defaultValue="overview" className="w-full">
- <TabsList className="bg-slate-500 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-slate-200 dark:border-slate-700">
+ <TabsList className="bg-slate-500 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-primary/40 dark:border-primary/40">
  <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 dark:bg-slate-900 data-[state=active]:text-primary dark:text-primary/70 data-[state=active]:">Overview</TabsTrigger>
  <TabsTrigger value="family" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 dark:bg-slate-900 data-[state=active]:text-primary dark:text-primary/70 data-[state=active]:">Family & Contacts</TabsTrigger>
  <TabsTrigger value="medical" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 dark:bg-slate-900 data-[state=active]:text-primary dark:text-primary/70 data-[state=active]:">Medical Summary</TabsTrigger>
@@ -150,7 +150,7 @@ export default function SHSStudentProfiles() {
  <div className="mt-6">
  <TabsContent value="overview" className="space-y-6 outline-none">
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
- <div className="p-5 rounded-2xl bg-primary/30 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 space-y-4">
+ <div className="p-5 rounded-2xl bg-primary/30 dark:bg-slate-800/30 border border-primary/40 dark:border-primary/40 space-y-4">
  <h3 className="text-sm font-bold text-primary dark:text-primary/70 uppercase tracking-wider">Demographics</h3>
  <div className="grid grid-cols-2 gap-y-4">
  <div>
@@ -171,7 +171,7 @@ export default function SHSStudentProfiles() {
  </div>
  </div>
  
- <div className="p-5 rounded-2xl bg-primary/30 border border-slate-200 space-y-4">
+ <div className="p-5 rounded-2xl bg-primary/30 border border-primary/40 space-y-4">
  <h3 className="text-sm font-bold text-primary uppercase tracking-wider">Enrollment Info</h3>
  <div className="grid grid-cols-2 gap-y-4">
  <div>
@@ -196,11 +196,11 @@ export default function SHSStudentProfiles() {
  </TabsContent>
  
  <TabsContent value="family" className="outline-none">
- <div className="p-8 text-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/20">
+ <div className="p-8 text-center border-2 border-dashed border-primary/40 dark:border-primary/40 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/20">
  <Users className="w-10 h-10 text-primary/30 mx-auto mb-3" />
  <h4 className="text-slate-700 dark:text-slate-300 dark:text-slate-200 font-bold">No Family Contacts Added</h4>
  <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 text-sm mt-1 mb-4">You have not added any emergency contacts or guardians for this student.</p>
- <Button variant="outline" className="border-primary/20 dark:border-slate-600 text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 rounded-xl">Add Contact</Button>
+ <Button variant="outline" className="border-primary/20 dark:border-primary/40 text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 rounded-xl">Add Contact</Button>
  </div>
  </TabsContent>
 
@@ -214,7 +214,7 @@ export default function SHSStudentProfiles() {
  </TabsContent>
 
  <TabsContent value="documents" className="outline-none">
- <div className="p-8 text-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl">
+ <div className="p-8 text-center border-2 border-dashed border-primary/40 dark:border-primary/40 rounded-2xl">
  <FileText className="w-10 h-10 text-slate-300 mx-auto mb-3" />
  <h4 className="text-slate-700 dark:text-slate-300 dark:text-slate-200 font-bold">No Documents Uploaded</h4>
  <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 text-sm mt-1 mb-4">Upload birth certificates, previous report cards, etc.</p>

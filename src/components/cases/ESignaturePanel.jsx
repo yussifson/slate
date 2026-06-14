@@ -120,7 +120,7 @@ Slate Law Management`,
       {isLoading ? (
         <div className="p-8 text-center text-sm text-muted-foreground">{t("loading", "Loading...")}</div>
       ) : requests.length === 0 ? (
-        <div className="bg-card rounded-xl border border-border p-10 text-center">
+        <div className="bg-card rounded-xl border border-primary/40 p-10 text-center">
           <PenTool className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
           <p className="text-sm font-medium">{t("no_signature_requests_yet", "No signature requests yet")}</p>
           <p className="text-xs text-muted-foreground mt-1">{t(
@@ -134,7 +134,7 @@ Slate Law Management`,
             const cfg = STATUS_CONFIG[req.status] || STATUS_CONFIG.sent;
             const StatusIcon = cfg.icon;
             return (
-              <div key={req.id} className="bg-card rounded-xl border border-border px-4 py-3 flex items-center gap-3">
+              <div key={req.id} className="bg-card rounded-xl border border-primary/40 px-4 py-3 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
                   <PenTool className="w-4 h-4 text-primary" />
                 </div>
@@ -183,7 +183,7 @@ Slate Law Management`,
           <DialogContent className="max-w-md">
             <DialogHeader><DialogTitle>{t("signed_signature", "Signed Signature —")} {viewingSig.document_name}</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div className="bg-white border border-border rounded-lg p-4 flex items-center justify-center min-h-32">
+              <div className="bg-white border border-primary/40 rounded-lg p-4 flex items-center justify-center min-h-32">
                 {viewingSig.signature_data
                   ? <img src={viewingSig.signature_data} alt="Client signature" className="max-h-28 object-contain" />
                   : <p className="text-sm text-muted-foreground">{t("no_signature_image", "No signature image")}</p>}

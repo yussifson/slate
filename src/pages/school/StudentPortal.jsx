@@ -133,7 +133,7 @@ export default function StudentPortal() {
  <h1 className="text-2xl school-heading font-extrabold tracking-tight">{t("welcome_back", "Welcome back")}, {user?.user_metadata?.full_name || activeStudent.name.split(' ')[0]}!</h1>
  <p className="text-sm text-muted-foreground mt-0.5">{t("student_id", "Student ID:")} <span className="font-bold text-foreground">{activeStudent.studentId}</span> • {activeStudent.class}</p>
  </div>
- <div className="flex gap-1 overflow-x-auto pb-2 md:pb-0 hide-scrollbar bg-muted p-1 rounded-xl border border-border">
+ <div className="flex gap-1 overflow-x-auto pb-2 md:pb-0 hide-scrollbar bg-muted p-1 rounded-xl border border-primary/40">
  <button onClick={() => setActiveTab('dashboard')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'dashboard' ? 'bg-background text-foreground ' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'}`}>
  <LayoutDashboard className="w-4 h-4" /> Dashboard
  </button>
@@ -153,7 +153,7 @@ export default function StudentPortal() {
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in fade-in">
  <div className="col-span-1 lg:col-span-2 space-y-6">
  <div className="grid grid-cols-2 gap-4">
- <div className="bg-card rounded-xl border border-border p-4 flex flex-col justify-center ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 flex flex-col justify-center ">
  <div className="flex items-center gap-3 mb-2">
  <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white "><CheckCircle className="w-5 h-5" /></div>
  <h3 className="font-bold text-muted-foreground text-sm">{t("attendance", "Attendance")}</h3>
@@ -162,7 +162,7 @@ export default function StudentPortal() {
  <p className="text-xs text-muted-foreground">{t("present_for_the_term", "Present for the term")}</p>
  </div>
  
- <div className="bg-card rounded-xl border border-border p-4 flex flex-col justify-center ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 flex flex-col justify-center ">
  <div className="flex items-center gap-3 mb-2">
  <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white "><GraduationCap className="w-5 h-5" /></div>
  <h3 className="font-bold text-muted-foreground text-sm">{t("performance", "Performance")}</h3>
@@ -173,7 +173,7 @@ export default function StudentPortal() {
  </div>
 
  <div className="school-card overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50 flex justify-between items-center">
+ <div className="p-4 border-b border-primary/40 bg-muted/50 flex justify-between items-center">
  <h3 className="font-bold text-card-foreground flex items-center gap-2"><Calendar className="w-5 h-5 text-muted-foreground" /> Upcoming Exams</h3>
  </div>
  <div className="divide-y divide-border p-2">
@@ -193,7 +193,7 @@ export default function StudentPortal() {
 
  <div className="col-span-1 space-y-6">
  <div className="school-card overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <h3 className="font-bold text-card-foreground flex items-center gap-2"><FileText className="w-5 h-5 text-muted-foreground" /> My Documents</h3>
  </div>
  <div className="divide-y divide-border p-2">
@@ -220,7 +220,7 @@ export default function StudentPortal() {
 
  {activeTab === 'courses' && (
  <div className="space-y-4 animate-in fade-in">
- <div className="bg-card rounded-xl border border-border p-6 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-6 ">
  <div className="flex justify-between items-start mb-6">
  <div>
  <h3 className="text-lg font-bold text-card-foreground">Course Registration</h3>
@@ -241,7 +241,7 @@ export default function StudentPortal() {
  ))}
  </div>
  ) : (
- <div className="text-center py-10 bg-muted/30 rounded-xl border border-dashed border-primary/50">
+ <div className="text-center py-10 bg-muted/30 rounded-xl border border-dashed border-primary/40">
  <BookOpen className="w-10 h-10 mx-auto text-muted-foreground opacity-30 mb-3" />
  <p className="font-semibold text-foreground">You are not registered for any courses yet.</p>
  {classConfig.allowSelfRegistration ? (
@@ -257,14 +257,14 @@ export default function StudentPortal() {
 
  {activeTab === 'grades' && (
  <div className="school-card overflow-hidden animate-in fade-in">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <h3 className="font-bold text-card-foreground">Academic Transcript</h3>
  </div>
  {studentGrades.length === 0 ? (
  <div className="py-12 text-center text-muted-foreground">No grades recorded yet.</div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-muted/30 border-b border-border">
+ <thead className="bg-muted/30 border-b border-primary/40">
  <tr>
  <th className="px-6 py-3 text-left font-bold text-muted-foreground uppercase">Exam/Assignment</th>
  <th className="px-6 py-3 text-left font-bold text-muted-foreground uppercase">Subject</th>
@@ -296,7 +296,7 @@ export default function StudentPortal() {
 
  {activeTab === 'assignments' && (
  <div className="school-card overflow-hidden animate-in fade-in">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <h3 className="font-bold text-card-foreground">My Assignments</h3>
  </div>
  {studentAssignments.length === 0 ? (

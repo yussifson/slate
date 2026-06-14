@@ -55,16 +55,16 @@ export default function UniExams() {
  updateStudentGpaMutation.mutate({ studentId: activeStudent.id, newGpa});
 };
 
- const selectClass = "w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body";
+ const selectClass = "w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body";
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="border-b border-[var(--color-border-subtle)] pb-4">
+ <div className="border-b border-primary/40 pb-4">
  <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Examinations & Grading</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Schedule examinations, sit online exams, and review grade transcripts.</p>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
  <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Active Student</label>
  <select value={selectedStudentId} onChange={e => { setSelectedStudentId(e.target.value); setActiveExam(null); setExamSubmitted(false);}} className={cn(selectClass, "mt-2")}>
  <option value="">-- Choose Undergraduate --</option>
@@ -76,13 +76,13 @@ export default function UniExams() {
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
  <div className="lg:col-span-2 space-y-6">
  {!activeExam ? (
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden">
- <div className="p-6 border-b border-[var(--color-border-subtle)]">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+ <div className="p-6 border-b border-primary/40">
  <h2 className="font-semibold text-[var(--color-text-primary)]">Available Examinations</h2>
  </div>
  <div className="p-4 space-y-3">
  {exams.map((exam, idx) => (
- <div key={idx} className="p-4 bg-[var(--color-surface-1)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+ <div key={idx} className="p-4 bg-[var(--color-surface-1)] rounded-[var(--radius-lg)] border border-primary/40 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
  <div>
  <div className="flex items-center gap-2">
  <span className="text-xs font-mono font-bold text-[var(--color-accent-primary)] bg-[var(--color-accent-subtle)] px-2 py-0.5 rounded-[var(--radius-sm)]">{exam.code}</span>
@@ -99,20 +99,20 @@ export default function UniExams() {
  </div>
  </div>
  ) : (
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden ">
- <div className="p-6 border-b border-[var(--color-border-subtle)] flex justify-between items-center">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden ">
+ <div className="p-6 border-b border-primary/40 flex justify-between items-center">
  <h3 className="font-semibold text-[var(--color-text-primary)]">Sitting: {activeExam.subject}</h3>
- <button onClick={() => setActiveExam(null)} className="px-3 py-1.5 border border-[var(--color-border-default)] text-[var(--color-text-primary)] text-xs font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-3)]">Quit</button>
+ <button onClick={() => setActiveExam(null)} className="px-3 py-1.5 border border-primary/40 text-[var(--color-text-primary)] text-xs font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-3)]">Quit</button>
  </div>
  <div className="p-6">
  {!examSubmitted ? (
  <div className="space-y-6">
  {activeExam.questions.map((q, qIdx) => (
- <div key={qIdx} className="space-y-2 border-b border-[var(--color-border-subtle)] pb-4 last:border-0">
+ <div key={qIdx} className="space-y-2 border-b border-primary/40 pb-4 last:border-0">
  <p className="font-medium text-[var(--color-text-primary)]">{qIdx + 1}. {q.q}</p>
  <div className="grid grid-cols-1 gap-2 pt-2">
  {q.options.map((opt, optIdx) => (
- <label key={optIdx} className={cn("flex items-center gap-2 text-[var(--text-sm)] border rounded-[var(--radius-md)] p-2.5 cursor-pointer transition-colors", answers[qIdx] === optIdx ? "border-[var(--primary)] bg-[var(--color-accent-subtle)]" : "border-[var(--color-border-default)] hover:bg-[var(--color-surface-2)]")}>
+ <label key={optIdx} className={cn("flex items-center gap-2 text-[var(--text-sm)] border rounded-[var(--radius-md)] p-2.5 cursor-pointer transition-colors", answers[qIdx] === optIdx ? "border-[var(--primary)] bg-[var(--color-accent-subtle)]" : "border-primary/40 hover:bg-[var(--color-surface-2)]")}>
  <input type="radio" name={`q-${qIdx}`} checked={answers[qIdx] === optIdx} onChange={() => setAnswers({ ...answers, [qIdx]: optIdx})} className="accent-[var(--primary)]" />
  <span className="font-medium text-[var(--color-text-primary)]">{opt}</span>
  </label>
@@ -126,7 +126,7 @@ export default function UniExams() {
  <div className="text-center py-6 space-y-4">
  <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto" style={{ background: 'var(--color-success-subtle)'}}><ClipboardCheck className="w-8 h-8" style={{ color: 'var(--color-success)'}} /></div>
  <h3 className="text-lg font-bold text-[var(--color-text-primary)]">Exam Graded</h3>
- <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto p-4 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)]">
+ <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto p-4 bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-lg)]">
  <div><p className="text-[10px] text-[var(--color-text-tertiary)] font-bold uppercase">Score</p><p className="text-xl font-display font-bold text-[var(--color-text-primary)]">{scoreResult.correct}/{scoreResult.total}</p></div>
  <div><p className="text-[10px] text-[var(--color-text-tertiary)] font-bold uppercase">Grade</p><p className="text-xl font-display font-bold text-[var(--color-success)]">{scoreResult.grade}/4.00</p></div>
  </div>
@@ -134,7 +134,7 @@ export default function UniExams() {
  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
  <div><p className="font-bold">GPA Recalculated</p><p className="mt-0.5">Cumulative GPA adjusted after logging this exam record.</p></div>
  </div>
- <button onClick={() => setActiveExam(null)} className="w-full py-2 border border-[var(--color-border-default)] text-[var(--color-text-primary)] font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-3)]">Return to Hub</button>
+ <button onClick={() => setActiveExam(null)} className="w-full py-2 border border-primary/40 text-[var(--color-text-primary)] font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-3)]">Return to Hub</button>
  </div>
  )}
  </div>
@@ -142,10 +142,10 @@ export default function UniExams() {
  )}
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 h-fit">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 h-fit">
  <h3 className="font-semibold text-[var(--color-text-primary)] mb-4">Grading Status</h3>
  <div className="space-y-3">
- <div className="flex justify-between py-2 border-b border-[var(--color-border-subtle)] text-[var(--text-sm)]">
+ <div className="flex justify-between py-2 border-b border-primary/40 text-[var(--text-sm)]">
  <span className="text-[var(--color-text-secondary)]">Program</span>
  <span className="font-medium text-[var(--color-text-primary)]">{activeStudent.major}</span>
  </div>
@@ -157,7 +157,7 @@ export default function UniExams() {
  </div>
  </div>
  ) : (
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-12 text-center text-[var(--color-text-tertiary)]">Select a student to load exam terminal.</div>
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-12 text-center text-[var(--color-text-tertiary)]">Select a student to load exam terminal.</div>
  )}
  </div>
  );

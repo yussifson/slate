@@ -20,7 +20,7 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tool
 
 function MetricCard({ title, value, icon: Icon}) {
  return (
- <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col items-center justify-center text-center relative overflow-hidden group transition-">
+ <div className="bg-white border border-primary/40 rounded-2xl p-4 flex flex-col items-center justify-center text-center relative overflow-hidden group transition-">
  <p className="text-2xl font-black text-slate-900 mb-1 relative z-10">{value}</p>
  <div className="flex items-center gap-1.5 relative z-10">
  <Icon className="w-4 h-4 text-primary" />
@@ -138,10 +138,10 @@ export default function SchoolDashboard({ companyId, company, isAdmin}) {
  </p>
  </div>
  <div className="flex items-center gap-2 shrink-0">
- <Button variant="outline" size="sm" className="gap-1.5 text-sm font-bold rounded-xl text-slate-700 bg-white hover:bg-slate-50 border-slate-200">
+ <Button variant="outline" size="sm" className="gap-1.5 text-sm font-bold rounded-xl text-slate-700 bg-white hover:bg-slate-50 border-primary/40">
  <BarChart2 className="w-4 h-4" /> {t("analytics", "Analytics")}
  </Button>
- <Button onClick={handleRefresh} disabled={isRefreshing} size="sm" className="gap-1.5 text-sm font-bold bg-white text-slate-700 hover:bg-slate-50 rounded-xl border border-slate-200 ">
+ <Button onClick={handleRefresh} disabled={isRefreshing} size="sm" className="gap-1.5 text-sm font-bold bg-white text-slate-700 hover:bg-slate-50 rounded-xl border border-primary/40 ">
  <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} /> {t("refresh", "Refresh")}
  </Button>
  </div>
@@ -203,8 +203,8 @@ export default function SchoolDashboard({ companyId, company, isAdmin}) {
  {/* Bottom grid */}
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
  {/* Upcoming Hearings */}
- <div className="bg-card rounded-xl border border-border">
- <div className="p-4 border-b border-border flex items-center justify-between">
+ <div className="bg-card rounded-xl border border-primary/40">
+ <div className="p-4 border-b border-primary/40 flex items-center justify-between">
  <div className="flex items-center gap-2">
  <Calendar className="w-4 h-4 text-primary" />
  <h3 className="text-sm font-semibold">{t("upcoming", "Upcoming")} {hearingsTermPlural}</h3>
@@ -240,8 +240,8 @@ export default function SchoolDashboard({ companyId, company, isAdmin}) {
  </div>
 
  {/* Plan Status */}
- <div className="bg-card rounded-xl border border-border">
- <div className="p-4 border-b border-border flex items-center justify-between">
+ <div className="bg-card rounded-xl border border-primary/40">
+ <div className="p-4 border-b border-primary/40 flex items-center justify-between">
  <h3 className="text-sm font-semibold">{t("plan_status", "Plan Status")}</h3>
  <span className="text-xs font-medium text-muted-foreground capitalize">{plan.name}</span>
  </div>
@@ -251,7 +251,7 @@ export default function SchoolDashboard({ companyId, company, isAdmin}) {
  <UsageRow label="Cases" used={activeCases.length} max={plan.maxCases} />
  <UsageRow label="Clients" used={clients.length} max={plan.maxClients} />
  </div>
- <div className="px-4 pb-4 border-t border-border pt-3">
+ <div className="px-4 pb-4 border-t border-primary/40 pt-3">
  <div className="flex items-center justify-between mb-2">
  <p className="text-sm font-semibold">{t("plan_details", "Plan Details")}</p>
  <p className="text-sm font-semibold">{formatCurrency(plan.price || 0, currency)}{t("mo", "/mo")}</p>

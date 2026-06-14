@@ -115,13 +115,13 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
 
     if (field.field_type === 'boolean') {
       return (
-        <div key={field.name} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+        <div key={field.name} className="flex items-center justify-between py-2 border-b border-primary/40 last:border-0">
           <label className="text-sm font-medium text-foreground">{label}</label>
           <input
             type="checkbox"
             checked={!!val}
             onChange={e => setEditData({ ...editData, [field.name]: e.target.checked })}
-            className="h-4 w-4 rounded border-border"
+            className="h-4 w-4 rounded border-primary/40"
           />
         </div>
       );
@@ -135,7 +135,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
           <select
             value={val}
             onChange={e => setEditData({ ...editData, [field.name]: e.target.value })}
-            className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full rounded-lg border border-primary/40 bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           >
             <option value="">Select...</option>
             {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
@@ -194,10 +194,10 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
         <span className="text-xs text-muted-foreground">{data.length} record{data.length !== 1 ? 's' : ''}</span>
       </div>
 
-      <div className="rounded-md border border-border bg-card">
+      <div className="rounded-md border border-primary/40 bg-card">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="text-xs text-muted-foreground bg-muted/50 border-b border-border uppercase">
+            <thead className="text-xs text-muted-foreground bg-muted/50 border-b border-primary/40 uppercase">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
@@ -267,7 +267,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
           {selectedRecord && (
             <div className="mt-2 space-y-2">
               {fieldDefinitions.map(f => (
-                <div key={f.name} className="flex justify-between items-center py-2 border-b border-border last:border-0">
+                <div key={f.name} className="flex justify-between items-center py-2 border-b border-primary/40 last:border-0">
                   <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{f.name.replace(/_/g, ' ')}</span>
                   <span className="text-sm font-medium text-foreground max-w-[60%] text-right break-words">{String(selectedRecord.data[f.name] ?? '-')}</span>
                 </div>
@@ -294,7 +294,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
           <div className="mt-4 space-y-4">
             {fieldDefinitions.map(f => renderEditField(f))}
           </div>
-          <DialogFooter className="mt-6 pt-4 border-t border-border">
+          <DialogFooter className="mt-6 pt-4 border-t border-primary/40">
             <Button variant="outline" onClick={() => setEditRecord(null)}>Cancel</Button>
             <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-primary hover:bg-primary/90 text-white">
               {isSaving ? 'Saving...' : 'Save Changes'}

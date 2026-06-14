@@ -147,7 +147,7 @@ export default function Events() {
  {isDbLoading ? (
  <div className="py-12 text-center text-muted-foreground">{t("loading_calendar", "Loading calendar...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
+ <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-primary/40">
  <Calendar className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
  <p className="font-semibold text-lg text-card-foreground">{t("no_upcoming_gatherings", "No upcoming gatherings")}</p>
  <p className="text-sm mt-1 max-w-md mx-auto">{t(
@@ -159,8 +159,8 @@ export default function Events() {
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  {filtered.map(event => {
  return (
- <div key={event.id} className="bg-card rounded-xl border border-border p-5 flex flex-col sm:flex-row gap-5 relative group transition-all">
- <div className="flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 rounded-lg p-4 min-w-[100px] shrink-0 border border-slate-200 dark:border-slate-200">
+ <div key={event.id} className="bg-card rounded-xl border border-primary/40 p-5 flex flex-col sm:flex-row gap-5 relative group transition-all">
+ <div className="flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 rounded-lg p-4 min-w-[100px] shrink-0 border border-primary/40 dark:border-primary/40">
  <span className="text-xs font-bold uppercase tracking-widest">{event.date?.split(' ')[0] || 'Upcoming'}</span>
  <span className="text-2xl font-black">{event.date?.includes(' ') ? event.date.split(' ')[1]?.replace(',', '') : 'Soon'}</span>
  </div>
@@ -202,7 +202,7 @@ export default function Events() {
  )}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-border">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
  <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
  <Calendar className="w-5 h-5 text-primary" /> {t("schedule_event_service", "Schedule Event / Service")}
  </h2>
@@ -304,7 +304,7 @@ export default function Events() {
  <div className="mt-6 space-y-4">
  {viewRecord && Object.entries(viewRecord).filter(([k]) => k !== 'id' && k !== 'status').map(([key, value]) => {
  return (
- <div key={key} className="border-b border-border pb-2">
+ <div key={key} className="border-b border-primary/40 pb-2">
  <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
  <p className="mt-1 text-base text-foreground font-semibold">
  {typeof value === 'object' ? JSON.stringify(value) : String(value)}

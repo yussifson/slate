@@ -14,7 +14,7 @@ import {
 
 // Status badges mapping
 const STATUS_COLORS = {
- Draft: 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700',
+ Draft: 'bg-slate-100 text-slate-600 border-primary/40 dark:bg-slate-800 dark:text-slate-400 dark:border-primary/40',
  Published: 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800',
  Archived: 'bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800'
 };
@@ -229,8 +229,8 @@ export default function UnivKnowledgeBase({
  <div className="flex h-full w-full bg-background overflow-hidden text-foreground font-sans">
  
  {/* SIDEBAR */}
- <div className="w-64 flex-shrink-0 border-r border-border bg-slate-50/50 dark:bg-slate-900/20 flex flex-col">
- <div className="p-4 border-b border-border">
+ <div className="w-64 flex-shrink-0 border-r border-primary/40 bg-slate-50/50 dark:bg-slate-900/20 flex flex-col">
+ <div className="p-4 border-b border-primary/40">
  <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
  <Folder className="w-5 h-5 text-primary" />
  {title}
@@ -270,7 +270,7 @@ export default function UnivKnowledgeBase({
  if (e.key === 'Enter') saveCategoryMutation.mutate(newCategoryName);
  if (e.key === 'Escape') setIsAddingCategory(false);
 }}
- className="w-full h-8 px-2 text-sm bg-background border border-border rounded-md focus:outline-none focus:border-primary"
+ className="w-full h-8 px-2 text-sm bg-background border border-primary/40 rounded-md focus:outline-none focus:border-primary"
  placeholder="Category name..."
  />
  <button onClick={() => setIsAddingCategory(false)} className="text-muted-foreground hover:text-foreground">
@@ -338,8 +338,8 @@ export default function UnivKnowledgeBase({
  </div>
 
  {/* ARTICLE LIST */}
- <div className="w-80 flex-shrink-0 border-r border-border flex flex-col bg-background">
- <div className="p-4 border-b border-border space-y-3">
+ <div className="w-80 flex-shrink-0 border-r border-primary/40 flex flex-col bg-background">
+ <div className="p-4 border-b border-primary/40 space-y-3">
  <div className="flex justify-between items-center">
  <h3 className="font-bold text-foreground">
  {activeCategory || 'All Articles'}
@@ -377,7 +377,7 @@ export default function UnivKnowledgeBase({
  "w-full text-left p-3 rounded-xl border transition-all duration-200",
  activeArticle?.id === art.id 
  ? "bg-primary/5 border-primary/30 " 
- : "bg-background border-transparent hover:border-border hover:bg-muted/30"
+ : "bg-background border-transparent hover:border-primary/40 hover:bg-muted/30"
  )}
  >
  <div className="flex items-start justify-between gap-2 mb-1">
@@ -423,7 +423,7 @@ export default function UnivKnowledgeBase({
  </div>
  ) : isEditing ? (
  <div className="flex-1 flex flex-col h-full animate-in slide-in-from-right-4 duration-300">
- <div className="h-16 px-6 border-b border-border flex items-center justify-between bg-card/50 shrink-0">
+ <div className="h-16 px-6 border-b border-primary/40 flex items-center justify-between bg-card/50 shrink-0">
  <div className="flex items-center gap-3">
  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
  <FileEdit className="w-4 h-4" />
@@ -460,13 +460,13 @@ export default function UnivKnowledgeBase({
  className="w-full text-4xl font-extrabold bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/30 focus:ring-0 px-0"
  />
  
- <div className="flex flex-wrap gap-4 p-4 rounded-xl bg-muted/30 border border-border">
+ <div className="flex flex-wrap gap-4 p-4 rounded-xl bg-muted/30 border border-primary/40">
  <div className="flex-1 min-w-[200px]">
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Category</label>
  <select 
  value={editorForm.category}
  onChange={e => setEditorForm({...editorForm, category: e.target.value})}
- className="w-full h-9 px-3 rounded-lg border border-border bg-background text-sm focus:outline-none focus:border-primary"
+ className="w-full h-9 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:outline-none focus:border-primary"
  >
  <option value="">Select Category</option>
  {categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
@@ -477,7 +477,7 @@ export default function UnivKnowledgeBase({
  <select 
  value={editorForm.status}
  onChange={e => setEditorForm({...editorForm, status: e.target.value})}
- className="w-full h-9 px-3 rounded-lg border border-border bg-background text-sm focus:outline-none focus:border-primary"
+ className="w-full h-9 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:outline-none focus:border-primary"
  >
  <option value="Draft">Draft</option>
  <option value="Published">Published</option>
@@ -490,14 +490,14 @@ export default function UnivKnowledgeBase({
  type="checkbox"
  checked={editorForm.pinned}
  onChange={e => setEditorForm({...editorForm, pinned: e.target.checked})}
- className="rounded border-border text-primary focus:ring-primary"
+ className="rounded border-primary/40 text-primary focus:ring-primary"
  />
  <Pin className="w-4 h-4 text-muted-foreground" /> Pin to top
  </label>
  </div>
  </div>
 
- <div className="h-px bg-border my-6" />
+ <div className="h-px bg-primary/40 my-6" />
 
  <textarea 
  value={editorForm.content}
@@ -510,7 +510,7 @@ export default function UnivKnowledgeBase({
  </div>
  ) : (
  <div className="flex-1 flex flex-col h-full animate-in fade-in duration-300">
- <div className="h-16 px-6 border-b border-border flex items-center justify-between bg-card/50 shrink-0">
+ <div className="h-16 px-6 border-b border-primary/40 flex items-center justify-between bg-card/50 shrink-0">
  <div className="flex items-center gap-3">
  <span className={cn("px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded border", STATUS_COLORS[activeArticle.status || 'Draft'])}>
  {activeArticle.status || 'Draft'}
@@ -543,7 +543,7 @@ export default function UnivKnowledgeBase({
  {activeArticle.title}
  </h1>
  
- <div className="flex items-center gap-4 text-sm text-muted-foreground mb-10 pb-6 border-b border-border">
+ <div className="flex items-center gap-4 text-sm text-muted-foreground mb-10 pb-6 border-b border-primary/40">
  <div className="flex items-center gap-1.5">
  <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">
  {activeArticle.author?.charAt(0).toUpperCase() || 'U'}

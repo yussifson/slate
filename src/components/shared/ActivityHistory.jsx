@@ -66,7 +66,7 @@ export default function ActivityHistory({ recordId, recordType }) {
               <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${config.color}`}>
                 <Icon className="w-3.5 h-3.5" />
               </div>
-              {idx < logs.length - 1 && <div className="w-px flex-1 min-h-[16px] bg-border mt-1" />}
+              {idx < logs.length - 1 && <div className="w-px flex-1 min-h-[16px] bg-primary/40 mt-1" />}
             </div>
             {/* Content */}
             <div className="pb-4 flex-1 min-w-0">

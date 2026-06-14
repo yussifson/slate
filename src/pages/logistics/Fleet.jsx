@@ -140,7 +140,7 @@ export default function Fleet() {
  const maintenance = vehicles.filter(v => v.status === 'Maintenance').length;
 
  const stats = [
- { label: 'Total Vehicles', value: total, icon: Truck, color: 'bg-slate-100 text-slate-600', border: 'border-slate-200'},
+ { label: 'Total Vehicles', value: total, icon: Truck, color: 'bg-slate-100 text-slate-600', border: 'border-primary/40'},
  { label: 'Available', value: available, icon: CheckCircle2, color: 'bg-slate-100 text-primary', border: 'border-primary/20'},
  { label: 'On Route', value: onRoute, icon: Car, color: 'bg-slate-100 text-primary', border: 'border-primary/20'},
  { label: 'In Maintenance', value: maintenance, icon: Wrench, color: 'bg-amber-100 text-amber-600', border: 'border-amber-200'},
@@ -177,8 +177,8 @@ export default function Fleet() {
 })}
  </div>
  {/* Table */}
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/40">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/40">
  <div className="relative max-w-sm w-full">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input
@@ -204,7 +204,7 @@ export default function Fleet() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-muted/30 border-b border-border">
+ <thead className="bg-muted/30 border-b border-primary/40">
  <tr>
  {['Vehicle', 'Make / Model', 'Year', 'Capacity', 'Fuel', 'Last Service', 'Current Driver', 'Status', 'Actions'].map(h => {
  return (
@@ -297,7 +297,7 @@ export default function Fleet() {
  {/* Add/Edit Modal */}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-5 border border-border max-h-[90vh] overflow-y-auto">
+ <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-5 border border-primary/40 max-h-[90vh] overflow-y-auto">
  <div className="flex items-center justify-between">
  <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
  <Truck className="w-5 h-5 text-primary" />

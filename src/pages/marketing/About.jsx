@@ -42,7 +42,7 @@ export default function About() {
  <div className="absolute inset-0 bg-slate-50 pointer-events-none" />
  
  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
- <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-semibold text-slate-600 mb-8 ">
+ <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-primary/40 text-xs font-semibold text-slate-600 mb-8 ">
  <span className="flex h-2 w-2 rounded-full bg-primary" />
  {t("our_story", "Our Story")}
  </div>
@@ -98,7 +98,7 @@ export default function About() {
 
  {/* Right — Visual Collage */}
  <div className="relative">
- <div className="relative rounded-[2rem] border border-slate-200/60 bg-white p-2 overflow-hidden aspect-[4/5] transform lg:rotate-2 hover:rotate-0 transition-transform duration-700">
+ <div className="relative rounded-[2rem] border border-primary/40 bg-white p-2 overflow-hidden aspect-[4/5] transform lg:rotate-2 hover:rotate-0 transition-transform duration-700">
  <img src="/images/hero_dashboard_ui.png" alt="Slate Interface" className="w-full h-full object-cover rounded-[1.5rem]" />
  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent flex items-end p-8">
  <div className="bg-white backdrop-blur-md border border-white/20 p-6 rounded-2xl w-full">
@@ -114,7 +114,7 @@ export default function About() {
  </div>
  </section>
  {/* Core Values Section */}
- <section className="bg-slate-50 border-y border-slate-100 py-24 md:py-32 relative overflow-hidden">
+ <section className="bg-slate-50 border-y border-primary/40 py-24 md:py-32 relative overflow-hidden">
  {/* Subtle grid pattern background */}
  <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(148, 163, 184, 0.15) 1px, transparent 0)', backgroundSize: '24px 24px'}}></div>
  
@@ -136,7 +136,7 @@ export default function About() {
  return (
  <div
  key={i}
- className="bg-white border border-slate-200/60 rounded-[2rem] p-10 -slate-200/20 hover:-translate-y-2 -emerald-900/5 transition-all duration-300 group"
+ className="bg-white border border-primary/40 rounded-[2rem] p-10 -slate-200/20 hover:-translate-y-2 -emerald-900/5 transition-all duration-300 group"
  >
  <div className="w-16 h-16 rounded-2xl bg-slate-50 group-hover:bg-primary flex items-center justify-center text-primary group-hover:text-white mb-8 transition-colors duration-300">
  <v.icon className="w-8 h-8" strokeWidth={2} />

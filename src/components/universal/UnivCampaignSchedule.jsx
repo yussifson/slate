@@ -133,7 +133,7 @@ export default function UnivCampaignSchedule() {
  initial={{ opacity: 0, height: 0}}
  animate={{ opacity: 1, height: 'auto'}}
  exit={{ opacity: 0, height: 0}}
- className="bg-card p-6 rounded-xl border border-border mb-8 overflow-hidden"
+ className="bg-card p-6 rounded-xl border border-primary/40 mb-8 overflow-hidden"
  >
  <h2 className="text-xl font-semibold mb-4 text-foreground">
  {editingId ? 'Edit Campaign' : 'Create Campaign'}
@@ -220,10 +220,10 @@ export default function UnivCampaignSchedule() {
  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
  </div>
  ) : (
- <div className="bg-card rounded-xl border border-border overflow-hidden">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
  <table className="w-full text-left border-collapse">
  <thead>
- <tr className="bg-background border-b border-border text-sm font-medium text-muted-foreground">
+ <tr className="bg-background border-b border-primary/40 text-sm font-medium text-muted-foreground">
  <th className="p-4">Campaign Info</th>
  <th className="p-4 hidden md:table-cell">Duration</th>
  <th className="p-4">Budget</th>
@@ -233,7 +233,7 @@ export default function UnivCampaignSchedule() {
  </thead>
  <tbody>
  {data.map((item) => (
- <tr key={item.id} className="border-b border-gray-50 hover:bg-background/50 transition-colors">
+ <tr key={item.id} className="border-b border-primary/40 hover:bg-background/50 transition-colors">
  <td className="p-4">
  <div className="font-semibold text-foreground">{item.campaign_name || 'Unnamed Campaign'}</div>
  </td>

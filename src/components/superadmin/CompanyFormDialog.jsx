@@ -54,7 +54,7 @@ export default function CompanyFormDialog({ open, onClose, onSubmit, initialData
               <Label>{t("phone", "Phone")}</Label>
               <Input value={form.phone} onChange={e => set("phone", e.target.value)} />
             </div>
-            <div className="col-span-2 pt-2 border-t border-border">
+            <div className="col-span-2 pt-2 border-t border-primary/40">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3 flex items-center gap-1.5"><UserPlus className="w-3.5 h-3.5" />{t("company_admin", "Company Admin")}</p>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
@@ -110,7 +110,7 @@ export default function CompanyFormDialog({ open, onClose, onSubmit, initialData
               </Select>
             </div>
 
-            <div className="col-span-2 pt-2 border-t border-border">
+            <div className="col-span-2 pt-2 border-t border-primary/40">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">{t("subscription", "Subscription")}</p>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
@@ -139,7 +139,7 @@ export default function CompanyFormDialog({ open, onClose, onSubmit, initialData
               </div>
             </div>
 
-            <div className="col-span-2 pt-2 border-t border-border">
+            <div className="col-span-2 pt-2 border-t border-primary/40">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">{t("usage_limits", "Usage Limits")}</p>
               <div className="grid grid-cols-3 gap-3">
                 <div className="space-y-1.5">

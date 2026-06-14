@@ -151,25 +151,25 @@ export default function Underwriting() {
  </Button>
  </div>
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-xl border border-border p-4 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 ">
  <div className="flex items-center gap-2 mb-2 text-muted-foreground"><FileSignature className="w-4 h-4"/> {t("total_applications", "Total Applications")}</div>
  <p className="text-2xl font-bold text-card-foreground">{applications.length}</p>
  </div>
- <div className="bg-card rounded-xl border border-border p-4 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 ">
  <div className="flex items-center gap-2 mb-2 text-amber-600"><Clock className="w-4 h-4"/> {t("pending_review", "Pending Review")}</div>
  <p className="text-2xl font-bold text-card-foreground">{applications.filter(a => a.decision === 'Pending Review').length}</p>
  </div>
- <div className="bg-card rounded-xl border border-border p-4 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 ">
  <div className="flex items-center gap-2 mb-2 text-primary"><CheckCircle2 className="w-4 h-4"/> {t("approved", "Approved")}</div>
  <p className="text-2xl font-bold text-card-foreground">{applications.filter(a => a.decision === 'Approved' || a.decision === 'Conditionally Approved').length}</p>
  </div>
- <div className="bg-card rounded-xl border border-border p-4 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 ">
  <div className="flex items-center gap-2 mb-2 text-red-600"><AlertTriangle className="w-4 h-4"/> {t("high_risk", "High Risk")}</div>
  <p className="text-2xl font-bold text-card-foreground">{applications.filter(a => a.riskLevel === 'High').length}</p>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input placeholder="Search application ID or applicant..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
@@ -189,7 +189,7 @@ export default function Underwriting() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-border">
+ <thead className="bg-card border-b border-primary/40">
  <tr>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("app_id", "App ID")}</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("applicant_product", "Applicant & Product")}</th>
@@ -264,7 +264,7 @@ export default function Underwriting() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-border">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
  <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Underwriting Application' : 'New Underwriting Application'}</h2>
  <div className="space-y-3">
  <div>

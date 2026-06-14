@@ -152,7 +152,7 @@ export default function Classes() {
  {isDbLoading ? (
  <div className="py-12 text-center text-muted-foreground">{t("loading_classes", "Loading classes...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
+ <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-primary/40">
  <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary dark:text-primary/70" />
  <p className="font-semibold text-lg text-card-foreground">{t("no_classes_registered", "No classes registered")}</p>
  <p className="text-sm mt-1 max-w-md mx-auto">{t(
@@ -188,7 +188,7 @@ export default function Classes() {
  <div className="school-card overflow-hidden">
  <div className="overflow-x-auto">
  <table className="w-full text-sm">
- <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-700">
+ <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-primary/40 dark:border-primary/40">
  <tr>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Class Name</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Subject</th>
@@ -234,7 +234,7 @@ export default function Classes() {
  {/* Add Modal */}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
- <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-border max-h-[90vh] overflow-y-auto custom-scrollbar">
+ <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-primary/40 max-h-[90vh] overflow-y-auto custom-scrollbar">
  <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Class' : 'Add New Class'}</h2>
  <div className="space-y-3">
  <div>
@@ -262,7 +262,7 @@ export default function Classes() {
  <label className="text-xs font-bold text-muted-foreground uppercase">{t("schedule", "Schedule")}</label>
  <Input value={formData.schedule} onChange={e => setFormData({...formData, schedule: e.target.value})} className="mt-1" placeholder="Mon-Wed 9AM-10AM" />
  </div>
- <div className="pt-2 border-t border-border">
+ <div className="pt-2 border-t border-primary/40">
  <label className="text-xs font-bold text-muted-foreground uppercase">{t("courses_subjects", "Assigned Courses / Subjects")}</label>
  <Input value={formData.courses} onChange={e => setFormData({...formData, courses: e.target.value})} className="mt-1" placeholder="e.g. Math, Physics, Chemistry" />
  <p className="text-[10px] text-muted-foreground mt-1">Comma-separated list of courses available for this class.</p>

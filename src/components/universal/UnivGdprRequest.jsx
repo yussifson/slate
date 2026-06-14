@@ -107,20 +107,20 @@ export default function UnivGdprRequest() {
 
  <div className="relative max-w-sm flex-shrink-0">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
- <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search gdpr requests..." className="w-full h-10 pl-9 pr-4 bg-card border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search gdpr requests..." className="w-full h-10 pl-9 pr-4 bg-card border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
 
  {loading ? (
  <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
  ) : (
- <div className="flex-1 overflow-auto rounded-2xl border border-border bg-card ">
+ <div className="flex-1 overflow-auto rounded-2xl border border-primary/40 bg-card ">
  <table className="w-full text-sm min-w-[600px]">
- <thead className="border-b border-border bg-muted/40 sticky top-0">
+ <thead className="border-b border-primary/40 bg-muted/40 sticky top-0">
  <tr><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Request Id</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Subject Name</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Request Type</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Received Date</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Due Date</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Status</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase"></th></tr>
  </thead>
  <tbody>
  {filtered.map(r => (
- <motion.tr key={r.id} initial={{ opacity: 0}} animate={{ opacity: 1}} className="border-b border-border/50 hover:bg-muted/20">
+ <motion.tr key={r.id} initial={{ opacity: 0}} animate={{ opacity: 1}} className="border-b border-primary/40 hover:bg-muted/20">
  <td className="px-4 py-3 font-semibold">{r['request_id']}</td><td className="px-4 py-3 text-muted-foreground">{r['subject_name']}</td><td className="px-4 py-3 text-muted-foreground">{r['request_type']}</td><td className="px-4 py-3 text-muted-foreground">{r['received_date']}</td><td className="px-4 py-3 text-muted-foreground">{r['due_date']}</td><td className="px-4 py-3"><span className={`px-2 py-0.5 rounded-full text-xs font-bold ${STATUS_COLORS[r['status']] || 'bg-muted text-foreground'}`}>{r['status']}</span></td>
  <td className="px-4 py-3">
  <div className="flex gap-1">
@@ -142,49 +142,49 @@ export default function UnivGdprRequest() {
  {modal && (
  <motion.div initial={{ opacity: 0}} animate={{ opacity: 1}} exit={{ opacity: 0}} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
  <motion.div initial={{ scale: 0.95, opacity: 0}} animate={{ scale: 1, opacity: 1}} exit={{ scale: 0.95, opacity: 0}} className="bg-card w-full max-w-lg rounded-2xl max-h-[90vh] flex flex-col">
- <div className="p-5 border-b border-border flex justify-between items-center shrink-0">
+ <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0">
  <h2 className="text-xl font-black">{editId ? 'Edit Record' : 'Add GDPR Requests'}</h2>
  <button onClick={closeModal} className="p-2 bg-muted rounded-full"><XCircle className="w-5 h-5 text-muted-foreground" /></button>
  </div>
  <form onSubmit={save} className="p-5 grid grid-cols-2 gap-4 overflow-y-auto custom-scrollbar">
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Request ID</label>
- <input required type="text" value={form['request_id']} onChange={e => setForm({ ...form, 'request_id': e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input required type="text" value={form['request_id']} onChange={e => setForm({ ...form, 'request_id': e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Data Subject Name</label>
- <input type="text" value={form['subject_name']} onChange={e => setForm({ ...form, 'subject_name': e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="text" value={form['subject_name']} onChange={e => setForm({ ...form, 'subject_name': e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Email</label>
- <input type="email" value={form['subject_email']} onChange={e => setForm({ ...form, 'subject_email': e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="email" value={form['subject_email']} onChange={e => setForm({ ...form, 'subject_email': e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Request Type</label>
- <select value={form['request_type']} onChange={e => setForm({ ...form, 'request_type': e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
+ <select value={form['request_type']} onChange={e => setForm({ ...form, 'request_type': e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
  {["Access","Deletion","Portability","Correction","Objection"].map(o => <option key={o}>{o}</option>)}
  </select>
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Received Date</label>
- <input type="date" value={form['received_date']} onChange={e => setForm({ ...form, 'received_date': e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="date" value={form['received_date']} onChange={e => setForm({ ...form, 'received_date': e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Due Date (30 days)</label>
- <input type="date" value={form['due_date']} onChange={e => setForm({ ...form, 'due_date': e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="date" value={form['due_date']} onChange={e => setForm({ ...form, 'due_date': e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div className="col-span-2">
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Notes / Actions</label>
- <input type="text" value={form['notes']} onChange={e => setForm({ ...form, 'notes': e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="text" value={form['notes']} onChange={e => setForm({ ...form, 'notes': e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
 
  <div className="col-span-2">
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Status</label>
- <select value={form['status']} onChange={e => setForm({ ...form, 'status': e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
+ <select value={form['status']} onChange={e => setForm({ ...form, 'status': e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
  {["Received","In Progress","Completed","Refused"].map(s => <option key={s}>{s}</option>)}
  </select>
  </div>
- <div className="col-span-2 flex justify-end gap-3 pt-2 border-t border-border">
+ <div className="col-span-2 flex justify-end gap-3 pt-2 border-t border-primary/40">
  <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button>
  <button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold">{editId ? 'Update' : 'Add'}</button>
  </div>

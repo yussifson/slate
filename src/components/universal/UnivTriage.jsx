@@ -74,7 +74,7 @@ const UnivTriage = () => {
 };
 
  const getPriorityColor = (level) => {
- if (!level) return 'bg-muted text-foreground border-border';
+ if (!level) return 'bg-muted text-foreground border-primary/40';
  if (level.includes('Level 1')) return 'bg-red-600 text-white border-red-700 animate-pulse';
  if (level.includes('Level 2')) return 'bg-orange-500 text-white border-orange-600';
  if (level.includes('Level 3')) return 'bg-yellow-100 text-yellow-800 border-yellow-300';
@@ -84,7 +84,7 @@ const UnivTriage = () => {
 
  return (
  <div className="p-6 max-w-7xl mx-auto bg-background min-h-screen ${view !== 'Default' ? 'hide-default' : ''}">
- <motion.div initial={{ opacity: 0, y: -20}} animate={{ opacity: 1, y: 0}} className="mb-8 flex flex-col md:flex-row justify-between items-center bg-card p-6 rounded-2xl border border-border">
+ <motion.div initial={{ opacity: 0, y: -20}} animate={{ opacity: 1, y: 0}} className="mb-8 flex flex-col md:flex-row justify-between items-center bg-card p-6 rounded-2xl border border-primary/40">
  <div className="view-header flex items-center gap-4">
  <div className="bg-red-100 p-4 rounded-full">
  <AlertOctagon className="w-8 h-8 text-red-600" />
@@ -97,16 +97,16 @@ const UnivTriage = () => {
  </motion.div>
 
  <div className="grid lg:grid-cols-3 gap-6">
- <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="lg:col-span-1 bg-card p-6 rounded-2xl border border-border h-fit">
+ <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="lg:col-span-1 bg-card p-6 rounded-2xl border border-primary/40 h-fit">
  <h2 className="text-xl font-bold text-foreground mb-6 border-b pb-2">New Assessment</h2>
  <form onSubmit={handleSubmit} className="space-y-4">
  <div>
  <label className="block text-sm font-semibold text-foreground mb-1">Patient Name</label>
- <input type="text" name="patient_name" value={formData.patient_name} onChange={handleChange} required className="w-full p-2.5 bg-background border border-border rounded-lg focus:ring-2 focus:ring-red-500 outline-none" />
+ <input type="text" name="patient_name" value={formData.patient_name} onChange={handleChange} required className="w-full p-2.5 bg-background border border-primary/40 rounded-lg focus:ring-2 focus:ring-red-500 outline-none" />
  </div>
  <div>
  <label className="block text-sm font-semibold text-foreground mb-1">Priority Level</label>
- <select name="priority_level" value={formData.priority_level} onChange={handleChange} className="w-full p-2.5 bg-background border border-border rounded-lg focus:ring-2 focus:ring-red-500 outline-none font-medium">
+ <select name="priority_level" value={formData.priority_level} onChange={handleChange} className="w-full p-2.5 bg-background border border-primary/40 rounded-lg focus:ring-2 focus:ring-red-500 outline-none font-medium">
  <option value="Level 1 - Resuscitation">Level 1 - Resuscitation (Immediate)</option>
  <option value="Level 2 - Emergent">Level 2 - Emergent (15 mins)</option>
  <option value="Level 3 - Urgent">Level 3 - Urgent (30 mins)</option>
@@ -116,21 +116,21 @@ const UnivTriage = () => {
  </div>
  <div>
  <label className="block text-sm font-semibold text-foreground mb-1">Chief Symptoms</label>
- <textarea name="symptoms" value={formData.symptoms} onChange={handleChange} required rows={3} className="w-full p-2.5 bg-background border border-border rounded-lg focus:ring-2 focus:ring-red-500 outline-none"></textarea>
+ <textarea name="symptoms" value={formData.symptoms} onChange={handleChange} required rows={3} className="w-full p-2.5 bg-background border border-primary/40 rounded-lg focus:ring-2 focus:ring-red-500 outline-none"></textarea>
  </div>
  <div className="grid grid-cols-2 gap-3">
  <div>
  <label className="block text-sm font-semibold text-foreground mb-1">Dept/Zone</label>
- <input type="text" name="assigned_department" value={formData.assigned_department} onChange={handleChange} className="w-full p-2.5 bg-background border border-border rounded-lg focus:ring-2 focus:ring-red-500 outline-none" />
+ <input type="text" name="assigned_department" value={formData.assigned_department} onChange={handleChange} className="w-full p-2.5 bg-background border border-primary/40 rounded-lg focus:ring-2 focus:ring-red-500 outline-none" />
  </div>
  <div>
  <label className="block text-sm font-semibold text-foreground mb-1">Arrival Time</label>
- <input type="datetime-local" name="arrival_time" value={formData.arrival_time} onChange={handleChange} className="w-full p-2.5 bg-background border border-border rounded-lg focus:ring-2 focus:ring-red-500 outline-none text-sm" />
+ <input type="datetime-local" name="arrival_time" value={formData.arrival_time} onChange={handleChange} className="w-full p-2.5 bg-background border border-primary/40 rounded-lg focus:ring-2 focus:ring-red-500 outline-none text-sm" />
  </div>
  </div>
  <div>
  <label className="block text-sm font-semibold text-foreground mb-1">Notes</label>
- <input type="text" name="notes" value={formData.notes} onChange={handleChange} className="w-full p-2.5 bg-background border border-border rounded-lg focus:ring-2 focus:ring-red-500 outline-none" />
+ <input type="text" name="notes" value={formData.notes} onChange={handleChange} className="w-full p-2.5 bg-background border border-primary/40 rounded-lg focus:ring-2 focus:ring-red-500 outline-none" />
  </div>
  <button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-all mt-4">
  Submit Assessment
@@ -142,11 +142,11 @@ const UnivTriage = () => {
  {loading ? (
  <div className="flex justify-center py-20"><Activity className="w-12 h-12 text-red-500 animate-spin" /></div>
  ) : triageList.length === 0 ? (
- <div className="text-center py-20 bg-card rounded-2xl border border-border text-muted-foreground">No patients in triage queue.</div>
+ <div className="text-center py-20 bg-card rounded-2xl border border-primary/40 text-muted-foreground">No patients in triage queue.</div>
  ) : (
  <div className="flex flex-col gap-4">
  {triageList.map((patient, index) => (
- <motion.div key={patient.id || index} initial={{ opacity: 0, x: 20}} animate={{ opacity: 1, x: 0}} transition={{ delay: index * 0.05}} className={`p-5 rounded-2xl border-2 flex flex-col sm:flex-row gap-4 bg-card ${getPriorityColor(patient.priority_level).includes('red-600') ? 'border-red-500' : 'border-border'}`}>
+ <motion.div key={patient.id || index} initial={{ opacity: 0, x: 20}} animate={{ opacity: 1, x: 0}} transition={{ delay: index * 0.05}} className={`p-5 rounded-2xl border-2 flex flex-col sm:flex-row gap-4 bg-card ${getPriorityColor(patient.priority_level).includes('red-600') ? 'border-red-500' : 'border-primary/40'}`}>
  <div className={`px-4 py-2 rounded-xl text-center font-bold text-sm h-fit ${getPriorityColor(patient.priority_level)}`}>
  {patient.priority_level?.split(' - ')[0]}
  </div>
@@ -158,7 +158,7 @@ const UnivTriage = () => {
  {new Date(patient.arrival_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
  </div>
  </div>
- <p className="text-foreground mb-3 bg-background p-3 rounded-lg border border-border">{patient.symptoms}</p>
+ <p className="text-foreground mb-3 bg-background p-3 rounded-lg border border-primary/40">{patient.symptoms}</p>
  <div className="flex flex-wrap gap-4 text-sm font-medium text-muted-foreground">
  {patient.assigned_department && (
  <span className="flex items-center gap-1 text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md"><MapPin className="w-4 h-4" /> {patient.assigned_department}</span>

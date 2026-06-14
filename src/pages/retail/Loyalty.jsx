@@ -128,8 +128,8 @@ export default function Loyalty() {
  <RetailStatCard label="Gold Tier Members" value={members.filter(m => m.tier === 'Gold').length} icon={Award} />
  </div>
 
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input placeholder="Search members..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
@@ -154,7 +154,7 @@ export default function Loyalty() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-border">
+ <thead className="bg-card border-b border-primary/40">
  <tr>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Member ID</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Customer Name</th>

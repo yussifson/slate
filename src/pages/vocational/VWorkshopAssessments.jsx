@@ -56,12 +56,12 @@ export default function VWorkshopAssessments() {
 
  <div className="flex-1 flex gap-6 overflow-hidden">
  <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
- <div className="p-4 border-b border-primary/5 dark:border-slate-800">
+ <div className="p-4 border-b border-primary/5 dark:border-primary/40">
  <div className="relative">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
  <Input 
  placeholder="Search assessments..." 
- className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
+ className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -120,7 +120,7 @@ export default function VWorkshopAssessments() {
  <div className="flex-1 mt-4 sm:mt-12">
  <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">{selectedAssessment.title}</h2>
  <div className="flex items-center gap-3 mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium">
- <span className="flex items-center gap-1.5"><Badge variant="outline" className="border-primary/20 dark:border-slate-600 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary">{selectedAssessment.data?.workshop_name}</Badge></span>
+ <span className="flex items-center gap-1.5"><Badge variant="outline" className="border-primary/20 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary">{selectedAssessment.data?.workshop_name}</Badge></span>
  <span>•</span>
  <span className="flex items-center gap-1.5">Inspector: {selectedAssessment.data?.inspector || 'N/A'}</span>
  </div>
@@ -129,7 +129,7 @@ export default function VWorkshopAssessments() {
 
  <div className="mt-8 space-y-6">
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
- <Card className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 ">
+ <Card className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 ">
  <CardHeader className="pb-2 flex flex-row items-center justify-between">
  <div>
  <CardTitle className="text-lg">Safety Score</CardTitle>
@@ -144,7 +144,7 @@ export default function VWorkshopAssessments() {
  </CardContent>
  </Card>
 
- <Card className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 ">
+ <Card className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 ">
  <CardHeader className="pb-2 flex flex-row items-center justify-between">
  <div>
  <CardTitle className="text-lg">Issues Found</CardTitle>
@@ -160,7 +160,7 @@ export default function VWorkshopAssessments() {
  </Card>
  </div>
 
- <div className="p-5 rounded-2xl bg-primary/30 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 space-y-4">
+ <div className="p-5 rounded-2xl bg-primary/30 dark:bg-slate-800/30 border border-primary/40 dark:border-primary/40 space-y-4">
  <h3 className="text-sm font-bold text-primary uppercase tracking-wider">Assessment Details</h3>
  <div className="grid grid-cols-1 gap-4">
  <div>
@@ -171,7 +171,7 @@ export default function VWorkshopAssessments() {
  </div>
  <div>
  <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">General Notes</p>
- <p className="font-medium text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 dark:border-slate-800">
+ <p className="font-medium text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-4 rounded-xl border border-primary/40 dark:border-primary/40 dark:border-primary/40">
  {selectedAssessment.data?.notes || 'No specific notes recorded for this assessment.'}
  </p>
  </div>

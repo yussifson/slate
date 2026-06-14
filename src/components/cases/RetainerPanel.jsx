@@ -155,7 +155,7 @@ export default function RetainerPanel({ caseData, user }) {
       )}
       {!retainer ? (
         /* No retainer yet */
-        (<div className="bg-card rounded-xl border border-border p-10 text-center">
+        (<div className="bg-card rounded-xl border border-primary/40 p-10 text-center">
           <Wallet className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
           <p className="text-sm font-medium">{t("no_retainer_set_up", "No Retainer Set Up")}</p>
           <p className="text-xs text-muted-foreground mt-1 mb-4">{t(
@@ -169,7 +169,7 @@ export default function RetainerPanel({ caseData, user }) {
       ) : (
         <>
           {/* Balance card */}
-          <div className="bg-card rounded-xl border border-border p-5 space-y-4">
+          <div className="bg-card rounded-xl border border-primary/40 p-5 space-y-4">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
@@ -214,7 +214,7 @@ export default function RetainerPanel({ caseData, user }) {
               </div>
             </div>
 
-            {retainer.notes && <p className="text-xs text-muted-foreground border-t border-border pt-3">{retainer.notes}</p>}
+            {retainer.notes && <p className="text-xs text-muted-foreground border-t border-primary/40 pt-3">{retainer.notes}</p>}
 
             {/* Actions */}
             <div className="flex gap-2 pt-1">

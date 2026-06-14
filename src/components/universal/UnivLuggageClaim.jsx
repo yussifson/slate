@@ -85,7 +85,7 @@ const UnivLuggageClaim = () => {
 
  return (
  <div className="p-6 max-w-7xl mx-auto bg-muted min-h-screen ${view !== 'Default' ? 'hide-default' : ''}">
- <motion.div initial={{ opacity: 0, y: -20}} animate={{ opacity: 1, y: 0}} className="mb-8 flex items-center justify-between bg-card p-6 rounded-2xl border border-border">
+ <motion.div initial={{ opacity: 0, y: -20}} animate={{ opacity: 1, y: 0}} className="mb-8 flex items-center justify-between bg-card p-6 rounded-2xl border border-primary/40">
  <div className="view-header flex items-center gap-4">
  <div className="bg-slate-800 p-4 rounded-xl text-white">
  <BaggageClaim className="w-8 h-8" />
@@ -98,14 +98,14 @@ const UnivLuggageClaim = () => {
  </motion.div>
 
  <div className="grid lg:grid-cols-3 gap-6">
- <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="lg:col-span-1 bg-card p-6 rounded-2xl border border-border h-fit">
+ <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="lg:col-span-1 bg-card p-6 rounded-2xl border border-primary/40 h-fit">
  <h2 className="text-lg font-bold mb-5 text-foreground border-b pb-2">File New Claim</h2>
  <form onSubmit={handleSubmit} className="space-y-4">
  <div>
  <label className="block text-sm font-semibold text-muted-foreground mb-1">Passenger Name</label>
  <div className="relative">
  <User className="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
- <input type="text" name="passenger_name" value={formData.passenger_name} onChange={handleChange} required className="w-full pl-9 p-2.5 bg-background border border-border rounded-lg focus:ring-2 focus:ring-slate-400 outline-none" />
+ <input type="text" name="passenger_name" value={formData.passenger_name} onChange={handleChange} required className="w-full pl-9 p-2.5 bg-background border border-primary/40 rounded-lg focus:ring-2 focus:ring-slate-400 outline-none" />
  </div>
  </div>
  <div className="grid grid-cols-2 gap-3">
@@ -113,25 +113,25 @@ const UnivLuggageClaim = () => {
  <label className="block text-sm font-semibold text-muted-foreground mb-1">Flight Number</label>
  <div className="relative">
  <Plane className="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
- <input type="text" name="flight_number" value={formData.flight_number} onChange={handleChange} required className="w-full pl-9 p-2.5 bg-background border border-border rounded-lg focus:ring-2 focus:ring-slate-400 outline-none uppercase font-mono text-sm" />
+ <input type="text" name="flight_number" value={formData.flight_number} onChange={handleChange} required className="w-full pl-9 p-2.5 bg-background border border-primary/40 rounded-lg focus:ring-2 focus:ring-slate-400 outline-none uppercase font-mono text-sm" />
  </div>
  </div>
  <div>
  <label className="block text-sm font-semibold text-muted-foreground mb-1">Claim Tag #</label>
  <div className="relative">
  <Tag className="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
- <input type="text" name="claim_tag" value={formData.claim_tag} onChange={handleChange} required className="w-full pl-9 p-2.5 bg-background border border-border rounded-lg focus:ring-2 focus:ring-slate-400 outline-none font-mono text-sm" />
+ <input type="text" name="claim_tag" value={formData.claim_tag} onChange={handleChange} required className="w-full pl-9 p-2.5 bg-background border border-primary/40 rounded-lg focus:ring-2 focus:ring-slate-400 outline-none font-mono text-sm" />
  </div>
  </div>
  </div>
  <div>
  <label className="block text-sm font-semibold text-muted-foreground mb-1">Bag Description</label>
- <input type="text" name="bag_type" value={formData.bag_type} onChange={handleChange} placeholder="e.g. Large blue Samsonite roller" required className="w-full p-2.5 bg-background border border-border rounded-lg focus:ring-2 focus:ring-slate-400 outline-none" />
+ <input type="text" name="bag_type" value={formData.bag_type} onChange={handleChange} placeholder="e.g. Large blue Samsonite roller" required className="w-full p-2.5 bg-background border border-primary/40 rounded-lg focus:ring-2 focus:ring-slate-400 outline-none" />
  </div>
  <div className="grid grid-cols-2 gap-3">
  <div>
  <label className="block text-sm font-semibold text-muted-foreground mb-1">Status</label>
- <select name="status" value={formData.status} onChange={handleChange} className="w-full p-2.5 bg-background border border-border rounded-lg focus:ring-2 focus:ring-slate-400 outline-none font-medium">
+ <select name="status" value={formData.status} onChange={handleChange} className="w-full p-2.5 bg-background border border-primary/40 rounded-lg focus:ring-2 focus:ring-slate-400 outline-none font-medium">
  <option value="Reported">Reported</option>
  <option value="In Progress">In Progress</option>
  <option value="Resolved">Resolved</option>
@@ -139,7 +139,7 @@ const UnivLuggageClaim = () => {
  </div>
  <div>
  <label className="block text-sm font-semibold text-muted-foreground mb-1">Report Date</label>
- <input type="date" name="reported_date" value={formData.reported_date} onChange={handleChange} required className="w-full p-2.5 bg-background border border-border rounded-lg focus:ring-2 focus:ring-slate-400 outline-none text-sm" />
+ <input type="date" name="reported_date" value={formData.reported_date} onChange={handleChange} required className="w-full p-2.5 bg-background border border-primary/40 rounded-lg focus:ring-2 focus:ring-slate-400 outline-none text-sm" />
  </div>
  </div>
  <button type="submit" className="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-lg transition-colors mt-2">
@@ -152,12 +152,12 @@ const UnivLuggageClaim = () => {
  {loading ? (
  <div className="flex justify-center py-20"><BaggageClaim className="w-10 h-10 text-muted-foreground animate-pulse" /></div>
  ) : claims.length === 0 ? (
- <div className="text-center py-20 bg-card rounded-2xl border border-border text-muted-foreground">No active claims.</div>
+ <div className="text-center py-20 bg-card rounded-2xl border border-primary/40 text-muted-foreground">No active claims.</div>
  ) : (
  <div className="flex flex-col gap-4">
  {claims.map((claim, index) => (
- <motion.div key={claim.id || index} initial={{ opacity: 0, x: 20}} animate={{ opacity: 1, x: 0}} transition={{ delay: index * 0.05}} className="bg-card p-5 rounded-2xl border border-border transition- flex flex-col sm:flex-row gap-5 items-start">
- <div className="bg-background p-3 rounded-xl border border-border flex-shrink-0 w-24 text-center">
+ <motion.div key={claim.id || index} initial={{ opacity: 0, x: 20}} animate={{ opacity: 1, x: 0}} transition={{ delay: index * 0.05}} className="bg-card p-5 rounded-2xl border border-primary/40 transition- flex flex-col sm:flex-row gap-5 items-start">
+ <div className="bg-background p-3 rounded-xl border border-primary/40 flex-shrink-0 w-24 text-center">
  <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Tag No.</p>
  <p className="font-mono font-bold text-foreground text-sm truncate">{claim.claim_tag}</p>
  </div>
@@ -165,7 +165,7 @@ const UnivLuggageClaim = () => {
  <div className="flex-1 min-w-0">
  <div className="flex justify-between items-start mb-2">
  <h3 className="font-bold text-lg text-foreground truncate">{claim.passenger_name}</h3>
- <div className="flex items-center gap-2 bg-background px-3 py-1 rounded-full border border-border">
+ <div className="flex items-center gap-2 bg-background px-3 py-1 rounded-full border border-primary/40">
  {getStatusIcon(claim.status)}
  <span className="text-xs font-bold text-foreground">{claim.status}</span>
  </div>

@@ -349,13 +349,13 @@ function LeadDetailDialog({ lead, onClose, onUpdateStatus, onConvert, onSave, on
                   <button
                     key={s}
                     onClick={() => onUpdateStatus(s)}
-                    className={`px-3 py-1 rounded-full text-xs font-medium border capitalize transition-colors ${lead.status === s ? STATUS_COLORS[s] + " border-transparent" : "border-border text-muted-foreground hover:bg-muted"}`}
+                    className={`px-3 py-1 rounded-full text-xs font-medium border capitalize transition-colors ${lead.status === s ? STATUS_COLORS[s] + " border-transparent" : "border-primary/40 text-muted-foreground hover:bg-muted"}`}
                   >{s}</button>
                 );
               })}
             </div>
           </div>
-          <div className="flex justify-between items-center pt-2 border-t border-border">
+          <div className="flex justify-between items-center pt-2 border-t border-primary/40">
             <Button variant="outline" onClick={onClose}>{t("close", "Close")}</Button>
             {lead.status !== "converted" && (
               <Button onClick={onConvert} disabled={isConverting} className="gap-1.5 bg-primary hover:bg-primary/90 text-white">

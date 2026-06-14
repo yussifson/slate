@@ -155,7 +155,7 @@ export default function Cases() {
  subtitle={`${activeCasesCount(cases)} active cases`}
  actions={
  <div className="flex items-center gap-2">
- <div className="flex items-center border border-border rounded-lg overflow-hidden">
+ <div className="flex items-center border border-primary/40 rounded-lg overflow-hidden">
  <button onClick={() => setViewMode("list")} className={`p-2 transition-colors ${viewMode === "list" ? "bg-primary text-white" : "hover:bg-muted text-muted-foreground"}`}><List className="w-4 h-4" /></button>
  <button onClick={() => setViewMode("kanban")} className={`p-2 transition-colors ${viewMode === "kanban" ? "bg-primary text-white" : "hover:bg-muted text-muted-foreground"}`}><LayoutGrid className="w-4 h-4" /></button>
  </div>
@@ -192,7 +192,7 @@ export default function Cases() {
  />
 
  {isLoading ? (
- <div className="bg-card rounded-xl border border-border overflow-hidden">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
  <Table>
  <TableHeader><TableRow className="bg-muted/50">{["", "Case", "Client", "Type", "Status", "Priority", "Lawyer", "Filed"].map((h, i) => {
  return <TableHead key={i}>{h}</TableHead>;
@@ -207,8 +207,8 @@ export default function Cases() {
  </Table>
  </div>
  ) : filtered.length === 0 ? (
- <div className="bg-card rounded-2xl border border-dashed border-slate-200 p-12 text-center max-w-sm mx-auto my-8 space-y-4 ">
- <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 flex items-center justify-center mx-auto text-primary">
+ <div className="bg-card rounded-2xl border border-dashed border-primary/40 p-12 text-center max-w-sm mx-auto my-8 space-y-4 ">
+ <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800/50 border border-primary/40 flex items-center justify-center mx-auto text-primary">
  <Briefcase className="w-5 h-5" />
  </div>
  <div className="space-y-1">
@@ -230,7 +230,7 @@ export default function Cases() {
  </div>
  </div>
  ) : (
- <div className="bg-card rounded-xl border border-border overflow-hidden">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
  <div className="overflow-x-auto">
  <Table>
  <TableHeader>

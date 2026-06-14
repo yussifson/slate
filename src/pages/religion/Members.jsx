@@ -130,7 +130,7 @@ export default function Members() {
  </Button>
  </div>
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="stat-card-premium bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+ <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
  <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
  <Users className="w-5 h-5" />
  </div>
@@ -139,7 +139,7 @@ export default function Members() {
  <p className="text-xs text-muted-foreground">{t("active_members", "Active Members")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+ <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
  <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/50 flex items-center justify-center text-amber-600 dark:text-amber-400">
  <Heart className="w-5 h-5" />
  </div>
@@ -149,8 +149,8 @@ export default function Members() {
  </div>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input placeholder="Search name or cell group..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
@@ -170,7 +170,7 @@ export default function Members() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-border">
+ <thead className="bg-card border-b border-primary/40">
  <tr>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("member_name", "Member Name")}</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("membership", "Membership")}</th>
@@ -236,7 +236,7 @@ export default function Members() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-border">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
  <h2 className="text-lg font-bold text-card-foreground">{t("add_religion_member", "Add Religion Member")}</h2>
  <div className="space-y-3">
  <div>
@@ -302,7 +302,7 @@ export default function Members() {
  <div className="mt-6 space-y-4">
  {viewRecord && Object.entries(viewRecord).filter(([k]) => k !== 'id' && k !== 'status').map(([key, value]) => {
  return (
- <div key={key} className="border-b border-border pb-2">
+ <div key={key} className="border-b border-primary/40 pb-2">
  <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
  <p className="mt-1 text-base text-foreground font-semibold">
  {key === 'group' ? (

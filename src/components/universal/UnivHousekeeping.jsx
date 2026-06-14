@@ -136,7 +136,7 @@ export default function UnivHousekeeping() {
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Kanban","Dashboard"].map(v => (
  <button 
  key={v} 
@@ -160,7 +160,7 @@ export default function UnivHousekeeping() {
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6 shrink-0">
- <button className="bg-card border border-border rounded-2xl p-4 flex items-center gap-3 hover:bg-muted/50 transition-colors text-left">
+ <button className="bg-card border border-primary/40 rounded-2xl p-4 flex items-center gap-3 hover:bg-muted/50 transition-colors text-left">
  <div className="p-3 bg-blue-100 text-blue-600 rounded-xl"><Sparkles className="w-5 h-5" /></div>
  <div>
  <h3 className="font-bold text-foreground text-lg">{tasks.length}</h3>
@@ -190,8 +190,8 @@ export default function UnivHousekeeping() {
  </button>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -199,7 +199,7 @@ export default function UnivHousekeeping() {
  placeholder="Search tasks..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -235,7 +235,7 @@ export default function UnivHousekeeping() {
  <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border w-fit ${
  t.priority === 'High' ? 'bg-red-50 text-red-700 border-red-200' : 
  t.priority === 'Medium' ? 'bg-orange-50 text-orange-700 border-orange-200' : 
- 'bg-background text-foreground border-border'
+ 'bg-background text-foreground border-primary/40'
 }`}>
  {t.priority}
  </span>
@@ -244,7 +244,7 @@ export default function UnivHousekeeping() {
  <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border flex items-center gap-1 w-fit ${
  t.status === 'Completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
  t.status === 'In Progress' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
- 'bg-background text-foreground border-border'
+ 'bg-background text-foreground border-primary/40'
 }`}>
  {t.status === 'Completed' && <CheckCircle2 className="w-3 h-3" />}
  {t.status === 'In Progress' && <Clock className="w-3 h-3" />}
@@ -266,20 +266,20 @@ export default function UnivHousekeeping() {
 
  {isModalOpen && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
- <motion.div initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} className="bg-background border border-border rounded-2xl w-full max-w-md overflow-hidden">
- <div className="flex justify-between items-center p-4 border-b border-border bg-muted/30">
+ <motion.div initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} className="bg-background border border-primary/40 rounded-2xl w-full max-w-md overflow-hidden">
+ <div className="flex justify-between items-center p-4 border-b border-primary/40 bg-muted/30">
  <h3 className="font-bold text-foreground">{editingId ? 'Edit Task' : 'New Task'}</h3>
  <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:text-foreground"><AlertTriangle className="w-5 h-5 hidden"/>Close</button>
  </div>
  <form onSubmit={handleSave} className="p-4 space-y-4">
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Room ID</label>
- <input required value={form.room_id} onChange={e => setForm({...form, room_id: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+ <input required value={form.room_id} onChange={e => setForm({...form, room_id: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Task Type</label>
- <select value={form.task_type} onChange={e => setForm({...form, task_type: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm">
+ <select value={form.task_type} onChange={e => setForm({...form, task_type: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm">
  <option>Routine Cleaning</option>
  <option>Deep Cleaning</option>
  <option>Maintenance Request</option>
@@ -287,7 +287,7 @@ export default function UnivHousekeeping() {
  </div>
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Status</label>
- <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm">
+ <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm">
  <option>Pending</option>
  <option>In Progress</option>
  <option>Completed</option>
@@ -296,7 +296,7 @@ export default function UnivHousekeeping() {
  </div>
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Priority</label>
- <select value={form.priority} onChange={e => setForm({...form, priority: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm">
+ <select value={form.priority} onChange={e => setForm({...form, priority: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm">
  <option>Low</option>
  <option>Medium</option>
  <option>High</option>
@@ -304,7 +304,7 @@ export default function UnivHousekeeping() {
  </div>
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Notes</label>
- <textarea rows="2" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+ <textarea rows="2" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
  </div>
  <div className="flex justify-between gap-2 pt-4">
  {editingId ? <button type="button" onClick={() => handleDelete(editingId)} className="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-xl">Delete</button> : <div/>}

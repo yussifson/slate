@@ -164,7 +164,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
       {isLoading ? (
         <div className="text-center py-10 text-sm text-muted-foreground">{t("loading", "Loading...")}</div>
       ) : slips.length === 0 ? (
-        <div className="bg-card border border-border rounded-xl p-12 text-center">
+        <div className="bg-card border border-primary/40 rounded-xl p-12 text-center">
           <FileText className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
           <p className="text-sm font-medium">{t("no_payroll_slips_for", "No payroll slips for")} {periodLabel(period)}</p>
           {isAdmin && staff.filter(s => s.status === "active" && s.salary > 0).length > 0 && (
@@ -181,8 +181,8 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
           )}
         </div>
       ) : (
-        <div className="bg-card border border-border rounded-xl overflow-hidden">
-          <div className="px-4 py-2.5 bg-muted/30 border-b border-border grid grid-cols-12 gap-2 text-xs font-semibold uppercase text-muted-foreground">
+        <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
+          <div className="px-4 py-2.5 bg-muted/30 border-b border-primary/40 grid grid-cols-12 gap-2 text-xs font-semibold uppercase text-muted-foreground">
             <span className="col-span-4">{t("staff_member", "Staff Member")}</span>
             <span className="col-span-2">{t("basic", "Basic")}</span>
             <span className="col-span-2">{t("deductions", "Deductions")}</span>
@@ -234,7 +234,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
                   </div>
                   {/* Expanded detail panel */}
                   {isExpanded && (
-                    <div className="bg-muted/20 border-t border-border px-8 py-4">
+                    <div className="bg-muted/20 border-t border-primary/40 px-8 py-4">
                       <div className="grid grid-cols-3 gap-6 text-sm">
                         {/* Earnings */}
                         <div>
@@ -252,7 +252,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
                                 </div>
                               );
                             }) : <p className="text-xs text-muted-foreground italic">{t("no_allowances", "No allowances")}</p>}
-                            <div className="flex justify-between font-semibold border-t border-border pt-1">
+                            <div className="flex justify-between font-semibold border-t border-primary/40 pt-1">
                               <span>{t("gross", "Gross")}</span>
                               <span>{formatCurrency(slip.gross_salary, currency)}</span>
                             </div>
@@ -272,7 +272,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
                               );
                             }) : <p className="text-xs text-muted-foreground italic">{t("no_deductions", "No deductions")}</p>}
                             {slip.total_deductions > 0 && (
-                              <div className="flex justify-between font-semibold border-t border-border pt-1 text-red-600">
+                              <div className="flex justify-between font-semibold border-t border-primary/40 pt-1 text-red-600">
                                 <span>{t("total", "Total")}</span>
                                 <span>-{formatCurrency(slip.total_deductions, currency)}</span>
                               </div>
@@ -298,14 +298,14 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
                                 <span className="text-amber-600">{slip.leave_days_taken} {t("day_s", "day(s)")}</span>
                               </div>
                             )}
-                            <div className="flex justify-between font-bold text-primary border-t border-border pt-1">
+                            <div className="flex justify-between font-bold text-primary border-t border-primary/40 pt-1">
                               <span>{t("net_pay", "Net Pay")}</span>
                               <span>{formatCurrency(slip.net_salary, currency)}</span>
                             </div>
                           </div>
                         </div>
                       </div>
-                      {slip.notes && <p className="text-xs text-muted-foreground mt-3 pt-3 border-t border-border">{slip.notes}</p>}
+                      {slip.notes && <p className="text-xs text-muted-foreground mt-3 pt-3 border-t border-primary/40">{slip.notes}</p>}
                     </div>
                   )}
                 </div>
@@ -367,7 +367,7 @@ function SalarySlipDialog({ slip, currency, onClose }) {
               {(slip.allowances || []).map((a, i) => {
                 return (<div key={i} className="flex justify-between text-primary/90"><span>{a.label}</span><span>+{formatCurrency(a.amount, currency)}</span></div>);
               })}
-              <div className="flex justify-between font-semibold border-t border-border pt-1 mt-1">
+              <div className="flex justify-between font-semibold border-t border-primary/40 pt-1 mt-1">
                 <span>{t("gross_salary", "Gross Salary")}</span><span>{formatCurrency(slip.gross_salary, currency)}</span>
               </div>
             </div>
@@ -381,7 +381,7 @@ function SalarySlipDialog({ slip, currency, onClose }) {
                 {slip.deductions.map((d, i) => {
                   return (<div key={i} className="flex justify-between text-red-600"><span>{d.label}</span><span>-{formatCurrency(d.amount, currency)}</span></div>);
                 })}
-                <div className="flex justify-between font-semibold border-t border-border pt-1 mt-1 text-red-600">
+                <div className="flex justify-between font-semibold border-t border-primary/40 pt-1 mt-1 text-red-600">
                   <span>{t("total_deductions", "Total Deductions")}</span><span>-{formatCurrency(slip.total_deductions, currency)}</span>
                 </div>
               </div>
@@ -395,7 +395,7 @@ function SalarySlipDialog({ slip, currency, onClose }) {
             <span className="text-primary">{formatCurrency(slip.net_salary, currency)}</span>
           </div>
 
-          {slip.notes && <p className="text-xs text-muted-foreground border-t border-border pt-2">{slip.notes}</p>}
+          {slip.notes && <p className="text-xs text-muted-foreground border-t border-primary/40 pt-2">{slip.notes}</p>}
         </div>
 
         <div className="flex justify-end gap-2 mt-2">
@@ -481,7 +481,7 @@ function EditSlipDialog({ slip, currency, onClose, onSubmit }) {
           <div className="bg-muted/30 rounded-lg p-3 text-sm space-y-1">
             <div className="flex justify-between"><span>{t("gross", "Gross")}</span><span className="font-medium">{formatCurrency(gross, currency)}</span></div>
             <div className="flex justify-between text-red-600"><span>{t("deductions", "Deductions")}</span><span>-{formatCurrency(totalDed, currency)}</span></div>
-            <div className="flex justify-between font-bold text-primary border-t border-border pt-1 mt-1"><span>{t("net_pay", "Net Pay")}</span><span>{formatCurrency(net, currency)}</span></div>
+            <div className="flex justify-between font-bold text-primary border-t border-primary/40 pt-1 mt-1"><span>{t("net_pay", "Net Pay")}</span><span>{formatCurrency(net, currency)}</span></div>
           </div>
 
           <div><Label>{t("notes", "Notes")}</Label><Textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} /></div>

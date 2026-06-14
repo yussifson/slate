@@ -69,7 +69,7 @@ export default function Gamification() {
  <div className="space-y-8 pb-20 max-w-6xl mx-auto">
  <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-6">
  <div className="flex items-center gap-4">
- <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center border border-border ">
+ <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center border border-primary/40 ">
  <Trophy className="w-8 h-8 text-primary dark:text-primary/70" />
  </div>
  <div>
@@ -92,7 +92,7 @@ export default function Gamification() {
  { title: "Helping Hand", desc: "Tutor 5 students", icon: Gift},
  { title: "Math Wizard", desc: "Win the math olympiad", icon: Zap}
  ].map((badge, i) => (
- <div key={i} className="bg-card rounded-xl p-6 border border-border text-center group cursor-pointer hover:border-primary/30 transition-colors duration-300">
+ <div key={i} className="bg-card rounded-xl p-6 border border-primary/40 text-center group cursor-pointer hover:border-primary/30 transition-colors duration-300">
  <div className={`w-16 h-16 mx-auto rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 flex items-center justify-center mb-4 `}>
  <badge.icon className="w-8 h-8 text-primary dark:text-primary/70" />
  </div>
@@ -102,7 +102,7 @@ export default function Gamification() {
  ))}
  </div>
 
- <div className="bg-card rounded-xl border border-border p-6 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-6 ">
  <h3 className="text-xl font-bold mb-6 text-card-foreground flex items-center gap-2">
  <Medal className="text-primary w-5 h-5" /> Leaderboard
  </h3>
@@ -113,7 +113,7 @@ export default function Gamification() {
  leaderboard.map((student, i) => {
  const isMe = student.clientId === session?.user?.id;
  return (
- <div key={i} className={`flex items-center justify-between p-4 rounded-lg border ${isMe ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 dark:bg-slate-100 border-primary/20' : 'bg-background border-border'} `}>
+ <div key={i} className={`flex items-center justify-between p-4 rounded-lg border ${isMe ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 dark:bg-slate-100 border-primary/20' : 'bg-background border-primary/40'} `}>
  <div className="flex items-center gap-4">
  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${i === 0 ? 'bg-slate-100 text-primary dark:text-primary/70' : i === 1 ? 'bg-muted text-muted-foreground' : i === 2 ? 'bg-muted text-muted-foreground' : 'bg-transparent text-muted-foreground'}`}>
  #{i + 1}

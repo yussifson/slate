@@ -142,7 +142,7 @@ export default function Prayers() {
  <HandHeart className="w-4 h-4" /> {t("submit_request", "Submit Request")}
  </Button>
  </div>
- <div className="bg-card rounded-xl border border-border p-4">
+ <div className="bg-card rounded-xl border border-primary/40 p-4">
  <div className="relative">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input placeholder="Search prayer requests..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-muted border-none" />
@@ -151,7 +151,7 @@ export default function Prayers() {
  {isDbLoading ? (
  <div className="py-12 text-center text-muted-foreground">{t("loading_prayer_board", "Loading prayer board...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-border">
+ <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-primary/40">
  <HandHeart className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
  <p className="font-semibold text-lg text-card-foreground">{t("no_prayer_requests_listed", "No prayer requests listed")}</p>
  <p className="text-xs mt-1">{t(
@@ -163,7 +163,7 @@ export default function Prayers() {
  <div className="space-y-4">
  {filtered.map(prayer => {
  return (
- <div key={prayer.id} className="bg-card rounded-xl border border-border p-6 flex flex-col sm:flex-row gap-6 relative overflow-hidden group">
+ <div key={prayer.id} className="bg-card rounded-xl border border-primary/40 p-6 flex flex-col sm:flex-row gap-6 relative overflow-hidden group">
  {prayer.status === 'Answered' && (
  <div className="absolute top-0 right-0 bg-primary text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-bl-lg">
  {t("answered", "Answered")}
@@ -181,7 +181,7 @@ export default function Prayers() {
  </div>
  <p className="text-foreground text-lg leading-relaxed font-medium">"{prayer.request}"</p>
  </div>
- <div className="flex sm:flex-col gap-2 justify-end sm:justify-start shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 sm:border-l border-border sm:pl-6 min-w-[150px]">
+ <div className="flex sm:flex-col gap-2 justify-end sm:justify-start shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 sm:border-l border-primary/40 sm:pl-6 min-w-[150px]">
  {prayer.status === 'Active' ? (
  <>
  <Button
@@ -231,7 +231,7 @@ export default function Prayers() {
  )}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-border">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
  <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
  <HandHeart className="w-5 h-5 text-primary" /> {t("submit_prayer_petition", "Submit Prayer Petition")}
  </h2>
@@ -279,7 +279,7 @@ export default function Prayers() {
  <div className="mt-6 space-y-4">
  {viewRecord && Object.entries(viewRecord).filter(([k]) => k !== 'id' && k !== 'status').map(([key, value]) => {
  return (
- <div key={key} className="border-b border-border pb-2">
+ <div key={key} className="border-b border-primary/40 pb-2">
  <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
  <p className="mt-1 text-base text-foreground font-semibold">
  {key === 'name' && value !== 'Anonymous' ? (

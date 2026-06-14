@@ -218,8 +218,8 @@ export default function Inventory() {
  <RetailStatCard label={t("total_stock_value", "Total Stock Value")} value={`$${stats.totalValue.toFixed(2)}`} icon={DollarSign} />
  </div>
  {/* Table */}
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50 flex gap-4 justify-between items-center">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50 flex gap-4 justify-between items-center">
  <div className="relative max-w-md w-full">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input
@@ -257,7 +257,7 @@ export default function Inventory() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-muted/30 border-b border-border">
+ <thead className="bg-muted/30 border-b border-primary/40">
  <tr>
  <th className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("item", "Item")}</th>
  <th className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("category", "Category")}</th>

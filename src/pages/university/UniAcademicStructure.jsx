@@ -32,17 +32,17 @@ export default function UniAcademicStructure() {
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="border-b border-[var(--color-border-subtle)] pb-4">
+ <div className="border-b border-primary/40 pb-4">
  <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">University Academic Structure</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage faculties, departments, schools, course programs, majors, and minors.</p>
  </div>
 
- <div className="flex justify-between items-center bg-[var(--color-surface-0)] p-4 rounded-[var(--radius-xl)] border border-[var(--color-border-subtle)] ">
+ <div className="flex justify-between items-center bg-[var(--color-surface-0)] p-4 rounded-[var(--radius-xl)] border border-primary/40 ">
  <div className="flex gap-3">
  <button className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] hover:opacity-90 text-white text-sm font-medium rounded-[var(--radius-md)] transition-all">
  <Plus className="w-4 h-4" /> Add Faculty
  </button>
- <button className="flex items-center gap-2 px-4 py-2 bg-[var(--color-surface-2)] hover:bg-[var(--color-surface-3)] text-[var(--color-text-primary)] border border-[var(--color-border-default)] text-sm font-medium rounded-[var(--radius-md)] transition-all">
+ <button className="flex items-center gap-2 px-4 py-2 bg-[var(--color-surface-2)] hover:bg-[var(--color-surface-3)] text-[var(--color-text-primary)] border border-primary/40 text-sm font-medium rounded-[var(--radius-md)] transition-all">
  <Plus className="w-4 h-4" /> Add Department
  </button>
  </div>
@@ -59,8 +59,8 @@ export default function UniAcademicStructure() {
  />
  ) : (
  structure.map((fac, idx) => (
- <div key={idx} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] hover:border-[var(--primary)] transition-colors rounded-[var(--radius-xl)] overflow-hidden">
- <div className="flex items-center gap-4 bg-[var(--color-surface-1)] px-6 py-4 border-b border-[var(--color-border-subtle)]">
+ <div key={idx} className="bg-[var(--color-surface-0)] border border-primary/40 hover:border-[var(--primary)] transition-colors rounded-[var(--radius-xl)] overflow-hidden">
+ <div className="flex items-center gap-4 bg-[var(--color-surface-1)] px-6 py-4 border-b border-primary/40">
  <div className="w-10 h-10 rounded-[var(--radius-lg)] bg-[var(--primary)] text-white flex items-center justify-center -glow-sm -[var(--primary)]">
  <fac.icon className="w-5 h-5" />
  </div>
@@ -72,20 +72,20 @@ export default function UniAcademicStructure() {
  
  <div className="p-6 space-y-6">
  {fac.schools && fac.schools.length > 0 ? fac.schools.map((school, sIdx) => (
- <div key={sIdx} className="pl-4 border-l-2 border-[var(--color-border-subtle)] space-y-4">
+ <div key={sIdx} className="pl-4 border-l-2 border-primary/40 space-y-4">
  <div className="flex items-center gap-2 text-[var(--color-text-primary)] font-semibold text-[var(--text-sm)]">
  <School className="w-4 h-4 text-[var(--primary)]" /> {school.name}
  </div>
  
  {school.departments && school.departments.map((dept, dIdx) => (
- <div key={dIdx} className="pl-6 border-l-2 border-dashed border-primary/50 space-y-3">
+ <div key={dIdx} className="pl-6 border-l-2 border-dashed border-primary/40 space-y-3">
  <div className="text-[var(--color-text-secondary)] font-bold text-[var(--text-xs)] flex items-center gap-1.5">
  <Landmark className="w-3.5 h-3.5" style={{ color: 'var(--color-info)'}} /> {dept.name}
  </div>
  
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4">
  {dept.programs && dept.programs.map((prog, pIdx) => (
- <div key={pIdx} className="bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] p-4 rounded-[var(--radius-lg)] flex flex-col justify-between hover:bg-[var(--color-surface-2)] transition-colors">
+ <div key={pIdx} className="bg-[var(--color-surface-1)] border border-primary/40 p-4 rounded-[var(--radius-lg)] flex flex-col justify-between hover:bg-[var(--color-surface-2)] transition-colors">
  <div>
  <p className="font-bold text-[var(--text-xs)] text-[var(--color-text-primary)] flex items-center gap-1.5">
  <GraduationCap className="w-4 h-4 text-[var(--primary)]" /> {prog.name}

@@ -129,21 +129,21 @@ export default function Pharmacy() {
  </Button>
  </div>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- <div className="bg-card rounded-xl border border-border p-5 flex items-center gap-4">
+ <div className="bg-card rounded-xl border border-primary/40 p-5 flex items-center gap-4">
  <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary"><Pill className="w-6 h-6" /></div>
  <div><p className="text-3xl font-bold text-card-foreground">{inventory.length}</p><p className="text-sm font-medium text-muted-foreground">{t("total_unique_drugs", "Total Unique Drugs")}</p></div>
  </div>
- <div className="bg-card rounded-xl border border-border p-5 flex items-center gap-4">
+ <div className="bg-card rounded-xl border border-primary/40 p-5 flex items-center gap-4">
  <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-red-600"><AlertTriangle className="w-6 h-6" /></div>
  <div><p className="text-3xl font-bold text-red-600">{lowStockCount}</p><p className="text-sm font-medium text-muted-foreground">{t("low_stock_alerts", "Low Stock Alerts")}</p></div>
  </div>
- <div className="bg-card rounded-xl border border-border p-5 flex items-center gap-4">
+ <div className="bg-card rounded-xl border border-primary/40 p-5 flex items-center gap-4">
  <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary"><ShoppingBag className="w-6 h-6" /></div>
  <div><p className="text-3xl font-bold text-card-foreground">{inventory.filter(d => d.stock > d.reorder).length}</p><p className="text-sm font-medium text-muted-foreground">{t("well_stocked_drugs", "Well Stocked Drugs")}</p></div>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div className="relative max-w-md w-full">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input placeholder="Search medication or category..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
@@ -154,7 +154,7 @@ export default function Pharmacy() {
  </div>
  <div className="overflow-x-auto">
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-border">
+ <thead className="bg-card border-b border-primary/40">
  <tr>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("drug_code_name", "Drug Code & Name")}</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("category", "Category")}</th>

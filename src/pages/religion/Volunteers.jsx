@@ -116,7 +116,7 @@ export default function Volunteers() {
  <Input placeholder="Search volunteers, groups, or roles..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
  </div>
  </div>
- <div className="bg-card rounded-xl border border-border overflow-hidden">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
  <div className="overflow-x-auto">
  {isDbLoading ? (
  <div className="py-12 text-center text-muted-foreground">{t("loading_roster", "Loading roster...")}</div>
@@ -131,7 +131,7 @@ export default function Volunteers() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-muted border-b border-border">
+ <thead className="bg-muted border-b border-primary/40">
  <tr>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("volunteer", "Volunteer")}</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("group_role", "Group / Role")}</th>
@@ -187,7 +187,7 @@ export default function Volunteers() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-border">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
  <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
  <ClipboardCheck className="w-5 h-5 text-primary" /> {t("schedule_religion_volunteer", "Schedule Religion Volunteer")}
  </h2>
@@ -270,7 +270,7 @@ export default function Volunteers() {
  <div className="mt-6 space-y-4">
  {viewRecord && Object.entries(viewRecord).filter(([k]) => k !== 'id' && k !== 'status').map(([key, value]) => {
  return (
- <div key={key} className="border-b border-border pb-2">
+ <div key={key} className="border-b border-primary/40 pb-2">
  <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
  <p className="mt-1 text-base text-foreground font-semibold">
  {key === 'name' ? (

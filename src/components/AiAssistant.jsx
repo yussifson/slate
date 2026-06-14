@@ -780,8 +780,8 @@ RULES FOR MULTI-STEP REASONING:
  <div className="flex h-full w-full">
  {/* History Sidebar */}
  {showHistory && (
- <div className="w-52 shrink-0 border-r border-border bg-muted/20 flex flex-col">
- <div className="px-3 py-2.5 border-b border-border flex items-center justify-between">
+ <div className="w-52 shrink-0 border-r border-primary/40 bg-muted/20 flex flex-col">
+ <div className="px-3 py-2.5 border-b border-primary/40 flex items-center justify-between">
  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{t("chat_history", "Chat History")}</span>
  <div className="flex items-center gap-1">
  <button onClick={startNewChat} className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-primary transition-colors" title="New chat">
@@ -800,7 +800,7 @@ RULES FOR MULTI-STEP REASONING:
  onClick={() => { setActiveId(s.id); setShowHistory(false);}}
  className={`group relative flex items-start gap-2 p-2 rounded-lg cursor-pointer text-left transition-colors ${
  s.id === activeId
- ? 'bg-slate-50 dark:bg-primary/30 border border-primary/20 dark:border-slate-200'
+ ? 'bg-slate-50 dark:bg-primary/30 border border-primary/20 dark:border-primary/40'
  : 'hover:bg-muted/70'
 }`}
  >
@@ -827,7 +827,7 @@ RULES FOR MULTI-STEP REASONING:
  <div className="flex-1 flex flex-col min-w-0">
 
  {/* Header */}
- <div className="flex items-center gap-2 px-3 py-2.5 border-b border-border bg-gradient-to-r from-primary/8 to-primary/5 shrink-0">
+ <div className="flex items-center gap-2 px-3 py-2.5 border-b border-primary/40 bg-gradient-to-r from-primary/8 to-primary/5 shrink-0">
  <button
  onClick={() => setShowHistory(prev => !prev)}
  className={`p-1.5 rounded-md transition-colors shrink-0 ${showHistory ? 'bg-slate-100 dark:bg-primary/40 text-primary dark:text-primary/70' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
@@ -857,7 +857,7 @@ RULES FOR MULTI-STEP REASONING:
  </div>
 
  {/* Page Context Bar */}
- <div className="px-3 py-1.5 flex items-center gap-1.5 bg-primary/60 dark:bg-slate-100 border-b border-slate-200 dark:border-primary/20 shrink-0">
+ <div className="px-3 py-1.5 flex items-center gap-1.5 bg-primary/60 dark:bg-slate-100 border-b border-primary/40 dark:border-primary/20 shrink-0">
  <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></div>
  <span className="text-[10px] text-primary dark:text-primary/70 font-semibold truncate">
  {ctx ? `${ctx.suite} ${ctx.title}` : location.pathname} {t("ai_has_full_context", "AI has full context")}
@@ -881,12 +881,12 @@ RULES FOR MULTI-STEP REASONING:
  <div className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed max-w-[88%] ${
  msg.role === 'user'
  ? 'bg-primary text-white rounded-tr-sm'
- : 'bg-card border border-border rounded-tl-sm text-foreground'
+ : 'bg-card border border-primary/40 rounded-tl-sm text-foreground'
 }`}>
  <FormatMessage content={msg.content} />
  
  {msg.isConfirmation && msg.pendingAction && (
- <div className="mt-3 flex gap-2 pt-3 border-t border-border">
+ <div className="mt-3 flex gap-2 pt-3 border-t border-primary/40">
  <button 
  onClick={() => confirmPendingAction(msg.pendingAction, i)}
  className="bg-primary hover:bg-primary/90 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5"
@@ -895,7 +895,7 @@ RULES FOR MULTI-STEP REASONING:
  </button>
  <button 
  onClick={() => cancelPendingAction(i)}
- className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border border-border "
+ className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border border-primary/40 "
  >
  {t("cancel", "Cancel")}
  </button>
@@ -910,7 +910,7 @@ RULES FOR MULTI-STEP REASONING:
  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-primary flex items-center justify-center shrink-0 ">
  <Sparkles className="w-3.5 h-3.5 text-white animate-spin" />
  </div>
- <div className="px-4 py-3 bg-card border border-border rounded-2xl rounded-tl-sm ">
+ <div className="px-4 py-3 bg-card border border-primary/40 rounded-2xl rounded-tl-sm ">
  <div className="flex gap-1.5 items-center">
  <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms'}} />
  <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms'}} />
@@ -932,7 +932,7 @@ RULES FOR MULTI-STEP REASONING:
  <button
  key={i}
  onClick={() => handleSend(s)}
- className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-slate-50 dark:bg-primary/30 text-primary/90 dark:text-primary/70 border border-slate-200 dark:border-primary/40 hover:bg-slate-100 dark:hover:bg-primary/40 transition-colors truncate max-w-[180px]"
+ className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-slate-50 dark:bg-primary/30 text-primary/90 dark:text-primary/70 border border-primary/40 dark:border-primary/40 hover:bg-slate-100 dark:hover:bg-primary/40 transition-colors truncate max-w-[180px]"
  >
  {s}
  </button>
@@ -955,8 +955,8 @@ RULES FOR MULTI-STEP REASONING:
  )}
 
  {/* Input */}
- <div className="p-3 border-t border-border bg-card/80 backdrop-blur-sm shrink-0">
- <div className="border border-border focus-within:border-primary/70 focus-within:ring-2 focus-within:ring-primary/15 rounded-xl bg-background transition-all overflow-hidden ">
+ <div className="p-3 border-t border-primary/40 bg-card/80 backdrop-blur-sm shrink-0">
+ <div className="border border-primary/40 focus-within:border-primary/70 focus-within:ring-2 focus-within:ring-primary/15 rounded-xl bg-background transition-all overflow-hidden ">
  <textarea
  value={input}
  onChange={e => setInput(e.target.value)}

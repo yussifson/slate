@@ -129,14 +129,14 @@ export default function SHSRoomAllocation() {
  </div>
 
  <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
- <CardHeader className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
+ <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
  <div className="flex flex-col md:flex-row gap-6 items-end">
  <div className="space-y-2 flex-1">
  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2">
  <Home className="w-4 h-4 text-primary dark:text-primary/70" /> Select Boarding House
  </label>
  <select 
- className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
+ className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
  value={selectedHouseId}
  onChange={(e) => setSelectedHouseId(e.target.value)}
  >
@@ -152,7 +152,7 @@ export default function SHSRoomAllocation() {
  </label>
  <Input 
  placeholder="Name or Index No..."
- className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -185,7 +185,7 @@ export default function SHSRoomAllocation() {
  <div>
  <div className="overflow-x-auto max-h-[600px]">
  <table className="w-full text-sm text-left">
- <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-wider sticky top-0 z-10 border-b border-slate-100 dark:border-slate-800 dark:border-slate-800">
+ <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-wider sticky top-0 z-10 border-b border-primary/40 dark:border-primary/40 dark:border-primary/40">
  <tr>
  <th className="px-6 py-4 rounded-tl-xl w-12 text-center">#</th>
  <th className="px-6 py-4">Student Details</th>
@@ -220,7 +220,7 @@ export default function SHSRoomAllocation() {
  <td className="px-6 py-4 text-center">
  <Input 
  placeholder="e.g. Room 12B"
- className="h-10 text-center font-bold bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 focus-visible:ring-primary dark:focus-visible:ring-primary"
+ className="h-10 text-center font-bold bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary"
  value={allocations[student.id] || ''}
  onChange={(e) => handleRoomChange(student.id, e.target.value)}
  />
@@ -231,7 +231,7 @@ export default function SHSRoomAllocation() {
  </table>
  </div>
 
- <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex items-center justify-between">
+ <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex items-center justify-between">
  <div>
  {saveSuccess && (
  <Badge className="bg-slate-100 text-primary/90 border-none px-3 py-1 text-sm font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">

@@ -113,28 +113,28 @@ export default function UnivCaseManagement() {
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6 shrink-0">
- <div className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between ">
+ <div className="bg-card border border-primary/40 rounded-2xl p-4 flex items-center justify-between ">
  <div>
  <p className="text-sm text-muted-foreground font-medium">Total Cases</p>
  <h3 className="text-2xl font-bold text-foreground mt-1">{cases.length}</h3>
  </div>
  <div className="p-3 bg-blue-100 dark:bg-blue-500/10 text-blue-600 rounded-xl"><Briefcase className="w-5 h-5" /></div>
  </div>
- <div className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between ">
+ <div className="bg-card border border-primary/40 rounded-2xl p-4 flex items-center justify-between ">
  <div>
  <p className="text-sm text-muted-foreground font-medium">Open Cases</p>
  <h3 className="text-2xl font-bold text-foreground mt-1">{cases.filter(c => c.status === 'Open').length}</h3>
  </div>
  <div className="p-3 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 rounded-xl"><Scale className="w-5 h-5" /></div>
  </div>
- <div className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between ">
+ <div className="bg-card border border-primary/40 rounded-2xl p-4 flex items-center justify-between ">
  <div>
  <p className="text-sm text-muted-foreground font-medium">In Progress</p>
  <h3 className="text-2xl font-bold text-foreground mt-1">{cases.filter(c => c.status === 'In Progress').length}</h3>
  </div>
  <div className="p-3 bg-orange-100 dark:bg-orange-500/10 text-orange-600 rounded-xl"><Clock className="w-5 h-5" /></div>
  </div>
- <div className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between ">
+ <div className="bg-card border border-primary/40 rounded-2xl p-4 flex items-center justify-between ">
  <div>
  <p className="text-sm text-muted-foreground font-medium">Closed</p>
  <h3 className="text-2xl font-bold text-foreground mt-1">{cases.filter(c => c.status === 'Closed').length}</h3>
@@ -143,8 +143,8 @@ export default function UnivCaseManagement() {
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -152,7 +152,7 @@ export default function UnivCaseManagement() {
  placeholder="Search cases, clients..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -197,7 +197,7 @@ export default function UnivCaseManagement() {
  <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border flex items-center gap-1 w-fit ${
  c.status === 'Open' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
  c.status === 'In Progress' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
- c.status === 'Closed' ? 'bg-muted text-foreground border-border' : 
+ c.status === 'Closed' ? 'bg-muted text-foreground border-primary/40' : 
  'bg-orange-50 text-orange-700 border-orange-200'
 }`}>
  {c.status}

@@ -297,7 +297,7 @@ export default function GlobalChatPanel({ isOpen, onClose}) {
  isOpen ? "max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-t-[32px] max-md: max-md:pb-[env(safe-area-inset-bottom)] max-md:translate-y-0 max-md:opacity-100" : "max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:h-0 max-md:translate-y-full max-md:opacity-0 max-md:pointer-events-none"
 } ${
  // Desktop: Side Panel
- isOpen ? "md:relative md:h-full md:shrink-0 md:border-l md:border-border md:w-[450px] md:opacity-100" : "md:h-full md:w-0 md:opacity-0 md:border-none md:pointer-events-none"
+ isOpen ? "md:relative md:h-full md:shrink-0 md:border-l md:border-primary/40 md:w-[450px] md:opacity-100" : "md:h-full md:w-0 md:opacity-0 md:border-none md:pointer-events-none"
 }`}
  >
  {/* Mobile Drag Handle */}
@@ -315,7 +315,7 @@ export default function GlobalChatPanel({ isOpen, onClose}) {
  />
 
  {/* Header */}
- <div className="flex items-center justify-between px-4 py-3 bg-[#f0f2f5] dark:bg-[#202c33] border-b border-border shrink-0">
+ <div className="flex items-center justify-between px-4 py-3 bg-[#f0f2f5] dark:bg-[#202c33] border-b border-primary/40 shrink-0">
  <div className="flex items-center gap-3">
  {activeRoomId ? (
  <Button variant="ghost" size="sm" className="h-8 px-2 -ml-2" onClick={() => setActiveRoomId(null)}>
@@ -373,7 +373,7 @@ export default function GlobalChatPanel({ isOpen, onClose}) {
  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
  <span className="text-sm font-bold text-primary">{room.name ? room.name[0].toUpperCase() : 'U'}</span>
  </div>
- <div className="flex-1 min-w-0 border-b border-border/50 group-last:border-none pb-3">
+ <div className="flex-1 min-w-0 border-b border-primary/40 group-last:border-none pb-3">
  <div className="flex justify-between items-baseline mb-0.5">
  <p className="text-base text-foreground truncate">{room.name || 'Direct Chat'}</p>
  <p className="text-xs text-muted-foreground">{format(new Date(room.updated_at), 'h:mm a')}</p>
@@ -533,7 +533,7 @@ export default function GlobalChatPanel({ isOpen, onClose}) {
  
  {/* Context Header for Reply/Edit */}
  {(replyTo || editingMsg) && (
- <div className="px-4 py-2 bg-[#f0f2f5] dark:bg-[#202c33] border-t border-border flex items-center justify-between z-10 text-sm">
+ <div className="px-4 py-2 bg-[#f0f2f5] dark:bg-[#202c33] border-t border-primary/40 flex items-center justify-between z-10 text-sm">
  <div className="flex-1 min-w-0 border-l-4 border-primary pl-3">
  <p className="font-semibold text-primary">{editingMsg ? "Editing Message" : `Replying to ${participantProfiles[replyTo?.sender_id]?.full_name || 'User'}`}</p>
  <p className="text-muted-foreground truncate">{editingMsg ? editingMsg.content : replyTo?.content}</p>
@@ -545,7 +545,7 @@ export default function GlobalChatPanel({ isOpen, onClose}) {
  )}
 
  {/* Input Area */}
- <div className="px-4 py-3 bg-[#f0f2f5] dark:bg-[#202c33] border-t border-border z-10 flex items-center gap-2">
+ <div className="px-4 py-3 bg-[#f0f2f5] dark:bg-[#202c33] border-t border-primary/40 z-10 flex items-center gap-2">
  <input type="file" ref={fileInputRef} className="hidden" onChange={(e) => handleFileUpload(e, 'file')} />
  <input type="file" accept="image/*" id="chat-image-upload" className="hidden" onChange={(e) => handleFileUpload(e, 'image')} />
  <input type="file" accept=".pdf,.doc,.docx,.txt" id="chat-doc-upload" className="hidden" onChange={(e) => handleFileUpload(e, 'doc')} />

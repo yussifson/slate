@@ -154,7 +154,7 @@ export default function UnivResourceAllocation({
  if (status === 'Available') return 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-400 dark:border-emerald-800';
  if (status === 'Assigned') return 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/40 dark:text-blue-400 dark:border-blue-800';
  if (status === 'Overbooked') return 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/40 dark:text-red-400 dark:border-red-800';
- if (status === 'Off') return 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700';
+ if (status === 'Off') return 'bg-slate-100 text-slate-700 border-primary/40 dark:bg-slate-800 dark:text-slate-400 dark:border-primary/40';
  return 'bg-muted text-muted-foreground';
 };
 
@@ -168,7 +168,7 @@ export default function UnivResourceAllocation({
  <div className="flex flex-col h-full bg-background font-sans">
  
  {/* Header */}
- <div className="border-b border-border bg-card px-6 sm:px-8 py-6 shrink-0 z-10 relative">
+ <div className="border-b border-primary/40 bg-card px-6 sm:px-8 py-6 shrink-0 z-10 relative">
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-2xl font-extrabold text-foreground tracking-tight flex items-center gap-2">
@@ -188,7 +188,7 @@ export default function UnivResourceAllocation({
 
  {/* Global Stats */}
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
- <div className="bg-card border border-border rounded-xl p-4 flex flex-col justify-center">
+ <div className="bg-card border border-primary/40 rounded-xl p-4 flex flex-col justify-center">
  <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">Avg Utilization</div>
  <div className="flex items-center gap-2">
  <div className="text-2xl font-bold text-foreground">{avgUtilization}%</div>
@@ -206,7 +206,7 @@ export default function UnivResourceAllocation({
  <div className="text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400 mb-1">Overbooked</div>
  <div className="text-2xl font-bold text-red-700 dark:text-red-300">{overbooked} <span className="text-sm font-medium opacity-70">people</span></div>
  </div>
- <div className="bg-card border border-border rounded-xl p-4 flex flex-col justify-center">
+ <div className="bg-card border border-primary/40 rounded-xl p-4 flex flex-col justify-center">
  <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">Total Headcount</div>
  <div className="text-2xl font-bold text-foreground">{totalResources}</div>
  </div>
@@ -221,10 +221,10 @@ export default function UnivResourceAllocation({
  placeholder="Search by name, role, department..."
  value={searchQuery}
  onChange={e => setSearchQuery(e.target.value)}
- className="w-full h-10 pl-9 pr-4 bg-muted/50 border border-border rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+ className="w-full h-10 pl-9 pr-4 bg-muted/50 border border-primary/40 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
  />
  </div>
- <button className="h-10 px-4 bg-background border border-border rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-muted transition-colors ">
+ <button className="h-10 px-4 bg-background border border-primary/40 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-muted transition-colors ">
  <Filter className="w-4 h-4 text-muted-foreground" /> Filter
  </button>
  </div>
@@ -246,7 +246,7 @@ export default function UnivResourceAllocation({
  const isOverbooked = util > 100;
  
  return (
- <div key={resource.id} className={cn("bg-card border rounded-2xl p-6 transition- group relative flex flex-col", isOverbooked ? "border-red-200 dark:border-red-800" : "border-border")}>
+ <div key={resource.id} className={cn("bg-card border rounded-2xl p-6 transition- group relative flex flex-col", isOverbooked ? "border-red-200 dark:border-red-800" : "border-primary/40")}>
  <div className="flex justify-between items-start mb-4">
  <div className="flex items-center gap-3">
  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center font-bold text-primary shrink-0">
@@ -271,7 +271,7 @@ export default function UnivResourceAllocation({
  </div>
  </div>
 
- <div className="pt-4 border-t border-border">
+ <div className="pt-4 border-t border-primary/40">
  <div className="flex justify-between items-end mb-2">
  <span className={cn("px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded border", getStatusStyle(resource.status))}>
  {resource.status}
@@ -299,9 +299,9 @@ export default function UnivResourceAllocation({
  initial={{ opacity: 0, scale: 0.95, y: 20}}
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: 20}}
- className="relative w-full max-w-lg bg-card border border-border rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
+ className="relative w-full max-w-lg bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
  >
- <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-muted/20">
+ <div className="px-6 py-4 border-b border-primary/40 flex items-center justify-between bg-muted/20">
  <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
  <Users className="w-5 h-5 text-primary" />
  {editingResource ? 'Edit Resource' : 'New Resource'}
@@ -312,33 +312,33 @@ export default function UnivResourceAllocation({
  <form id="resource-form" onSubmit={handleSave} className="space-y-4">
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Full Name *</label>
- <input required type="text" value={formState.name} onChange={e => setFormState({...formState, name: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input required type="text" value={formState.name} onChange={e => setFormState({...formState, name: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Role</label>
- <input type="text" value={formState.role} onChange={e => setFormState({...formState, role: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input type="text" value={formState.role} onChange={e => setFormState({...formState, role: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Department</label>
- <input type="text" value={formState.department} onChange={e => setFormState({...formState, department: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input type="text" value={formState.department} onChange={e => setFormState({...formState, department: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  </div>
 
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Current Project</label>
- <input type="text" value={formState.current_project} onChange={e => setFormState({...formState, current_project: e.target.value})} placeholder="e.g. Website Redesign" className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input type="text" value={formState.current_project} onChange={e => setFormState({...formState, current_project: e.target.value})} placeholder="e.g. Website Redesign" className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
 
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Total Capacity (%)</label>
- <input type="number" min="0" max="100" value={formState.capacity_percentage} onChange={e => setFormState({...formState, capacity_percentage: parseInt(e.target.value)})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input type="number" min="0" max="100" value={formState.capacity_percentage} onChange={e => setFormState({...formState, capacity_percentage: parseInt(e.target.value)})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Current Utilization (%)</label>
- <input type="number" min="0" value={formState.utilization_percentage} onChange={e => setFormState({...formState, utilization_percentage: parseInt(e.target.value)})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input type="number" min="0" value={formState.utilization_percentage} onChange={e => setFormState({...formState, utilization_percentage: parseInt(e.target.value)})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  </div>
 
@@ -346,7 +346,7 @@ export default function UnivResourceAllocation({
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Availability Override</label>
  <div className="flex items-center gap-4">
  <label className="flex items-center gap-2 text-sm">
- <input type="checkbox" checked={formState.status === 'Off'} onChange={e => setFormState({...formState, status: e.target.checked ? 'Off' : 'Available'})} className="rounded border-border text-primary focus:ring-primary" />
+ <input type="checkbox" checked={formState.status === 'Off'} onChange={e => setFormState({...formState, status: e.target.checked ? 'Off' : 'Available'})} className="rounded border-primary/40 text-primary focus:ring-primary" />
  Currently OOO / Off
  </label>
  </div>
@@ -355,13 +355,13 @@ export default function UnivResourceAllocation({
 
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Notes</label>
- <textarea value={formState.notes} onChange={e => setFormState({...formState, notes: e.target.value})} className="w-full h-24 p-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none resize-none" />
+ <textarea value={formState.notes} onChange={e => setFormState({...formState, notes: e.target.value})} className="w-full h-24 p-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none resize-none" />
  </div>
 
  </form>
  </div>
  
- <div className="px-6 py-4 border-t border-border bg-muted/20 flex justify-end gap-3">
+ <div className="px-6 py-4 border-t border-primary/40 bg-muted/20 flex justify-end gap-3">
  <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors">Cancel</button>
  <button type="submit" form="resource-form" disabled={saveMutation.isPending} className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors disabled:opacity-50">
  {saveMutation.isPending ? 'Saving...' : 'Save Resource'}

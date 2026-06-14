@@ -63,7 +63,7 @@ export default function UnivNotificationPreferences({ title = 'Notification Pref
  </div>
 
  {/* Channels Legend */}
- <div className="flex flex-wrap gap-6 p-4 bg-muted/30 border border-border rounded-xl">
+ <div className="flex flex-wrap gap-6 p-4 bg-muted/30 border border-primary/40 rounded-xl">
  <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
  <Monitor className="w-4 h-4 text-muted-foreground" /> In-App
  <span className="text-xs font-normal text-muted-foreground">(Inbox)</span>
@@ -79,7 +79,7 @@ export default function UnivNotificationPreferences({ title = 'Notification Pref
  </div>
 
  {/* Preferences Grid */}
- <div className="bg-card border border-border rounded-2xl overflow-hidden">
+ <div className="bg-card border border-primary/40 rounded-2xl overflow-hidden">
  <div className="divide-y divide-border">
  {categories.map(cat => (
  <div key={cat.id} className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-muted/10 transition-colors">
@@ -94,7 +94,7 @@ export default function UnivNotificationPreferences({ title = 'Notification Pref
  </div>
  </div>
 
- <div className="flex items-center gap-4 shrink-0 bg-muted/30 p-2 rounded-xl border border-border">
+ <div className="flex items-center gap-4 shrink-0 bg-muted/30 p-2 rounded-xl border border-primary/40">
  {/* In-App Toggle */}
  <label className="flex flex-col items-center gap-2 cursor-pointer group">
  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground group-hover:text-foreground transition-colors">In-App</span>
@@ -113,7 +113,7 @@ export default function UnivNotificationPreferences({ title = 'Notification Pref
  </div>
  </label>
 
- <div className="w-px h-8 bg-border"></div>
+ <div className="w-px h-8 bg-primary/40"></div>
 
  {/* Email Toggle */}
  <label className="flex flex-col items-center gap-2 cursor-pointer group">

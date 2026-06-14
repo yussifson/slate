@@ -166,7 +166,7 @@ export default function Parents() {
  ) : (
  <div className="overflow-x-auto">
  <table className="w-full text-sm">
- <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-700">
+ <thead className="bg-slate-50/60 dark:bg-slate-800/40 border-b border-primary/40 dark:border-primary/40">
  <tr>
  <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Parent / Guardian</th>
  <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">ID / Login ID</th>
@@ -233,10 +233,10 @@ export default function Parents() {
  {/* Tabbed Wizard Modal (Edit Only) */}
  {showModal && editingId && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
- <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-lg overflow-hidden border border-border flex flex-col max-h-[90vh]">
- <div className="p-6 border-b border-border">
+ <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-lg overflow-hidden border border-primary/40 flex flex-col max-h-[90vh]">
+ <div className="p-6 border-b border-primary/40">
  <h2 className="text-xl school-heading font-bold tracking-tight">Edit Parent</h2>
- <div className="flex gap-4 mt-4 border-b border-border">
+ <div className="flex gap-4 mt-4 border-b border-primary/40">
  {['personal', 'linking'].map(tab => (
  <button
  key={tab}
@@ -279,7 +279,7 @@ export default function Parents() {
  </select>
  </div>
  
- <div className="pt-4 border-t border-border">
+ <div className="pt-4 border-t border-primary/40">
  <label className="text-xs font-bold text-muted-foreground uppercase">Parent ID</label>
  <Input value={formData.parentId} onChange={e => setFormData({...formData, parentId: e.target.value})} className="mt-1" placeholder="Leave blank to auto-generate" disabled />
  </div>
@@ -287,7 +287,7 @@ export default function Parents() {
  )}
  </div>
 
- <div className="p-6 border-t border-border bg-muted/30 flex gap-3">
+ <div className="p-6 border-t border-primary/40 bg-muted/30 flex gap-3">
  <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setActiveTab('personal');}} disabled={mutateParent.isPending}>{t("cancel", "Cancel")}</Button>
  {activeTab !== 'linking' ? (
  <Button className="flex-1 bg-primary hover:bg-primary text-white -[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold" onClick={() => setActiveTab('linking')}>{t("next", "Next")}</Button>

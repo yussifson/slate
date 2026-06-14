@@ -132,7 +132,7 @@ export default function LegalDocs() {
         {sections.map(section => {
           return (
             <div key={section.id} id={section.id} className="scroll-mt-32">
-              <div className="flex items-center gap-4 mb-6 pb-4 border-b border-slate-200">
+              <div className="flex items-center gap-4 mb-6 pb-4 border-b border-primary/40">
                 <div className="w-12 h-12 bg-slate-100 text-slate-700 rounded-xl flex items-center justify-center shrink-0">
                   <section.icon className="w-6 h-6" />
                 </div>

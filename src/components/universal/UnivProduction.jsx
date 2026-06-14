@@ -172,8 +172,8 @@ export default function UnivProduction() {
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -181,7 +181,7 @@ export default function UnivProduction() {
  placeholder="Search batches, products..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -194,10 +194,10 @@ export default function UnivProduction() {
  animate={{ opacity: 1, scale: 1}}
  transition={{ delay: idx * 0.05}}
  key={p.id} 
- className="bg-background border border-border rounded-2xl p-5 hover:border-primary/40 transition-colors group relative flex flex-col justify-between"
+ className="bg-background border border-primary/40 rounded-2xl p-5 hover:border-primary/40 transition-colors group relative flex flex-col justify-between"
  >
  <div>
- <div className="flex justify-between items-start mb-4 border-b border-border pb-4">
+ <div className="flex justify-between items-start mb-4 border-b border-primary/40 pb-4">
  <div>
  <h3 className="font-bold text-lg text-foreground flex items-center gap-2">
  <Factory className="w-4 h-4 text-primary" /> {p.batch_number}
@@ -210,7 +210,7 @@ export default function UnivProduction() {
  p.status === 'In Progress' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
  p.status === 'QA' ? 'bg-purple-50 text-purple-700 border-purple-200' : 
  p.status === 'Completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
- 'bg-background text-foreground border-border'
+ 'bg-background text-foreground border-primary/40'
 }`}>
  {p.status === 'In Progress' && <PlayCircle className="w-3 h-3" />}
  {p.status === 'QA' && <Settings className="w-3 h-3" />}
@@ -236,7 +236,7 @@ export default function UnivProduction() {
  </div>
  </div>
 
- <div className="pt-4 border-t border-border flex justify-end gap-2 shrink-0">
+ <div className="pt-4 border-t border-primary/40 flex justify-end gap-2 shrink-0">
  <button onClick={() => handleOpenModal(p)} className="p-1.5 hover:bg-muted rounded-md text-muted-foreground hover:text-primary transition-colors">
  <Edit2 className="w-4 h-4" />
  </button>
@@ -264,9 +264,9 @@ export default function UnivProduction() {
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
  exit={{ opacity: 0, scale: 0.95}}
- className="bg-card border border-border rounded-2xl w-full max-w-md overflow-hidden"
+ className="bg-card border border-primary/40 rounded-2xl w-full max-w-md overflow-hidden"
  >
- <div className="flex items-center justify-between p-4 border-b border-border">
+ <div className="flex items-center justify-between p-4 border-b border-primary/40">
  <h3 className="font-semibold text-foreground">{editingId ? 'Edit Batch' : 'New Production Batch'}</h3>
  <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:text-foreground">
  <XCircle className="w-5 h-5" />
@@ -276,11 +276,11 @@ export default function UnivProduction() {
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Batch Number</label>
- <input required value={form.batch_number} onChange={e => setForm({...form, batch_number: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+ <input required value={form.batch_number} onChange={e => setForm({...form, batch_number: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
  </div>
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Status</label>
- <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm">
+ <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm">
  <option value="Planned">Planned</option>
  <option value="In Progress">In Progress</option>
  <option value="QA">QA</option>
@@ -291,22 +291,22 @@ export default function UnivProduction() {
 
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Product Name</label>
- <input required value={form.product_name} onChange={e => setForm({...form, product_name: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+ <input required value={form.product_name} onChange={e => setForm({...form, product_name: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
  </div>
 
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Quantity</label>
- <input type="number" required value={form.quantity} onChange={e => setForm({...form, quantity: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+ <input type="number" required value={form.quantity} onChange={e => setForm({...form, quantity: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
  </div>
 
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">Start Date</label>
- <input type="date" value={form.start_date} onChange={e => setForm({...form, start_date: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+ <input type="date" value={form.start_date} onChange={e => setForm({...form, start_date: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
  </div>
  <div>
  <label className="block text-xs font-medium text-muted-foreground mb-1">End Date</label>
- <input type="date" value={form.end_date} onChange={e => setForm({...form, end_date: e.target.value})} className="w-full p-2 bg-background border border-border rounded-lg text-sm" />
+ <input type="date" value={form.end_date} onChange={e => setForm({...form, end_date: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
  </div>
  </div>
 

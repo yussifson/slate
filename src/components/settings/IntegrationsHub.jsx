@@ -62,7 +62,7 @@ export function EmailSettings({ activeIndustry, company, onSave, saving}) {
 
  return (
  <SectionCard title="Email Delivery Center" subtitle="Configure SMTP servers or register your own verified sending domains for branded notifications">
- <div className="flex gap-1 border border-border/80 bg-muted/20 rounded-xl p-1 w-fit mb-6">
+ <div className="flex gap-1 border border-primary/40 bg-muted/20 rounded-xl p-1 w-fit mb-6">
  <button
  onClick={() => setActiveTab("smtp")}
  className={`px-4 py-2 rounded-lg text-sm font-bold capitalize transition-all duration-200 ${activeTab === "smtp" ? "bg-foreground text-background " : "text-muted-foreground hover:text-foreground"}`}
@@ -79,13 +79,13 @@ export function EmailSettings({ activeIndustry, company, onSave, saving}) {
  {activeTab === "smtp" ? (
  <FormRow>
  <Field label="From Name">
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={smtpForm.from_name} onChange={e => setSmtpForm({ ...smtpForm, from_name: e.target.value})} />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" value={smtpForm.from_name} onChange={e => setSmtpForm({ ...smtpForm, from_name: e.target.value})} />
  </Field>
  <Field label="From Email Address">
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="email" value={smtpForm.from_email} onChange={e => setSmtpForm({ ...smtpForm, from_email: e.target.value})} placeholder="noreply@yourfirm.com" />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" type="email" value={smtpForm.from_email} onChange={e => setSmtpForm({ ...smtpForm, from_email: e.target.value})} placeholder="noreply@yourfirm.com" />
  </Field>
  <Field label="Reply-To Address">
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="email" value={smtpForm.reply_to} onChange={e => setSmtpForm({ ...smtpForm, reply_to: e.target.value})} placeholder="billing@yourfirm.com" />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" type="email" value={smtpForm.reply_to} onChange={e => setSmtpForm({ ...smtpForm, reply_to: e.target.value})} placeholder="billing@yourfirm.com" />
  </Field>
  <Field label="SMTP Connection Port">
  <Select value={smtpForm.smtp_port} onValueChange={v => setSmtpForm({ ...smtpForm, smtp_port: v})}>
@@ -98,13 +98,13 @@ export function EmailSettings({ activeIndustry, company, onSave, saving}) {
  </Select>
  </Field>
  <Field label="SMTP Host Server" full>
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={smtpForm.smtp_host} onChange={e => setSmtpForm({ ...smtpForm, smtp_host: e.target.value})} placeholder="smtp.mailgun.org" />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" value={smtpForm.smtp_host} onChange={e => setSmtpForm({ ...smtpForm, smtp_host: e.target.value})} placeholder="smtp.mailgun.org" />
  </Field>
  <Field label="SMTP Username">
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={smtpForm.smtp_user} onChange={e => setSmtpForm({ ...smtpForm, smtp_user: e.target.value})} />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" value={smtpForm.smtp_user} onChange={e => setSmtpForm({ ...smtpForm, smtp_user: e.target.value})} />
  </Field>
  <Field label="SMTP Password">
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="password" value={smtpForm.smtp_pass} onChange={e => setSmtpForm({ ...smtpForm, smtp_pass: e.target.value})} />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" type="password" value={smtpForm.smtp_pass} onChange={e => setSmtpForm({ ...smtpForm, smtp_pass: e.target.value})} />
  </Field>
  <Field label="Encryption Type">
  <Select value={smtpForm.smtp_encryption} onValueChange={v => setSmtpForm({ ...smtpForm, smtp_encryption: v})}>
@@ -126,7 +126,7 @@ export function EmailSettings({ activeIndustry, company, onSave, saving}) {
  ) : (
  <div className="relative">
  {!isPaidPlan ? (
- <div className="absolute inset-0 z-20 backdrop-blur-md bg-card/65 rounded-2xl border border-dashed border-primary/50 p-8 flex flex-col items-center justify-center text-center space-y-4 ">
+ <div className="absolute inset-0 z-20 backdrop-blur-md bg-card/65 rounded-2xl border border-dashed border-primary/40 p-8 flex flex-col items-center justify-center text-center space-y-4 ">
  <div className="w-14 h-14 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center border border-amber-500/20 animate-pulse">
  <Lock className="w-6 h-6" />
  </div>
@@ -150,18 +150,18 @@ export function EmailSettings({ activeIndustry, company, onSave, saving}) {
  ) : null}
 
  <div className={`space-y-6 ${!isPaidPlan ? "opacity-35 pointer-events-none select-none" : ""}`}>
- <div className="bg-muted/15 border border-border/50 rounded-xl p-5 space-y-4">
+ <div className="bg-muted/15 border border-primary/40 rounded-xl p-5 space-y-4">
  <h3 className="text-sm font-bold text-foreground">{t("configure_domain", "Configure Domain")}</h3>
  <div className="flex flex-col sm:flex-row gap-3">
  <div className="flex-1 relative">
  <Input 
  value={domainInput} 
  onChange={e => setDomainInput(e.target.value.toLowerCase().replace(/[^a-z0-9.-]/g, ''))} 
- className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors pr-10" 
+ className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors pr-10" 
  placeholder="e.g. smithandassociates.com"
  />
  {company?.custom_email_verified && (
- <span className="absolute right-3 top-1/2 -translate-y-1/2 text-primary flex items-center gap-1 text-xs font-bold bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/40 px-2 py-0.5 rounded-full border border-slate-200">
+ <span className="absolute right-3 top-1/2 -translate-y-1/2 text-primary flex items-center gap-1 text-xs font-bold bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/40 px-2 py-0.5 rounded-full border border-primary/40">
  <CheckCircle className="w-3.5 h-3.5" /> {t("verified", "Verified")}
  </span>
  )}
@@ -188,10 +188,10 @@ export function EmailSettings({ activeIndustry, company, onSave, saving}) {
  </Button>
  </div>
 
- <div className="overflow-x-auto rounded-xl border border-border/80 bg-muted/10">
+ <div className="overflow-x-auto rounded-xl border border-primary/40 bg-muted/10">
  <table className="w-full text-left border-collapse text-xs">
  <thead>
- <tr className="bg-muted/30 border-b border-border/80 font-bold uppercase tracking-wider text-muted-foreground select-none">
+ <tr className="bg-muted/30 border-b border-primary/40 font-bold uppercase tracking-wider text-muted-foreground select-none">
  <th className="px-4 py-3">{t("type", "Type")}</th>
  <th className="px-4 py-3">{t("host_name", "Host / Name")}</th>
  <th className="px-4 py-3">{t("value", "Value")}</th>
@@ -275,7 +275,7 @@ export function NotificationSettings({ activeIndustry, onSave, saving}) {
  <div className="grid grid-cols-1 gap-4">
  {items.map(item => {
  return (
- <div key={item.key} className="flex items-center justify-between p-4 rounded-2xl border border-border/60 bg-card hover:bg-muted/40 transition-all duration-200">
+ <div key={item.key} className="flex items-center justify-between p-4 rounded-2xl border border-primary/40 bg-card hover:bg-muted/40 transition-all duration-200">
  <div className="space-y-1 pr-4">
  <p className="text-sm font-bold text-foreground">{item.label}</p>
  <p className="text-xs text-muted-foreground/80 leading-relaxed">{item.desc}</p>
@@ -308,16 +308,16 @@ export function SlackSettings({ activeIndustry, onSave, saving, initialData}) {
  <SectionCard title="Slack Integration" subtitle="Push realtime file updates and reminders directly to channels" onSave={() => onSave(form)} saving={saving}>
  <FormRow>
  <Field label="Incoming Webhook URL" full>
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={form.webhook_url} onChange={e => setForm({ ...form, webhook_url: e.target.value})} placeholder="https://hooks.slack.com/services/..." />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" value={form.webhook_url} onChange={e => setForm({ ...form, webhook_url: e.target.value})} placeholder="https://hooks.slack.com/services/..." />
  </Field>
  <Field label="Default Channel Name">
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={form.channel} onChange={e => setForm({ ...form, channel: e.target.value})} placeholder="#general-alerts" />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" value={form.channel} onChange={e => setForm({ ...form, channel: e.target.value})} placeholder="#general-alerts" />
  </Field>
  </FormRow>
  <div className="space-y-4 mt-8">
  {[["notify_new_case", "Realtime " + getTerm(activeIndustry, "case") + " Intake Alerts", "Ping channel whenever a new " + getTerm(activeIndustry, "case").toLowerCase() + " file is successfully created"], ["notify_overdue", "Overdue Balance Webhooks", "Notify Slack channels automatically upon invoice status overdue trigger"]].map(([k, l, d]) => {
  return (
- <div key={k} className="flex items-center justify-between p-4 rounded-2xl border border-border/60 bg-card hover:bg-muted/40 transition-all duration-200">
+ <div key={k} className="flex items-center justify-between p-4 rounded-2xl border border-primary/40 bg-card hover:bg-muted/40 transition-all duration-200">
  <div className="space-y-1 pr-4">
  <p className="text-sm font-bold text-foreground">{l}</p>
  <p className="text-xs text-muted-foreground/80">{d}</p>
@@ -350,16 +350,16 @@ export function TwilioSettings({ activeIndustry, onSave, saving, initialData}) {
  <SectionCard title="Twilio SMS Delivery" subtitle={"Broadcast automatic text messages for " + getTerm(activeIndustry, "hearing").toLowerCase() + "s and " + getTerm(activeIndustry, "case").toLowerCase() + " status updates"} onSave={() => onSave(form)} saving={saving}>
  <FormRow>
  <Field label="Account SID">
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={form.account_sid} onChange={e => setForm({ ...form, account_sid: e.target.value})} placeholder="ACxxxxxxx..." />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" value={form.account_sid} onChange={e => setForm({ ...form, account_sid: e.target.value})} placeholder="ACxxxxxxx..." />
  </Field>
  <Field label="Auth Token">
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="password" value={form.auth_token} onChange={e => setForm({ ...form, auth_token: e.target.value})} />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" type="password" value={form.auth_token} onChange={e => setForm({ ...form, auth_token: e.target.value})} />
  </Field>
  <Field label="Sender Number">
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={form.from_number} onChange={e => setForm({ ...form, from_number: e.target.value})} placeholder="+15551234567" />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" value={form.from_number} onChange={e => setForm({ ...form, from_number: e.target.value})} placeholder="+15551234567" />
  </Field>
  </FormRow>
- <div className="flex items-center justify-between p-4 rounded-2xl border border-border/60 bg-card hover:bg-muted/40 transition-all duration-200 mt-8">
+ <div className="flex items-center justify-between p-4 rounded-2xl border border-primary/40 bg-card hover:bg-muted/40 transition-all duration-200 mt-8">
  <div className="space-y-1">
  <p className="text-sm font-bold text-foreground">{t("global_sms_dispatch", "Global SMS Dispatch")}</p>
  <p className="text-xs text-muted-foreground/80">{t(
@@ -404,16 +404,16 @@ export function PaymentSettings({ activeIndustry, onSave, saving, initialData}) 
  </Select>
  </Field>
  <Field label="Public Key / API Key">
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={form.public_key} onChange={e => setForm({ ...form, public_key: e.target.value})} placeholder="pk_..." />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" value={form.public_key} onChange={e => setForm({ ...form, public_key: e.target.value})} placeholder="pk_..." />
  </Field>
  <Field label="Secret Key">
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="password" value={form.secret_key} onChange={e => setForm({ ...form, secret_key: e.target.value})} placeholder="sk_..." />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" type="password" value={form.secret_key} onChange={e => setForm({ ...form, secret_key: e.target.value})} placeholder="sk_..." />
  </Field>
  <Field label="Webhook Signing Key" full>
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="password" value={form.webhook_secret} onChange={e => setForm({ ...form, webhook_secret: e.target.value})} placeholder="whsec_..." />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" type="password" value={form.webhook_secret} onChange={e => setForm({ ...form, webhook_secret: e.target.value})} placeholder="whsec_..." />
  </Field>
  </FormRow>
- <div className="flex items-center justify-between p-4 rounded-2xl border border-border/60 bg-card hover:bg-muted/40 transition-all duration-200 mt-8">
+ <div className="flex items-center justify-between p-4 rounded-2xl border border-primary/40 bg-card hover:bg-muted/40 transition-all duration-200 mt-8">
  <div className="space-y-1">
  <p className="text-sm font-bold text-foreground">{t("production_live_mode", "Production Live Mode")}</p>
  <p className="text-xs text-muted-foreground/80">{t(
@@ -446,16 +446,16 @@ export function GoogleCalendarSettings({ activeIndustry, onSave, saving, initial
  <SectionCard title="Google Calendar Sync" subtitle={"Synchronize files and schedule " + getTerm(activeIndustry, "hearing").toLowerCase() + "s with corporate calendars"} onSave={() => onSave(form)} saving={saving}>
  <FormRow>
  <Field label="OAuth Client ID">
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={form.client_id} onChange={e => setForm({ ...form, client_id: e.target.value})} placeholder="xxxxxxxxx.apps.googleusercontent.com" />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" value={form.client_id} onChange={e => setForm({ ...form, client_id: e.target.value})} placeholder="xxxxxxxxx.apps.googleusercontent.com" />
  </Field>
  <Field label="OAuth Client Secret">
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" type="password" value={form.client_secret} onChange={e => setForm({ ...form, client_secret: e.target.value})} />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" type="password" value={form.client_secret} onChange={e => setForm({ ...form, client_secret: e.target.value})} />
  </Field>
  <Field label="Target Calendar Identifier (Optional)">
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={form.calendar_id} onChange={e => setForm({ ...form, calendar_id: e.target.value})} placeholder="primary or corporate@yourfirm.com" />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" value={form.calendar_id} onChange={e => setForm({ ...form, calendar_id: e.target.value})} placeholder="primary or corporate@yourfirm.com" />
  </Field>
  </FormRow>
- <div className="flex items-center justify-between p-4 rounded-2xl border border-border/60 bg-card hover:bg-muted/40 transition-all duration-200 mt-8">
+ <div className="flex items-center justify-between p-4 rounded-2xl border border-primary/40 bg-card hover:bg-muted/40 transition-all duration-200 mt-8">
  <div className="space-y-1">
  <p className="text-sm font-bold text-foreground">{t("activate_sync_operations", "Activate Sync Operations")}</p>
  <p className="text-xs text-muted-foreground/80">{t(

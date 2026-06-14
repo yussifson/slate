@@ -110,8 +110,8 @@ export default function UnivSafety() {
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -119,7 +119,7 @@ export default function UnivSafety() {
  placeholder="Search incidents..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -154,7 +154,7 @@ export default function UnivSafety() {
  i.severity === 'Critical' ? 'bg-red-50 text-red-700 border-red-200' : 
  i.severity === 'High' ? 'bg-orange-50 text-orange-700 border-orange-200' : 
  i.severity === 'Medium' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : 
- 'bg-background text-foreground border-border'
+ 'bg-background text-foreground border-primary/40'
 }`}>
  {i.severity}
  </span>

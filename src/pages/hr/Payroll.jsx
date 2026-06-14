@@ -166,7 +166,7 @@ export default function Payroll() {
  </div>
  </div>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- <div className="bg-card rounded-xl border border-border p-6 flex items-center justify-between">
+ <div className="bg-card rounded-xl border border-primary/40 p-6 flex items-center justify-between">
  <div>
  <p className="text-sm text-muted-foreground mb-1">{t("total_payroll", "Total Payroll")}</p>
  <h2 className="text-3xl font-bold text-card-foreground">${totalPayroll.toLocaleString()}</h2>
@@ -175,7 +175,7 @@ export default function Payroll() {
  <DollarSign className="w-6 h-6" />
  </div>
  </div>
- <div className="bg-card rounded-xl border border-border p-6 flex items-center justify-between">
+ <div className="bg-card rounded-xl border border-primary/40 p-6 flex items-center justify-between">
  <div>
  <p className="text-sm text-muted-foreground mb-1">{t("processed", "Processed")}</p>
  <h2 className="text-3xl font-bold text-card-foreground">{processed}</h2>
@@ -184,7 +184,7 @@ export default function Payroll() {
  <FileText className="w-6 h-6" />
  </div>
  </div>
- <div className="bg-card rounded-xl border border-border p-6 flex items-center justify-between">
+ <div className="bg-card rounded-xl border border-primary/40 p-6 flex items-center justify-between">
  <div>
  <p className="text-sm text-muted-foreground mb-1">{t("pending", "Pending")}</p>
  <h2 className="text-3xl font-bold text-card-foreground">{pending}</h2>
@@ -194,8 +194,8 @@ export default function Payroll() {
  </div>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input placeholder="Search employee..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
@@ -212,7 +212,7 @@ export default function Payroll() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-border">
+ <thead className="bg-card border-b border-primary/40">
  <tr>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("employee", "Employee")}</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("period", "Period")}</th>
@@ -285,7 +285,7 @@ export default function Payroll() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-border">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
  <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Payslip' : 'Add Payslip'}</h2>
  <div className="space-y-3">
  <div>

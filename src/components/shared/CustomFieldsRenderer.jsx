@@ -15,7 +15,7 @@ export default function CustomFieldsRenderer({ fields = [], formData = {}, onCha
   if (!fields.length) return null;
 
   return (
-    <div className="pt-4 mt-4 border-t border-border">
+    <div className="pt-4 mt-4 border-t border-primary/40">
       <h4 className="text-xs font-bold text-muted-foreground uppercase mb-3">{t("custom_fields", "Custom Fields")}</h4>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {fields.map(field => {

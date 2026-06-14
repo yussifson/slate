@@ -14,7 +14,7 @@ export default function ChartBlock({ dataConfig, styleConfig}) {
  enabled: !!table
 });
 
- const bgClass = theme === 'dark' ? 'bg-slate-900 text-white border-slate-800' : 'bg-card text-card-foreground border-border';
+ const bgClass = theme === 'dark' ? 'bg-slate-900 text-white border-primary/40' : 'bg-card text-card-foreground border-primary/40';
  const padClass = padding || 'p-4';
 
  // Aggregate data for the chart

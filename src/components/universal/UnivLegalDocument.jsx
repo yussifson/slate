@@ -86,8 +86,8 @@ export default function UnivLegalDocument() {
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
- <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
  <input 
@@ -95,7 +95,7 @@ export default function UnivLegalDocument() {
  placeholder="Search documents..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -108,7 +108,7 @@ export default function UnivLegalDocument() {
  animate={{ opacity: 1, scale: 1}}
  transition={{ delay: idx * 0.05}}
  key={d.id} 
- className="bg-background border border-border rounded-2xl p-5 hover:border-primary/40 transition-colors group flex flex-col h-full cursor-pointer"
+ className="bg-background border border-primary/40 rounded-2xl p-5 hover:border-primary/40 transition-colors group flex flex-col h-full cursor-pointer"
  >
  <div className="flex justify-between items-start mb-4">
  <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
@@ -120,12 +120,12 @@ export default function UnivLegalDocument() {
  <h3 className="font-bold text-foreground text-lg mb-1 line-clamp-1" title={d.document_title}>{d.document_title}</h3>
  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">{d.document_type}</p>
 
- <div className="mt-auto pt-4 border-t border-border flex justify-between items-center">
+ <div className="mt-auto pt-4 border-t border-primary/40 flex justify-between items-center">
  <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border flex items-center gap-1 w-fit ${
  d.status === 'Filed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
  d.status === 'Final' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
  d.status === 'Under Review' ? 'bg-orange-50 text-orange-700 border-orange-200' : 
- 'bg-background text-foreground border-border'
+ 'bg-background text-foreground border-primary/40'
 }`}>
  {d.status === 'Filed' && <CheckCircle2 className="w-3 h-3" />}
  {d.status === 'Under Review' && <Clock className="w-3 h-3" />}

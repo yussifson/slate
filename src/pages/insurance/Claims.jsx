@@ -172,19 +172,19 @@ export default function Claims() {
  </div>
  {/* Stats */}
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-xl border border-border p-4 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 ">
  <div className="flex items-center gap-2 mb-2 text-muted-foreground"><FileWarning className="w-4 h-4"/> {t("total_claims", "Total Claims")}</div>
  <p className="text-2xl font-bold text-card-foreground">{claims.length}</p>
  </div>
- <div className="bg-card rounded-xl border border-border p-4 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 ">
  <div className="flex items-center gap-2 mb-2 text-amber-600"><Clock className="w-4 h-4"/> {t("under_review", "Under Review")}</div>
  <p className="text-2xl font-bold text-card-foreground">{claims.filter(c => c.status === 'Under Review').length}</p>
  </div>
- <div className="bg-card rounded-xl border border-border p-4 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 ">
  <div className="flex items-center gap-2 mb-2 text-primary"><CheckCircle className="w-4 h-4"/> {t("approved", "Approved")}</div>
  <p className="text-2xl font-bold text-card-foreground">{claims.filter(c => c.status === 'Approved' || c.status === 'Paid').length}</p>
  </div>
- <div className="bg-card rounded-xl border border-border p-4 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 ">
  <div className="flex items-center gap-2 mb-2 text-primary"><span className="font-bold text-sm">$</span> {t("total_claimed", "Total Claimed")}</div>
  <p className="text-2xl font-bold text-card-foreground">${totalAmount.toLocaleString()}</p>
  </div>
@@ -195,8 +195,8 @@ export default function Claims() {
  onApplyFilters={(f) => setAiFilters(f)}
  />
  {/* Table */}
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input placeholder="Search claim number, policy or claimant..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
@@ -216,7 +216,7 @@ export default function Claims() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-border">
+ <thead className="bg-card border-b border-primary/40">
  <tr>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("claim_info", "Claim Info")}</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("claimant", "Claimant")}</th>
@@ -299,7 +299,7 @@ export default function Claims() {
  {/* AI Risk Analyzer Modal */}
  {showRiskAnalyzer && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-2xl border border-border p-6 space-y-4">
+ <div className="bg-card rounded-2xl w-full max-w-2xl border border-primary/40 p-6 space-y-4">
  <div className="flex items-center justify-between">
  <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
  <Sparkles className="w-5 h-5 text-amber-500" /> {t("ai_risk_analyzer_claims", "AI Risk Analyzer — Claims")}
@@ -313,7 +313,7 @@ export default function Claims() {
  {/* Add/Edit Modal */}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-4 border border-border overflow-y-auto max-h-[90vh]">
+ <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-4 border border-primary/40 overflow-y-auto max-h-[90vh]">
  <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Claim' : 'File New Claim'}</h2>
 
  {/* AI Document Parser */}
@@ -376,7 +376,7 @@ export default function Claims() {
  {viewRecord && Object.entries(viewRecord).map(([key, value]) => {
  if (key === 'id') return null;
  return (
- <div key={key} className="border-b border-border pb-3">
+ <div key={key} className="border-b border-primary/40 pb-3">
  <label className="text-xs font-bold text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</label>
  <p className="font-medium mt-1">
  {key === 'policyNumber' ? (

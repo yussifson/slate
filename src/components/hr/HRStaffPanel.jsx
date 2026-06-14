@@ -58,7 +58,7 @@ export default function HRStaffPanel({ companyId, staff, currency, isAdmin }) {
           </Button>
         )}
       </div>
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
+      <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
         {filtered.length === 0 ? (
           <div className="p-10 text-center text-sm text-muted-foreground">{t("no_staff_found", "No staff found")}</div>
         ) : (

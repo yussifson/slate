@@ -120,7 +120,7 @@ ContextMenuLabel.displayName = ContextMenuPrimitive.Label.displayName
 const ContextMenuSeparator = React.forwardRef(({ className, ...props}, ref) => (
  <ContextMenuPrimitive.Separator
  ref={ref}
- className={cn("-mx-1 my-1 h-px bg-border", className)}
+ className={cn("-mx-1 my-1 h-px bg-primary/40", className)}
  {...props} />
 ))
 ContextMenuSeparator.displayName = ContextMenuPrimitive.Separator.displayName

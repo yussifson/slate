@@ -164,7 +164,7 @@ export default function UnivAnalytics({
  <button
  onClick={handleRefresh}
  disabled={refreshing || loading}
- className="flex items-center gap-2 px-4 py-2 bg-muted border border-border rounded-xl text-sm font-medium hover:bg-muted/80 transition-colors disabled:opacity-50"
+ className="flex items-center gap-2 px-4 py-2 bg-muted border border-primary/40 rounded-xl text-sm font-medium hover:bg-muted/80 transition-colors disabled:opacity-50"
  >
  <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} /> Refresh
  </button>
@@ -184,7 +184,7 @@ export default function UnivAnalytics({
  <p className="text-sm font-medium">Scanning your workslate data...</p>
  </div>
  ) : stats.length === 0 ? (
- <div className="flex-1 flex flex-col items-center justify-center gap-3 text-muted-foreground py-20 border-2 border-dashed border-primary/50 rounded-2xl">
+ <div className="flex-1 flex flex-col items-center justify-center gap-3 text-muted-foreground py-20 border-2 border-dashed border-primary/40 rounded-2xl">
  <AlertCircle className="w-10 h-10 opacity-40" />
  <p className="text-base font-bold text-foreground">No data found yet</p>
  <p className="text-sm text-center max-w-sm">Start adding records to your workslate slates and they will appear here automatically.</p>
@@ -194,17 +194,17 @@ export default function UnivAnalytics({
 
  {/* Summary KPI Cards */}
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
- <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} className="bg-card border border-border rounded-2xl p-5 ">
+ <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} className="bg-card border border-primary/40 rounded-2xl p-5 ">
  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Total Records</p>
  <p className="text-4xl font-black text-foreground">{totalRecords.toLocaleString()}</p>
  <p className="text-xs text-muted-foreground mt-2">Across all active slates</p>
  </motion.div>
- <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.05}} className="bg-card border border-border rounded-2xl p-5 ">
+ <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.05}} className="bg-card border border-primary/40 rounded-2xl p-5 ">
  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Active Slates</p>
  <p className="text-4xl font-black text-foreground">{stats.length}</p>
  <p className="text-xs text-muted-foreground mt-2">Slates with data in this workslate</p>
  </motion.div>
- <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.1}} className="bg-card border border-border rounded-2xl p-5 ">
+ <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.1}} className="bg-card border border-primary/40 rounded-2xl p-5 ">
  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Top Slate</p>
  <p className="text-2xl font-black text-foreground truncate">{topModule?.label || '—'}</p>
  <p className="text-xs text-muted-foreground mt-2">{topModule ? `${topModule.count.toLocaleString()} records` : 'No data yet'}</p>
@@ -212,7 +212,7 @@ export default function UnivAnalytics({
  </div>
 
  {/* Bar Chart — all modules */}
- <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.15}} className="bg-card border border-border rounded-2xl p-6 ">
+ <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.15}} className="bg-card border border-primary/40 rounded-2xl p-6 ">
  <div className="flex items-center gap-2 mb-6">
  <BarChart2 className="w-5 h-5 text-primary" />
  <h3 className="text-lg font-bold text-foreground">Records by Slate</h3>
@@ -238,13 +238,13 @@ export default function UnivAnalytics({
  </motion.div>
 
  {/* Breakdown Table */}
- <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.25}} className="bg-card border border-border rounded-2xl overflow-hidden ">
- <div className="p-5 border-b border-border flex items-center gap-2 bg-muted/20">
+ <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.25}} className="bg-card border border-primary/40 rounded-2xl overflow-hidden ">
+ <div className="p-5 border-b border-primary/40 flex items-center gap-2 bg-muted/20">
  <TrendingUp className="w-5 h-5 text-muted-foreground" />
  <h3 className="text-lg font-bold text-foreground">Detailed Breakdown</h3>
  </div>
  <table className="w-full text-left text-sm">
- <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground border-b border-border">
+ <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground border-b border-primary/40">
  <tr>
  <th className="p-4 font-semibold">Slate</th>
  <th className="p-4 font-semibold">Table</th>

@@ -50,7 +50,7 @@ export function GeoBanner({ country, tier, onTierChange}) {
  </div>
 
  {open && (
- <div className="absolute top-full mt-2 left-0 right-0 sm:left-auto sm:right-0 sm:w-72 bg-white border border-slate-200 rounded-2xl z-50 p-2 animate-in fade-in slide-in-from-top-2 duration-150">
+ <div className="absolute top-full mt-2 left-0 right-0 sm:left-auto sm:right-0 sm:w-72 bg-white border border-primary/40 rounded-2xl z-50 p-2 animate-in fade-in slide-in-from-top-2 duration-150">
  <div className="px-3 py-2 mb-1">
  <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Select your region</p>
  </div>
@@ -66,7 +66,7 @@ export function GeoBanner({ country, tier, onTierChange}) {
  <span className="text-xs text-slate-500 font-medium">{t.sub}</span>
  </button>
  ))}
- <div className="border-t border-slate-100 mt-1 pt-1">
+ <div className="border-t border-primary/40 mt-1 pt-1">
  <p className="text-[10px] text-slate-400 font-medium px-3 py-2">
  Community &amp; education pricing requires admin verification at signup.
  </p>

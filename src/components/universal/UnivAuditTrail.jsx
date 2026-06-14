@@ -107,20 +107,20 @@ export default function UnivAuditTrail() {
 
  <div className="relative max-w-sm flex-shrink-0">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
- <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search audit trail..." className="w-full h-10 pl-9 pr-4 bg-card border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search audit trail..." className="w-full h-10 pl-9 pr-4 bg-card border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
 
  {loading ? (
  <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
  ) : (
- <div className="flex-1 overflow-auto rounded-2xl border border-border bg-card ">
+ <div className="flex-1 overflow-auto rounded-2xl border border-primary/40 bg-card ">
  <table className="w-full text-sm min-w-[600px]">
- <thead className="border-b border-border bg-muted/40 sticky top-0">
+ <thead className="border-b border-primary/40 bg-muted/40 sticky top-0">
  <tr><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Action</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">User Name</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Slate</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Timestamp</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Severity</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase"></th></tr>
  </thead>
  <tbody>
  {filtered.map(r => (
- <motion.tr key={r.id} initial={{ opacity: 0}} animate={{ opacity: 1}} className="border-b border-border/50 hover:bg-muted/20">
+ <motion.tr key={r.id} initial={{ opacity: 0}} animate={{ opacity: 1}} className="border-b border-primary/40 hover:bg-muted/20">
  <td className="px-4 py-3 font-semibold">{r['action']}</td><td className="px-4 py-3 text-muted-foreground">{r['user_name']}</td><td className="px-4 py-3 text-muted-foreground">{r['slate']}</td><td className="px-4 py-3 text-muted-foreground">{r['timestamp']}</td><td className="px-4 py-3"><span className={`px-2 py-0.5 rounded-full text-xs font-bold ${STATUS_COLORS[r['severity']] || 'bg-muted text-foreground'}`}>{r['severity']}</span></td>
  <td className="px-4 py-3">
  <div className="flex gap-1">
@@ -142,47 +142,47 @@ export default function UnivAuditTrail() {
  {modal && (
  <motion.div initial={{ opacity: 0}} animate={{ opacity: 1}} exit={{ opacity: 0}} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
  <motion.div initial={{ scale: 0.95, opacity: 0}} animate={{ scale: 1, opacity: 1}} exit={{ scale: 0.95, opacity: 0}} className="bg-card w-full max-w-lg rounded-2xl max-h-[90vh] flex flex-col">
- <div className="p-5 border-b border-border flex justify-between items-center shrink-0">
+ <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0">
  <h2 className="text-xl font-black">{editId ? 'Edit Record' : 'Add Audit Trail'}</h2>
  <button onClick={closeModal} className="p-2 bg-muted rounded-full"><XCircle className="w-5 h-5 text-muted-foreground" /></button>
  </div>
  <form onSubmit={save} className="p-5 grid grid-cols-2 gap-4 overflow-y-auto custom-scrollbar">
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Action</label>
- <input required type="text" value={form['action']} onChange={e => setForm({ ...form, 'action': e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input required type="text" value={form['action']} onChange={e => setForm({ ...form, 'action': e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">User Name</label>
- <input type="text" value={form['user_name']} onChange={e => setForm({ ...form, 'user_name': e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="text" value={form['user_name']} onChange={e => setForm({ ...form, 'user_name': e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Slate / Area</label>
- <input type="text" value={form['module']} onChange={e => setForm({ ...form, 'module': e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="text" value={form['module']} onChange={e => setForm({ ...form, 'module': e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Record Affected</label>
- <input type="text" value={form['record_affected']} onChange={e => setForm({ ...form, 'record_affected': e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="text" value={form['record_affected']} onChange={e => setForm({ ...form, 'record_affected': e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">IP Address</label>
- <input type="text" value={form['ip_address']} onChange={e => setForm({ ...form, 'ip_address': e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="text" value={form['ip_address']} onChange={e => setForm({ ...form, 'ip_address': e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Timestamp</label>
- <input type="datetime-local" value={form['timestamp']} onChange={e => setForm({ ...form, 'timestamp': e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="datetime-local" value={form['timestamp']} onChange={e => setForm({ ...form, 'timestamp': e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div className="col-span-2">
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Details</label>
- <input type="text" value={form['description']} onChange={e => setForm({ ...form, 'description': e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="text" value={form['description']} onChange={e => setForm({ ...form, 'description': e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
 
  <div className="col-span-2">
  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Severity</label>
- <select value={form['severity']} onChange={e => setForm({ ...form, 'severity': e.target.value})} className="w-full h-10 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
+ <select value={form['severity']} onChange={e => setForm({ ...form, 'severity': e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
  {["Info","Warning","Critical"].map(s => <option key={s}>{s}</option>)}
  </select>
  </div>
- <div className="col-span-2 flex justify-end gap-3 pt-2 border-t border-border">
+ <div className="col-span-2 flex justify-end gap-3 pt-2 border-t border-primary/40">
  <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button>
  <button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold">{editId ? 'Update' : 'Add'}</button>
  </div>

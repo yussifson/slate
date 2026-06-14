@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 
 const STAGE_COLORS = [
- { bg: 'from-slate-500 to-slate-600', light: 'bg-muted/50', border: 'border-border', text: 'text-foreground', badge: 'bg-muted text-muted-foreground'},
+ { bg: 'from-slate-500 to-slate-600', light: 'bg-muted/50', border: 'border-primary/40', text: 'text-foreground', badge: 'bg-muted text-muted-foreground'},
  { bg: 'from-primary to-primary', light: 'bg-muted/50', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-muted text-primary'},
  { bg: 'from-primary to-primary', light: 'bg-muted/50', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-muted text-primary'},
  { bg: 'from-primary to-primary', light: 'bg-muted/50', border: 'border-primary/20', text: 'text-primary/90', badge: 'bg-muted text-primary'},
@@ -50,7 +50,7 @@ function PipelineCard({ record, fieldDefinitions, stageFieldName, onView, colorT
  e.currentTarget.style.opacity = '1';
  e.currentTarget.style.transform = 'rotate(0deg)';
 }}
- className="bg-card rounded-xl border border-border/80 p-4 cursor-grab active:cursor-grabbing transition-all duration-200 hover:border-border group"
+ className="bg-card rounded-xl border border-primary/40 p-4 cursor-grab active:cursor-grabbing transition-all duration-200 hover:border-primary/40 group"
  >
  <div className="flex items-start justify-between mb-2">
  <div className="flex items-center gap-2 min-w-0">
@@ -91,7 +91,7 @@ function PipelineCard({ record, fieldDefinitions, stageFieldName, onView, colorT
  </div>
  )}
 
- <div className="flex items-center justify-between mt-3 pt-2 border-t border-border">
+ <div className="flex items-center justify-between mt-3 pt-2 border-t border-primary/40">
  <span className="text-[10px] text-muted-foreground">
  {record.created_at ? format(new Date(record.created_at), 'MMM d, yyyy') : ''}
  </span>
@@ -201,7 +201,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
  if (!stageField && fieldDefinitions.length > 0) {
  return (
  <div className="flex flex-col items-center justify-center py-20 text-center">
- <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-border mb-5">
+ <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-primary/40 mb-5">
  <Layers className="w-12 h-12 text-primary/30" />
  </div>
  <h3 className="text-lg font-semibold text-foreground mb-2">No Pipeline Field Found</h3>
@@ -215,7 +215,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
  if (!data || data.length === 0) {
  return (
  <div className="flex flex-col items-center justify-center py-20 text-center">
- <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-border mb-5">
+ <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border border-primary/40 mb-5">
  <Sparkles className="w-12 h-12 text-primary/30" />
  </div>
  <h3 className="text-lg font-semibold text-foreground mb-2">Empty Pipeline</h3>
@@ -268,7 +268,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
  className={`w-[300px] flex-shrink-0 rounded-2xl flex flex-col max-h-[700px] border transition-all duration-200 ${
  isDragOver
  ? `${color.border} ring-2 ring-offset-2 ring-primary/30`
- : 'border-border/80 '
+ : 'border-primary/40 '
 }`}
  style={{ backgroundColor: isDragOver ? '#f0f4ff' : '#fafbfc'}}
  onDragOver={(e) => {
@@ -320,7 +320,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
  </div>
 
  {/* Column Footer */}
- <div className="p-3 border-t border-border/60">
+ <div className="p-3 border-t border-primary/40">
  <div className="flex items-center justify-center">
  <ChevronRight className="w-3.5 h-3.5 text-muted-foreground mr-1" />
  <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
@@ -343,7 +343,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
  {viewRecord && (
  <div className="mt-2 space-y-2">
  {fieldDefinitions.map(f => (
- <div key={f.name} className="flex justify-between items-center py-2.5 border-b border-border last:border-0">
+ <div key={f.name} className="flex justify-between items-center py-2.5 border-b border-primary/40 last:border-0">
  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
  {f.name.replace(/_/g, ' ')}
  </span>

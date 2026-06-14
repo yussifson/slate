@@ -43,7 +43,7 @@ export default function ConflictChecker() {
     <div className="space-y-6">
       <PageHeader title="Conflict of Interest Checker" subtitle="Search clients, parties, and cases before accepting new matters" />
       {/* Search */}
-      <div className="bg-card border border-border rounded-xl p-6 space-y-4">
+      <div className="bg-card border border-primary/40 rounded-xl p-6 space-y-4">
         <div className="flex items-center gap-2 mb-2">
           <Shield className="w-5 h-5 text-primary" />
           <h2 className="text-sm font-semibold">{t("enter_name_or_id_to_check", "Enter Name or ID to Check")}</h2>
@@ -137,7 +137,7 @@ export default function ConflictChecker() {
         </div>
       )}
       {/* Guide */}
-      <div className="bg-muted/30 border border-border rounded-xl p-4">
+      <div className="bg-muted/30 border border-primary/40 rounded-xl p-4">
         <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">{t("what_we_check", "What we check")}</h3>
         <ul className="text-xs text-muted-foreground space-y-1">
           <li>• <strong>{t("existing_clients", "Existing clients")}</strong> {t("name_email_and_id_number", "— name, email, and ID number")}</li>

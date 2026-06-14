@@ -125,10 +125,10 @@ export default function UnivNotification() {
  </div>
  </div>
  <div className="flex items-center gap-2">
- <button onClick={markAllRead} className="px-4 py-2 text-sm font-medium text-foreground bg-card border border-border rounded-xl hover:bg-muted transition-colors">
+ <button onClick={markAllRead} className="px-4 py-2 text-sm font-medium text-foreground bg-card border border-primary/40 rounded-xl hover:bg-muted transition-colors">
  Mark all as read
  </button>
- <button className="p-2 text-muted-foreground bg-card border border-border rounded-xl hover:bg-muted transition-colors">
+ <button className="p-2 text-muted-foreground bg-card border border-primary/40 rounded-xl hover:bg-muted transition-colors">
  <Settings className="w-5 h-5" />
  </button>
  </div>
@@ -145,7 +145,7 @@ export default function UnivNotification() {
  animate={{ opacity: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95}}
  key={n.id} 
- className={`flex items-start gap-4 p-5 rounded-2xl border transition-all ${n.read ? 'bg-card border-border opacity-70 hover:opacity-100' : 'bg-card border-primary/30 -primary/5'}`}
+ className={`flex items-start gap-4 p-5 rounded-2xl border transition-all ${n.read ? 'bg-card border-primary/40 opacity-70 hover:opacity-100' : 'bg-card border-primary/30 -primary/5'}`}
  >
  <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${getBg(n.type)}`}>
  {getIcon(n.type)}
@@ -174,7 +174,7 @@ export default function UnivNotification() {
  )}
  
  {!loading && notifications.length === 0 && (
- <div className="text-center p-12 bg-card border border-primary/50 border-dashed rounded-2xl">
+ <div className="text-center p-12 bg-card border border-primary/40 border-dashed rounded-2xl">
  <Bell className="w-10 h-10 text-slate-300 mx-auto mb-3" />
  <h3 className="text-lg font-semibold text-foreground">All caught up!</h3>
  <p className="text-muted-foreground mt-1 text-sm">You have no new notifications.</p>

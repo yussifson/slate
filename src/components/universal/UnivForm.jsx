@@ -69,7 +69,7 @@ export default function UnivForm({
  <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>
  </div>
 
- <form onSubmit={handleSubmit} className="bg-card border border-border rounded-2xl p-6 sm:p-8 space-y-6">
+ <form onSubmit={handleSubmit} className="bg-card border border-primary/40 rounded-2xl p-6 sm:p-8 space-y-6">
  {fields.map((field) => (
  <div key={field.id} className="space-y-2">
  <label className="text-sm font-semibold text-foreground flex items-center gap-1">
@@ -83,7 +83,7 @@ export default function UnivForm({
  required={field.required}
  value={formData[field.id] || ''}
  onChange={(e) => handleChange(field.id, e.target.value)}
- className="w-full h-11 px-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition-"
+ className="w-full h-11 px-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition-"
  />
  ) : field.type === 'textarea' ? (
  <textarea 
@@ -92,7 +92,7 @@ export default function UnivForm({
  value={formData[field.id] || ''}
  onChange={(e) => handleChange(field.id, e.target.value)}
  rows={4}
- className="w-full p-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition- resize-none"
+ className="w-full p-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition- resize-none"
  />
  ) : field.type === 'select' ? (
  <div className="relative">
@@ -100,7 +100,7 @@ export default function UnivForm({
  required={field.required}
  value={formData[field.id] || ''}
  onChange={(e) => handleChange(field.id, e.target.value)}
- className="w-full h-11 pl-4 pr-10 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 appearance-none"
+ className="w-full h-11 pl-4 pr-10 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 appearance-none"
  >
  <option value="" disabled>Select an option</option>
  {field.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
@@ -114,12 +114,12 @@ export default function UnivForm({
  required={field.required}
  value={formData[field.id] || ''}
  onChange={(e) => handleChange(field.id, e.target.value)}
- className="w-full h-11 pl-11 pr-4 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-11 pl-11 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
  ) : field.type === 'file' ? (
  <div 
- className={`w-full border-2 border-dashed rounded-xl p-8 text-center transition-colors ${dragActive ? 'border-primary bg-primary/5' : 'border-border bg-background hover:bg-muted/30'} relative`}
+ className={`w-full border-2 border-dashed rounded-xl p-8 text-center transition-colors ${dragActive ? 'border-primary bg-primary/5' : 'border-primary/40 bg-background hover:bg-muted/30'} relative`}
  onDragOver={(e) => { e.preventDefault(); setDragActive(true);}}
  onDragLeave={() => setDragActive(false)}
  onDrop={(e) => {
@@ -159,7 +159,7 @@ export default function UnivForm({
  </div>
  ))}
 
- <div className="pt-4 flex justify-end gap-3 border-t border-border mt-8">
+ <div className="pt-4 flex justify-end gap-3 border-t border-primary/40 mt-8">
  <button type="button" className="px-5 py-2.5 rounded-xl text-sm font-medium text-foreground bg-muted hover:bg-muted/60 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors">
  Cancel
  </button>

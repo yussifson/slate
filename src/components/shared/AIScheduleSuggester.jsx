@@ -58,7 +58,7 @@ Use dates starting from tomorrow.`
 };
 
  return (
- <div className="bg-card border border-border rounded-xl p-5 ">
+ <div className="bg-card border border-primary/40 rounded-xl p-5 ">
  <div className="flex items-center justify-between mb-4">
  <div className="flex items-center gap-2">
  <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-primary">
@@ -80,7 +80,7 @@ Use dates starting from tomorrow.`
  </Button>
  </div>
  {suggestions.length > 0 && (
- <div className="space-y-2 mt-4 pt-4 border-t border-border">
+ <div className="space-y-2 mt-4 pt-4 border-t border-primary/40">
  <p className="text-xs font-bold text-muted-foreground uppercase mb-2">{t("suggested_slots", "Suggested Slots")}</p>
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
  {suggestions.map((slot, idx) => {

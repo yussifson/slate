@@ -102,7 +102,7 @@ export default function UnivAffiliateProgram() {
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Calendar","Dashboard"].map(v => (
  <button 
  key={v} 
@@ -135,7 +135,7 @@ export default function UnivAffiliateProgram() {
  initial={{ opacity: 0, height: 0}}
  animate={{ opacity: 1, height: 'auto'}}
  exit={{ opacity: 0, height: 0}}
- className="bg-card p-6 rounded-xl border border-border mb-8 overflow-hidden"
+ className="bg-card p-6 rounded-xl border border-primary/40 mb-8 overflow-hidden"
  >
  <h2 className="text-xl font-semibold mb-4 text-foreground">
  {editingId ? 'Edit Affiliate' : 'New Affiliate Partner'}
@@ -226,10 +226,10 @@ export default function UnivAffiliateProgram() {
  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-500"></div>
  </div>
  ) : (
- <div className="bg-card rounded-xl border border-border overflow-hidden">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
  <table className="w-full text-left border-collapse">
  <thead>
- <tr className="bg-muted border-b border-border text-sm font-medium text-muted-foreground uppercase tracking-wider">
+ <tr className="bg-muted border-b border-primary/40 text-sm font-medium text-muted-foreground uppercase tracking-wider">
  <th className="p-4">Affiliate Partner</th>
  <th className="p-4 text-center">Performance (Clicks / Conv)</th>
  <th className="p-4 text-right">Total Payout</th>
@@ -265,10 +265,10 @@ export default function UnivAffiliateProgram() {
  </td>
  <td className="p-4 text-center">
  <div className="flex justify-center gap-2">
- <button onClick={() => handleEdit(item)} className="p-1.5 text-muted-foreground hover:text-indigo-600 bg-card border border-border rounded-md hover:bg-indigo-50 transition-all">
+ <button onClick={() => handleEdit(item)} className="p-1.5 text-muted-foreground hover:text-indigo-600 bg-card border border-primary/40 rounded-md hover:bg-indigo-50 transition-all">
  <Edit2 className="w-4 h-4" />
  </button>
- <button onClick={() => handleDelete(item.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 bg-card border border-border rounded-md hover:bg-rose-50 transition-all">
+ <button onClick={() => handleDelete(item.id)} className="p-1.5 text-muted-foreground hover:text-rose-600 bg-card border border-primary/40 rounded-md hover:bg-rose-50 transition-all">
  <Trash2 className="w-4 h-4" />
  </button>
  </div>

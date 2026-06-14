@@ -178,7 +178,7 @@ export default function UnivCompliance({
  <div className="flex flex-col h-full bg-background font-sans">
  
  {/* Header */}
- <div className="border-b border-border bg-card px-6 sm:px-8 py-6 shrink-0 z-10 relative">
+ <div className="border-b border-primary/40 bg-card px-6 sm:px-8 py-6 shrink-0 z-10 relative">
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-2xl font-extrabold text-foreground tracking-tight flex items-center gap-2">
@@ -198,7 +198,7 @@ export default function UnivCompliance({
 
  {/* Global Stats */}
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
- <div className="bg-card border border-border rounded-xl p-4 flex flex-col justify-center">
+ <div className="bg-card border border-primary/40 rounded-xl p-4 flex flex-col justify-center">
  <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">Compliance Rate</div>
  <div className="flex items-center gap-2">
  <div className="text-2xl font-bold text-foreground">{complianceRate.toFixed(0)}%</div>
@@ -234,10 +234,10 @@ export default function UnivCompliance({
  placeholder="Search compliance items..."
  value={searchQuery}
  onChange={e => setSearchQuery(e.target.value)}
- className="w-full h-10 pl-9 pr-4 bg-muted/50 border border-border rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+ className="w-full h-10 pl-9 pr-4 bg-muted/50 border border-primary/40 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
  />
  </div>
- <button className="h-10 px-4 bg-background border border-border rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-muted transition-colors ">
+ <button className="h-10 px-4 bg-background border border-primary/40 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-muted transition-colors ">
  <Filter className="w-4 h-4 text-muted-foreground" /> Filter
  </button>
  </div>
@@ -259,7 +259,7 @@ export default function UnivCompliance({
  const isWarning = colorClass.includes('orange');
 
  return (
- <div key={item.id} className="bg-card border border-border rounded-2xl p-6 transition- group relative flex flex-col">
+ <div key={item.id} className="bg-card border border-primary/40 rounded-2xl p-6 transition- group relative flex flex-col">
  <div className="flex justify-between items-start mb-4">
  <div>
  <span className={cn("px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded border mb-2 inline-block", colorClass)}>
@@ -295,7 +295,7 @@ export default function UnivCompliance({
  </div>
  </div>
 
- <div className="pt-4 border-t border-border flex items-center justify-between text-sm">
+ <div className="pt-4 border-t border-primary/40 flex items-center justify-between text-sm">
  <div className="text-muted-foreground">Owner</div>
  <div className="font-medium text-foreground">{item.owner || 'Unassigned'}</div>
  </div>
@@ -316,9 +316,9 @@ export default function UnivCompliance({
  initial={{ opacity: 0, scale: 0.95, y: 20}}
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: 20}}
- className="relative w-full max-w-2xl bg-card border border-border rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
+ className="relative w-full max-w-2xl bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
  >
- <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-muted/20">
+ <div className="px-6 py-4 border-b border-primary/40 flex items-center justify-between bg-muted/20">
  <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
  <ShieldCheck className="w-5 h-5 text-primary" />
  {editingItem ? 'Edit Compliance Item' : 'New Compliance Item'}
@@ -331,11 +331,11 @@ export default function UnivCompliance({
  <div className="grid grid-cols-2 gap-4">
  <div className="col-span-2">
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Item Title *</label>
- <input required type="text" value={formState.title} onChange={e => setFormState({...formState, title: e.target.value})} placeholder="e.g. SOC 2 Type II, GDPR Privacy Policy" className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input required type="text" value={formState.title} onChange={e => setFormState({...formState, title: e.target.value})} placeholder="e.g. SOC 2 Type II, GDPR Privacy Policy" className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Category</label>
- <select value={formState.category} onChange={e => setFormState({...formState, category: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none">
+ <select value={formState.category} onChange={e => setFormState({...formState, category: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none">
  <option>Certification</option>
  <option>Internal Policy</option>
  <option>Regulatory Requirement</option>
@@ -344,14 +344,14 @@ export default function UnivCompliance({
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Framework / Standard</label>
- <input type="text" value={formState.framework} onChange={e => setFormState({...formState, framework: e.target.value})} placeholder="e.g. ISO 27001, HIPAA" className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input type="text" value={formState.framework} onChange={e => setFormState({...formState, framework: e.target.value})} placeholder="e.g. ISO 27001, HIPAA" className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  </div>
 
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Status</label>
- <select value={formState.status} onChange={e => setFormState({...formState, status: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none">
+ <select value={formState.status} onChange={e => setFormState({...formState, status: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none">
  <option>Compliant</option>
  <option>In Progress</option>
  <option>Non-Compliant</option>
@@ -360,27 +360,27 @@ export default function UnivCompliance({
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Owner / Responsible</label>
- <input type="text" value={formState.owner} onChange={e => setFormState({...formState, owner: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input type="text" value={formState.owner} onChange={e => setFormState({...formState, owner: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Last Audit Date</label>
- <input type="date" value={formState.last_audit_date} onChange={e => setFormState({...formState, last_audit_date: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input type="date" value={formState.last_audit_date} onChange={e => setFormState({...formState, last_audit_date: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Next Audit Due</label>
- <input type="date" value={formState.next_audit_date} onChange={e => setFormState({...formState, next_audit_date: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none" />
+ <input type="date" value={formState.next_audit_date} onChange={e => setFormState({...formState, next_audit_date: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  </div>
 
  <div>
  <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Notes / Remediation Plan</label>
- <textarea value={formState.notes} onChange={e => setFormState({...formState, notes: e.target.value})} className="w-full h-24 p-3 rounded-lg border border-border bg-background text-sm focus:border-primary focus:outline-none resize-none" />
+ <textarea value={formState.notes} onChange={e => setFormState({...formState, notes: e.target.value})} className="w-full h-24 p-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none resize-none" />
  </div>
 
  </form>
  </div>
  
- <div className="px-6 py-4 border-t border-border bg-muted/20 flex justify-end gap-3">
+ <div className="px-6 py-4 border-t border-primary/40 bg-muted/20 flex justify-end gap-3">
  <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors">Cancel</button>
  <button type="submit" form="compliance-form" disabled={saveMutation.isPending} className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors disabled:opacity-50">
  {saveMutation.isPending ? 'Saving...' : 'Save Item'}

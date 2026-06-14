@@ -23,13 +23,13 @@ export default function Partners() {
  <Button className="rounded-full px-8 bg-primary text-white hover:bg-primary/90 h-14 text-lg font-bold -emerald-600/20 w-full sm:w-auto">
  {t("become_a_partner", "Become a Partner")}
  </Button>
- <Button variant="outline" className="rounded-full px-8 h-14 text-lg font-bold w-full sm:w-auto border-slate-300 text-slate-700 hover:bg-slate-50">
+ <Button variant="outline" className="rounded-full px-8 h-14 text-lg font-bold w-full sm:w-auto border-primary/40 text-slate-700 hover:bg-slate-50">
  {t("find_a_partner", "Find a Partner")}
  </Button>
  </div>
  </div>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
- <div className="bg-white p-10 rounded-[2rem] border border-slate-200 text-center">
+ <div className="bg-white p-10 rounded-[2rem] border border-primary/40 text-center">
  <div className="w-14 h-14 bg-slate-50 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
  <Globe className="w-7 h-7" />
  </div>
@@ -42,7 +42,7 @@ export default function Partners() {
  </p>
  </div>
  
- <div className="bg-white p-10 rounded-[2rem] border border-slate-200 text-center">
+ <div className="bg-white p-10 rounded-[2rem] border border-primary/40 text-center">
  <div className="w-14 h-14 bg-slate-50 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
  <ShieldCheck className="w-7 h-7" />
  </div>
@@ -55,7 +55,7 @@ export default function Partners() {
  </p>
  </div>
 
- <div className="bg-white p-10 rounded-[2rem] border border-slate-200 text-center">
+ <div className="bg-white p-10 rounded-[2rem] border border-primary/40 text-center">
  <div className="w-14 h-14 bg-slate-50 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
  <Rocket className="w-7 h-7" />
  </div>

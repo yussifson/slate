@@ -45,7 +45,7 @@ const BG_BLUE_LIGHT = "bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20";
 
 function ReportMetricCard({ title, value, sub, icon: Icon, trend}) {
  return (
- <div className="bg-card border border-border rounded-xl p-6 transition-">
+ <div className="bg-card border border-primary/40 rounded-xl p-6 transition-">
  <div className="flex items-start justify-between gap-3">
  <div className="min-w-0">
  <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{title}</p>
@@ -74,8 +74,8 @@ function ReportMetricCard({ title, value, sub, icon: Icon, trend}) {
 
 function ReportSection({ title, description, icon: Icon, children, className = ""}) {
  return (
- <section className={`bg-card border border-border rounded-xl overflow-hidden ${className}`}>
- <div className="px-6 py-5 border-b border-border bg-slate-50/50 dark:bg-transparent dark:bg-slate-900/50">
+ <section className={`bg-card border border-primary/40 rounded-xl overflow-hidden ${className}`}>
+ <div className="px-6 py-5 border-b border-primary/40 bg-slate-50/50 dark:bg-transparent dark:bg-slate-900/50">
  <div className="flex items-center gap-3">
  {Icon && <Icon className={`w-5 h-5 ${THEME_BLUE} shrink-0`} />}
  <div>
@@ -92,7 +92,7 @@ function ReportSection({ title, description, icon: Icon, children, className = "
 function BlueTooltip({ active, payload, label, prefix = "", suffix = ""}) {
  if (!active || !payload?.length) return null;
  return (
- <div className="bg-card border border-border rounded-lg p-3 text-sm min-w-[140px]">
+ <div className="bg-card border border-primary/40 rounded-lg p-3 text-sm min-w-[140px]">
  <p className="font-semibold text-primary mb-2">{label}</p>
  {payload.map((entry, i) => (
  <div key={i} className="flex justify-between gap-4 text-muted-foreground">
@@ -315,7 +315,7 @@ export default function ReportsDashboard() {
 
  return (
  <div className="space-y-8 pb-12 max-w-[1600px]">
- <header className="border-b border-border pb-6">
+ <header className="border-b border-primary/40 pb-6">
  <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
  <div>
  <p className={`text-xs font-bold ${THEME_BLUE} uppercase tracking-widest mb-2`}>
@@ -331,7 +331,7 @@ export default function ReportsDashboard() {
  )}
  </p>
  </div>
- <div className="flex items-center gap-3 bg-card border border-border rounded-lg px-3 py-2 ">
+ <div className="flex items-center gap-3 bg-card border border-primary/40 rounded-lg px-3 py-2 ">
  <Clock className="w-4 h-4 text-primary shrink-0" />
  <Select value={period} onValueChange={setPeriod}>
  <SelectTrigger className="w-40 border-0 focus:ring-0 font-medium text-foreground">
@@ -507,7 +507,7 @@ export default function ReportsDashboard() {
  <div className="overflow-x-auto -mx-2">
  <table className="w-full text-sm">
  <thead>
- <tr className="border-b border-border text-left">
+ <tr className="border-b border-primary/40 text-left">
  <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase`}>{isSchool ? 'Student' : isRetail ? 'Customer' : 'Client'}</th>
  <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase text-right`}>Billed</th>
  <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase text-center`}>{isSchool ? 'Classes' : 'Cases'}</th>
@@ -546,7 +546,7 @@ export default function ReportsDashboard() {
  <div className="overflow-x-auto -mx-2">
  <table className="w-full text-sm">
  <thead>
- <tr className="border-b border-border text-left">
+ <tr className="border-b border-primary/40 text-left">
  <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase`}>Name</th>
  <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase`}>Role</th>
  <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase`}>Department</th>
@@ -584,26 +584,26 @@ export default function ReportsDashboard() {
  icon={FileText}
  >
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
- <div className="p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
+ <div className="p-6 rounded-xl border border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
  <p className={`text-xs font-bold ${THEME_BLUE} uppercase`}>{t("total_invoices", "Total invoices")}</p>
  <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 dark:text-white mt-2">{invoices.length}</p>
  </div>
- <div className="p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
+ <div className="p-6 rounded-xl border border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
  <p className={`text-xs font-bold ${THEME_BLUE} uppercase`}>{t("paid_invoices", "Paid invoices")}</p>
  <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 dark:text-white mt-2">{paidCount}</p>
  </div>
- <div className="p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
+ <div className="p-6 rounded-xl border border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
  <p className={`text-xs font-bold ${THEME_BLUE} uppercase`}>{t("team_members", "Team members")}</p>
  <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 dark:text-white mt-2">{staff.length}</p>
  </div>
- <div className="p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
+ <div className="p-6 rounded-xl border border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
  <p className={`text-xs font-bold ${THEME_BLUE} uppercase`}>{t("avg_monthly_revenue", "Avg monthly revenue")}</p>
  <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 dark:text-white mt-2">
  {formatCurrency(months ? Math.round(totalRevenue / months) : 0, currency)}
  </p>
  </div>
  </div>
- <p className="text-xs text-muted-foreground mt-6 border-t border-border pt-4">
+ <p className="text-xs text-muted-foreground mt-6 border-t border-primary/40 pt-4">
  {t(
  "report_footer_note",
  "Figures are generated from live workspace data. Export detailed ledgers from Billing or Data Export for audit trails."

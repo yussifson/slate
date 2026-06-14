@@ -195,14 +195,14 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
 };
 
  return (
- <div className="flex h-full bg-background rounded-xl overflow-hidden relative border border-border group">
+ <div className="flex h-full bg-background rounded-xl overflow-hidden relative border border-primary/40 group">
  
  {/* Video Content Area */}
  <div className="flex-1 flex flex-col relative min-w-0">
  {/* AI Response Overlay */}
  {aiResponse && (
- <div className="absolute top-4 left-4 right-4 z-40 bg-card/95 backdrop-blur-md border border-border p-4 rounded-xl animate-in fade-in max-h-[80%] overflow-y-auto">
- <div className="flex items-center justify-between mb-3 border-b border-border pb-2">
+ <div className="absolute top-4 left-4 right-4 z-40 bg-card/95 backdrop-blur-md border border-primary/40 p-4 rounded-xl animate-in fade-in max-h-[80%] overflow-y-auto">
+ <div className="flex items-center justify-between mb-3 border-b border-primary/40 pb-2">
  <h3 className="font-bold flex items-center gap-2 text-primary"><Sparkles className="w-4 h-4"/> AI Meeting Notes</h3>
  <Button variant="ghost" size="sm" onClick={() => setAiResponse(null)} className="h-6 px-2 text-xs">Close</Button>
  </div>
@@ -239,8 +239,8 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
 
  {/* Chat Sidebar */}
  {showChat && (
- <div className="w-80 border-l border-border bg-card flex flex-col shrink-0 animate-in slide-in-from-right">
- <div className="h-14 border-b border-border flex items-center justify-between px-4">
+ <div className="w-80 border-l border-primary/40 bg-card flex flex-col shrink-0 animate-in slide-in-from-right">
+ <div className="h-14 border-b border-primary/40 flex items-center justify-between px-4">
  <h3 className="font-semibold flex items-center gap-2"><MessageSquare className="w-4 h-4" /> Meeting Chat</h3>
  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setShowChat(false)}>
  <X className="w-4 h-4" />
@@ -262,7 +262,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  </div>
  )}
  </div>
- <div className="p-3 border-t border-border flex gap-2">
+ <div className="p-3 border-t border-primary/40 flex gap-2">
  <input 
  type="text" 
  placeholder="Send a message..." 
@@ -280,7 +280,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  </div>
 
  {/* Control Bar */}
- <div className={`bg-card border-t border-border flex items-center justify-center z-10 transition-all ${isPipMode ? 'h-12 px-2 gap-2' : 'h-20 px-6 gap-4'}`}>
+ <div className={`bg-card border-t border-primary/40 flex items-center justify-center z-10 transition-all ${isPipMode ? 'h-12 px-2 gap-2' : 'h-20 px-6 gap-4'}`}>
  <Button 
  onClick={toggleAudio}
  variant={isMuted ? "destructive" : "secondary"}
@@ -346,7 +346,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  
  {/* Invite Sidebar/Popup */}
  {showInvite && !isPipMode && (
- <div className="absolute bottom-24 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:right-6 w-[340px] bg-card border border-border rounded-2xl p-5 z-50 animate-in fade-in slide-in-from-bottom-4">
+ <div className="absolute bottom-24 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:right-6 w-[340px] bg-card border border-primary/40 rounded-2xl p-5 z-50 animate-in fade-in slide-in-from-bottom-4">
  <div className="flex items-center justify-between mb-3">
  <h3 className="font-semibold flex items-center gap-2"><UserPlus className="w-4 h-4 text-primary"/> Quick Connect</h3>
  <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setShowInvite(false)}><X className="w-4 h-4" /></Button>
@@ -356,7 +356,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  <input 
  type="email" 
  placeholder="guest@email.com" 
- className="flex-1 bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
+ className="flex-1 bg-background border border-primary/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
  value={inviteEmail}
  onChange={(e) => setInviteEmail(e.target.value)}
  onKeyDown={(e) => e.key === 'Enter' && handleInvite()}
@@ -460,15 +460,15 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
  
  if (roomUrl && (roomUrl.includes('meet.jit.si') || roomUrl.includes('meet.ffmuc.net') || roomUrl.includes('jitsi'))) {
  return (
- <div className="flex flex-col h-full bg-slate-50/50 dark:bg-slate-950 rounded-xl relative overflow-hidden items-center justify-center text-foreground border border-border">
+ <div className="flex flex-col h-full bg-slate-50/50 dark:bg-slate-950 rounded-xl relative overflow-hidden items-center justify-center text-foreground border border-primary/40">
  <div className="absolute top-0 right-0 z-50 p-2 flex gap-2">
  <Button variant="destructive" size="sm" onClick={onLeave} className="rounded-full h-8 px-4 font-semibold opacity-80 hover:opacity-100 ">
  <PhoneOff className="w-4 h-4 mr-2" /> End Session
  </Button>
  </div>
  
- <div className="flex flex-col items-center max-w-md text-center p-8 bg-white dark:bg-slate-900 rounded-3xl border border-border ">
- <div className="w-24 h-24 bg-slate-50 dark:bg-primary/30 rounded-full flex items-center justify-center mb-6 border border-slate-200 dark:border-primary/80">
+ <div className="flex flex-col items-center max-w-md text-center p-8 bg-white dark:bg-slate-900 rounded-3xl border border-primary/40 ">
+ <div className="w-24 h-24 bg-slate-50 dark:bg-primary/30 rounded-full flex items-center justify-center mb-6 border border-primary/40 dark:border-primary/80">
  <VideoIcon className="w-10 h-10 text-primary dark:text-primary/70" />
  </div>
  <h2 className="text-2xl font-bold mb-3 text-slate-800 dark:text-white tracking-tight">Secure Video Meeting</h2>

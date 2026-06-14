@@ -62,7 +62,7 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh})
 
  if (!data || data.length === 0) {
  return (
- <div className="py-12 text-center text-muted-foreground bg-card border border-border rounded-xl ">
+ <div className="py-12 text-center text-muted-foreground bg-card border border-primary/40 rounded-xl ">
  No records found. Click "Add Record" to create one.
  </div>
  );
@@ -76,7 +76,7 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh})
  <>
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
  {data.map((record) => (
- <div key={record.id} className={`bg-card rounded-xl border border-border p-5 transition- relative overflow-hidden group`}>
+ <div key={record.id} className={`bg-card rounded-xl border border-primary/40 p-5 transition- relative overflow-hidden group`}>
  {theme && theme !== 'primary' && (
  <div className={`absolute top-0 left-0 w-full h-1 bg-${theme}-500`} />
  )}
@@ -88,21 +88,21 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh})
  <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
  <button
  onClick={() => setViewRecord(record)}
- className="p-1.5 rounded-lg bg-card/80 backdrop-blur border border-border text-muted-foreground hover:text-primary hover:border-primary/30 transition-colors "
+ className="p-1.5 rounded-lg bg-card/80 backdrop-blur border border-primary/40 text-muted-foreground hover:text-primary hover:border-primary/30 transition-colors "
  title="View"
  >
  <Eye className="w-3.5 h-3.5" />
  </button>
  <button
  onClick={() => openEdit(record)}
- className="p-1.5 rounded-lg bg-card/80 backdrop-blur border border-border text-muted-foreground hover:text-amber-600 hover:border-amber-300 transition-colors "
+ className="p-1.5 rounded-lg bg-card/80 backdrop-blur border border-primary/40 text-muted-foreground hover:text-amber-600 hover:border-amber-300 transition-colors "
  title="Edit"
  >
  <Pencil className="w-3.5 h-3.5" />
  </button>
  <button
  onClick={() => setDeleteRecord(record)}
- className="p-1.5 rounded-lg bg-card/80 backdrop-blur border border-border text-muted-foreground hover:text-red-600 hover:border-red-300 transition-colors "
+ className="p-1.5 rounded-lg bg-card/80 backdrop-blur border border-primary/40 text-muted-foreground hover:text-red-600 hover:border-red-300 transition-colors "
  title="Delete"
  >
  <Trash2 className="w-3.5 h-3.5" />
@@ -119,7 +119,7 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh})
 
  <div className="space-y-2 text-sm">
  {otherFields.map(field => (
- <div key={field.id} className="flex justify-between items-center border-t border-border pt-2">
+ <div key={field.id} className="flex justify-between items-center border-t border-primary/40 pt-2">
  <span className="text-muted-foreground text-xs">{field.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
  <span className="font-medium text-foreground truncate max-w-[120px]" title={record.data[field.name]}>
  {field.field_type === 'boolean' ? (record.data[field.name] ? 'Yes' : 'No') : 
@@ -130,7 +130,7 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh})
  ))}
  </div>
  
- <div className="mt-4 pt-3 border-t border-border flex justify-between items-center text-xs text-muted-foreground">
+ <div className="mt-4 pt-3 border-t border-primary/40 flex justify-between items-center text-xs text-muted-foreground">
  <span>Added {format(new Date(record.created_at || new Date()), 'MMM d')}</span>
  </div>
  </div>
@@ -147,7 +147,7 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh})
  {viewRecord && (
  <div className="mt-2 space-y-2">
  {fieldDefinitions.map(f => (
- <div key={f.name} className="flex justify-between items-center py-2 border-b border-border last:border-0">
+ <div key={f.name} className="flex justify-between items-center py-2 border-b border-primary/40 last:border-0">
  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{f.name.replace(/_/g, ' ')}</span>
  <span className="text-sm font-medium text-foreground max-w-[60%] text-right break-words">{String(viewRecord.data[f.name] ?? '-')}</span>
  </div>
@@ -178,9 +178,9 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh})
 
  if (f.field_type === 'boolean') {
  return (
- <div key={f.name} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+ <div key={f.name} className="flex items-center justify-between py-2 border-b border-primary/40 last:border-0">
  <label className="text-sm font-medium text-foreground">{label}</label>
- <input type="checkbox" checked={!!val} onChange={e => setEditData({ ...editData, [f.name]: e.target.checked})} className="h-4 w-4 rounded border-border" />
+ <input type="checkbox" checked={!!val} onChange={e => setEditData({ ...editData, [f.name]: e.target.checked})} className="h-4 w-4 rounded border-primary/40" />
  </div>
  );
 }
@@ -190,7 +190,7 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh})
  return (
  <div key={f.name} className="space-y-1">
  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</label>
- <select value={val} onChange={e => setEditData({ ...editData, [f.name]: e.target.value})} className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+ <select value={val} onChange={e => setEditData({ ...editData, [f.name]: e.target.value})} className="w-full rounded-lg border border-primary/40 bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
  <option value="">Select...</option>
  {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
  </select>
@@ -205,7 +205,7 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh})
  );
 })}
  </div>
- <DialogFooter className="mt-6 pt-4 border-t border-border">
+ <DialogFooter className="mt-6 pt-4 border-t border-primary/40">
  <Button variant="outline" onClick={() => setEditRecord(null)}>Cancel</Button>
  <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-primary hover:bg-primary/90 text-white">
  {isSaving ? 'Saving...' : 'Save Changes'}

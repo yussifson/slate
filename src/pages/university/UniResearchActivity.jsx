@@ -26,7 +26,7 @@ export default function UniResearchActivity() {
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="flex items-end justify-between border-b border-[var(--color-border-subtle)] pb-4">
+ <div className="flex items-end justify-between border-b border-primary/40 pb-4">
  <div>
  <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Research Activity & Grants Hub</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage academic research proposals, publication indices, ethics reviews, and external grant awards.</p>
@@ -35,7 +35,7 @@ export default function UniResearchActivity() {
 
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  {stats.map((stat, i) => (
- <div key={i} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">
+ <div key={i} className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
  <div className="flex items-center justify-between">
  <div>
  <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">{stat.label}</p>
@@ -50,8 +50,8 @@ export default function UniResearchActivity() {
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
- <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden">
- <div className="p-6 border-b border-[var(--color-border-subtle)] flex items-center justify-between">
+ <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+ <div className="p-6 border-b border-primary/40 flex items-center justify-between">
  <div>
  <h2 className="font-semibold text-[var(--color-text-primary)]">Research & Projects Directory</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Academic investigations, field research, and publications portfolio.</p>
@@ -63,21 +63,21 @@ export default function UniResearchActivity() {
  <div className="p-6">
  {research.length === 0 ? (
  <div className="space-y-4">
- <div className="p-4 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] flex justify-between items-center">
+ <div className="p-4 bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-xl)] flex justify-between items-center">
  <div>
  <h4 className="font-bold text-[var(--text-sm)] text-[var(--color-text-primary)] flex items-center gap-1.5"><Sparkles className="w-4 h-4 text-[var(--color-warning)]" /> Quantum Cryptography Initiatives</h4>
  <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)] mt-0.5">Principal Investigator: Dr. Alan Turing · Department of Physics</p>
  </div>
  <OrbitStatusBadge status="Active" />
  </div>
- <div className="p-4 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] flex justify-between items-center">
+ <div className="p-4 bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-xl)] flex justify-between items-center">
  <div>
  <h4 className="font-bold text-[var(--text-sm)] text-[var(--color-text-primary)] flex items-center gap-1.5">Machine Learning Ethics & Fairness</h4>
  <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)] mt-0.5">Principal Investigator: Prof. Ada Lovelace · Computer Science School</p>
  </div>
  <OrbitStatusBadge status="Reviewing" label="Ethics Review" />
  </div>
- <div className="p-4 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] flex justify-between items-center">
+ <div className="p-4 bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-xl)] flex justify-between items-center">
  <div>
  <h4 className="font-bold text-[var(--text-sm)] text-[var(--color-text-primary)] flex items-center gap-1.5">Sustainable Bio-Concrete Development</h4>
  <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)] mt-0.5">Principal Investigator: Dr. Richard Feynman · Department of Materials Engineering</p>
@@ -90,7 +90,7 @@ export default function UniResearchActivity() {
  {research.map((item, i) => {
  let info = {}; try { info = JSON.parse(item.notes);} catch(e){}
  return (
- <div key={i} className="p-4 bg-[var(--color-surface-1)] rounded-[var(--radius-xl)] border border-[var(--color-border-subtle)] flex justify-between items-center">
+ <div key={i} className="p-4 bg-[var(--color-surface-1)] rounded-[var(--radius-xl)] border border-primary/40 flex justify-between items-center">
  <div>
  <h4 className="font-bold text-[var(--color-text-primary)] text-[var(--text-sm)]">{info.title || "Research Project"}</h4>
  <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)]">PI: {info.investigator || "Staff"} · Category: {info.category || "General"}</p>
@@ -104,7 +104,7 @@ export default function UniResearchActivity() {
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 h-fit ">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 h-fit ">
  <h2 className="font-semibold text-[var(--color-text-primary)] mb-1">Ethics Approval Pipeline</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-6">Ethics clearances from Institutional Review Board (IRB).</p>
  <div className="space-y-6">
@@ -116,11 +116,11 @@ export default function UniResearchActivity() {
  </div>
  </div>
  <div className="space-y-3">
- <div className="flex justify-between items-center text-[var(--text-xs)] pb-2 border-b border-[var(--color-border-subtle)]">
+ <div className="flex justify-between items-center text-[var(--text-xs)] pb-2 border-b border-primary/40">
  <span className="font-semibold text-[var(--color-text-primary)]">Cognitive Development Analysis</span>
  <span className="text-[var(--color-warning)] font-bold">In Progress</span>
  </div>
- <div className="flex justify-between items-center text-[var(--text-xs)] pb-2 border-b border-[var(--color-border-subtle)]">
+ <div className="flex justify-between items-center text-[var(--text-xs)] pb-2 border-b border-primary/40">
  <span className="font-semibold text-[var(--color-text-primary)]">Clinical Trial Phase 1</span>
  <span className="text-[var(--color-info)] font-bold">Approved</span>
  </div>

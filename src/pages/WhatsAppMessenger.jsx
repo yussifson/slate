@@ -78,7 +78,7 @@ export default function WhatsAppMessenger() {
       />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Left: Client & Case selection */}
-        <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+        <div className="bg-card border border-primary/40 rounded-xl p-5 space-y-4">
           <h3 className="text-sm font-semibold flex items-center gap-2">
             <User className="w-4 h-4 text-primary" /> {t("select_recipient", "Select Recipient")}
           </h3>
@@ -156,7 +156,7 @@ export default function WhatsAppMessenger() {
         </div>
 
         {/* Right: Message composer */}
-        <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+        <div className="bg-card border border-primary/40 rounded-xl p-5 space-y-4">
           <h3 className="text-sm font-semibold flex items-center gap-2">
             <MessageCircle className="w-4 h-4 text-primary" /> {t("compose_message", "Compose Message")}
           </h3>
@@ -169,7 +169,7 @@ export default function WhatsAppMessenger() {
                   <button
                     key={template.label}
                     onClick={() => handleTemplate(template)}
-                    className="text-[10px] px-2 py-1 rounded-md border border-border hover:border-primary hover:bg-slate-50 dark:bg-slate-800/50 transition-colors"
+                    className="text-[10px] px-2 py-1 rounded-md border border-primary/40 hover:border-primary hover:bg-slate-50 dark:bg-slate-800/50 transition-colors"
                   >
                     {template.label}
                   </button>
@@ -210,7 +210,7 @@ export default function WhatsAppMessenger() {
       </div>
       {/* Quick send cards */}
       {clients.filter(c => c.phone).length > 0 && (
-        <div className="bg-card border border-border rounded-xl p-5">
+        <div className="bg-card border border-primary/40 rounded-xl p-5">
           <h3 className="text-sm font-semibold mb-3">{t("quick_contact_clients_with_wha", "Quick Contact — Clients with WhatsApp")}</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
             {clients.filter(c => c.phone).slice(0, 8).map(c => {
@@ -220,7 +220,7 @@ export default function WhatsAppMessenger() {
                   href={`https://wa.me/${formatPhone(c.phone).replace("+", "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 p-2.5 rounded-lg border border-border hover:border-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 transition-colors group"
+                  className="flex items-center gap-2 p-2.5 rounded-lg border border-primary/40 hover:border-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 transition-colors group"
                 >
                   <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">
                     <span className="text-[10px] font-bold text-primary/90">{c.name?.[0]?.toUpperCase()}</span>

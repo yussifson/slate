@@ -68,7 +68,7 @@ export default function VInternshipTracking() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
  <Input 
  placeholder="Search placements..." 
- className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
+ className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -140,7 +140,7 @@ export default function VInternshipTracking() {
 
  <div className="mt-8">
  <Tabs defaultValue="overview" className="w-full">
- <TabsList className="bg-slate-500 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-slate-200 dark:border-slate-700">
+ <TabsList className="bg-slate-500 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-primary/40 dark:border-primary/40">
  <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-primary">Overview</TabsTrigger>
  <TabsTrigger value="supervisor" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-primary">Supervisor</TabsTrigger>
  <TabsTrigger value="logs" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-primary">Daily Logs</TabsTrigger>
@@ -149,7 +149,7 @@ export default function VInternshipTracking() {
  <div className="mt-6">
  <TabsContent value="overview" className="space-y-6 outline-none">
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
- <div className="p-5 rounded-2xl bg-primary/30 border border-slate-200 space-y-4">
+ <div className="p-5 rounded-2xl bg-primary/30 border border-primary/40 space-y-4">
  <h3 className="text-sm font-bold text-primary uppercase tracking-wider">Placement Details</h3>
  <div className="grid grid-cols-2 gap-y-4">
  <div>
@@ -171,7 +171,7 @@ export default function VInternshipTracking() {
  </div>
  </div>
  
- <div className="p-5 rounded-2xl bg-primary/30 border border-slate-200 space-y-4">
+ <div className="p-5 rounded-2xl bg-primary/30 border border-primary/40 space-y-4">
  <h3 className="text-sm font-bold text-primary uppercase tracking-wider">Company Info</h3>
  <div className="space-y-4">
  <div>
@@ -192,7 +192,7 @@ export default function VInternshipTracking() {
  </TabsContent>
  
  <TabsContent value="supervisor" className="outline-none">
- <div className="p-8 text-center border-2 border-dashed border-slate-200 rounded-2xl bg-primary/20">
+ <div className="p-8 text-center border-2 border-dashed border-primary/40 rounded-2xl bg-primary/20">
  <UserCircle className="w-10 h-10 text-primary/30 mx-auto mb-3" />
  <h4 className="text-slate-700 dark:text-slate-300 font-bold">Supervisor Details</h4>
  <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 mb-4">No supervisor information recorded for this placement.</p>
@@ -201,7 +201,7 @@ export default function VInternshipTracking() {
  </TabsContent>
 
  <TabsContent value="logs" className="outline-none">
- <div className="p-8 text-center border-2 border-dashed border-slate-200 rounded-2xl bg-primary/20">
+ <div className="p-8 text-center border-2 border-dashed border-primary/40 rounded-2xl bg-primary/20">
  <Star className="w-10 h-10 text-primary/30 mx-auto mb-3" />
  <h4 className="text-slate-700 dark:text-slate-300 font-bold">No Daily Logs</h4>
  <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 mb-4">Student has not submitted any daily logs yet.</p>

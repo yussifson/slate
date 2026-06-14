@@ -125,7 +125,7 @@ export default function UnivPressRelease() {
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
  exit={{ opacity: 0, scale: 0.95}}
- className="bg-card p-6 rounded-xl border border-border mb-8"
+ className="bg-card p-6 rounded-xl border border-primary/40 mb-8"
  >
  <h2 className="text-xl font-semibold mb-4 text-foreground">
  {editingId ? 'Edit Press Release' : 'Create Press Release'}
@@ -222,7 +222,7 @@ export default function UnivPressRelease() {
  key={item.id}
  initial={{ opacity: 0, x: -20}}
  animate={{ opacity: 1, x: 0}}
- className="bg-card p-5 rounded-xl border border-border flex flex-col md:flex-row md:items-center justify-between gap-4 transition-"
+ className="bg-card p-5 rounded-xl border border-primary/40 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-"
  >
  <div className="flex-grow">
  <div className="flex items-center gap-3 mb-2">
@@ -251,7 +251,7 @@ export default function UnivPressRelease() {
  </motion.div>
  ))}
  {data.length === 0 && !isEditing && (
- <div className="py-12 text-center bg-card rounded-xl border border-dashed border-primary/50">
+ <div className="py-12 text-center bg-card rounded-xl border border-dashed border-primary/40">
  <Mic className="w-12 h-12 text-slate-300 mx-auto mb-3" />
  <p className="text-muted-foreground">No press releases found.</p>
  </div>

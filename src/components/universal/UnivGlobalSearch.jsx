@@ -113,7 +113,7 @@ export default function UnivGlobalSearch({
  return (
  <div className="flex flex-col h-full bg-background font-sans">
  {/* Search Hero */}
- <div className="bg-card border-b border-border pt-12 pb-6 px-6 sm:px-10 shrink-0 relative overflow-hidden">
+ <div className="bg-card border-b border-primary/40 pt-12 pb-6 px-6 sm:px-10 shrink-0 relative overflow-hidden">
  <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-primary via-indigo-500 to-purple-500"></div>
  <div className="max-w-4xl mx-auto space-y-6">
  <div className="flex flex-col gap-1 text-center md:text-left">
@@ -131,14 +131,14 @@ export default function UnivGlobalSearch({
  onChange={e => setQuery(e.target.value)}
  onKeyDown={e => e.key === 'Enter' && saveRecentSearch(query)}
  placeholder="Type to search..."
- className="w-full h-16 pl-14 pr-16 bg-muted/50 border border-border rounded-2xl text-lg font-medium text-foreground placeholder:text-muted-foreground/50 focus:bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all "
+ className="w-full h-16 pl-14 pr-16 bg-muted/50 border border-primary/40 rounded-2xl text-lg font-medium text-foreground placeholder:text-muted-foreground/50 focus:bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all "
  autoFocus
  />
  <div className="absolute inset-y-0 right-0 flex items-center pr-4">
  {isFetching ? (
  <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
  ) : (
- <kbd className="hidden sm:inline-flex h-7 items-center gap-1 rounded bg-background border border-border px-2 font-mono text-[11px] font-medium text-muted-foreground ">
+ <kbd className="hidden sm:inline-flex h-7 items-center gap-1 rounded bg-background border border-primary/40 px-2 font-mono text-[11px] font-medium text-muted-foreground ">
  <Command className="w-3 h-3" /> K
  </kbd>
  )}
@@ -182,7 +182,7 @@ export default function UnivGlobalSearch({
  <button 
  key={s} 
  onClick={() => setQuery(s)}
- className="px-3 py-1.5 bg-card border border-border rounded-lg text-sm hover:border-primary/50 transition-colors "
+ className="px-3 py-1.5 bg-card border border-primary/40 rounded-lg text-sm hover:border-primary/50 transition-colors "
  >
  {s}
  </button>
@@ -229,7 +229,7 @@ export default function UnivGlobalSearch({
  const snippet = renderSnippet(data);
  
  return (
- <div key={record.id} className="group bg-card border border-border hover:border-primary/40 rounded-2xl p-5 transition-all relative overflow-hidden">
+ <div key={record.id} className="group bg-card border border-primary/40 hover:border-primary/40 rounded-2xl p-5 transition-all relative overflow-hidden">
  <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary/20 group-hover:bg-primary transition-colors"></div>
  
  <div className="flex justify-between items-start mb-2">
@@ -247,7 +247,7 @@ export default function UnivGlobalSearch({
  </p>
  )}
  
- <div className="flex items-center gap-3 text-[10px] uppercase font-bold tracking-wider text-muted-foreground mt-auto pt-3 border-t border-border/50">
+ <div className="flex items-center gap-3 text-[10px] uppercase font-bold tracking-wider text-muted-foreground mt-auto pt-3 border-t border-primary/40">
  <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {new Date(record.created_at).toLocaleDateString()}</span>
  {data.status && (
  <span className="px-1.5 py-0.5 bg-muted rounded">{data.status}</span>

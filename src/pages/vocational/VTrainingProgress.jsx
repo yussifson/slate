@@ -57,12 +57,12 @@ export default function VTrainingProgress() {
 
  <div className="flex-1 flex gap-6 overflow-hidden">
  <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
- <div className="p-4 border-b border-primary/5 dark:border-slate-800">
+ <div className="p-4 border-b border-primary/5 dark:border-primary/40">
  <div className="relative">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
  <Input 
  placeholder="Search progress records..." 
- className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus-visible:ring-primary"
+ className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -121,7 +121,7 @@ export default function VTrainingProgress() {
  <div className="flex-1 mt-4 sm:mt-12">
  <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">{selectedRecord.title}</h2>
  <div className="flex items-center gap-3 mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium">
- <span className="flex items-center gap-1.5"><Badge variant="outline" className="border-primary/20 dark:border-slate-600 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary">{selectedRecord.data?.trainee_name}</Badge></span>
+ <span className="flex items-center gap-1.5"><Badge variant="outline" className="border-primary/20 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary">{selectedRecord.data?.trainee_name}</Badge></span>
  <span>•</span>
  <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4 text-primary" /> Slate: {selectedRecord.data?.current_slate || 'N/A'}</span>
  <span>•</span>
@@ -136,7 +136,7 @@ export default function VTrainingProgress() {
 
  <div className="mt-8">
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
- <Card className="bg-slate-500 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700">
+ <Card className="bg-slate-500 dark:bg-slate-800/50 border-primary/40 dark:border-primary/40">
  <CardHeader className="pb-2">
  <CardDescription>Hours Completed</CardDescription>
  <CardTitle className="text-2xl text-primary/90 dark:text-primary/70 flex items-center gap-2">
@@ -145,7 +145,7 @@ export default function VTrainingProgress() {
  </CardTitle>
  </CardHeader>
  </Card>
- <Card className="bg-slate-500 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700">
+ <Card className="bg-slate-500 dark:bg-slate-800/50 border-primary/40 dark:border-primary/40">
  <CardHeader className="pb-2">
  <CardDescription>Practical Score</CardDescription>
  <CardTitle className="text-2xl text-primary/90 dark:text-primary/70 flex items-center gap-2">
@@ -154,7 +154,7 @@ export default function VTrainingProgress() {
  </CardTitle>
  </CardHeader>
  </Card>
- <Card className="bg-slate-500 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700">
+ <Card className="bg-slate-500 dark:bg-slate-800/50 border-primary/40 dark:border-primary/40">
  <CardHeader className="pb-2">
  <CardDescription>Tasks Finished</CardDescription>
  <CardTitle className="text-2xl text-primary/90 dark:text-primary/70 flex items-center gap-2">
@@ -165,12 +165,12 @@ export default function VTrainingProgress() {
  </Card>
  </div>
 
- <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-4 ">
+ <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 border border-primary/40 dark:border-primary/40 space-y-4 ">
  <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider">Instructor Notes</h3>
  <p className="text-slate-600 dark:text-slate-300 text-sm whitespace-pre-wrap">
  {selectedRecord.data?.notes || 'No instructor notes available for this progress record.'}
  </p>
- <div className="pt-4 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-end">
+ <div className="pt-4 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end">
  <Button variant="outline" className="text-primary border-primary/20 hover:bg-slate-50">
  Update Progress
  </Button>

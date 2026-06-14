@@ -122,7 +122,7 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
 
  return (
  <SectionCard title="Brand & Identity" subtitle="Manage your company logos, application favicon, custom subdomain address, and theme colors" onSave={handleSaveClick} saving={saving}>
- <div className="flex gap-1 border border-border/80 bg-muted/20 rounded-xl p-1 w-fit mb-6">
+ <div className="flex gap-1 border border-primary/40 bg-muted/20 rounded-xl p-1 w-fit mb-6">
  {["logos", "text", "theme"].map(item => {
  return (
  <button
@@ -138,27 +138,27 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
  {tab === "logos" && (
  <FormRow>
  <Field label="Logo URL (Dark Background)">
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" placeholder="https://..." value={form.logo_url} onChange={e => setForm({ ...form, logo_url: e.target.value})} />
- {form.logo_url && <img src={form.logo_url} alt="Logo preview" className="mt-3 h-12 object-contain rounded-lg border border-border/60 p-1 bg-slate-900" />}
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" placeholder="https://..." value={form.logo_url} onChange={e => setForm({ ...form, logo_url: e.target.value})} />
+ {form.logo_url && <img src={form.logo_url} alt="Logo preview" className="mt-3 h-12 object-contain rounded-lg border border-primary/40 p-1 bg-slate-900" />}
  </Field>
  <Field label="Logo URL (Light Background)">
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" placeholder="https://..." value={form.logo_light_url || ""} onChange={e => setForm({ ...form, logo_light_url: e.target.value})} />
- {form.logo_light_url && <img src={form.logo_light_url} alt="Light logo preview" className="mt-3 h-12 object-contain rounded-lg border border-border/60 p-1 bg-white dark:bg-slate-900/40" />}
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" placeholder="https://..." value={form.logo_light_url || ""} onChange={e => setForm({ ...form, logo_light_url: e.target.value})} />
+ {form.logo_light_url && <img src={form.logo_light_url} alt="Light logo preview" className="mt-3 h-12 object-contain rounded-lg border border-primary/40 p-1 bg-white dark:bg-slate-900/40" />}
  </Field>
  <Field label="Favicon URL" full>
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" placeholder="https://..." value={form.favicon_url || ""} onChange={e => setForm({ ...form, favicon_url: e.target.value})} />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" placeholder="https://..." value={form.favicon_url || ""} onChange={e => setForm({ ...form, favicon_url: e.target.value})} />
  </Field>
  </FormRow>
  )}
  {tab === "text" && (
  <FormRow>
  <Field label="Application Name">
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" value={form.name} onChange={e => setForm({ ...form, name: e.target.value})} />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" value={form.name} onChange={e => setForm({ ...form, name: e.target.value})} />
  </Field>
  <Field label="Custom Subdomain">
- <div className="flex items-center rounded-lg overflow-hidden border border-border/60 focus-within:border-primary/80 transition-colors">
+ <div className="flex items-center rounded-lg overflow-hidden border border-primary/40 focus-within:border-primary/80 transition-colors">
  <Input placeholder="yourfirm" value={form.subdomain} onChange={e => setForm({ ...form, subdomain: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '')})} className="h-11 bg-muted/20 border-0 rounded-none focus-visible:ring-0" />
- <div className="bg-muted text-muted-foreground px-4 py-3 text-sm font-semibold border-l border-border/60 whitespace-nowrap overflow-hidden text-ellipsis select-none">.{getSubdomainAndBase().baseDomain}</div>
+ <div className="bg-muted text-muted-foreground px-4 py-3 text-sm font-semibold border-l border-primary/40 whitespace-nowrap overflow-hidden text-ellipsis select-none">.{getSubdomainAndBase().baseDomain}</div>
  </div>
  <p className="text-xs text-amber-600 dark:text-amber-500 font-medium mt-2 flex items-center gap-1"><Info className="w-3 h-3" /> {t(
  "changing_this_will_instantly_r",
@@ -166,7 +166,7 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
  )}</p>
  </Field>
  <Field label="Tagline / Slogan" full>
- <Input className="h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" placeholder="e.g. Legal Excellence in Africa" value={form.tagline} onChange={e => setForm({ ...form, tagline: e.target.value})} />
+ <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" placeholder="e.g. Legal Excellence in Africa" value={form.tagline} onChange={e => setForm({ ...form, tagline: e.target.value})} />
  </Field>
  </FormRow>
  )}
@@ -174,8 +174,8 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
  <div className="space-y-4">
  <Field label="Primary Theme Color">
  <div className="flex items-center gap-4">
- <input type="color" value={form.primary_color} onChange={e => setForm({ ...form, primary_color: e.target.value})} className="w-12 h-12 rounded-xl border border-border/80 cursor-pointer " />
- <Input value={form.primary_color} onChange={e => setForm({ ...form, primary_color: e.target.value})} className="w-36 h-11 bg-muted/20 border-border/60 focus:border-primary/80 transition-colors" />
+ <input type="color" value={form.primary_color} onChange={e => setForm({ ...form, primary_color: e.target.value})} className="w-12 h-12 rounded-xl border border-primary/40 cursor-pointer " />
+ <Input value={form.primary_color} onChange={e => setForm({ ...form, primary_color: e.target.value})} className="w-36 h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" />
  <div className="flex gap-2">
  {["#16a34a", "#2563eb", "#9333ea", "#dc2626", "#0f766e"].map(c => {
  return (<button key={c} onClick={() => setForm({ ...form, primary_color: c})} className={`w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 active:scale-95 ${form.primary_color === c ? "border-primary scale-110" : "border-background"}`} style={{ background: c}} />);

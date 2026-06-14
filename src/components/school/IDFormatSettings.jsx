@@ -69,7 +69,7 @@ export default function IDFormatSettings() {
 });
 
  return (
- <div className="bg-card rounded-xl border border-border p-6 mb-6">
+ <div className="bg-card rounded-xl border border-primary/40 p-6 mb-6">
  <div className="flex items-center gap-2 mb-4">
  <Settings className="w-5 h-5 text-primary" />
  <h3 className="text-lg font-bold">Dynamic ID Generation Settings</h3>
@@ -77,7 +77,7 @@ export default function IDFormatSettings() {
  
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  <div className="space-y-4">
- <h4 className="font-semibold text-sm text-muted-foreground border-b border-border pb-2">Student ID Format</h4>
+ <h4 className="font-semibold text-sm text-muted-foreground border-b border-primary/40 pb-2">Student ID Format</h4>
  <div>
  <Label>Prefix</Label>
  <Input value={studentPrefix} onChange={e => setStudentPrefix(e.target.value)} placeholder="e.g. STU" className="mt-1" />
@@ -95,7 +95,7 @@ export default function IDFormatSettings() {
  </div>
 
  <div className="space-y-4">
- <h4 className="font-semibold text-sm text-muted-foreground border-b border-border pb-2">Parent ID Format</h4>
+ <h4 className="font-semibold text-sm text-muted-foreground border-b border-primary/40 pb-2">Parent ID Format</h4>
  <div>
  <Label>Prefix</Label>
  <Input value={parentPrefix} onChange={e => setParentPrefix(e.target.value)} placeholder="e.g. PAR" className="mt-1" />

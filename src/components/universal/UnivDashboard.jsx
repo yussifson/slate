@@ -50,7 +50,7 @@ function trendPercent(current, previous) {
 function CustomTooltip({ active, payload, label}) {
  if (!active || !payload?.length) return null;
  return (
- <div className="bg-card border border-border rounded-xl px-3 py-2 text-xs">
+ <div className="bg-card border border-primary/40 rounded-xl px-3 py-2 text-xs">
  <p className="font-bold text-foreground mb-1">{label}</p>
  {payload.map((p) => (
  <p key={p.dataKey} className="text-muted-foreground">
@@ -335,13 +335,13 @@ export default function UnivDashboard({
  <button
  onClick={() => fetchAllWidgetData(layout)}
  title="Refresh data"
- className="flex items-center gap-1.5 px-3 py-2 bg-muted text-muted-foreground border border-border rounded-xl text-sm font-medium hover:bg-muted/80 transition-colors"
+ className="flex items-center gap-1.5 px-3 py-2 bg-muted text-muted-foreground border border-primary/40 rounded-xl text-sm font-medium hover:bg-muted/80 transition-colors"
  >
  <RefreshCw className="w-3.5 h-3.5" />
  </button>
  <button
  onClick={() => setIsEditing(true)}
- className="flex items-center gap-2 px-4 py-2 bg-muted text-foreground border border-border rounded-xl text-sm font-bold hover:bg-muted/80 transition-colors"
+ className="flex items-center gap-2 px-4 py-2 bg-muted text-foreground border border-primary/40 rounded-xl text-sm font-bold hover:bg-muted/80 transition-colors"
  >
  <Edit3 className="w-4 h-4" /> Edit Dashboard
  </button>
@@ -400,7 +400,7 @@ export default function UnivDashboard({
  animate={{ opacity: 1, y: 0}}
  transition={{ delay: idx * 0.06}}
  key={w.id}
- className="bg-card border border-border rounded-2xl p-5 transition- relative group"
+ className="bg-card border border-primary/40 rounded-2xl p-5 transition- relative group"
  >
  {isEditing && (
  <button
@@ -438,7 +438,7 @@ export default function UnivDashboard({
 
  {/* Trend row */}
  {data && count !== 'N/A' && (
- <div className="mt-3 pt-3 border-t border-border/50 flex items-center justify-between">
+ <div className="mt-3 pt-3 border-t border-primary/40 flex items-center justify-between">
  <span className="text-xs text-muted-foreground flex items-center gap-1">
  <LayoutGrid className="w-3 h-3" />
  {source?.label || w.table}
@@ -458,7 +458,7 @@ export default function UnivDashboard({
 
  {/* Fallback footer when data not yet loaded */}
  {!data && (
- <div className="mt-3 pt-3 border-t border-border/50 flex items-center text-xs font-medium text-muted-foreground">
+ <div className="mt-3 pt-3 border-t border-primary/40 flex items-center text-xs font-medium text-muted-foreground">
  <LayoutGrid className="w-3.5 h-3.5 mr-1" />
  {source?.label || w.table}
  </div>
@@ -468,7 +468,7 @@ export default function UnivDashboard({
 })}
 
  {layout.length === 0 && !isEditing && (
- <div className="col-span-full py-20 text-center border-2 border-dashed border-primary/50 rounded-2xl">
+ <div className="col-span-full py-20 text-center border-2 border-dashed border-primary/40 rounded-2xl">
  <h3 className="text-lg font-bold text-foreground">Your Dashboard is empty</h3>
  <p className="text-sm text-muted-foreground mt-1 mb-4">
  Click "Edit Dashboard" to add your first widget.
@@ -492,7 +492,7 @@ export default function UnivDashboard({
  initial={{ opacity: 0, y: 12}}
  animate={{ opacity: 1, y: 0}}
  transition={{ delay: 0.15}}
- className="lg:col-span-2 bg-card border border-border rounded-2xl p-5 "
+ className="lg:col-span-2 bg-card border border-primary/40 rounded-2xl p-5 "
  >
  <div className="flex items-center justify-between mb-4">
  <div>
@@ -552,7 +552,7 @@ export default function UnivDashboard({
  initial={{ opacity: 0, y: 12}}
  animate={{ opacity: 1, y: 0}}
  transition={{ delay: 0.2}}
- className="bg-card border border-border rounded-2xl p-5 flex flex-col"
+ className="bg-card border border-primary/40 rounded-2xl p-5 flex flex-col"
  >
  <div className="flex items-center justify-between mb-4">
  <div>
@@ -604,7 +604,7 @@ export default function UnivDashboard({
  className="grid grid-cols-1 sm:grid-cols-3 gap-3"
  >
  {/* Total Workslates */}
- <div className="flex items-center gap-3 px-4 py-3 bg-card border border-border rounded-xl ">
+ <div className="flex items-center gap-3 px-4 py-3 bg-card border border-primary/40 rounded-xl ">
  <div className="p-2 bg-primary/10 text-primary rounded-lg">
  <LayoutGrid className="w-4 h-4" />
  </div>
@@ -617,7 +617,7 @@ export default function UnivDashboard({
  </div>
 
  {/* Last Synced */}
- <div className="flex items-center gap-3 px-4 py-3 bg-card border border-border rounded-xl ">
+ <div className="flex items-center gap-3 px-4 py-3 bg-card border border-primary/40 rounded-xl ">
  <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-lg">
  <Activity className="w-4 h-4" />
  </div>
@@ -632,7 +632,7 @@ export default function UnivDashboard({
  </div>
 
  {/* Growth this month */}
- <div className="flex items-center gap-3 px-4 py-3 bg-card border border-border rounded-xl ">
+ <div className="flex items-center gap-3 px-4 py-3 bg-card border border-primary/40 rounded-xl ">
  <div className="p-2 bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 rounded-lg">
  <Zap className="w-4 h-4" />
  </div>
@@ -654,7 +654,7 @@ export default function UnivDashboard({
  {isModalOpen && (
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in">
  <div className="bg-card w-full max-w-md rounded-2xl flex flex-col overflow-hidden">
- <div className="p-5 border-b border-border flex justify-between items-center bg-muted/20">
+ <div className="p-5 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <h2 className="text-xl font-black text-foreground flex items-center gap-2">
  <LayoutGrid className="w-5 h-5 text-primary" /> Add Widget
  </h2>
@@ -675,7 +675,7 @@ export default function UnivDashboard({
  value={newWidget.title}
  onChange={(e) => setNewWidget({ ...newWidget, title: e.target.value})}
  placeholder="e.g. Total Active Leads"
- className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"
+ className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"
  />
  </div>
  <div>
@@ -685,14 +685,14 @@ export default function UnivDashboard({
  <select
  value={newWidget.table}
  onChange={(e) => setNewWidget({ ...newWidget, table: e.target.value})}
- className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"
+ className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"
  >
  {AVAILABLE_SOURCES.map((s) => (
  <option key={s.table} value={s.table}>{s.label}</option>
  ))}
  </select>
  </div>
- <div className="flex justify-end gap-3 mt-2 pt-5 border-t border-border">
+ <div className="flex justify-end gap-3 mt-2 pt-5 border-t border-primary/40">
  <button
  onClick={() => setIsModalOpen(false)}
  className="h-10 px-5 bg-muted rounded-xl text-sm font-medium hover:bg-muted/80 transition-colors"

@@ -60,7 +60,7 @@ export default function UniLayout({ children}) {
  return (
  <div className="flex flex-col h-screen overflow-hidden bg-[var(--color-surface-1)] text-[var(--color-text-primary)] font-body">
  {/* COMMAND BAR (fixed top, 48px, blur-backdrop) */}
- <div className="h-12 shrink-0 flex items-center justify-between px-4 bg-[#0D0F12]/85 backdrop-blur-[20px] border-b border-[var(--color-border-subtle)] z-50">
+ <div className="h-12 shrink-0 flex items-center justify-between px-4 bg-[#0D0F12]/85 backdrop-blur-[20px] border-b border-primary/40 z-50">
  <div className="flex items-center gap-4">
  <div className="flex items-center gap-2">
  <div className="w-6 h-6 rounded bg-[var(--color-accent-primary)] flex items-center justify-center">
@@ -79,13 +79,13 @@ export default function UniLayout({ children}) {
  <div className="flex-1 max-w-md mx-4">
  <button 
  onClick={() => setCmdPaletteOpen(true)}
- className="w-full flex items-center justify-between px-3 py-1.5 bg-[var(--color-surface-2)] hover:bg-[var(--color-surface-3)] border border-[var(--color-border-default)] rounded-md text-sm text-[var(--color-text-secondary)] transition-colors"
+ className="w-full flex items-center justify-between px-3 py-1.5 bg-[var(--color-surface-2)] hover:bg-[var(--color-surface-3)] border border-primary/40 rounded-md text-sm text-[var(--color-text-secondary)] transition-colors"
  >
  <span className="flex items-center gap-2">
  <Search className="w-4 h-4" />
  <span>Search anything...</span>
  </span>
- <kbd className="hidden sm:inline-flex items-center gap-1 font-mono text-[10px] bg-[var(--color-surface-1)] px-1.5 py-0.5 rounded border border-[var(--color-border-subtle)]">
+ <kbd className="hidden sm:inline-flex items-center gap-1 font-mono text-[10px] bg-[var(--color-surface-1)] px-1.5 py-0.5 rounded border border-primary/40">
  <span>⌘</span>K
  </kbd>
  </button>
@@ -108,7 +108,7 @@ export default function UniLayout({ children}) {
  <div className="flex flex-1 overflow-hidden">
  {/* SIDEBAR */}
  <div className={cn(
- "shrink-0 bg-[var(--color-surface-0)] border-r border-[var(--color-border-subtle)] flex flex-col transition-all duration-300",
+ "shrink-0 bg-[var(--color-surface-0)] border-r border-primary/40 flex flex-col transition-all duration-300",
  isSidebarCollapsed ? "w-[60px]" : "w-[240px]"
  )}>
  {/* Collapse Toggle */}
@@ -153,7 +153,7 @@ export default function UniLayout({ children}) {
  </div>
 
  {/* Sidebar Footer */}
- <div className="p-3 border-t border-[var(--color-border-subtle)] space-y-1">
+ <div className="p-3 border-t border-primary/40 space-y-1">
  <button className="flex items-center gap-3 px-2 py-2 w-full rounded-md text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-3)] transition-colors" title="Settings">
  <Settings className="w-[18px] h-[18px] shrink-0" style={{ strokeWidth: 1.5}} />
  {!isSidebarCollapsed && <span className="text-sm">Settings</span>}
@@ -164,7 +164,7 @@ export default function UniLayout({ children}) {
  </button>
  <button 
  onClick={() => setOrbitAIOpen(!isOrbitAIOpen)}
- className="flex items-center gap-3 px-2 py-2 mt-2 w-full rounded-md bg-[var(--color-surface-2)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-3)] transition-colors border border-[var(--color-border-default)]" 
+ className="flex items-center gap-3 px-2 py-2 mt-2 w-full rounded-md bg-[var(--color-surface-2)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-3)] transition-colors border border-primary/40" 
  title="Orbit AI"
  >
  <div className="relative shrink-0">
@@ -179,7 +179,7 @@ export default function UniLayout({ children}) {
  {/* MAIN CONTENT AREA */}
  <div className="flex-1 flex flex-col relative overflow-hidden bg-[var(--color-surface-1)]">
  {/* TOPBAR (Module-specific, 56px) */}
- <div className="h-14 shrink-0 flex items-center justify-between px-6 border-b border-[var(--color-border-subtle)] bg-[var(--color-surface-0)] z-10">
+ <div className="h-14 shrink-0 flex items-center justify-between px-6 border-b border-primary/40 bg-[var(--color-surface-0)] z-10">
  <div className="flex items-center gap-3">
  <activeModule.icon className="w-6 h-6" style={{ color: activeModule.color}} />
  <h1 className="font-display text-xl font-semibold tracking-tight">{activeSlate.name}</h1>
@@ -195,10 +195,10 @@ export default function UniLayout({ children}) {
 
  {/* CONTEXT PANEL (optional right slide-in) */}
  <div className={cn(
- "absolute top-0 right-0 bottom-0 w-[360px] bg-[var(--color-surface-2)] border-l border-[var(--color-border-subtle)] transform transition-transform duration-300 ease-out z-20",
+ "absolute top-0 right-0 bottom-0 w-[360px] bg-[var(--color-surface-2)] border-l border-primary/40 transform transition-transform duration-300 ease-out z-20",
  isContextPanelOpen ? "translate-x-0" : "translate-x-full"
  )}>
- <div className="h-14 flex items-center justify-between px-4 border-b border-[var(--color-border-subtle)]">
+ <div className="h-14 flex items-center justify-between px-4 border-b border-primary/40">
  <h3 className="font-semibold">Context details</h3>
  <button onClick={() => setContextPanelOpen(false)} className="p-1 hover:bg-[var(--color-surface-3)] rounded text-[var(--color-text-secondary)]">
  <X className="w-4 h-4" />

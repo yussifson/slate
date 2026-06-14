@@ -61,7 +61,7 @@ export default function CaseOutcomes() {
           { label: "Settlement Rate", value: `${settleRate}%`, color: "bg-slate-50 dark:bg-slate-800/50 text-primary" },
         ].map(s => {
           return (
-            <div key={s.label} className="bg-card border border-border rounded-xl p-4 flex items-center gap-3">
+            <div key={s.label} className="bg-card border border-primary/40 rounded-xl p-4 flex items-center gap-3">
               <div className={cn("w-9 h-9 rounded-lg flex items-center justify-center shrink-0", s.color)}><Target className="w-4 h-4" /></div>
               <div><p className="text-xl font-bold">{s.value}</p><p className="text-xs text-muted-foreground">{s.label}</p></div>
             </div>
@@ -71,7 +71,7 @@ export default function CaseOutcomes() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Pie chart */}
         {outcomeStats.length > 0 && (
-          <div className="bg-card border border-border rounded-xl p-5">
+          <div className="bg-card border border-primary/40 rounded-xl p-5">
             <h3 className="text-sm font-semibold mb-3">{t("outcome_distribution", "Outcome Distribution")}</h3>
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
@@ -87,8 +87,8 @@ export default function CaseOutcomes() {
         )}
 
         {/* Recent outcomes */}
-        <div className="bg-card border border-border rounded-xl overflow-hidden">
-          <div className="p-4 border-b border-border flex items-center gap-2">
+        <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
+          <div className="p-4 border-b border-primary/40 flex items-center gap-2">
             <Trophy className="w-4 h-4 text-primary" />
             <h3 className="text-sm font-semibold">{t("recent_outcomes", "Recent Outcomes")}</h3>
           </div>

@@ -138,26 +138,26 @@ export default function Patients() {
  </div>
  {/* Stats */}
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4 ">
  <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary"><Users className="w-5 h-5" /></div>
  <div><p className="text-2xl font-bold text-card-foreground">{patients.length}</p><p className="text-xs text-muted-foreground">{t("total_patients", "Total Patients")}</p></div>
  </div>
- <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4 ">
  <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center text-red-600"><Activity className="w-5 h-5" /></div>
  <div><p className="text-2xl font-bold text-card-foreground">{patients.filter(p => p.status === 'Admitted').length}</p><p className="text-xs text-muted-foreground">{t("currently_admitted", "Currently Admitted")}</p></div>
  </div>
- <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4 ">
  <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary"><Stethoscope className="w-5 h-5" /></div>
  <div><p className="text-2xl font-bold text-card-foreground">{patients.filter(p => p.status === 'Outpatient').length}</p><p className="text-xs text-muted-foreground">{t("outpatients", "Outpatients")}</p></div>
  </div>
- <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 ">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4 ">
  <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary"><Heart className="w-5 h-5" /></div>
  <div><p className="text-2xl font-bold text-card-foreground">{patients.filter(p => p.status === 'Discharged').length}</p><p className="text-xs text-muted-foreground">{t("discharged", "Discharged")}</p></div>
  </div>
  </div>
  {/* Table */}
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/50">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input placeholder="Search patient name or ID..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
@@ -165,7 +165,7 @@ export default function Patients() {
  </div>
  <div className="overflow-x-auto">
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-border">
+ <thead className="bg-card border-b border-primary/40">
  <tr>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("patient", "Patient")}</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("demographics", "Demographics")}</th>

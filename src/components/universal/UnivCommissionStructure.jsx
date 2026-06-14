@@ -100,7 +100,7 @@ export default function UnivCommissionStructure() {
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Calendar","Dashboard"].map(v => (
  <button 
  key={v} 
@@ -133,7 +133,7 @@ export default function UnivCommissionStructure() {
  initial={{ opacity: 0, y: -20}}
  animate={{ opacity: 1, y: 0}}
  exit={{ opacity: 0, y: -20}}
- className="bg-card p-6 rounded-xl border border-border mb-8"
+ className="bg-card p-6 rounded-xl border border-primary/40 mb-8"
  >
  <h2 className="text-xl font-semibold mb-4 text-foreground">
  {editingId ? 'Edit Structure' : 'New Structure'}
@@ -219,7 +219,7 @@ export default function UnivCommissionStructure() {
  key={item.id}
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
- className="bg-card rounded-xl border border-border overflow-hidden transition-"
+ className="bg-card rounded-xl border border-primary/40 overflow-hidden transition-"
  >
  <div className="p-5">
  <div className="flex justify-between items-start mb-4">
@@ -242,7 +242,7 @@ export default function UnivCommissionStructure() {
  <span className="text-muted-foreground">Quota Amount:</span>
  <span className="font-medium text-foreground">${Number(item.quota_amount).toLocaleString()}</span>
  </div>
- <div className="flex justify-between items-center text-sm pt-3 border-t border-gray-50">
+ <div className="flex justify-between items-center text-sm pt-3 border-t border-primary/40">
  <span className="text-muted-foreground">Bonus Rate:</span>
  <span className="font-bold text-green-600">{item.bonus_percentage}%</span>
  </div>
@@ -251,7 +251,7 @@ export default function UnivCommissionStructure() {
  </motion.div>
  ))}
  {data.length === 0 && !isEditing && (
- <div className="col-span-full py-12 text-center bg-card rounded-xl border border-dashed border-primary/50">
+ <div className="col-span-full py-12 text-center bg-card rounded-xl border border-dashed border-primary/40">
  <Percent className="w-12 h-12 text-gray-300 mx-auto mb-3" />
  <p className="text-muted-foreground">No commission structures found.</p>
  </div>

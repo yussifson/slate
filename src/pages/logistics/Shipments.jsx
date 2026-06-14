@@ -182,8 +182,8 @@ export default function Shipments() {
 })}
  </div>
  {/* Table */}
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 border-b border-border bg-muted/40 flex items-center justify-between gap-4">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 border-b border-primary/40 bg-muted/40 flex items-center justify-between gap-4">
  <div className="relative max-w-sm w-full">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
  <Input
@@ -206,7 +206,7 @@ export default function Shipments() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-muted/30 border-b border-border">
+ <thead className="bg-muted/30 border-b border-primary/40">
  <tr>
  {['Tracking #', 'Route', 'Customer', 'Carrier / Weight', 'Est. Delivery', 'Status', 'Actions'].map(h => {
  return (
@@ -301,7 +301,7 @@ export default function Shipments() {
  {/* Add/Edit Modal */}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-5 border border-border">
+ <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-5 border border-primary/40">
  <div className="flex items-center justify-between">
  <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
  <Package className="w-5 h-5 text-orange-600" />

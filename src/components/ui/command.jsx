@@ -75,7 +75,7 @@ const CommandGroup = React.forwardRef(({ className, ...props }, ref) => (
 CommandGroup.displayName = CommandPrimitive.Group.displayName
 
 const CommandSeparator = React.forwardRef(({ className, ...props }, ref) => (
-  <CommandPrimitive.Separator ref={ref} className={cn("-mx-1 h-px bg-border", className)} {...props} />
+  <CommandPrimitive.Separator ref={ref} className={cn("-mx-1 h-px bg-primary/40", className)} {...props} />
 ))
 CommandSeparator.displayName = CommandPrimitive.Separator.displayName
 

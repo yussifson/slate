@@ -130,13 +130,13 @@ export default function StaffPermissionsSettings() {
   return (
     <div className="flex gap-4 items-start">
       {/* Staff list */}
-      <div className="w-48 shrink-0 bg-muted/30 rounded-xl border border-border overflow-hidden">
+      <div className="w-48 shrink-0 bg-muted/30 rounded-xl border border-primary/40 overflow-hidden">
         {staff.map(s => {
           return (
             <button
               key={s.id}
               onClick={() => setSelectedStaff(s)}
-              className={`w-full text-left px-3 py-2.5 text-sm transition-colors border-b border-border last:border-0 ${activeStaff?.id === s.id ? "bg-slate-100 text-primary font-medium" : "hover:bg-muted text-foreground"}`}
+              className={`w-full text-left px-3 py-2.5 text-sm transition-colors border-b border-primary/40 last:border-0 ${activeStaff?.id === s.id ? "bg-slate-100 text-primary font-medium" : "hover:bg-muted text-foreground"}`}
             >
               <p className="font-medium truncate">{s.full_name}</p>
               <p className="text-[10px] text-muted-foreground capitalize">{s.role?.replace(/_/g, " ")}</p>
@@ -159,8 +159,8 @@ export default function StaffPermissionsSettings() {
 
           {PERMISSION_GROUPS.map(group => {
             return (
-              <div key={group.label} className="bg-card border border-border rounded-xl overflow-hidden">
-                <div className="px-4 py-2 bg-muted/40 border-b border-border">
+              <div key={group.label} className="bg-card border border-primary/40 rounded-xl overflow-hidden">
+                <div className="px-4 py-2 bg-muted/40 border-b border-primary/40">
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{group.label}</p>
                 </div>
                 <div className="divide-y divide-border">

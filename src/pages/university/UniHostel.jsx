@@ -43,7 +43,7 @@ export default function UniHostel() {
  const handleAllocate = (e) => { e.preventDefault(); if (!allocForm.studentId || !allocForm.roomNumber) { toast({ title: "Validation", description: "Fill all fields.", variant: "destructive"}); return;} allocateMutation.mutate(allocForm);};
  const handleTicket = (e) => { e.preventDefault(); if (!ticketForm.room || !ticketForm.issue) { toast({ title: "Validation", description: "Fill all fields.", variant: "destructive"}); return;} ticketMutation.mutate({ company_id: companyId, case_name: ticketForm.issue, case_type: 'uni_hostel_ticket', notes: JSON.stringify({ room: ticketForm.room, issue: ticketForm.issue, priority: ticketForm.priority, status: 'Open'})});};
 
- const inputClass = "w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body";
+ const inputClass = "w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body";
  const stats = [
  { label: 'Total Beds', value: '1,200', icon: Bed, color: 'var(--primary)'},
  { label: 'Occupied', value: allocatedStudents.length, icon: Users, color: 'var(--color-success)'},
@@ -60,21 +60,21 @@ export default function UniHostel() {
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="flex items-end justify-between border-b border-[var(--color-border-subtle)] pb-4">
+ <div className="flex items-end justify-between border-b border-primary/40 pb-4">
  <div>
  <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Hostel & Housing</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage room allocations, maintenance tickets, and housing capacity.</p>
  </div>
- <div className="flex items-center bg-[var(--color-surface-2)] p-1 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+ <div className="flex items-center bg-[var(--color-surface-2)] p-1 rounded-[var(--radius-lg)] border border-primary/40">
  {[{ id: 'overview', label: 'Overview'}, { id: 'allocate', label: 'Allocate'}, { id: 'tickets', label: 'Tickets'}].map(tab => (
- <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={cn("px-4 py-1.5 text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-all", activeTab === tab.id ? "bg-[var(--color-surface-0)] text-[var(--color-text-primary)] border border-[var(--color-border-subtle)]" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border border-transparent")}>{tab.label}</button>
+ <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={cn("px-4 py-1.5 text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-all", activeTab === tab.id ? "bg-[var(--color-surface-0)] text-[var(--color-text-primary)] border border-primary/40" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border border-transparent")}>{tab.label}</button>
  ))}
  </div>
  </div>
 
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  {stats.map((stat, i) => (
- <div key={i} className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">
+ <div key={i} className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
  <div className="flex items-center justify-between">
  <div>
  <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">{stat.label}</p>
@@ -91,13 +91,13 @@ export default function UniHostel() {
  <div className="min-h-[400px]">
  {activeTab === 'overview' && (
  <div className="space-y-6">
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden">
- <div className="p-4 border-b border-[var(--color-border-subtle)]"><h3 className="font-semibold text-[var(--color-text-primary)]">Housing Directory</h3></div>
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+ <div className="p-4 border-b border-primary/40"><h3 className="font-semibold text-[var(--color-text-primary)]">Housing Directory</h3></div>
  <div className="p-4 space-y-2">
  {allocatedStudents.length === 0 ? (
  <p className="text-center text-[var(--color-text-tertiary)] py-8">No room allocations yet.</p>
  ) : allocatedStudents.map((s, i) => (
- <div key={i} className="flex justify-between items-center p-3 bg-[var(--color-surface-1)] rounded-[var(--radius-md)] border border-[var(--color-border-subtle)]">
+ <div key={i} className="flex justify-between items-center p-3 bg-[var(--color-surface-1)] rounded-[var(--radius-md)] border border-primary/40">
  <div className="flex items-center gap-3">
  <div className="w-8 h-8 rounded-full bg-[var(--primary)] text-white flex items-center justify-center text-xs font-bold">{s.name?.substring(0, 2).toUpperCase()}</div>
  <span className="font-medium text-[var(--color-text-primary)]">{s.name}</span>
@@ -114,7 +114,7 @@ export default function UniHostel() {
  )}
 
  {activeTab === 'allocate' && (
- <div className="max-w-lg mx-auto bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-8 ">
+ <div className="max-w-lg mx-auto bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-8 ">
  <h2 className="font-display text-[var(--text-2xl)] font-semibold tracking-tight text-[var(--color-text-primary)] mb-6">Room Allocation</h2>
  <form onSubmit={handleAllocate} className="space-y-6">
  <div className="space-y-2">
@@ -142,7 +142,7 @@ export default function UniHostel() {
  )}
 
  {activeTab === 'tickets' && (
- <div className="max-w-lg mx-auto bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-8 ">
+ <div className="max-w-lg mx-auto bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-8 ">
  <h2 className="font-display text-[var(--text-2xl)] font-semibold tracking-tight text-[var(--color-text-primary)] mb-6">New Maintenance Ticket</h2>
  <form onSubmit={handleTicket} className="space-y-6">
  <div className="space-y-2">

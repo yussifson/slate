@@ -103,18 +103,18 @@ export default function UniAdmissions() {
  { id: 'actions', header: 'Actions', align: 'right', render: (_, r) => <button onClick={(e) => { e.stopPropagation(); setSelectedApplicant(r);}} className="px-3 py-1.5 text-xs font-bold text-[var(--color-accent-primary)] hover:bg-[var(--color-surface-3)] rounded-[var(--radius-md)] transition-colors flex items-center gap-1"><Eye className="w-4 h-4"/> Review</button>}
  ];
 
- const inputClass = "w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body";
+ const inputClass = "w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body";
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="flex items-end justify-between border-b border-[var(--color-border-subtle)] pb-4">
+ <div className="flex items-end justify-between border-b border-primary/40 pb-4">
  <div>
  <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Admissions & Intake Board</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Process freshman candidate profiles, review personal statements, and extend academic offers.</p>
  </div>
- <div className="flex items-center bg-[var(--color-surface-2)] p-1 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+ <div className="flex items-center bg-[var(--color-surface-2)] p-1 rounded-[var(--radius-lg)] border border-primary/40">
  {[{ id: 'directory', label: 'Applicants Directory'}, { id: 'interviews', label: 'Interview Schedules'}, { id: 'add', label: 'Log Candidate'}].map(tab => (
- <button key={tab.id} onClick={() => { setActiveTab(tab.id); setSelectedApplicant(null);}} className={cn("px-4 py-1.5 text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-all", activeTab === tab.id ? "bg-[var(--color-surface-0)] text-[var(--color-text-primary)] border border-[var(--color-border-subtle)]" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border border-transparent")}>{tab.label}</button>
+ <button key={tab.id} onClick={() => { setActiveTab(tab.id); setSelectedApplicant(null);}} className={cn("px-4 py-1.5 text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-all", activeTab === tab.id ? "bg-[var(--color-surface-0)] text-[var(--color-text-primary)] border border-primary/40" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border border-transparent")}>{tab.label}</button>
  ))}
  </div>
  </div>
@@ -131,8 +131,8 @@ export default function UniAdmissions() {
  )}
 
  {activeTab === 'directory' && selectedApplicant && (
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden">
- <div className="bg-[var(--color-surface-2)] p-6 border-b border-[var(--color-border-subtle)] flex justify-between items-center">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+ <div className="bg-[var(--color-surface-2)] p-6 border-b border-primary/40 flex justify-between items-center">
  <div className="flex items-center gap-4">
  <div className="w-16 h-16 rounded-[var(--radius-lg)] bg-[var(--primary)] text-white flex items-center justify-center font-display text-[var(--text-2xl)] -glow-sm -[var(--primary)]">
  {selectedApplicant.name?.substring(0, 2).toUpperCase()}
@@ -148,16 +148,16 @@ export default function UniAdmissions() {
  </div>
  </div>
  </div>
- <button onClick={() => setSelectedApplicant(null)} className="px-4 py-2 bg-[var(--color-surface-0)] border border-[var(--color-border-default)] hover:bg-[var(--color-surface-3)] text-[var(--color-text-primary)] text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-colors">Close Profile</button>
+ <button onClick={() => setSelectedApplicant(null)} className="px-4 py-2 bg-[var(--color-surface-0)] border border-primary/40 hover:bg-[var(--color-surface-3)] text-[var(--color-text-primary)] text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-colors">Close Profile</button>
  </div>
  
  <div className="p-6 space-y-6">
  <div>
  <h4 className="font-bold text-[var(--color-text-primary)] text-sm">Personal Statement / Essay</h4>
- <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] p-4 rounded-[var(--radius-lg)] leading-relaxed mt-2">{selectedApplicant.statement}</p>
+ <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] bg-[var(--color-surface-1)] border border-primary/40 p-4 rounded-[var(--radius-lg)] leading-relaxed mt-2">{selectedApplicant.statement}</p>
  </div>
  
- <div className="flex gap-3 pt-4 border-t border-[var(--color-border-subtle)]">
+ <div className="flex gap-3 pt-4 border-t border-primary/40">
  <button onClick={() => updateApplicantStatusMutation.mutate({ id: selectedApplicant.id, status: 'Admitted'})} className="px-6 py-2.5 bg-[var(--color-success)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all">Admit Candidate</button>
  <button onClick={() => updateApplicantStatusMutation.mutate({ id: selectedApplicant.id, status: 'Rejected'})} className="px-6 py-2.5 border border-[var(--color-danger)] text-[var(--color-danger)] hover:bg-[var(--color-danger-subtle)] font-medium rounded-[var(--radius-md)] transition-all">Reject Application</button>
  </div>
@@ -166,11 +166,11 @@ export default function UniAdmissions() {
  )}
 
  {activeTab === 'interviews' && (
- <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 ">
+ <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 ">
  <h2 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-1.5 mb-1"><Calendar className="w-4 h-4 text-[var(--primary)]" /> Interview Matrix</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-6">Scheduled entrance evaluation sessions.</p>
  
- <div className="p-4 bg-[var(--color-surface-1)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] flex items-start gap-4">
+ <div className="p-4 bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-lg)] flex items-start gap-4">
  <CalendarCheck className="w-8 h-8 text-[var(--primary)] shrink-0" />
  <div>
  <p className="font-bold text-[var(--color-text-primary)] text-sm">Interviews scheduled for tomorrow</p>
@@ -181,7 +181,7 @@ export default function UniAdmissions() {
  )}
 
  {activeTab === 'add' && (
- <div className="max-w-xl mx-auto bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-8 ">
+ <div className="max-w-xl mx-auto bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-8 ">
  <h2 className="font-display text-[var(--text-2xl)] font-semibold tracking-tight text-[var(--color-text-primary)] mb-6">Log Candidate Application</h2>
  <form onSubmit={handleCreateApplicant} className="space-y-6">
  <div className="space-y-2">

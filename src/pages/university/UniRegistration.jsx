@@ -78,16 +78,16 @@ export default function UniRegistration() {
   };
 
   const registeredCredits = activeStudent ? courses.filter(c => activeStudent.courses.includes(c.code)).reduce((sum, c) => sum + c.credits, 0) : 0;
-  const selectClass = "w-full bg-[var(--color-surface-1)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-accent-primary)] focus:ring-1 focus:ring-[var(--color-accent-primary)] font-body";
+  const selectClass = "w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-accent-primary)] focus:ring-1 focus:ring-[var(--color-accent-primary)] font-body";
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="border-b border-[var(--color-border-subtle)] pb-4">
+      <div className="border-b border-primary/40 pb-4">
         <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Course Registration</h1>
         <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Submit slate choices, validate credit workloads, and satisfy prerequisites.</p>
       </div>
 
-      <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6">
+      <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
         <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Active Student Profile</label>
         <select value={selectedStudentId} onChange={e => setSelectedStudentId(e.target.value)} className={cn(selectClass, "mt-2")}>
           <option value="">-- Choose Undergraduate --</option>
@@ -97,8 +97,8 @@ export default function UniRegistration() {
 
       {activeStudent ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] overflow-hidden">
-            <div className="p-6 border-b border-[var(--color-border-subtle)]">
+          <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+            <div className="p-6 border-b border-primary/40">
               <h2 className="font-semibold text-[var(--color-text-primary)]">Registration Grid</h2>
               <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Select courses. System verifies requirements automatically.</p>
             </div>
@@ -108,7 +108,7 @@ export default function UniRegistration() {
               ) : courses.map((course, idx) => {
                 const isEnrolled = activeStudent.courses.includes(course.code);
                 return (
-                  <div key={idx} className="p-4 bg-[var(--color-surface-1)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                  <div key={idx} className="p-4 bg-[var(--color-surface-1)] rounded-[var(--radius-lg)] border border-primary/40 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-mono font-bold text-[var(--color-accent-primary)] bg-[var(--color-accent-subtle)] px-2 py-0.5 rounded-[var(--radius-sm)]">{course.code}</span>
@@ -138,7 +138,7 @@ export default function UniRegistration() {
             </div>
           </div>
 
-          <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-6 h-fit space-y-6">
+          <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 h-fit space-y-6">
             <h3 className="font-semibold text-[var(--color-text-primary)]">Workload Summary</h3>
             <div className="space-y-3">
               <div className="flex justify-between text-[var(--text-sm)]">
@@ -149,7 +149,7 @@ export default function UniRegistration() {
                 <div className="bg-[var(--color-accent-primary)] h-full transition-all" style={{ width: `${Math.min(100, (registeredCredits / 18) * 100)}%` }} />
               </div>
             </div>
-            <div className="space-y-3 pt-4 border-t border-[var(--color-border-subtle)]">
+            <div className="space-y-3 pt-4 border-t border-primary/40">
               <div className="flex justify-between text-[var(--text-sm)]">
                 <span className="text-[var(--color-text-secondary)]">Standing:</span>
                 <span className={activeStudent.gpa >= 2.0 ? 'text-[var(--color-success)] font-medium' : 'text-[var(--color-danger)] font-medium'}>
@@ -164,7 +164,7 @@ export default function UniRegistration() {
           </div>
         </div>
       ) : (
-        <div className="bg-[var(--color-surface-0)] border border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] p-12 text-center text-[var(--color-text-tertiary)]">
+        <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-12 text-center text-[var(--color-text-tertiary)]">
           Select a student to manage course registration.
         </div>
       )}

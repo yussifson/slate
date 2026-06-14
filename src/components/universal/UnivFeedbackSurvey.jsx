@@ -100,12 +100,12 @@ const UnivFeedbackSurvey = () => {
  <label className="block text-sm font-semibold text-foreground mb-1">Name (Optional)</label>
  <div className="relative">
  <User className="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
- <input type="text" name="respondent_name" value={formData.respondent_name} onChange={handleChange} placeholder="Anonymous" className="w-full pl-9 p-2.5 bg-background border border-border rounded-xl focus:ring-2 focus:ring-pink-400 outline-none transition-all" />
+ <input type="text" name="respondent_name" value={formData.respondent_name} onChange={handleChange} placeholder="Anonymous" className="w-full pl-9 p-2.5 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-pink-400 outline-none transition-all" />
  </div>
  </div>
  <div>
  <label className="block text-sm font-semibold text-foreground mb-1">Service/Product Used</label>
- <input type="text" name="service_used" value={formData.service_used} onChange={handleChange} required className="w-full p-2.5 bg-background border border-border rounded-xl focus:ring-2 focus:ring-pink-400 outline-none transition-all" />
+ <input type="text" name="service_used" value={formData.service_used} onChange={handleChange} required className="w-full p-2.5 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-pink-400 outline-none transition-all" />
  </div>
  <div>
  <label className="block text-sm font-semibold text-foreground mb-1">Rating (1-5)</label>
@@ -117,10 +117,10 @@ const UnivFeedbackSurvey = () => {
  </div>
  <div>
  <label className="block text-sm font-semibold text-foreground mb-1">Comments</label>
- <textarea name="comments" value={formData.comments} onChange={handleChange} rows="3" required className="w-full p-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-pink-400 outline-none transition-all"></textarea>
+ <textarea name="comments" value={formData.comments} onChange={handleChange} rows="3" required className="w-full p-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-pink-400 outline-none transition-all"></textarea>
  </div>
- <div className="flex items-center gap-2 p-3 bg-background rounded-xl border border-border">
- <input type="checkbox" id="follow_up" name="follow_up_required" checked={formData.follow_up_required} onChange={handleChange} className="w-4 h-4 text-pink-500 rounded border-border focus:ring-pink-500" />
+ <div className="flex items-center gap-2 p-3 bg-background rounded-xl border border-primary/40">
+ <input type="checkbox" id="follow_up" name="follow_up_required" checked={formData.follow_up_required} onChange={handleChange} className="w-4 h-4 text-pink-500 rounded border-primary/40 focus:ring-pink-500" />
  <label htmlFor="follow_up" className="text-sm font-medium text-foreground cursor-pointer">Requires follow-up</label>
  </div>
  <button type="submit" className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 rounded-xl transition-all mt-2">
@@ -133,11 +133,11 @@ const UnivFeedbackSurvey = () => {
  {loading ? (
  <div className="text-center py-20"><MessageSquareHeart className="w-10 h-10 text-pink-400 animate-pulse mx-auto" /></div>
  ) : feedbacks.length === 0 ? (
- <div className="text-center py-20 bg-card rounded-3xl border border-border text-muted-foreground">No feedback received yet.</div>
+ <div className="text-center py-20 bg-card rounded-3xl border border-primary/40 text-muted-foreground">No feedback received yet.</div>
  ) : (
  <div className="grid sm:grid-cols-2 gap-4">
  {feedbacks.map((fb, index) => (
- <motion.div key={fb.id || index} initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className="bg-card p-5 rounded-3xl border border-border relative group hover:border-pink-200 transition-colors">
+ <motion.div key={fb.id || index} initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className="bg-card p-5 rounded-3xl border border-primary/40 relative group hover:border-pink-200 transition-colors">
  {fb.follow_up_required && (
  <div className="absolute -top-2 -right-2 bg-red-500 text-white p-1.5 rounded-full " title="Requires Follow-up">
  <AlertCircle className="w-4 h-4" />
@@ -150,7 +150,7 @@ const UnivFeedbackSurvey = () => {
  
  <p className="text-foreground text-sm mb-4 italic line-clamp-3">"{fb.comments}"</p>
  
- <div className="mt-auto pt-3 border-t border-slate-50 flex items-center justify-between text-xs">
+ <div className="mt-auto pt-3 border-t border-primary/40 flex items-center justify-between text-xs">
  <span className="font-semibold text-foreground">{fb.respondent_name || 'Anonymous'}</span>
  <span className="bg-muted text-muted-foreground px-2 py-1 rounded-md font-medium truncate max-w-[120px]">{fb.service_used}</span>
  </div>

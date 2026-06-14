@@ -12,7 +12,7 @@ import { format, isAfter, isBefore, addDays, startOfMonth, endOfMonth } from "da
 
 function StatCard({ icon: IconComp, label, value, sub, color = "bg-slate-50 dark:bg-slate-800/50 text-primary" }) {
   return (
-    <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+    <div className="bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
       <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${color}`}>
         <IconComp className="w-5 h-5" />
       </div>
@@ -105,7 +105,7 @@ export default function StaffDashboard() {
         <StatCard icon={TrendingUp} label="Billed Amount" value={formatCurrency(billedAmount, staffRecord?.currency || "GHS")} sub="This month" color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
       </div>
       {/* Hours vs Target */}
-      <div className="bg-card rounded-xl border border-border p-5">
+      <div className="bg-card rounded-xl border border-primary/40 p-5">
         <div className="flex items-center justify-between mb-3">
           <div>
             <h3 className="text-sm font-semibold">{t("billable_hours", "Billable Hours —")} {format(today, "MMMM yyyy")}</h3>
@@ -141,8 +141,8 @@ export default function StaffDashboard() {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Tasks */}
-        <div className="bg-card rounded-xl border border-border">
-          <div className="p-4 border-b border-border flex items-center justify-between">
+        <div className="bg-card rounded-xl border border-primary/40">
+          <div className="p-4 border-b border-primary/40 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <CheckSquare className="w-4 h-4 text-primary" />
               <h3 className="text-sm font-semibold">{t("my_tasks", "My Tasks")}</h3>
@@ -192,8 +192,8 @@ export default function StaffDashboard() {
         </div>
 
         {/* Upcoming Hearings */}
-        <div className="bg-card rounded-xl border border-border">
-          <div className="p-4 border-b border-border flex items-center gap-2">
+        <div className="bg-card rounded-xl border border-primary/40">
+          <div className="p-4 border-b border-primary/40 flex items-center gap-2">
             <Calendar className="w-4 h-4 text-primary" />
             <h3 className="text-sm font-semibold">{t("upcoming_hearings", "Upcoming Hearings")}</h3>
           </div>
@@ -220,8 +220,8 @@ export default function StaffDashboard() {
         </div>
       </div>
       {/* Active Cases */}
-      <div className="bg-card rounded-xl border border-border">
-        <div className="p-4 border-b border-border flex items-center gap-2">
+      <div className="bg-card rounded-xl border border-primary/40">
+        <div className="p-4 border-b border-primary/40 flex items-center gap-2">
           <Briefcase className="w-4 h-4 text-primary" />
           <h3 className="text-sm font-semibold">{t("my_active_cases", "My Active Cases")}</h3>
           <span className="ml-auto text-xs text-muted-foreground">{activeCases.length} {t("cases", "cases")}</span>

@@ -57,8 +57,8 @@ export default function CustomerPortal() {
  </div>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
  <div className="col-span-1 md:col-span-2 space-y-6">
- <div className="bg-card rounded-xl border border-border overflow-hidden">
- <div className="p-4 md:p-5 border-b border-border bg-muted/50 flex justify-between items-center">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="p-4 md:p-5 border-b border-primary/40 bg-muted/50 flex justify-between items-center">
  <h3 className="font-bold text-card-foreground flex items-center gap-2"><ShoppingBag className="w-5 h-5 text-primary" /> {t("recent_purchases", "Recent Purchases")}</h3>
  <Button variant="ghost" size="sm" className="text-xs text-primary">{t("view_all", "View All")}</Button>
  </div>
@@ -86,7 +86,7 @@ export default function CustomerPortal() {
  <p className="text-[10px] text-muted-foreground">{order.items?.length || 0} {t("items", "items")}</p>
  </div>
  </div>
- <div className="bg-muted/50 rounded-lg p-3 space-y-2 text-sm mt-3 border border-border">
+ <div className="bg-muted/50 rounded-lg p-3 space-y-2 text-sm mt-3 border border-primary/40">
  {order.items?.map((item, idx) => {
  return (
  <div key={idx} className="flex justify-between text-xs">
@@ -106,7 +106,7 @@ export default function CustomerPortal() {
  </div>
 
  <div className="space-y-6">
- <div className="bg-card rounded-xl border border-border p-5">
+ <div className="bg-card rounded-xl border border-primary/40 p-5">
  <h3 className="font-bold text-card-foreground flex items-center gap-2 mb-4"><Tag className="w-5 h-5 text-amber-500" /> {t("available_offers", "Available Offers")}</h3>
  <div className="space-y-3">
  <div className="border border-dashed border-amber-300 bg-amber-50 dark:bg-amber-950/20 rounded-lg p-3 relative overflow-hidden">
@@ -116,7 +116,7 @@ export default function CustomerPortal() {
  <p className="text-[10px] text-amber-700/80 mt-1">{t("unlock_for_1_000_points", "Unlock for 1,000 points")}</p>
  <Button size="sm" className="w-full mt-3 bg-amber-500 hover:bg-amber-600 text-white h-7 text-xs" disabled={loyaltyPoints < 1000}>{t("redeem", "Redeem")}</Button>
  </div>
- <div className="border border-border bg-card rounded-lg p-3">
+ <div className="border border-primary/40 bg-card rounded-lg p-3">
  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">{t("seasonal_sale", "Seasonal Sale")}</p>
  <p className="font-black text-foreground">{t("free_shipping", "Free Shipping")}</p>
  <p className="text-[10px] text-muted-foreground mt-1">{t("on_orders_over_50", "On orders over $50")}</p>
@@ -124,7 +124,7 @@ export default function CustomerPortal() {
  </div>
  </div>
 
- <div className="bg-card rounded-xl border border-border p-5 text-center">
+ <div className="bg-card rounded-xl border border-primary/40 p-5 text-center">
  <MapPin className="w-8 h-8 text-primary mx-auto mb-2" />
  <h4 className="font-bold text-sm">{t("find_a_store", "Find a Store")}</h4>
  <p className="text-xs text-muted-foreground mt-1 mb-3">{t(

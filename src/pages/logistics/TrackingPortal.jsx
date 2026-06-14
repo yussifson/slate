@@ -58,7 +58,7 @@ export default function TrackingPortal() {
  </div>
  </div>
  {searchedId && (
- <div className="bg-card rounded-2xl border border-border overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+ <div className="bg-card rounded-2xl border border-primary/40 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
  {isLoading ? (
  <div className="p-16 text-center text-muted-foreground flex flex-col items-center">
  <Truck className="w-10 h-10 animate-bounce mb-4 text-primary" />
@@ -76,7 +76,7 @@ export default function TrackingPortal() {
  </div>
  ) : (
  <div>
- <div className="p-6 md:p-8 border-b border-border bg-muted/20">
+ <div className="p-6 md:p-8 border-b border-primary/40 bg-muted/20">
  <div className="flex flex-col md:flex-row justify-between md:items-start gap-4">
  <div>
  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">{t("tracking_number", "Tracking Number")}</p>
@@ -87,7 +87,7 @@ export default function TrackingPortal() {
  </div>
  <div className="text-left md:text-right">
  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">{t("current_status", "Current Status")}</p>
- <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/30 border border-slate-200 dark:border-primary/70">
+ <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/30 border border-primary/40 dark:border-primary/70">
  {shipment.status === 'Delivered' ? <CheckCircle2 className="w-5 h-5 text-primary" /> : 
  shipment.status === 'In Transit' ? <Truck className="w-5 h-5 text-primary" /> :
  <Clock className="w-5 h-5 text-amber-500" />}

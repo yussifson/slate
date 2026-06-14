@@ -94,14 +94,14 @@ export default function CalendarPage() {
  />
  {/* Calendar Controls (Admin / Staff visibility toggles) */}
  {isAdminUser && (
- <div className="bg-card rounded-xl border border-border p-4 flex gap-6 items-center text-sm select-none">
+ <div className="bg-card rounded-xl border border-primary/40 p-4 flex gap-6 items-center text-sm select-none">
  <span className="font-semibold text-muted-foreground uppercase text-[10px] tracking-wider">{t("toggles", "Toggles:")}</span>
  <label className="flex items-center gap-2 cursor-pointer hover:opacity-90">
  <input
  type="checkbox"
  checked={showAdminCalendar}
  onChange={(e) => setShowAdminCalendar(e.target.checked)}
- className="rounded text-primary focus:ring-primary border-border"
+ className="rounded text-primary focus:ring-primary border-primary/40"
  />
  <span className="font-medium text-foreground">{t("firm_admin_calendar", "Firm Admin Calendar")}</span>
  </label>
@@ -110,7 +110,7 @@ export default function CalendarPage() {
  type="checkbox"
  checked={showStaffCalendar}
  onChange={(e) => setShowStaffCalendar(e.target.checked)}
- className="rounded text-primary focus:ring-primary border-border"
+ className="rounded text-primary focus:ring-primary border-primary/40"
  />
  <span className="font-medium text-foreground">{t("staff_calendars", "Staff Calendars")}</span>
  </label>
@@ -118,7 +118,7 @@ export default function CalendarPage() {
  )}
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
  {/* Calendar Grid */}
- <div className="lg:col-span-2 bg-card rounded-xl border border-border p-4 ">
+ <div className="lg:col-span-2 bg-card rounded-xl border border-primary/40 p-4 ">
  <div className="flex items-center justify-between mb-4">
  <h3 className="text-lg font-semibold">{format(currentMonth, "MMMM yyyy")}</h3>
  <div className="flex gap-1">
@@ -132,7 +132,7 @@ export default function CalendarPage() {
  </div>
  </div>
 
- <div className="grid grid-cols-7 gap-px bg-border rounded-lg overflow-hidden">
+ <div className="grid grid-cols-7 gap-px bg-primary/40 rounded-lg overflow-hidden">
  {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(d => {
  return (<div key={d} className="bg-muted/50 p-2 text-center text-xs font-medium text-muted-foreground">{d}</div>);
 })}
@@ -169,8 +169,8 @@ export default function CalendarPage() {
  </div>
 
  {/* Upcoming */}
- <div className="bg-card rounded-xl border border-border">
- <div className="p-4 border-b border-border">
+ <div className="bg-card rounded-xl border border-primary/40">
+ <div className="p-4 border-b border-primary/40">
  <h3 className="text-sm font-semibold flex items-center gap-2">
  <Calendar className="w-4 h-4 text-primary" /> Upcoming {getTerm(activeIndustry, "hearing", true)}s
  </h3>

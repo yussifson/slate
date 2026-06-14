@@ -7,7 +7,7 @@ import { FileText } from "lucide-react";
 export default function DataTable({ columns, data, isLoading, onRowClick, emptyTitle, emptyDescription, emptyIcon }) {
   if (isLoading) {
     return (
-      <div className="bg-card rounded-xl border border-border overflow-hidden">
+      <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
@@ -34,7 +34,7 @@ export default function DataTable({ columns, data, isLoading, onRowClick, emptyT
 
   if (!data?.length) {
     return (
-      <div className="bg-card rounded-xl border border-border">
+      <div className="bg-card rounded-xl border border-primary/40">
         <EmptyState
           icon={emptyIcon || FileText}
           title={emptyTitle || "No data yet"}
@@ -45,7 +45,7 @@ export default function DataTable({ columns, data, isLoading, onRowClick, emptyT
   }
 
   return (
-    <div className="bg-card rounded-xl border border-border overflow-hidden">
+    <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>

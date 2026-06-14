@@ -60,7 +60,7 @@ export default function Subscriptions() {
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
  {Object.entries(SUBSCRIPTION_PLANS).map(([key, plan]) => {
  return (
- <div key={key} className="bg-card rounded-xl border border-border p-5 transition-">
+ <div key={key} className="bg-card rounded-xl border border-primary/40 p-5 transition-">
  <div className="flex items-center justify-between mb-4">
  <h3 className="text-lg font-bold">{plan.name}</h3>
  <Badge variant="secondary" className="text-xs">{planCounts[key] || 0} {t("firms", "firms")}</Badge>
@@ -82,7 +82,7 @@ export default function Subscriptions() {
  <span>{t("max_clients", "Max Clients")}</span><span className="font-medium text-foreground">{plan.maxClients}</span>
  </div>
  </div>
- <div className="mt-4 pt-3 border-t border-border">
+ <div className="mt-4 pt-3 border-t border-primary/40">
  <div className="h-2 bg-muted rounded-full overflow-hidden">
  <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${companies.length > 0 ? ((planCounts[key] || 0) / companies.length * 100) : 0}%`}} />
  </div>
@@ -97,7 +97,7 @@ export default function Subscriptions() {
  {/* Company subscription list */}
  <div>
  <h2 className="text-base font-semibold mb-3">{t("all_firm_subscriptions", "All Firm Subscriptions")}</h2>
- <div className="bg-card rounded-xl border border-border overflow-hidden">
+ <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
  <table className="w-full text-sm">
  <thead className="bg-muted/50">
  <tr>

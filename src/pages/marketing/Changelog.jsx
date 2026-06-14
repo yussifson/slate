@@ -55,7 +55,7 @@ export default function Changelog() {
  <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-slate-100 text-primary shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 relative z-10">
  {update.type === 'feature' ? <Star className="w-4 h-4 fill-current" /> : <Zap className="w-4 h-4 fill-current" />}
  </div>
- <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-6 rounded-2xl border border-slate-200 transition-">
+ <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-6 rounded-2xl border border-primary/40 transition-">
  <div className="flex items-center justify-between mb-2">
  <span className="text-sm font-bold text-primary bg-slate-50 px-3 py-1 rounded-full">{update.version}</span>
  <time className="text-sm font-medium text-slate-500">{update.date}</time>

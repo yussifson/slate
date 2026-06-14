@@ -80,7 +80,7 @@ export default function UnivVolunteerRoster() {
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-border mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Dashboard"].map(v => (
  <button 
  key={v} 
@@ -107,7 +107,7 @@ export default function UnivVolunteerRoster() {
  </div>
 
  {showForm && (
- <motion.div initial={{ opacity: 0, y: -20}} animate={{ opacity: 1, y: 0}} className="bg-card p-6 rounded-xl border border-border mb-8 relative">
+ <motion.div initial={{ opacity: 0, y: -20}} animate={{ opacity: 1, y: 0}} className="bg-card p-6 rounded-xl border border-primary/40 mb-8 relative">
  <button onClick={() => setShowForm(false)} className="absolute top-4 right-4 text-muted-foreground hover:text-muted-foreground">
  <X size={20} />
  </button>
@@ -120,7 +120,7 @@ export default function UnivVolunteerRoster() {
  type="text"
  value={formData.volunteer_name}
  onChange={(e) => setFormData({ ...formData, volunteer_name: e.target.value})}
- className="border border-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+ className="border border-primary/40 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
  placeholder={`Enter volunteer name`}
  />
  </div>
@@ -130,7 +130,7 @@ export default function UnivVolunteerRoster() {
  type="email"
  value={formData.email}
  onChange={(e) => setFormData({ ...formData, email: e.target.value})}
- className="border border-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+ className="border border-primary/40 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
  placeholder={`Enter email`}
  />
  </div>
@@ -140,7 +140,7 @@ export default function UnivVolunteerRoster() {
  type="text"
  value={formData.role}
  onChange={(e) => setFormData({ ...formData, role: e.target.value})}
- className="border border-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+ className="border border-primary/40 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
  placeholder={`Enter role`}
  />
  </div>
@@ -150,7 +150,7 @@ export default function UnivVolunteerRoster() {
  type="text"
  value={formData.availability}
  onChange={(e) => setFormData({ ...formData, availability: e.target.value})}
- className="border border-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+ className="border border-primary/40 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
  placeholder={`Enter availability`}
  />
  </div>
@@ -160,7 +160,7 @@ export default function UnivVolunteerRoster() {
  type="number"
  value={formData.hours_logged}
  onChange={(e) => setFormData({ ...formData, hours_logged: e.target.value})}
- className="border border-border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+ className="border border-primary/40 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
  placeholder={`Enter hours logged`}
  />
  </div>
@@ -173,7 +173,7 @@ export default function UnivVolunteerRoster() {
 
  <div className="grid gap-4">
  {items.map((item) => (
- <motion.div key={item.id} initial={{ opacity: 0}} animate={{ opacity: 1}} className="bg-card p-5 rounded-xl border border-border transition-">
+ <motion.div key={item.id} initial={{ opacity: 0}} animate={{ opacity: 1}} className="bg-card p-5 rounded-xl border border-primary/40 transition-">
  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
  
  <div>
@@ -200,7 +200,7 @@ export default function UnivVolunteerRoster() {
  </motion.div>
  ))}
  {items.length === 0 && !loading && (
- <div className="text-center py-12 text-muted-foreground bg-background rounded-xl border border-dashed border-primary/50">
+ <div className="text-center py-12 text-muted-foreground bg-background rounded-xl border border-dashed border-primary/40">
  <p>No volunteer roster records found. Create one to get started.</p>
  </div>
  )}
