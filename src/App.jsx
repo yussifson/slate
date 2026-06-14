@@ -117,6 +117,8 @@ import ClientPortal from './pages/ClientPortal';
 import CaseDetail from './pages/CaseDetail';
 import StaffDashboard from './pages/StaffDashboard';
 import IntakeForm from './pages/IntakeForm';
+import AppIntegrations from './pages/Integrations';
+import Automations from './pages/Automations';
 import Leads from './pages/Leads';
 import BillingDashboard from './pages/BillingDashboard';
 import CasePipelinePage from './pages/CasePipelinePage';
@@ -413,6 +415,7 @@ function PlatformRoutes() {
       <Route path="/settings" element={<Settings />} />
       <Route path="/settings/custom-fields" element={<CustomFieldsSettings />} />
       <Route path="/integrations" element={<AppIntegrations />} />
+      <Route path="/automations" element={<Automations />} />
       <Route path="/client-portal" element={<ClientPortal />} />
       <Route path="/cases/:id" element={<CaseDetail />} />
       <Route path="/my-dashboard" element={<StaffDashboard />} />
