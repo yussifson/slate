@@ -1,232 +1,316 @@
-import React, { useState, useEffect} from 'react';
-import { useTranslation} from 'react-i18next';
-import { useAuth} from '@/lib/AuthContext';
-import { base44} from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription} from '@/components/ui/card';
-import { Button} from '@/components/ui/button';
-import { Input} from '@/components/ui/input';
-import { Search, Briefcase, Building2, MapPin, Calendar, Clock, Plus, Building, UserCircle, Star} from 'lucide-react';
-import { Badge} from '@/components/ui/badge';
-import { ScrollArea} from '@/components/ui/scroll-area';
-import { Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Search, Briefcase, Building2, MapPin, Calendar, Clock, Plus, Building, UserCircle, Star } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { toast } from 'react-hot-toast';
 
 export default function VInternshipTracking() {
- const { t} = useTranslation();
- const { user} = useAuth();
- const [internships, setInternships] = useState([]);
- const [loading, setLoading] = useState(true);
- const [searchQuery, setSearchQuery] = useState('');
- const [selectedInternship, setSelectedInternship] = useState(null);
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const [internships, setInternships] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedInternship, setSelectedInternship] = useState(null);
 
- const fetchInternships = async () => {
- setLoading(true);
- try {
- const records = await base44.getEntities('voc_internship', user?.company_id);
- setInternships(records);
- if (records.length > 0 && !selectedInternship) {
- setSelectedInternship(records[0]);
-}
-} catch (error) {
- console.error('Failed to fetch internships:', error);
-} finally {
- setLoading(false);
-}
-};
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newInternship, setNewInternship] = useState({ student_name: '', company_name: '', start_date: '', end_date: '', duration_weeks: '', location: '', supervisor_name: '' });
 
- useEffect(() => {
- if (user?.company_id) {
- fetchInternships();
-}
-}, [user]);
+  const fetchInternships = async () => {
+    setLoading(true);
+    try {
+      const records = await base44.getEntities('voc_internship', user?.company_id);
+      setInternships(records);
+      if (records.length > 0 && !selectedInternship) {
+        setSelectedInternship(records[0]);
+      } else if (selectedInternship) {
+        const updated = records.find(r => r.id === selectedInternship.id);
+        if (updated) setSelectedInternship(updated);
+      }
+    } catch (error) {
+      console.error('Failed to fetch internships:', error);
+      toast.error('Failed to load internships');
+    } finally {
+      setLoading(false);
+    }
+  };
 
- const filteredInternships = internships.filter(i => 
- i.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
- i.data?.student_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
- i.data?.company_name?.toLowerCase().includes(searchQuery.toLowerCase())
- );
+  useEffect(() => {
+    if (user?.company_id) {
+      fetchInternships();
+    }
+  }, [user]);
 
- return (
- <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300 h-[calc(100vh-100px)] flex flex-col">
- <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
- <div>
- <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
- Internship Tracking
- </h1>
- <p className="text-muted-foreground mt-1 text-sm font-medium">
- Manage and track student internship placements and performance.
- </p>
- </div>
- <Button className="rounded-xl -indigo-200">
- <Plus className="w-4 h-4 mr-2" /> New Placement
- </Button>
- </div>
+  const handleCreateInternship = async () => {
+    if (!newInternship.student_name || !newInternship.company_name) {
+      toast.error('Student Name and Company Name are required');
+      return;
+    }
+    try {
+      const created = await base44.createEntity('voc_internship', {
+        title: `${newInternship.student_name} - ${newInternship.company_name}`,
+        status: 'Active',
+        data: {
+          student_name: newInternship.student_name,
+          company_name: newInternship.company_name,
+          start_date: newInternship.start_date || new Date().toISOString().split('T')[0],
+          end_date: newInternship.end_date,
+          duration_weeks: parseInt(newInternship.duration_weeks) || 12,
+          location: newInternship.location || 'Remote',
+          supervisor_name: newInternship.supervisor_name || 'TBD',
+          supervisor_phone: '',
+          supervisor_email: '',
+          logs: []
+        }
+      }, user?.company_id);
+      toast.success('Internship placement added');
+      setIsDialogOpen(false);
+      setNewInternship({ student_name: '', company_name: '', start_date: '', end_date: '', duration_weeks: '', location: '', supervisor_name: '' });
+      fetchInternships();
+      setSelectedInternship(created);
+    } catch (error) {
+      console.error('Failed to add placement:', error);
+      toast.error('Failed to add placement');
+    }
+  };
 
- <div className="flex-1 flex gap-6 overflow-hidden">
- <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
- <div className="p-4 border-b border-primary/5">
- <div className="relative">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
- <Input 
- placeholder="Search placements..." 
- className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary"
- value={searchQuery}
- onChange={(e) => setSearchQuery(e.target.value)}
- />
- </div>
- </div>
- <ScrollArea className="flex-1">
- {loading ? (
- <div className="p-8 text-center text-primary/30 text-sm">Loading placements...</div>
- ) : filteredInternships.length === 0 ? (
- <div className="p-8 text-center text-slate-400 text-sm">No internships found.</div>
- ) : (
- <div className="p-2 space-y-1">
- {filteredInternships.map(internship => (
- <button
- key={internship.id}
- onClick={() => setSelectedInternship(internship)}
- className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
- selectedInternship?.id === internship.id 
- ? 'bg-primary text-white -indigo-500/20' 
- : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200'
-}`}
- >
- <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${
- selectedInternship?.id === internship.id ? 'bg-white dark:bg-slate-900/40/20' : 'bg-slate-100 text-primary'
-}`}>
- <Briefcase className="w-5 h-5" />
- </div>
- <div className="overflow-hidden">
- <p className="font-bold truncate">{internship.data?.student_name || internship.title}</p>
- <p className={`text-xs truncate ${selectedInternship?.id === internship.id ? 'text-primary/20' : 'text-slate-500 dark:text-slate-400'}`}>
- {internship.data?.company_name || 'Unassigned'}
- </p>
- </div>
- </button>
- ))}
- </div>
- )}
- </ScrollArea>
- </Card>
+  const filteredInternships = internships.filter(i => 
+    i.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    i.data?.student_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    i.data?.company_name?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
- <Card className="flex-1 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative">
- {selectedInternship ? (
- <>
- <div className="h-32 bg-gradient-to-r from-primary/90 to-primary relative shrink-0">
- <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
- </div>
- 
- <ScrollArea className="flex-1 -mt-12">
- <div className="px-8 pb-8">
- <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center relative z-10">
- <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-1 shrink-0">
- <div className="w-full h-full rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center text-primary">
- <Briefcase className="w-12 h-12" />
- </div>
- </div>
- <div className="flex-1 mt-4 sm:mt-12">
- <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">{selectedInternship.data?.student_name || selectedInternship.title}</h2>
- <div className="flex items-center gap-3 mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium">
- <span className="flex items-center gap-1.5"><Building2 className="w-4 h-4 text-primary" /> {selectedInternship.data?.company_name || 'TBD'}</span>
- <span>•</span>
- <span className="flex items-center gap-1.5">
- <Badge className={selectedInternship.status === 'Active' ? 'bg-primary' : selectedInternship.status === 'Completed' ? 'bg-primary' : 'bg-amber-500'}>
- {selectedInternship.status || 'Pending'}
- </Badge>
- </span>
- </div>
- </div>
- </div>
+  return (
+    <div className="space-y-6 h-[calc(100vh-100px)] flex flex-col">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            {t('internship_tracking', 'Internship Tracking')}
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm font-medium">
+            {t('internships_desc', 'Manage and track student internship placements and performance.')}
+          </p>
+        </div>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-primary hover:bg-primary/90 text-white rounded-xl shadow-none">
+              <Plus className="w-4 h-4 mr-2" /> {t('new_placement', 'New Placement')}
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px] rounded-2xl border-primary/40 shadow-none bg-card">
+            <DialogHeader>
+              <DialogTitle>{t('add_placement', 'Add Placement')}</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4 max-h-[60vh] overflow-y-auto px-1">
+              <div className="space-y-2">
+                <Label htmlFor="student">{t('student_name', 'Student Name')}</Label>
+                <Input id="student" placeholder="e.g. John Doe" value={newInternship.student_name} onChange={e => setNewInternship({...newInternship, student_name: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="company">{t('company', 'Company Name')}</Label>
+                <Input id="company" placeholder="e.g. TechCorp" value={newInternship.company_name} onChange={e => setNewInternship({...newInternship, company_name: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="supervisor">{t('supervisor', 'Supervisor Name')}</Label>
+                <Input id="supervisor" placeholder="e.g. Jane Smith" value={newInternship.supervisor_name} onChange={e => setNewInternship({...newInternship, supervisor_name: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="location">{t('location', 'Location')}</Label>
+                <Input id="location" placeholder="e.g. Accra" value={newInternship.location} onChange={e => setNewInternship({...newInternship, location: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="sdate">{t('start_date', 'Start Date')}</Label>
+                  <Input id="sdate" type="date" value={newInternship.start_date} onChange={e => setNewInternship({...newInternship, start_date: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="duration">{t('duration', 'Duration (Weeks)')}</Label>
+                  <Input id="duration" type="number" placeholder="12" value={newInternship.duration_weeks} onChange={e => setNewInternship({...newInternship, duration_weeks: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+                </div>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button onClick={handleCreateInternship} className="bg-primary text-white hover:bg-primary/90 rounded-xl shadow-none">{t('save', 'Save Placement')}</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
 
- <div className="mt-8">
- <Tabs defaultValue="overview" className="w-full">
- <TabsList className="bg-slate-500 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-primary/40 dark:border-primary/40">
- <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-primary">Overview</TabsTrigger>
- <TabsTrigger value="supervisor" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-primary">Supervisor</TabsTrigger>
- <TabsTrigger value="logs" className="rounded-lg data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-primary">Daily Logs</TabsTrigger>
- </TabsList>
- 
- <div className="mt-6">
- <TabsContent value="overview" className="space-y-6 outline-none">
- <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
- <div className="p-5 rounded-2xl bg-primary/30 border border-primary/40 space-y-4">
- <h3 className="text-sm font-bold text-primary uppercase tracking-wider">Placement Details</h3>
- <div className="grid grid-cols-2 gap-y-4">
- <div>
- <p className="text-xs text-slate-500 dark:text-slate-400">Start Date</p>
- <p className="font-medium text-slate-800 flex items-center gap-2"><Calendar className="w-4 h-4 text-primary/70" /> {selectedInternship.data?.start_date || 'N/A'}</p>
- </div>
- <div>
- <p className="text-xs text-slate-500 dark:text-slate-400">End Date</p>
- <p className="font-medium text-slate-800 flex items-center gap-2"><Calendar className="w-4 h-4 text-primary/70" /> {selectedInternship.data?.end_date || 'N/A'}</p>
- </div>
- <div>
- <p className="text-xs text-slate-500 dark:text-slate-400">Duration</p>
- <p className="font-medium text-slate-800 flex items-center gap-2"><Clock className="w-4 h-4 text-primary/70" /> {selectedInternship.data?.duration_weeks || 'N/A'} weeks</p>
- </div>
- <div>
- <p className="text-xs text-slate-500 dark:text-slate-400">Location</p>
- <p className="font-medium text-slate-800 flex items-center gap-2"><MapPin className="w-4 h-4 text-primary/70" /> {selectedInternship.data?.location || 'N/A'}</p>
- </div>
- </div>
- </div>
- 
- <div className="p-5 rounded-2xl bg-primary/30 border border-primary/40 space-y-4">
- <h3 className="text-sm font-bold text-primary uppercase tracking-wider">Company Info</h3>
- <div className="space-y-4">
- <div>
- <p className="text-xs text-slate-500 dark:text-slate-400">Company Name</p>
- <p className="font-medium text-slate-800">{selectedInternship.data?.company_name || 'N/A'}</p>
- </div>
- <div>
- <p className="text-xs text-slate-500 dark:text-slate-400">Industry</p>
- <p className="font-medium text-slate-800">{selectedInternship.data?.industry || 'N/A'}</p>
- </div>
- <div>
- <p className="text-xs text-slate-500 dark:text-slate-400">Department</p>
- <p className="font-medium text-slate-800">{selectedInternship.data?.department || 'N/A'}</p>
- </div>
- </div>
- </div>
- </div>
- </TabsContent>
- 
- <TabsContent value="supervisor" className="outline-none">
- <div className="p-8 text-center border-2 border-dashed border-primary/40 rounded-2xl bg-primary/20">
- <UserCircle className="w-10 h-10 text-primary/30 mx-auto mb-3" />
- <h4 className="text-slate-700 dark:text-slate-300 font-bold">Supervisor Details</h4>
- <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 mb-4">No supervisor information recorded for this placement.</p>
- <Button variant="outline" className="border-primary/20 text-primary hover:bg-slate-50 dark:bg-slate-800/50 rounded-xl">Add Supervisor</Button>
- </div>
- </TabsContent>
+      <div className="flex-1 flex gap-6 overflow-hidden">
+        {/* Left Panel */}
+        <Card className="w-[350px] shrink-0 flex flex-col rounded-2xl border border-primary/40 bg-card shadow-none">
+          <div className="p-4 border-b border-primary/10">
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Input 
+                placeholder="Search placements..." 
+                className="pl-9 h-10 border-primary/40 rounded-xl focus-visible:ring-primary shadow-none"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+          <ScrollArea className="flex-1">
+            {loading ? (
+              <div className="p-8 text-center text-muted-foreground text-sm">Loading placements...</div>
+            ) : filteredInternships.length === 0 ? (
+              <div className="p-8 text-center text-muted-foreground text-sm">No internships found.</div>
+            ) : (
+              <div className="p-2 space-y-1">
+                {filteredInternships.map(internship => (
+                  <button
+                    key={internship.id}
+                    onClick={() => setSelectedInternship(internship)}
+                    className={`w-full text-left p-3 rounded-xl transition-all duration-200 flex items-center gap-3 ${
+                      selectedInternship?.id === internship.id 
+                        ? 'bg-primary/10 text-primary' 
+                        : 'hover:bg-primary/5 text-foreground'
+                    }`}
+                  >
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold shrink-0 ${
+                      selectedInternship?.id === internship.id ? 'bg-primary text-white' : 'bg-primary/10 text-primary'
+                    }`}>
+                      <Briefcase className="w-5 h-5" />
+                    </div>
+                    <div className="overflow-hidden">
+                      <p className="font-bold truncate text-sm">{internship.data?.student_name || internship.title}</p>
+                      <p className={`text-xs truncate ${selectedInternship?.id === internship.id ? 'text-primary' : 'text-muted-foreground'}`}>
+                        {internship.data?.company_name || 'Unassigned'}
+                      </p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </ScrollArea>
+        </Card>
 
- <TabsContent value="logs" className="outline-none">
- <div className="p-8 text-center border-2 border-dashed border-primary/40 rounded-2xl bg-primary/20">
- <Star className="w-10 h-10 text-primary/30 mx-auto mb-3" />
- <h4 className="text-slate-700 dark:text-slate-300 font-bold">No Daily Logs</h4>
- <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 mb-4">Student has not submitted any daily logs yet.</p>
- <Button variant="outline" className="border-primary/20 text-primary hover:bg-slate-50 dark:bg-slate-800/50 rounded-xl">View Requirements</Button>
- </div>
- </TabsContent>
- </div>
- </Tabs>
- </div>
- </div>
- </ScrollArea>
- </>
- ) : (
- <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
- <div className="w-20 h-20 rounded-full bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center mb-6">
- <Briefcase className="w-10 h-10 text-primary/30" />
- </div>
- <h3 className="text-xl font-bold text-slate-700 dark:text-slate-300">No Placement Selected</h3>
- <p className="text-slate-500 dark:text-slate-400 max-w-sm mt-2">
- Select an internship placement from the list to view details and performance.
- </p>
- </div>
- )}
- </Card>
- </div>
- </div>
- );
+        {/* Right Panel */}
+        <Card className="flex-1 flex flex-col rounded-2xl border border-primary/40 bg-card shadow-none overflow-hidden relative">
+          {selectedInternship ? (
+            <>
+              <div className="h-32 bg-primary/10 relative shrink-0 border-b border-primary/10"></div>
+              
+              <ScrollArea className="flex-1 -mt-12">
+                <div className="px-8 pb-8">
+                  <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center relative z-10">
+                    <div className="w-24 h-24 rounded-2xl bg-card border border-primary/40 p-2 shrink-0 shadow-none">
+                      <div className="w-full h-full rounded-xl bg-primary/5 flex items-center justify-center text-primary">
+                        <Briefcase className="w-10 h-10" />
+                      </div>
+                    </div>
+                    <div className="flex-1 mt-4 sm:mt-12">
+                      <h2 className="text-3xl font-black text-slate-900 dark:text-white">{selectedInternship.data?.student_name || selectedInternship.title}</h2>
+                      <div className="flex items-center gap-3 mt-2 text-sm text-muted-foreground font-medium">
+                        <span className="flex items-center gap-1.5"><Building2 className="w-4 h-4 text-primary" /> {selectedInternship.data?.company_name || 'TBD'}</span>
+                        <span>•</span>
+                        <Badge variant="secondary" className={`shadow-none px-3 py-1 text-xs ${selectedInternship.status === 'Active' ? 'bg-primary text-white' : selectedInternship.status === 'Completed' ? 'bg-primary text-white' : 'bg-slate-200 text-slate-600'}`}>
+                          {selectedInternship.status || 'Pending'}
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8">
+                    <Tabs defaultValue="overview" className="w-full">
+                      <TabsList className="bg-primary/5 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-primary/10">
+                        <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-none">Overview</TabsTrigger>
+                        <TabsTrigger value="supervisor" className="rounded-lg data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-none">Supervisor</TabsTrigger>
+                        <TabsTrigger value="logs" className="rounded-lg data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-none">Daily Logs</TabsTrigger>
+                      </TabsList>
+                      
+                      <div className="mt-6">
+                        <TabsContent value="overview" className="space-y-6 outline-none">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <Card className="bg-primary/5 border border-primary/10 shadow-none rounded-2xl">
+                              <CardHeader className="pb-3 border-b border-primary/5">
+                                <CardTitle className="text-sm font-bold text-primary uppercase tracking-wider">Placement Details</CardTitle>
+                              </CardHeader>
+                              <CardContent className="pt-4 grid grid-cols-2 gap-y-4">
+                                <div>
+                                  <p className="text-xs text-muted-foreground">Start Date</p>
+                                  <p className="font-medium text-slate-900 dark:text-white flex items-center gap-2"><Calendar className="w-4 h-4 text-primary" /> {selectedInternship.data?.start_date || 'N/A'}</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-muted-foreground">End Date</p>
+                                  <p className="font-medium text-slate-900 dark:text-white flex items-center gap-2"><Calendar className="w-4 h-4 text-primary" /> {selectedInternship.data?.end_date || 'N/A'}</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-muted-foreground">Duration</p>
+                                  <p className="font-medium text-slate-900 dark:text-white flex items-center gap-2"><Clock className="w-4 h-4 text-primary" /> {selectedInternship.data?.duration_weeks || 'N/A'} weeks</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-muted-foreground">Location</p>
+                                  <p className="font-medium text-slate-900 dark:text-white flex items-center gap-2"><MapPin className="w-4 h-4 text-primary" /> {selectedInternship.data?.location || 'N/A'}</p>
+                                </div>
+                              </CardContent>
+                            </Card>
+                            
+                            <Card className="bg-primary/5 border border-primary/10 shadow-none rounded-2xl">
+                              <CardHeader className="pb-3 border-b border-primary/5">
+                                <CardTitle className="text-sm font-bold text-primary uppercase tracking-wider">Company Info</CardTitle>
+                              </CardHeader>
+                              <CardContent className="pt-4 space-y-4">
+                                <div>
+                                  <p className="text-xs text-muted-foreground">Company Name</p>
+                                  <p className="font-medium text-slate-900 dark:text-white">{selectedInternship.data?.company_name || 'N/A'}</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-muted-foreground">Supervisor / Mentor</p>
+                                  <p className="font-medium text-slate-900 dark:text-white flex items-center gap-2">
+                                    <UserCircle className="w-4 h-4 text-primary" />
+                                    {selectedInternship.data?.supervisor_name || 'N/A'}
+                                  </p>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
+                        </TabsContent>
+                        
+                        <TabsContent value="supervisor" className="outline-none">
+                          <Card className="border border-primary/10 bg-primary/5 shadow-none rounded-2xl text-center py-12 flex flex-col items-center">
+                            <UserCircle className="w-12 h-12 text-primary/40 mx-auto mb-4" />
+                            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Supervisor Evaluation</h3>
+                            <p className="text-muted-foreground text-sm max-w-sm mb-6">
+                              The supervisor evaluation has not been submitted yet. Usually completed at the end of the internship period.
+                            </p>
+                            <Button variant="outline" className="border-primary/40 text-primary shadow-none rounded-xl">Send Evaluation Request</Button>
+                          </Card>
+                        </TabsContent>
+                        
+                        <TabsContent value="logs" className="outline-none">
+                          <Card className="border border-primary/10 bg-primary/5 shadow-none rounded-2xl text-center py-12">
+                            <Clock className="w-12 h-12 text-primary/40 mx-auto mb-4" />
+                            <p className="text-muted-foreground text-sm mb-4">No daily logs recorded by the intern yet.</p>
+                          </Card>
+                        </TabsContent>
+                      </div>
+                    </Tabs>
+                  </div>
+                </div>
+              </ScrollArea>
+            </>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+                <Briefcase className="w-10 h-10 text-primary/40" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white">No Internship Selected</h3>
+              <p className="text-muted-foreground max-w-sm mt-2">
+                Select an internship placement to view its details, supervisor feedback, and student logs.
+              </p>
+            </div>
+          )}
+        </Card>
+      </div>
+    </div>
+  );
 }
