@@ -251,18 +251,22 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  moduleData.company_id = companyId || '00000000-0000-0000-0000-000000000000';
  moduleData.created_at = new Date().toISOString();
 }
-
- const { error: moduleError} = isEditing
- ? (await (async () => {
- const _p = moduleData;
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`UPDATE module_definitions SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, id]);
- return { data: null};
-}))()
- : await (async () => { let _p = moduleData; if (Array.isArray(_p)) _p = _p[0]; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); const _pl = _k.map(()=>'?').join(', '); await powerSync.execute(`INSERT INTO module_definitions (${_k.join(', ')}) VALUES (${_pl})`, _v);})();
-
- if (moduleError) throw moduleError;
+      let moduleError = null;
+      try {
+        if (isEditing) {
+          const _k = Object.keys(moduleData);
+          const _v = Object.values(moduleData).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          await powerSync.execute(`UPDATE module_definitions SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, id]);
+        } else {
+          const _k = Object.keys(moduleData);
+          const _v = Object.values(moduleData).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          await powerSync.execute(`INSERT INTO module_definitions (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+        }
+      } catch (err) {
+        moduleError = err;
+      }
+      
+      if (moduleError) throw moduleError;
 
  // Delete existing fields then re-insert (clean update)
  await powerSync.execute(`DELETE FROM field_definitions WHERE module_id = ?`, [moduleId]);
@@ -281,8 +285,15 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  created_at: new Date().toISOString()
 }));
 
- const { error: fieldError} = await (async () => { let _p = fieldsToInsert; if (Array.isArray(_p)) _p = _p[0]; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); const _pl = _k.map(()=>'?').join(', '); await powerSync.execute(`INSERT INTO field_definitions (${_k.join(', ')}) VALUES (${_pl})`, _v);})();
- if (fieldError) throw fieldError;
+        try {
+          for (const field of fieldsToInsert) {
+            const _k = Object.keys(field);
+            const _v = Object.values(field).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+            await powerSync.execute(`INSERT INTO field_definitions (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+          }
+        } catch (fieldError) {
+          throw fieldError;
+        }
 }
 
  toast({
