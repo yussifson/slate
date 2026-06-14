@@ -126,7 +126,7 @@ export default function UnivClientPortal({
  
  {/* Hero Banner */}
  <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 px-8 py-10 shrink-0 relative overflow-hidden">
- <div className="absolute inset-0 bg-black/10"></div>
+ <div className="absolute inset-0 bg-primary/20"></div>
  <div className="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
  <div className="max-w-6xl mx-auto relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
  <div className="text-white">

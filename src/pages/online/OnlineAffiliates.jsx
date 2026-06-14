@@ -66,10 +66,10 @@ export default function OnlineAffiliates() {
  <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0}/>
  </linearGradient>
  </defs>
- <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border-subtle)" />
+ <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--primary) / 0.4)" />
  <XAxis dataKey="name" tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} axisLine={false} tickLine={false} />
  <YAxis tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} axisLine={false} tickLine={false} />
- <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface-0)', borderColor: 'var(--color-border-subtle)', borderRadius: '8px'}} />
+ <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface-0)', borderColor: "hsl(var(--primary) / 0.4)", borderRadius: '8px'}} />
  <Area type="monotone" dataKey="clicks" stroke="var(--chart-1)" fillOpacity={1} fill="url(#colorClicks)" strokeWidth={2} name="Clicks" />
  </AreaChart>
  </ResponsiveContainer>

@@ -104,7 +104,7 @@ export default function OnlineCourses() {
  className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden flex flex-col group hover:border-[var(--primary)] transition-all duration-300 glass-card"
  >
  <div className="aspect-video bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface-3)] relative flex items-center justify-center overflow-hidden">
- <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors z-10" />
+ <div className="absolute inset-0 bg-primary/20 group-hover:bg-primary/20 transition-colors z-10" />
  <PlayCircle className="w-12 h-12 text-[var(--primary)] opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 z-20 " />
  <div className="absolute top-3 right-3 px-2.5 py-1 bg-white dark:bg-slate-900/40/90 dark:bg-black/50 backdrop-blur-sm border border-white/20 dark:border-white/10 text-[10px] font-bold rounded-md text-[var(--color-text-primary)] uppercase tracking-wider z-20">
  {extra.level || 'Beginner'}

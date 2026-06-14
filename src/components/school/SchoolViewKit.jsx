@@ -256,7 +256,7 @@ export function ModuleBanner({ title, subtitle, dateText, onRefresh, isRefreshin
  return (
  <div className="bg-gradient-to-r from-primary via-primary/90 to-primary rounded-3xl p-6 relative overflow-hidden mb-6 -primary/20">
  <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl opacity-30 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
- <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/10 rounded-full blur-3xl opacity-50 translate-y-1/3 -translate-x-1/4 pointer-events-none" />
+ <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl opacity-50 translate-y-1/3 -translate-x-1/4 pointer-events-none" />
  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.04] pointer-events-none" />
  
  <div className="relative z-10 flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6">

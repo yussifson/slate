@@ -232,7 +232,7 @@ export default function Parents() {
 
  {/* Tabbed Wizard Modal (Edit Only) */}
  {showModal && editingId && (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
+ <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-md p-4">
  <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-lg overflow-hidden border border-primary/40 flex flex-col max-h-[90vh]">
  <div className="p-6 border-b border-primary/40">
  <h2 className="text-xl school-heading font-bold tracking-tight">Edit Parent</h2>

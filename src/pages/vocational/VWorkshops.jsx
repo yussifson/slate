@@ -160,7 +160,7 @@ export default function VWorkshops() {
       {/* Session Detail Slide-over */}
       {selectedSession && (
         <div className="fixed inset-0 z-50 flex justify-end" onClick={() => setSelectedSession(null)}>
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-primary/20 backdrop-blur-sm" />
           <div className="relative w-[400px] bg-[#161B22] border-l border-[#30363D] h-full overflow-y-auto animate-in slide-in-from-right duration-200" onClick={e => e.stopPropagation()}>
             <div className="p-4 border-b border-[#30363D] flex items-center justify-between">
               <h2 className="text-[16px] font-bold text-[#F0F6FC]" style={{ fontFamily: F.display }}>{selectedSession.title}</h2>

@@ -116,7 +116,7 @@ export default function UnivHoa() {
  </div>
  )}
  <AnimatePresence>{modal && (
- <motion.div initial={{ opacity: 0}} animate={{ opacity: 1}} exit={{ opacity: 0}} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+ <motion.div initial={{ opacity: 0}} animate={{ opacity: 1}} exit={{ opacity: 0}} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
  <motion.div initial={{ scale: 0.95}} animate={{ scale: 1}} exit={{ scale: 0.95}} className="bg-card w-full max-w-lg rounded-2xl ">
  <div className="p-5 border-b border-primary/40 flex justify-between items-center"><h2 className="text-xl font-black">{editId ? 'Edit Unit' : 'Add HOA Unit'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-full"><XCircle className="w-5 h-5 text-muted-foreground" /></button></div>
  <form onSubmit={save} className="p-5 grid grid-cols-2 gap-4">

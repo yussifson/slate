@@ -87,7 +87,7 @@ export default function UniGraduationStats() {
  <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
  ))}
  </Pie>
- <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface-0)', borderColor: 'var(--color-border-subtle)', borderRadius: '8px'}} />
+ <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface-0)', borderColor: "hsl(var(--primary) / 0.4)", borderRadius: '8px'}} />
  </PieChart>
  </ResponsiveContainer>
  </div>

@@ -33,7 +33,7 @@ export default function GlobalVideoOverlay() {
 
  {/* Green "LIVE" badge on the PiP window */}
  {effectivePipMode && (
- <div className="absolute top-2 left-2 flex items-center gap-1.5 bg-black/60 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full pointer-events-none">
+ <div className="absolute top-2 left-2 flex items-center gap-1.5 bg-primary/20 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full pointer-events-none">
  <span className="relative flex h-2 w-2">
  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
@@ -48,14 +48,14 @@ export default function GlobalVideoOverlay() {
  <button
  onClick={() => navigate('/board')}
  title="Go to Board"
- className="w-7 h-7 rounded-full bg-black/60 backdrop-blur-sm text-white flex items-center justify-center hover:bg-green-600 transition-colors"
+ className="w-7 h-7 rounded-full bg-primary/20 backdrop-blur-sm text-white flex items-center justify-center hover:bg-green-600 transition-colors"
  >
  <Video className="w-3.5 h-3.5" />
  </button>
  <button
  onClick={leaveRoom}
  title="End Call"
- className="w-7 h-7 rounded-full bg-black/60 backdrop-blur-sm text-white flex items-center justify-center hover:bg-red-600 transition-colors"
+ className="w-7 h-7 rounded-full bg-primary/20 backdrop-blur-sm text-white flex items-center justify-center hover:bg-red-600 transition-colors"
  >
  <PhoneOff className="w-3.5 h-3.5" />
  </button>

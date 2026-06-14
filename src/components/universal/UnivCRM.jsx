@@ -468,7 +468,7 @@ export default function UnivCRM() {
 
  {/* Add / Edit Modal (Tailwind CSS Modal to ensure zero dependency issues) */}
  {isModalOpen && (
- <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+ <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-primary/20 backdrop-blur-sm animate-in fade-in duration-200">
  <div className="bg-card border border-primary/40 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
  <div className="flex justify-between items-center p-5 sm:p-6 border-b border-primary/40 bg-muted/30 shrink-0">
  <h2 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2">

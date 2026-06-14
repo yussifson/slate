@@ -265,7 +265,7 @@ export default function UnivHousekeeping() {
  </div>
 
  {isModalOpen && (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+ <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
  <motion.div initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} className="bg-background border border-primary/40 rounded-2xl w-full max-w-md overflow-hidden">
  <div className="flex justify-between items-center p-4 border-b border-primary/40 bg-muted/30">
  <h3 className="font-bold text-foreground">{editingId ? 'Edit Task' : 'New Task'}</h3>

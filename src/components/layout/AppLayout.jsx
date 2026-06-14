@@ -217,7 +217,7 @@ export default function AppLayout() {
  <div className="flex items-center gap-2 relative z-10">
  <Clock className="w-5 h-5 shrink-0 animate-pulse text-white/90" />
  <span className="font-bold tracking-tight">{t("free_trial_active", "Free Trial Active:")}</span>
- <span className="text-white/90">{t("you_have", "You have")} <strong className="font-extrabold text-white text-base bg-black/20 px-1.5 py-0.5 rounded">{trialDaysLeft} {t("days", "days")}</strong> {t("remaining_on_your_slate_trial", "remaining on your Slate trial.")}</span>
+ <span className="text-white/90">{t("you_have", "You have")} <strong className="font-extrabold text-white text-base bg-primary/20 px-1.5 py-0.5 rounded">{trialDaysLeft} {t("days", "days")}</strong> {t("remaining_on_your_slate_trial", "remaining on your Slate trial.")}</span>
  </div>
  <div className="flex items-center gap-3 relative z-10 w-full sm:w-auto">
  <Link to="/settings" className="w-full sm:w-auto">

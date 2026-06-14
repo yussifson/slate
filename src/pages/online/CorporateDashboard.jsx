@@ -90,10 +90,10 @@ export default function CorporateDashboard() {
  <div className="h-[300px] w-full">
  <ResponsiveContainer width="100%" height="100%">
  <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0}}>
- <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border-subtle)" />
+ <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--primary) / 0.4)" />
  <XAxis dataKey="department" tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} axisLine={false} tickLine={false} />
  <YAxis tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} axisLine={false} tickLine={false} />
- <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface-0)', borderColor: 'var(--color-border-subtle)', borderRadius: '8px'}} cursor={{fill: 'var(--color-surface-2)'}} />
+ <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface-0)', borderColor: "hsl(var(--primary) / 0.4)", borderRadius: '8px'}} cursor={{fill: 'var(--color-surface-2)'}} />
  <Bar dataKey="completed" stackId="a" fill="var(--chart-1)" radius={[0, 0, 4, 4]} name="Completed" />
  <Bar dataKey="inProgress" stackId="a" fill="var(--chart-2)" radius={[4, 4, 0, 0]} name="In Progress" />
  </BarChart>

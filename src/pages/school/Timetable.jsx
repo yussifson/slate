@@ -288,7 +288,7 @@ export default function Timetable() {
  <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
- <Button variant="ghost" className="h-6 w-6 p-0 hover:bg-black/10">
+ <Button variant="ghost" className="h-6 w-6 p-0 hover:bg-primary/20">
  <MoreVertical className="h-3 w-3" />
  </Button>
  </DropdownMenuTrigger>
@@ -338,7 +338,7 @@ export default function Timetable() {
  )}
  {/* Add Slot Modal */}
  {showModal && (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4">
+ <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-md p-4">
  <div className="bg-white dark:bg-slate-900/40/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl -[#1E3A8A]/10 w-full max-w-md p-6 space-y-4 border border-primary/40 max-h-[90vh] overflow-y-auto">
  <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
  <Plus className="w-5 h-5 text-primary dark:text-primary/70" /> {editingId ? 'Edit Timetable Slot' : 'Add Timetable Slot'}

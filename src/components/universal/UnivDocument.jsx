@@ -183,7 +183,7 @@ export default function UnivDocument() {
  </div>
 
  {isModalOpen && (
- <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+ <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
  <div className="bg-card w-full max-w-lg rounded-2xl flex flex-col max-h-[90vh]">
  <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0"><h2 className="text-xl font-black">{editingId?'Edit Document':'Add Document'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-full text-muted-foreground"><XCircle className="w-5 h-5" /></button></div>
  <form onSubmit={save} className="p-5 overflow-y-auto flex-1 custom-scrollbar">

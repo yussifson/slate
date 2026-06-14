@@ -88,7 +88,7 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
         <div className="flex flex-col items-center space-y-3">
           <div className="relative w-20 h-20 rounded-lg overflow-hidden border border-primary/40">
             <img src={preview} alt="Document Preview" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
               <Button size="sm" variant="ghost" className="text-white hover:text-white hover:bg-white/20" onClick={(e) => { e.stopPropagation(); setPreview(null); }}>
                 <X className="w-4 h-4" />
               </Button>

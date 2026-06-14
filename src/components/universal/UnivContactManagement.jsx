@@ -199,7 +199,7 @@ export default function UnivContactManagement() {
  </div>
 
  {selected && (
- <div className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm" onClick={() => setSelected(null)}>
+ <div className="fixed inset-0 z-40 bg-primary/20 backdrop-blur-sm" onClick={() => setSelected(null)}>
  <div className="absolute right-0 top-0 bottom-0 w-80 bg-card border-l border-primary/40 flex flex-col" onClick={e => e.stopPropagation()}>
  <div className="p-5 border-b border-primary/40 flex justify-between items-center"><h3 className="font-black text-lg">Contact</h3><button onClick={() => setSelected(null)} className="p-1.5 bg-muted rounded-full"><XCircle className="w-4 h-4 text-muted-foreground" /></button></div>
  <div className="flex-1 overflow-y-auto p-5 custom-scrollbar">
@@ -222,7 +222,7 @@ export default function UnivContactManagement() {
  )}
 
  {isModalOpen && (
- <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+ <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
  <div className="bg-card w-full max-w-lg rounded-2xl flex flex-col max-h-[90vh]">
  <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0"><h2 className="text-xl font-black">{editingId?'Edit Contact':'Add Contact'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-full text-muted-foreground"><XCircle className="w-5 h-5" /></button></div>
  <form onSubmit={save} className="p-5 overflow-y-auto flex-1 custom-scrollbar">

@@ -81,10 +81,10 @@ export default function UniEnrollment() {
  <stop offset="95%" stopColor="var(--chart-2)" stopOpacity={0}/>
  </linearGradient>
  </defs>
- <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border-subtle)" />
+ <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--primary) / 0.4)" />
  <XAxis dataKey="term" tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} />
  <YAxis tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} />
- <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface-0)', borderColor: 'var(--color-border-subtle)', borderRadius: '8px'}} />
+ <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface-0)', borderColor: "hsl(var(--primary) / 0.4)", borderRadius: '8px'}} />
  <Area type="monotone" dataKey="applied" stroke="var(--chart-2)" fillOpacity={1} fill="url(#colorApplied)" strokeWidth={2} />
  <Area type="monotone" dataKey="enrolled" stroke="var(--chart-1)" fillOpacity={1} fill="url(#colorEnrolled)" strokeWidth={2} />
  </AreaChart>

@@ -46,7 +46,7 @@ export default function LearningPlayer() {
  <motion.div 
  initial={{ opacity: 0, y: -20}}
  animate={{ opacity: 1, y: 0}}
- className="w-full aspect-video bg-black relative flex items-center justify-center flex-shrink-0 group overflow-hidden"
+ className="w-full aspect-video bg-primary/20 relative flex items-center justify-center flex-shrink-0 group overflow-hidden"
  >
  <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary)]/20 to-transparent opacity-50" />
  <PlayCircle className="w-24 h-24 text-white/80 group-hover:text-[var(--primary)] group-hover:scale-110 transition-all duration-300 cursor-pointer z-10" />

@@ -8,7 +8,7 @@ export default function ConfirmationModal({ isOpen, onClose, onConfirm, title = 
  if (!isOpen) return null;
 
  return (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md p-4 animate-in fade-in duration-300">
+ <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-md p-4 animate-in fade-in duration-300">
  <div className="bg-card border border-primary/40 rounded-2xl -[0_30px_60px_-15px_rgba(0,0,0,0.5)] w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-300 ease-out">
  <div className="p-5 space-y-4">
  <div className="flex justify-between items-start">

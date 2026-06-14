@@ -250,10 +250,10 @@ export default function Chat() {
  {user?.avatar_url ? <img src={user.avatar_url} className="w-full h-full object-cover"/> : <MessageSquare className="w-5 h-5 text-primary" />}
  </div>
  <div className="flex items-center gap-1 text-[#54656f] dark:text-[#aebac1]">
- <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full hover:bg-black/5" onClick={() => setIsAddChatOpen(true)}>
+ <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full hover:bg-primary/20" onClick={() => setIsAddChatOpen(true)}>
  <Plus className="w-5 h-5" />
  </Button>
- <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full hover:bg-black/5">
+ <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full hover:bg-primary/20">
  <MoreVertical className="w-5 h-5" />
  </Button>
  </div>
@@ -372,7 +372,7 @@ export default function Chat() {
  : "bg-white dark:bg-slate-900/40 dark:bg-[#202c33] text-slate-900 dark:text-slate-100 dark:text-gray-100 rounded-tl-none"
  )}>
  {msg.reply_to_id && (
- <div className="bg-black/5 dark:bg-white dark:bg-slate-900/40/5 border-l-4 border-primary rounded p-1.5 mb-1.5 text-xs opacity-80 cursor-pointer" onClick={() => {
+ <div className="bg-primary/20 dark:bg-white dark:bg-slate-900/40/5 border-l-4 border-primary rounded p-1.5 mb-1.5 text-xs opacity-80 cursor-pointer" onClick={() => {
  const el = document.getElementById(`msg-${msg.reply_to_id}`);
  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center'});
 }}>
@@ -394,13 +394,13 @@ export default function Chat() {
  
  {msg.content.startsWith('[Attachment|') ? (
  <div className="pr-12 pt-1 pb-1">
- <div className="flex items-center gap-2 bg-black/5 dark:bg-white dark:bg-slate-900/40/5 p-2 rounded-lg">
+ <div className="flex items-center gap-2 bg-primary/20 dark:bg-white dark:bg-slate-900/40/5 p-2 rounded-lg">
  {msg.content.split('|')[3] === 'data:image' ? (
  <img src={msg.content.split('|')[2]} alt="attachment" className="max-w-[200px] rounded object-cover cursor-pointer hover:opacity-90 transition-opacity" onClick={() => window.open(msg.content.split('|')[2], '_blank')} />
  ) : msg.content.split('|')[3] === 'data:video' ? (
  <video src={msg.content.split('|')[2]} controls className="max-w-[250px] rounded" />
  ) : (
- <a href={msg.content.split('|')[2]} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:bg-black/5 dark:hover:bg-white dark:bg-slate-900/40/5 rounded-md p-1 transition-colors">
+ <a href={msg.content.split('|')[2]} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:bg-primary/20 dark:hover:bg-white dark:bg-slate-900/40/5 rounded-md p-1 transition-colors">
  <FileText className="w-8 h-8 text-primary shrink-0" />
  <div className="flex flex-col min-w-0">
  <span className="text-sm font-semibold truncate max-w-[150px] text-primary hover:underline">{msg.content.split('|')[1]}</span>
@@ -428,7 +428,7 @@ export default function Chat() {
  
  {/* Message Actions */}
  <div className="opacity-40 hover:opacity-100 transition-opacity flex flex-wrap items-center gap-1 bg-white dark:bg-slate-900/40/50 dark:bg-black/20 rounded-full px-1 py-0.5 mb-1 self-center">
- <button onClick={() => setReplyTo(msg)} className="p-1 hover:bg-black/10 rounded-full text-muted-foreground" title="Reply">
+ <button onClick={() => setReplyTo(msg)} className="p-1 hover:bg-primary/20 rounded-full text-muted-foreground" title="Reply">
  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
  </button>
  <button 
@@ -447,7 +447,7 @@ export default function Chat() {
  setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, reactions: { ...m.reactions, likes: currentLikes + 1}} : m));
 }
 }} 
- className="p-1 hover:bg-black/10 rounded-full text-muted-foreground flex items-center gap-0.5" 
+ className="p-1 hover:bg-primary/20 rounded-full text-muted-foreground flex items-center gap-0.5" 
  title="Like"
  >
  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
@@ -455,7 +455,7 @@ export default function Chat() {
  </button>
  {isMe && (
  <>
- <button onClick={() => { setEditingMsg(msg); setInputValue(msg.content);}} className="p-1 hover:bg-black/10 rounded-full text-muted-foreground" title="Edit">
+ <button onClick={() => { setEditingMsg(msg); setInputValue(msg.content);}} className="p-1 hover:bg-primary/20 rounded-full text-muted-foreground" title="Edit">
  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
  </button>
  <button 
@@ -484,7 +484,7 @@ export default function Chat() {
  <p className="font-semibold text-primary">{editingMsg ? "Editing Message" : `Replying to ${participantProfiles[replyTo?.sender_id]?.full_name || 'User'}`}</p>
  <p className="text-muted-foreground truncate">{editingMsg ? editingMsg.content : replyTo?.content}</p>
  </div>
- <button onClick={() => { setReplyTo(null); setEditingMsg(null); setInputValue('');}} className="p-2 hover:bg-black/5 rounded-full">
+ <button onClick={() => { setReplyTo(null); setEditingMsg(null); setInputValue('');}} className="p-2 hover:bg-primary/20 rounded-full">
  <X className="w-4 h-4 text-muted-foreground" />
  </button>
  </div>
@@ -498,7 +498,7 @@ export default function Chat() {
  
  <Popover open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
  <PopoverTrigger asChild>
- <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full text-[#54656f] dark:text-[#aebac1] hover:bg-black/5 shrink-0">
+ <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full text-[#54656f] dark:text-[#aebac1] hover:bg-primary/20 shrink-0">
  <Smile className="w-6 h-6" />
  </Button>
  </PopoverTrigger>
@@ -509,7 +509,7 @@ export default function Chat() {
 
  <Popover open={showAttachMenu} onOpenChange={setShowAttachMenu}>
  <PopoverTrigger asChild>
- <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full text-[#54656f] dark:text-[#aebac1] hover:bg-black/5 shrink-0">
+ <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full text-[#54656f] dark:text-[#aebac1] hover:bg-primary/20 shrink-0">
  {isUploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Paperclip className="w-6 h-6" />}
  </Button>
  </PopoverTrigger>

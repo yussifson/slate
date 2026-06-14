@@ -218,7 +218,7 @@ export default function UnivAttendance() {
  </div>
 
  {isModalOpen && (
- <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+ <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
  <div className="bg-card w-full max-w-md rounded-2xl flex flex-col overflow-hidden">
  <div className="p-5 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <h2 className="text-xl font-black text-foreground flex items-center gap-2"><Clock className="w-5 h-5 text-primary" /> {editingId ? 'Edit Record' : 'Mark Attendance'}</h2>

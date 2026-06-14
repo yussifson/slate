@@ -124,7 +124,7 @@ export default function SpotlightSearch() {
 
  return (
  <div
- className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex justify-center pt-[8vh] p-4 font-sans"
+ className="fixed inset-0 z-[100] bg-primary/20 backdrop-blur-sm flex justify-center pt-[8vh] p-4 font-sans"
  onClick={(e) => { if (e.target === e.currentTarget) setIsOpen(false);}}
  >
  <div

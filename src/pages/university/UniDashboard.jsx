@@ -106,11 +106,11 @@ export default function UniDashboard() {
  <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0}/>
  </linearGradient>
  </defs>
- <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border-subtle)" />
+ <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--primary) / 0.4)" />
  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} dy={10} />
  <YAxis axisLine={false} tickLine={false} tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} />
  <Tooltip 
- contentStyle={{ backgroundColor: 'var(--color-surface-0)', borderColor: 'var(--color-border-default)', borderRadius: '8px', color: 'var(--color-text-primary)'}}
+ contentStyle={{ backgroundColor: 'var(--color-surface-0)', borderColor: "hsl(var(--primary) / 0.4)", borderRadius: '8px', color: 'var(--color-text-primary)'}}
  itemStyle={{ color: 'var(--chart-1)'}}
  />
  <Area type="monotone" dataKey="value" stroke="var(--chart-1)" strokeWidth={3} fillOpacity={1} fill="url(#colorValue)" />

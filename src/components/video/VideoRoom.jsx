@@ -403,7 +403,7 @@ function ScreenShareTile({ screen}) {
  
  {!screen.local && <audio ref={audioRef} autoPlay playsInline />}
  
- <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-md flex items-center gap-2">
+ <div className="absolute bottom-3 left-3 bg-primary/20 backdrop-blur-sm px-3 py-1 rounded-md flex items-center gap-2">
  <span className="text-white text-xs font-medium">{screen.local ? "Your Screen" : "Shared Screen"}</span>
  </div>
  </div>
@@ -446,7 +446,7 @@ function ParticipantTile({ id, isLocal}) {
  
  {!isLocal && <audio ref={audioRef} autoPlay playsInline />}
  
- <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-md flex items-center gap-2">
+ <div className="absolute bottom-3 left-3 bg-primary/20 backdrop-blur-sm px-3 py-1 rounded-md flex items-center gap-2">
  <span className="text-white text-xs font-medium">{isLocal ? "You" : "Participant"}</span>
  {audioState?.state !== 'playable' && <MicOff className="w-3 h-3 text-red-500" />}
  </div>

@@ -276,7 +276,7 @@ function ConfigPanel({ node, onUpdate, onClose}) {
  <div className={cn('flex items-center gap-2 px-4 py-3 border-b border-primary/40', def.bgClass)}>
  <def.icon className="w-4 h-4" />
  <span className="text-sm font-bold flex-1">{def.label} Config</span>
- <button onClick={onClose} className="p-1 rounded-lg hover:bg-black/5 text-muted-foreground">
+ <button onClick={onClose} className="p-1 rounded-lg hover:bg-primary/20 text-muted-foreground">
  <X className="w-4 h-4" />
  </button>
  </div>

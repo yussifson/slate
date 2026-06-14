@@ -298,7 +298,7 @@ export default function Claims() {
  </div>
  {/* AI Risk Analyzer Modal */}
  {showRiskAnalyzer && (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+ <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
  <div className="bg-card rounded-2xl w-full max-w-2xl border border-primary/40 p-6 space-y-4">
  <div className="flex items-center justify-between">
  <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
@@ -312,7 +312,7 @@ export default function Claims() {
  )}
  {/* Add/Edit Modal */}
  {showModal && (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+ <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
  <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-4 border border-primary/40 overflow-y-auto max-h-[90vh]">
  <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Claim' : 'File New Claim'}</h2>
 

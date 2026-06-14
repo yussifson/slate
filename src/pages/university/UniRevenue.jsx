@@ -76,10 +76,10 @@ export default function UniRevenue() {
  <div className="h-[300px] w-full">
  <ResponsiveContainer width="100%" height="100%">
  <BarChart data={defaultRevenueData} margin={{ top: 10, right: 10, left: -20, bottom: 0}}>
- <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border-subtle)" />
+ <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--primary) / 0.4)" />
  <XAxis dataKey="month" tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} />
  <YAxis tick={{fill: 'var(--color-text-secondary)', fontSize: 12}} />
- <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface-0)', borderColor: 'var(--color-border-subtle)', borderRadius: '8px'}} />
+ <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface-0)', borderColor: "hsl(var(--primary) / 0.4)", borderRadius: '8px'}} />
  <Bar dataKey="Tuition" fill="var(--chart-1)" radius={[4, 4, 0, 0]} />
  <Bar dataKey="Housing" fill="var(--chart-2)" radius={[4, 4, 0, 0]} />
  <Bar dataKey="Scholarships" fill="var(--chart-3)" radius={[4, 4, 0, 0]} />

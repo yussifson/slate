@@ -75,7 +75,7 @@ export default function StudentDashboard() {
  className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-5 flex flex-col sm:flex-row gap-5 items-start sm:items-center group hover:border-[var(--primary)] transition-all duration-300 glass-card"
  >
  <div className="w-full sm:w-48 aspect-video bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface-3)] rounded-[var(--radius-lg)] flex items-center justify-center relative overflow-hidden flex-shrink-0">
- <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors z-10" />
+ <div className="absolute inset-0 bg-primary/20 group-hover:bg-primary/20 transition-colors z-10" />
  <PlayCircle className="w-10 h-10 text-[var(--primary)] opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 z-20 " />
  <div className="absolute bottom-0 left-0 h-1.5 bg-[var(--color-surface-1)] w-full z-20">
  <div className="h-full bg-[var(--primary)] w-[65%]" />

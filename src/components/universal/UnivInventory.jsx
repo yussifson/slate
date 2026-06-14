@@ -169,7 +169,7 @@ export default function UnivInventory() {
  </div>
 
  {isModalOpen && (
- <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+ <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
  <div className="bg-card w-full max-w-2xl rounded-2xl flex flex-col max-h-[90vh]">
  <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0"><h2 className="text-xl font-black">{editingId?'Edit Item':'Add Inventory Item'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-full text-muted-foreground"><XCircle className="w-5 h-5"/></button></div>
  <form onSubmit={save} className="p-5 overflow-y-auto flex-1 custom-scrollbar">
@@ -190,7 +190,7 @@ export default function UnivInventory() {
  )}
 
  {qrItem && (
- <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={()=>setQrItem(null)}>
+ <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm" onClick={()=>setQrItem(null)}>
  <div className="bg-card border border-primary/40 w-full max-w-sm rounded-2xl p-6 text-center" onClick={e=>e.stopPropagation()}>
  <div className="flex justify-between items-center mb-4"><h3 className="font-black text-lg">Item QR Code</h3><button onClick={()=>setQrItem(null)} className="p-1.5 bg-muted rounded-full"><XCircle className="w-4 h-4 text-muted-foreground"/></button></div>
  <div className="bg-white p-4 rounded-xl inline-block mx-auto border border-primary/40 mb-4">

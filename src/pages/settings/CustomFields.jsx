@@ -206,7 +206,7 @@ export default function CustomFields() {
  </div>
  </div>
  {showModal && (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+ <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
  <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
  <h2 className="text-lg font-bold text-card-foreground">{editingField ? 'Edit Custom Field' : 'New Custom Field'}</h2>
  

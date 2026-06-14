@@ -240,7 +240,7 @@ export default function SHSAssessment() {
  
  <div className="space-y-2">
  <h4 className="font-bold text-primary/10 dark:text-primary/70">Grading System ({assessmentConfig.gradingSystem})</h4>
- <div className="bg-black/20 rounded-xl p-4 text-xs space-y-2">
+ <div className="bg-primary/20 rounded-xl p-4 text-xs space-y-2">
  {assessmentConfig.gradingSystem === 'WAEC Standard (A1-F9)' ? (
  <>
  <div className="flex justify-between"><span className="text-primary/20 dark:text-primary/80">80 - 100</span><strong className="text-primary/70">A1 (Excellent)</strong></div>

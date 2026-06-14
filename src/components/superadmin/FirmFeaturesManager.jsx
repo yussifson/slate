@@ -111,7 +111,7 @@ export default function FirmFeaturesManager({ firm, onClose}) {
  );
 
  return (
- <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+ <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm animate-in fade-in">
  <div className="bg-card w-full max-w-4xl rounded-2xl flex flex-col max-h-[90vh]">
  
  <div className="p-5 border-b border-primary/40 flex justify-between items-center bg-muted/20 shrink-0">

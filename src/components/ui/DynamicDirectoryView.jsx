@@ -270,7 +270,7 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
  >
  {/* Card top gradient */}
  <div className={`h-16 bg-gradient-to-r ${gradient} relative`}>
- <div className="absolute inset-0 bg-black/5" />
+ <div className="absolute inset-0 bg-primary/20" />
  {/* Action buttons */}
  <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
  <button
@@ -338,7 +338,7 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
  return (
  <>
  <div className={`-mx-6 -mt-6 h-24 bg-gradient-to-r ${gradient} rounded-t-lg relative`}>
- <div className="absolute inset-0 bg-black/10 rounded-t-lg" />
+ <div className="absolute inset-0 bg-primary/20 rounded-t-lg" />
  </div>
  <div className="-mt-12 relative px-2">
  <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-2xl font-bold ring-4 ring-white`}>

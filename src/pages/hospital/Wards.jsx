@@ -229,7 +229,7 @@ export default function Wards() {
 })}
  </div>
  {showModal && (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+ <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
  <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4">
  <h2 className="text-lg font-bold text-card-foreground">{t("update_bed", "Update Bed")} {selectedBed?.bed.id}</h2>
  <div className="space-y-4">
@@ -256,7 +256,7 @@ export default function Wards() {
  </div>
  )}
  {showNewWardModal && (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+ <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
  <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4">
  <h2 className="text-lg font-bold text-card-foreground">{t("create_new_ward", "Create New Ward")}</h2>
  <div className="space-y-4">

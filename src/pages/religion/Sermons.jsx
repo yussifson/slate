@@ -133,10 +133,10 @@ export default function Sermons() {
  <div>
  <div className="h-40 bg-muted dark:bg-muted/50 relative flex items-center justify-center group-hover:bg-slate-100 dark:group-hover:bg-primary/20 transition-colors cursor-pointer">
  <PlayCircle className="w-16 h-16 text-primary dark:text-primary/70 opacity-80 group-hover:scale-110 transition-transform" />
- <span className="absolute bottom-2 right-2 bg-black/60 text-white text-xs font-bold px-2 py-1 rounded">{sermon.duration || '45:00'}</span>
+ <span className="absolute bottom-2 right-2 bg-primary/20 text-white text-xs font-bold px-2 py-1 rounded">{sermon.duration || '45:00'}</span>
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
- <Button variant="ghost" size="sm" className="absolute top-2 right-2 h-8 w-8 p-0 text-foreground hover:bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+ <Button variant="ghost" size="sm" className="absolute top-2 right-2 h-8 w-8 p-0 text-foreground hover:bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity">
  <MoreVertical className="h-4 w-4 text-white" />
  </Button>
  </DropdownMenuTrigger>
@@ -174,7 +174,7 @@ export default function Sermons() {
  </div>
  )}
  {showModal && (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+ <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
  <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
  <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
  <Upload className="w-5 h-5 text-primary" /> {t("log_sermon_media", "Log Sermon Media")}
