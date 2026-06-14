@@ -159,9 +159,9 @@ export const AuthProvider = ({ children }) => {
 
         if (!profile) {
           // Create new profile mapped to the existing company and role
-                    const _p = {
+          const _p = {
             id: sessionUser.id,
-            role: staffRecord.role || 'lawyer',
+            role: staffRecord.role || sessionUser.user_metadata?.role || 'lawyer',
             company_id: staffRecord.company_id,
             company_name: companyName,
             email: sessionUser.email?.toLowerCase() || null,
@@ -194,7 +194,6 @@ export const AuthProvider = ({ children }) => {
             profile.email?.toLowerCase() !== sessionUser.email?.toLowerCase()
           ) {
                         const _p = {
-              role: shouldUpdateRole ? staffRecord.role : profile.role,
               company_id: staffRecord.company_id,
               company_name: companyName || profile.company_name,
               email: sessionUser.email?.toLowerCase() || profile.email || null,
@@ -242,7 +241,7 @@ export const AuthProvider = ({ children }) => {
 
                 const _p = {
           id: sessionUser.id,
-          role: 'lawyer', // Default role for net-new independent signups
+          role: invitedRole || 'lawyer', // Default role for net-new independent signups
           company_id: invitedCompanyId,
           company_name: null,
           email: sessionUser.email?.toLowerCase() || null
