@@ -1,200 +1,346 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
-import { Calendar, ChevronLeft, ChevronRight, Plus, Users, Clock, MapPin, Printer, AlertTriangle, CheckCircle2 } from 'lucide-react';
-
-const F = { display: "'Barlow Condensed', sans-serif", body: "'IBM Plex Sans', sans-serif", mono: "'IBM Plex Mono', monospace", label: "'Barlow Semi Condensed', sans-serif" };
-const C = { forge: '#0D1117', carbon: '#161B22', steel: '#21262D', galv: '#30363D', alloy: '#484F58', chrome: '#8B949E', titanium: '#C9D1D9', white: '#F0F6FC', volt: '#F6C90E', plasma: '#FF6B2C', signal: '#00C896', circuit: '#4493F8', arc: '#BF8FFF' };
-
-const tradeColors = { 'Welding': C.volt, 'Electrical': C.circuit, 'Plumbing': C.signal, 'Carpentry': '#F59E0B', 'Automotive': C.plasma, 'Safety': '#EF4444', 'Assessment': C.arc, 'CNC': '#06B6D4' };
+import { Calendar, ChevronLeft, ChevronRight, Plus, Users, Clock, MapPin, Printer, CheckCircle2, UserCheck, X } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { toast } from 'react-hot-toast';
 
 export default function VWorkshops() {
+  const { t } = useTranslation();
   const { user } = useAuth();
+  
   const [workshops, setWorkshops] = useState([]);
+  const [attendance, setAttendance] = useState([]);
+  const [trainees, setTrainees] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState('week');
+  
+  const [viewMode, setViewMode] = useState('week'); // 'day', 'week', 'month'
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedSession, setSelectedSession] = useState(null);
 
-  useEffect(() => {
+  // Create state
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [newWorkshop, setNewWorkshop] = useState({ title: '', trade: '', room: '', instructor: '', dayOfWeek: '1', startHour: '8', duration: '2', capacity: '20' });
+
+  const fetchData = async () => {
     if (!user?.company_id) return;
-    (async () => {
-      setLoading(true);
-      try { setWorkshops(await base44.getEntities('voc_workshop', user.company_id)); }
-      catch (e) { console.error(e); }
-      finally { setLoading(false); }
-    })();
+    setLoading(true);
+    try {
+      const [wData, aData, tData] = await Promise.all([
+        base44.getEntities('voc_workshop', user.company_id),
+        base44.getEntities('voc_attendance', user.company_id),
+        base44.getEntities('voc_trainee', user.company_id)
+      ]);
+      setWorkshops(wData);
+      setAttendance(aData);
+      setTrainees(tData);
+    } catch (e) {
+      console.error(e);
+      toast.error('Failed to load workshop data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
   }, [user]);
 
+  const handleCreateWorkshop = async () => {
+    if (!newWorkshop.title || !newWorkshop.trade) {
+      toast.error('Title and Trade are required');
+      return;
+    }
+    try {
+      await base44.createEntity('voc_workshop', {
+        title: newWorkshop.title,
+        status: 'scheduled',
+        data: {
+          trade: newWorkshop.trade,
+          room: newWorkshop.room || 'TBD',
+          instructor: newWorkshop.instructor || 'TBD',
+          dayOfWeek: parseInt(newWorkshop.dayOfWeek),
+          startHour: parseInt(newWorkshop.startHour),
+          duration: parseInt(newWorkshop.duration),
+          capacity: parseInt(newWorkshop.capacity),
+          enrolled: 0
+        }
+      }, user.company_id);
+      toast.success('Workshop scheduled');
+      setIsCreateOpen(false);
+      fetchData();
+    } catch (e) {
+      console.error(e);
+      toast.error('Failed to schedule workshop');
+    }
+  };
+
+  // Calendar logic
   const weekStart = new Date(currentDate);
-  weekStart.setDate(weekStart.getDate() - weekStart.getDay() + 1);
-  const weekDays = Array.from({ length: 6 }, (_, i) => {
+  weekStart.setDate(weekStart.getDate() - weekStart.getDay() + 1); // Monday
+  const weekDays = Array.from({ length: 6 }, (_, i) => { // Mon - Sat
     const d = new Date(weekStart);
     d.setDate(d.getDate() + i);
     return d;
   });
-  const hours = Array.from({ length: 14 }, (_, i) => 7 + i);
-  const rooms = ['Workshop A', 'Workshop B', 'Workshop C', 'Lab 1', 'Lab 2'];
+  const hours = Array.from({ length: 14 }, (_, i) => 7 + i); // 07:00 - 20:00
   const dayLabels = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
-  // Generate sample session blocks from real data + fallbacks
-  const sessionBlocks = workshops.slice(0, 8).map((w, i) => {
-    const trade = w.data?.trade || ['Welding', 'Electrical', 'Plumbing', 'CNC', 'Automotive', 'Safety'][i % 6];
-    const statuses = ['live', 'scheduled', 'completed', 'scheduled'];
-    return {
-      id: w.id,
-      title: w.title || w.data?.name || `${trade} Session`,
-      trade,
-      room: rooms[i % rooms.length],
-      dayIndex: i % 6,
-      startHour: 8 + (i % 4) * 2,
-      duration: 2 + (i % 3),
-      instructor: w.data?.instructor || `Instructor ${i + 1}`,
-      trainees: w.data?.enrolled || Math.floor(Math.random() * 15) + 8,
-      capacity: w.data?.capacity || 20,
-      status: statuses[i % 4],
-      color: tradeColors[trade] || C.circuit,
-    };
-  });
+  const prevPeriod = () => {
+    const d = new Date(currentDate);
+    if (viewMode === 'day') d.setDate(d.getDate() - 1);
+    else if (viewMode === 'week') d.setDate(d.getDate() - 7);
+    else d.setMonth(d.getMonth() - 1);
+    setCurrentDate(d);
+  };
+  
+  const nextPeriod = () => {
+    const d = new Date(currentDate);
+    if (viewMode === 'day') d.setDate(d.getDate() + 1);
+    else if (viewMode === 'week') d.setDate(d.getDate() + 7);
+    else d.setMonth(d.getMonth() + 1);
+    setCurrentDate(d);
+  };
 
-  const prevWeek = () => { const d = new Date(currentDate); d.setDate(d.getDate() - 7); setCurrentDate(d); };
-  const nextWeek = () => { const d = new Date(currentDate); d.setDate(d.getDate() + 7); setCurrentDate(d); };
-  const weekLabel = `${weekDays[0].toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${weekDays[5].toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+  const periodLabel = viewMode === 'week' 
+    ? `${weekDays[0].toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${weekDays[5].toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
+    : viewMode === 'day' ? currentDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+    : currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+  // Map workshops to grid blocks
+  const sessionBlocks = workshops.map(w => ({
+    ...w,
+    dayIndex: (w.data?.dayOfWeek || 1) - 1, // 0-based for Mon-Sat
+    startHour: w.data?.startHour || 8,
+    duration: w.data?.duration || 2
+  }));
+
+  // Get roster for selected session
+  const getSessionRoster = (sessionId) => {
+    return attendance.filter(a => a.data?.workshop_id === sessionId);
+  };
 
   return (
-    <div className="min-h-screen bg-[#0D1117] text-[#C9D1D9] p-4 md:p-6" style={{ fontFamily: F.body }}>
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-[28px] font-bold tracking-tight text-[#F0F6FC]" style={{ fontFamily: F.display }}>WORKSHOP SCHEDULE</h1>
-          <p className="text-[13px] text-[#8B949E] mt-0.5" style={{ fontFamily: F.mono }}>{workshops.length} workshops · {rooms.length} rooms</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            {t('workshop_schedule', 'Workshop Schedule')}
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm font-medium">
+            {workshops.length} {t('workshops_scheduled', 'workshops scheduled')}
+          </p>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center bg-[#161B22] border border-[#30363D]">
-            <button onClick={prevWeek} className="p-2 hover:bg-[#21262D] transition-colors"><ChevronLeft className="w-4 h-4 text-[#8B949E]" /></button>
-            <span className="px-3 text-[12px] font-semibold text-[#F0F6FC]" style={{ fontFamily: F.label }}>{weekLabel}</span>
-            <button onClick={nextWeek} className="p-2 hover:bg-[#21262D] transition-colors"><ChevronRight className="w-4 h-4 text-[#8B949E]" /></button>
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center bg-card border border-primary/20 rounded-xl overflow-hidden shadow-none">
+            <button onClick={prevPeriod} className="p-2 hover:bg-primary/5 transition-colors"><ChevronLeft className="w-4 h-4 text-primary" /></button>
+            <span className="px-3 text-sm font-semibold text-slate-900 dark:text-white">{periodLabel}</span>
+            <button onClick={nextPeriod} className="p-2 hover:bg-primary/5 transition-colors"><ChevronRight className="w-4 h-4 text-primary" /></button>
           </div>
-          <div className="flex bg-[#161B22] border border-[#30363D]">
-            {['Day', 'Week', 'Month'].map(v => (
-              <button key={v} onClick={() => setViewMode(v.toLowerCase())} className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider transition-colors"
-                style={{ fontFamily: F.label, background: viewMode === v.toLowerCase() ? `${C.volt}15` : 'transparent', color: viewMode === v.toLowerCase() ? C.volt : C.chrome }}>
+          <div className="flex bg-card border border-primary/20 rounded-xl overflow-hidden shadow-none">
+            {['day', 'week', 'month'].map(v => (
+              <button key={v} onClick={() => setViewMode(v)} className={`px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-colors ${viewMode === v ? 'bg-primary/10 text-primary' : 'hover:bg-primary/5 text-muted-foreground'}`}>
                 {v}
               </button>
             ))}
           </div>
-          <button className="px-3 py-1.5 bg-[#161B22] border border-[#30363D] text-[11px] font-semibold uppercase tracking-wider hover:bg-[#21262D] transition-colors flex items-center gap-1.5" style={{ fontFamily: F.label, color: C.chrome }}><Printer className="w-3.5 h-3.5" /> Print</button>
-          <button className="px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider flex items-center gap-1.5 hover:opacity-90" style={{ fontFamily: F.label, background: C.volt, color: C.forge }}>
-            <Plus className="w-4 h-4" /> Schedule
-          </button>
+          <Button variant="outline" className="rounded-xl border border-primary/40 text-primary shadow-none hover:bg-primary/5">
+            <Printer className="w-4 h-4 mr-2" /> Print
+          </Button>
+          <Button onClick={() => setIsCreateOpen(true)} className="rounded-xl bg-primary text-white hover:bg-primary/90 shadow-none">
+            <Plus className="w-4 h-4 mr-2" /> Schedule
+          </Button>
         </div>
       </div>
 
-      {/* Room filter chips */}
-      <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
-        {rooms.map(room => (
-          <button key={room} className="px-3 py-1 text-[10px] font-semibold uppercase tracking-wider whitespace-nowrap border transition-colors"
-            style={{ fontFamily: F.label, background: C.carbon, borderColor: C.galv, color: C.chrome }}>
-            <MapPin className="w-3 h-3 inline mr-1" />{room}
-          </button>
-        ))}
-      </div>
-
-      {/* Calendar Grid */}
-      <div className="bg-[#161B22] border border-[#30363D] overflow-hidden" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.3)' }}>
-        <div className="overflow-x-auto">
+      {/* Calendar Grid (Week View Only for simplicity here, day/month can be mapped similarly) */}
+      {viewMode === 'week' ? (
+        <Card className="rounded-2xl border border-primary/40 bg-card shadow-none overflow-x-auto">
           <div className="min-w-[900px]">
             {/* Day headers */}
-            <div className="grid grid-cols-[80px_repeat(6,1fr)] border-b border-[#30363D]">
-              <div className="p-3 bg-[#0D1117]" />
+            <div className="grid grid-cols-[80px_repeat(6,1fr)] border-b border-primary/10">
+              <div className="p-3 bg-primary/5" />
               {weekDays.map((d, i) => (
-                <div key={i} className="p-3 text-center border-l border-[#21262D] bg-[#0D1117]">
-                  <div className="text-[10px] font-semibold uppercase tracking-wider" style={{ fontFamily: F.label, color: C.alloy }}>{dayLabels[i]}</div>
-                  <div className="text-[14px] font-bold text-[#F0F6FC] mt-0.5" style={{ fontFamily: F.display }}>{d.getDate()}</div>
+                <div key={i} className="p-3 text-center border-l border-primary/10 bg-primary/5">
+                  <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{dayLabels[i]}</div>
+                  <div className="text-lg font-bold text-slate-900 dark:text-white mt-0.5">{d.getDate()}</div>
                 </div>
               ))}
             </div>
 
             {/* Time grid */}
             {hours.map(h => (
-              <div key={h} className="grid grid-cols-[80px_repeat(6,1fr)] border-b border-[#21262D]/50" style={{ minHeight: 52 }}>
-                <div className="px-3 py-1 text-[10px] font-mono text-[#484F58] text-right pr-4 pt-2">{String(h).padStart(2, '0')}:00</div>
+              <div key={h} className="grid grid-cols-[80px_repeat(6,1fr)] border-b border-primary/5" style={{ minHeight: 60 }}>
+                <div className="px-3 py-1 text-xs font-medium text-muted-foreground text-right pr-4 pt-2">
+                  {String(h).padStart(2, '0')}:00
+                </div>
                 {dayLabels.map((_, di) => {
-                  const block = sessionBlocks.find(b => b.dayIndex === di && b.startHour === h);
+                  // Find all blocks starting in this hour/day
+                  const blocks = sessionBlocks.filter(b => b.dayIndex === di && b.startHour === h);
                   return (
-                    <div key={di} className="border-l border-[#21262D]/30 relative" style={{ minHeight: 52 }}>
-                      {block && (
+                    <div key={di} className="border-l border-primary/5 relative" style={{ minHeight: 60 }}>
+                      {blocks.map((block, idx) => (
                         <div
-                          className="absolute left-1 right-1 top-1 rounded-sm px-2 py-1 cursor-pointer transition-all hover:opacity-90 group overflow-hidden"
+                          key={block.id}
+                          className="absolute left-1 right-1 rounded-xl p-2 cursor-pointer transition-all hover:opacity-90 shadow-none border border-primary/20 bg-card"
                           style={{
-                            backgroundColor: `${block.color}18`,
-                            borderLeft: `3px solid ${block.color}`,
-                            height: `${block.duration * 52 - 4}px`,
-                            zIndex: 10,
+                            top: `${idx * 4}px`, // Slight offset if multiple
+                            height: `${block.duration * 60 - 8}px`,
+                            zIndex: 10 + idx,
+                            borderLeftWidth: '4px',
+                            borderLeftColor: 'hsl(var(--primary))'
                           }}
                           onClick={() => setSelectedSession(block)}
                         >
-                          <div className="flex items-center gap-1 mb-0.5">
+                          <div className="flex items-center gap-1 mb-1">
                             {block.status === 'live' && (
-                              <span className="relative flex h-1.5 w-1.5">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: C.signal }} />
-                                <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ background: C.signal }} />
+                              <span className="relative flex h-2 w-2 mr-1">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
                               </span>
                             )}
-                            {block.status === 'completed' && <CheckCircle2 className="w-3 h-3" style={{ color: C.alloy }} />}
-                            <span className="text-[10px] font-bold uppercase truncate" style={{ fontFamily: F.label, color: block.color }}>{block.title}</span>
+                            <span className="text-xs font-bold text-slate-900 dark:text-white truncate">{block.title}</span>
                           </div>
-                          <div className="text-[9px] text-[#8B949E]" style={{ fontFamily: F.mono }}>{block.room} · {block.instructor}</div>
-                          <div className="text-[9px] text-[#484F58] mt-0.5 flex items-center gap-1"><Users className="w-2.5 h-2.5" />{block.trainees}/{block.capacity}</div>
+                          <div className="text-[10px] text-muted-foreground">{block.data?.room || 'TBD'} • {block.data?.instructor || 'TBD'}</div>
+                          <div className="text-[10px] text-primary mt-1 flex items-center gap-1">
+                            <Users className="w-3 h-3" /> {block.data?.enrolled || 0}/{block.data?.capacity || 20}
+                          </div>
                         </div>
-                      )}
+                      ))}
                     </div>
                   );
                 })}
               </div>
             ))}
           </div>
-        </div>
-      </div>
+        </Card>
+      ) : (
+        <Card className="rounded-2xl border border-primary/40 bg-card shadow-none p-12 text-center text-muted-foreground">
+          {viewMode.charAt(0).toUpperCase() + viewMode.slice(1)} view implemented in full version. Use Week view for now.
+        </Card>
+      )}
 
       {/* Session Detail Slide-over */}
       {selectedSession && (
         <div className="fixed inset-0 z-50 flex justify-end" onClick={() => setSelectedSession(null)}>
-          <div className="absolute inset-0 bg-primary/20 backdrop-blur-sm" />
-          <div className="relative w-[400px] bg-[#161B22] border-l border-[#30363D] h-full overflow-y-auto animate-in slide-in-from-right duration-200" onClick={e => e.stopPropagation()}>
-            <div className="p-4 border-b border-[#30363D] flex items-center justify-between">
-              <h2 className="text-[16px] font-bold text-[#F0F6FC]" style={{ fontFamily: F.display }}>{selectedSession.title}</h2>
-              <button onClick={() => setSelectedSession(null)} className="text-[#8B949E] hover:text-[#F0F6FC]"><ChevronRight className="w-5 h-5" /></button>
+          <div className="absolute inset-0 bg-slate-900/20 backdrop-blur-sm" />
+          <div className="relative w-full max-w-md bg-card border-l border-primary/20 h-full shadow-2xl animate-in slide-in-from-right duration-200 flex flex-col" onClick={e => e.stopPropagation()}>
+            <div className="p-6 border-b border-primary/10 flex items-center justify-between bg-primary/5">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white">{selectedSession.title}</h2>
+              <Button variant="ghost" size="icon" onClick={() => setSelectedSession(null)} className="rounded-full hover:bg-primary/10">
+                <X className="w-5 h-5 text-muted-foreground" />
+              </Button>
             </div>
-            <div className="p-4 space-y-4">
-              <div className="grid grid-cols-2 gap-3">
-                {[{ label: 'Room', value: selectedSession.room, icon: MapPin }, { label: 'Time', value: `${selectedSession.startHour}:00 – ${selectedSession.startHour + selectedSession.duration}:00`, icon: Clock }, { label: 'Instructor', value: selectedSession.instructor, icon: Users }, { label: 'Capacity', value: `${selectedSession.trainees}/${selectedSession.capacity}`, icon: Users }].map(d => (
-                  <div key={d.label} className="p-3 bg-[#0D1117] border border-[#21262D]">
-                    <div className="flex items-center gap-1 text-[9px] text-[#484F58] uppercase tracking-wider mb-1" style={{ fontFamily: F.label }}><d.icon className="w-3 h-3" />{d.label}</div>
-                    <div className="text-[13px] text-[#F0F6FC] font-semibold">{d.value}</div>
+            
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  { label: 'Room', value: selectedSession.data?.room || 'TBD', icon: MapPin }, 
+                  { label: 'Time', value: `${selectedSession.startHour}:00 – ${selectedSession.startHour + selectedSession.duration}:00`, icon: Clock }, 
+                  { label: 'Instructor', value: selectedSession.data?.instructor || 'TBD', icon: Users }, 
+                  { label: 'Capacity', value: `${selectedSession.data?.enrolled || 0}/${selectedSession.data?.capacity || 20}`, icon: Users }
+                ].map((d, i) => (
+                  <div key={i} className="p-4 rounded-2xl bg-primary/5 border border-primary/10">
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground uppercase tracking-wider mb-1"><d.icon className="w-4 h-4 text-primary" />{d.label}</div>
+                    <div className="text-sm font-bold text-slate-900 dark:text-white">{d.value}</div>
                   </div>
                 ))}
               </div>
+
               <div>
-                <h3 className="text-[11px] font-semibold uppercase tracking-wider text-[#484F58] mb-2" style={{ fontFamily: F.label }}>Attendance Roster</h3>
-                <div className="space-y-1">
-                  {Array.from({ length: Math.min(selectedSession.trainees, 6) }, (_, i) => (
-                    <div key={i} className="flex items-center gap-2 p-2 bg-[#0D1117] border border-[#21262D]">
-                      <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold" style={{ background: `${C.volt}20`, color: C.volt }}>T{i + 1}</div>
-                      <span className="text-[12px] text-[#C9D1D9] flex-1">Trainee {i + 1}</span>
-                      <span className="text-[10px] font-semibold uppercase" style={{ fontFamily: F.label, color: i < 4 ? C.signal : i === 4 ? C.volt : C.plasma }}>{i < 4 ? '✓ Present' : i === 4 ? '⚠ Late' : '✕ Absent'}</span>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                  <UserCheck className="w-5 h-5 text-primary" /> Attendance Roster
+                </h3>
+                <div className="space-y-2">
+                  {getSessionRoster(selectedSession.id).length === 0 ? (
+                    <div className="p-4 text-center text-sm text-muted-foreground border border-primary/10 rounded-xl border-dashed">
+                      No attendance recorded yet.
                     </div>
-                  ))}
+                  ) : (
+                    getSessionRoster(selectedSession.id).map((record, i) => (
+                      <div key={i} className="flex items-center justify-between p-3 rounded-xl border border-primary/10 bg-card hover:bg-primary/5 transition-colors">
+                        <span className="text-sm font-medium">{record.data?.trainee_name || `Trainee ${i+1}`}</span>
+                        <Badge variant="outline" className={`border-primary/40 ${record.data?.status === 'present' ? 'bg-primary/10 text-primary' : 'bg-slate-100 text-slate-500'}`}>
+                          {record.data?.status || 'Unknown'}
+                        </Badge>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
-              <div className="flex gap-2">
-                <button className="flex-1 py-2 text-[11px] font-semibold uppercase tracking-wider text-center border border-[#30363D] text-[#C9D1D9] hover:bg-[#21262D] transition-colors" style={{ fontFamily: F.label }}>End Session</button>
-                <button className="flex-1 py-2 text-[11px] font-semibold uppercase tracking-wider text-center hover:opacity-90" style={{ fontFamily: F.label, background: C.plasma, color: '#fff' }}>Flag Incident</button>
-              </div>
+            </div>
+            
+            <div className="p-6 border-t border-primary/10 bg-primary/5 flex gap-3">
+              <Button variant="outline" className="flex-1 rounded-xl border-primary/40 shadow-none bg-card hover:bg-primary/5 text-primary">Edit Session</Button>
+              <Button className="flex-1 rounded-xl bg-primary text-white hover:bg-primary/90 shadow-none">Take Attendance</Button>
             </div>
           </div>
         </div>
       )}
+
+      {/* Create Dialog */}
+      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+        <DialogContent className="sm:max-w-[425px] rounded-2xl border-primary/40 shadow-none bg-card">
+          <DialogHeader>
+            <DialogTitle>Schedule Workshop</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Workshop Title</label>
+              <Input placeholder="e.g. Safety Briefing" value={newWorkshop.title} onChange={e => setNewWorkshop({...newWorkshop, title: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Trade</label>
+              <Input placeholder="e.g. Welding" value={newWorkshop.trade} onChange={e => setNewWorkshop({...newWorkshop, trade: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Day of Week</label>
+                <Select value={newWorkshop.dayOfWeek} onValueChange={v => setNewWorkshop({...newWorkshop, dayOfWeek: v})}>
+                  <SelectTrigger className="rounded-xl border-primary/40 shadow-none"><SelectValue placeholder="Select" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">Monday</SelectItem><SelectItem value="2">Tuesday</SelectItem>
+                    <SelectItem value="3">Wednesday</SelectItem><SelectItem value="4">Thursday</SelectItem>
+                    <SelectItem value="5">Friday</SelectItem><SelectItem value="6">Saturday</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Start Hour</label>
+                <Select value={newWorkshop.startHour} onValueChange={v => setNewWorkshop({...newWorkshop, startHour: v})}>
+                  <SelectTrigger className="rounded-xl border-primary/40 shadow-none"><SelectValue placeholder="Select" /></SelectTrigger>
+                  <SelectContent>
+                    {[8,9,10,11,12,13,14,15,16,17].map(h => <SelectItem key={h} value={`${h}`}>{`${h}:00`}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Duration (Hours)</label>
+                <Input type="number" value={newWorkshop.duration} onChange={e => setNewWorkshop({...newWorkshop, duration: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Capacity</label>
+                <Input type="number" value={newWorkshop.capacity} onChange={e => setNewWorkshop({...newWorkshop, capacity: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Room</label>
+              <Input placeholder="e.g. Lab 1" value={newWorkshop.room} onChange={e => setNewWorkshop({...newWorkshop, room: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsCreateOpen(false)} className="rounded-xl border-primary/40 shadow-none">Cancel</Button>
+            <Button onClick={handleCreateWorkshop} className="bg-primary text-white hover:bg-primary/90 rounded-xl shadow-none">Schedule</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -7,7 +7,7 @@ import { isSuperAdmin} from "@/lib/constants";
 import { useQueryClient} from "@tanstack/react-query";
 import { useToast} from "@/components/ui/use-toast";
 import ThemeToggle from "./ThemeToggle";
-import NotificationBell from "./NotificationBell";
+import UnivNotificationCenter from "@/components/universal/UnivNotificationCenter";
 import TimeTracker from "../shared/TimeTracker";
 import { useCompany} from "@/hooks/useCompanyId";
 import { INDUSTRIES} from "@/config/industries";
@@ -157,7 +157,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  <Sparkles className="w-4 h-4" />
  </Button>
  <div className="scale-90 origin-right">
- <NotificationBell user={user} />
+                <UnivNotificationCenter />
  </div>
  </div>
  </div>
@@ -313,7 +313,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
 
  {/* Premium Theme Toggle & Notifications */}
  <ThemeToggle />
- <NotificationBell user={user} />
+ <UnivNotificationCenter />
 
  {/* User */}
  <button onClick={() => setShowAvatarDialog(true)} className="flex items-center gap-2 sm:ml-1 hover:bg-muted/50 p-1 rounded-lg transition-colors">

@@ -1,60 +1,48 @@
-import { supabase } from '@/api/supabaseClient';
-/**
- * Slate Notification Engine Wrapper
- * 
- * This service abstracts the notification emitting process. 
- * Under the hood, this should trigger a Supabase Edge Function which securely 
- * uses your Novu Secret Key to trigger workflows.
- */
-import { powerSync } from "@/api/PowerSyncConnector";
+import { base44 } from '@/api/base44Client';
+import { v4 as uuidv4 } from 'uuid';
 
+/**
+ * Universal Notification Engine
+ * 
+ * Writes directly to the PowerSync `notifications` table for instant local feedback 
+ * and guaranteed offline sync. When connectivity is restored, these sync to Supabase 
+ * where Edge Functions can optionally push them to email (Novu/Resend).
+ */
 export const NotificationService = {
   /**
-   * Emits a global event to the Unified Notification Engine.
+   * Dispatch a new notification to a specific user.
    * 
    * @param {Object} params
-   * @param {string} params.name - The event name matching your Novu workflow (e.g., 'task-assigned')
-   * @param {string|string[]} params.to - The subscriber ID(s) (usually user UUIDs)
-   * @param {Object} params.payload - Dynamic data to inject into the notification templates
+   * @param {string} params.companyId - The company ID.
+   * @param {string} params.recipientEmail - The email of the receiving user.
+   * @param {string} params.title - Short summary (e.g. 'Task Assigned').
+   * @param {string} params.message - Detailed body.
+   * @param {string} [params.type='system'] - 'system', 'mention', 'alert', 'task', etc.
+   * @param {string} [params.relatedId] - Optional link/ID (e.g. '/tasks/123').
+   * @param {string} [params.createdBy] - Optional email of the sender.
    */
-  emit: async ({ name, to, payload }) => {
+  emit: async ({ companyId, recipientEmail, title, message, type = 'system', relatedId = '', createdBy = 'system' }) => {
     try {
-      // In production, you would call a Supabase Edge Function here:
-      // const { data, error } = await supabase.functions.invoke('novu-trigger', {
-      //   body: { name, to, payload }
-      // });
-      // if (error) throw error;
+      if (!companyId || !recipientEmail) {
+        console.warn('NotificationService: companyId and recipientEmail are required.');
+        return;
+      }
+
+      await base44.entities.Notification.create({
+        id: uuidv4(),
+        company_id: companyId,
+        recipient_email: recipientEmail,
+        title,
+        message,
+        type,
+        related_id: relatedId,
+        created_by: createdBy,
+        is_read: 'false',
+        email_sent: 'false'
+      });
       
-      console.log(`[Notification Engine] Emitted '${name}' to:`, to);
-      console.log(`[Notification Engine] Payload:`, payload);
-
-      return { success: true };
-    } catch (error) {
-      console.error(`[Notification Engine] Failed to emit event '${name}':`, error);
-      return { success: false, error };
-    }
-  },
-
-  /**
-   * Identifies or updates a user in the notification system.
-   * Call this on login or when a user updates their profile.
-   * 
-   * @param {Object} user 
-   * @param {string} user.id - The user's UUID
-   * @param {string} user.firstName
-   * @param {string} user.lastName
-   * @param {string} user.email
-   * @param {string} user.phone
-   */
-  identifySubscriber: async (user) => {
-    try {
-      // In production, call edge function to sync subscriber
-      // await supabase.functions.invoke('novu-sync-subscriber', { body: user });
-      console.log(`[Notification Engine] Identified subscriber: ${user.id}`);
-      return { success: true };
-    } catch (error) {
-      console.error(`[Notification Engine] Failed to identify subscriber:`, error);
-      return { success: false, error };
+    } catch (e) {
+      console.error('Failed to dispatch notification:', e);
     }
   }
 };
