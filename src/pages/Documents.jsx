@@ -228,7 +228,7 @@ function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, a
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label>{t("file", "File")}</Label>
-            <div className="mt-1 border-2 border-dashed border-border rounded-lg p-6 text-center">
+            <div className="mt-1 border-2 border-dashed border-primary/50 rounded-lg p-6 text-center">
               <Upload className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
               <input type="file" className="hidden" id="doc-upload" onChange={handleFileUpload} />
               <label htmlFor="doc-upload" className="text-sm text-primary cursor-pointer hover:underline">

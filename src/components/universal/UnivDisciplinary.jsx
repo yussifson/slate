@@ -190,7 +190,7 @@ export default function UnivDisciplinary() {
  </motion.div>
  ))}
  {items.length === 0 && !loading && (
- <div className="text-center py-12 text-muted-foreground bg-background rounded-xl border border-dashed border-border">
+ <div className="text-center py-12 text-muted-foreground bg-background rounded-xl border border-dashed border-primary/50">
  <p>No disciplinary records found. Create one to get started.</p>
  </div>
  )}

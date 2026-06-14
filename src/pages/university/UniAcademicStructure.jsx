@@ -78,7 +78,7 @@ export default function UniAcademicStructure() {
  </div>
  
  {school.departments && school.departments.map((dept, dIdx) => (
- <div key={dIdx} className="pl-6 border-l-2 border-dashed border-[var(--color-border-subtle)] space-y-3">
+ <div key={dIdx} className="pl-6 border-l-2 border-dashed border-primary/50 space-y-3">
  <div className="text-[var(--color-text-secondary)] font-bold text-[var(--text-xs)] flex items-center gap-1.5">
  <Landmark className="w-3.5 h-3.5" style={{ color: 'var(--color-info)'}} /> {dept.name}
  </div>

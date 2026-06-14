@@ -76,7 +76,7 @@ export default function OnlineDashboard() {
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">Platform-wide enrollments over the last 7 days.</p>
  </div>
  </div>
- <div className="h-[300px] w-full flex items-center justify-center border border-dashed border-[var(--color-border-subtle)] rounded-xl">
+ <div className="h-[300px] w-full flex items-center justify-center border border-dashed border-primary/50 rounded-xl">
  <p className="text-[var(--color-text-secondary)] text-sm">Not enough data to display chart.</p>
  </div>
  </div>
@@ -87,7 +87,7 @@ export default function OnlineDashboard() {
  
  <div className="space-y-4 flex-1">
  {recentCourses.length === 0 ? (
- <div className="text-center p-6 border border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-lg)]">
+ <div className="text-center p-6 border border-dashed border-primary/50 rounded-[var(--radius-lg)]">
  <PlayCircle className="w-8 h-8 mx-auto text-[var(--color-text-tertiary)] mb-2" />
  <p className="text-sm font-medium text-[var(--color-text-secondary)]">No courses found</p>
  <p className="text-xs text-[var(--color-text-tertiary)] mt-1">Add courses to see them here.</p>

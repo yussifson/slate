@@ -82,7 +82,7 @@ export default function OnlineCourses() {
  <motion.div 
  initial={{ opacity: 0, y: 10}}
  animate={{ opacity: 1, y: 0}}
- className="col-span-full py-16 text-center border-2 border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] bg-[var(--color-surface-0)] glass-card"
+ className="col-span-full py-16 text-center border-2 border-dashed border-primary/50 rounded-[var(--radius-xl)] bg-[var(--color-surface-0)] glass-card"
  >
  <BookOpen className="w-12 h-12 mx-auto mb-4 opacity-30 text-[var(--primary)]" />
  <h3 className="font-semibold text-lg text-[var(--color-text-primary)] mb-1">No courses found</h3>

@@ -149,7 +149,7 @@ export function PromotionGridCard({ promo, onEdit, onDelete}) {
  const value = promo.discountValue ?? promo.data?.discountValue ?? 0;
  const code = promo.code || promo.data?.code || "PROMO";
  return (
- <article className="group relative bg-card border border-dashed border-border rounded-2xl overflow-hidden hover:border-solid hover:border-primary/40 transition-all flex flex-col min-h-[220px]">
+ <article className="group relative bg-card border border-dashed border-primary/50 rounded-2xl overflow-hidden hover:border-solid hover:border-primary/40 transition-all flex flex-col min-h-[220px]">
  <div className="flex-1 p-6 relative">
  <div className="flex justify-between items-start mb-6">
  <div className="bg-slate-100 text-primary text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest inline-flex items-center gap-1.5">
@@ -165,9 +165,9 @@ export function PromotionGridCard({ promo, onEdit, onDelete}) {
  </div>
  </div>
  
- <div className="h-16 bg-muted/40 border-t border-dashed border-border px-6 flex items-center justify-between relative overflow-hidden">
- <div className="absolute -left-3 -top-3 w-6 h-6 rounded-full bg-background border border-border border-dashed z-10" />
- <div className="absolute -right-3 -top-3 w-6 h-6 rounded-full bg-background border border-border border-dashed z-10" />
+ <div className="h-16 bg-muted/40 border-t border-dashed border-primary/50 px-6 flex items-center justify-between relative overflow-hidden">
+ <div className="absolute -left-3 -top-3 w-6 h-6 rounded-full bg-background border border-primary/50 border-dashed z-10" />
+ <div className="absolute -right-3 -top-3 w-6 h-6 rounded-full bg-background border border-primary/50 border-dashed z-10" />
  
  <p className="font-mono text-lg font-bold text-primary tracking-widest">{code}</p>
  <p className="text-xs text-muted-foreground uppercase">{type}</p>
@@ -235,7 +235,7 @@ export function OrderGridCard({ order, onEdit, onDelete}) {
  <p className="text-xs text-muted-foreground font-mono">{order.date}</p>
  </div>
  
- <div className="mt-auto pt-4 border-t border-dashed border-border flex items-end justify-between">
+ <div className="mt-auto pt-4 border-t border-dashed border-primary/50 flex items-end justify-between">
  <div>
  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Amount Due</p>
  <p className="text-3xl font-extrabold text-primary">${Number(order.total || 0).toFixed(2)}</p>

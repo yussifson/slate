@@ -98,7 +98,7 @@ export default function CSVImportModal({ isOpen, onClose, recordType, onComplete
  {/* Body */}
  <div className="p-6">
  {step === 1 && (
- <div className="border-2 border-dashed border-border rounded-xl p-12 text-center hover:bg-muted/30 transition-colors">
+ <div className="border-2 border-dashed border-primary/50 rounded-xl p-12 text-center hover:bg-muted/30 transition-colors">
  <UploadCloud className="w-12 h-12 mx-auto text-primary mb-4" />
  <h3 className="text-lg font-bold mb-2">{t("drag_and_drop_your_csv_here", "Drag and drop your CSV here")}</h3>
  <p className="text-sm text-muted-foreground mb-6">{t("or_click_to_browse_your_files", "Or click to browse your files")}</p>

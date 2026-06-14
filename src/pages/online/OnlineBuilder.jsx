@@ -155,19 +155,19 @@ export default function OnlineBuilder() {
  {activeTab === 'curriculum' && (
  <div className="space-y-6">
  {courseId ? (
- <div className="text-center py-12 border-2 border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] text-[var(--color-text-secondary)] text-sm">
+ <div className="text-center py-12 border-2 border-dashed border-primary/50 rounded-[var(--radius-lg)] text-[var(--color-text-secondary)] text-sm">
  <p className="mb-4">No slates created yet.</p>
  <button className="px-4 py-2 bg-[var(--color-surface-1)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
  Create First Module
  </button>
  </div>
  ) : (
- <div className="text-center py-12 border-2 border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] text-[var(--color-text-secondary)] text-sm">
+ <div className="text-center py-12 border-2 border-dashed border-primary/50 rounded-[var(--radius-lg)] text-[var(--color-text-secondary)] text-sm">
  Please save the course first to start adding modules.
  </div>
  )}
 
- <button className="w-full flex items-center justify-center gap-2 py-6 border-2 border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] text-[var(--color-text-secondary)] font-medium hover:text-[var(--primary)] hover:border-[var(--primary)] hover:bg-[var(--color-surface-1)] transition-colors">
+ <button className="w-full flex items-center justify-center gap-2 py-6 border-2 border-dashed border-primary/50 rounded-[var(--radius-lg)] text-[var(--color-text-secondary)] font-medium hover:text-[var(--primary)] hover:border-[var(--primary)] hover:bg-[var(--color-surface-1)] transition-colors">
  <PlusCircle className="w-5 h-5" /> Add New Module
  </button>
  </div>

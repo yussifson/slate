@@ -119,7 +119,7 @@ export default function AssessmentBuilder() {
  ))}
  </div>
 
- <button onClick={addQuestion} className="w-full py-4 border-2 border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] flex items-center justify-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--primary)] hover:border-[var(--primary)] hover:bg-[var(--color-surface-1)] transition-colors font-medium">
+ <button onClick={addQuestion} className="w-full py-4 border-2 border-dashed border-primary/50 rounded-[var(--radius-xl)] flex items-center justify-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--primary)] hover:border-[var(--primary)] hover:bg-[var(--color-surface-1)] transition-colors font-medium">
  <PlusCircle className="w-5 h-5" /> Add Another Question
  </button>
  </div>

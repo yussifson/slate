@@ -173,7 +173,7 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
 })}
  {provided.placeholder}
  {(stageCards[stage.id]?.length === 0) && !snapshot.isDraggingOver && (
- <div className="h-12 rounded-lg border border-dashed border-border/60 flex items-center justify-center">
+ <div className="h-12 rounded-lg border border-dashed border-primary/50 flex items-center justify-center">
  <span className="text-[10px] text-muted-foreground">{t("drop_here", "Drop here")}</span>
  </div>
  )}
@@ -196,7 +196,7 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
  <div className="space-y-2 bg-muted/10 rounded-lg p-2 min-h-[120px]">
  {untrackedCases.slice(0, 8).map(c => {
  return (
- <div key={c.id} className="bg-card border border-dashed border-border rounded-lg p-2.5 text-xs">
+ <div key={c.id} className="bg-card border border-dashed border-primary/50 rounded-lg p-2.5 text-xs">
  <p className="font-medium line-clamp-2 text-muted-foreground mb-1">{c.title}</p>
  <Button
  size="sm"

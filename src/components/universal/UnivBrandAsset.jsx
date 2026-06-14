@@ -255,7 +255,7 @@ export default function UnivBrandAsset() {
  </motion.div>
  ))}
  {data.length === 0 && !isEditing && (
- <div className="col-span-full py-16 text-center bg-card rounded-xl border border-dashed border-border">
+ <div className="col-span-full py-16 text-center bg-card rounded-xl border border-dashed border-primary/50">
  <UploadCloud className="w-16 h-16 text-gray-300 mx-auto mb-4" />
  <p className="text-muted-foreground text-lg">No brand assets uploaded.</p>
  </div>

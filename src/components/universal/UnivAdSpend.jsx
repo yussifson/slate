@@ -262,7 +262,7 @@ export default function UnivAdSpend() {
  </motion.div>
  ))}
  {data.length === 0 && !isEditing && (
- <div className="col-span-full py-12 text-center bg-card rounded-xl border border-dashed border-border">
+ <div className="col-span-full py-12 text-center bg-card rounded-xl border border-dashed border-primary/50">
  <TrendingUp className="w-12 h-12 text-gray-300 mx-auto mb-3" />
  <p className="text-muted-foreground">No ad spend data available.</p>
  </div>

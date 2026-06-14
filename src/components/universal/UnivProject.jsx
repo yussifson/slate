@@ -195,7 +195,7 @@ export default function UnivProject() {
  </div>
  </div>
  )})}
- {filtered.length === 0 && <div className="col-span-full py-20 text-center text-muted-foreground border-2 border-dashed border-border rounded-2xl"><Briefcase className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" /><p className="font-medium">No projects found.</p></div>}
+ {filtered.length === 0 && <div className="col-span-full py-20 text-center text-muted-foreground border-2 border-dashed border-primary/50 rounded-2xl"><Briefcase className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" /><p className="font-medium">No projects found.</p></div>}
  </div>
  )}
  </div>

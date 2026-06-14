@@ -17,7 +17,7 @@ export default function OnlineCertificates() {
  </div>
 
  {certificates.length === 0 ? (
- <div className="p-12 text-center border-2 border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-xl)] bg-[var(--color-surface-0)]">
+ <div className="p-12 text-center border-2 border-dashed border-primary/50 rounded-[var(--radius-xl)] bg-[var(--color-surface-0)]">
  <Award className="w-16 h-16 mx-auto text-[var(--color-text-tertiary)] mb-4" />
  <h2 className="text-xl font-bold font-display text-[var(--color-text-primary)]">No Certificates Yet</h2>
  <p className="text-[var(--color-text-secondary)] mt-2">Complete a course to earn your first certificate.</p>

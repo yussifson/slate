@@ -468,7 +468,7 @@ export default function UnivDashboard({
 })}
 
  {layout.length === 0 && !isEditing && (
- <div className="col-span-full py-20 text-center border-2 border-dashed border-border rounded-2xl">
+ <div className="col-span-full py-20 text-center border-2 border-dashed border-primary/50 rounded-2xl">
  <h3 className="text-lg font-bold text-foreground">Your Dashboard is empty</h3>
  <p className="text-sm text-muted-foreground mt-1 mb-4">
  Click "Edit Dashboard" to add your first widget.

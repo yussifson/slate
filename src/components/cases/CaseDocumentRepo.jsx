@@ -155,7 +155,7 @@ export default function CaseDocumentRepo({ caseData, user }) {
       {isLoading ? (
         <div className="p-8 text-center text-sm text-muted-foreground">{t("loading_documents", "Loading documents...")}</div>
       ) : filtered.length === 0 ? (
-        <div className="bg-card rounded-xl border border-dashed border-border p-12 text-center">
+        <div className="bg-card rounded-xl border border-dashed border-primary/50 p-12 text-center">
           <FolderOpen className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
           <p className="text-sm font-medium">{t("no_documents_yet", "No documents yet")}</p>
           <p className="text-xs text-muted-foreground mt-1 mb-4">{t(

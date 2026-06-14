@@ -126,7 +126,7 @@ export function EmailSettings({ activeIndustry, company, onSave, saving}) {
  ) : (
  <div className="relative">
  {!isPaidPlan ? (
- <div className="absolute inset-0 z-20 backdrop-blur-md bg-card/65 rounded-2xl border border-dashed border-border/80 p-8 flex flex-col items-center justify-center text-center space-y-4 ">
+ <div className="absolute inset-0 z-20 backdrop-blur-md bg-card/65 rounded-2xl border border-dashed border-primary/50 p-8 flex flex-col items-center justify-center text-center space-y-4 ">
  <div className="w-14 h-14 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center border border-amber-500/20 animate-pulse">
  <Lock className="w-6 h-6" />
  </div>

@@ -130,7 +130,7 @@ export default function UnivHREmployee() {
  </div>
  </div>
  ))}
- {filtered.length===0&&<div className="col-span-full py-20 text-center text-muted-foreground border-2 border-dashed border-border rounded-2xl"><Users className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3"/><p className="font-medium">No employees found.</p></div>}
+ {filtered.length===0&&<div className="col-span-full py-20 text-center text-muted-foreground border-2 border-dashed border-primary/50 rounded-2xl"><Users className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3"/><p className="font-medium">No employees found.</p></div>}
  </div>
  ) : viewMode === 'list' ? (
  <div className="bg-card border border-border rounded-2xl overflow-hidden ">

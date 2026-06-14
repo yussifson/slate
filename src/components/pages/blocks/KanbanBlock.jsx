@@ -48,7 +48,7 @@ export default function KanbanBlock({ dataConfig, styleConfig}) {
  </div>
  ))}
  {items.length === 0 && (
- <div className="py-6 text-center text-xs text-muted-foreground border-2 border-dashed border-border/60 rounded-lg">
+ <div className="py-6 text-center text-xs text-muted-foreground border-2 border-dashed border-primary/50 rounded-lg">
  No items
  </div>
  )}

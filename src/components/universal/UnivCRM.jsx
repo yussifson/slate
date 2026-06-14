@@ -363,7 +363,7 @@ export default function UnivCRM() {
  ))}
  {provided.placeholder}
  {stageLeads.length === 0 && !snapshot.isDraggingOver && (
- <div className="h-24 flex items-center justify-center border-2 border-dashed border-border/60 rounded-xl text-xs text-muted-foreground font-medium bg-card/20">
+ <div className="h-24 flex items-center justify-center border-2 border-dashed border-primary/50 rounded-xl text-xs text-muted-foreground font-medium bg-card/20">
  Drop leads here
  </div>
  )}
@@ -374,7 +374,7 @@ export default function UnivCRM() {
  );
 })}
  {/* Add Stage Column */}
- <div className="flex-shrink-0 w-[320px] max-w-[85vw] h-[150px] rounded-2xl flex flex-col snap-center border-2 border-dashed border-border/60 hover:border-border transition-colors bg-card/30">
+ <div className="flex-shrink-0 w-[320px] max-w-[85vw] h-[150px] rounded-2xl flex flex-col snap-center border-2 border-dashed border-primary/50 hover:border-border transition-colors bg-card/30">
  {isAddingStage ? (
  <form onSubmit={handleAddStage} className="p-4 flex flex-col gap-3 h-full justify-center">
  <input autoFocus type="text" value={newStageName} onChange={e=>setNewStageName(e.target.value)} placeholder="Stage Name..." className="w-full h-10 px-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm " />

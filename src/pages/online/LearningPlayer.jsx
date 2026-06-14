@@ -102,7 +102,7 @@ export default function LearningPlayer() {
  )}
  {activeTab === 'resources' && (
  <motion.div initial={{ opacity: 0, y: 10}} animate={{ opacity: 1, y: 0}} className="space-y-3">
- <p className="text-sm text-[var(--color-text-secondary)] text-center py-12 border-2 border-dashed border-[var(--color-border-subtle)] rounded-[var(--radius-lg)]">No resources available for this slate yet.</p>
+ <p className="text-sm text-[var(--color-text-secondary)] text-center py-12 border-2 border-dashed border-primary/50 rounded-[var(--radius-lg)]">No resources available for this slate yet.</p>
  </motion.div>
  )}
  </div>

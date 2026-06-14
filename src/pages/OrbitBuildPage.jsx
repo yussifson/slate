@@ -320,7 +320,7 @@ function DynamicGalleryView({ companyId, pageDef, cleanId, tableName}) {
  </div>
 
  {filtered.length === 0 ? (
- <div className="p-12 text-center text-muted-foreground border border-dashed border-border rounded-2xl bg-card/50">
+ <div className="p-12 text-center text-muted-foreground border border-dashed border-primary/50 rounded-2xl bg-card/50">
  <GalleryIcon className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" />
  <p className="font-medium">No items found in visual gallery.</p>
  </div>

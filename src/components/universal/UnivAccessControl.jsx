@@ -296,7 +296,7 @@ export default function UnivAccessControl() {
  </div>
  </div>
  ))}
- {roles.length === 0 && <div className="col-span-full py-12 text-center text-muted-foreground border-2 border-dashed border-border rounded-2xl">No roles defined. Create your first Role!</div>}
+ {roles.length === 0 && <div className="col-span-full py-12 text-center text-muted-foreground border-2 border-dashed border-primary/50 rounded-2xl">No roles defined. Create your first Role!</div>}
  </div>
  </div>
  )}

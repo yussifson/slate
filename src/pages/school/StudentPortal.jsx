@@ -241,7 +241,7 @@ export default function StudentPortal() {
  ))}
  </div>
  ) : (
- <div className="text-center py-10 bg-muted/30 rounded-xl border border-dashed border-border">
+ <div className="text-center py-10 bg-muted/30 rounded-xl border border-dashed border-primary/50">
  <BookOpen className="w-10 h-10 mx-auto text-muted-foreground opacity-30 mb-3" />
  <p className="font-semibold text-foreground">You are not registered for any courses yet.</p>
  {classConfig.allowSelfRegistration ? (

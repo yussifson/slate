@@ -174,7 +174,7 @@ export default function UnivNotification() {
  )}
  
  {!loading && notifications.length === 0 && (
- <div className="text-center p-12 bg-card border border-border border-dashed rounded-2xl">
+ <div className="text-center p-12 bg-card border border-primary/50 border-dashed rounded-2xl">
  <Bell className="w-10 h-10 text-slate-300 mx-auto mb-3" />
  <h3 className="text-lg font-semibold text-foreground">All caught up!</h3>
  <p className="text-muted-foreground mt-1 text-sm">You have no new notifications.</p>

@@ -184,7 +184,7 @@ export default function UnivAnalytics({
  <p className="text-sm font-medium">Scanning your workslate data...</p>
  </div>
  ) : stats.length === 0 ? (
- <div className="flex-1 flex flex-col items-center justify-center gap-3 text-muted-foreground py-20 border-2 border-dashed border-border rounded-2xl">
+ <div className="flex-1 flex flex-col items-center justify-center gap-3 text-muted-foreground py-20 border-2 border-dashed border-primary/50 rounded-2xl">
  <AlertCircle className="w-10 h-10 opacity-40" />
  <p className="text-base font-bold text-foreground">No data found yet</p>
  <p className="text-sm text-center max-w-sm">Start adding records to your workslate slates and they will appear here automatically.</p>

@@ -322,7 +322,7 @@ export default function Timetable() {
  setFormData({ ...defaultForm, className: selectedClass, day, period: String(period)});
  setShowModal(true);
 }}
- className="w-full h-full min-h-[56px] rounded-lg border-2 border-dashed border-border text-muted-foreground/40 hover:border-primary/70 hover:text-primary transition-colors flex items-center justify-center"
+ className="w-full h-full min-h-[56px] rounded-lg border-2 border-dashed border-primary/50 text-muted-foreground/40 hover:border-primary/70 hover:text-primary transition-colors flex items-center justify-center"
  >
  <Plus className="w-4 h-4" />
  </button>

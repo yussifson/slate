@@ -202,7 +202,7 @@ export default function UnivKanban({ title = "Kanban Board", companyId, pageName
  </Draggable>
  ))}
  {provided.placeholder}
- {colTasks.length === 0 && !snapshot.isDraggingOver && <div className="h-20 flex items-center justify-center border-2 border-dashed border-border/50 rounded-xl text-xs text-muted-foreground">Drop tasks here</div>}
+ {colTasks.length === 0 && !snapshot.isDraggingOver && <div className="h-20 flex items-center justify-center border-2 border-dashed border-primary/50 rounded-xl text-xs text-muted-foreground">Drop tasks here</div>}
  </div>
  )}
  </Droppable>
@@ -210,7 +210,7 @@ export default function UnivKanban({ title = "Kanban Board", companyId, pageName
  );
 })}
  {/* Add Column */}
- <div className="flex-shrink-0 w-56 rounded-2xl border-2 border-dashed border-border/60 flex flex-col items-center justify-center min-h-[150px] hover:border-border transition-colors bg-card/30">
+ <div className="flex-shrink-0 w-56 rounded-2xl border-2 border-dashed border-primary/50 flex flex-col items-center justify-center min-h-[150px] hover:border-border transition-colors bg-card/30">
  {addingCol ? (
  <form onSubmit={addColumn} className="p-4 w-full flex flex-col gap-2">
  <input autoFocus type="text" value={newColName} onChange={e => setNewColName(e.target.value)} placeholder="Column name..." className="w-full h-9 px-3 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />

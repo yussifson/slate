@@ -67,7 +67,7 @@ export default function OnlineSales() {
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">One-time purchases vs Subscriptions</p>
  </div>
  </div>
- <div className="h-[300px] w-full flex items-center justify-center border border-dashed border-[var(--color-border-subtle)] rounded-xl">
+ <div className="h-[300px] w-full flex items-center justify-center border border-dashed border-primary/50 rounded-xl">
  <p className="text-[var(--color-text-secondary)] text-sm">Not enough data to display chart.</p>
  </div>
  </div>
@@ -79,7 +79,7 @@ export default function OnlineSales() {
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">Total lifetime value generated</p>
  </div>
  </div>
- <div className="h-[300px] w-full flex items-center justify-center border border-dashed border-[var(--color-border-subtle)] rounded-xl">
+ <div className="h-[300px] w-full flex items-center justify-center border border-dashed border-primary/50 rounded-xl">
  <p className="text-[var(--color-text-secondary)] text-sm">Not enough data to display chart.</p>
  </div>
  </div>

@@ -27,7 +27,7 @@ export default function GenericDashboard({ data, metricKeys}) {
  </div>
  ))}
  {Array.from({ length: Math.max(0, 4 - metricKeys.length)}).map((_, i) => (
- <div key={'empty-'+i} className="bg-muted/10 p-6 rounded-2xl border border-dashed border-border/50 flex flex-col items-center justify-center text-muted-foreground">
+ <div key={'empty-'+i} className="bg-muted/10 p-6 rounded-2xl border border-dashed border-primary/50 flex flex-col items-center justify-center text-muted-foreground">
  <span className="text-xs font-semibold uppercase tracking-widest opacity-50">Empty Metric</span>
  </div>
  ))}

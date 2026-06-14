@@ -279,7 +279,7 @@ export default function CasePipelinePage() {
  {isLoading ? (
  <div className="text-center text-sm text-muted-foreground py-8">{t("loading_pipelines", "Loading pipelines...")}</div>
  ) : pipelines.length === 0 ? (
- <div className="bg-card rounded-xl border border-dashed border-border p-12 text-center">
+ <div className="bg-card rounded-xl border border-dashed border-primary/50 p-12 text-center">
  <GitBranch className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
  <p className="text-sm font-medium">{t("no_pipelines_yet", "No pipelines yet")}</p>
  <p className="text-xs text-muted-foreground mt-1 mb-4">{t(

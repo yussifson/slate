@@ -260,7 +260,7 @@ function ExpenseFormDialog({ open, onClose, onSubmit, currency }) {
           </div>
           <div>
             <Label>{t("receipt_optional", "Receipt (optional)")}</Label>
-            <div className="mt-1 border-2 border-dashed border-border rounded-lg p-3 text-center">
+            <div className="mt-1 border-2 border-dashed border-primary/50 rounded-lg p-3 text-center">
               <input type="file" id="receipt-upload" className="hidden" onChange={handleReceiptUpload} accept="image/*,.pdf" />
               <label htmlFor="receipt-upload" className="text-sm text-primary cursor-pointer hover:underline">
                 {uploadingReceipt ? "Uploading..." : form.receipt_url ? "✓ Receipt uploaded" : "Upload receipt"}

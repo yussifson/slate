@@ -155,7 +155,7 @@ export default function SuperAdminDashboard() {
  </div>
  </div>
  ) : (
- <div className="bg-card border border-dashed border-border rounded-xl p-10 text-center space-y-3">
+ <div className="bg-card border border-dashed border-primary/50 rounded-xl p-10 text-center space-y-3">
  <Building2 className="w-10 h-10 text-muted-foreground/40 mx-auto" />
  <p className="text-sm text-muted-foreground">{t("no_firm_configured_yet", "No " + (getTerm(activeIndustry, "venue") || "firm").toLowerCase() + " configured yet.")}</p>
  <Button onClick={() => setShowForm(true)} size="sm">{t("setup_your_firm", "Setup Your " + (getTerm(activeIndustry, "venue") || "Firm"))}</Button>

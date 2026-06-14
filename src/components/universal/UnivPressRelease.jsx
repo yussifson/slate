@@ -251,7 +251,7 @@ export default function UnivPressRelease() {
  </motion.div>
  ))}
  {data.length === 0 && !isEditing && (
- <div className="py-12 text-center bg-card rounded-xl border border-dashed border-border">
+ <div className="py-12 text-center bg-card rounded-xl border border-dashed border-primary/50">
  <Mic className="w-12 h-12 text-slate-300 mx-auto mb-3" />
  <p className="text-muted-foreground">No press releases found.</p>
  </div>

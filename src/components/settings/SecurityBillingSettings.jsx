@@ -273,7 +273,7 @@ export function BillingSettings({ company, activeIndustry}) {
  </div>
 
  {invoices.length === 0 ? (
- <div className="text-center py-10 text-sm text-muted-foreground font-semibold bg-muted/10 rounded-2xl border border-dashed border-border/60">
+ <div className="text-center py-10 text-sm text-muted-foreground font-semibold bg-muted/10 rounded-2xl border border-dashed border-primary/50">
  {t("no_service_invoices_recorded", "No service invoices recorded.")}
  </div>
  ) : (

@@ -432,7 +432,7 @@ function TemplatesPanel({ companyId}) {
  {isLoading ? (
  <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
  ) : templates.length === 0 ? (
- <div className="bg-card border border-dashed border-border rounded-2xl p-10 text-center">
+ <div className="bg-card border border-dashed border-primary/50 rounded-2xl p-10 text-center">
  <LayoutTemplate className="w-10 h-10 text-muted-foreground mx-auto mb-2 opacity-40" />
  <p className="text-sm text-muted-foreground">No templates yet. Create your first one.</p>
  </div>

@@ -772,7 +772,7 @@ export default function OnboardingWizard() {
  </div>
  </div>
  ) : (
- <div className="border-2 border-dashed border-border rounded-2xl p-8 text-center bg-muted/30">
+ <div className="border-2 border-dashed border-primary/50 rounded-2xl p-8 text-center bg-muted/30">
  <Users className="w-8 h-8 text-slate-300 mx-auto mb-3" />
  <p className="text-sm text-slate-500 font-medium">No team members added yet.</p>
  <p className="text-xs text-slate-400 mt-1">You can always invite them later from settings.</p>

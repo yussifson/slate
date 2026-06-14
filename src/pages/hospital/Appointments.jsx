@@ -195,7 +195,7 @@ export default function Appointments() {
  <Link to="/hospital/patients" className="font-bold text-sm text-primary hover:underline">{appt.patient}</Link>
  <p className="text-xs text-muted-foreground font-medium">{appt.doctor}</p>
  </div>
- <div className="flex items-center justify-between gap-1 text-xs text-muted-foreground mt-1 border-t border-dashed border-border pt-2">
+ <div className="flex items-center justify-between gap-1 text-xs text-muted-foreground mt-1 border-t border-dashed border-primary/50 pt-2">
  <div className="flex items-center gap-1">
  <Clock className="w-3.5 h-3.5 text-muted-foreground" /> <span>{appt.time}</span>
  </div>
