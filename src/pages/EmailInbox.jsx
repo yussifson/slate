@@ -65,16 +65,46 @@ export default function EmailInbox() {
  enabled: !!companyId,
 });
 
- const createMutation = useMutation({
- mutationFn: (data) => base44.entities.CaseEmail.create({
- ...data, company_id: companyId, logged_by: user?.email, sender_email: user?.email
-}),
- onSuccess: () => {
- queryClient.invalidateQueries({ queryKey: ["case-emails"]});
- setShowCompose(false);
- setIsComposeMinimized(false);
-},
-});
+  const createMutation = useMutation({
+    mutationFn: async (data) => {
+      const emailRecord = await base44.entities.CaseEmail.create({
+        subject: data.subject,
+        recipient_email: data.recipient_email,
+        body_preview: data.body_preview,
+        received_date: data.received_date,
+        attachments: data.attachments,
+        company_id: companyId,
+        logged_by: user?.email,
+        sender_email: user?.email
+      });
+
+      // If internal, create notifications
+      if (data.is_internal && data.internal_recipients) {
+        for (const recipient of data.internal_recipients) {
+          if (recipient === user?.email) continue; // don't notify self
+          try {
+            await base44.entities.Notification.create({
+              company_id: companyId,
+              recipient_email: recipient,
+              type: 'internal_message',
+              title: `New Message: ${data.subject}`,
+              message: `From ${user?.full_name || user?.email}`,
+              related_id: `/emails`,
+              is_read: 'false'
+            });
+          } catch(e) {
+            console.error("Failed to notify", recipient, e);
+          }
+        }
+      }
+      return emailRecord;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["case-emails"] });
+      setShowCompose(false);
+      setIsComposeMinimized(false);
+    },
+  });
 
  const userEmail = user?.email?.toLowerCase() || "";
  const userName = user?.full_name?.toLowerCase() || "";
@@ -474,16 +504,17 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
  finally { setIsUploading(false);}
 };
 
- const handleSubmit = async e => {
- e.preventDefault();
- let recipients = [];
- if (recipientType === "internal" || recipientType === "both") {
- recipients = staff.filter(s => selectedStaffIds.includes(s.id)).map(s => s.user_email || s.email).filter(Boolean);
- }
- if (recipientType === "external" || recipientType === "both") {
- recipients = [...recipients, ...externalEmails.split(",").map(e => e.trim()).filter(Boolean)];
- }
- 
+  const handleSubmit = async e => {
+    e.preventDefault();
+    let recipients = [];
+    let internalEmails = [];
+    if (recipientType === "internal" || recipientType === "both") {
+      internalEmails = staff.filter(s => selectedStaffIds.includes(s.id)).map(s => s.user_email || s.email).filter(Boolean);
+      recipients = [...internalEmails];
+    }
+    if (recipientType === "external" || recipientType === "both") {
+      recipients = [...recipients, ...externalEmails.split(",").map(e => e.trim()).filter(Boolean)];
+    }
  if (recipientType === "external" || recipientType === "both") {
  try {
  const { error} = await supabase.functions.invoke('send-external-email', {
@@ -496,7 +527,15 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
  }
  }
 
- onSubmit({ subject, recipient_email: recipients.join(", "), body_preview: message, received_date: new Date().toISOString(), attachments: attachments.length ? JSON.stringify(attachments) : null});
+    onSubmit({ 
+      subject, 
+      recipient_email: recipients.join(", "), 
+      body_preview: message, 
+      received_date: new Date().toISOString(), 
+      attachments: attachments.length ? JSON.stringify(attachments) : null,
+      is_internal: recipientType === "internal" || recipientType === "both",
+      internal_recipients: internalEmails
+    });
 };
 
  const toggleStaff = id => setSelectedStaffIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
