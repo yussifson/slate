@@ -29,7 +29,10 @@ serve(async (req) => {
 
     // Trigger Novu workflow named 'in-app-notification'
     await novu.trigger('in-app-notification', {
-      to: { subscriberId: record.recipient_email },
+      to: { 
+        subscriberId: record.recipient_email,
+        email: record.recipient_email 
+      },
       payload: {
         title: record.title,
         message: record.message,

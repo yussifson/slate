@@ -1,5 +1,5 @@
 import { base44 } from '@/api/base44Client';
-import { v4 as uuidv4 } from 'uuid';
+
 
 /**
  * Universal Notification Engine
@@ -29,7 +29,7 @@ export const NotificationService = {
       }
 
       await base44.entities.Notification.create({
-        id: uuidv4(),
+        id: crypto.randomUUID(),
         company_id: companyId,
         recipient_email: recipientEmail,
         title,
