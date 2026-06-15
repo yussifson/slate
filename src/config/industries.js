@@ -615,6 +615,7 @@ export const INDUSTRIES = {
       { label: 'Platform Overview', path: '/admin', icon: 'LayoutDashboard' },
       { label: 'Firms & Quotas', path: '/admin/firms', icon: 'Building2' },
       { label: 'System Users', path: '/admin/users', icon: 'Users2' },
+      { label: 'Pricing & Plans', path: '/admin/pricing', icon: 'Crown' },
       { label: 'Revenue & Billing', path: '/admin/billing', icon: 'CreditCard' },
       { label: 'Security & Audit', path: '/admin/security', icon: 'Shield' },
       { label: 'System Broadcasts', path: '/admin/broadcasts', icon: 'BellRing' },
