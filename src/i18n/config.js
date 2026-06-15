@@ -3,27 +3,12 @@ import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import ChainedBackend from 'i18next-chained-backend';
 import LocalStorageBackend from 'i18next-localstorage-backend';
-import LocizeBackend from 'i18next-locize-backend';
+import HttpBackend from 'i18next-http-backend';
 
 const isProduction = import.meta.env.PROD;
 
-// Default local translations for fallback while offline
-const fallbackTranslations = {
-  en: {
-    translation: {
-      "dashboard": "Dashboard",
-      "loading": "Loading...",
-      "error": "An error occurred",
-      "save": "Save",
-      "cancel": "Cancel",
-      "delete": "Delete",
-      "edit": "Edit",
-    }
-  }
-};
-
 i18n
-  // Configure multiple backends: LocalStorage first, then Locize
+  // Configure multiple backends: LocalStorage first, then HttpBackend
   .use(ChainedBackend)
   // Detect user language automatically
   .use(LanguageDetector)
@@ -33,7 +18,6 @@ i18n
     fallbackLng: 'en',
     supportedLngs: ['en', 'es', 'fr', 'ar', 'he', 'de', 'pt', 'zh', 'ja'], // Extend as needed
     debug: !isProduction,
-    saveMissing: !isProduction,
     
     interpolation: {
       escapeValue: false, // React already safeguards from XSS
@@ -42,23 +26,17 @@ i18n
     backend: {
       backends: [
         LocalStorageBackend,  // Primary (local cache)
-        LocizeBackend         // Fallback (fetch from locize)
+        HttpBackend           // Fallback (fetch from local static json)
       ],
       backendOptions: [{
-        // LocalStorage backend options - v2 busts old empty caches
-        expirationTime: 60 * 60 * 1000, // 1 hour (so new translations load quickly)
-        prefix: 'i18next_res_v2_',
+        // LocalStorage backend options
+        expirationTime: 24 * 60 * 60 * 1000, // 24 hours
+        prefix: 'i18next_res_',
       }, {
-        // Locize backend options
-        projectId: import.meta.env.VITE_LOCIZE_PROJECT_ID || 'demo-project-id',
-        apiKey: import.meta.env.VITE_LOCIZE_API_KEY || '', 
-        referenceLng: 'en',
+        // Http backend options
+        loadPath: '/locales/{{lng}}/translation.json'
       }]
-    },
-    
-    // Add default translations to prevent UI breaking if both locize and cache fail
-    resources: fallbackTranslations,
-    partialBundledLanguages: true
+    }
   });
 
 // Handle RTL text direction dynamically

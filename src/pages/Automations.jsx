@@ -491,11 +491,19 @@ export default function Automations() {
               </Button>
             </>
           )}
-          {mode === 'list' && (
-            <Button onClick={startNewFlow} className="gap-2 shadow-md">
-              <Plus className="w-4 h-4" /> Create New Flow
-            </Button>
-          )}
+            {mode === 'list' && (
+              <div className="flex gap-2 items-center">
+                <Button 
+                  onClick={() => window.dispatchEvent(new CustomEvent("orbit:inject", { detail: { label: "OrbitFlow Automation Builder", query: "Help me build an automation flow." } }))} 
+                  className="gap-2 shadow-md bg-indigo-600 hover:bg-indigo-700 text-white"
+                >
+                  <OrbitIcon className="w-4 h-4 fill-white" /> Automate with OrbitFlow
+                </Button>
+                <Button onClick={startNewFlow} className="gap-2 shadow-md">
+                  <Plus className="w-4 h-4" /> Create New Flow
+                </Button>
+              </div>
+            )}
         </div>
       </div>
 
