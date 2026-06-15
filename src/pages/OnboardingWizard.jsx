@@ -219,26 +219,25 @@ export default function OnboardingWizard() {
       compPayload.subscription_plan = 'starter';
       compPayload.subscription_status = 'trial';
     }
-    const compKeys = Object.keys(compPayload);
-    const compVals = Object.values(compPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-    await powerSync.execute(`INSERT INTO companies (${compKeys.join(', ')}) VALUES (${compKeys.map(()=>'?').join(', ')})`, compVals);
- const __resComp = await powerSync.execute(`SELECT * FROM companies WHERE subdomain = ?`, [finalSubdomain]);
- const newComp = __resComp.rows && __resComp.rows.length > 0 ? __resComp.rows.item(0) : null;
- const newCompErr = null;
+     const { data: newComp, error: newCompErr } = await supabase
+       .from('companies')
+       .insert(compPayload)
+       .select()
+       .single();
 
- if (newCompErr) {
- if (newCompErr.code === '23505') {
- // Duplicate subdomain, try appending a random string
- finalSubdomain = `${cSubdomain}-${Math.random().toString(36).substring(2, 6)}`;
- attempt++;
-} else {
- throw newCompErr;
-}
-} else {
- insertSuccess = true;
- newCompData = newComp;
-}
-}
+     if (newCompErr) {
+       if (newCompErr.code === '23505') {
+         // Duplicate subdomain, try appending a random string
+         finalSubdomain = `${cSubdomain}-${Math.random().toString(36).substring(2, 6)}`;
+         attempt++;
+       } else {
+         throw newCompErr;
+       }
+     } else {
+       insertSuccess = true;
+       newCompData = newComp;
+     }
+   }
 
  if (!insertSuccess) {
  throw new Error("Could not generate a unique subdomain. Please try again.");
@@ -256,12 +255,12 @@ export default function OnboardingWizard() {
  profPayload.role = 'admin'; // Founder/Admin role
 }
 
- const profKeys = Object.keys(profPayload);
- const profVals = Object.values(profPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`UPDATE profiles SET ${profKeys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [...profVals, user.id]);
- const profErr = null;
- 
- if (profErr) throw profErr;
+  const { error: profErr } = await supabase
+    .from('profiles')
+    .update(profPayload)
+    .eq('id', user.id);
+
+  if (profErr) throw profErr;
 }
 
  // 1. Update company details
@@ -276,15 +275,15 @@ export default function OnboardingWizard() {
  currency: currency,
  status: 'active'
 };
- const updCompKeys = Object.keys(updCompPayload);
- const updCompVals = Object.values(updCompPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`UPDATE companies SET ${updCompKeys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [...updCompVals, companyIdToUse]);
- const compError = null;
+  const { error: compError } = await supabase
+    .from('companies')
+    .update(updCompPayload)
+    .eq('id', companyIdToUse);
 
- // Update profile with industry_type now that finalIndustry is defined
- await powerSync.execute(`UPDATE profiles SET industry_type = ? WHERE id = ?`, [finalIndustry, user.id]);
+  // Also update profile industry_type directly in Supabase
+  await supabase.from('profiles').update({ industry_type: finalIndustry }).eq('id', user.id);
 
- if (compError) throw compError;
+  if (compError) throw compError;
 
  // 2. Insert invited staff records
  if (invitedStaff.length > 0) {
