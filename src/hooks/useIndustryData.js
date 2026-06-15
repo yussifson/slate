@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useCompanyId } from './useCompanyId';
+import { useAuth } from '@/lib/AuthContext';
 
 /**
  * Hook to fetch generic industry records using LegalCase as the underlying generic container.
@@ -31,9 +32,11 @@ export function useIndustryRecords(recordType) {
           data: data,
           status: r.status,
           search_text: r.title,
-          created_at: r.created_date
+          created_at: r.created_date || r.created_at,
+          updated_at: r.updated_date || r.updated_at,
+          created_by: r.created_by
         };
-      }).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      }).sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
     },
     enabled: !!companyId && !!recordType,
     placeholderData: (prev) => prev,
@@ -43,6 +46,7 @@ export function useIndustryRecords(recordType) {
 export function useMutateIndustryRecord() {
   const queryClient = useQueryClient();
   const companyId = useCompanyId();
+  const { user } = useAuth();
 
   return useMutation({
     mutationFn: async ({ id, recordType, payload, status, searchText }) => {
@@ -50,18 +54,23 @@ export function useMutateIndustryRecord() {
         throw new Error("Missing context to save record.");
       }
 
+      const userName = user?.user_metadata?.full_name || user?.email || 'Unknown User';
+
       const casePayload = {
         company_id: companyId,
         case_type: recordType,
         title: searchText || 'Record',
         status: status || 'Active',
-        notes: JSON.stringify(payload)
+        notes: JSON.stringify(payload),
+        updated_date: new Date().toISOString()
       };
 
       let result;
       if (id) {
         result = await base44.entities.LegalCase.update(id, casePayload);
       } else {
+        casePayload.created_by = userName;
+        casePayload.created_date = new Date().toISOString();
         result = await base44.entities.LegalCase.create(casePayload);
       }
 
@@ -75,7 +84,9 @@ export function useMutateIndustryRecord() {
         data: data,
         status: result.status,
         search_text: result.title,
-        created_at: result.created_date
+        created_at: result.created_date || result.created_at,
+        updated_at: result.updated_date || result.updated_at,
+        created_by: result.created_by
       };
     },
     onSuccess: (data) => {

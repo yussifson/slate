@@ -41,7 +41,9 @@ export default function Customers() {
  phone: data.phone || '',
  totalSpent,
  orders: parseInt(data.orders) || 0,
- segment
+ segment,
+ createdBy: r.created_by || 'System',
+ createdAt: r.created_at || new Date().toISOString()
 };
 });
 
@@ -204,6 +206,7 @@ export default function Customers() {
  <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("total_orders", "Total Orders")}</th>
  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("lifetime_value", "Lifetime Value")}</th>
  <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("segment", "Segment")}</th>
+ <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Added By</th>
  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("actions", "Actions")}</th>
  </tr>
  </thead>
@@ -227,6 +230,10 @@ export default function Customers() {
  <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border ${segmentColors[cust.segment] || 'bg-muted'}`}>
  {cust.segment}
  </span>
+ </td>
+ <td className="px-6 py-4">
+ <p className="text-sm font-medium text-card-foreground">{cust.createdBy}</p>
+ <p className="text-xs text-muted-foreground">{new Date(cust.createdAt).toLocaleDateString()}</p>
  </td>
  <td className="px-6 py-4 text-right">
  <DropdownMenu>
@@ -289,13 +296,17 @@ export default function Customers() {
  <div className="col-span-1 font-semibold text-muted-foreground">{t("lifetime_spend", "Lifetime Spend")}</div>
  <div className="col-span-2">${selectedRecord.totalSpent.toFixed(2)}</div>
  </div>
- <div className="grid grid-cols-3 gap-4">
+ <div className="grid grid-cols-3 gap-4 border-b pb-4">
  <div className="col-span-1 font-semibold text-muted-foreground">{t("segment", "Segment")}</div>
  <div className="col-span-2">
  <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border ${segmentColors[selectedRecord.segment] || 'bg-muted'}`}>
  {selectedRecord.segment}
  </span>
  </div>
+ </div>
+ <div className="grid grid-cols-3 gap-4">
+ <div className="col-span-1 font-semibold text-muted-foreground">Added By</div>
+ <div className="col-span-2">{selectedRecord.createdBy} on {new Date(selectedRecord.createdAt).toLocaleDateString()}</div>
  </div>
  </div>
  )}

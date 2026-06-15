@@ -47,7 +47,9 @@ export default function Orders() {
  date: r.data?.date || new Date().toISOString().split('T')[0],
  total: parseFloat(r.data?.total) || 0,
  status: r.data?.status || 'Pending',
- items: r.data?.items || []
+ items: r.data?.items || [],
+ createdBy: r.created_by || 'System',
+ createdAt: r.created_at || new Date().toISOString()
 }));
 
  const [search, setSearch] = useState('');
@@ -269,6 +271,7 @@ export default function Orders() {
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Date</th>
  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Total</th>
  <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Status</th>
+ <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Added By</th>
  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Actions</th>
  </tr>
  </thead>
@@ -281,6 +284,10 @@ export default function Orders() {
  <td className="px-6 py-4 text-right font-bold text-card-foreground">${o.total.toFixed(2)}</td>
  <td className="px-6 py-4 text-center">
  <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${o.status === 'Completed' || o.status === 'Delivered' ? 'bg-slate-100 text-primary/90' : 'bg-amber-100 text-amber-700'}`}>{o.status}</span>
+ </td>
+ <td className="px-6 py-4">
+ <p className="text-sm font-medium text-card-foreground">{o.createdBy}</p>
+ <p className="text-xs text-muted-foreground">{new Date(o.createdAt).toLocaleDateString()}</p>
  </td>
  <td className="px-6 py-4 text-right">
  <Button variant="ghost" size="icon" onClick={() => openEdit(o)}><Edit className="w-4 h-4" /></Button>

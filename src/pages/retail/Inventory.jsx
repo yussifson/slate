@@ -73,6 +73,8 @@ export default function Inventory() {
  supplierName: d.supplierId ? (suppliers.find(s => s.id === d.supplierId)?.name || 'Unknown') : (d.supplier || ''),
  expiryDate: d.expiryDate || '',
  status: getStatus(quantity, reorderLevel),
+ createdBy: r.created_by || 'System',
+ createdAt: r.created_at || new Date().toISOString()
 };
 });
 
@@ -266,6 +268,7 @@ export default function Inventory() {
  <th className="px-5 py-3 text-right text-xs font-bold text-muted-foreground uppercase">{t("cost", "Cost")}</th>
  <th className="px-5 py-3 text-center text-xs font-bold text-muted-foreground uppercase">{t("qty_reorder", "Qty / Reorder")}</th>
  <th className="px-5 py-3 text-center text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</th>
+ <th className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Added By</th>
  <th className="px-5 py-3 text-right text-xs font-bold text-muted-foreground uppercase">{t("actions", "Actions")}</th>
  </tr>
  </thead>
@@ -306,6 +309,10 @@ export default function Inventory() {
  </span>
  )}
  </div>
+ </td>
+ <td className="px-5 py-4">
+ <p className="text-sm font-medium text-card-foreground">{item.createdBy}</p>
+ <p className="text-xs text-muted-foreground">{new Date(item.createdAt).toLocaleDateString()}</p>
  </td>
  <td className="px-5 py-4 text-right">
  <DropdownMenu>
@@ -383,13 +390,17 @@ export default function Inventory() {
  <div className="col-span-1 font-semibold text-muted-foreground">{t("expiry_date", "Expiry Date")}</div>
  <div className="col-span-2">{selectedItem.expiryDate || '—'}</div>
  </div>
- <div className="grid grid-cols-3 gap-4">
+ <div className="grid grid-cols-3 gap-4 border-b pb-4">
  <div className="col-span-1 font-semibold text-muted-foreground">{t("status", "Status")}</div>
  <div className="col-span-2">
  <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[selectedItem.status] || 'bg-muted'}`}>
  {selectedItem.status}
  </span>
  </div>
+ </div>
+ <div className="grid grid-cols-3 gap-4">
+ <div className="col-span-1 font-semibold text-muted-foreground">Added By</div>
+ <div className="col-span-2">{selectedItem.createdBy} on {new Date(selectedItem.createdAt).toLocaleDateString()}</div>
  </div>
  </div>
  )}

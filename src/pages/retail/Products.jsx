@@ -29,7 +29,9 @@ export default function Products() {
  price: parseFloat(r.data?.price) || 0,
  stock: parseInt(r.data?.stock) || 0,
  status: r.data?.stock > 0 ? 'In Stock' : 'Out of Stock',
- supplierId: r.data?.supplierId || ''
+ supplierId: r.data?.supplierId || '',
+ createdBy: r.created_by || 'System',
+ createdAt: r.created_at || new Date().toISOString()
 }));
 
  const [search, setSearch] = useState('');
@@ -131,6 +133,7 @@ export default function Products() {
  <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Stock</th>
  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Supplier</th>
  <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Status</th>
+ <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Added By</th>
  <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Actions</th>
  </tr>
  </thead>
@@ -147,6 +150,10 @@ export default function Products() {
  <td className="px-6 py-4 text-muted-foreground text-xs">{suppliers.find(s => s.id === p.supplierId)?.name || 'None'}</td>
  <td className="px-6 py-4 text-center">
  <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${p.stock > 0 ? 'bg-slate-100 text-primary/90' : 'bg-red-100 text-red-700'}`}>{p.status}</span>
+ </td>
+ <td className="px-6 py-4">
+ <p className="text-sm font-medium text-card-foreground">{p.createdBy}</p>
+ <p className="text-xs text-muted-foreground">{new Date(p.createdAt).toLocaleDateString()}</p>
  </td>
  <td className="px-6 py-4 text-right">
  <Button variant="ghost" size="icon" onClick={() => openEdit(p)}><Edit className="w-4 h-4" /></Button>
