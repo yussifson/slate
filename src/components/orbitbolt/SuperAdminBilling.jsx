@@ -16,8 +16,6 @@ export default function SuperAdminBilling({ title = 'Super Admin Billing Center'
  const queryClient = useQueryClient();
  const [activeTab, setActiveTab] = useState('dashboard');
  
-  const [activeTab, setActiveTab] = useState('dashboard');
-
  return (
   <div className="flex flex-col md:flex-row h-full bg-background font-sans overflow-hidden">
   
