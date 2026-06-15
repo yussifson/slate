@@ -2,10 +2,12 @@ import React, { createContext, useState, useContext, useEffect, useRef, useCallb
 import { powerSync } from "@/api/PowerSyncConnector";
 import { supabase } from "@/api/supabaseClient";
 import { getSubdomainAndBase } from './domainUtils';
+import { useImpersonation } from './ImpersonationContext';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const { impersonatedCompany } = useImpersonation();
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
@@ -445,16 +447,33 @@ export const AuthProvider = ({ children }) => {
         console.error("Failed to fetch available workspaces:", e);
       }
 
-      const newUser = { 
+      let newUser = { 
         ...sessionUser, 
         ...profile, 
-        role: ['super_admin', 'admin'].includes(profile?.role) ? profile.role : (staffRecord?.role || profile?.role || 'lawyer'),
+        companies: companyData,
+        availableCompanies: availableCompanies
+      };
+      
+      if (impersonatedCompany) {
+        newUser = {
+          ...newUser,
+          company_id: impersonatedCompany.id,
+          company_name: impersonatedCompany.name,
+          role: 'company_admin', // Treat them as admin of this firm
+          is_impersonating: true,
+          companies: impersonatedCompany
+        };
+      }
+
+      newUser = { 
+        ...newUser,
+        role: ['super_admin', 'admin'].includes(newUser?.role) ? newUser.role : (staffRecord?.role || newUser?.role || 'lawyer'),
         company_logo_url: companyData?.logo_url || null,
-        company_name: companyData?.name || profile?.company_name || sessionUser.user_metadata?.company_name || "Slate",
-        company_industry: profile?.industry_type || companyData?.industry_type || 'law',
+        company_name: companyData?.name || newUser?.company_name || sessionUser.user_metadata?.company_name || "Slate",
+        company_industry: newUser?.industry_type || companyData?.industry_type || 'law',
         email: sessionUser.email, 
-        full_name: staffRecord?.full_name || profile?.full_name || sessionUser.user_metadata?.full_name || "Admin",
-        avatar_url: sessionUser.user_metadata?.avatar_url || profile?.avatar_url || null,
+        full_name: staffRecord?.full_name || newUser?.full_name || sessionUser.user_metadata?.full_name || "Admin",
+        avatar_url: sessionUser.user_metadata?.avatar_url || newUser?.avatar_url || null,
         subscription_plan: companyData?.subscription_plan || 'starter',
         subscription_status: companyData?.subscription_status || 'trial',
         company_created_date: companyData?.created_date || null,

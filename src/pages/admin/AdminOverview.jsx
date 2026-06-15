@@ -1,40 +1,18 @@
 import { useTranslation} from "react-i18next";
 import { useState, useEffect} from 'react';
-import { powerSync} from "@/api/PowerSyncConnector";
+import { powerSync } from "@/api/PowerSyncConnector";
+import { useQuery } from "@powersync/react";
 import { Scale, Users, Building2, DollarSign, Loader2} from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import Companies from '@/pages/Companies';
 
 export default function AdminOverview() {
- const { t} = useTranslation();
- const [companies, setCompanies] = useState([]);
- const [profiles, setProfiles] = useState([]);
- const [cases, setCases] = useState([]);
- const [loading, setLoading] = useState(true);
+ const { t } = useTranslation();
+ const { data: companies = [], isLoading: loadingCompanies } = useQuery("SELECT * FROM companies");
+ const { data: profiles = [], isLoading: loadingProfiles } = useQuery("SELECT id FROM profiles");
+ const { data: cases = [], isLoading: loadingCases } = useQuery("SELECT id FROM industry_records WHERE record_type = 'case'");
 
- useEffect(() => {
- const fetchData = async () => {
- setLoading(true);
- try {
- const __resComp = await powerSync.execute(`SELECT * FROM companies`);
- const compData = __resComp.rows ? (__resComp.rows._array || Array.from(__resComp.rows)) : [];
- if (compData) setCompanies(compData);
-
- const __resProf = await powerSync.execute(`SELECT * FROM profiles`);
- const profData = __resProf.rows ? (__resProf.rows._array || Array.from(__resProf.rows)) : [];
- if (profData) setProfiles(profData);
-
- const __resCase = await powerSync.execute(`SELECT * FROM legal_cases`);
- const caseData = __resCase.rows ? (__resCase.rows._array || Array.from(__resCase.rows)) : [];
- if (caseData) setCases(caseData);
-} catch (err) {
- console.error("Failed to load platform stats:", err);
-} finally {
- setLoading(false);
-}
-};
- fetchData();
-}, []);
+ const loading = loadingCompanies || loadingProfiles || loadingCases;
 
  const activeFirmsCount = companies.filter(c => c.status === 'active').length;
  const totalUsersCount = profiles.length;

@@ -1,7 +1,8 @@
 import { supabase } from '@/api/supabaseClient';
 import { useTranslation } from "react-i18next";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { powerSync } from "@/api/PowerSyncConnector";
+import { useQuery } from "@powersync/react";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -12,45 +13,18 @@ import PageHeader from '@/components/shared/PageHeader';
 export default function AdminUsers() {
   const { t } = useTranslation();
   const { toast } = useToast();
-  const [profiles, setProfiles] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data: rawProfiles = [], isLoading: loadingProfiles } = useQuery("SELECT id, full_name, email, role, created_date, company_id FROM profiles ORDER BY created_date DESC LIMIT 100");
+  const { data: rawCompanies = [], isLoading: loadingCompanies } = useQuery("SELECT id, name FROM companies");
+
   const [searchQuery, setSearchQuery] = useState('');
+  const loading = loadingProfiles || loadingCompanies;
 
-  const fetchProfiles = async () => {
-    setLoading(true);
-    try {
-      const { data: profData, error: profErr } = await supabase
-        .from('profiles')
-        .select('id, full_name, email, role, created_date, company_id')
-        .order('created_date', { ascending: false })
-        .limit(100);
-
-      if (profErr) throw profErr;
-
-      const { data: compData, error: compErr } = await supabase
-        .from('companies')
-        .select('id, name');
-
-      if (compErr) throw compErr;
-
-      const joinedData = (profData || []).map(profile => ({
-        ...profile,
-        companies: {
-          name: compData?.find(c => c.id === profile.company_id)?.name || null
-        }
-      }));
-
-      setProfiles(joinedData);
-    } catch (err) {
-      toast({ title: "Failed to load users", description: err.message, variant: "destructive" });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProfiles();
-  }, []);
+  const profiles = useMemo(() => {
+    return rawProfiles.map(p => ({
+      ...p,
+      companies: { name: rawCompanies.find(c => c.id === p.company_id)?.name || null }
+    }));
+  }, [rawProfiles, rawCompanies]);
 
   const handleResetPassword = async (email) => {
     try {

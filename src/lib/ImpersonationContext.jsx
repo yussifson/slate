@@ -7,6 +7,16 @@ const STORAGE_KEY = "slate_impersonating";
 export function ImpersonationProvider({ children }) {
   const [impersonatedCompany, setImpersonatedCompany] = useState(() => {
     try {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('impersonate_token');
+      if (token) {
+        const decoded = JSON.parse(atob(token));
+        if (decoded.exp > Date.now()) {
+          sessionStorage.setItem(STORAGE_KEY, JSON.stringify(decoded));
+          window.history.replaceState({}, document.title, window.location.pathname);
+          return decoded;
+        }
+      }
       const stored = sessionStorage.getItem(STORAGE_KEY);
       return stored ? JSON.parse(stored) : null;
     } catch {
@@ -15,13 +25,24 @@ export function ImpersonationProvider({ children }) {
   });
 
   const startImpersonation = (company) => {
-    setImpersonatedCompany(company);
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(company));
+    import('@/lib/domainUtils').then(({ getSubdomainAndBase }) => {
+      const { baseDomain } = getSubdomainAndBase();
+      const token = btoa(JSON.stringify({ ...company, exp: Date.now() + 60000 }));
+      const protocol = window.location.protocol;
+      const port = window.location.port ? ':' + window.location.port : '';
+      window.location.href = `${protocol}//${company.subdomain}.${baseDomain}${port}/?impersonate_token=${token}`;
+    });
   };
 
   const stopImpersonation = () => {
     setImpersonatedCompany(null);
     sessionStorage.removeItem(STORAGE_KEY);
+    import('@/lib/domainUtils').then(({ getSubdomainAndBase }) => {
+      const { baseDomain } = getSubdomainAndBase();
+      const protocol = window.location.protocol;
+      const port = window.location.port ? ':' + window.location.port : '';
+      window.location.href = `${protocol}//${baseDomain}${port}/admin`;
+    });
   };
 
   return (

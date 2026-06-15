@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react';
 import { powerSync } from "@/api/PowerSyncConnector";
+import { useQuery } from "@powersync/react";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -18,10 +19,10 @@ export default function AdminFirms() {
   const { startImpersonation } = useImpersonation();
   const { notify } = useNotifications();
 
-  const [companies, setCompanies] = useState([]);
-  const [profiles, setProfiles] = useState([]);
-  const [cases, setCases] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data: companies = [], isLoading: loadingCompanies } = useQuery("SELECT * FROM companies");
+  const { data: profiles = [], isLoading: loadingProfiles } = useQuery("SELECT company_id FROM profiles");
+  const { data: cases = [], isLoading: loadingCases } = useQuery("SELECT company_id FROM industry_records WHERE record_type = 'case'");
+  const loading = loadingCompanies || loadingProfiles || loadingCases;
   const [searchQuery, setSearchQuery] = useState('');
 
   const [selectedCompany, setSelectedCompany] = useState(null);
@@ -40,31 +41,6 @@ export default function AdminFirms() {
   const [messageContent, setMessageContent] = useState('');
   const [sendingMessage, setSendingMessage] = useState(false);
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const __resComp = await powerSync.execute(`SELECT * FROM companies`);
-      const compData = __resComp.rows ? (__resComp.rows._array || Array.from(__resComp.rows)) : [];
-      if (compData) setCompanies(compData);
-
-      const __resProf = await powerSync.execute(`SELECT company_id FROM profiles`);
-      const profData = __resProf.rows ? (__resProf.rows._array || Array.from(__resProf.rows)) : [];
-      if (profData) setProfiles(profData);
-
-      const __resCase = await powerSync.execute(`SELECT company_id FROM industry_records WHERE record_type = 'case'`);
-      const caseData = __resCase.rows ? (__resCase.rows._array || Array.from(__resCase.rows)) : [];
-      if (caseData) setCases(caseData);
-    } catch (err) {
-      console.error("Failed to load platform stats:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const handleToggleStatus = async (company) => {
     const nextStatus = company.status === 'active' ? 'suspended' : 'active';
     try {
@@ -75,7 +51,6 @@ export default function AdminFirms() {
         await powerSync.execute(`UPDATE companies SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, company.id]);
       })();
       toast({ title: `Firm status updated`, description: `${company.name} is now ${nextStatus}.` });
-      fetchData();
     } catch (err) {
       toast({ title: "Operation failed", description: err.message, variant: "destructive" });
     }
@@ -133,7 +108,6 @@ export default function AdminFirms() {
       })();
       toast({ title: "Limits updated successfully" });
       setEditDialogOpen(false);
-      fetchData();
     } catch (err) {
       toast({ title: "Update failed", description: err.message, variant: "destructive" });
     } finally {
