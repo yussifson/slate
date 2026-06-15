@@ -1,9 +1,9 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
-import { Users, Search, Plus, Star, Trash2, MoreVertical, Eye, Edit} from 'lucide-react';
+import { Users, Search, Plus, Star, Trash2, MoreVertical, Eye, Edit, ShoppingCart} from 'lucide-react';
 import { ViewModeToggle, RetailStatCard, CustomerGridCard} from '@/components/retail/RetailViewKit';
 import { Button} from '@/components/ui/button';
-import { Link} from 'react-router-dom';
+import { Link, useNavigate} from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
 
@@ -22,6 +22,7 @@ const segmentColors = {
 
 export default function Customers() {
  const { t} = useTranslation();
+ const navigate = useNavigate();
  const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('customer');
  const mutateRecord = useMutateIndustryRecord();
  const deleteRecord = useDeleteIndustryRecord();
@@ -308,6 +309,21 @@ export default function Customers() {
  <div className="col-span-1 font-semibold text-muted-foreground">Added By</div>
  <div className="col-span-2">{selectedRecord.createdBy} on {new Date(selectedRecord.createdAt).toLocaleDateString()}</div>
  </div>
+ <div className="flex gap-3 pt-6 mt-4 border-t border-primary/20">
+    <Button 
+      onClick={() => { setIsSheetOpen(false); openEdit(selectedRecord); }} 
+      className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl"
+    >
+      <Edit className="w-4 h-4 mr-2" /> {t("edit", "Edit")}
+    </Button>
+    <Button 
+      variant="outline"
+      onClick={() => navigate('/pos', { state: { customerId: selectedRecord.id } })} 
+      className="flex-1 rounded-xl border-orange-500 text-orange-500 hover:bg-orange-50 font-bold"
+    >
+      <ShoppingCart className="w-4 h-4 mr-2" /> {t("put_order", "Put Order")}
+    </Button>
+  </div>
  </div>
  )}
  </SheetContent>

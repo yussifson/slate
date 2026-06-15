@@ -1,7 +1,7 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
 import { ShoppingCart, Search, Plus, Minus, CreditCard, X, Receipt, ScanBarcode, UserPlus, Wallet, Banknote, History, Save, ShieldAlert} from 'lucide-react';
-import { Link} from 'react-router-dom';
+import { Link, useLocation} from 'react-router-dom';
 import { useAuth} from '@/lib/AuthContext';
 import { isRetailAdmin, isRetailCashier} from '@/lib/constants';
 import { Button} from '@/components/ui/button';
@@ -39,9 +39,10 @@ export default function POS() {
  name: r.data?.name || 'Unnamed Customer'
 }));
 
+ const location = useLocation();
  const [search, setSearch] = useState('');
  const [cart, setCart] = useState([]);
- const [selectedCustomerId, setSelectedCustomerId] = useState('');
+ const [selectedCustomerId, setSelectedCustomerId] = useState(location.state?.customerId || '');
  const [promoCode, setPromoCode] = useState('');
  const [appliedPromo, setAppliedPromo] = useState(null);
 
