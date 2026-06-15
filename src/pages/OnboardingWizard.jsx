@@ -136,6 +136,7 @@ export default function OnboardingWizard() {
         await initiatePaystackSubscription({
           email: user?.email || 'user@example.com',
           amount: plan.price_monthly,
+          currency: currency,
           planName: plan.name,
           companyId: user?.company_id || user?.id || 'new_user',
           onSuccess: async (ref) => {
@@ -341,21 +342,28 @@ export default function OnboardingWizard() {
  if (activeModulesToSave) {
  localStorage.setItem(`active_modules_${companyIdToUse}`, JSON.stringify(activeModulesToSave));
  
- // Save to database for cross-device persistence
- const indPayload = {
- id: `template_${finalIndustry}`,
- company_id: companyIdToUse,
- industry: finalIndustry,
- record_type: 'onboarding_template',
- search_text: 'initial setup template applied',
- data: { applied: true, timestamp: new Date().toISOString()}
-};
+  // Save to database for cross-device persistence
+  const existingCheck = await powerSync.execute(`SELECT id FROM industry_records WHERE company_id = ? AND record_type = 'onboarding_template'`, [companyIdToUse]);
+  let recordId = crypto.randomUUID();
+  let isUpdate = false;
+  if (existingCheck.rows && existingCheck.rows.length > 0) {
+    recordId = existingCheck.rows.item(0).id;
+    isUpdate = true;
+  }
+  
+  const indPayload = {
+    id: recordId,
+    company_id: companyIdToUse,
+    industry: finalIndustry,
+    record_type: 'onboarding_template',
+    search_text: 'initial setup template applied',
+    data: { applied: true, timestamp: new Date().toISOString()}
+  };
   const indKeys = Object.keys(indPayload);
   const indVals = Object.values(indPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
   
-  const existingCheck = await powerSync.execute(`SELECT id FROM industry_records WHERE id = ?`, [indPayload.id]);
-  if (existingCheck.rows && existingCheck.rows.length > 0) {
-    await powerSync.execute(`UPDATE industry_records SET ${indKeys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [...indVals, indPayload.id]);
+  if (isUpdate) {
+    await powerSync.execute(`UPDATE industry_records SET ${indKeys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [...indVals, recordId]);
   } else {
     await powerSync.execute(`INSERT INTO industry_records (${indKeys.join(', ')}) VALUES (${indKeys.map(()=>'?').join(', ')})`, indVals);
   }
