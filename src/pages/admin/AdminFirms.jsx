@@ -4,7 +4,7 @@ import { powerSync } from "@/api/PowerSyncConnector";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Edit2, CheckCircle2, AlertOctagon, Loader2, Search, UserCheck, MessageSquare, Layers } from 'lucide-react';
+import { Edit2, CheckCircle2, AlertOctagon, Loader2, Search, UserCheck, MessageSquare, Layers, Users } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { useImpersonation } from '@/lib/ImpersonationContext';
