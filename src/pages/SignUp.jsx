@@ -14,15 +14,15 @@ export default function SignUp() {
  const { t} = useTranslation();
  const { isAuthenticated, user, isLoadingAuth} = useAuth();
  
- // Auto-redirect if already authenticated
+ // Auto-redirect if already authenticated and NOT currently registering
  useEffect(() => {
- if (!isLoadingAuth && isAuthenticated && user) {
+ if (!isLoadingAuth && isAuthenticated && user && !loading && !success) {
  if (user.role === 'student') window.location.href = '/student-portal';
  else if (user.role === 'parent') window.location.href = '/parent-portal';
  else if (user.role === 'super_admin') window.location.href = '/admin';
  else window.location.href = '/';
 }
-}, [isAuthenticated, isLoadingAuth, user]);
+}, [isAuthenticated, isLoadingAuth, user, loading, success]);
 
  const [username, setUsername] = useState('');
  const [companyName, setCompanyName] = useState('');
@@ -101,10 +101,8 @@ export default function SignUp() {
  name: companyName,
  subdomain: cleanSubdomain,
  email: email,
- industry_type: 'law',
  country: null,
  subscription_plan: urlPlan,
- market_tier: urlMarket,
  subscription_status: 'trial',
  status: 'active'
 };
@@ -137,6 +135,19 @@ export default function SignUp() {
 })();
 
  if (profError) throw profError;
+
+ // Trigger Welcome Notification
+ supabase.functions.invoke('notify-omnichannel', {
+   body: {
+     companyId: companyData.id,
+     recipientEmail: email,
+     recipientName: username,
+     title: "Welcome to Optalflow / Slate!",
+     message: "Your account has been successfully created. We're excited to have you onboard. Please complete your setup in the onboarding portal.",
+     type: 'info',
+     channels: ['in-app', 'email']
+   }
+ }).catch(err => console.error("Notification failed:", err));
 
  setSuccess("Account and WorkSlate successfully created! Redirecting to your onboarding portal...");
  
