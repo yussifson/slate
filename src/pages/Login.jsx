@@ -182,7 +182,7 @@ export default function Login() {
  // Check if user belongs to this subdomain
  const { data: profile} = await powerSync.execute('SELECT company_id, role, onboarding_completed FROM profiles WHERE id = ? LIMIT 1', [authData.user.id]).then(res => ({ data: res.rows._array[0]}));
  
- if (profile && (profile.onboarding_completed === false || profile.onboarding_completed === 0)) {
+ if (profile && !profile.onboarding_completed) {
  window.location.href = '/onboarding';
  return;
 }
@@ -227,12 +227,19 @@ export default function Login() {
  // Base domain login
  const { data: profile} = await powerSync.execute('SELECT company_id, role, onboarding_completed FROM profiles WHERE id = ? LIMIT 1', [authData.user.id]).then(res => ({ data: res.rows._array[0]}));
  
+ // 1. Strict Onboarding Check: If missing, null, false, or 0, ALWAYS send to onboarding.
+ if (!profile || !profile.onboarding_completed) {
+ window.location.href = '/onboarding';
+ return;
+ }
+ 
  // If Super Admin logs into the Base Domain, route directly to the admin command center
  if (profile?.role === 'super_admin') {
  window.location.href = '/admin';
  return;
 }
 
+ // 2. Intelligent Routing to Subdomain
  if (profile?.company_id) {
  const { data: company} = await powerSync.execute('SELECT name, subdomain FROM companies WHERE id = ? LIMIT 1', [profile.company_id]).then(res => ({ data: res.rows._array[0]}));
  const companySubdomain = company?.subdomain || company?.name?.toLowerCase().replace(/[^a-z0-9-]/g, '');
@@ -252,12 +259,8 @@ export default function Login() {
 }
 }
  
- // Fallback: send to onboarding if they don't have a company or haven't onboarded
- if (!profile?.company_id || profile?.onboarding_completed === false || profile?.onboarding_completed === 0) {
- window.location.href = '/onboarding';
- } else {
+ // 3. Fallback if they somehow have no company but ARE onboarded
  window.location.href = '/';
- }
 }
 };
 
@@ -351,7 +354,7 @@ export default function Login() {
 
  <div className="text-center mt-6">
  <span className="text-xs text-slate-500 font-medium">{t("don_t_have_an_account", "Don't have an account?")} </span>
- <a href="/signup" className="text-xs font-bold text-primary hover:underline">
+ <a href={`${getMainAppUrl()}/signup`} className="text-xs font-bold text-primary hover:underline">
  {t("create_workspace", "Create Workslate")}
  </a>
  </div>
