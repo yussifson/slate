@@ -1423,6 +1423,7 @@ export const AppSchema = new Schema({
     subscription_plans: new Table({
         id: column.text,
         name: column.text,
+        market_tier: column.text,
         paystack_plan_code: column.text,
         price_monthly: column.text,
         price_yearly: column.text,

@@ -15,6 +15,8 @@ import {
 // IMPORTANT: Add Paystack script to your index.html:
 // <script src="https://js.paystack.co/v1/inline.js"></script>
 
+import { detectMarketTier } from '@/lib/pricing';
+
 export default function UnivBilling({
  title = 'Billing & Plans',
  companyId,
@@ -33,7 +35,9 @@ export default function UnivBilling({
  const { data: availablePlans = [], isLoading: plansLoading} = useQuery({
  queryKey: ['subscription_plans'],
  queryFn: async () => {
- const __res = await powerSync.execute(`SELECT * FROM subscription_plans WHERE is_active = ? ORDER BY price_monthly ASC`, [true]);
+ const market = await detectMarketTier();
+ const currentTier = market.tier || 'global';
+ const __res = await powerSync.execute(`SELECT * FROM subscription_plans WHERE is_active = ? AND (market_tier = ? OR market_tier IS NULL) ORDER BY price_monthly ASC`, [true, currentTier]);
  const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
  const error = null;
  if (error) throw error;

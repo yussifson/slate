@@ -169,7 +169,7 @@ function TabPlanManager({ queryClient, toast}) {
 };
 
  const handleAddNew = () => {
- const newPlan = { id: 'new', name: 'New Plan', price_monthly: 0, price_yearly: 0, paystack_plan_code: '', limits: { users: 1, ai_credits_monthly: 100}, is_active: false};
+ const newPlan = { id: 'new', name: 'New Plan', price_monthly: 0, price_yearly: 0, paystack_plan_code: '', limits: { users: 1, ai_credits_monthly: 100}, is_active: false, market_tier: 'global'};
  setEditingId('new');
  setEditForm(newPlan);
 };
@@ -202,7 +202,8 @@ function TabPlanManager({ queryClient, toast}) {
  <span className="text-3xl font-black">${p.price_monthly}</span><span className="text-muted-foreground font-medium text-sm mb-1">/mo</span>
  </div>
  <div className="text-sm font-mono bg-muted px-3 py-1.5 rounded-md text-muted-foreground mb-4 truncate flex items-center gap-2">
- <LinkIcon className="w-3 h-3" /> {p.paystack_plan_code || 'No Paystack Code'}
+ <span className="px-2 py-0.5 bg-primary/10 text-primary font-bold text-[10px] rounded uppercase">{p.market_tier || 'global'}</span>
+ <LinkIcon className="w-3 h-3 ml-1" /> {p.paystack_plan_code || 'No Paystack Code'}
  </div>
  <div className="grid grid-cols-2 gap-2 text-sm border-t border-primary/40 pt-4">
  <div className="text-muted-foreground">Users Limit:</div><div className="font-bold text-right">{p.limits?.users || 'Unlmt'}</div>
@@ -220,9 +221,20 @@ function PlanEditor({ plan, setPlan, onSave, onCancel, isSaving}) {
  return (
  <div className="bg-card border-2 border-primary rounded-xl p-6 flex flex-col">
  <div className="space-y-4 mb-6 flex-1">
+ <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="text-xs font-bold uppercase text-muted-foreground">Plan Name</label>
  <input type="text" value={plan.name} onChange={e => setPlan({...plan, name: e.target.value})} className="w-full h-9 px-3 border rounded text-sm mt-1" />
+ </div>
+ <div>
+ <label className="text-xs font-bold uppercase text-muted-foreground">Market Tier</label>
+ <select value={plan.market_tier || 'global'} onChange={e => setPlan({...plan, market_tier: e.target.value})} className="w-full h-9 px-3 border rounded text-sm mt-1 bg-background">
+ <option value="global">Global</option>
+ <option value="emerging">Emerging</option>
+ <option value="community">Community</option>
+ <option value="education">Education</option>
+ </select>
+ </div>
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
