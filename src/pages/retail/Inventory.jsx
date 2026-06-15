@@ -288,7 +288,7 @@ export default function Inventory() {
  </td>
  <td className="px-5 py-4 text-muted-foreground">{item.category}</td>
  <td className="px-5 py-4 text-muted-foreground">
- {item.supplierName && item.supplierName !== 'Unknown' ? <Link to="/retail/suppliers" className="text-primary hover:underline">{item.supplierName}</Link> : '—'}
+ {item.supplierName && item.supplierName !== 'Unknown' ? <Link to="/suppliers" className="text-primary hover:underline">{item.supplierName}</Link> : '—'}
  </td>
  <td className="px-5 py-4 text-right font-bold text-card-foreground">${item.price.toFixed(2)}</td>
  <td className="px-5 py-4 text-right text-muted-foreground">${item.costPrice.toFixed(2)}</td>
@@ -371,7 +371,7 @@ export default function Inventory() {
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
  <div className="col-span-1 font-semibold text-muted-foreground">{t("supplier", "Supplier")}</div>
- <div className="col-span-2">{selectedItem.supplierName && selectedItem.supplierName !== 'Unknown' ? <Link to="/retail/suppliers" className="text-primary hover:underline">{selectedItem.supplierName}</Link> : '—'}</div>
+ <div className="col-span-2">{selectedItem.supplierName && selectedItem.supplierName !== 'Unknown' ? <Link to="/suppliers" className="text-primary hover:underline">{selectedItem.supplierName}</Link> : '—'}</div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
  <div className="col-span-1 font-semibold text-muted-foreground">{t("price", "Price")}</div>

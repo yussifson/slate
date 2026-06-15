@@ -151,7 +151,7 @@ export default function Products() {
  <td className="px-6 py-4 text-muted-foreground">{p.category}</td>
  <td className="px-6 py-4 text-right font-bold text-card-foreground">${p.price.toFixed(2)}</td>
  <td className="px-6 py-4 text-center font-medium">
- <Link to="/retail/inventory" className="text-primary hover:underline" title="Manage in Inventory">{p.stock}</Link>
+ <Link to="/retail-inventory" className="text-primary hover:underline" title="Manage in Inventory">{p.stock}</Link>
  </td>
  <td className="px-6 py-4 text-muted-foreground text-xs">{suppliers.find(s => s.id === p.supplierId)?.name || 'None'}</td>
  <td className="px-6 py-4 text-center">

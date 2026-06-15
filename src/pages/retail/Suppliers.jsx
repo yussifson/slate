@@ -197,7 +197,7 @@ export default function Suppliers() {
  <tr key={sup.id} className="hover:bg-muted/50 transition-colors">
  <td className="px-6 py-4">
  <p className="font-bold text-card-foreground flex items-center gap-2"><Truck className="w-4 h-4 text-muted-foreground"/> {sup.name}</p>
- <p className="text-xs text-muted-foreground mt-1"><Link to="/retail/inventory" className="text-primary hover:underline">{sup.category}</Link></p>
+ <p className="text-xs text-muted-foreground mt-1"><Link to="/retail-inventory" className="text-primary hover:underline">{sup.category}</Link></p>
  </td>
  <td className="px-6 py-4 font-medium text-foreground">{sup.contact}</td>
  <td className="px-6 py-4 text-muted-foreground space-y-1">
@@ -270,7 +270,7 @@ export default function Suppliers() {
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
  <div className="col-span-1 font-semibold text-muted-foreground">{t("category", "Category")}</div>
- <div className="col-span-2"><Link to="/retail/inventory" className="text-primary hover:underline">{selectedRecord.category}</Link></div>
+ <div className="col-span-2"><Link to="/retail-inventory" className="text-primary hover:underline">{selectedRecord.category}</Link></div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
  <div className="col-span-1 font-semibold text-muted-foreground">{t("contact_person", "Contact Person")}</div>

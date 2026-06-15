@@ -655,7 +655,7 @@ function PlatformRoutes() {
       <Route path="/purchase-orders" element={<RetailPurchaseOrders />} />
       <Route path="/promotions" element={<RetailPromotions />} />
       <Route path="/pos" element={<RetailPOS />} />
-      <Route path="/inventory" element={<RetailInventory />} />
+      <Route path="/retail-inventory" element={<RetailInventory />} />
       <Route path="/sales" element={<RetailSales />} />
       <Route path="/suppliers" element={<RetailSuppliers />} />
       <Route path="/retail-customers" element={<RetailCustomers />} />

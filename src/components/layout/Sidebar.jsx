@@ -198,9 +198,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  claims_adjuster: ["/", "/policies", "/claims", "/documents", "/tasks", "/chat", "/email-inbox"],
 
  // Retail / POS Roles
- supervisor: ["/retail-dashboard", "/pos", "/orders", "/inventory", "/products", "/promotions", "/clients", "/shifts", "/reports", "/tasks", "/chat", "/email-inbox"],
- cashier: ["/retail-dashboard", "/pos", "/orders", "/clients", "/loyalty", "/shifts", "/tasks"],
- inventory_manager: ["/retail-dashboard", "/inventory", "/purchase-orders", "/products", "/suppliers", "/shifts", "/tasks"],
+ supervisor: ["/retail-dashboard", "/pos", "/orders", "/retail-inventory", "/products", "/promotions", "/retail-customers", "/shifts", "/reports", "/tasks", "/chat", "/email-inbox"],
+ cashier: ["/retail-dashboard", "/pos", "/orders", "/retail-customers", "/loyalty", "/shifts", "/tasks"],
+ inventory_manager: ["/retail-dashboard", "/retail-inventory", "/purchase-orders", "/products", "/suppliers", "/shifts", "/tasks"],
  
  // Logistics Roles
  dispatcher: ["/", "/shipments", "/dispatch", "/drivers", "/routes", "/fleet", "/pickups", "/chat", "/email-inbox"],

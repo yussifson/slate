@@ -222,8 +222,8 @@ export default function Customers() {
  <p>{cust.email}</p>
  <p className="text-xs">{cust.phone}</p>
  </td>
- <td className="px-6 py-4 text-center font-medium text-card-foreground">
- <Link to="/retail/sales" className="text-primary hover:underline">{cust.orders}</Link>
+ <td className="px-6 py-4 text-center">
+ <Link to="/sales" className="text-primary hover:underline">{cust.orders}</Link>
  </td>
  <td className="px-6 py-4 text-right font-bold text-card-foreground">${cust.totalSpent.toFixed(2)}</td>
  <td className="px-6 py-4 text-center">
@@ -290,7 +290,7 @@ export default function Customers() {
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
  <div className="col-span-1 font-semibold text-muted-foreground">{t("total_orders", "Total Orders")}</div>
- <div className="col-span-2"><Link to="/retail/sales" className="text-primary hover:underline">{selectedRecord.orders}</Link></div>
+ <div className="col-span-2"><Link to="/sales" className="text-primary hover:underline">{selectedRecord.orders}</Link></div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
  <div className="col-span-1 font-semibold text-muted-foreground">{t("lifetime_spend", "Lifetime Spend")}</div>

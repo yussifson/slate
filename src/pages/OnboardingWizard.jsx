@@ -846,54 +846,77 @@ export default function OnboardingWizard() {
    </div>
  ) : (
    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-full w-full mx-auto">
-     {plans.map((p) => (
-       <div key={p.id} className={`relative flex flex-col bg-background rounded-2xl p-6 border transition-all ${p.price_monthly > 0 ? 'border-primary/20 hover:border-primary/40' : 'border-border hover:border-border/80'} shadow-none`}>
-         <div className="mb-4">
-           <h3 className="font-bold text-xl text-foreground mb-1">{p.name}</h3>
-           <div className="flex items-end gap-1 mb-2">
-             {p.price_monthly === 0 ? (
-               <span className="text-4xl font-black tracking-tight">Free</span>
-             ) : (
-               <>
-                 <span className="text-4xl font-black tracking-tight">GH₵{p.price_monthly}</span>
-                 <span className="text-muted-foreground font-medium text-sm mb-1.5">/mo</span>
-               </>
-             )}
-           </div>
-           <p className="text-sm text-muted-foreground line-clamp-2 min-h-[40px]">
-              {p.price_monthly === 0 ? "Perfect to get started and explore." : "Advanced features for growing teams."}
-           </p>
-         </div>
-         
-         <div className="flex-1 space-y-3 text-sm text-foreground mb-6">
-           <div className="flex justify-between items-center py-2 border-b border-border/40">
-             <span className="text-muted-foreground">Team Size</span>
-             <span className="font-bold">{p.limits?.users || (p.price_monthly === 0 ? 1 : 'Unlimited')}</span>
-           </div>
-           <div className="flex justify-between items-center py-2 border-b border-border/40">
-             <span className="text-muted-foreground">AI Credits</span>
-             <span className="font-bold">{p.limits?.ai_credits_monthly || (p.price_monthly === 0 ? 100 : 'Unlimited')}</span>
-           </div>
-           <div className="flex justify-between items-center py-2 border-b border-border/40">
-             <span className="text-muted-foreground">Support</span>
-             <span className="font-bold">{p.price_monthly === 0 ? 'Community' : 'Priority'}</span>
-           </div>
-         </div>
+      {plans.map((p) => {
+        const isHighlight = p.price_monthly > 0 && p.price_monthly < 500; // e.g., Professional plan highlight
+        return (
+          <div 
+            key={p.id} 
+            className={`relative flex flex-col bg-white rounded-3xl border transition-all duration-300 p-8 ${
+              isHighlight
+                ? 'border-primary shadow-[0_8px_30px_rgb(0,0,0,0.08)] md:-translate-y-2'
+                : 'border-primary/20 hover:border-primary/40'
+            }`}
+          >
+            {isHighlight && (
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest whitespace-nowrap">
+                Most popular
+              </div>
+            )}
+            
+            <div className="mb-6 pb-6 border-b border-primary/20">
+              <h3 className="font-bold text-2xl text-slate-900 mb-2 tracking-tight">{p.name}</h3>
+              <p className="text-sm text-slate-500 font-medium">
+                {p.price_monthly === 0 ? "Perfect to get started and explore." : "Advanced features for growing teams."}
+              </p>
+            </div>
+            
+            <div className="mb-8">
+              <div className="flex items-end gap-1 mb-1">
+                {p.price_monthly === 0 ? (
+                  <span className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tighter">Free</span>
+                ) : (
+                  <>
+                    <span className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tighter">GH₵{p.price_monthly}</span>
+                    <span className="text-slate-400 text-sm font-semibold mb-1.5">/ mo</span>
+                  </>
+                )}
+              </div>
+            </div>
+            
+            <div className="bg-slate-50/80 rounded-2xl p-5 border border-primary/20 mb-8 space-y-3">
+              <div className="flex justify-between items-center text-sm font-semibold">
+                <span className="text-slate-500">Team Size</span>
+                <span className="text-slate-900 text-right">{p.limits?.users || (p.price_monthly === 0 ? 1 : 'Unlimited')}</span>
+              </div>
+              <div className="flex justify-between items-center text-sm font-semibold">
+                <span className="text-slate-500">AI Credits</span>
+                <span className="text-slate-900">{p.limits?.ai_credits_monthly || (p.price_monthly === 0 ? 100 : 'Unlimited')}</span>
+              </div>
+              <div className="flex justify-between items-center text-sm font-semibold">
+                <span className="text-slate-500">Support</span>
+                <span className="text-slate-900">{p.price_monthly === 0 ? 'Community' : 'Priority'}</span>
+              </div>
+            </div>
 
-         <div className="mt-auto">
-           <Button 
-             disabled={loading}
-             onClick={() => handleSelectPlan(p)}
-             className={`w-full h-11 rounded-xl font-bold transition-all ${p.price_monthly === 0 ? 'bg-slate-100 text-slate-900 hover:bg-slate-200' : 'bg-primary text-primary-foreground hover:bg-primary/90'}`}
-           >
-             {loading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : (
-               p.price_monthly === 0 ? "Start for Free" : "Upgrade Now"
-             )}
-           </Button>
-         </div>
-       </div>
-     ))}
-   </div>
+            <div className="mt-auto">
+              <Button 
+                disabled={loading}
+                onClick={() => handleSelectPlan(p)}
+                className={`w-full py-6 text-sm rounded-2xl font-bold transition-all ${
+                  isHighlight
+                    ? 'bg-primary hover:bg-primary/90 text-white'
+                    : 'bg-white border-2 border-orange-500 text-orange-500 hover:bg-orange-50 hover:text-orange-600'
+                }`}
+              >
+                {loading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : (
+                  p.price_monthly === 0 ? "Start for Free" : "Upgrade Now"
+                )}
+              </Button>
+            </div>
+          </div>
+        );
+      })}
+    </div>
  )}
  </div>
  )}

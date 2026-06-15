@@ -260,7 +260,7 @@ export default function Sales() {
  <div key={idx} className="flex justify-between items-center bg-muted/30 p-2 rounded">
  <div>
  <div className="font-semibold">{item.name}</div>
- <div className="text-xs text-muted-foreground font-mono"><Link to="/retail/inventory" className="text-primary hover:underline">{item.sku}</Link></div>
+ <div className="text-xs text-muted-foreground font-mono"><Link to="/retail-inventory" className="text-primary hover:underline">{item.sku}</Link></div>
  </div>
  <div className="text-right">
  <div className="font-bold">${item.price.toFixed(2)}</div>
