@@ -6,7 +6,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-// Multi-Novu Fallback implementation for 'send_notification'
 const NOVU_API_KEYS = [
   Deno.env.get('NOVU_API_KEY') ?? '',
   Deno.env.get('NOVU_API_KEY_SECONDARY') ?? '',
@@ -15,7 +14,7 @@ const NOVU_API_KEYS = [
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response('ok', { headers: corsHeaders, status: 200 })
   }
 
   try {
@@ -24,17 +23,34 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    // The payload from the Supabase Master Webhook Trigger
-    const { type, table, record, old_record } = await req.json()
+    const payloadRaw = await req.json()
+    let { type, table, record, old_record } = payloadRaw
+    
+    let isResume = false;
+    let ruleToResume = null;
+    let resumeNodeId = null;
+    
+    if (payloadRaw.is_resume) {
+      isResume = true;
+      ruleToResume = payloadRaw.rule;
+      resumeNodeId = payloadRaw.next_node_id;
+      record = payloadRaw.record;
+      table = payloadRaw.table;
+    }
 
-    // 1. Fetch active automation rules for this table
-    const { data: rules, error: rulesError } = await supabaseClient
-      .from('automation_rules')
-      .select('*')
-      .eq('table_name', table)
-      .eq('is_active', true)
+    let rules = [];
+    if (!isResume) {
+      const { data, error: rulesError } = await supabaseClient
+        .from('automation_rules')
+        .select('*')
+        .eq('table_name', table)
+        .eq('is_active', true)
+      if (rulesError) throw rulesError;
+      rules = data || [];
+    } else {
+      rules = [ruleToResume];
+    }
 
-    if (rulesError) throw rulesError
     if (!rules || rules.length === 0) {
       return new Response(JSON.stringify({ message: "No rules active for this table." }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -42,93 +58,161 @@ serve(async (req) => {
       })
     }
 
-    const executedActions = []
+    const executedActions = [];
 
-    // Helper: Interpolate {{variables}} using record data
-    const interpolate = (obj) => {
+    const interpolate = (obj, context) => {
       let str = JSON.stringify(obj || {});
       str = str.replace(/\{\{(.*?)\}\}/g, (match, key) => {
-        const val = record[key.trim()] || record.data?.[key.trim()];
+        const val = context[key.trim()] || context.data?.[key.trim()];
         return val !== undefined ? String(val) : match;
       });
       return JSON.parse(str);
     }
 
-    // 2. Evaluate each rule
+    const evaluateCondition = (variable, operator, value, context) => {
+      let actual = context[variable] || context.data?.[variable];
+      if (actual === undefined) return false;
+      
+      let nActual = Number(actual);
+      let nValue = Number(value);
+      let isNum = !isNaN(nActual) && !isNaN(nValue);
+
+      switch(operator) {
+        case '==': return actual == value;
+        case '!=': return actual != value;
+        case '>': return isNum ? nActual > nValue : actual > value;
+        case '<': return isNum ? nActual < nValue : actual < value;
+        case 'contains': return String(actual).toLowerCase().includes(String(value).toLowerCase());
+        default: return false;
+      }
+    }
+
+    const logExecution = async (rule_id, company_id, status, logs) => {
+      await supabaseClient.from('automation_logs').insert({
+        rule_id, company_id, status, logs
+      });
+    }
+
     for (const rule of rules) {
       const actionType = rule.action_type;
-      const payload = interpolate(rule.action_payload || {});
-
+      const logs = [];
+      let finalStatus = 'success';
+      
       try {
-        if (actionType === 'send_notification') {
-          // Send via Novu with Multi-Account Fallback
-          let success = false;
-          let lastError = null;
-
-          for (const apiKey of NOVU_API_KEYS) {
-            try {
-              const res = await fetch('https://api.novu.co/v1/events/trigger', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `ApiKey ${apiKey}`
-                },
-                body: JSON.stringify({
-                  name: 'system-notification',
-                  to: {
-                    subscriberId: payload.recipient || record.email || 'unknown',
-                    email: payload.recipient || record.email
-                  },
-                  payload: {
-                    title: payload.title || `Alert from ${table}`,
-                    message: payload.message || `A new record was added to ${table}.`
-                  }
-                })
-              });
-
-              if (!res.ok) {
-                const errorBody = await res.text();
-                throw new Error(`Novu error: ${res.status} ${errorBody}`);
-              }
-              
-              success = true;
-              break; // Success! Break the retry loop
-            } catch (err) {
-              lastError = err;
-              console.warn(`[NOVU FALLBACK] Key failed: ${err.message}. Trying next...`);
+        if (actionType === 'flow' && rule.action_payload?.nodes) {
+          const nodes = rule.action_payload.nodes;
+          const edges = rule.action_payload.edges;
+          
+          let currentNode = null;
+          
+          if (isResume) {
+            currentNode = nodes.find(n => n.id === resumeNodeId);
+          } else {
+            currentNode = nodes.find(n => n.type === 'triggerNode');
+            if (currentNode) {
+               const nextEdge = edges.find(e => e.source === currentNode.id);
+               currentNode = nextEdge ? nodes.find(n => n.id === nextEdge.target) : null;
             }
           }
 
-          if (success) {
-            executedActions.push({ rule_id: rule.id, action: 'send_notification', status: 'success' });
-          } else {
-            executedActions.push({ rule_id: rule.id, action: 'send_notification', status: 'failed', error: lastError?.message });
+          while (currentNode) {
+            let nextEdge = null;
+            
+            if (currentNode.type === 'conditionNode') {
+              const { variable, operator, value } = currentNode.data.config || {};
+              const isTrue = evaluateCondition(variable, operator, value, record);
+              logs.push("Condition (${variable} ${operator} ${value}) evaluated to ${isTrue}");
+              
+              nextEdge = edges.find(e => e.source === currentNode.id && e.sourceHandle === (isTrue ? 'true' : 'false'));
+            } 
+            else if (currentNode.type === 'delayNode') {
+              const { amount, unit } = currentNode.data.config || {};
+              logs.push("Delaying for ${amount} ${unit}");
+              
+              const edgeOut = edges.find(e => e.source === currentNode.id);
+              if (edgeOut) {
+                let ms = 0;
+                if (unit === 'minutes') ms = amount * 60000;
+                else if (unit === 'hours') ms = amount * 3600000;
+                else if (unit === 'days') ms = amount * 86400000;
+                
+                const executeAt = new Date(Date.now() + ms).toISOString();
+                
+                await supabaseClient.from('automation_queue').insert({
+                  company_id: rule.company_id,
+                  rule_id: rule.id,
+                  payload: {
+                    is_resume: true,
+                    rule: rule,
+                    record: record,
+                    table: table,
+                    next_node_id: edgeOut.target
+                  },
+                  execute_at: executeAt,
+                  status: 'pending'
+                });
+                
+                finalStatus = 'delayed';
+                break;
+              }
+            }
+            else if (currentNode.type === 'actionNode') {
+               const actType = currentNode.data.actionType;
+               const actPayload = interpolate(currentNode.data.config?.payload || {}, record);
+               logs.push("Executing ${actType}");
+               
+               if (actType === 'send_notification') {
+                  let success = false;
+                  for (const apiKey of NOVU_API_KEYS) {
+                    try {
+                      const res = await fetch('https://api.novu.co/v1/events/trigger', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': "ApiKey ${apiKey}" },
+                        body: JSON.stringify({
+                          name: 'system-notification',
+                          to: { subscriberId: actPayload.recipient || record.email || 'unknown', email: actPayload.recipient || record.email },
+                          payload: { title: actPayload.title || "Alert from ${table}", message: actPayload.message || "A new record was added to ${table}." }
+                        })
+                      });
+                      if (res.ok) { success = true; break; }
+                    } catch (err) {}
+                  }
+                  if (!success) throw new Error("Novu failed");
+               }
+               else if (actType === 'create_task') {
+                  const { error: insertError } = await supabaseClient.from('tasks').insert({
+                    title: actPayload.title || "Task from ${table}",
+                    description: actPayload.description || "Generated by automation on ${table}",
+                    status: 'pending',
+                    company_id: rule.company_id || record.company_id || null
+                  });
+                  if (insertError) throw insertError;
+               }
+               else if (actType === 'webhook') {
+                  const response = await fetch(actPayload.url, {
+                    method: actPayload.method || 'POST',
+                    headers: actPayload.headers || { 'Content-Type': 'application/json' },
+                    body: (actPayload.method === 'GET' || actPayload.method === 'HEAD') ? undefined : JSON.stringify(actPayload.body || record)
+                  });
+                  if (!response.ok) throw new Error("Webhook HTTP status: " + response.status);
+               }
+               
+               nextEdge = edges.find(e => e.source === currentNode.id);
+            }
+            
+            if (nextEdge) {
+               currentNode = nodes.find(n => n.id === nextEdge.target);
+            } else {
+               currentNode = null;
+            }
           }
-        } 
-        else if (actionType === 'create_task') {
-          // Insert a new task
-          const { error: insertError } = await supabaseClient
-            .from('tasks')
-            .insert({
-              title: payload.title || `Task from ${table}`,
-              description: payload.description || `Generated by automation on ${table}`,
-              status: 'pending',
-              company_id: record.company_id || null
-            })
-          
-          executedActions.push({ rule_id: rule.id, action: 'create_task', status: insertError ? 'failed' : 'success', error: insertError?.message })
         }
-        else if (actionType === 'webhook') {
-          // External HTTP Request
-          const response = await fetch(payload.url, {
-            method: payload.method || 'POST',
-            headers: payload.headers || { 'Content-Type': 'application/json' },
-            body: (payload.method === 'GET' || payload.method === 'HEAD') ? undefined : JSON.stringify(payload.body || record)
-          });
-          executedActions.push({ rule_id: rule.id, action: 'webhook', status: response.ok ? 'success' : 'failed' })
-        }
+
+        executedActions.push({ rule_id: rule.id, status: finalStatus, logs });
+        await logExecution(rule.id, rule.company_id, finalStatus, logs);
       } catch (err) {
-        executedActions.push({ rule_id: rule.id, action: actionType, status: 'failed', error: err.message })
+        executedActions.push({ rule_id: rule.id, status: 'failed', error: err.message, logs });
+        await logExecution(rule.id, rule.company_id, 'failed', [...logs, "ERROR: ${err.message}" ]);
       }
     }
 

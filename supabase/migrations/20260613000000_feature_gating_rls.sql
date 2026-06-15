@@ -2,7 +2,7 @@
 -- Enforce Plan limits via RLS
 
 -- Function to check internal user limit
-CREATE OR REPLACE FUNCTION auth_check_company_users_limit(p_company_id uuid) RETURNS boolean AS $$
+CREATE OR REPLACE FUNCTION auth_check_company_users_limit(p_company_id text) RETURNS boolean AS $$
 DECLARE
     v_limit int;
     v_current_count int;
@@ -29,8 +29,8 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 DROP POLICY IF EXISTS "Insert staff record" ON public.staff_records;
 DROP POLICY IF EXISTS "Company members can insert staff records" ON public.staff_records;
 CREATE POLICY "Company members can insert staff records (Gated)" ON public.staff_records FOR INSERT WITH CHECK (
-    company_id IN (SELECT company_id::uuid FROM profiles WHERE id = auth.uid()) AND
-    auth_check_company_users_limit(company_id)
+    company_id::text IN (SELECT company_id::text FROM profiles WHERE id = auth.uid()) AND
+    auth_check_company_users_limit(company_id::text)
 );
 
 
