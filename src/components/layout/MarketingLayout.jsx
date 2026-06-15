@@ -155,9 +155,7 @@ export default function MarketingLayout({ children}) {
  const navItems = [
  { name: 'Home', path: '/', icon: Home},
  { name: 'Features', path: '/features', icon: Layers},
- { name: 'Pricing', path: '/pricing', icon: CreditCard},
- { name: 'About', path: '/about', icon: Info},
- { name: 'Contact', path: '/contact', icon: Mail}
+ { name: 'Pricing', path: '/pricing', icon: CreditCard}
  ];
 
  return (

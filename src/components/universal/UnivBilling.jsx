@@ -62,6 +62,7 @@ export default function UnivBilling({
  key: paystackPublicKey,
  email: user.email,
  amount: targetPlan.price_monthly * 100, // Paystack amount is in kobo/cents
+ currency: 'GHS', // Switched to GHS for now
  plan: targetPlan.paystack_plan_code,
  metadata: {
  custom_fields: [
