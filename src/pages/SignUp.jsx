@@ -14,16 +14,6 @@ export default function SignUp() {
  const { t} = useTranslation();
  const { isAuthenticated, user, isLoadingAuth} = useAuth();
  
- // Auto-redirect if already authenticated and NOT currently registering
- useEffect(() => {
- if (!isLoadingAuth && isAuthenticated && user && !loading && !success) {
- if (user.role === 'student') window.location.href = '/student-portal';
- else if (user.role === 'parent') window.location.href = '/parent-portal';
- else if (user.role === 'super_admin') window.location.href = '/admin';
- else window.location.href = '/';
-}
-}, [isAuthenticated, isLoadingAuth, user, loading, success]);
-
  const [username, setUsername] = useState('');
  const [companyName, setCompanyName] = useState('');
  const [subdomain, setSubdomain] = useState('');
@@ -33,6 +23,16 @@ export default function SignUp() {
  const [error, setError] = useState('');
  const [success, setSuccess] = useState('');
  const [loading, setLoading] = useState(false);
+
+ // Auto-redirect if already authenticated and NOT currently registering
+ useEffect(() => {
+ if (!isLoadingAuth && isAuthenticated && user && !loading && !success) {
+ if (user.role === 'student') window.location.href = '/student-portal';
+ else if (user.role === 'parent') window.location.href = '/parent-portal';
+ else if (user.role === 'super_admin') window.location.href = '/admin';
+ else window.location.href = '/';
+}
+}, [isAuthenticated, isLoadingAuth, user, loading, success]);
 
  // Disconnect Auth Pages from Dashboard Theme Switcher
  useEffect(() => {
