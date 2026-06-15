@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, Search, Wand2, Zap, Save, Trash2, Edit3, 
-  Settings, Bot, ArrowRight, Database, Webhook, CheckSquare, X, Mail
+  Settings, Bot, ArrowRight, Database, Webhook, CheckSquare, X, Mail, GitBranch, Clock
 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
@@ -76,10 +76,53 @@ const ActionNode = ({ data }) => {
   );
 };
 
+
+const ConditionNode = ({ data }) => {
+  return (
+    <div className="bg-white dark:bg-slate-900 border-2 border-amber-500 rounded-xl shadow-lg w-64 overflow-hidden relative">
+      <Handle type="target" position={Position.Left} className="w-3 h-3 bg-amber-500 border-2 border-white" />
+      <div className="bg-amber-500/10 px-4 py-2 border-b border-amber-500/20 flex items-center gap-2">
+        <GitBranch className="w-4 h-4 text-amber-500" />
+        <span className="text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider">Condition</span>
+      </div>
+      <div className="p-4 flex flex-col gap-2">
+        <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+          {data.label || 'If / Else'}
+        </span>
+      </div>
+      <Handle type="source" position={Position.Right} id="true" style={{ top: '30%' }} className="w-3 h-3 bg-emerald-500 border-2 border-white" />
+      <div className="absolute right-[-24px] top-[22%] text-[10px] font-bold text-emerald-500">TRUE</div>
+      <Handle type="source" position={Position.Right} id="false" style={{ top: '70%' }} className="w-3 h-3 bg-rose-500 border-2 border-white" />
+      <div className="absolute right-[-28px] top-[62%] text-[10px] font-bold text-rose-500">FALSE</div>
+    </div>
+  );
+};
+
+const DelayNode = ({ data }) => {
+  return (
+    <div className="bg-white dark:bg-slate-900 border-2 border-blue-500 rounded-xl shadow-lg w-64 overflow-hidden">
+      <Handle type="target" position={Position.Left} className="w-3 h-3 bg-blue-500 border-2 border-white" />
+      <div className="bg-blue-500/10 px-4 py-2 border-b border-blue-500/20 flex items-center gap-2">
+        <Clock className="w-4 h-4 text-blue-500" />
+        <span className="text-xs font-bold text-blue-700 dark:text-blue-400 uppercase tracking-wider">Delay</span>
+      </div>
+      <div className="p-4 flex flex-col gap-2">
+        <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+          {data.label || 'Wait'}
+        </span>
+      </div>
+      <Handle type="source" position={Position.Right} className="w-3 h-3 bg-blue-500 border-2 border-white" />
+    </div>
+  );
+};
+
 const nodeTypes = {
   triggerNode: TriggerNode,
   actionNode: ActionNode,
+  conditionNode: ConditionNode,
+  delayNode: DelayNode,
 };
+
 
 // --- SIDEBAR DRAG COMPONENT ---
 const Sidebar = () => {
@@ -100,6 +143,29 @@ const Sidebar = () => {
         >
           <Database className="w-5 h-5 text-indigo-500" />
           <span className="text-sm font-medium">Record Created</span>
+        </div>
+      </div>
+
+      
+      <div>
+        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Logic</h3>
+        <div className="space-y-2">
+          <div 
+            className="bg-white dark:bg-slate-800 border border-amber-200 dark:border-amber-900/50 p-3 rounded-lg flex items-center gap-3 cursor-grab hover:border-amber-400 hover:shadow-md transition-all"
+            onDragStart={(event) => onDragStart(event, 'conditionNode')}
+            draggable
+          >
+            <GitBranch className="w-5 h-5 text-amber-500" />
+            <span className="text-sm font-medium">Condition (If/Else)</span>
+          </div>
+          <div 
+            className="bg-white dark:bg-slate-800 border border-blue-200 dark:border-blue-900/50 p-3 rounded-lg flex items-center gap-3 cursor-grab hover:border-blue-400 hover:shadow-md transition-all"
+            onDragStart={(event) => onDragStart(event, 'delayNode')}
+            draggable
+          >
+            <Clock className="w-5 h-5 text-blue-500" />
+            <span className="text-sm font-medium">Delay</span>
+          </div>
         </div>
       </div>
 
@@ -131,6 +197,49 @@ const Sidebar = () => {
             <span className="text-sm font-medium">HTTP Webhook</span>
           </div>
         </div>
+      </div>
+    </div>
+  );
+};
+
+
+const ExecutionLogs = ({ companyId }) => {
+  const { data: logs = [], isLoading } = useQuery({
+    queryKey: ['automation_logs', companyId],
+    queryFn: async () => {
+      const { data, error } = await base44.supabase.from('automation_logs').select(`
+        *,
+        automation_rules (table_name, action_type)
+      `).order('created_at', { ascending: false }).limit(50);
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!companyId
+  });
+
+  if (isLoading) return <div className="py-10 text-center">Loading logs...</div>;
+
+  return (
+    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border p-6">
+      <h3 className="text-lg font-bold mb-4">Recent Executions</h3>
+      <div className="space-y-4">
+        {logs.map(log => (
+          <div key={log.id} className="border-b border-border pb-4 last:border-0 flex items-start justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <Badge variant={log.status === 'success' ? 'default' : log.status === 'delayed' ? 'secondary' : 'destructive'}>
+                  {log.status.toUpperCase()}
+                </Badge>
+                <span className="text-sm font-semibold">{log.automation_rules?.table_name}</span>
+                <span className="text-xs text-muted-foreground">{new Date(log.created_at).toLocaleString()}</span>
+              </div>
+              <div className="text-xs font-mono bg-slate-100 dark:bg-slate-800 p-2 rounded mt-2">
+                {Array.isArray(log.logs) ? log.logs.join(' -> ') : 'No logs recorded.'}
+              </div>
+            </div>
+          </div>
+        ))}
+        {logs.length === 0 && <p className="text-muted-foreground">No execution logs found.</p>}
       </div>
     </div>
   );
@@ -311,15 +420,14 @@ export default function Automations() {
   const handleSaveAutomation = async () => {
     // Basic validation: need at least 1 trigger and 1 action connected
     const trigger = nodes.find(n => n.type === 'triggerNode');
-    const action = nodes.find(n => n.type === 'actionNode');
     
-    if (!trigger || !action || edges.length === 0) {
-      toast.error("Please connect a Trigger to an Action.");
+    if (!trigger || edges.length === 0) {
+      toast.error("Please connect a Trigger to at least one Node.");
       return;
     }
 
-    if (!trigger.data.config.tableName) {
-      toast.error("Please configure the Trigger table name.");
+    if (!trigger.data.config?.tableName) {
+      toast.error("Please configure the Trigger event.");
       return;
     }
 
@@ -327,10 +435,9 @@ export default function Automations() {
       const payload = {
         company_id: companyId,
         table_name: trigger.data.config.tableName,
-        action_type: action.data.actionType,
-        action_payload: action.data.config.payload || {},
+        action_type: 'flow',
+        action_payload: { nodes, edges },
         is_active: true,
-        // Store flow state for visual builder to reload later
         conditions: { flowData: { nodes, edges } } 
       };
 
@@ -627,7 +734,17 @@ export default function Automations() {
                         </div>
                       </motion.div>
                     )}
-                  </AnimatePresence>
+                    {mode === 'logs' && (
+              <motion.div
+                key="logs"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+              >
+                <ExecutionLogs companyId={companyId} />
+              </motion.div>
+            )}
+          </AnimatePresence>
                 </div>
 
                 {/* Draggable Sidebar */}
@@ -635,7 +752,17 @@ export default function Automations() {
               </ReactFlowProvider>
             </motion.div>
           )}
-        </AnimatePresence>
+          {mode === 'logs' && (
+              <motion.div
+                key="logs"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+              >
+                <ExecutionLogs companyId={companyId} />
+              </motion.div>
+            )}
+          </AnimatePresence>
       </div>
     </div>
   );
