@@ -83,15 +83,15 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
       // For now, let's just create the room.
 
       await (async () => {
-        const _p = {
+        const _payload = {
         room_type: isGroup ? 'group' : 'direct',
         name: isGroup ? groupName : null,
         created_by: user.id,
         company_id: companyId
       };
-        const _k = Object.keys(_p);
-        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-        await powerSync.execute(`INSERT INTO chat_rooms (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+        const _keys = Object.keys(_payload);
+        const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`INSERT INTO chat_rooms (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
       })();
       const room = null;
       const roomErr = null.select().single();
@@ -100,15 +100,15 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
 
       // Add self
       await (async () => {
-        const _p = {
+        const _payload = {
         room_id: room.id,
         user_id: user.id,
         role: 'admin'
       };
-        const _k = Object.keys(_p);
-        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-        const _pl = _k.map(()=>'?').join(', ');
-        await powerSync.execute(`INSERT INTO chat_participants (${_k.join(', ')}) VALUES (${_pl})`, _v);
+        const _keys = Object.keys(_payload);
+        const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _plhdr = _keys.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO chat_participants (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals);
       })();
 
       const selectedRecords = [...staff, ...clients].filter((r) => selectedUsers.includes(r.id));
@@ -176,11 +176,11 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
       }
 
       const { error: participantsError } = await (async () => {
-        const _p = participantInserts;
-        const _k = Object.keys(_p);
-        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-        const _pl = _k.map(()=>'?').join(', ');
-        await powerSync.execute(`INSERT INTO chat_participants (${_k.join(', ')}) VALUES (${_pl})`, _v);
+        const _payload = participantInserts;
+        const _keys = Object.keys(_payload);
+        const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _plhdr = _keys.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO chat_participants (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals);
       })();
       if (participantsError) throw participantsError;
 

@@ -36,14 +36,14 @@ export default function SuperAdminDashboard() {
  
  // Link the current user's profile to the new company
  if (user?.id) {
- const _p = {
+ const _payload = {
  company_id: created.id,
  company_name: created.name
 };
  if (user?.role !== 'super_admin') {
- _p.role = "company_admin";
+ _payload.role = "company_admin";
 }
- await base44.entities.Profile.update(user.id, _p);
+ await base44.entities.Profile.update(user.id, _payload);
  // Immediately refresh the Auth context so the rest of the app gets the new company_id
  await refreshUser();
 }

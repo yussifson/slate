@@ -114,10 +114,10 @@ export default function GenericModulePage({ title: propTitle, description: propD
  setIsSavingSettings(true);
  try {
  (async () => {
- const _p = { visibility, shared_with: sharedWith};
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`UPDATE module_definitions SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, moduleDef.id]);
+ const _payload = { visibility, shared_with: sharedWith};
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`UPDATE module_definitions SET ${_keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._vals, moduleDef.id]);
 })();
  const error = null;
  
@@ -138,7 +138,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
  // Clone module as draft
  const newModuleId = crypto.randomUUID();
  await (async () => {
- const _p = {
+ const _payload = {
  id: newModuleId,
  company_id: targetCompanyId,
  name: moduleDef.name,
@@ -149,10 +149,10 @@ export default function GenericModulePage({ title: propTitle, description: propD
  is_active: 'true',
  created_at: new Date().toISOString()
 };
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const _pl = _k.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO module_definitions (${_k.join(', ')}) VALUES (${_pl})`, _v);
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ const _plhdr = _keys.map(()=>'?').join(', ');
+ await powerSync.execute(`INSERT INTO module_definitions (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals);
 })();
 
  // Clone fields
@@ -168,7 +168,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
  created_at: new Date().toISOString()
 }));
  if (newFields.length > 0) {
- await (async () => { let _p = newFields; if (Array.isArray(_p)) _p = _p[0]; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); const _pl = _k.map(()=>'?').join(', '); await powerSync.execute(`INSERT INTO field_definitions (${_k.join(', ')}) VALUES (${_pl})`, _v);})();
+ await (async () => { let _payload = newFields; if (Array.isArray(_payload)) _payload = _payload[0]; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' ? JSON.stringify(v) : v); const _plhdr = _keys.map(()=>'?').join(', '); await powerSync.execute(`INSERT INTO field_definitions (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals);})();
 }
 }
 }

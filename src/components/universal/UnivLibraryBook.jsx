@@ -55,15 +55,15 @@ export default function UnivLibraryBook() {
  const handleSubmit = async (e) => {
  e.preventDefault();
  if (editingId) {
- const { error} = await (async () => { const _p = { ...formData, company_id: companyId}; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_librarybooks SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]); return { error: null};})();
+ const { error} = await (async () => { const _payload = { ...formData, company_id: companyId}; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_librarybooks SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editingId]); return { error: null};})();
  if (error) console.error('Error updating:', error);
 } else {
  const { error} = await (async () => {
- const _p = { ...formData, id: crypto.randomUUID(), company_id: companyId};
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const _pl = _k.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO univ_librarybooks (${_k.join(', ')}) VALUES (${_pl})`, _v); return { error: null};})();
+ const _payload = { ...formData, id: crypto.randomUUID(), company_id: companyId};
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ const _plhdr = _keys.map(()=>'?').join(', ');
+ await powerSync.execute(`INSERT INTO univ_librarybooks (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals); return { error: null};})();
  if (error) console.error('Error inserting:', error);
 }
  

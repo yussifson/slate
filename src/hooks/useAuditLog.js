@@ -8,7 +8,7 @@ export function useLogActivity() {
   return useMutation({
     mutationFn: async ({ action, recordType, recordId, changes }) => {
       const error = await (async () => {
-        const _p = {
+        const _payload = {
           user_id: user?.id,
           user_email: user?.email,
           action,
@@ -17,10 +17,10 @@ export function useLogActivity() {
           changes: changes || {},
           created_at: new Date().toISOString()
         };
-        const _k = Object.keys(_p);
-        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _keys = Object.keys(_payload);
+        const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         try {
-          await powerSync.execute(`INSERT INTO audit_logs (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+          await powerSync.execute(`INSERT INTO audit_logs (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
           return null;
         } catch(e) { return e; }
       })();

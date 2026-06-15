@@ -442,17 +442,17 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  p.page_name === renameData.currentName ? { ...p, page_name: renameData.newName} : p
  );
  await (async () => {
- const _p = { data: { ...orbitBuildData, pages: updatedPages}};
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`UPDATE industry_records SET ${_k.map(k=>k+' = ?').join(', ')} WHERE company_id = ? AND industry = 'orbit_build' AND record_type = 'workspace_config'`, [..._v, companyId]);
+ const _payload = { data: { ...orbitBuildData, pages: updatedPages}};
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`UPDATE industry_records SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE company_id = ? AND industry = 'orbit_build' AND record_type = 'workspace_config'`, [..._vals, companyId]);
 })();
  // Invalidate to refresh sidebar
  queryClient.invalidateQueries(['orbit_build_config', companyId]);
 }
 } else {
  setDynamicModules(prev => prev.map(m => m.id === renameData.id ? { ...m, name: renameData.newName} : m));
- await (async () => { const _p = {name: renameData.newName}; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE module_definitions SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, renameData.id]);})();
+ await (async () => { const _payload = {name: renameData.newName}; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE module_definitions SET ${_keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._vals, renameData.id]);})();
 }
  setRenameData(null);
 } else {
@@ -463,7 +463,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  const handleTogglePublish = async (id, currentStatus) => {
  const newStatus = currentStatus === 'published' ? 'draft' : 'published';
  setDynamicModules(prev => prev.map(m => m.id === id ? { ...m, status: newStatus} : m));
- await (async () => { const _p = {status: newStatus}; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE module_definitions SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, id]);})();
+ await (async () => { const _payload = {status: newStatus}; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE module_definitions SET ${_keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._vals, id]);})();
 };
 
  const renderNavContent = (collapsed) => (

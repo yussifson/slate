@@ -140,22 +140,22 @@ export default function OnboardingWizard() {
  let newCompData = null;
 
  while (!insertSuccess && attempt < 3) {
- await (async () => {
- const _p = {
- name: cName,
- subdomain: finalSubdomain,
- email: user.email,
- industry_type: finalIndustry || 'law',
- country: country,
- currency: currency,
- subscription_plan: 'starter',
- subscription_status: 'trial',
- status: 'active'
-};
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO companies (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
-})();
+  await (async () => {
+    const compPayload = {
+      name: cName,
+      subdomain: finalSubdomain,
+      email: user.email,
+      industry_type: finalIndustry || 'law',
+      country: country,
+      currency: currency,
+      subscription_plan: 'starter',
+      subscription_status: 'trial',
+      status: 'active'
+    };
+    const compKeys = Object.keys(compPayload);
+    const compVals = Object.values(compPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+    await powerSync.execute(`INSERT INTO companies (${compKeys.join(', ')}) VALUES (${compKeys.map(()=>'?').join(', ')})`, compVals);
+  })();
  const __resComp = await powerSync.execute(`SELECT * FROM companies WHERE subdomain = ?`, [finalSubdomain]);
  const newComp = __resComp.rows && __resComp.rows.length > 0 ? __resComp.rows.item(0) : null;
  const newCompErr = null;
@@ -180,19 +180,19 @@ export default function OnboardingWizard() {
  companyIdToUse = newCompData.id;
 }
 
- const _p = {
+ const profPayload = {
  full_name: step1Data.fullName,
  company_id: companyIdToUse,
  company_name: step1Data.companyName
 };
  
  if (user?.role !== 'super_admin') {
- _p.role = 'admin'; // Founder/Admin role
+ profPayload.role = 'admin'; // Founder/Admin role
 }
 
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`UPDATE profiles SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, user.id]);
+ const profKeys = Object.keys(profPayload);
+ const profVals = Object.values(profPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`UPDATE profiles SET ${profKeys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [...profVals, user.id]);
  const profErr = null;
  
  if (profErr) throw profErr;
@@ -205,15 +205,15 @@ export default function OnboardingWizard() {
 }
 
  await (async () => {
- const _p = {
+ const updCompPayload = {
  industry_type: finalIndustry,
  country: country,
  currency: currency,
  status: 'active'
 };
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`UPDATE companies SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, companyIdToUse]);
+ const updCompKeys = Object.keys(updCompPayload);
+ const updCompVals = Object.values(updCompPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`UPDATE companies SET ${updCompKeys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [...updCompVals, companyIdToUse]);
 })();
  const compError = null;
 
@@ -229,10 +229,10 @@ export default function OnboardingWizard() {
  department: 'Operations'
 }));
  await (async () => {
- for (const _p of staffInserts) {
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO staff_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+ for (const staffPayload of staffInserts) {
+ const staffKeys = Object.keys(staffPayload);
+ const staffVals = Object.values(staffPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`INSERT INTO staff_records (${staffKeys.join(', ')}) VALUES (${staffKeys.map(()=>'?').join(', ')})`, staffVals);
 }
 })();
 }
@@ -240,15 +240,15 @@ export default function OnboardingWizard() {
  // 3. Create first client and case
  if (clientName && caseTitle) {
  await (async () => {
- const _p = {
+ const clientPayload = {
  company_id: companyIdToUse,
  name: clientName,
  email: clientEmail || `${clientName.toLowerCase().replace(/[^a-z0-9]/g, '')}@example.com`,
  status: 'active'
 };
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO clients (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+ const clientKeys = Object.keys(clientPayload);
+ const clientVals = Object.values(clientPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`INSERT INTO clients (${clientKeys.join(', ')}) VALUES (${clientKeys.map(()=>'?').join(', ')})`, clientVals);
 })();
  const __resC = await powerSync.execute(`SELECT * FROM clients WHERE company_id = ? AND name = ?`, [companyIdToUse, clientName]);
  const clientData = __resC.rows && __resC.rows.length > 0 ? __resC.rows.item(0) : null;
@@ -256,15 +256,15 @@ export default function OnboardingWizard() {
 
  if (!clientError && clientData) {
  await (async () => {
- const _p = {
+ const casePayload = {
  company_id: companyIdToUse,
  title: "Example Contract Review",
  client_name: "Acme Corp",
  status: "Open"
 };
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO legal_cases (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+ const caseKeys = Object.keys(casePayload);
+ const caseVals = Object.values(casePayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`INSERT INTO legal_cases (${caseKeys.join(', ')}) VALUES (${caseKeys.map(()=>'?').join(', ')})`, caseVals);
 })();
 }
 }
@@ -309,7 +309,7 @@ export default function OnboardingWizard() {
  
  // Save to database for cross-device persistence
  await (async () => {
- const _p = {
+ const indPayload = {
  id: `template_${step2Data.industry}`,
  company_id: companyIdToUse,
  industry: step2Data.industry,
@@ -317,29 +317,29 @@ export default function OnboardingWizard() {
  search_text: 'initial setup template applied',
  data: { applied: true, timestamp: new Date().toISOString()}
 };
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO industry_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_k.map(k=>k+' = excluded.'+k).join(', ')}`, _v);
+ const indKeys = Object.keys(indPayload);
+ const indVals = Object.values(indPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`INSERT INTO industry_records (${indKeys.join(', ')}) VALUES (${indKeys.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${indKeys.map(k=>k+' = excluded.'+k).join(', ')}`, indVals);
 })();
 } else {
  localStorage.removeItem(`active_modules_${companyIdToUse}`); // Template implies all modules
 }
  
  // Trigger Workspace Ready Notification (Novu Webhook)
- await (async () => {
-   const _p = {
-     company_id: companyIdToUse,
-     recipient_email: user?.email,
-     recipient_name: user?.user_metadata?.full_name || 'Admin',
-     title: "Your Workspace is Ready!",
-     message: `Your ${finalIndustry} workspace has been successfully created and configured. You can now access your dashboard and start managing your operations.`,
-     type: 'success',
-     is_read: false
-   };
-   const _k = Object.keys(_p);
-   const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-   await powerSync.execute(`INSERT INTO notifications (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
- })().catch(err => console.error("Notification failed:", err));
+  await (async () => {
+    const notifPayload = {
+      company_id: companyIdToUse,
+      recipient_email: user?.email,
+      recipient_name: user?.user_metadata?.full_name || 'Admin',
+      title: "Your Workspace is Ready!",
+      message: `Your ${finalIndustry} workspace has been successfully created and configured. You can now access your dashboard and start managing your operations.`,
+      type: 'success',
+      is_read: false
+    };
+    const notifKeys = Object.keys(notifPayload);
+    const notifVals = Object.values(notifPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+    await powerSync.execute(`INSERT INTO notifications (${notifKeys.join(', ')}) VALUES (${notifKeys.map(()=>'?').join(', ')})`, notifVals);
+  })().catch(err => console.error("Notification failed:", err));
 
 
  toast({ title: "Setup Complete!", description: "Welcome to your new digital workspace."});

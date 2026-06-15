@@ -158,16 +158,16 @@ export default function UnivPrescription() {
 };
 
  if (editingId) {
- const { error} = await (async () => { const _p = payload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_prescriptions SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]); return { error: null};})();
+ const { error} = await (async () => { const _payload = payload; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_prescriptions SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editingId]); return { error: null};})();
  if (error) throw error;
  toast.success('Prescription updated');
 } else {
  const { error} = await (async () => {
- const _p = payload;
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const _pl = _k.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO univ_prescriptions (${_k.join(', ')}) VALUES (${_pl})`, _v); return { error: null};})();
+ const _payload = payload;
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ const _plhdr = _keys.map(()=>'?').join(', ');
+ await powerSync.execute(`INSERT INTO univ_prescriptions (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals); return { error: null};})();
  if (error) throw error;
  toast.success('Prescription created');
 }

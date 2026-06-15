@@ -270,13 +270,13 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
       let moduleError = null;
       try {
         if (isEditing) {
-          const _k = Object.keys(moduleData);
-          const _v = Object.values(moduleData).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-          await powerSync.execute(`UPDATE module_definitions SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, id]);
+          const _keys = Object.keys(moduleData);
+          const _vals = Object.values(moduleData).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          await powerSync.execute(`UPDATE module_definitions SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, id]);
         } else {
-          const _k = Object.keys(moduleData);
-          const _v = Object.values(moduleData).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-          await powerSync.execute(`INSERT INTO module_definitions (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+          const _keys = Object.keys(moduleData);
+          const _vals = Object.values(moduleData).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          await powerSync.execute(`INSERT INTO module_definitions (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
         }
       } catch (err) {
         moduleError = err;
@@ -303,9 +303,9 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
 
         try {
           for (const field of fieldsToInsert) {
-            const _k = Object.keys(field);
-            const _v = Object.values(field).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-            await powerSync.execute(`INSERT INTO field_definitions (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+            const _keys = Object.keys(field);
+            const _vals = Object.values(field).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+            await powerSync.execute(`INSERT INTO field_definitions (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
           }
         } catch (fieldError) {
           throw fieldError;

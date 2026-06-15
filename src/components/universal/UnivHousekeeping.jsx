@@ -60,16 +60,16 @@ export default function UnivHousekeeping() {
  try {
  const payload = { ...form, company_id: companyId};
  if (editingId) {
- const { error} = await (async () => { const _p = payload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_housekeeping SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]); return { error: null};})();
+ const { error} = await (async () => { const _payload = payload; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_housekeeping SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editingId]); return { error: null};})();
  if (error) throw error;
  toast.success('Task updated');
 } else {
  const { error} = await (async () => {
- const _p = { ...payload, id: crypto.randomUUID()};
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const _pl = _k.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO univ_housekeeping (${_k.join(', ')}) VALUES (${_pl})`, _v);
+ const _payload = { ...payload, id: crypto.randomUUID()};
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ const _plhdr = _keys.map(()=>'?').join(', ');
+ await powerSync.execute(`INSERT INTO univ_housekeeping (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals);
  return { error: null};
 })();
  if (error) throw error;

@@ -97,7 +97,7 @@ export default function Board() {
 
  // Create new room record
  await (async () => {
- const _p = {
+ const _payload = {
  company_id: companyId,
  title: `${user?.full_name?.split(' ')[0] || 'User'}'s Instant Meeting`,
  daily_room_url: realUrl,
@@ -105,9 +105,9 @@ export default function Board() {
  host_id: user.id,
  status: 'active'
 };
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO video_rooms (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`INSERT INTO video_rooms (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
 })();
  const newRoom = null;
  const error = null.select().single();

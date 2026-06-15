@@ -98,7 +98,7 @@ export default function AppLayout() {
  if (!uiPrefsId) setUiPrefsId(recordId);
 
  await (async () => {
- const _p = {
+ const _payload = {
  id: recordId,
  company_id: user.company_id,
  industry: 'core',
@@ -106,7 +106,7 @@ export default function AppLayout() {
  search_text: user.email,
  data: { isAIOpen: newState}
 };
-  await supabase.from('industry_records').upsert(_p);
+  await supabase.from('industry_records').upsert(_payload);
 })();
 } catch (e) {
  console.error("Failed to save UI prefs", e);

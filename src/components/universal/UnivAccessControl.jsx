@@ -96,14 +96,14 @@ export default function UnivAccessControl() {
 }
 
  await (async () => {
- const _p = payload;
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ const _payload = payload;
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
  if (editingUserId) {
- await powerSync.execute(`UPDATE univ_accesscontrols SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingUserId]);
+ await powerSync.execute(`UPDATE univ_accesscontrols SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editingUserId]);
 } else {
- const _pl = _k.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO univ_accesscontrols (${_k.join(', ')}) VALUES (${_pl})`, _v);
+ const _plhdr = _keys.map(()=>'?').join(', ');
+ await powerSync.execute(`INSERT INTO univ_accesscontrols (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals);
 }
 })();
  const error = null;
@@ -141,14 +141,14 @@ export default function UnivAccessControl() {
  const payload = { ...roleForm, company_id: companyId};
  
  await (async () => {
- const _p = payload;
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ const _payload = payload;
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
  if (editingRoleId) {
- await powerSync.execute(`UPDATE univ_roles SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingRoleId]);
+ await powerSync.execute(`UPDATE univ_roles SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editingRoleId]);
 } else {
- const _pl = _k.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO univ_roles (${_k.join(', ')}) VALUES (${_pl})`, _v);
+ const _plhdr = _keys.map(()=>'?').join(', ');
+ await powerSync.execute(`INSERT INTO univ_roles (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals);
 }
 })();
  const error = null;

@@ -58,17 +58,17 @@ export default function UnivInventory() {
 };
  try {
  if (editingId) {
- await (async () => { const _p = { ...payload}; delete _p.status; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_inventory SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]);})();
+ await (async () => { const _payload = { ...payload}; delete _payload.status; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_inventory SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editingId]);})();
  const error = null; const data = [];
  if (error) throw error;
  toast.success('Item updated!');
 } else {
  await (async () => {
- const _p = { ...payload, id: crypto.randomUUID(), company_id: companyId, sku: form.sku || `SKU-${Math.floor(Math.random()*10000)}`};
- delete _p.status;
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO univ_inventory (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v); return { error: null};})();
+ const _payload = { ...payload, id: crypto.randomUUID(), company_id: companyId, sku: form.sku || `SKU-${Math.floor(Math.random()*10000)}`};
+ delete _payload.status;
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`INSERT INTO univ_inventory (${_keys.join(',')}) VALUES (${_keys.map(()=>'?').join(',')})`, _vals); return { error: null};})();
  const error = null;
  if (error) throw error;
  toast.success('Item added!');

@@ -16,6 +16,7 @@ export default function SuperAdminBilling({ title = 'Super Admin Billing Center'
  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [overrideCompanyId, setOverrideCompanyId] = useState('');
   
   return (
    <div className="flex flex-col md:flex-row h-full bg-background font-sans overflow-hidden">
@@ -51,8 +52,8 @@ export default function SuperAdminBilling({ title = 'Super Admin Billing Center'
 
  {activeTab === 'dashboard' && <TabDashboard />}
  {activeTab === 'plans' && <TabPlanManager queryClient={queryClient} toast={toast} />}
- {activeTab === 'customers' && <TabCustomerSubscriptions />}
- {activeTab === 'overrides' && <TabManualOverrides />}
+ {activeTab === 'customers' && <TabCustomerSubscriptions setActiveTab={setActiveTab} setOverrideCompanyId={setOverrideCompanyId} />}
+ {activeTab === 'overrides' && <TabManualOverrides initialTargetCompany={overrideCompanyId} />}
  {activeTab === 'transactions' && <TabTransactions />}
  {activeTab === 'usage' && <TabUsageMonitor />}
  {activeTab === 'webhooks' && <TabWebhooks />}
@@ -351,7 +352,7 @@ function PlanEditor({ plan, setPlan, onSave, onCancel, isSaving}) {
 // ----------------------------------------------------
 // 3. Customer Subscriptions Tab
 // ----------------------------------------------------
-function TabCustomerSubscriptions() {
+function TabCustomerSubscriptions({ setActiveTab, setOverrideCompanyId }) {
   const [search, setSearch] = useState('');
   
   const { data: customers = [], isLoading } = useQuery({
@@ -412,7 +413,9 @@ function TabCustomerSubscriptions() {
                   )}>{c.subscription_status || 'UNKNOWN'}</span>
                 </td>
                 <td className="px-6 py-4 text-muted-foreground font-mono">{c.paystack_customer_code || 'N/A'}</td>
-                <td className="px-6 py-4 text-right"><button className="text-primary hover:underline text-xs font-bold">Manage</button></td>
+                <td className="px-6 py-4 text-right">
+                  <button onClick={() => { setOverrideCompanyId(c.id); setActiveTab('overrides'); }} className="text-primary hover:underline text-xs font-bold">Manage</button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -425,9 +428,13 @@ function TabCustomerSubscriptions() {
 // ----------------------------------------------------
 // 4. Manual Overrides Tab
 // ----------------------------------------------------
-function TabManualOverrides() {
+function TabManualOverrides({ initialTargetCompany }) {
   const { toast } = useToast();
-  const [targetCompany, setTargetCompany] = useState('');
+  const [targetCompany, setTargetCompany] = useState(initialTargetCompany || '');
+
+  useEffect(() => {
+    if (initialTargetCompany) setTargetCompany(initialTargetCompany);
+  }, [initialTargetCompany]);
   const [selectedPlan, setSelectedPlan] = useState('');
   const [bonusCredits, setBonusCredits] = useState(0);
   const [isApplying, setIsApplying] = useState(false);

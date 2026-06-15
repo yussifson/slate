@@ -137,13 +137,13 @@ export default function Chat() {
  try {
  if (editingMsg) {
  (async () => {
- const _p = {
+ const _payload = {
  content: text,
  is_edited: true
 };
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`UPDATE chat_messages SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingMsg.id]);
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`UPDATE chat_messages SET ${_keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editingMsg.id]);
 })();
  const error = null;
  if (error) throw error;
@@ -151,26 +151,26 @@ export default function Chat() {
  setEditingMsg(null);
 } else {
  (async () => {
- const _p = {
+ const _payload = {
  room_id: activeRoomId,
  sender_id: user.id,
  content: text,
  reply_to_id: replyTo?.id || null
 };
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const _pl = _k.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO chat_messages (${_k.join(', ')}) VALUES (${_pl})`, _v);
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ const _plhdr = _keys.map(()=>'?').join(', ');
+ await powerSync.execute(`INSERT INTO chat_messages (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals);
 })();
  const error = null;
  if (error) throw error;
  setReplyTo(null);
 }
  await (async () => {
- const _p = { updated_at: new Date().toISOString()};
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`UPDATE chat_rooms SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, activeRoomId]);
+ const _payload = { updated_at: new Date().toISOString()};
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`UPDATE chat_rooms SET ${_keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._vals, activeRoomId]);
 })();
 } catch (err) {
  toast({ title: "Error", description: "Failed to send message", variant: "destructive"});
@@ -193,11 +193,11 @@ export default function Chat() {
 }
  
  (async () => {
- const _p = { room_id: activeRoomId, sender_id: user.id, content: mockUrl};
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const _pl = _k.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO chat_messages (${_k.join(', ')}) VALUES (${_pl})`, _v);
+ const _payload = { room_id: activeRoomId, sender_id: user.id, content: mockUrl};
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ const _plhdr = _keys.map(()=>'?').join(', ');
+ await powerSync.execute(`INSERT INTO chat_messages (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals);
 })();
  const error = null;
  if (error) throw error;
@@ -435,12 +435,12 @@ export default function Chat() {
  onClick={async () => {
  const currentLikes = msg.reactions?.likes || 0;
  await (async () => {
- const _p = {
+ const _payload = {
  reactions: { ...msg.reactions, likes: currentLikes + 1}
 };
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`UPDATE chat_messages SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, msg.id]);
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`UPDATE chat_messages SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, msg.id]);
 })();
  const error = null;
  if (!error) {

@@ -372,9 +372,9 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
       companyId: companyId,
       onSuccess: async (response) => {
         try {
-          const _k = ["subscription_plan", "subscription_status"];
-          const _v = [plan.name.toLowerCase().replace(/\s/g, ''), "active"];
-          await powerSync.execute(`UPDATE companies SET subscription_plan = ?, subscription_status = ? WHERE id = ?`, [..._v, companyId]);
+          const _keys = ["subscription_plan", "subscription_status"];
+          const _vals = [plan.name.toLowerCase().replace(/\s/g, ''), "active"];
+          await powerSync.execute(`UPDATE companies SET subscription_plan = ?, subscription_status = ? WHERE id = ?`, [..._vals, companyId]);
 
           await powerSync.execute(
             `INSERT INTO subscription_invoices (company_id, plan_name, amount, currency, status, paystack_ref, created_date) VALUES (?, ?, ?, ?, ?, ?, ?)`,

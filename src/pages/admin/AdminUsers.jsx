@@ -44,7 +44,7 @@ export default function AdminUsers() {
       await powerSync.execute(`UPDATE ${'profiles'.replace(/['"`]/g, '')} SET ${setClause} WHERE id = ?`, [...values, userObj.id]);
       
       if (userObj.company_id) {
-        await (async () => { const _p = {email: null}; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE companies SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, userObj.company_id]);})();
+        await (async () => { const _payload = {email: null}; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE companies SET ${_keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._vals, userObj.company_id]);})();
       }
       
       toast({ title: "Success", description: "User forced to onboard on next login" });

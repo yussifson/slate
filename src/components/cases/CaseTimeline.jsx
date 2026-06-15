@@ -41,7 +41,7 @@ export default function CaseTimeline({ caseData, user}) {
  const addMutation = useMutation({
  mutationFn: async (entry) => {
  const { data, error} = await (async () => {
- const _p = {
+ const _payload = {
  ...entry,
  case_id: caseData.id,
  case_title: caseData.title,
@@ -49,10 +49,10 @@ export default function CaseTimeline({ caseData, user}) {
  created_by: user.id,
  logged_by_name: user.name || user.email.split("@")[0]
 };
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const _pl = _k.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO case_timeline (${_k.join(', ')}) VALUES (${_pl})`, _v);
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ const _plhdr = _keys.map(()=>'?').join(', ');
+ await powerSync.execute(`INSERT INTO case_timeline (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals);
 })();
  if (error) throw error;
  return data;

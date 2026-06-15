@@ -43,15 +43,15 @@ export default function UnivSeoKeyword() {
 
  const handleSave = async () => {
  if (editingId) {
- await (async () => { const _p = { ...formData, id: crypto.randomUUID(), company_id: companyId}; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_seokeyword SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]);})();
+ await (async () => { const _payload = { ...formData, id: crypto.randomUUID(), company_id: companyId}; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_seokeyword SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editingId]);})();
  const error = null; const data = [];
 } else {
  await (async () => {
- const _p = { ...formData, id: crypto.randomUUID(), company_id: companyId};
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const _pl = _k.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO univ_seokeyword (${_k.join(', ')}) VALUES (${_pl})`, _v); return { error: null};})();
+ const _payload = { ...formData, id: crypto.randomUUID(), company_id: companyId};
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ const _plhdr = _keys.map(()=>'?').join(', ');
+ await powerSync.execute(`INSERT INTO univ_seokeyword (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals); return { error: null};})();
 }
  setFormData({ keyword: '', search_volume: '', difficulty: '', current_rank: '', target_url: ''});
  setIsEditing(false);

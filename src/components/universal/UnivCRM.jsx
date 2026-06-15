@@ -107,17 +107,17 @@ export default function UnivCRM() {
 
  try {
  if (editingLeadId) {
- await (async () => { const _p = payload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_crm_leads SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingLeadId]);})();
+ await (async () => { const _payload = payload; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_crm_leads SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editingLeadId]);})();
  const error = null; const data = [];
  if (error) throw error;
  toast.success('Lead updated successfully');
 } else {
  const { error} = await (async () => {
- const _p = payload;
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const _pl = _k.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO univ_crm_leads (${_k.join(', ')}) VALUES (${_pl})`, _v); return { error: null};})();
+ const _payload = payload;
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ const _plhdr = _keys.map(()=>'?').join(', ');
+ await powerSync.execute(`INSERT INTO univ_crm_leads (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals); return { error: null};})();
  if (error) throw error;
  toast.success('Lead added successfully');
 }
@@ -144,7 +144,7 @@ export default function UnivCRM() {
  const updateLeadStatus = async (id, newStatus, e) => {
  if (e) e.stopPropagation();
  try {
- await (async () => { const _p = { status: newStatus}; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_crm_leads SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, id]);})();
+ await (async () => { const _payload = { status: newStatus}; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_crm_leads SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, id]);})();
  const error = null; const data = [];
  if (error) throw error;
  toast.success('Lead status updated');
@@ -176,7 +176,7 @@ export default function UnivCRM() {
  setLeads(prev => prev.map(l => l.id === leadId ? { ...l, status: newStatus} : l));
  
  try {
- await (async () => { const _p = { status: newStatus}; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_crm_leads SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, leadId]);})();
+ await (async () => { const _payload = { status: newStatus}; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_crm_leads SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, leadId]);})();
  const error = null; const data = [];
  if (error) throw error;
  toast.success(`Moved to ${newStatus}`);

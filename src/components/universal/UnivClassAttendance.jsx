@@ -59,11 +59,11 @@ export default function UnivClassAttendance() {
 };
  try {
  const { error} = await (async () => {
- const _p = newRecord;
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const _pl = _k.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO univ_class_attendance (${_k.join(', ')}) VALUES (${_pl})`, _v); return { error: null};})();
+ const _payload = newRecord;
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ const _plhdr = _keys.map(()=>'?').join(', ');
+ await powerSync.execute(`INSERT INTO univ_class_attendance (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals); return { error: null};})();
  if (error) throw error;
  toast.success(`Marked as ${status}`);
 } catch (err) {

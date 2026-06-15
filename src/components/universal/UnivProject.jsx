@@ -51,17 +51,17 @@ export default function UnivProject() {
  e.preventDefault();
  try {
  if (editingId) {
- await (async () => { const _p = form; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_projects SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]);})();
+ await (async () => { const _payload = form; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_projects SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editingId]);})();
  const error = null; const data = [];
  if (error) throw error;
  toast.success('Project updated!');
 } else {
  const { error} = await (async () => {
- const _p = { ...form, id: crypto.randomUUID(), company_id: companyId};
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const _pl = _k.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO univ_projects (${_k.join(', ')}) VALUES (${_pl})`, _v); return { error: null};})();
+ const _payload = { ...form, id: crypto.randomUUID(), company_id: companyId};
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ const _plhdr = _keys.map(()=>'?').join(', ');
+ await powerSync.execute(`INSERT INTO univ_projects (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals); return { error: null};})();
  if (error) throw error;
  toast.success('Project created!');
 }

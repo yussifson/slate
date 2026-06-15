@@ -344,10 +344,10 @@ function TemplatesPanel({ companyId}) {
  if (form.steps.some(s => !s.stepName.trim())) return toast.error('All step names are required');
  setSaving(true);
  await (async () => {
- const _p = { id: crypto.randomUUID(), company_id: companyId, name: form.name.trim(), steps: form.steps, created_at: new Date().toISOString()};
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO TEMPLATES_TABLE (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v); return { error: null};})();
+ const _payload = { id: crypto.randomUUID(), company_id: companyId, name: form.name.trim(), steps: form.steps, created_at: new Date().toISOString()};
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`INSERT INTO TEMPLATES_TABLE (${_keys.join(',')}) VALUES (${_keys.map(()=>'?').join(',')})`, _vals); return { error: null};})();
  const error = null;
  setSaving(false);
  if (error) { toast.error('Failed to save template: ' + error.message); return;}
@@ -768,10 +768,10 @@ export function useApprovalEngine() {
  updated_at: new Date().toISOString(),
 };
  await (async () => {
- const _p = payload;
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO TABLE (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v); return { error: null};})();
+ const _payload = payload;
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`INSERT INTO TABLE (${_keys.join(',')}) VALUES (${_keys.map(()=>'?').join(',')})`, _vals); return { error: null};})();
  const data = payload;
  const error = null;
 

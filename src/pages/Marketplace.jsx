@@ -86,16 +86,16 @@ export default function Marketplace() {
  const newModuleId = crypto.randomUUID();
  const moduleError = await (async () => {
  try {
- const _p = {
+ const _payload = {
  company_id: companyId,
  name: module.name,
  icon: module.icon,
  color: module.color,
  is_active: true
 };
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO module_definitions (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`INSERT INTO module_definitions (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
  return null;
 } catch(e) { return e;}
 })();
@@ -122,7 +122,7 @@ export default function Marketplace() {
  order_index: f.order_index,
  created_at: new Date().toISOString()
 }));
- const { error: fieldsError} = await (async () => { let _p = fieldsToInsert; if (Array.isArray(_p)) _p = _p[0]; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); const _pl = _k.map(()=>'?').join(', '); await powerSync.execute(`INSERT INTO field_definitions (${_k.join(', ')}) VALUES (${_pl})`, _v);})();
+ const { error: fieldsError} = await (async () => { let _payload = fieldsToInsert; if (Array.isArray(_payload)) _payload = _payload[0]; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' ? JSON.stringify(v) : v); const _plhdr = _keys.map(()=>'?').join(', '); await powerSync.execute(`INSERT INTO field_definitions (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals);})();
  if (fieldsError) throw fieldsError;
 }
 

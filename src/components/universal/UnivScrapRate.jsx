@@ -49,16 +49,16 @@ const UnivScrapRate = () => {
  const handleSubmit = async (e) => {
  e.preventDefault();
  if (editId) {
- await (async () => { const _p = { ...formData, id: crypto.randomUUID(), company_id: companyId}; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editId]);})();
+ await (async () => { const _payload = { ...formData, id: crypto.randomUUID(), company_id: companyId}; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editId]);})();
  const error = null; const data = [];
  if (error) console.error('Error updating:', error);
 } else {
  const { error} = await (async () => {
- const _p = { ...formData, id: crypto.randomUUID(), company_id: companyId};
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const _pl = _k.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO (${_k.join(', ')}) VALUES (${_pl})`, _v); return { error: null};})();
+ const _payload = { ...formData, id: crypto.randomUUID(), company_id: companyId};
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ const _plhdr = _keys.map(()=>'?').join(', ');
+ await powerSync.execute(`INSERT INTO (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals); return { error: null};})();
  if (error) console.error('Error inserting:', error);
 }
  setFormData({batch_number: '', defect_count: '', total_produced: '', scrap_pct: ''});

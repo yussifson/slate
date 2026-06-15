@@ -204,10 +204,10 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
  setSessions([s]);
  setActiveId(s.id);
  (async () => {
- const _p = { id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s};
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO industry_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_k.map(k=>k+' = excluded.'+k).join(', ')}`, _v);
+ const _payload = { id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s};
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_keys.map(k=>k+' = excluded.'+k).join(', ')}`, _vals);
 })();
 }
  setIsInitialized(true);
@@ -237,12 +237,12 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
  
  if (companyId && user?.email) {
  (async () => {
- const _p = {
+ const _payload = {
  id: newS.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: newS
 };
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO industry_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_k.map(k=>k+' = excluded.'+k).join(', ')}`, _v);
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_keys.map(k=>k+' = excluded.'+k).join(', ')}`, _vals);
 })();
 }
  return newS;
@@ -694,10 +694,10 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  const s = newSession();
  if (companyId && user?.email) {
  (async () => {
- const _p = { id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s};
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO industry_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_k.map(k=>k+' = excluded.'+k).join(', ')}`, _v);
+ const _payload = { id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s};
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_keys.map(k=>k+' = excluded.'+k).join(', ')}`, _vals);
 })();
 }
  setSessions(prev => [s, ...prev]);
@@ -716,10 +716,10 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  const fresh = newSession();
  if (companyId && user?.email) {
  (async () => {
- const _p = { id: fresh.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: fresh};
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO industry_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_k.map(k=>k+' = excluded.'+k).join(', ')}`, _v);
+ const _payload = { id: fresh.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: fresh};
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_keys.map(k=>k+' = excluded.'+k).join(', ')}`, _vals);
 })();
 }
  setActiveId(fresh.id);

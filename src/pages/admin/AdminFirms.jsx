@@ -45,10 +45,10 @@ export default function AdminFirms() {
     const nextStatus = company.status === 'active' ? 'suspended' : 'active';
     try {
       (async () => {
-        const _p = { status: nextStatus };
-        const _k = Object.keys(_p);
-        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-        await powerSync.execute(`UPDATE companies SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, company.id]);
+        const _payload = { status: nextStatus };
+        const _keys = Object.keys(_payload);
+        const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`UPDATE companies SET ${_keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._vals, company.id]);
       })();
       toast({ title: `Firm status updated`, description: `${company.name} is now ${nextStatus}.` });
     } catch (err) {
@@ -96,15 +96,15 @@ export default function AdminFirms() {
     setUpdatingQuota(true);
     try {
       (async () => {
-        const _p = {
+        const _payload = {
           max_users: maxUsers,
           max_cases: maxCases,
           subscription_plan: subPlan,
           subscription_status: subStatus
         };
-        const _k = Object.keys(_p);
-        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-        await powerSync.execute(`UPDATE companies SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, selectedCompany.id]);
+        const _keys = Object.keys(_payload);
+        const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`UPDATE companies SET ${_keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._vals, selectedCompany.id]);
       })();
       toast({ title: "Limits updated successfully" });
       setEditDialogOpen(false);

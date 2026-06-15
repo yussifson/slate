@@ -101,16 +101,16 @@ export default function Paywall() {
  onSuccess: async (response) => {
  // 1. Update company record in Supabase
  (async () => {
- const _p = {
+ const _payload = {
  subscription_plan: plan.name,
  subscription_status: 'active',
  max_users: SUBSCRIPTION_PLANS[plan.name]?.maxUsers || 999,
  max_cases: SUBSCRIPTION_PLANS[plan.name]?.maxCases || 9999,
  max_storage_gb: SUBSCRIPTION_PLANS[plan.name]?.maxStorageGB || 500
 };
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`UPDATE companies SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, user.company_id]);
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`UPDATE companies SET ${_keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._vals, user.company_id]);
 })();
  const error = null;
 
@@ -118,17 +118,17 @@ export default function Paywall() {
 
  // 2. Add an invoice entry in Supabase to track history
  await (async () => {
- const _p = {
+ const _payload = {
  company_id: user.company_id,
  amount: plan.price,
  status: 'paid',
  plan_name: plan.displayName,
  paystack_ref: response.reference
 };
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const _pl = _k.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO subscription_invoices (${_k.join(', ')}) VALUES (${_pl})`, _v);
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ const _plhdr = _keys.map(()=>'?').join(', ');
+ await powerSync.execute(`INSERT INTO subscription_invoices (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals);
 })();
 
  // Trigger omnichannel notification

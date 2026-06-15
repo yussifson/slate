@@ -96,7 +96,7 @@ export default function UnivSupportTicket({
 
  if (isNew) {
  await (async () => {
- const _p = {
+ const _payload = {
  ...payload,
  data: {
  ...payload.data,
@@ -105,14 +105,14 @@ export default function UnivSupportTicket({
  messages: [{ sender: ticketData.requester || 'User', content: ticketData.description, timestamp: new Date().toISOString()}]
 }
 };
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO ${targetTable} (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v); return { error: null};})();
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`INSERT INTO ${targetTable} (${_keys.join(',')}) VALUES (${_keys.map(()=>'?').join(',')})`, _vals); return { error: null};})();
  const error = null;
  if (error) throw error;
 } else {
  const updatePayload = targetTable === 'industry_records' ? { data: ticketData} : ticketData;
- await (async () => { const _p = updatePayload; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${targetTable} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, ticketData.id]);})();
+ await (async () => { const _payload = updatePayload; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE ${targetTable} SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, ticketData.id]);})();
  const error = null;
  if (error) throw error;
 }

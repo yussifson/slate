@@ -54,7 +54,7 @@ export default function UnivContactManagement() {
  try {
  if (editingId) {
  await (async () => {
- const _p = {
+ const _payload = {
  name: form.name,
  email: form.email,
  phone: form.phone,
@@ -64,16 +64,16 @@ export default function UnivContactManagement() {
  id: crypto.randomUUID(),
  company_id: companyId
 };
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`UPDATE univ_contacts SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editingId]);
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`UPDATE univ_contacts SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editingId]);
 })();
  const error = null;
  if (error) throw error;
  toast.success('Contact updated!');
 } else {
  await (async () => {
- const _p = {
+ const _payload = {
  id: crypto.randomUUID(),
  company_id: companyId,
  name: form.name,
@@ -83,9 +83,9 @@ export default function UnivContactManagement() {
  type: form.type,
  notes: form.notes
 };
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO univ_contacts (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v); return { error: null};})();
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`INSERT INTO univ_contacts (${_keys.join(',')}) VALUES (${_keys.map(()=>'?').join(',')})`, _vals); return { error: null};})();
  const error = null;
  if (error) throw error;
  toast.success('Contact added!');

@@ -716,12 +716,12 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  const s = newSession();
  if (companyId && user?.email) {
  await (async () => {
- const _p = {
+ const _payload = {
  id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s
 };
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO industry_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_k.map(k=>k+' = excluded.'+k).join(', ')}`, _v);
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_keys.map(k=>k+' = excluded.'+k).join(', ')}`, _vals);
 })().then();
 }
  setSessions(prev => [s, ...prev]);

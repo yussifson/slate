@@ -161,7 +161,7 @@ export const AuthProvider = ({ children }) => {
 
         if (!profile) {
           // Create new profile mapped to the existing company and role
-          const _p = {
+          const _payload = {
             id: sessionUser.id,
             role: staffRecord.role || sessionUser.user_metadata?.role || 'lawyer',
             company_id: staffRecord.company_id,
@@ -171,9 +171,9 @@ export const AuthProvider = ({ children }) => {
             department: staffRecord.department || null,
             bar_number: staffRecord.bar_number || null
           };
-          const _k = Object.keys(_p);
-          const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-          await powerSync.execute(`INSERT INTO profiles (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+          const _keys = Object.keys(_payload);
+          const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          await powerSync.execute(`INSERT INTO profiles (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
           const __resNew = await powerSync.execute(`SELECT * FROM profiles WHERE id = ?`, [sessionUser.id]);
           const newProfile = __resNew.rows && __resNew.rows.length > 0 ? __resNew.rows.item(0) : null;
           const insertError = null;
@@ -195,7 +195,7 @@ export const AuthProvider = ({ children }) => {
             !profile.company_name ||
             profile.email?.toLowerCase() !== sessionUser.email?.toLowerCase()
           ) {
-                        const _p = {
+                        const _payload = {
               company_id: staffRecord.company_id,
               company_name: companyName || profile.company_name,
               email: sessionUser.email?.toLowerCase() || profile.email || null,
@@ -203,9 +203,9 @@ export const AuthProvider = ({ children }) => {
               department: staffRecord.department || null,
               bar_number: staffRecord.bar_number || null
             };
-            const _k = Object.keys(_p);
-            const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-            await powerSync.execute(`UPDATE profiles SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, sessionUser.id]);
+            const _keys = Object.keys(_payload);
+            const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+            await powerSync.execute(`UPDATE profiles SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, sessionUser.id]);
             const __resUpd = await powerSync.execute(`SELECT * FROM profiles WHERE id = ?`, [sessionUser.id]);
             const updatedProfile = __resUpd.rows && __resUpd.rows.length > 0 ? __resUpd.rows.item(0) : null;
             const updateError = null;
@@ -217,10 +217,10 @@ export const AuthProvider = ({ children }) => {
 
         if (staffRecord.id && !staffRecord.user_id) {
           await (async () => {
-        const _p = { user_id: sessionUser.id };
-        const _k = Object.keys(_p);
-        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-        await powerSync.execute(`UPDATE staff_records SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, staffRecord.id]);
+        const _payload = { user_id: sessionUser.id };
+        const _keys = Object.keys(_payload);
+        const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`UPDATE staff_records SET ${_keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._vals, staffRecord.id]);
       })();
         }
       } else if (!profile) {
@@ -241,16 +241,16 @@ export const AuthProvider = ({ children }) => {
           }
         }
 
-                const _p = {
+                const _payload = {
           id: sessionUser.id,
           role: invitedRole || 'lawyer', // Default role for net-new independent signups
           company_id: invitedCompanyId,
           company_name: null,
           email: sessionUser.email?.toLowerCase() || null
         };
-        const _k = Object.keys(_p);
-        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-        await powerSync.execute(`INSERT INTO profiles (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+        const _keys = Object.keys(_payload);
+        const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`INSERT INTO profiles (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
         const __resNew = await powerSync.execute(`SELECT * FROM profiles WHERE id = ?`, [sessionUser.id]);
         const newProfile = __resNew.rows && __resNew.rows.length > 0 ? __resNew.rows.item(0) : null;
         const insertError = null;
@@ -437,8 +437,8 @@ export const AuthProvider = ({ children }) => {
           const _cIdsArr = Array.from(cIds);
           let comps = [];
           if (_cIdsArr.length > 0) {
-            const _pl = _cIdsArr.map(()=>'?').join(',');
-            const __resC = await powerSync.execute(`SELECT id, name, subdomain FROM companies WHERE id IN (${_pl})`, _cIdsArr);
+            const _plhdr = _cIdsArr.map(()=>'?').join(',');
+            const __resC = await powerSync.execute(`SELECT id, name, subdomain FROM companies WHERE id IN (${_plhdr})`, _cIdsArr);
             comps = __resC.rows ? (__resC.rows._array || Array.from(__resC.rows)) : [];
           }
           if (comps) availableCompanies = comps;

@@ -37,10 +37,10 @@ export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSucces
 
  const error = await (async () => {
  try {
- const _p = record;
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO dynamic_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+ const _payload = record;
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`INSERT INTO dynamic_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
  return null;
 } catch(e) { return e;}
 })();

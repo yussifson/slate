@@ -96,20 +96,20 @@ export default function SignUp() {
  const urlMarket = searchParams.get('market') || 'global';
 
  // 2. Create the company
- await (async () => {
- const _p = {
- name: companyName,
- subdomain: cleanSubdomain,
- email: email,
- country: null,
- subscription_plan: urlPlan,
- subscription_status: 'trial',
- status: 'active'
-};
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO companies (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
-})();
+  await (async () => {
+    const payloadData = {
+      name: companyName,
+      subdomain: cleanSubdomain,
+      email: email,
+      country: null,
+      subscription_plan: urlPlan,
+      subscription_status: 'trial',
+      status: 'active'
+    };
+    const payloadKeys = Object.keys(payloadData);
+    const payloadVals = Object.values(payloadData).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+    await powerSync.execute(`INSERT INTO companies (${payloadKeys.join(', ')}) VALUES (${payloadKeys.map(()=>'?').join(', ')})`, payloadVals);
+  })();
  const __resComp = await powerSync.execute(`SELECT * FROM companies WHERE subdomain = ?`, [cleanSubdomain]);
  const companyData = __resComp.rows && __resComp.rows.length > 0 ? __resComp.rows.item(0) : null;
  const compError = null;
@@ -118,7 +118,7 @@ export default function SignUp() {
 
  // 3. Update the profile
  const { error: profError} = await (async () => {
- const _p = {
+ const profPayload = {
  company_id: companyData.id,
  company_name: companyData.name,
  full_name: username
@@ -126,31 +126,31 @@ export default function SignUp() {
  
  // Prevent downgrading super admins
  if (user?.role !== 'super_admin') {
- _p.role = 'company_admin';
+ profPayload.role = 'company_admin';
 }
 
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`UPDATE profiles SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, user.id]);
+ const profKeys = Object.keys(profPayload);
+ const profVals = Object.values(profPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`UPDATE profiles SET ${profKeys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [...profVals, user.id]);
 })();
 
  if (profError) throw profError;
 
  // Trigger Welcome Notification (Novu Webhook)
- await (async () => {
-   const _p = {
-     company_id: companyData.id,
-     recipient_email: email,
-     recipient_name: username,
-     title: "Welcome to Optalflow / Slate!",
-     message: "Your account has been successfully created. We're excited to have you onboard. Please complete your setup in the onboarding portal.",
-     type: 'info',
-     is_read: false
-   };
-   const _k = Object.keys(_p);
-   const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-   await powerSync.execute(`INSERT INTO notifications (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
- })().catch(err => console.error("Notification failed:", err));
+  await (async () => {
+    const notifPayload = {
+      company_id: companyData.id,
+      recipient_email: email,
+      recipient_name: username,
+      title: "Welcome to Optalflow / Slate!",
+      message: "Your account has been successfully created. We're excited to have you onboard. Please complete your setup in the onboarding portal.",
+      type: 'info',
+      is_read: false
+    };
+    const notifKeys = Object.keys(notifPayload);
+    const notifVals = Object.values(notifPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+    await powerSync.execute(`INSERT INTO notifications (${notifKeys.join(', ')}) VALUES (${notifKeys.map(()=>'?').join(', ')})`, notifVals);
+  })().catch(err => console.error("Notification failed:", err));
 
  setSuccess("Account and WorkSlate successfully created! Redirecting to your onboarding portal...");
  

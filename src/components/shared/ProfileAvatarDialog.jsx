@@ -24,7 +24,7 @@ export default function ProfileAvatarDialog({ open, onOpenChange}) {
  setIsSaving(true);
  try {
  // Update the profiles table directly
- const { error: profileError} = await (async () => { const _p = {avatar_url: url}; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE profiles SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, user.id]);})();
+ const { error: profileError} = await (async () => { const _payload = {avatar_url: url}; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE profiles SET ${_keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._vals, user.id]);})();
  if (profileError) throw profileError;
  
  // Also update auth user metadata just in case

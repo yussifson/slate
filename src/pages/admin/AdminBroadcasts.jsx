@@ -54,10 +54,10 @@ export default function AdminBroadcasts() {
           status: "unread"
         }));
         
-        for (const _p of notificationInserts) {
-          const _k = Object.keys(_p);
-          const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-          await powerSync.execute(`INSERT INTO notifications (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+        for (const _payload of notificationInserts) {
+          const _keys = Object.keys(_payload);
+          const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          await powerSync.execute(`INSERT INTO notifications (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
         }
       }
 

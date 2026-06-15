@@ -50,13 +50,13 @@ class SyncQueue {
         cleanData = Object.fromEntries(Object.entries(cleanData).filter(([k]) => !k.includes(':')));
       }
       await (async () => {
-        const _p = cleanData;
-        const _k = Object.keys(_p);
-        const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _payload = cleanData;
+        const _keys = Object.keys(_payload);
+        const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         if (action === 'POST') {
-          await powerSync.execute(`INSERT INTO ${endpoint.replace(/[^a-zA-Z0-9_]/g, '')} (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+          await powerSync.execute(`INSERT INTO ${endpoint.replace(/[^a-zA-Z0-9_]/g, '')} (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
         } else {
-          await powerSync.execute(`UPDATE ${endpoint.replace(/[^a-zA-Z0-9_]/g, '')} SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, cleanData.id]);
+          await powerSync.execute(`UPDATE ${endpoint.replace(/[^a-zA-Z0-9_]/g, '')} SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, cleanData.id]);
         }
       })();
       const error = null;

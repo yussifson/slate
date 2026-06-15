@@ -323,7 +323,7 @@ export async function generateOrbitBuildWorkspace(prompt, companyId) {
     // Save the assembly configuration to industry_records
     const configId = crypto.randomUUID();
     const configError = await (async () => {
-      const _p = {
+      const _payload = {
         id: configId,
         company_id: companyId,
         industry: 'orbit_build',
@@ -332,10 +332,10 @@ export async function generateOrbitBuildWorkspace(prompt, companyId) {
         search_text: 'orbit build assembly configuration',
         created_at: new Date().toISOString()
       };
-      const _k = Object.keys(_p);
-      const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+      const _keys = Object.keys(_payload);
+      const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
       try {
-        await powerSync.execute(`INSERT INTO industry_records (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+        await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
         return null;
       } catch(e) { return e; }
     })();
@@ -346,7 +346,7 @@ export async function generateOrbitBuildWorkspace(prompt, companyId) {
     }
 
     // Update the company's industry_type
-    const { error: compError } = await (async () => { const _p = {industry_type: 'orbit_build'}; const _k = Object.keys(_p); const _v = Object.values(_p).map(v => typeof v === 'object' ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE companies SET ${_k.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._v, companyId]); })();
+    const { error: compError } = await (async () => { const _payload = {industry_type: 'orbit_build'}; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE companies SET ${_keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._vals, companyId]); })();
 
     if (compError) {
       console.error("Failed to update company industry_type:", compError);

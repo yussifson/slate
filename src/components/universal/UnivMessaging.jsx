@@ -138,10 +138,10 @@ export default function UnivMessaging() {
  
  // Create a new direct room
  await (async () => {
- const _p = { room_type: 'direct', id: crypto.randomUUID(), company_id: companyId, created_by: currentUser.id}; window.__tmpRoomId = _p.id;
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO chat_rooms (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v); return { error: null};})();
+ const _payload = { room_type: 'direct', id: crypto.randomUUID(), company_id: companyId, created_by: currentUser.id}; window.__tmpRoomId = _payload.id;
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`INSERT INTO chat_rooms (${_keys.join(',')}) VALUES (${_keys.map(()=>'?').join(',')})`, _vals); return { error: null};})();
  const newRoom = { id: window.__tmpRoomId};
  const roomError = null;
  
@@ -151,10 +151,10 @@ export default function UnivMessaging() {
  await (async () => {
  const p1 = { room_id: newRoom.id, user_id: currentUser.id, role: 'member'};
  const p2 = { room_id: newRoom.id, user_id: contactId, role: 'member'};
- const _k = Object.keys(p1);
- const _pl = _k.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO chat_participants (${_k.join(',')}) VALUES (${_pl})`, Object.values(p1));
- await powerSync.execute(`INSERT INTO chat_participants (${_k.join(',')}) VALUES (${_pl})`, Object.values(p2));
+ const _keys = Object.keys(p1);
+ const _plhdr = _keys.map(()=>'?').join(', ');
+ await powerSync.execute(`INSERT INTO chat_participants (${_keys.join(',')}) VALUES (${_plhdr})`, Object.values(p1));
+ await powerSync.execute(`INSERT INTO chat_participants (${_keys.join(',')}) VALUES (${_plhdr})`, Object.values(p2));
 })();
  const partError = null;
  if (partError) throw partError;
@@ -181,10 +181,10 @@ export default function UnivMessaging() {
  setMessage('');
  try {
  await (async () => {
- const _p = { room_id: activeRoomId, sender_id: currentUser.id, content: textToSend};
- const _k = Object.keys(_p);
- const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO chat_messages (${_k.join(',')}) VALUES (${_k.map(()=>'?').join(',')})`, _v); return { error: null};})();
+ const _payload = { room_id: activeRoomId, sender_id: currentUser.id, content: textToSend};
+ const _keys = Object.keys(_payload);
+ const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+ await powerSync.execute(`INSERT INTO chat_messages (${_keys.join(',')}) VALUES (${_keys.map(()=>'?').join(',')})`, _vals); return { error: null};})();
  const error = null;
  if (error) throw error;
  
