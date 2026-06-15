@@ -247,9 +247,10 @@ export default function OnboardingWizard() {
 }
 
  const profPayload = {
- full_name: user?.user_metadata?.full_name || 'Admin',
- company_id: companyIdToUse,
- company_name: workspaceName || 'My Workslate'
+  full_name: user?.user_metadata?.full_name || 'Admin',
+  company_id: companyIdToUse,
+  company_name: workspaceName || 'My Workslate',
+  industry_type: finalIndustry // Save industry to profile as well
 };
  
  if (user?.role !== 'super_admin') {
