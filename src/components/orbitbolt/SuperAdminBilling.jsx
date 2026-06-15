@@ -463,9 +463,9 @@ function TabManualOverrides({ initialTargetCompany }) {
       if (Number(bonusCredits) > 0) {
         // Find existing usage or create one
         await powerSync.execute(`
-          INSERT INTO usage_metrics (company_id, metric_name, used_amount) 
-          VALUES (?, 'ai_bonus_credits', ?)
-        `, [targetCompany, Number(bonusCredits)]);
+          INSERT INTO usage_metrics (id, company_id, metric_name, used_amount) 
+          VALUES (?, ?, 'ai_bonus_credits', ?)
+        `, [crypto.randomUUID(), targetCompany, Number(bonusCredits)]);
       }
       toast({ title: "Override Applied", description: "The system override was successfully executed." });
       setTargetCompany('');
