@@ -790,8 +790,8 @@ function App() {
     <PowerSyncContext.Provider value={powerSync}>
     <HelmetProvider>
     <ImpersonationProvider>
-      <ThemeProvider>
-        <AuthProvider>
+      <AuthProvider>
+        <ThemeProvider>
           <VideoProvider>
             <QueryClientProvider client={queryClientInstance}>
             <Router>
@@ -869,8 +869,8 @@ function App() {
             </Router>
           </QueryClientProvider>
           </VideoProvider>
-        </AuthProvider>
-      </ThemeProvider>
+        </ThemeProvider>
+      </AuthProvider>
     </ImpersonationProvider>
     </HelmetProvider>
     </PowerSyncContext.Provider>
