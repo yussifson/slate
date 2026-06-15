@@ -12,8 +12,9 @@ import confetti from 'canvas-confetti';
 import { useToast} from '@/components/ui/use-toast';
 import { getSubdomainAndBase} from '@/lib/domainUtils';
 import { getTerm, INDUSTRIES} from '@/config/industries';
-import { COUNTRIES_CURRENCIES} from '@/config/countries';
-import { generateOrbitBuildWorkspace} from '@/lib/orbitBuildGenerator';
+import { COUNTRIES_CURRENCIES } from '@/config/countries';
+import { generateOrbitBuildWorkspace } from '@/lib/orbitBuildGenerator';
+import { initiatePaystackSubscription } from "@/lib/paystack";
 
 export default function OnboardingWizard() {
  const { t} = useTranslation();
@@ -87,10 +88,24 @@ export default function OnboardingWizard() {
  const [staffName, setStaffName] = useState('');
  const [invitedStaff, setInvitedStaff] = useState([]);
 
- // Step 4: First Case
- const [caseTitle, setCaseTitle] = useState('');
- const [clientName, setClientName] = useState('');
- const [clientEmail, setClientEmail] = useState('');
+ // Step 4: Subscription Plan
+ const [plans, setPlans] = useState([]);
+ const [plansLoading, setPlansLoading] = useState(true);
+ const [selectedPlanId, setSelectedPlanId] = useState(null);
+
+ useEffect(() => {
+   const fetchPlans = async () => {
+     try {
+       const { rows } = await powerSync.execute("SELECT * FROM subscription_plans WHERE is_active = 'true' OR is_active = 1 ORDER BY price_monthly ASC");
+       setPlans(rows._array || Array.from(rows));
+     } catch (err) {
+       console.error("Failed to load plans:", err);
+     } finally {
+       setPlansLoading(false);
+     }
+   };
+   fetchPlans();
+ }, []);
 
  const handleAddStaff = () => {
  if (!staffEmail || !staffName) return;
@@ -104,7 +119,7 @@ export default function OnboardingWizard() {
  setInvitedStaff(invitedStaff.filter((_, idx) => idx !== index));
 };
 
- const handleCompleteOnboarding = async () => {
+ const handleCompleteOnboarding = async (selectedPlan = null) => {
  setLoading(true);
 
  try {
@@ -147,10 +162,15 @@ export default function OnboardingWizard() {
       industry_type: finalIndustry || 'law',
       country: country,
       currency: currency,
-      subscription_plan: 'starter',
-      subscription_status: 'trial',
       status: 'active'
     };
+    if (selectedPlan) {
+      compPayload.subscription_plan = selectedPlan.name.toLowerCase().replace(/\s/g, '');
+      compPayload.subscription_status = selectedPlan.price_monthly > 0 ? 'active' : 'trial';
+    } else {
+      compPayload.subscription_plan = 'starter';
+      compPayload.subscription_status = 'trial';
+    }
     const compKeys = Object.keys(compPayload);
     const compVals = Object.values(compPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
     await powerSync.execute(`INSERT INTO companies (${compKeys.join(', ')}) VALUES (${compKeys.map(()=>'?').join(', ')})`, compVals);
@@ -231,33 +251,7 @@ export default function OnboardingWizard() {
 }
 }
 
- // 3. Create first client and case
- if (clientName && caseTitle) {
- const clientPayload = {
- company_id: companyIdToUse,
- name: clientName,
- email: clientEmail || `${clientName.toLowerCase().replace(/[^a-z0-9]/g, '')}@example.com`,
- status: 'active'
-};
- const clientKeys = Object.keys(clientPayload);
- const clientVals = Object.values(clientPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO clients (${clientKeys.join(', ')}) VALUES (${clientKeys.map(()=>'?').join(', ')})`, clientVals);
- const __resC = await powerSync.execute(`SELECT * FROM clients WHERE company_id = ? AND name = ?`, [companyIdToUse, clientName]);
- const clientData = __resC.rows && __resC.rows.length > 0 ? __resC.rows.item(0) : null;
- const clientError = null;
-
- if (!clientError && clientData) {
- const casePayload = {
- company_id: companyIdToUse,
- title: "Example Contract Review",
- client_name: "Acme Corp",
- status: "Open"
-};
- const caseKeys = Object.keys(casePayload);
- const caseVals = Object.values(casePayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO legal_cases (${caseKeys.join(', ')}) VALUES (${caseKeys.map(()=>'?').join(', ')})`, caseVals);
-}
-}
+ // 3. Remove first client/case creation (replaced by pricing plans logic)
 
  // 4. Trigger celebration confetti
  confetti({
@@ -271,11 +265,13 @@ export default function OnboardingWizard() {
  setOrbitProgress("Analyzing Industry & Assembling Workspace...");
  try {
  await generateOrbitBuildWorkspace(orbitPrompt, companyIdToUse);
+ return { success: true, companyId: companyIdToUse };
 } catch (err) {
- console.error("OrbitBuild Error", err);
- toast({ title: "OrbitBuild Failed", description: err.message, variant: "destructive"});
+ console.error(err);
+ toast({ title: "Setup Failed", description: err.message, variant: "destructive"});
+ setLoading(false);
+ return { success: false };
 }
- setOrbitProgress("");
 }
 
  // 5. Refresh user session and go to dashboard
@@ -687,7 +683,7 @@ export default function OnboardingWizard() {
  <p className="text-slate-500 text-sm leading-relaxed">
  {t("add_your", "Add your")} {getTerm(industry, 'lawyer').toLowerCase()}{t(
  "s_and_staff_members_to_collabo",
- "s and staff members to collaborate in real-time."
+ "s and staff members to collaborate in real-time. An email invitation will be automatically dispatched containing a secure registration link. Once they sign up, their account will be instantly linked to your workslate."
  )}
  </p>
  </div>
@@ -784,53 +780,59 @@ export default function OnboardingWizard() {
  </div>
  )}
 
- {/* Step 4: First Case */}
+ {/* Step 4: Subscription Plans */}
  {step === 4 && (
  <div className="space-y-8">
  <div className="space-y-2">
  <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
- {t("initialize_your_first", "Initialize your first")} {getTerm(industry, 'case')}
+ {t("choose_your_plan", "Choose your plan")}
  </h2>
  <p className="text-slate-500 text-sm leading-relaxed">
- {t("create_a", "Create a")} {getTerm(industry, 'case').toLowerCase()} {t("and_link_it_to_your_first_acti", "and link it to your first active")} {getTerm(industry, 'client').toLowerCase()} {t("to_test_the_pipeline", "to test the pipeline.")}
+ {t("select_a_subscription_tier_tha", "Select a subscription tier that matches your firm's operational needs.")}
  </p>
  </div>
 
- <div className="bg-muted/300 border border-primary/40 rounded-2xl p-6 space-y-5">
- <div className="space-y-2">
- <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'case')} {t("title", "Title")}</label>
- <Input 
- type="text"
- value={caseTitle}
- onChange={(e) => setCaseTitle(e.target.value)}
- placeholder={`E.g., Initial ${getTerm(industry, 'case')} for setup`}
- className="h-12 bg-card border-primary/20 focus:bg-card focus-visible:bg-card focus:border-primary text-slate-900 rounded-xl"
- />
- </div>
+ {plansLoading ? (
+   <div className="flex justify-center items-center py-20">
+     <Loader2 className="w-8 h-8 animate-spin text-primary" />
+   </div>
+ ) : (
+   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+     {plans.map((p) => (
+       <div key={p.id} className="relative flex flex-col bg-card rounded-2xl border border-primary/20 p-6 transition-all hover:border-primary/40 hover:-translate-y-1 hover:shadow-md cursor-pointer" onClick={() => handleSelectPlan(p)}>
+         <div className="mb-4">
+           <h3 className="font-bold text-xl text-foreground mb-1">{p.name}</h3>
+           <div className="flex items-end gap-1">
+             <span className="text-3xl font-black">GH₵{p.price_monthly}</span>
+             <span className="text-muted-foreground font-medium text-sm mb-1">/mo</span>
+           </div>
+         </div>
+         
+         <div className="bg-muted/40 rounded-xl p-4 mb-6 space-y-2 text-sm border border-primary/10">
+           <div className="flex justify-between">
+             <span className="text-muted-foreground">Team Size:</span>
+             <span className="font-bold">{p.limits?.users || 'Unlimited'}</span>
+           </div>
+           <div className="flex justify-between">
+             <span className="text-muted-foreground">AI Credits:</span>
+             <span className="font-bold">{p.limits?.ai_credits_monthly || 0}</span>
+           </div>
+         </div>
 
- <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
- <div className="space-y-2">
- <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'client')} {t("full_name", "Full Name")}</label>
- <Input 
- type="text"
- value={clientName}
- onChange={(e) => setClientName(e.target.value)}
- placeholder="Adama Mensah"
- className="h-12 bg-card border-primary/20 focus:bg-card focus-visible:bg-card focus:border-primary text-slate-900 rounded-xl"
- />
- </div>
- <div className="space-y-2">
- <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">{getTerm(industry, 'client')} {t("email", "Email")} <span className="text-slate-400 font-normal lowercase">(Optional)</span></label>
- <Input 
- type="email"
- value={clientEmail}
- onChange={(e) => setClientEmail(e.target.value)}
- placeholder="contact@email.com"
- className="h-12 bg-card border-primary/20 focus:bg-card focus-visible:bg-card focus:border-primary text-slate-900 rounded-xl"
- />
- </div>
- </div>
- </div>
+         <div className="mt-auto pt-4">
+           <Button 
+             disabled={loading}
+             className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-12 rounded-xl font-bold shadow-sm"
+           >
+             {loading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : (
+               p.price_monthly === 0 ? "Get Started for Free" : "Upgrade & Complete"
+             )}
+           </Button>
+         </div>
+       </div>
+     ))}
+   </div>
+ )}
  </div>
  )}
  
@@ -886,32 +888,13 @@ export default function OnboardingWizard() {
                 </div>
               ) : (
                 <div className="flex gap-3">
-                  {(!caseTitle || !clientName) && (
-                    <Button 
-                      variant="outline"
-                      onClick={handleCompleteOnboarding}
-                      disabled={loading || !!orbitProgress}
-                      className="h-12 px-6 rounded-xl border-primary/40 bg-card hover:bg-muted/30 transition-colors font-semibold"
-                    >
-                      {loading || orbitProgress ? <Loader2 className="w-4 h-4 animate-spin" /> : t("skip_for_now", "Skip for now")}
-                    </Button>
-                  )}
                   <Button 
-                    onClick={handleCompleteOnboarding}
-                    disabled={loading || !!orbitProgress || (!caseTitle || !clientName)}
-                    className="h-12 px-8 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl flex items-center gap-2 transition-all hover:-translate-y-0.5 active:translate-y-0"
+                    variant="outline"
+                    onClick={() => handleCompleteOnboarding(null)}
+                    disabled={loading || !!orbitProgress}
+                    className="h-12 px-6 rounded-xl border-primary/40 bg-card hover:bg-muted/30 transition-colors font-semibold"
                   >
-                    {loading || orbitProgress ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>{orbitProgress || t("finalizing_workslate", "Finalizing Workslate...")}</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>{t("complete_setup", "Complete Setup!")}</span>
-                        <Sparkles className="w-4 h-4 ml-1" />
-                      </>
-                    )}
+                    {loading || orbitProgress ? <Loader2 className="w-4 h-4 animate-spin" /> : t("skip_for_now", "Skip for now")}
                   </Button>
                 </div>
               )}
