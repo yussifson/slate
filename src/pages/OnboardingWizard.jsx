@@ -325,18 +325,22 @@ export default function OnboardingWizard() {
  localStorage.removeItem(`active_modules_${companyIdToUse}`); // Template implies all modules
 }
  
- // Trigger Workspace Ready Notification
- supabase.functions.invoke('notify-omnichannel', {
-   body: {
-     companyId: companyIdToUse,
-     recipientEmail: user?.email,
-     recipientName: user?.user_metadata?.full_name || 'Admin',
+ // Trigger Workspace Ready Notification (Novu Webhook)
+ await (async () => {
+   const _p = {
+     company_id: companyIdToUse,
+     recipient_email: user?.email,
+     recipient_name: user?.user_metadata?.full_name || 'Admin',
      title: "Your Workspace is Ready!",
      message: `Your ${finalIndustry} workspace has been successfully created and configured. You can now access your dashboard and start managing your operations.`,
      type: 'success',
-     channels: ['in-app', 'email']
-   }
- }).catch(err => console.error("Notification failed:", err));
+     is_read: false
+   };
+   const _k = Object.keys(_p);
+   const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+   await powerSync.execute(`INSERT INTO notifications (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+ })().catch(err => console.error("Notification failed:", err));
+
 
  toast({ title: "Setup Complete!", description: "Welcome to your new digital workspace."});
  

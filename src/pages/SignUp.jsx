@@ -136,18 +136,21 @@ export default function SignUp() {
 
  if (profError) throw profError;
 
- // Trigger Welcome Notification
- supabase.functions.invoke('notify-omnichannel', {
-   body: {
-     companyId: companyData.id,
-     recipientEmail: email,
-     recipientName: username,
+ // Trigger Welcome Notification (Novu Webhook)
+ await (async () => {
+   const _p = {
+     company_id: companyData.id,
+     recipient_email: email,
+     recipient_name: username,
      title: "Welcome to Optalflow / Slate!",
      message: "Your account has been successfully created. We're excited to have you onboard. Please complete your setup in the onboarding portal.",
      type: 'info',
-     channels: ['in-app', 'email']
-   }
- }).catch(err => console.error("Notification failed:", err));
+     is_read: false
+   };
+   const _k = Object.keys(_p);
+   const _v = Object.values(_p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+   await powerSync.execute(`INSERT INTO notifications (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+ })().catch(err => console.error("Notification failed:", err));
 
  setSuccess("Account and WorkSlate successfully created! Redirecting to your onboarding portal...");
  
