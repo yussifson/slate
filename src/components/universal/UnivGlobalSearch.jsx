@@ -1,4 +1,3 @@
-import { Loader2 } from 'lucide-react';
 import React, { useState, useEffect, useMemo} from 'react';
 
 import { supabase} from "@/api/supabaseClient";

@@ -1,4 +1,3 @@
-import { Loader2 } from 'lucide-react';
 import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";

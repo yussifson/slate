@@ -1,4 +1,3 @@
-import { Loader2 } from 'lucide-react';
 import { powerSync} from '@/api/PowerSyncConnector';
 import React, { useState, useMemo, useRef, useCallback, useEffect} from 'react';
 import { motion, AnimatePresence} from 'framer-motion';
