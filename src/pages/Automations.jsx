@@ -734,17 +734,7 @@ export default function Automations() {
                         </div>
                       </motion.div>
                     )}
-                    {mode === 'logs' && (
-              <motion.div
-                key="logs"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-              >
-                <ExecutionLogs companyId={companyId} />
-              </motion.div>
-            )}
-          </AnimatePresence>
+</AnimatePresence>
                 </div>
 
                 {/* Draggable Sidebar */}
@@ -753,16 +743,16 @@ export default function Automations() {
             </motion.div>
           )}
           {mode === 'logs' && (
-              <motion.div
-                key="logs"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-              >
-                <ExecutionLogs companyId={companyId} />
-              </motion.div>
-            )}
-          </AnimatePresence>
+            <motion.div
+              key="logs"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+            >
+              <ExecutionLogs companyId={companyId} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

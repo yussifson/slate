@@ -365,10 +365,6 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
  <div className="w-px h-5 bg-primary/40 mx-2" />
 
  <ActionBtn icon={Trash2} label="Delete" onClick={onDelete} danger />
-
- <div className="ml-auto">
- <ActionBtn icon={MoreVertical} label="More" />
- </div>
  </div>
 
  {/* Content */}
@@ -517,7 +513,11 @@ function ComposeEmailPopup({ isMinimized, onToggleMinimize, onClose, onSubmit, s
       recipients = [...internalEmails];
     }
     if (recipientType === "external" || recipientType === "both") {
-      recipients = [...recipients, ...externalEmails.split(",").map(e => e.trim()).filter(Boolean)];
+      let extEmails = externalEmails.split(",").map(e => e.trim()).filter(Boolean);
+      if (recipientQuery.includes("@")) {
+        extEmails.push(recipientQuery.trim());
+      }
+      recipients = [...recipients, ...extEmails];
     }
  if (recipientType === "external" || recipientType === "both") {
  try {
