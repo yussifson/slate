@@ -15,7 +15,7 @@ import { getTerm, INDUSTRIES} from '@/config/industries';
 import { COUNTRIES_CURRENCIES } from '@/config/countries';
 import { generateOrbitBuildWorkspace } from '@/lib/orbitBuildGenerator';
 import { initiatePaystackSubscription } from "@/lib/paystack";
-
+import { detectMarketTier } from '@/lib/pricing';
 export default function OnboardingWizard() {
  const { t} = useTranslation();
  const { user, refreshUser} = useAuth();
@@ -96,9 +96,11 @@ export default function OnboardingWizard() {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
+        const { tier } = await detectMarketTier();
         const { data, error } = await supabase
           .from('subscription_plans')
           .select('*')
+          .eq('market_tier', tier)
           .order('price_monthly', { ascending: true });
           
         if (error) throw error;
@@ -807,32 +809,32 @@ export default function OnboardingWizard() {
      <Loader2 className="w-8 h-8 animate-spin text-primary" />
    </div>
  ) : (
-   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
      {plans.map((p) => (
-       <div key={p.id} className="relative flex flex-col bg-card rounded-2xl border border-primary/20 p-6 transition-all hover:border-primary/40 hover:-translate-y-1 hover:shadow-md cursor-pointer" onClick={() => handleSelectPlan(p)}>
-         <div className="mb-4">
-           <h3 className="font-bold text-xl text-foreground mb-1">{p.name}</h3>
-           <div className="flex items-end gap-1">
-             <span className="text-3xl font-black">GH₵{p.price_monthly}</span>
-             <span className="text-muted-foreground font-medium text-sm mb-1">/mo</span>
+       <div key={p.id} className="relative flex flex-col bg-background rounded-xl p-8 border border-border hover:border-primary/50 transition-colors shadow-none" onClick={() => handleSelectPlan(p)}>
+         <div className="mb-6">
+           <h3 className="font-semibold text-lg text-foreground mb-2">{p.name}</h3>
+           <div className="flex items-end gap-1 mb-2">
+             <span className="text-4xl font-bold tracking-tight">GH₵{p.price_monthly}</span>
+             <span className="text-muted-foreground font-medium text-sm mb-1.5">/mo</span>
            </div>
          </div>
          
-         <div className="bg-muted/40 rounded-xl p-4 mb-6 space-y-2 text-sm border border-primary/10">
-           <div className="flex justify-between">
-             <span className="text-muted-foreground">Team Size:</span>
-             <span className="font-bold">{p.limits?.users || 'Unlimited'}</span>
+         <div className="flex-1 space-y-4 text-sm text-foreground/80 mb-8">
+           <div className="flex justify-between items-center py-2 border-b border-border/40">
+             <span>Team Size</span>
+             <span className="font-semibold">{p.limits?.users || 'Unlimited'}</span>
            </div>
-           <div className="flex justify-between">
-             <span className="text-muted-foreground">AI Credits:</span>
-             <span className="font-bold">{p.limits?.ai_credits_monthly || 0}</span>
+           <div className="flex justify-between items-center py-2 border-b border-border/40">
+             <span>AI Credits</span>
+             <span className="font-semibold">{p.limits?.ai_credits_monthly || 0}</span>
            </div>
          </div>
 
-         <div className="mt-auto pt-4">
+         <div className="mt-auto">
            <Button 
              disabled={loading}
-             className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-12 rounded-xl font-bold shadow-sm"
+             className={`w-full h-11 rounded-lg font-medium transition-colors ${p.price_monthly === 0 ? 'bg-secondary text-secondary-foreground hover:bg-secondary/80' : 'bg-primary text-primary-foreground hover:bg-primary/90'}`}
            >
              {loading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : (
                p.price_monthly === 0 ? "Get Started for Free" : "Upgrade & Complete"
