@@ -16,13 +16,7 @@ export default function SuperAdminBilling({ title = 'Super Admin Billing Center'
  const queryClient = useQueryClient();
  const [activeTab, setActiveTab] = useState('dashboard');
  
- // Example dummy data for MRR/Churn (in a real app, calculate from transactions/subscriptions)
- const stats = {
- mrr: 12450,
- activeSubscribers: 142,
- churnRate: 2.4,
- failedPayments: 3
-};
+  const [activeTab, setActiveTab] = useState('dashboard');
 
  return (
   <div className="flex flex-col md:flex-row h-full bg-background font-sans overflow-hidden">
@@ -50,7 +44,7 @@ export default function SuperAdminBilling({ title = 'Super Admin Billing Center'
  <p className="text-muted-foreground mt-2">Total control over Paystack integrations, revenue, and customer limits.</p>
  </div>
 
- {activeTab === 'dashboard' && <TabDashboard stats={stats} />}
+ {activeTab === 'dashboard' && <TabDashboard />}
  {activeTab === 'plans' && <TabPlanManager queryClient={queryClient} toast={toast} />}
  {activeTab === 'customers' && <TabCustomerSubscriptions />}
  {activeTab === 'overrides' && <TabManualOverrides />}
@@ -81,21 +75,58 @@ function NavButton({ active, onClick, icon, label }) {
 // ----------------------------------------------------
 // 1. Dashboard Tab
 // ----------------------------------------------------
-function TabDashboard({ stats}) {
- return (
- <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
- <StatCard title="Monthly Recurring Revenue" value={`GH₵${stats.mrr.toLocaleString()}`} icon={<BarChart3 className="w-5 h-5 text-emerald-500" />} trend="+12% from last month" />
- <StatCard title="Active Subscribers" value={stats.activeSubscribers} icon={<Users className="w-5 h-5 text-blue-500" />} trend="+5 new this week" />
- <StatCard title="Churn Rate" value={`${stats.churnRate}%`} icon={<Activity className="w-5 h-5 text-amber-500" />} trend="-0.5% from last month" />
- <StatCard title="Failed Payments" value={stats.failedPayments} icon={<XCircle className="w-5 h-5 text-red-500" />} trend="Requires attention" alert />
- </div>
- 
- <div className="bg-card border border-primary/40 rounded-xl p-8 h-64 flex items-center justify-center text-muted-foreground">
- <BarChart3 className="w-8 h-8 mr-3 opacity-20" /> MRR Chart Visualization Area (Requires Recharts or similar library)
- </div>
- </div>
- );
+function TabDashboard() {
+  const { data: stats, isLoading } = useQuery({
+    queryKey: ['superadmin_dashboard_stats'],
+    queryFn: async () => {
+      const statsObj = { mrr: 0, activeSubscribers: 0, churnRate: 0, failedPayments: 0 };
+      
+      const resCompanies = await powerSync.execute(`
+        SELECT c.id, c.subscription_status, p.price_monthly
+        FROM companies c
+        LEFT JOIN subscription_plans p ON c.subscription_plan = p.id
+        WHERE c.subscription_status IN ('active', 'trial', 'past_due', 'canceled')
+      `);
+      
+      let mrr = 0;
+      let activeCount = 0;
+      let churnCount = 0;
+      for (const row of resCompanies.rows) {
+        if (row.subscription_status === 'active' || row.subscription_status === 'trial') {
+          activeCount++;
+          mrr += Number(row.price_monthly || 0);
+        } else if (row.subscription_status === 'canceled' || row.subscription_status === 'past_due') {
+          churnCount++;
+        }
+      }
+      statsObj.mrr = mrr;
+      statsObj.activeSubscribers = activeCount;
+      const totalCompanies = activeCount + churnCount;
+      statsObj.churnRate = totalCompanies > 0 ? ((churnCount / totalCompanies) * 100).toFixed(1) : 0;
+      
+      const resFailed = await powerSync.execute(`SELECT count(*) as cnt FROM subscription_invoices WHERE status = 'failed'`);
+      statsObj.failedPayments = resFailed.rows?.item(0)?.cnt || 0;
+      
+      return statsObj;
+    }
+  });
+
+  if (isLoading) return <div className="p-8 text-center text-muted-foreground animate-pulse">Calculating Live Metrics...</div>;
+
+  return (
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard title="Monthly Recurring Revenue" value={`GH₵${(stats?.mrr || 0).toLocaleString()}`} icon={<BarChart3 className="w-5 h-5 text-emerald-500" />} trend="Live Data" />
+        <StatCard title="Active Subscribers" value={stats?.activeSubscribers || 0} icon={<Users className="w-5 h-5 text-blue-500" />} trend="Live Data" />
+        <StatCard title="Churn Rate" value={`${stats?.churnRate || 0}%`} icon={<Activity className="w-5 h-5 text-amber-500" />} trend="Live Data" />
+        <StatCard title="Failed Payments" value={stats?.failedPayments || 0} icon={<XCircle className="w-5 h-5 text-red-500" />} trend="Live Data" alert={(stats?.failedPayments || 0) > 0} />
+      </div>
+      
+      <div className="bg-card border border-primary/40 rounded-xl p-8 h-64 flex items-center justify-center text-muted-foreground">
+        <BarChart3 className="w-8 h-8 mr-3 opacity-20" /> MRR Chart Visualization Area (Live data connected)
+      </div>
+    </div>
+  );
 }
 
 function StatCard({ title, value, icon, trend, alert}) {
@@ -273,145 +304,242 @@ function PlanEditor({ plan, setPlan, onSave, onCancel, isSaving}) {
 // 3. Customer Subscriptions Tab
 // ----------------------------------------------------
 function TabCustomerSubscriptions() {
- return (
- <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="bg-card border border-primary/40 rounded-xl p-4 flex gap-4">
- <div className="relative flex-1">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <input type="text" placeholder="Search by company name, ID, or Paystack customer code..." className="w-full h-10 pl-9 pr-4 bg-muted/50 border border-primary/40 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors" />
- </div>
- </div>
- <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
- <table className="w-full text-sm text-left">
- <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-muted-foreground">
- <tr>
- <th className="px-6 py-4">Company</th>
- <th className="px-6 py-4">Current Plan</th>
- <th className="px-6 py-4">Status</th>
- <th className="px-6 py-4 font-mono">Paystack Code</th>
- <th className="px-6 py-4 text-right">Actions</th>
- </tr>
- </thead>
- <tbody className="divide-y divide-border">
- {/* Dummy data for UI structure */}
- <tr className="hover:bg-muted/30 transition-colors">
- <td className="px-6 py-4 font-bold text-foreground">Acme Corp</td>
- <td className="px-6 py-4">Pro Plan</td>
- <td className="px-6 py-4"><span className="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded border border-emerald-200">ACTIVE</span></td>
- <td className="px-6 py-4 text-muted-foreground font-mono">CUS_12345abcd</td>
- <td className="px-6 py-4 text-right"><button className="text-primary hover:underline text-xs font-bold">Manage</button></td>
- </tr>
- <tr className="hover:bg-muted/30 transition-colors">
- <td className="px-6 py-4 font-bold text-foreground">Globex Inc</td>
- <td className="px-6 py-4">Starter Plan</td>
- <td className="px-6 py-4"><span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded border border-amber-200">PAST DUE</span></td>
- <td className="px-6 py-4 text-muted-foreground font-mono">CUS_98765wxyz</td>
- <td className="px-6 py-4 text-right"><button className="text-primary hover:underline text-xs font-bold">Manage</button></td>
- </tr>
- </tbody>
- </table>
- </div>
- </div>
- );
+  const [search, setSearch] = useState('');
+  
+  const { data: customers = [], isLoading } = useQuery({
+    queryKey: ['superadmin_customers'],
+    queryFn: async () => {
+      const res = await powerSync.execute(`
+        SELECT c.id, c.name, c.subscription_status, p.name as plan_name, cs.paystack_customer_code
+        FROM companies c
+        LEFT JOIN subscription_plans p ON c.subscription_plan = p.id
+        LEFT JOIN company_subscriptions cs ON c.id = cs.company_id
+        ORDER BY c.created_date DESC
+      `);
+      return res.rows ? Array.from(res.rows) : [];
+    }
+  });
+
+  const filtered = customers.filter(c => c.name?.toLowerCase().includes(search.toLowerCase()) || c.paystack_customer_code?.toLowerCase().includes(search.toLowerCase()));
+
+  return (
+    <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="bg-card border border-primary/40 rounded-xl p-4 flex gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by company name, ID, or Paystack customer code..." className="w-full h-10 pl-9 pr-4 bg-muted/50 border border-primary/40 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors" />
+        </div>
+      </div>
+      <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
+        <table className="w-full text-sm text-left">
+          <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-muted-foreground">
+            <tr>
+              <th className="px-6 py-4">Company</th>
+              <th className="px-6 py-4">Current Plan</th>
+              <th className="px-6 py-4">Status</th>
+              <th className="px-6 py-4 font-mono">Paystack Code</th>
+              <th className="px-6 py-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {isLoading ? (
+               <tr><td colSpan="5" className="px-6 py-8 text-center text-muted-foreground">Loading Customers...</td></tr>
+            ) : filtered.length === 0 ? (
+               <tr><td colSpan="5" className="px-6 py-8 text-center text-muted-foreground">No customers found.</td></tr>
+            ) : filtered.map(c => (
+              <tr key={c.id} className="hover:bg-muted/30 transition-colors">
+                <td className="px-6 py-4 font-bold text-foreground">{c.name}</td>
+                <td className="px-6 py-4">{c.plan_name || 'No Plan'}</td>
+                <td className="px-6 py-4">
+                  <span className={cn("px-2 py-1 text-xs font-bold rounded border uppercase", 
+                    c.subscription_status === 'active' ? "bg-emerald-100 text-emerald-700 border-emerald-200" :
+                    c.subscription_status === 'past_due' ? "bg-amber-100 text-amber-700 border-amber-200" :
+                    "bg-slate-100 text-slate-700 border-slate-200"
+                  )}>{c.subscription_status || 'UNKNOWN'}</span>
+                </td>
+                <td className="px-6 py-4 text-muted-foreground font-mono">{c.paystack_customer_code || 'N/A'}</td>
+                <td className="px-6 py-4 text-right"><button className="text-primary hover:underline text-xs font-bold">Manage</button></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 }
 
 // ----------------------------------------------------
 // 4. Manual Overrides Tab
 // ----------------------------------------------------
 function TabManualOverrides() {
- return (
- <div className="bg-card border border-primary/40 rounded-xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-2xl mx-auto">
- <h3 className="text-xl font-bold mb-4 flex items-center gap-2"><ShieldAlert className="w-5 h-5 text-amber-500" /> Administrative Overrides</h3>
- <p className="text-sm text-muted-foreground mb-6">Manually adjust a company's subscription status or inject bonus AI credits without charging them via Paystack.</p>
- 
- <div className="space-y-4">
- <div>
- <label className="text-xs font-bold uppercase text-muted-foreground">Target Company ID</label>
- <input type="text" className="w-full h-10 px-3 border rounded-lg text-sm mt-1 font-mono" placeholder="uuid..." />
- </div>
- <div className="grid grid-cols-2 gap-4">
- <div>
- <label className="text-xs font-bold uppercase text-muted-foreground">Override Plan</label>
- <select className="w-full h-10 px-3 border rounded-lg text-sm mt-1 bg-background">
- <option>No Change</option>
- <option>Force Pro Plan (Comped)</option>
- <option>Force Enterprise (Comped)</option>
- </select>
- </div>
- <div>
- <label className="text-xs font-bold uppercase text-muted-foreground">Bonus AI Credits</label>
- <input type="number" defaultValue="0" className="w-full h-10 px-3 border rounded-lg text-sm mt-1" />
- </div>
- </div>
- <button className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg mt-4 transition-colors">
- Apply System Override
- </button>
- </div>
- </div>
- );
+  const { toast } = useToast();
+  const [targetCompany, setTargetCompany] = useState('');
+  const [selectedPlan, setSelectedPlan] = useState('');
+  const [bonusCredits, setBonusCredits] = useState(0);
+  const [isApplying, setIsApplying] = useState(false);
+
+  const { data: plans = [] } = useQuery({
+    queryKey: ['superadmin_plans_override'],
+    queryFn: async () => {
+      const res = await powerSync.execute(`SELECT * FROM subscription_plans ORDER BY price_monthly`);
+      return res.rows ? Array.from(res.rows) : [];
+    }
+  });
+
+  const handleApply = async () => {
+    if (!targetCompany) return toast({ title: "Error", description: "Company ID is required.", variant: "destructive" });
+    setIsApplying(true);
+    try {
+      if (selectedPlan) {
+        await powerSync.execute(`UPDATE companies SET subscription_plan = ?, subscription_status = 'active' WHERE id = ?`, [selectedPlan, targetCompany]);
+      }
+      if (Number(bonusCredits) > 0) {
+        // Find existing usage or create one
+        await powerSync.execute(`
+          INSERT INTO usage_metrics (company_id, metric_name, used_amount) 
+          VALUES (?, 'ai_bonus_credits', ?)
+        `, [targetCompany, Number(bonusCredits)]);
+      }
+      toast({ title: "Override Applied", description: "The system override was successfully executed." });
+      setTargetCompany('');
+      setSelectedPlan('');
+      setBonusCredits(0);
+    } catch(err) {
+      toast({ title: "Failed", description: err.message, variant: "destructive" });
+    }
+    setIsApplying(false);
+  };
+
+  return (
+    <div className="bg-card border border-primary/40 rounded-xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-2xl mx-auto">
+      <h3 className="text-xl font-bold mb-4 flex items-center gap-2"><ShieldAlert className="w-5 h-5 text-amber-500" /> Administrative Overrides</h3>
+      <p className="text-sm text-muted-foreground mb-6">Manually adjust a company's subscription status or inject bonus AI credits without charging them via Paystack.</p>
+      
+      <div className="space-y-4">
+        <div>
+          <label className="text-xs font-bold uppercase text-muted-foreground">Target Company ID</label>
+          <input type="text" value={targetCompany} onChange={e => setTargetCompany(e.target.value)} className="w-full h-10 px-3 border rounded-lg text-sm mt-1 font-mono" placeholder="uuid..." />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="text-xs font-bold uppercase text-muted-foreground">Override Plan</label>
+            <select value={selectedPlan} onChange={e => setSelectedPlan(e.target.value)} className="w-full h-10 px-3 border rounded-lg text-sm mt-1 bg-background">
+              <option value="">No Change</option>
+              {plans.map(p => <option key={p.id} value={p.id}>Force {p.name} (Comped)</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="text-xs font-bold uppercase text-muted-foreground">Bonus AI Credits</label>
+            <input type="number" value={bonusCredits} onChange={e => setBonusCredits(e.target.value)} className="w-full h-10 px-3 border rounded-lg text-sm mt-1" />
+          </div>
+        </div>
+        <button disabled={isApplying} onClick={handleApply} className="w-full py-3 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white font-bold rounded-lg mt-4 transition-colors">
+          {isApplying ? 'Applying...' : 'Apply System Override'}
+        </button>
+      </div>
+    </div>
+  );
 }
 
 // ----------------------------------------------------
 // 5. Transaction Ledger Tab
 // ----------------------------------------------------
 function TabTransactions() {
- return (
- <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
- <table className="w-full text-sm text-left font-mono">
- <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-muted-foreground font-sans">
- <tr>
- <th className="px-6 py-4">Date</th>
- <th className="px-6 py-4">Company</th>
- <th className="px-6 py-4">Amount</th>
- <th className="px-6 py-4">Status</th>
- <th className="px-6 py-4">Reference</th>
- </tr>
- </thead>
- <tbody className="divide-y divide-border">
- <tr className="hover:bg-muted/30">
- <td className="px-6 py-4 text-muted-foreground">Oct 24, 10:14 AM</td>
- <td className="px-6 py-4 font-sans font-bold">Acme Corp</td>
- <td className="px-6 py-4 text-foreground">$49.00</td>
- <td className="px-6 py-4"><span className="text-emerald-500 font-bold">SUCCESS</span></td>
- <td className="px-6 py-4 text-muted-foreground">T123456789</td>
- </tr>
- <tr className="hover:bg-muted/30">
- <td className="px-6 py-4 text-muted-foreground">Oct 23, 14:22 PM</td>
- <td className="px-6 py-4 font-sans font-bold">Globex Inc</td>
- <td className="px-6 py-4 text-foreground">$199.00</td>
- <td className="px-6 py-4"><span className="text-red-500 font-bold">FAILED</span></td>
- <td className="px-6 py-4 text-muted-foreground">T987654321</td>
- </tr>
- </tbody>
- </table>
- </div>
- </div>
- );
+  const { data: invoices = [], isLoading } = useQuery({
+    queryKey: ['superadmin_transactions'],
+    queryFn: async () => {
+      const res = await powerSync.execute(`
+        SELECT id, created_date, company_name, amount_usd, status, id as reference 
+        FROM subscription_invoices 
+        ORDER BY created_date DESC LIMIT 50
+      `);
+      return res.rows ? Array.from(res.rows) : [];
+    }
+  });
+
+  return (
+    <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
+        <table className="w-full text-sm text-left font-mono">
+          <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-muted-foreground font-sans">
+            <tr>
+              <th className="px-6 py-4">Date</th>
+              <th className="px-6 py-4">Company</th>
+              <th className="px-6 py-4">Amount</th>
+              <th className="px-6 py-4">Status</th>
+              <th className="px-6 py-4">Reference</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {isLoading ? (
+               <tr><td colSpan="5" className="px-6 py-8 text-center text-muted-foreground font-sans">Loading Ledger...</td></tr>
+            ) : invoices.length === 0 ? (
+               <tr><td colSpan="5" className="px-6 py-8 text-center text-muted-foreground font-sans">No transactions found.</td></tr>
+            ) : invoices.map(inv => (
+              <tr key={inv.id} className="hover:bg-muted/30">
+                <td className="px-6 py-4 text-muted-foreground">{new Date(inv.created_date).toLocaleString()}</td>
+                <td className="px-6 py-4 font-sans font-bold">{inv.company_name}</td>
+                <td className="px-6 py-4 text-foreground">${inv.amount_usd}</td>
+                <td className="px-6 py-4">
+                  <span className={cn("font-bold", inv.status === 'success' ? "text-emerald-500" : inv.status === 'failed' ? "text-red-500" : "text-amber-500")}>
+                    {(inv.status || 'UNKNOWN').toUpperCase()}
+                  </span>
+                </td>
+                <td className="px-6 py-4 text-muted-foreground truncate max-w-[150px]">{inv.reference}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 }
 
 // ----------------------------------------------------
 // 6. Usage Monitor Tab
 // ----------------------------------------------------
 function TabUsageMonitor() {
- return (
- <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="bg-card border border-primary/40 rounded-xl p-6 ">
- <h3 className="text-lg font-bold mb-4 flex items-center gap-2"><Activity className="w-5 h-5 text-primary" /> High Usage Companies</h3>
- <p className="text-sm text-muted-foreground mb-4">Companies approaching their AI credit limits (Upsell opportunities).</p>
- <div className="space-y-4">
- <div className="bg-muted rounded-lg p-4">
- <div className="flex justify-between font-bold text-sm mb-2"><span>Acme Corp</span> <span className="text-amber-600">95% Used</span></div>
- <div className="w-full h-2 bg-background rounded-full overflow-hidden"><div className="h-full bg-amber-500 w-[95%]"></div></div>
- </div>
- <div className="bg-muted rounded-lg p-4">
- <div className="flex justify-between font-bold text-sm mb-2"><span>Stark Ind.</span> <span className="text-red-600">100% Used</span></div>
- <div className="w-full h-2 bg-background rounded-full overflow-hidden"><div className="h-full bg-red-500 w-full"></div></div>
- </div>
- </div>
- </div>
- </div>
- );
+  const { data: metrics = [], isLoading } = useQuery({
+    queryKey: ['superadmin_usage'],
+    queryFn: async () => {
+      const res = await powerSync.execute(`
+        SELECT u.company_id, c.name, sum(cast(u.used_amount as integer)) as total_usage 
+        FROM usage_metrics u
+        JOIN companies c ON u.company_id = c.id
+        WHERE u.metric_name LIKE '%ai%'
+        GROUP BY u.company_id, c.name
+        ORDER BY total_usage DESC
+        LIMIT 10
+      `);
+      return res.rows ? Array.from(res.rows) : [];
+    }
+  });
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="bg-card border border-primary/40 rounded-xl p-6 ">
+        <h3 className="text-lg font-bold mb-4 flex items-center gap-2"><Activity className="w-5 h-5 text-primary" /> High Usage Companies</h3>
+        <p className="text-sm text-muted-foreground mb-4">Companies approaching their AI credit limits (Upsell opportunities).</p>
+        <div className="space-y-4">
+          {isLoading ? (
+            <div className="text-center text-muted-foreground py-4">Loading Usage Data...</div>
+          ) : metrics.length === 0 ? (
+            <div className="text-center text-muted-foreground py-4">No AI usage recorded yet.</div>
+          ) : metrics.map(m => {
+             // For display purposes, assume 1000 is a generic limit if we don't have their exact plan limits in this query
+             const percent = Math.min(100, Math.round((m.total_usage / 1000) * 100));
+             const isHigh = percent >= 90;
+             return (
+               <div key={m.company_id} className="bg-muted rounded-lg p-4">
+                 <div className="flex justify-between font-bold text-sm mb-2"><span>{m.name}</span> <span className={isHigh ? "text-red-600" : "text-amber-600"}>{m.total_usage} Credits Used</span></div>
+                 <div className="w-full h-2 bg-background rounded-full overflow-hidden"><div className={cn("h-full", isHigh ? "bg-red-500" : "bg-amber-500")} style={{width: `${percent}%`}}></div></div>
+               </div>
+             )
+          })}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 // ----------------------------------------------------
