@@ -396,11 +396,11 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md animate-in fade-in duration-300">
-      <div className="relative w-full max-w-5xl bg-card rounded-[2rem] border border-primary/40 shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 animate-in fade-in duration-300">
+      <div className="relative w-full max-w-5xl bg-card rounded-2xl shadow-xl flex flex-col max-h-[90vh] overflow-hidden">
         
         {/* Header */}
-        <div className="flex items-center justify-between p-6 md:p-8 border-b border-primary/20">
+        <div className="flex items-center justify-between p-6 md:p-8 border-b border-border">
           <div>
             <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">Upgrade Your Plan</h2>
             <p className="text-sm text-muted-foreground mt-1">Select the perfect tier for your firm's growing needs.</p>
@@ -411,7 +411,7 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto p-6 md:p-8 bg-muted/10">
+        <div className="overflow-y-auto p-6 md:p-8 bg-background">
           {loading ? (
             <div className="flex justify-center items-center py-20">
               <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -421,7 +421,7 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
               {plans.map((p) => {
                 const isCurrent = company?.subscription_plan === p.name.toLowerCase().replace(/\s/g, '');
                 return (
-                  <div key={p.id} className={`relative flex flex-col bg-card rounded-3xl border p-6 md:p-8 transition-all ${isCurrent ? 'border-primary/40 opacity-70' : 'border-primary/20 hover:border-primary/40 hover:-translate-y-1'}`}>
+                  <div key={p.id} className={`relative flex flex-col bg-card rounded-2xl border p-6 md:p-8 transition-all ${isCurrent ? 'border-primary opacity-70' : 'border-border hover:border-muted-foreground hover:shadow-md'}`}>
                     <div className="mb-4">
                       <h3 className="font-bold text-xl text-foreground mb-1">{p.name}</h3>
                       <div className="flex items-end gap-1">
@@ -430,7 +430,7 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
                       </div>
                     </div>
                     
-                    <div className="bg-muted/40 rounded-xl p-4 mb-6 space-y-2 text-sm border border-primary/10">
+                    <div className="bg-muted/40 rounded-xl p-4 mb-6 space-y-2 text-sm border border-border">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Team Size:</span>
                         <span className="font-bold">{p.limits?.users || 'Unlimited'}</span>
@@ -449,11 +449,12 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
                       ) : (
                         <Button 
                           onClick={() => handleUpgrade(p)}
-                          disabled={processingId === p.id}
-                          className="w-full bg-primary hover:bg-primary/90 text-white h-12 rounded-xl font-bold flex items-center justify-center gap-2"
+                          disabled={processingId !== null}
+                          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-12 rounded-xl font-bold shadow-sm"
                         >
-                          {processingId === p.id ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Upgrade Now'}
-                          {processingId !== p.id && <ArrowRight className="w-4 h-4" />}
+                          {processingId === p.id ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : (
+                            <>Upgrade Now <ArrowRight className="w-4 h-4 ml-2" /></>
+                          )}
                         </Button>
                       )}
                     </div>
