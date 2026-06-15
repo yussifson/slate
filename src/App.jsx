@@ -395,6 +395,7 @@ import AdminOverview from './pages/admin/AdminOverview';
 import AdminFirms from './pages/admin/AdminFirms';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminBilling from './pages/admin/AdminBilling';
+import SuperAdminBilling from './components/orbitbolt/SuperAdminBilling';
 import AdminSecurity from './pages/admin/AdminSecurity';
 import AdminBroadcasts from './pages/admin/AdminBroadcasts';
 import NotificationsInbox from './pages/NotificationsInbox';
@@ -826,6 +827,7 @@ function App() {
                           <Route path="/admin/firms" element={<AdminFirms />} />
                           <Route path="/admin/users" element={<AdminUsers />} />
                           <Route path="/admin/billing" element={<AdminBilling />} />
+                          <Route path="/admin/pricing" element={<SuperAdminBilling title="Pricing Engine" />} />
                           <Route path="/admin/security" element={<AdminSecurity />} />
                           <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
 
@@ -850,6 +852,7 @@ function App() {
                           <Route path="/admin/firms" element={<AdminFirms />} />
                           <Route path="/admin/users" element={<AdminUsers />} />
                           <Route path="/admin/billing" element={<AdminBilling />} />
+                          <Route path="/admin/pricing" element={<SuperAdminBilling title="Pricing Engine" />} />
                           <Route path="/admin/security" element={<AdminSecurity />} />
                           <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
 

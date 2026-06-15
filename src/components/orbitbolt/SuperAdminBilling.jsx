@@ -25,23 +25,23 @@ export default function SuperAdminBilling({ title = 'Super Admin Billing Center'
 };
 
  return (
- <div className="flex h-full bg-background font-sans overflow-hidden">
- 
- {/* Sidebar Navigation */}
- <div className="w-64 bg-card border-r border-primary/40 shrink-0 flex flex-col p-4 space-y-2 overflow-y-auto">
- <h2 className="text-sm font-black uppercase tracking-widest text-muted-foreground px-4 mb-4 mt-2">Billing Engine</h2>
- 
- <NavButton active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon={<LayoutDashboard className="w-4 h-4" />} label="Financial Dashboard" />
- <NavButton active={activeTab === 'plans'} onClick={() => setActiveTab('plans')} icon={<Crown className="w-4 h-4" />} label="Plan Manager" />
- <NavButton active={activeTab === 'customers'} onClick={() => setActiveTab('customers')} icon={<Users className="w-4 h-4" />} label="Customer Subscriptions" />
- <NavButton active={activeTab === 'overrides'} onClick={() => setActiveTab('overrides')} icon={<ShieldAlert className="w-4 h-4" />} label="Manual Overrides" />
- <NavButton active={activeTab === 'transactions'} onClick={() => setActiveTab('transactions')} icon={<CreditCard className="w-4 h-4" />} label="Transaction Ledger" />
- <NavButton active={activeTab === 'usage'} onClick={() => setActiveTab('usage')} icon={<Activity className="w-4 h-4" />} label="Usage Monitor" />
- <NavButton active={activeTab === 'webhooks'} onClick={() => setActiveTab('webhooks')} icon={<Plug className="w-4 h-4" />} label="Webhook Diagnostics" />
- </div>
+  <div className="flex flex-col md:flex-row h-full bg-background font-sans overflow-hidden">
+  
+  {/* Navigation */}
+  <div className="w-full md:w-64 bg-card border-b md:border-b-0 md:border-r border-primary/40 shrink-0 flex md:flex-col p-4 gap-2 overflow-x-auto md:overflow-y-auto no-scrollbar">
+  <h2 className="hidden md:block text-sm font-black uppercase tracking-widest text-muted-foreground px-4 mb-4 mt-2">Pricing Engine</h2>
+  
+  <NavButton active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon={<LayoutDashboard className="w-4 h-4" />} label="Dashboard" />
+  <NavButton active={activeTab === 'plans'} onClick={() => setActiveTab('plans')} icon={<Crown className="w-4 h-4" />} label="Plans" />
+  <NavButton active={activeTab === 'customers'} onClick={() => setActiveTab('customers')} icon={<Users className="w-4 h-4" />} label="Customers" />
+  <NavButton active={activeTab === 'overrides'} onClick={() => setActiveTab('overrides')} icon={<ShieldAlert className="w-4 h-4" />} label="Overrides" />
+  <NavButton active={activeTab === 'transactions'} onClick={() => setActiveTab('transactions')} icon={<CreditCard className="w-4 h-4" />} label="Ledger" />
+  <NavButton active={activeTab === 'usage'} onClick={() => setActiveTab('usage')} icon={<Activity className="w-4 h-4" />} label="Usage" />
+  <NavButton active={activeTab === 'webhooks'} onClick={() => setActiveTab('webhooks')} icon={<Plug className="w-4 h-4" />} label="Webhooks" />
+  </div>
 
- {/* Main Content Area */}
- <div className="flex-1 overflow-y-auto bg-muted/10">
+  {/* Main Content Area */}
+  <div className="flex-1 overflow-y-auto bg-muted/10">
  <div className="p-8 max-w-6xl mx-auto">
  <div className="mb-8">
  <h1 className="text-3xl font-extrabold text-foreground flex items-center gap-2">
@@ -64,18 +64,18 @@ export default function SuperAdminBilling({ title = 'Super Admin Billing Center'
  );
 }
 
-function NavButton({ active, onClick, icon, label}) {
- return (
- <button 
- onClick={onClick}
- className={cn(
- "flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors w-full text-left",
- active ? "bg-primary text-white " : "text-muted-foreground hover:bg-muted hover:text-foreground"
- )}
- >
- {icon} {label}
- </button>
- );
+function NavButton({ active, onClick, icon, label }) {
+  return (
+    <button 
+      onClick={onClick}
+      className={cn(
+        "flex items-center gap-2 whitespace-nowrap px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex-shrink-0 md:w-full text-left",
+        active ? "bg-primary text-white shadow-sm" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+      )}
+    >
+      {icon} <span className="hidden md:inline">{label}</span><span className="md:hidden">{label}</span>
+    </button>
+  );
 }
 
 // ----------------------------------------------------

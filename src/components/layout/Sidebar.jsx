@@ -113,7 +113,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  queryKey: ['company', user?.company_id],
  queryFn: async () => {
  if (!user?.company_id) return null;
- const { data} = await powerSync.execute('SELECT education_level FROM companies WHERE id = ? LIMIT 1', [user.company_id]).then(res => ({ data: res.rows._array[0]}));
+ const { data} = await powerSync.execute('SELECT industry_type FROM companies WHERE id = ? LIMIT 1', [user.company_id]).then(res => ({ data: res.rows._array[0]}));
  return data;
 },
  enabled: !!user?.company_id
@@ -121,7 +121,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
  const activeCompanyLogo = impersonatedCompany?.logo_url || impersonatedCompany?.logo_light_url || user?.company_logo_url;
  const activeCompanyName = impersonatedCompany?.name || user?.company_name || "Slate";
- const activeEducationLevel = impersonatedCompany?.education_level || companyData?.education_level || 'primary';
+ const activeEducationLevel = impersonatedCompany?.industry_type || companyData?.industry_type || 'primary';
 
  const industryData = INDUSTRIES[activeIndustry] || INDUSTRIES.law;
  const industryNav = getIndustryNav(activeIndustry, activeEducationLevel);
@@ -275,7 +275,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  { label: "Overview", path: "/admin", icon: "LayoutDashboard"},
  { label: "Workspaces", path: "/admin/firms", icon: "Building2"},
  { label: "Users", path: "/admin/users", icon: "Users"},
- { label: "Billing / Plans", path: "/billing", icon: "Crown"},
+ { label: "Pricing", path: "/admin/pricing", icon: "Crown"},
  { label: "Global Invoices", path: "/admin/billing", icon: "DollarSign"},
  { label: "Security", path: "/admin/security", icon: "Shield"},
  { label: "Broadcasts", path: "/admin/broadcasts", icon: "Megaphone"}

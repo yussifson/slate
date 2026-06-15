@@ -617,7 +617,5 @@ export default function BillingDashboard() {
   const companyId = useCompanyId();
   const { impersonatedCompany } = useImpersonation();
 
-  const showSuperAdmin = isSuperAdmin(user) && !impersonatedCompany;
-
-  return showSuperAdmin ? <SuperAdminBilling /> : <CompanyBilling companyId={companyId} />;
+  return <CompanyBilling companyId={companyId} />;
 }

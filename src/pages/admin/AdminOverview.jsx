@@ -62,7 +62,7 @@ export default function AdminOverview() {
  subtitle="Global metrics and MRR across the Slate ecosystem." 
  />
  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
- <div className="bg-card border border-primary/40 p-6 rounded-2xl flex items-center justify-between ">
+ <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 border border-primary/20 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 p-6 rounded-2xl flex items-center justify-between">
  <div>
  <p className="text-sm text-muted-foreground mb-1">{t("total_mrr", "Total MRR")}</p>
  <p className="text-3xl font-black text-slate-900 dark:text-slate-100">${mrr}</p>
@@ -73,7 +73,7 @@ export default function AdminOverview() {
  </div>
  </div>
 
- <div className="bg-card border border-primary/40 p-6 rounded-2xl flex items-center justify-between ">
+ <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 border border-primary/20 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 p-6 rounded-2xl flex items-center justify-between">
  <div>
  <p className="text-sm text-muted-foreground mb-1">{t("total_firms", "Total Firms")}</p>
  <p className="text-3xl font-black text-slate-900 dark:text-slate-100">{companies.length}</p>
@@ -84,7 +84,7 @@ export default function AdminOverview() {
  </div>
  </div>
 
- <div className="bg-card border border-primary/40 p-6 rounded-2xl flex items-center justify-between ">
+ <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 border border-primary/20 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 p-6 rounded-2xl flex items-center justify-between">
  <div>
  <p className="text-sm text-muted-foreground mb-1">{t("total_users", "Total Users")}</p>
  <p className="text-3xl font-black text-slate-900 dark:text-slate-100">{totalUsersCount}</p>
@@ -95,7 +95,7 @@ export default function AdminOverview() {
  </div>
  </div>
 
- <div className="bg-card border border-primary/40 p-6 rounded-2xl flex items-center justify-between ">
+ <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 border border-primary/20 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 p-6 rounded-2xl flex items-center justify-between">
  <div>
  <p className="text-sm text-muted-foreground mb-1">{t("total_cases", "Total Cases")}</p>
  <p className="text-3xl font-black text-slate-900 dark:text-slate-100">{totalCasesCount}</p>

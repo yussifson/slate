@@ -102,7 +102,6 @@ export default function SignUp() {
  subdomain: cleanSubdomain,
  email: email,
  industry_type: 'law',
- education_level: null,
  country: null,
  subscription_plan: urlPlan,
  market_tier: urlMarket,

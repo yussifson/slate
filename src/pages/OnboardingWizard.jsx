@@ -146,7 +146,6 @@ export default function OnboardingWizard() {
  subdomain: finalSubdomain,
  email: user.email,
  industry_type: finalIndustry || 'law',
- education_level: finalEduLevel,
  country: country,
  currency: currency,
  subscription_plan: 'starter',
@@ -208,7 +207,6 @@ export default function OnboardingWizard() {
  await (async () => {
  const _p = {
  industry_type: finalIndustry,
- education_level: (industry === 'school' && educationLevel === 'basic') ? 'basic' : null,
  country: country,
  currency: currency,
  status: 'active'
