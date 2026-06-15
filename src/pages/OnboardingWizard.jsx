@@ -428,7 +428,7 @@ export default function OnboardingWizard() {
  <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-primary/20 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
  {/* Main Container */}
- <div className={`w-full h-[100dvh] sm:h-auto ${step === 4 ? 'sm:max-w-6xl' : 'sm:max-w-3xl'} bg-card sm:rounded-3xl sm:shadow-2xl sm:border border-border/60 relative z-10 flex flex-col sm:my-10 transition-all duration-500`}>
+ <div className={`w-full h-[100dvh] sm:h-auto ${step === 4 ? 'sm:max-w-[95%]' : 'sm:max-w-3xl'} bg-card sm:rounded-3xl sm:shadow-sm sm:border border-border/60 relative z-10 flex flex-col sm:my-10 transition-all duration-500`}>
  
  {/* Header Section */}
  <div className="px-5 sm:px-8 pt-6 sm:pt-8 pb-6 border-b border-primary/40 shrink-0">
