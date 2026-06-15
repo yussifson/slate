@@ -106,6 +106,17 @@ export default function OnboardingWizard() {
         if (error) throw error;
         // Filter active plans locally if needed, but usually they should all be active
         const activePlans = (data || []).filter(p => p.is_active === true || p.is_active === 'true' || p.is_active === 1);
+        
+        const hasFree = activePlans.some(p => p.price_monthly === 0);
+        if (!hasFree) {
+          activePlans.unshift({
+            id: 'free',
+            name: 'Free',
+            price_monthly: 0,
+            limits: { users: 1, ai_credits_monthly: 100 }
+          });
+        }
+        
         setPlans(activePlans);
       } catch (err) {
         console.error("Failed to load plans:", err);
@@ -115,6 +126,31 @@ export default function OnboardingWizard() {
     };
     fetchPlans();
   }, []);
+
+  const handleSelectPlan = async (plan) => {
+    if (plan.price_monthly === 0) {
+      await handleCompleteOnboarding(plan);
+    } else {
+      setLoading(true);
+      try {
+        await initiatePaystackSubscription({
+          email: user?.email,
+          amount: plan.price_monthly,
+          planCode: plan.provider_plan_id || '',
+          onSuccess: async (ref) => {
+            await handleCompleteOnboarding(plan);
+          },
+          onClose: () => {
+            setLoading(false);
+            toast({ title: "Payment Cancelled", description: "You cancelled the payment." });
+          }
+        });
+      } catch (err) {
+        setLoading(false);
+        toast({ title: "Payment Failed", description: err.message, variant: "destructive" });
+      }
+    }
+  };
 
  const handleAddStaff = () => {
  if (!staffEmail || !staffName) return;
@@ -209,9 +245,9 @@ export default function OnboardingWizard() {
 }
 
  const profPayload = {
- full_name: step1Data.fullName,
+ full_name: user?.user_metadata?.full_name || 'Admin',
  company_id: companyIdToUse,
- company_name: step1Data.companyName
+ company_name: workspaceName || 'My Workslate'
 };
  
  if (user?.role !== 'super_admin') {
@@ -306,9 +342,9 @@ export default function OnboardingWizard() {
  
  // Save to database for cross-device persistence
  const indPayload = {
- id: `template_${step2Data.industry}`,
+ id: `template_${finalIndustry}`,
  company_id: companyIdToUse,
- industry: step2Data.industry,
+ industry: finalIndustry,
  record_type: 'onboarding_template',
  search_text: 'initial setup template applied',
  data: { applied: true, timestamp: new Date().toISOString()}
@@ -392,7 +428,7 @@ export default function OnboardingWizard() {
  <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-primary/20 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
  {/* Main Container */}
- <div className="w-full h-[100dvh] sm:h-auto sm:max-w-3xl bg-card sm:rounded-3xl sm:-[0_20px_50px_-12px_rgba(0,0,0,0.1)] sm:border border-primary/40 relative z-10 flex flex-col sm:my-10">
+ <div className={`w-full h-[100dvh] sm:h-auto ${step === 4 ? 'sm:max-w-5xl' : 'sm:max-w-3xl'} bg-card sm:rounded-3xl sm:-[0_20px_50px_-12px_rgba(0,0,0,0.1)] sm:border border-primary/40 relative z-10 flex flex-col sm:my-10 transition-all duration-500`}>
  
  {/* Header Section */}
  <div className="px-5 sm:px-8 pt-6 sm:pt-8 pb-6 border-b border-primary/40 shrink-0">
@@ -811,33 +847,47 @@ export default function OnboardingWizard() {
  ) : (
    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
      {plans.map((p) => (
-       <div key={p.id} className="relative flex flex-col bg-background rounded-xl p-8 border border-border hover:border-primary/50 transition-colors shadow-none" onClick={() => handleSelectPlan(p)}>
-         <div className="mb-6">
-           <h3 className="font-semibold text-lg text-foreground mb-2">{p.name}</h3>
+       <div key={p.id} className={`relative flex flex-col bg-background rounded-2xl p-6 border-2 transition-all ${p.price_monthly > 0 ? 'border-primary/20 hover:border-primary shadow-sm hover:shadow-md' : 'border-border hover:border-border/80'}`}>
+         <div className="mb-4">
+           <h3 className="font-bold text-xl text-foreground mb-1">{p.name}</h3>
            <div className="flex items-end gap-1 mb-2">
-             <span className="text-4xl font-bold tracking-tight">GH₵{p.price_monthly}</span>
-             <span className="text-muted-foreground font-medium text-sm mb-1.5">/mo</span>
+             {p.price_monthly === 0 ? (
+               <span className="text-4xl font-black tracking-tight">Free</span>
+             ) : (
+               <>
+                 <span className="text-4xl font-black tracking-tight">GH₵{p.price_monthly}</span>
+                 <span className="text-muted-foreground font-medium text-sm mb-1.5">/mo</span>
+               </>
+             )}
            </div>
+           <p className="text-sm text-muted-foreground line-clamp-2 min-h-[40px]">
+              {p.price_monthly === 0 ? "Perfect to get started and explore." : "Advanced features for growing teams."}
+           </p>
          </div>
          
-         <div className="flex-1 space-y-4 text-sm text-foreground/80 mb-8">
+         <div className="flex-1 space-y-3 text-sm text-foreground mb-6">
            <div className="flex justify-between items-center py-2 border-b border-border/40">
-             <span>Team Size</span>
-             <span className="font-semibold">{p.limits?.users || 'Unlimited'}</span>
+             <span className="text-muted-foreground">Team Size</span>
+             <span className="font-bold">{p.limits?.users || (p.price_monthly === 0 ? 1 : 'Unlimited')}</span>
            </div>
            <div className="flex justify-between items-center py-2 border-b border-border/40">
-             <span>AI Credits</span>
-             <span className="font-semibold">{p.limits?.ai_credits_monthly || 0}</span>
+             <span className="text-muted-foreground">AI Credits</span>
+             <span className="font-bold">{p.limits?.ai_credits_monthly || (p.price_monthly === 0 ? 100 : 'Unlimited')}</span>
+           </div>
+           <div className="flex justify-between items-center py-2 border-b border-border/40">
+             <span className="text-muted-foreground">Support</span>
+             <span className="font-bold">{p.price_monthly === 0 ? 'Community' : 'Priority'}</span>
            </div>
          </div>
 
          <div className="mt-auto">
            <Button 
              disabled={loading}
-             className={`w-full h-11 rounded-lg font-medium transition-colors ${p.price_monthly === 0 ? 'bg-secondary text-secondary-foreground hover:bg-secondary/80' : 'bg-primary text-primary-foreground hover:bg-primary/90'}`}
+             onClick={() => handleSelectPlan(p)}
+             className={`w-full h-11 rounded-xl font-bold transition-all ${p.price_monthly === 0 ? 'bg-slate-100 text-slate-900 hover:bg-slate-200' : 'bg-primary text-primary-foreground hover:bg-primary/90'}`}
            >
              {loading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : (
-               p.price_monthly === 0 ? "Get Started for Free" : "Upgrade & Complete"
+               p.price_monthly === 0 ? "Start for Free" : "Upgrade Now"
              )}
            </Button>
          </div>
@@ -900,14 +950,7 @@ export default function OnboardingWizard() {
                 </div>
               ) : (
                 <div className="flex gap-3">
-                  <Button 
-                    variant="outline"
-                    onClick={() => handleCompleteOnboarding(null)}
-                    disabled={loading || !!orbitProgress}
-                    className="h-12 px-6 rounded-xl border-primary/40 bg-card hover:bg-muted/30 transition-colors font-semibold"
-                  >
-                    {loading || orbitProgress ? <Loader2 className="w-4 h-4 animate-spin" /> : t("skip_for_now", "Skip for now")}
-                  </Button>
+                  {/* Skip for now is removed; user must select a plan (Free or Paid) from the cards */}
                 </div>
               )}
  </div>
