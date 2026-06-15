@@ -13,47 +13,18 @@ import PageHeader from '@/components/shared/PageHeader';
 export default function AdminUsers() {
   const { t } = useTranslation();
   const { toast } = useToast();
-  const { data: localProfiles = [] } = useQuery("SELECT id, full_name, email, role, created_date, company_id FROM profiles ORDER BY created_date DESC LIMIT 100");
-  const { data: localCompanies = [] } = useQuery("SELECT id, name FROM companies");
-
-  const [rawProfiles, setRawProfiles] = useState([]);
-  const [rawCompanies, setRawCompanies] = useState([]);
-  const [loadingProfiles, setLoadingProfiles] = useState(true);
-  const [loadingCompanies, setLoadingCompanies] = useState(true);
-
-  async function fetchProfiles() {
-    try {
-      const [{ data: pData }, { data: cData }] = await Promise.all([
-        supabase.from('profiles').select('id, full_name, email, role, created_date, company_id').order('created_date', { ascending: false }).limit(100),
-        supabase.from('companies').select('id, name')
-      ]);
-      if (pData) setRawProfiles(pData);
-      if (cData) setRawCompanies(cData);
-    } catch(err) {
-      console.warn("Offline or failed to fetch from Supabase, falling back to local sync");
-    } finally {
-      setLoadingProfiles(false);
-      setLoadingCompanies(false);
-    }
-  }
-
-  useEffect(() => {
-    fetchProfiles();
-  }, []);
+  const { data: rawProfiles = [], isLoading: loadingProfiles } = useQuery("SELECT id, full_name, email, role, created_date, company_id FROM profiles ORDER BY created_date DESC LIMIT 100");
+  const { data: rawCompanies = [], isLoading: loadingCompanies } = useQuery("SELECT id, name FROM companies");
 
   const [searchQuery, setSearchQuery] = useState('');
   const loading = loadingProfiles || loadingCompanies;
 
-  // Use online Supabase data if available, otherwise fallback to offline PowerSync data
   const profiles = useMemo(() => {
-    const activeProfiles = rawProfiles.length > 0 ? rawProfiles : localProfiles;
-    const activeCompanies = rawCompanies.length > 0 ? rawCompanies : localCompanies;
-    
-    return activeProfiles.map(p => ({
+    return rawProfiles.map(p => ({
       ...p,
-      companies: { name: activeCompanies.find(c => c.id === p.company_id)?.name || null }
+      companies: { name: rawCompanies.find(c => c.id === p.company_id)?.name || null }
     }));
-  }, [rawProfiles, localProfiles, rawCompanies, localCompanies]);
+  }, [rawProfiles, rawCompanies]);
 
   const handleResetPassword = async (email) => {
     try {
@@ -67,23 +38,16 @@ export default function AdminUsers() {
 
   const handleForceOnboarding = async (userObj) => {
     try {
-      // Must use Supabase directly because Admin's local PowerSync DB doesn't have other users' records
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({ company_id: null, onboarding_completed: false })
-        .eq('id', userObj.id);
-        
-      if (profileError) throw profileError;
+      const keys = Object.keys({ company_id: null, onboarding_completed: false });
+      const values = Object.values({ company_id: null, onboarding_completed: false }).map(v => typeof v === 'object' ? JSON.stringify(v) : v);
+      const setClause = keys.map(k => `${k} = ?`).join(', ');
+      await powerSync.execute(`UPDATE ${'profiles'.replace(/['"`]/g, '')} SET ${setClause} WHERE id = ?`, [...values, userObj.id]);
       
       if (userObj.company_id) {
-        await supabase
-          .from('companies')
-          .update({ email: null })
-          .eq('id', userObj.company_id);
+        await (async () => { const _payload = {email: null}; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE companies SET ${_keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._vals, userObj.company_id]);})();
       }
       
       toast({ title: "Success", description: "User forced to onboard on next login" });
-      fetchProfiles();
     } catch (err) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
     }
