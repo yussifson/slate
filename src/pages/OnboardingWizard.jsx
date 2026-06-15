@@ -428,7 +428,7 @@ export default function OnboardingWizard() {
  <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-primary/20 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
  {/* Main Container */}
- <div className={`w-full h-[100dvh] sm:h-auto ${step === 4 ? 'sm:max-w-5xl' : 'sm:max-w-3xl'} bg-card sm:rounded-3xl sm:-[0_20px_50px_-12px_rgba(0,0,0,0.1)] sm:border border-primary/40 relative z-10 flex flex-col sm:my-10 transition-all duration-500`}>
+ <div className={`w-full h-[100dvh] sm:h-auto ${step === 4 ? 'sm:max-w-6xl' : 'sm:max-w-3xl'} bg-card sm:rounded-3xl sm:shadow-2xl sm:border border-border/60 relative z-10 flex flex-col sm:my-10 transition-all duration-500`}>
  
  {/* Header Section */}
  <div className="px-5 sm:px-8 pt-6 sm:pt-8 pb-6 border-b border-primary/40 shrink-0">
@@ -845,9 +845,9 @@ export default function OnboardingWizard() {
      <Loader2 className="w-8 h-8 animate-spin text-primary" />
    </div>
  ) : (
-   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
+   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-full w-full mx-auto">
      {plans.map((p) => (
-       <div key={p.id} className={`relative flex flex-col bg-background rounded-2xl p-6 border-2 transition-all ${p.price_monthly > 0 ? 'border-primary/20 hover:border-primary shadow-sm hover:shadow-md' : 'border-border hover:border-border/80'}`}>
+       <div key={p.id} className={`relative flex flex-col bg-background rounded-2xl p-6 border transition-all ${p.price_monthly > 0 ? 'border-primary/20 hover:border-primary/40' : 'border-border hover:border-border/80'} shadow-none`}>
          <div className="mb-4">
            <h3 className="font-bold text-xl text-foreground mb-1">{p.name}</h3>
            <div className="flex items-end gap-1 mb-2">
