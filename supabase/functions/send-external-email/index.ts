@@ -5,49 +5,84 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+// Multi-Novu Fallback implementation matching automation-engine
+const NOVU_API_KEYS = [
+  Deno.env.get('NOVU_API_KEY') ?? '',
+  Deno.env.get('NOVU_API_KEY_SECONDARY') ?? '',
+  Deno.env.get('NOVU_API_KEY_TERTIARY') ?? ''
+].filter(key => key !== '');
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders, status: 200 })
   }
 
   try {
-    const { to, subject, message } = await req.json()
+    const body = await req.json();
+    const { to, subject, message } = body;
 
     if (!to || !subject || !message) {
-      throw new Error("Missing 'to', 'subject', or 'message' fields.");
+      throw new Error(`Missing required fields. Received to: ${!!to}, subject: ${!!subject}, message: ${!!message}`);
     }
 
-    const recipients = Array.isArray(to) ? to : to.split(',').map(e => e.trim()).filter(Boolean);
-
-    // Using Resend for reliable external email sending.
-    // The user must provide RESEND_API_KEY in Supabase Edge Function Secrets.
-    const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
+    const recipients = Array.isArray(to) ? to : to.split(',').map((e: string) => e.trim()).filter(Boolean);
     
-    if (!RESEND_API_KEY) {
-      throw new Error("RESEND_API_KEY is missing from environment variables.");
+    if (recipients.length === 0) {
+       throw new Error("No valid recipients provided.");
     }
 
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${RESEND_API_KEY}`
-      },
-      body: JSON.stringify({
-        from: 'Airflake System <onboarding@resend.dev>',
-        to: recipients,
-        subject: subject,
-        html: `<div style="font-family: sans-serif; padding: 20px;">
-          <h2 style="color: #333;">${subject}</h2>
-          <p style="white-space: pre-wrap; color: #555;">${message}</p>
-        </div>`,
-        text: message
-      })
-    });
+    if (NOVU_API_KEYS.length === 0) {
+       throw new Error("No Novu API keys configured in environment variables.");
+    }
 
-    if (!res.ok) {
-      const errorBody = await res.text();
-      throw new Error(`Resend error: ${res.status} ${errorBody}`);
+    let allSuccess = true;
+    let lastError = null;
+
+    // Send via Novu with Multi-Account Fallback
+    for (const recipient of recipients) {
+      let success = false;
+      for (const apiKey of NOVU_API_KEYS) {
+        try {
+          const res = await fetch('https://api.novu.co/v1/events/trigger', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `ApiKey ${apiKey}`
+            },
+            body: JSON.stringify({
+              name: 'system-notification',
+              to: {
+                subscriberId: recipient,
+                email: recipient
+              },
+              payload: {
+                title: subject,
+                message: message
+              }
+            })
+          });
+
+          if (!res.ok) {
+            const errorBody = await res.text();
+            throw new Error(`Novu error: ${res.status} ${errorBody}`);
+          }
+          
+          success = true;
+          break; // Success! Break the retry loop
+        } catch (err) {
+          lastError = err;
+          console.warn(`[NOVU FALLBACK] Key failed for ${recipient}: ${err.message}. Trying next...`);
+        }
+      }
+
+      if (!success) {
+        allSuccess = false;
+        console.error(`Failed to send to ${recipient} after trying all Novu accounts. Last error: ${lastError?.message}`);
+      }
+    }
+
+    if (!allSuccess) {
+      throw new Error(lastError?.message || "Failed to send to one or more recipients.");
     }
 
     return new Response(JSON.stringify({ message: "Emails sent successfully" }), {
@@ -55,7 +90,7 @@ serve(async (req) => {
       status: 200,
     })
   } catch (error) {
-    console.error(error)
+    console.error("SEND EXTERNAL EMAIL ERROR:", error)
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,
