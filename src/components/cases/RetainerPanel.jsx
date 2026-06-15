@@ -34,7 +34,7 @@ export default function RetainerPanel({ caseData, user }) {
     queryFn: () => base44.entities.Company.filter({ id: companyId }),
     enabled: !!companyId,
   });
-  const currency = companies[0]?.currency || "GHS";
+  const currency = user?.company_currency || "GHS";
 
   const { data: retainers = [], isLoading } = useQuery({
     queryKey: ["retainer", caseData.id],

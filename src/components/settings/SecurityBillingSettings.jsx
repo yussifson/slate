@@ -396,64 +396,62 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 animate-in fade-in duration-300">
-      <div className="relative w-full max-w-5xl bg-card rounded-2xl shadow-xl flex flex-col max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 h-[100dvh] w-screen m-0 p-4 animate-in fade-in duration-200">
+      <div className="relative w-full max-w-5xl bg-background rounded-xl flex flex-col max-h-[90vh] overflow-hidden border border-border shadow-none">
         
         {/* Header */}
-        <div className="flex items-center justify-between p-6 md:p-8 border-b border-border">
-          <div>
-            <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">Upgrade Your Plan</h2>
-            <p className="text-sm text-muted-foreground mt-1">Select the perfect tier for your firm's growing needs.</p>
-          </div>
-          <button onClick={onClose} className="p-2 rounded-full hover:bg-muted transition-colors">
-            <X className="w-6 h-6 text-muted-foreground" />
+        <div className="flex flex-col items-center justify-center p-8 md:p-12 border-b border-border/40 relative">
+          <button onClick={onClose} className="absolute right-6 top-6 p-2 rounded-full hover:bg-muted text-muted-foreground transition-colors">
+            <X className="w-5 h-5" />
           </button>
+          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-foreground">Select your plan</h2>
+          <p className="text-base text-muted-foreground mt-3 max-w-xl text-center">Transparent pricing for every stage of your firm's growth. Upgrade anytime.</p>
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto p-6 md:p-8 bg-background">
+        <div className="overflow-y-auto p-6 md:p-10 bg-muted/10">
           {loading ? (
-            <div className="flex justify-center items-center py-20">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <div className="flex justify-center items-center py-24">
+              <Loader2 className="w-6 h-6 animate-spin text-primary/50" />
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
               {plans.map((p) => {
                 const isCurrent = company?.subscription_plan === p.name.toLowerCase().replace(/\s/g, '');
                 return (
-                  <div key={p.id} className={`relative flex flex-col bg-card rounded-2xl border p-6 md:p-8 transition-all ${isCurrent ? 'border-primary opacity-70' : 'border-border hover:border-muted-foreground hover:shadow-md'}`}>
-                    <div className="mb-4">
-                      <h3 className="font-bold text-xl text-foreground mb-1">{p.name}</h3>
-                      <div className="flex items-end gap-1">
-                        <span className="text-3xl font-black">GH₵{p.price_monthly}</span>
-                        <span className="text-muted-foreground font-medium text-sm mb-1">/mo</span>
+                  <div key={p.id} className={`relative flex flex-col bg-background rounded-xl p-8 transition-colors ${isCurrent ? 'border-2 border-primary' : 'border border-border hover:border-primary/50'}`}>
+                    <div className="mb-6">
+                      <h3 className="font-semibold text-lg text-foreground mb-2">{p.name}</h3>
+                      <div className="flex items-end gap-1 mb-2">
+                        <span className="text-4xl font-bold tracking-tight">GH₵{p.price_monthly}</span>
+                        <span className="text-muted-foreground font-medium text-sm mb-1.5">/mo</span>
                       </div>
                     </div>
                     
-                    <div className="bg-muted/40 rounded-xl p-4 mb-6 space-y-2 text-sm border border-border">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Team Size:</span>
-                        <span className="font-bold">{p.limits?.users || 'Unlimited'}</span>
+                    <div className="flex-1 space-y-4 text-sm text-foreground/80 mb-8">
+                      <div className="flex justify-between items-center py-2 border-b border-border/40">
+                        <span>Team Size</span>
+                        <span className="font-semibold">{p.limits?.users || 'Unlimited'}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">AI Credits:</span>
-                        <span className="font-bold">{p.limits?.ai_credits_monthly || 0}</span>
+                      <div className="flex justify-between items-center py-2 border-b border-border/40">
+                        <span>AI Credits</span>
+                        <span className="font-semibold">{p.limits?.ai_credits_monthly || 0}</span>
                       </div>
                     </div>
 
-                    <div className="mt-auto pt-4">
+                    <div className="mt-auto">
                       {isCurrent ? (
-                        <Button disabled className="w-full bg-muted text-muted-foreground h-12 rounded-xl font-bold">
+                        <Button disabled variant="outline" className="w-full h-11 rounded-lg font-medium border-border text-muted-foreground bg-muted/30">
                           Current Plan
                         </Button>
                       ) : (
                         <Button 
                           onClick={() => handleUpgrade(p)}
                           disabled={processingId !== null}
-                          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-12 rounded-xl font-bold shadow-sm"
+                          className={`w-full h-11 rounded-lg font-medium transition-colors ${p.price_monthly === 0 ? 'bg-secondary text-secondary-foreground hover:bg-secondary/80' : 'bg-primary text-primary-foreground hover:bg-primary/90'}`}
                         >
-                          {processingId === p.id ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : (
-                            <>Upgrade Now <ArrowRight className="w-4 h-4 ml-2" /></>
+                          {processingId === p.id ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : (
+                            p.price_monthly === 0 ? "Downgrade to Free" : "Upgrade Plan"
                           )}
                         </Button>
                       )}
@@ -463,12 +461,6 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
               })}
             </div>
           )}
-        </div>
-        
-        {/* Footer */}
-        <div className="p-4 md:p-6 bg-card border-t border-primary/20 flex flex-wrap justify-center gap-6 text-xs font-semibold text-muted-foreground">
-          <div className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-500" /> Instant Activation</div>
-          <div className="flex items-center gap-1.5"><Zap className="w-4 h-4 text-amber-500" /> Secure checkout by Paystack</div>
         </div>
       </div>
     </div>

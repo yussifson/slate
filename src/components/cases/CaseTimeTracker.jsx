@@ -69,7 +69,7 @@ export default function CaseTimeTracker({ caseData, user }) {
     queryFn: () => base44.entities.Company.filter({ id: companyId }),
     enabled: !!companyId,
   });
-  const currency = companies[0]?.currency || "GHS";
+  const currency = user?.company_currency || "GHS";
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.TimeEntry.create(data),

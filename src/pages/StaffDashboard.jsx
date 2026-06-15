@@ -102,7 +102,7 @@ export default function StaffDashboard() {
         <StatCard icon={Briefcase} label="Active Cases" value={activeCases.length} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
         <StatCard icon={CheckSquare} label="Pending Tasks" value={pendingTasks.length} sub={overdueTasks.length > 0 ? `${overdueTasks.length} overdue` : undefined} color="bg-amber-50 text-amber-600" />
         <StatCard icon={Clock} label="Hours This Month" value={totalHours.toFixed(1)} sub={`${billedHours.toFixed(1)}h billed`} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
-        <StatCard icon={TrendingUp} label="Billed Amount" value={formatCurrency(billedAmount, staffRecord?.currency || "GHS")} sub="This month" color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
+        <StatCard icon={TrendingUp} label="Billed Amount" value={formatCurrency(billedAmount, user?.company_currency || "GHS")} sub="This month" color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
       </div>
       {/* Hours vs Target */}
       <div className="bg-card rounded-xl border border-primary/40 p-5">

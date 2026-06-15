@@ -471,6 +471,7 @@ export const AuthProvider = ({ children }) => {
         company_logo_url: companyData?.logo_url || null,
         company_name: companyData?.name || newUser?.company_name || sessionUser.user_metadata?.company_name || "Slate",
         company_industry: newUser?.industry_type || companyData?.industry_type || 'law',
+        company_currency: companyData?.currency || null,
         email: sessionUser.email, 
         full_name: staffRecord?.full_name || newUser?.full_name || sessionUser.user_metadata?.full_name || "Admin",
         avatar_url: sessionUser.user_metadata?.avatar_url || newUser?.avatar_url || null,

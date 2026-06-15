@@ -80,7 +80,7 @@ export default function PerformanceDashboard() {
   }));
 
   const topBiller = lawyerMetrics[0];
-  const currency = staff[0]?.currency || "GHS";
+  const currency = user?.company_currency || "GHS";
 
   return (
     <div className="space-y-6">

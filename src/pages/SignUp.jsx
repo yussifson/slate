@@ -96,7 +96,9 @@ export default function SignUp() {
  const urlMarket = searchParams.get('market') || 'global';
 
  // 2. Create the company
+  const companyId = crypto.randomUUID();
   const payloadData = {
+    id: companyId,
     name: companyName,
     subdomain: cleanSubdomain,
     email: email,
@@ -108,11 +110,8 @@ export default function SignUp() {
   const payloadKeys = Object.keys(payloadData);
   const payloadVals = Object.values(payloadData).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
   await powerSync.execute(`INSERT INTO companies (${payloadKeys.join(', ')}) VALUES (${payloadKeys.map(()=>'?').join(', ')})`, payloadVals);
- const __resComp = await powerSync.execute(`SELECT * FROM companies WHERE subdomain = ?`, [cleanSubdomain]);
- const companyData = __resComp.rows && __resComp.rows.length > 0 ? __resComp.rows.item(0) : null;
- const compError = null;
-
- if (compError) throw compError;
+  
+  const companyData = { ...payloadData };
 
  // 3. Update the profile
   const profPayload = {
@@ -130,9 +129,10 @@ export default function SignUp() {
   const profVals = Object.values(profPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
   await powerSync.execute(`UPDATE profiles SET ${profKeys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [...profVals, user.id]);
 
- // Trigger Welcome Notification (Novu Webhook)
+  // Trigger Welcome Notification (Novu Webhook)
   try {
     const notifPayload = {
+      id: crypto.randomUUID(),
       company_id: companyData.id,
       recipient_email: email,
       recipient_name: username,

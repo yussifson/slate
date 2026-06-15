@@ -156,6 +156,7 @@ export default function OnboardingWizard() {
 
  while (!insertSuccess && attempt < 3) {
     const compPayload = {
+      id: crypto.randomUUID(),
       name: cName,
       subdomain: finalSubdomain,
       email: user.email,
@@ -238,6 +239,7 @@ export default function OnboardingWizard() {
  // 2. Insert invited staff records
  if (invitedStaff.length > 0) {
  const staffInserts = invitedStaff.map(s => ({
+ id: crypto.randomUUID(),
  company_id: companyIdToUse,
  user_email: s.email,
  full_name: s.name,
@@ -312,6 +314,7 @@ export default function OnboardingWizard() {
  // Trigger Workspace Ready Notification (Novu Webhook)
   try {
     const notifPayload = {
+      id: crypto.randomUUID(),
       company_id: companyIdToUse,
       recipient_email: user?.email,
       recipient_name: user?.user_metadata?.full_name || 'Admin',

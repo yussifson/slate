@@ -89,7 +89,7 @@ export default function CaseExpenses({ caseData, user }) {
       items,
       subtotal: total,
       total_amount: total,
-      currency: unbilled[0]?.currency || "GHS",
+      currency: user?.company_currency || "GHS",
       status: "draft",
     });
     for (const e of unbilled) {
@@ -101,7 +101,7 @@ export default function CaseExpenses({ caseData, user }) {
 
   const totalUnbilled = expenses.filter(e => e.billable && !e.billed).reduce((s, e) => s + (e.amount || 0), 0);
   const totalAll = expenses.reduce((s, e) => s + (e.amount || 0), 0);
-  const currency = expenses[0]?.currency || "GHS";
+  const currency = user?.company_currency || "GHS";
 
   return (
     <div className="space-y-4">
@@ -193,7 +193,7 @@ export default function CaseExpenses({ caseData, user }) {
         open={showForm}
         onClose={() => setShowForm(false)}
         onSubmit={(data) => createMutation.mutate(data)}
-        currency={expenses[0]?.currency || "GHS"}
+        currency={user?.company_currency || "GHS"}
       />
     </div>
   );
