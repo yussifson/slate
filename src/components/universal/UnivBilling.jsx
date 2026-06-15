@@ -174,7 +174,7 @@ export default function UnivBilling({
  )}
  <h4 className="text-xl font-bold text-foreground mb-2">{p.name}</h4>
  <div className="flex items-end gap-1 mb-6">
- <span className="text-4xl font-black">${p.price_monthly}</span>
+ <span className="text-4xl font-black">GH₵{p.price_monthly}</span>
  <span className="text-muted-foreground font-medium mb-1">/ mo</span>
  </div>
 

@@ -85,7 +85,7 @@ function TabDashboard({ stats}) {
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
- <StatCard title="Monthly Recurring Revenue" value={`$${stats.mrr.toLocaleString()}`} icon={<BarChart3 className="w-5 h-5 text-emerald-500" />} trend="+12% from last month" />
+ <StatCard title="Monthly Recurring Revenue" value={`GH₵${stats.mrr.toLocaleString()}`} icon={<BarChart3 className="w-5 h-5 text-emerald-500" />} trend="+12% from last month" />
  <StatCard title="Active Subscribers" value={stats.activeSubscribers} icon={<Users className="w-5 h-5 text-blue-500" />} trend="+5 new this week" />
  <StatCard title="Churn Rate" value={`${stats.churnRate}%`} icon={<Activity className="w-5 h-5 text-amber-500" />} trend="-0.5% from last month" />
  <StatCard title="Failed Payments" value={stats.failedPayments} icon={<XCircle className="w-5 h-5 text-red-500" />} trend="Requires attention" alert />
@@ -199,7 +199,7 @@ function TabPlanManager({ queryClient, toast}) {
  {!p.is_active && <span className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] font-bold uppercase rounded border">Archived</span>}
  </div>
  <div className="flex items-end gap-1 mb-4">
- <span className="text-3xl font-black">${p.price_monthly}</span><span className="text-muted-foreground font-medium text-sm mb-1">/mo</span>
+ <span className="text-3xl font-black">GH₵{p.price_monthly}</span><span className="text-muted-foreground font-medium text-sm mb-1">/mo</span>
  </div>
  <div className="text-sm font-mono bg-muted px-3 py-1.5 rounded-md text-muted-foreground mb-4 truncate flex items-center gap-2">
  <span className="px-2 py-0.5 bg-primary/10 text-primary font-bold text-[10px] rounded uppercase">{p.market_tier || 'global'}</span>
@@ -238,7 +238,7 @@ function PlanEditor({ plan, setPlan, onSave, onCancel, isSaving}) {
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="text-xs font-bold uppercase text-muted-foreground">Monthly ($)</label>
+ <label className="text-xs font-bold uppercase text-muted-foreground">Monthly (GH₵)</label>
  <input type="number" value={plan.price_monthly} onChange={e => setPlan({...plan, price_monthly: Number(e.target.value)})} className="w-full h-9 px-3 border rounded text-sm mt-1" />
  </div>
  <div>

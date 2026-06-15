@@ -275,7 +275,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  { label: "Overview", path: "/admin", icon: "LayoutDashboard"},
  { label: "Workspaces", path: "/admin/firms", icon: "Building2"},
  { label: "Users", path: "/admin/users", icon: "Users"},
- { label: "Billing", path: "/admin/billing", icon: "DollarSign"},
+ { label: "Billing / Plans", path: "/billing", icon: "Crown"},
+ { label: "Global Invoices", path: "/admin/billing", icon: "DollarSign"},
  { label: "Security", path: "/admin/security", icon: "Shield"},
  { label: "Broadcasts", path: "/admin/broadcasts", icon: "Megaphone"}
  ];
