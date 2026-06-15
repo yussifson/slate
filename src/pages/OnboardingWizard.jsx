@@ -134,9 +134,10 @@ export default function OnboardingWizard() {
       setLoading(true);
       try {
         await initiatePaystackSubscription({
-          email: user?.email,
+          email: user?.email || 'user@example.com',
           amount: plan.price_monthly,
-          planCode: plan.provider_plan_id || '',
+          planName: plan.name,
+          companyId: user?.company_id || user?.id || 'new_user',
           onSuccess: async (ref) => {
             await handleCompleteOnboarding(plan);
           },
@@ -349,9 +350,15 @@ export default function OnboardingWizard() {
  search_text: 'initial setup template applied',
  data: { applied: true, timestamp: new Date().toISOString()}
 };
- const indKeys = Object.keys(indPayload);
- const indVals = Object.values(indPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO industry_records (${indKeys.join(', ')}) VALUES (${indKeys.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${indKeys.map(k=>k+' = excluded.'+k).join(', ')}`, indVals);
+  const indKeys = Object.keys(indPayload);
+  const indVals = Object.values(indPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+  
+  const existingCheck = await powerSync.execute(`SELECT id FROM industry_records WHERE id = ?`, [indPayload.id]);
+  if (existingCheck.rows && existingCheck.rows.length > 0) {
+    await powerSync.execute(`UPDATE industry_records SET ${indKeys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [...indVals, indPayload.id]);
+  } else {
+    await powerSync.execute(`INSERT INTO industry_records (${indKeys.join(', ')}) VALUES (${indKeys.map(()=>'?').join(', ')})`, indVals);
+  }
 } else {
  localStorage.removeItem(`active_modules_${companyIdToUse}`); // Template implies all modules
 }
