@@ -249,8 +249,7 @@ export default function OnboardingWizard() {
  const profPayload = {
   full_name: user?.user_metadata?.full_name || 'Admin',
   company_id: companyIdToUse,
-  company_name: workspaceName || 'My Workslate',
-  industry_type: finalIndustry // Save industry to profile as well
+  company_name: workspaceName || 'My Workslate'
 };
  
  if (user?.role !== 'super_admin') {
@@ -281,6 +280,9 @@ export default function OnboardingWizard() {
  const updCompVals = Object.values(updCompPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
  await powerSync.execute(`UPDATE companies SET ${updCompKeys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [...updCompVals, companyIdToUse]);
  const compError = null;
+
+ // Update profile with industry_type now that finalIndustry is defined
+ await powerSync.execute(`UPDATE profiles SET industry_type = ? WHERE id = ?`, [finalIndustry, user.id]);
 
  if (compError) throw compError;
 
