@@ -172,6 +172,7 @@ function TabPlanManager({ queryClient, toast}) {
   mutationFn: async (planData) => {
     if (planData.id === 'new') {
       const { id, ...restData } = planData;
+      restData.id = crypto.randomUUID();
       const planKeys = Object.keys(restData);
       const planVals = Object.values(restData).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
       await powerSync.execute(`INSERT INTO subscription_plans (${planKeys.join(', ')}) VALUES (${planKeys.map(()=>'?').join(', ')})`, planVals);
@@ -184,7 +185,10 @@ function TabPlanManager({ queryClient, toast}) {
   onSuccess: () => {
     queryClient.invalidateQueries(['superadmin_plans']);
     setEditingId(null);
-    toast({ title: 'Plan saved.'});
+    toast({ title: 'Plan saved.', description: 'The subscription plan was successfully saved.' });
+  },
+  onError: (err) => {
+    toast({ title: 'Save Failed', description: err.message, variant: 'destructive' });
   }
  });
 
