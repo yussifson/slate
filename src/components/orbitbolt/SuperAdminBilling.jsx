@@ -314,7 +314,13 @@ function TabCustomerSubscriptions() {
         LEFT JOIN company_subscriptions cs ON c.id = cs.company_id
         ORDER BY c.created_date DESC
       `);
-      return res.rows ? Array.from(res.rows) : [];
+      const data = [];
+      if (res.rows) {
+        for (let i = 0; i < res.rows.length; i++) {
+          data.push(res.rows.item(i));
+        }
+      }
+      return data;
     }
   });
 
@@ -380,7 +386,13 @@ function TabManualOverrides() {
     queryKey: ['superadmin_plans_override'],
     queryFn: async () => {
       const res = await powerSync.execute(`SELECT * FROM subscription_plans ORDER BY price_monthly`);
-      return res.rows ? Array.from(res.rows) : [];
+      const data = [];
+      if (res.rows) {
+        for (let i = 0; i < res.rows.length; i++) {
+          data.push(res.rows.item(i));
+        }
+      }
+      return data;
     }
   });
 
@@ -451,7 +463,13 @@ function TabTransactions() {
         FROM subscription_invoices 
         ORDER BY created_date DESC LIMIT 50
       `);
-      return res.rows ? Array.from(res.rows) : [];
+      const data = [];
+      if (res.rows) {
+        for (let i = 0; i < res.rows.length; i++) {
+          data.push(res.rows.item(i));
+        }
+      }
+      return data;
     }
   });
 
@@ -509,7 +527,13 @@ function TabUsageMonitor() {
         ORDER BY total_usage DESC
         LIMIT 10
       `);
-      return res.rows ? Array.from(res.rows) : [];
+      const data = [];
+      if (res.rows) {
+        for (let i = 0; i < res.rows.length; i++) {
+          data.push(res.rows.item(i));
+        }
+      }
+      return data;
     }
   });
 
