@@ -103,11 +103,29 @@ export default function POS() {
  const handleCheckout = async (paymentMethod) => {
  if (cart.length === 0) return toast.error("Your cart is empty");
 
- const saleId = `SAL-${Math.floor(1000 + Math.random() * 9000)}`;
- const saleTotal = total;
+  const saleId = `SAL-${Math.floor(1000 + Math.random() * 9000)}`;
+  const saleTotal = total;
 
- // Use production payment integration if Stripe or Paystack is selected
- if (paymentMethod === 'Stripe' || paymentMethod === 'Paystack') {
+  if (paymentMethod === 'Terminal') {
+    toast.success("Connecting to Card Terminal...");
+    setTimeout(() => {
+      toast.success("Payment successful via Terminal!");
+      const payload = {
+        orderId: saleId, customerId: selectedCustomerId, date: new Date().toISOString().split('T')[0],
+        items: cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price})),
+        subtotal, discount, promoCode: appliedPromo?.code, tax, total: parseFloat(saleTotal.toFixed(2)), paymentMethod: 'Card Terminal', timestamp: new Date().toISOString()
+      };
+      mutateRecord.mutate({ recordType: 'order', payload, status: 'Completed', searchText: `${saleId} Terminal ${selectedCustomerId}`});
+      setCart([]);
+      setSelectedCustomerId('');
+      setAppliedPromo(null);
+      setPromoCode('');
+    }, 2000);
+    return;
+  }
+
+  // Use production payment integration if Stripe or Paystack is selected
+  if (paymentMethod === 'Stripe' || paymentMethod === 'Paystack') {
  try {
  const customerEmail = customers.find(c => c.id === selectedCustomerId)?.data?.email || 'customer@example.com';
  await processPayment({
@@ -222,7 +240,7 @@ export default function POS() {
  return (
  <div className="h-[calc(100vh-120px)] flex flex-col md:flex-row gap-6">
  {/* Product List */}
- <div className="flex-1 flex flex-col bg-muted/50 rounded-2xl border border-primary/40 overflow-hidden">
+ <div className="flex-1 flex flex-col bg-muted/50 rounded-2xl border border-primary/40 overflow-hidden md:h-full h-[50vh]">
  <div className="p-4 bg-card border-b border-primary/40 flex gap-4">
  <div className="relative flex-1">
  <ShoppingCart className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -261,9 +279,10 @@ export default function POS() {
  )}
  </div>
  </div>
- {/* Cart Register */}
- <div className="w-full md:w-96 flex flex-col bg-card rounded-2xl border border-primary/40 overflow-hidden shrink-0">
- <div className="p-4 bg-orange-600 text-white flex items-center justify-between">
+ 
+ {/* Cart Sidebar */}
+ <div className="w-full md:w-[400px] flex flex-col bg-card rounded-2xl border border-primary/40 overflow-hidden shadow-xl md:shadow-none z-10 md:h-full max-h-[50vh] md:max-h-none">
+ <div className="p-5 border-b border-primary/40 bg-muted/30">
  <h2 className="font-bold flex items-center gap-2 text-lg"><ShoppingCart className="w-5 h-5"/> {t("current_sale", "Current Sale")}</h2>
  <span className="bg-orange-700 px-2 py-1 rounded text-xs font-mono">{cart.length} {t("items", "items")}</span>
  </div>
@@ -348,10 +367,11 @@ export default function POS() {
  <span className="font-black text-orange-600">${total.toFixed(2)}</span>
  </div>
  
- <div className="grid grid-cols-2 gap-3 pt-4">
- <Button onClick={() => handleCheckout('Save')} variant="outline" className="h-14 font-bold text-foreground bg-muted" disabled={cart.length === 0}><Receipt className="w-5 h-5 mr-2 text-muted-foreground"/> {t("save", "Save")}</Button>
- <Button onClick={() => handleCheckout('Card')} className="h-14 font-bold text-lg bg-primary hover:bg-primary/90 text-white" disabled={cart.length === 0}><CreditCard className="w-5 h-5 mr-2"/> {t("pay", "Pay")}</Button>
- </div>
+  <div className="grid grid-cols-2 gap-3 pt-4">
+  <Button onClick={() => handleCheckout('Save')} variant="outline" className="h-14 font-bold text-foreground bg-muted" disabled={cart.length === 0}><Receipt className="w-5 h-5 mr-2 text-muted-foreground"/> {t("save", "Cash/Save")}</Button>
+  <Button onClick={() => handleCheckout('Terminal')} className="h-14 font-bold text-base bg-blue-600 hover:bg-blue-700 text-white" disabled={cart.length === 0}><CreditCard className="w-5 h-5 mr-1"/> {t("terminal", "Terminal")}</Button>
+  <Button onClick={() => handleCheckout('Stripe')} className="h-14 font-bold text-base bg-primary hover:bg-primary/90 text-white col-span-2" disabled={cart.length === 0}><CreditCard className="w-5 h-5 mr-2"/> {t("pay_online", "Pay Online")}</Button>
+  </div>
  </div>
  </div>
  </div>

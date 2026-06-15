@@ -170,7 +170,28 @@ export default function Orders() {
 }
 }
 }
-}
+ } else if (formData.status === 'Returned') {
+   const originalOrder = orders.find(o => o.id === editingId);
+   const wasAlreadyReturned = originalOrder && originalOrder.status === 'Returned';
+   
+   if (!wasAlreadyReturned) {
+     // Restock inventory for returned items
+     for (const item of formData.items) {
+       const prod = productRecords.find(p => p.id === item.productId);
+       if (prod) {
+         const currentStock = Number(prod.data?.quantity || prod.data?.stock || 0);
+         await mutateRecord.mutateAsync({
+           id: prod.id,
+           recordType: 'product',
+           payload: { ...prod.data, quantity: currentStock + item.qty, stock: currentStock + item.qty},
+           status: prod.status,
+           searchText: prod.search_text
+         });
+       }
+     }
+     toast.success("Items have been restocked into inventory.");
+   }
+ }
 
  mutateRecord.mutate({
  ...(editingId ? { id: editingId} : {}),
@@ -333,9 +354,18 @@ export default function Orders() {
  <div className="grid grid-cols-2 gap-3">
  <div><label className="text-xs font-bold text-muted-foreground uppercase">Date</label><Input type="date" value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value})} className="mt-1" /></div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">Status</label>
- <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
- <option>Pending</option><option>Delivered</option><option>Completed</option><option>Cancelled</option>
+ <label className="text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</label>
+ <select 
+ value={formData.status} 
+ onChange={e => setFormData({...formData, status: e.target.value})} 
+ className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+ >
+ <option>Pending</option>
+ <option>Processing</option>
+ <option>Completed</option>
+ <option>Delivered</option>
+ <option>Returned</option>
+ <option>Cancelled</option>
  </select>
  </div>
  </div>

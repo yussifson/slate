@@ -1,6 +1,6 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
-import { Package, Search, Plus, AlertTriangle, Trash2, Edit2, X, DollarSign, ShoppingBag, TrendingDown, MoreVertical, Eye, Edit, ShieldAlert} from 'lucide-react';
+import { Package, Search, Plus, AlertTriangle, Trash2, Edit2, X, DollarSign, ShoppingBag, TrendingDown, MoreVertical, Eye, Edit, ShieldAlert, Printer, MapPin, ArrowRightLeft, Barcode} from 'lucide-react';
 import { ViewModeToggle, RetailStatCard, InventoryGridCard} from '@/components/retail/RetailViewKit';
 import { Button} from '@/components/ui/button';
 import { Link} from 'react-router-dom';
@@ -15,6 +15,7 @@ import { useAuth} from '@/lib/AuthContext';
 import { isRetailAdmin, isRetailInventoryManager} from '@/lib/constants';
 
 const CATEGORIES = ['Electronics', 'Apparel', 'Footwear', 'Groceries', 'Fitness', 'Home & Living', 'Beauty', 'Other'];
+const LOCATIONS = ['Main Store', 'Downtown Branch', 'Warehouse A', 'Online Fulfillment'];
 
 const statusColors = {
  'In Stock': 'bg-slate-100 dark:bg-primary/20 text-primary/90 dark:text-primary/70',
@@ -38,6 +39,7 @@ const emptyForm = {
  costPrice: '',
  supplier: '',
  expiryDate: '',
+ storeLocation: 'Main Store'
 };
 
 export default function Inventory() {
@@ -72,6 +74,7 @@ export default function Inventory() {
  supplierId: d.supplierId || '',
  supplierName: d.supplierId ? (suppliers.find(s => s.id === d.supplierId)?.name || 'Unknown') : (d.supplier || ''),
  expiryDate: d.expiryDate || '',
+ storeLocation: d.storeLocation || 'Main Store',
  status: getStatus(quantity, reorderLevel),
  createdBy: r.created_by || 'System',
  createdAt: r.created_at || new Date().toISOString()
@@ -81,6 +84,8 @@ export default function Inventory() {
  const [search, setSearch] = useState('');
  const [viewMode, setViewMode] = useState('list');
  const [showModal, setShowModal] = useState(false);
+ const [showTransferModal, setShowTransferModal] = useState(false);
+ const [transferData, setTransferData] = useState({ qty: '', targetLocation: '' });
  const [deleteTargetId, setDeleteTargetId] = useState(null);
  const [formData, setFormData] = useState(emptyForm);
  const [selectedItem, setSelectedItem] = useState(null);
@@ -100,9 +105,39 @@ export default function Inventory() {
  costPrice: String(item.costPrice),
  supplier: item.supplierId,
  expiryDate: item.expiryDate,
+ storeLocation: item.storeLocation || 'Main Store',
 });
  setShowModal(true);
 };
+
+ const handleTransfer = () => {
+   const qty = parseInt(transferData.qty) || 0;
+   if (qty <= 0) return toast.error('Transfer quantity must be greater than 0');
+   if (qty > selectedItem.quantity) return toast.error('Insufficient stock for transfer');
+   if (!transferData.targetLocation || transferData.targetLocation === selectedItem.storeLocation) {
+     return toast.error('Please select a different target location');
+   }
+
+   // 1. Decrement current item
+   const currentPayload = { ...selectedItem, quantity: selectedItem.quantity - qty, stock: selectedItem.quantity - qty };
+   mutateRecord.mutate({ id: selectedItem.id, recordType: 'product', payload: currentPayload, status: getStatus(currentPayload.stock, currentPayload.reorderLevel), searchText: `${currentPayload.sku} ${currentPayload.name}` });
+
+   // 2. See if item exists in target location
+   const targetItem = items.find(i => i.sku === selectedItem.sku && i.storeLocation === transferData.targetLocation);
+   if (targetItem) {
+     const targetPayload = { ...targetItem, quantity: targetItem.quantity + qty, stock: targetItem.quantity + qty };
+     mutateRecord.mutate({ id: targetItem.id, recordType: 'product', payload: targetPayload, status: getStatus(targetPayload.stock, targetPayload.reorderLevel), searchText: `${targetPayload.sku} ${targetPayload.name}` });
+   } else {
+     // Create new item in target location
+     const newPayload = { ...selectedItem, quantity: qty, stock: qty, storeLocation: transferData.targetLocation };
+     delete newPayload.id; delete newPayload.createdAt; delete newPayload.createdBy;
+     mutateRecord.mutate({ recordType: 'product', payload: newPayload, status: getStatus(qty, selectedItem.reorderLevel), searchText: `${newPayload.sku} ${newPayload.name}` });
+   }
+
+   toast.success(`Successfully transferred ${qty} items to ${transferData.targetLocation}`);
+   setShowTransferModal(false);
+   setIsSheetOpen(false);
+ };
 
  const handleSave = () => {
  if (!formData.sku.trim() || !formData.name.trim() || !formData.price) {
@@ -125,6 +160,7 @@ export default function Inventory() {
  costPrice: parseFloat(formData.costPrice) || 0,
  supplierId: formData.supplier,
  expiryDate: formData.expiryDate,
+ storeLocation: formData.storeLocation,
 };
 
  mutateRecord.mutate({
@@ -266,6 +302,7 @@ export default function Inventory() {
  <tr>
  <th className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("item", "Item")}</th>
  <th className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("category", "Category")}</th>
+ <th className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("location", "Location")}</th>
  <th className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("supplier", "Supplier")}</th>
  <th className="px-5 py-3 text-right text-xs font-bold text-muted-foreground uppercase">{t("price", "Price")}</th>
  <th className="px-5 py-3 text-right text-xs font-bold text-muted-foreground uppercase">{t("cost", "Cost")}</th>
@@ -287,6 +324,7 @@ export default function Inventory() {
  )}
  </td>
  <td className="px-5 py-4 text-muted-foreground">{item.category}</td>
+ <td className="px-5 py-4 text-xs font-medium text-slate-600"><MapPin className="w-3 h-3 inline mr-1" />{item.storeLocation}</td>
  <td className="px-5 py-4 text-muted-foreground">
  {item.supplierName && item.supplierName !== 'Unknown' ? <Link to="/suppliers" className="text-primary hover:underline">{item.supplierName}</Link> : '—'}
  </td>
@@ -370,6 +408,10 @@ export default function Inventory() {
  <div className="col-span-2">{selectedItem.category}</div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
+  <div className="col-span-1 font-semibold text-muted-foreground">{t("location", "Location")}</div>
+  <div className="col-span-2 flex items-center gap-2"><MapPin className="w-4 h-4 text-muted-foreground" /> {selectedItem.storeLocation}</div>
+  </div>
+ <div className="grid grid-cols-3 gap-4 border-b pb-4">
  <div className="col-span-1 font-semibold text-muted-foreground">{t("supplier", "Supplier")}</div>
  <div className="col-span-2">{selectedItem.supplierName && selectedItem.supplierName !== 'Unknown' ? <Link to="/suppliers" className="text-primary hover:underline">{selectedItem.supplierName}</Link> : '—'}</div>
  </div>
@@ -405,10 +447,52 @@ export default function Inventory() {
  <div className="col-span-1 font-semibold text-muted-foreground">Added By</div>
  <div className="col-span-2">{selectedItem.createdBy} on {new Date(selectedItem.createdAt).toLocaleDateString()}</div>
  </div>
+
+  <div className="bg-muted/30 border border-primary/20 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 mt-4">
+    <div className="flex space-x-[2px] h-12 w-48 opacity-80">
+       {/* Pseudo barcode using div borders */}
+       {Array.from({length: 30}).map((_, i) => (
+         <div key={i} style={{ width: Math.random() > 0.5 ? '4px' : '2px', backgroundColor: 'currentColor' }} className="h-full text-slate-800"></div>
+       ))}
+    </div>
+    <div className="font-mono text-xs text-muted-foreground tracking-widest">{selectedItem.sku}</div>
+  </div>
+
+  <div className="flex gap-2 pt-4">
+    <Button variant="outline" className="flex-1 text-primary border-primary hover:bg-primary/5" onClick={() => { toast.success("Sending to label printer..."); }}><Printer className="w-4 h-4 mr-2"/> Print Label</Button>
+    <Button className="flex-1 bg-amber-600 hover:bg-amber-700 text-white" onClick={() => { setShowTransferModal(true); }}><ArrowRightLeft className="w-4 h-4 mr-2"/> Transfer</Button>
+  </div>
  </div>
  )}
  </SheetContent>
  </Sheet>
+
+  {showTransferModal && (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+      <div className="bg-card rounded-2xl w-full max-w-sm p-6 space-y-4 shadow-xl border border-border">
+        <h3 className="font-bold text-lg flex items-center gap-2"><ArrowRightLeft className="w-5 h-5 text-amber-600" /> Transfer Stock</h3>
+        <p className="text-sm text-muted-foreground">Move inventory from <strong>{selectedItem?.storeLocation}</strong> to another location.</p>
+        
+        <div>
+          <label className="text-xs font-bold text-muted-foreground uppercase">Quantity to Transfer (Max {selectedItem?.quantity})</label>
+          <Input type="number" value={transferData.qty} onChange={e => setTransferData({...transferData, qty: e.target.value})} className="mt-1" placeholder="e.g. 5" />
+        </div>
+        <div>
+          <label className="text-xs font-bold text-muted-foreground uppercase">Target Location</label>
+          <select value={transferData.targetLocation} onChange={e => setTransferData({...transferData, targetLocation: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+            <option value="">Select Location</option>
+            {LOCATIONS.filter(l => l !== selectedItem?.storeLocation).map(l => <option key={l} value={l}>{l}</option>)}
+          </select>
+        </div>
+
+        <div className="flex gap-3 pt-4">
+          <Button variant="outline" className="flex-1" onClick={() => setShowTransferModal(false)}>Cancel</Button>
+          <Button className="flex-1 bg-amber-600 hover:bg-amber-700 text-white" onClick={handleTransfer}>Transfer</Button>
+        </div>
+      </div>
+    </div>
+  )}
+
  {/* Add / Edit Modal */}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
@@ -437,6 +521,16 @@ export default function Inventory() {
 })}
  </select>
  </div>
+ <div>
+  <label className="text-xs font-bold text-muted-foreground uppercase">Location</label>
+  <select
+  value={formData.storeLocation}
+  onChange={e => setFormData(p => ({ ...p, storeLocation: e.target.value}))}
+  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+  >
+  {LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
+  </select>
+  </div>
  <div>
  <label className="text-xs font-bold text-muted-foreground uppercase">{t("supplier", "Supplier")}</label>
  <select
