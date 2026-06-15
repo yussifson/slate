@@ -25,12 +25,25 @@ export function ImpersonationProvider({ children }) {
   });
 
   const startImpersonation = (company) => {
-    import('@/lib/domainUtils').then(({ getSubdomainAndBase }) => {
+    import('@/lib/domainUtils').then(async ({ getSubdomainAndBase }) => {
       const { baseDomain } = getSubdomainAndBase();
       const token = btoa(JSON.stringify({ ...company, exp: Date.now() + 60000 }));
       const protocol = window.location.protocol;
       const port = window.location.port ? ':' + window.location.port : '';
-      window.location.href = `${protocol}//${company.subdomain}.${baseDomain}${port}/?impersonate_token=${token}`;
+      
+      let url = `${protocol}//${company.subdomain}.${baseDomain}${port}/?impersonate_token=${token}`;
+      
+      try {
+        const { supabase } = await import('@/api/supabaseClient');
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.access_token && session?.refresh_token) {
+          url += `&access_token=${session.access_token}&refresh_token=${session.refresh_token}`;
+        }
+      } catch (err) {
+        console.error("Failed to append session tokens", err);
+      }
+      
+      window.location.href = url;
     });
   };
 
