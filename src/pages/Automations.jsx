@@ -220,7 +220,15 @@ const ExecutionLogs = ({ companyId }) => {
   if (isLoading) return <div className="py-10 text-center">Loading logs...</div>;
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border p-6">
+    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border p-6 relative">
+      <Button 
+        variant="outline" 
+        size="sm" 
+        className="absolute top-4 right-4" 
+        onClick={() => setMode('list')}
+      >
+        <ArrowLeft className="w-4 h-4 mr-2" /> Back
+      </Button>
       <h3 className="text-lg font-bold mb-4">Recent Executions</h3>
       <div className="space-y-4">
         {logs.map(log => (
@@ -494,10 +502,18 @@ export default function Automations() {
             {mode === 'list' && (
               <div className="flex gap-2 items-center">
                 <Button 
-                  onClick={() => window.dispatchEvent(new CustomEvent("orbit:inject", { detail: { label: "OrbitFlow Automation Builder", query: "Help me build an automation flow." } }))} 
-                  className="gap-2 shadow-md bg-indigo-600 hover:bg-indigo-700 text-white"
+                  onClick={() => setMode('logs')} 
+                  variant="outline"
+                  className="gap-2 shadow-md"
                 >
-                  <OrbitIcon className="w-4 h-4 fill-white" /> Automate with OrbitFlow
+                  View Logs
+                </Button>
+                <Button 
+                  onClick={() => window.dispatchEvent(new CustomEvent("orbit:inject", { detail: { label: "OrbitFlow Automation Builder", query: "Help me build an automation flow." } }))} 
+                  variant="secondary"
+                  className="gap-2 shadow-md text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-900"
+                >
+                  <OrbitIcon className="w-4 h-4 fill-current" /> Automate with OrbitFlow
                 </Button>
                 <Button onClick={startNewFlow} className="gap-2 shadow-md">
                   <Plus className="w-4 h-4" /> Create New Flow

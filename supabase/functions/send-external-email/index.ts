@@ -1,16 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { Novu } from "https://esm.sh/@novu/node";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
-
-// Multi-Novu Fallback implementation matching automation-engine
-const NOVU_API_KEYS = [
-  Deno.env.get('NOVU_API_KEY') ?? '',
-  Deno.env.get('NOVU_API_KEY_SECONDARY') ?? '',
-  Deno.env.get('NOVU_API_KEY_TERTIARY') ?? ''
-].filter(key => key !== '');
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -31,8 +25,15 @@ serve(async (req) => {
        throw new Error("No valid recipients provided.");
     }
 
-    if (NOVU_API_KEYS.length === 0) {
-       throw new Error("No Novu API keys configured in environment variables.");
+    const novuApiKeys = [
+      "09ce520feae0cc9d84fab4ab83b7c13c", // Account 1 (Primary)
+      Deno.env.get('NOVU_API_KEY') ?? '',
+      Deno.env.get('NOVU_API_KEY_SECONDARY') ?? '',
+      Deno.env.get('NOVU_API_KEY_TERTIARY') ?? ''
+    ].filter(key => key !== '');
+
+    if (novuApiKeys.length === 0) {
+       throw new Error("No Novu API keys configured.");
     }
 
     let allSuccess = true;
@@ -41,31 +42,22 @@ serve(async (req) => {
     // Send via Novu with Multi-Account Fallback
     for (const recipient of recipients) {
       let success = false;
-      for (const apiKey of NOVU_API_KEYS) {
+      for (const apiKey of novuApiKeys) {
         try {
-          const res = await fetch('https://api.novu.co/v1/events/trigger', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `ApiKey ${apiKey}`
-            },
-            body: JSON.stringify({
-              name: 'system-notification',
-              to: {
-                subscriberId: recipient,
-                email: recipient
-              },
-              payload: {
-                title: subject,
-                message: message
-              }
-            })
-          });
+          const novu = new Novu(apiKey);
 
-          if (!res.ok) {
-            const errorBody = await res.text();
-            throw new Error(`Novu error: ${res.status} ${errorBody}`);
-          }
+          // We use in-app-notification because system-notification might not exist on the user's dashboard
+          await novu.trigger('in-app-notification', {
+            to: {
+              subscriberId: recipient,
+              email: recipient
+            },
+            payload: {
+              title: subject,
+              message: message,
+              type: "email"
+            }
+          });
           
           success = true;
           break; // Success! Break the retry loop
