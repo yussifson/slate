@@ -3,6 +3,7 @@ import { useState} from 'react';
 import { Tag, Search, Plus, Package, Edit, Trash2} from 'lucide-react';
 import { ViewModeToggle, RetailStatCard, ProductGridCard} from '@/components/retail/RetailViewKit';
 import { Button} from '@/components/ui/button';
+import { Link} from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
 import { Input} from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
@@ -53,10 +54,13 @@ export default function Products() {
  const handleSave = () => {
  if (!formData.name.trim()) return toast.error("Name is required");
 
+ const existingData = editingId ? dbRecords.find(r => r.id === editingId)?.data || {} : {};
+
  mutateRecord.mutate({
  ...(editingId ? { id: editingId} : {}),
  recordType: 'product',
  payload: {
+ ...existingData,
  name: formData.name, sku: formData.sku, category: formData.category,
  price: parseFloat(formData.price) || 0, stock: parseInt(formData.stock) || 0,
  supplierId: formData.supplierId
@@ -146,7 +150,9 @@ export default function Products() {
  </td>
  <td className="px-6 py-4 text-muted-foreground">{p.category}</td>
  <td className="px-6 py-4 text-right font-bold text-card-foreground">${p.price.toFixed(2)}</td>
- <td className="px-6 py-4 text-center text-card-foreground font-medium">{p.stock}</td>
+ <td className="px-6 py-4 text-center font-medium">
+ <Link to="/retail/inventory" className="text-primary hover:underline" title="Manage in Inventory">{p.stock}</Link>
+ </td>
  <td className="px-6 py-4 text-muted-foreground text-xs">{suppliers.find(s => s.id === p.supplierId)?.name || 'None'}</td>
  <td className="px-6 py-4 text-center">
  <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${p.stock > 0 ? 'bg-slate-100 text-primary/90' : 'bg-red-100 text-red-700'}`}>{p.status}</span>

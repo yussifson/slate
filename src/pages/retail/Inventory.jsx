@@ -112,7 +112,10 @@ export default function Inventory() {
  const reorder = parseInt(formData.reorderLevel) || 10;
  const computedStatus = getStatus(qty, reorder);
 
+ const existingData = editingItem ? dbRecords.find(r => r.id === editingItem.id)?.data || {} : {};
+
  const payload = {
+ ...existingData,
  sku: formData.sku.trim(),
  name: formData.name.trim(),
  category: formData.category,
