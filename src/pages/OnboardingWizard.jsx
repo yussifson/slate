@@ -93,19 +93,26 @@ export default function OnboardingWizard() {
  const [plansLoading, setPlansLoading] = useState(true);
  const [selectedPlanId, setSelectedPlanId] = useState(null);
 
- useEffect(() => {
-   const fetchPlans = async () => {
-     try {
-       const { rows } = await powerSync.execute("SELECT * FROM subscription_plans WHERE is_active = 'true' OR is_active = 1 ORDER BY price_monthly ASC");
-       setPlans(rows._array || Array.from(rows));
-     } catch (err) {
-       console.error("Failed to load plans:", err);
-     } finally {
-       setPlansLoading(false);
-     }
-   };
-   fetchPlans();
- }, []);
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('subscription_plans')
+          .select('*')
+          .order('price_monthly', { ascending: true });
+          
+        if (error) throw error;
+        // Filter active plans locally if needed, but usually they should all be active
+        const activePlans = (data || []).filter(p => p.is_active === true || p.is_active === 'true' || p.is_active === 1);
+        setPlans(activePlans);
+      } catch (err) {
+        console.error("Failed to load plans:", err);
+      } finally {
+        setPlansLoading(false);
+      }
+    };
+    fetchPlans();
+  }, []);
 
  const handleAddStaff = () => {
  if (!staffEmail || !staffName) return;
