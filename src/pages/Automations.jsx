@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, Search, Wand2, Zap, Save, Trash2, Edit3, 
-  Settings, Bot, ArrowRight, Database, Webhook, CheckSquare, X, Mail, GitBranch, Clock
+  Settings, Bot, ArrowRight, Database, Webhook, CheckSquare, X, Mail, GitBranch, Clock, ArrowLeft
 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
