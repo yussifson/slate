@@ -1,3 +1,4 @@
+import { Loader2 } from 'lucide-react';
 import { powerSync} from '@/api/PowerSyncConnector';
 import React, { useState, useEffect} from 'react';
 
