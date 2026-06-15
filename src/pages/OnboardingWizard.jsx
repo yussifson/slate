@@ -245,22 +245,29 @@ export default function OnboardingWizard() {
  companyIdToUse = newCompData.id;
 }
 
- const profPayload = {
-  full_name: user?.user_metadata?.full_name || 'Admin',
-  company_id: companyIdToUse,
-  company_name: workspaceName || 'My Workslate'
-};
- 
+ // Only include columns that are guaranteed to exist in the current Supabase profiles schema.
+ // full_name and industry_type are added via migration - handled below via PowerSync for local sync.
+ const supaProfilePayload = {
+   company_id: companyIdToUse,
+   company_name: workspaceName || 'My Workslate',
+ };
+
  if (user?.role !== 'super_admin') {
- profPayload.role = 'admin'; // Founder/Admin role
-}
+   supaProfilePayload.role = 'company_admin'; // Must match Supabase CHECK constraint
+ }
 
-  const { error: profErr } = await supabase
-    .from('profiles')
-    .update(profPayload)
-    .eq('id', user.id);
+ const { error: profErr } = await supabase
+   .from('profiles')
+   .update(supaProfilePayload)
+   .eq('id', user.id);
 
-  if (profErr) throw profErr;
+ if (profErr) throw profErr;
+
+ // Also update full_name locally via PowerSync (will sync to Supabase once migration is applied)
+ const fullNameToSave = user?.user_metadata?.full_name || 'Admin';
+ await powerSync.execute(`UPDATE profiles SET full_name = ?, company_id = ?, company_name = ? WHERE id = ?`, [
+   fullNameToSave, companyIdToUse, workspaceName || 'My Workslate', user.id
+ ]);
 }
 
  // 1. Update company details
@@ -280,8 +287,18 @@ export default function OnboardingWizard() {
     .update(updCompPayload)
     .eq('id', companyIdToUse);
 
-  // Also update profile industry_type directly in Supabase
-  await supabase.from('profiles').update({ industry_type: finalIndustry }).eq('id', user.id);
+  // Update profile industry_type - try Supabase first (works after migration), 
+  // always update locally via PowerSync too
+  const { error: profIndustryErr } = await supabase
+    .from('profiles')
+    .update({ industry_type: finalIndustry })
+    .eq('id', user.id);
+  if (profIndustryErr) {
+    // Column may not exist yet (migration not applied) - silently ignore and rely on localStorage fallback
+    console.warn('[Onboarding] Could not update profile.industry_type in Supabase (migration pending):', profIndustryErr.message);
+  }
+  // Always save locally so PowerSync has it
+  await powerSync.execute(`UPDATE profiles SET industry_type = ? WHERE id = ?`, [finalIndustry, user.id]);
 
   if (compError) throw compError;
 
