@@ -12,9 +12,10 @@ import { Button} from "@/components/ui/button";
 import { Progress} from "@/components/ui/progress";
 import { SectionCard, FormRow, Field} from "./SettingsShared";
 import { X, Check, Zap, ArrowRight, Loader2} from "lucide-react";
-import { initiatePaystackSubscription} from "@/lib/paystack";
+import { initiatePaystackSubscription } from "@/lib/paystack";
+import { COUNTRIES_CURRENCIES } from "@/config/countries";
 
-export function CurrencySettings({ activeIndustry, company, onSave, saving}) {
+export function CurrencySettings({ activeIndustry, company, onSave, saving }) {
  const { t} = useTranslation();
  const [form, setForm] = useState({
  currency: company?.currency || "GHS",
@@ -36,12 +37,11 @@ export function CurrencySettings({ activeIndustry, company, onSave, saving}) {
  <Field label="System Default Currency">
  <Select value={form.currency} onValueChange={v => setForm({ ...form, currency: v})}>
  <SelectTrigger className="h-11 bg-muted/40 hover:bg-muted/60 transition-colors"><SelectValue /></SelectTrigger>
- <SelectContent>
- <SelectItem value="GHS">{t("ghs_ghanaian_cedi_gh", "GHS – Ghanaian Cedi (GH₵)")}</SelectItem>
- <SelectItem value="NGN">{t("ngn_nigerian_naira", "NGN – Nigerian Naira (₦)")}</SelectItem>
- <SelectItem value="SLL">{t("sll_sierra_leonean_leone_le", "SLL – Sierra Leonean Leone (Le)")}</SelectItem>
- <SelectItem value="USD">{t("usd_us_dollar", "USD – US Dollar ($)")}</SelectItem>
- </SelectContent>
+              <SelectContent className="max-h-80">
+                {Array.from(new Set(COUNTRIES_CURRENCIES.map(c => c.currency))).sort().map(curr => (
+                  <SelectItem key={curr} value={curr}>{curr}</SelectItem>
+                ))}
+              </SelectContent>
  </Select>
  </Field>
  <Field label="Currency Symbol Position">

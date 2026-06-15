@@ -852,46 +852,69 @@ export default function OnboardingWizard() {
  <div></div> // Empty div for spacing if no back button
  )}
  
- {step < 4 ? (
- <Button 
- onClick={() => {
- if (step === 2 && setupMode !== 'orbit' && industry === 'school' && !educationLevel) {
- toast({ title: "Required", description: "Please select an education level.", variant: "destructive"});
- return;
-}
- if (step === 2 && isMissingMetadata && (!workspaceName || !subdomain)) {
- toast({ title: "Required", description: "Please enter your workslate name and subdomain.", variant: "destructive"});
- return;
-}
- setStep(step + 1);
-}}
- disabled={
- (step === 1 && !setupMode) || (step === 2 && setupMode === 'custom' && selectedModules.length === 0) || (step === 2 && setupMode === 'orbit' && !orbitPrompt)
-}
- className="h-12 px-8 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl -emerald-600/20 group transition-all"
- >
- {t("continue_setup", "Continue Setup")}
- <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
- </Button>
- ) : (
- <Button 
- onClick={handleCompleteOnboarding}
- disabled={loading || !!orbitProgress}
- className="h-12 px-8 bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-white font-bold rounded-xl -emerald-600/20 flex items-center gap-2 transition-all hover:-translate-y-0.5 active:translate-y-0"
- >
- {loading || orbitProgress ? (
- <>
- <Loader2 className="w-4 h-4 animate-spin" />
- <span>{orbitProgress || t("finalizing_workslate", "Finalizing Workslate...")}</span>
- </>
- ) : (
- <>
- <span>{(!caseTitle || !clientName) ? t("skip_and_complete", "Skip & Complete Setup!") : t("complete_setup", "Complete Setup!")}</span>
- <Sparkles className="w-4 h-4 ml-1" />
- </>
- )}
- </Button>
- )}
+              {step < 4 ? (
+                <div className="flex gap-3">
+                  {step === 3 && (
+                    <Button 
+                      variant="outline"
+                      onClick={() => setStep(step + 1)}
+                      className="h-12 px-6 rounded-xl border-primary/40 bg-card hover:bg-muted/30 transition-colors font-semibold"
+                    >
+                      {t("skip_for_now", "Skip for now")}
+                    </Button>
+                  )}
+                  <Button 
+                    onClick={() => {
+                      if (step === 2 && setupMode !== 'orbit' && industry === 'school' && !educationLevel) {
+                        toast({ title: "Required", description: "Please select an education level.", variant: "destructive"});
+                        return;
+                      }
+                      if (step === 2 && isMissingMetadata && (!workspaceName || !subdomain)) {
+                        toast({ title: "Required", description: "Please enter your workslate name and subdomain.", variant: "destructive"});
+                        return;
+                      }
+                      setStep(step + 1);
+                    }}
+                    disabled={
+                      (step === 1 && !setupMode) || (step === 2 && setupMode === 'custom' && selectedModules.length === 0) || (step === 2 && setupMode === 'orbit' && !orbitPrompt)
+                    }
+                    className="h-12 px-8 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl flex items-center group transition-all"
+                  >
+                    {t("continue_setup", "Continue Setup")}
+                    <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex gap-3">
+                  {(!caseTitle || !clientName) && (
+                    <Button 
+                      variant="outline"
+                      onClick={handleCompleteOnboarding}
+                      disabled={loading || !!orbitProgress}
+                      className="h-12 px-6 rounded-xl border-primary/40 bg-card hover:bg-muted/30 transition-colors font-semibold"
+                    >
+                      {loading || orbitProgress ? <Loader2 className="w-4 h-4 animate-spin" /> : t("skip_for_now", "Skip for now")}
+                    </Button>
+                  )}
+                  <Button 
+                    onClick={handleCompleteOnboarding}
+                    disabled={loading || !!orbitProgress || (!caseTitle || !clientName)}
+                    className="h-12 px-8 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl flex items-center gap-2 transition-all hover:-translate-y-0.5 active:translate-y-0"
+                  >
+                    {loading || orbitProgress ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>{orbitProgress || t("finalizing_workslate", "Finalizing Workslate...")}</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>{t("complete_setup", "Complete Setup!")}</span>
+                        <Sparkles className="w-4 h-4 ml-1" />
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
  </div>
  </div>
  </div>
