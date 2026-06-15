@@ -13,8 +13,25 @@ import PageHeader from '@/components/shared/PageHeader';
 export default function AdminUsers() {
   const { t } = useTranslation();
   const { toast } = useToast();
-  const { data: rawProfiles = [], isLoading: loadingProfiles } = useQuery("SELECT id, full_name, email, role, created_date, company_id FROM profiles ORDER BY created_date DESC LIMIT 100");
-  const { data: rawCompanies = [], isLoading: loadingCompanies } = useQuery("SELECT id, name FROM companies");
+  const [rawProfiles, setRawProfiles] = useState([]);
+  const [rawCompanies, setRawCompanies] = useState([]);
+  const [loadingProfiles, setLoadingProfiles] = useState(true);
+  const [loadingCompanies, setLoadingCompanies] = useState(true);
+
+  async function fetchProfiles() {
+    const [{ data: pData }, { data: cData }] = await Promise.all([
+      supabase.from('profiles').select('id, full_name, email, role, created_date, company_id').order('created_date', { ascending: false }).limit(100),
+      supabase.from('companies').select('id, name')
+    ]);
+    if (pData) setRawProfiles(pData);
+    if (cData) setRawCompanies(cData);
+    setLoadingProfiles(false);
+    setLoadingCompanies(false);
+  }
+
+  useEffect(() => {
+    fetchProfiles();
+  }, []);
 
   const [searchQuery, setSearchQuery] = useState('');
   const loading = loadingProfiles || loadingCompanies;

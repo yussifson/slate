@@ -136,7 +136,7 @@ export default function OnboardingWizard() {
         await initiatePaystackSubscription({
           email: user?.email || 'user@example.com',
           amount: plan.price_monthly,
-          currency: currency,
+          currency: 'GHS', // Hardcoded to GHS for Paystack merchant constraint
           planName: plan.name,
           companyId: user?.company_id || user?.id || 'new_user',
           onSuccess: async (ref) => {
