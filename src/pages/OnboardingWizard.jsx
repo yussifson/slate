@@ -140,7 +140,6 @@ export default function OnboardingWizard() {
  let newCompData = null;
 
  while (!insertSuccess && attempt < 3) {
-  await (async () => {
     const compPayload = {
       name: cName,
       subdomain: finalSubdomain,
@@ -155,7 +154,6 @@ export default function OnboardingWizard() {
     const compKeys = Object.keys(compPayload);
     const compVals = Object.values(compPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
     await powerSync.execute(`INSERT INTO companies (${compKeys.join(', ')}) VALUES (${compKeys.map(()=>'?').join(', ')})`, compVals);
-  })();
  const __resComp = await powerSync.execute(`SELECT * FROM companies WHERE subdomain = ?`, [finalSubdomain]);
  const newComp = __resComp.rows && __resComp.rows.length > 0 ? __resComp.rows.item(0) : null;
  const newCompErr = null;
@@ -204,7 +202,6 @@ export default function OnboardingWizard() {
  finalIndustry = 'orbit_build';
 }
 
- await (async () => {
  const updCompPayload = {
  industry_type: finalIndustry,
  country: country,
@@ -214,7 +211,6 @@ export default function OnboardingWizard() {
  const updCompKeys = Object.keys(updCompPayload);
  const updCompVals = Object.values(updCompPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
  await powerSync.execute(`UPDATE companies SET ${updCompKeys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [...updCompVals, companyIdToUse]);
-})();
  const compError = null;
 
  if (compError) throw compError;
@@ -228,18 +224,15 @@ export default function OnboardingWizard() {
  role: s.role,
  department: 'Operations'
 }));
- await (async () => {
  for (const staffPayload of staffInserts) {
  const staffKeys = Object.keys(staffPayload);
  const staffVals = Object.values(staffPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
  await powerSync.execute(`INSERT INTO staff_records (${staffKeys.join(', ')}) VALUES (${staffKeys.map(()=>'?').join(', ')})`, staffVals);
 }
-})();
 }
 
  // 3. Create first client and case
  if (clientName && caseTitle) {
- await (async () => {
  const clientPayload = {
  company_id: companyIdToUse,
  name: clientName,
@@ -249,13 +242,11 @@ export default function OnboardingWizard() {
  const clientKeys = Object.keys(clientPayload);
  const clientVals = Object.values(clientPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
  await powerSync.execute(`INSERT INTO clients (${clientKeys.join(', ')}) VALUES (${clientKeys.map(()=>'?').join(', ')})`, clientVals);
-})();
  const __resC = await powerSync.execute(`SELECT * FROM clients WHERE company_id = ? AND name = ?`, [companyIdToUse, clientName]);
  const clientData = __resC.rows && __resC.rows.length > 0 ? __resC.rows.item(0) : null;
  const clientError = null;
 
  if (!clientError && clientData) {
- await (async () => {
  const casePayload = {
  company_id: companyIdToUse,
  title: "Example Contract Review",
@@ -265,7 +256,6 @@ export default function OnboardingWizard() {
  const caseKeys = Object.keys(casePayload);
  const caseVals = Object.values(casePayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
  await powerSync.execute(`INSERT INTO legal_cases (${caseKeys.join(', ')}) VALUES (${caseKeys.map(()=>'?').join(', ')})`, caseVals);
-})();
 }
 }
 
@@ -308,7 +298,6 @@ export default function OnboardingWizard() {
  localStorage.setItem(`active_modules_${companyIdToUse}`, JSON.stringify(activeModulesToSave));
  
  // Save to database for cross-device persistence
- await (async () => {
  const indPayload = {
  id: `template_${step2Data.industry}`,
  company_id: companyIdToUse,
@@ -320,13 +309,12 @@ export default function OnboardingWizard() {
  const indKeys = Object.keys(indPayload);
  const indVals = Object.values(indPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
  await powerSync.execute(`INSERT INTO industry_records (${indKeys.join(', ')}) VALUES (${indKeys.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${indKeys.map(k=>k+' = excluded.'+k).join(', ')}`, indVals);
-})();
 } else {
  localStorage.removeItem(`active_modules_${companyIdToUse}`); // Template implies all modules
 }
  
  // Trigger Workspace Ready Notification (Novu Webhook)
-  await (async () => {
+  try {
     const notifPayload = {
       company_id: companyIdToUse,
       recipient_email: user?.email,
@@ -339,7 +327,7 @@ export default function OnboardingWizard() {
     const notifKeys = Object.keys(notifPayload);
     const notifVals = Object.values(notifPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
     await powerSync.execute(`INSERT INTO notifications (${notifKeys.join(', ')}) VALUES (${notifKeys.map(()=>'?').join(', ')})`, notifVals);
-  })().catch(err => console.error("Notification failed:", err));
+  } catch(err) { console.error("Notification failed:", err); }
 
 
  toast({ title: "Setup Complete!", description: "Welcome to your new digital workspace."});
