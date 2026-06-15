@@ -1,5 +1,6 @@
 import { Toaster } from "@/components/ui/toaster"
-import { QueryClientProvider } from '@tanstack/react-query'
+import { useToast } from "@/components/ui/use-toast"
+import { QueryClientProvider, useQueryClient } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Route, Routes, Outlet, Navigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
@@ -755,6 +756,38 @@ function PlatformRoutes() {
   );
 }
 
+function GlobalSystemListener() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const handleSuccess = (e) => {
+      // Invalidate queries universally so disjointed data dashboards sync instantly
+      queryClient.invalidateQueries(); 
+      if (!e.detail.isNoisy) {
+        toast({ title: "Action Successful", description: "Your changes have been saved." });
+      }
+    };
+    const handleError = (e) => {
+      toast({ title: "Action Failed", description: e.detail.error?.message || "An error occurred.", variant: "destructive" });
+    };
+    const handleHardError = (e) => {
+      toast({ title: "Cloud Sync Failed", description: e.detail.errorMessage, variant: "destructive" });
+    };
+
+    window.addEventListener('db:local-mutation-success', handleSuccess);
+    window.addEventListener('db:local-mutation-error', handleError);
+    window.addEventListener('sync:hard-error', handleHardError);
+    return () => {
+      window.removeEventListener('db:local-mutation-success', handleSuccess);
+      window.removeEventListener('db:local-mutation-error', handleError);
+      window.removeEventListener('sync:hard-error', handleHardError);
+    };
+  }, [queryClient, toast]);
+
+  return null;
+}
+
 function ProtectedRoute() {
   const { isAuthenticated, isLoadingAuth, authChecked } = useAuth();
   
@@ -795,6 +828,7 @@ function App() {
           <VideoProvider>
             <QueryClientProvider client={queryClientInstance}>
             <Router>
+              <GlobalSystemListener />
               <ErrorBoundary>
                 <React.Suspense fallback={<div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"><div className="w-12 h-12 rounded-full border-[3px] border-primary/20 border-t-primary animate-spin"></div></div>}>
                   {isBaseDomain ? (

@@ -127,6 +127,41 @@ export const powerSync = new PowerSyncDatabase({
   schema: AppSchema
 });
 
+// ------------------------------------------------------------------------------------------------
+// GLOBAL DATABASE INTERCEPTOR
+// Hook into the raw execution pipeline to automatically trigger global React Query invalidations
+// and UI Success/Error toasts without writing manual try/catch blocks in every UI component.
+// ------------------------------------------------------------------------------------------------
+const originalExecute = powerSync.execute.bind(powerSync);
+powerSync.execute = async (sql, parameters) => {
+  try {
+    const res = await originalExecute(sql, parameters);
+    
+    // Determine if this is a mutation (write) query
+    const upperSql = typeof sql === 'string' ? sql.trim().toUpperCase() : '';
+    if (upperSql.startsWith('INSERT') || upperSql.startsWith('UPDATE') || upperSql.startsWith('DELETE')) {
+      // Exclude noisy background tables from visual popups, but they will STILL trigger query invalidations
+      const isNoisy = upperSql.includes('USAGE_METRICS') || 
+                      upperSql.includes('NOTIFICATIONS') || 
+                      upperSql.includes('SYNC_ERRORS') || 
+                      upperSql.includes('CHAT_MESSAGES');
+                      
+      window.dispatchEvent(new CustomEvent('db:local-mutation-success', { 
+        detail: { sql, isNoisy } 
+      }));
+    }
+    return res;
+  } catch (err) {
+    const upperSql = typeof sql === 'string' ? sql.trim().toUpperCase() : '';
+    if (upperSql.startsWith('INSERT') || upperSql.startsWith('UPDATE') || upperSql.startsWith('DELETE')) {
+      window.dispatchEvent(new CustomEvent('db:local-mutation-error', { 
+        detail: { sql, error: err } 
+      }));
+    }
+    throw err;
+  }
+};
+
 let initPromise = null;
 export const initPowerSync = () => {
   if (!initPromise) {
