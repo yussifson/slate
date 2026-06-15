@@ -29,41 +29,68 @@ export default function UnivProductCatalog() {
 
  useEffect(() => { if (companyId) fetchData();}, [companyId]);
 
- const fetchData = async () => {
- setLoading(true);
- const __res = await powerSync.execute(`SELECT * FROM TABLE WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
- const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
- const error = null;
- if (!error) setRecords(data || []);
- setLoading(false);
-};
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const __res = await powerSync.execute(`SELECT * FROM ${TABLE} WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      setRecords(data || []);
+    } catch(e) {}
+    setLoading(false);
+  };
 
- const save = async (e) => {
- e.preventDefault();
- const payload = { ...form, company_id: companyId};
- await (async () => {
- const _payload = payload;
- const _keys = Object.keys(_payload);
- const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- if (editId) {
- await powerSync.execute(`UPDATE TABLE SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editId]);
-} else {
- const _plhdr = _keys.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO TABLE (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals);
-}
-})();
- const error = null;
- if (error) { toast.error('Failed to save: ' + error.message); return;}
- toast.success(editId ? 'Updated!' : 'Record added!');
- closeModal(); fetchData();
-};
+  const save = async (e) => {
+    e.preventDefault();
+    try {
+      if (editId) {
+        const payload = { ...form };
+        const _keys = Object.keys(payload);
+        const _vals = Object.values(payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`UPDATE ${TABLE} SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editId]);
+        
+        await powerSync.execute(`
+          INSERT INTO univ_inventory (id, company_id, item_name, sku, category, unit_price, quantity)
+          VALUES (?, ?, ?, ?, ?, ?, ?)
+          ON CONFLICT(id) DO UPDATE SET
+            item_name = excluded.item_name,
+            sku = excluded.sku,
+            category = excluded.category,
+            unit_price = excluded.unit_price,
+            quantity = excluded.quantity
+        `, [editId, companyId, form.product_name || '', form.sku || '', form.category || '', Number(form.price) || 0, Number(form.stock_qty) || 0]);
 
- const remove = async (id) => {
- await powerSync.execute(`DELETE FROM TABLE WHERE id = ?`, [id]);
- const error = null;
- if (!error) { toast.success('Deleted!'); fetchData();}
- else toast.error('Failed to delete');
-};
+        toast.success('Updated!');
+      } else {
+        const newId = crypto.randomUUID();
+        const payload = { ...form, id: newId, company_id: companyId };
+        const _keys = Object.keys(payload);
+        const _vals = Object.values(payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _plhdr = _keys.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO ${TABLE} (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals);
+        
+        await powerSync.execute(`
+          INSERT INTO univ_inventory (id, company_id, item_name, sku, category, unit_price, quantity)
+          VALUES (?, ?, ?, ?, ?, ?, ?)
+        `, [newId, companyId, form.product_name || '', form.sku || '', form.category || '', Number(form.price) || 0, Number(form.stock_qty) || 0]);
+
+        toast.success('Record added!');
+      }
+      closeModal(); fetchData();
+    } catch (error) {
+      toast.error('Failed to save: ' + error.message);
+    }
+  };
+
+  const remove = async (id) => {
+    try {
+      await powerSync.execute(`DELETE FROM ${TABLE} WHERE id = ?`, [id]);
+      try { await powerSync.execute(`DELETE FROM univ_inventory WHERE id = ?`, [id]); } catch(e){}
+      toast.success('Deleted!'); 
+      fetchData();
+    } catch(error) {
+      toast.error('Failed to delete');
+    }
+  };
 
  const openModal = (r = null) => { setForm(r ? { ...r} : EMPTY); setEditId(r?.id || null); setModal(true);};
  const closeModal = () => { setModal(false); setEditId(null); setForm(EMPTY);};

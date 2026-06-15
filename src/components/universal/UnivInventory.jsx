@@ -47,41 +47,58 @@ export default function UnivInventory() {
 
  const calcStatus = (qty, reorder) => qty === 0 ? 'Out of Stock' : qty <= reorder ? 'Low Stock' : 'In Stock';
 
- const save = async (e) => {
- e.preventDefault();
- const payload = { 
- ...form, 
- quantity: Number(form.quantity) || 0,
- unit_price: Number(form.unit_price) || 0,
- reorder_level: Number(form.reorder_level) || 0,
- status: calcStatus(Number(form.quantity), Number(form.reorder_level)) 
-};
- try {
- if (editingId) {
- await (async () => { const _payload = { ...payload}; delete _payload.status; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_inventory SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editingId]);})();
- const error = null; const data = [];
- if (error) throw error;
- toast.success('Item updated!');
-} else {
- await (async () => {
- const _payload = { ...payload, id: crypto.randomUUID(), company_id: companyId, sku: form.sku || `SKU-${Math.floor(Math.random()*10000)}`};
- delete _payload.status;
- const _keys = Object.keys(_payload);
- const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO univ_inventory (${_keys.join(',')}) VALUES (${_keys.map(()=>'?').join(',')})`, _vals); return { error: null};})();
- const error = null;
- if (error) throw error;
- toast.success('Item added!');
-}
- closeModal(); fetchItems();
-} catch (err) { console.error(err); toast.error(err.message || 'Failed to save');}
-};
+  const save = async (e) => {
+    e.preventDefault();
+    const payload = { 
+      ...form, 
+      quantity: Number(form.quantity) || 0,
+      unit_price: Number(form.unit_price) || 0,
+      reorder_level: Number(form.reorder_level) || 0,
+      status: calcStatus(Number(form.quantity), Number(form.reorder_level)) 
+    };
+    try {
+      if (editingId) {
+        await (async () => { const _payload = { ...payload}; delete _payload.status; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_inventory SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editingId]);})();
+        
+        await powerSync.execute(`
+          INSERT INTO univ_productcatalogs (id, company_id, product_name, sku, category, price, stock_qty, status)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          ON CONFLICT(id) DO UPDATE SET
+            product_name = excluded.product_name,
+            sku = excluded.sku,
+            category = excluded.category,
+            price = excluded.price,
+            stock_qty = excluded.stock_qty
+        `, [editingId, companyId, payload.item_name || '', payload.sku || '', payload.category || '', payload.unit_price || 0, payload.quantity || 0, 'Active']);
 
- const remove = async (id) => {
- await powerSync.execute(`DELETE FROM univ_inventory WHERE id = ?`, [id]);
- const error = null;
- if (error) toast.error('Failed to delete'); else { toast.success('Deleted'); fetchItems();}
-};
+        toast.success('Item updated!');
+      } else {
+        const newId = crypto.randomUUID();
+        const newSku = form.sku || `SKU-${Math.floor(Math.random()*10000)}`;
+        
+        await (async () => {
+          const _payload = { ...payload, id: newId, company_id: companyId, sku: newSku};
+          delete _payload.status;
+          const _keys = Object.keys(_payload);
+          const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          await powerSync.execute(`INSERT INTO univ_inventory (${_keys.join(',')}) VALUES (${_keys.map(()=>'?').join(',')})`, _vals); return { error: null};})();
+          
+        await powerSync.execute(`
+          INSERT INTO univ_productcatalogs (id, company_id, product_name, sku, category, price, stock_qty, status)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `, [newId, companyId, payload.item_name || '', newSku, payload.category || '', payload.unit_price || 0, payload.quantity || 0, 'Active']);
+
+        toast.success('Item added!');
+      }
+      closeModal(); fetchItems();
+    } catch (err) { console.error(err); toast.error(err.message || 'Failed to save');}
+  };
+
+  const remove = async (id) => {
+    await powerSync.execute(`DELETE FROM univ_inventory WHERE id = ?`, [id]);
+    try { await powerSync.execute(`DELETE FROM univ_productcatalogs WHERE id = ?`, [id]); } catch(e){}
+    toast.success('Deleted'); fetchItems();
+  };
 
  const openModal = (r = null) => { setForm(r ? { ...r} : EMPTY_FORM); setEditingId(r?.id || null); setIsModalOpen(true);};
  const closeModal = () => { setIsModalOpen(false); setEditingId(null); setForm(EMPTY_FORM);};
