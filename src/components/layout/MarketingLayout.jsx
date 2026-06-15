@@ -42,22 +42,7 @@ export default function MarketingLayout({ children}) {
  return () => window.removeEventListener('scroll', handleScroll);
 }, []);
 
- // Auto-redirect authenticated users away from marketing pages
- useEffect(() => {
- if (!isLoadingAuth && isAuthenticated && user) {
- if (user.role === 'super_admin' && !companySubdomain) {
- window.location.href = '/admin';
-} else if (companySubdomain) {
- window.location.href = workspaceUrl;
-} else if (user.role === 'student') {
- window.location.href = '/student-portal';
-} else if (user.role === 'parent') {
- window.location.href = '/parent-portal';
-} else {
- window.location.href = '/onboarding';
-}
-}
-}, [isAuthenticated, isLoadingAuth, user, companySubdomain, workspaceUrl]);
+ // Auto-redirect removed to allow logged-in users to browse marketing pages.
 
  // Disconnect Marketing Pages from Dashboard Theme Switcher
  useEffect(() => {

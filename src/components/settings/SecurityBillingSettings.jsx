@@ -3,6 +3,7 @@ import { useTranslation} from "react-i18next";
 import { getTerm} from "@/config/industries";
 import { base44} from "@/api/base44Client";
 import { supabase} from "@/api/supabaseClient";
+import { powerSync} from "@/api/PowerSyncConnector";
 import { useAuth} from "@/lib/AuthContext";
 import { useToast} from "@/components/ui/use-toast";
 import { Input} from "@/components/ui/input";
@@ -10,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/
 import { Button} from "@/components/ui/button";
 import { Progress} from "@/components/ui/progress";
 import { SectionCard, FormRow, Field} from "./SettingsShared";
+import { X, Check, Zap, ArrowRight, Loader2} from "lucide-react";
+import { initiatePaystackSubscription} from "@/lib/paystack";
 
 export function CurrencySettings({ activeIndustry, company, onSave, saving}) {
  const { t} = useTranslation();
@@ -167,6 +170,7 @@ export function BillingSettings({ company, activeIndustry}) {
  const [activeCasesCount, setActiveCasesCount] = useState(0);
  const [invoices, setInvoices] = useState([]);
  const [loadingPlan, setLoadingPlan] = useState(null);
+ const [showUpgradeModal, setShowUpgradeModal] = useState(false);
  const { toast} = useToast();
 
  useEffect(() => {
@@ -255,13 +259,26 @@ export function BillingSettings({ company, activeIndustry}) {
  </div>
  <div className="pt-4 border-t border-primary/40">
  <Button 
- onClick={() => window.location.href = '/pricing'} 
+ onClick={() => setShowUpgradeModal(true)} 
  className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-bold px-8 h-12 rounded-xl text-sm transition-transform hover:-translate-y-0.5"
  >
  {t("explore_corporate_pricing", "Explore Corporate Pricing")}
  </Button>
  </div>
  </div>
+ 
+ {showUpgradeModal && (
+ <UpgradeModal 
+ company={company} 
+ companyId={companyId}
+ onClose={() => setShowUpgradeModal(false)}
+ onUpgradeSuccess={() => {
+ setShowUpgradeModal(false);
+ toast({ title: "Upgrade Successful!", description: "Your new limits are now active."});
+ refreshUser(); // Assuming this triggers a re-fetch of company data
+ }}
+ />
+ )}
  
  <div className="bg-card/45 backdrop-blur-xl rounded-3xl border border-primary/40 p-8 space-y-6 -black/5 hover:border-primary/40 transition-colors">
  <div>
@@ -313,4 +330,146 @@ export function BillingSettings({ company, activeIndustry}) {
  </div>
  </div>
  );
+}
+
+function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [processingId, setProcessingId] = useState(null);
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const { rows } = await powerSync.execute("SELECT * FROM subscription_plans WHERE is_active = 'true' OR is_active = 1 ORDER BY price_monthly ASC");
+        setPlans(rows._array || Array.from(rows));
+      } catch (err) {
+        console.error("Failed to load plans:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPlans();
+  }, []);
+
+  const handleUpgrade = async (plan) => {
+    setProcessingId(plan.id);
+    
+    const price = plan.price_monthly;
+    
+    if (price === 0) {
+      setProcessingId(null);
+      return;
+    }
+
+    const authSession = await supabase.auth.getSession();
+    const email = authSession?.data?.session?.user?.email || company?.email || "billing@company.com";
+
+    initiatePaystackSubscription({
+      email,
+      amount: price,
+      currency: "GHS",
+      planName: plan.name,
+      companyId: companyId,
+      onSuccess: async (response) => {
+        try {
+          const _k = ["subscription_plan", "subscription_status"];
+          const _v = [plan.name.toLowerCase().replace(/\s/g, ''), "active"];
+          await powerSync.execute(`UPDATE companies SET subscription_plan = ?, subscription_status = ? WHERE id = ?`, [..._v, companyId]);
+
+          await powerSync.execute(
+            `INSERT INTO subscription_invoices (company_id, plan_name, amount, currency, status, paystack_ref, created_date) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [companyId, plan.name, price, "GHS", "SUCCESS", response.reference, new Date().toISOString()]
+          );
+          
+          onUpgradeSuccess();
+        } catch (err) {
+          console.error("Database update failed after payment", err);
+          alert("Payment succeeded but applying the plan failed. Please contact support.");
+        } finally {
+          setProcessingId(null);
+        }
+      },
+      onClose: () => {
+        setProcessingId(null);
+      }
+    });
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md animate-in fade-in duration-300">
+      <div className="relative w-full max-w-5xl bg-card rounded-[2rem] border border-primary/40 shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+        
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 md:p-8 border-b border-primary/20">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">Upgrade Your Plan</h2>
+            <p className="text-sm text-muted-foreground mt-1">Select the perfect tier for your firm's growing needs.</p>
+          </div>
+          <button onClick={onClose} className="p-2 rounded-full hover:bg-muted transition-colors">
+            <X className="w-6 h-6 text-muted-foreground" />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="overflow-y-auto p-6 md:p-8 bg-muted/10">
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {plans.map((p) => {
+                const isCurrent = company?.subscription_plan === p.name.toLowerCase().replace(/\s/g, '');
+                return (
+                  <div key={p.id} className={`relative flex flex-col bg-card rounded-3xl border p-6 md:p-8 transition-all ${isCurrent ? 'border-primary/40 opacity-70' : 'border-primary/20 hover:border-primary/40 hover:-translate-y-1'}`}>
+                    <div className="mb-4">
+                      <h3 className="font-bold text-xl text-foreground mb-1">{p.name}</h3>
+                      <div className="flex items-end gap-1">
+                        <span className="text-3xl font-black">GH₵{p.price_monthly}</span>
+                        <span className="text-muted-foreground font-medium text-sm mb-1">/mo</span>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-muted/40 rounded-xl p-4 mb-6 space-y-2 text-sm border border-primary/10">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Team Size:</span>
+                        <span className="font-bold">{p.limits?.users || 'Unlimited'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">AI Credits:</span>
+                        <span className="font-bold">{p.limits?.ai_credits_monthly || 0}</span>
+                      </div>
+                    </div>
+
+                    <div className="mt-auto pt-4">
+                      {isCurrent ? (
+                        <Button disabled className="w-full bg-muted text-muted-foreground h-12 rounded-xl font-bold">
+                          Current Plan
+                        </Button>
+                      ) : (
+                        <Button 
+                          onClick={() => handleUpgrade(p)}
+                          disabled={processingId === p.id}
+                          className="w-full bg-primary hover:bg-primary/90 text-white h-12 rounded-xl font-bold flex items-center justify-center gap-2"
+                        >
+                          {processingId === p.id ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Upgrade Now'}
+                          {processingId !== p.id && <ArrowRight className="w-4 h-4" />}
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+        
+        {/* Footer */}
+        <div className="p-4 md:p-6 bg-card border-t border-primary/20 flex flex-wrap justify-center gap-6 text-xs font-semibold text-muted-foreground">
+          <div className="flex items-center gap-1.5"><Check className="w-4 h-4 text-emerald-500" /> Instant Activation</div>
+          <div className="flex items-center gap-1.5"><Zap className="w-4 h-4 text-amber-500" /> Secure checkout by Paystack</div>
+        </div>
+      </div>
+    </div>
+  );
 }

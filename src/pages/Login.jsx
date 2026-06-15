@@ -182,7 +182,7 @@ export default function Login() {
  // Check if user belongs to this subdomain
  const { data: profile} = await powerSync.execute('SELECT company_id, role, onboarding_completed FROM profiles WHERE id = ? LIMIT 1', [authData.user.id]).then(res => ({ data: res.rows._array[0]}));
  
- if (profile && profile.onboarding_completed === false) {
+ if (profile && (profile.onboarding_completed === false || profile.onboarding_completed === 0)) {
  window.location.href = '/onboarding';
  return;
 }
@@ -225,7 +225,7 @@ export default function Login() {
  window.location.href = '/';
 } else {
  // Base domain login
- const { data: profile} = await powerSync.execute('SELECT company_id, role FROM profiles WHERE id = ? LIMIT 1', [authData.user.id]).then(res => ({ data: res.rows._array[0]}));
+ const { data: profile} = await powerSync.execute('SELECT company_id, role, onboarding_completed FROM profiles WHERE id = ? LIMIT 1', [authData.user.id]).then(res => ({ data: res.rows._array[0]}));
  
  // If Super Admin logs into the Base Domain, route directly to the admin command center
  if (profile?.role === 'super_admin') {
@@ -252,12 +252,12 @@ export default function Login() {
 }
 }
  
- // Fallback: send to onboarding if they don't have a company
- if (!profile?.company_id) {
+ // Fallback: send to onboarding if they don't have a company or haven't onboarded
+ if (!profile?.company_id || profile?.onboarding_completed === false || profile?.onboarding_completed === 0) {
  window.location.href = '/onboarding';
-} else {
+ } else {
  window.location.href = '/';
-}
+ }
 }
 };
 
