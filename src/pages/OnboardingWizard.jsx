@@ -397,6 +397,7 @@ export default function OnboardingWizard() {
  // Build cross-subdomain transfer params
  const transferParams = new URLSearchParams();
  transferParams.set('setup_mode', setupMode);
+ transferParams.set('industry', finalIndustry); // Pass industry so dashboard loads instantly without waiting for sync
  if (activeModulesToSave) {
  transferParams.set('active_modules', JSON.stringify(activeModulesToSave));
 }

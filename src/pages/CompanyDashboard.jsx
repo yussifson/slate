@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { useImpersonation } from "@/lib/ImpersonationContext";
 import { useCompanyId } from "@/hooks/useCompanyId";
@@ -20,7 +20,19 @@ export default function CompanyDashboard() {
   const company = companies.length > 0 ? companies[0] : null;
 
   const isAdmin = ["company_admin", "super_admin", "admin"].includes(user?.role);
-  const industry = sessionStorage.getItem('slate_industry_override') || company?.industry_type || user?.company_industry || "law";
+  // Priority: sessionStorage override > localStorage (set by onboarding redirect) > DB > user object > fallback
+  const industry = sessionStorage.getItem('slate_industry_override') 
+    || localStorage.getItem('slate_onboarding_industry')
+    || company?.industry_type 
+    || user?.company_industry 
+    || "law";
+
+  // Once the company has fully synced its industry_type from the DB, clear the temporary localStorage key
+  useEffect(() => {
+    if (company?.industry_type) {
+      localStorage.removeItem('slate_onboarding_industry');
+    }
+  }, [company?.industry_type]);
 
   if (industry === 'law') {
     return <LawDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
