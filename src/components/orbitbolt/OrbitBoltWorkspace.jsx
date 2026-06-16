@@ -182,7 +182,12 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
 };
  const _keys = Object.keys(_payload);
  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_keys.map(k=>k+' = excluded.'+k).join(', ')}`, _vals);
+ const existing = await powerSync.get('SELECT id FROM industry_records WHERE id = ?', [_payload.id]);
+        if (existing) {
+          await powerSync.execute(`UPDATE industry_records SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, _payload.id]);
+        } else {
+          await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
+        }
 })();
 };
 

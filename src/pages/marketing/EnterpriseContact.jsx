@@ -7,7 +7,8 @@ import { Label} from '@/components/ui/label';
 import { Textarea} from '@/components/ui/textarea';
 import { useToast} from '@/components/ui/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import { Switch} from '@/components/ui/switch';
+import { Switch } from '@/components/ui/switch';
+import { supabase } from '@/api/supabaseClient';
 
 export default function EnterpriseContact() {
  const { t} = useTranslation();
@@ -35,18 +36,43 @@ export default function EnterpriseContact() {
  const handleNext = () => setStep(2);
  const handleBack = () => setStep(1);
 
- const handleSubmit = (e) => {
- e.preventDefault();
- setLoading(true);
- // Simulate API call to CRM
- setTimeout(() => {
- setLoading(false);
- setStep(3); // Success step
- toast({
- title: "Request Received",
- description: "Our enterprise team will contact you within 24 hours.",
-});
-}, 1500);
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+
+  const payload = {
+    first_name: formData.firstName,
+    last_name: formData.lastName,
+    work_email: formData.workEmail,
+    company_name: formData.companyName,
+    industry: formData.industry,
+    user_count: formData.userCount,
+    deployment_type: formData.deployment,
+    needs_migration: formData.needsMigration,
+    needs_whitelabel: formData.needsWhitelabel,
+    needs_compliance: formData.needsCompliance,
+    message: formData.message,
+    status: 'pending'
+  };
+
+  const { error } = await supabase.from('enterprise_requests').insert([payload]);
+
+  setLoading(false);
+
+  if (error) {
+    toast({
+      variant: 'destructive',
+      title: 'Submission Failed',
+      description: error.message || 'There was an error submitting your request. Please try again.',
+    });
+    return;
+  }
+
+  setStep(3); // Success step
+  toast({
+    title: 'Request Received',
+    description: 'Our enterprise team will contact you within 24 hours.',
+  });
 };
 
  return (

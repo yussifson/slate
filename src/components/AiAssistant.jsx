@@ -207,7 +207,12 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
  const _payload = { id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s};
  const _keys = Object.keys(_payload);
  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_keys.map(k=>k+' = excluded.'+k).join(', ')}`, _vals);
+ const existing = await powerSync.get('SELECT id FROM industry_records WHERE id = ?', [_payload.id]);
+        if (existing) {
+          await powerSync.execute(`UPDATE industry_records SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, _payload.id]);
+        } else {
+          await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
+        }
 })();
 }
  setIsInitialized(true);
@@ -242,7 +247,12 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
 };
  const _keys = Object.keys(_payload);
  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_keys.map(k=>k+' = excluded.'+k).join(', ')}`, _vals);
+ const existing = await powerSync.get('SELECT id FROM industry_records WHERE id = ?', [_payload.id]);
+        if (existing) {
+          await powerSync.execute(`UPDATE industry_records SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, _payload.id]);
+        } else {
+          await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
+        }
 })();
 }
  return newS;
@@ -697,7 +707,12 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  const _payload = { id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s};
  const _keys = Object.keys(_payload);
  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_keys.map(k=>k+' = excluded.'+k).join(', ')}`, _vals);
+ const existing = await powerSync.get('SELECT id FROM industry_records WHERE id = ?', [_payload.id]);
+        if (existing) {
+          await powerSync.execute(`UPDATE industry_records SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, _payload.id]);
+        } else {
+          await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
+        }
 })();
 }
  setSessions(prev => [s, ...prev]);
@@ -719,7 +734,12 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  const _payload = { id: fresh.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: fresh};
  const _keys = Object.keys(_payload);
  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')}) ON CONFLICT(id) DO UPDATE SET ${_keys.map(k=>k+' = excluded.'+k).join(', ')}`, _vals);
+ const existing = await powerSync.get('SELECT id FROM industry_records WHERE id = ?', [_payload.id]);
+        if (existing) {
+          await powerSync.execute(`UPDATE industry_records SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, _payload.id]);
+        } else {
+          await powerSync.execute(`INSERT INTO industry_records (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
+        }
 })();
 }
  setActiveId(fresh.id);

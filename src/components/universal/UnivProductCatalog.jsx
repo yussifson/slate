@@ -48,16 +48,19 @@ export default function UnivProductCatalog() {
         const _vals = Object.values(payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         await powerSync.execute(`UPDATE ${TABLE} SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editId]);
         
-        await powerSync.execute(`
-          INSERT INTO univ_inventory (id, company_id, item_name, sku, category, unit_price, quantity)
-          VALUES (?, ?, ?, ?, ?, ?, ?)
-          ON CONFLICT(id) DO UPDATE SET
-            item_name = excluded.item_name,
-            sku = excluded.sku,
-            category = excluded.category,
-            unit_price = excluded.unit_price,
-            quantity = excluded.quantity
-        `, [editId, companyId, form.product_name || '', form.sku || '', form.category || '', Number(form.price) || 0, Number(form.stock_qty) || 0]);
+        const existingInventory = await powerSync.get('SELECT id FROM univ_inventory WHERE id = ?', [editId]);
+        if (existingInventory) {
+          await powerSync.execute(`
+            UPDATE univ_inventory SET
+              item_name = ?, sku = ?, category = ?, unit_price = ?, quantity = ?
+            WHERE id = ?
+          `, [form.product_name || '', form.sku || '', form.category || '', Number(form.price) || 0, Number(form.stock_qty) || 0, editId]);
+        } else {
+          await powerSync.execute(`
+            INSERT INTO univ_inventory (id, company_id, item_name, sku, category, unit_price, quantity)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+          `, [editId, companyId, form.product_name || '', form.sku || '', form.category || '', Number(form.price) || 0, Number(form.stock_qty) || 0]);
+        }
 
         toast.success('Updated!');
       } else {

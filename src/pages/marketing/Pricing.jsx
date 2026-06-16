@@ -54,7 +54,7 @@ export default function Pricing() {
 },
  {
  q: 'Can I self-host Slate on my own servers?',
- a: 'Yes. Our Off-Cloud Enterprise deployment starts at $15,500/year and allows you to run Slate completely air-gapped on your private network.'
+ a: 'Yes. Our Off-Cloud Enterprise deployment allows you to run Slate completely air-gapped on your private network.'
 },
  {
  q: 'Do community and education plans need verification?',
@@ -344,8 +344,8 @@ export default function Pricing() {
  </div>
  </div>
  <div className="w-full md:w-80 shrink-0 flex flex-col items-center bg-white rounded-3xl p-8 border border-primary/40 ">
- <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Starting At</span>
- <span className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tighter">$15,500<span className="text-xl text-slate-500 font-medium tracking-normal">/yr</span></span>
+ <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Tailored Quote</span>
+ <span className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tighter">Custom<span className="text-xl text-slate-500 font-medium tracking-normal"> Pricing</span></span>
  <Button
  onClick={() => setShowOffCloudDialog(true)}
  className="w-full py-6 rounded-2xl font-bold text-sm bg-primary text-white hover:bg-primary/90 transition-all "
@@ -363,7 +363,7 @@ export default function Pricing() {
  <div className="bg-slate-50 border-b border-primary/40 px-8 py-8 shrink-0 text-center">
  <DialogTitle className="text-2xl font-bold text-slate-900 mb-3 tracking-tight">{t('off_cloud_enterprise', 'Off-Cloud Enterprise')}</DialogTitle>
  <DialogDescription className="text-slate-600 text-sm max-w-md mx-auto leading-relaxed font-medium">
- Deploy Slate securely on your own private infrastructure. Starting at $15,500 USD / year.
+ Deploy Slate securely on your own private infrastructure with custom enterprise pricing.
  </DialogDescription>
  </div>
  <div className="px-8 py-8 overflow-y-auto bg-white flex-1">
@@ -395,7 +395,7 @@ export default function Pricing() {
  {t('close', 'Close')}
  </Button>
  <Link to="/enterprise-contact" onClick={() => setShowOffCloudDialog(false)} className="w-full sm:w-auto block">
- <Button className="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white font-bold py-6 px-8 rounded-2xl flex items-center gap-2">
+ <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-bold py-6 px-8 rounded-2xl flex items-center gap-2">
  {t('contact_sales', 'Contact Sales')} <ArrowRight className="w-4 h-4" />
  </Button>
  </Link>
