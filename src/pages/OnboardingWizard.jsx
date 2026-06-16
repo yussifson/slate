@@ -263,11 +263,8 @@ export default function OnboardingWizard() {
 
  if (profErr) throw profErr;
 
- // Also update full_name locally via PowerSync (will sync to Supabase once migration is applied)
- const fullNameToSave = user?.user_metadata?.full_name || 'Admin';
- await powerSync.execute(`UPDATE profiles SET full_name = ?, company_id = ?, company_name = ? WHERE id = ?`, [
-   fullNameToSave, companyIdToUse, workspaceName || 'My Workslate', user.id
- ]);
+  // Removed local PowerSync profile update to prevent view upsert errors.
+  // Supabase Realtime will sync this down shortly.
 }
 
  // 1. Update company details
@@ -297,27 +294,25 @@ export default function OnboardingWizard() {
     // Column may not exist yet (migration not applied) - silently ignore and rely on localStorage fallback
     console.warn('[Onboarding] Could not update profile.industry_type in Supabase (migration pending):', profIndustryErr.message);
   }
-  // Always save locally so PowerSync has it
-  await powerSync.execute(`UPDATE profiles SET industry_type = ? WHERE id = ?`, [finalIndustry, user.id]);
+  // Removed local PowerSync industry_type update to prevent view upsert errors.
+  
 
   if (compError) throw compError;
 
  // 2. Insert invited staff records
  if (invitedStaff.length > 0) {
- const staffInserts = invitedStaff.map(s => ({
- id: crypto.randomUUID(),
- company_id: companyIdToUse,
- user_email: s.email,
- full_name: s.name,
- role: s.role,
- department: 'Operations'
-}));
- for (const staffPayload of staffInserts) {
- const staffKeys = Object.keys(staffPayload);
- const staffVals = Object.values(staffPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- await powerSync.execute(`INSERT INTO staff_records (${staffKeys.join(', ')}) VALUES (${staffKeys.map(()=>'?').join(', ')})`, staffVals);
-}
-}
+   const staffInserts = invitedStaff.map(s => ({
+     id: crypto.randomUUID(),
+     company_id: companyIdToUse,
+     user_email: s.email,
+     full_name: s.name,
+     role: s.role,
+     department: 'Operations'
+   }));
+   
+   const { error: staffErr } = await supabase.from('staff_records').insert(staffInserts);
+   if (staffErr) console.error("Failed to save staff records:", staffErr);
+ }
 
  // 3. Remove first client/case creation (replaced by pricing plans logic)
 
@@ -378,13 +373,19 @@ export default function OnboardingWizard() {
     search_text: 'initial setup template applied',
     data: { applied: true, timestamp: new Date().toISOString()}
   };
-  const indKeys = Object.keys(indPayload);
-  const indVals = Object.values(indPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-  
   if (isUpdate) {
-    await powerSync.execute(`UPDATE industry_records SET ${indKeys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [...indVals, recordId]);
+    const { error: indUpdErr } = await supabase
+      .from('industry_records')
+      .update({
+        industry: finalIndustry,
+        data: indPayload.data,
+        search_text: 'initial setup template applied'
+      })
+      .eq('id', recordId);
+    if (indUpdErr) console.error("Failed to update industry record:", indUpdErr);
   } else {
-    await powerSync.execute(`INSERT INTO industry_records (${indKeys.join(', ')}) VALUES (${indKeys.map(()=>'?').join(', ')})`, indVals);
+    const { error: indInsErr } = await supabase.from('industry_records').insert([indPayload]);
+    if (indInsErr) console.error("Failed to insert industry record:", indInsErr);
   }
 } else {
  localStorage.removeItem(`active_modules_${companyIdToUse}`); // Template implies all modules
@@ -402,9 +403,7 @@ export default function OnboardingWizard() {
       type: 'success',
       is_read: false
     };
-    const notifKeys = Object.keys(notifPayload);
-    const notifVals = Object.values(notifPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-    await powerSync.execute(`INSERT INTO notifications (${notifKeys.join(', ')}) VALUES (${notifKeys.map(()=>'?').join(', ')})`, notifVals);
+    await supabase.from('notifications').insert([notifPayload]);
   } catch(err) { console.error("Notification failed:", err); }
 
 

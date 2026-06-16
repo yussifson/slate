@@ -372,14 +372,27 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
       companyId: companyId,
       onSuccess: async (response) => {
         try {
-          const _keys = ["subscription_plan", "subscription_status"];
-          const _vals = [plan.name.toLowerCase().replace(/\s/g, ''), "active"];
-          await powerSync.execute(`UPDATE companies SET subscription_plan = ?, subscription_status = ? WHERE id = ?`, [..._vals, companyId]);
+          // Use direct Supabase calls to bypass PowerSync read-only view restrictions
+          const { error: updateErr } = await supabase
+            .from('companies')
+            .update({
+              subscription_plan: plan.name.toLowerCase().replace(/\s/g, ''),
+              subscription_status: 'active'
+            })
+            .eq('id', companyId);
 
-          await powerSync.execute(
-            `INSERT INTO subscription_invoices (company_id, plan_name, amount, currency, status, paystack_ref, created_date) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [companyId, plan.name, price, "GHS", "SUCCESS", response.reference, new Date().toISOString()]
-          );
+          if (updateErr) throw updateErr;
+
+          await supabase
+            .from('subscription_invoices')
+            .insert([{
+              company_id: companyId,
+              plan_name: plan.name,
+              amount_usd: String(price),
+              status: "SUCCESS",
+              notes: `paystack_ref: ${response.reference}, currency: GHS`,
+              paid_date: new Date().toISOString()
+            }]);
           
           onUpgradeSuccess();
         } catch (err) {

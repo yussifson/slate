@@ -462,7 +462,16 @@ function TabManualOverrides({ initialTargetCompany }) {
     setIsApplying(true);
     try {
       if (selectedPlan) {
-        await powerSync.execute(`UPDATE companies SET subscription_plan = ?, subscription_status = 'active' WHERE id = ?`, [selectedPlan, targetCompany]);
+        // await powerSync.execute(`UPDATE companies SET subscription_plan = ?, subscription_status = 'active' WHERE id = ?`, [selectedPlan, targetCompany]);
+        const { error } = await supabase
+          .from('companies')
+          .update({
+            subscription_plan: selectedPlan,
+            subscription_status: 'active'
+          })
+          .eq('id', targetCompany);
+        
+        if (error) throw error;
       }
       if (Number(bonusCredits) > 0) {
         // Find existing usage or create one
