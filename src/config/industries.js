@@ -619,6 +619,7 @@ export const INDUSTRIES = {
       { label: 'Revenue & Billing', path: '/admin/billing', icon: 'CreditCard' },
       { label: 'Security & Audit', path: '/admin/security', icon: 'Shield' },
       { label: 'System Broadcasts', path: '/admin/broadcasts', icon: 'BellRing' },
+      { label: 'Enterprise Requests', path: '/admin/enterprise-requests', icon: 'Building2' },
 
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
