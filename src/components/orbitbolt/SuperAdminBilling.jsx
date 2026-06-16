@@ -90,21 +90,24 @@ function TabDashboard() {
       const statsObj = { mrr: 0, activeSubscribers: 0, churnRate: 0, failedPayments: 0 };
       
       const resCompanies = await powerSync.execute(`
-        SELECT c.id, c.subscription_status, p.price_monthly
-        FROM companies c
-        LEFT JOIN subscription_plans p ON c.subscription_plan = p.id
-        WHERE c.subscription_status IN ('active', 'trial', 'past_due', 'canceled')
+        SELECT cs.company_id, cs.status as subscription_status, p.price_monthly
+        FROM company_subscriptions cs
+        LEFT JOIN subscription_plans p ON cs.plan_id = p.id
+        WHERE cs.status IN ('active', 'trial', 'past_due', 'canceled')
       `);
       
       let mrr = 0;
       let activeCount = 0;
       let churnCount = 0;
-      for (const row of resCompanies.rows) {
-        if (row.subscription_status === 'active' || row.subscription_status === 'trial') {
-          activeCount++;
-          mrr += Number(row.price_monthly || 0);
-        } else if (row.subscription_status === 'canceled' || row.subscription_status === 'past_due') {
-          churnCount++;
+      if (resCompanies.rows) {
+        for (let i = 0; i < resCompanies.rows.length; i++) {
+          const row = resCompanies.rows.item(i);
+          if (row.subscription_status === 'active' || row.subscription_status === 'trial') {
+            activeCount++;
+            mrr += Number(row.price_monthly || 0);
+          } else if (row.subscription_status === 'canceled' || row.subscription_status === 'past_due') {
+            churnCount++;
+          }
         }
       }
       statsObj.mrr = mrr;
@@ -112,7 +115,7 @@ function TabDashboard() {
       const totalCompanies = activeCount + churnCount;
       statsObj.churnRate = totalCompanies > 0 ? ((churnCount / totalCompanies) * 100).toFixed(1) : 0;
       
-      const resFailed = await powerSync.execute(`SELECT count(*) as cnt FROM subscription_invoices WHERE status = 'failed'`);
+      const resFailed = await powerSync.execute(`SELECT count(*) as cnt FROM billing_transactions WHERE status = 'failed'`);
       statsObj.failedPayments = resFailed.rows?.item(0)?.cnt || 0;
       
       return statsObj;
@@ -529,9 +532,10 @@ function TabTransactions() {
     queryKey: ['superadmin_transactions'],
     queryFn: async () => {
       const res = await powerSync.execute(`
-        SELECT id, created_date, company_name, amount_usd, status, id as reference 
-        FROM subscription_invoices 
-        ORDER BY created_date DESC LIMIT 50
+        SELECT bt.id, bt.created_at as created_date, c.name as company_name, bt.amount as amount_usd, bt.status, bt.paystack_reference as reference 
+        FROM billing_transactions bt
+        LEFT JOIN companies c ON bt.company_id = c.id
+        ORDER BY bt.created_at DESC LIMIT 50
       `);
       const data = [];
       if (res.rows) {

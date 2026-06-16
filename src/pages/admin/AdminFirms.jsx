@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Edit2, CheckCircle2, AlertOctagon, Loader2, Search, UserCheck, MessageSquare, Layers, Users } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { useImpersonation } from '@/lib/ImpersonationContext';
 import PageHeader from '@/components/shared/PageHeader';
 import FirmFeaturesManager from '@/components/superadmin/FirmFeaturesManager';
@@ -219,6 +219,7 @@ export default function AdminFirms() {
       {/* Message Dialog */}
       <Dialog open={messageDialogOpen} onOpenChange={setMessageDialogOpen}>
         <DialogContent className="max-w-md rounded-2xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 p-6 font-sans">
+          <DialogDescription className="sr-only">Details about the firm</DialogDescription>
           <DialogHeader>
             <DialogTitle className="text-slate-900 dark:text-slate-100 font-extrabold text-base flex items-center gap-1.5">
               <MessageSquare className="w-4 h-4 text-primary" />
@@ -251,6 +252,7 @@ export default function AdminFirms() {
       {/* Edit Quota & Plans Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
         <DialogContent className="max-w-md rounded-2xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 p-6 font-sans">
+          <DialogDescription className="sr-only">Adjust firm quota settings</DialogDescription>
           <DialogHeader>
             <DialogTitle className="text-slate-900 dark:text-slate-100 font-extrabold text-base flex items-center gap-1.5">
               <Edit2 className="w-4 h-4 text-primary" />

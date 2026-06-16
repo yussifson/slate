@@ -9,21 +9,26 @@ import Companies from '@/pages/Companies';
 export default function AdminOverview() {
  const { t } = useTranslation();
  const { data: companies = [], isLoading: loadingCompanies } = useQuery("SELECT * FROM companies");
- const { data: profiles = [], isLoading: loadingProfiles } = useQuery("SELECT id FROM profiles");
- const { data: cases = [], isLoading: loadingCases } = useQuery("SELECT id FROM industry_records WHERE record_type = 'case'");
+  const { data: subscriptions = [], isLoading: loadingSubscriptions } = useQuery(`
+    SELECT cs.company_id, cs.status as subscription_status, p.price_monthly
+    FROM company_subscriptions cs
+    LEFT JOIN subscription_plans p ON cs.plan_id = p.id
+    WHERE cs.status IN ('active', 'trial')
+  `);
+  const { data: profiles = [], isLoading: loadingProfiles } = useQuery("SELECT id FROM profiles");
+  const { data: cases = [], isLoading: loadingCases } = useQuery("SELECT id FROM industry_records WHERE record_type = 'case'");
 
- const loading = loadingCompanies || loadingProfiles || loadingCases;
+  const loading = loadingCompanies || loadingProfiles || loadingCases || loadingSubscriptions;
 
- const activeFirmsCount = companies.filter(c => c.status === 'active').length;
- const totalUsersCount = profiles.length;
- const totalCasesCount = cases.length;
+  const activeFirmsCount = companies.filter(c => c.status === 'active').length;
+  const totalUsersCount = profiles.length;
+  const totalCasesCount = cases.length;
 
- const mrr = companies
- .filter(c => c.subscription_status === 'active' && c.status === 'active')
- .reduce((sum, c) => {
- const planPrice = c.subscription_plan === 'starter' ? 29 : c.subscription_plan === 'professional' ? 79 : c.subscription_plan === 'enterprise' ? 199 : 0;
- return sum + planPrice;
-}, 0);
+  const mrr = subscriptions
+  .filter(s => s.subscription_status === 'active' || s.subscription_status === 'trial')
+  .reduce((sum, s) => {
+  return sum + Number(s.price_monthly || 0);
+ }, 0);
 
  if (loading) {
  return (
