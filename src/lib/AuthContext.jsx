@@ -492,6 +492,7 @@ export const AuthProvider = ({ children }) => {
         avatar_url: sessionUser.user_metadata?.avatar_url || newUser?.avatar_url || null,
         subscription_plan: companyData?.subscription_plan || 'starter',
         subscription_status: companyData?.subscription_status || 'trial',
+        company_status: companyData?.status || 'active',
         company_created_date: companyData?.created_date || null,
         available_companies: availableCompanies
       };
