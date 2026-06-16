@@ -15,13 +15,13 @@ BEGIN
     PERFORM cron.schedule(
       'process_automation_queue',
       '* * * * *',
-      $$
+      $cron$
       SELECT net.http_post(
-          url:='https://wmabgiafwamxkcgxyhee.supabase.co/functions/v1/automation-worker',
-          headers:='{"Content-Type": "application/json", "Authorization": "Bearer ' || current_setting('request.jwt.claim.role', true) || '"}'::jsonb,
-          body:='{}'::jsonb
+          url => 'https://wmabgiafwamxkcgxyhee.supabase.co/functions/v1/automation-worker',
+          headers => '{"Content-Type": "application/json"}'::jsonb,
+          body => '{}'::jsonb
       );
-      $$
+      $cron$
     );
   END IF;
 END $$;
