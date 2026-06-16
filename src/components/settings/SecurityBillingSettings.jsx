@@ -13,6 +13,7 @@ import { Progress} from "@/components/ui/progress";
 import { SectionCard, FormRow, Field} from "./SettingsShared";
 import { X, Check, Zap, ArrowRight, Loader2} from "lucide-react";
 import { initiatePaystackSubscription } from "@/lib/paystack";
+import { NotificationService } from "@/lib/notifications";
 import { COUNTRIES_CURRENCIES } from "@/config/countries";
 
 export function CurrencySettings({ activeIndustry, company, onSave, saving }) {
@@ -393,6 +394,21 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
               notes: `paystack_ref: ${response.reference}, currency: GHS`,
               paid_date: new Date().toISOString()
             }]);
+            
+          // Trigger omnichannel notification via Novu unified system
+          try {
+            await NotificationService.send({
+              companyId: companyId,
+              recipientEmail: email,
+              recipientName: authSession?.data?.session?.user?.user_metadata?.full_name || 'Admin',
+              title: 'Plan Upgraded Successfully',
+              message: `Your workspace has been successfully upgraded to the ${plan.name} plan.`,
+              type: 'success',
+              channels: ['in-app', 'email']
+            });
+          } catch(err) {
+            console.error("Failed to send upgrade notification", err);
+          }
           
           onUpgradeSuccess();
         } catch (err) {
