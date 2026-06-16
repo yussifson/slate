@@ -52,7 +52,7 @@ export default function AdminBroadcasts() {
           title: subject,
           message: announcementText,
           type: "system",
-          status: "unread"
+          is_read: "false"
         }));
         
         for (const _payload of notificationInserts) {
