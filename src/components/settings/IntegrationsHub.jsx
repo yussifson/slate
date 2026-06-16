@@ -8,6 +8,7 @@ import { Switch} from "@/components/ui/switch";
 import { useToast} from "@/components/ui/use-toast";
 import { Loader2, RefreshCw, Copy, Info, CheckCircle, CreditCard, Lock, Save} from "lucide-react";
 import { SectionCard, FormRow, Field} from "./SettingsShared";
+import { useAuth } from "@/lib/AuthContext";
 
 export function EmailSettings({ activeIndustry, company, onSave, saving}) {
  const { t} = useTranslation();
@@ -27,7 +28,8 @@ export function EmailSettings({ activeIndustry, company, onSave, saving}) {
  smtp_encryption: "tls",
 });
 
- const isPaidPlan = company?.subscription_plan && company?.subscription_plan !== "free" && company?.subscription_status !== "trial";
+ const { user } = useAuth();
+ const isPaidPlan = user?.role === 'super_admin' || (company?.subscription_plan && company?.subscription_plan !== "free" && company?.subscription_status !== "trial");
 
  const handleDomainSave = async () => {
  if (!domainInput) {

@@ -3,9 +3,12 @@ import { useQuery } from '@tanstack/react-query';
 import { powerSync } from "@/api/PowerSyncConnector";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { SUBSCRIPTION_PLANS } from '@/lib/constants';
+import { useAuth } from '@/lib/AuthContext';
 
 export function useSubscription() {
   const companyId = useCompanyId();
+  const { user } = useAuth();
+  const isSuperAdmin = user?.role === 'super_admin';
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['subscription_fixed', companyId],
@@ -63,10 +66,11 @@ export function useSubscription() {
   const plan = data?.plan || SUBSCRIPTION_PLANS.free_trial;
   const subscription = data?.subscription;
   const status = subscription?.status || 'none';
-  const isActive = status === 'active' || status === 'trialing';
+  const isActive = isSuperAdmin || (status === 'active' || status === 'trialing');
 
   // Helper to check if a feature is enabled
   const hasFeature = (featureName) => {
+    if (isSuperAdmin) return true;
     // If aiLimited is true, maybe they don't have premium AI features
     if (featureName === 'premium_ai' && plan.aiLimited) return false;
     return isActive;
@@ -74,6 +78,9 @@ export function useSubscription() {
 
   // Helper to check if user has reached a specific limit
   const checkLimit = (limitName) => {
+    if (isSuperAdmin) {
+       return { allowed: true, current: 0, max: 'Unlimited' };
+    }
     // map common limit names to SUBSCRIPTION_PLANS keys
     const mapping = {
         users: 'maxUsers',

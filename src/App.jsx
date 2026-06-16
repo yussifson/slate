@@ -812,19 +812,18 @@ function ProtectedRoute() {
   
   if (user?.company_status === 'suspended') {
     return (
-      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4 font-sans">
-        <div className="max-w-md w-full bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border border-red-100 dark:border-red-900/30 p-8 text-center relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 to-rose-600"></div>
-          <div className="w-20 h-20 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner border border-red-100 dark:border-red-500/20">
-            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-50/50 dark:bg-slate-900 p-4 font-sans backdrop-blur-sm">
+        <div className="max-w-md w-full bg-white dark:bg-slate-800 rounded-3xl p-8 text-center border border-slate-100 dark:border-slate-800">
+          <div className="w-16 h-16 bg-red-50 dark:bg-red-500/10 text-red-500 dark:text-red-400 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
           </div>
-          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-3 tracking-tight">Workspace Suspended</h1>
-          <p className="text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">Workspace Suspended</h1>
+          <p className="text-slate-500 dark:text-slate-400 mb-8 leading-relaxed font-medium">
             Your workspace access has been temporarily suspended by an administrator. Please contact support to resolve this issue.
           </p>
-          <button onClick={() => supabase.auth.signOut().then(() => window.location.href='/login')} className="w-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-semibold py-3.5 px-6 rounded-xl transition-all shadow-md active:scale-[0.98]">
+          <button onClick={() => supabase.auth.signOut().then(() => window.location.href='/login')} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-3.5 px-6 rounded-xl transition-all">
             Return to Login
           </button>
         </div>

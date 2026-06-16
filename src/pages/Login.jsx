@@ -276,29 +276,20 @@ export default function Login() {
  const mainUrl = `${getMainAppUrl()}/login`;
 
  return (
- <div className="flex min-h-screen items-center justify-center bg-background p-4 relative">
- <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
- </div>
- <div className="w-full max-w-md space-y-6 rounded-xl bg-card p-8 text-center border border-primary/40">
- <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10">
- <AlertCircle className="h-8 w-8 text-red-500" />
- </div>
- <div>
- <h2 className="text-2xl font-bold tracking-tight text-foreground">{t("workslate_not_found", "Workslate Not Found")}</h2>
- <p className="mt-2 text-sm text-muted-foreground">
- {t(
- "we_couldn_t_find_an_organizati",
- "We couldn't find an organization matching the web address"
- )} <span className="font-semibold text-foreground">"{currentSubdomain}"</span>.
- </p>
- </div>
- <div className="pt-4 border-t border-primary/40">
- <Button onClick={() => window.location.href = mainUrl} variant="outline" className="w-full">
- {t("go_to_main_login_portal", "Go to Main Login Portal")}
- </Button>
- </div>
- </div>
- </div>
+  <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-50/50 dark:bg-slate-900 p-4 font-sans backdrop-blur-sm">
+    <div className="w-full max-w-md bg-white dark:bg-slate-800 rounded-3xl p-8 text-center border border-slate-100 dark:border-slate-800">
+      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-red-50 dark:bg-red-500/10 mb-6">
+        <AlertCircle className="h-8 w-8 text-red-500 dark:text-red-400" />
+      </div>
+      <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white mb-2">{t("workslate_not_found", "Workslate Not Found")}</h2>
+      <p className="mb-8 text-sm font-medium text-slate-500 dark:text-slate-400 leading-relaxed">
+        {t("we_couldn_t_find_an_organizati", "We couldn't find an organization matching the web address")} <span className="font-bold text-slate-900 dark:text-white">"{currentSubdomain}"</span>.
+      </p>
+      <button onClick={() => window.location.href = mainUrl} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-3.5 px-6 rounded-xl transition-all">
+        {t("go_to_main_login_portal", "Go to Main Login Portal")}
+      </button>
+    </div>
+  </div>
  );
 }
 
