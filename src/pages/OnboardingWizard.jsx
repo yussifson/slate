@@ -67,7 +67,6 @@ export default function OnboardingWizard() {
  setSetupMode('orbit');
  setOrbitPrompt(pendingPrompt);
  setStep(2); // Jump to Profile step to get Company Name
- localStorage.removeItem('pendingOrbitPrompt');
 }
 }, []);
 
@@ -390,6 +389,7 @@ export default function OnboardingWizard() {
  
  // Store onboarding completion in localStorage to prevent repeat redirects
  localStorage.setItem(`onboarding_done_${companyIdToUse}`, 'true');
+ localStorage.removeItem('pendingOrbitPrompt');
 
  // Prepare the modules to save
  let activeModulesToSave = null;
