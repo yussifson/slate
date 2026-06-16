@@ -326,7 +326,7 @@ export default function Automations() {
 
   useEffect(() => {
     const handleAIPreview = (e) => {
-      const { trigger, actions } = e.detail;
+      const { trigger, steps, actions } = e.detail;
       
       const newNodes = [];
       const newEdges = [];
@@ -342,30 +342,91 @@ export default function Automations() {
         }
       });
 
-      let prevId = triggerId;
-      actions.forEach((act, idx) => {
-        const actionId = `node_${Date.now()}_act_${idx}`;
-        newNodes.push({
-          id: actionId,
-          type: 'actionNode',
-          position: { x: 450 + (idx * 300), y: 150 },
-          data: {
-            label: act.type.replace('_', ' ').toUpperCase(),
-            actionType: act.type,
-            config: { payload: act.payload, actionTitle: act.type }
-          }
-        });
+      const traverseSteps = (stepsArray, parentId, xOffset, yOffset, edgeSourceHandle) => {
+        let currentParent = parentId;
+        let currentY = yOffset;
+        
+        if (!stepsArray) return;
 
-        newEdges.push({
-          id: `edge_${prevId}_${actionId}`,
-          source: prevId,
-          target: actionId,
-          animated: true,
-          style: { stroke: '#10b981', strokeWidth: 2 }
+        stepsArray.forEach((step) => {
+           const nodeId = `node_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+           let nodeType = 'actionNode';
+           let nodeData = { config: step.config || {} };
+           
+           if (step.type === 'delay') {
+              nodeType = 'delayNode';
+              nodeData.label = `Wait ${step.config?.amount} ${step.config?.unit}`;
+           } else if (step.type === 'condition') {
+              nodeType = 'conditionNode';
+              nodeData.label = `If ${step.config?.variable} ${step.config?.operator} ${step.config?.value}`;
+           } else {
+              nodeType = 'actionNode';
+              nodeData.actionType = step.type;
+              nodeData.label = step.type?.replace('_', ' ').toUpperCase() || 'ACTION';
+              nodeData.config.payload = step.config || {};
+           }
+           
+           newNodes.push({
+             id: nodeId,
+             type: nodeType,
+             position: { x: xOffset, y: currentY },
+             data: nodeData
+           });
+           
+           if (currentParent) {
+             newEdges.push({
+               id: `edge_${currentParent}_${nodeId}`,
+               source: currentParent,
+               target: nodeId,
+               sourceHandle: edgeSourceHandle,
+               animated: true,
+               style: { stroke: '#10b981', strokeWidth: 2 }
+             });
+           }
+           
+           if (step.type === 'condition') {
+             if (step.true_steps && step.true_steps.length > 0) {
+               traverseSteps(step.true_steps, nodeId, xOffset + 350, currentY - 100, 'true');
+             }
+             if (step.false_steps && step.false_steps.length > 0) {
+               traverseSteps(step.false_steps, nodeId, xOffset + 350, currentY + 150, 'false');
+             }
+             currentParent = null; // Branched out
+           } else {
+             currentParent = nodeId;
+             xOffset += 350;
+             edgeSourceHandle = undefined;
+           }
         });
+      };
 
-        prevId = actionId;
-      });
+      if (steps) {
+        traverseSteps(steps, triggerId, 450, 150);
+      } else if (actions) {
+        // Fallback for old prompt actions
+        let prevId = triggerId;
+        actions.forEach((act, idx) => {
+          const actionId = `node_${Date.now()}_act_${idx}`;
+          newNodes.push({
+            id: actionId,
+            type: 'actionNode',
+            position: { x: 450 + (idx * 300), y: 150 },
+            data: {
+              label: act.type.replace('_', ' ').toUpperCase(),
+              actionType: act.type,
+              config: { payload: act.payload, actionTitle: act.type }
+            }
+          });
+          newEdges.push({
+            id: `edge_${prevId}_${actionId}`,
+            source: prevId,
+            target: actionId,
+            animated: true,
+            style: { stroke: '#10b981', strokeWidth: 2 }
+          });
+          prevId = actionId;
+        });
+      }
 
       setNodes(newNodes);
       setEdges(newEdges);
