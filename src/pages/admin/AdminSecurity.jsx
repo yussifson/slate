@@ -4,16 +4,24 @@ import { Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import { Badge} from '@/components/ui/badge';
 import { ShieldCheck, AlertTriangle, Eye, Lock} from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
 
 export default function AdminSecurity() {
  const { t} = useTranslation();
- const auditLogs = [
- { type: 'Impersonation', user: 'super_admin@slate.com', target: 'Apex Legal Partners', time: '10 mins ago', status: 'Success'},
- { type: 'Failed Login', user: 'unknown_ip@192.168.1.1', target: 'System', time: '15 mins ago', status: 'Blocked'},
- { type: 'Settings Changed', user: 'super_admin@slate.com', target: 'Global Configuration', time: '1 hour ago', status: 'Success'},
- { type: 'Firm Suspended', user: 'admin_dashboard', target: 'Test Corp 1', time: '2 hours ago', status: 'Success'},
- { type: 'Quota Exceeded', user: 'Global Logistics Co', target: 'Active Users', time: '5 hours ago', status: 'Warning'},
- ];
+  const { data: realAuditLogs = [] } = useQuery({
+    queryKey: ['admin_security_logs'],
+    queryFn: () => base44.entities.SystemActivityLog.list()
+  });
+
+  // Map the real data to the format expected by the UI
+  const auditLogs = realAuditLogs.map(log => ({
+    type: log.action || 'System Event',
+    user: log.user_email || log.user_name || 'System',
+    target: log.module || log.details || 'General',
+    time: log.created_at || log.created_date || 'Just now',
+    status: 'Success' // system_activity_logs currently only records successful actions by default
+  })).sort((a, b) => new Date(b.time) - new Date(a.time)).slice(0, 50);
 
  return (
  <div className="p-6 space-y-6 max-w-7xl mx-auto">

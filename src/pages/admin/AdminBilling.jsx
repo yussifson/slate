@@ -6,6 +6,7 @@ import { DollarSign, TrendingUp, CreditCard, ArrowUpRight, Activity, Plus, Searc
 import PageHeader from '@/components/shared/PageHeader';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import { powerSync } from '@/api/PowerSyncConnector';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/constants';
 import { format } from 'date-fns';
@@ -21,7 +22,16 @@ export default function AdminBilling() {
   // Fetch Global Data
   const { data: invoices = [], isLoading: loadingInvoices } = useQuery({
     queryKey: ['admin_invoices'],
-    queryFn: () => base44.entities.Invoice.list()
+    queryFn: async () => {
+      const res = await powerSync.execute(`SELECT * FROM subscription_invoices`);
+      const data = [];
+      if (res.rows) {
+        for (let i = 0; i < res.rows.length; i++) {
+          data.push(res.rows.item(i));
+        }
+      }
+      return data;
+    }
   });
 
   const { data: companies = [] } = useQuery({
