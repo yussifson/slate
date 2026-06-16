@@ -900,6 +900,7 @@ function App() {
                   )}
                 </React.Suspense>
               </ErrorBoundary>
+              <Toaster />
             </Router>
           </QueryClientProvider>
           </VideoProvider>
