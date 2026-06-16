@@ -291,6 +291,21 @@ export default function OnboardingWizard() {
     .update(updCompPayload)
     .eq('id', companyIdToUse);
 
+  if (compError) {
+    console.warn("Full company update failed, trying safe fields only:", compError.message);
+    const safePayload = { status: 'active' };
+    if (selectedPlan) {
+      safePayload.subscription_plan = selectedPlan.name.toLowerCase().replace(/\s/g, '');
+      safePayload.subscription_status = selectedPlan.price_monthly > 0 ? 'active' : 'trial';
+    }
+    const { error: safeCompError } = await supabase
+      .from('companies')
+      .update(safePayload)
+      .eq('id', companyIdToUse);
+      
+    if (safeCompError) throw safeCompError;
+  }
+
   // If there was a successful payment reference, save it to invoices so it shows in their billing history
   if (selectedPlan && paystackRef) {
     try {
@@ -298,7 +313,7 @@ export default function OnboardingWizard() {
         company_id: companyIdToUse,
         plan_name: selectedPlan.name,
         amount_usd: String(selectedPlan.price_monthly || 0),
-        status: 'SUCCESS',
+        status: 'paid',
         notes: `paystack_ref: ${paystackRef.reference}, currency: GHS`,
         paid_date: new Date().toISOString()
       }]);
@@ -331,7 +346,6 @@ export default function OnboardingWizard() {
   // Removed local PowerSync industry_type update to prevent view upsert errors.
   
 
-  if (compError) throw compError;
 
  // 2. Insert invited staff records
  if (invitedStaff.length > 0) {

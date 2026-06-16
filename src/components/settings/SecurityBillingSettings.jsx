@@ -390,7 +390,7 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
               company_id: companyId,
               plan_name: plan.name,
               amount_usd: String(price),
-              status: "SUCCESS",
+              status: "paid",
               notes: `paystack_ref: ${response.reference}, currency: GHS`,
               paid_date: new Date().toISOString()
             }]);
