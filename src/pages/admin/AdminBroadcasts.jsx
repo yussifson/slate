@@ -66,9 +66,10 @@ export default function AdminBroadcasts() {
 
       const { NotificationService } = await import("@/lib/notifications");
 
+      let successCount = 0;
       for (const admin of admins) {
         if (!admin.email) continue;
-        await NotificationService.send({
+        const res = await NotificationService.send({
           companyId: admin.company_id,
           recipientEmail: admin.email,
           recipientName: admin.full_name || 'Admin',
@@ -77,9 +78,19 @@ export default function AdminBroadcasts() {
           type: 'system',
           channels: channelsToSend
         });
+        
+        if (res.error) {
+          console.error("Failed to send to", admin.email, res.error);
+        } else {
+          successCount++;
+        }
       }
 
-      toast({ title: "Broadcast Dispatched", description: `Message successfully sent to ${admins.length} administrator(s) across ${targetList.length} firm(s).` });
+      if (successCount === 0 && admins.length > 0) {
+        throw new Error("Failed to dispatch broadcasts. Please check if edge functions are deployed (CORS error usually means the function is missing).");
+      }
+
+      toast({ title: "Broadcast Dispatched", description: `Message successfully sent to ${successCount} administrator(s) across ${targetList.length} firm(s).` });
       setSubject('');
       setAnnouncementText('');
       setSelectedCompanies([]);

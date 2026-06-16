@@ -4,6 +4,7 @@ import { encryptText, decryptText } from '../lib/encryption';
 import { powerSync } from './PowerSyncConnector';
 import { syncQueue } from '../services/syncQueue';
 import { ActivityLogger } from '../lib/activityLogger';
+import { toast } from '../components/ui/use-toast';
 
 const TABLE_MAP = {
     Company: 'companies',
@@ -385,6 +386,7 @@ export const base44 = {
                             } catch (e) {}
                         })();
 
+                        toast({ title: "Success", description: `Successfully created record in ${tableName}.`, variant: "default" });
                         return revealResults(securedPayload);
                     } catch (err) {
                         console.error(`[PowerSync] Create failed on ${tableName}:`, err);
@@ -399,11 +401,14 @@ export const base44 = {
                                 securedPayload.id = securedPayload.id || crypto.randomUUID();
                                 if (!securedPayload.created_date) securedPayload.created_date = new Date().toISOString();
                                 await mirrorToSupabase(tableName, securedPayload, 'upsert');
+                                toast({ title: "Success", description: `Successfully created record in ${tableName}.`, variant: "default" });
                                 return revealResults(securedPayload);
                             } catch (mirrorErr) {
+                                toast({ title: "Error", description: `Failed to create record in ${tableName}.`, variant: "destructive" });
                                 throw mirrorErr;
                             }
                         }
+                        toast({ title: "Error", description: `Failed to create record in ${tableName}.`, variant: "destructive" });
                         throw err;
                     }
                 },
@@ -451,9 +456,11 @@ export const base44 = {
                             } catch (e) {}
                         })();
 
+                        toast({ title: "Success", description: `Successfully updated record in ${tableName}.`, variant: "default" });
                         return revealResults(updatedData);
                     } catch (err) {
                         console.error(`[PowerSync] Update failed on ${tableName}:`, err);
+                        toast({ title: "Error", description: `Failed to update record in ${tableName}.`, variant: "destructive" });
                         throw err;
                     }
                 },
@@ -479,9 +486,11 @@ export const base44 = {
                             } catch (e) {}
                         })();
 
+                        toast({ title: "Success", description: `Successfully deleted record from ${tableName}.`, variant: "default" });
                         return { id };
                     } catch (err) {
                         console.error(`[PowerSync] Delete failed on ${tableName}:`, err);
+                        toast({ title: "Error", description: `Failed to delete record from ${tableName}.`, variant: "destructive" });
                         throw err;
                     }
                 },
