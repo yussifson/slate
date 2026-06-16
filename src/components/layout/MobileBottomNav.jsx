@@ -5,7 +5,9 @@ import { cn} from "@/lib/utils";
 import { useNavigation} from "@/hooks/useNavigation";
 import { useAuth} from "@/lib/AuthContext";
 import { useImpersonation} from "@/lib/ImpersonationContext";
-import { X, MoreHorizontal, LayoutDashboard, Briefcase, Users, Calendar, Inbox, Blocks, ShoppingCart, Settings, Shield, PanelLeft, ChevronRight} from "lucide-react";
+import { X, MoreHorizontal, LayoutDashboard, Briefcase, Users, Calendar, Inbox, Blocks, ShoppingCart, Settings, Shield, PanelLeft, ChevronRight, LogOut} from "lucide-react";
+import ThemeToggle from "@/components/layout/ThemeToggle";
+import { base44 } from "@/api/base44Client";
 
 // Mapping string icons to components
 const ICON_MAP = {
@@ -127,7 +129,30 @@ export default function MobileBottomNav() {
  </Link>
  );
 })}
- </div>
+          <div className="border-t border-primary/40 dark:border-primary/40 mt-4 pt-2">
+            <div className="px-5 py-4 flex items-center justify-between">
+              <span className="text-[16px] font-semibold tracking-tight text-slate-700 dark:text-slate-300">
+                {t('theme', 'Theme')}
+              </span>
+              <ThemeToggle />
+            </div>
+            
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                base44.auth.logout();
+              }}
+              className="w-full flex items-center gap-4 px-5 py-4 transition-colors active:bg-red-50 dark:active:bg-red-950/30 text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20"
+            >
+              <div className="w-8 h-8 rounded-full flex items-center justify-center bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-500">
+                <LogOut className="w-4 h-4" strokeWidth={2} />
+              </div>
+              <span className="text-[16px] font-semibold tracking-tight flex-1 text-left">
+                {t('log_out', 'Log out')}
+              </span>
+            </button>
+          </div>
+        </div>
  </div>
  </div>
  </div>
