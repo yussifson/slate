@@ -157,11 +157,19 @@ export default function SignUp() {
  const targetHost = `${companyData.subdomain}.${baseDomain}${port}`;
  
  let url = `${window.location.protocol}//${targetHost}/onboarding`;
- if (authData?.session?.access_token && authData?.session?.refresh_token) {
- url += `?access_token=${authData.session.access_token}&refresh_token=${authData.session.refresh_token}`;
-}
+ const finalUrl = new URL(url);
  
- window.location.href = url;
+ if (authData?.session?.access_token && authData?.session?.refresh_token) {
+   finalUrl.searchParams.set('access_token', authData.session.access_token);
+   finalUrl.searchParams.set('refresh_token', authData.session.refresh_token);
+ }
+ 
+ const pendingPrompt = localStorage.getItem('pendingOrbitPrompt');
+ if (pendingPrompt) {
+   finalUrl.searchParams.set('orbit_prompt', pendingPrompt);
+ }
+ 
+ window.location.href = finalUrl.toString();
 }, 2000);
 
 } catch (err) {

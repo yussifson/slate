@@ -62,12 +62,23 @@ export default function OnboardingWizard() {
  const [orbitProgress, setOrbitProgress] = useState('');
 
  useEffect(() => {
- const pendingPrompt = localStorage.getItem('pendingOrbitPrompt');
+ const searchParams = new URLSearchParams(window.location.search);
+ const urlPrompt = searchParams.get('orbit_prompt');
+ 
+ if (urlPrompt) {
+   localStorage.setItem('pendingOrbitPrompt', urlPrompt);
+   
+   // Clean up URL so it doesn't stay there on refresh
+   const newUrl = window.location.pathname + window.location.search.replace(/&?orbit_prompt=[^&]*/, '').replace(/^\?$/, '');
+   window.history.replaceState({}, '', newUrl || '/');
+ }
+
+ const pendingPrompt = urlPrompt || localStorage.getItem('pendingOrbitPrompt');
  if (pendingPrompt) {
- setSetupMode('orbit');
- setOrbitPrompt(pendingPrompt);
- setStep(2); // Jump to Profile step to get Company Name
-}
+   setSetupMode('orbit');
+   setOrbitPrompt(pendingPrompt);
+   setStep(2); // Jump to Profile step to get Company Name
+ }
 }, []);
 
 
