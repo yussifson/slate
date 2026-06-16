@@ -23,6 +23,16 @@ serve(async (req) => {
       })
     }
 
+    // If it's an internal-only notification, skip triggering Novu completely.
+    // This allows it to show up in the database-backed inbox without sending an email.
+    if (record.type === 'internal') {
+      console.log("Internal notification detected. Skipping Novu trigger.");
+      return new Response(JSON.stringify({ message: "Ignored - Internal Only" }), { 
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
     console.log("Received Webhook Trigger!");
     console.log("Record Data:", JSON.stringify({ recipient: record.recipient_email, type: record.type, title: record.title }));
 

@@ -59,28 +59,44 @@ export default function AdminBroadcasts() {
         return;
       }
 
-      // Use Novu integration via notifications table webhooks
-      const notifPayloads = admins.map(admin => ({
-        id: crypto.randomUUID(),
-        company_id: admin.company_id,
-        recipient_email: admin.email,
-        recipient_name: admin.full_name || 'Admin',
-        title: subject,
-        message: announcementText,
-        type: 'system',
-        is_read: false
-      }));
+      // Dispatch routing based on selected channel
+      if (channel === 'external') {
+        // External Only: Use the dedicated edge function so it doesn't pollute the in-app database
+        const recipients = admins.map(a => a.email).filter(Boolean);
+        if (recipients.length > 0) {
+          const { error: invokeErr } = await supabase.functions.invoke('send-external-email', {
+            body: { to: recipients, subject, message: announcementText }
+          });
+          if (invokeErr) {
+            console.error("External broadcast failed:", invokeErr);
+            throw new Error("Failed to dispatch external broadcast via Novu.");
+          }
+        }
+      } else {
+        // Internal or Both: Insert into notifications table
+        // We set type to 'internal' so the webhook knows to skip sending an email if it's internal only.
+        const notifPayloads = admins.map(admin => ({
+          id: crypto.randomUUID(),
+          company_id: admin.company_id,
+          recipient_email: admin.email,
+          recipient_name: admin.full_name || 'Admin',
+          title: subject,
+          message: announcementText,
+          type: channel === 'internal' ? 'internal' : 'system',
+          is_read: false
+        }));
 
-      if (notifPayloads.length > 0) {
-        // Insert directly to Supabase to trigger server-side Novu webhooks immediately
-        const { error: notifErr } = await supabase.from('notifications').insert(notifPayloads);
-        if (notifErr) {
-          console.error("Broadcast insertion failed:", notifErr);
-          throw new Error("Failed to dispatch broadcasts. Please ensure you have permission to send notifications.");
+        if (notifPayloads.length > 0) {
+          // Insert directly to Supabase to trigger server-side Novu webhooks (if not internal-only)
+          const { error: notifErr } = await supabase.from('notifications').insert(notifPayloads);
+          if (notifErr) {
+            console.error("Broadcast insertion failed:", notifErr);
+            throw new Error("Failed to dispatch broadcasts. Please ensure you have permission to send notifications.");
+          }
         }
       }
 
-      toast({ title: "Broadcast Dispatched", description: `Message successfully sent to ${admins.length} administrator(s) across ${targetList.length} firm(s) via Novu.` });
+      toast({ title: "Broadcast Dispatched", description: `Message successfully sent to ${admins.length} administrator(s) across ${targetList.length} firm(s) via selected channel(s).` });
       setSubject('');
       setAnnouncementText('');
       setSelectedCompanies([]);
