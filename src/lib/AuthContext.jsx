@@ -112,16 +112,25 @@ export const AuthProvider = ({ children }) => {
       }
 
       setAuthStep("Fetching profile...");
-      let { data: profile, error: profileError } = await powerSync.execute('SELECT * FROM profiles WHERE id = ?', [sessionUser.id]).then(res => ({ data: res.rows._array[0] || null, error: null }));
-      
-      // FALLBACK TO SUPABASE FOR MISSING COLUMNS
-      if (profile) {
-          try {
-              const { data: supaProfile } = await supabase.from('profiles').select('*').eq('id', profile.id).maybeSingle();
-              if (supaProfile) profile = { ...profile, ...supaProfile };
-          } catch (e) {
-              console.warn('[AuthContext] Offline: Using local profile cache only');
+      let profile = null;
+      let profileError = null;
+
+      try {
+          // ALWAYS TRY SUPABASE FIRST TO AVOID SYNC DELAYS AND FLICKERS
+          const { data: supaProfile } = await supabase.from('profiles').select('*').eq('id', sessionUser.id).maybeSingle();
+          if (supaProfile) {
+              profile = supaProfile;
           }
+      } catch (e) {
+          console.warn('[AuthContext] Supabase fetch failed, trying local offline DB:', e);
+      }
+
+      if (!profile) {
+          // FALLBACK TO POWERSYNC IF OFFLINE OR NOT FOUND IN SUPABASE YET
+          try {
+             let res = await powerSync.execute('SELECT * FROM profiles WHERE id = ?', [sessionUser.id]);
+             profile = res.rows._array[0] || null;
+          } catch(e) {}
       }
 
       // Save transferred config to local storage using the correct company ID
