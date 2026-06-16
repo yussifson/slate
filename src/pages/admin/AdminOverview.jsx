@@ -5,7 +5,7 @@ import { useQuery } from "@powersync/react";
 import { Scale, Users, Building2, DollarSign, Loader2, Activity, Clock} from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import Companies from '@/pages/Companies';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/api/supabaseClient';
 
 export default function AdminOverview() {
   const { t } = useTranslation();

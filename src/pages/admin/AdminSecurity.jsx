@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { ShieldCheck, AlertTriangle, Eye, Lock } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/api/supabaseClient';
 import { useToast } from '@/components/ui/use-toast';
 
 export default function AdminSecurity() {

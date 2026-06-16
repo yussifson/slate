@@ -13,7 +13,7 @@ import { useImpersonation } from '@/lib/ImpersonationContext';
 import PageHeader from '@/components/shared/PageHeader';
 import FirmFeaturesManager from '@/components/superadmin/FirmFeaturesManager';
 import { useNotifications } from '@/hooks/useNotifications';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/api/supabaseClient';
 
 export default function AdminFirms() {
   const { t } = useTranslation();
