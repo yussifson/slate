@@ -1,4 +1,5 @@
 import { powerSync} from '@/api/PowerSyncConnector';
+import { NotificationService } from "@/lib/notifications";
 import { useTranslation} from "react-i18next";
 import { useState, useRef, useEffect} from 'react';
 import { useNavigate} from 'react-router-dom';
@@ -140,7 +141,7 @@ export default function OnboardingWizard() {
           planName: plan.name,
           companyId: user?.company_id || user?.id || 'new_user',
           onSuccess: async (ref) => {
-            await handleCompleteOnboarding(plan);
+            await handleCompleteOnboarding(plan, ref);
           },
           onClose: () => {
             setLoading(false);
@@ -166,7 +167,7 @@ export default function OnboardingWizard() {
  setInvitedStaff(invitedStaff.filter((_, idx) => idx !== index));
 };
 
- const handleCompleteOnboarding = async (selectedPlan = null) => {
+ const handleCompleteOnboarding = async (selectedPlan = null, paystackRef = null) => {
  setLoading(true);
 
  try {
@@ -279,10 +280,43 @@ export default function OnboardingWizard() {
  currency: currency,
  status: 'active'
 };
+
+ if (selectedPlan) {
+   updCompPayload.subscription_plan = selectedPlan.name.toLowerCase().replace(/\s/g, '');
+   updCompPayload.subscription_status = selectedPlan.price_monthly > 0 ? 'active' : 'trial';
+ }
+
   const { error: compError } = await supabase
     .from('companies')
     .update(updCompPayload)
     .eq('id', companyIdToUse);
+
+  // If there was a successful payment reference, save it to invoices so it shows in their billing history
+  if (selectedPlan && paystackRef) {
+    try {
+      await supabase.from('subscription_invoices').insert([{
+        company_id: companyIdToUse,
+        plan_name: selectedPlan.name,
+        amount_usd: String(selectedPlan.price_monthly || 0),
+        status: 'SUCCESS',
+        notes: `paystack_ref: ${paystackRef.reference}, currency: GHS`,
+        paid_date: new Date().toISOString()
+      }]);
+      
+      // Trigger omnichannel receipt/notification for the initial purchase
+      await NotificationService.send({
+        companyId: companyIdToUse,
+        recipientEmail: user?.email,
+        recipientName: user?.user_metadata?.full_name || 'Admin',
+        title: 'Welcome to your Premium Workspace',
+        message: `Your workspace has been successfully initialized on the ${selectedPlan.name} plan.`,
+        type: 'success',
+        channels: ['in-app', 'email']
+      });
+    } catch (invErr) {
+      console.error("Failed to process post-payment tasks during onboarding:", invErr);
+    }
+  }
 
   // Update profile industry_type - try Supabase first (works after migration), 
   // always update locally via PowerSync too
@@ -356,12 +390,18 @@ export default function OnboardingWizard() {
  if (activeModulesToSave) {
  localStorage.setItem(`active_modules_${companyIdToUse}`, JSON.stringify(activeModulesToSave));
  
-  // Save to database for cross-device persistence
-  const existingCheck = await powerSync.execute(`SELECT id FROM industry_records WHERE company_id = ? AND record_type = 'onboarding_template'`, [companyIdToUse]);
+  // Save active modules to database for cross-device persistence
+  const { data: existingCheck } = await supabase
+    .from('industry_records')
+    .select('id')
+    .eq('company_id', companyIdToUse)
+    .eq('record_type', 'active_modules')
+    .maybeSingle();
+
   let recordId = crypto.randomUUID();
   let isUpdate = false;
-  if (existingCheck.rows && existingCheck.rows.length > 0) {
-    recordId = existingCheck.rows.item(0).id;
+  if (existingCheck) {
+    recordId = existingCheck.id;
     isUpdate = true;
   }
   
@@ -369,23 +409,24 @@ export default function OnboardingWizard() {
     id: recordId,
     company_id: companyIdToUse,
     industry: finalIndustry,
-    record_type: 'onboarding_template',
-    search_text: 'initial setup template applied',
-    data: { applied: true, timestamp: new Date().toISOString()}
+    record_type: 'active_modules',
+    search_text: 'custom active modules selected',
+    data: activeModulesToSave
   };
+
   if (isUpdate) {
     const { error: indUpdErr } = await supabase
       .from('industry_records')
       .update({
         industry: finalIndustry,
         data: indPayload.data,
-        search_text: 'initial setup template applied'
+        search_text: 'custom active modules selected'
       })
       .eq('id', recordId);
-    if (indUpdErr) console.error("Failed to update industry record:", indUpdErr);
+    if (indUpdErr) console.error("Failed to update active modules record:", indUpdErr);
   } else {
     const { error: indInsErr } = await supabase.from('industry_records').insert([indPayload]);
-    if (indInsErr) console.error("Failed to insert industry record:", indInsErr);
+    if (indInsErr) console.error("Failed to insert active modules record:", indInsErr);
   }
 } else {
  localStorage.removeItem(`active_modules_${companyIdToUse}`); // Template implies all modules
