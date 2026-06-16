@@ -1,17 +1,19 @@
 import { useTranslation } from "react-i18next";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { powerSync } from "@/api/PowerSyncConnector";
-import { useQuery } from "@powersync/react";
+import { useQuery as usePSQuery } from "@powersync/react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Edit2, CheckCircle2, AlertOctagon, Loader2, Search, UserCheck, MessageSquare, Layers, Users } from 'lucide-react';
+import { Edit2, CheckCircle2, AlertOctagon, Loader2, Search, UserCheck, MessageSquare, Layers, Users, Clock } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { useImpersonation } from '@/lib/ImpersonationContext';
 import PageHeader from '@/components/shared/PageHeader';
 import FirmFeaturesManager from '@/components/superadmin/FirmFeaturesManager';
 import { useNotifications } from '@/hooks/useNotifications';
+import { supabase } from '@/lib/supabase';
 
 export default function AdminFirms() {
   const { t } = useTranslation();
@@ -19,10 +21,36 @@ export default function AdminFirms() {
   const { startImpersonation } = useImpersonation();
   const { notify } = useNotifications();
 
-  const { data: companies = [], isLoading: loadingCompanies } = useQuery("SELECT * FROM companies");
-  const { data: profiles = [], isLoading: loadingProfiles } = useQuery("SELECT company_id FROM profiles");
-  const { data: cases = [], isLoading: loadingCases } = useQuery("SELECT company_id FROM industry_records WHERE record_type = 'case'");
+  const { data: companies = [], isLoading: loadingCompanies } = usePSQuery("SELECT * FROM companies");
+  const { data: profiles = [], isLoading: loadingProfiles } = usePSQuery("SELECT company_id, email FROM profiles");
+  const { data: cases = [], isLoading: loadingCases } = usePSQuery("SELECT company_id FROM industry_records WHERE record_type = 'case'");
   const loading = loadingCompanies || loadingProfiles || loadingCases;
+
+  // Live sessions to derive last-activity per firm
+  const { data: activeSessions = [] } = useQuery({
+    queryKey: ['admin_active_sessions_firms'],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_active_sessions');
+      if (error) return [];
+      return data || [];
+    }
+  });
+
+  // Build a map of company_id -> last activity timestamp
+  const firmLastActivity = useMemo(() => {
+    const map = {};
+    profiles.forEach(p => {
+      const session = activeSessions.find(s => s.email === p.email);
+      if (session) {
+        const existing = map[p.company_id];
+        const ts = new Date(session.last_sign_in_at);
+        if (!existing || ts > new Date(existing)) {
+          map[p.company_id] = session.last_sign_in_at;
+        }
+      }
+    });
+    return map;
+  }, [profiles, activeSessions]);
   const [searchQuery, setSearchQuery] = useState('');
 
   const [selectedCompany, setSelectedCompany] = useState(null);
@@ -173,9 +201,18 @@ export default function AdminFirms() {
                         </span>
                       </div>
                       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-slate-400">
-                        <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {activeUsers} Users</span>
-                        <span className="flex items-center gap-1"><Layers className="w-3.5 h-3.5" /> {activeCases} Cases</span>
+                        <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {activeUsers} / {c.max_users || '∞'} Users</span>
+                        <span className="flex items-center gap-1"><Layers className="w-3.5 h-3.5" /> {activeCases} / {c.max_cases || '∞'} Cases</span>
                         <span>{c.email}</span>
+                        {firmLastActivity[c.id] ? (
+                          <span className="flex items-center gap-1 text-emerald-600 font-semibold">
+                            <Clock className="w-3.5 h-3.5" /> Active {new Date(firmLastActivity[c.id]).toLocaleString()}
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-1 italic">
+                            <Clock className="w-3.5 h-3.5" /> No recent session
+                          </span>
+                        )}
                       </div>
                       <div className="mt-3 flex gap-2 items-center">
                         <Badge className="text-[10px] font-bold uppercase py-0.5 px-2 bg-slate-100 text-slate-700 dark:text-slate-300 border-none">{c.subscription_plan}</Badge>
