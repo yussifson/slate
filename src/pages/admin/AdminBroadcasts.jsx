@@ -59,38 +59,28 @@ export default function AdminBroadcasts() {
         return;
       }
 
-      // Dispatch notifications
-      const channelsToSend = [];
-      if (channel === 'internal' || channel === 'both') channelsToSend.push('in-app');
-      if (channel === 'external' || channel === 'both') channelsToSend.push('email');
+      // Use Novu integration via notifications table webhooks
+      const notifPayloads = admins.map(admin => ({
+        id: crypto.randomUUID(),
+        company_id: admin.company_id,
+        recipient_email: admin.email,
+        recipient_name: admin.full_name || 'Admin',
+        title: subject,
+        message: announcementText,
+        type: 'system',
+        is_read: false
+      }));
 
-      const { NotificationService } = await import("@/lib/notifications");
-
-      let successCount = 0;
-      for (const admin of admins) {
-        if (!admin.email) continue;
-        const res = await NotificationService.send({
-          companyId: admin.company_id,
-          recipientEmail: admin.email,
-          recipientName: admin.full_name || 'Admin',
-          title: subject,
-          message: announcementText,
-          type: 'system',
-          channels: channelsToSend
-        });
-        
-        if (res.error) {
-          console.error("Failed to send to", admin.email, res.error);
-        } else {
-          successCount++;
+      if (notifPayloads.length > 0) {
+        // Insert directly to Supabase to trigger server-side Novu webhooks immediately
+        const { error: notifErr } = await supabase.from('notifications').insert(notifPayloads);
+        if (notifErr) {
+          console.error("Broadcast insertion failed:", notifErr);
+          throw new Error("Failed to dispatch broadcasts. Please ensure you have permission to send notifications.");
         }
       }
 
-      if (successCount === 0 && admins.length > 0) {
-        throw new Error("Failed to dispatch broadcasts. Please check if edge functions are deployed (CORS error usually means the function is missing).");
-      }
-
-      toast({ title: "Broadcast Dispatched", description: `Message successfully sent to ${successCount} administrator(s) across ${targetList.length} firm(s).` });
+      toast({ title: "Broadcast Dispatched", description: `Message successfully sent to ${admins.length} administrator(s) across ${targetList.length} firm(s) via Novu.` });
       setSubject('');
       setAnnouncementText('');
       setSelectedCompanies([]);
