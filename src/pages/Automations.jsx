@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, Search, Wand2, Zap, Save, Trash2, Edit3, 
-  Settings, Bot, ArrowRight, Database, Webhook, CheckSquare, X, Mail, GitBranch, Clock, ArrowLeft
+  Settings, Bot, ArrowRight, Database, Webhook, CheckSquare, X, Mail, GitBranch, Clock, ArrowLeft, Play, List
 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
@@ -14,6 +14,7 @@ import { Badge } from '@/components/ui/badge';
 import { OrbitIcon } from '@/components/ui/OrbitIcon';
 import { useQuery } from '@tanstack/react-query';
 import { getTerm } from '@/config/industries';
+import { SCHEMA_COLUMNS } from '@/api/schemaColumns';
 
 // React Flow Imports
 import {
@@ -253,6 +254,37 @@ const ExecutionLogs = ({ companyId }) => {
   );
 };
 
+// --- VARIABLE PICKER COMPONENT ---
+const VariablePicker = ({ triggerTable, onSelect }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const columns = triggerTable && SCHEMA_COLUMNS[triggerTable] ? SCHEMA_COLUMNS[triggerTable] : [];
+
+  if (columns.length === 0) return null;
+
+  return (
+    <div className="relative inline-block text-left mt-1">
+      <Button variant="outline" size="sm" className="h-6 text-[10px] px-2 text-primary" onClick={() => setIsOpen(!isOpen)}>
+        {'{ }'} Insert Variable
+      </Button>
+      {isOpen && (
+        <div className="absolute z-50 mt-1 w-48 rounded-md bg-white dark:bg-slate-800 shadow-lg border border-border max-h-48 overflow-y-auto">
+          <div className="py-1">
+            {columns.map((col) => (
+              <button
+                key={col}
+                className="block w-full text-left px-4 py-2 text-xs hover:bg-slate-100 dark:hover:bg-slate-700"
+                onClick={() => { onSelect(`{{${col}}}`); setIsOpen(false); }}
+              >
+                {col}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // --- MAIN AUTOMATIONS COMPONENT ---
 export default function Automations() {
   const { user } = useAuth();
@@ -476,6 +508,18 @@ export default function Automations() {
     setMode('builder');
   };
 
+  const triggerNodeForVars = nodes.find(n => n.type === 'triggerNode');
+  const triggerTableForVars = triggerNodeForVars?.data?.config?.tableName;
+
+  const handleTestRun = () => {
+    toast.success("Test run executed! (Sandbox mode simulated)");
+    // Highlight nodes temporarily
+    setNodes(nds => nds.map(n => ({ ...n, style: { ...n.style, border: '2px solid #10b981', boxShadow: '0 0 10px #10b981' } })));
+    setTimeout(() => {
+      setNodes(nds => nds.map(n => ({ ...n, style: { ...n.style, border: 'none', boxShadow: 'none' } })));
+    }, 2000);
+  };
+
   return (
     <div className="h-full bg-slate-50 dark:bg-background overflow-hidden flex flex-col">
       {/* Header */}
@@ -494,9 +538,12 @@ export default function Automations() {
           {mode === 'builder' && (
             <>
               <Button variant="outline" onClick={() => setMode('list')}>Cancel</Button>
-              <Button onClick={handleSaveAutomation} className="gap-2 shadow-md">
-                <Save className="w-4 h-4" /> Deploy Flow
-              </Button>
+                <Button variant="secondary" size="sm" className="h-8 gap-2" onClick={handleTestRun}>
+                  <Play className="w-4 h-4 text-emerald-500 fill-emerald-500" /> Test Run
+                </Button>
+                <Button size="sm" className="h-8 gap-2 bg-indigo-600 hover:bg-indigo-700" onClick={handleSaveAutomation}>
+                  <Save className="w-4 h-4" /> Deploy Workflow
+                </Button>
             </>
           )}
             {mode === 'list' && (
@@ -697,7 +744,13 @@ export default function Automations() {
                                 {selectedNode.data.actionType === 'send_notification' && (
                                   <>
                                     <div className="space-y-1">
-                                      <label className="text-xs font-semibold text-foreground">Recipient Email</label>
+                                      <label className="text-xs font-semibold text-foreground flex justify-between items-center">
+                                        Recipient Email
+                                        <VariablePicker 
+                                          triggerTable={triggerTableForVars} 
+                                          onSelect={(v) => handleUpdateNodeConfig('payload', { ...(selectedNode.data.config.payload || {}), recipient: (selectedNode.data.config?.payload?.recipient || '') + v })}
+                                        />
+                                      </label>
                                       <Input 
                                         placeholder="e.g. {{email}}" 
                                         value={selectedNode.data.config?.payload?.recipient || ''}
@@ -705,7 +758,13 @@ export default function Automations() {
                                       />
                                     </div>
                                     <div className="space-y-1">
-                                      <label className="text-xs font-semibold text-foreground">Message</label>
+                                      <label className="text-xs font-semibold text-foreground flex justify-between items-center">
+                                        Message
+                                        <VariablePicker 
+                                          triggerTable={triggerTableForVars} 
+                                          onSelect={(v) => handleUpdateNodeConfig('payload', { ...(selectedNode.data.config.payload || {}), message: (selectedNode.data.config?.payload?.message || '') + v })}
+                                        />
+                                      </label>
                                       <textarea 
                                         className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm h-24 resize-none"
                                         placeholder="Welcome to our platform!" 
@@ -719,7 +778,13 @@ export default function Automations() {
                                 {selectedNode.data.actionType === 'create_task' && (
                                   <>
                                     <div className="space-y-1">
-                                      <label className="text-xs font-semibold text-foreground">Task Title</label>
+                                      <label className="text-xs font-semibold text-foreground flex justify-between items-center">
+                                        Task Title
+                                        <VariablePicker 
+                                          triggerTable={triggerTableForVars} 
+                                          onSelect={(v) => handleUpdateNodeConfig('payload', { ...(selectedNode.data.config.payload || {}), title: (selectedNode.data.config?.payload?.title || '') + v })}
+                                        />
+                                      </label>
                                       <Input 
                                         placeholder="e.g. Call new lead {{full_name}}" 
                                         value={selectedNode.data.config?.payload?.title || ''}
@@ -727,7 +792,13 @@ export default function Automations() {
                                       />
                                     </div>
                                     <div className="space-y-1">
-                                      <label className="text-xs font-semibold text-foreground">Task Description</label>
+                                      <label className="text-xs font-semibold text-foreground flex justify-between items-center">
+                                        Task Description
+                                        <VariablePicker 
+                                          triggerTable={triggerTableForVars} 
+                                          onSelect={(v) => handleUpdateNodeConfig('payload', { ...(selectedNode.data.config.payload || {}), description: (selectedNode.data.config?.payload?.description || '') + v })}
+                                        />
+                                      </label>
                                       <textarea 
                                         className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm h-24 resize-none"
                                         placeholder="Details about the task..." 
@@ -741,7 +812,13 @@ export default function Automations() {
                                 {selectedNode.data.actionType === 'webhook' && (
                                   <>
                                     <div className="space-y-1">
-                                      <label className="text-xs font-semibold text-foreground">Webhook URL</label>
+                                      <label className="text-xs font-semibold text-foreground flex justify-between items-center">
+                                        Webhook URL
+                                        <VariablePicker 
+                                          triggerTable={triggerTableForVars} 
+                                          onSelect={(v) => handleUpdateNodeConfig('payload', { ...(selectedNode.data.config.payload || {}), url: (selectedNode.data.config?.payload?.url || '') + v })}
+                                        />
+                                      </label>
                                       <Input 
                                         placeholder="https://api.example.com/webhook" 
                                         value={selectedNode.data.config?.payload?.url || ''}
