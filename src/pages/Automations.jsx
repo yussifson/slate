@@ -318,6 +318,7 @@ export default function Automations() {
     { label: "Invoice Generated", value: "invoices" },
     { label: `New ${getTerm(industry, "client")} Registered`, value: "clients" },
     { label: `New ${getTerm(industry, "case")} Created`, value: "legal_cases" },
+    { label: "Inbound Webhook", value: "webhook_inbound" }
   ];
 
   useEffect(() => {
@@ -687,14 +688,29 @@ export default function Automations() {
                           </Button>
                         </div>
                       </CardHeader>
-                      <CardContent className="flex-1 flex items-center gap-3">
-                        <div className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded-md text-xs font-semibold">
-                          {rule.table_name}
-                        </div>
-                        <ArrowRight className="w-4 h-4 text-muted-foreground" />
-                        <div className="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-md text-xs font-semibold">
-                          Action
-                        </div>
+                      <CardContent className="flex-1 flex flex-col justify-center gap-3">
+                        {rule.table_name === 'webhook_inbound' ? (
+                          <div className="flex flex-col gap-1 w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-md border text-[10px]">
+                            <span className="font-semibold text-muted-foreground">Webhook URL:</span>
+                            <div className="flex items-center gap-2 w-full">
+                              <code className="flex-1 truncate select-all">https://wmabgiafwamxkcgxyhee.supabase.co/functions/v1/automation-webhook?rule_id={rule.id}</code>
+                              <Button variant="ghost" size="icon" className="h-5 w-5 shrink-0" onClick={() => {
+                                navigator.clipboard.writeText(`https://wmabgiafwamxkcgxyhee.supabase.co/functions/v1/automation-webhook?rule_id=${rule.id}`);
+                                toast.success("URL Copied!");
+                              }}><CheckSquare className="w-3 h-3"/></Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-3">
+                            <div className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded-md text-xs font-semibold">
+                              {rule.table_name}
+                            </div>
+                            <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                            <div className="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-md text-xs font-semibold">
+                              Action
+                            </div>
+                          </div>
+                        )}
                       </CardContent>
                       <CardFooter className="pt-0 border-t mt-auto px-6 py-4">
                         <div className="flex items-center justify-between w-full">
@@ -786,7 +802,11 @@ export default function Automations() {
                                   </optgroup>
                                 )}
                               </select>
-                              <p className="text-[10px] text-muted-foreground">The automation will run automatically when this event occurs.</p>
+                              <p className="text-[10px] text-muted-foreground">
+                                {selectedNode.data.config?.tableName === 'webhook_inbound' 
+                                  ? "Save this flow to generate a unique Webhook URL."
+                                  : "The automation will run automatically when this event occurs."}
+                              </p>
                             </div>
                           )}
 
