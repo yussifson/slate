@@ -3,6 +3,7 @@ import { SCHEMA_COLUMNS } from './schemaColumns';
 import { encryptText, decryptText } from '../lib/encryption';
 import { powerSync } from './PowerSyncConnector';
 import { syncQueue } from '../services/syncQueue';
+import { ActivityLogger } from '../lib/activityLogger';
 
 const TABLE_MAP = {
     Company: 'companies',
@@ -367,6 +368,23 @@ export const base44 = {
 
                         await mirrorToSupabase(tableName, securedPayload, 'upsert');
                         
+                        // Fire-and-forget activity log
+                        (async () => {
+                            try {
+                                const profs = await powerSync.getAll('SELECT company_id, email, full_name FROM profiles LIMIT 1');
+                                const prof = profs[0] || {};
+                                await ActivityLogger.log({
+                                    companyId: securedPayload.company_id || prof.company_id,
+                                    userEmail: prof.email,
+                                    userName: prof.full_name,
+                                    action: 'Created Record',
+                                    module: tableName,
+                                    slate: 'Orbit System',
+                                    details: { id: securedPayload.id }
+                                });
+                            } catch (e) {}
+                        })();
+
                         return revealResults(securedPayload);
                     } catch (err) {
                         console.error(`[PowerSync] Create failed on ${tableName}:`, err);
@@ -415,6 +433,24 @@ export const base44 = {
                         if (updatedData) {
                             await mirrorToSupabase(tableName, updatedData, 'upsert');
                         }
+                        
+                        // Fire-and-forget activity log
+                        (async () => {
+                            try {
+                                const profs = await powerSync.getAll('SELECT company_id, email, full_name FROM profiles LIMIT 1');
+                                const prof = profs[0] || {};
+                                await ActivityLogger.log({
+                                    companyId: prof.company_id,
+                                    userEmail: prof.email,
+                                    userName: prof.full_name,
+                                    action: 'Updated Record',
+                                    module: tableName,
+                                    slate: 'Orbit System',
+                                    details: { id }
+                                });
+                            } catch (e) {}
+                        })();
+
                         return revealResults(updatedData);
                     } catch (err) {
                         console.error(`[PowerSync] Update failed on ${tableName}:`, err);
@@ -425,6 +461,24 @@ export const base44 = {
                     try {
                         await powerSync.execute(`DELETE FROM ${tableName} WHERE id = ?`, [id]);
                         await mirrorToSupabase(tableName, id, 'delete');
+                        
+                        // Fire-and-forget activity log
+                        (async () => {
+                            try {
+                                const profs = await powerSync.getAll('SELECT company_id, email, full_name FROM profiles LIMIT 1');
+                                const prof = profs[0] || {};
+                                await ActivityLogger.log({
+                                    companyId: prof.company_id,
+                                    userEmail: prof.email,
+                                    userName: prof.full_name,
+                                    action: 'Deleted Record',
+                                    module: tableName,
+                                    slate: 'Orbit System',
+                                    details: { id }
+                                });
+                            } catch (e) {}
+                        })();
+
                         return { id };
                     } catch (err) {
                         console.error(`[PowerSync] Delete failed on ${tableName}:`, err);

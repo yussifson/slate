@@ -43,43 +43,43 @@ export default function AdminBroadcasts() {
     setBroadcasting(true);
     try {
       const targetList = targetMode === 'all' ? companies : companies.filter(c => selectedCompanies.includes(c.id));
-      
-      // 1. Internal Broadcast (In-App Notifications)
-      if (channel === 'internal' || channel === 'both') {
-        const notificationInserts = targetList.map(c => ({
-          id: crypto.randomUUID(),
-          company_id: c.id,
+      const targetIds = targetList.map(c => c.id);
+
+      // Fetch administrators for the target companies
+      const { data: admins, error: adminErr } = await supabase
+        .from('profiles')
+        .select('email, full_name, company_id, role')
+        .in('company_id', targetIds)
+        .in('role', ['company_admin', 'super_admin']);
+
+      if (adminErr) throw adminErr;
+      if (!admins || admins.length === 0) {
+        toast({ title: "No targets found", description: "Could not find any administrators in the selected companies.", variant: "destructive" });
+        setBroadcasting(false);
+        return;
+      }
+
+      // Dispatch notifications
+      const channelsToSend = [];
+      if (channel === 'internal' || channel === 'both') channelsToSend.push('in-app');
+      if (channel === 'external' || channel === 'both') channelsToSend.push('email');
+
+      const { NotificationService } = await import("@/lib/notifications");
+
+      for (const admin of admins) {
+        if (!admin.email) continue;
+        await NotificationService.send({
+          companyId: admin.company_id,
+          recipientEmail: admin.email,
+          recipientName: admin.full_name || 'Admin',
           title: subject,
           message: announcementText,
-          type: "system",
-          is_read: "false"
-        }));
-        
-        for (const _payload of notificationInserts) {
-          const _keys = Object.keys(_payload);
-          const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-          await powerSync.execute(`INSERT INTO notifications (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
-        }
-      }
-
-      // 2. External Broadcast (Emails)
-      if (channel === 'external' || channel === 'both') {
-        // Trigger edge function or API for emails
-        const { error } = await supabase.functions.invoke('send-broadcast-email', {
-          body: {
-            subject,
-            message: announcementText,
-            target_companies: targetList.map(c => c.id)
-          }
+          type: 'system',
+          channels: channelsToSend
         });
-        
-        if (error) {
-           console.warn("Email broadcast edge function not configured or failed:", error);
-           toast({ title: "Email dispatch issue", description: "Emails could not be sent. Please ensure the edge function is deployed.", variant: "destructive"});
-        }
       }
 
-      toast({ title: "Broadcast Dispatched", description: `Message successfully sent to ${targetList.length} firm(s).` });
+      toast({ title: "Broadcast Dispatched", description: `Message successfully sent to ${admins.length} administrator(s) across ${targetList.length} firm(s).` });
       setSubject('');
       setAnnouncementText('');
       setSelectedCompanies([]);

@@ -17,21 +17,17 @@ export default function AuditLog() {
  const { data: logs = [], isLoading} = useQuery({
  queryKey: ["audit-logs", companyId],
  queryFn: async () => {
- // In a real implementation this would fetch from 'system_activity_logs'
- // We will mock this or use the actual table if it exists
- try {
- const { data, error} = await supabase
- .from("system_activity_logs")
- .select("*")
- .eq("company_id", companyId)
- .order("created_date", { ascending: false});
- if (error) throw error;
- return data;
-} catch (err) {
- console.error("Failed to fetch logs:", err);
- return [];
-}
-},
+  try {
+    const data = await powerSync.getAll(
+      "SELECT * FROM system_activity_logs WHERE company_id = ? ORDER BY created_date DESC LIMIT 1000", 
+      [companyId]
+    );
+    return data || [];
+  } catch (err) {
+    console.error("Failed to fetch logs:", err);
+    return [];
+  }
+ },
  enabled: !!companyId,
 });
 
