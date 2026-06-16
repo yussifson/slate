@@ -66,7 +66,7 @@ export default function OnboardingWizard() {
  if (pendingPrompt) {
  setSetupMode('orbit');
  setOrbitPrompt(pendingPrompt);
- setStep(3); // Jump straight to Invite Team
+ setStep(2); // Jump to Profile step to get Company Name
  localStorage.removeItem('pendingOrbitPrompt');
 }
 }, []);

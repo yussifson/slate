@@ -141,14 +141,31 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  .eq('record_type', 'active_modules')
  .maybeSingle();
  
- if (!error && data?.data) {
- const currentStr = localStorage.getItem(`active_modules_${companyId}`);
- const newStr = JSON.stringify(data.data);
- if (currentStr !== newStr) {
- localStorage.setItem(`active_modules_${companyId}`, newStr);
-}
-}
- return data?.data || null;
+  if (!error && data?.data) {
+  const currentStr = localStorage.getItem(`active_modules_${companyId}`);
+  const newStr = JSON.stringify(data.data);
+  if (currentStr !== newStr) {
+  localStorage.setItem(`active_modules_${companyId}`, newStr);
+  }
+  return data.data;
+ } else if (!data?.data && savedModulesStr) {
+  // DB is missing the modules but we have them locally! Sync UP to DB
+  try {
+    const parsedLocal = JSON.parse(savedModulesStr);
+    supabase.from('industry_records').insert({
+      id: crypto.randomUUID(),
+      company_id: companyId,
+      industry: 'custom',
+      record_type: 'active_modules',
+      search_text: 'auto-synced active modules',
+      data: parsedLocal
+    }).then(({error}) => {
+      if(error) console.error("Auto-sync UP failed:", error);
+    });
+    return parsedLocal;
+  } catch(e) {}
+ }
+  return null;
 },
  enabled: !!companyId
 });

@@ -47,6 +47,7 @@ export default function AdminBroadcasts() {
       // 1. Internal Broadcast (In-App Notifications)
       if (channel === 'internal' || channel === 'both') {
         const notificationInserts = targetList.map(c => ({
+          id: crypto.randomUUID(),
           company_id: c.id,
           title: subject,
           message: announcementText,
