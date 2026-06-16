@@ -273,10 +273,21 @@ export async function generateOrbitBuildWorkspace(prompt, companyId) {
       { role: 'user', content: prompt }
     ];
 
-    const responseText = await generateText(aiMessages);
+    let responseText = await generateText(aiMessages);
+    
+    // Safety check in case the AI provider returns an object instead of a string
+    if (typeof responseText !== 'string') {
+      if (responseText && typeof responseText.response === 'string') {
+        responseText = responseText.response;
+      } else if (responseText && typeof responseText.text === 'string') {
+        responseText = responseText.text;
+      } else {
+        responseText = JSON.stringify(responseText || "");
+      }
+    }
     
     // Parse the JSON array. Handle potential markdown formatting.
-    let jsonStr = responseText.trim();
+    let jsonStr = (responseText || "").trim();
     if (jsonStr.startsWith('\`\`\`json')) {
       jsonStr = jsonStr.replace(/^\`\`\`json/, '').replace(/\`\`\`$/, '').trim();
     } else if (jsonStr.startsWith('\`\`\`')) {
