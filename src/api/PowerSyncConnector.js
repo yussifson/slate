@@ -39,6 +39,10 @@ class SupabaseConnector {
                 const allowed = ['id', 'created_date', 'updated_date', 'created_by', 'role', 'company_id', 'company_name', 'phone', 'avatar_url', 'department', 'bar_number'];
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
               }
+              if (op.table === 'automation_logs') {
+                const allowed = ['id', 'company_id', 'created_at', 'status', 'rule_id'];
+                payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
+              }
               const { error } = await table.upsert(payload);
               if (error) throw error;
               break;
@@ -47,6 +51,10 @@ class SupabaseConnector {
               let payload = { ...op.opData };
               if (op.table === 'profiles') {
                 const allowed = ['id', 'created_date', 'updated_date', 'created_by', 'role', 'company_id', 'company_name', 'phone', 'avatar_url', 'department', 'bar_number'];
+                payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
+              }
+              if (op.table === 'automation_logs') {
+                const allowed = ['id', 'company_id', 'created_at', 'status', 'rule_id'];
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
               }
               if (Object.keys(payload).length > 0) {
