@@ -466,7 +466,7 @@ export const AppSchema = new Schema({
         is_read: column.text,
         email_sent: column.text,
     }),
-    system_activity_logs: new Table({
+    automation_logs: new Table({
         id: column.text,
         company_id: column.text,
         user_email: column.text,

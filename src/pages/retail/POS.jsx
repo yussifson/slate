@@ -238,9 +238,9 @@ export default function POS() {
 }
 
  return (
- <div className="h-[calc(100vh-120px)] flex flex-col md:flex-row gap-6">
+ <div className="h-[calc(100vh-100px)] flex flex-col md:flex-row gap-6 pb-6">
  {/* Product List */}
- <div className="flex-1 flex flex-col bg-muted/50 rounded-2xl border border-primary/40 overflow-hidden md:h-full h-[50vh]">
+ <div className="flex-1 flex flex-col bg-muted/50 rounded-2xl border border-primary/40 overflow-hidden md:h-full min-h-[40vh]">
  <div className="p-4 bg-card border-b border-primary/40 flex gap-4">
  <div className="relative flex-1">
  <ShoppingCart className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -281,7 +281,7 @@ export default function POS() {
  </div>
  
  {/* Cart Sidebar */}
- <div className="w-full md:w-[400px] flex flex-col bg-card rounded-2xl border border-primary/40 overflow-hidden shadow-xl md:shadow-none z-10 md:h-full max-h-[50vh] md:max-h-none">
+ <div className="w-full md:w-[450px] flex flex-col bg-card rounded-2xl border border-primary/40 overflow-hidden shadow-xl md:shadow-none z-10 md:h-full flex-shrink-0 flex-grow-0">
  <div className="p-5 border-b border-primary/40 bg-muted/30">
  <h2 className="font-bold flex items-center gap-2 text-lg"><ShoppingCart className="w-5 h-5"/> {t("current_sale", "Current Sale")}</h2>
  <span className="bg-orange-700 px-2 py-1 rounded text-xs font-mono">{cart.length} {t("items", "items")}</span>
@@ -298,7 +298,7 @@ export default function POS() {
  </select>
  </div>
 
- <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-muted">
+ <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-muted/30 min-h-[250px]">
  {cart.length === 0 ? (
  <div className="h-full flex flex-col items-center justify-center text-muted-foreground opacity-50">
  <ShoppingCart className="w-16 h-16 mb-4 animate-bounce" />

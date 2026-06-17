@@ -19,7 +19,7 @@ export default function AuditLog() {
  queryFn: async () => {
   try {
     const data = await powerSync.getAll(
-      "SELECT * FROM system_activity_logs WHERE company_id = ? ORDER BY created_date DESC LIMIT 1000", 
+      "SELECT * FROM automation_logs WHERE company_id = ? ORDER BY created_date DESC LIMIT 1000", 
       [companyId]
     );
     return data || [];

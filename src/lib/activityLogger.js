@@ -37,7 +37,7 @@ export const ActivityLogger = {
       const values = Object.values(payload);
 
       await powerSync.execute(
-        `INSERT INTO system_activity_logs (${keys.join(', ')}) VALUES (${keys.map(() => '?').join(', ')})`,
+        `INSERT INTO automation_logs (${keys.join(', ')}) VALUES (${keys.map(() => '?').join(', ')})`,
         values
       );
     } catch (err) {

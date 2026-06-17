@@ -11,6 +11,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@
 import { Link} from 'react-router-dom';
 import { useNotifications} from '@/hooks/integrations/useNotifications';
 import { useAuth} from '@/lib/AuthContext';
+import { base44 } from "@/api/base44Client";
+import { supabase } from "@/api/supabaseClient";
 
 export default function Employees() {
  const { t} = useTranslation();
@@ -45,52 +47,69 @@ export default function Employees() {
  salary: '',
  startDate: new Date().toISOString().split('T')[0]
 });
+ const [password, setPassword] = useState('');
+ const [isSubmitting, setIsSubmitting] = useState(false);
 
- const handleCreateOrUpdateEmployee = () => {
+ const handleCreateOrUpdateEmployee = async () => {
  if (!formData.name.trim()) return toast.error("Please enter a name");
+ if (!editTargetId && !password) return toast.error("Please provide a temporary password");
  
- if (editTargetId) {
- const emp = employees.find(e => e.id === editTargetId);
- const payload = { ...formData, employeeId: emp.employeeId};
- 
- mutateRecord.mutate({
- id: editTargetId,
- recordType: 'staff',
- payload,
- status: emp.status,
- searchText: `${formData.name} ${formData.role} ${emp.employeeId}`
-}, {
- onSuccess: () => {
- toast.success('Employee updated successfully!');
- setShowModal(false);
- setEditTargetId(null);
- setFormData({
- name: '', departmentId: '', reportsTo: '', role: '', email: '', phone: '', salary: '', startDate: new Date().toISOString().split('T')[0]
-});
-},
- onError: (err) => toast.error('Failed to update employee: ' + err.message)
-});
-} else {
- const employeeId = `EMP-${Math.floor(1000 + Math.random() * 9000)}`;
- const payload = { ...formData, employeeId};
-
- mutateRecord.mutate({
- recordType: 'staff',
- payload,
- status: 'active',
- searchText: `${formData.name} ${formData.role} ${employeeId}`
-}, {
- onSuccess: () => {
- toast.success('Employee added successfully!');
- notifyTeam({ companyId: user?.company_id, provider: 'slack', message: `New employee onboarded: ${formData.name} as ${formData.role}`, channel: '#general'}).catch(console.error);
- setShowModal(false);
- setFormData({
- name: '', departmentId: '', reportsTo: '', role: '', email: '', phone: '', salary: '', startDate: new Date().toISOString().split('T')[0]
-});
-},
- onError: (err) => toast.error('Failed to add employee: ' + err.message)
-});
-}
+ setIsSubmitting(true);
+ try {
+   if (editTargetId) {
+     const emp = employees.find(e => e.id === editTargetId);
+     const payload = { ...formData, employeeId: emp.employeeId};
+     
+     await mutateRecord.mutateAsync({
+       id: editTargetId,
+       recordType: 'staff',
+       payload,
+       status: emp.status,
+       searchText: `${formData.name} ${formData.role} ${emp.employeeId}`
+     });
+     
+     toast.success('Employee updated successfully!');
+     setShowModal(false);
+     setEditTargetId(null);
+     setFormData({ name: '', departmentId: '', reportsTo: '', role: '', email: '', phone: '', salary: '', startDate: new Date().toISOString().split('T')[0] });
+     setPassword('');
+   } else {
+     const employeeId = `EMP-${Math.floor(1000 + Math.random() * 9000)}`;
+     
+     // Register Auth
+     const reg = await base44.auth.register({
+       email: formData.email,
+       password: password,
+       company_id: user?.company_id,
+       role: formData.role || 'staff',
+     });
+     
+     const authUserId = reg?.user?.id;
+     
+     const payload = { ...formData, employeeId, user_id: authUserId || null};
+    
+     await mutateRecord.mutateAsync({
+       recordType: 'staff',
+       payload,
+       status: 'active',
+       searchText: `${formData.name} ${formData.role} ${employeeId}`
+     });
+     
+     if (authUserId) {
+       await supabase.from("staff_records").update({ user_id: authUserId }).eq("company_id", user?.company_id).ilike("user_email", formData.email);
+     }
+     
+     toast.success('Employee added and account created successfully!');
+     notifyTeam({ companyId: user?.company_id, provider: 'slack', message: `New employee onboarded: ${formData.name} as ${formData.role}`, channel: '#general'}).catch(console.error);
+     setShowModal(false);
+     setFormData({ name: '', departmentId: '', reportsTo: '', role: '', email: '', phone: '', salary: '', startDate: new Date().toISOString().split('T')[0] });
+     setPassword('');
+   }
+ } catch (err) {
+   toast.error(err.message || 'An error occurred');
+ } finally {
+   setIsSubmitting(false);
+ }
 };
 
  const openEdit = (emp) => {
@@ -311,8 +330,14 @@ export default function Employees() {
  </div>
  <div>
  <label className="text-xs font-bold text-muted-foreground uppercase">{t("email", "Email")}</label>
- <Input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} placeholder="alice@example.com" className="mt-1" />
+ <Input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} placeholder="alice@example.com" className="mt-1" disabled={!!editTargetId} />
  </div>
+ {!editTargetId && (
+   <div>
+     <label className="text-xs font-bold text-muted-foreground uppercase">{t("temporary_password", "Temporary Password *")}</label>
+     <Input type="text" value={password} onChange={e => setPassword(e.target.value)} placeholder="Min 6 characters" className="mt-1" />
+   </div>
+ )}
  <div>
  <label className="text-xs font-bold text-muted-foreground uppercase">{t("phone", "Phone")}</label>
  <Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} placeholder="+1 234 567 8900" className="mt-1" />
@@ -357,8 +382,8 @@ export default function Employees() {
  </div>
  </div>
  <div className="flex gap-3 pt-4">
- <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
- <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCreateOrUpdateEmployee}>{t("save", "Save")}</Button>
+ <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)} disabled={isSubmitting}>{t("cancel", "Cancel")}</Button>
+ <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleCreateOrUpdateEmployee} disabled={isSubmitting}>{isSubmitting ? t("saving", "Saving...") : t("save", "Save")}</Button>
  </div>
  </div>
  </div>
