@@ -82,7 +82,6 @@ export default function EnterpriseContact() {
  
  {/* Left Side: Premium Info Panel */}
  <div className="w-full lg:w-[45%] bg-primary text-white p-10 md:p-16 flex flex-col justify-between relative overflow-hidden">
- <div className="absolute inset-0 bg-white pointer-events-none" />
  <div className="absolute top-0 right-0 w-[200%] h-[200%] bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.1)_0%,transparent_50%)] pointer-events-none" />
  
  <div className="relative z-10">
@@ -172,10 +171,10 @@ export default function EnterpriseContact() {
  <div 
  key={type}
  onClick={() => handleChange('deployment', type)}
- className={`cursor-pointer rounded-2xl border-2 p-5 flex flex-col items-center justify-center text-center transition-all bg-white backdrop-blur-md ${
+ className={`cursor-pointer rounded-2xl border-2 p-5 flex flex-col items-center justify-center text-center transition-all bg-slate-50 ${
  formData.deployment === type 
  ? 'border-primary -emerald-600/10' 
- : 'border-white hover:border-primary/20 '
+ : 'border-slate-200 hover:border-primary/40 '
 }`}
  >
  <Server className={`w-6 h-6 mb-3 ${formData.deployment === type ? 'text-primary' : 'text-slate-400'}`} />
@@ -192,7 +191,7 @@ export default function EnterpriseContact() {
  <div>
  <Label className="text-sm font-bold text-slate-900 mb-3 block">{t("estimated_active_users", "Estimated Active Users")}</Label>
  <Select value={formData.userCount} onValueChange={(val) => handleChange('userCount', val)}>
- <SelectTrigger className="h-14 rounded-2xl border-white bg-white backdrop-blur-md focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all">
+ <SelectTrigger className="h-14 rounded-2xl border-slate-200 bg-slate-50 focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all">
  <SelectValue placeholder="Select user count" />
  </SelectTrigger>
  <SelectContent className="rounded-2xl border-primary/40">
@@ -208,7 +207,7 @@ export default function EnterpriseContact() {
  <div>
  <Label className="text-sm font-bold text-slate-900 mb-4 block">{t("enterprise_add_ons", "Enterprise Add-ons")}</Label>
  <div className="space-y-4">
- <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white backdrop-blur-md hover:border-primary/40 transition-colors">
+ <div className="flex items-center justify-between p-5 rounded-2xl border border-slate-200 bg-slate-50 hover:border-primary/40 transition-colors">
  <div className="space-y-1">
  <Label className="text-base font-bold text-slate-900 cursor-pointer" onClick={() => handleChange('needsMigration', !formData.needsMigration)}>{t("legacy_data_migration", "Legacy Data Migration")}</Label>
  <p className="text-xs text-slate-500 font-medium">{t(
@@ -219,7 +218,7 @@ export default function EnterpriseContact() {
  <Switch checked={formData.needsMigration} onCheckedChange={(c) => handleChange('needsMigration', c)} />
  </div>
  
- <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white backdrop-blur-md hover:border-primary/40 transition-colors">
+ <div className="flex items-center justify-between p-5 rounded-2xl border border-slate-200 bg-slate-50 hover:border-primary/40 transition-colors">
  <div className="space-y-1">
  <Label className="text-base font-bold text-slate-900 cursor-pointer" onClick={() => handleChange('needsWhitelabel', !formData.needsWhitelabel)}>{t("full_white_labeling", "Full White-Labeling")}</Label>
  <p className="text-xs text-slate-500 font-medium">{t(
@@ -230,7 +229,7 @@ export default function EnterpriseContact() {
  <Switch checked={formData.needsWhitelabel} onCheckedChange={(c) => handleChange('needsWhitelabel', c)} />
  </div>
 
- <div className="flex items-center justify-between p-5 rounded-2xl border border-white bg-white backdrop-blur-md hover:border-primary/40 transition-colors">
+ <div className="flex items-center justify-between p-5 rounded-2xl border border-slate-200 bg-slate-50 hover:border-primary/40 transition-colors">
  <div className="space-y-1">
  <Label className="text-base font-bold text-slate-900 cursor-pointer" onClick={() => handleChange('needsCompliance', !formData.needsCompliance)}>{t("compliance_audit_package", "Compliance Audit Package")}</Label>
  <p className="text-xs text-slate-500 font-medium">{t(
@@ -260,29 +259,29 @@ export default function EnterpriseContact() {
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
  <div className="space-y-2">
  <Label className="text-sm font-bold text-slate-900">{t("first_name", "First Name")}</Label>
- <Input required className="h-14 rounded-2xl border-white bg-white backdrop-blur-md focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium" placeholder="Jane" value={formData.firstName} onChange={(e) => handleChange('firstName', e.target.value)} />
+ <Input required className="h-14 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium" placeholder="Jane" value={formData.firstName} onChange={(e) => handleChange('firstName', e.target.value)} />
  </div>
  <div className="space-y-2">
  <Label className="text-sm font-bold text-slate-900">{t("last_name", "Last Name")}</Label>
- <Input required className="h-14 rounded-2xl border-white bg-white backdrop-blur-md focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium" placeholder="Doe" value={formData.lastName} onChange={(e) => handleChange('lastName', e.target.value)} />
+ <Input required className="h-14 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium" placeholder="Doe" value={formData.lastName} onChange={(e) => handleChange('lastName', e.target.value)} />
  </div>
  </div>
 
  <div className="space-y-6 mb-6">
  <div className="space-y-2">
  <Label className="text-sm font-bold text-slate-900">{t("work_email", "Work Email")}</Label>
- <Input required type="email" className="h-14 rounded-2xl border-white bg-white backdrop-blur-md focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium" placeholder="jane@company.com" value={formData.workEmail} onChange={(e) => handleChange('workEmail', e.target.value)} />
+ <Input required type="email" className="h-14 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium" placeholder="jane@company.com" value={formData.workEmail} onChange={(e) => handleChange('workEmail', e.target.value)} />
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
  <div className="space-y-2">
  <Label className="text-sm font-bold text-slate-900">{t("company_name", "Company Name")}</Label>
- <Input required className="h-14 rounded-2xl border-white bg-white backdrop-blur-md focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium" placeholder="Acme Corp" value={formData.companyName} onChange={(e) => handleChange('companyName', e.target.value)} />
+ <Input required className="h-14 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium" placeholder="Acme Corp" value={formData.companyName} onChange={(e) => handleChange('companyName', e.target.value)} />
  </div>
  <div className="space-y-2">
  <Label className="text-sm font-bold text-slate-900">{t("industry", "Industry")}</Label>
  <Select value={formData.industry} onValueChange={(val) => handleChange('industry', val)} required>
- <SelectTrigger className="h-14 rounded-2xl border-white bg-white backdrop-blur-md focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium">
+ <SelectTrigger className="h-14 rounded-2xl border-slate-200 bg-slate-50 focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium">
  <SelectValue placeholder="Select industry" />
  </SelectTrigger>
  <SelectContent className="rounded-2xl border-primary/40">
@@ -299,7 +298,7 @@ export default function EnterpriseContact() {
  <div className="space-y-2">
  <Label className="text-sm font-bold text-slate-900">{t("any_specific_requirements_opti", "Any specific requirements? (Optional)")}</Label>
  <Textarea 
- className="min-h-[120px] rounded-2xl border-white bg-white backdrop-blur-md focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all resize-none font-medium p-4" 
+ className="min-h-[120px] rounded-2xl border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all resize-none font-medium p-4" 
  placeholder="Tell us about your current infrastructure..."
  value={formData.message}
  onChange={(e) => handleChange('message', e.target.value)}
