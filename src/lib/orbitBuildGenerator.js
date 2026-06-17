@@ -357,7 +357,17 @@ export async function generateOrbitBuildWorkspace(prompt, companyId) {
     }
 
     // Update the company's industry_type
-    const { error: compError } = await (async () => { const _payload = {industry_type: 'orbit_build'}; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE companies SET ${_keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._vals, companyId]); })();
+    const { error: compError } = await (async () => {
+      try {
+        const _payload = {industry_type: 'orbit_build'};
+        const _keys = Object.keys(_payload);
+        const _vals = Object.values(_payload).map(v => typeof v === 'object' ? JSON.stringify(v) : v);
+        await powerSync.execute(`UPDATE companies SET ${_keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._vals, companyId]);
+        return { error: null };
+      } catch (e) {
+        return { error: e };
+      }
+    })();
 
     if (compError) {
       console.error("Failed to update company industry_type:", compError);
