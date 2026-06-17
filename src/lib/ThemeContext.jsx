@@ -11,7 +11,7 @@ export const ThemeProvider = ({ children }) => {
     // 1. Check local storage for quick sync to prevent flash on load
     const stored = localStorage.getItem('theme');
     if (stored) return stored;
-    return 'system';
+    return 'light';
   });
 
   const isUpdatingRef = useRef(false);
