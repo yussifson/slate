@@ -194,7 +194,7 @@ export default function AdminFirms() {
                       <div className="flex items-start justify-between md:justify-start gap-3">
                         <div>
                           <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 leading-tight">{c.name}</h3>
-                          <p className="font-mono text-[11px] text-primary mt-1">{c.subdomain}{t("slate_com", ".slate.com")}</p>
+                          <p className="font-mono text-[11px] text-primary mt-1">{c.subdomain}{t("slate_optavel_com", ".slate.optavel.com")}</p>
                         </div>
                         <span className={`md:hidden inline-flex py-1 px-2.5 rounded-full text-[10px] font-bold uppercase ${c.status === 'active' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border border-primary/40' : 'bg-red-50 text-red-700 border border-red-100'}`}>
                           {c.status}

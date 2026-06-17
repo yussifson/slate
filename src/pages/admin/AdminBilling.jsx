@@ -39,8 +39,29 @@ export default function AdminBilling() {
     queryFn: () => base44.entities.Company.list()
   });
 
+  const { data: subscriptions = [] } = useQuery({
+    queryKey: ['admin_subscriptions'],
+    queryFn: async () => {
+      const res = await powerSync.execute(`
+        SELECT cs.company_id, cs.status as subscription_status, p.price_monthly
+        FROM company_subscriptions cs
+        LEFT JOIN subscription_plans p ON cs.plan_id = p.id
+      `);
+      const data = [];
+      if (res.rows) {
+        for (let i = 0; i < res.rows.length; i++) {
+          data.push(res.rows.item(i));
+        }
+      }
+      return data;
+    }
+  });
+
   // Calculate Metrics
-  const totalRevenue = invoices.filter(i => i.status === 'paid').reduce((acc, i) => acc + (i.total_amount || i.amount || 0), 0);
+  const totalRevenue = subscriptions
+    .filter(s => s.subscription_status === 'active' || s.subscription_status === 'trial')
+    .reduce((sum, s) => sum + Number(s.price_monthly || 0), 0);
+    
   const pendingRevenue = invoices.filter(i => i.status === 'pending').reduce((acc, i) => acc + (i.total_amount || i.amount || 0), 0);
   const failedCharges = invoices.filter(i => i.status === 'overdue' || i.status === 'failed').length;
 
