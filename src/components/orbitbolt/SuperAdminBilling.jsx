@@ -547,7 +547,7 @@ function TabTransactions() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('subscription_invoices')
-        .select('id, paid_date, company_id, amount_usd, status, notes, companies(name)')
+        .select('id, paid_date, company_id, amount_usd, status, notes, company_name')
         .order('paid_date', { ascending: false })
         .limit(50);
         
@@ -556,7 +556,7 @@ function TabTransactions() {
       return (data || []).map(inv => ({
         id: inv.id,
         created_date: inv.paid_date,
-        company_name: inv.companies?.name || 'Unknown',
+        company_name: inv.company_name || 'Unknown',
         amount_usd: inv.amount_usd,
         status: inv.status,
         reference: inv.notes
@@ -621,13 +621,15 @@ function TabUsageMonitor() {
         });
       }
 
-      const results = (companies || []).map(c => ({
-        company_id: c.id,
-        name: c.name,
-        total_usage: usageMap[c.id] || 0
-      }));
+      const results = (companies || [])
+        .map(c => ({
+          company_id: c.id,
+          name: c.name,
+          total_usage: usageMap[c.id] || 0
+        }))
+        .filter(c => c.total_usage > 0);
 
-      return results.sort((a, b) => b.total_usage - a.total_usage).slice(0, 10);
+      return results.sort((a, b) => b.total_usage - a.total_usage).slice(0, 100);
     }
   });
 
