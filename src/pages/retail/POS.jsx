@@ -238,7 +238,7 @@ export default function POS() {
 }
 
  return (
- <div className="h-[calc(100vh-100px)] flex flex-col md:flex-row gap-6 pb-6">
+ <div className="h-[calc(100vh-140px)] flex flex-col md:flex-row gap-6 pb-6">
  {/* Product List */}
  <div className="flex-1 flex flex-col bg-muted/50 rounded-2xl border border-primary/40 overflow-hidden md:h-full min-h-[40vh]">
  <div className="p-4 bg-card border-b border-primary/40 flex gap-4">

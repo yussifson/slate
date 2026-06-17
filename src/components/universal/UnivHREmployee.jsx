@@ -12,6 +12,7 @@ import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
 import { Users, UserPlus, Search, Trash2, Edit2, Loader2, XCircle, Mail, Phone, Building2, Briefcase, DollarSign, LayoutGrid, List, Network} from 'lucide-react';
 import { toast} from 'react-hot-toast';
+import { base44 } from "@/api/base44Client";
 
 const EMPTY_FORM = { first_name: '', last_name: '', email: '', phone: '', role_title: '', department: '', status: 'Active', salary: '', employment_type: 'Full-Time', hire_date: ''};
 const DEPARTMENTS = ['General','Engineering','Marketing','Sales','Finance','HR','Operations','Legal','Design','Support'];
@@ -31,6 +32,7 @@ export default function UnivHREmployee() {
  const [editingId, setEditingId] = useState(null);
  const [selected, setSelected] = useState(null);
  const [form, setForm] = useState(EMPTY_FORM);
+ const [password, setPassword] = useState('');
 
  useEffect(() => {
  if (companyId) {
@@ -61,22 +63,38 @@ export default function UnivHREmployee() {
  else payload.salary = Number(payload.salary);
  
  if (editingId) {
- await (async () => { const _payload = payload; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_hr_employees SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editingId]);})();
- const error = null; const data = [];
- if (error) throw error;
- toast.success('Employee updated!');
-} else {
- const { error} = await (async () => {
- const _payload = payload;
- const _keys = Object.keys(_payload);
- const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const _plhdr = _keys.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO univ_hr_employees (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals); return { error: null};})();
- if (error) throw error;
- toast.success('Employee added!');
-}
- closeModal(); fetchEmps();
-} catch (err) { console.error(err); toast.error(err.message || 'Failed to save');}
+  await (async () => { const _payload = payload; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_hr_employees SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editingId]);})();
+  const error = null; const data = [];
+  if (error) throw error;
+  toast.success('Employee updated!');
+ } else {
+  if (!password) {
+    toast.error('Temporary password is required');
+    return;
+  }
+  
+  const reg = await base44.auth.register({
+    email: form.email,
+    password: password,
+    company_id: companyId,
+    role: form.role_title || 'staff',
+  });
+  
+  if (reg?.user?.id) {
+    payload.user_id = reg.user.id;
+  }
+  
+  const { error} = await (async () => {
+  const _payload = payload;
+  const _keys = Object.keys(_payload);
+  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+  const _plhdr = _keys.map(()=>'?').join(', ');
+  await powerSync.execute(`INSERT INTO univ_hr_employees (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals); return { error: null};})();
+  if (error) throw error;
+  toast.success('Employee added and account created!');
+ }
+  closeModal(); fetchEmps();
+ } catch (err) { console.error(err); toast.error(err.message || 'Failed to save');}
 };
 
  const remove = async (id) => {
@@ -85,8 +103,8 @@ export default function UnivHREmployee() {
  if (error) toast.error('Failed to delete'); else { toast.success('Deleted'); fetchEmps(); setSelected(null);}
 };
 
- const openModal = (emp = null) => { setForm(emp ? { ...emp} : EMPTY_FORM); setEditingId(emp?.id || null); setIsModalOpen(true);};
- const closeModal = () => { setIsModalOpen(false); setEditingId(null); setForm(EMPTY_FORM);};
+ const openModal = (emp = null) => { setForm(emp ? { ...emp} : EMPTY_FORM); setEditingId(emp?.id || null); setPassword(''); setIsModalOpen(true);};
+ const closeModal = () => { setIsModalOpen(false); setEditingId(null); setForm(EMPTY_FORM); setPassword('');};
  const filtered = employees.filter(e => `${e.first_name} ${e.last_name} ${e.email} ${e.department} ${e.role_title}`.toLowerCase().includes(search.toLowerCase()));
 
  return (
@@ -212,7 +230,10 @@ export default function UnivHREmployee() {
  <div className="grid grid-cols-2 gap-4">
  <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">First Name *</label><input required type="text" value={form.first_name} onChange={e=>setForm({...form,first_name:e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
  <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Last Name *</label><input required type="text" value={form.last_name} onChange={e=>setForm({...form,last_name:e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Email *</label><input required type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Email *</label><input required type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" disabled={!!editingId} /></div>
+ {!editingId && (
+   <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Temp Password *</label><input required type="text" value={password} onChange={e=>setPassword(e.target.value)} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="Min 6 characters"/></div>
+ )}
  <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Phone</label><input type="tel" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
  <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Role / Title</label><input type="text" value={form.role_title} onChange={e=>setForm({...form,role_title:e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
  <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Department</label><select value={form.department} onChange={e=>setForm({...form,department:e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"><option value="">Select...</option>{DEPARTMENTS.map(d=><option key={d}>{d}</option>)}</select></div>

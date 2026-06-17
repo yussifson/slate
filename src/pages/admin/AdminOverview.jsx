@@ -46,10 +46,10 @@ export default function AdminOverview() {
     }
   });
 
-  const { data: totalCasesCount = 0, isLoading: loadingCases } = useQuery({
-    queryKey: ['admin_overview_cases_count'],
+  const { data: totalRecordsCount = 0, isLoading: loadingRecords } = useQuery({
+    queryKey: ['admin_overview_records_count'],
     queryFn: async () => {
-      const { count } = await supabase.from('industry_records').select('id', { count: 'exact', head: true }).eq('record_type', 'case');
+      const { count } = await supabase.from('industry_records').select('id', { count: 'exact', head: true });
       return count || 0;
     }
   });
@@ -164,11 +164,11 @@ export default function AdminOverview() {
 
         <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 border border-primary/20 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 p-6 rounded-2xl flex items-center justify-between">
           <div>
-            <p className="text-sm text-muted-foreground mb-1">{t("total_cases", "Total Cases")}</p>
+            <p className="text-sm text-muted-foreground mb-1">{t("total_records", "Platform Records")}</p>
             <p className="text-3xl font-black text-slate-900 dark:text-slate-100">{totalCasesCount}</p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">{t("platform_wide_data", "Platform-wide data")}</p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 dark:bg-slate-800 dark:text-amber-400 flex items-center justify-center">
             <Scale className="w-6 h-6" />
           </div>
         </div>
