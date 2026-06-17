@@ -67,29 +67,29 @@ export default function AdminOverview() {
       
       {/* Live Telemetry Section (Bypasses Offline First for Live Server Metrics) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div className="bg-slate-900 text-white shadow-sm p-6 rounded-2xl flex items-center justify-between border border-slate-800">
+        <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 shadow-sm p-6 rounded-2xl flex items-center justify-between border border-primary/20">
           <div>
-            <p className="text-sm text-slate-400 mb-1">{t("active_users_today", "Active Users Today")}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">{t("active_users_today", "Active Users Today")}</p>
             <div className="flex items-center space-x-3">
-              <p className="text-3xl font-black">{loadingTelemetry ? '-' : telemetry?.active_today || 0}</p>
-              <span className="text-xs font-semibold bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-full">LIVE</span>
+              <p className="text-3xl font-black text-slate-900 dark:text-slate-100">{loadingTelemetry ? '-' : telemetry?.active_today || 0}</p>
+              <span className="text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 px-2 py-1 rounded-full">LIVE</span>
             </div>
-            <p className="text-xs text-slate-400 mt-2 font-medium">Logged in past 24h</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">Logged in past 24h</p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-slate-800 text-emerald-400 flex items-center justify-center border border-slate-700">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 dark:bg-slate-800 dark:text-emerald-400 flex items-center justify-center border border-emerald-100 dark:border-slate-700">
             <Activity className="w-6 h-6" />
           </div>
         </div>
 
-        <div className="bg-slate-900 text-white shadow-sm p-6 rounded-2xl flex items-center justify-between border border-slate-800">
+        <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 shadow-sm p-6 rounded-2xl flex items-center justify-between border border-primary/20">
           <div>
-            <p className="text-sm text-slate-400 mb-1">{t("monthly_active_users", "Monthly Active Users")}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">{t("monthly_active_users", "Monthly Active Users")}</p>
             <div className="flex items-center space-x-3">
-               <p className="text-3xl font-black">{loadingTelemetry ? '-' : telemetry?.active_month || 0}</p>
+               <p className="text-3xl font-black text-slate-900 dark:text-slate-100">{loadingTelemetry ? '-' : telemetry?.active_month || 0}</p>
             </div>
-            <p className="text-xs text-slate-400 mt-2 font-medium">Logged in past 30 days</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">Logged in past 30 days</p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-slate-800 text-blue-400 flex items-center justify-center border border-slate-700">
+          <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 dark:bg-slate-800 dark:text-blue-400 flex items-center justify-center border border-blue-100 dark:border-slate-700">
             <Clock className="w-6 h-6" />
           </div>
         </div>

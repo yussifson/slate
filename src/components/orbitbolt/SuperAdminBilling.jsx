@@ -366,7 +366,7 @@ function TabCustomerSubscriptions({ setActiveTab, setOverrideCompanyId }) {
     queryKey: ['superadmin_customers'],
     queryFn: async () => {
       const res = await powerSync.execute(`
-        SELECT c.id, c.name, c.subscription_status, p.name as plan_name, cs.paystack_customer_code
+        SELECT c.id, c.name, c.subscription_status, c.subscription_plan, p.name as plan_name, cs.paystack_customer_code
         FROM companies c
         LEFT JOIN subscription_plans p ON c.subscription_plan = p.id
         LEFT JOIN company_subscriptions cs ON c.id = cs.company_id
@@ -411,7 +411,7 @@ function TabCustomerSubscriptions({ setActiveTab, setOverrideCompanyId }) {
             ) : filtered.map(c => (
               <tr key={c.id} className="hover:bg-muted/30 transition-colors">
                 <td className="px-6 py-4 font-bold text-foreground">{c.name}</td>
-                <td className="px-6 py-4">{c.plan_name || 'No Plan'}</td>
+                <td className="px-6 py-4 capitalize">{c.plan_name || c.subscription_plan || 'No Plan'}</td>
                 <td className="px-6 py-4">
                   <span className={cn("px-2 py-1 text-xs font-bold rounded border uppercase", 
                     c.subscription_status === 'active' ? "bg-emerald-100 text-emerald-700 border-emerald-200" :
