@@ -365,20 +365,34 @@ function TabCustomerSubscriptions({ setActiveTab, setOverrideCompanyId }) {
   const { data: customers = [], isLoading } = useQuery({
     queryKey: ['superadmin_customers'],
     queryFn: async () => {
-      const res = await powerSync.execute(`
-        SELECT c.id, c.name, c.subscription_status, c.subscription_plan, p.name as plan_name, cs.paystack_customer_code
-        FROM companies c
-        LEFT JOIN subscription_plans p ON c.subscription_plan = p.id
-        LEFT JOIN company_subscriptions cs ON c.id = cs.company_id
-        ORDER BY c.created_date DESC
-      `);
-      const data = [];
-      if (res.rows) {
-        for (let i = 0; i < res.rows.length; i++) {
-          data.push(res.rows.item(i));
+      const { data: cData, error: cErr } = await supabase.from('companies').select('id, name, subscription_status, subscription_plan');
+      if (cErr) throw cErr;
+      
+      const { data: pData } = await supabase.from('subscription_plans').select('id, name');
+      const { data: csData } = await supabase.from('company_subscriptions').select('company_id, paystack_customer_code');
+
+      return (cData || []).map(c => {
+        let planName = c.subscription_plan;
+        if (pData) {
+          const matchedPlan = pData.find(p => p.id === c.subscription_plan || p.name.toLowerCase().replace(/\s/g, '') === c.subscription_plan?.toLowerCase());
+          if (matchedPlan) planName = matchedPlan.name;
         }
-      }
-      return data;
+        
+        let paystackCode = 'N/A';
+        if (csData) {
+          const sub = csData.find(cs => cs.company_id === c.id);
+          if (sub && sub.paystack_customer_code) paystackCode = sub.paystack_customer_code;
+        }
+
+        return {
+          id: c.id,
+          name: c.name,
+          subscription_status: c.subscription_status,
+          subscription_plan: c.subscription_plan,
+          plan_name: planName,
+          paystack_customer_code: paystackCode
+        };
+      });
     }
   });
 
@@ -531,19 +545,22 @@ function TabTransactions() {
   const { data: invoices = [], isLoading } = useQuery({
     queryKey: ['superadmin_transactions'],
     queryFn: async () => {
-      const res = await powerSync.execute(`
-        SELECT inv.id, inv.paid_date as created_date, c.name as company_name, inv.amount_usd as amount_usd, inv.status, inv.notes as reference 
-        FROM subscription_invoices inv
-        LEFT JOIN companies c ON inv.company_id = c.id
-        ORDER BY inv.paid_date DESC LIMIT 50
-      `);
-      const data = [];
-      if (res.rows) {
-        for (let i = 0; i < res.rows.length; i++) {
-          data.push(res.rows.item(i));
-        }
-      }
-      return data;
+      const { data, error } = await supabase
+        .from('subscription_invoices')
+        .select('id, paid_date, company_id, amount_usd, status, notes, companies(name)')
+        .order('paid_date', { ascending: false })
+        .limit(50);
+        
+      if (error) throw error;
+      
+      return (data || []).map(inv => ({
+        id: inv.id,
+        created_date: inv.paid_date,
+        company_name: inv.companies?.name || 'Unknown',
+        amount_usd: inv.amount_usd,
+        status: inv.status,
+        reference: inv.notes
+      }));
     }
   });
 
@@ -592,21 +609,25 @@ function TabUsageMonitor() {
   const { data: metrics = [], isLoading } = useQuery({
     queryKey: ['superadmin_usage'],
     queryFn: async () => {
-      const res = await powerSync.execute(`
-        SELECT c.id as company_id, c.name, COALESCE(sum(cast(u.used_amount as integer)), 0) as total_usage 
-        FROM companies c
-        LEFT JOIN usage_metrics u ON u.company_id = c.id AND u.metric_name LIKE '%ai%'
-        GROUP BY c.id, c.name
-        ORDER BY total_usage DESC
-        LIMIT 10
-      `);
-      const data = [];
-      if (res.rows) {
-        for (let i = 0; i < res.rows.length; i++) {
-          data.push(res.rows.item(i));
-        }
+      const { data: companies, error: cErr } = await supabase.from('companies').select('id, name');
+      if (cErr) throw cErr;
+      
+      const { data: metrics } = await supabase.from('usage_metrics').select('company_id, used_amount').ilike('metric_name', '%ai%');
+      
+      const usageMap = {};
+      if (metrics) {
+        metrics.forEach(m => {
+          usageMap[m.company_id] = (usageMap[m.company_id] || 0) + Number(m.used_amount || 0);
+        });
       }
-      return data;
+
+      const results = (companies || []).map(c => ({
+        company_id: c.id,
+        name: c.name,
+        total_usage: usageMap[c.id] || 0
+      }));
+
+      return results.sort((a, b) => b.total_usage - a.total_usage).slice(0, 10);
     }
   });
 
