@@ -130,13 +130,95 @@ export default function MobileBottomNav() {
  );
 })}
           <div className="border-t border-primary/40 dark:border-primary/40 mt-4 pt-2">
-            <div className="px-5 py-4 flex items-center justify-between">
-              <span className="text-[16px] font-semibold tracking-tight text-slate-700 dark:text-slate-300">
-                {t('theme', 'Theme')}
-              </span>
-              <ThemeToggle />
+            <div className="px-5 py-4 flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <span className="text-[16px] font-semibold tracking-tight text-slate-700 dark:text-slate-300">
+                  {t('theme', 'Theme')}
+                </span>
+                <ThemeToggle />
+              </div>
+
+              {/* Language Switcher */}
+              <div className="flex items-center justify-between">
+                <span className="text-[16px] font-semibold tracking-tight text-slate-700 dark:text-slate-300">Language</span>
+                <select 
+                  onChange={(e) => window.location.reload()} // Simplified for mobile
+                  className="bg-transparent border border-primary/40 rounded-md px-2 py-1 text-sm text-foreground outline-none"
+                >
+                  <option value="en">English 🇬🇧</option>
+                  <option value="es">Español 🇪🇸</option>
+                  <option value="fr">Français 🇫🇷</option>
+                </select>
+              </div>
+
+              {/* Workspace Switcher */}
+              {user?.available_companies?.length > 1 && (
+                <div className="flex items-center justify-between">
+                  <span className="text-[16px] font-semibold tracking-tight text-slate-700 dark:text-slate-300">Workspace</span>
+                  <select
+                    value={user.company_id}
+                    onChange={async (e) => {
+                      const targetId = e.target.value;
+                      if (!targetId || targetId === user.company_id) return;
+                      // Update profiles directly via API
+                      await base44.auth.updateProfile({ company_id: targetId });
+                      window.location.href = '/';
+                    }}
+                    className="bg-transparent border border-primary/40 rounded-md px-2 py-1 text-sm text-foreground outline-none max-w-[150px] truncate"
+                  >
+                    {user.available_companies.map(comp => (
+                      <option key={comp.id} value={comp.id}>{comp.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* Super Admin Switchers */}
+              {user?.role === 'super_admin' && (
+                <>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[16px] font-semibold tracking-tight text-amber-600 dark:text-amber-500">Industry</span>
+                    <select
+                      value={sessionStorage.getItem('slate_industry_override') || 'law'}
+                      onChange={(e) => {
+                        sessionStorage.setItem('slate_industry_override', e.target.value);
+                        window.location.href = '/';
+                      }}
+                      className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900 rounded-md px-2 py-1 text-sm text-amber-700 dark:text-amber-400 outline-none"
+                    >
+                      <option value="law">Law Firm</option>
+                      <option value="accounting">Accounting</option>
+                      <option value="consulting">Consulting</option>
+                      <option value="real_estate">Real Estate</option>
+                      <option value="agency">Creative Agency</option>
+                      <option value="tech">Tech Startup</option>
+                      <option value="manufacturing">Manufacturing</option>
+                      <option value="healthcare">Healthcare</option>
+                    </select>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-[16px] font-semibold tracking-tight text-indigo-600 dark:text-indigo-500">Components</span>
+                    <select
+                      value=""
+                      onChange={(e) => {
+                        if (e.target.value) window.location.href = `/orbit-test/${e.target.value}`;
+                      }}
+                      className="bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-900 rounded-md px-2 py-1 text-sm text-indigo-700 dark:text-indigo-400 outline-none max-w-[140px]"
+                    >
+                      <option value="" disabled>View Component...</option>
+                      <option value="AdminDashboard">Admin Dashboard</option>
+                      <option value="UniversalBilling">Universal Billing</option>
+                      <option value="TeamDirectory">Team Directory</option>
+                      <option value="ClientPortal">Client Portal</option>
+                      <option value="DocumentVault">Document Vault</option>
+                      <option value="KanbanBoard">Kanban Board</option>
+                      <option value="SecurityAudit">Security Audit</option>
+                    </select>
+                  </div>
+                </>
+              )}
             </div>
-            
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
