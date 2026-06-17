@@ -394,6 +394,17 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
               notes: `paystack_ref: ${response.reference}, currency: GHS`,
               paid_date: new Date().toISOString()
             }]);
+
+          // Also insert/upsert into company_subscriptions so the superadmin can see the paystack_customer_code
+          await supabase
+            .from('company_subscriptions')
+            .upsert({
+              company_id: companyId,
+              plan_id: plan.id,
+              paystack_customer_code: response.reference, // We use the reference as the tracked code
+              paystack_subscription_code: response.reference,
+              status: 'active',
+            }, { onConflict: 'company_id' });
             
           // Trigger omnichannel notification via Novu unified system
           try {

@@ -532,10 +532,10 @@ function TabTransactions() {
     queryKey: ['superadmin_transactions'],
     queryFn: async () => {
       const res = await powerSync.execute(`
-        SELECT bt.id, bt.created_at as created_date, c.name as company_name, bt.amount as amount_usd, bt.status, bt.paystack_reference as reference 
-        FROM billing_transactions bt
-        LEFT JOIN companies c ON bt.company_id = c.id
-        ORDER BY bt.created_at DESC LIMIT 50
+        SELECT inv.id, inv.paid_date as created_date, c.name as company_name, inv.amount_usd as amount_usd, inv.status, inv.notes as reference 
+        FROM subscription_invoices inv
+        LEFT JOIN companies c ON inv.company_id = c.id
+        ORDER BY inv.paid_date DESC LIMIT 50
       `);
       const data = [];
       if (res.rows) {
@@ -593,11 +593,10 @@ function TabUsageMonitor() {
     queryKey: ['superadmin_usage'],
     queryFn: async () => {
       const res = await powerSync.execute(`
-        SELECT u.company_id, c.name, sum(cast(u.used_amount as integer)) as total_usage 
-        FROM usage_metrics u
-        JOIN companies c ON u.company_id = c.id
-        WHERE u.metric_name LIKE '%ai%'
-        GROUP BY u.company_id, c.name
+        SELECT c.id as company_id, c.name, COALESCE(sum(cast(u.used_amount as integer)), 0) as total_usage 
+        FROM companies c
+        LEFT JOIN usage_metrics u ON u.company_id = c.id AND u.metric_name LIKE '%ai%'
+        GROUP BY c.id, c.name
         ORDER BY total_usage DESC
         LIMIT 10
       `);

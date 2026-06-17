@@ -40,11 +40,12 @@ export default function AdminSecurity() {
       try {
           // Log the force logout action
           const { error } = await supabase.from('audit_logs').insert({
-              action_type: 'FORCE_LOGOUT',
+              action: 'FORCE_LOGOUT',
               entity_type: 'USER',
               entity_id: userId,
-              actor_email: 'Super Admin',
-              new_data: { target_email: email }
+              user_email: 'Super Admin',
+              details: JSON.stringify({ target_email: email }),
+              severity: 'warning'
           });
           if (error) throw error;
           

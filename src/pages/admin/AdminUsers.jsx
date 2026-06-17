@@ -60,17 +60,17 @@ export default function AdminUsers() {
     setUpdatingRole(true);
     try {
       const { user, newRole } = roleDialog;
-      const setClause = 'role = ?';
-      await powerSync.execute(`UPDATE profiles SET ${setClause} WHERE id = ?`, [newRole, user.id]);
+      const { error } = await supabase.from('profiles').update({ role: newRole }).eq('id', user.id);
+      if (error) throw error;
 
       // Log the role change in audit_logs
       await supabase.from('audit_logs').insert({
-        action_type: 'ROLE_CHANGED',
+        action: 'ROLE_CHANGED',
         entity_type: 'USER',
         entity_id: user.id,
-        actor_email: 'Super Admin',
-        old_data: { role: user.role },
-        new_data: { role: newRole }
+        user_email: 'Super Admin',
+        details: JSON.stringify({ old_role: user.role, new_role: newRole }),
+        severity: 'info'
       });
 
       toast({ title: "Role Updated", description: `${user.full_name || user.email}'s role changed to ${newRole}.` });
@@ -85,14 +85,15 @@ export default function AdminUsers() {
   const handleSuspendUser = async (user) => {
     setSuspendingId(user.id);
     try {
-      await powerSync.execute(`UPDATE profiles SET role = ? WHERE id = ?`, ['suspended', user.id]);
+      const { error } = await supabase.from('profiles').update({ role: 'suspended' }).eq('id', user.id);
+      if (error) throw error;
       await supabase.from('audit_logs').insert({
-        action_type: 'USER_SUSPENDED',
+        action: 'USER_SUSPENDED',
         entity_type: 'USER',
         entity_id: user.id,
-        actor_email: 'Super Admin',
-        old_data: { role: user.role },
-        new_data: { role: 'suspended' }
+        user_email: 'Super Admin',
+        details: JSON.stringify({ old_role: user.role, new_role: 'suspended' }),
+        severity: 'warning'
       });
       toast({ title: "User Suspended", description: `${user.full_name || user.email} has been suspended.` });
     } catch (err) {
