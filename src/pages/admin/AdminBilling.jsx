@@ -43,9 +43,9 @@ export default function AdminBilling() {
     queryKey: ['admin_subscriptions'],
     queryFn: async () => {
       const res = await powerSync.execute(`
-        SELECT cs.company_id, cs.status as subscription_status, p.price_monthly
-        FROM company_subscriptions cs
-        LEFT JOIN subscription_plans p ON cs.plan_id = p.id
+        SELECT c.id as company_id, c.subscription_status, p.price_monthly
+        FROM companies c
+        LEFT JOIN subscription_plans p ON lower(replace(p.name, ' ', '')) = c.subscription_plan
       `);
       const data = [];
       if (res.rows) {

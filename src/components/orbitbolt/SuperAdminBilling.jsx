@@ -90,10 +90,10 @@ function TabDashboard() {
       const statsObj = { mrr: 0, activeSubscribers: 0, churnRate: 0, failedPayments: 0 };
       
       const resCompanies = await powerSync.execute(`
-        SELECT cs.company_id, cs.status as subscription_status, p.price_monthly
-        FROM company_subscriptions cs
-        LEFT JOIN subscription_plans p ON cs.plan_id = p.id
-        WHERE cs.status IN ('active', 'trial', 'past_due', 'canceled')
+        SELECT c.id as company_id, c.subscription_status, p.price_monthly
+        FROM companies c
+        LEFT JOIN subscription_plans p ON lower(replace(p.name, ' ', '')) = c.subscription_plan
+        WHERE c.subscription_status IN ('active', 'trial', 'past_due', 'canceled')
       `);
       
       let mrr = 0;

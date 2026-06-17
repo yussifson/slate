@@ -392,7 +392,8 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
               amount_usd: String(price),
               status: "paid",
               notes: `paystack_ref: ${response.reference}, currency: GHS`,
-              paid_date: new Date().toISOString()
+              paid_date: new Date().toISOString(),
+              created_date: new Date().toISOString()
             }]);
 
           // Also insert/upsert into company_subscriptions so the superadmin can see the paystack_customer_code
