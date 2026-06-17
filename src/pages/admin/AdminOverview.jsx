@@ -2,7 +2,7 @@ import { useTranslation} from "react-i18next";
 import { useState, useEffect} from 'react';
 import { powerSync } from "@/api/PowerSyncConnector";
 import { useQuery } from "@tanstack/react-query";
-import { Scale, Users, Building2, DollarSign, Loader2, Activity, Clock} from 'lucide-react';
+import { Database, Scale, Users, Building2, DollarSign, Loader2, Activity, Clock} from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import Companies from '@/pages/Companies';
 import { supabase } from '@/api/supabaseClient';
@@ -73,7 +73,7 @@ export default function AdminOverview() {
     loadTelemetry();
   }, []);
 
-  const loading = loadingCompanies || loadingProfiles || loadingCases || loadingSubscriptions;
+  const loading = loadingCompanies || loadingProfiles || loadingRecords || loadingSubscriptions;
 
   const activeFirmsCount = companies.filter(c => c.subscription_status === 'active').length;
 
@@ -165,11 +165,11 @@ export default function AdminOverview() {
         <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 border border-primary/20 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 p-6 rounded-2xl flex items-center justify-between">
           <div>
             <p className="text-sm text-muted-foreground mb-1">{t("total_records", "Platform Records")}</p>
-            <p className="text-3xl font-black text-slate-900 dark:text-slate-100">{totalCasesCount}</p>
+            <p className="text-3xl font-black text-slate-900 dark:text-slate-100">{totalRecordsCount}</p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">{t("platform_wide_data", "Platform-wide data")}</p>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 dark:bg-slate-800 dark:text-amber-400 flex items-center justify-center">
-            <Scale className="w-6 h-6" />
+            <Database className="w-6 h-6" />
           </div>
         </div>
       </div>
