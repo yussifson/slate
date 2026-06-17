@@ -31,7 +31,22 @@ export default function AdminSecurity() {
     queryFn: async () => {
       const { data, error } = await supabase.rpc('get_active_sessions');
       if (error) throw error;
-      return data || [];
+      
+      const sessions = data || [];
+      if (sessions.length > 0) {
+        const emails = sessions.map(s => s.email);
+        const { data: profiles } = await supabase.from('profiles').select('email, role').in('email', emails);
+        
+        if (profiles) {
+          sessions.forEach(session => {
+            const profile = profiles.find(p => p.email === session.email);
+            if (profile && profile.role) {
+              session.role = profile.role;
+            }
+          });
+        }
+      }
+      return sessions;
     }
   });
 
