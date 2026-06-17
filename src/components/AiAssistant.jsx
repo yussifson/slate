@@ -207,7 +207,7 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
  const _payload = { id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s};
  const _keys = Object.keys(_payload);
  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const existing = await powerSync.get('SELECT id FROM industry_records WHERE id = ?', [_payload.id]);
+ const existing = await powerSync.getOptional('SELECT id FROM industry_records WHERE id = ?', [_payload.id]);
         if (existing) {
           await powerSync.execute(`UPDATE industry_records SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, _payload.id]);
         } else {
@@ -247,7 +247,7 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
 };
  const _keys = Object.keys(_payload);
  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const existing = await powerSync.get('SELECT id FROM industry_records WHERE id = ?', [_payload.id]);
+ const existing = await powerSync.getOptional('SELECT id FROM industry_records WHERE id = ?', [_payload.id]);
         if (existing) {
           await powerSync.execute(`UPDATE industry_records SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, _payload.id]);
         } else {
@@ -707,7 +707,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  const _payload = { id: s.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: s};
  const _keys = Object.keys(_payload);
  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const existing = await powerSync.get('SELECT id FROM industry_records WHERE id = ?', [_payload.id]);
+ const existing = await powerSync.getOptional('SELECT id FROM industry_records WHERE id = ?', [_payload.id]);
         if (existing) {
           await powerSync.execute(`UPDATE industry_records SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, _payload.id]);
         } else {
@@ -734,7 +734,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  const _payload = { id: fresh.id, company_id: companyId, industry: 'core', record_type: 'ai_session', search_text: user.email, data: fresh};
  const _keys = Object.keys(_payload);
  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const existing = await powerSync.get('SELECT id FROM industry_records WHERE id = ?', [_payload.id]);
+ const existing = await powerSync.getOptional('SELECT id FROM industry_records WHERE id = ?', [_payload.id]);
         if (existing) {
           await powerSync.execute(`UPDATE industry_records SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, _payload.id]);
         } else {

@@ -48,7 +48,7 @@ export default function UnivProductCatalog() {
         const _vals = Object.values(payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         await powerSync.execute(`UPDATE ${TABLE} SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editId]);
         
-        const existingInventory = await powerSync.get('SELECT id FROM univ_inventory WHERE id = ?', [editId]);
+        const existingInventory = await powerSync.getOptional('SELECT id FROM univ_inventory WHERE id = ?', [editId]);
         if (existingInventory) {
           await powerSync.execute(`
             UPDATE univ_inventory SET
