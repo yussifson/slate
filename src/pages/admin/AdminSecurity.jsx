@@ -64,6 +64,18 @@ export default function AdminSecurity() {
           });
           if (error) throw error;
           
+          // Broadcast the logout event so the target user's browser picks it up instantly
+          const channel = supabase.channel('global_security');
+          channel.subscribe((status) => {
+            if (status === 'SUBSCRIBED') {
+              channel.send({
+                type: 'broadcast',
+                event: 'FORCE_LOGOUT',
+                payload: { userId: userId }
+              });
+            }
+          });
+          
           toast({ title: 'Session Revoked', description: `Successfully force-logged out ${email}.` });
           refetchLogs();
       } catch (err) {

@@ -613,9 +613,30 @@ export const AuthProvider = ({ children }) => {
       }
     });
 
+    // Step 3: Listen for Global Security Broadcasts (e.g. Force Logout)
+    const securityChannel = supabase.channel('global_security')
+      .on('broadcast', { event: 'FORCE_LOGOUT' }, async (payload) => {
+        if (!isMounted) return;
+        const targetUserId = payload.payload?.userId;
+        const currentUser = userRef.current;
+        
+        if (currentUser && currentUser.id === targetUserId) {
+          console.warn("Received FORCE_LOGOUT signal from super admin. Logging out...");
+          isExplicitLogoutRef.current = true;
+          // Clear local storage and sign out from Supabase
+          try { localStorage.removeItem('slate_cached_user'); } catch(e) {}
+          await supabase.auth.signOut();
+          
+          // Force a full page reload so they are kicked to the login screen
+          window.location.reload();
+        }
+      })
+      .subscribe();
+
     return () => {
       isMounted = false;
       subscription?.unsubscribe();
+      supabase.removeChannel(securityChannel);
     };
   }, [checkUserAuth]);
 
