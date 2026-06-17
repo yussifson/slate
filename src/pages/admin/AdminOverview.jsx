@@ -1,7 +1,7 @@
 import { useTranslation} from "react-i18next";
 import { useState, useEffect} from 'react';
 import { powerSync } from "@/api/PowerSyncConnector";
-import { useQuery } from "@powersync/react";
+import { useQuery } from "@tanstack/react-query";
 import { Scale, Users, Building2, DollarSign, Loader2, Activity, Clock} from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import Companies from '@/pages/Companies';
@@ -9,15 +9,50 @@ import { supabase } from '@/api/supabaseClient';
 
 export default function AdminOverview() {
   const { t } = useTranslation();
-  const { data: companies = [], isLoading: loadingCompanies } = useQuery("SELECT * FROM companies");
-  const { data: subscriptions = [], isLoading: loadingSubscriptions } = useQuery(`
-    SELECT cs.company_id, cs.status as subscription_status, p.price_monthly
-    FROM company_subscriptions cs
-    LEFT JOIN subscription_plans p ON cs.plan_id = p.id
-    WHERE cs.status IN ('active', 'trial')
-  `);
-  const { data: profiles = [], isLoading: loadingProfiles } = useQuery("SELECT id FROM profiles");
-  const { data: cases = [], isLoading: loadingCases } = useQuery("SELECT id FROM industry_records WHERE record_type = 'case'");
+  const { data: companies = [], isLoading: loadingCompanies } = useQuery({
+    queryKey: ['admin_overview_companies'],
+    queryFn: async () => {
+      const { data } = await supabase.from('companies').select('*');
+      return data || [];
+    }
+  });
+
+  const { data: subscriptions = [], isLoading: loadingSubscriptions } = useQuery({
+    queryKey: ['admin_overview_subscriptions'],
+    queryFn: async () => {
+      const { data: cData } = await supabase.from('companies').select('id, subscription_status, subscription_plan');
+      const { data: pData } = await supabase.from('subscription_plans').select('id, name, price_monthly');
+      
+      return (cData || []).map(c => {
+        let price = 0;
+        if (pData) {
+          const matchedPlan = pData.find(p => p.id === c.subscription_plan || p.name.toLowerCase().replace(/\s/g, '') === c.subscription_plan?.toLowerCase());
+          if (matchedPlan) price = matchedPlan.price_monthly;
+        }
+        return {
+          company_id: c.id,
+          subscription_status: c.subscription_status,
+          price_monthly: price
+        };
+      });
+    }
+  });
+
+  const { data: totalUsersCount = 0, isLoading: loadingProfiles } = useQuery({
+    queryKey: ['admin_overview_profiles_count'],
+    queryFn: async () => {
+      const { count } = await supabase.from('profiles').select('id', { count: 'exact', head: true });
+      return count || 0;
+    }
+  });
+
+  const { data: totalCasesCount = 0, isLoading: loadingCases } = useQuery({
+    queryKey: ['admin_overview_cases_count'],
+    queryFn: async () => {
+      const { count } = await supabase.from('industry_records').select('id', { count: 'exact', head: true }).eq('record_type', 'case');
+      return count || 0;
+    }
+  });
 
   const [telemetry, setTelemetry] = useState(null);
   const [loadingTelemetry, setLoadingTelemetry] = useState(true);
@@ -40,9 +75,7 @@ export default function AdminOverview() {
 
   const loading = loadingCompanies || loadingProfiles || loadingCases || loadingSubscriptions;
 
-  const activeFirmsCount = companies.filter(c => c.status === 'active').length;
-  const totalUsersCount = profiles.length;
-  const totalCasesCount = cases.length;
+  const activeFirmsCount = companies.filter(c => c.subscription_status === 'active').length;
 
   const mrr = subscriptions
   .filter(s => s.subscription_status === 'active' || s.subscription_status === 'trial')
