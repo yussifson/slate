@@ -105,7 +105,7 @@ export default function EnterpriseContact() {
  </div>
  <div>
  <p className="font-bold text-base text-white">{t("data_sovereignty", "Data Sovereignty")}</p>
- <p className="text-sm text-slate-400 mt-1.5 leading-relaxed">{t(
+ <p className="text-sm text-white/80 mt-1.5 leading-relaxed">{t(
  "keep_your_client_data_physical",
  "Keep your client data physically isolated within your geographical boundaries."
  )}</p>
@@ -117,7 +117,7 @@ export default function EnterpriseContact() {
  </div>
  <div>
  <p className="font-bold text-base text-white">{t("unlimited_api_limits", "Unlimited API Limits")}</p>
- <p className="text-sm text-slate-400 mt-1.5 leading-relaxed">{t(
+ <p className="text-sm text-white/80 mt-1.5 leading-relaxed">{t(
  "no_rate_limits_on_api_calls_we",
  "No rate limits on API calls, webhooks, or automation triggers."
  )}</p>
@@ -129,7 +129,7 @@ export default function EnterpriseContact() {
  </div>
  <div>
  <p className="font-bold text-base text-white">{t("sla_guarantees", "SLA Guarantees")}</p>
- <p className="text-sm text-slate-400 mt-1.5 leading-relaxed">{t(
+ <p className="text-sm text-white/80 mt-1.5 leading-relaxed">{t(
  "financial_backing_for_99_99_up",
  "Financial backing for 99.99% uptime with immediate resolution routing."
  )}</p>
@@ -140,9 +140,9 @@ export default function EnterpriseContact() {
 
  <div className="mt-16 pt-8 border-t border-white/10 relative z-10 flex items-center justify-between">
  <div>
- <p className="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">{t("need_immediate_assistance", "Need immediate assistance?")}</p>
- <a href="tel:+18005550199" className="inline-flex items-center gap-2 font-bold text-xl text-white hover:text-primary/70 transition-colors">
- <Headphones className="w-5 h-5" /> {t("1_800_optal_hq", "1-800-OPTAL-HQ")}
+ <p className="text-xs font-bold text-white/80 mb-1 uppercase tracking-wider">{t("need_immediate_assistance", "Need immediate assistance?")}</p>
+ <a href="tel:+18005550199" className="inline-flex items-center gap-2 font-bold text-xl text-white hover:text-white/80 transition-colors">
+ <Headphones className="w-5 h-5" /> {t("1_800_optavel_hq", "1-800-OPTAVEL-HQ")}
  </a>
  </div>
  </div>
@@ -311,7 +311,7 @@ export default function EnterpriseContact() {
  <Button type="button" variant="ghost" onClick={handleBack} className="text-slate-500 hover:text-slate-900 font-bold hover:bg-slate-200/50 rounded-2xl px-6 py-6 h-auto">
  {t("back", "Back")}
  </Button>
- <Button type="submit" disabled={loading} className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-6 px-10 rounded-2xl w-full sm:w-auto text-base -slate-900/20 hover:-translate-y-0.5 transition-all">
+ <Button type="submit" disabled={loading} className="bg-primary hover:bg-primary/90 text-white font-bold py-6 px-10 rounded-2xl w-full sm:w-auto text-base -emerald-600/20 hover:-translate-y-0.5 transition-all">
  {loading ? 'Submitting Request...' : 'Submit Request'}
  </Button>
  </div>
