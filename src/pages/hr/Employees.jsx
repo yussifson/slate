@@ -321,9 +321,9 @@ export default function Employees() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
- <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Employee' : 'Add Employee'}</h2>
- <div className="space-y-3">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40 max-h-[90vh] flex flex-col">
+ <h2 className="text-lg font-bold text-card-foreground flex-shrink-0">{editTargetId ? 'Edit Employee' : 'Add Employee'}</h2>
+ <div className="space-y-3 overflow-y-auto flex-1 pr-2">
  <div>
  <label className="text-xs font-bold text-muted-foreground uppercase">{t("full_name", "Full Name")}</label>
  <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="e.g. Alice Johnson" className="mt-1" />
