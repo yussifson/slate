@@ -245,13 +245,22 @@ export default function Shipments() {
  {ship.estimatedDelivery || '—'}
  </td>
  <td className="px-5 py-4">
- <div className="flex flex-col items-start gap-1.5">
- <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${STATUS_COLORS[ship.status] || 'bg-muted text-muted-foreground'}`}>
- {ship.status}
- </span>
+ <div className="flex flex-col gap-2 w-32">
+ <div className="flex items-center justify-between relative z-0">
+ <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-muted -z-10 translate-y-[-50%]"></div>
+ <div className={`absolute top-1/2 left-0 h-0.5 -z-10 translate-y-[-50%] transition-all ${ship.status === 'Pending' ? 'w-0' : ship.status === 'In Transit' ? 'w-1/2 bg-blue-500' : ship.status === 'Delivered' ? 'w-full bg-emerald-500' : 'w-full bg-red-500'}`}></div>
+ <div className={`w-3 h-3 rounded-full border-2 ${ship.status === 'Pending' ? 'border-amber-500 bg-amber-500' : ship.status === 'Failed' ? 'border-red-500 bg-red-500' : 'border-primary bg-primary'}`}></div>
+ <div className={`w-3 h-3 rounded-full border-2 ${ship.status === 'Pending' ? 'border-muted bg-background' : ship.status === 'In Transit' ? 'border-blue-500 bg-background' : ship.status === 'Delivered' ? 'border-primary bg-primary' : 'border-red-500 bg-red-500'}`}></div>
+ <div className={`w-3 h-3 rounded-full border-2 ${ship.status === 'Delivered' ? 'border-emerald-500 bg-emerald-500' : ship.status === 'Failed' ? 'border-red-500 bg-red-500' : 'border-muted bg-background'}`}></div>
+ </div>
+ <div className="flex justify-between text-[9px] font-bold uppercase text-muted-foreground mt-0.5">
+ <span className={ship.status === 'Pending' ? 'text-amber-600' : ''}>Pend</span>
+ <span className={ship.status === 'In Transit' ? 'text-blue-600' : ''}>Transit</span>
+ <span className={ship.status === 'Delivered' ? 'text-emerald-600' : ship.status === 'Failed' ? 'text-red-600' : ''}>{ship.status === 'Failed' ? 'Fail' : 'Deliv'}</span>
+ </div>
  {ship.status === 'In Transit' && ship.estimatedDelivery && new Date(ship.estimatedDelivery) < new Date(new Date().setHours(0,0,0,0)) && (
- <span className="text-[10px] font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-full animate-pulse flex items-center gap-1">
- <AlertCircle className="w-3 h-3"/> {t("sla_delayed", "SLA Delayed")}
+ <span className="text-[9px] font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-full animate-pulse flex items-center gap-1 w-fit mt-1">
+ <AlertCircle className="w-3 h-3"/> SLA Delayed
  </span>
  )}
  </div>
