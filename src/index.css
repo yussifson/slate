@@ -311,6 +311,132 @@
   100% { width: 100%; }
 }
 
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.4);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* ===== PHASE 7: PREMIUM ANIMATIONS & MICRO-INTERACTIONS ===== */
+
+.animate-slide-up {
+  animation: slideInUp 0.3s ease-out;
+}
+
+.animate-slide-down {
+  animation: slideInDown 0.3s ease-out;
+}
+
+.animate-fade-scale {
+  animation: fadeInScale 0.4s ease-out;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Micro-interactions for List Items */
+[role="option"], .list-item {
+  @apply transition-all duration-200 ease-out;
+}
+
+[role="option"]:hover, .list-item:hover {
+  @apply translate-x-1 bg-primary/5;
+}
+
+/* Smooth Page Transitions */
+.page-transition {
+  animation: fadeInScale 0.4s ease-out;
+}
+
+/* Enhanced Loading States */
+.loading-skeleton {
+  @apply bg-gradient-to-r from-muted to-muted/50 animate-pulse rounded-lg;
+}
+
+/* Premium Dropdown Animation */
+[role="menu"] {
+  animation: slideInDown 0.3s ease-out;
+}
+
+/* Smooth Label Transitions */
+label {
+  @apply transition-colors duration-250;
+}
+
+label:focus-within {
+  @apply text-primary;
+}
+
+/* Premium Table Row Hover Animation */
+tbody tr {
+  @apply relative transition-all duration-300 ease-out;
+}
+
+tbody tr::before {
+  content: '';
+  @apply absolute left-0 top-0 h-full w-1 bg-primary/0 transition-all duration-300;
+}
+
+tbody tr:hover::before {
+  @apply bg-primary;
+}
+
+/* Smooth Transition for Cards on Mount */
+.card-mount {
+  animation: slideInUp 0.4s ease-out;
+}
+
 /* ===== PHASE 6: GLOBAL DASHBOARD PREMIUM STYLES ===== */
 
 /* Dashboard Grid Layouts */
