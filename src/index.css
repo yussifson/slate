@@ -500,3 +500,285 @@ a:not([class*="btn"]):not([class*="button"]) {
 code, pre {
   @apply bg-muted/30 rounded-lg border border-border/30;
 }
+
+/* ===== EXTENDED PHASE 7: PREMIUM MICRO-INTERACTIONS ===== */
+
+/* Smooth Hover Transitions for Interactive Elements */
+a[href]:not([class*="btn"]):not([class*="button"]) {
+  @apply relative transition-all duration-200 hover:text-primary;
+}
+
+a[href]:not([class*="btn"])::after {
+  content: '';
+  @apply absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300;
+}
+
+a[href]:not([class*="btn"]):hover::after {
+  @apply w-full;
+}
+
+/* Focus Pulse Animation */
+@keyframes focus-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+/* Success State Animation */
+@keyframes success-check {
+  0% { transform: scale(0) rotate(-45deg); }
+  50% { transform: scale(1.2) rotate(10deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+/* Error Shake Animation */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+.animate-success-check {
+  animation: success-check 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Tooltip Animation */
+@keyframes tooltip-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+[role="tooltip"] {
+  animation: tooltip-pop 0.2s ease-out;
+}
+
+/* Notification Slide Animations */
+@keyframes notification-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes notification-out-right {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+}
+
+.notification-enter {
+  animation: notification-in-right 0.3s ease-out;
+}
+
+.notification-exit {
+  animation: notification-out-right 0.3s ease-in;
+}
+
+/* Collapse Animation */
+@keyframes collapse-down {
+  from {
+    opacity: 1;
+    max-height: 1000px;
+  }
+  to {
+    opacity: 0;
+    max-height: 0;
+  }
+}
+
+@keyframes expand-up {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 1000px;
+  }
+}
+
+.animate-collapse {
+  animation: collapse-down 0.3s ease-out;
+}
+
+.animate-expand {
+  animation: expand-up 0.3s ease-out;
+}
+
+/* Hover Lift for Cards */
+.card-hover-lift {
+  @apply transition-all duration-300 ease-out;
+}
+
+.card-hover-lift:hover {
+  @apply -translate-y-2 shadow-elevation-4;
+}
+
+/* Smooth Counter Animation */
+.counter-value {
+  @apply transition-all duration-500 tabular-nums;
+}
+
+/* Tab Indicator Animation */
+@keyframes tab-indicator {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+[role="tab"][aria-selected="true"]::after {
+  content: '';
+  @apply absolute bottom-0 left-0 h-0.5 bg-primary;
+  animation: tab-indicator 0.3s ease-out;
+}
+
+/* Checkbox Checked State */
+@keyframes checkbox-bounce {
+  0% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+input[type="checkbox"]:checked {
+  animation: checkbox-bounce 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Radio Button Selection */
+@keyframes radio-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+}
+
+input[type="radio"]:checked {
+  animation: radio-pulse 0.4s ease-out;
+}
+
+/* Toggle Switch Animation */
+@keyframes toggle-slide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(20px);
+  }
+}
+
+[role="switch"]:checked {
+  animation: toggle-slide 0.3s ease-out;
+}
+
+/* Skeleton Loading Pulse */
+@keyframes skeleton-pulse {
+  0%, 100% {
+    background-color: hsl(var(--muted) / 0.4);
+  }
+  50% {
+    background-color: hsl(var(--muted) / 0.2);
+  }
+}
+
+.skeleton-loading {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+/* Smooth Number Input Spinner */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  @apply transition-opacity duration-200;
+  opacity: 0;
+}
+
+input[type="number"]:hover::-webkit-outer-spin-button,
+input[type="number"]:hover::-webkit-inner-spin-button {
+  opacity: 1;
+}
+
+/* Button Ripple Effect */
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+button.ripple::after {
+  content: '';
+  @apply absolute top-1/2 left-1/2 w-2 h-2 bg-white/30 rounded-full pointer-events-none -translate-x-1/2 -translate-y-1/2;
+  animation: ripple 0.6s ease-out;
+}
+
+/* Smooth Transition for Form States */
+.form-group {
+  @apply transition-all duration-300;
+}
+
+.form-group.error {
+  @apply animate-shake;
+}
+
+.form-group.success input {
+  @apply border-primary shadow-elevation-2;
+}
+
+/* Loading Spinner Animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+/* Bounce Animation */
+@keyframes bounce-in {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.6s ease-in-out infinite;
+}
