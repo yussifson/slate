@@ -96,6 +96,14 @@
 }
 
 @layer utilities {
+  /* Premium Card Base */
+  .card-premium {
+    @apply relative p-6 rounded-lg border border-border/50 bg-card shadow-elevation-1 hover:shadow-elevation-3 transition-all duration-300;
+  }
+  .card-premium:hover {
+    @apply -translate-y-1 border-primary/20;
+  }
+  
   .glass {
     @apply bg-white/5 backdrop-blur-md border border-white/10;
   }
@@ -140,7 +148,7 @@
     border-radius: 10px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(var(--muted-foreground) / 0.5);
+    background-color: hsl(var(--muted-foreground) / 0.6);
   }
   * {
     scrollbar-width: thin;
@@ -149,10 +157,7 @@
 
   /* Premium Stat Card Effects */
   .stat-card-premium {
-    @apply relative overflow-hidden transition-all duration-300 ease-out;
-  }
-  .stat-card-premium:hover {
-    @apply -translate-y-1.5 border-primary/30 z-10;
+    @apply relative overflow-hidden p-6 rounded-lg border border-border/50 bg-card shadow-elevation-2 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-elevation-4 hover:border-primary/30;
   }
   .stat-card-premium::before {
     content: '';
@@ -170,11 +175,21 @@
     @apply translate-x-full opacity-100;
     transition: all 0.7s ease-in-out;
   }
+  
+  /* Typography Utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Focus Visible Utility */
+  .focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background rounded-lg;
+  }
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring/50 transition-colors duration-200;
   }
 
   body {
@@ -186,9 +201,9 @@
   }
   
   .dark body {
-    background-image: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.15) 0%, transparent 60%),
-                      radial-gradient(circle at 0% 100%, rgba(249, 115, 22, 0.08) 0%, transparent 60%),
-                      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='rgba(255,255,255,0.03)' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-image: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.12) 0%, transparent 60%),
+                      radial-gradient(circle at 0% 100%, rgba(249, 115, 22, 0.06) 0%, transparent 60%),
+                      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='rgba(255,255,255,0.02)' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     background-attachment: fixed;
   }
 
@@ -213,17 +228,25 @@
   
   /* Global Input and Button Google/Material Reskin */
   button {
-    @apply transition-all duration-200 ease-out active:scale-[0.98];
+    @apply transition-all duration-250 ease-out active:scale-[0.96] font-medium;
   }
   button:not([class*="p-1.5"]):not([class*="p-2"]) {
-    /* Exclude small icon buttons from being pill-shaped universally to preserve layouts */
-    @apply rounded-full;
+    @apply min-h-10 rounded-lg;
   }
-  button[class*="bg-primary"], button[class*="bg-blue"] {
-    @apply hover:-translate-y-0.5;
+  button:hover:not(:disabled) {
+    @apply -translate-y-0.5 shadow-md;
+  }
+  button:focus {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
   }
   input, select, textarea {
-    @apply transition-all duration-200 ease-out hover:border-primary/40 focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl;
+    @apply transition-all duration-250 ease-out hover:border-primary/40 focus:border-primary focus:ring-4 focus:ring-primary/15 rounded-lg min-h-11 px-4 py-2.5;
+  }
+  input::placeholder, textarea::placeholder {
+    @apply text-muted-foreground/60;
+  }
+  input:focus, select:focus, textarea:focus {
+    @apply shadow-elevation-2;
   }
 }
 

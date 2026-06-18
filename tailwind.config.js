@@ -12,8 +12,41 @@ module.exports = {
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
+  			sm: 'calc(var(--radius) - 4px)',
+  			xs: '4px',
+  			'2xl': '16px',
+  			'3xl': '20px'
   		},
+  		spacing: {
+  			'4.5': '1.125rem',
+  			'5.5': '1.375rem',
+  			'7.5': '1.875rem',
+  			'8.5': '2.125rem',
+  			'9.5': '2.375rem'
+  		},
+  		fontSize: {
+  			xs: ['12px', { lineHeight: '16px', letterSpacing: '0.3px' }],
+  			sm: ['14px', { lineHeight: '20px', letterSpacing: '0.25px' }],
+  			base: ['16px', { lineHeight: '24px', letterSpacing: '0px' }],
+  			lg: ['18px', { lineHeight: '28px', letterSpacing: '0px' }],
+  			xl: ['20px', { lineHeight: '28px', letterSpacing: '0px' }],
+  			'2xl': ['24px', { lineHeight: '32px', letterSpacing: '-0.5px' }],
+  			'3xl': ['30px', { lineHeight: '36px', letterSpacing: '-0.5px' }],
+  			'4xl': ['36px', { lineHeight: '44px', letterSpacing: '-1px' }]
+  		},
+  		boxShadow: {
+  			'elevation-1': '0 1px 2px rgba(0, 0, 0, 0.05)',
+  			'elevation-2': '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
+  			'elevation-3': '0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06)',
+  			'elevation-4': '0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05)',
+  			'elevation-5': '0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04)',
+  			'glow-primary': '0 0 20px rgba(16, 185, 129, 0.3)',
+  			'glow-accent': '0 0 20px rgba(255, 159, 67, 0.3)'
+  		},
+  		transitionDuration: {
+  			'250': '250ms',
+  			'350': '350ms'
+  		}
   		colors: {
   			insurance: {
   				50: '#f9f5ff',
