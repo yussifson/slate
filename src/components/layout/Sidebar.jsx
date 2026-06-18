@@ -534,25 +534,23 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  return (
  <div key={item.path}>
  {showSection && (
- <div className="pt-4 pb-1.5 px-1 first:pt-0">
- <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/60">{t(item.section.toLowerCase().replace(/\s+/g, '_'), item.section)}</p>
- </div>
+  <div className="pt-4 pb-1.5 px-1 first:pt-0">
+  <p className="sidebar-section-label">{t(item.section.toLowerCase().replace(/\s+/g, '_'), item.section)}</p>
+  </div>
  )}
  <div className="relative group">
  <Link
  to={item.path}
  title={collapsed ? t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label) : undefined}
- className={cn(
- "flex items-center rounded-lg text-sm font-medium transition-all duration-150 relative",
- collapsed ? "justify-center p-2" : "gap-3 px-3 py-2 pr-8",
- isActive
- ? "bg-primary text-white "
- : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
- )}
+  className={cn(
+  "sidebar-nav-item relative",
+  collapsed ? "justify-center px-0 w-9" : "",
+  isActive ? "sidebar-nav-item-active" : ""
+  )}
  >
  {isActive && !collapsed && <div className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-white rounded-r-full" />}
- <span className="relative flex-shrink-0">
- <IconComp className={cn("transition-all", collapsed ? "w-5 h-5" : "w-4 h-4")} />
+  <span className="relative flex-shrink-0">
+  <IconComp className={cn("sidebar-nav-icon transition-all", collapsed ? "w-5 h-5" : "")} />
  {showLiveDot && (
  <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
@@ -694,10 +692,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  return (
  <>
  {/* Desktop sidebar - Strictly hidden on mobile */}
- <aside className={cn(
- "hidden md:flex flex-col h-screen sticky top-0 border-r-2 border-r-primary/30 transition-all duration-300 relative z-[1] bg-sidebar",
- isCollapsed ? "w-[80px] min-w-[80px] max-w-[80px]" : "w-[256px] min-w-[256px] max-w-[256px]"
- )}>
+  <aside className={cn(
+  "sidebar-premium hidden md:flex flex-col h-screen sticky top-0 transition-all duration-300 relative z-[1]",
+  isCollapsed ? "w-[60px] min-w-[60px] max-w-[60px]" : "w-[240px] min-w-[240px] max-w-[240px]"
+  )}>
  {renderNavContent(isCollapsed)}
  </aside>
 
