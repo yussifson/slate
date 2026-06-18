@@ -231,7 +231,7 @@ import LogisticsShipments from './pages/logistics/Shipments';
 import LogisticsFleet from './pages/logistics/Fleet';
 import LogisticsDrivers from './pages/logistics/Drivers';
 import LogisticsTrackingPortal from './pages/logistics/TrackingPortal';
-import LogisticsWarehouses from './pages/logistics/Warehouses';
+const LogisticsWarehouse = React.lazy(() => import('./pages/logistics/Warehouse'));
 import LogisticsRouteOptimization from './pages/logistics/RouteOptimization';
 import LogisticsProofOfDelivery from './pages/logistics/ProofOfDelivery';
 import LogisticsIncidentManagement from './pages/logistics/IncidentManagement';
