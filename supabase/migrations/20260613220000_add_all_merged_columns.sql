@@ -2163,6 +2163,7 @@ ALTER TABLE "public"."univ_dispatch" ADD COLUMN IF NOT EXISTS "company_id" text;
 ALTER TABLE "public"."univ_dispatch" ADD COLUMN IF NOT EXISTS "driver_name" text;
 ALTER TABLE "public"."univ_dispatch" ADD COLUMN IF NOT EXISTS "status" text;
 ALTER TABLE "public"."univ_dispatch" ADD COLUMN IF NOT EXISTS "current_location" text;
+ALTER TABLE "public"."univ_dispatch" ADD COLUMN IF NOT EXISTS "shipment_id" text;
 
 CREATE TABLE IF NOT EXISTS "public"."univ_doctorschedules" (
     id uuid default gen_random_uuid() primary key

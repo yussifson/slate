@@ -96,6 +96,14 @@
 }
 
 @layer utilities {
+  /* Premium Card Base */
+  .card-premium {
+    @apply relative p-6 rounded-lg border border-border/50 bg-card shadow-elevation-1 hover:shadow-elevation-3 transition-all duration-300;
+  }
+  .card-premium:hover {
+    @apply -translate-y-1 border-primary/20;
+  }
+  
   .glass {
     @apply bg-white/5 backdrop-blur-md border border-white/10;
   }
@@ -140,7 +148,7 @@
     border-radius: 10px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(var(--muted-foreground) / 0.5);
+    background-color: hsl(var(--muted-foreground) / 0.6);
   }
   * {
     scrollbar-width: thin;
@@ -149,10 +157,7 @@
 
   /* Premium Stat Card Effects */
   .stat-card-premium {
-    @apply relative overflow-hidden transition-all duration-300 ease-out;
-  }
-  .stat-card-premium:hover {
-    @apply -translate-y-1.5 border-primary/30 z-10;
+    @apply relative overflow-hidden p-6 rounded-lg border border-border/50 bg-card shadow-elevation-2 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-elevation-4 hover:border-primary/30;
   }
   .stat-card-premium::before {
     content: '';
@@ -170,11 +175,21 @@
     @apply translate-x-full opacity-100;
     transition: all 0.7s ease-in-out;
   }
+  
+  /* Typography Utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Focus Visible Utility */
+  .focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background rounded-lg;
+  }
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring/50 transition-colors duration-200;
   }
 
   body {
@@ -186,9 +201,9 @@
   }
   
   .dark body {
-    background-image: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.15) 0%, transparent 60%),
-                      radial-gradient(circle at 0% 100%, rgba(249, 115, 22, 0.08) 0%, transparent 60%),
-                      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='rgba(255,255,255,0.03)' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-image: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.12) 0%, transparent 60%),
+                      radial-gradient(circle at 0% 100%, rgba(249, 115, 22, 0.06) 0%, transparent 60%),
+                      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='rgba(255,255,255,0.02)' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     background-attachment: fixed;
   }
 
@@ -213,17 +228,25 @@
   
   /* Global Input and Button Google/Material Reskin */
   button {
-    @apply transition-all duration-200 ease-out active:scale-[0.98];
+    @apply transition-all duration-250 ease-out active:scale-[0.96] font-medium;
   }
   button:not([class*="p-1.5"]):not([class*="p-2"]) {
-    /* Exclude small icon buttons from being pill-shaped universally to preserve layouts */
-    @apply rounded-full;
+    @apply min-h-10 rounded-lg;
   }
-  button[class*="bg-primary"], button[class*="bg-blue"] {
-    @apply hover:-translate-y-0.5;
+  button:hover:not(:disabled) {
+    @apply -translate-y-0.5 shadow-md;
+  }
+  button:focus {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
   }
   input, select, textarea {
-    @apply transition-all duration-200 ease-out hover:border-primary/40 focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl;
+    @apply transition-all duration-250 ease-out hover:border-primary/40 focus:border-primary focus:ring-4 focus:ring-primary/15 rounded-lg min-h-11 px-4 py-2.5;
+  }
+  input::placeholder, textarea::placeholder {
+    @apply text-muted-foreground/60;
+  }
+  input:focus, select:focus, textarea:focus {
+    @apply shadow-elevation-2;
   }
 }
 
@@ -286,4 +309,476 @@
 @keyframes progress {
   0% { width: 0%; }
   100% { width: 100%; }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.4);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* ===== PHASE 7: PREMIUM ANIMATIONS & MICRO-INTERACTIONS ===== */
+
+.animate-slide-up {
+  animation: slideInUp 0.3s ease-out;
+}
+
+.animate-slide-down {
+  animation: slideInDown 0.3s ease-out;
+}
+
+.animate-fade-scale {
+  animation: fadeInScale 0.4s ease-out;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Micro-interactions for List Items */
+[role="option"], .list-item {
+  @apply transition-all duration-200 ease-out;
+}
+
+[role="option"]:hover, .list-item:hover {
+  @apply translate-x-1 bg-primary/5;
+}
+
+/* Smooth Page Transitions */
+.page-transition {
+  animation: fadeInScale 0.4s ease-out;
+}
+
+/* Enhanced Loading States */
+.loading-skeleton {
+  @apply bg-gradient-to-r from-muted to-muted/50 animate-pulse rounded-lg;
+}
+
+/* Premium Dropdown Animation */
+[role="menu"] {
+  animation: slideInDown 0.3s ease-out;
+}
+
+/* Smooth Label Transitions */
+label {
+  @apply transition-colors duration-250;
+}
+
+label:focus-within {
+  @apply text-primary;
+}
+
+/* Premium Table Row Hover Animation */
+tbody tr {
+  @apply relative transition-all duration-300 ease-out;
+}
+
+tbody tr::before {
+  content: '';
+  @apply absolute left-0 top-0 h-full w-1 bg-primary/0 transition-all duration-300;
+}
+
+tbody tr:hover::before {
+  @apply bg-primary;
+}
+
+/* Smooth Transition for Cards on Mount */
+.card-mount {
+  animation: slideInUp 0.4s ease-out;
+}
+
+/* ===== PHASE 6: GLOBAL DASHBOARD PREMIUM STYLES ===== */
+
+/* Dashboard Grid Layouts */
+.grid > div[class*="bg-card"],
+.grid > [class*="rounded-"] {
+  @apply shadow-elevation-1 hover:shadow-elevation-3 transition-all duration-300;
+}
+
+/* Dashboard Headers */
+.dashboard-header, [class*="dashboard"] > h1, [class*="dashboard"] > h2 {
+  @apply text-foreground font-bold tracking-tight;
+}
+
+/* Stats/Metric Grid Enhancement */
+[class*="grid-cols"] [class*="bg-card"][class*="border"] {
+  @apply shadow-elevation-1;
+}
+
+/* Premium Modal/Dialog */
+[role="dialog"] {
+  @apply shadow-elevation-4;
+}
+
+/* Enhanced Dropdown Menus */
+[role="menu"], [role="listbox"] {
+  @apply shadow-elevation-3 rounded-lg border-border/50;
+}
+
+/* Checkbox and Radio Premium */
+input[type="checkbox"]:focus,
+input[type="radio"]:focus {
+  @apply ring-2 ring-primary/30 ring-offset-2 ring-offset-background;
+}
+
+/* Toggle Switch Enhancement */
+[role="switch"] {
+  @apply transition-all duration-250;
+}
+
+/* Progress Bar Enhancement */
+progress {
+  @apply h-2 rounded-full overflow-hidden;
+}
+
+/* Tooltip Enhancement */
+[role="tooltip"] {
+  @apply shadow-elevation-3 rounded-lg border border-border/30;
+}
+
+/* Alert/Notification Premium */
+[role="alert"] {
+  @apply shadow-elevation-2 rounded-lg border border-border/50;
+}
+
+/* Link Hover Enhancement */
+a:not([class*="btn"]):not([class*="button"]) {
+  @apply transition-colors duration-200 hover:text-primary;
+}
+
+/* Code Block Enhancement */
+code, pre {
+  @apply bg-muted/30 rounded-lg border border-border/30;
+}
+
+/* ===== EXTENDED PHASE 7: PREMIUM MICRO-INTERACTIONS ===== */
+
+/* Smooth Hover Transitions for Interactive Elements */
+a[href]:not([class*="btn"]):not([class*="button"]) {
+  @apply relative transition-all duration-200 hover:text-primary;
+}
+
+a[href]:not([class*="btn"])::after {
+  content: '';
+  @apply absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300;
+}
+
+a[href]:not([class*="btn"]):hover::after {
+  @apply w-full;
+}
+
+/* Focus Pulse Animation */
+@keyframes focus-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+/* Success State Animation */
+@keyframes success-check {
+  0% { transform: scale(0) rotate(-45deg); }
+  50% { transform: scale(1.2) rotate(10deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+/* Error Shake Animation */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+.animate-success-check {
+  animation: success-check 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Tooltip Animation */
+@keyframes tooltip-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+[role="tooltip"] {
+  animation: tooltip-pop 0.2s ease-out;
+}
+
+/* Notification Slide Animations */
+@keyframes notification-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes notification-out-right {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+}
+
+.notification-enter {
+  animation: notification-in-right 0.3s ease-out;
+}
+
+.notification-exit {
+  animation: notification-out-right 0.3s ease-in;
+}
+
+/* Collapse Animation */
+@keyframes collapse-down {
+  from {
+    opacity: 1;
+    max-height: 1000px;
+  }
+  to {
+    opacity: 0;
+    max-height: 0;
+  }
+}
+
+@keyframes expand-up {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 1000px;
+  }
+}
+
+.animate-collapse {
+  animation: collapse-down 0.3s ease-out;
+}
+
+.animate-expand {
+  animation: expand-up 0.3s ease-out;
+}
+
+/* Hover Lift for Cards */
+.card-hover-lift {
+  @apply transition-all duration-300 ease-out;
+}
+
+.card-hover-lift:hover {
+  @apply -translate-y-2 shadow-elevation-4;
+}
+
+/* Smooth Counter Animation */
+.counter-value {
+  @apply transition-all duration-500 tabular-nums;
+}
+
+/* Tab Indicator Animation */
+@keyframes tab-indicator {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+[role="tab"][aria-selected="true"]::after {
+  content: '';
+  @apply absolute bottom-0 left-0 h-0.5 bg-primary;
+  animation: tab-indicator 0.3s ease-out;
+}
+
+/* Checkbox Checked State */
+@keyframes checkbox-bounce {
+  0% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+input[type="checkbox"]:checked {
+  animation: checkbox-bounce 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Radio Button Selection */
+@keyframes radio-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+}
+
+input[type="radio"]:checked {
+  animation: radio-pulse 0.4s ease-out;
+}
+
+/* Toggle Switch Animation */
+@keyframes toggle-slide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(20px);
+  }
+}
+
+[role="switch"]:checked {
+  animation: toggle-slide 0.3s ease-out;
+}
+
+/* Skeleton Loading Pulse */
+@keyframes skeleton-pulse {
+  0%, 100% {
+    background-color: hsl(var(--muted) / 0.4);
+  }
+  50% {
+    background-color: hsl(var(--muted) / 0.2);
+  }
+}
+
+.skeleton-loading {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+/* Smooth Number Input Spinner */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  @apply transition-opacity duration-200;
+  opacity: 0;
+}
+
+input[type="number"]:hover::-webkit-outer-spin-button,
+input[type="number"]:hover::-webkit-inner-spin-button {
+  opacity: 1;
+}
+
+/* Button Ripple Effect */
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+button.ripple::after {
+  content: '';
+  @apply absolute top-1/2 left-1/2 w-2 h-2 bg-white/30 rounded-full pointer-events-none -translate-x-1/2 -translate-y-1/2;
+  animation: ripple 0.6s ease-out;
+}
+
+/* Smooth Transition for Form States */
+.form-group {
+  @apply transition-all duration-300;
+}
+
+.form-group.error {
+  @apply animate-shake;
+}
+
+.form-group.success input {
+  @apply border-primary shadow-elevation-2;
+}
+
+/* Loading Spinner Animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+/* Bounce Animation */
+@keyframes bounce-in {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.6s ease-in-out infinite;
 }
