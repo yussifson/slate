@@ -670,17 +670,17 @@ function PlatformRoutes() {
       <Route path="/customer-portal" element={<RetailCustomerPortal />} />
 
       {/* Logistics Suite */}
-      <Route path="/shipments" element={<LogisticsShipments />} />
-      <Route path="/fleet" element={<LogisticsFleet />} />
-      <Route path="/drivers" element={<LogisticsDrivers />} />
-      <Route path="/tracking" element={<LogisticsTrackingPortal />} />
-      <Route path="/warehouse" element={<LogisticsWarehouses />} />
-      <Route path="/routes" element={<LogisticsRouteOptimization />} />
-      <Route path="/proof-of-delivery" element={<LogisticsProofOfDelivery />} />
-      <Route path="/incidents" element={<LogisticsIncidentManagement />} />
-      <Route path="/returns" element={<LogisticsReturnsManagement />} />
-      <Route path="/logistics-analytics" element={<LogisticsAdvancedAnalytics />} />
-      <Route path="/driver-mobile-app" element={<LogisticsDriverMobileApp />} />
+      <Route path="/logistics/shipments" element={<LogisticsShipments />} />
+      <Route path="/logistics/fleet" element={<LogisticsFleet />} />
+      <Route path="/logistics/drivers" element={<LogisticsDrivers />} />
+      <Route path="/logistics/tracking" element={<LogisticsTrackingPortal />} />
+      <Route path="/logistics/warehouse" element={<LogisticsWarehouses />} />
+      <Route path="/logistics/routes" element={<LogisticsRouteOptimization />} />
+      <Route path="/logistics/proof-of-delivery" element={<LogisticsProofOfDelivery />} />
+      <Route path="/logistics/incidents" element={<LogisticsIncidentManagement />} />
+      <Route path="/logistics/returns" element={<LogisticsReturnsManagement />} />
+      <Route path="/logistics/analytics" element={<LogisticsAdvancedAnalytics />} />
+      <Route path="/logistics/driver-mobile-app" element={<LogisticsDriverMobileApp />} />
 
       {/* HR Suite */}
       <Route path="/employees" element={<HREmployees />} />

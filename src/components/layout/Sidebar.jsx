@@ -220,9 +220,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  inventory_manager: ["/retail-dashboard", "/retail-inventory", "/purchase-orders", "/products", "/suppliers", "/shifts", "/tasks"],
  
  // Logistics Roles
- dispatcher: ["/", "/shipments", "/dispatch", "/drivers", "/routes", "/fleet", "/pickups", "/chat", "/email-inbox"],
- driver: ["/", "/dispatch", "/routes", "/pickups", "/tasks", "/chat"],
- warehouse_staff: ["/", "/shipments", "/warehouse", "/inventory", "/tasks", "/chat"],
+ dispatcher: ["/", "/logistics/shipments", "/dispatch", "/logistics/drivers", "/logistics/routes", "/logistics/fleet", "/pickups", "/chat", "/email-inbox"],
+ driver: ["/", "/dispatch", "/logistics/routes", "/pickups", "/tasks", "/chat"],
+ warehouse_staff: ["/", "/logistics/shipments", "/logistics/warehouse", "/inventory", "/tasks", "/chat"],
 
  // HR / ERP Roles
  hr_manager: ["/", "/employees", "/recruitment", "/payroll", "/leave", "/performance", "/training", "/org-chart", "/disciplinary", "/benefits", "/documents", "/reports", "/tasks", "/chat", "/email-inbox"],
@@ -247,7 +247,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  'Support Tickets': ['/support-center', '/complaints'],
  'Appointments': ['/calendar', '/appointments'],
  'Payroll': ['/payroll'],
- 'Asset Management': ['/equipment-inventory', '/fleet'],
+ 'Asset Management': ['/equipment-inventory', '/logistics/fleet'],
  'Procurement': ['/purchase-orders', '/suppliers'],
  'Analytics': ['/reports', '/analytics']
 };
