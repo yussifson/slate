@@ -127,19 +127,22 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
  <HearingReminders hearings={hearings} userEmail={user?.email} isAdmin={isAdmin} />
  {/* Header */}
  <div className="flex items-center justify-between">
- <h1 className="text-xl font-bold text-foreground">{t("dashboard", "Dashboard")}</h1>
- <div className="flex items-center gap-2">
- <Button variant="outline" size="sm" className="gap-1.5 text-xs ">
- <BarChart2 className="w-3.5 h-3.5" /> {t("analytics", "Analytics")}
+ <div>
+ <h1 className="text-3xl font-bold text-foreground tracking-tight">{t("dashboard", "Dashboard")}</h1>
+ <p className="text-sm text-muted-foreground/60 mt-1">Welcome back! Here's your business overview.</p>
+ </div>
+ <div className="flex items-center gap-3">
+ <Button variant="outline" size="sm" className="gap-2 text-xs">
+ <BarChart2 className="w-4 h-4" /> {t("analytics", "Analytics")}
  </Button>
- <Button variant="outline" size="sm" className="gap-1.5 text-xs " onClick={handleRefresh} disabled={isRefreshing}>
- <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`} /> 
+ <Button variant="default" size="sm" className="gap-2 text-xs" onClick={handleRefresh} disabled={isRefreshing}>
+ <RefreshCw className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`} /> 
  {isRefreshing ? "Refreshing..." : "Refresh"}
  </Button>
  </div>
  </div>
  {/* Metric Cards */}
- <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+ <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
  <MetricCard title={`Active ${casesTermPlural}`} value={activeCases.length} icon={Briefcase} iconBg="bg-slate-100" iconColor="text-primary" subtitle={`${cases.length} total`} />
  <MetricCard title={`Active ${clientsTermPlural}`} value={activeClients.length} icon={Users} iconBg="bg-slate-100" iconColor="text-primary"
  subtitle={clients.length > 0 ? `+${Math.round((activeClients.length / Math.max(clients.length, 1)) * 100)}% this month` : undefined}

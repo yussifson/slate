@@ -310,3 +310,67 @@
   0% { width: 0%; }
   100% { width: 100%; }
 }
+
+/* ===== PHASE 6: GLOBAL DASHBOARD PREMIUM STYLES ===== */
+
+/* Dashboard Grid Layouts */
+.grid > div[class*="bg-card"],
+.grid > [class*="rounded-"] {
+  @apply shadow-elevation-1 hover:shadow-elevation-3 transition-all duration-300;
+}
+
+/* Dashboard Headers */
+.dashboard-header, [class*="dashboard"] > h1, [class*="dashboard"] > h2 {
+  @apply text-foreground font-bold tracking-tight;
+}
+
+/* Stats/Metric Grid Enhancement */
+[class*="grid-cols"] [class*="bg-card"][class*="border"] {
+  @apply shadow-elevation-1;
+}
+
+/* Premium Modal/Dialog */
+[role="dialog"] {
+  @apply shadow-elevation-4;
+}
+
+/* Enhanced Dropdown Menus */
+[role="menu"], [role="listbox"] {
+  @apply shadow-elevation-3 rounded-lg border-border/50;
+}
+
+/* Checkbox and Radio Premium */
+input[type="checkbox"]:focus,
+input[type="radio"]:focus {
+  @apply ring-2 ring-primary/30 ring-offset-2 ring-offset-background;
+}
+
+/* Toggle Switch Enhancement */
+[role="switch"] {
+  @apply transition-all duration-250;
+}
+
+/* Progress Bar Enhancement */
+progress {
+  @apply h-2 rounded-full overflow-hidden;
+}
+
+/* Tooltip Enhancement */
+[role="tooltip"] {
+  @apply shadow-elevation-3 rounded-lg border border-border/30;
+}
+
+/* Alert/Notification Premium */
+[role="alert"] {
+  @apply shadow-elevation-2 rounded-lg border border-border/50;
+}
+
+/* Link Hover Enhancement */
+a:not([class*="btn"]):not([class*="button"]) {
+  @apply transition-colors duration-200 hover:text-primary;
+}
+
+/* Code Block Enhancement */
+code, pre {
+  @apply bg-muted/30 rounded-lg border border-border/30;
+}
