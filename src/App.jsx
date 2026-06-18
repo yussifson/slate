@@ -683,7 +683,7 @@ function PlatformRoutes() {
       <Route path="/fleet" element={<LogisticsFleet />} />
       <Route path="/drivers" element={<LogisticsDrivers />} />
       <Route path="/tracking" element={<LogisticsTrackingPortal />} />
-      <Route path="/warehouse" element={<LogisticsWarehouses />} />
+      <Route path="/warehouse" element={<LogisticsWarehouse />} />
       <Route path="/routes" element={<LogisticsRouteOptimization />} />
       <Route path="/proof-of-delivery" element={<LogisticsProofOfDelivery />} />
       <Route path="/incidents" element={<LogisticsIncidentManagement />} />
