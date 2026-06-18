@@ -2007,6 +2007,7 @@ export const AppSchema = new Schema({
         id: column.text,
         created_at: column.text,
         company_id: column.text,
+        employee_name: column.text,
         name: column.text,
         type: column.text,
         description: column.text,

@@ -1,224 +1,364 @@
-import { powerSync} from '@/api/PowerSyncConnector';
-import React, { useState, useEffect} from 'react';
+import { powerSync } from '@/api/PowerSyncConnector';
+import React, { useState, useEffect, useCallback } from 'react';
+import { supabase } from "@/api/supabaseClient";
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { Plus, Trash2, Edit2, Loader2, XCircle, Search, FileText, Download, Eye, UploadCloud, User } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+import { useDropzone } from 'react-dropzone';
+import { motion } from 'framer-motion';
 
-import GenericGrid from '@/components/views/GenericGrid';
-import GenericKanban from '@/components/views/GenericKanban';
-import GenericCalendar from '@/components/views/GenericCalendar';
-import GenericDashboard from '@/components/views/GenericDashboard';
+const TABLE = 'univ_documents';
+const TYPE_ICONS = { "Offer Letter": '📄', "Contract": '📝', "NDA": '🔒', "Performance Review": '📈', "Tax Form": '🏛️', "Other": '📁' };
+const STATUS_COLORS = { "Active": 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200', "Archived": 'bg-muted text-muted-foreground border-primary/40', "Draft": 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200' };
 
-
-import { supabase} from "@/api/supabaseClient";
-import { useCompanyId} from '@/hooks/useCompanyId';
-import { FolderOpen, Plus, Search, Trash2, Edit2, Loader2, XCircle, FileText, Download, Eye, UploadCloud} from 'lucide-react';
-import { toast} from 'react-hot-toast';
-import { useDropzone} from 'react-dropzone';
-
-const EMPTY_FORM = { name: '', type: 'Document', description: '', file_url: '', status: 'Active', tags: ''};
-const TYPE_ICONS = { Document: '📄', Spreadsheet: '📊', Image: '🖼️', PDF: '📋', Contract: '📝', Report: '📈', Other: '📁'};
-const STATUS_COLORS = { Active: 'bg-emerald-50 text-emerald-700 border-emerald-200', Archived: 'bg-muted text-muted-foreground border-primary/40', Draft: 'bg-amber-50 text-amber-700 border-amber-200'};
+const EMPTY_FORM = { employee_name: '', name: '', type: 'Offer Letter', description: '', file_url: '', status: 'Active', tags: '' };
 
 export default function UnivDocument() {
- const companyId = useCompanyId();
- const [view, setView] = useState('Default');
- const [records, setRecords] = useState([]);
- const [loading, setLoading] = useState(true);
- const [search, setSearch] = useState('');
- const [typeFilter, setTypeFilter] = useState('All');
- const [isModalOpen, setIsModalOpen] = useState(false);
- const [editingId, setEditingId] = useState(null);
- const [form, setForm] = useState(EMPTY_FORM);
- const [uploading, setUploading] = useState(false);
- const [uploadProgress, setUploadProgress] = useState(0);
+  const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
+  const [records, setRecords] = useState([]);
+  const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [modal, setModal] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [saving, setSaving] = useState(false);
 
- const onDrop = async (acceptedFiles) => {
- if (acceptedFiles.length === 0) return;
- const file = acceptedFiles[0];
- setUploading(true);
- setUploadProgress(0);
- // Simulate upload progress
- const interval = setInterval(() => {
- setUploadProgress(p => {
- if (p >= 100) {
- clearInterval(interval);
- return 100;
-}
- return p + 20;
-});
-}, 200);
- setTimeout(() => {
- clearInterval(interval);
- const reader = new FileReader();
- reader.onload = (e) => {
- setForm({ ...form, name: file.name || form.name, file_url: e.target.result});
- setUploading(false);
- toast.success('File attached successfully for offline sync');
-};
- reader.readAsDataURL(file);
-}, 1500);
-};
- const { getRootProps, getInputProps, isDragActive} = useDropzone({ onDrop});
+  const onDrop = async (acceptedFiles) => {
+    if (acceptedFiles.length === 0) return;
+    const file = acceptedFiles[0];
+    setUploading(true);
+    setUploadProgress(0);
+    const interval = setInterval(() => {
+      setUploadProgress(p => {
+        if (p >= 100) { clearInterval(interval); return 100; }
+        return p + 20;
+      });
+    }, 200);
+    setTimeout(() => {
+      clearInterval(interval);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setForm({ ...form, name: file.name || form.name, file_url: e.target.result });
+        setUploading(false);
+        toast.success('File attached securely');
+      };
+      reader.readAsDataURL(file);
+    }, 1500);
+  };
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
- useEffect(() => {
- if (companyId) {
- fetchDocs();
- const ch = supabase.channel('docs_ch').on('postgres_changes', { event: '*', schema: 'public', table: 'univ_documents', filter: `company_id=eq.${companyId}`}, fetchDocs).subscribe();
- return () => supabase.removeChannel(ch);
-}
-}, [companyId]);
+  const fetchData = useCallback(async () => {
+    if (!companyId) return;
+    setLoading(true);
+    try {
+      const __res = await powerSync.execute(`SELECT * FROM ${TABLE} WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
+      const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
+      setRecords(data || []);
 
- const fetchDocs = async () => {
- setLoading(true);
- try {
- const __res = await powerSync.execute(`SELECT * FROM univ_documents WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
- const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
- const error = null;
- if (error && error.code !== '42P01') throw error;
- setRecords(data || []);
-} catch (e) { console.error(e);} finally { setLoading(false);}
-};
+      const __empRes = await powerSync.execute(`SELECT * FROM univ_hr_employees WHERE company_id = ? ORDER BY first_name ASC`, [companyId]);
+      const empData = __empRes.rows ? (__empRes.rows._array || Array.from(__empRes.rows)) : [];
+      setEmployees(empData || []);
+    } catch (e) {
+      if (e.message && e.message.includes('no such table')) {
+        // Ignore schema migration lag
+      } else {
+        console.error('[Document] fetch error:', e);
+      }
+    }
+    setLoading(false);
+  }, [companyId]);
 
- const save = async (e) => {
- e.preventDefault();
- try {
- if (editingId) {
- await (async () => { const _payload = form; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_documents SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editingId]);})();
- const error = null; const data = [];
- if (error) throw error;
- toast.success('Document updated!');
-} else {
- const { error} = await (async () => {
- const _payload = { ...form, id: crypto.randomUUID(), company_id: companyId};
- const _keys = Object.keys(_payload);
- const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const _plhdr = _keys.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO univ_documents (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals); return { error: null};})();
- if (error) throw error;
- toast.success('Document added!');
-}
- closeModal(); fetchDocs();
-} catch (err) { toast.error('Failed to save');}
-};
+  useEffect(() => { 
+    fetchData();
+    if (companyId) {
+      const ch = supabase.channel('docs_ch').on('postgres_changes', { event: '*', schema: 'public', table: TABLE, filter: `company_id=eq.${companyId}` }, fetchData).subscribe();
+      return () => supabase.removeChannel(ch);
+    }
+  }, [fetchData, companyId]);
 
- const remove = async (id) => {
- await powerSync.execute(`DELETE FROM univ_documents WHERE id = ?`, [id]);
- const error = null;
- if (error) toast.error('Failed to delete'); else { toast.success('Deleted'); fetchDocs();}
-};
+  const openAdd = () => { setForm({ ...EMPTY_FORM }); setEditId(null); setModal(true); };
+  const openEdit = (r) => { setForm({ ...r }); setEditId(r.id); setModal(true); };
+  const closeModal = () => { setModal(false); setEditId(null); setForm({ ...EMPTY_FORM }); };
 
- const openModal = (r = null) => { setForm(r ? { ...r} : EMPTY_FORM); setEditingId(r?.id || null); setIsModalOpen(true);};
- const closeModal = () => { setIsModalOpen(false); setEditingId(null); setForm(EMPTY_FORM);};
- const filtered = records.filter(r => {
- const match = `${r.name} ${r.description} ${r.tags}`.toLowerCase().includes(search.toLowerCase());
- const matchType = typeFilter === 'All' || r.type === typeFilter;
- return match && matchType;
-});
+  const handleSave = async (e) => {
+    e.preventDefault();
+    if (!form.employee_name) return toast.error('Employee is required');
+    if (!form.name) return toast.error('Document Name is required');
+    if (!form.file_url) return toast.error('A document file must be attached');
+    
+    setSaving(true);
+    const payload = { ...form, company_id: companyId };
+    
+    try {
+      if (editId) {
+        const _payload = payload;
+        const _keys = Object.keys(_payload);
+        const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        await powerSync.execute(`UPDATE ${TABLE} SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editId]);
+        toast.success('Document updated!');
+      } else {
+        const _payload = { ...payload, id: crypto.randomUUID() };
+        const _keys = Object.keys(_payload);
+        const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _plhdr = _keys.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO ${TABLE} (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals);
+        toast.success('Document uploaded!');
+      }
+      closeModal();
+      fetchData();
+    } catch (error) {
+      toast.error('Save failed: ' + error.message);
+    }
+    setSaving(false);
+  };
 
- const types = ['All', ...Object.keys(TYPE_ICONS)];
+  const handleDelete = async (id) => {
+    try {
+      await powerSync.execute(`DELETE FROM ${TABLE} WHERE id = ?`, [id]);
+      toast.success('Document deleted');
+      fetchData();
+    } catch (error) {
+      toast.error('Delete failed');
+    }
+  };
 
- 
- const handleExport = () => {
- const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
- if (!exportData || exportData.length === 0) return alert('No data to export');
- const keys = Object.keys(exportData[0]).filter(k => k !== 'company_id' && k !== 'id');
- const csv = [keys.join(','), ...exportData.map(r => keys.map(k => '"' + (r[k]||'').toString().replace(/"/g, '""') + '"').join(','))].join('\n');
- const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;'});
- const url = URL.createObjectURL(blob);
- const a = document.createElement('a');
- a.href = url; a.download = 'export.csv'; a.click();
-};
+  const downloadFile = (fileUrl, fileName) => {
+    if (!fileUrl) return toast.error('No file attached');
+    const a = document.createElement('a');
+    a.href = fileUrl;
+    a.download = fileName || 'document';
+    a.click();
+  };
 
- return (
- <div className="h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}">
- <div className="view-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
- <div><h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2"><FolderOpen className="w-7 h-7 text-primary" />Document Drive</h1><p className="text-muted-foreground text-sm font-medium mt-1">{records.length} documents stored.</p></div>
- <div className="flex items-center gap-2">
+  const getEmployeeName = (idOrName) => {
+    const emp = employees.find(e => e.id === idOrName);
+    if (emp) return `${emp.first_name} ${emp.last_name}`;
+    return idOrName || '—';
+  };
 
- 
- 
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
- <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
- Export CSV
- </button>
+  const filtered = records.filter(r => {
+    const empName = getEmployeeName(r.employee_name);
+    return `${empName} ${r.name} ${r.type} ${r.description} ${r.status} ${r.tags}`.toLowerCase().includes(search.toLowerCase());
+  });
 
- <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 "><Plus className="w-4 h-4" />Add Document</button>
- </div>
- </div>
+  const handleExport = () => {
+    const exportData = filtered.map(({ file_url, ...rest }) => rest);
+    if (!exportData || exportData.length === 0) return alert('No data to export');
+    const keys = Object.keys(exportData[0]).filter(k => k !== 'company_id' && k !== 'id');
+    const csv = [keys.join(','), ...exportData.map(r => keys.map(k => '"' + (r[k]||'').toString().replace(/"/g, '""') + '"').join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'export.csv'; a.click();
+  };
 
- <div className="grid grid-cols-2 md:grid-cols-4 gap-4 shrink-0">
- {['Active','Draft','Archived'].map(s => <div key={s} className="bg-card border border-primary/40 p-4 rounded-2xl "><p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">{s}</p><p className="text-2xl font-black text-foreground">{records.filter(r=>r.status===s).length}</p></div>)}
- <div className="bg-card border border-primary/40 p-4 rounded-2xl "><p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Total</p><p className="text-2xl font-black text-foreground">{records.length}</p></div>
- </div>
+  return (
+    <div className={`h-full flex flex-col gap-6 p-6 bg-background overflow-auto ${view !== 'Default' ? 'hide-default' : ''}`}>
+      {/* Header */}
+      <div className="view-header flex items-center justify-between flex-wrap gap-4 shrink-0">
+        <div>
+          <h1 className="text-2xl font-black text-foreground flex items-center gap-3">
+            <span className="p-2.5 rounded-xl bg-primary/10 text-primary"><FileText className="w-6 h-6" /></span>
+            Document Library
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1 ml-0.5">Securely manage employee contracts, offer letters, NDAs, and files.</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 transition-all active:scale-95">
+            Export CSV
+          </button>
+          <button onClick={openAdd} className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 active:scale-95 transition-all shadow-sm">
+            <UploadCloud className="w-4 h-4" /> Upload Document
+          </button>
+        </div>
+      </div>
 
- <div className="flex flex-col sm:flex-row gap-3 shrink-0">
- <div className="relative flex-1"><Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search documents..." className="w-full h-11 pl-10 pr-4 bg-card border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm " /></div>
- <div className="flex gap-2 overflow-x-auto shrink-0">
- {types.map(t => <button key={t} onClick={() => setTypeFilter(t)} className={`px-3 h-11 rounded-xl text-sm font-bold border whitespace-nowrap transition-all ${typeFilter===t?'bg-primary text-white border-primary':'bg-card border-primary/40 text-muted-foreground hover:text-foreground'}`}>{t}</button>)}
- </div>
- </div>
+      {/* Search & Stats */}
+      <div className="flex flex-col sm:flex-row gap-4 shrink-0 justify-between items-start sm:items-center">
+        <div className="relative w-full max-w-sm shrink-0">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search documents..." className="w-full h-11 pl-9 pr-4 bg-card border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all" />
+        </div>
+        
+        {!loading && records.length > 0 && (
+          <div className="flex gap-2 overflow-x-auto pb-1 sm:pb-0 custom-scrollbar">
+            {Object.entries(
+              records.reduce((acc, r) => {
+                const s = r.type || 'Unknown';
+                acc[s] = (acc[s] || 0) + 1;
+                return acc;
+              }, {})
+            ).map(([s, count]) => (
+              <div key={s} className="px-3 py-1.5 rounded-lg border bg-muted/30 text-foreground text-[11px] font-bold uppercase tracking-wider flex items-center gap-2 whitespace-nowrap">
+                <span>{TYPE_ICONS[s] || '📄'} {s}</span>
+                <span className="bg-background/50 border rounded px-1.5">{count}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
- <div className="flex-1 overflow-auto min-h-0 bg-card border border-primary/40 rounded-2xl flex flex-col custom-scrollbar">
- <div className="grid grid-cols-12 gap-2 p-4 border-b border-primary/40 bg-muted/50 text-xs font-bold text-muted-foreground uppercase tracking-wider shrink-0">
- <div className="col-span-5">Document</div><div className="col-span-2">Type</div><div className="col-span-2">Status</div><div className="col-span-1">Tags</div><div className="col-span-2 text-right">Actions</div>
- </div>
- <div className="flex-1 overflow-y-auto custom-scrollbar">
- {loading ? <div className="flex h-40 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
- : filtered.length === 0 ? <div className="p-12 text-center text-muted-foreground"><FolderOpen className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" /><p className="font-medium">No documents found.</p></div>
- : filtered.map(r => (
- <div key={r.id} className="grid grid-cols-12 gap-2 p-4 border-b border-primary/40 hover:bg-muted/30 transition-colors items-center group">
- <div className="col-span-5 flex items-center gap-3">
- <div className="w-9 h-9 rounded-lg bg-muted border border-primary/40 flex items-center justify-center text-lg shrink-0">{TYPE_ICONS[r.type]||'📁'}</div>
- <div><p className="font-bold text-sm text-foreground">{r.name}</p><p className="text-xs text-muted-foreground truncate max-w-[200px]">{r.description||'—'}</p></div>
- </div>
- <div className="col-span-2 text-sm text-muted-foreground">{r.type}</div>
- <div className="col-span-2"><span className={`px-2 py-0.5 text-[10px] font-bold uppercase border rounded-md ${STATUS_COLORS[r.status]||'bg-muted border-primary/40'}`}>{r.status}</span></div>
- <div className="col-span-1 text-xs text-muted-foreground truncate">{r.tags||'—'}</div>
- <div className="col-span-2 flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
- {r.file_url && <a href={r.file_url} target="_blank" rel="noreferrer" className="p-1.5 bg-muted rounded-md text-muted-foreground hover:text-primary"><Eye className="w-3.5 h-3.5" /></a>}
- <button onClick={() => openModal(r)} className="p-1.5 bg-muted rounded-md text-muted-foreground hover:text-primary"><Edit2 className="w-3.5 h-3.5" /></button>
- <button onClick={() => remove(r.id)} className="p-1.5 bg-red-50 rounded-md text-red-400 hover:text-red-600"><Trash2 className="w-3.5 h-3.5" /></button>
- </div>
- </div>
- ))}
- </div>
- </div>
+      {/* Table */}
+      {loading ? (
+        <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
+      ) : (
+        <div className="flex-1 overflow-auto rounded-2xl border border-primary/40 bg-card custom-scrollbar">
+          <table className="w-full text-sm min-w-[900px]">
+            <thead className="border-b border-primary/40 bg-muted/40 sticky top-0 z-10">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Employee</th>
+                <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">Document Details</th>
+                <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Tags</th>
+                <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Status</th>
+                <th className="px-4 py-3 text-right text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map(r => {
+                const empName = getEmployeeName(r.employee_name);
+                return (
+                  <motion.tr key={r.id} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className="border-b border-primary/40 hover:bg-muted/20 transition-colors group align-middle">
+                    <td className="px-4 py-4">
+                      <p className="font-bold text-foreground flex items-center gap-2"><User className="w-4 h-4 text-muted-foreground" /> {empName}</p>
+                    </td>
+                    <td className="px-4 py-4 max-w-sm">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground border border-primary/20 bg-muted/50 px-1.5 py-0.5 rounded">{TYPE_ICONS[r.type]} {r.type}</span>
+                      </div>
+                      <p className="font-semibold text-primary">{r.name}</p>
+                      <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">{r.description || 'No description provided.'}</p>
+                    </td>
+                    <td className="px-4 py-4">
+                      <div className="flex flex-wrap gap-1">
+                        {(r.tags || '').split(',').filter(Boolean).map((t, i) => (
+                           <span key={i} className="text-[10px] bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded">{t.trim()}</span>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="px-4 py-4">
+                      <span className={`px-2 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider border ${STATUS_COLORS[r.status] || 'bg-muted text-foreground'}`}>{r.status}</span>
+                    </td>
+                    <td className="px-4 py-4">
+                      <div className="flex justify-end gap-2">
+                        {r.file_url && (
+                          <div className="flex gap-1 border-r pr-2 border-primary/20">
+                            <button onClick={() => window.open(r.file_url, '_blank')} className="p-1.5 bg-blue-50 text-blue-600 rounded hover:bg-blue-100 transition-colors tooltip-trigger" title="Preview"><Eye className="w-4 h-4" /></button>
+                            <button onClick={() => downloadFile(r.file_url, r.name)} className="p-1.5 bg-emerald-50 text-emerald-600 rounded hover:bg-emerald-100 transition-colors tooltip-trigger" title="Download"><Download className="w-4 h-4" /></button>
+                          </div>
+                        )}
+                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button onClick={() => openEdit(r)} className="p-1.5 bg-muted rounded-lg hover:bg-muted/80 transition-colors"><Edit2 className="w-3.5 h-3.5" /></button>
+                          <button onClick={() => handleDelete(r.id)} className="p-1.5 bg-red-50 dark:bg-red-900/20 rounded-lg hover:bg-red-100 text-red-500 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                        </div>
+                      </div>
+                    </td>
+                  </motion.tr>
+                );
+              })}
+              {!filtered.length && (
+                <tr>
+                  <td colSpan={5} className="px-4 py-20 text-center text-muted-foreground">
+                    <FileText className="w-10 h-10 mx-auto mb-3 text-muted-foreground/30" />
+                    <p className="font-medium">No documents found.</p>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
 
- {isModalOpen && (
- <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
- <div className="bg-card w-full max-w-lg rounded-2xl flex flex-col max-h-[90vh]">
- <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0"><h2 className="text-xl font-black">{editingId?'Edit Document':'Add Document'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-full text-muted-foreground"><XCircle className="w-5 h-5" /></button></div>
- <form onSubmit={save} className="p-5 overflow-y-auto flex-1 custom-scrollbar">
- <div className="grid grid-cols-2 gap-4">
- <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Document Name *</label><input required type="text" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Type</label><select value={form.type} onChange={e=>setForm({...form,type:e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(TYPE_ICONS).map(t=><option key={t}>{t}</option>)}</select></div>
- <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Status</label><select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(STATUS_COLORS).map(s=><option key={s}>{s}</option>)}</select></div>
- 
- <div className="col-span-2">
- <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">File Upload</label>
- <div {...getRootProps()} className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ${isDragActive ? 'border-primary bg-primary/5' : 'border-primary/40 hover:border-primary/50'}`}>
- <input {...getInputProps()} />
- <UploadCloud className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
- {uploading ? (
- <div className="w-full max-w-xs mx-auto">
- <div className="flex justify-between text-xs mb-1"><span>Uploading...</span><span>{uploadProgress}%</span></div>
- <div className="h-2 w-full bg-muted rounded-full overflow-hidden"><div className="h-full bg-primary transition-all duration-200" style={{width: `${uploadProgress}%`}}></div></div>
- </div>
- ) : form.file_url ? (
- <p className="text-sm font-bold text-emerald-600">File attached! Click or drag to replace.</p>
- ) : (
- <p className="text-sm text-muted-foreground">Drag & drop a file here, or click to select</p>
- )}
- </div>
- </div>
+      {/* Modal Form */}
+      {modal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-card w-full max-w-2xl rounded-2xl flex flex-col border shadow-2xl max-h-[90vh]">
+            <div className="p-5 border-b flex justify-between items-center bg-muted/20 shrink-0">
+              <h2 className="text-xl font-black flex items-center gap-2"><UploadCloud className="w-5 h-5 text-primary" /> {editId ? 'Edit Document' : 'Upload Employee Document'}</h2>
+              <button onClick={closeModal} className="p-2 hover:bg-muted rounded-full transition-colors"><XCircle className="w-5 h-5 text-muted-foreground" /></button>
+            </div>
+            
+            <form onSubmit={handleSave} className="p-5 overflow-y-auto custom-scrollbar flex flex-col gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2">
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Employee *</label>
+                  <select required value={form.employee_name} onChange={e => setForm({...form, employee_name: e.target.value})} className="w-full h-11 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm appearance-none cursor-pointer">
+                    <option value="">-- Select Employee --</option>
+                    {employees.map(emp => <option key={emp.id} value={emp.id}>{emp.first_name} {emp.last_name}</option>)}
+                  </select>
+                </div>
+              </div>
 
- <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">File URL (Manual Override)</label><input type="url" value={form.file_url} onChange={e=>setForm({...form,file_url:e.target.value})} placeholder="https://..." className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Description</label><textarea rows="2" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} className="w-full p-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none"/></div>
- <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Tags (comma-separated)</label><input type="text" value={form.tags} onChange={e=>setForm({...form,tags:e.target.value})} placeholder="legal, 2024, contract..." className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- </div>
- <div className="flex justify-end gap-3 mt-5 pt-5 border-t border-primary/40"><button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button><button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold ">{editingId?'Update':'Add Document'}</button></div>
- </form>
- </div>
- </div>
- )}
- </div>
- );
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2 sm:col-span-1">
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Document Title *</label>
+                  <input required type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="e.g. John Doe Offer Letter 2026" className="w-full h-11 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm" />
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Document Type</label>
+                  <select value={form.type} onChange={e => setForm({...form, type: e.target.value})} className="w-full h-11 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm cursor-pointer">
+                    {Object.keys(TYPE_ICONS).map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Description</label>
+                <input type="text" value={form.description} onChange={e => setForm({...form, description: e.target.value})} placeholder="Optional summary of document contents" className="w-full h-11 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm" />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Tags (comma separated)</label>
+                  <input type="text" value={form.tags} onChange={e => setForm({...form, tags: e.target.value})} placeholder="e.g. Finance, 2026, Confidential" className="w-full h-11 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Status</label>
+                  <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full h-11 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm cursor-pointer">
+                    {Object.keys(STATUS_COLORS).map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              <div className="mt-2">
+                <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Document Attachment *</label>
+                <div {...getRootProps()} className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-colors ${isDragActive ? 'border-primary bg-primary/5' : 'border-primary/20 hover:border-primary/50'}`}>
+                  <input {...getInputProps()} />
+                  {uploading ? (
+                    <div className="flex flex-col items-center gap-2">
+                      <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                      <p className="text-sm font-medium">Securing file... {uploadProgress}%</p>
+                    </div>
+                  ) : form.file_url ? (
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center"><FileText className="w-6 h-6" /></div>
+                      <p className="text-sm font-bold text-emerald-600">File ready for upload</p>
+                      <p className="text-xs text-muted-foreground">Click or drag to replace</p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="w-12 h-12 bg-muted text-muted-foreground rounded-full flex items-center justify-center"><UploadCloud className="w-6 h-6" /></div>
+                      <p className="text-sm font-bold">Drag & drop your document here</p>
+                      <p className="text-xs text-muted-foreground">PDF, Word, or Image files supported</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 mt-4 pt-5 border-t shrink-0">
+                <button type="button" onClick={closeModal} className="h-11 px-6 bg-muted rounded-xl text-sm font-bold hover:bg-muted/80 transition-colors">Cancel</button>
+                <button type="submit" disabled={saving || uploading} className="h-11 px-6 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 transition-colors flex items-center gap-2">
+                  {(saving || uploading) && <Loader2 className="w-4 h-4 animate-spin" />}
+                  {editId ? 'Save Changes' : 'Upload Document'}
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
+    </div>
+  );
 }

@@ -787,15 +787,13 @@ function GlobalSystemListener() {
     const handleSuccess = (e) => {
       // Invalidate queries universally so disjointed data dashboards sync instantly
       queryClient.invalidateQueries(); 
-      if (!e.detail.isNoisy) {
-        toast({ title: "Action Successful", description: "Your changes have been saved." });
-      }
+      // Disabled global toast to prevent popup spam
     };
     const handleError = (e) => {
       toast({ title: "Action Failed", description: e.detail.error?.message || "An error occurred.", variant: "destructive" });
     };
     const handleHardError = (e) => {
-      toast({ title: "Cloud Sync Failed", description: e.detail.errorMessage, variant: "destructive" });
+      console.error("Cloud Sync Failed:", e.detail.errorMessage);
     };
 
     window.addEventListener('db:local-mutation-success', handleSuccess);
