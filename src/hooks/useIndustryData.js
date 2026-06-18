@@ -62,16 +62,22 @@ export function useMutateIndustryRecord() {
         title: searchText || 'Record',
         status: status || 'Active',
         notes: JSON.stringify(payload),
-        updated_date: new Date().toISOString()
+        updated_at: new Date().toISOString()
       };
 
       let result;
-      if (id) {
-        result = await base44.entities.LegalCase.update(id, casePayload);
-      } else {
-        casePayload.created_by = userName;
-        casePayload.created_date = new Date().toISOString();
-        result = await base44.entities.LegalCase.create(casePayload);
+      try {
+        if (id) {
+          result = await base44.entities.LegalCase.update(id, casePayload);
+        } else {
+          casePayload.created_by = userName;
+          casePayload.created_at = new Date().toISOString();
+          result = await base44.entities.LegalCase.create(casePayload);
+        }
+      } catch (err) {
+        const errorMsg = err?.message || 'Failed to save record';
+        console.error('[v0] Industry data save error:', errorMsg, err);
+        throw new Error(`Failed to save ${recordType}: ${errorMsg}`);
       }
 
       let data = {};
@@ -84,8 +90,8 @@ export function useMutateIndustryRecord() {
         data: data,
         status: result.status,
         search_text: result.title,
-        created_at: result.created_date || result.created_at,
-        updated_at: result.updated_date || result.updated_at,
+        created_at: result.created_at,
+        updated_at: result.updated_at,
         created_by: result.created_by
       };
     },

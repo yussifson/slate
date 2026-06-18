@@ -36,7 +36,7 @@ class SupabaseConnector {
             case 'PUT': {
               let payload = { ...op.opData, id: op.id };
               if (op.table === 'profiles') {
-                const allowed = ['id', 'created_date', 'updated_date', 'created_by', 'role', 'company_id', 'company_name', 'phone', 'avatar_url', 'department', 'bar_number'];
+                const allowed = ['id', 'created_at', 'updated_at', 'created_by', 'role', 'company_id', 'company_name', 'phone', 'avatar_url', 'department', 'bar_number'];
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
               }
               if (op.table === 'automation_logs') {
@@ -50,7 +50,7 @@ class SupabaseConnector {
             case 'PATCH': {
               let payload = { ...op.opData };
               if (op.table === 'profiles') {
-                const allowed = ['id', 'created_date', 'updated_date', 'created_by', 'role', 'company_id', 'company_name', 'phone', 'avatar_url', 'department', 'bar_number'];
+                const allowed = ['id', 'created_at', 'updated_at', 'created_by', 'role', 'company_id', 'company_name', 'phone', 'avatar_url', 'department', 'bar_number'];
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
               }
               if (op.table === 'automation_logs') {

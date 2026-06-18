@@ -357,8 +357,8 @@ export const base44 = {
                         const securedPayload = await securePayload(cleanedPayload);
                         const tempId = crypto.randomUUID();
                         securedPayload.id = tempId;
-                        if (!securedPayload.created_date) {
-                            securedPayload.created_date = new Date().toISOString();
+                        if (!securedPayload.created_at) {
+                            securedPayload.created_at = new Date().toISOString();
                         }
 
                         const keys = Object.keys(securedPayload);
@@ -399,7 +399,7 @@ export const base44 = {
                                 }
                                 const securedPayload = await securePayload(cleanedPayload);
                                 securedPayload.id = securedPayload.id || crypto.randomUUID();
-                                if (!securedPayload.created_date) securedPayload.created_date = new Date().toISOString();
+                                if (!securedPayload.created_at) securedPayload.created_at = new Date().toISOString();
                                 await mirrorToSupabase(tableName, securedPayload, 'upsert');
                                 toast({ title: "Success", description: `Successfully created record in ${tableName}.`, variant: "default" });
                                 return revealResults(securedPayload);
@@ -426,7 +426,7 @@ export const base44 = {
                         }));
 
                         const securedPayload = await securePayload(cleanedPayload);
-                        securedPayload.updated_date = new Date().toISOString();
+                        securedPayload.updated_at = new Date().toISOString();
 
                         const keys = Object.keys(securedPayload);
                         const assignments = keys.map(k => `${k} = ?`).join(', ');
