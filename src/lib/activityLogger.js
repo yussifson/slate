@@ -27,10 +27,8 @@ export const ActivityLogger = {
         slate,
         ip_address: 'Logged via App',
         details: JSON.stringify(details),
-        created_date: new Date().toISOString(),
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        updated_date: new Date().toISOString()
+        updated_at: new Date().toISOString()
       };
 
       const keys = Object.keys(payload);
