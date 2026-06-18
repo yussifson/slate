@@ -35,11 +35,15 @@ export function useAutoAssignment() {
       if (!companyId) throw new Error('Company context missing');
 
       // Fetch shipments
-      const shipments = await base44.entities.LegalCase.filter({
-        company_id: companyId,
-        case_type: 'shipment',
-        id: { in: shipmentIds }
-      });
+      const shipments = await Promise.all(
+        shipmentIds.map(id => 
+          base44.entities.LegalCase.filter({
+            company_id: companyId,
+            case_type: 'shipment',
+            id
+          })
+        )
+      ).then(results => results.flat());
 
       // Fetch available vehicles
       const vehicles = await base44.entities.LegalCase.filter({
@@ -65,6 +69,7 @@ export function useAutoAssignment() {
       const routes = [];
       for (const [vehicleId, assignedShipments] of Object.entries(assignments)) {
         const route = {
+          id: crypto.randomUUID(),
           vehicle_id: vehicleId,
           shipment_ids: assignedShipments,
           route_status: 'planned',

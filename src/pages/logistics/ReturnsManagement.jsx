@@ -44,15 +44,22 @@ export default function ReturnsManagement() {
   const { mutate: mutateReturn } = useMutateReturnOrder();
 
   const handleRequestReturn = async () => {
-    if (!formData.originalShipmentId.trim() || !formData.returnReason.trim()) {
+    const shipmentId = typeof formData.originalShipmentId === 'string' 
+      ? formData.originalShipmentId 
+      : formData.originalShipmentId?.id || '';
+    const customerId = typeof formData.customerId === 'string' 
+      ? formData.customerId 
+      : formData.customerId?.id || '';
+      
+    if (!shipmentId?.trim() || !formData.returnReason.trim()) {
       toast.error('Please fill in required fields');
       return;
     }
 
     requestReturn({
-      originalShipmentId: formData.originalShipmentId,
+      originalShipmentId: shipmentId,
       returnReason: formData.returnReason,
-      customerId: formData.customerId,
+      customerId: customerId,
       returnLocation: { type: 'warehouse' },
       pickupScheduledDate: formData.pickupScheduledDate
     }, {

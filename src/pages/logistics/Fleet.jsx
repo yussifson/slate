@@ -92,7 +92,7 @@ export default function Fleet() {
 }
 
  mutateRecord.mutate({
- id: editTarget?.id,
+ id: editTarget?.id || crypto.randomUUID(),
  recordType: 'vehicle',
  payload: { ...formData},
  status: formData.status,

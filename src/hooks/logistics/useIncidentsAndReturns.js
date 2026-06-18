@@ -46,7 +46,8 @@ export function useReportIncident() {
       // If critical incident, update shipment status
       if (severity === 'critical') {
         const shipment = await base44.entities.LegalCase.filter({
-          id: shipmentId
+          company_id: companyId,
+          id: typeof shipmentId === 'string' ? shipmentId : shipmentId?.id
         });
 
         if (shipment.length > 0) {
@@ -165,11 +166,12 @@ export function useRequestReturn() {
       notes = ''
     }) => {
       const returnOrder = {
+        id: crypto.randomUUID(),
         company_id: companyId,
-        original_shipment_id: originalShipmentId,
+        original_shipment_id: typeof originalShipmentId === 'string' ? originalShipmentId : originalShipmentId?.id,
         return_reason: returnReason,
         return_status: 'requested',
-        customer_id: customerId,
+        customer_id: typeof customerId === 'string' ? customerId : customerId?.id,
         return_location: returnLocation,
         pickup_scheduled_date: pickupScheduledDate,
         notes,
@@ -252,9 +254,10 @@ export function useCreateReturnShipment() {
       estimatedReturnDate
     }) => {
       const returnShipment = {
-        return_order_id: returnOrderId,
-        vehicle_id: vehicleId,
-        driver_id: driverId,
+        id: crypto.randomUUID(),
+        return_order_id: typeof returnOrderId === 'string' ? returnOrderId : returnOrderId?.id,
+        vehicle_id: typeof vehicleId === 'string' ? vehicleId : vehicleId?.id,
+        driver_id: typeof driverId === 'string' ? driverId : driverId?.id,
         shipment_status: 'pending',
         created_at: new Date().toISOString()
       };
