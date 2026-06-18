@@ -8,7 +8,6 @@ import { usePowerSync } from '@powersync/react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
-import { v4 as uuidv4 } from 'uuid';
 
 export default function SmartDocs() {
   const { t } = useTranslation();
@@ -44,7 +43,7 @@ export default function SmartDocs() {
     try {
       // 1. Upload to Supabase Storage
       const fileExt = currentFile.name.split('.').pop();
-      const fileName = `${uuidv4()}.${fileExt}`;
+      const fileName = `${crypto.randomUUID()}.${fileExt}`;
       const filePath = `${companyId}/smart_docs/${fileName}`;
       
       const { data: uploadData, error: uploadError } = await supabase.storage
@@ -58,7 +57,7 @@ export default function SmartDocs() {
         .getPublicUrl(filePath);
         
       const fileUrl = publicUrlData.publicUrl;
-      const docId = uuidv4();
+      const docId = crypto.randomUUID();
 
       // 2. Insert into PowerSync Database
       await powerSync.execute(

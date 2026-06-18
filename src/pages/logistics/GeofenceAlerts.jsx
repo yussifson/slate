@@ -7,7 +7,6 @@ import { toast } from '@/components/ui/use-toast';
 import { usePowerSync } from '@powersync/react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/lib/AuthContext';
-import { v4 as uuidv4 } from 'uuid';
 
 export default function GeofenceAlerts() {
   const { t } = useTranslation();
@@ -44,7 +43,7 @@ export default function GeofenceAlerts() {
 
   const handleSimulate = async (fence) => {
     try {
-      const logId = uuidv4();
+      const logId = crypto.randomUUID();
       const eventMsg = `Truck 99 entered ${fence.name} ${fence.radius_meters}m radius.`;
       
       await powerSync.execute(
@@ -68,7 +67,7 @@ export default function GeofenceAlerts() {
     
     try {
       setIsCreating(true);
-      const fenceId = uuidv4();
+      const fenceId = crypto.randomUUID();
       
       await powerSync.execute(
         `INSERT INTO logistics_geofences (id, company_id, name, latitude, longitude, radius_meters, active, alert_phone_numbers) 
