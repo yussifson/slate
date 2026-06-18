@@ -1,6 +1,6 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
-import { Users, Search, Plus, Mail, Phone, Briefcase, Trash2, MoreVertical, Edit, Eye} from 'lucide-react';
+import { Users, Search, Plus, Mail, Phone, Briefcase, Trash2, MoreVertical, Edit, Eye, Network} from 'lucide-react';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
@@ -13,6 +13,29 @@ import { useNotifications} from '@/hooks/integrations/useNotifications';
 import { useAuth} from '@/lib/AuthContext';
 import { base44 } from "@/api/base44Client";
 import { supabase } from "@/api/supabaseClient";
+
+const OrgNode = ({ employee, allEmployees }) => {
+ const children = allEmployees.filter(e => e.reportsTo === employee.id);
+ return (
+ <div className="flex flex-col items-center">
+ <div className="p-4 border border-primary/20 rounded-xl shadow-sm bg-card hover:border-primary/50 transition-colors w-48 relative z-10 flex flex-col items-center text-center">
+ <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg mb-2">
+ {employee.name?.charAt(0).toUpperCase()}
+ </div>
+ <p className="font-bold text-sm text-foreground truncate w-full">{employee.name}</p>
+ <p className="text-xs text-primary font-medium truncate w-full">{employee.role}</p>
+ <p className="text-[10px] text-muted-foreground uppercase tracking-wider truncate w-full mt-1">{employee.departmentName}</p>
+ </div>
+ {children.length > 0 && (
+ <div className="flex gap-6 pt-6 mt-0 border-t-2 border-primary/20 relative">
+ <div className="absolute top-0 left-1/2 w-0.5 h-6 bg-primary/20 -translate-y-full"></div>
+ <div className="absolute top-0 left-[calc(50%-1px)] w-0.5 h-6 bg-primary/20"></div>
+ {children.map(c => <div key={c.id} className="relative pt-6"><div className="absolute top-0 left-1/2 w-0.5 h-6 bg-primary/20 -translate-x-1/2"></div><OrgNode employee={c} allEmployees={allEmployees} /></div>)}
+ </div>
+ )}
+ </div>
+ );
+};
 
 export default function Employees() {
  const { t} = useTranslation();
@@ -36,6 +59,7 @@ export default function Employees() {
  const [deleteTargetId, setDeleteTargetId] = useState(null);
  const [editTargetId, setEditTargetId] = useState(null);
  const [viewTargetId, setViewTargetId] = useState(null);
+ const [activeTab, setActiveTab] = useState('list');
 
  const [formData, setFormData] = useState({
  name: '',
@@ -185,9 +209,15 @@ export default function Employees() {
  <h1 className="text-2xl font-bold text-card-foreground">{t("employees", "Employees")}</h1>
  <p className="text-sm text-muted-foreground mt-0.5">{t("manage_staff_profiles_and_dire", "Manage staff profiles and directories")}</p>
  </div>
- <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white">
+ <div className="flex gap-2">
+ <div className="bg-muted p-1 rounded-xl flex">
+ <button onClick={() => setActiveTab('list')} className={`px-4 py-1.5 text-sm font-bold rounded-lg transition-all ${activeTab === 'list' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}><Users className="w-4 h-4 inline-block mr-1.5" /> List</button>
+ <button onClick={() => setActiveTab('org')} className={`px-4 py-1.5 text-sm font-bold rounded-lg transition-all ${activeTab === 'org' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}><Network className="w-4 h-4 inline-block mr-1.5" /> Org Chart</button>
+ </div>
+ <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white rounded-xl">
  <Plus className="w-4 h-4" /> {t("add_employee", "Add Employee")}
  </Button>
+ </div>
  </div>
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
@@ -245,6 +275,15 @@ export default function Employees() {
  "add_your_first_employee_to_get",
  "Add your first employee to get started."
  )}</p>
+ </div>
+ ) : activeTab === 'org' ? (
+ <div className="p-8 overflow-auto min-h-[500px] flex justify-center bg-slate-50/50 dark:bg-slate-900/50 custom-scrollbar">
+ {employees.filter(e => !e.reportsTo || e.reportsTo === '' || e.reportsTo === 'None' || !employees.find(x => x.id === e.reportsTo)).map(root => (
+ <div key={root.id} className="mx-8"><OrgNode employee={root} allEmployees={employees} /></div>
+ ))}
+ {employees.length > 0 && employees.filter(e => !e.reportsTo || e.reportsTo === '' || e.reportsTo === 'None' || !employees.find(x => x.id === e.reportsTo)).length === 0 && (
+ <div className="text-center text-muted-foreground mt-20">Could not find any root employees (no manager).</div>
+ )}
  </div>
  ) : (
  <table className="w-full text-sm">
