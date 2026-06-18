@@ -1952,12 +1952,6 @@ export const AppSchema = new Schema({
         id: column.text,
         created_at: column.text,
         company_id: column.text,
-        employee_name: column.text,
-        incident_date: column.text,
-        issue_type: column.text,
-        action_taken: column.text,
-        status: column.text,
-        notes: column.text,
     }),
     univ_discounts: new Table({
         id: column.text,
