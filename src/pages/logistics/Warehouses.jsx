@@ -7,7 +7,7 @@ import {
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
-import { toast} from 'react-hot-toast';
+import { toast } from '@/components/ui/use-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { Link} from 'react-router-dom';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem} from '@/components/ui/dropdown-menu';
@@ -95,12 +95,12 @@ export default function Warehouses() {
 };
 
  const handleSave = () => {
- if (!formData.warehouseName.trim() || !formData.location.trim()) {
- return toast.error('Warehouse name and location are required.');
-}
- if (formData.capacity && formData.usedCapacity && Number(formData.usedCapacity) > Number(formData.capacity)) {
- return toast.error('Used capacity cannot exceed total capacity.');
-}
+    if (!formData.warehouseName.trim() || !formData.location.trim()) {
+      return toast({ title: "Error", description: "Warehouse name and location are required.", variant: "destructive" });
+    }
+    if (formData.capacity && formData.usedCapacity && Number(formData.usedCapacity) > Number(formData.capacity)) {
+      return toast({ title: "Error", description: "Used capacity cannot exceed total capacity.", variant: "destructive" });
+    }
 
  mutateRecord.mutate({
  id: editTarget?.id,
@@ -110,18 +110,18 @@ export default function Warehouses() {
  searchText: `${formData.warehouseName} ${formData.code} ${formData.location}`,
 }, {
  onSuccess: () => {
- toast.success(editTarget ? 'Warehouse updated!' : 'Warehouse added!');
- closeModal();
+      toast({ title: "Success", description: editTarget ? 'Warehouse updated!' : 'Warehouse added!', variant: "default" });
+      closeModal();
 },
- onError: (err) => toast.error('Failed: ' + err.message),
+ onError: (err) => toast({ title: "Failed", description: err.message, variant: "destructive" }),
 });
 };
 
  const handleDelete = () => {
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'warehouse'}, {
- onSuccess: () => { toast.success('Warehouse removed!'); setDeleteTargetId(null);},
- onError: (err) => { toast.error('Failed: ' + err.message); setDeleteTargetId(null);},
-});
+    deleteRecord.mutate({ id: deleteTargetId, recordType: 'warehouse' }, {
+      onSuccess: () => { toast({ title: "Success", description: "Warehouse removed!", variant: "default" }); setDeleteTargetId(null); },
+      onError: (err) => { toast({ title: "Failed", description: err.message, variant: "destructive" }); setDeleteTargetId(null); },
+    });
 };
 
  const filtered = warehouses.filter(w =>

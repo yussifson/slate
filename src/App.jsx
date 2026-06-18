@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/toaster"
+import { Toaster as HotToaster } from "react-hot-toast"
 import { useToast } from "@/components/ui/use-toast"
 import { QueryClientProvider, useQueryClient } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -222,6 +223,8 @@ import RetailCustomers from './pages/retail/Customers';
 import RetailCustomerPortal from './pages/retail/CustomerPortal';
 
 // Logistics Pages
+const SmartDocs = React.lazy(() => import('./pages/logistics/SmartDocs'));
+const GeofenceAlerts = React.lazy(() => import('./pages/logistics/GeofenceAlerts'));
 import LogisticsShipments from './pages/logistics/Shipments';
 import LogisticsFleet from './pages/logistics/Fleet';
 import LogisticsDrivers from './pages/logistics/Drivers';
@@ -670,6 +673,8 @@ function PlatformRoutes() {
       <Route path="/customer-portal" element={<RetailCustomerPortal />} />
 
       {/* Logistics Suite */}
+      <Route path="/smart-docs" element={<SmartDocs />} />
+      <Route path="/geofences" element={<GeofenceAlerts />} />
       <Route path="/shipments" element={<LogisticsShipments />} />
       <Route path="/fleet" element={<LogisticsFleet />} />
       <Route path="/drivers" element={<LogisticsDrivers />} />
@@ -942,6 +947,7 @@ function App() {
                 </React.Suspense>
               </ErrorBoundary>
               <Toaster />
+              <HotToaster position="top-right" />
             </Router>
           </QueryClientProvider>
           </VideoProvider>

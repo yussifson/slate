@@ -584,8 +584,10 @@ export const INDUSTRIES = {
       { label: 'Dispatch Board', path: '/dispatch', icon: 'LayoutGrid' },
       { label: 'Real-Time Monitoring', path: '/dispatch/monitoring', icon: 'Activity' },
       { label: 'Multi-Stop Delivery', path: '/dispatch/multi-stop', icon: 'Navigation' },
+      { label: 'Geofence Alerts', path: '/geofences', icon: 'BellRing' },
       
-      { section: 'Core Operations', label: 'Shipments', path: '/shipments', icon: 'Package' },
+      { section: 'Core Operations', label: 'Smart Docs (OCR)', path: '/smart-docs', icon: 'Scan' },
+      { label: 'Shipments', path: '/shipments', icon: 'Package' },
       { label: 'Warehouse', path: '/warehouse', icon: 'Warehouse' },
       { label: 'Pickup Requests', path: '/pickups', icon: 'MapPin' },
       { label: 'Proof of Delivery', path: '/proof-of-delivery', icon: 'CheckCircle' },

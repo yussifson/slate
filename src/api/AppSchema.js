@@ -2072,7 +2072,7 @@ export const AppSchema = new Schema({
         license_plate: column.text,
         vehicle_type: column.text,
         status: column.text,
-        mileage: column.text,
+        mileage: column.real,
         last_service_date: column.text,
     }),
     univ_forkliftmaintenances: new Table({
