@@ -542,18 +542,29 @@ export const INDUSTRIES = {
     ],
     nav: [
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
-      { label: 'Shipments', path: '/shipments', icon: 'Package' },
+      
+      { section: 'Operations', label: 'Shipments', path: '/shipments', icon: 'Package' },
       { label: 'Dispatch Board', path: '/dispatch', icon: 'LayoutGrid' },
-      { label: 'Drivers', path: '/drivers', icon: 'Truck' },
-      { label: 'Routes', path: '/routes', icon: 'Map' },
+      { label: 'Route Optimization', path: '/routes', icon: 'Map' },
       { label: 'Warehouse', path: '/warehouse', icon: 'Warehouse' },
-      { label: 'Fleet', path: '/fleet', icon: 'Car' },
-      { label: 'Customers', path: '/clients', icon: 'Users' },
       { label: 'Pickup Requests', path: '/pickups', icon: 'MapPin' },
+      
+      { section: 'Fleet & Drivers', label: 'Fleet', path: '/fleet', icon: 'Car' },
+      { label: 'Drivers', path: '/drivers', icon: 'Truck' },
+      { label: 'Driver Mobile App', path: '/driver-mobile-app', icon: 'Smartphone' },
+      
+      { section: 'Delivery Management', label: 'Proof of Delivery', path: '/proof-of-delivery', icon: 'CheckCircle' },
+      { label: 'Returns', path: '/returns', icon: 'RefreshCw' },
+      { label: 'Incidents', path: '/incidents', icon: 'AlertTriangle' },
+      
+      { section: 'Business', label: 'Customers', path: '/clients', icon: 'Users' },
       { label: 'Billing', path: '/billing', icon: 'Receipt' },
-      { label: 'Staff', path: '/team', icon: 'UserCog' },
+      
+      { section: 'Analytics & Reporting', label: 'Advanced Analytics', path: '/logistics-analytics', icon: 'BarChart2' },
+      { label: 'Reports', path: '/reports', icon: 'FileText' },
+      
+      { section: 'Administration', label: 'Staff', path: '/team', icon: 'UserCog' },
       { label: 'HR & Leave', path: '/hr', icon: 'HeartHandshake' },
-      { label: 'Reports', path: '/reports', icon: 'BarChart2' },
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },

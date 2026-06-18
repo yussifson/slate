@@ -20,13 +20,13 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tool
 
 function MetricCard({ title, value, icon: Icon, iconBg, iconColor, subtitle, subtitleColor}) {
  return (
- <div className="bg-card rounded-xl border border-primary/40 p-5 flex items-center justify-between">
+ <div className="stat-card-premium group">
  <div>
- <p className="text-xs text-muted-foreground mb-1">{title}</p>
- <p className="text-2xl font-bold text-foreground">{value}</p>
- {subtitle && <p className={`text-xs mt-1 ${subtitleColor || "text-muted-foreground"}`}>{subtitle}</p>}
+ <p className="text-xs font-semibold text-muted-foreground/70 mb-2 uppercase tracking-wider">{title}</p>
+ <p className="text-3xl font-bold text-foreground tracking-tight">{value}</p>
+ {subtitle && <p className={`text-xs mt-2 font-medium ${subtitleColor || "text-muted-foreground"}`}>{subtitle}</p>}
  </div>
- <div className={`w-11 h-11 rounded-full ${iconBg} flex items-center justify-center`}>
+ <div className={`w-12 h-12 rounded-lg ${iconBg} flex items-center justify-center flex-shrink-0 transition-all group-hover:scale-105 group-hover:shadow-lg`}>
  <Icon className={`w-5 h-5 ${iconColor}`} />
  </div>
  </div>
@@ -127,19 +127,22 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
  <HearingReminders hearings={hearings} userEmail={user?.email} isAdmin={isAdmin} />
  {/* Header */}
  <div className="flex items-center justify-between">
- <h1 className="text-xl font-bold text-foreground">{t("dashboard", "Dashboard")}</h1>
- <div className="flex items-center gap-2">
- <Button variant="outline" size="sm" className="gap-1.5 text-xs ">
- <BarChart2 className="w-3.5 h-3.5" /> {t("analytics", "Analytics")}
+ <div>
+ <h1 className="text-3xl font-bold text-foreground tracking-tight">{t("dashboard", "Dashboard")}</h1>
+ <p className="text-sm text-muted-foreground/60 mt-1">Welcome back! Here's your business overview.</p>
+ </div>
+ <div className="flex items-center gap-3">
+ <Button variant="outline" size="sm" className="gap-2 text-xs">
+ <BarChart2 className="w-4 h-4" /> {t("analytics", "Analytics")}
  </Button>
- <Button variant="outline" size="sm" className="gap-1.5 text-xs " onClick={handleRefresh} disabled={isRefreshing}>
- <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`} /> 
+ <Button variant="default" size="sm" className="gap-2 text-xs" onClick={handleRefresh} disabled={isRefreshing}>
+ <RefreshCw className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`} /> 
  {isRefreshing ? "Refreshing..." : "Refresh"}
  </Button>
  </div>
  </div>
  {/* Metric Cards */}
- <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+ <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
  <MetricCard title={`Active ${casesTermPlural}`} value={activeCases.length} icon={Briefcase} iconBg="bg-slate-100" iconColor="text-primary" subtitle={`${cases.length} total`} />
  <MetricCard title={`Active ${clientsTermPlural}`} value={activeClients.length} icon={Users} iconBg="bg-slate-100" iconColor="text-primary"
  subtitle={clients.length > 0 ? `+${Math.round((activeClients.length / Math.max(clients.length, 1)) * 100)}% this month` : undefined}

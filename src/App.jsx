@@ -12,7 +12,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import React, { useEffect } from 'react';
 import { PowerSyncContext } from '@powersync/react';
 import { HelmetProvider } from 'react-helmet-async';
-import { powerSync, initPowerSync } from './api/PowerSyncConnector';
+import { powerSync, initPowerSync, clearPowerSyncDatabase } from './api/PowerSyncConnector';
 import { supabase } from './api/supabaseClient';
 
 const UnivCRM = React.lazy(() => import('@/components/universal/UnivCRM'));
@@ -227,6 +227,12 @@ import LogisticsFleet from './pages/logistics/Fleet';
 import LogisticsDrivers from './pages/logistics/Drivers';
 import LogisticsTrackingPortal from './pages/logistics/TrackingPortal';
 import LogisticsWarehouses from './pages/logistics/Warehouses';
+import LogisticsRouteOptimization from './pages/logistics/RouteOptimization';
+import LogisticsProofOfDelivery from './pages/logistics/ProofOfDelivery';
+import LogisticsIncidentManagement from './pages/logistics/IncidentManagement';
+import LogisticsReturnsManagement from './pages/logistics/ReturnsManagement';
+import LogisticsAdvancedAnalytics from './pages/logistics/AdvancedAnalytics';
+import LogisticsDriverMobileApp from './pages/logistics/DriverMobileApp';
 
 // HR Pages
 import HREmployees from './pages/hr/Employees';
@@ -669,6 +675,12 @@ function PlatformRoutes() {
       <Route path="/drivers" element={<LogisticsDrivers />} />
       <Route path="/tracking" element={<LogisticsTrackingPortal />} />
       <Route path="/warehouse" element={<LogisticsWarehouses />} />
+      <Route path="/routes" element={<LogisticsRouteOptimization />} />
+      <Route path="/proof-of-delivery" element={<LogisticsProofOfDelivery />} />
+      <Route path="/incidents" element={<LogisticsIncidentManagement />} />
+      <Route path="/returns" element={<LogisticsReturnsManagement />} />
+      <Route path="/logistics-analytics" element={<LogisticsAdvancedAnalytics />} />
+      <Route path="/driver-mobile-app" element={<LogisticsDriverMobileApp />} />
 
       {/* HR Suite */}
       <Route path="/employees" element={<HREmployees />} />
@@ -843,7 +855,25 @@ function App() {
   const isBaseDomain = currentSubdomain === null;
 
   useEffect(() => {
-    initPowerSync().catch(console.error);
+    const initDatabase = async () => {
+      try {
+        // Check if we need to refresh the schema (version mismatch recovery)
+        const schemaVersion = localStorage.getItem('powersync_schema_version');
+        const currentVersion = 'v2.1'; // Increment this when schema changes
+        
+        if (schemaVersion !== currentVersion) {
+          console.log('[PowerSync] Schema version mismatch - clearing local database');
+          await clearPowerSyncDatabase();
+          localStorage.setItem('powersync_schema_version', currentVersion);
+        }
+        
+        await initPowerSync();
+      } catch (error) {
+        console.error('[PowerSync] Initialization error:', error);
+      }
+    };
+    
+    initDatabase();
   }, []);
 
   return (

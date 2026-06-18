@@ -186,10 +186,28 @@ let initPromise = null;
 export const initPowerSync = () => {
   if (!initPromise) {
     initPromise = (async () => {
-      const connector = new SupabaseConnector();
-      await powerSync.init();
-      await powerSync.connect(connector);
+      try {
+        const connector = new SupabaseConnector();
+        await powerSync.init();
+        await powerSync.connect(connector);
+        
+        // Force sync to pull updated schema from Supabase
+        console.log("[PowerSync] Initialized and connected");
+      } catch (error) {
+        console.error("[PowerSync] Initialization error:", error);
+        throw error;
+      }
     })();
   }
   return initPromise;
+};
+
+// Clear local database to force schema refresh from Supabase
+export const clearPowerSyncDatabase = async () => {
+  try {
+    await powerSync.disconnectAndClear();
+    console.log("[PowerSync] Local database cleared");
+  } catch (error) {
+    console.error("[PowerSync] Error clearing database:", error);
+  }
 };
