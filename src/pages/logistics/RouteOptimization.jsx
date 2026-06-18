@@ -160,28 +160,38 @@ export default function RouteOptimization() {
                 <label className="text-sm font-semibold block mb-3">
                   Select Shipments ({selectedShipments.length} selected)
                 </label>
-                <div className="space-y-2 max-h-96 overflow-y-auto border rounded-lg p-3">
-                  {pendingShipments.map(shipment => (
-                    <label key={shipment.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded">
-                      <input
-                        type="checkbox"
-                        checked={selectedShipments.includes(shipment.id)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedShipments([...selectedShipments, shipment.id]);
-                          } else {
-                            setSelectedShipments(selectedShipments.filter(id => id !== shipment.id));
-                          }
-                        }}
-                        className="w-4 h-4"
-                      />
-                      <div className="flex-1">
-                        <p className="font-semibold text-sm">{shipment.data?.trackingNumber}</p>
-                        <p className="text-xs text-gray-600">{shipment.data?.destination}</p>
-                      </div>
-                    </label>
-                  ))}
-                </div>
+                {pendingShipments.length === 0 ? (
+                  <div className="border rounded-lg p-6 text-center text-gray-500">
+                    <Package className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No pending shipments available</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2 max-h-64 overflow-y-auto border rounded-lg p-3 bg-gray-50">
+                    {pendingShipments.map(shipment => (
+                      <label key={shipment.id} className="flex items-center gap-3 p-3 hover:bg-white rounded transition-colors cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedShipments.includes(shipment.id)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedShipments([...selectedShipments, shipment.id]);
+                            } else {
+                              setSelectedShipments(selectedShipments.filter(id => id !== shipment.id));
+                            }
+                          }}
+                          className="w-4 h-4 cursor-pointer"
+                        />
+                        <div className="flex-1">
+                          <p className="font-semibold text-sm">{shipment.data?.trackingNumber || shipment.id?.slice(0, 8)}</p>
+                          <p className="text-xs text-gray-600">{shipment.data?.destination || 'No destination'}</p>
+                        </div>
+                        <Badge className="bg-blue-100 text-blue-700 text-xs">
+                          {shipment.status || 'Pending'}
+                        </Badge>
+                      </label>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div>
