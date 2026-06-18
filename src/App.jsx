@@ -224,6 +224,7 @@ import RetailCustomerPortal from './pages/retail/CustomerPortal';
 
 // Logistics Pages
 const SmartDocs = React.lazy(() => import('./pages/logistics/SmartDocs'));
+const RouteOptimization = React.lazy(() => import('./pages/logistics/RouteOptimization'));
 const GeofenceAlerts = React.lazy(() => import('./pages/logistics/GeofenceAlerts'));
 import LogisticsShipments from './pages/logistics/Shipments';
 import LogisticsFleet from './pages/logistics/Fleet';
@@ -674,6 +675,7 @@ function PlatformRoutes() {
 
       {/* Logistics Suite */}
       <Route path="/smart-docs" element={<SmartDocs />} />
+      <Route path="/ai-routes" element={<RouteOptimization />} />
       <Route path="/geofences" element={<GeofenceAlerts />} />
       <Route path="/shipments" element={<LogisticsShipments />} />
       <Route path="/fleet" element={<LogisticsFleet />} />

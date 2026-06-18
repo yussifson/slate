@@ -1,296 +1,276 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import {
-  Map, Zap, Plus, Filter, MoreVertical, Eye, Edit2, Trash2,
-  Truck, Package, Clock, MapPin, AlertCircle, CheckCircle2
-} from 'lucide-react';
+import { Map, MapPin, Zap, Lock, Navigation, ListOrdered, Save, Loader2, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useIndustryRecords } from '@/hooks/useIndustryData';
-import { useRoutes, useAutoAssignment } from '@/hooks/logistics/useRouteOptimization';
-import { toast } from 'react-hot-toast';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { useCompanyId } from '@/hooks/useCompanyId';
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem
-} from '@/components/ui/dropdown-menu';
-
-const STATUS_COLORS = {
-  'planned': 'bg-blue-100 text-blue-700',
-  'in-progress': 'bg-orange-100 text-orange-700',
-  'completed': 'bg-green-100 text-green-700',
-  'cancelled': 'bg-red-100 text-red-700'
-};
+import { toast } from '@/components/ui/use-toast';
+import { usePowerSync } from '@powersync/react';
+import { useAuth } from '@/lib/AuthContext';
+import { useSubscription } from '@/hooks/useSubscription';
+import { generateText } from '@/lib/cloudflareAI';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function RouteOptimization() {
   const { t } = useTranslation();
-  const companyId = useCompanyId();
-  const [search, setSearch] = useState('');
-  const [showOptimizeModal, setShowOptimizeModal] = useState(false);
-  const [selectedShipments, setSelectedShipments] = useState([]);
-  const [optimizationStrategy, setOptimizationStrategy] = useState('cost');
+  const powerSync = usePowerSync();
+  const { user } = useAuth();
+  const companyId = user?.app_metadata?.company_id || '00000000-0000-0000-0000-000000000000';
+  
+  // Custom hook that checks subscription.
+  const { data: subData } = useSubscription();
+  // If useSubscription returns null initially, we default to starter to be safe.
+  const plan = subData?.subscription_plan || 'starter';
+  const isProOrAbove = plan === 'pro' || plan === 'enterprise';
 
-  const { data: shipments } = useIndustryRecords('shipment');
-  const { data: routes } = useRoutes();
-  const { mutate: autoAssign, isPending: isAssigning } = useAutoAssignment();
+  const [stops, setStops] = useState([{ id: crypto.randomUUID(), address: '' }, { id: crypto.randomUUID(), address: '' }]);
+  const [isOptimizing, setIsOptimizing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [routeName, setRouteName] = useState('Today Delivery Route');
 
-  const pendingShipments = shipments?.filter(s => s.status === 'Pending') || [];
-  const unassignedCount = pendingShipments.length - selectedShipments.length;
+  const handleAddStop = () => {
+    setStops([...stops, { id: crypto.randomUUID(), address: '' }]);
+  };
+
+  const handleRemoveStop = (id) => {
+    setStops(stops.filter(s => s.id !== id));
+  };
+
+  const handleUpdateStop = (id, address) => {
+    setStops(stops.map(s => s.id === id ? { ...s, address } : s));
+  };
 
   const handleOptimize = async () => {
-    if (selectedShipments.length === 0) {
-      toast.error('Please select at least one shipment');
+    const validStops = stops.filter(s => s.address.trim() !== '');
+    if (validStops.length < 2) {
+      toast({ title: "Error", description: "Please add at least 2 addresses.", variant: "destructive" });
       return;
     }
 
-    autoAssign({
-      shipmentIds: selectedShipments,
-      optimizationStrategy
-    }, {
-      onSuccess: () => {
-        toast.success('Routes optimized successfully!');
-        setShowOptimizeModal(false);
-        setSelectedShipments([]);
-      },
-      onError: (error) => toast.error(`Error: ${error.message}`)
-    });
+    setIsOptimizing(true);
+    try {
+      const prompt = `You are a logistics AI. I have a list of delivery addresses. Optimize the delivery route for efficiency. 
+      Return ONLY a raw JSON array of objects representing the optimized sequence. Each object MUST have an "original_id" matching the input, and an "address". 
+      No markdown, no explanation.
+      
+      Input Addresses:
+      ${validStops.map(s => JSON.stringify({ original_id: s.id, address: s.address })).join(',\n')}
+      `;
+
+      const response = await generateText([{ role: 'user', content: prompt }]);
+      
+      let optimizedArray = [];
+      try {
+        const cleaned = response.replace(/```json/g, '').replace(/```/g, '').trim();
+        optimizedArray = JSON.parse(cleaned);
+      } catch (e) {
+        throw new Error('Failed to parse AI output.');
+      }
+
+      if (!Array.isArray(optimizedArray) || optimizedArray.length === 0) {
+        throw new Error('Invalid AI response format.');
+      }
+
+      // Reorder local state based on AI response
+      const reorderedStops = optimizedArray.map(opt => {
+        const original = validStops.find(s => s.id === opt.original_id);
+        return original || { id: crypto.randomUUID(), address: opt.address };
+      });
+
+      setStops(reorderedStops);
+      toast({ title: "Optimized!", description: "AI has successfully generated the most efficient route.", variant: "default" });
+    } catch (error) {
+      console.error(error);
+      toast({ title: "AI Optimization Failed", description: error.message, variant: "destructive" });
+    } finally {
+      setIsOptimizing(false);
+    }
+  };
+
+  const handleSaveRoute = async () => {
+    const validStops = stops.filter(s => s.address.trim() !== '');
+    if (validStops.length === 0) return;
+
+    setIsSaving(true);
+    try {
+      const routeId = crypto.randomUUID();
+      
+      // Save route header
+      await powerSync.execute(
+        `INSERT INTO logistics_routes (id, company_id, name, date, status) VALUES (?, ?, ?, ?, ?)`,
+        [routeId, companyId, routeName, new Date().toISOString().split('T')[0], 'pending']
+      );
+
+      // Save individual stops
+      for (let i = 0; i < validStops.length; i++) {
+        await powerSync.execute(
+          `INSERT INTO logistics_route_stops (id, route_id, company_id, address, sequence_number, status) VALUES (?, ?, ?, ?, ?, ?)`,
+          [crypto.randomUUID(), routeId, companyId, validStops[i].address, i + 1, 'pending']
+        );
+      }
+
+      toast({ title: "Route Saved", description: "Route synced to drivers.", variant: "default" });
+      setStops([{ id: crypto.randomUUID(), address: '' }, { id: crypto.randomUUID(), address: '' }]);
+    } catch (error) {
+      console.error(error);
+      toast({ title: "Error", description: "Failed to save route.", variant: "destructive" });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
+    <div className="p-4 sm:p-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Route Optimization</h1>
-          <p className="text-gray-600 mt-1">Intelligently assign and optimize delivery routes</p>
+          <h1 className="text-2xl font-bold text-card-foreground flex items-center gap-2">
+            <Zap className="w-6 h-6 text-primary" />
+            {t("ai_route_optimization", "AI Route Optimization")}
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            {t("route_opt_desc", "Use our advanced AI to find the most efficient delivery sequence for your fleet.")}
+          </p>
         </div>
-        <Button 
-          onClick={() => setShowOptimizeModal(true)}
-          className="gap-2 bg-primary hover:bg-primary/90"
-        >
-          <Zap className="w-4 h-4" />
-          Optimize Routes
-        </Button>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">{routes?.length || 0}</div>
-              <p className="text-sm text-gray-600 mt-2">Active Routes</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-orange-600">{pendingShipments.length}</div>
-              <p className="text-sm text-gray-600 mt-2">Unassigned</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-green-600">
-                {routes?.filter(r => r.route_status === 'completed').length || 0}
-              </div>
-              <p className="text-sm text-gray-600 mt-2">Completed</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-center">
-              <div className="text-3xl font-bold">
-                {routes?.reduce((sum, r) => sum + (r.optimized_distance || 0), 0).toFixed(0)}
-              </div>
-              <p className="text-sm text-gray-600 mt-2">Total Distance (km)</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Routes List */}
-      <Card>
-        <CardHeader>
-          <div className="flex justify-between items-center">
-            <CardTitle>Active Routes</CardTitle>
-            <div className="flex gap-2">
-              <Input
-                placeholder="Search routes..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-64"
-              />
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {routes && routes.length > 0 ? (
-              routes.map(route => (
-                <RouteCard key={route.id} route={route} />
-              ))
-            ) : (
-              <div className="text-center py-12">
-                <Map className="w-12 h-12 mx-auto text-gray-300 mb-3" />
-                <p className="text-gray-500">No routes created yet</p>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Optimization Modal */}
-      {showOptimizeModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <Card className="w-full max-w-md">
-            <CardHeader>
-              <CardTitle>Optimize Shipments</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {/* Left Column: Route Builder */}
+        <div className="lg:col-span-1 space-y-6">
+          <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+            <div className="mb-6 space-y-4">
               <div>
-                <label className="text-sm font-semibold block mb-3">
-                  Select Shipments ({selectedShipments.length} selected)
-                </label>
-                <div className="space-y-2 max-h-96 overflow-y-auto border rounded-lg p-3">
-                  {pendingShipments.map(shipment => (
-                    <label key={shipment.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded">
-                      <input
-                        type="checkbox"
-                        checked={selectedShipments.includes(shipment.id)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedShipments([...selectedShipments, shipment.id]);
-                          } else {
-                            setSelectedShipments(selectedShipments.filter(id => id !== shipment.id));
-                          }
-                        }}
-                        className="w-4 h-4"
-                      />
-                      <div className="flex-1">
-                        <p className="font-semibold text-sm">{shipment.data?.trackingNumber}</p>
-                        <p className="text-xs text-gray-600">{shipment.data?.destination}</p>
-                      </div>
-                    </label>
-                  ))}
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Route Name</label>
+                <Input value={routeName} onChange={e => setRouteName(e.target.value)} className="mt-1" />
+              </div>
+            </div>
+
+            <h2 className="text-lg font-bold text-card-foreground mb-4 flex items-center gap-2">
+              <ListOrdered className="w-5 h-5 text-primary" />
+              Delivery Stops
+            </h2>
+
+            <div className="space-y-3">
+              {stops.map((stop, index) => (
+                <div key={stop.id} className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold shrink-0">
+                    {index + 1}
+                  </div>
+                  <Input 
+                    placeholder="Enter address..." 
+                    value={stop.address}
+                    onChange={(e) => handleUpdateStop(stop.id, e.target.value)}
+                  />
+                  <Button variant="ghost" size="icon" onClick={() => handleRemoveStop(stop.id)} className="text-destructive shrink-0">
+                    <TrashIcon className="w-4 h-4" />
+                  </Button>
                 </div>
-              </div>
+              ))}
+            </div>
 
-              <div>
-                <label className="text-sm font-semibold block mb-2">Optimization Strategy</label>
-                <select
-                  value={optimizationStrategy}
-                  onChange={(e) => setOptimizationStrategy(e.target.value)}
-                  className="w-full border rounded-lg p-2 text-sm"
-                >
-                  <option value="cost">Minimize Cost</option>
-                  <option value="time">Minimize Time</option>
-                  <option value="distance">Minimize Distance</option>
-                  <option value="balanced">Balanced</option>
-                </select>
-              </div>
-
-              <div className="flex gap-2 pt-4">
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => setShowOptimizeModal(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="flex-1 gap-2 bg-primary"
-                  onClick={handleOptimize}
-                  disabled={isAssigning || selectedShipments.length === 0}
-                >
-                  <Zap className="w-4 h-4" />
-                  {isAssigning ? 'Optimizing...' : 'Optimize'}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+            <Button variant="outline" onClick={handleAddStop} className="w-full mt-4 border-dashed">
+              + Add Another Stop
+            </Button>
+          </div>
         </div>
-      )}
+
+        {/* Right Column: AI & Map */}
+        <div className="lg:col-span-2 space-y-6">
+          
+          {/* AI Optimization Banner / Paywall */}
+          <div className="relative rounded-2xl overflow-hidden border border-primary/20 bg-gradient-to-r from-primary/10 to-transparent p-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="space-y-2 flex-1">
+              <h3 className="text-lg font-bold flex items-center gap-2">
+                <Zap className="w-5 h-5 text-primary fill-primary" /> 
+                Smart Routing Engine
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Let our AI instantly calculate the fastest, most fuel-efficient sequence for these stops.
+              </p>
+            </div>
+
+            <div className="relative">
+              {!isProOrAbove && (
+                <div className="absolute -inset-2 bg-background/80 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center rounded-xl border border-border">
+                  <Lock className="w-5 h-5 text-amber-500 mb-1" />
+                  <span className="text-[10px] font-bold text-amber-600 uppercase tracking-wider">Pro Plan Required</span>
+                </div>
+              )}
+              <Button 
+                onClick={handleOptimize} 
+                disabled={isOptimizing || !isProOrAbove} 
+                className="gap-2 relative z-0"
+                size="lg"
+              >
+                {isOptimizing ? <Loader2 className="w-5 h-5 animate-spin" /> : <Play className="w-5 h-5" />}
+                {isOptimizing ? "Calculating..." : "AI Optimize Route"}
+              </Button>
+            </div>
+          </div>
+
+          {/* Map Preview Area */}
+          <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm h-[500px] flex flex-col relative">
+             {/* Simulated Map Background */}
+             <div className="absolute inset-0 bg-slate-100 dark:bg-slate-900 opacity-50 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxyZWN0IHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0ibm9uZSI+PC9yZWN0Pgo8cGF0aCBkPSJNMCAyMEw0MCAyME0yMCAwTDIwIDQwIiBzdHJva2U9InJnYmEoMCwgMCwgMCwgMC4wNSkiIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4=')]"></div>
+             
+             <div className="p-4 border-b border-border/50 bg-background/80 backdrop-blur-md relative z-10 flex justify-between items-center">
+                <h3 className="font-semibold flex items-center gap-2"><Map className="w-4 h-4" /> Live Route Preview</h3>
+                <Button onClick={handleSaveRoute} disabled={isSaving || stops.filter(s=>s.address).length < 2} size="sm" className="gap-2">
+                   {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Save Route
+                </Button>
+             </div>
+
+             <div className="flex-1 relative z-10 p-6 flex items-center justify-center">
+                {stops.filter(s => s.address).length > 0 ? (
+                  <div className="space-y-6 w-full max-w-md bg-background/90 p-6 rounded-xl border border-border shadow-lg backdrop-blur-md">
+                     {stops.filter(s => s.address).map((stop, i, arr) => (
+                       <div key={stop.id} className="relative">
+                          <div className="flex items-center gap-4">
+                             <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold shadow-md z-10">
+                               {i + 1}
+                             </div>
+                             <div className="flex-1">
+                               <p className="text-sm font-semibold truncate">{stop.address}</p>
+                               {i < arr.length - 1 && <p className="text-[10px] text-muted-foreground mt-1">Driving ~15 mins</p>}
+                             </div>
+                          </div>
+                          {i < arr.length - 1 && (
+                            <div className="absolute left-4 top-8 bottom-[-24px] w-0.5 bg-primary/30"></div>
+                          )}
+                       </div>
+                     ))}
+                  </div>
+                ) : (
+                  <div className="text-center text-muted-foreground flex flex-col items-center">
+                     <Navigation className="w-12 h-12 mb-3 opacity-20" />
+                     <p>Add delivery stops to see the route preview.</p>
+                  </div>
+                )}
+             </div>
+          </div>
+
+        </div>
+      </div>
     </div>
   );
 }
 
-function RouteCard({ route }) {
+function TrashIcon(props) {
   return (
-    <div className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
-      <div className="flex justify-between items-start mb-3">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-semibold">Route {route.id?.slice(0, 8)}</h3>
-            <Badge className={STATUS_COLORS[route.route_status]}>
-              {route.route_status}
-            </Badge>
-          </div>
-          <p className="text-sm text-gray-600">{route.shipment_ids?.length || 0} deliveries</p>
-        </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm">
-              <MoreVertical className="w-4 h-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem className="gap-2">
-              <Eye className="w-4 h-4" />
-              View Details
-            </DropdownMenuItem>
-            <DropdownMenuItem className="gap-2">
-              <Edit2 className="w-4 h-4" />
-              Edit Route
-            </DropdownMenuItem>
-            <DropdownMenuItem className="gap-2 text-red-600">
-              <Trash2 className="w-4 h-4" />
-              Delete Route
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      {/* Route Details */}
-      <div className="grid grid-cols-4 gap-4 text-sm bg-gray-50 rounded p-3">
-        <div>
-          <p className="text-gray-600">Distance</p>
-          <p className="font-semibold">{route.optimized_distance?.toFixed(1) || 0} km</p>
-        </div>
-        <div>
-          <p className="text-gray-600">Est. Time</p>
-          <p className="font-semibold">{route.estimated_duration_minutes || 0} min</p>
-        </div>
-        <div>
-          <p className="text-gray-600">Priority</p>
-          <p className="font-semibold">{route.priority || 5}/10</p>
-        </div>
-        <div>
-          <p className="text-gray-600">Vehicle</p>
-          <p className="font-semibold">ID: {route.vehicle_id?.slice(0, 8)}</p>
-        </div>
-      </div>
-
-      {/* Shipments */}
-      <div className="mt-3 space-y-2">
-        {route.shipment_ids?.slice(0, 3).map((shipmentId, idx) => (
-          <div key={idx} className="flex items-center gap-2 text-xs text-gray-600">
-            <Package className="w-3 h-3" />
-            <span>{shipmentId?.slice(0, 8)}...</span>
-          </div>
-        ))}
-        {route.shipment_ids?.length > 3 && (
-          <p className="text-xs text-gray-500 ml-5">+{route.shipment_ids.length - 3} more</p>
-        )}
-      </div>
-    </div>
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 6h18" />
+      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+    </svg>
   );
 }
