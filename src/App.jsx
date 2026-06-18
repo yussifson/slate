@@ -613,13 +613,6 @@ function PlatformRoutes() {
       <Route path="/o/community" element={<OnlineCommunity />} />
       <Route path="/o/ai" element={<OrbitAIAssistant />} />
 
-      <Route path="/canteen-pos" element={<SchoolCanteenPOS />} />
-      <Route path="/complaints" element={<SchoolComplaints />} />
-      <Route path="/support-center" element={<SchoolSupportCenter />} />
-
-      <Route path="/campus-marketplace" element={<SchoolCampusMarketplace />} />
-      <Route path="/institution-settings" element={<SchoolInstitutionSettings />} />
-
       {/* Hospital Suite */}
       <Route path="/patients" element={<HospitalPatients />} />
       <Route path="/appointments" element={<HospitalAppointments />} />
