@@ -847,5 +847,11 @@ export const SCHEMA_COLUMNS = {
   "online_lessons": ["id","created_date","updated_date","created_by","company_id","course_id","title","description","video_url","content","order_index","is_preview","duration_minutes","resources"],
   "online_enrollments": ["id","created_date","updated_date","created_by","company_id","course_id","student_id","student_name","student_email","enrollment_date","progress_percent","status","last_accessed","certificate_issued","certificate_url"],
   "online_assessments": ["id","created_date","updated_date","created_by","company_id","course_id","lesson_id","title","type","questions","passing_score","time_limit_minutes"],
-  "online_certificates": ["id","created_date","updated_date","created_by","company_id","enrollment_id","student_id","student_name","course_id","course_title","issue_date","credential_id","pdf_url","status"]
+  "online_certificates": ["id","created_date","updated_date","created_by","company_id","enrollment_id","student_id","student_name","course_id","course_title","issue_date","credential_id","pdf_url","status"],
+  
+  "routes": ["id","created_at","updated_at","company_id","driver_id","driver_name","status","shipment_ids","optimized_route","estimated_distance","estimated_time","actual_distance","actual_time","start_location","end_location","waypoints"],
+  "pod_records": ["id","created_at","updated_at","company_id","shipment_id","delivery_date","recipient_name","signature_data","photo_urls","delivery_notes","status"],
+  "return_orders": ["id","created_at","updated_at","company_id","original_shipment_id","return_reason","status","initiation_date","expected_return_date","actual_return_date","notes"],
+  "incident_reports": ["id","created_at","updated_at","company_id","shipment_id","incident_type","severity","description","location","reported_by","evidence_urls","resolution","status"],
+  "gps_tracking": ["id","created_at","company_id","shipment_id","driver_id","latitude","longitude","accuracy","speed","heading","timestamp"]
 };
