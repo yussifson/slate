@@ -227,6 +227,12 @@ import LogisticsFleet from './pages/logistics/Fleet';
 import LogisticsDrivers from './pages/logistics/Drivers';
 import LogisticsTrackingPortal from './pages/logistics/TrackingPortal';
 import LogisticsWarehouses from './pages/logistics/Warehouses';
+import LogisticsRouteOptimization from './pages/logistics/RouteOptimization';
+import LogisticsProofOfDelivery from './pages/logistics/ProofOfDelivery';
+import LogisticsIncidentManagement from './pages/logistics/IncidentManagement';
+import LogisticsReturnsManagement from './pages/logistics/ReturnsManagement';
+import LogisticsAdvancedAnalytics from './pages/logistics/AdvancedAnalytics';
+import LogisticsDriverMobileApp from './pages/logistics/DriverMobileApp';
 
 // HR Pages
 import HREmployees from './pages/hr/Employees';
@@ -669,6 +675,12 @@ function PlatformRoutes() {
       <Route path="/drivers" element={<LogisticsDrivers />} />
       <Route path="/tracking" element={<LogisticsTrackingPortal />} />
       <Route path="/warehouse" element={<LogisticsWarehouses />} />
+      <Route path="/routes" element={<LogisticsRouteOptimization />} />
+      <Route path="/proof-of-delivery" element={<LogisticsProofOfDelivery />} />
+      <Route path="/incidents" element={<LogisticsIncidentManagement />} />
+      <Route path="/returns" element={<LogisticsReturnsManagement />} />
+      <Route path="/logistics-analytics" element={<LogisticsAdvancedAnalytics />} />
+      <Route path="/driver-mobile-app" element={<LogisticsDriverMobileApp />} />
 
       {/* HR Suite */}
       <Route path="/employees" element={<HREmployees />} />
