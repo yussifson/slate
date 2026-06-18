@@ -1103,6 +1103,23 @@ export const AppSchema = new Schema({
         notes: column.text,
         outcome: column.text,
     }),
+    logistics_routes: new Table({
+        company_id: column.text,
+        created_at: column.text,
+        name: column.text,
+        date: column.text,
+        status: column.text,
+    }),
+    logistics_route_stops: new Table({
+        route_id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        address: column.text,
+        lat: column.real,
+        lng: column.real,
+        sequence_number: column.integer,
+        status: column.text,
+    }),
     logistics_smart_docs: new Table({
         company_id: column.text,
         created_at: column.text,
