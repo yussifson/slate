@@ -546,6 +546,7 @@ export const INDUSTRIES = {
       { section: 'Driver Management', label: 'Driver Profiles', path: '/drivers', icon: 'Truck' },
       { section: 'Dispatch & Operations', label: 'Dispatch Board', path: '/dispatch', icon: 'LayoutGrid' },
       { label: 'AI Route Optimization', path: '/ai-routes', icon: 'Zap' },
+      { label: 'Load Board', path: '/load-board', icon: 'PackageSearch' },
       { label: 'Geofence Alerts', path: '/geofences', icon: 'BellRing' },
       { section: 'Core Operations', label: 'Smart Docs (OCR)', path: '/smart-docs', icon: 'Scan' },
       { label: 'Shipments', path: '/shipments', icon: 'Package' },
