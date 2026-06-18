@@ -50,7 +50,7 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
       }
 
       toast.success('Document successfully parsed!');
-      if (onExtracted) onExtracted(extractedData);
+      if (onExtracted) onExtracted(extractedData, file);
       
     } catch (error) {
       console.error(error);

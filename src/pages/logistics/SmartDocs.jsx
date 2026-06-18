@@ -1,23 +1,81 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Scan, FileText, CheckCircle, Package, Truck, Database, Save, UploadCloud } from 'lucide-react';
+import { Scan, FileText, CheckCircle, Database, Save, UploadCloud, Loader2, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import AIDocumentParser from '@/components/shared/AIDocumentParser';
 import { toast } from '@/components/ui/use-toast';
+import { usePowerSync } from '@powersync/react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function SmartDocs() {
   const { t } = useTranslation();
+  const powerSync = usePowerSync();
+  const { user } = useAuth();
+  const companyId = user?.app_metadata?.company_id || '00000000-0000-0000-0000-000000000000';
+  
   const [extractedData, setExtractedData] = useState(null);
+  const [currentFile, setCurrentFile] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleExtracted = (data) => {
+  // Fetch historical docs
+  const { data: historicalDocs } = useQuery({
+    queryKey: ['logistics_smart_docs', companyId],
+    queryFn: async () => {
+      const res = await powerSync.execute(
+        'SELECT * FROM logistics_smart_docs WHERE company_id = ? ORDER BY created_at DESC', 
+        [companyId]
+      );
+      return res.rows?._array || [];
+    }
+  });
+
+  const handleExtracted = (data, file) => {
     setExtractedData(data);
-    toast({ title: "Success", description: "Document data successfully extracted via AI.", variant: "default" });
+    setCurrentFile(file);
   };
 
-  const handleSave = () => {
-    // In a real implementation, we would save this to the database
-    toast({ title: "Saved", description: "Document data has been saved to the system.", variant: "default" });
-    setExtractedData(null);
+  const handleSave = async () => {
+    if (!extractedData || !currentFile) return;
+    setIsSaving(true);
+    
+    try {
+      // 1. Upload to Supabase Storage
+      const fileExt = currentFile.name.split('.').pop();
+      const fileName = `${uuidv4()}.${fileExt}`;
+      const filePath = `${companyId}/smart_docs/${fileName}`;
+      
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('documents')
+        .upload(filePath, currentFile);
+        
+      if (uploadError) throw uploadError;
+      
+      const { data: publicUrlData } = supabase.storage
+        .from('documents')
+        .getPublicUrl(filePath);
+        
+      const fileUrl = publicUrlData.publicUrl;
+      const docId = uuidv4();
+
+      // 2. Insert into PowerSync Database
+      await powerSync.execute(
+        `INSERT INTO logistics_smart_docs (id, company_id, document_type, file_url, extracted_data, status) 
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [docId, companyId, 'bol', fileUrl, JSON.stringify(extractedData), 'verified']
+      );
+
+      toast({ title: "Saved", description: "Document and extracted data saved successfully.", variant: "default" });
+      setExtractedData(null);
+      setCurrentFile(null);
+    } catch (error) {
+      console.error(error);
+      toast({ title: "Error", description: "Failed to save document.", variant: "destructive" });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -45,23 +103,51 @@ export default function SmartDocs() {
               onExtracted={handleExtracted} 
               fieldsContext="freight document details such as: Shipper Name, Consignee Name, Delivery Address, Total Weight, Number of Packages, Delivery Date, Driver Signature Present (boolean), and Freight Charge."
             />
-            <div className="mt-6 p-4 bg-muted/50 rounded-xl border border-border">
-              <h3 className="font-semibold text-sm mb-2">Supported Document Types:</h3>
-              <ul className="text-xs text-muted-foreground space-y-1">
-                <li className="flex items-center gap-1"><CheckCircle className="w-3 h-3 text-emerald-500" /> Bill of Lading (BOL)</li>
-                <li className="flex items-center gap-1"><CheckCircle className="w-3 h-3 text-emerald-500" /> Proof of Delivery (POD)</li>
-                <li className="flex items-center gap-1"><CheckCircle className="w-3 h-3 text-emerald-500" /> Commercial Invoices</li>
-                <li className="flex items-center gap-1"><CheckCircle className="w-3 h-3 text-emerald-500" /> Packing Slips</li>
-              </ul>
+          </div>
+          
+          {/* Historical Docs */}
+          <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+             <h2 className="text-lg font-bold text-card-foreground mb-4 flex items-center gap-2">
+              <Database className="w-5 h-5 text-primary" />
+              Recently Processed
+            </h2>
+            <div className="space-y-3">
+              {historicalDocs?.map(doc => {
+                const data = JSON.parse(doc.extracted_data || '{}');
+                return (
+                  <div key={doc.id} className="p-3 border border-border rounded-xl flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <FileText className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold truncate max-w-[200px]">{data['Shipper Name'] || data['Consignee Name'] || 'Freight Document'}</p>
+                        <p className="text-xs text-muted-foreground flex items-center gap-1">
+                           <Calendar className="w-3 h-3" />
+                           {new Date(doc.created_at).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-medium px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full">
+                        {doc.status}
+                      </span>
+                    </div>
+                  </div>
+                )
+              })}
+              {(!historicalDocs || historicalDocs.length === 0) && (
+                <p className="text-sm text-muted-foreground italic">No historical documents found.</p>
+              )}
             </div>
           </div>
         </div>
 
         <div className="space-y-4">
-          <div className="bg-card border border-primary/20 rounded-2xl p-6 shadow-sm min-h-[400px] flex flex-col">
+          <div className="bg-card border border-primary/20 rounded-2xl p-6 shadow-sm min-h-[400px] flex flex-col sticky top-4">
             <h2 className="text-lg font-bold text-card-foreground mb-4 flex items-center gap-2">
-              <Database className="w-5 h-5 text-primary" />
-              Extracted Data
+              <CheckCircle className="w-5 h-5 text-primary" />
+              Extracted Data Review
             </h2>
 
             {extractedData ? (
@@ -80,8 +166,9 @@ export default function SmartDocs() {
                 </div>
                 
                 <div className="pt-4 border-t border-border mt-auto">
-                  <Button onClick={handleSave} className="w-full gap-2">
-                    <Save className="w-4 h-4" /> Save to System
+                  <Button onClick={handleSave} disabled={isSaving} className="w-full gap-2">
+                    {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} 
+                    {isSaving ? "Saving..." : "Save & Verify"}
                   </Button>
                 </div>
               </div>
