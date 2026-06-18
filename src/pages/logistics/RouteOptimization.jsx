@@ -8,7 +8,6 @@ import { usePowerSync } from '@powersync/react';
 import { useAuth } from '@/lib/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { generateText } from '@/lib/cloudflareAI';
-import { v4 as uuidv4 } from 'uuid';
 
 export default function RouteOptimization() {
   const { t } = useTranslation();
