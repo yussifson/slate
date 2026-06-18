@@ -2055,6 +2055,7 @@ export const AppSchema = new Schema({
         driver_name: column.text,
         status: column.text,
         current_location: column.text,
+        shipment_id: column.text,
     }),
     univ_doctorschedules: new Table({
         id: column.text,

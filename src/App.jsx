@@ -12,7 +12,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import React, { useEffect } from 'react';
 import { PowerSyncContext } from '@powersync/react';
 import { HelmetProvider } from 'react-helmet-async';
-import { powerSync, initPowerSync } from './api/PowerSyncConnector';
+import { powerSync, initPowerSync, clearPowerSyncDatabase } from './api/PowerSyncConnector';
 import { supabase } from './api/supabaseClient';
 
 const UnivCRM = React.lazy(() => import('@/components/universal/UnivCRM'));
@@ -855,7 +855,25 @@ function App() {
   const isBaseDomain = currentSubdomain === null;
 
   useEffect(() => {
-    initPowerSync().catch(console.error);
+    const initDatabase = async () => {
+      try {
+        // Check if we need to refresh the schema (version mismatch recovery)
+        const schemaVersion = localStorage.getItem('powersync_schema_version');
+        const currentVersion = 'v2.1'; // Increment this when schema changes
+        
+        if (schemaVersion !== currentVersion) {
+          console.log('[PowerSync] Schema version mismatch - clearing local database');
+          await clearPowerSyncDatabase();
+          localStorage.setItem('powersync_schema_version', currentVersion);
+        }
+        
+        await initPowerSync();
+      } catch (error) {
+        console.error('[PowerSync] Initialization error:', error);
+      }
+    };
+    
+    initDatabase();
   }, []);
 
   return (
