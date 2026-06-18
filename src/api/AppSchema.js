@@ -2531,6 +2531,10 @@ export const AppSchema = new Schema({
         id: column.text,
         created_at: column.text,
         company_id: column.text,
+        title: column.text,
+        message: column.text,
+        type: column.text,
+        read: column.integer,
     }),
     univ_onboardingtask: new Table({
         id: column.text,

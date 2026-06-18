@@ -51,6 +51,13 @@ export default function GeofenceAlerts() {
          VALUES (?, ?, ?, ?, ?, ?)`,
         [logId, companyId, fence.id, 'Truck-99', eventMsg, fence.alert_phone_numbers]
       );
+
+      // Also trigger a unified offline-first notification
+      await powerSync.execute(
+        `INSERT INTO univ_notifications (id, company_id, created_at, title, message, type, read) 
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [crypto.randomUUID(), companyId, new Date().toISOString(), "Geofence Triggered", eventMsg, "warning", 0]
+      );
       
       toast({ title: "Simulation Triggered", description: `Alert sent to ${fence.alert_phone_numbers}.`, variant: "default" });
     } catch (error) {
