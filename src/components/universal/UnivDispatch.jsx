@@ -14,7 +14,6 @@ export default function UnivDispatch() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [openMenuId, setOpenMenuId] = useState(null);
 
   const { data: drivers = [] } = useIndustryRecords('driver');
   const { data: shipments = [] } = useIndustryRecords('shipment');
@@ -107,21 +106,9 @@ export default function UnivDispatch() {
              toast.success('Shipment marked as Delivered!');
           }
        }
-       setOpenMenuId(null);
        fetchDispatch();
     } catch (err) {
        toast.error('Failed to update status');
-    }
-  };
-
-  const deleteDispatch = async (dispatchId) => {
-    try {
-      await powerSync.execute(`DELETE FROM univ_dispatch WHERE id = ?`, [dispatchId]);
-      toast.success('Dispatch record deleted');
-      setOpenMenuId(null);
-      fetchDispatch();
-    } catch (err) {
-      toast.error('Failed to delete dispatch record');
     }
   };
 
@@ -240,30 +227,7 @@ export default function UnivDispatch() {
                           Mark Delivered
                         </button>
                       )}
-                      <div className="relative inline-block">
-                        <button 
-                          onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === d.id ? null : d.id); }} 
-                          className="text-muted-foreground hover:text-primary transition-colors p-2"
-                        >
-                          <MoreHorizontal className="w-4 h-4" />
-                        </button>
-                        {openMenuId === d.id && (
-                          <div className="absolute right-0 mt-1 w-40 bg-card border border-primary/40 rounded-lg shadow-lg z-50 overflow-hidden">
-                            <button 
-                              onClick={(e) => { e.stopPropagation(); markDelivered(d); }} 
-                              className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors flex items-center gap-2"
-                            >
-                              <CheckCircle2 className="w-3.5 h-3.5" /> Mark Delivered
-                            </button>
-                            <button 
-                              onClick={(e) => { e.stopPropagation(); deleteDispatch(d.id); }} 
-                              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors flex items-center gap-2 border-t border-primary/40"
-                            >
-                              <AlertCircle className="w-3.5 h-3.5" /> Delete
-                            </button>
-                          </div>
-                        )}
-                      </div>
+                      <button className="text-muted-foreground hover:text-primary transition-colors p-2"><MoreHorizontal className="w-4 h-4" /></button>
                     </td>
                   </motion.tr>
                 );
