@@ -20,13 +20,13 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tool
 
 function MetricCard({ title, value, icon: Icon, iconBg, iconColor, subtitle, subtitleColor}) {
  return (
- <div className="bg-card rounded-xl border border-primary/40 p-5 flex items-center justify-between">
+ <div className="stat-card-premium group">
  <div>
- <p className="text-xs text-muted-foreground mb-1">{title}</p>
- <p className="text-2xl font-bold text-foreground">{value}</p>
- {subtitle && <p className={`text-xs mt-1 ${subtitleColor || "text-muted-foreground"}`}>{subtitle}</p>}
+ <p className="text-xs font-semibold text-muted-foreground/70 mb-2 uppercase tracking-wider">{title}</p>
+ <p className="text-3xl font-bold text-foreground tracking-tight">{value}</p>
+ {subtitle && <p className={`text-xs mt-2 font-medium ${subtitleColor || "text-muted-foreground"}`}>{subtitle}</p>}
  </div>
- <div className={`w-11 h-11 rounded-full ${iconBg} flex items-center justify-center`}>
+ <div className={`w-12 h-12 rounded-lg ${iconBg} flex items-center justify-center flex-shrink-0 transition-all group-hover:scale-105 group-hover:shadow-lg`}>
  <Icon className={`w-5 h-5 ${iconColor}`} />
  </div>
  </div>

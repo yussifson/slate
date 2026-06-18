@@ -485,26 +485,26 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 };
 
  const renderNavContent = (collapsed) => (
- <div className="flex flex-col h-full bg-sidebar overflow-x-hidden">
- <div className={cn("py-5 border-b border-sidebar-border flex items-center transition-all", collapsed ? "px-4 justify-center" : "px-5 gap-3")}>
- {activeCompanyLogo ? (
- <img src={activeCompanyLogo} alt="Logo" className={cn("object-contain", collapsed ? "w-8 h-8" : "w-9 h-9")} />
- ) : (
- <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center flex-shrink-0 text-lg">
- {industryData.icon}
- </div>
- )}
- {!collapsed && (
- <div className="animate-in fade-in zoom-in duration-200">
- <div className="flex flex-col">
- <span className="font-bold text-foreground leading-tight tracking-tight mt-0.5">orbtal</span>
- <span className="text-[9px] font-extrabold text-muted-foreground uppercase tracking-widest leading-none mt-1">
- {companyData?.name || (activeIndustry === 'orbit_build' ? (orbitBuildData?.industry_name || 'Custom Wixlate') : industryData.name)}
- </span>
- </div>
- </div>
- )}
- </div>
+     <div className="flex flex-col h-full bg-sidebar overflow-x-hidden border-r border-sidebar-border/50">
+      <div className={cn("py-6 border-b border-sidebar-border/50 flex items-center transition-all duration-300", collapsed ? "px-3.5 justify-center" : "px-5 gap-3.5")}>
+        {activeCompanyLogo ? (
+          <img src={activeCompanyLogo} alt="Logo" className={cn("object-contain transition-all duration-300", collapsed ? "w-8 h-8" : "w-9 h-9")} />
+        ) : (
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center flex-shrink-0 text-sm font-bold text-primary-foreground shadow-elevation-2">
+            {activeCompanyName?.charAt(0).toUpperCase()}
+          </div>
+        )}
+        {!collapsed && (
+          <div className="animate-in fade-in zoom-in duration-300">
+            <div className="flex flex-col">
+              <span className="font-bold text-foreground leading-tight tracking-tight">Slate</span>
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider leading-none mt-0.5">
+                Enterprise
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
 
  {/* Section label */}
  {!collapsed ? (
@@ -515,7 +515,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  <div className="pt-5" />
  )}
 
- <nav className="flex-1 px-3 pb-3 space-y-1 overflow-y-auto overflow-x-hidden scrollbar-hide">
+      <nav className="flex-1 px-3 pb-3 space-y-1.5 overflow-y-auto overflow-x-hidden scrollbar-hide pt-2">
  {isOrbitMode && !collapsed && dynamicNavItems.length === 0 && orbitBuildNavItems.length === 0 && (
  <div className="mx-1 my-3 p-3 rounded-xl bg-slate-50 border border-primary/40 text-center">
  <div className="text-2xl mb-1">⚡</div>
@@ -534,21 +534,21 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  return (
  <div key={item.path}>
  {showSection && (
- <div className="pt-4 pb-1.5 px-1 first:pt-0">
- <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/60">{t(item.section.toLowerCase().replace(/\s+/g, '_'), item.section)}</p>
- </div>
+      <div className="pt-5 pb-2 px-2 first:pt-2">
+        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 px-1">{t(item.section.toLowerCase().replace(/\s+/g, '_'), item.section)}</p>
+      </div>
  )}
  <div className="relative group">
  <Link
  to={item.path}
  title={collapsed ? t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label) : undefined}
- className={cn(
- "flex items-center rounded-lg text-sm font-medium transition-all duration-150 relative",
- collapsed ? "justify-center p-2" : "gap-3 px-3 py-2 pr-8",
- isActive
- ? "bg-primary text-white "
- : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
- )}
+                className={cn(
+                  "flex items-center rounded-lg text-sm font-medium transition-all duration-250 relative group",
+                  collapsed ? "justify-center p-2.5" : "gap-3 px-4 py-2.5 pr-8",
+                  isActive
+                    ? "bg-primary text-white shadow-elevation-2"
+                    : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 hover:shadow-elevation-1"
+                )}
  >
  {isActive && !collapsed && <div className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-white rounded-r-full" />}
  <span className="relative flex-shrink-0">

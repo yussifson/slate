@@ -46,7 +46,7 @@ module.exports = {
   		transitionDuration: {
   			'250': '250ms',
   			'350': '350ms'
-  		}
+  		},
   		colors: {
   			insurance: {
   				50: '#f9f5ff',
