@@ -182,7 +182,7 @@ export default function Pricing() {
  <Link to="/enterprise-contact" className="w-full block">
  <Button
  id={`cta-${planKey}`}
- className="w-full py-6 text-base font-bold tracking-tight rounded-2xl bg-slate-900 hover:bg-slate-800 text-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all hover:-translate-y-0.5"
+ className="w-full py-6 text-base font-bold tracking-tight rounded-2xl bg-primary hover:bg-primary/90 text-white shadow-[0_8px_30px_rgba(16,185,129,0.3)] transition-all hover:-translate-y-0.5"
  >
  {meta.cta} <ArrowRight className="w-4 h-4 ml-1.5" />
  </Button>

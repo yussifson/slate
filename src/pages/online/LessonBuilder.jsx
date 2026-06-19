@@ -1,26 +1,71 @@
-import React, { useState} from 'react';
+import React, { useState, useEffect} from 'react';
 import { useParams, useNavigate} from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { powerSync } from "@/api/PowerSyncConnector";
+import { useCompanyId } from "@/hooks/useCompanyId";
 import { ArrowLeft, Save, Video, FileText, UploadCloud, Settings, MonitorPlay} from 'lucide-react';
 import { useToast} from "@/components/ui/use-toast";
 
 export default function LessonBuilder() {
  const { courseId, moduleId} = useParams();
  const navigate = useNavigate();
+ const companyId = useCompanyId();
+ const queryClient = useQueryClient();
  const { toast} = useToast();
 
  const [lessonTitle, setLessonTitle] = useState('');
  const [lessonType, setLessonType] = useState('video');
  const [textContent, setTextContent] = useState('');
 
+ const { data: lessonData } = useQuery({
+   queryKey: ["online_lesson", moduleId],
+   queryFn: async () => {
+     if (!moduleId) return null;
+     const { data } = await powerSync.execute(`SELECT * FROM online_lessons WHERE id = ?`, [moduleId]);
+     return data?.[0] || null;
+   },
+   enabled: !!moduleId
+ });
+
+ useEffect(() => {
+   if (lessonData) {
+     setLessonTitle(lessonData.title || '');
+     setTextContent(lessonData.content || '');
+   }
+ }, [lessonData]);
+
+ const saveMutation = useMutation({
+   mutationFn: async () => {
+     if (moduleId) {
+       await powerSync.execute(
+         `UPDATE online_lessons SET title = ?, content = ?, updated_at = ? WHERE id = ?`,
+         [lessonTitle, textContent, new Date().toISOString(), moduleId]
+       );
+     } else {
+       const newId = `les_${Math.random().toString(36).substr(2, 9)}`;
+       await powerSync.execute(
+         `INSERT INTO online_lessons (id, company_id, course_id, title, content, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
+         [newId, companyId, courseId, lessonTitle, textContent, new Date().toISOString()]
+       );
+     }
+   },
+   onSuccess: () => {
+     queryClient.invalidateQueries(["online_lessons", courseId]);
+     toast({ title: "Success", description: "Lesson saved successfully!"});
+     navigate(`/o/builder/course/${courseId}`);
+   },
+   onError: () => {
+     toast({ variant: "destructive", title: "Error", description: "Failed to save lesson."});
+   }
+ });
+
  const handleSave = () => {
  if (!lessonTitle.trim()) {
  toast({ variant: "destructive", title: "Error", description: "Lesson title is required."});
  return;
-}
- toast({ title: "Success", description: "Lesson saved successfully!"});
- // Navigate back to builder
- navigate(`/o/builder/course/${courseId}`);
-};
+ }
+ saveMutation.mutate();
+ };
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto">
@@ -35,8 +80,8 @@ export default function LessonBuilder() {
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Configure your lesson content and media.</p>
  </div>
  <div className="ml-auto flex gap-3">
- <button onClick={handleSave} className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-md-[var(--radius-md)] hover:opacity-90 transition-opacity">
- <Save className="w-4 h-4" /> Save Lesson
+ <button onClick={handleSave} disabled={saveMutation.isPending} className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-md-[var(--radius-md)] hover:opacity-90 transition-opacity disabled:opacity-50">
+ <Save className="w-4 h-4" /> {saveMutation.isPending ? 'Saving...' : 'Save Lesson'}
  </button>
  </div>
  </div>
