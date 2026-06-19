@@ -50,7 +50,7 @@ export default function Wards() {
     queryFn: async () => {
       if (!companyId) return [];
       const res = await powerSync.execute(
-        "SELECT a.*, p.first_name || ' ' || p.last_name as patient_name FROM univ_admissions a LEFT JOIN univ_patients p ON a.patient_id = p.id WHERE a.company_id = ? AND a.status = 'Active'",
+        "SELECT a.*, p.COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, '') as patient_name FROM univ_admissions a LEFT JOIN univ_patients p ON a.patient_id = p.id WHERE a.company_id = ? AND a.status = 'Active'",
         [companyId]
       );
       return res.rows._array;
@@ -63,7 +63,7 @@ export default function Wards() {
     queryKey: ['univ_patients_list', companyId],
     queryFn: async () => {
       if (!companyId) return [];
-      const res = await powerSync.execute('SELECT id, first_name || " " || last_name as name FROM univ_patients WHERE company_id = ?', [companyId]);
+      const res = await powerSync.execute('SELECT id, COALESCE(first_name, 'Unknown') || ' ' || COALESCE(last_name, 'Patient') as name FROM univ_patients WHERE company_id = ?', [companyId]);
       return res.rows._array;
     },
     enabled: !!companyId
@@ -72,8 +72,8 @@ export default function Wards() {
   const mutateWard = useMutation({
     mutationFn: async (payload) => {
       await powerSync.execute(
-        `INSERT INTO univ_wards (id, created_at, company_id, ward_name, type, capacity, status)
-         VALUES (uuid(), datetime('now'), ?, ?, ?, ?, 'Active')`,
+        `INSERT INTO univ_wards (id, created_at, company_id, ward_name, type, capacity, bed_number, status)
+         VALUES (uuid(), datetime('now'), ?, ?, ?, ?, 'N/A', 'Active')`,
         [companyId, payload.name, payload.type, payload.capacity]
       );
     },

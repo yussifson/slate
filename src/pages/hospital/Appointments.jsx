@@ -120,16 +120,11 @@ export default function Appointments() {
       return toast.error("Conflict Detected: Doctor is already booked at this time!");
     }
 
-    const [hours, minutes] = formData.time.split(':');
-    const ampm = parseInt(hours) >= 12 ? 'PM' : 'AM';
-    const formattedHours = parseInt(hours) % 12 || 12;
-    const formattedTime = `${formattedHours}:${minutes} ${ampm}`;
-
     let payload = {
       client_name: formData.patient,
       doctor_id: formData.doctor,
       date: formData.date,
-      time: formattedTime,
+      time: formData.time,
       type: formData.type,
       status: 'Scheduled',
       notes: ''

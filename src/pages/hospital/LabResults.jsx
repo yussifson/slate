@@ -33,7 +33,7 @@ export default function LabResults() {
       if (!companyId) return [];
         const res = await powerSync.execute(
           `SELECT l.*, test_name AS test_type, result_value AS result,
-                  p.first_name || ' ' || p.last_name as patient_name
+                  p.COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, '') as patient_name
            FROM univ_labs l
            LEFT JOIN univ_patients p ON l.patient_id = p.id
            WHERE l.company_id = ? ORDER BY l.created_at DESC`,
@@ -48,7 +48,7 @@ export default function LabResults() {
     queryKey: ['univ_patients_list', companyId],
     queryFn: async () => {
       if (!companyId) return [];
-      const res = await powerSync.execute('SELECT id, first_name || " " || last_name as name FROM univ_patients WHERE company_id = ?', [companyId]);
+      const res = await powerSync.execute('SELECT id, COALESCE(first_name, 'Unknown') || ' ' || COALESCE(last_name, 'Patient') as name FROM univ_patients WHERE company_id = ?', [companyId]);
       return res.rows._array;
     },
     enabled: !!companyId
@@ -72,15 +72,15 @@ export default function LabResults() {
       if (payload.id) {
         await powerSync.execute(
           `UPDATE univ_labs SET 
-             patient_id = ?, test_name = ?, result_value = ?, reference_range = ?, status = ?
+             patient_id = ?, test_name = ?, result_value = ?, reference_range = ?, status = ?, document_url = ?
            WHERE id = ?`,
-          [payload.patient_id, payload.testType, payload.result, payload.range, payload.status, payload.id]
+          [payload.patient_id, payload.testType, payload.result, payload.range, payload.status, payload.document_url, payload.id]
         );
       } else {
         await powerSync.execute(
-          `INSERT INTO univ_labs (id, created_at, company_id, patient_id, test_name, test_date, result_value, reference_range, status)
-           VALUES (uuid(), datetime('now'), ?, ?, ?, datetime('now'), ?, ?, ?)`,
-          [companyId, payload.patient_id, payload.testType, payload.result, payload.range, payload.status]
+          `INSERT INTO univ_labs (id, created_at, company_id, patient_id, test_name, test_date, result_value, reference_range, status, document_url)
+           VALUES (uuid(), datetime('now'), ?, ?, ?, datetime('now'), ?, ?, ?, ?)`,
+          [companyId, payload.patient_id, payload.testType, payload.result, payload.range, payload.status, payload.document_url]
         );
       }
     },
@@ -89,7 +89,7 @@ export default function LabResults() {
       toast.success(editingResult ? 'Lab results updated!' : 'Lab results uploaded successfully!');
       setShowModal(false);
       setEditingResult(null);
-      setFormData({ patient_id: '', testType: 'Complete Blood Count (CBC)', result: '', range: 'Ref: Standard', status: 'Completed' });
+      setFormData({ patient_id: '', testType: 'Complete Blood Count (CBC)', result: '', range: 'Ref: Standard', status: 'Completed', document_url: '' });
     },
     onError: (err) => toast.error('Failed to save lab result: ' + err.message)
   });
@@ -115,7 +115,8 @@ export default function LabResults() {
       testType: formData.testType,
       result: formData.result,
       range: formData.range,
-      status: formData.status
+      status: formData.status,
+      document_url: formData.document_url
     });
   };
 
@@ -152,7 +153,7 @@ export default function LabResults() {
           <p className="text-sm text-[#71717a] mt-0.5">{t("track_and_manage_patient_lab_t", "Track and manage patient lab tests and reports")}</p>
         </div>
         <div className="flex gap-3">
-          <Button onClick={() => { setEditingResult(null); setFormData({ patient_id: '', testType: 'Complete Blood Count (CBC)', result: '', range: 'Ref: Standard', status: 'Completed' }); setShowModal(true); }} className="gap-2 bg-primary hover:bg-primary/90 text-white">
+          <Button onClick={() => { setEditingResult(null); setFormData({ patient_id: '', testType: 'Complete Blood Count (CBC)', result: '', range: 'Ref: Standard', status: 'Completed', document_url: '' }); setShowModal(true); }} className="gap-2 bg-primary hover:bg-primary/90 text-white">
             <Upload className="w-4 h-4" /> {t("upload_results", "Upload Results")}
           </Button>
         </div>
@@ -275,6 +276,10 @@ export default function LabResults() {
                   <option>Pending</option><option>Completed</option><option>Abnormal</option>
                 </select>
               </div>
+              <div>
+                <label className="text-xs font-semibold text-[#71717a] uppercase">Attachment URL (Optional)</label>
+                <Input type="url" value={formData.document_url} onChange={e => setFormData({ ...formData, document_url: e.target.value})} className="mt-1" placeholder="https://..." />
+              </div>
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
@@ -299,6 +304,18 @@ export default function LabResults() {
                 <div><h3 className="text-xs font-semibold text-[#71717a] uppercase">Patient</h3><p className="text-base font-semibold">{viewResult.patient_name}</p></div>
                 <div><h3 className="text-xs font-semibold text-[#71717a] uppercase">Test Type</h3><p className="text-base text-primary font-medium">{viewResult.test_type}</p></div>
                 <div><h3 className="text-xs font-semibold text-[#71717a] uppercase">Date Requested</h3><p className="text-base">{new Date(viewResult.test_date).toLocaleString()}</p></div>
+                <div className="pt-4 border-t">
+                  <h3 className="text-sm font-semibold text-[#71717a] uppercase mb-2">Status</h3>
+                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${viewResult.status === 'Completed' ? 'bg-green-100 text-green-700 border border-green-200' : viewResult.status === 'Abnormal' ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-amber-100 text-amber-700 border border-amber-200'}`}>{viewResult.status}</span>
+                </div>
+                {viewResult.document_url && (
+                  <div className="pt-4 border-t">
+                    <h3 className="text-sm font-semibold text-[#71717a] uppercase mb-2">Attachment</h3>
+                    <a href={viewResult.document_url} target="_blank" rel="noreferrer" className="text-primary text-sm hover:underline break-all">
+                      {viewResult.document_url}
+                    </a>
+                  </div>
+                )}
               </div>
               <div>
                 <h3 className="text-sm font-semibold text-[#71717a] uppercase mb-2">Findings</h3>

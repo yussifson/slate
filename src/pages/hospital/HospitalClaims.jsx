@@ -21,7 +21,7 @@ export default function HospitalClaims() {
       if (!companyId) return [];
       const res = await powerSync.execute(
         `SELECT c.*, 
-                p.first_name || ' ' || p.last_name as patient_name
+                p.COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, '') as patient_name
          FROM univ_medicalclaims c
          LEFT JOIN univ_patients p ON c.patient_id = p.id
          WHERE c.company_id = ?
@@ -37,7 +37,7 @@ export default function HospitalClaims() {
     queryKey: ['univ_patients_list', companyId],
     queryFn: async () => {
       if (!companyId) return [];
-      const res = await powerSync.execute('SELECT id, first_name || " " || last_name as name FROM univ_patients WHERE company_id = ?', [companyId]);
+      const res = await powerSync.execute('SELECT id, COALESCE(first_name, 'Unknown') || ' ' || COALESCE(last_name, 'Patient') as name FROM univ_patients WHERE company_id = ?', [companyId]);
       return res.rows._array;
     },
     enabled: !!companyId
