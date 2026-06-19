@@ -1180,6 +1180,16 @@ export const AppSchema = new Schema({
         status: column.text,
         notes: column.text,
         outcome: column.text}),
+    online_media: new Table({
+        id: column.text,
+        company_id: column.text,
+        created_at: column.text,
+        name: column.text,
+        type: column.text,
+        size: column.text,
+        url: column.text,
+        folder: column.text,
+        uploaded_by: column.text}),
     online_courses: new Table({
         id: column.text,
         created_at: column.text,

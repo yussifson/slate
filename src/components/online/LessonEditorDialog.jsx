@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { powerSync } from '@/api/PowerSyncConnector';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/components/ui/use-toast';
-import { Loader2, Video, FileText, CheckSquare, Award } from 'lucide-react';
+import { Loader2, Video, FileText, CheckSquare, Award, UploadCloud } from 'lucide-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
@@ -18,6 +18,15 @@ export default function LessonEditorDialog({ open, onOpenChange, courseId, compa
   const [content, setContent] = useState('');
   const [duration, setDuration] = useState('');
   const [lessonType, setLessonType] = useState('video');
+
+  const { data: mediaAssets = [] } = useQuery({
+    queryKey: ['online_media', companyId],
+    queryFn: async () => {
+      const res = await powerSync.execute('SELECT * FROM online_media WHERE company_id = ? AND type = ? ORDER BY created_at DESC', [companyId, 'video']);
+      return res.rows._array || [];
+    },
+    enabled: !!companyId && open && lessonType === 'video'
+  });
 
   useEffect(() => {
     if (open) {
@@ -119,14 +128,32 @@ export default function LessonEditorDialog({ open, onOpenChange, courseId, compa
             {lessonType === 'video' && (
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="md:col-span-3">
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Video URL</label>
-                  <input 
-                    type="url" 
-                    value={videoUrl}
-                    onChange={(e) => setVideoUrl(e.target.value)}
-                    className="w-full h-11 px-3 rounded-lg border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none text-sm"
-                    placeholder="https://vimeo.com/..."
-                  />
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Video Source</label>
+                  <div className="flex gap-2">
+                    <select 
+                      className="flex-1 h-11 px-3 rounded-lg border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none text-sm bg-white"
+                      value={mediaAssets.some(m => m.url === videoUrl) ? videoUrl : (videoUrl ? 'custom' : '')}
+                      onChange={(e) => {
+                        if (e.target.value !== 'custom') setVideoUrl(e.target.value);
+                        else setVideoUrl('');
+                      }}
+                    >
+                      <option value="">-- Select from Media Library --</option>
+                      {mediaAssets.map(asset => (
+                        <option key={asset.id} value={asset.url}>{asset.name}</option>
+                      ))}
+                      <option value="custom">External URL (YouTube/Vimeo)</option>
+                    </select>
+                    {(!mediaAssets.some(m => m.url === videoUrl) || videoUrl === 'custom') && (
+                      <input 
+                        type="url" 
+                        value={videoUrl}
+                        onChange={(e) => setVideoUrl(e.target.value)}
+                        className="flex-1 h-11 px-3 rounded-lg border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none text-sm"
+                        placeholder="https://vimeo.com/..."
+                      />
+                    )}
+                  </div>
                 </div>
                 <div className="md:col-span-1">
                   <label className="block text-sm font-medium text-slate-700 mb-1">Duration (min)</label>

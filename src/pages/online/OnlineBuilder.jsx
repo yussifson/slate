@@ -9,6 +9,8 @@ import LessonEditorDialog from "@/components/online/LessonEditorDialog";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from '@/lib/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
+import { generateText } from '@/lib/cloudflareAI';
+import { Bot, Sparkles, Loader2 } from 'lucide-react';
 
 export default function OnlineBuilder() {
  const { courseId } = useParams();
@@ -31,6 +33,7 @@ export default function OnlineBuilder() {
  const [isEditorOpen, setIsEditorOpen] = useState(false);
  const [editingLesson, setEditingLesson] = useState(null);
  const [lessonType, setLessonType] = useState('video');
+ const [isGeneratingOutline, setIsGeneratingOutline] = useState(false);
 
  const { data: courseData, isLoading } = useQuery({
    queryKey: ["online_course", courseId],
@@ -175,6 +178,37 @@ export default function OnlineBuilder() {
    saveMutation.mutate();
  };
 
+ const handleGenerateOutline = async () => {
+   if (!title.trim() && !description.trim()) {
+     toast({ title: "Topic Required", description: "Please enter a course title or description first so AI knows what to generate.", variant: "destructive" });
+     return;
+   }
+   setIsGeneratingOutline(true);
+   toast({ title: "Generating Curriculum...", description: "AI is drafting a course structure..." });
+   
+   try {
+     const prompt = `Generate a 5-module course curriculum for a course titled "${title}" with description: "${description}". For each module, only provide the title separated by a newline. Do not include module numbers or descriptions. Just 5 line-separated titles.`;
+     const response = await generateText([{ role: 'user', content: prompt }]);
+     
+     const modules = response.split('\n').map(m => m.replace(/^(?:Module|Lesson)\s*\d*[:.-]?\s*/i, '').trim()).filter(Boolean);
+     
+     for (let i = 0; i < modules.length; i++) {
+       const newId = `lsn_${Math.random().toString(36).substr(2, 9)}`;
+       await powerSync.execute(
+         `INSERT INTO online_lessons (id, course_id, company_id, title, order_index, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
+         [newId, courseId, companyId, modules[i], i, new Date().toISOString()]
+       );
+     }
+     
+     queryClient.invalidateQueries(["online_lessons", courseId]);
+     toast({ title: "Success", description: "AI generated curriculum structure successfully!" });
+   } catch (error) {
+     toast({ title: "Generation Failed", description: "Failed to generate outline.", variant: "destructive" });
+   } finally {
+     setIsGeneratingOutline(false);
+   }
+ };
+
  const navClass = (tab) => `h-full px-6 border-b-2 font-medium transition-colors ${activeTab === tab ? 'border-[var(--primary)] text-[var(--primary)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`;
 
  return (
@@ -230,6 +264,18 @@ export default function OnlineBuilder() {
                <Award className="w-4 h-4" /> Certificate
              </button>
            </div>
+         </div>
+         
+         <div className="bg-gradient-to-br from-indigo-50 to-blue-50/50 border-[0.5px] border-indigo-200/60 rounded-md-[var(--radius-xl)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]">
+           <div className="flex items-center gap-2 mb-3 text-indigo-900">
+             <Sparkles className="w-4 h-4" />
+             <h3 className="font-semibold text-sm">AI Course Builder</h3>
+           </div>
+           <p className="text-xs text-indigo-700/80 mb-4 leading-relaxed">Let AI automatically generate a comprehensive curriculum outline based on your course title.</p>
+           <button onClick={handleGenerateOutline} disabled={!courseId || isGeneratingOutline} className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-white text-indigo-700 text-sm font-medium rounded-md-[var(--radius-md)] border border-indigo-200/60 shadow-sm hover:shadow transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+             {isGeneratingOutline ? <Loader2 className="w-4 h-4 animate-spin" /> : <Bot className="w-4 h-4" />}
+             {isGeneratingOutline ? "Generating..." : "Generate Outline"}
+           </button>
          </div>
        </div>
 

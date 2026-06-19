@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from "react-i18next";
 import { Calendar, BookOpen, CheckCircle, Clock, User, Download, FileText, ClipboardList, GraduationCap, LayoutDashboard, Zap, Target, ArrowRight } from 'lucide-react';
-import { useIndustryRecords, useMutateIndustryRecord } from '@/hooks/useIndustryData';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { powerSync } from '@/api/PowerSyncConnector';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from "@tanstack/react-query";
-import { useCompanyId } from '@/hooks/useCompanyId';
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { useAuth } from '@/lib/AuthContext';
