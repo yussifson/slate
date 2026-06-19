@@ -74,29 +74,29 @@ export default function Pricing() {
  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-xs font-semibold text-slate-600 mb-6 uppercase tracking-widest  tracking-[0.04em]">
  {t('technology_for_everyone', 'Technology For Everyone')}
  </div>
- <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-slate-900 mb-6 leading-tight tracking-[-0.02em]">
+ <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-slate-900 mb-6 leading-tight">
  {t('one_platform_all_features_fa', 'One platform. All features.')}
- <span className="block text-primary/80">{t('fairly_priced', 'Fairly priced.')}</span>
+ <span className="block text-primary">{t('fairly_priced', 'Fairly priced.')}</span>
  </h1>
- <p className="text-base md:text-lg text-slate-600 font-medium mb-10 max-w-2xl mx-auto leading-relaxed">
+ <p className="text-base md:text-xl text-slate-600 font-medium mb-10 max-w-2xl mx-auto leading-relaxed">
  {t('we_dont_gate_features', "We don't gate features. Every plan includes all 14 Work Slate modules. Choose the capacity your team needs.")}
  </p>
 
  {/* Billing Toggle */}
- <div className="flex items-center justify-center gap-4 text-sm md:text-base font-semibold text-slate-700 bg-slate-50 inline-flex mx-auto p-1.5 rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 ">
+ <div className="flex items-center justify-center gap-2 text-sm md:text-base font-semibold text-slate-700 bg-slate-100/80 backdrop-blur-md inline-flex mx-auto p-1.5 rounded-full ring-1 ring-slate-900/5 shadow-inner">
  <button
  onClick={() => setBillingCycle('monthly')}
- className={`px-5 py-2.5 rounded-full transition-colors ${billingCycle === 'monthly' ? 'bg-white text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
+ className={`px-6 py-2.5 rounded-full transition-all duration-300 ${billingCycle === 'monthly' ? 'bg-white text-slate-900 shadow-sm ring-1 ring-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
  >
  {t('monthly', 'Monthly')}
  </button>
  <button
  onClick={() => setBillingCycle('annual')}
- className={`px-5 py-2.5 rounded-full flex items-center gap-2 transition-colors ${billingCycle === 'annual' ? 'bg-primary text-white ' : 'text-slate-500 hover:text-slate-700'}`}
+ className={`px-6 py-2.5 rounded-full flex items-center gap-2 transition-all duration-300 ${billingCycle === 'annual' ? 'bg-primary text-white shadow-sm ring-1 ring-primary/50' : 'text-slate-500 hover:text-slate-700'}`}
  >
  {t('annually', 'Annually')}
  {billingCycle !== 'annual' && (
- <span className="text-[10px] font-black bg-primary/10 text-primary px-2 py-0.5 rounded-full uppercase tracking-widest tracking-[0.04em]">
+ <span className="text-[10px] font-black bg-primary/10 text-primary px-2 py-0.5 rounded-full uppercase tracking-widest">
  {t('save_20', 'SAVE 20%')}
  </span>
  )}
@@ -117,11 +117,11 @@ export default function Pricing() {
  <div
  key={planKey}
  id={`plan-card-${planKey}`}
- className={`relative flex flex-col bg-white rounded-3xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 p-8 ${
+ className={`relative flex flex-col bg-white rounded-3xl transition-all duration-300 p-8 ${
  meta.highlight
- ? 'border-primary -primary/5 md:-translate-y-2'
- : 'border-primary/40 hover:border-primary/40'
-}`}
+ ? 'ring-2 ring-primary md:-translate-y-2 shadow-[0_20px_40px_-15px_rgba(var(--primary),0.3)]'
+ : 'ring-1 ring-slate-900/5 hover:ring-slate-900/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)]'
+ }`}
  >
  {meta.popular && (
  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest whitespace-nowrap tracking-[0.04em]">
@@ -129,14 +129,14 @@ export default function Pricing() {
  </div>
  )}
 
- <div className="mb-6 pb-6 border-b border-primary/40">
- <h3 className="font-semibold text-2xl text-slate-900 mb-2 tracking-tight tracking-[-0.02em]">{meta.name}</h3>
+ <div className="mb-6 pb-6 border-b border-slate-100">
+ <h3 className="font-bold text-2xl text-slate-900 mb-2 tracking-tight">{meta.name}</h3>
  <p className="text-sm text-slate-500 font-medium">{meta.tagline}</p>
  </div>
 
  <div className="mb-8">
  <div className="flex items-end gap-2 mb-1">
- <span className="text-4xl md:text-5xl font-semibold text-slate-900 tracking-tighter tracking-[-0.02em]">
+ <span className="text-4xl md:text-6xl font-bold text-slate-900 tracking-tighter">
  {isEnterprise ? 'Custom' : (price === 0 ? 'Free' : '$' + formatPriceNumber(price))}
  </span>
  {!isEnterprise && price > 0 && (
@@ -151,7 +151,7 @@ export default function Pricing() {
  )}
  </div>
 
- <div className="bg-slate-50/80 rounded-2xl p-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-8 space-y-3">
+ <div className="bg-slate-50 rounded-2xl p-5 ring-1 ring-slate-900/5 mb-8 space-y-3">
  <div className="flex justify-between items-center text-sm font-semibold">
  <span className="text-slate-500">{t('internal_users', 'Users')}</span>
  <span className="text-slate-900 text-right">{meta.quota}</span>
@@ -182,8 +182,7 @@ export default function Pricing() {
  <Link to="/enterprise-contact" className="w-full block">
  <Button
  id={`cta-${planKey}`}
- variant="outline"
- className="w-full py-6 text-sm font-semibold rounded-2xl border-2 border-orange-500 text-orange-500 hover:bg-orange-50 hover:text-orange-600 transition-all"
+ className="w-full py-6 text-base font-bold tracking-tight rounded-2xl bg-slate-900 hover:bg-slate-800 text-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all hover:-translate-y-0.5"
  >
  {meta.cta} <ArrowRight className="w-4 h-4 ml-1.5" />
  </Button>
@@ -192,11 +191,11 @@ export default function Pricing() {
  <Link to={`/signup?plan=${planKey}&billing=${billingCycle}`} className="w-full block">
  <Button
  id={`cta-${planKey}`}
- className={`w-full py-6 text-sm font-semibold rounded-2xl transition-all ${
+ className={`w-full py-6 text-base font-bold tracking-tight rounded-2xl transition-all hover:-translate-y-0.5 ${
  meta.highlight
- ? 'bg-primary hover:bg-primary/90 text-white -primary/20'
- : 'bg-white border-2 border-orange-500 text-orange-500 hover:bg-orange-50'
-}`}
+ ? 'bg-primary hover:bg-primary/90 text-white shadow-[0_8px_30px_rgba(var(--primary),0.3)]'
+ : 'bg-white ring-1 ring-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm'
+ }`}
  >
  {meta.cta}
  </Button>

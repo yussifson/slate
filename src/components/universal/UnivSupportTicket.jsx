@@ -9,8 +9,9 @@ import { useToast} from '@/components/ui/use-toast';
 import {
  LifeBuoy, Search, Plus, Filter, MessageSquare, 
  Clock, AlertCircle, CheckCircle2, User, 
- MoreHorizontal, Tag, Paperclip, Send
+ MoreHorizontal, Tag, Paperclip, Send, Sparkles, BrainCircuit
 } from 'lucide-react';
+import { generateText } from '@/lib/cloudflareAI';
 
 const PRIORITY_COLORS = {
  'Low': 'bg-slate-100 text-slate-700 border-primary/40 dark:bg-slate-800 dark:text-slate-400 dark:border-primary/40',
@@ -44,6 +45,8 @@ export default function UnivSupportTicket({
  const [activeTicketId, setActiveTicketId] = useState(null);
  const [isNewTicketOpen, setIsNewTicketOpen] = useState(false);
  const [replyInput, setReplyInput] = useState('');
+ const [isAnalyzing, setIsAnalyzing] = useState(false);
+ const [sentimentModal, setSentimentModal] = useState(null);
 
  const [formState, setFormState] = useState({
  subject: '',
@@ -146,6 +149,32 @@ export default function UnivSupportTicket({
  saveMutation.mutate({ ...activeTicket, status: newStatus});
 };
 
+ const handleAIAnalyze = async () => {
+   if (!activeTicket) return;
+   setIsAnalyzing(true);
+   toast({ title: "Analyzing ticket sentiment..." });
+   try {
+     const prompt = [
+       { role: 'system', content: 'You are an AI Customer Success Manager. Analyze the messages in this support ticket. Return a JSON object with: "sentiment" ("Angry", "Frustrated", "Neutral", "Happy"), "urgencyScore" (1-10), and "suggestedReply" (1-2 sentences on how to best respond to de-escalate or resolve the issue).' },
+       { role: 'user', content: `Ticket Subject: ${activeTicket.subject}\nMessages:\n${(activeTicket.messages || []).map(m => `- ${m.sender}: ${m.content}`).join('\n')}` }
+     ];
+     let response = await generateText(prompt);
+     if (typeof response !== 'string') response = response.response || response.text || JSON.stringify(response);
+     const jsonMatch = response.match(/\{[\s\S]*\}/);
+     if (jsonMatch) {
+       const parsed = JSON.parse(jsonMatch[0]);
+       setSentimentModal(parsed);
+       toast({ title: "Analysis complete" });
+     } else {
+       toast({ title: "Failed to parse analysis", variant: "destructive" });
+     }
+   } catch (err) {
+     toast({ title: "Analysis failed", variant: "destructive" });
+   } finally {
+     setIsAnalyzing(false);
+   }
+ };
+
  return (
  <div className="flex h-full w-full bg-background font-sans overflow-hidden">
  
@@ -243,6 +272,9 @@ export default function UnivSupportTicket({
  <option value="Resolved">Resolved</option>
  <option value="Closed">Closed</option>
  </select>
+ <button onClick={handleAIAnalyze} disabled={isAnalyzing} className="px-3 h-9 bg-fuchsia-50 text-fuchsia-600 border border-fuchsia-100 rounded-xl text-xs font-semibold flex items-center gap-2 hover:bg-fuchsia-100 disabled:opacity-50 transition-colors">
+ {isAnalyzing ? <Sparkles className="w-3.5 h-3.5 animate-pulse" /> : <BrainCircuit className="w-3.5 h-3.5" />} AI Analyze
+ </button>
  <button className="p-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background rounded-xl hover:bg-muted text-[#71717a] dark:text-gray-400 transition-colors">
  <MoreHorizontal className="w-4 h-4" />
  </button>
@@ -365,7 +397,37 @@ export default function UnivSupportTicket({
  </motion.div>
  </div>
  )}
- </AnimatePresence>
+  </AnimatePresence>
+
+  {sentimentModal && (
+   <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
+     <div className="bg-card w-full max-w-lg rounded-2xl flex flex-col hover:shadow-xl transition-all">
+       <div className="p-5 border-b border-primary/40 flex justify-between items-center bg-fuchsia-50/50">
+         <h2 className="text-lg font-bold flex items-center gap-2 text-fuchsia-900"><BrainCircuit className="w-5 h-5 text-fuchsia-600" /> AI Sentiment Analysis</h2>
+         <button onClick={() => setSentimentModal(null)} className="p-2 hover:bg-fuchsia-100 rounded-full transition-colors">✕</button>
+       </div>
+       <div className="p-6 space-y-5">
+         <div className="grid grid-cols-2 gap-4">
+           <div>
+             <div className="text-xs uppercase font-bold tracking-wider text-rose-500 mb-1">Customer Sentiment</div>
+             <div className="text-xl font-black text-rose-700">{sentimentModal.sentiment}</div>
+           </div>
+           <div>
+             <div className="text-xs uppercase font-bold tracking-wider text-amber-500 mb-1">Urgency Score</div>
+             <div className="text-3xl font-black text-amber-600">{sentimentModal.urgencyScore}/10</div>
+           </div>
+         </div>
+         <div>
+           <div className="text-xs uppercase font-bold tracking-wider text-emerald-600 mb-2 flex items-center gap-2"><MessageSquare className="w-3.5 h-3.5"/> AI Suggested Reply Strategy</div>
+           <p className="text-sm text-emerald-800 leading-relaxed italic bg-emerald-50/50 p-3 rounded-lg border border-emerald-100">{sentimentModal.suggestedReply}</p>
+         </div>
+         <button onClick={() => { setReplyInput(sentimentModal.suggestedReply); setSentimentModal(null); }} className="w-full h-10 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors mt-2">
+           Use as Draft Reply
+         </button>
+       </div>
+     </div>
+   </div>
+  )}
 
  </div>
  );

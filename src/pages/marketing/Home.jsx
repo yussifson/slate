@@ -560,12 +560,12 @@ return (
 
  {/* Headline */}
  <FadeIn delay="delay-100">
- <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-semibold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6 tracking-[-0.02em]">
+ <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-slate-900 leading-[1.05] max-w-4xl mx-auto mb-6">
  {t(
  "the_work_made_effortless_that_tur",
  "The unified workspace that turns hours into"
  )}{' '}
- <span className="bg-slate-100 text-slate-900 px-4 py-1 rounded-md-[1.5rem] inline-block mt-2">
+ <span className="bg-slate-100 text-slate-900 px-4 py-1.5 rounded-2xl inline-block mt-2 shadow-[inset_0_1px_3px_rgba(0,0,0,0.05)] border-[0.5px] border-slate-200">
  {t("clear_profit", "clear profit")}
  </span>
  </h1>
@@ -596,9 +596,9 @@ return (
  />
  
  {/* Inner White Container */}
- <div className="relative bg-white rounded-md-[1.5rem] p-6 sm:p-8 text-center flex flex-col h-full w-full z-10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="relative bg-white/90 backdrop-blur-3xl rounded-[1.5rem] p-6 sm:p-8 text-center flex flex-col h-full w-full z-10 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.1)] transition-shadow duration-300">
  <div className="mb-6">
- <h2 className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-orange-500 text-2xl sm:text-3xl tracking-tight leading-snug tracking-[-0.02em]">
+ <h2 className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-orange-500 text-2xl sm:text-3xl tracking-tighter leading-snug">
  Can't find your preferred workslate?<br/><span className="font-black text-emerald-700">Build it with Orbit Build</span>
  </h2>
  </div>
@@ -616,7 +616,7 @@ return (
  <button
  type="submit"
  disabled={!aiPrompt.trim()}
- className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-10 py-4 rounded-xl font-black transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
+ className="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white px-10 py-4 rounded-xl font-bold tracking-tight shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgb(0,0,0,0.16)] disabled:opacity-50 disabled:hover:translate-y-0"
  >
  Build with Orbit
  </button>
@@ -937,7 +937,7 @@ return (
 
  <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
  <Link to="/signup">
- <Button className="bg-white text-primary hover:bg-white font-semibold text-base py-6 px-10 rounded-xl group transition-all hover:scale-[1.02] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Button className="bg-white text-primary hover:bg-slate-50 font-bold tracking-tight text-base py-6 px-10 rounded-2xl group transition-all hover:scale-[1.02] shadow-[0_8px_30px_rgba(0,0,0,0.1)]">
  {t("start_your_free_trial", "Start Your Free Trial")}
  <ChevronRight className="w-5 h-5 ml-1 transition-transform group-hover:translate-x-1" />
  </Button>
@@ -945,7 +945,7 @@ return (
  <Link to="/contact">
  <Button
  variant="outline"
- className="border-white/30 text-white hover:bg-white font-semibold text-base py-6 px-10 rounded-xl transition-all hover:scale-[1.02] bg-transparent hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="border-white/20 text-white hover:bg-white/10 font-bold tracking-tight text-base py-6 px-10 rounded-2xl transition-all hover:scale-[1.02] bg-transparent backdrop-blur-sm"
  >
  {t("contact_sales", "Contact Sales")}
  </Button>

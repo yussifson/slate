@@ -1,21 +1,16 @@
 import { OrbitLoader } from '@/components/ui/orbit-loader';
-import { powerSync} from '@/api/PowerSyncConnector';
-import React, { useState, useEffect} from 'react';
-
+import { powerSync } from '@/api/PowerSyncConnector';
+import React, { useState, useEffect } from 'react';
 import GenericGrid from '@/components/views/GenericGrid';
 import GenericKanban from '@/components/views/GenericKanban';
 import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
-
-import { useCompanyId} from '@/hooks/useCompanyId';
-import { motion} from 'framer-motion';
-import { Save, RefreshCw, X, Plus, Activity, Sparkles, XCircle, HeartHandshake} from 'lucide-react';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { motion } from 'framer-motion';
+import { Save, RefreshCw, X, Plus, Activity, Sparkles, XCircle, HeartHandshake } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { generateText } from '@/lib/cloudflareAI';
-
-import { generateText } from '@/lib/cloudflareAI';
-
-import { supabase} from "@/api/supabaseClient";
+import { supabase } from "@/api/supabaseClient";
 
 export default function UnivDonationLog() {
  const companyId = useCompanyId();
@@ -269,3 +264,5 @@ export default function UnivDonationLog() {
  </div>
  );
 }
+
+

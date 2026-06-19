@@ -9,9 +9,10 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
-import {FileText, Plus, Search, Trash2, Edit2, XCircle, Send, Download, Clock, CreditCard, AlertCircle, CheckCircle2, Eye, Link} from "lucide-react";
+import {FileText, Plus, Search, Trash2, Edit2, XCircle, Send, Download, Clock, CreditCard, AlertCircle, CheckCircle2, Eye, Link, Sparkles} from "lucide-react";
 import { toast} from 'react-hot-toast';
 import { jsPDF} from 'jspdf';
+import { generateText } from '@/lib/cloudflareAI';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const EMPTY_FORM = { client_name: '', client_email: '', invoice_number: '', amount: '', currency: 'USD', status: 'Draft', due_date: '', issue_date: '', notes: ''};
@@ -24,6 +25,8 @@ export default function UnivInvoice() {
  const [loading, setLoading] = useState(true);
  const [search, setSearch] = useState('');
  const [statusFilter, setStatusFilter] = useState('All');
+ const [isPredicting, setIsPredicting] = useState(false);
+ const [predictionModal, setPredictionModal] = useState(null);
  const [isModalOpen, setIsModalOpen] = useState(false);
  const [editingId, setEditingId] = useState(null);
  const [viewingInvoice, setViewingInvoice] = useState(null);
@@ -91,7 +94,31 @@ export default function UnivInvoice() {
  const totalOutstanding = invoices.filter(i=>i.status==='Sent').reduce((s,i)=>s+Number(i.amount),0);
  const totalOverdue = invoices.filter(i=>i.status==='Overdue').reduce((s,i)=>s+Number(i.amount),0);
 
- 
+ const handleAIPredict = async () => {
+   setIsPredicting(true);
+   toast.loading("Analyzing invoice history...", { id: "predict" });
+   try {
+     const prompt = [
+       { role: 'system', content: 'You are an AI Financial Analyst. Analyze the invoices and return a JSON object with keys: "highRiskClient" (name of client most likely to default or pay late), "riskScore" (0-100), and "collectionStrategy" (1 sentence on how to handle them).' },
+       { role: 'user', content: `Invoices:\n${invoices.map(i => `- ${i.client_name}: $${i.amount} (${i.status}, Due: ${i.due_date})`).join('\n')}` }
+     ];
+     let response = await generateText(prompt);
+     if (typeof response !== 'string') response = response.response || response.text || JSON.stringify(response);
+     const jsonMatch = response.match(/\{[\s\S]*\}/);
+     if (jsonMatch) {
+       const parsed = JSON.parse(jsonMatch[0]);
+       setPredictionModal(parsed);
+       toast.success("Prediction complete", { id: "predict" });
+     } else {
+       toast.error("Failed to parse prediction", { id: "predict" });
+     }
+   } catch (err) {
+     toast.error("Prediction failed", { id: "predict" });
+   } finally {
+     setIsPredicting(false);
+   }
+ };
+
  const handleExport = () => {
  const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
  if (!exportData || exportData.length === 0) return alert('No data to export');
@@ -138,6 +165,10 @@ export default function UnivInvoice() {
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
+
+ <button onClick={handleAIPredict} disabled={isPredicting || invoices.length === 0} className="h-10 px-4 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-indigo-100 disabled:opacity-50 transition-colors">
+  {isPredicting ? <Sparkles className="w-4 h-4 animate-pulse" /> : <Sparkles className="w-4 h-4" />} AI Risk Predictor
+  </button>
 
  <button onClick={()=>openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 "><Plus className="w-4 h-4"/>Create Invoice</button>
  </div>
@@ -233,6 +264,33 @@ export default function UnivInvoice() {
  </div>
  </div>
  )}
+
+ {predictionModal && (
+   <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
+     <div className="bg-card w-full max-w-lg rounded-2xl flex flex-col hover:shadow-xl transition-all">
+       <div className="p-5 border-b border-primary/40 flex justify-between items-center bg-indigo-50/50">
+         <h2 className="text-lg font-bold flex items-center gap-2 text-indigo-900"><Sparkles className="w-5 h-5 text-indigo-600" /> AI Payment Risk Predictor</h2>
+         <button onClick={() => setPredictionModal(null)} className="p-2 hover:bg-indigo-100 rounded-full transition-colors"><XCircle className="w-5 h-5 text-indigo-400" /></button>
+       </div>
+       <div className="p-6 space-y-5">
+         <div className="grid grid-cols-2 gap-4">
+           <div>
+             <div className="text-xs uppercase font-bold tracking-wider text-rose-500 mb-1">High Risk Client</div>
+             <div className="text-xl font-black text-rose-700">{predictionModal.highRiskClient}</div>
+           </div>
+           <div>
+             <div className="text-xs uppercase font-bold tracking-wider text-indigo-400 mb-1">Default Risk Score</div>
+             <div className="text-3xl font-black text-indigo-600">{predictionModal.riskScore}%</div>
+           </div>
+         </div>
+         <div>
+           <div className="text-xs uppercase font-bold tracking-wider text-emerald-600 mb-2 flex items-center gap-2"><CreditCard className="w-3.5 h-3.5"/> Recommended Collection Strategy</div>
+           <p className="text-sm text-emerald-800 leading-relaxed italic bg-emerald-50/50 p-3 rounded-lg border border-emerald-100">{predictionModal.collectionStrategy}</p>
+         </div>
+       </div>
+     </div>
+   </div>
+  )}
  </div>
  );
 }

@@ -170,16 +170,16 @@ export default function Features() {
  <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-slate-600 text-xs font-semibold uppercase tracking-wider mb-6  tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {t("core_features", "Core Features")}
  </span>
- <h1 className="text-3xl sm:text-4xl md:text-6xl font-semibold tracking-tight text-slate-900 mb-6 max-w-4xl mx-auto leading-[1.1] tracking-[-0.02em]">
+ <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tighter text-slate-900 mb-6 max-w-4xl mx-auto leading-[1.05]">
  {t("everything_your_business_team_", "Everything your business team needs to")}{' '}
- <span className="bg-slate-100 text-slate-900 px-4 py-1 rounded-md-[1.5rem] inline-block mt-2">
+ <span className="bg-slate-100 text-slate-900 px-4 py-1.5 rounded-2xl inline-block mt-2 shadow-[inset_0_1px_3px_rgba(0,0,0,0.05)] border-[0.5px] border-slate-200">
  {t("succeed", "succeed")}
  </span>
  </h1>
- <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-medium">
+ <p className="text-base sm:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed font-medium">
  {t(
  "unlock_a_comprehensive_system_",
- "Unlock a comprehensive system built specifically for modern operational\n requirements. Minimize admin work and focus entirely on\n delivering value to your clients."
+ "Unlock a comprehensive system built specifically for modern operational requirements. Minimize admin work and focus entirely on delivering value to your clients."
  )}
  </p>
  </div>
@@ -200,11 +200,11 @@ export default function Features() {
  >
  {/* Text content */}
  <div className="flex-1 space-y-6">
- <span className="inline-flex px-4 py-1.5 rounded-full bg-slate-50 text-primary text-xs font-semibold uppercase tracking-wider tracking-[0.04em]">
+ <span className="inline-flex px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest ring-1 ring-primary/20">
  {feature.badge}
  </span>
 
- <h2 className="text-3xl md:text-4xl font-semibold text-slate-900 tracking-tight leading-tight tracking-[-0.02em]">
+ <h2 className="text-3xl md:text-5xl font-bold text-slate-900 tracking-tighter leading-[1.1]">
  {feature.title}
  </h2>
 
@@ -230,12 +230,14 @@ export default function Features() {
  </div>
  {/* Stylized UI Mockup */}
  <div className="flex-1 w-full">
- <div className="w-full aspect-[4/3] rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden relative group bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-full aspect-[4/3] rounded-[2rem] border border-slate-200/60 p-2 bg-white/50 backdrop-blur-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] overflow-hidden relative group">
+ <div className="absolute inset-2 rounded-[1.5rem] overflow-hidden bg-slate-100">
  <img 
  src={feature.image} 
  alt={`${feature.badge} Interface`} 
- className="absolute inset-0 w-full h-full object-cover object-center transform scale-[1.3] group-hover:scale-[1.35] transition-transform duration-700"
+ className="w-full h-full object-cover object-center transform scale-[1.02] group-hover:scale-105 transition-transform duration-700"
  />
+ </div>
  </div>
  </div>
  </div>
