@@ -5,8 +5,7 @@ import {
   ToastDescription,
   ToastProvider,
   ToastTitle,
-  ToastViewport,
-} from "@/components/ui/toast";
+  ToastViewport} from "@/components/ui/toast";
 
 export function Toaster() {
   const { toasts, dismiss } = useToast();

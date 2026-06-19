@@ -63,16 +63,14 @@ export default function EnterpriseContact() {
     toast({
       variant: 'destructive',
       title: 'Submission Failed',
-      description: error.message || 'There was an error submitting your request. Please try again.',
-    });
+      description: error.message || 'There was an error submitting your request. Please try again.'});
     return;
   }
 
   setStep(3); // Success step
   toast({
     title: 'Request Received',
-    description: 'Our enterprise team will contact you within 24 hours.',
-  });
+    description: 'Our enterprise team will contact you within 24 hours.'});
 };
 
  return (

@@ -32,8 +32,7 @@ const Carousel = React.forwardRef((
 ) => {
   const [carouselRef, api] = useEmblaCarousel({
     ...opts,
-    axis: orientation === "horizontal" ? "x" : "y",
-  }, plugins)
+    axis: orientation === "horizontal" ? "x" : "y"}, plugins)
   const [canScrollPrev, setCanScrollPrev] = React.useState(false)
   const [canScrollNext, setCanScrollNext] = React.useState(false)
 
@@ -97,8 +96,7 @@ const Carousel = React.forwardRef((
         scrollPrev,
         scrollNext,
         canScrollPrev,
-        canScrollNext,
-      }}>
+        canScrollNext}}>
       <div
         ref={ref}
         onKeyDownCapture={handleKeyDown}

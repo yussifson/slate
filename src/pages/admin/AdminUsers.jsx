@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import {ShieldAlert, Trash2, Search,, KeyRound, RefreshCcw, Building2, Calendar, Clock, ChevronDown} from "lucide-react";
+import {ShieldAlert, Trash2, Search, KeyRound, RefreshCcw, Building2, Calendar, Clock, ChevronDown} from "lucide-react";
 import { useToast } from '@/components/ui/use-toast';
 import PageHeader from '@/components/shared/PageHeader';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
@@ -136,8 +136,7 @@ export default function AdminUsers() {
     super_admin: 'bg-violet-50 text-violet-700',
     admin: 'bg-blue-50 text-blue-700',
     member: 'bg-slate-100 text-slate-700',
-    suspended: 'bg-red-50 text-red-700',
-  };
+    suspended: 'bg-red-50 text-red-700'};
 
   const ROLES = ['member', 'admin', 'super_admin'];
 

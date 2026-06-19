@@ -34,14 +34,12 @@ export default function Invoices() {
   const { data: invoices = [], isLoading } = useQuery({
     queryKey: ["invoices", companyId],
     queryFn: () => base44.entities.Invoice.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const { data: clients = [] } = useQuery({
     queryKey: ["clients", companyId],
     queryFn: () => base44.entities.Client.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const { data: company } = useQuery({
     queryKey: ["company", companyId],
@@ -49,23 +47,19 @@ export default function Invoices() {
       const list = await base44.entities.Company.list();
       return list.find(c => c.id === companyId) || null;
     },
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.Invoice.create({ ...data, company_id: companyId, currency: data.currency || company?.currency || "GHS" }),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["invoices"] }); setShowForm(false); toast({ title: "Invoice created" }); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["invoices"] }); setShowForm(false); toast({ title: "Invoice created" }); }});
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Invoice.update(id, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["invoices"] }); setEditingInvoice(null); toast({ title: "Invoice updated" }); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["invoices"] }); setEditingInvoice(null); toast({ title: "Invoice updated" }); }});
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.Invoice.delete(id),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["invoices"] }); toast({ title: "Invoice deleted" }); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["invoices"] }); toast({ title: "Invoice deleted" }); }});
 
   const currency = company?.currency || "GHS";
   const filtered = invoices.filter(i => {

@@ -27,8 +27,7 @@ const PAGE_TITLES = {
  "/companies": "Companies",
  "/subscriptions": "Subscriptions",
  "/settings": "Settings",
- "/client-portal": "Client Portal",
-};
+ "/client-portal": "Client Portal"};
 
 const LANGUAGES = {
  en: { name: "English", flag: "🇬🇧"},
@@ -45,8 +44,7 @@ const LANGUAGES = {
  ar: { name: "العربية", flag: "🇸🇦"},
  he: { name: "עברית", flag: "🇮🇱"},
  hi: { name: "हिन्दी", flag: "🇮🇳"},
- tr: { name: "Türkçe", flag: "🇹🇷"},
-};
+ tr: { name: "Türkçe", flag: "🇹🇷"}};
 
 export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOpen, toggleAI, isChatOpen, toggleChat, isBoltOpen, toggleBolt}) {
  const { t, i18n} = useTranslation();
@@ -72,16 +70,14 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  toast({
  title: t('offline_mode', "Offline Mode"),
  description: t('cannot_switch_industry_offline', "Cannot switch industries while offline. Please reconnect."),
- variant: "destructive",
-});
+ variant: "destructive"});
  return;
 }
  sessionStorage.setItem('slate_industry_override', newIndustry);
  queryClient.clear();
  toast({
  title: t('industry_switched', "Industry Switched"),
- description: t('active_industry_changed', "Active industry changed"),
-});
+ description: t('active_industry_changed', "Active industry changed")});
  navigate('/');
  setTimeout(() => {
  window.location.reload();

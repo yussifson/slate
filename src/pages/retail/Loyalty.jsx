@@ -26,8 +26,7 @@ export default function Loyalty() {
  customerId: r.data?.customerId || '',
  customerName: r.data?.customerId ? (customers.find(c => c.id === r.data.customerId)?.name || 'Unknown') : (r.data?.customerName || 'Unnamed Member'),
  points: parseInt(r.data?.points) || 0,
- tier: r.data?.tier || 'Bronze',
-}));
+ tier: r.data?.tier || 'Bronze'}));
 
  const [search, setSearch] = useState('');
  const [viewMode, setViewMode] = useState('list');

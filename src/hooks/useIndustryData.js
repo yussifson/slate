@@ -39,8 +39,7 @@ export function useIndustryRecords(recordType) {
       }).sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
     },
     enabled: !!companyId && !!recordType,
-    placeholderData: (prev) => prev,
-  });
+    placeholderData: (prev) => prev});
 }
 
 export function useMutateIndustryRecord() {
@@ -105,8 +104,7 @@ export function useMutateIndustryRecord() {
         }
       );
       queryClient.invalidateQueries({ queryKey: ['industry_records', companyId, data.record_type] });
-    },
-  });
+    }});
 }
 
 export function useDeleteIndustryRecord() {
@@ -124,6 +122,5 @@ export function useDeleteIndustryRecord() {
         (old = []) => old.filter(r => r.id !== data.id)
       );
       queryClient.invalidateQueries({ queryKey: ['industry_records', companyId, data.recordType] });
-    },
-  });
+    }});
 }

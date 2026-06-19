@@ -57,14 +57,12 @@ export default function EmailInbox() {
  const { data} = await powerSync.execute('SELECT * FROM profiles WHERE company_id = ?', [companyId]).then(res => ({ data: res.rows._array}));
  return data || [];
 },
- enabled: !!companyId,
-});
+ enabled: !!companyId});
 
  const { data: clients = []} = useTanstackQuery({
  queryKey: ["clients", companyId],
  queryFn: () => base44.entities.Client.filter({ company_id: companyId}),
- enabled: !!companyId,
-});
+ enabled: !!companyId});
 
   const createMutation = useMutation({
     mutationFn: async (data) => {
@@ -104,8 +102,7 @@ export default function EmailInbox() {
       queryClient.invalidateQueries({ queryKey: ["case-emails"] });
       setShowCompose(false);
       setIsComposeMinimized(false);
-    },
-  });
+    }});
 
   const userEmail = user?.email?.toLowerCase() || "";
   const userName = user?.full_name?.toLowerCase() || "";

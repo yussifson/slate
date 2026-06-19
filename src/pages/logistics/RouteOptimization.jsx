@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import {Map, MapPin, Zap, Lock, Navigation, ListOrdered, Save,, Play} from "lucide-react";
+import {Map, MapPin, Zap, Lock, Navigation, ListOrdered, Save, Play} from "lucide-react";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';

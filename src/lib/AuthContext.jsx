@@ -281,8 +281,7 @@ export const AuthProvider = ({ children }) => {
           .from('profiles')
           .update({
             company_id: sessionUser.user_metadata.company_id,
-            email: sessionUser.email?.toLowerCase() || profile.email || null,
-          })
+            email: sessionUser.email?.toLowerCase() || profile.email || null})
           .eq('id', sessionUser.id)
           .select()
           .single();

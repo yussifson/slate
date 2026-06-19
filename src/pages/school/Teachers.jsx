@@ -103,8 +103,7 @@ export default function Teachers() {
         setEditingId(null);
         setFormData({ full_name: '', email: '', phone: '', department: 'Academics', position: 'Teacher', qualifications: '', subjects: '', defaultPassword: '' });
       },
-      onError: (err) => toast.error(err?.message || "Failed to save teacher"),
-    };
+      onError: (err) => toast.error(err?.message || "Failed to save teacher")};
 
     if (editingId) mutateTeacher.mutate({ id: editingId, ...payload }, onDone);
     else mutateTeacher.mutate(payload, onDone);

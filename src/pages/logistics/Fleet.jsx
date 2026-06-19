@@ -18,8 +18,7 @@ const STATUS_COLORS = {
  'Available': 'bg-slate-100 text-primary/90 dark:bg-primary/30 dark:text-primary/70',
  'On Route': 'bg-orange-100 text-orange-700 dark:bg-primary/30 dark:text-primary/70',
  'Maintenance': 'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400',
- 'Decommissioned': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400',
-};
+ 'Decommissioned': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400'};
 
 const VEHICLE_TYPES = ['Truck', 'Van', 'Motorcycle', 'Container'];
 const FUEL_TYPES = ['Diesel', 'Petrol', 'Electric', 'Hybrid', 'CNG'];
@@ -35,8 +34,7 @@ const EMPTY_FORM = {
  currentDriver: '',
  status: 'Available',
  fuelType: 'Diesel',
- lastServiceDate: '',
-};
+ lastServiceDate: ''};
 
 export default function Fleet() {
  const { t} = useTranslation();
@@ -47,8 +45,7 @@ export default function Fleet() {
  const vehicles = dbRecords.map(r => ({
  id: r.id,
  status: r.status || 'Available',
- ...r.data,
-}));
+ ...r.data}));
 
  const [search, setSearch] = useState('');
  const [showModal, setShowModal] = useState(false);
@@ -75,8 +72,7 @@ export default function Fleet() {
  currentDriver: vehicle.currentDriver || '',
  status: vehicle.status || 'Available',
  fuelType: vehicle.fuelType || 'Diesel',
- lastServiceDate: vehicle.lastServiceDate || '',
-});
+ lastServiceDate: vehicle.lastServiceDate || ''});
  setShowModal(true);
 };
 
@@ -96,14 +92,12 @@ export default function Fleet() {
  recordType: 'vehicle',
  payload: { ...formData},
  status: formData.status,
- searchText: `${formData.plateNumber} ${formData.vehicleType} ${formData.make} ${formData.model}`,
-}, {
+ searchText: `${formData.plateNumber} ${formData.vehicleType} ${formData.make} ${formData.model}`}, {
  onSuccess: () => {
  toast.success(editTarget ? 'Vehicle updated!' : 'Vehicle added!');
  closeModal();
 },
- onError: (err) => toast.error('Failed: ' + err.message),
-});
+ onError: (err) => toast.error('Failed: ' + err.message)});
 };
 
  const handleUpdateStatus = (vehicle, newStatus) => {
@@ -113,18 +107,15 @@ export default function Fleet() {
  recordType: 'vehicle',
  payload: rest,
  status: newStatus,
- searchText: `${vehicle.plateNumber} ${vehicle.vehicleType} ${vehicle.make} ${vehicle.model}`,
-}, {
+ searchText: `${vehicle.plateNumber} ${vehicle.vehicleType} ${vehicle.make} ${vehicle.model}`}, {
  onSuccess: () => toast.success(`Vehicle status set to ${newStatus}`),
- onError: (err) => toast.error('Failed: ' + err.message),
-});
+ onError: (err) => toast.error('Failed: ' + err.message)});
 };
 
  const handleDelete = () => {
  deleteRecord.mutate({ id: deleteTargetId, recordType: 'vehicle'}, {
  onSuccess: () => { toast.success('Vehicle removed!'); setDeleteTargetId(null);},
- onError: (err) => { toast.error('Failed: ' + err.message); setDeleteTargetId(null);},
-});
+ onError: (err) => { toast.error('Failed: ' + err.message); setDeleteTargetId(null);}});
 };
 
  const filtered = vehicles.filter(v =>

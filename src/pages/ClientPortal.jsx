@@ -45,52 +45,44 @@ export default function ClientPortal() {
   const { data: clients = [] } = useQuery({
     queryKey: ["my-client", user?.email],
     queryFn: () => base44.entities.Client.filter({ email: user?.email }),
-    enabled: !!user?.email,
-  });
+    enabled: !!user?.email});
 
   const client = clients[0];
 
   const { data: cases = [] } = useQuery({
     queryKey: ["client-cases", client?.id],
     queryFn: () => base44.entities.LegalCase.filter({ client_id: client?.id }),
-    enabled: !!client?.id,
-  });
+    enabled: !!client?.id});
 
   const { data: hearings = [] } = useQuery({
     queryKey: ["client-hearings", client?.id],
     queryFn: () => base44.entities.Hearing.filter({ company_id: client?.company_id }),
-    enabled: !!client?.id,
-  });
+    enabled: !!client?.id});
 
   const { data: invoices = [] } = useQuery({
     queryKey: ["client-invoices", client?.id],
     queryFn: () => base44.entities.Invoice.filter({ client_id: client?.id }),
-    enabled: !!client?.id,
-  });
+    enabled: !!client?.id});
 
   const { data: sharedDocs = [] } = useQuery({
     queryKey: ["client-docs", client?.id],
     queryFn: () => base44.entities.Document.filter({ client_id: client?.id, shared_with_client: true }),
-    enabled: !!client?.id,
-  });
+    enabled: !!client?.id});
 
   const { data: expenses = [] } = useQuery({
     queryKey: ["client-expenses", client?.id],
     queryFn: () => base44.entities.Expense.filter({ client_id: client?.id }),
-    enabled: !!client?.id,
-  });
+    enabled: !!client?.id});
 
   const { data: signatureRequests = [] } = useQuery({
     queryKey: ["client-signatures", client?.id],
     queryFn: () => base44.entities.SignatureRequest.filter({ client_id: client?.id }),
-    enabled: !!client?.id,
-  });
+    enabled: !!client?.id});
 
   const { data: pipelineStates = [] } = useQuery({
     queryKey: ["client-pipeline-states", client?.id],
     queryFn: () => base44.entities.CasePipelineState.filter({ company_id: client?.company_id }),
-    enabled: !!client?.id,
-  });
+    enabled: !!client?.id});
 
   const caseIds = new Set(cases.map(c => c.id));
   const upcomingHearings = hearings
@@ -105,8 +97,7 @@ export default function ClientPortal() {
       queryClient.invalidateQueries({ queryKey: ["client-docs", client?.id] });
       toast({ title: "Document uploaded successfully" });
       setShowUpload(false);
-    },
-  });
+    }});
 
   const handleUploadSubmit = (docData) => {
     // If no case is selected, assign it to the first active case, or just leave it null
@@ -128,8 +119,7 @@ export default function ClientPortal() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["client-invoices", client?.id] });
       setPayingInvoice(null);
-    },
-  });
+    }});
 
   if (!client) {
     return (

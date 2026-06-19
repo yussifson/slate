@@ -23,15 +23,13 @@ const PRIORITY_COLORS = {
   low: "bg-gray-100 text-gray-700",
   medium: "bg-orange-100 text-orange-700",
   high: "bg-orange-100 text-orange-700",
-  urgent: "bg-red-100 text-red-700",
-};
+  urgent: "bg-red-100 text-red-700"};
 
 const STATUS_COLORS = {
   pending: "bg-yellow-100 text-yellow-700",
   in_progress: "bg-orange-100 text-orange-700",
   completed: "bg-slate-100 text-primary/90",
-  cancelled: "bg-gray-100 text-[#71717a] dark:text-gray-400",
-};
+  cancelled: "bg-gray-100 text-[#71717a] dark:text-gray-400"};
 
 function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, caseTerm }) {
   const { t } = useTranslation();
@@ -47,8 +45,7 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
     priority: "medium",
     status: "pending",
     due_date: "",
-    category: "legal",
-  };
+    category: "legal"};
 
   const [form, setForm] = useState(initialData || defaultForm);
   const { toast } = useToast();
@@ -210,25 +207,21 @@ export default function Tasks() {
   const { data: tasks = [], isLoading } = useQuery({
     queryKey: ["tasks", companyId],
     queryFn: () => base44.entities.Task.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const { data: cases = [] } = useQuery({
     queryKey: ["cases-list", companyId],
     queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const { data: staff = [] } = useQuery({
     queryKey: ["staff-list", companyId],
     queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Task.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["tasks", companyId] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["tasks", companyId] })});
 
   const isAdmin = ["super_admin", "company_admin", "managing_partner"].includes(user?.role);
   const filtered = tasks.filter(item => {
@@ -247,8 +240,7 @@ export default function Tasks() {
     total: tasks.length,
     pending: tasks.filter(item => item.status === "pending").length,
     in_progress: tasks.filter(item => item.status === "in_progress").length,
-    completed: tasks.filter(item => item.status === "completed").length,
-  };
+    completed: tasks.filter(item => item.status === "completed").length};
 
   const columns = [
     {
@@ -260,8 +252,7 @@ export default function Tasks() {
             {row.case_title && <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{row.case_title}</p>}
           </div>
         );
-      },
-    },
+      }},
     {
       header: "Assigned To",
       render: row => {
@@ -272,8 +263,7 @@ export default function Tasks() {
               : "—"}
           </span>
         );
-      },
-    },
+      }},
     {
       header: "Priority",
       render: row => {
@@ -282,8 +272,7 @@ export default function Tasks() {
             {row.priority}
           </Badge>
         );
-      },
-    },
+      }},
     {
       header: "Status",
       render: row => {
@@ -300,14 +289,12 @@ export default function Tasks() {
             </SelectContent>
           </Select>
         );
-      },
-    },
+      }},
     {
       header: "Due Date",
       render: (row) => row.due_date
         ? <span className="text-sm">{format(new Date(row.due_date), "MMM d, yyyy")}</span>
-        : <span className="text-sm text-[#71717a] dark:text-gray-400">—</span>,
-    },
+        : <span className="text-sm text-[#71717a] dark:text-gray-400">—</span>},
     {
       header: "",
       render: row => {
@@ -316,8 +303,7 @@ export default function Tasks() {
             {t("edit", "Edit")}
           </Button>
         );
-      },
-    },
+      }},
   ];
 
   return (

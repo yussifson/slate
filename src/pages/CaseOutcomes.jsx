@@ -29,18 +29,15 @@ export default function CaseOutcomes() {
   const { data: outcomes = [] } = useQuery({
     queryKey: ["outcomes", companyId],
     queryFn: () => base44.entities.CaseOutcome.filter({ company_id: companyId }, "-created_date"),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
   const { data: cases = [] } = useQuery({
     queryKey: ["cases", companyId],
     queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.CaseOutcome.create({ ...data, company_id: companyId }),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["outcomes"] }); setShowForm(false); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["outcomes"] }); setShowForm(false); }});
 
   const outcomeStats = ["won", "lost", "settled", "dismissed", "withdrawn"].map(o => ({ name: o, value: outcomes.filter(x => x.outcome === o).length })).filter(o => o.value > 0);
   const winRate = outcomes.length > 0 ? Math.round((outcomes.filter(o => o.outcome === "won").length / outcomes.filter(o => o.outcome !== "ongoing").length) * 100) : 0;

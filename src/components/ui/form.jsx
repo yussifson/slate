@@ -41,8 +41,7 @@ const useFormField = () => {
     formItemId: `${id}-form-item`,
     formDescriptionId: `${id}-form-item-description`,
     formMessageId: `${id}-form-item-message`,
-    ...fieldState,
-  }
+    ...fieldState}
 }
 
 const FormItemContext = React.createContext({})
@@ -130,5 +129,4 @@ export {
   FormControl,
   FormDescription,
   FormMessage,
-  FormField,
-}
+  FormField}

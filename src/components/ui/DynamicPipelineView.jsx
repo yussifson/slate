@@ -18,8 +18,7 @@ import {
  MoreHorizontal,
  Sparkles,
  TrendingUp,
- Layers,
-} from 'lucide-react';
+ Layers} from 'lucide-react';
 
 const STAGE_COLORS = [
  { bg: 'from-slate-500 to-slate-600', light: 'bg-muted/50', border: 'border-primary/40', text: 'text-foreground', badge: 'bg-muted text-[#71717a] dark:text-gray-400'},
@@ -186,15 +185,13 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
 
  toast({
  title: 'Card Moved',
- description: `Moved to "${stage}" successfully.`,
-});
+ description: `Moved to "${stage}" successfully.`});
  if (onRefresh) onRefresh();
 } catch (err) {
  toast({
  title: 'Move Failed',
  description: err.message || 'Could not move card.',
- variant: 'destructive',
-});
+ variant: 'destructive'});
 }
 };
 

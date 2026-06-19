@@ -1,7 +1,7 @@
 import { powerSync} from '@/api/PowerSyncConnector';
 import React, { useState, useMemo, useRef, useCallback, useEffect} from 'react';
 import { motion, AnimatePresence} from 'framer-motion';
-import {Search, Download, Plus,, Trash2,
+import {Search, Download, Plus, Trash2,
  ArrowUp, ArrowDown, ArrowUpDown, ChevronDown, ChevronRight,
  Save, Bookmark, X, CheckSquare, SquareMinus, Layers,
  FileDown, AlertCircle} from "lucide-react";
@@ -29,8 +29,7 @@ const STATUS_CLASSES = {
  review: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800',
  closed: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-400 dark:border-red-800',
  overdue: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-400 dark:border-red-800',
- inactive: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-400 dark:border-red-800',
-};
+ inactive: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-400 dark:border-red-800'};
 
 function getCellFormatClass(value) {
  if (typeof value === 'string') {

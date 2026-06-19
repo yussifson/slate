@@ -18,8 +18,7 @@ import { Play, FileText, CheckCircle, Banknote, Plus, Trash2, Printer, Eye, Chev
 const STATUS_COLORS = {
   draft: "bg-slate-100 text-slate-600",
   approved: "bg-orange-100 text-orange-700",
-  paid: "bg-slate-100 text-primary/90",
-};
+  paid: "bg-slate-100 text-primary/90"};
 
 // Generate YYYY-MM period string
 function currentPeriod() {
@@ -45,18 +44,15 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
   const { data: slips = [], isLoading } = useQuery({
     queryKey: ["payroll", companyId, period],
     queryFn: () => base44.entities.PayrollSlip.filter({ company_id: companyId, pay_period: period }),
-    enabled: !!companyId && !!period,
-  });
+    enabled: !!companyId && !!period});
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.PayrollSlip.create(data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["payroll", companyId, period] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["payroll", companyId, period] })});
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.PayrollSlip.update(id, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["payroll", companyId, period] }); setEditSlip(null); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["payroll", companyId, period] }); setEditSlip(null); }});
 
   const bulkGenerate = async () => {
     setGenerating(true);
@@ -95,8 +91,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
         net_salary: net,
         currency: currency,
         leave_days_taken: leaveDays,
-        status: "draft",
-      });
+        status: "draft"});
     }
     setGenerating(false);
   };

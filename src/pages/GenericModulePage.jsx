@@ -230,8 +230,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
  data: records,
  fieldDefinitions: fieldDefs,
  moduleDef: moduleDef,
- onRefresh: fetchDynamicData,
-};
+ onRefresh: fetchDynamicData};
 
  const suspenseFallback = (
  <div className="h-64 flex flex-col items-center justify-center text-[#71717a] dark:text-gray-400 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">

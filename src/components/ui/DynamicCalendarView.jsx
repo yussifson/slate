@@ -9,8 +9,7 @@ import {
  Eye,
  Pencil,
  X,
- Layers,
-} from 'lucide-react';
+ Layers} from 'lucide-react';
 import { Button} from '@/components/ui/button';
 import { Badge} from '@/components/ui/badge';
 import { Input} from '@/components/ui/input';
@@ -20,8 +19,7 @@ import {
  DialogHeader,
  DialogTitle,
  DialogDescription,
- DialogFooter,
-} from '@/components/ui/dialog';
+ DialogFooter} from '@/components/ui/dialog';
 import { powerSync} from "@/api/PowerSyncConnector";
 import { useToast} from '@/components/ui/use-toast';
 
@@ -74,8 +72,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
  map[key].push({
  record,
  fieldName: df.name,
- colorIdx: idx % EVENT_COLORS.length,
-});
+ colorIdx: idx % EVENT_COLORS.length});
 }
 } catch {
  // skip invalid dates

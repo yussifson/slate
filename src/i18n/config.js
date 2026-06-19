@@ -31,8 +31,7 @@ i18n
       backendOptions: [{
         // LocalStorage backend options
         expirationTime: 24 * 60 * 60 * 1000, // 24 hours
-        prefix: 'i18next_res_',
-      }, {
+        prefix: 'i18next_res_'}, {
         // Http backend options
         loadPath: '/locales/{{lng}}/translation.json'
       }]

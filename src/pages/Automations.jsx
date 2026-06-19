@@ -122,8 +122,7 @@ const nodeTypes = {
   triggerNode: TriggerNode,
   actionNode: ActionNode,
   conditionNode: ConditionNode,
-  delayNode: DelayNode,
-};
+  delayNode: DelayNode};
 
 
 // --- SIDEBAR DRAG COMPONENT ---
@@ -475,8 +474,7 @@ export default function Automations() {
 
       const position = reactFlowInstance.screenToFlowPosition({
         x: event.clientX,
-        y: event.clientY,
-      });
+        y: event.clientY});
 
       const newNode = {
         id: `node_${Date.now()}`,
@@ -486,8 +484,7 @@ export default function Automations() {
           label: type === 'triggerNode' ? 'Select Table...' : 'Configure Action...',
           actionType,
           config: {} 
-        },
-      };
+        }};
 
       setNodes((nds) => nds.concat(newNode));
     },

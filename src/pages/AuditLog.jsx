@@ -28,8 +28,7 @@ export default function AuditLog() {
     return [];
   }
  },
- enabled: !!companyId,
-});
+ enabled: !!companyId});
 
  const filteredLogs = logs.filter(
  (l) =>
@@ -46,8 +45,7 @@ export default function AuditLog() {
  <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  {format(new Date(row.created_date), "MMM d, yyyy h:mm:ss a")}
  </span>
- ),
-},
+ )},
  {
  header: "User",
  render: (row) => (
@@ -55,20 +53,16 @@ export default function AuditLog() {
  <p className="text-sm font-medium">{row.user_name || "System"}</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{row.user_email || "N/A"}</p>
  </div>
- ),
-},
+ )},
  {
  header: "Action",
- render: (row) => <span className="text-sm font-medium">{row.action}</span>,
-},
+ render: (row) => <span className="text-sm font-medium">{row.action}</span>},
  {
  header: "Slate",
- render: (row) => <span className="text-xs uppercase bg-muted px-2 py-0.5 rounded-full tracking-[0.04em]">{row.slate}</span>,
-},
+ render: (row) => <span className="text-xs uppercase bg-muted px-2 py-0.5 rounded-full tracking-[0.04em]">{row.slate}</span>},
  {
  header: "IP Address",
- render: (row) => <span className="text-xs font-mono text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{row.ip_address || "Unknown"}</span>,
-},
+ render: (row) => <span className="text-xs font-mono text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{row.ip_address || "Unknown"}</span>},
  ];
 
  return (

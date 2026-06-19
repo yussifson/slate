@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
-import {UserPlus, Plus, Search, Trash2, Edit2,, XCircle, Briefcase, Mail, Phone, Calendar, User, Star, List, LayoutGrid} from "lucide-react";
+import {UserPlus, Plus, Search, Trash2, Edit2, XCircle, Briefcase, Mail, Phone, Calendar, User, Star, List, LayoutGrid} from "lucide-react";
 import { toast } from 'react-hot-toast';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { OrbitLoader } from "@/components/ui/orbit-loader";

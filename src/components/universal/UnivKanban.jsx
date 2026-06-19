@@ -10,7 +10,7 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
 import { DragDropContext, Droppable, Draggable} from '@hello-pangea/dnd';
-import {LayoutGrid, Plus, Search, Trash2, Edit2,, XCircle, User, Calendar, Tag} from "lucide-react";
+import {LayoutGrid, Plus, Search, Trash2, Edit2, XCircle, User, Calendar, Tag} from "lucide-react";
 import { toast} from 'react-hot-toast';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 

@@ -21,8 +21,7 @@ import {
  User,
  Eye,
  Inbox,
- Sparkles,
-} from 'lucide-react';
+ Sparkles} from 'lucide-react';
 
 const DEFAULT_STATUSES = ['Submitted', 'Under Review', 'Approved', 'Rejected'];
 
@@ -34,8 +33,7 @@ const STATUS_CONFIG = {
  border: 'border-primary/20',
  gradient: 'from-primary to-primary',
  badgeCls: 'bg-orange-100 text-orange-700',
- ring: 'ring-primary/20',
-},
+ ring: 'ring-primary/20'},
  'under review': {
  icon: Clock,
  color: 'text-amber-600',
@@ -43,8 +41,7 @@ const STATUS_CONFIG = {
  border: 'border-amber-200',
  gradient: 'from-amber-500 to-orange-500',
  badgeCls: 'bg-amber-100 text-amber-700',
- ring: 'ring-amber-200',
-},
+ ring: 'ring-amber-200'},
  approved: {
  icon: CheckCircle2,
  color: 'text-primary',
@@ -52,8 +49,7 @@ const STATUS_CONFIG = {
  border: 'border-primary/20',
  gradient: 'from-primary to-primary',
  badgeCls: 'bg-primary/10 text-primary',
- ring: 'ring-primary/20',
-},
+ ring: 'ring-primary/20'},
  rejected: {
  icon: XCircle,
  color: 'text-red-600',
@@ -61,9 +57,7 @@ const STATUS_CONFIG = {
  border: 'border-red-200',
  gradient: 'from-red-500 to-rose-500',
  badgeCls: 'bg-red-100 text-red-700',
- ring: 'ring-red-200',
-},
-};
+ ring: 'ring-red-200'}};
 
 const FALLBACK_CONFIG = {
  icon: FileText,
@@ -72,8 +66,7 @@ const FALLBACK_CONFIG = {
  border: 'border-primary/40',
  gradient: 'from-slate-500 to-slate-600',
  badgeCls: 'bg-muted text-[#71717a] dark:text-gray-400',
- ring: 'ring-slate-200',
-};
+ ring: 'ring-slate-200'};
 
 function getStatusConfig(status) {
  if (!status) return FALLBACK_CONFIG;
@@ -328,16 +321,14 @@ export default function DynamicApprovalView({ data = [], fieldDefinitions = [], 
 
  toast({
  title: 'Status Updated',
- description: `Record has been marked as "${newStatus}".`,
-});
+ description: `Record has been marked as "${newStatus}".`});
  setConfirmAction(null);
  if (onRefresh) onRefresh();
 } catch (err) {
  toast({
  title: 'Update Failed',
  description: err.message || 'Could not update status.',
- variant: 'destructive',
-});
+ variant: 'destructive'});
 } finally {
  setIsUpdating(false);
 }

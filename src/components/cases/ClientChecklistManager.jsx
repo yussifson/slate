@@ -17,15 +17,13 @@ const STATUS_ICONS = {
   pending: Square,
   in_progress: Clock,
   completed: CheckCircle2,
-  waived: AlertCircle,
-};
+  waived: AlertCircle};
 
 const STATUS_COLORS = {
   pending: "bg-muted text-[#71717a] dark:text-gray-400",
   in_progress: "bg-orange-100 text-orange-700",
   completed: "bg-slate-100 text-primary/90",
-  waived: "bg-amber-100 text-amber-700",
-};
+  waived: "bg-amber-100 text-amber-700"};
 
 const DEFAULT_TEMPLATES = [
   "Provide valid government-issued ID",
@@ -45,8 +43,7 @@ export default function ClientChecklistManager({ caseData, client, user }) {
   const { data: items = [] } = useQuery({
     queryKey: ["checklist-case", caseData?.id],
     queryFn: () => base44.entities.ClientChecklist.filter({ case_id: caseData?.id }),
-    enabled: !!caseData?.id,
-  });
+    enabled: !!caseData?.id});
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.ClientChecklist.create(data),
@@ -54,18 +51,15 @@ export default function ClientChecklistManager({ caseData, client, user }) {
       queryClient.invalidateQueries({ queryKey: ["checklist-case", caseData?.id] });
       setForm({ title: "", description: "", due_date: "" });
       setShowForm(false);
-    },
-  });
+    }});
 
   const updateMutation = useMutation({
     mutationFn: ({ id, status }) => base44.entities.ClientChecklist.update(id, { status }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["checklist-case", caseData?.id] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["checklist-case", caseData?.id] })});
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.ClientChecklist.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["checklist-case", caseData?.id] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["checklist-case", caseData?.id] })});
 
   const handleCreate = () => {
     if (!form.title.trim()) return;
@@ -81,8 +75,7 @@ export default function ClientChecklistManager({ caseData, client, user }) {
       title: form.title,
       description: form.description,
       due_date: form.due_date || undefined,
-      status: "pending",
-    });
+      status: "pending"});
   };
 
   return (

@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import {Edit2, CheckCircle2, AlertOctagon,, Search, UserCheck, MessageSquare, Layers, Users, Clock} from "lucide-react";
+import {Edit2, CheckCircle2, AlertOctagon, Search, UserCheck, MessageSquare, Layers, Users, Clock} from "lucide-react";
 import { useToast } from '@/components/ui/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { useImpersonation } from '@/lib/ImpersonationContext';

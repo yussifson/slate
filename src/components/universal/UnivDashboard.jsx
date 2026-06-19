@@ -6,11 +6,9 @@ import { motion} from 'framer-motion';
 import {
  Plus, Edit3, Check, Trash2, LayoutGrid, XCircle, X,
  Database, TrendingUp, TrendingDown, Users, Activity,
- Clock, Zap, BarChart2, AlertTriangle, RefreshCw,
-} from 'lucide-react';
+ Clock, Zap, BarChart2, AlertTriangle, RefreshCw} from 'lucide-react';
 import {
- AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer,
-} from 'recharts';
+ AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer} from 'recharts';
 import { format, subMonths, startOfMonth, endOfMonth} from 'date-fns';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 
@@ -65,8 +63,7 @@ function CustomTooltip({ active, payload, label}) {
 // ─── Main Component ────────────────────────────────────────────────────────────
 export default function UnivDashboard({
  title = 'Dashboard',
- subtitle = 'Dynamic overview of your workspace.',
-}) {
+ subtitle = 'Dynamic overview of your workspace.'}) {
  const companyId = useCompanyId();
 
  const [isEditing, setIsEditing] = useState(false);
@@ -199,13 +196,11 @@ export default function UnivDashboard({
  lastMonth: lastMonth ?? 0,
  trend: trendPercent(thisMonth ?? 0, lastMonth ?? 0),
  recentRecords: recent ?? [],
- monthlyActivity,
-};
+ monthlyActivity};
 } catch {
  newData[w.id] = {
  current: 'N/A', thisMonth: 0, lastMonth: 0, trend: 0,
- recentRecords: [], monthlyActivity: [],
-};
+ recentRecords: [], monthlyActivity: []};
 }
 }
 
@@ -354,6 +349,7 @@ export default function UnivDashboard({
  {loading ? (
  <div className="flex-1 flex items-center justify-center">
  <OrbitLoader size="md" />
+ </div>
  ) : (
  <>
  {/* ── AI Insight Banner ─────────────────────────────────────────────── */}

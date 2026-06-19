@@ -43,8 +43,7 @@ export default function Settings() {
  const { data} = await powerSync.execute('SELECT * FROM companies WHERE id = ?', [companyId]).then(res => ({ data: res.rows._array[0] || null, error: null}));
  return data;
 },
- enabled: !!companyId,
-});
+ enabled: !!companyId});
 
  const updateCompany = async (data) => {
  if (!company) return;

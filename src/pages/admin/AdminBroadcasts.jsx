@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@powersync/react';
-import {Bell,, Mail, Send, CheckCircle2, Building2, Users} from "lucide-react";
+import {Bell, Mail, Send, CheckCircle2, Building2, Users} from "lucide-react";
 import { useToast } from '@/components/ui/use-toast';
 import PageHeader from '@/components/shared/PageHeader';
 import { cn } from '@/lib/utils';

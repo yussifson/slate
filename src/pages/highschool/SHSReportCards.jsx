@@ -95,8 +95,7 @@ export default function SHSReportCards() {
  ...student,
  subjectCount: studentGrades.length,
  average: avgScore,
- grades: studentGrades,
-};
+ grades: studentGrades};
 });
 
  const filteredStats = studentStats.filter(s => 

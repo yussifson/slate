@@ -1,7 +1,7 @@
 import { supabase} from '@/api/supabaseClient';
 import React, { useState, useEffect} from "react";
 import { useTranslation} from "react-i18next";
-import {Video, Plus, Calendar, Clock, Users, Copy, Sparkles, LayoutGrid,} from "lucide-react";
+import {Video, Plus, Calendar, Clock, Users, Copy, Sparkles, LayoutGrid} from "lucide-react";
 import { Button} from "@/components/ui/button";
 import VideoRoom from "@/components/video/VideoRoom";
 import { useToast} from "@/components/ui/use-toast";
@@ -144,8 +144,7 @@ export default function Board() {
  navigator.clipboard.writeText(url);
  toast({
  title: "Link Copied",
- description: "Meeting link copied to clipboard.",
-});
+ description: "Meeting link copied to clipboard."});
 };
 
  if (activeRoomUrl) {

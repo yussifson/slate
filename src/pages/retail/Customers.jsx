@@ -17,8 +17,7 @@ import { UploadCloud} from 'lucide-react';
 const segmentColors = {
  VIP: 'bg-primary/15 text-primary border-primary/25',
  Regular: 'bg-slate-100 text-primary border-primary/20',
- New: 'bg-muted text-[#71717a] dark:text-gray-400 border-primary/40',
-};
+ New: 'bg-muted text-[#71717a] dark:text-gray-400 border-primary/40'};
 
 export default function Customers() {
  const { t} = useTranslation();

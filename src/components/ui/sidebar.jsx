@@ -15,8 +15,7 @@ import {
  Tooltip,
  TooltipContent,
  TooltipProvider,
- TooltipTrigger,
-} from "@/components/ui/tooltip"
+ TooltipTrigger} from "@/components/ui/tooltip"
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -102,8 +101,7 @@ const SidebarProvider = React.forwardRef((
  isMobile,
  openMobile,
  setOpenMobile,
- toggleSidebar,
-}), [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar])
+ toggleSidebar}), [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar])
 
  return (
  (<SidebarContext.Provider value={contextValue}>
@@ -434,19 +432,14 @@ const sidebarMenuButtonVariants = cva(
  variant: {
  default: "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
  outline:
- "bg-background -[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground -[0_0_0_1px_hsl(var(--sidebar-accent))]",
-},
+ "bg-background -[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground -[0_0_0_1px_hsl(var(--sidebar-accent))]"},
  size: {
  default: "h-8 text-sm",
  sm: "h-7 text-xs",
- lg: "h-12 text-sm group-data-[collapsible=icon]:!p-0",
-},
-},
+ lg: "h-12 text-sm group-data-[collapsible=icon]:!p-0"}},
  defaultVariants: {
  variant: "default",
- size: "default",
-},
-}
+ size: "default"}}
 )
 
 const SidebarMenuButton = React.forwardRef((
@@ -480,8 +473,7 @@ const SidebarMenuButton = React.forwardRef((
 
  if (typeof tooltip === "string") {
  tooltip = {
- children: tooltip,
-}
+ children: tooltip}
 }
 
  return (
@@ -636,5 +628,4 @@ export {
  SidebarRail,
  SidebarSeparator,
  SidebarTrigger,
- useSidebar,
-}
+ useSidebar}

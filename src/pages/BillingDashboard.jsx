@@ -27,8 +27,7 @@ const SUB_STATUS_COLORS = {
   sent: "bg-orange-100 text-orange-700",
   paid: "bg-slate-100 text-primary/90",
   overdue: "bg-red-100 text-red-700",
-  cancelled: "bg-gray-100 text-[#71717a] dark:text-gray-400",
-};
+  cancelled: "bg-gray-100 text-[#71717a] dark:text-gray-400"};
 
 const SUB_STATUS_ICONS = { pending: Clock, sent: Send, paid: CheckCircle, overdue: AlertCircle, cancelled: AlertCircle };
 
@@ -51,8 +50,7 @@ function MetricCard({ icon: IconComp, label, value, color }) {
 const EXPENSE_CATEGORY_LABELS = {
   travel: "Travel", filing_fees: "Filing Fees", court_costs: "Court Costs",
   postage: "Postage", printing: "Printing", accommodation: "Accommodation",
-  expert_fees: "Expert Fees", translation: "Translation", other: "Other",
-};
+  expert_fees: "Expert Fees", translation: "Translation", other: "Other"};
 
 function CompanyBilling({ companyId }) {
   const { t } = useTranslation();
@@ -69,47 +67,39 @@ function CompanyBilling({ companyId }) {
   const { data: invoices = [], isLoading } = useQuery({
     queryKey: ["invoices", companyId],
     queryFn: () => base44.entities.Invoice.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const { data: clients = [] } = useQuery({
     queryKey: ["clients", companyId],
     queryFn: () => base44.entities.Client.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const { data: cases = [] } = useQuery({
     queryKey: ["cases-billing", companyId],
     queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const { data: expenses = [], isLoading: expensesLoading } = useQuery({
     queryKey: ["expenses", companyId],
     queryFn: () => base44.entities.Expense.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const { data: timeEntries = [] } = useQuery({
     queryKey: ["time-entries", companyId],
     queryFn: () => base44.entities.TimeEntry.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const createExpenseMutation = useMutation({
     mutationFn: (data) => base44.entities.Expense.create({ ...data, company_id: companyId, currency: currency }),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["expenses", companyId] }); setShowExpenseForm(false); setEditingExpense(null); toast({ title: "Expense logged" }); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["expenses", companyId] }); setShowExpenseForm(false); setEditingExpense(null); toast({ title: "Expense logged" }); }});
 
   const updateExpenseMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Expense.update(id, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["expenses", companyId] }); setEditingExpense(null); toast({ title: "Expense updated" }); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["expenses", companyId] }); setEditingExpense(null); toast({ title: "Expense updated" }); }});
 
   const deleteExpenseMutation = useMutation({
     mutationFn: (id) => base44.entities.Expense.delete(id),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["expenses", companyId] }); toast({ title: "Expense deleted" }); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["expenses", companyId] }); toast({ title: "Expense deleted" }); }});
 
   const addExpenseToInvoice = (expense) => {
     setShowForm(true);
@@ -123,8 +113,7 @@ function CompanyBilling({ companyId }) {
       status: "draft",
       due_date: "",
       notes: "",
-      items: [{ description: `${EXPENSE_CATEGORY_LABELS[expense.category] || expense.category}: ${expense.description}`, quantity: 1, unit_price: expense.amount, total: expense.amount }],
-    });
+      items: [{ description: `${EXPENSE_CATEGORY_LABELS[expense.category] || expense.category}: ${expense.description}`, quantity: 1, unit_price: expense.amount, total: expense.amount }]});
   };
 
   const { data: company } = useQuery({
@@ -133,23 +122,19 @@ function CompanyBilling({ companyId }) {
       const list = await base44.entities.Company.list();
       return list.find(c => c.id === companyId) || null;
     },
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.Invoice.create({ ...data, company_id: companyId, currency: company?.currency || "GHS" }),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["invoices"] }); setShowForm(false); toast({ title: "Invoice created" }); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["invoices"] }); setShowForm(false); toast({ title: "Invoice created" }); }});
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Invoice.update(id, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["invoices"] }); setEditingInvoice(null); toast({ title: "Invoice updated" }); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["invoices"] }); setEditingInvoice(null); toast({ title: "Invoice updated" }); }});
 
   const deleteInvoiceMutation = useMutation({
     mutationFn: (id) => base44.entities.Invoice.delete(id),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["invoices"] }); toast({ title: "Invoice deleted" }); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["invoices"] }); toast({ title: "Invoice deleted" }); }});
 
   const currency = company?.currency || "GHS";
   const unbilledTime = timeEntries.filter(t => t.billable && !t.billed);
@@ -193,8 +178,7 @@ function CompanyBilling({ companyId }) {
           currency: currency,
           subtotal: totalAmount,
           total_amount: totalAmount,
-          items: items,
-       };
+          items: items};
        
        try {
           const newInvoice = await createMutation.mutateAsync(invoicePayload);
@@ -463,18 +447,15 @@ function SuperAdminBilling() {
 
   const { data: invoices = [], isLoading } = useQuery({
     queryKey: ["subscription-invoices"],
-    queryFn: () => base44.entities.SubscriptionInvoice.list("-created_date"),
-  });
+    queryFn: () => base44.entities.SubscriptionInvoice.list("-created_date")});
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.SubscriptionInvoice.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["subscription-invoices"] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["subscription-invoices"] })});
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.SubscriptionInvoice.delete(id),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["subscription-invoices"] }); toast({ title: "Invoice deleted" }); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["subscription-invoices"] }); toast({ title: "Invoice deleted" }); }});
 
   const runBilling = async () => {
     setRunning(true);
@@ -495,8 +476,7 @@ function SuperAdminBilling() {
     await base44.integrations.Core.SendEmail({
       to: inv.admin_email,
       subject: `[LexAfrica] Payment Reminder — ${inv.plan_name} Plan`,
-      body: `Dear ${inv.company_name},\n\nThis is a reminder that your LexAfrica subscription of $${inv.amount_usd} USD for ${inv.billing_period} is ${inv.status === "overdue" ? "OVERDUE" : "pending payment"}.\n\nDue Date: ${inv.due_date}\n\nPlease arrange payment at your earliest convenience.\n\n— LexAfrica Billing`,
-    });
+      body: `Dear ${inv.company_name},\n\nThis is a reminder that your LexAfrica subscription of $${inv.amount_usd} USD for ${inv.billing_period} is ${inv.status === "overdue" ? "OVERDUE" : "pending payment"}.\n\nDue Date: ${inv.due_date}\n\nPlease arrange payment at your earliest convenience.\n\n— LexAfrica Billing`});
     updateMutation.mutate({ id: inv.id, data: { reminder_count: (inv.reminder_count || 0) + 1, last_reminder_at: new Date().toISOString() } });
     toast({ title: "Reminder sent", description: `Email sent to ${inv.admin_email}` });
   };

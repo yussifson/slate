@@ -105,8 +105,7 @@ export default function Employees() {
        email: formData.email,
        password: password,
        company_id: user?.company_id,
-       role: formData.role || 'staff',
-     });
+       role: formData.role || 'staff'});
      
      const authUserId = reg?.user?.id;
      

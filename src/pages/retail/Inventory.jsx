@@ -20,8 +20,7 @@ const LOCATIONS = ['Main Store', 'Downtown Branch', 'Warehouse A', 'Online Fulfi
 const statusColors = {
  'In Stock': 'bg-slate-100 dark:bg-primary/20 text-primary/90 dark:text-primary/70',
  'Low Stock': 'bg-amber-100 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 dark:border-amber-800',
- 'Out of Stock': 'bg-red-100 dark:bg-red-950/20 text-red-700 dark:text-red-400 border-[0.5px] border-black/9 dark:border-white/8 border-red-200 dark:border-red-800',
-};
+ 'Out of Stock': 'bg-red-100 dark:bg-red-950/20 text-red-700 dark:text-red-400 border-[0.5px] border-black/9 dark:border-white/8 border-red-200 dark:border-red-800'};
 
 function getStatus(quantity, reorderLevel) {
  if (quantity === 0) return 'Out of Stock';
@@ -105,8 +104,7 @@ export default function Inventory() {
  costPrice: String(item.costPrice),
  supplier: item.supplierId,
  expiryDate: item.expiryDate,
- storeLocation: item.storeLocation || 'Main Store',
-});
+ storeLocation: item.storeLocation || 'Main Store'});
  setShowModal(true);
 };
 
@@ -160,40 +158,35 @@ export default function Inventory() {
  costPrice: parseFloat(formData.costPrice) || 0,
  supplierId: formData.supplier,
  expiryDate: formData.expiryDate,
- storeLocation: formData.storeLocation,
-};
+ storeLocation: formData.storeLocation};
 
  mutateRecord.mutate({
  ...(editingItem ? { id: editingItem.id} : {}),
  recordType: 'product',
  payload,
  status: computedStatus,
- searchText: `${payload.sku} ${payload.name} ${payload.category} ${payload.supplierId}`,
-}, {
+ searchText: `${payload.sku} ${payload.name} ${payload.category} ${payload.supplierId}`}, {
  onSuccess: () => {
  toast.success(editingItem ? 'Item updated!' : 'Item added to inventory!');
  setShowModal(false);
  setFormData(emptyForm);
  setEditingItem(null);
 },
- onError: (err) => toast.error('Failed: ' + err.message),
-});
+ onError: (err) => toast.error('Failed: ' + err.message)});
 };
 
  const handleDelete = () => {
  if (!deleteTargetId) return;
  deleteRecord.mutate({ id: deleteTargetId, recordType: 'product'}, {
  onSuccess: () => { toast.success('Item deleted.'); setDeleteTargetId(null);},
- onError: (err) => { toast.error('Failed: ' + err.message); setDeleteTargetId(null);},
-});
+ onError: (err) => { toast.error('Failed: ' + err.message); setDeleteTargetId(null);}});
 };
 
  const stats = {
  total: items.length,
  lowStock: items.filter(i => i.status === 'Low Stock').length,
  outOfStock: items.filter(i => i.status === 'Out of Stock').length,
- totalValue: items.reduce((s, i) => s + i.price * i.quantity, 0),
-};
+ totalValue: items.reduce((s, i) => s + i.price * i.quantity, 0)};
 
  const filtered = items.filter(i =>
  i.name.toLowerCase().includes(search.toLowerCase()) ||

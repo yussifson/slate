@@ -19,8 +19,7 @@ import {
  PieChart,
  Pie,
  Cell,
- Legend,
-} from "recharts";
+ Legend} from "recharts";
 import {
  TrendingUp,
  DollarSign,
@@ -31,8 +30,7 @@ import {
  FileText,
  BarChart2,
  Percent,
- Clock,
-} from "lucide-react";
+ Clock} from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import { formatCurrency} from "@/lib/constants";
 import { startOfMonth, subMonths, format, isWithinInterval, endOfMonth} from "date-fns";
@@ -144,23 +142,19 @@ export default function ReportsDashboard() {
  const { data: invoices = []} = useQuery({
  queryKey: ["invoices", companyId],
  queryFn: () => base44.entities.Invoice.filter({ company_id: companyId}),
- enabled: !!companyId && !isRetail,
-});
+ enabled: !!companyId && !isRetail});
  const { data: staff = []} = useQuery({
  queryKey: ["staff", companyId],
  queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId}),
- enabled: !!companyId && !isRetail,
-});
+ enabled: !!companyId && !isRetail});
  const { data: clients = []} = useQuery({
  queryKey: ["clients", companyId],
  queryFn: () => base44.entities.Client.filter({ company_id: companyId}),
- enabled: !!companyId && !isRetail,
-});
+ enabled: !!companyId && !isRetail});
  const { data: cases = []} = useQuery({
  queryKey: ["cases", companyId],
  queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId}),
- enabled: !!companyId && !isRetail && !isSchool,
-});
+ enabled: !!companyId && !isRetail && !isSchool});
 
  // Retail specific data using useIndustryRecords directly if we can, but since this is a global component,
  // we'll fetch them using React Query to match the hook's structure (or simulate it).
@@ -252,8 +246,7 @@ export default function ReportsDashboard() {
  totalRevenue: totalRev,
  totalClients: totalItems,
  totalStaff: totalStaffCount,
- avgDealSize: avgDeal,
-};
+ avgDealSize: avgDeal};
 }, [invoices, clients, staff, retailOrders, retailCustomers, isRetail]);
 
  const totalRevenue = revenueData.reduce((s, d) => s + d.revenue, 0);
@@ -271,8 +264,7 @@ export default function ReportsDashboard() {
 });
  return Object.entries(map).map(([name, value]) => ({
  name: name.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
- value,
-}));
+ value}));
 }, [invoices]);
 
  const pipelineStages = useMemo(() => {
@@ -284,8 +276,7 @@ export default function ReportsDashboard() {
 });
  return Object.entries(stages).map(([name, count]) => ({
  name: name.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
- count,
-}));
+ count}));
 }, [cases, isRetail]);
 
  const topClients = useMemo(() => {
@@ -296,8 +287,7 @@ export default function ReportsDashboard() {
  name: c.name || "Unknown",
  billed: c.total_billed || 0,
  cases: c.total_cases || 0,
- status: c.status || "active",
-}));
+ status: c.status || "active"}));
 }, [clients]);
 
  const staffSummary = useMemo(() => {
@@ -305,8 +295,7 @@ export default function ReportsDashboard() {
  name: s.full_name || s.user_email,
  role: (s.role || "staff").replace(/_/g, " "),
  department: s.department || "—",
- status: s.status || "active",
-}));
+ status: s.status || "active"}));
 }, [staff]);
 
  const overdueCount = invoices.filter((i) => i.status === "overdue").length;

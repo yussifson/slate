@@ -11,8 +11,7 @@ import {
  Save,
  Circle,
  CheckCircle2,
- AlertCircle,
-} from "lucide-react";
+ AlertCircle} from "lucide-react";
 import { Badge} from "@/components/ui/badge";
 import { Button} from "@/components/ui/button";
 import { cn} from "@/lib/utils";
@@ -180,8 +179,7 @@ function NotesPanel({ recordId}) {
  const newNote = {
  id: Date.now(),
  text: draft.trim(),
- createdAt: new Date().toISOString(),
-};
+ createdAt: new Date().toISOString()};
  const updated = [newNote, ...notes];
  setNotes(updated);
  localStorage.setItem(storageKey, JSON.stringify(updated));
@@ -258,22 +256,19 @@ function TimelinePanel({ record}) {
  milestones.push({
  label: "Record Created",
  date: record.created_at,
- type: "created",
-});
+ type: "created"});
 }
  if (record?.updated_at && record.updated_at !== record.created_at) {
  milestones.push({
  label: "Last Updated",
  date: record.updated_at,
- type: "updated",
-});
+ type: "updated"});
 }
  if (milestones.length === 0) {
  milestones.push({
  label: "Record Opened",
  date: new Date().toISOString(),
- type: "now",
-});
+ type: "now"});
 }
 
  return (
@@ -328,8 +323,7 @@ export default function RecordWorkspace({
  onClose,
  onSave,
  isOpen,
- tableName,
-}) {
+ tableName}) {
  const [activeTab, setActiveTab] = useState("overview");
 
  // Close on Escape

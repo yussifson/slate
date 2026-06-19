@@ -9,8 +9,7 @@ export const SCHOOL_BRAND = {
  primaryDark: "hsl(var(--primary) / 0.9)",
  primaryLight: "hsl(var(--primary) / 0.1)",
  accent: "hsl(var(--primary))", // Bright Blue
- chart: ["hsl(var(--primary))", "hsl(var(--primary) / 0.8)", "hsl(var(--primary) / 0.6)", "hsl(var(--primary) / 0.4)", "hsl(var(--primary) / 0.2)", "hsl(var(--primary) / 0.1)"],
-};
+ chart: ["hsl(var(--primary))", "hsl(var(--primary) / 0.8)", "hsl(var(--primary) / 0.6)", "hsl(var(--primary) / 0.4)", "hsl(var(--primary) / 0.2)", "hsl(var(--primary) / 0.1)"]};
 
 export function ViewModeToggle({ viewMode, onChange, className}) {
  return (

@@ -100,8 +100,7 @@ export default function Parents() {
         setShowModal(false); setEditingId(null);
         setFormData({ name: '', phone: '', email: '', address: '', parentId: '', linkedStudentId: '' });
       },
-      onError: (err) => toast.error(err?.message || "Failed to save parent"),
-    };
+      onError: (err) => toast.error(err?.message || "Failed to save parent")};
 
     if (editingId) {
       mutateParent.mutate({ id: editingId, ...payload }, onDone);

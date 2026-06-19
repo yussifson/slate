@@ -40,8 +40,7 @@ export function useCompany() {
       }
     },
     enabled: !!companyId,
-    staleTime: 5 * 60 * 1000,
-  });
+    staleTime: 5 * 60 * 1000});
 
   const override = typeof window !== 'undefined' ? sessionStorage.getItem('slate_industry_override') : null;
 

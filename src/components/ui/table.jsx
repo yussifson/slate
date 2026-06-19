@@ -82,5 +82,4 @@ export {
   TableHead,
   TableRow,
   TableCell,
-  TableCaption,
-}
+  TableCaption}

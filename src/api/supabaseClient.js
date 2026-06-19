@@ -65,8 +65,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     // This stops the endless _recoverAndRefresh retry storm when loading offline.
     autoRefreshToken: typeof navigator !== 'undefined' ? navigator.onLine : true,
     detectSessionInUrl: true,
-    persistSession: true,
-  },
+    persistSession: true},
   global: {
     fetch: customFetch
   }

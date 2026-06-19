@@ -64,8 +64,7 @@ export default function SuperAdminDashboard() {
  full_name: adminName || form.admin_email.split("@")[0],
  role: "company_admin",
  status: "active",
- currency: form.currency || "GHS",
-});
+ currency: form.currency || "GHS"});
 }
  return created;
 },
@@ -73,8 +72,7 @@ export default function SuperAdminDashboard() {
  queryClient.invalidateQueries({ queryKey: ["single-company"]});
  setShowForm(false);
  toast({ title: "Firm created successfully"});
-},
-});
+}});
 
  const updateMutation = useMutation({
  mutationFn: ({ id, data}) => base44.entities.Company.update(id, data),
@@ -82,8 +80,7 @@ export default function SuperAdminDashboard() {
  queryClient.invalidateQueries({ queryKey: ["single-company"]});
  setShowForm(false);
  toast({ title: "Firm updated"});
-},
-});
+}});
 
  if (isLoading) {
  return (

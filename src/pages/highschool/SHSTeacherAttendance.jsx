@@ -108,8 +108,7 @@ export default function SHSTeacherAttendance() {
  present: recordsArray.filter(r => r.status === 'Present').length,
  absent: recordsArray.filter(r => r.status === 'Absent').length,
  late: recordsArray.filter(r => r.status === 'Late').length,
- onLeave: recordsArray.filter(r => r.status === 'On Leave').length,
-}
+ onLeave: recordsArray.filter(r => r.status === 'On Leave').length}
 }
 };
 

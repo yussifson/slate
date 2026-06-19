@@ -66,8 +66,7 @@ export default function Attendance() {
     const records = classStudents.map(s => ({
       studentId: s.studentId,
       studentName: s.name,
-      status: statusMap[s.id] || 'Present',
-    }));
+      status: statusMap[s.id] || 'Present'}));
 
     mutateRecord.mutate({
       id: existingRecord?.id,

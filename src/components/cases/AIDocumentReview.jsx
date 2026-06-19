@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import {Upload, Sparkles, FileText, Calendar, AlertTriangle,
-  Clock, Users, ChevronDown, ChevronUp,, X, CheckCircle} from "lucide-react";
+  Clock, Users, ChevronDown, ChevronUp, X, CheckCircle} from "lucide-react";
 import { format, parseISO, isValid, isBefore } from "date-fns";
 import { generateText, analyzeImage } from "@/lib/cloudflareAI";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
@@ -14,14 +14,12 @@ const URGENCY_COLORS = {
   critical: "bg-red-100 text-red-700 border-red-200",
   high: "bg-orange-100 text-orange-700 border-orange-200",
   medium: "bg-yellow-100 text-yellow-700 border-yellow-200",
-  low: "bg-slate-100 text-primary/90 border-primary/20",
-};
+  low: "bg-slate-100 text-primary/90 border-primary/20"};
 
 const IMPORTANCE_COLORS = {
   high: "bg-red-50 border-red-200 text-red-800",
   medium: "bg-slate-50 border-primary/20 text-primary/80",
-  low: "bg-gray-50 border-primary/40 text-gray-700",
-};
+  low: "bg-gray-50 border-primary/40 text-gray-700"};
 
 const DATE_TYPE_COLORS = {
   Hearing: "bg-slate-100 text-primary/90",
@@ -29,8 +27,7 @@ const DATE_TYPE_COLORS = {
   Effective: "bg-slate-100 text-primary/90",
   Expiry: "bg-red-100 text-red-700",
   Filing: "bg-orange-100 text-orange-700",
-  Payment: "bg-yellow-100 text-yellow-700",
-};
+  Payment: "bg-yellow-100 text-yellow-700"};
 
 function SectionCard({ icon: Icon, title, count, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -191,8 +188,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
         title: d.label,
         date: d.date,
         status: "scheduled",
-        notes: `Extracted by AI Document Review from: ${docName}`,
-      })
+        notes: `Extracted by AI Document Review from: ${docName}`})
     ));
     alert(`${allDates.length} date(s) saved to the case calendar!`);
   };

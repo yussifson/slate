@@ -27,8 +27,7 @@ export default function TimeTracker() {
   const { data: cases = [] } = useQuery({
     queryKey: ["cases", companyId],
     queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   useEffect(() => {
     const savedState = localStorage.getItem("slate_timer_state");
@@ -95,8 +94,7 @@ export default function TimeTracker() {
         description: description || "Time entry",
         hours: parseFloat((seconds / 3600).toFixed(2)),
         date: new Date().toISOString().split('T')[0],
-        created_by: user?.email,
-      };
+        created_by: user?.email};
 
       // Assuming there is a Billing/TimeEntry entity. If not we save it to Invoices or just log it.
       // We'll use InvoiceItems or TimeEntries

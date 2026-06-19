@@ -2,7 +2,7 @@ import { useTranslation} from "react-i18next";
 import { useState, useEffect} from 'react';
 import { powerSync } from "@/api/PowerSyncConnector";
 import { useQuery } from "@tanstack/react-query";
-import {Database, Scale, Users, Building2, DollarSign,, Activity, Clock} from "lucide-react";
+import {Database, Scale, Users, Building2, DollarSign, Activity, Clock} from "lucide-react";
 import PageHeader from '@/components/shared/PageHeader';
 import Companies from '@/pages/Companies';
 import { supabase } from '@/api/supabaseClient';

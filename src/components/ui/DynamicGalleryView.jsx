@@ -15,8 +15,7 @@ import {
  Image,
  Sparkles,
  Calendar,
- Hash,
-} from 'lucide-react';
+ Hash} from 'lucide-react';
 import { Button} from '@/components/ui/button';
 import { Badge} from '@/components/ui/badge';
 import { Input} from '@/components/ui/input';
@@ -26,8 +25,7 @@ import {
  DialogHeader,
  DialogTitle,
  DialogDescription,
- DialogFooter,
-} from '@/components/ui/dialog';
+ DialogFooter} from '@/components/ui/dialog';
 import { powerSync} from "@/api/PowerSyncConnector";
 import { useToast} from '@/components/ui/use-toast';
 

@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
-import {, Component} from "lucide-react";
+import { Component} from "lucide-react";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const components = {
@@ -203,8 +203,7 @@ const components = {
   UnivWard: React.lazy(() => import('@/components/universal/UnivWard')),
   UnivWarehouse: React.lazy(() => import('@/components/universal/UnivWarehouse')),
   UnivWishlist: React.lazy(() => import('@/components/universal/UnivWishlist')),
-  UnivWorkOrder: React.lazy(() => import('@/components/universal/UnivWorkOrder')),
-};
+  UnivWorkOrder: React.lazy(() => import('@/components/universal/UnivWorkOrder'))};
 
 export const ORBIT_COMPONENTS_LIST = Object.keys(components);
 

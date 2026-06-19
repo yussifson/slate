@@ -16,8 +16,7 @@ import { useCompanyId} from "@/hooks/useCompanyId";
 const statusColors = {
  Admitted: 'bg-red-100 text-red-700',
  Outpatient: 'bg-slate-100 text-primary/90',
- Discharged: 'bg-slate-100 text-primary/90',
-};
+ Discharged: 'bg-slate-100 text-primary/90'};
 
 const BLANK_FORM = {
  firstName: '',
@@ -27,8 +26,7 @@ const BLANK_FORM = {
  bloodType: 'O+',
  phone: '',
  diagnosis: '',
- status: 'Outpatient',
-};
+ status: 'Outpatient'};
 
 export default function Patients() {
  const { t} = useTranslation();
@@ -65,8 +63,7 @@ export default function Patients() {
  bloodType: p.bloodType || 'O+',
  phone: p.phone || '',
  diagnosis: p.diagnosis || '',
- status: p.status || 'Outpatient',
-});
+ status: p.status || 'Outpatient'});
  setShowModal(true);
 };
 
@@ -87,31 +84,27 @@ export default function Patients() {
  bloodType: formData.bloodType,
  phone: formData.phone || '',
  diagnosis: formData.diagnosis || '',
- lastVisit: new Date().toISOString().split('T')[0],
-};
+ lastVisit: new Date().toISOString().split('T')[0]};
 
  mutateRecord.mutate({
  id: editingPatient?.id,
  recordType: 'patient',
  payload,
  status: formData.status,
- searchText: `${name} ${patientId}`,
-}, {
+ searchText: `${name} ${patientId}`}, {
  onSuccess: () => {
  toast.success(editingPatient ? 'Patient updated!' : 'Patient registered!');
  setShowModal(false);
  setFormData(BLANK_FORM);
  setEditingPatient(null);
 },
- onError: (err) => toast.error('Failed: ' + err.message),
-});
+ onError: (err) => toast.error('Failed: ' + err.message)});
 };
 
  const confirmDelete = () => {
  deleteRecord.mutate({ id: deleteTargetId, recordType: 'patient'}, {
  onSuccess: () => { toast.success('Patient deleted!'); setDeleteTargetId(null);},
- onError: (err) => { toast.error('Failed: ' + err.message); setDeleteTargetId(null);},
-});
+ onError: (err) => { toast.error('Failed: ' + err.message); setDeleteTargetId(null);}});
 };
 
  const filtered = patients.filter(p =>

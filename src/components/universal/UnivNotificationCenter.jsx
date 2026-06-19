@@ -41,21 +41,18 @@ export default function UnivNotificationCenter() {
     if (currentUnreadCount > prevCount.current && prevCount.current !== 0) {
       toast({
         title: "New Notification",
-        description: "You have a new notification in your inbox.",
-      });
+        description: "You have a new notification in your inbox."});
     }
     prevCount.current = currentUnreadCount;
   }, [currentUnreadCount, toast]);
 
   const markReadMutation = useMutation({
     mutationFn: (id) => base44.entities.Notification.update(id, { is_read: 'true' }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notifications", user?.email] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notifications", user?.email] })});
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.Notification.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notifications", user?.email] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notifications", user?.email] })});
 
   const unreadCount = notifications.filter(n => n.is_read !== 'true').length;
 

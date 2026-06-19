@@ -7,7 +7,7 @@ import { useAuth} from "@/lib/AuthContext";
 import { base44} from "@/api/base44Client";
 import { powerSync} from "@/api/PowerSyncConnector";
 import { useToast} from "@/components/ui/use-toast";
-import {Camera,} from "lucide-react";
+import {Camera} from "lucide-react";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const ROBOT_SEEDS = ["Felix", "Aneka", "Jack", "Midnight", "Oliver", "Bella"];

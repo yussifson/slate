@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import {Scan, FileText, CheckCircle, Database, Save, UploadCloud,, Calendar} from "lucide-react";
+import {Scan, FileText, CheckCircle, Database, Save, UploadCloud, Calendar} from "lucide-react";
 import { Button } from '@/components/ui/button';
 import AIDocumentParser from '@/components/shared/AIDocumentParser';
 import { toast } from '@/components/ui/use-toast';

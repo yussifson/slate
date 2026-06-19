@@ -19,8 +19,7 @@ const roleColors = {
   paralegal: "bg-slate-100 text-primary/90",
   hr: "bg-slate-100 text-primary/90",
   finance: "bg-amber-100 text-amber-700",
-  support: "bg-slate-100 text-slate-600",
-};
+  support: "bg-slate-100 text-slate-600"};
 
 export default function HRStaffPanel({ companyId, staff, currency, isAdmin }) {
   const { t } = useTranslation();
@@ -33,13 +32,11 @@ export default function HRStaffPanel({ companyId, staff, currency, isAdmin }) {
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.StaffRecord.create({ ...data, company_id: companyId }),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["staff", companyId] }); setShowForm(false); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["staff", companyId] }); setShowForm(false); }});
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.StaffRecord.update(id, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["staff", companyId] }); setEditing(null); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["staff", companyId] }); setEditing(null); }});
 
   const filtered = staff.filter(s =>
     !search || s.full_name?.toLowerCase().includes(search.toLowerCase()) || s.user_email?.toLowerCase().includes(search.toLowerCase())

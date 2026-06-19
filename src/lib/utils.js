@@ -27,8 +27,7 @@ export const INDUSTRY_TERMS = {
     hearing: "hearing",
     hearings: "hearings",
     casesUrl: "/cases",
-    clientsUrl: "/clients",
-  },
+    clientsUrl: "/clients"},
   school: {
     case: "class",
     cases: "classes",
@@ -47,8 +46,7 @@ export const INDUSTRY_TERMS = {
     hearing: "session",
     hearings: "sessions",
     casesUrl: "/classes",
-    clientsUrl: "/students",
-  },
+    clientsUrl: "/students"},
   hospital: {
     case: "appointment",
     cases: "appointments",
@@ -67,8 +65,7 @@ export const INDUSTRY_TERMS = {
     hearing: "appointment",
     hearings: "appointments",
     casesUrl: "/appointments",
-    clientsUrl: "/patients",
-  },
+    clientsUrl: "/patients"},
   hotel: {
     case: "room",
     cases: "rooms",
@@ -87,8 +84,7 @@ export const INDUSTRY_TERMS = {
     hearing: "booking",
     hearings: "bookings",
     casesUrl: "/rooms",
-    clientsUrl: "/guests",
-  },
+    clientsUrl: "/guests"},
   retail: {
     case: "order",
     cases: "orders",
@@ -107,8 +103,7 @@ export const INDUSTRY_TERMS = {
     hearing: "transaction",
     hearings: "transactions",
     casesUrl: "/orders",
-    clientsUrl: "/customers",
-  }
+    clientsUrl: "/customers"}
 };
 
 export function getTerm(key, industry = "law", capitalize = false) {

@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
-import {FileText, Download,, Eye, BarChart2} from "lucide-react";
+import {FileText, Download, Eye, BarChart2} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
@@ -136,23 +136,19 @@ const TEMPLATES = [
   {
     id: "legal_notice",
     label: "Legal Notice",
-    description: "Formal legal notice to opposing party",
-  },
+    description: "Formal legal notice to opposing party"},
   {
     id: "court_filing",
     label: "Court Filing Cover Sheet",
-    description: "Standard cover sheet for court submissions",
-  },
+    description: "Standard cover sheet for court submissions"},
   {
     id: "client_summary",
     label: "Client Case Summary",
-    description: "Summary report for client communication",
-  },
+    description: "Summary report for client communication"},
   {
     id: "engagement_letter",
     label: "Engagement Letter",
-    description: "Initial engagement and retainer agreement letter",
-  },
+    description: "Initial engagement and retainer agreement letter"},
 ];
 
 function buildPDF(template, caseData, client, additionalNotes) {
@@ -372,26 +368,22 @@ export default function CasePDFGenerator({ caseData, user }) {
   const { data: clients = [] } = useQuery({
     queryKey: ["clients", caseData.company_id],
     queryFn: () => base44.entities.Client.filter({ company_id: caseData.company_id }),
-    enabled: !!caseData.company_id,
-  });
+    enabled: !!caseData.company_id});
 
   const { data: invoices = [] } = useQuery({
     queryKey: ["case-invoices-pdf", caseData.id],
     queryFn: () => base44.entities.Invoice.filter({ case_id: caseData.id }),
-    enabled: !!caseData.id,
-  });
+    enabled: !!caseData.id});
 
   const { data: timeEntries = [] } = useQuery({
     queryKey: ["case-time-pdf", caseData.id],
     queryFn: () => base44.entities.TimeEntry.filter({ case_id: caseData.id }),
-    enabled: !!caseData.id,
-  });
+    enabled: !!caseData.id});
 
   const { data: hearings = [] } = useQuery({
     queryKey: ["case-hearings-pdf", caseData.id],
     queryFn: () => base44.entities.Hearing.filter({ case_id: caseData.id }),
-    enabled: !!caseData.id,
-  });
+    enabled: !!caseData.id});
 
   const client = clients.find(c => c.id === caseData.client_id);
   const selectedTemplate = TEMPLATES.find(item => item.id === templateId);

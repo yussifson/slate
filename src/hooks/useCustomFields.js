@@ -24,8 +24,7 @@ export function useCustomFields(recordType) {
       if (error) throw error;
       return data || [];
     },
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 }
 
 export function useMutateCustomField() {
@@ -44,8 +43,7 @@ export function useMutateCustomField() {
         field_label: fieldLabel,
         field_type: fieldType || 'text',
         field_options: fieldOptions || [],
-        is_required: isRequired || false,
-      };
+        is_required: isRequired || false};
 
       if (id) {
         const { data, error } = await supabase

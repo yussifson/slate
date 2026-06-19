@@ -148,8 +148,7 @@ export default function SHSDailyAttendance() {
  present: recordsArray.filter(r => r.status === 'Present').length,
  absent: recordsArray.filter(r => r.status === 'Absent').length,
  late: recordsArray.filter(r => r.status === 'Late').length,
- excused: recordsArray.filter(r => r.status === 'Excused').length,
-}
+ excused: recordsArray.filter(r => r.status === 'Excused').length}
 }
 };
 

@@ -30,14 +30,12 @@ export default function WhatsAppMessenger() {
   const { data: clients = [] } = useQuery({
     queryKey: ["clients", companyId],
     queryFn: () => base44.entities.Client.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const { data: cases = [] } = useQuery({
     queryKey: ["cases", companyId],
     queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const clientCases = selectedClient
     ? cases.filter(c => c.client_id === selectedClient.id)

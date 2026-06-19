@@ -6,7 +6,7 @@ import { Input} from "@/components/ui/input";
 import { useToast} from "@/components/ui/use-toast";
 import { powerSync} from "@/api/PowerSyncConnector";
 import { useCompanyId} from "@/hooks/useCompanyId";
-import {Search,, CheckCircle2, Download, Trash2, ShieldCheck, Blocks} from "lucide-react";
+import {Search, CheckCircle2, Download, Trash2, ShieldCheck, Blocks} from "lucide-react";
 import PageHeader from "@/components/shared/PageHeader";
 import * as LucideIcons from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter} from "@/components/ui/dialog";
@@ -131,8 +131,7 @@ export default function Marketplace() {
  setInstallSuccessModal(mod);
  toast({
  title: "?? Slate Installed!",
- description: `${mod.name} is now in your workslate sidebar.`,
-});
+ description: `${mod.name} is now in your workslate sidebar.`});
 
 } catch (err) {
  console.error(err);
@@ -165,8 +164,7 @@ export default function Marketplace() {
 
  toast({
  title: "Module Uninstalled",
- description: `${mod.name} has been removed from your workslate.`,
-});
+ description: `${mod.name} has been removed from your workslate.`});
 } catch (err) {
  console.error(err);
  toast({ title: "Uninstall Failed", description: err.message, variant: "destructive"});

@@ -32,14 +32,12 @@ export default function LeaveManagement() {
   const { data: allLeaves = [] } = useQuery({
     queryKey: ["leaves", companyId],
     queryFn: () => base44.entities.LeaveRequest.filter({ company_id: companyId }, "-created_date", 100),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const { data: staffRecords = [] } = useQuery({
     queryKey: ["staff", companyId],
     queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const createMutation = useMutation({
     mutationFn: (data) => {
@@ -49,13 +47,11 @@ export default function LeaveManagement() {
       const { _for_staff_email, _for_staff_name, ...rest } = data;
       return base44.entities.LeaveRequest.create({ ...rest, ...staffInfo, company_id: companyId });
     },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["leaves"] }); setShowForm(false); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["leaves"] }); setShowForm(false); }});
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.LeaveRequest.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["leaves"] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["leaves"] })});
 
   const myLeaves = allLeaves.filter(l => l.staff_email === user?.email);
   const pendingLeaves = allLeaves.filter(l => l.status === "pending");

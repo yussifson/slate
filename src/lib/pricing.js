@@ -6,27 +6,22 @@ export const PRICES = {
     global:    { monthly: 0,     annual: 0     },
     emerging:  { monthly: 0,     annual: 0     },
     community: { monthly: 0,     annual: 0     },
-    education: { monthly: 0,     annual: 0     },
-  },
+    education: { monthly: 0,     annual: 0     }},
   professional: {
     global:    { monthly: 4900,  annual: 3900  },
     emerging:  { monthly: 1900,  annual: 1520  },
     community: { monthly: 900,   annual: 720   },
-    education: { monthly: 2900,  annual: 2320  },
-  },
+    education: { monthly: 2900,  annual: 2320  }},
   business: {
     global:    { monthly: 9900,  annual: 7900  },
     emerging:  { monthly: 3900,  annual: 3120  },
     community: { monthly: 1900,  annual: 1520  },
-    education: { monthly: 6900,  annual: 5520  },
-  },
+    education: { monthly: 6900,  annual: 5520  }},
   enterprise: {
     global:    { monthly: 24900, annual: 19900 },
     emerging:  { monthly: 9900,  annual: 7920  },
     community: { monthly: 4900,  annual: 3920  },
-    education: { monthly: 6900,  annual: 5520  },
-  },
-};
+    education: { monthly: 6900,  annual: 5520  }}};
 
 export function getPrice(plan, tier, cycle) {
   return PRICES[plan]?.[tier]?.[cycle] ?? 0;
@@ -36,8 +31,7 @@ export function formatPrice(cents) {
   if (cents === 0) return 'Free';
   return new Intl.NumberFormat('en-US', {
     style: 'currency', currency: 'USD',
-    minimumFractionDigits: 0, maximumFractionDigits: 0,
-  }).format(cents / 100);
+    minimumFractionDigits: 0, maximumFractionDigits: 0}).format(cents / 100);
 }
 
 export function formatPriceNumber(cents) {
@@ -146,15 +140,13 @@ export const PLAN_META = {
   starter:      { name:'Starter',      tagline:'Get started for free',           quota:'Up to 5 Internal Users',   storage:'10 GB',  aiTokens:'None',                 popular:false, highlight:false, cta:'Get started free'   },
   professional: { name:'Professional', tagline:'For growing teams',               quota:'Up to 50 Internal Users',  storage:'500 GB', aiTokens:'10,000 / mo',          popular:true,  highlight:true,  cta:'Start 14-day trial'  },
   business:     { name:'Business',     tagline:'For scaling organizations',       quota:'Unlimited Internal Users', storage:'5 TB',   aiTokens:'Unlimited',            popular:false, highlight:false, cta:'Start 14-day trial'  },
-  enterprise:   { name:'Enterprise',   tagline:'Custom-fit for large enterprise', quota:'Unlimited Internal Users', storage:'Custom', aiTokens:'Unlimited + Priority', popular:false, highlight:false, cta:'Contact sales'       },
-};
+  enterprise:   { name:'Enterprise',   tagline:'Custom-fit for large enterprise', quota:'Unlimited Internal Users', storage:'Custom', aiTokens:'Unlimited + Priority', popular:false, highlight:false, cta:'Contact sales'       }};
 
 export const TIER_META = {
   global:    { name:'Global',    desc:'US, UK, EU, Gulf, AU, JP, KR', badge:null        },
   emerging:  { name:'Emerging',  desc:'Africa, SE Asia, LatAm',       badge:'~60% off'  },
   community: { name:'Community', desc:'NGOs, Churches, Nonprofits',   badge:'~80% off'  },
-  education: { name:'Education', desc:'Schools & Universities',       badge:'~40% off'  },
-};
+  education: { name:'Education', desc:'Schools & Universities',       badge:'~40% off'  }};
 
 export const UNIVERSAL_FEATURES = [
   'All 14 Work Slate Modules',

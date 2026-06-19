@@ -8,7 +8,7 @@ import { powerSync } from "@/api/PowerSyncConnector";
 import { base44 } from "@/api/base44Client";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { useAuth } from "@/lib/AuthContext";
-import {, Search, Users, Briefcase} from "lucide-react";
+import { Search, Users, Briefcase} from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 
@@ -167,8 +167,7 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
       const participantInserts = participantUserIds.map((userId) => ({
         room_id: room.id,
         user_id: userId,
-        role: "member",
-      }));
+        role: "member"}));
 
       if (participantInserts.length === 0) {
         throw new Error(
@@ -189,8 +188,7 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
       if (participantInserts.length < expectedCount) {
         toast({
           title: "Chat created",
-          description: `${participantInserts.length} of ${expectedCount} participants added (others need to log in first).`,
-        });
+          description: `${participantInserts.length} of ${expectedCount} participants added (others need to log in first).`});
       } else {
         toast({ title: "Success", description: "Chat created successfully" });
       }

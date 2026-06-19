@@ -7,8 +7,7 @@ import { toggleVariants } from "@/components/ui/toggle"
 
 const ToggleGroupContext = React.createContext({
   size: "default",
-  variant: "default",
-})
+  variant: "default"})
 
 const ToggleGroup = React.forwardRef(({ className, variant, size, children, ...props }, ref) => (
   <ToggleGroupPrimitive.Root
@@ -31,8 +30,7 @@ const ToggleGroupItem = React.forwardRef(({ className, children, variant, size, 
       ref={ref}
       className={cn(toggleVariants({
         variant: context.variant || variant,
-        size: context.size || size,
-      }), className)}
+        size: context.size || size}), className)}
       {...props}>
       {children}
     </ToggleGroupPrimitive.Item>)

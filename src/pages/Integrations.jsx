@@ -7,7 +7,7 @@ import { useCompanyId} from '@/hooks/useCompanyId';
 import { Button} from '@/components/ui/button';
 import { Badge} from '@/components/ui/badge';
 import { Input} from '@/components/ui/input';
-import {Search,, CheckCircle2, Link2, ExternalLink, ShieldCheck, HelpCircle} from "lucide-react";
+import {Search, CheckCircle2, Link2, ExternalLink, ShieldCheck, HelpCircle} from "lucide-react";
 import PageHeader from '@/components/shared/PageHeader';
 import { useToast} from '@/components/ui/use-toast';
 import { powerSync} from "@/api/PowerSyncConnector";
@@ -263,8 +263,7 @@ export default function Integrations() {
  
  toast({
  title: "Connecting to " + app.name,
- description: "Redirecting you to the secure authorization portal...",
-});
+ description: "Redirecting you to the secure authorization portal..."});
 
  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
  const returnUrl = encodeURIComponent(window.location.href);
@@ -298,8 +297,7 @@ export default function Integrations() {
 
  toast({
  title: "Integration Connected",
- description: `Successfully configured production API credentials for ${modalApp.name}.`,
-});
+ description: `Successfully configured production API credentials for ${modalApp.name}.`});
  setModalApp(null);
 } catch (err) {
  toast({
@@ -351,8 +349,7 @@ export default function Integrations() {
  
  toast({
  title: "Syncing Calendar...",
- description: `Pushing a test event to ${app.name}...`,
-});
+ description: `Pushing a test event to ${app.name}...`});
 
  try {
  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
@@ -404,8 +401,7 @@ export default function Integrations() {
  
  toast({
  title: `Testing ${app.name}...`,
- description: `Triggering automation feature...`,
-});
+ description: `Triggering automation feature...`});
 
  try {
  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';

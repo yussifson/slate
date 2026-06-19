@@ -10,8 +10,7 @@ import {
  DropdownMenuItem,
  DropdownMenuLabel,
  DropdownMenuSeparator,
- DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+ DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
 import {
  LayoutDashboard, Briefcase, Users, Calendar,
  Receipt, CheckSquare, FolderOpen, Settings,

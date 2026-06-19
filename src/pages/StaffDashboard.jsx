@@ -36,32 +36,27 @@ export default function StaffDashboard() {
   const { data: tasks = [], isLoading: loadingTasks } = useQuery({
     queryKey: ["my-tasks", user?.email],
     queryFn: () => base44.entities.Task.filter({ company_id: companyId, assigned_to: user?.email }),
-    enabled: !!user?.email && !!companyId,
-  });
+    enabled: !!user?.email && !!companyId});
 
   const { data: timeEntries = [] } = useQuery({
     queryKey: ["my-time", user?.email],
     queryFn: () => base44.entities.TimeEntry.filter({ company_id: companyId, lawyer_email: user?.email }),
-    enabled: !!user?.email && !!companyId,
-  });
+    enabled: !!user?.email && !!companyId});
 
   const { data: hearings = [] } = useQuery({
     queryKey: ["my-hearings", companyId],
     queryFn: () => base44.entities.Hearing.filter({ company_id: companyId, lawyer_email: user?.email }),
-    enabled: !!user?.email && !!companyId,
-  });
+    enabled: !!user?.email && !!companyId});
 
   const { data: cases = [] } = useQuery({
     queryKey: ["my-cases", companyId],
     queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, assigned_lawyer: user?.email }),
-    enabled: !!user?.email && !!companyId,
-  });
+    enabled: !!user?.email && !!companyId});
 
   const { data: staffRecords = [] } = useQuery({
     queryKey: ["staff-record", user?.email],
     queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId, user_email: user?.email }),
-    enabled: !!user?.email && !!companyId,
-  });
+    enabled: !!user?.email && !!companyId});
 
   const staffRecord = staffRecords[0];
 

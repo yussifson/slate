@@ -44,32 +44,27 @@ export default function HRDashboard() {
   const { data: staff = [] } = useQuery({
     queryKey: ["staff", companyId],
     queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const { data: leaves = [] } = useQuery({
     queryKey: ["leaves", companyId],
     queryFn: () => base44.entities.LeaveRequest.filter({ company_id: companyId }, "-created_date", 200),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const { data: complaints = [] } = useQuery({
     queryKey: ["complaints", companyId],
     queryFn: () => base44.entities.HRComplaint.filter({ company_id: companyId }, "-created_date", 100),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const { data: promotions = [] } = useQuery({
     queryKey: ["promotions", companyId],
     queryFn: () => base44.entities.Promotion.filter({ company_id: companyId }, "-created_date", 100),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const { data: company } = useQuery({
     queryKey: ["company", companyId],
     queryFn: async () => { const list = await base44.entities.Company.list(); return list.find(c => c.id === companyId) || null; },
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const currency = company?.currency || "GHS";
   const activeStaff = staff.filter(s => s.status === "active").length;

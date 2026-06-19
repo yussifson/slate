@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import {DollarSign, TrendingUp, CreditCard, ArrowUpRight, Activity, Plus, Search, MoreVertical, Edit, CheckCircle,} from "lucide-react";
+import {DollarSign, TrendingUp, CreditCard, ArrowUpRight, Activity, Plus, Search, MoreVertical, Edit, CheckCircle} from "lucide-react";
 import PageHeader from '@/components/shared/PageHeader';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';

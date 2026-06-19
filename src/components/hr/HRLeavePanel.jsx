@@ -31,13 +31,11 @@ export default function HRLeavePanel({ companyId, leaves, staff, isAdmin, user }
       const { _for_staff_email, _for_staff_name, ...rest } = data;
       return base44.entities.LeaveRequest.create({ ...rest, ...staffInfo, company_id: companyId });
     },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["leaves", companyId] }); setShowForm(false); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["leaves", companyId] }); setShowForm(false); }});
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.LeaveRequest.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["leaves", companyId] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["leaves", companyId] })});
 
   const myLeaves = leaves.filter(l => l.staff_email === user?.email);
   const pending = leaves.filter(l => l.status === "pending");

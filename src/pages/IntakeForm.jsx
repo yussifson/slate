@@ -1,7 +1,7 @@
 import { useTranslation} from "react-i18next";
 import React, { useState} from "react";
 import { base44} from "@/api/base44Client";
-import {Scale, CheckCircle,, Phone, Mail, User, Building2, FileText, AlertTriangle} from "lucide-react";
+import {Scale, CheckCircle, Phone, Mail, User, Building2, FileText, AlertTriangle} from "lucide-react";
 import { Button} from "@/components/ui/button";
 import { Input} from "@/components/ui/input";
 import { Label} from "@/components/ui/label";
@@ -26,15 +26,13 @@ const URGENCY_CONFIG = {
  low: { label: "Not Urgent", color: "bg-slate-100 text-slate-600"},
  medium: { label: "Within 1–2 Weeks", color: "bg-orange-100 text-orange-700"},
  high: { label: "Within a Few Days", color: "bg-amber-100 text-amber-700"},
- urgent: { label: "Extremely Urgent", color: "bg-red-100 text-red-700"},
-};
+ urgent: { label: "Extremely Urgent", color: "bg-red-100 text-red-700"}};
 
 export default function IntakeForm() {
  const { t} = useTranslation();
  const [form, setForm] = useState({
  full_name: "", email: "", phone: "", organization: "",
- case_type: "", case_description: "", urgency: "medium", preferred_contact: "email",
-});
+ case_type: "", case_description: "", urgency: "medium", preferred_contact: "email"});
  const [submitting, setSubmitting] = useState(false);
  const [submitted, setSubmitted] = useState(false);
  const [error, setError] = useState(null);
@@ -46,8 +44,7 @@ export default function IntakeForm() {
  const { data: company} = useQuery({
  queryKey: ["company-intake", companyId],
  queryFn: () => base44.entities.Company.findUnique({ filter: { id: companyId}}),
- enabled: !!companyId,
-});
+ enabled: !!companyId});
 
  const firmName = company?.name || "Law Firm";
 
@@ -61,8 +58,7 @@ export default function IntakeForm() {
  ...form,
  company_id: companyId,
  source: "web_form",
- status: "new",
-});
+ status: "new"});
 
  // Send confirmation to prospective client
  await base44.integrations.Core.SendEmail({
@@ -80,8 +76,7 @@ Urgency: ${URGENCY_CONFIG[form.urgency]?.label || form.urgency}
 We aim to respond within 24 business hours. If this is an emergency, please call us directly.
 
 Best regards,
-${firmName} Intake Team`,
-});
+${firmName} Intake Team`});
 
  // Notify internal intake team
  await base44.integrations.Core.SendEmail({
@@ -101,8 +96,7 @@ Preferred Contact: ${form.preferred_contact}
 Case Description:
 ${form.case_description}
 
-View in App: ${window.location.origin}/leads`,
-});
+View in App: ${window.location.origin}/leads`});
 
  setSubmitting(false);
  setSubmitted(true);

@@ -10,7 +10,7 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
 import { motion} from 'framer-motion';
-import {Search, MonitorSpeaker, Plus, Activity, AlertTriangle, Settings, MoreHorizontal, Edit2, Trash2, XCircle,} from "lucide-react";
+import {Search, MonitorSpeaker, Plus, Activity, AlertTriangle, Settings, MoreHorizontal, Edit2, Trash2, XCircle} from "lucide-react";
 import { toast} from 'react-hot-toast';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 

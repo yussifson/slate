@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import PageHeader from "@/components/shared/PageHeader";
-import {Sparkles, BookOpen, Scale,, AlertTriangle, ChevronDown, ChevronUp, Search, Clock} from "lucide-react";
+import {Sparkles, BookOpen, Scale, AlertTriangle, ChevronDown, ChevronUp, Search, Clock} from "lucide-react";
 import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 import { format } from "date-fns";

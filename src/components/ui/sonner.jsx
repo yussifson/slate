@@ -19,9 +19,7 @@ const Toaster = ({
  actionButton:
  "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
  cancelButton:
- "group-[.toast]:bg-muted group-[.toast]:text-[#71717a] dark:text-gray-400",
-},
-}}
+ "group-[.toast]:bg-muted group-[.toast]:text-[#71717a] dark:text-gray-400"}}}
  {...props} />)
  );
 }

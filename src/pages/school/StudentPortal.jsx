@@ -55,8 +55,7 @@ export default function StudentPortal() {
   const { data: documents = [] } = useQuery({
     queryKey: ["student-docs", activeStudent?.id],
     queryFn: () => base44.entities.Document.filter({ client_id: activeStudent?.id }),
-    enabled: !!activeStudent?.id,
-  });
+    enabled: !!activeStudent?.id});
 
   // Calculate stats
   let attendancePct = 0;

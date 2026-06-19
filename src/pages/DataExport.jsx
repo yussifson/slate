@@ -173,8 +173,7 @@ export default function DataExport() {
 
   const counts = {
     cases: cases.length, clients: clients.length, invoices: invoices.length,
-    time: timeEntries.length, tasks: tasks.length, staff: staff.length,
-  };
+    time: timeEntries.length, tasks: tasks.length, staff: staff.length};
 
   return (
     <div className="space-y-5">

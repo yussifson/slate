@@ -3,7 +3,7 @@ import { useCompanyId} from '@/hooks/useCompanyId';
 
 import { supabase} from "@/api/supabaseClient";
 import { motion} from 'framer-motion';
-import {BarChart2, TrendingUp, Download,, RefreshCw, Database, AlertCircle} from "lucide-react";
+import {BarChart2, TrendingUp, Download, RefreshCw, Database, AlertCircle} from "lucide-react";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 // Master map: component_id (from orbit build config) → real Supabase table name
@@ -43,8 +43,7 @@ const COMPONENT_TO_TABLE = {
  UnivHousekeeping: { table: 'univ_housekeeping', label: 'Housekeeping Tasks'},
  UnivDining: { table: 'univ_dining', label: 'Dining Orders'},
  UnivPOS: { table: 'univ_pos', label: 'POS Sales'},
- UnivSubscription: { table: 'univ_subscriptions', label: 'Subscriptions'},
-};
+ UnivSubscription: { table: 'univ_subscriptions', label: 'Subscriptions'}};
 
 const COLORS = [
  'bg-blue-500/10', 'bg-violet-500', 'bg-emerald-500/10', 'bg-amber-500',
@@ -54,8 +53,7 @@ const COLORS = [
 
 export default function UnivAnalytics({
  title = "Analytics & Reports",
- subtitle = "Live insights from your workspace data.",
-}) {
+ subtitle = "Live insights from your workspace data."}) {
  const companyId = useCompanyId();
  const [loading, setLoading] = useState(true);
  const [refreshing, setRefreshing] = useState(false);
@@ -115,8 +113,7 @@ export default function UnivAnalytics({
  table: item.table,
  count: error ? null : (count ?? 0),
  color: COLORS[i % COLORS.length],
- hasError: !!error,
-};
+ hasError: !!error};
 } catch {
  return { label: item.label, table: item.table, count: null, color: COLORS[i % COLORS.length], hasError: true};
 }

@@ -2,7 +2,7 @@ import { powerSync} from '@/api/PowerSyncConnector';
 import React, { useState, useMemo} from 'react';
 import { useCompanyId} from '@/hooks/useCompanyId';
 import { motion, AnimatePresence} from 'framer-motion';
-import {ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon, Clock, Users, Video,, Trash2} from "lucide-react";
+import {ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon, Clock, Users, Video, Trash2} from "lucide-react";
 import { useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
 
 import { supabase} from "@/api/supabaseClient";

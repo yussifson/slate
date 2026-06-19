@@ -26,8 +26,7 @@ const ROLE_COLORS = {
   paralegal: "bg-slate-100 text-primary/90",
   hr: "bg-amber-100 text-amber-700",
   finance: "bg-slate-100 text-primary/90",
-  support: "bg-slate-100 text-slate-600",
-};
+  support: "bg-slate-100 text-slate-600"};
 
 const emptyInvite = { full_name: "", user_email: "", role: "lawyer", department: "", bar_number: "" };
 
@@ -41,29 +40,25 @@ export default function FirmStaffManager({ firm, onClose }) {
   const { data: staffRecords = [], isLoading } = useQuery({
     queryKey: ["firm-staff", firm.id],
     queryFn: () => base44.entities.StaffRecord.filter({ company_id: firm.id }),
-    enabled: !!firm.id,
-  });
+    enabled: !!firm.id});
 
   const updateRoleMutation = useMutation({
     mutationFn: ({ id, role }) => base44.entities.StaffRecord.update(id, { role }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["firm-staff", firm.id] });
       toast({ title: "Role updated" });
-    },
-  });
+    }});
 
   const toggleStatusMutation = useMutation({
     mutationFn: ({ id, status }) => base44.entities.StaffRecord.update(id, { status }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["firm-staff", firm.id] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["firm-staff", firm.id] })});
 
   const removeMutation = useMutation({
     mutationFn: (id) => base44.entities.StaffRecord.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["firm-staff", firm.id] });
       toast({ title: "Staff member removed" });
-    },
-  });
+    }});
 
   const handleInvite = async () => {
     if (!invite.user_email || !invite.full_name) return;
@@ -93,8 +88,7 @@ export default function FirmStaffManager({ firm, onClose }) {
         department: invite.department || undefined,
         bar_number: invite.bar_number || undefined,
         status: "active",
-        currency: firm.currency || "GHS",
-      });
+        currency: firm.currency || "GHS"});
       queryClient.invalidateQueries({ queryKey: ["firm-staff", firm.id] });
       toast({ 
         title: `✓ Invited ${invite.full_name}`, 

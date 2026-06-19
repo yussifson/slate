@@ -9,8 +9,7 @@ export const INDUSTRIES = {
       case: 'Case', cases: 'Cases',
       staff: 'Lawyer', staffPlural: 'Lawyers',
       venue: 'Court', intake: 'Intake Form',
-      hearing: 'Hearing', hearings: 'Hearings',
-    },
+      hearing: 'Hearing', hearings: 'Hearings'},
     roles: [
       { value: 'company_admin', label: 'Managing Partner' },
       { value: 'lawyer', label: 'Lawyer / Associate' },
@@ -41,8 +40,7 @@ export const INDUSTRIES = {
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
-    ],
-  },
+    ]},
 
   school: {
     name: 'School',
@@ -52,8 +50,7 @@ export const INDUSTRIES = {
       case: 'Class', cases: 'Classes',
       staff: 'Teacher', staffPlural: 'Teachers',
       venue: 'Campus', intake: 'Enrollment Form',
-      hearing: 'Class Session', hearings: 'Class Sessions',
-    },
+      hearing: 'Class Session', hearings: 'Class Sessions'},
     roles: [
       { value: 'company_admin', label: 'School Principal' },
       { value: 'teacher', label: 'Teacher' },
@@ -96,8 +93,7 @@ export const INDUSTRIES = {
       { label: 'Automations', path: '/automations', icon: 'Zap' },
       { label: 'Institution Settings', path: '/institution-settings', icon: 'Building' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
-    ],
-  },
+    ]},
 
   highschool: {
     name: 'High School',
@@ -107,8 +103,7 @@ export const INDUSTRIES = {
       case: 'Class', cases: 'Classes',
       staff: 'Teacher', staffPlural: 'Teachers',
       venue: 'Campus', intake: 'Enrollment',
-      hearing: 'Session', hearings: 'Sessions',
-    },
+      hearing: 'Session', hearings: 'Sessions'},
     roles: [
       { value: 'company_admin', label: 'Principal' },
       { value: 'teacher', label: 'Teacher' },
@@ -187,8 +182,7 @@ export const INDUSTRIES = {
       { label: 'Financial', path: '/s/financial-analytics', icon: 'TrendingUp' },
       
       { section: 'System', label: 'Settings', path: '/settings', icon: 'Settings' },
-    ],
-  },
+    ]},
 
   university: {
     name: 'University',
@@ -198,8 +192,7 @@ export const INDUSTRIES = {
       case: 'Course', cases: 'Courses',
       staff: 'Lecturer', staffPlural: 'Lecturers',
       venue: 'Campus', intake: 'Admission Form',
-      hearing: 'Session', hearings: 'Sessions',
-    },
+      hearing: 'Session', hearings: 'Sessions'},
     roles: [
       { value: 'company_admin', label: 'Chancellor / Dean' },
       { value: 'lecturer', label: 'Lecturer' },
@@ -231,8 +224,7 @@ export const INDUSTRIES = {
       { label: 'Finance Operations', path: '/u/finance', icon: 'Banknote' },
 
       { section: 'System', label: 'Settings', path: '/settings', icon: 'Settings' },
-    ],
-  },
+    ]},
 
   online: {
     name: 'Online Learning',
@@ -242,8 +234,7 @@ export const INDUSTRIES = {
       case: 'Course', cases: 'Courses',
       staff: 'Instructor', staffPlural: 'Instructors',
       venue: 'Platform', intake: 'Registration',
-      hearing: 'Live Session', hearings: 'Live Sessions',
-    },
+      hearing: 'Live Session', hearings: 'Live Sessions'},
     roles: [
       { value: 'company_admin', label: 'Platform Admin' },
       { value: 'instructor', label: 'Instructor' },
@@ -271,8 +262,7 @@ export const INDUSTRIES = {
       { section: 'Community & AI', label: 'Community', path: '/o/community', icon: 'MessageSquare' },
       
       { section: 'System', label: 'Settings', path: '/settings', icon: 'Settings' },
-    ],
-  },
+    ]},
 
   vocational: {
     name: 'Vocational / Technical',
@@ -282,8 +272,7 @@ export const INDUSTRIES = {
       case: 'Program', cases: 'Programs',
       staff: 'Instructor', staffPlural: 'Instructors',
       venue: 'Workshop', intake: 'Enrollment',
-      hearing: 'Practical', hearings: 'Practicals',
-    },
+      hearing: 'Practical', hearings: 'Practicals'},
     roles: [
       { value: 'company_admin', label: 'Director' },
       { value: 'instructor', label: 'Instructor' },
@@ -326,8 +315,7 @@ export const INDUSTRIES = {
       { label: 'Course Performance', path: '/v/course-performance', icon: 'BarChart2' },
       
       { section: 'System', label: 'Settings', path: '/settings', icon: 'Settings' },
-    ],
-  },
+    ]},
 
   hospital: {
     name: 'Hospital',
@@ -337,8 +325,7 @@ export const INDUSTRIES = {
       case: 'Admission', cases: 'Admissions',
       staff: 'Doctor', staffPlural: 'Doctors',
       venue: 'Ward', intake: 'Patient Registration',
-      hearing: 'Appointment', hearings: 'Appointments',
-    },
+      hearing: 'Appointment', hearings: 'Appointments'},
     roles: [
       { value: 'company_admin', label: 'Hospital Director' },
       { value: 'doctor', label: 'Doctor' },
@@ -366,8 +353,7 @@ export const INDUSTRIES = {
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
-    ],
-  },
+    ]},
 
   hotel: {
     name: 'Hotel',
@@ -377,8 +363,7 @@ export const INDUSTRIES = {
       case: 'Booking', cases: 'Bookings',
       staff: 'Staff', staffPlural: 'Staff',
       venue: 'Property', intake: 'Reservation',
-      hearing: 'Reservation', hearings: 'Reservations',
-    },
+      hearing: 'Reservation', hearings: 'Reservations'},
     roles: [
       { value: 'company_admin', label: 'Hotel Manager' },
       { value: 'receptionist', label: 'Receptionist' },
@@ -404,8 +389,7 @@ export const INDUSTRIES = {
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
-    ],
-  },
+    ]},
 
   religion: {
     name: 'Religion',
@@ -415,8 +399,7 @@ export const INDUSTRIES = {
       case: 'Group', cases: 'Groups',
       staff: 'Pastor', staffPlural: 'Pastors',
       venue: 'Branch', intake: 'Member Registration',
-      hearing: 'Event', hearings: 'Events',
-    },
+      hearing: 'Event', hearings: 'Events'},
     roles: [
       { value: 'company_admin', label: 'Senior Pastor' },
       { value: 'elder', label: 'Elder / Deacon' },
@@ -442,8 +425,7 @@ export const INDUSTRIES = {
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
-    ],
-  },
+    ]},
 
   insurance: {
     name: 'Insurance Agency',
@@ -453,8 +435,7 @@ export const INDUSTRIES = {
       case: 'Claim', cases: 'Claims',
       staff: 'Agent', staffPlural: 'Agents',
       venue: 'Branch', intake: 'Policy Application',
-      hearing: 'Meeting', hearings: 'Meetings',
-    },
+      hearing: 'Meeting', hearings: 'Meetings'},
     roles: [
       { value: 'company_admin', label: 'Agency Director' },
       { value: 'underwriter', label: 'Underwriter' },
@@ -480,8 +461,7 @@ export const INDUSTRIES = {
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
-    ],
-  },
+    ]},
 
   retail: {
     name: 'Retail / POS',
@@ -491,8 +471,7 @@ export const INDUSTRIES = {
       case: 'Order', cases: 'Orders',
       staff: 'Cashier', staffPlural: 'Staff',
       venue: 'Store', intake: 'New Order',
-      hearing: 'Shift', hearings: 'Shifts',
-    },
+      hearing: 'Shift', hearings: 'Shifts'},
     roles: [
       { value: 'company_admin', label: 'Store Manager' },
       { value: 'supervisor', label: 'Supervisor' },
@@ -519,8 +498,7 @@ export const INDUSTRIES = {
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
-    ],
-  },
+    ]},
 
   logistics: {
     name: 'Logistics',
@@ -530,8 +508,7 @@ export const INDUSTRIES = {
       case: 'Shipment', cases: 'Shipments',
       staff: 'Driver', staffPlural: 'Drivers',
       venue: 'Hub', intake: 'Pickup Request',
-      hearing: 'Dispatch', hearings: 'Dispatches',
-    },
+      hearing: 'Dispatch', hearings: 'Dispatches'},
     roles: [
       { value: 'company_admin', label: 'Operations Manager' },
       { value: 'dispatcher', label: 'Dispatcher' },
@@ -561,8 +538,7 @@ export const INDUSTRIES = {
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
-    ],
-  },
+    ]},
 
   hr: {
     name: 'HR / ERP',
@@ -572,8 +548,7 @@ export const INDUSTRIES = {
       case: 'Project', cases: 'Projects',
       staff: 'Manager', staffPlural: 'Managers',
       venue: 'Department', intake: 'Job Application',
-      hearing: 'Interview', hearings: 'Interviews',
-    },
+      hearing: 'Interview', hearings: 'Interviews'},
     roles: [
       { value: 'company_admin', label: 'HR Director' },
       { value: 'hr_manager', label: 'HR Manager' },
@@ -599,8 +574,7 @@ export const INDUSTRIES = {
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
-    ],
-  },
+    ]},
 
   slate: {
     name: 'Slate Admin',
@@ -610,8 +584,7 @@ export const INDUSTRIES = {
       case: 'Subscription', cases: 'Subscriptions',
       staff: 'Admin', staffPlural: 'Admins',
       venue: 'Data Center', intake: 'Firm Onboarding',
-      hearing: 'Audit Event', hearings: 'Audit Events',
-    },
+      hearing: 'Audit Event', hearings: 'Audit Events'},
     roles: [
       { value: 'super_admin', label: 'Platform Administrator' }
     ],
@@ -628,9 +601,7 @@ export const INDUSTRIES = {
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
-    ],
-  },
-};
+    ]}};
 
 import { EDUCATION_LEVELS } from './educationLevels';
 

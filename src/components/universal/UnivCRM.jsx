@@ -12,7 +12,7 @@ import { useCompanyId} from '@/hooks/useCompanyId';
 import { DragDropContext, Droppable, Draggable} from '@hello-pangea/dnd';
 import { motion, AnimatePresence} from 'framer-motion';
 import {Plus, Search, Filter, MoreHorizontal, User, Mail, Phone, 
- Calendar as CalendarIcon,, DollarSign, Trash2, X,
+ Calendar as CalendarIcon, DollarSign, Trash2, X,
  LayoutList, KanbanSquare, Target, TrendingUp, Building2, Edit2, Eye} from "lucide-react";
 import { toast} from 'react-hot-toast';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from "@/components/ui/sheet";

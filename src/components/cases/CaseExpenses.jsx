@@ -20,8 +20,7 @@ const STATUS_COLORS = {
   pending: "bg-amber-100 text-amber-700",
   approved: "bg-slate-100 text-primary/90",
   rejected: "bg-red-100 text-red-700",
-  billed: "bg-orange-100 text-orange-700",
-};
+  billed: "bg-orange-100 text-orange-700"};
 
 export default function CaseExpenses({ caseData, user }) {
   const { t } = useTranslation();
@@ -33,8 +32,7 @@ export default function CaseExpenses({ caseData, user }) {
   const { data: expenses = [], isLoading } = useQuery({
     queryKey: ["case-expenses", caseData.id],
     queryFn: () => base44.entities.Expense.filter({ case_id: caseData.id }),
-    enabled: !!caseData.id,
-  });
+    enabled: !!caseData.id});
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.Expense.create({
@@ -45,27 +43,23 @@ export default function CaseExpenses({ caseData, user }) {
       client_id: caseData.client_id,
       client_name: caseData.client_name,
       logged_by: user?.email,
-      logged_by_name: user?.full_name,
-    }),
+      logged_by_name: user?.full_name}),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["case-expenses", caseData.id] });
       setShowForm(false);
       toast({ title: "Expense logged" });
-    },
-  });
+    }});
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Expense.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["case-expenses", caseData.id] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["case-expenses", caseData.id] })});
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.Expense.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["case-expenses", caseData.id] });
       toast({ title: "Expense deleted" });
-    },
-  });
+    }});
 
   const handleAddToInvoice = async () => {
     const unbilled = expenses.filter(e => e.billable && !e.billed && e.status === "approved");
@@ -77,8 +71,7 @@ export default function CaseExpenses({ caseData, user }) {
       description: `[Expense] ${e.description} (${e.category?.replace("_", " ")})`,
       quantity: 1,
       unit_price: e.amount,
-      total: e.amount,
-    }));
+      total: e.amount}));
     const total = unbilled.reduce((s, e) => s + (e.amount || 0), 0);
     const inv = await base44.entities.Invoice.create({
       company_id: user?.company_id,
@@ -90,8 +83,7 @@ export default function CaseExpenses({ caseData, user }) {
       subtotal: total,
       total_amount: total,
       currency: user?.company_currency || "GHS",
-      status: "draft",
-    });
+      status: "draft"});
     for (const e of unbilled) {
       await base44.entities.Expense.update(e.id, { billed: true, status: "billed", invoice_id: inv.id });
     }
@@ -203,8 +195,7 @@ function ExpenseFormDialog({ open, onClose, onSubmit, currency }) {
   const { t } = useTranslation();
   const [form, setForm] = useState({
     description: "", category: "other", amount: "", expense_date: new Date().toISOString().split("T")[0],
-    billable: true, notes: "", currency: currency || "GHS",
-  });
+    billable: true, notes: "", currency: currency || "GHS"});
   const [uploadingReceipt, setUploadingReceipt] = useState(false);
 
   const handleReceiptUpload = async (e) => {

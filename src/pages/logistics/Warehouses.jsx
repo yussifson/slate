@@ -16,8 +16,7 @@ import { MoreVertical, Eye} from 'lucide-react';
 
 const STATUS_COLORS = {
  'Active': 'bg-slate-100 text-primary/90 dark:bg-primary/30 dark:text-primary/70',
- 'Inactive': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400',
-};
+ 'Inactive': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400'};
 
 const EMPTY_FORM = {
  warehouseName: '',
@@ -28,8 +27,7 @@ const EMPTY_FORM = {
  manager: '',
  phone: '',
  categories: '',
- status: 'active',
-};
+ status: 'active'};
 
 function generateCode() {
  return `WH-${String(Math.floor(10 + Math.random() * 90))}`;
@@ -56,8 +54,7 @@ export default function Warehouses() {
  const warehouses = dbRecords.map(r => ({
  id: r.id,
  status: r.status || 'Active',
- ...r.data,
-}));
+ ...r.data}));
 
  const [search, setSearch] = useState('');
  const [showModal, setShowModal] = useState(false);
@@ -83,8 +80,7 @@ export default function Warehouses() {
  manager: wh.manager || '',
  phone: wh.phone || '',
  categories: wh.categories || '',
- status: wh.status || 'Active',
-});
+ status: wh.status || 'Active'});
  setShowModal(true);
 };
 
@@ -107,21 +103,18 @@ export default function Warehouses() {
  recordType: 'warehouse',
  payload: { ...formData},
  status: formData.status,
- searchText: `${formData.warehouseName} ${formData.code} ${formData.location}`,
-}, {
+ searchText: `${formData.warehouseName} ${formData.code} ${formData.location}`}, {
  onSuccess: () => {
       toast({ title: "Success", description: editTarget ? 'Warehouse updated!' : 'Warehouse added!', variant: "default" });
       closeModal();
 },
- onError: (err) => toast({ title: "Failed", description: err.message, variant: "destructive" }),
-});
+ onError: (err) => toast({ title: "Failed", description: err.message, variant: "destructive" })});
 };
 
  const handleDelete = () => {
     deleteRecord.mutate({ id: deleteTargetId, recordType: 'warehouse' }, {
       onSuccess: () => { toast({ title: "Success", description: "Warehouse removed!", variant: "default" }); setDeleteTargetId(null); },
-      onError: (err) => { toast({ title: "Failed", description: err.message, variant: "destructive" }); setDeleteTargetId(null); },
-    });
+      onError: (err) => { toast({ title: "Failed", description: err.message, variant: "destructive" }); setDeleteTargetId(null); }});
 };
 
  const filtered = warehouses.filter(w =>

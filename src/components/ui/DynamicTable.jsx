@@ -6,8 +6,7 @@ import {
   useReactTable,
   getPaginationRowModel,
   getSortedRowModel,
-  getFilteredRowModel,
-} from '@tanstack/react-table';
+  getFilteredRowModel} from '@tanstack/react-table';
 import { ArrowUpDown, Search, ChevronLeft, ChevronRight, Eye, Pencil, Trash2, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -50,8 +49,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
           );
         }
         return <div className="text-sm max-w-[200px] truncate" title={val}>{val || '-'}</div>;
-      },
-    }));
+      }}));
   }, [fieldDefinitions]);
 
   const table = useReactTable({
@@ -63,8 +61,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onGlobalFilterChange: setGlobalFilter,
-    state: { sorting, globalFilter },
-  });
+    state: { sorting, globalFilter }});
 
   const openEdit = (record) => {
     setEditRecord(record);

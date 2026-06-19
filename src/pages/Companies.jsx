@@ -29,8 +29,7 @@ export default function Companies() {
 
   const { data: companies = [], isLoading } = useQuery({
     queryKey: ["companies"],
-    queryFn: () => base44.entities.Company.list("-created_date"),
-  });
+    queryFn: () => base44.entities.Company.list("-created_date")});
 
   const createMutation = useMutation({
     mutationFn: async ({ form, adminName }) => {
@@ -48,18 +47,15 @@ export default function Companies() {
           full_name: adminName || form.admin_email.split("@")[0],
           role: "company_admin",
           status: "active",
-          currency: form.currency || "GHS",
-        });
+          currency: form.currency || "GHS"});
       }
       return company;
     },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["companies"] }); setShowForm(false); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["companies"] }); setShowForm(false); }});
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Company.update(id, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["companies"] }); setEditingCompany(null); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["companies"] }); setEditingCompany(null); }});
 
   const filtered = companies.filter(c => {
     const matchSearch = !search || c.name?.toLowerCase().includes(search.toLowerCase());

@@ -36,13 +36,11 @@ export default function NotificationsInbox() {
 
   const markReadMutation = useMutation({
     mutationFn: (id) => base44.entities.Notification.update(id, { is_read: 'true' }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notifications", user?.email] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notifications", user?.email] })});
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.Notification.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notifications", user?.email] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notifications", user?.email] })});
 
   const filteredNotifications = notifications.filter(n => {
     const isRead = n.is_read === 'true';

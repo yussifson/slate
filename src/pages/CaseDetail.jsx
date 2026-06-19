@@ -32,8 +32,7 @@ export default function CaseDetail() {
   const { data: clients = [] } = useQuery({
     queryKey: ["case-client", caseData?.client_id],
     queryFn: () => base44.entities.Client.filter({ id: caseData?.client_id }),
-    enabled: !!caseData?.client_id,
-  });
+    enabled: !!caseData?.client_id});
   const client = clients[0];
 
   if (!caseData) {

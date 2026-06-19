@@ -10,7 +10,7 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
-import {Users, UserPlus, Search, Trash2, Edit2,, XCircle, Mail, Phone, Building2, Briefcase, DollarSign, LayoutGrid, List, Network} from "lucide-react";
+import {Users, UserPlus, Search, Trash2, Edit2, XCircle, Mail, Phone, Building2, Briefcase, DollarSign, LayoutGrid, List, Network} from "lucide-react";
 import { toast} from 'react-hot-toast';
 import { base44 } from "@/api/base44Client";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
@@ -78,8 +78,7 @@ export default function UnivHREmployee() {
     email: form.email,
     password: password,
     company_id: companyId,
-    role: form.role_title || 'staff',
-  });
+    role: form.role_title || 'staff'});
   
   if (reg?.user?.id) {
     payload.user_id = reg.user.id;

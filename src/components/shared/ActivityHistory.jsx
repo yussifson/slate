@@ -7,8 +7,7 @@ import { formatDistanceToNow } from 'date-fns';
 const ACTION_CONFIG = {
   CREATE: { label: 'Created', color: 'bg-slate-100 text-primary/90 dark:bg-primary/30 dark:text-primary/70', icon: Plus },
   UPDATE: { label: 'Updated', color: 'bg-orange-100 text-orange-700 dark:bg-primary/30 dark:text-primary/70', icon: Edit },
-  DELETE: { label: 'Deleted', color: 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400', icon: Trash2 },
-};
+  DELETE: { label: 'Deleted', color: 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400', icon: Trash2 }};
 
 export default function ActivityHistory({ recordId, recordType }) {
   const { t } = useTranslation();

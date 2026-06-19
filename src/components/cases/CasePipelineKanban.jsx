@@ -24,8 +24,7 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
  const { data: cases = []} = useQuery({
  queryKey: ["cases-for-pipeline", companyId],
  queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId}),
- enabled: !!companyId,
-});
+ enabled: !!companyId});
 
  const updateStateMutation = useMutation({
  mutationFn: ({ stateId, caseId, stage, pipelineId}) => {
@@ -33,8 +32,7 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
  return base44.entities.CasePipelineState.update(stateId, {
  current_stage_id: stage.id,
  current_stage_name: stage.name,
- stage_entered_at: new Date().toISOString(),
-});
+ stage_entered_at: new Date().toISOString()});
 }
  return base44.entities.CasePipelineState.create({
  company_id: companyId,
@@ -43,14 +41,12 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
  current_stage_id: stage.id,
  current_stage_name: stage.name,
  stage_entered_at: new Date().toISOString(),
- stage_history: [],
-});
+ stage_history: []});
 },
  onSuccess: () => {
  queryClient.invalidateQueries({ queryKey: ["pipeline-states"]});
  toast({ title: "Case moved"});
-},
-});
+}});
 
  if (!activePipeline || !activePipeline.stages?.length) return null;
 
@@ -87,8 +83,7 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
  stateId: existingState?.id || null,
  caseId,
  stage: destStage,
- pipelineId: activePipeline.id,
-});
+ pipelineId: activePipeline.id});
 };
 
  return (

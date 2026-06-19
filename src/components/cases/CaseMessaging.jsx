@@ -35,20 +35,17 @@ export default function CaseMessaging({ caseData, user}) {
  queryKey: ["case-messages", caseData.id],
  queryFn: () => base44.entities.CaseMessage.filter({ case_id: caseData.id}, "created_date"),
  enabled: !!caseData.id,
- refetchInterval: 5000,
-});
+ refetchInterval: 5000});
 
  const { data: staff = []} = useQuery({
  queryKey: ["staff", user?.company_id],
  queryFn: () => base44.entities.StaffRecord.filter({ company_id: user?.company_id}),
- enabled: !!user?.company_id,
-});
+ enabled: !!user?.company_id});
 
  const { data: documents = []} = useQuery({
  queryKey: ["case-documents", caseData.id],
  queryFn: () => base44.entities.Document.filter({ case_id: caseData.id}),
- enabled: !!caseData.id,
-});
+ enabled: !!caseData.id});
 
  // Real-time subscription
  useEffect(() => {
@@ -59,8 +56,7 @@ export default function CaseMessaging({ caseData, user}) {
  if (event.type === "create" && event.data?.tagged_emails?.includes(user?.email)) {
  if (Notification.permission === "granted") {
  new Notification(`New message in ${caseData.title}`, {
- body: `${event.data.sender_name}: ${event.data.content?.slice(0, 80)}`,
-});
+ body: `${event.data.sender_name}: ${event.data.content?.slice(0, 80)}`});
 }
 }
 }
@@ -88,8 +84,7 @@ export default function CaseMessaging({ caseData, user}) {
  setContent("");
  setSelectedTags([]);
  setLinkedDocs([]);
-},
-});
+}});
 
  const handleSend = () => {
  if (!content.trim() && linkedDocs.length === 0) return;
@@ -101,8 +96,7 @@ export default function CaseMessaging({ caseData, user}) {
  content: content.trim(),
  tagged_emails: selectedTags,
  document_links: linkedDocs,
- read_by: [user?.email],
-});
+ read_by: [user?.email]});
 };
 
  const handleKeyDown = (e) => {

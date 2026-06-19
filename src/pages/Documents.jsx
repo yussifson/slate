@@ -49,8 +49,7 @@ export default function Documents() {
     },
     enabled: !!companyId,
     retry: 2,
-    staleTime: 30_000,
-  });
+    staleTime: 30_000});
 
   const { data: cases = [] } = useQuery({
     queryKey: ["cases", companyId, user?.email, isAdmin],
@@ -59,8 +58,7 @@ export default function Documents() {
       if (isAdmin) return list;
       return list.filter(c => c.assigned_lawyer === user?.email || c.created_by === user?.id);
     },
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.Document.create({ ...data, company_id: companyId, uploaded_by: user?.email }),
@@ -209,8 +207,7 @@ function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, a
       toast({
         title: "Using Local Storage Fallback",
         description: "Supabase storage upload failed. Created a local preview link successfully.",
-        variant: "default",
-      });
+        variant: "default"});
     } finally {
       setUploading(false);
     }

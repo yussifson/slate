@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import {MapPin, BellRing, Smartphone, Plus, Activity, Settings2, Trash2, CheckCircle,} from "lucide-react";
+import {MapPin, BellRing, Smartphone, Plus, Activity, Settings2, Trash2, CheckCircle} from "lucide-react";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';

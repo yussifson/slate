@@ -3,15 +3,13 @@ import React from 'react'
 const SIZE_MAP = {
   sm: { dim: 16, stroke: 1.5, r: 6 },
   md: { dim: 24, stroke: 2,   r: 9 },
-  lg: { dim: 40, stroke: 2.5, r: 16 },
-}
+  lg: { dim: 40, stroke: 2.5, r: 16 }}
 
 export function OrbitLoader({
   size = 'md',
   className = '',
   label = 'Loading',
-  color,
-}) {
+  color}) {
   const { dim, stroke, r } = SIZE_MAP[size]
   const cx = dim / 2
   const cy = dim / 2
@@ -64,8 +62,7 @@ export function LoadingOverlay({
   visible,
   size = 'md',
   label = 'Loading',
-  blur = false,
-}) {
+  blur = false}) {
   if (!visible) return null
 
   return (
@@ -86,8 +83,7 @@ export function LoadingOverlay({
         backdropFilter: blur ? 'blur(2px)' : 'none',
         borderRadius: 'inherit',
         zIndex: 10,
-        animation: 'overlay-fade-in 150ms ease',
-      }}
+        animation: 'overlay-fade-in 150ms ease'}}
     >
       <OrbitLoader size={size} label={label} />
     </div>
@@ -109,8 +105,7 @@ export function PageLoader({ label = 'Loading Slate' }) {
         gap: '16px',
         background: 'hsl(var(--background))',
         zIndex: 9999,
-        animation: 'overlay-fade-in 200ms ease',
-      }}
+        animation: 'overlay-fade-in 200ms ease'}}
     >
       <OrbitLoader size="lg" label={label} />
       <span
@@ -120,8 +115,7 @@ export function PageLoader({ label = 'Loading Slate' }) {
           letterSpacing: '0.06em',
           textTransform: 'uppercase',
           color: 'hsl(var(--muted-foreground))',
-          animation: 'page-loader-text 600ms ease 300ms both',
-        }}
+          animation: 'page-loader-text 600ms ease 300ms both'}}
       >
         {label}
       </span>

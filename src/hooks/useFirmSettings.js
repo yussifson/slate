@@ -24,8 +24,7 @@ export function useFirmSettings() {
   const { data: settingsArr = [] } = useQuery({
     queryKey: ["firm-settings", companyId],
     queryFn: () => base44.entities.FirmSettings.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const settings = settingsArr[0] || null;
 
@@ -37,8 +36,7 @@ export function useFirmSettings() {
         return base44.entities.FirmSettings.create({ company_id: companyId, ...patch });
       }
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["firm-settings", companyId] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["firm-settings", companyId] })});
 
   const caseTypes = [...DEFAULT_CASE_TYPES, ...(settings?.custom_case_types || [])];
   const caseStatuses = [...DEFAULT_CASE_STATUSES, ...(settings?.custom_case_statuses || [])];

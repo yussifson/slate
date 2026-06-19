@@ -32,8 +32,7 @@ const statusColors = {
  Arriving: 'bg-slate-50 dark:bg-slate-800/50 border-primary/30 text-primary/80 hover:bg-slate-100',
  Reserved: 'bg-slate-50 dark:bg-slate-800/50 border-primary/30 text-primary/80 hover:bg-slate-100',
  Cleaning: 'bg-yellow-50 border-yellow-300 text-yellow-800 hover:bg-yellow-100',
- Maintenance:'bg-slate-100 border-primary/40 text-slate-700 dark:text-slate-300 hover:bg-slate-200',
-};
+ Maintenance:'bg-slate-100 border-primary/40 text-slate-700 dark:text-slate-300 hover:bg-slate-200'};
 
 const statusIcons = {
  Available: <CheckCircle2 className="w-4 h-4 text-primary" />,
@@ -41,8 +40,7 @@ const statusIcons = {
  Arriving: <LogIn className="w-4 h-4 text-primary" />,
  Reserved: <Calendar className="w-4 h-4 text-primary" />,
  Cleaning: <Brush className="w-4 h-4 text-yellow-500" />,
- Maintenance: <Settings className="w-4 h-4 text-slate-500 dark:text-slate-400" />,
-};
+ Maintenance: <Settings className="w-4 h-4 text-slate-500 dark:text-slate-400" />};
 
 export default function FrontDesk() {
  const { t} = useTranslation();
@@ -83,8 +81,7 @@ export default function FrontDesk() {
  checkIn: today,
  checkOut: checkInForm.checkOut,
  nights,
- totalAmount: total,
-},
+ totalAmount: total},
  status: 'Checked-in',
  searchText: `${checkInForm.guestName} ${reservationId} ${selectedRoom}`
 }, {

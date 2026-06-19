@@ -16,8 +16,7 @@ export default function ClientMessaging({ caseData, user, senderType = "client" 
     queryKey: ["client-messages", caseData?.id],
     queryFn: () => base44.entities.ClientMessage.filter({ case_id: caseData.id }, "created_date"),
     enabled: !!caseData?.id,
-    refetchInterval: 6000,
-  });
+    refetchInterval: 6000});
 
   useEffect(() => {
     const unsub = base44.entities.ClientMessage.subscribe((event) => {
@@ -41,8 +40,7 @@ export default function ClientMessaging({ caseData, user, senderType = "client" 
 
   const sendMutation = useMutation({
     mutationFn: (data) => base44.entities.ClientMessage.create(data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["client-messages", caseData.id] }); setContent(""); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["client-messages", caseData.id] }); setContent(""); }});
 
   const handleSend = () => {
     if (!content.trim()) return;
@@ -55,8 +53,7 @@ export default function ClientMessaging({ caseData, user, senderType = "client" 
       sender_type: senderType,
       content: content.trim(),
       read_by_client: senderType === "client",
-      read_by_lawyer: senderType === "lawyer",
-    });
+      read_by_lawyer: senderType === "lawyer"});
   };
 
   const getInitials = (name) => name?.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) || "?";

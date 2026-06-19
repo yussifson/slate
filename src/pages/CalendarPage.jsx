@@ -33,8 +33,7 @@ export default function CalendarPage() {
  const { data: hearings = []} = useQuery({
  queryKey: ["hearings", companyId],
  queryFn: () => base44.entities.Hearing.filter({ company_id: companyId}),
- enabled: !!companyId,
-});
+ enabled: !!companyId});
 
  const { data: cases = []} = useQuery({
  queryKey: ["cases", companyId, user?.email, isAdminUser],
@@ -43,19 +42,16 @@ export default function CalendarPage() {
  if (isAdminUser) return list;
  return list.filter(c => c.assigned_lawyer === user?.email || c.created_by === user?.id);
 },
- enabled: !!companyId,
-});
+ enabled: !!companyId});
 
  const { data: staff = []} = useQuery({
  queryKey: ["staff", companyId],
  queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId}),
- enabled: !!companyId,
-});
+ enabled: !!companyId});
 
  const createMutation = useMutation({
  mutationFn: (data) => base44.entities.Hearing.create({ ...data, company_id: companyId}),
- onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["hearings"]}); setShowForm(false);},
-});
+ onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["hearings"]}); setShowForm(false);}});
 
  const monthStart = startOfMonth(currentMonth);
  const monthEnd = endOfMonth(currentMonth);

@@ -147,8 +147,7 @@ export default function SHSBoardingAttendance() {
  total: students.length,
  present: recordsArray.filter(r => r.status === 'Present').length,
  absent: recordsArray.filter(r => r.status === 'Absent').length,
- exeat: recordsArray.filter(r => r.status === 'Exeat').length,
-}
+ exeat: recordsArray.filter(r => r.status === 'Exeat').length}
 }
 };
 

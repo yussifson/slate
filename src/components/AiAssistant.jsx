@@ -52,8 +52,7 @@ const PAGE_CONTEXT = {
  '/fleet': { title: 'Fleet', suite: 'Logistics', desc: 'vehicle fleet management'},
  '/inventory': { title: 'Inventory', suite: 'Retail', desc: 'product inventory'},
  '/orders': { title: 'Sales Orders', suite: 'Retail', desc: 'sales orders'},
- '/pos': { title: 'Point of Sale', suite: 'Retail', desc: 'retail POS system'},
-};
+ '/pos': { title: 'Point of Sale', suite: 'Retail', desc: 'retail POS system'}};
 
 // Contextual smart suggestions per page/suite
 const PAGE_SUGGESTIONS = {
@@ -67,8 +66,7 @@ const PAGE_SUGGESTIONS = {
  '/students': ['Show students with missing fees', 'Add a new student', 'Find students by class'],
  '/inventory': ['Show low stock items', 'Add a new product', 'Find products below reorder level'],
  '/claims': ['List pending claims', 'Create a new claim', 'Show high-value claims this month'],
- '/': ['Give me a summary of today\'s activity', 'Show key metrics', 'What needs my attention today?'],
-};
+ '/': ['Give me a summary of today\'s activity', 'Show key metrics', 'What needs my attention today?']};
 
 // Session Storage (Fallback/Types)
 function newSession() {

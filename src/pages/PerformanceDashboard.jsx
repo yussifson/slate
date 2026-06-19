@@ -28,28 +28,23 @@ export default function PerformanceDashboard() {
   const { data: staff = [] } = useQuery({
     queryKey: ["staff", companyId],
     queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
   const { data: cases = [] } = useQuery({
     queryKey: ["cases", companyId],
     queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
   const { data: timeEntries = [] } = useQuery({
     queryKey: ["time-entries", companyId],
     queryFn: () => base44.entities.TimeEntry.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
   const { data: tasks = [] } = useQuery({
     queryKey: ["tasks", companyId],
     queryFn: () => base44.entities.Task.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
   const { data: outcomes = [] } = useQuery({
     queryKey: ["outcomes", companyId],
     queryFn: () => base44.entities.CaseOutcome.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const { start, end } = getPeriodRange();
 
@@ -76,8 +71,7 @@ export default function PerformanceDashboard() {
   const chartData = lawyerMetrics.slice(0, 8).map(l => ({
     name: l.full_name?.split(" ")[0] || l.user_email?.split("@")[0],
     hours: parseFloat(l.metrics.totalHours.toFixed(1)),
-    cases: l.metrics.activeCases,
-  }));
+    cases: l.metrics.activeCases}));
 
   const topBiller = lawyerMetrics[0];
   const currency = user?.company_currency || "GHS";

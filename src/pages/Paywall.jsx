@@ -4,7 +4,7 @@ import { useAuth} from '@/lib/AuthContext';
 import { powerSync} from "@/api/PowerSyncConnector";
 import { initiatePaystackSubscription} from '@/lib/paystack';
 import { Button} from '@/components/ui/button';
-import {Scale, Check, LogOut,, Sparkles, Server, Shield, Database, Headphones} from "lucide-react";
+import {Scale, Check, LogOut, Sparkles, Server, Shield, Database, Headphones} from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter} from "@/components/ui/dialog";
 import confetti from 'canvas-confetti';
 import { SUBSCRIPTION_PLANS} from '@/lib/constants';

@@ -32,8 +32,7 @@ export default function PatientPortal() {
  const { data: documents = []} = useQuery({
  queryKey: ["patient-docs", activePatient?.id],
  queryFn: () => base44.entities.Document.filter({ client_id: activePatient?.id}),
- enabled: !!activePatient?.id,
-});
+ enabled: !!activePatient?.id});
 
  const createDocMutation = useMutation({
  mutationFn: (data) => base44.entities.Document.create(data),
@@ -41,8 +40,7 @@ export default function PatientPortal() {
  queryClient.invalidateQueries({ queryKey: ["patient-docs", activePatient?.id]});
  toast.success("Document uploaded successfully");
  setShowUpload(false);
-},
-});
+}});
 
  const handleUploadSubmit = (docData) => {
  createDocMutation.mutate({
@@ -51,8 +49,7 @@ export default function PatientPortal() {
  client_id: activePatient?.id,
  client_name: activePatient?.name,
  uploaded_by: 'Patient',
- shared_with_client: true,
-});
+ shared_with_client: true});
 };
 
  if (isPatientsLoading || isApptsLoading) {

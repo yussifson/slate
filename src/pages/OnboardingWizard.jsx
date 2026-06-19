@@ -8,7 +8,7 @@ import { useAuth} from '@/lib/AuthContext';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import {Scale, Building2, Users, Briefcase, ArrowRight, ArrowLeft, Check, Sparkles,, X} from "lucide-react";
+import {Scale, Building2, Users, Briefcase, ArrowRight, ArrowLeft, Check, Sparkles, X} from "lucide-react";
 import confetti from 'canvas-confetti';
 import { useToast} from '@/components/ui/use-toast';
 import { getSubdomainAndBase} from '@/lib/domainUtils';
@@ -261,8 +261,7 @@ export default function OnboardingWizard() {
  // full_name and industry_type are added via migration - handled below via PowerSync for local sync.
  const supaProfilePayload = {
    company_id: companyIdToUse,
-   company_name: workspaceName || 'My Workslate',
- };
+   company_name: workspaceName || 'My Workslate'};
 
  if (user?.role !== 'super_admin') {
    supaProfilePayload.role = 'company_admin'; // Must match Supabase CHECK constraint

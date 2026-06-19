@@ -20,8 +20,7 @@ const STATUS_COLORS = {
  'Active': 'bg-slate-100 text-primary/90 dark:bg-primary/30 dark:text-primary/70',
  'On Trip': 'bg-orange-100 text-orange-700 dark:bg-primary/30 dark:text-primary/70',
  'Off Duty': 'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400',
- 'Suspended': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400',
-};
+ 'Suspended': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400'};
 
 const STATUSES = ['Active', 'On Trip', 'Off Duty', 'Suspended'];
 
@@ -34,8 +33,7 @@ const EMPTY_FORM = {
  email: '',
  vehicleAssigned: '',
  totalTrips: '0',
- status: 'active',
-};
+ status: 'active'};
 
 function generateDriverId() {
  return `DRV-${String(Math.floor(1000 + Math.random() * 9000))}`;
@@ -52,8 +50,7 @@ export default function Drivers() {
  const drivers = dbRecords.map(r => ({
  id: r.id,
  status: r.status || 'Active',
- ...r.data,
-}));
+ ...r.data}));
 
  const [search, setSearch] = useState('');
  const [showModal, setShowModal] = useState(false);
@@ -79,8 +76,7 @@ export default function Drivers() {
  email: driver.email || '',
  vehicleAssigned: driver.vehicleAssigned || '',
  totalTrips: driver.totalTrips || '0',
- status: driver.status || 'Active',
-});
+ status: driver.status || 'Active'});
  setShowModal(true);
 };
 
@@ -100,14 +96,12 @@ export default function Drivers() {
  recordType: 'driver',
  payload: { ...formData},
  status: formData.status,
- searchText: `${formData.driverName} ${formData.driverId} ${formData.vehicleAssigned}`,
-}, {
+ searchText: `${formData.driverName} ${formData.driverId} ${formData.vehicleAssigned}`}, {
  onSuccess: () => {
  toast.success(editTarget ? 'Driver updated!' : 'Driver added!');
  closeModal();
 },
- onError: (err) => toast.error('Failed: ' + err.message),
-});
+ onError: (err) => toast.error('Failed: ' + err.message)});
 };
 
  const handleUpdateStatus = (driver, newStatus) => {
@@ -117,18 +111,15 @@ export default function Drivers() {
  recordType: 'driver',
  payload: rest,
  status: newStatus,
- searchText: `${driver.driverName} ${driver.driverId} ${driver.vehicleAssigned}`,
-}, {
+ searchText: `${driver.driverName} ${driver.driverId} ${driver.vehicleAssigned}`}, {
  onSuccess: () => toast.success(`Status set to ${newStatus}`),
- onError: (err) => toast.error('Failed: ' + err.message),
-});
+ onError: (err) => toast.error('Failed: ' + err.message)});
 };
 
  const handleDelete = () => {
  deleteRecord.mutate({ id: deleteTargetId, recordType: 'driver'}, {
  onSuccess: () => { toast.success('Driver removed!'); setDeleteTargetId(null);},
- onError: (err) => { toast.error('Failed: ' + err.message); setDeleteTargetId(null);},
-});
+ onError: (err) => { toast.error('Failed: ' + err.message); setDeleteTargetId(null);}});
 };
 
  const filtered = drivers.filter(d =>
@@ -153,8 +144,7 @@ export default function Drivers() {
  'Active': <CheckCircle2 className="w-3 h-3" />,
  'On Trip': <Truck className="w-3 h-3" />,
  'Off Duty': <Clock className="w-3 h-3" />,
- 'Suspended': <ShieldOff className="w-3 h-3" />,
-};
+ 'Suspended': <ShieldOff className="w-3 h-3" />};
 
  return (
  <div className="space-y-6">

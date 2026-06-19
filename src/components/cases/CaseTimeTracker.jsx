@@ -61,25 +61,21 @@ export default function CaseTimeTracker({ caseData, user }) {
   const { data: entries = [], isLoading } = useQuery({
     queryKey: ["time-entries", caseData.id],
     queryFn: () => base44.entities.TimeEntry.filter({ case_id: caseData.id }),
-    enabled: !!caseData.id,
-  });
+    enabled: !!caseData.id});
 
   const { data: companies = [] } = useQuery({
     queryKey: ["company", companyId],
     queryFn: () => base44.entities.Company.filter({ id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
   const currency = user?.company_currency || "GHS";
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.TimeEntry.create(data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["time-entries", caseData.id] }); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["time-entries", caseData.id] }); }});
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.TimeEntry.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["time-entries", caseData.id] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["time-entries", caseData.id] })});
 
   const createInvoiceMutation = useMutation({
     mutationFn: (data) => base44.entities.Invoice.create(data),
@@ -87,13 +83,11 @@ export default function CaseTimeTracker({ caseData, user }) {
       queryClient.invalidateQueries({ queryKey: ["invoices"] });
       toast({ title: "Draft invoice created", description: "Go to Invoices to review and send." });
       setShowInvoiceDialog(false);
-    },
-  });
+    }});
 
   const markBilledMutation = useMutation({
     mutationFn: ({ ids, invoiceId }) => Promise.all(ids.map(id => base44.entities.TimeEntry.update(id, { billed: true, invoice_id: invoiceId }))),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["time-entries", caseData.id] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["time-entries", caseData.id] })});
 
   // Timer tick
   useEffect(() => {
@@ -134,8 +128,7 @@ export default function CaseTimeTracker({ caseData, user }) {
       currency,
       is_billable: true,
       billed: false,
-      category: timerCategory,
-    });
+      category: timerCategory});
     setTimerDesc("");
     setElapsed(0);
     toast({ title: `Logged ${formatDuration(durationMinutes)}` });
@@ -157,8 +150,7 @@ export default function CaseTimeTracker({ caseData, user }) {
       billable_amount: parseFloat(amount.toFixed(2)),
       currency,
       billed: false,
-      start_time: new Date(manualForm.date).toISOString(),
-    });
+      start_time: new Date(manualForm.date).toISOString()});
     setShowManual(false);
     setManualForm({ description: "", category: "other", duration_minutes: 60, hourly_rate: 150, is_billable: true, date: format(new Date(), "yyyy-MM-dd") });
     toast({ title: "Time entry added" });
@@ -173,8 +165,7 @@ export default function CaseTimeTracker({ caseData, user }) {
       description: `${e.description || "Legal Services"} (${formatDuration(e.duration_minutes || 0)})`,
       quantity: parseFloat(((e.duration_minutes || 0) / 60).toFixed(2)),
       unit_price: e.hourly_rate || 0,
-      total: e.billable_amount || 0,
-    }));
+      total: e.billable_amount || 0}));
     const invoice = await createInvoiceMutation.mutateAsync({
       company_id: companyId,
       client_id: caseData.client_id,
@@ -186,8 +177,7 @@ export default function CaseTimeTracker({ caseData, user }) {
       total_amount: totalUnbilledAmount,
       currency,
       status: "draft",
-      invoice_number: `INV-${Date.now().toString().slice(-6)}`,
-    });
+      invoice_number: `INV-${Date.now().toString().slice(-6)}`});
     await markBilledMutation.mutateAsync({ ids: unbilledEntries.map(e => e.id), invoiceId: invoice.id });
   };
 

@@ -26,8 +26,7 @@ export function buildDistributionChart(items, field, labelFormatter) {
 
   const entries = Object.entries(counts).map(([key, count]) => ({
     name: labelFormatter ? labelFormatter(key) : key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, " "),
-    count,
-  }));
+    count}));
 
   if (entries.length === 0) {
     return [{ name: "No data yet", count: 0 }];

@@ -96,8 +96,7 @@ function PipelineEditor({ pipeline, onClose, onSave}) {
  order: form.stages.length,
  color: STAGE_COLORS[form.stages.length % STAGE_COLORS.length],
  deadline_days: null,
- notify_team: true,
-};
+ notify_team: true};
  setForm(prev => ({ ...prev, stages: [...prev.stages, newStage]}));
  setNewStageName("");
 };
@@ -106,8 +105,7 @@ function PipelineEditor({ pipeline, onClose, onSave}) {
 
  const updateStage = (id, field, value) => setForm(prev => ({
  ...prev,
- stages: prev.stages.map(s => s.id === id ? { ...s, [field]: value} : s),
-}));
+ stages: prev.stages.map(s => s.id === id ? { ...s, [field]: value} : s)}));
 
  return (
  <Dialog open={true} onOpenChange={onClose}>
@@ -228,29 +226,24 @@ export default function CasePipelinePage() {
  const { data: pipelines = [], isLoading} = useQuery({
  queryKey: ["pipelines", user?.company_id],
  queryFn: () => base44.entities.CasePipeline.filter({ company_id: user?.company_id}),
- enabled: !!user?.company_id,
-});
+ enabled: !!user?.company_id});
 
  const { data: caseStates = []} = useQuery({
  queryKey: ["pipeline-states", user?.company_id],
  queryFn: () => base44.entities.CasePipelineState.filter({ company_id: user?.company_id}),
- enabled: !!user?.company_id,
-});
+ enabled: !!user?.company_id});
 
  const createMutation = useMutation({
  mutationFn: (data) => base44.entities.CasePipeline.create({ ...data, company_id: user?.company_id}),
- onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["pipelines"]}); setShowNew(false); toast({ title: "Pipeline created"});},
-});
+ onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["pipelines"]}); setShowNew(false); toast({ title: "Pipeline created"});}});
 
  const updateMutation = useMutation({
  mutationFn: ({ id, data}) => base44.entities.CasePipeline.update(id, data),
- onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["pipelines"]}); setEditing(null); toast({ title: "Pipeline updated"});},
-});
+ onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["pipelines"]}); setEditing(null); toast({ title: "Pipeline updated"});}});
 
  const deleteMutation = useMutation({
  mutationFn: (id) => base44.entities.CasePipeline.delete(id),
- onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["pipelines"]}); toast({ title: "Pipeline deleted"});},
-});
+ onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["pipelines"]}); toast({ title: "Pipeline deleted"});}});
 
  const handleSave = (form) => {
  if (editing) updateMutation.mutate({ id: editing.id, data: form});

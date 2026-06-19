@@ -17,8 +17,7 @@ import {
  Database,
  Layers,
  ChevronDown,
- ChevronUp,
-} from 'lucide-react';
+ ChevronUp} from 'lucide-react';
 
 const CHART_COLORS = [
  '#6366f1', '#8b5cf6', '#a78bfa', '#c084fc',
@@ -35,8 +34,7 @@ function StatCard({ icon: Icon, label, value, subtitle, gradient, delay}) {
  className="relative overflow-hidden rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-white/20 p-5 transition-all duration-300 hover:-translate-y-0.5"
  style={{
  background: gradient,
- animationDelay: `${delay}ms`,
-}}
+ animationDelay: `${delay}ms`}}
  >
  <div className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-10 -mr-8 -mt-8 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  <div className="relative z-10">
@@ -110,8 +108,7 @@ function HorizontalBarChart({ title, data, icon: Icon, maxVal}) {
  className="h-full rounded-full transition-all duration-700 ease-out"
  style={{
  width: `${pct}%`,
- background: `linear-gradient(90deg, ${color}, ${color}dd)`,
-}}
+ background: `linear-gradient(90deg, ${color}, ${color}dd)`}}
  />
  </div>
  </div>
@@ -243,9 +240,7 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
  avg: vals.reduce((a, b) => a + b, 0) / vals.length,
  min: Math.min(...vals),
  max: Math.max(...vals),
- count: vals.length,
-},
-};
+ count: vals.length}};
 });
 }, [numberFields, data]);
 
@@ -265,8 +260,7 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
  { label: 'Yes', value: trueCount},
  { label: 'No', value: falseCount},
  ],
- max: Math.max(trueCount, falseCount),
-};
+ max: Math.max(trueCount, falseCount)};
 });
 }, [booleanFields, data]);
 
@@ -280,8 +274,7 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
  if (dates.length === 0) return null;
  return {
  earliest: dates[0],
- latest: dates[dates.length - 1],
-};
+ latest: dates[dates.length - 1]};
 }, [data]);
 
  const handlePrint = () => {

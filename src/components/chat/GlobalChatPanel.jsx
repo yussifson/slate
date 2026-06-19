@@ -1,6 +1,6 @@
 import { supabase} from '@/api/supabaseClient';
 import React, { useState, useEffect, useRef} from "react";
-import {Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video,, X, Paperclip, CheckCheck, Image as ImageIcon, FileText, Check, Smile, File} from "lucide-react";
+import {Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video, X, Paperclip, CheckCheck, Image as ImageIcon, FileText, Check, Smile, File} from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import { Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import { cn} from "@/lib/utils";

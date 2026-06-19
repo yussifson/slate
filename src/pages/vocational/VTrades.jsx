@@ -64,8 +64,7 @@ export default function VTrades() {
         data: {
           industry: newTrade.industry,
           duration: newTrade.duration,
-          description: newTrade.description,
-        }
+          description: newTrade.description}
       }, user?.company_id);
       toast.success('Trade created successfully');
       setIsDialogOpen(false);
@@ -86,8 +85,7 @@ export default function VTrades() {
         data: {
           industry: editTrade.data?.industry,
           duration: editTrade.data?.duration,
-          description: editTrade.data?.description,
-        }
+          description: editTrade.data?.description}
       }, user?.company_id);
       toast.success('Trade updated successfully');
       setIsEditDialogOpen(false);

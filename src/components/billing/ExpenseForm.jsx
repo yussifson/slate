@@ -31,8 +31,7 @@ export default function ExpenseForm({ open, onClose, onSubmit, initialData, case
     client_id: "",
     client_name: "",
     billable: true,
-    notes: "",
-  });
+    notes: ""});
 
   useEffect(() => {
     if (initialData) setForm(initialData);
@@ -46,8 +45,7 @@ export default function ExpenseForm({ open, onClose, onSubmit, initialData, case
       client_id: "",
       client_name: "",
       billable: true,
-      notes: "",
-    });
+      notes: ""});
   }, [initialData, open]);
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));

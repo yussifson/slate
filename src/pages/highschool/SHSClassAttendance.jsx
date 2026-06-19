@@ -152,8 +152,7 @@ export default function SHSClassAttendance() {
  total: students.length,
  present: recordsArray.filter(r => r.status === 'Present').length,
  absent: recordsArray.filter(r => r.status === 'Absent').length,
- late: recordsArray.filter(r => r.status === 'Late').length,
-}
+ late: recordsArray.filter(r => r.status === 'Late').length}
 }
 };
 

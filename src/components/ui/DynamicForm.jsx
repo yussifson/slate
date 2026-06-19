@@ -10,8 +10,7 @@ import {
  SelectContent,
  SelectItem,
  SelectTrigger,
- SelectValue,
-} from '@/components/ui/select';
+ SelectValue} from '@/components/ui/select';
 import { supabase} from '@/api/supabaseClient';
 import { useToast} from '@/components/ui/use-toast';
 import { useAuth} from '@/lib/AuthContext';
@@ -49,8 +48,7 @@ export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSucces
 
  toast({
  title: "Success",
- description: "Record created successfully.",
-});
+ description: "Record created successfully."});
 
  if (onSuccess) onSuccess();
 } catch (err) {
@@ -58,8 +56,7 @@ export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSucces
  toast({
  title: "Error",
  description: err.message || "Failed to create record. Please try again.",
- variant: "destructive",
-});
+ variant: "destructive"});
 } finally {
  setIsSubmitting(false);
 }

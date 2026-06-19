@@ -57,8 +57,7 @@ export default function ParentPortal() {
   const { data: documents = [] } = useQuery({
     queryKey: ["student-docs", activeStudent?.id],
     queryFn: () => base44.entities.Document.filter({ client_id: activeStudent?.id }),
-    enabled: !!activeStudent?.id,
-  });
+    enabled: !!activeStudent?.id});
 
   const createDocMutation = useMutation({
     mutationFn: (data) => base44.entities.Document.create(data),
@@ -66,8 +65,7 @@ export default function ParentPortal() {
       queryClient.invalidateQueries({ queryKey: ["student-docs", activeStudent?.id] });
       toast.success("Document uploaded successfully");
       setShowUpload(false);
-    },
-  });
+    }});
 
   const handleUploadSubmit = (docData) => {
     createDocMutation.mutate({
@@ -76,8 +74,7 @@ export default function ParentPortal() {
       client_id: activeStudent?.id,
       client_name: activeStudent?.name,
       uploaded_by: 'Parent/Guardian',
-      shared_with_client: true,
-    });
+      shared_with_client: true});
   };
 
   const mappedExams = exams.map(r => ({

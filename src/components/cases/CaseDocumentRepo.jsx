@@ -68,29 +68,25 @@ export default function CaseDocumentRepo({ caseData, user }) {
   const { data: documents = [], isLoading } = useQuery({
     queryKey: ["case-documents", caseData.id],
     queryFn: () => base44.entities.Document.filter({ case_id: caseData.id }),
-    enabled: !!caseData.id,
-  });
+    enabled: !!caseData.id});
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.Document.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["case-documents", caseData.id] });
       toast({ title: "Document deleted" });
-    },
-  });
+    }});
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.Document.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["case-documents", caseData.id] });
       toast({ title: "Document uploaded successfully" });
-    },
-  });
+    }});
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Document.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["case-documents", caseData.id] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["case-documents", caseData.id] })});
 
   const filtered = documents.filter(doc => {
     const matchCat = categoryFilter === "all" || doc.category === categoryFilter;
@@ -110,8 +106,7 @@ export default function CaseDocumentRepo({ caseData, user }) {
       case_title: caseData.title,
       client_id: caseData.client_id,
       client_name: caseData.client_name,
-      uploaded_by: user?.email,
-    });
+      uploaded_by: user?.email});
     setShowUpload(false);
   };
 
@@ -344,8 +339,7 @@ export function UploadDocumentDialog({ onClose, onSubmit, isUploading: saving, c
         toast({
           title: "Using Local Storage Fallback",
           description: `Supabase upload failed for ${file.name}. Created a local preview link successfully.`,
-          variant: "default",
-        });
+          variant: "default"});
       }
     }
     setFiles(prev => [...prev, ...results]);
@@ -376,8 +370,7 @@ export function UploadDocumentDialog({ onClose, onSubmit, isUploading: saving, c
         name: files.length === 1 ? (form.name || f.name) : f.name,
         file_url: f.url,
         file_size: f.size,
-        file_type: f.type,
-      });
+        file_type: f.type});
     });
   };
 

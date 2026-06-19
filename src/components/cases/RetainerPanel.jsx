@@ -15,8 +15,7 @@ import { format } from "date-fns";
 const RETAINER_STATUS_COLORS = {
   active: "bg-slate-100 text-primary/90",
   depleted: "bg-red-100 text-red-700",
-  closed: "bg-gray-100 text-[#71717a] dark:text-gray-400",
-};
+  closed: "bg-gray-100 text-[#71717a] dark:text-gray-400"};
 
 export default function RetainerPanel({ caseData, user }) {
   const { t } = useTranslation();
@@ -32,15 +31,13 @@ export default function RetainerPanel({ caseData, user }) {
   const { data: companies = [] } = useQuery({
     queryKey: ["company", companyId],
     queryFn: () => base44.entities.Company.filter({ id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
   const currency = user?.company_currency || "GHS";
 
   const { data: retainers = [], isLoading } = useQuery({
     queryKey: ["retainer", caseData.id],
     queryFn: () => base44.entities.Retainer.filter({ case_id: caseData.id }),
-    enabled: !!caseData.id,
-  });
+    enabled: !!caseData.id});
 
   const retainer = retainers[0];
 
@@ -50,13 +47,11 @@ export default function RetainerPanel({ caseData, user }) {
       queryClient.invalidateQueries({ queryKey: ["retainer", caseData.id] });
       setShowSetup(false);
       toast({ title: "Retainer created successfully" });
-    },
-  });
+    }});
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Retainer.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["retainer", caseData.id] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["retainer", caseData.id] })});
 
   const handleSetup = (e) => {
     e.preventDefault();
@@ -75,8 +70,7 @@ export default function RetainerPanel({ caseData, user }) {
       alert_threshold: threshold,
       alert_triggered: false,
       status: "active",
-      notes: setupForm.notes,
-    });
+      notes: setupForm.notes});
   };
 
   const handleDeduct = (e) => {
@@ -95,16 +89,13 @@ export default function RetainerPanel({ caseData, user }) {
         current_balance: Math.max(newBalance, 0),
         total_deducted: newDeducted,
         status: depleted ? "depleted" : "active",
-        alert_triggered: belowThreshold,
-      },
-    });
+        alert_triggered: belowThreshold}});
 
     if (belowThreshold && !retainer.alert_triggered) {
       toast({
         title: "⚠️ Retainer Balance Low",
         description: `Balance (${formatCurrency(newBalance, currency)}) has fallen below the alert threshold of ${formatCurrency(retainer.alert_threshold, currency)}.`,
-        variant: "destructive",
-      });
+        variant: "destructive"});
     } else if (depleted) {
       toast({ title: "Retainer Depleted", description: "The retainer balance has reached zero.", variant: "destructive" });
     } else {
@@ -254,9 +245,7 @@ export default function RetainerPanel({ caseData, user }) {
                 alert_threshold: threshold,
                 notes: setupForm.notes || retainer.notes,
                 status: retainer.current_balance > 0 ? "active" : retainer.status,
-                alert_triggered: threshold > 0 && retainer.current_balance < threshold,
-              },
-            });
+                alert_triggered: threshold > 0 && retainer.current_balance < threshold}});
             setShowSetup(false);
             toast({ title: "Retainer updated" });
           } : handleSetup} className="space-y-3">

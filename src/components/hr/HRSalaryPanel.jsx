@@ -17,8 +17,7 @@ const roleColors = {
   paralegal: "bg-slate-100 text-primary/90",
   hr: "bg-slate-100 text-primary/90",
   finance: "bg-amber-100 text-amber-700",
-  support: "bg-slate-100 text-slate-600",
-};
+  support: "bg-slate-100 text-slate-600"};
 
 export default function HRSalaryPanel({ companyId, staff, currency, isAdmin }) {
   const { t } = useTranslation();
@@ -27,8 +26,7 @@ export default function HRSalaryPanel({ companyId, staff, currency, isAdmin }) {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.StaffRecord.update(id, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["staff", companyId] }); setEditing(null); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["staff", companyId] }); setEditing(null); }});
 
   const totalPayroll = staff.filter(s => s.status === "active").reduce((s, m) => s + (m.salary || 0), 0);
 

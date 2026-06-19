@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import {Warehouse as WarehouseIcon, Box, ArrowDownToLine, ArrowUpFromLine, ScanBarcode, Zap, Lock,, CheckCircle, Search} from "lucide-react";
+import {Warehouse as WarehouseIcon, Box, ArrowDownToLine, ArrowUpFromLine, ScanBarcode, Zap, Lock, CheckCircle, Search} from "lucide-react";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';

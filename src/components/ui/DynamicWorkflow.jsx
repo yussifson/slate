@@ -21,8 +21,7 @@ export default function DynamicWorkflow({ record, moduleDef, onStatusChange}) {
  );
  toast({
  title: "Workflow Updated",
- description: `Record moved to ${nextStatus}`,
-});
+ description: `Record moved to ${nextStatus}`});
  if (onStatusChange) onStatusChange(record.id, nextStatus);
 } catch (err) {
  toast({

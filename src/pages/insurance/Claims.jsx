@@ -27,8 +27,7 @@ const statusColors = {
  'Under Review': 'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400',
  'Approved': 'bg-slate-100 text-primary dark:bg-primary/30 dark:text-primary/70',
  'Rejected': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400',
- 'Paid': 'bg-slate-100 text-primary/90 dark:bg-primary/30 dark:text-primary/70',
-};
+ 'Paid': 'bg-slate-100 text-primary/90 dark:bg-primary/30 dark:text-primary/70'};
 
 export default function Claims() {
  const { t} = useTranslation();

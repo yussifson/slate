@@ -11,21 +11,17 @@ const RISK_CONFIG = {
  label: 'High Risk',
  classes: 'bg-red-100 text-red-700 border-red-200 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900/50',
  badgeClasses: 'bg-red-500/10 text-white',
- icon: AlertTriangle,
-},
+ icon: AlertTriangle},
  MEDIUM: {
  label: 'Medium Risk',
  classes: 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-900/50',
  badgeClasses: 'bg-amber-500 text-white',
- icon: Info,
-},
+ icon: Info},
  LOW: {
  label: 'Low Risk',
  classes: 'bg-orange-100 text-orange-700 border-primary/20 dark:bg-primary/30 dark:text-primary/70 dark:border-primary/40',
  badgeClasses: 'bg-primary text-white',
- icon: Info,
-},
-};
+ icon: Info}};
 
 /**
  * AIRiskAnalyzer — analyses a set of records for anomalies and business risks.

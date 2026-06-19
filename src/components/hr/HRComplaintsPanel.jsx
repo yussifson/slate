@@ -26,13 +26,11 @@ export default function HRComplaintsPanel({ companyId, complaints, staff, isAdmi
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.HRComplaint.create({ ...data, company_id: companyId, staff_email: data.is_anonymous ? "anonymous" : user.email, staff_name: data.is_anonymous ? "Anonymous" : user.full_name }),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["complaints", companyId] }); setShowForm(false); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["complaints", companyId] }); setShowForm(false); }});
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.HRComplaint.update(id, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["complaints", companyId] }); setViewing(null); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["complaints", companyId] }); setViewing(null); }});
 
   const visible = isAdmin ? complaints : complaints.filter(c => c.staff_email === user?.email);
 

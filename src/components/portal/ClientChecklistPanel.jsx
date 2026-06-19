@@ -12,8 +12,7 @@ const STATUS_CONFIG = {
   pending: { icon: Square, color: "text-[#71717a] dark:text-gray-400", badge: "bg-muted text-[#71717a] dark:text-gray-400" },
   in_progress: { icon: Clock, color: "text-primary", badge: "bg-orange-100 text-orange-700" },
   completed: { icon: CheckCircle2, color: "text-primary", badge: "bg-slate-100 text-primary/90" },
-  waived: { icon: AlertCircle, color: "text-amber-500", badge: "bg-amber-100 text-amber-700" },
-};
+  waived: { icon: AlertCircle, color: "text-amber-500", badge: "bg-amber-100 text-amber-700" }};
 
 export default function ClientChecklistPanel({ clientId }) {
   const { t } = useTranslation();
@@ -22,16 +21,13 @@ export default function ClientChecklistPanel({ clientId }) {
   const { data: items = [], isLoading } = useQuery({
     queryKey: ["client-checklist", clientId],
     queryFn: () => base44.entities.ClientChecklist.filter({ client_id: clientId }),
-    enabled: !!clientId,
-  });
+    enabled: !!clientId});
 
   const updateMutation = useMutation({
     mutationFn: ({ id, status }) => base44.entities.ClientChecklist.update(id, {
       status,
-      completed_at: status === "completed" ? new Date().toISOString() : null,
-    }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["client-checklist", clientId] }),
-  });
+      completed_at: status === "completed" ? new Date().toISOString() : null}),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["client-checklist", clientId] })});
 
   const pending = items.filter(i => i.status !== "completed" && i.status !== "waived");
   const done = items.filter(i => i.status === "completed" || i.status === "waived");

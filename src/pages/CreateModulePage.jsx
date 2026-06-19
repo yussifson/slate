@@ -314,8 +314,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
 
  toast({
  title: status === 'draft' ? "📝 Saved as Draft" : (isEditing ? "✨ Slate Updated!" : "✨ Slate Published!"),
- description: `'${name}' is ready. Redirecting...`,
-});
+ description: `'${name}' is ready. Redirecting...`});
 
       if (!isEditing) {
         sessionStorage.removeItem('orbitbolt_draft_slate');

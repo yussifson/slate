@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/
 import { Button} from "@/components/ui/button";
 import { Progress} from "@/components/ui/progress";
 import { SectionCard, FormRow, Field} from "./SettingsShared";
-import {X, Check, Zap, ArrowRight,} from "lucide-react";
+import {X, Check, Zap, ArrowRight} from "lucide-react";
 import { initiatePaystackSubscription } from "@/lib/paystack";
 import { NotificationService } from "@/lib/notifications";
 import { COUNTRIES_CURRENCIES } from "@/config/countries";
@@ -24,8 +24,7 @@ export function CurrencySettings({ activeIndustry, company, onSave, saving }) {
  currency_position: "before",
  decimal_separator: ".",
  thousands_separator: ",",
- decimal_places: "2",
-});
+ decimal_places: "2"});
 
  useEffect(() => {
  if (company?.currency) {
@@ -405,8 +404,7 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
               plan_id: plan.id,
               paystack_customer_code: response.reference, // We use the reference as the tracked code
               paystack_subscription_code: response.reference,
-              status: 'active',
-            }, { onConflict: 'company_id' });
+              status: 'active'}, { onConflict: 'company_id' });
             
           // Trigger omnichannel notification via Novu unified system
           try {

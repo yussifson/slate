@@ -166,8 +166,7 @@ export default function Login() {
  // Base domain login
  const baseAuth = await supabase.auth.signInWithPassword({
  email: loginEmail,
- password,
-});
+ password});
  authData = baseAuth.data;
  signInError = baseAuth.error;
 }

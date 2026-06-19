@@ -30,8 +30,7 @@ const roleColors = {
   paralegal: "bg-slate-100 text-primary/90",
   hr: "bg-slate-100 text-primary/90",
   finance: "bg-amber-100 text-amber-700",
-  support: "bg-slate-100 text-slate-600",
-};
+  support: "bg-slate-100 text-slate-600"};
 
 export default function Team() {
   const { t } = useTranslation();
@@ -54,8 +53,7 @@ export default function Team() {
   const { data: staff = [], isLoading } = useQuery({
     queryKey: ["staff", companyId],
     queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.StaffRecord.create({ ...data, company_id: companyId }),
@@ -172,13 +170,11 @@ export default function Team() {
             email: data.user_email,
             password,
             company_id: companyId,
-            role: data.role,
-          });
+            role: data.role});
           const authUserId = reg?.user?.id;
           await createMutation.mutateAsync({
             ...data,
-            user_id: authUserId || null,
-          });
+            user_id: authUserId || null});
 
           if (authUserId && data.user_email) {
             await supabase
@@ -192,13 +188,11 @@ export default function Team() {
             recipientEmail: data.user_email,
             title: "Welcome to Slate!",
             message: `Your account has been created by ${user?.full_name || "an Admin"}. Log in with this email and the temporary password you were given.`,
-            type: "WELCOME",
-          }).catch(() => {});
+            type: "WELCOME"}).catch(() => {});
 
           toast({
             title: `Account created for ${data.full_name}`,
-            description: "They can log in and change their password anytime.",
-          });
+            description: "They can log in and change their password anytime."});
           setShowCreate(false);
           setEditingStaff(null);
         }}
@@ -240,8 +234,7 @@ function StaffDialog({ open, onClose, onSubmit, initialData, isNew, industryRole
       toast({
         title: isNew ? "Account creation failed" : "Save failed",
         description: err?.message || "Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive"});
     } finally {
       setSubmitting(false);
     }

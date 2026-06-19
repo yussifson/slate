@@ -13,8 +13,7 @@ import {
  AlertDialogDescription,
  AlertDialogFooter,
  AlertDialogHeader,
- AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+ AlertDialogTitle} from "@/components/ui/alert-dialog";
 import { SectionCard, FormRow, Field} from "./SettingsShared";
 
 export function SystemSettings({ activeIndustry, company, onSave, saving}) {
@@ -25,8 +24,7 @@ export function SystemSettings({ activeIndustry, company, onSave, saving}) {
  date_format: "Y-m-d",
  time_format: "H:i",
  calendar_start: "sunday",
- timezone: "Africa/Accra",
-});
+ timezone: "Africa/Accra"});
 
  return (
  <SectionCard title="System Configuration" subtitle="Define default date formats, time zones, application languages, and display mode settings" onSave={() => onSave(form)} saving={saving}>
@@ -109,8 +107,7 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
  name: company?.name || "",
  subdomain: company?.subdomain || "",
  tagline: company?.tagline || "",
- primary_color: company?.primary_color || "#16a34a",
-});
+ primary_color: company?.primary_color || "#16a34a"});
 
  const handleSaveClick = () => {
  if (form.subdomain && form.subdomain !== company?.subdomain) {

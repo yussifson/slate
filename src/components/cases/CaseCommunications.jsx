@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
-import {Send, Mail, MessageSquare, Phone,} from "lucide-react";
+import {Send, Mail, MessageSquare, Phone} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";

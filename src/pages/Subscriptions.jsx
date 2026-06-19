@@ -17,8 +17,7 @@ const STATUS_COLORS = {
  active: "bg-slate-100 text-primary/90",
  trial: "bg-orange-100 text-orange-700",
  inactive: "bg-slate-100 text-slate-600",
- expired: "bg-red-100 text-red-700",
-};
+ expired: "bg-red-100 text-red-700"};
 
 export default function Subscriptions() {
  const { t} = useTranslation();
@@ -27,13 +26,11 @@ export default function Subscriptions() {
 
  const { data: companies = []} = useQuery({
  queryKey: ["companies"],
- queryFn: () => base44.entities.Company.list(),
-});
+ queryFn: () => base44.entities.Company.list()});
 
  const updateMutation = useMutation({
  mutationFn: ({ id, data}) => base44.entities.Company.update(id, data),
- onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["companies"]}); setEditingCompany(null);},
-});
+ onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["companies"]}); setEditingCompany(null);}});
 
  const planCounts = companies.reduce((acc, c) => {
  acc[c.subscription_plan] = (acc[c.subscription_plan] || 0) + 1;
@@ -155,8 +152,7 @@ function EditSubscriptionDialog({ company, onClose, onSave, saving}) {
  subscription_status: company.subscription_status || "trial",
  max_users: company.max_users ?? 2,
  max_cases: company.max_cases ?? 10,
- max_storage_gb: company.max_storage_gb ?? 1,
-});
+ max_storage_gb: company.max_storage_gb ?? 1});
 
  useEffect(() => {
  setForm({
@@ -164,8 +160,7 @@ function EditSubscriptionDialog({ company, onClose, onSave, saving}) {
  subscription_status: company.subscription_status || "trial",
  max_users: company.max_users ?? 2,
  max_cases: company.max_cases ?? 10,
- max_storage_gb: company.max_storage_gb ?? 1,
-});
+ max_storage_gb: company.max_storage_gb ?? 1});
 }, [company]);
 
  const handlePlanChange = (plan) => {
@@ -175,8 +170,7 @@ function EditSubscriptionDialog({ company, onClose, onSave, saving}) {
  subscription_plan: plan,
  max_users: planData?.maxUsers ?? prev.max_users,
  max_cases: planData?.maxCases ?? prev.max_cases,
- max_storage_gb: planData?.maxStorageGB ?? prev.max_storage_gb,
-}));
+ max_storage_gb: planData?.maxStorageGB ?? prev.max_storage_gb}));
 };
 
  const set = (field, value) => setForm(prev => ({ ...prev, [field]: value}));

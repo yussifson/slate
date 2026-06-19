@@ -83,8 +83,7 @@ export default function SHSGrades() {
  newState[student.id] = {
  id: existing ? existing.id : null,
  classScore: existing ? existing.data?.classScore : '',
- examScore: existing ? existing.data?.examScore : '',
-};
+ examScore: existing ? existing.data?.examScore : ''};
 });
  
  setGrades(newState);

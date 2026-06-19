@@ -16,8 +16,7 @@ const PERMISSION_GROUPS = [
       { key: "can_create_cases", label: "Create Cases" },
       { key: "can_edit_cases", label: "Edit Cases" },
       { key: "can_delete_cases", label: "Delete Cases" },
-    ],
-  },
+    ]},
   {
     label: "Clients",
     perms: [
@@ -25,38 +24,33 @@ const PERMISSION_GROUPS = [
       { key: "can_create_clients", label: "Create Clients" },
       { key: "can_edit_clients", label: "Edit Clients" },
       { key: "can_delete_clients", label: "Delete Clients" },
-    ],
-  },
+    ]},
   {
     label: "Finance",
     perms: [
       { key: "can_view_invoices", label: "View Invoices" },
       { key: "can_create_invoices", label: "Create Invoices" },
-    ],
-  },
+    ]},
   {
     label: "Documents",
     perms: [
       { key: "can_view_documents", label: "View Documents" },
       { key: "can_upload_documents", label: "Upload Documents" },
       { key: "can_delete_documents", label: "Delete Documents" },
-    ],
-  },
+    ]},
   {
     label: "Tasks",
     perms: [
       { key: "can_view_tasks", label: "View Tasks" },
       { key: "can_create_tasks", label: "Create Tasks" },
-    ],
-  },
+    ]},
   {
     label: "Other",
     perms: [
       { key: "can_view_team", label: "View Team" },
       { key: "can_view_reports", label: "View Reports" },
       { key: "can_manage_leave", label: "Manage Leave" },
-    ],
-  },
+    ]},
 ];
 
 const DEFAULTS = {
@@ -65,8 +59,7 @@ const DEFAULTS = {
   can_view_invoices: false, can_create_invoices: false,
   can_view_documents: true, can_upload_documents: true, can_delete_documents: false,
   can_view_tasks: true, can_create_tasks: true,
-  can_view_team: false, can_view_reports: false, can_manage_leave: false,
-};
+  can_view_team: false, can_view_reports: false, can_manage_leave: false};
 
 export default function StaffPermissionsSettings() {
   const { t } = useTranslation();
@@ -77,14 +70,12 @@ export default function StaffPermissionsSettings() {
   const { data: staff = [], isLoading: loadingStaff } = useQuery({
     queryKey: ["staff", companyId],
     queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const { data: permissions = [] } = useQuery({
     queryKey: ["staff-permissions", companyId],
     queryFn: () => base44.entities.StaffPermission.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const updateMutation = useMutation({
     mutationFn: async ({ staffEmail, staffName, key, value }) => {
@@ -97,12 +88,10 @@ export default function StaffPermissionsSettings() {
           staff_email: staffEmail,
           staff_name: staffName,
           ...DEFAULTS,
-          [key]: value,
-        });
+          [key]: value});
       }
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["staff-permissions", companyId] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["staff-permissions", companyId] })});
 
   const getPermission = (staffEmail, key) => {
     const p = permissions.find(p => p.staff_email === staffEmail);
@@ -174,8 +163,7 @@ export default function StaffPermissionsSettings() {
                             staffEmail: activeStaff.user_email,
                             staffName: activeStaff.full_name,
                             key: perm.key,
-                            value: val,
-                          })}
+                            value: val})}
                         />
                       </div>
                     );

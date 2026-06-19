@@ -123,8 +123,7 @@ class SupabaseConnector {
               operation: op.op,
               recordId: op.id,
               errorCode: opEx.code || opEx.status,
-              errorMessage: opEx.message,
-            };
+              errorMessage: opEx.message};
             window.dispatchEvent(new CustomEvent('sync:hard-error', { detail: eventPayload }));
             
             continue; // Skip this operation in the queue

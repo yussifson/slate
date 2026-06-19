@@ -52,8 +52,7 @@ export default function Clients() {
  const { data: clients = [], isLoading} = useQuery({
  queryKey: ["clients", companyId],
  queryFn: () => base44.entities.Client.filter({ company_id: companyId}),
- enabled: !!companyId,
-});
+ enabled: !!companyId});
 
  const createMutation = useMutation({
  mutationFn: (data) => base44.entities.Client.create({ ...data, company_id: companyId}),
@@ -149,8 +148,7 @@ export default function Clients() {
 
  const exportData = clients.map(c => ({
  name: c.name, email: c.email, phone: c.phone, type: c.type,
- status: c.status, city: c.city, country: c.country,
-}));
+ status: c.status, city: c.city, country: c.country}));
 
  const clientTerm = getTerm(industry, "client");
  const clientsTerm = getTerm(industry, "clients");

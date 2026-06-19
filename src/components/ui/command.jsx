@@ -112,5 +112,4 @@ export {
   CommandGroup,
   CommandItem,
   CommandShortcut,
-  CommandSeparator,
-}
+  CommandSeparator}

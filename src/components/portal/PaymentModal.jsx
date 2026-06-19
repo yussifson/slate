@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription} fr
 import { Button} from "@/components/ui/button";
 import { Input} from "@/components/ui/input";
 import { Label} from "@/components/ui/label";
-import {CreditCard, Smartphone, CheckCircle,, Lock} from "lucide-react";
+import {CreditCard, Smartphone, CheckCircle, Lock} from "lucide-react";
 import { formatCurrency} from "@/lib/constants";
 import { useTranslation} from "react-i18next";
 import { cn} from "@/lib/utils";

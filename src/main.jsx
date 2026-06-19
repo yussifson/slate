@@ -14,8 +14,7 @@ const updateSW = registerSW({
   },
   onOfflineReady() {
     console.log('App is ready for offline use');
-  },
-})
+  }})
 
 // Listen for Vite chunk loading errors (e.g. when Vercel deploys a new version and old chunks are missing)
 // If this happens, force reload to fetch the new index.html and fresh bundles.

@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { powerSync } from "@/api/PowerSyncConnector";
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import {, Database, LayoutDashboard, Activity, FileText} from "lucide-react";
+import { Database, LayoutDashboard, Activity, FileText} from "lucide-react";
 import UnivDashboard from '@/components/universal/UnivDashboard';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 

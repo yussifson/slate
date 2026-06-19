@@ -21,8 +21,7 @@ const STATUS_COLORS = {
  'Pending': 'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400',
  'In Transit': 'bg-orange-100 text-orange-700 dark:bg-primary/30 dark:text-primary/70',
  'Delivered': 'bg-slate-100 text-primary/90 dark:bg-primary/30 dark:text-primary/70',
- 'Failed': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400',
-};
+ 'Failed': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400'};
 
 const CARRIERS = ['DHL', 'FedEx', 'UPS', 'USPS', 'Local Courier', 'In-House'];
 const STATUSES = ['Pending', 'In Transit', 'Delivered', 'Failed'];
@@ -36,8 +35,7 @@ const EMPTY_FORM = {
  estimatedDelivery: '',
  customer: '',
  notes: '',
- status: 'Pending',
-};
+ status: 'Pending'};
 
 function generateTrackingNumber() {
  return `SHIP-${String(Math.floor(1000 + Math.random() * 9000))}`;
@@ -54,8 +52,7 @@ export default function Shipments() {
  const shipments = dbRecords.map(r => ({
  id: r.id,
  status: r.status || 'Pending',
- ...r.data,
-}));
+ ...r.data}));
 
  const [search, setSearch] = useState('');
  const [showModal, setShowModal] = useState(false);
@@ -81,8 +78,7 @@ export default function Shipments() {
  estimatedDelivery: ship.estimatedDelivery || '',
  customer: ship.customer || '',
  notes: ship.notes || '',
- status: ship.status || 'Pending',
-});
+ status: ship.status || 'Pending'});
  setShowModal(true);
 };
 
@@ -104,14 +100,12 @@ export default function Shipments() {
  recordType: 'shipment',
  payload,
  status: formData.status,
- searchText: `${formData.trackingNumber} ${formData.destination} ${formData.customer}`,
-}, {
+ searchText: `${formData.trackingNumber} ${formData.destination} ${formData.customer}`}, {
  onSuccess: () => {
  toast.success(editTarget ? 'Shipment updated!' : 'Shipment created!');
  closeModal();
 },
- onError: (err) => toast.error('Failed: ' + err.message),
-});
+ onError: (err) => toast.error('Failed: ' + err.message)});
 };
 
  const handleUpdateStatus = (ship, newStatus) => {
@@ -121,18 +115,15 @@ export default function Shipments() {
  recordType: 'shipment',
  payload: rest,
  status: newStatus,
- searchText: `${ship.trackingNumber} ${ship.destination} ${ship.customer}`,
-}, {
+ searchText: `${ship.trackingNumber} ${ship.destination} ${ship.customer}`}, {
  onSuccess: () => toast.success(`Status updated to ${newStatus}`),
- onError: (err) => toast.error('Failed: ' + err.message),
-});
+ onError: (err) => toast.error('Failed: ' + err.message)});
 };
 
  const handleDelete = () => {
  deleteRecord.mutate({ id: deleteTargetId, recordType: 'shipment'}, {
  onSuccess: () => { toast.success('Shipment deleted!'); setDeleteTargetId(null);},
- onError: (err) => { toast.error('Failed: ' + err.message); setDeleteTargetId(null);},
-});
+ onError: (err) => { toast.error('Failed: ' + err.message); setDeleteTargetId(null);}});
 };
 
  const filtered = shipments.filter(s =>

@@ -20,8 +20,7 @@ import {
  FileText,
  Bell,
  CreditCard,
- Sparkles,
-} from 'lucide-react';
+ Sparkles} from 'lucide-react';
 import { Button} from '@/components/ui/button';
 
 /* ------------------------------------------------------------------ */
@@ -122,24 +121,21 @@ const testimonials = [
  author: 'Adama Mensah',
  role: 'Managing Partner',
  firm: 'Mensah & Partners',
- rating: 5,
-},
+ rating: 5},
  {
  quote:
  'The custom-branded client portal lets us serve high-net-worth clients under their own secure domain. Best investment we made this year.',
  author: 'Chinedu Okafor',
  role: 'Senior Partner',
  firm: 'Temple Chambers, Lagos',
- rating: 5,
-},
+ rating: 5},
  {
  quote:
  'Managing schedules, billing via Paystack, and email sync has never been this seamless. Highly recommended for any organization.',
  author: 'Mariama Kamara',
  role: 'Founder',
  firm: 'Kamara Group',
- rating: 5,
-},
+ rating: 5},
 ];
 
 const firms = [

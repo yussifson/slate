@@ -23,13 +23,11 @@ export default function HRPromotionsPanel({ companyId, promotions, staff, curren
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.Promotion.create({ ...data, company_id: companyId }),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["promotions", companyId] }); setShowForm(false); },
-  });
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["promotions", companyId] }); setShowForm(false); }});
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Promotion.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["promotions", companyId] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["promotions", companyId] })});
 
   const handleApprove = (p) => updateMutation.mutate({ id: p.id, data: { status: "approved", approved_by: user.email } });
   const handleReject = (p) => updateMutation.mutate({ id: p.id, data: { status: "rejected" } });

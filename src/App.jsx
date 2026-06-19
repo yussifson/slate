@@ -413,7 +413,6 @@ import AdminSecurity from './pages/admin/AdminSecurity';
 import AdminBroadcasts from './pages/admin/AdminBroadcasts';
 import AdminEnterpriseRequests from './pages/admin/AdminEnterpriseRequests';
 import NotificationsInbox from './pages/NotificationsInbox';
-import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 function PlatformRoutes() {
   return (

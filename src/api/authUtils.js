@@ -80,8 +80,7 @@ export const registerSchoolUser = async (realEmail, password, role, companyId, f
           id: data.user.id,
           company_id: companyId,
           role: role,
-          email: cleanEmail,
-        }
+          email: cleanEmail}
       ]);
       
       if (profileError) {

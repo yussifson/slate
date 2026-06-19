@@ -50,8 +50,7 @@ const PaginationLink = (
       aria-current={isActive ? "page" : undefined}
       className={cn(buttonVariants({
         variant: isActive ? "outline" : "ghost",
-        size,
-      }), className)}
+        size}), className)}
       {...props} />
   );
 }
@@ -108,5 +107,4 @@ export {
   PaginationItem,
   PaginationPrevious,
   PaginationNext,
-  PaginationEllipsis,
-}
+  PaginationEllipsis}

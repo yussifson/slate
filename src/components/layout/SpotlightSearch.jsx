@@ -73,8 +73,7 @@ export default function SpotlightSearch() {
  ).slice(0, 4),
  other: allTasks.filter(item =>
  item.title?.toLowerCase().includes(q)
- ).slice(0, 4),
-});
+ ).slice(0, 4)});
 } catch (err) {
  console.error("Spotlight search failed", err);
 } finally {
@@ -99,8 +98,7 @@ export default function SpotlightSearch() {
  query,
  entityType: item.entityType,
  record: item,
- label: item.title || item.name || item.full_name,
-};
+ label: item.title || item.name || item.full_name};
  window.dispatchEvent(new CustomEvent("orbit:inject", { detail: context}));
  setIsOpen(false);
 };

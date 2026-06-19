@@ -82,8 +82,7 @@ export default function Library() {
       available: issueBookTarget.available - 1,
       borrowed: issueBookTarget.borrowed + 1,
       current_borrower: borrowerName.trim(),
-      issued_at: new Date().toISOString(),
-    };
+      issued_at: new Date().toISOString()};
     delete updatedPayload.id;
     delete updatedPayload.status;
 

@@ -20,15 +20,13 @@ const STATUS_COLORS = {
   contacted: "bg-amber-100 text-amber-700",
   qualified: "bg-slate-100 text-primary/90",
   converted: "bg-slate-100 text-primary/90",
-  lost: "bg-gray-100 text-[#71717a] dark:text-gray-400",
-};
+  lost: "bg-gray-100 text-[#71717a] dark:text-gray-400"};
 
 const URGENCY_COLORS = {
   low: "bg-slate-100 text-slate-600",
   medium: "bg-slate-100 text-primary",
   high: "bg-amber-100 text-amber-700",
-  urgent: "bg-red-100 text-red-700",
-};
+  urgent: "bg-red-100 text-red-700"};
 
 export default function Leads() {
   const { t } = useTranslation();
@@ -43,16 +41,14 @@ export default function Leads() {
   const { data: leads = [], isLoading } = useQuery({
     queryKey: ["leads", companyId],
     queryFn: () => base44.entities.Lead.filter({ company_id: companyId }),
-    enabled: !!companyId,
-  });
+    enabled: !!companyId});
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Lead.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["leads"] });
       toast({ title: "Lead updated" });
-    },
-  });
+    }});
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.Lead.delete(id),
@@ -60,8 +56,7 @@ export default function Leads() {
       queryClient.invalidateQueries({ queryKey: ["leads"] });
       toast({ title: "Lead deleted" });
       setSelectedLead(null);
-    },
-  });
+    }});
 
   const convertToClientMutation = useMutation({
     mutationFn: async (lead) => {
@@ -71,8 +66,7 @@ export default function Leads() {
         email: lead.email,
         phone: lead.phone,
         type: lead.organization ? "organization" : "individual",
-        status: "active",
-      });
+        status: "active"});
       await base44.entities.Lead.update(lead.id, { status: "converted" });
     },
     onSuccess: () => {
@@ -80,8 +74,7 @@ export default function Leads() {
       queryClient.invalidateQueries({ queryKey: ["clients"] });
       setSelectedLead(null);
       toast({ title: "Lead converted to client" });
-    },
-  });
+    }});
 
   const filtered = leads.filter(l => {
     const matchSearch = !search || l.full_name?.toLowerCase().includes(search.toLowerCase()) || l.email?.toLowerCase().includes(search.toLowerCase());

@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/
 import { Button} from "@/components/ui/button";
 import { Switch} from "@/components/ui/switch";
 import { useToast} from "@/components/ui/use-toast";
-import {, RefreshCw, Copy, Info, CheckCircle, CreditCard, Lock, Save} from "lucide-react";
+import { RefreshCw, Copy, Info, CheckCircle, CreditCard, Lock, Save} from "lucide-react";
 import { SectionCard, FormRow, Field} from "./SettingsShared";
 import { useAuth } from "@/lib/AuthContext";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
@@ -26,8 +26,7 @@ export function EmailSettings({ activeIndustry, company, onSave, saving}) {
  smtp_port: "587",
  smtp_user: "",
  smtp_pass: "",
- smtp_encryption: "tls",
-});
+ smtp_encryption: "tls"});
 
  const { user } = useAuth();
  const isPaidPlan = user?.role === 'super_admin' || (company?.subscription_plan && company?.subscription_plan !== "free" && company?.subscription_status !== "trial");
@@ -258,8 +257,7 @@ export function NotificationSettings({ activeIndustry, onSave, saving}) {
  invoice_reminder_1d: true,
  task_due: true,
  new_case: false,
- new_client: false,
-});
+ new_client: false});
 
  const toggle = (key) => setForm(f => ({ ...f, [key]: !f[key]}));
 
@@ -302,8 +300,7 @@ export function SlackSettings({ activeIndustry, onSave, saving, initialData}) {
  webhook_url: initialData.access_token || "",
  channel: initialData.metadata?.channel || "#general",
  notify_new_case: initialData.metadata?.notify_new_case !== false,
- notify_overdue: initialData.metadata?.notify_overdue !== false,
-});
+ notify_overdue: initialData.metadata?.notify_overdue !== false});
 }
 }, [initialData]);
 
@@ -344,8 +341,7 @@ export function TwilioSettings({ activeIndustry, onSave, saving, initialData}) {
  account_sid: initialData.provider_user_id || "",
  auth_token: initialData.access_token || "",
  from_number: initialData.metadata?.from_number || "",
- sms_enabled: !!initialData.metadata?.sms_enabled,
-});
+ sms_enabled: !!initialData.metadata?.sms_enabled});
 }
 }, [initialData]);
 
@@ -387,8 +383,7 @@ export function PaymentSettings({ activeIndustry, onSave, saving, initialData}) 
  public_key: initialData.provider_user_id || "",
  secret_key: initialData.access_token || "",
  webhook_secret: initialData.metadata?.webhook_secret || "",
- live_mode: !!initialData.metadata?.live_mode,
-});
+ live_mode: !!initialData.metadata?.live_mode});
 }
 }, [initialData]);
 
@@ -440,8 +435,7 @@ export function GoogleCalendarSettings({ activeIndustry, onSave, saving, initial
  client_id: initialData.provider_user_id || "",
  client_secret: initialData.access_token || "",
  sync_enabled: !!initialData.metadata?.sync_enabled,
- calendar_id: initialData.metadata?.calendar_id || "",
-});
+ calendar_id: initialData.metadata?.calendar_id || ""});
 }
 }, [initialData]);
 

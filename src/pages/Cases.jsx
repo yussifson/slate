@@ -59,20 +59,17 @@ export default function Cases() {
  if (isAdmin) return list;
  return list.filter(c => c.assigned_lawyer === user?.email || c.created_by === user?.id);
 },
- enabled: !!companyId,
-});
+ enabled: !!companyId});
 
  const { data: clients = []} = useQuery({
  queryKey: ["clients", companyId],
  queryFn: () => base44.entities.Client.filter({ company_id: companyId}),
- enabled: !!companyId,
-});
+ enabled: !!companyId});
 
  const { data: staff = []} = useQuery({
  queryKey: ["staff", companyId],
  queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId}),
- enabled: !!companyId,
-});
+ enabled: !!companyId});
 
  const createMutation = useMutation({
  mutationFn: (data) => base44.entities.LegalCase.create({ ...data, company_id: companyId}),
@@ -145,8 +142,7 @@ export default function Cases() {
  const exportData = cases.map(c => ({
  title: c.title, case_number: c.case_number, client: c.client_name,
  type: c.case_type, status: c.status, priority: c.priority,
- lawyer: c.assigned_lawyer_name, filing_date: c.filing_date,
-}));
+ lawyer: c.assigned_lawyer_name, filing_date: c.filing_date}));
 
  return (
  <div className="space-y-4">

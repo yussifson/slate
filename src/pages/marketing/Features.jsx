@@ -149,20 +149,17 @@ export default function Features() {
  icon: Mail,
  title: "Integrated Email Sync",
  description:
- "Connect your workslate directly with Office 365 or Gmail. Read, flag, and reply to client emails right inside the project files.",
-},
+ "Connect your workslate directly with Office 365 or Gmail. Read, flag, and reply to client emails right inside the project files."},
  {
  icon: Shield,
  title: "Compliance Audit Logs",
  description:
- "Maintain high-integrity logs tracking user logins, file modifications, client downloads, and sensitive database exports automatically.",
-},
+ "Maintain high-integrity logs tracking user logins, file modifications, client downloads, and sensitive database exports automatically."},
  {
  icon: Clock,
  title: "Leave & Payroll Tools",
  description:
- "Manage associate leave requests, store payroll structures, generate salary slips, and run performance analytics indicators.",
-},
+ "Manage associate leave requests, store payroll structures, generate salary slips, and run performance analytics indicators."},
  ];
 
  return (

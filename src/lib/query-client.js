@@ -12,7 +12,5 @@ export const queryClientInstance = new QueryClient({
 		},
 		mutations: {
 			networkMode: 'always',
-			retry: 0,
-		}
-	},
-});
+			retry: 0}
+	}});

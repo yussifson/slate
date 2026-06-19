@@ -31,12 +31,10 @@ const GRADE_COLORS = {
   B: 'bg-[var(--color-info)]/10 text-[var(--color-info)]',
   C: 'bg-[var(--color-success)]/10 text-[var(--color-success)]',
   D: 'bg-[var(--color-warning)]/10 text-[var(--color-warning)]',
-  F: 'bg-[var(--color-destructive)]/10 text-[var(--color-destructive)]',
-};
+  F: 'bg-[var(--color-destructive)]/10 text-[var(--color-destructive)]'};
 
 const defaultForm = {
-  studentName: '', className: 'Grade 9A', subject: 'Mathematics', examName: '', date: new Date().toISOString().split('T')[0], score: '', maxScore: '100',
-};
+  studentName: '', className: 'Grade 9A', subject: 'Mathematics', examName: '', date: new Date().toISOString().split('T')[0], score: '', maxScore: '100'};
 
 export default function Grades() {
   const { t } = useTranslation();
@@ -79,8 +77,7 @@ export default function Grades() {
   const grades = dbRecords.map(r => ({
     id: r.id,
     status: r.status || 'Active',
-    ...r.data,
-  }));
+    ...r.data}));
 
   const filtered = grades.filter(g => {
     const matchClass = filterClass === 'All' || g.className === filterClass;
@@ -112,8 +109,7 @@ export default function Grades() {
       date: formData.date,
       score,
       maxScore,
-      grade,
-    };
+      grade};
 
     if (editingId) {
       mutateRecord.mutate({
@@ -121,30 +117,26 @@ export default function Grades() {
         recordType: 'grade',
         payload,
         status: 'active',
-        searchText: `${formData.studentName} ${formData.className} ${formData.subject} ${formData.examName}`,
-      }, {
+        searchText: `${formData.studentName} ${formData.className} ${formData.subject} ${formData.examName}`}, {
         onSuccess: () => {
           toast.success('Grade entry updated!');
           setShowModal(false);
           setEditingId(null);
           setFormData(defaultForm);
         },
-        onError: (err) => toast.error('Failed: ' + err.message),
-      });
+        onError: (err) => toast.error('Failed: ' + err.message)});
     } else {
       mutateRecord.mutate({
         recordType: 'grade',
         payload,
         status: 'active',
-        searchText: `${formData.studentName} ${formData.className} ${formData.subject} ${formData.examName}`,
-      }, {
+        searchText: `${formData.studentName} ${formData.className} ${formData.subject} ${formData.examName}`}, {
         onSuccess: () => {
           toast.success('Grade entry recorded!');
           setShowModal(false);
           setFormData(defaultForm);
         },
-        onError: (err) => toast.error('Failed: ' + err.message),
-      });
+        onError: (err) => toast.error('Failed: ' + err.message)});
     }
   };
 
@@ -152,8 +144,7 @@ export default function Grades() {
     if (!deleteTargetId) return;
     deleteRecord.mutate({ id: deleteTargetId, recordType: 'grade' }, {
       onSuccess: () => { toast.success('Grade record deleted.'); setDeleteTargetId(null); },
-      onError: (err) => { toast.error('Failed: ' + err.message); setDeleteTargetId(null); },
-    });
+      onError: (err) => { toast.error('Failed: ' + err.message); setDeleteTargetId(null); }});
   };
 
   const liveGrade = calcGrade(parseFloat(formData.score) || 0, parseFloat(formData.maxScore) || 100);

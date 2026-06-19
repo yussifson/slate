@@ -8,8 +8,7 @@ export const RETAIL_BRAND = {
  primary: "hsl(221, 83%, 53%)",
  primaryDark: "hsl(221, 83%, 45%)",
  primaryLight: "hsl(221, 83%, 96%)",
- chart: ["#2563eb", "#3b82f6", "#60a5fa", "#93c5fd", "#1d4ed8", "#1e40af"],
-};
+ chart: ["#2563eb", "#3b82f6", "#60a5fa", "#93c5fd", "#1d4ed8", "#1e40af"]};
 
 export function ViewModeToggle({ viewMode, onChange, className}) {
  return (
@@ -45,8 +44,7 @@ export function RetailStatCard({ label, value, icon: Icon, hint, variant = "defa
  default: "bg-slate-100 text-primary",
  warning: "bg-amber-500/10 text-amber-600",
  danger: "bg-red-500/10/10 text-red-600",
- success: "bg-slate-100 text-primary",
-};
+ success: "bg-slate-100 text-primary"};
  return (
  <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 min-h-[88px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center shrink-0", variants[variant])}>
@@ -217,8 +215,7 @@ export function OrderGridCard({ order, onEdit, onDelete}) {
  Completed: "bg-slate-100 text-primary/90",
  Pending: "bg-amber-500/10 text-amber-700",
  Cancelled: "bg-red-500/10/10 text-red-600",
- Processing: "bg-slate-100 text-primary/90",
-};
+ Processing: "bg-slate-100 text-primary/90"};
  return (
  <article className="group relative bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-0 transition-all flex flex-col min-h-[220px] overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="bg-muted/30 p-5 border-b border-primary/40 flex justify-between items-start relative">
@@ -253,8 +250,7 @@ export function InventoryGridCard({ item, onEdit, onDelete, onView}) {
  const statusClass = {
  "In Stock": "bg-slate-100 text-primary border-primary/20",
  "Low Stock": "bg-amber-500/10 text-amber-700 border-amber-200",
- "Out of Stock": "bg-red-500/10/10 text-red-700 border-red-200",
-};
+ "Out of Stock": "bg-red-500/10/10 text-red-700 border-red-200"};
  return (
  <article className="group relative bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden hover:border-primary/30 transition-all flex flex-col min-h-[280px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="h-32 bg-muted/30 border-b border-primary/40 flex items-center justify-center relative">
@@ -313,8 +309,7 @@ export function LoyaltyGridCard({ member, onEdit, onDelete}) {
  Bronze: "bg-amber-700/10 text-amber-800",
  Silver: "bg-slate-500/10 text-slate-700",
  Gold: "bg-slate-100 text-primary",
- Platinum: "bg-slate-100 text-primary/70",
-};
+ Platinum: "bg-slate-100 text-primary/70"};
  return (
  <article className="group relative bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-6 hover:border-primary/30 transition-all min-h-[180px] flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-start">

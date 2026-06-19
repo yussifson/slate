@@ -4,8 +4,7 @@ import React, {
  useRef,
  useCallback,
  useEffect,
- useMemo,
-} from 'react';
+ useMemo} from 'react';
 import { motion, AnimatePresence} from 'framer-motion';
 import {
  Workflow,
@@ -30,8 +29,7 @@ import {
  MousePointer2,
  Link2,
  Unlink2,
- RotateCcw,
-} from 'lucide-react';
+ RotateCcw} from 'lucide-react';
 
 import { supabase} from "@/api/supabaseClient";
 import { cn} from '@/lib/utils';
@@ -56,8 +54,7 @@ const NODE_TYPES = {
  { value: 'record_updated', label: 'Record Updated'},
  { value: 'status_changed', label: 'Status Changed'},
  { value: 'date_arrives', label: 'Date Arrives'},
- ],
-},
+ ]},
  condition: {
  label: 'Condition',
  description: 'If this is true...',
@@ -70,8 +67,7 @@ const NODE_TYPES = {
  { value: 'field_equals', label: 'Field equals value'},
  { value: 'field_empty', label: 'Field is empty'},
  { value: 'status_is', label: 'Status is'},
- ],
-},
+ ]},
  action: {
  label: 'Action',
  description: 'Then do this...',
@@ -86,8 +82,7 @@ const NODE_TYPES = {
  { value: 'assign_to', label: 'Assign To'},
  { value: 'create_record', label: 'Create Record'},
  { value: 'send_email', label: 'Send Email'},
- ],
-},
+ ]},
  end: {
  label: 'End',
  description: 'Workflow complete',
@@ -96,9 +91,7 @@ const NODE_TYPES = {
  bgClass: 'bg-slate-50 dark:bg-slate-800/30',
  badgeClass: 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300',
  icon: Square,
- options: [],
-},
-};
+ options: []}};
 
 const PALETTE_ITEMS = [
  { type: 'trigger', label: 'Trigger', icon: Zap},
@@ -112,8 +105,7 @@ const ACTION_ICONS = {
  change_status: RefreshCw,
  assign_to: UserPlus,
  create_record: FilePlus,
- send_email: Mail,
-};
+ send_email: Mail};
 
 function genId() {
  return `node_${Date.now()}_${Math.floor(Math.random() * 9999)}`;
@@ -157,8 +149,7 @@ function WorkflowNode({
  onMouseDown,
  onPortClick,
  onDelete,
- onSelect,
-}) {
+ onSelect}) {
  const def = NODE_TYPES[node.type] || NODE_TYPES.trigger;
  const IconComp = def.icon;
  const optionLabel =
@@ -173,8 +164,7 @@ function WorkflowNode({
  top: node.y,
  width: NODE_WIDTH,
  position: 'absolute',
- userSelect: 'none',
-}}
+ userSelect: 'none'}}
  className={cn(
  'rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-l-4 bg-card transition- duration-150',
  def.borderClass,
@@ -502,8 +492,7 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  type,
  x: Math.round(80 + Math.random() * (rect.width - NODE_WIDTH - 160)),
  y: Math.round(80 + Math.random() * (rect.height - NODE_HEIGHT - 120)),
- config: {},
-};
+ config: {}};
  setNodes((prev) => [...prev, newNode]);
  setSelectedNodeId(newNode.id);
 };
@@ -518,8 +507,7 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  startX: e.clientX,
  startY: e.clientY,
  origX: node.x,
- origY: node.y,
-};
+ origY: node.y};
 }, [nodes]);
 
  const handleCanvasMouseMove = useCallback((e) => {
@@ -743,8 +731,7 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  backgroundImage:
  'radial-gradient(circle, hsl(var(--border)) 1px, transparent 1px)',
  backgroundSize: '24px 24px',
- backgroundColor: 'hsl(var(--muted) / 0.18)',
-}}
+ backgroundColor: 'hsl(var(--muted) / 0.18)'}}
  onMouseMove={handleCanvasMouseMove}
  onMouseUp={handleCanvasMouseUp}
  onClick={handleCanvasClick}

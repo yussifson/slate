@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import React, { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {Send, PenTool, Eye, CheckCircle, Clock, XCircle,, RefreshCw} from "lucide-react";
+import {Send, PenTool, Eye, CheckCircle, Clock, XCircle, RefreshCw} from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,8 +19,7 @@ const STATUS_CONFIG = {
   opened:   { color: "bg-amber-100 text-amber-700",  icon: Eye },
   signed:   { color: "bg-slate-100 text-primary/90",  icon: CheckCircle },
   declined: { color: "bg-red-100 text-red-700",      icon: XCircle },
-  expired:  { color: "bg-gray-100 text-[#71717a] dark:text-gray-400",    icon: Clock },
-};
+  expired:  { color: "bg-gray-100 text-[#71717a] dark:text-gray-400",    icon: Clock }};
 
 export default function ESignaturePanel({ caseData, user }) {
   const { t } = useTranslation();
@@ -33,14 +32,12 @@ export default function ESignaturePanel({ caseData, user }) {
   const { data: requests = [], isLoading } = useQuery({
     queryKey: ["sig-requests", caseData.id],
     queryFn: () => base44.entities.SignatureRequest.filter({ case_id: caseData.id }),
-    enabled: !!caseData.id,
-  });
+    enabled: !!caseData.id});
 
   const { data: documents = [] } = useQuery({
     queryKey: ["case-documents", caseData.id],
     queryFn: () => base44.entities.Document.filter({ case_id: caseData.id }),
-    enabled: !!caseData.id,
-  });
+    enabled: !!caseData.id});
 
   const sendMutation = useMutation({
     mutationFn: async (data) => {
@@ -55,8 +52,7 @@ export default function ESignaturePanel({ caseData, user }) {
         status: "sent",
         sent_at: new Date().toISOString(),
         signature_token: token,
-        expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-      });
+        expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()});
 
       const signingUrl = `${window.location.origin}/sign/${token}`;
 
@@ -78,8 +74,7 @@ This link will expire in 7 days.
 
 Best regards,
 ${user?.full_name}
-Slate Law Management`,
-      });
+Slate Law Management`});
 
       return req;
     },
@@ -87,8 +82,7 @@ Slate Law Management`,
       queryClient.invalidateQueries({ queryKey: ["sig-requests", caseData.id] });
       setShowSendForm(false);
       toast({ title: "Signature request sent to client" });
-    },
-  });
+    }});
 
   const resendMutation = useMutation({
     mutationFn: async (req) => {
@@ -96,11 +90,9 @@ Slate Law Management`,
       await base44.integrations.Core.SendEmail({
         to: req.client_email,
         subject: `[Reminder] Signature Required: ${req.document_name}`,
-        body: `Dear ${req.client_name},\n\nThis is a reminder to sign the document: ${req.document_name}\n\nSigning link: ${signingUrl}\n\n— Slate`,
-      });
+        body: `Dear ${req.client_name},\n\nThis is a reminder to sign the document: ${req.document_name}\n\nSigning link: ${signingUrl}\n\n— Slate`});
       toast({ title: "Reminder sent" });
-    },
-  });
+    }});
 
   return (
     <div className="space-y-4">
@@ -210,8 +202,7 @@ function SendSignatureDialog({ open, onClose, onSubmit, documents, caseData, isS
     client_id: caseData.client_id || "",
     client_name: caseData.client_name || "",
     client_email: "",
-    message: "",
-  });
+    message: ""});
 
   const handleDocChange = (id) => {
     const doc = documents.find(d => d.id === id);

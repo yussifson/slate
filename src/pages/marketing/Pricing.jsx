@@ -11,8 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import {
  PLAN_META, UNIVERSAL_FEATURES,
  getPrice, formatPriceNumber,
- detectMarketTier, assertPricingIntegrity,
-} from '@/lib/pricing';
+ detectMarketTier, assertPricingIntegrity} from '@/lib/pricing';
 
 // Run integrity check in dev
 if (import.meta?.env?.DEV) {

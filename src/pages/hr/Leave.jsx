@@ -26,8 +26,7 @@ export default function Leave() {
 
  const staffList = staffRecords.map(r => ({
  id: r.id,
- name: r.data?.full_name || r.data?.name || 'Unnamed Staff',
-}));
+ name: r.data?.full_name || r.data?.name || 'Unnamed Staff'}));
 
  const requests = dbRecords.map(r => ({
  id: r.id,

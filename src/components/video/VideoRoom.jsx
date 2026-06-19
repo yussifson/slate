@@ -62,16 +62,14 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  toast({
  title: 'Video connection error',
  description: ev?.errorMsg || 'Could not connect to the meeting room.',
- variant: 'destructive',
-});
+ variant: 'destructive'});
 });
 
  const ensureJoined = () => {
  if (joined && daily) return true;
  toast({
  title: 'Connecting…',
- description: 'Wait until the call has connected before using camera or mic.',
-});
+ description: 'Wait until the call has connected before using camera or mic.'});
  return false;
 };
 

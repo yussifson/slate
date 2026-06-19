@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import {PackageSearch, Lock, Zap, MapPin, DollarSign, Weight, Truck, CheckCircle,, Plus, Users} from "lucide-react";
+import {PackageSearch, Lock, Zap, MapPin, DollarSign, Weight, Truck, CheckCircle, Plus, Users} from "lucide-react";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
