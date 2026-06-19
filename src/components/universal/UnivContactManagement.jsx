@@ -136,22 +136,22 @@ export default function UnivContactManagement() {
  </button>
  ))}
  </div>
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-md-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 "><Plus className="w-4 h-4" />Add Contact</button>
+ <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 "><Plus className="w-4 h-4" />Add Contact</button>
  </div>
  </div>
 
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 shrink-0">
- {['Client','Vendor','Partner','Other'].map(t => <div key={t} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 rounded-md-2xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">{t}s</p><p className="text-2xl font-black text-foreground tracking-[-0.02em]">{records.filter(r => r.type === t).length}</p></div>)}
+ {['Client','Vendor','Partner','Other'].map(t => <div key={t} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 rounded-2xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">{t}s</p><p className="text-2xl font-black text-foreground tracking-[-0.02em]">{records.filter(r => r.type === t).length}</p></div>)}
  </div>
 
  <div className="flex gap-3 shrink-0">
- <div className="relative flex-1"><Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" /><input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search contacts..." className="w-full h-11 pl-10 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" /></div>
- <div className="flex bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-1 gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="relative flex-1"><Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" /><input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search contacts..." className="w-full h-11 pl-10 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" /></div>
+ <div className="flex bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-1 gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <button onClick={() => setViewMode('list')} className={`px-3 py-1.5 rounded-xl text-sm font-semibold flex items-center gap-2.5 ${viewMode === 'list' ? 'bg-primary text-white' : 'text-[#71717a] dark:text-gray-400'}`}><List className="w-4 h-4" /></button>
  <button onClick={() => setViewMode('grid')} className={`px-3 py-1.5 rounded-xl text-sm font-semibold flex items-center gap-2.5 ${viewMode === 'grid' ? 'bg-primary text-white' : 'text-[#71717a] dark:text-gray-400'}`}><LayoutGrid className="w-4 h-4" /></button>
  </div>
@@ -162,9 +162,9 @@ export default function UnivContactManagement() {
  : viewMode === 'grid' ? (
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-8">
  {filtered.map(r => (
- <div key={r.id} onClick={() => setSelected(r)} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 transition-all group cursor-pointer hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={r.id} onClick={() => setSelected(r)} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 transition-all group cursor-pointer hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex flex-col items-center text-center">
- <div className={`w-14 h-14 rounded-md-full bg-gradient-to-br ${grad(r.name)} flex items-center justify-center text-white text-xl font-black mb-3`}>{(r.name || '?').charAt(0).toUpperCase()}</div>
+ <div className={`w-14 h-14 rounded-full bg-gradient-to-br ${grad(r.name)} flex items-center justify-center text-white text-xl font-black mb-3`}>{(r.name || '?').charAt(0).toUpperCase()}</div>
  <h3 className="font-semibold text-base text-foreground">{r.name}</h3>
  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">{r.company || '—'}</p>
  <span className={`mt-2 px-2 py-0.5 text-[10px] font-semibold uppercase border-[0.5px] border-black/9 dark:border-white/8 rounded-lg ${TYPE_COLORS[r.type] || 'bg-muted border-primary/40 text-[#71717a] dark:text-gray-400'}`}>{r.type}</span>
@@ -175,16 +175,16 @@ export default function UnivContactManagement() {
  </div>
  </div>
  ))}
- {filtered.length === 0 && <div className="col-span-full py-20 text-center text-[#71717a] dark:text-gray-400 border-2 border-dashed border-primary/40 rounded-md-2xl"><Users className="w-12 h-12 mx-auto text-[#71717a] dark:text-gray-400/30 mb-3" /><p className="font-medium">No contacts found.</p></div>}
+ {filtered.length === 0 && <div className="col-span-full py-20 text-center text-[#71717a] dark:text-gray-400 border-2 border-dashed border-primary/40 rounded-2xl"><Users className="w-12 h-12 mx-auto text-[#71717a] dark:text-gray-400/30 mb-3" /><p className="font-medium">No contacts found.</p></div>}
  </div>
  ) : (
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm">
  <thead className="bg-muted/50 border-b border-primary/40"><tr>{['Contact','Company','Type','Phone','Actions'].map(h => <th key={h} className="p-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">{h}</th>)}</tr></thead>
  <tbody className="divide-y divide-border">
  {filtered.map(r => (
  <tr key={r.id} onClick={() => setSelected(r)} className="hover:bg-muted/30 transition-colors group cursor-pointer">
- <td className="p-4"><div className="flex items-center gap-3"><div className={`w-9 h-9 rounded-md-full bg-gradient-to-br ${grad(r.name)} flex items-center justify-center text-white text-xs font-black shrink-0`}>{(r.name||'?').charAt(0).toUpperCase()}</div><div><p className="font-semibold text-foreground">{r.name}</p><p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{r.email}</p></div></div></td>
+ <td className="p-4"><div className="flex items-center gap-3"><div className={`w-9 h-9 rounded-full bg-gradient-to-br ${grad(r.name)} flex items-center justify-center text-white text-xs font-black shrink-0`}>{(r.name||'?').charAt(0).toUpperCase()}</div><div><p className="font-semibold text-foreground">{r.name}</p><p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{r.email}</p></div></div></td>
  <td className="p-4 text-[#71717a] dark:text-gray-400">{r.company || '—'}</td>
  <td className="p-4"><span className={`px-2 py-0.5 text-[10px] font-semibold uppercase border-[0.5px] border-black/9 dark:border-white/8 rounded-lg ${TYPE_COLORS[r.type]}`}>{r.type}</span></td>
  <td className="p-4 text-[#71717a] dark:text-gray-400">{r.phone || '—'}</td>
@@ -201,21 +201,21 @@ export default function UnivContactManagement() {
  {selected && (
  <div className="fixed inset-0 z-40 bg-primary/20 backdrop-blur-sm" onClick={() => setSelected(null)}>
  <div className="absolute right-0 top-0 bottom-0 w-80 bg-card border-l border-primary/40 flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={e => e.stopPropagation()}>
- <div className="p-5 border-b border-primary/40 flex justify-between items-center"><h3 className="font-black text-lg">Contact</h3><button onClick={() => setSelected(null)} className="p-1.5 bg-muted rounded-md-full"><XCircle className="w-4 h-4 text-[#71717a] dark:text-gray-400" /></button></div>
+ <div className="p-5 border-b border-primary/40 flex justify-between items-center"><h3 className="font-black text-lg">Contact</h3><button onClick={() => setSelected(null)} className="p-1.5 bg-muted rounded-full"><XCircle className="w-4 h-4 text-[#71717a] dark:text-gray-400" /></button></div>
  <div className="flex-1 overflow-y-auto p-5 custom-scrollbar">
  <div className="flex flex-col items-center text-center mb-5">
- <div className={`w-16 h-16 rounded-md-full bg-gradient-to-br ${grad(selected.name)} flex items-center justify-center text-white text-2xl font-black mb-3`}>{(selected.name||'?').charAt(0).toUpperCase()}</div>
+ <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${grad(selected.name)} flex items-center justify-center text-white text-2xl font-black mb-3`}>{(selected.name||'?').charAt(0).toUpperCase()}</div>
  <h3 className="font-black text-xl">{selected.name}</h3>
- <span className={`mt-2 px-3 py-1 text-[11px] font-semibold uppercase border-[0.5px] border-black/9 dark:border-white/8 rounded-md-full ${TYPE_COLORS[selected.type]}`}>{selected.type}</span>
+ <span className={`mt-2 px-3 py-1 text-[11px] font-semibold uppercase border-[0.5px] border-black/9 dark:border-white/8 rounded-full ${TYPE_COLORS[selected.type]}`}>{selected.type}</span>
  </div>
  <div className="space-y-2">
- {[{icon:<Building2 className="w-4 h-4"/>,label:'Company',value:selected.company},{icon:<Mail className="w-4 h-4"/>,label:'Email',value:selected.email},{icon:<Phone className="w-4 h-4"/>,label:'Phone',value:selected.phone}].map((f,i)=>f.value?(<div key={i} className="flex items-center gap-3 p-3 bg-muted/40 rounded-md-xl"><span className="text-primary shrink-0">{f.icon}</span><div><p className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{f.label}</p><p className="text-sm font-medium">{f.value}</p></div></div>):null)}
- {selected.notes && <div className="p-3 bg-muted/40 rounded-md-xl"><p className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Notes</p><p className="text-sm">{selected.notes}</p></div>}
+ {[{icon:<Building2 className="w-4 h-4"/>,label:'Company',value:selected.company},{icon:<Mail className="w-4 h-4"/>,label:'Email',value:selected.email},{icon:<Phone className="w-4 h-4"/>,label:'Phone',value:selected.phone}].map((f,i)=>f.value?(<div key={i} className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl"><span className="text-primary shrink-0">{f.icon}</span><div><p className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{f.label}</p><p className="text-sm font-medium">{f.value}</p></div></div>):null)}
+ {selected.notes && <div className="p-3 bg-muted/40 rounded-xl"><p className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Notes</p><p className="text-sm">{selected.notes}</p></div>}
  </div>
  </div>
  <div className="p-5 border-t border-primary/40 flex gap-2">
- <button onClick={()=>{openModal(selected);setSelected(null);}} className="flex-1 h-9 bg-primary text-white rounded-md-xl text-sm font-semibold flex items-center justify-center gap-2"><Edit2 className="w-3.5 h-3.5"/>Edit</button>
- <button onClick={()=>remove(selected.id)} className="flex-1 h-9 bg-red-50 text-red-600 border-[0.5px] border-black/9 dark:border-white/8 border-red-200 rounded-md-xl text-sm font-semibold flex items-center justify-center gap-2 hover:bg-red-100"><Trash2 className="w-3.5 h-3.5"/>Delete</button>
+ <button onClick={()=>{openModal(selected);setSelected(null);}} className="flex-1 h-9 bg-primary text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2"><Edit2 className="w-3.5 h-3.5"/>Edit</button>
+ <button onClick={()=>remove(selected.id)} className="flex-1 h-9 bg-red-50 text-red-600 border-[0.5px] border-black/9 dark:border-white/8 border-red-200 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 hover:bg-red-100"><Trash2 className="w-3.5 h-3.5"/>Delete</button>
  </div>
  </div>
  </div>
@@ -223,20 +223,20 @@ export default function UnivContactManagement() {
 
  {isModalOpen && (
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
- <div className="bg-card w-full max-w-lg rounded-md-2xl flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0"><h2 className="text-xl font-black">{editingId?'Edit Contact':'Add Contact'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-md-full text-[#71717a] dark:text-gray-400"><XCircle className="w-5 h-5" /></button></div>
+ <div className="bg-card w-full max-w-lg rounded-2xl flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0"><h2 className="text-xl font-black">{editingId?'Edit Contact':'Add Contact'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-full text-[#71717a] dark:text-gray-400"><XCircle className="w-5 h-5" /></button></div>
  <form onSubmit={save} className="p-5 overflow-y-auto flex-1 custom-scrollbar">
  <div className="grid grid-cols-2 gap-4">
- <div className="col-span-2"><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Full Name *</label><input required type="text" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Email</label><input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Phone</label><input type="tel" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Company</label><input type="text" value={form.company} onChange={e=>setForm({...form,company:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Type</label><select value={form.type} onChange={e=>setForm({...form,type:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(TYPE_COLORS).map(t=><option key={t}>{t}</option>)}</select></div>
- <div className="col-span-2"><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Notes</label><textarea rows="2" value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})} className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none"/></div>
+ <div className="col-span-2"><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Full Name *</label><input required type="text" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Email</label><input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Phone</label><input type="tel" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Company</label><input type="text" value={form.company} onChange={e=>setForm({...form,company:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Type</label><select value={form.type} onChange={e=>setForm({...form,type:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(TYPE_COLORS).map(t=><option key={t}>{t}</option>)}</select></div>
+ <div className="col-span-2"><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Notes</label><textarea rows="2" value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})} className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none"/></div>
  </div>
  <div className="flex justify-end gap-3 mt-5 pt-5 border-t border-primary/40">
- <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-md-xl text-sm font-medium">Cancel</button>
- <button type="submit" className="h-10 px-5 bg-primary text-white rounded-md-xl text-sm font-semibold ">{editingId?'Update':'Add Contact'}</button>
+ <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button>
+ <button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-semibold ">{editingId?'Update':'Add Contact'}</button>
  </div>
  </form>
  </div>

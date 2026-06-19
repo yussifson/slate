@@ -72,13 +72,13 @@ export default function SHSParentFees() {
  </div>
 
  {loading ? (
- <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-20 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading financial records...</CardContent>
  </Card>
  ) : wards.length === 0 ? (
- <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-20 text-center">
- <div className="w-16 h-16 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
  <User className="w-8 h-8 text-primary dark:text-primary" />
  </div>
  <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No Wards Linked</h3>
@@ -94,13 +94,13 @@ export default function SHSParentFees() {
  <button
  key={ward.id}
  onClick={() => setSelectedWardId(ward.id)}
- className={`w-full p-4 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 text-left transition-all duration-300 flex items-center gap-4 ${
+ className={`w-full p-4 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 text-left transition-all duration-300 flex items-center gap-4 ${
  selectedWardId === ward.id 
  ? 'bg-primary dark:bg-primary border-primary dark:border-primary text-white -emerald-500/20 scale-100' 
  : 'bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:border-primary dark:border-primary/40 scale-95'
 }`}
  >
- <div className={`w-12 h-12 rounded-md-full flex items-center justify-center font-semibold text-lg shrink-0 ${
+ <div className={`w-12 h-12 rounded-full flex items-center justify-center font-semibold text-lg shrink-0 ${
  selectedWardId === ward.id ? 'bg-white dark:bg-slate-900/40 dark:bg-slate-900/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
 }`}>
  {ward.title.charAt(0)}
@@ -118,19 +118,19 @@ export default function SHSParentFees() {
  <div className="lg:col-span-3 space-y-6">
  
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6">
  <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 tracking-[0.04em]">Total Billed</p>
  <h3 className="text-3xl font-black text-slate-800 dark:text-slate-100 tracking-[-0.02em]">${totalBilled.toFixed(2)}</h3>
  </CardContent>
  </Card>
- <Card className="rounded-md-3xl border-none bg-slate-50">
+ <Card className="rounded-3xl border-none bg-slate-50">
  <CardContent className="p-6">
  <p className="text-sm font-semibold text-primary/70 uppercase tracking-wider mb-2 tracking-[0.04em]">Total Paid</p>
  <h3 className="text-3xl font-black text-primary/90 tracking-[-0.02em]">${totalPaid.toFixed(2)}</h3>
  </CardContent>
  </Card>
- <Card className={`rounded-md-3xl border-none ${currentBalance > 0 ? 'bg-rose-50' : 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800'}`}>
+ <Card className={`rounded-3xl border-none ${currentBalance > 0 ? 'bg-rose-50' : 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800'}`}>
  <CardContent className="p-6">
  <p className={`text-sm font-semibold uppercase tracking-wider mb-2 ${currentBalance > 0 ? 'text-rose-600/70' : 'text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400'}`}>Current Arrears</p>
  <h3 className={`text-3xl font-black ${currentBalance > 0 ? 'text-rose-700' : 'text-slate-800 dark:text-slate-100'}`}>${currentBalance.toFixed(2)}</h3>
@@ -138,7 +138,7 @@ export default function SHSParentFees() {
  </Card>
  </div>
 
- <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50">
  <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <Receipt className="w-5 h-5 text-primary dark:text-primary/70" /> Recent Invoices
@@ -154,7 +154,7 @@ export default function SHSParentFees() {
  {wardInvoices.map(invoice => (
  <div key={invoice.id} className="p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
  <div className="flex items-start gap-4">
- <div className="w-12 h-12 rounded-md-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
+ <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
  <Receipt className="w-6 h-6 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  </div>
  <div>
@@ -182,7 +182,7 @@ export default function SHSParentFees() {
  </CardContent>
  </Card>
 
- <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50">
  <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <DollarSign className="w-5 h-5 text-primary" /> Payment History
@@ -198,7 +198,7 @@ export default function SHSParentFees() {
  <table className="w-full text-sm text-left">
  <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider tracking-[0.04em]">
  <tr>
- <th className="px-6 py-4 rounded-md-tl-xl">Date</th>
+ <th className="px-6 py-4 rounded-tl-xl">Date</th>
  <th className="px-6 py-4">Receipt No</th>
  <th className="px-6 py-4">Invoice Ref</th>
  <th className="px-6 py-4">Amount</th>

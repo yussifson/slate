@@ -63,7 +63,7 @@ export default function AuditLog() {
 },
  {
  header: "Slate",
- render: (row) => <span className="text-xs uppercase bg-muted px-2 py-0.5 rounded-md-full tracking-[0.04em]">{row.slate}</span>,
+ render: (row) => <span className="text-xs uppercase bg-muted px-2 py-0.5 rounded-full tracking-[0.04em]">{row.slate}</span>,
 },
  {
  header: "IP Address",
@@ -90,7 +90,7 @@ export default function AuditLog() {
  </div>
  </div>
 
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <DataTable
  columns={columns}
  data={filteredLogs}

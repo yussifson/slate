@@ -277,15 +277,15 @@ export default function Login() {
 
  return (
   <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-50/50 dark:bg-slate-900 p-4 font-sans backdrop-blur-sm">
-    <div className="w-full max-w-md bg-white dark:bg-slate-800 rounded-md-3xl p-8 text-center border-[0.5px] border-black/9 dark:border-white/8 border-slate-100 dark:border-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-md-2xl bg-red-50 dark:bg-red-500/10/10 mb-6">
+    <div className="w-full max-w-md bg-white dark:bg-slate-800 rounded-3xl p-8 text-center border-[0.5px] border-black/9 dark:border-white/8 border-slate-100 dark:border-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-red-50 dark:bg-red-500/10/10 mb-6">
         <AlertCircle className="h-8 w-8 text-red-500 dark:text-red-400" />
       </div>
       <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white mb-2 tracking-[-0.02em]">{t("workslate_not_found", "Workslate Not Found")}</h2>
       <p className="mb-8 text-sm font-medium text-slate-500 dark:text-slate-400 leading-relaxed">
         {t("we_couldn_t_find_an_organizati", "We couldn't find an organization matching the web address")} <span className="font-semibold text-slate-900 dark:text-white">"{currentSubdomain}"</span>.
       </p>
-      <button onClick={() => window.location.href = mainUrl} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3.5 px-6 rounded-md-xl transition-all">
+      <button onClick={() => window.location.href = mainUrl} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3.5 px-6 rounded-xl transition-all">
         {t("go_to_main_login_portal", "Go to Main Login Portal")}
       </button>
     </div>
@@ -309,7 +309,7 @@ export default function Login() {
  </div>
  
  <form className="space-y-4" onSubmit={handleLogin}>
- {error && <div className="rounded-md-xl bg-red-50 p-3 text-xs text-red-600 border-[0.5px] border-black/9 dark:border-white/8 border-red-100 font-medium tracking-[0.04em]">{error}</div>}
+ {error && <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border-[0.5px] border-black/9 dark:border-white/8 border-red-100 font-medium tracking-[0.04em]">{error}</div>}
  
  <div className="space-y-4">
  <div>
@@ -375,7 +375,7 @@ export default function Login() {
  </p>
  
  <div className="flex items-center gap-5 pt-8 relative z-10">
- <div className="w-16 h-16 rounded-md-full bg-gradient-to-br from-primary/5 to-primary/10 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 flex items-center justify-center text-primary/90 font-semibold text-xl ">
+ <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/5 to-primary/10 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 flex items-center justify-center text-primary/90 font-semibold text-xl ">
  {t("mk", "MK")}
  </div>
  <div>

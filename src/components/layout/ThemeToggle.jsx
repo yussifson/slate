@@ -50,7 +50,7 @@ export default function ThemeToggle() {
 
  {/* Floating Glassmorphism Dropdown */}
  {isOpen && (
- <div className="absolute right-0 mt-2 w-36 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card/85 backdrop-blur-md p-1.5 animate-in fade-in zoom-in-95 duration-150 z-50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="absolute right-0 mt-2 w-36 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card/85 backdrop-blur-md p-1.5 animate-in fade-in zoom-in-95 duration-150 z-50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="space-y-1">
  {themeOptions.map((option) => {
  const isSelected = option.value === theme;
@@ -73,7 +73,7 @@ export default function ThemeToggle() {
  <OptIcon className={cn("w-3.5 h-3.5 shrink-0", isSelected ? "text-white" : option.color)} />
  <span className="flex-1">{option.label}</span>
  {isSelected && (
- <span className="w-1.5 h-1.5 rounded-md-full bg-white animate-pulse hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+ <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  )}
  </button>
  );

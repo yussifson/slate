@@ -165,13 +165,13 @@ export default function AdminUsers() {
       ) : (
         <div className="space-y-4">
           {filteredProfiles.length === 0 ? (
-            <div className="bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 text-center py-12 text-slate-400 text-sm font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 text-center py-12 text-slate-400 text-sm font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               No users found matching query.
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredProfiles.map(user => (
-                <div key={user.id} className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300 p-5 flex flex-col justify-between gap-4 relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                <div key={user.id} className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300 p-5 flex flex-col justify-between gap-4 relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                   
                   {/* Role Badge top-right */}
                   <div className="absolute top-4 right-4">
@@ -181,7 +181,7 @@ export default function AdminUsers() {
                   </div>
                   
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-md-2xl bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center font-black text-primary text-lg shrink-0">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center font-black text-primary text-lg shrink-0">
                       {user.full_name?.charAt(0) || user.email?.charAt(0) || 'U'}
                     </div>
                     <div className="min-w-0">
@@ -254,7 +254,7 @@ export default function AdminUsers() {
 
       {/* Role Change Dialog */}
       <Dialog open={!!roleDialog} onOpenChange={(o) => !o && setRoleDialog(null)}>
-        <DialogContent className="max-w-sm rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-white dark:bg-slate-900/40 p-6 font-sans hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <DialogContent className="max-w-sm rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-white dark:bg-slate-900/40 p-6 font-sans hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <DialogDescription className="sr-only">Change user role</DialogDescription>
           <DialogHeader>
             <DialogTitle className="text-slate-900 dark:text-slate-100 font-extrabold text-base">
@@ -266,15 +266,15 @@ export default function AdminUsers() {
               <button
                 key={r}
                 onClick={() => setRoleDialog(d => ({ ...d, newRole: r }))}
-                className={`w-full text-left px-4 py-3 rounded-md-xl text-sm font-semibold transition-colors border-2 ${roleDialog?.newRole === r ? 'border-primary bg-primary/5 text-primary' : 'border-transparent bg-slate-50 text-slate-700 hover:bg-slate-100'}`}
+                className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold transition-colors border-2 ${roleDialog?.newRole === r ? 'border-primary bg-primary/5 text-primary' : 'border-transparent bg-slate-50 text-slate-700 hover:bg-slate-100'}`}
               >
                 {r.replace(/_/g, ' ').toUpperCase()}
               </button>
             ))}
           </div>
           <DialogFooter className="flex gap-2 pt-2">
-            <Button variant="outline" onClick={() => setRoleDialog(null)} className="flex-1 rounded-md-xl border-primary/40 h-11">Cancel</Button>
-            <Button onClick={handleChangeRole} disabled={updatingRole} className="flex-1 bg-primary hover:bg-primary/90 text-white font-semibold rounded-md-xl h-11">
+            <Button variant="outline" onClick={() => setRoleDialog(null)} className="flex-1 rounded-xl border-primary/40 h-11">Cancel</Button>
+            <Button onClick={handleChangeRole} disabled={updatingRole} className="flex-1 bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl h-11">
               {updatingRole ? <Loader2 className="w-4 h-4 animate-spin" /> : "Confirm"}
             </Button>
           </DialogFooter>

@@ -40,7 +40,7 @@ export default function ClientChecklistPanel({ clientId }) {
 
   if (items.length === 0) {
     return (
-      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <CheckSquare className="w-8 h-8 text-[#71717a] dark:text-gray-400 mx-auto mb-2" />
         <p className="text-sm text-[#71717a] dark:text-gray-400">{t("no_checklist_items_assigned_ye", "No checklist items assigned yet")}</p>
       </div>
@@ -50,21 +50,21 @@ export default function ClientChecklistPanel({ clientId }) {
   return (
     <div className="space-y-4">
       {/* Progress */}
-      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="flex justify-between items-center mb-2">
           <p className="text-sm font-semibold">{t("your_action_items", "Your Action Items")}</p>
           <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{done.length}/{items.length} {t("completed", "completed")}</span>
         </div>
-        <div className="w-full bg-muted rounded-md-full h-2">
+        <div className="w-full bg-muted rounded-full h-2">
           <div
-            className="bg-primary h-2 rounded-md-full transition-all"
+            className="bg-primary h-2 rounded-full transition-all"
             style={{ width: `${items.length ? (done.length / items.length) * 100 : 0}%` }}
           />
         </div>
       </div>
       {/* Pending items */}
       {pending.length > 0 && (
-        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="px-4 py-3 border-b border-primary/40">
             <p className="text-sm font-semibold">{t("pending", "Pending (")}{pending.length})</p>
           </div>
@@ -105,7 +105,7 @@ export default function ClientChecklistPanel({ clientId }) {
       )}
       {/* Completed items */}
       {done.length > 0 && (
-        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden opacity-70 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden opacity-70 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="px-4 py-3 border-b border-primary/40">
             <p className="text-sm font-semibold text-[#71717a] dark:text-gray-400">{t("completed", "Completed (")}{done.length})</p>
           </div>

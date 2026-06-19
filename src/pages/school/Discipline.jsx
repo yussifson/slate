@@ -43,7 +43,7 @@ export default function Discipline() {
       <div className="relative border-l-4 border-green-800 ml-8 space-y-12 pb-12">
         {logs.map((log, i) => (
           <div key={log.id} className="relative pl-12">
-            <div className={`absolute -left-[26px] top-4 w-12 h-12 border-4 border-green-900 rounded-md-full flex items-center justify-center ${log.type === 'Merit' ? 'bg-green-400' : 'bg-red-400'}`}>
+            <div className={`absolute -left-[26px] top-4 w-12 h-12 border-4 border-green-900 rounded-full flex items-center justify-center ${log.type === 'Merit' ? 'bg-green-400' : 'bg-red-400'}`}>
               {log.type === 'Merit' ? <ShieldCheck className="w-6 h-6 text-green-900" /> : <AlertTriangle className="w-6 h-6 text-red-900" />}
             </div>
             <div className="bg-white border-4 border-green-900 p-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">

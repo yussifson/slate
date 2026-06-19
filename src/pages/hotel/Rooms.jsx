@@ -121,7 +121,7 @@ export default function Rooms() {
  <Plus className="w-4 h-4" /> {t("add_room", "Add Room")}
  </Button>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -155,11 +155,11 @@ export default function Rooms() {
  <td className="px-6 py-4 font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${room.rate}</td>
  <td className="px-6 py-4">
  {room.status === 'Maintenance' ? (
- <span className="inline-flex items-center px-2 py-1 rounded-md-full text-[10px] font-semibold bg-red-100 text-red-700 uppercase tracking-wider animate-pulse tracking-[0.04em]">
+ <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-semibold bg-red-100 text-red-700 uppercase tracking-wider animate-pulse tracking-[0.04em]">
  <Activity className="w-3 h-3 mr-1" /> {t("maintenance_alert", "Maintenance Alert")}
  </span>
  ) : (
- <span className={`inline-flex items-center px-2 py-1 rounded-md-full text-[10px] font-semibold uppercase tracking-wider ${room.status === 'Available' ? 'bg-slate-100 text-primary/90' : 'bg-slate-100 text-primary/90'}`}>
+ <span className={`inline-flex items-center px-2 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider ${room.status === 'Available' ? 'bg-slate-100 text-primary/90' : 'bg-slate-100 text-primary/90'}`}>
  {room.status}
  </span>
  )}
@@ -214,7 +214,7 @@ export default function Rooms() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {editTargetId ? <Edit className="w-5 h-5 text-primary"/> : <Plus className="w-5 h-5 text-primary"/>}
  {editTargetId ? 'Edit Room Configuration' : 'Configure New Room'}
@@ -298,7 +298,7 @@ export default function Rooms() {
  </div>
  <div className="bg-muted/50 p-3 rounded-xl">
  <p className="text-xs text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">{t("status", "Status")}</p>
- <span className="inline-flex items-center px-2 py-1 rounded-md-full text-xs font-semibold bg-slate-100 text-primary/90 tracking-[0.04em]">
+ <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-slate-100 text-primary/90 tracking-[0.04em]">
  <Activity className="w-3 h-3 mr-1" /> {room.status}
  </span>
  </div>

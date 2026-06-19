@@ -176,7 +176,7 @@ function WorkflowNode({
  userSelect: 'none',
 }}
  className={cn(
- 'rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-l-4 bg-card transition- duration-150',
+ 'rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-l-4 bg-card transition- duration-150',
  def.borderClass,
  selected && ' ring-2 ring-primary ring-offset-1',
  'group'
@@ -188,7 +188,7 @@ function WorkflowNode({
 }}
  >
  {/* Header */}
- <div className={cn('flex items-center gap-2 px-3 pt-3 pb-2 rounded-md-t-xl', def.bgClass)}>
+ <div className={cn('flex items-center gap-2 px-3 pt-3 pb-2 rounded-t-xl', def.bgClass)}>
  <span className={cn('flex items-center justify-center w-6 h-6 rounded-lg', def.badgeClass)}>
  <IconComp className="w-3.5 h-3.5" />
  </span>
@@ -198,7 +198,7 @@ function WorkflowNode({
  <button
  onMouseDown={(e) => e.stopPropagation()}
  onClick={(e) => { e.stopPropagation(); onDelete(node.id);}}
- className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity w-5 h-5 rounded-md-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center text-red-500 hover:bg-red-200"
+ className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity w-5 h-5 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center text-red-500 hover:bg-red-200"
  title="Delete node"
  >
  <X className="w-3 h-3" />
@@ -227,7 +227,7 @@ function WorkflowNode({
  title="Input port"
  className={cn(
  'absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2',
- 'w-3.5 h-3.5 rounded-md-full border-2 border-primary/40 bg-background',
+ 'w-3.5 h-3.5 rounded-full border-2 border-primary/40 bg-background',
  'hover:border-primary hover:bg-primary/20 transition-colors cursor-crosshair',
  connecting?.targetId === node.id && 'border-primary bg-primary/30'
  )}
@@ -242,7 +242,7 @@ function WorkflowNode({
  title="Output port — click to start connection"
  className={cn(
  'absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2',
- 'w-3.5 h-3.5 rounded-md-full border-2 border-primary bg-background',
+ 'w-3.5 h-3.5 rounded-full border-2 border-primary bg-background',
  'hover:bg-primary/20 transition-colors cursor-crosshair',
  connecting?.sourceId === node.id && 'bg-primary/40 scale-125'
  )}
@@ -635,15 +635,15 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  </div>
 
  {/* Node count badge */}
- <span className="text-[11px] font-semibold px-2 py-0.5 bg-muted text-[#71717a] dark:text-gray-400 rounded-md-full">
+ <span className="text-[11px] font-semibold px-2 py-0.5 bg-muted text-[#71717a] dark:text-gray-400 rounded-full">
  {nodes.length} node{nodes.length !== 1 ? 's' : ''}
  </span>
- <span className="text-[11px] font-semibold px-2 py-0.5 bg-muted text-[#71717a] dark:text-gray-400 rounded-md-full">
+ <span className="text-[11px] font-semibold px-2 py-0.5 bg-muted text-[#71717a] dark:text-gray-400 rounded-full">
  {edges.length} edge{edges.length !== 1 ? 's' : ''}
  </span>
 
  {connecting && (
- <span className="flex items-center gap-2.5 text-[11px] font-semibold px-2.5 py-1 bg-primary/10 text-primary rounded-md-full animate-pulse">
+ <span className="flex items-center gap-2.5 text-[11px] font-semibold px-2.5 py-1 bg-primary/10 text-primary rounded-full animate-pulse">
  <Link2 className="w-3 h-3" />
  Click an input port to connect
  </span>
@@ -694,7 +694,7 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  key={type}
  onClick={() => addNodeFromPalette(type)}
  className={cn(
- 'w-full flex items-center gap-3 px-3 py-2.5 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-left',
+ 'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-left',
  'hover:border-primary/40 transition-all duration-150',
  'bg-background group'
  )}
@@ -751,7 +751,7 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  >
  {isLoading && (
  <div className="absolute inset-0 flex items-center justify-center bg-background/60 z-20">
- <div className="flex items-center gap-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl px-6 py-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex items-center gap-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl px-6 py-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <RefreshCw className="w-5 h-5 text-primary animate-spin" />
  <span className="text-sm font-semibold">Loading workflow…</span>
  </div>

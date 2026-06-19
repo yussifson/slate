@@ -25,7 +25,7 @@ export default function OnlineAffiliates() {
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
  <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 flex flex-col justify-center">
  <div className="flex items-center gap-3 mb-2">
- <div className="w-10 h-10 rounded-md-full bg-[var(--color-info-subtle)] flex items-center justify-center text-[var(--color-info)]">
+ <div className="w-10 h-10 rounded-full bg-[var(--color-info-subtle)] flex items-center justify-center text-[var(--color-info)]">
  <Users className="w-5 h-5" />
  </div>
  <h3 className="font-semibold text-[var(--color-text-secondary)] text-sm uppercase tracking-wider tracking-[0.04em]">Total Referrals</h3>
@@ -35,7 +35,7 @@ export default function OnlineAffiliates() {
  
  <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 flex flex-col justify-center">
  <div className="flex items-center gap-3 mb-2">
- <div className="w-10 h-10 rounded-md-full bg-[var(--color-warning-subtle)] flex items-center justify-center text-[var(--color-warning)]">
+ <div className="w-10 h-10 rounded-full bg-[var(--color-warning-subtle)] flex items-center justify-center text-[var(--color-warning)]">
  <TrendingUp className="w-5 h-5" />
  </div>
  <h3 className="font-semibold text-[var(--color-text-secondary)] text-sm uppercase tracking-wider tracking-[0.04em]">Conversion Rate</h3>
@@ -45,7 +45,7 @@ export default function OnlineAffiliates() {
  
  <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 flex flex-col justify-center">
  <div className="flex items-center gap-3 mb-2">
- <div className="w-10 h-10 rounded-md-full bg-[var(--color-success-subtle)] flex items-center justify-center text-[var(--color-success)]">
+ <div className="w-10 h-10 rounded-full bg-[var(--color-success-subtle)] flex items-center justify-center text-[var(--color-success)]">
  <DollarSign className="w-5 h-5" />
  </div>
  <h3 className="font-semibold text-[var(--color-text-secondary)] text-sm uppercase tracking-wider tracking-[0.04em]">Earned Commission</h3>

@@ -181,7 +181,7 @@ export default function Appointments() {
  </div>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
  {/* Sidebar Calendar List */}
- <div className="col-span-1 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 h-[600px] overflow-y-auto space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="col-span-1 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 h-[600px] overflow-y-auto space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h3 className="font-semibold text-card-foreground flex items-center gap-2 border-b border-primary/40 pb-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><CalendarIcon className="w-4 h-4 text-primary"/> {t("scheduled_visits", "Scheduled Visits (")}{filteredAppts.length})</h3>
  <div className="space-y-3">
  {filteredAppts.map(appt => {
@@ -218,13 +218,13 @@ export default function Appointments() {
  {/* Main Details Area */}
  <div className="col-span-1 md:col-span-2 space-y-6">
  {selectedAppt ? (
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 space-y-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 space-y-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-start">
  <div>
  <Link to="/hospital/patients" className="text-xl font-semibold text-primary hover:underline">{selectedAppt.patient}</Link>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("assigned", "Assigned:")} <strong>{selectedAppt.doctor}</strong></p>
  </div>
- <span className={`text-xs font-semibold px-3 py-1 rounded-md-full border ${statusColors[selectedAppt.status]}`}>{selectedAppt.status}</span>
+ <span className={`text-xs font-semibold px-3 py-1 rounded-full border ${statusColors[selectedAppt.status]}`}>{selectedAppt.status}</span>
  </div>
 
  <div className="grid grid-cols-2 gap-4 border-y border-primary/40 py-4 my-4">
@@ -253,7 +253,7 @@ export default function Appointments() {
  </Button>
  )}
  {selectedAppt.status === 'Completed' && (
- <div className="bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 text-primary/90 text-sm p-4 rounded-md-xl flex items-center gap-2 w-full justify-center font-semibold">
+ <div className="bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 text-primary/90 text-sm p-4 rounded-xl flex items-center gap-2 w-full justify-center font-semibold">
  <CheckCircle className="w-5 h-5" /> {t(
  "visit_completed_successfully_c",
  "Visit completed successfully. Clinical chart created."
@@ -263,8 +263,8 @@ export default function Appointments() {
  </div>
  </div>
  ) : (
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex flex-col items-center justify-center min-h-[300px] text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-md-full flex items-center justify-center mb-4">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex flex-col items-center justify-center min-h-[300px] text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
  <Stethoscope className="w-8 h-8 text-primary" />
  </div>
  <h2 className="text-lg font-semibold text-card-foreground mb-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("select_an_appointment", "Select an appointment")}</h2>
@@ -278,7 +278,7 @@ export default function Appointments() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("book_appointment", "Book Appointment")}</h2>
  <div className="space-y-3">
  <div>

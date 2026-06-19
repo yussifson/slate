@@ -73,7 +73,7 @@ export default function OnlineLearners() {
  <tr key={idx} className="hover:bg-[var(--color-surface-1)] transition-colors group">
  <td className="px-6 py-4">
  <div className="flex items-center gap-3">
- <div className="w-8 h-8 rounded-md-full bg-[var(--color-surface-2)] text-[var(--primary)] flex items-center justify-center font-semibold text-xs uppercase  tracking-[0.04em]">
+ <div className="w-8 h-8 rounded-full bg-[var(--color-surface-2)] text-[var(--primary)] flex items-center justify-center font-semibold text-xs uppercase  tracking-[0.04em]">
  {(learner.title || 'U').charAt(0)}
  </div>
  <span className="font-medium">{learner.title || 'Unnamed Learner'}</span>

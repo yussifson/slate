@@ -112,13 +112,13 @@ export default function UnivNotificationCenter() {
       <button 
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "relative p-2 rounded-md-full transition-all duration-300",
+          "relative p-2 rounded-full transition-all duration-300",
           isOpen ? "bg-primary/10 text-primary" : "hover:bg-muted text-[#71717a] dark:text-gray-400 hover:text-foreground"
         )}
       >
         <Bell className="w-5 h-5" />
         {unreadCount > 0 && (
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500/10 rounded-md-full border-2 border-background animate-pulse"></span>
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500/10 rounded-full border-2 border-background animate-pulse"></span>
         )}
       </button>
 
@@ -136,7 +136,7 @@ export default function UnivNotificationCenter() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.95 }}
               transition={{ duration: 0.15 }}
-              className="absolute right-0 mt-2 w-80 sm:w-96 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-xl rounded-md-xl z-50 overflow-hidden flex flex-col max-h-[80vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+              className="absolute right-0 mt-2 w-80 sm:w-96 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-xl rounded-xl z-50 overflow-hidden flex flex-col max-h-[80vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
             >
               {/* Header */}
               <div className="p-4 border-b border-[0.5px] border-black/9 dark:border-white/8 flex items-center justify-between bg-muted/30">
@@ -192,7 +192,7 @@ export default function UnivNotificationCenter() {
                         )}
                       >
                         <div className="shrink-0 mt-0.5">
-                          <div className={cn("w-8 h-8 rounded-md-full flex items-center justify-center", isRead ? "bg-muted" : "bg-background ")}>
+                          <div className={cn("w-8 h-8 rounded-full flex items-center justify-center", isRead ? "bg-muted" : "bg-background ")}>
                             {getIcon(notification.type)}
                           </div>
                         </div>
@@ -218,7 +218,7 @@ export default function UnivNotificationCenter() {
                           </div>
                         </div>
                         {!isRead && (
-                          <div className="shrink-0 w-2 h-2 rounded-md-full bg-primary mt-1.5 mr-1" />
+                          <div className="shrink-0 w-2 h-2 rounded-full bg-primary mt-1.5 mr-1" />
                         )}
                       </div>
                     )

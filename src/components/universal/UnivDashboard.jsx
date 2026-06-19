@@ -50,7 +50,7 @@ function trendPercent(current, previous) {
 function CustomTooltip({ active, payload, label}) {
  if (!active || !payload?.length) return null;
  return (
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl px-3 py-2 text-xs tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl px-3 py-2 text-xs tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <p className="font-semibold text-foreground mb-1">{label}</p>
  {payload.map((p) => (
  <p key={p.dataKey} className="text-[#71717a] dark:text-gray-400">
@@ -319,13 +319,13 @@ export default function UnivDashboard({
  <>
  <button
  onClick={() => setIsModalOpen(true)}
- className="flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground rounded-md-xl text-sm font-semibold hover:bg-secondary/80 transition-colors"
+ className="flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground rounded-xl text-sm font-semibold hover:bg-secondary/80 transition-colors"
  >
  <Plus className="w-4 h-4" /> Add Widget
  </button>
  <button
  onClick={() => setIsEditing(false)}
- className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-semibold hover:bg-primary/90 transition-colors"
+ className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors"
  >
  <Check className="w-4 h-4" /> Done
  </button>
@@ -335,13 +335,13 @@ export default function UnivDashboard({
  <button
  onClick={() => fetchAllWidgetData(layout)}
  title="Refresh data"
- className="flex items-center gap-2.5 px-3 py-2 bg-muted text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm font-medium hover:bg-muted/80 transition-colors"
+ className="flex items-center gap-2.5 px-3 py-2 bg-muted text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm font-medium hover:bg-muted/80 transition-colors"
  >
  <RefreshCw className="w-3.5 h-3.5" />
  </button>
  <button
  onClick={() => setIsEditing(true)}
- className="flex items-center gap-2 px-4 py-2 bg-muted text-foreground border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm font-semibold hover:bg-muted/80 transition-colors"
+ className="flex items-center gap-2 px-4 py-2 bg-muted text-foreground border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm font-semibold hover:bg-muted/80 transition-colors"
  >
  <Edit3 className="w-4 h-4" /> Edit Dashboard
  </button>
@@ -352,7 +352,7 @@ export default function UnivDashboard({
 
  {loading ? (
  <div className="flex-1 flex items-center justify-center">
- <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-md-full animate-spin" />
+ <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
  </div>
  ) : (
  <>
@@ -366,7 +366,7 @@ export default function UnivDashboard({
  {zeroWidgets.map((w) => (
  <div
  key={w.id}
- className="flex items-start justify-between gap-3 px-4 py-3 bg-amber-50 dark:bg-amber-900/20 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 dark:border-amber-800/40 rounded-md-xl text-amber-800 dark:text-amber-300 text-sm"
+ className="flex items-start justify-between gap-3 px-4 py-3 bg-amber-50 dark:bg-amber-900/20 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 dark:border-amber-800/40 rounded-xl text-amber-800 dark:text-amber-300 text-sm"
  >
  <div className="flex items-start gap-3">
  <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0 text-amber-500" />
@@ -400,12 +400,12 @@ export default function UnivDashboard({
  animate={{ opacity: 1, y: 0}}
  transition={{ delay: idx * 0.06}}
  key={w.id}
- className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 transition- relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 transition- relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  {isEditing && (
  <button
  onClick={() => removeWidget(w.id)}
- className="absolute -top-2 -right-2 bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 rounded-md-full p-1.5 hover:bg-red-200 dark:hover:bg-red-900/60 transition-colors z-10"
+ className="absolute -top-2 -right-2 bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 rounded-full p-1.5 hover:bg-red-200 dark:hover:bg-red-900/60 transition-colors z-10"
  >
  <XCircle className="w-4 h-4" />
  </button>
@@ -416,7 +416,7 @@ export default function UnivDashboard({
  <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider leading-tight pr-2 tracking-[0.04em]">
  {w.title}
  </p>
- <div className="p-2.5 bg-primary/10 text-primary rounded-md-xl shrink-0">
+ <div className="p-2.5 bg-primary/10 text-primary rounded-xl shrink-0">
  <Icon className="w-5 h-5" />
  </div>
  </div>
@@ -444,7 +444,7 @@ export default function UnivDashboard({
  {source?.label || w.table}
  </span>
  <span
- className={`flex items-center gap-2 text-xs font-semibold px-2 py-0.5 rounded-md-full ${
+ className={`flex items-center gap-2 text-xs font-semibold px-2 py-0.5 rounded-full ${
  isUp
  ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
  : 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'
@@ -468,14 +468,14 @@ export default function UnivDashboard({
 })}
 
  {layout.length === 0 && !isEditing && (
- <div className="col-span-full py-20 text-center border-2 border-dashed border-primary/40 rounded-md-2xl">
+ <div className="col-span-full py-20 text-center border-2 border-dashed border-primary/40 rounded-2xl">
  <h3 className="text-lg font-semibold text-foreground">Your Dashboard is empty</h3>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1 mb-4">
  Click "Edit Dashboard" to add your first widget.
  </p>
  <button
  onClick={() => setIsEditing(true)}
- className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-semibold hover:bg-primary/90 transition-colors"
+ className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors"
  >
  <Edit3 className="w-4 h-4" /> Edit Dashboard
  </button>
@@ -492,7 +492,7 @@ export default function UnivDashboard({
  initial={{ opacity: 0, y: 12}}
  animate={{ opacity: 1, y: 0}}
  transition={{ delay: 0.15}}
- className="lg:col-span-2 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="lg:col-span-2 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="flex items-center justify-between mb-4">
  <div>
@@ -552,7 +552,7 @@ export default function UnivDashboard({
  initial={{ opacity: 0, y: 12}}
  animate={{ opacity: 1, y: 0}}
  transition={{ delay: 0.2}}
- className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="flex items-center justify-between mb-4">
  <div>
@@ -576,7 +576,7 @@ export default function UnivDashboard({
  return (
  <div
  key={rec.id ?? i}
- className="flex items-center justify-between gap-2 px-3 py-2 bg-muted/40 rounded-md-xl hover:bg-muted/70 transition-colors"
+ className="flex items-center justify-between gap-2 px-3 py-2 bg-muted/40 rounded-xl hover:bg-muted/70 transition-colors"
  >
  <p className="text-xs font-semibold text-foreground truncate tracking-[0.04em]">{label}</p>
  <span className="text-[10px] text-[#71717a] dark:text-gray-400 whitespace-nowrap">
@@ -604,7 +604,7 @@ export default function UnivDashboard({
  className="grid grid-cols-1 sm:grid-cols-3 gap-3"
  >
  {/* Total Workslates */}
- <div className="flex items-center gap-3 px-4 py-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex items-center gap-3 px-4 py-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-2 bg-primary/10 text-primary rounded-xl">
  <LayoutGrid className="w-4 h-4" />
  </div>
@@ -617,7 +617,7 @@ export default function UnivDashboard({
  </div>
 
  {/* Last Synced */}
- <div className="flex items-center gap-3 px-4 py-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex items-center gap-3 px-4 py-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl">
  <Activity className="w-4 h-4" />
  </div>
@@ -632,7 +632,7 @@ export default function UnivDashboard({
  </div>
 
  {/* Growth this month */}
- <div className="flex items-center gap-3 px-4 py-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex items-center gap-3 px-4 py-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-2 bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 rounded-xl">
  <Zap className="w-4 h-4" />
  </div>
@@ -653,14 +653,14 @@ export default function UnivDashboard({
  {/* ── Add Widget Modal ──────────────────────────────────────────────────── */}
  {isModalOpen && (
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm animate-in fade-in">
- <div className="bg-card w-full max-w-md rounded-md-2xl flex flex-col overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card w-full max-w-md rounded-2xl flex flex-col overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-5 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <h2 className="text-xl font-black text-foreground flex items-center gap-2">
  <LayoutGrid className="w-5 h-5 text-primary" /> Add Widget
  </h2>
  <button
  onClick={() => setIsModalOpen(false)}
- className="p-2 hover:bg-muted rounded-md-full text-[#71717a] dark:text-gray-400 transition-colors"
+ className="p-2 hover:bg-muted rounded-full text-[#71717a] dark:text-gray-400 transition-colors"
  >
  <XCircle className="w-5 h-5" />
  </button>
@@ -675,7 +675,7 @@ export default function UnivDashboard({
  value={newWidget.title}
  onChange={(e) => setNewWidget({ ...newWidget, title: e.target.value})}
  placeholder="e.g. Total Active Leads"
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"
  />
  </div>
  <div>
@@ -685,7 +685,7 @@ export default function UnivDashboard({
  <select
  value={newWidget.table}
  onChange={(e) => setNewWidget({ ...newWidget, table: e.target.value})}
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"
  >
  {AVAILABLE_SOURCES.map((s) => (
  <option key={s.table} value={s.table}>{s.label}</option>
@@ -695,14 +695,14 @@ export default function UnivDashboard({
  <div className="flex justify-end gap-3 mt-2 pt-5 border-t border-primary/40">
  <button
  onClick={() => setIsModalOpen(false)}
- className="h-10 px-5 bg-muted rounded-md-xl text-sm font-medium hover:bg-muted/80 transition-colors"
+ className="h-10 px-5 bg-muted rounded-xl text-sm font-medium hover:bg-muted/80 transition-colors"
  >
  Cancel
  </button>
  <button
  onClick={addWidget}
  disabled={!newWidget.title}
- className="h-10 px-5 bg-primary text-white rounded-md-xl text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
+ className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
  >
  Add Widget
  </button>

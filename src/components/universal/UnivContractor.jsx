@@ -110,19 +110,19 @@ export default function UnivContractor() {
  </button>
  ))}
  </div>
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={handleAddContractor} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
+ <button onClick={handleAddContractor} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
  <Plus className="w-4 h-4" /> Add Contractor
  </button>
  </div>
  </div>
  </div>
 
- <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
@@ -131,7 +131,7 @@ export default function UnivContractor() {
  placeholder="Search contractors, trades..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -144,10 +144,10 @@ export default function UnivContractor() {
  animate={{ opacity: 1, scale: 1}}
  transition={{ delay: idx * 0.05}}
  key={c.id} 
- className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 hover:border-primary/40 transition-colors group"
+ className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 hover:border-primary/40 transition-colors group"
  >
  <div className="flex justify-between items-start mb-4">
- <div className="w-12 h-12 rounded-md-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+ <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
  <Users className="w-6 h-6" />
  </div>
  <button className="opacity-0 group-hover:opacity-100 transition-opacity text-[#71717a] dark:text-gray-400 hover:text-primary"><MoreHorizontal className="w-4 h-4" /></button>

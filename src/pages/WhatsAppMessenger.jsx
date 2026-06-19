@@ -78,7 +78,7 @@ export default function WhatsAppMessenger() {
       />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Left: Client & Case selection */}
-        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-5 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-5 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <h3 className="text-sm font-semibold flex items-center gap-2">
             <User className="w-4 h-4 text-primary" /> {t("select_recipient", "Select Recipient")}
           </h3>
@@ -156,7 +156,7 @@ export default function WhatsAppMessenger() {
         </div>
 
         {/* Right: Message composer */}
-        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-5 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-5 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <h3 className="text-sm font-semibold flex items-center gap-2">
             <MessageCircle className="w-4 h-4 text-primary" /> {t("compose_message", "Compose Message")}
           </h3>
@@ -210,7 +210,7 @@ export default function WhatsAppMessenger() {
       </div>
       {/* Quick send cards */}
       {clients.filter(c => c.phone).length > 0 && (
-        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <h3 className="text-sm font-semibold mb-3">{t("quick_contact_clients_with_wha", "Quick Contact — Clients with WhatsApp")}</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
             {clients.filter(c => c.phone).slice(0, 8).map(c => {
@@ -222,7 +222,7 @@ export default function WhatsAppMessenger() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 p-2.5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 transition-colors group"
                 >
-                  <div className="w-7 h-7 rounded-md-full bg-slate-100 flex items-center justify-center flex-shrink-0">
+                  <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">
                     <span className="text-[10px] font-semibold text-primary/90">{c.name?.[0]?.toUpperCase()}</span>
                   </div>
                   <div className="min-w-0">

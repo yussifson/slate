@@ -115,7 +115,7 @@ export default function GuestRequests() {
  <Plus className="w-4 h-4" /> {t("new_request", "New Request")}
  </Button>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -139,13 +139,13 @@ export default function GuestRequests() {
  return (
  <div key={req.id} className="p-4 sm:p-6 hover:bg-muted/40 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4 group">
  <div className="flex gap-4 items-start">
- <div className={`w-12 h-12 rounded-md-full flex items-center justify-center shrink-0 bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary dark:text-primary/70`}>
+ <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary dark:text-primary/70`}>
  {requestIcons[req.type] || <Bell className="w-5 h-5" />}
  </div>
  <div>
  <div className="flex items-center gap-3 mb-1">
  <span className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("room", "Room")} {req.room}</span>
- <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md-full uppercase tracking-wider ${statusColors[req.status] || 'bg-muted'}`}>{req.status}</span>
+ <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider ${statusColors[req.status] || 'bg-muted'}`}>{req.status}</span>
  </div>
  <p className="text-sm font-medium text-foreground">{req.type}: <span className="font-normal text-[#71717a] dark:text-gray-400">{req.detail}</span></p>
  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 flex items-center gap-2 tracking-[0.04em]"><Clock className="w-3 h-3"/> {req.time || 'Just now'}</p>
@@ -173,7 +173,7 @@ export default function GuestRequests() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-sm p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-sm p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><Bell className="w-5 h-5 text-primary"/> {t("log_guest_request", "Log Guest Request")}</h2>
  <div className="space-y-3">
  <div>

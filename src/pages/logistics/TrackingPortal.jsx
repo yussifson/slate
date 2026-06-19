@@ -29,7 +29,7 @@ export default function TrackingPortal() {
  return (
  <div className="space-y-6 max-w-4xl mx-auto">
  {/* Header Profile */}
- <div className="bg-gradient-to-r from-primary/80 to-primary/70 rounded-md-2xl p-8 md:p-12 text-white relative overflow-hidden text-center">
+ <div className="bg-gradient-to-r from-primary/80 to-primary/70 rounded-2xl p-8 md:p-12 text-white relative overflow-hidden text-center">
  <div className="relative z-10 max-w-2xl mx-auto">
  <Truck className="w-12 h-12 mx-auto mb-4 text-primary/20" />
  <h1 className="text-3xl md:text-4xl font-semibold mb-3 tracking-[-0.02em]">{t("track_your_shipment", "Track Your Shipment")}</h1>
@@ -45,10 +45,10 @@ export default function TrackingPortal() {
  value={trackingId}
  onChange={e => setTrackingId(e.target.value)}
  placeholder="e.g. SHIP-1234" 
- className="pl-12 h-14 bg-white dark:bg-slate-900/40/10 backdrop-blur-md border-white/20 text-white placeholder:text-white/60 focus-visible:ring-white/30 text-lg rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-12 h-14 bg-white dark:bg-slate-900/40/10 backdrop-blur-md border-white/20 text-white placeholder:text-white/60 focus-visible:ring-white/30 text-lg rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
- <Button type="submit" className="h-14 px-8 bg-primary hover:bg-primary text-white rounded-md-xl text-lg font-semibold transition-all active:scale-95">
+ <Button type="submit" className="h-14 px-8 bg-primary hover:bg-primary text-white rounded-xl text-lg font-semibold transition-all active:scale-95">
  {t("track", "Track")}
  </Button>
  </form>
@@ -58,7 +58,7 @@ export default function TrackingPortal() {
  </div>
  </div>
  {searchedId && (
- <div className="bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {isLoading ? (
  <div className="p-16 text-center text-[#71717a] dark:text-gray-400 flex flex-col items-center">
  <Truck className="w-10 h-10 animate-bounce mb-4 text-primary" />
@@ -125,7 +125,7 @@ export default function TrackingPortal() {
  <div className="relative border-l-2 border-muted pl-4 space-y-6 ml-2">
  {shipment.status === 'Delivered' && (
  <div className="relative">
- <div className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-md-full bg-primary ring-4 ring-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>
+ <div className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>
  <p className="font-semibold text-sm">{t("delivered_successfully", "Delivered Successfully")}</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t(
  "shipment_has_reached_its_final",
@@ -135,7 +135,7 @@ export default function TrackingPortal() {
  )}
  {(shipment.status === 'In Transit' || shipment.status === 'Delivered') && (
  <div className="relative">
- <div className={`absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-md-full ${shipment.status === 'In Transit' ? 'bg-primary ring-4 ring-primary/10' : 'bg-muted'} ring-4 ring-card`}></div>
+ <div className={`absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full ${shipment.status === 'In Transit' ? 'bg-primary ring-4 ring-primary/10' : 'bg-muted'} ring-4 ring-card`}></div>
  <p className={`font-semibold text-sm ${shipment.status === 'In Transit' ? 'text-primary' : ''}`}>{t("in_transit_to", "In Transit to")} {shipment.data.destination}</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t(
  "shipment_is_moving_through_the",
@@ -144,7 +144,7 @@ export default function TrackingPortal() {
  </div>
  )}
  <div className="relative">
- <div className={`absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-md-full ${shipment.status === 'Pending' ? 'bg-amber-500 ring-4 ring-amber-100' : 'bg-muted'} ring-4 ring-card`}></div>
+ <div className={`absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full ${shipment.status === 'Pending' ? 'bg-amber-500 ring-4 ring-amber-100' : 'bg-muted'} ring-4 ring-card`}></div>
  <p className="font-semibold text-sm">{t("label_created", "Label Created")}</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("origin", "Origin:")} {shipment.data.origin}</p>
  </div>

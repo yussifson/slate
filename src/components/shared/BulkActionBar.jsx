@@ -9,7 +9,7 @@ export default function BulkActionBar({ selectedCount, onClear, statusOptions, o
   if (selectedCount === 0) return null;
 
   return (
-    <div className="flex items-center gap-3 px-4 py-2.5 bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-xl">
+    <div className="flex items-center gap-3 px-4 py-2.5 bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl">
       <span className="text-sm font-medium text-primary">{selectedCount} {t("selected", "selected")}</span>
       <div className="flex-1" />
       {statusOptions && (

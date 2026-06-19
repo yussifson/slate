@@ -156,11 +156,11 @@ export default function UnivTimeline({
  </div>
  {!propMilestones && (
  <div className="flex items-center gap-2">
- <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+ <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
- <button onClick={handleOpenAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
+ <button onClick={handleOpenAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
  <Plus className="w-4 h-4" /> Add Milestone
  </button>
  </div>
@@ -177,17 +177,17 @@ export default function UnivTimeline({
  className="relative pl-8 sm:pl-12 group animate-fade-in"
  >
  {/* Timeline Node */}
- <div className={`absolute -left-[11px] top-1 w-5 h-5 rounded-md-full flex items-center justify-center ring-4 ring-background transition-colors ${
+ <div className={`absolute -left-[11px] top-1 w-5 h-5 rounded-full flex items-center justify-center ring-4 ring-background transition-colors ${
  ms.status === 'completed' ? 'bg-emerald-500/10 text-white' : 
  ms.status === 'current' ? 'bg-primary text-white' : 
  'bg-muted border-2 border-primary/40 text-transparent'
 }`}>
  {ms.status === 'completed' && <CheckCircle2 className="w-3 h-3" />}
- {ms.status === 'current' && <div className="w-2 h-2 bg-card rounded-md-full animate-pulse hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />}
+ {ms.status === 'current' && <div className="w-2 h-2 bg-card rounded-full animate-pulse hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />}
  </div>
 
  {/* Content Card */}
- <div className={`bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl p-5 sm:p-6 transition-all duration-300 relative ${ms.status === 'current' ? 'border-primary ' : 'border-primary/40 group-hover:border-primary/40'}`}>
+ <div className={`bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-5 sm:p-6 transition-all duration-300 relative ${ms.status === 'current' ? 'border-primary ' : 'border-primary/40 group-hover:border-primary/40'}`}>
  {!propMilestones && ms.id !== 'm1' && ms.id !== 'm2' && ms.id !== 'm3' && ms.id !== 'm4' && (
  <button 
  onClick={() => handleDelete(ms.id)}
@@ -218,8 +218,8 @@ export default function UnivTimeline({
  <span className="text-primary">In Progress</span>
  <span className="text-[#71717a] dark:text-gray-400">65%</span>
  </div>
- <div className="w-full h-1.5 bg-muted rounded-md-full overflow-hidden">
- <div className="h-full bg-primary rounded-md-full w-[65%]"></div>
+ <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
+ <div className="h-full bg-primary rounded-full w-[65%]"></div>
  </div>
  </div>
  )}
@@ -228,7 +228,7 @@ export default function UnivTimeline({
  ))}
  
  {/* End Flag */}
- <div className="absolute -left-[11px] bottom-0 w-5 h-5 rounded-md-full bg-muted border-2 border-primary/40 flex items-center justify-center ring-4 ring-background text-[#71717a] dark:text-gray-400">
+ <div className="absolute -left-[11px] bottom-0 w-5 h-5 rounded-full bg-muted border-2 border-primary/40 flex items-center justify-center ring-4 ring-background text-[#71717a] dark:text-gray-400">
  <Flag className="w-3 h-3" />
  </div>
  </div>
@@ -240,7 +240,7 @@ export default function UnivTimeline({
  <motion.div 
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
- className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl max-w-md w-full p-6 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl max-w-md w-full p-6 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <button 
  onClick={() => setIsModalOpen(false)}
@@ -260,7 +260,7 @@ export default function UnivTimeline({
  onChange={(e) => setForm({ ...form, title: e.target.value})}
  placeholder="e.g. Design Review"
  required
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
@@ -270,7 +270,7 @@ export default function UnivTimeline({
  type="date" 
  value={form.date}
  onChange={(e) => setForm({ ...form, date: e.target.value})}
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
@@ -279,7 +279,7 @@ export default function UnivTimeline({
  <select 
  value={form.status}
  onChange={(e) => setForm({ ...form, status: e.target.value})}
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  >
  <option value="upcoming">Upcoming (Planning)</option>
  <option value="current">Current (Active)</option>
@@ -294,7 +294,7 @@ export default function UnivTimeline({
  onChange={(e) => setForm({ ...form, description: e.target.value})}
  placeholder="Details about milestone deliverables..."
  rows="3"
- className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
@@ -302,13 +302,13 @@ export default function UnivTimeline({
  <button 
  type="button" 
  onClick={() => setIsModalOpen(false)}
- className="px-4 py-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-foreground hover:bg-muted/50 rounded-md-xl text-sm font-medium transition-colors"
+ className="px-4 py-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-foreground hover:bg-muted/50 rounded-xl text-sm font-medium transition-colors"
  >
  Cancel
  </button>
  <button 
  type="submit" 
- className="px-4 py-2 bg-primary text-white hover:bg-primary/90 rounded-md-xl text-sm font-medium transition-colors "
+ className="px-4 py-2 bg-primary text-white hover:bg-primary/90 rounded-xl text-sm font-medium transition-colors "
  >
  Save
  </button>

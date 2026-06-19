@@ -74,12 +74,12 @@ export default function AIRiskAnalyzer({ records = [], recordType = 'record', on
 
  return (
  <div className="fixed inset-0 z-[70] flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col max-h-[85vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col max-h-[85vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
 
  {/* Header */}
  <div className="flex items-center justify-between p-5 border-b border-primary/40 bg-gradient-to-r from-amber-500/10 to-red-500/10 rounded-md-t-2xl">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-md-xl bg-amber-100 dark:bg-amber-950/50 flex items-center justify-center text-amber-600">
+ <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/50 flex items-center justify-center text-amber-600">
  <ShieldAlert className="w-5 h-5" />
  </div>
  <div>
@@ -87,7 +87,7 @@ export default function AIRiskAnalyzer({ records = [], recordType = 'record', on
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("scanning", "Scanning")} {records.length} {recordType} {t("records_for_anomalies", "records for anomalies")}</p>
  </div>
  </div>
- <button onClick={onClose} className="text-[#71717a] dark:text-gray-400 hover:bg-muted p-1.5 rounded-md-full transition-colors">
+ <button onClick={onClose} className="text-[#71717a] dark:text-gray-400 hover:bg-muted p-1.5 rounded-full transition-colors">
  <X className="w-5 h-5" />
  </button>
  </div>
@@ -116,8 +116,8 @@ export default function AIRiskAnalyzer({ records = [], recordType = 'record', on
  {isAnalyzing && (
  <div className="text-center py-10">
  <div className="relative w-16 h-16 mx-auto mb-4">
- <div className="absolute inset-0 rounded-md-full border-4 border-amber-200 dark:border-amber-900/50" />
- <div className="absolute inset-0 rounded-md-full border-4 border-t-amber-500 animate-spin" />
+ <div className="absolute inset-0 rounded-full border-4 border-amber-200 dark:border-amber-900/50" />
+ <div className="absolute inset-0 rounded-full border-4 border-t-amber-500 animate-spin" />
  <ShieldAlert className="absolute inset-0 m-auto w-6 h-6 text-amber-500" />
  </div>
  <p className="text-sm font-medium text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("analyzing_records_with_ai", "Analyzing records with AI...")}</p>
@@ -151,12 +151,12 @@ export default function AIRiskAnalyzer({ records = [], recordType = 'record', on
  const config = RISK_CONFIG[finding.level] || RISK_CONFIG.MEDIUM;
  const Icon = config.icon;
  return (
- <div key={idx} className={`p-4 rounded-md-xl border ${config.classes} transition-all `}>
+ <div key={idx} className={`p-4 rounded-xl border ${config.classes} transition-all `}>
  <div className="flex items-start gap-3">
  <Icon className="w-4 h-4 mt-0.5 flex-shrink-0" />
  <div className="flex-1 min-w-0">
  <div className="flex items-center gap-2 flex-wrap">
- <span className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded-md-full ${config.badgeClasses}`}>
+ <span className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full ${config.badgeClasses}`}>
  {config.label}
  </span>
  {finding.record_ref && (

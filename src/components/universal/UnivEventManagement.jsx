@@ -184,8 +184,8 @@ export default function UnivEventManagement({
 
  {/* Global Stats */}
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
  <CalendarDays className="w-5 h-5" />
  </div>
  <div>
@@ -193,8 +193,8 @@ export default function UnivEventManagement({
  <div className="text-xl font-semibold text-foreground">{events.length}</div>
  </div>
  </div>
- <div className="bg-blue-50 dark:bg-blue-900/10 border-[0.5px] border-black/9 dark:border-white/8 border-blue-100 dark:border-blue-800 rounded-md-xl p-4 flex items-center gap-4">
- <div className="w-10 h-10 rounded-md-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+ <div className="bg-blue-50 dark:bg-blue-900/10 border-[0.5px] border-black/9 dark:border-white/8 border-blue-100 dark:border-blue-800 rounded-xl p-4 flex items-center gap-4">
+ <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
  <CalendarClock className="w-5 h-5" />
  </div>
  <div>
@@ -202,8 +202,8 @@ export default function UnivEventManagement({
  <div className="text-xl font-semibold text-blue-700 dark:text-blue-300">{upcomingCount}</div>
  </div>
  </div>
- <div className="bg-emerald-50 dark:bg-emerald-900/10 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-100 dark:border-emerald-800 rounded-md-xl p-4 flex items-center gap-4">
- <div className="w-10 h-10 rounded-md-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+ <div className="bg-emerald-50 dark:bg-emerald-900/10 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-100 dark:border-emerald-800 rounded-xl p-4 flex items-center gap-4">
+ <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
  <Users className="w-5 h-5" />
  </div>
  <div>
@@ -246,7 +246,7 @@ export default function UnivEventManagement({
  const isFull = event.attendees >= event.max_attendees && event.max_attendees > 0;
 
  return (
- <div key={event.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6 transition- group relative flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={event.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-6 transition- group relative flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-start mb-4">
  <div>
  <span className={cn("px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-md border-[0.5px] border-black/9 dark:border-white/8 mb-2 inline-block", getStatusStyle(event.status))}>
@@ -281,7 +281,7 @@ export default function UnivEventManagement({
  {event.attendees} / {event.max_attendees}
  </span>
  </div>
- <div className="w-full h-1.5 bg-muted rounded-md-full overflow-hidden">
+ <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
  <div className={cn("h-full transition-all", isFull ? "bg-red-500/10" : "bg-primary")} style={{ width: `${Math.min((event.attendees / (event.max_attendees || 1)) * 100, 100)}%`}}></div>
  </div>
  </div>
@@ -302,7 +302,7 @@ export default function UnivEventManagement({
  initial={{ opacity: 0, scale: 0.95, y: 20}}
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: 20}}
- className="relative w-full max-w-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="relative w-full max-w-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="px-6 py-4 border-b border-primary/40 flex items-center justify-between bg-muted/20">
  <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">

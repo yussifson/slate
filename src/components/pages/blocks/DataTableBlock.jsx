@@ -22,7 +22,7 @@ export default function DataTableBlock({ dataConfig, styleConfig}) {
  const padClass = padding || 'p-0';
 
  return (
- <div className={cn("rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 overflow-hidden", bgClass, padClass)}>
+ <div className={cn("rounded-xl border-[0.5px] border-black/9 dark:border-white/8 overflow-hidden", bgClass, padClass)}>
  <div className="overflow-x-auto">
  <Table>
  <TableHeader>

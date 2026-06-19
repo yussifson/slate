@@ -40,11 +40,11 @@ export default function MobileBottomNav() {
  to={item.path}
  onClick={() => setMobileMenuOpen(false)}
  className={cn(
- "flex flex-col items-center justify-center gap-2 py-1 px-2 rounded-md-xl min-w-[64px] transition-all",
+ "flex flex-col items-center justify-center gap-2 py-1 px-2 rounded-xl min-w-[64px] transition-all",
  isActive ? "text-primary" : "text-[#71717a] dark:text-gray-400 hover:text-foreground"
  )}
  >
- <div className={cn("w-8 h-8 rounded-md-full flex items-center justify-center transition-colors", isActive ? "bg-slate-100" : "")}>
+ <div className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors", isActive ? "bg-slate-100" : "")}>
  <IconComp className={cn("w-5 h-5 transition-transform", isActive ? "scale-110" : "")} />
  </div>
  <span className={cn("text-[10px] font-semibold leading-none", isActive ? "text-primary" : "")}>
@@ -58,11 +58,11 @@ export default function MobileBottomNav() {
  <button
  onClick={() => setMobileMenuOpen(true)}
  className={cn(
- "flex flex-col items-center justify-center gap-2 py-1 px-2 rounded-md-xl min-w-[64px] transition-all",
+ "flex flex-col items-center justify-center gap-2 py-1 px-2 rounded-xl min-w-[64px] transition-all",
  mobileMenuOpen ? "text-primary" : "text-[#71717a] dark:text-gray-400 hover:text-foreground"
  )}
  >
- <div className={cn("w-8 h-8 rounded-md-full flex items-center justify-center transition-colors", mobileMenuOpen ? "bg-slate-100" : "")}>
+ <div className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors", mobileMenuOpen ? "bg-slate-100" : "")}>
  <MoreHorizontal className={cn("w-5 h-5 transition-transform", mobileMenuOpen ? "scale-110" : "")} />
  </div>
  <span className={cn("text-[10px] font-semibold leading-none", mobileMenuOpen ? "text-primary" : "")}>
@@ -83,12 +83,12 @@ export default function MobileBottomNav() {
  
  {/* Drag Handle & Header */}
  <div className="flex flex-col items-center pt-3 pb-2 border-b border-primary/40 dark:border-primary/40">
- <div className="w-12 h-1.5 rounded-md-full bg-slate-200 dark:bg-slate-800 mb-4" />
+ <div className="w-12 h-1.5 rounded-full bg-slate-200 dark:bg-slate-800 mb-4" />
  <div className="w-full flex items-center justify-between px-6">
  <h2 className="text-xl font-semibold text-slate-900 dark:text-white tracking-tight">{t('menu', 'Menu')}</h2>
  <button 
  onClick={() => setMobileMenuOpen(false)} 
- className="w-8 h-8 rounded-md-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+ className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
  >
  <X className="w-4 h-4" />
  </button>
@@ -97,7 +97,7 @@ export default function MobileBottomNav() {
 
  {/* Native Scrollable List */}
  <div className="flex-1 overflow-y-auto px-4 py-4 pb-[env(safe-area-inset-bottom)]">
- <div className="bg-slate-50 dark:bg-slate-900/50 rounded-md-2xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 divide-y divide-slate-100 dark:divide-slate-800/50 ">
+ <div className="bg-slate-50 dark:bg-slate-900/50 rounded-2xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 divide-y divide-slate-100 dark:divide-slate-800/50 ">
  {overflowItems.map((item, index) => {
  const isActive = location.pathname === item.path || (item.path !== "/" && location.pathname.startsWith(item.path));
  const IconComp = typeof item.icon === 'string' ? ICON_MAP[item.icon] || LayoutDashboard : item.icon;
@@ -113,7 +113,7 @@ export default function MobileBottomNav() {
  )}
  >
  <div className={cn(
- "w-8 h-8 rounded-md-full flex items-center justify-center transition-colors",
+ "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
  isActive ? "bg-primary/10 text-primary" : "bg-slate-200/50 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
  )}>
  <IconComp className="w-4 h-4" strokeWidth={isActive ? 2.5 : 2} />
@@ -226,7 +226,7 @@ export default function MobileBottomNav() {
               }}
               className="w-full flex items-center gap-4 px-5 py-4 transition-colors active:bg-red-50 dark:active:bg-red-950/30 text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20"
             >
-              <div className="w-8 h-8 rounded-md-full flex items-center justify-center bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-500">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-500">
                 <LogOut className="w-4 h-4" strokeWidth={2} />
               </div>
               <span className="text-[16px] font-semibold tracking-tight flex-1 text-left">

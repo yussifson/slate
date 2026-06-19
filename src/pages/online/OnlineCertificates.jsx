@@ -27,7 +27,7 @@ export default function OnlineCertificates() {
  {certificates.map(cert => (
  <div key={cert.id} className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden flex flex-col group hover:border-[var(--primary)] transition-colors">
  <div className="p-8 bg-gradient-to-br from-[var(--color-surface-1)] to-[var(--color-surface-2)] flex flex-col items-center justify-center text-center border-b border-primary/40 relative">
- <div className="absolute top-4 right-4 bg-white dark:bg-slate-900/40/50 backdrop-blur rounded-md-full p-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="absolute top-4 right-4 bg-white dark:bg-slate-900/40/50 backdrop-blur rounded-full p-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <ShieldCheck className="w-5 h-5 text-[var(--color-success)]" />
  </div>
  <Award className="w-16 h-16 text-[var(--primary)] mb-4" />

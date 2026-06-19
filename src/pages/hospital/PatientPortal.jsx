@@ -61,7 +61,7 @@ export default function PatientPortal() {
 
  if (mappedPatients.length === 0) {
  return (
- <div className="py-12 text-center max-w-md mx-auto bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="py-12 text-center max-w-md mx-auto bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Activity className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary animate-pulse" />
  <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_health_profile_found", "No health profile found")}</p>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1 mb-4">{t(
@@ -75,7 +75,7 @@ export default function PatientPortal() {
  return (
  <div className="space-y-6 max-w-5xl mx-auto" style={{ background: "linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
  {/* Header */}
- <div className="bg-gradient-to-r from-primary to-primary/90 rounded-md-2xl p-6 md:p-8 text-white relative overflow-hidden">
+ <div className="bg-gradient-to-r from-primary to-primary/90 rounded-2xl p-6 md:p-8 text-white relative overflow-hidden">
  <div className="relative z-10">
  <h1 className="text-2xl md:text-3xl font-semibold mb-2 tracking-[-0.02em]">{t("welcome", "Welcome,")} {activePatient.name}</h1>
  <p className="text-primary/10 max-w-xl">{t(
@@ -88,14 +88,14 @@ export default function PatientPortal() {
  </div>
  </div>
  {/* Patient Profile Card */}
- <div className="bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex flex-col md:flex-row items-center md:items-start gap-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-24 h-24 rounded-md-full bg-slate-100 flex items-center justify-center text-primary/90 text-3xl font-semibold shrink-0 uppercase tracking-[-0.02em] tracking-[0.04em]">
+ <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex flex-col md:flex-row items-center md:items-start gap-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-24 h-24 rounded-full bg-slate-100 flex items-center justify-center text-primary/90 text-3xl font-semibold shrink-0 uppercase tracking-[-0.02em] tracking-[0.04em]">
  {activePatient.name?.substring(0, 2)}
  </div>
  <div className="text-center md:text-left flex-1">
  <h2 className="text-2xl font-semibold text-card-foreground mb-1 tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{activePatient.name}</h2>
  <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-sm text-[#71717a] dark:text-gray-400 font-medium">
- <span className="bg-muted px-3 py-1 rounded-md-full text-foreground">{activePatient.age} {t("yrs", "yrs")}</span>
+ <span className="bg-muted px-3 py-1 rounded-full text-foreground">{activePatient.age} {t("yrs", "yrs")}</span>
  <span>{t("blood_type", "Blood Type:")} <strong className="text-red-500">{activePatient.bloodType}</strong></span>
  <span className="text-slate-300">•</span>
  <span>{t("patient_id", "Patient ID:")} {activePatient.patientId}</span>
@@ -106,18 +106,18 @@ export default function PatientPortal() {
  {/* Left Column (Stats & Appts) */}
  <div className="col-span-1 lg:col-span-2 space-y-6">
  <div className="grid grid-cols-2 gap-4">
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-3 mb-3">
- <div className="w-8 h-8 rounded-md-full bg-slate-100 dark:bg-primary/20 flex items-center justify-center text-primary"><Pill className="w-4 h-4" /></div>
+ <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-primary/20 flex items-center justify-center text-primary"><Pill className="w-4 h-4" /></div>
  <h3 className="font-semibold text-foreground">{t("active_prescriptions", "Active Prescriptions")}</h3>
  </div>
  <p className="text-3xl font-extrabold text-card-foreground mb-1 tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">2</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("medications", "Medications")}</p>
  </div>
  
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-3 mb-3">
- <div className="w-8 h-8 rounded-md-full bg-slate-100 dark:bg-primary/20 flex items-center justify-center text-primary"><Beaker className="w-4 h-4" /></div>
+ <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-primary/20 flex items-center justify-center text-primary"><Beaker className="w-4 h-4" /></div>
  <h3 className="font-semibold text-foreground">{t("lab_results", "Lab Results")}</h3>
  </div>
  <p className="text-3xl font-extrabold text-primary mb-1 tracking-[-0.02em]">{t("new", "New")}</p>
@@ -125,7 +125,7 @@ export default function PatientPortal() {
  </div>
  </div>
 
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 md:p-5 border-b border-primary/40 bg-muted/50 flex justify-between items-center">
  <h3 className="font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><Calendar className="w-5 h-5 text-[#71717a] dark:text-gray-400" /> {t("upcoming_appointments", "Upcoming Appointments")}</h3>
  </div>
@@ -141,7 +141,7 @@ export default function PatientPortal() {
  <p className="font-semibold text-card-foreground text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{item.type}</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{item.doctor}</p>
  </div>
- <span className="bg-amber-100 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 text-[10px] font-semibold px-2 py-0.5 rounded-md-sm uppercase tracking-wider tracking-[0.04em]">{item.status}</span>
+ <span className="bg-amber-100 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 text-[10px] font-semibold px-2 py-0.5 rounded-sm uppercase tracking-wider tracking-[0.04em]">{item.status}</span>
  </div>
  );
 })}
@@ -154,7 +154,7 @@ export default function PatientPortal() {
 
  {/* Right Column (Documents & Lab Results) */}
  <div className="space-y-6">
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50 flex justify-between items-center">
  <h3 className="font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><FileText className="w-5 h-5 text-[#71717a] dark:text-gray-400" /> {t("medical_records_labs", "Medical Records & Labs")}</h3>
  <Button size="sm" variant="outline" className="h-8 gap-2" onClick={() => setShowUpload(true)}>

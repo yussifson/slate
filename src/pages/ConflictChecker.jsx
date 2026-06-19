@@ -43,7 +43,7 @@ export default function ConflictChecker() {
     <div className="space-y-6">
       <PageHeader title="Conflict of Interest Checker" subtitle="Search clients, parties, and cases before accepting new matters" />
       {/* Search */}
-      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="flex items-center gap-2 mb-2">
           <Shield className="w-5 h-5 text-primary" />
           <h2 className="text-sm font-semibold">{t("enter_name_or_id_to_check", "Enter Name or ID to Check")}</h2>
@@ -70,8 +70,8 @@ export default function ConflictChecker() {
       </div>
       {/* Result Banner */}
       {checked && (
-        <div className={cn("rounded-md-xl p-5 flex items-start gap-4 border", hasConflict ? "bg-red-50 border-red-200" : "bg-slate-50 dark:bg-slate-800/50 border-primary/20")}>
-          <div className={cn("w-10 h-10 rounded-md-full flex items-center justify-center shrink-0", hasConflict ? "bg-red-100" : "bg-slate-100")}>
+        <div className={cn("rounded-xl p-5 flex items-start gap-4 border", hasConflict ? "bg-red-50 border-red-200" : "bg-slate-50 dark:bg-slate-800/50 border-primary/20")}>
+          <div className={cn("w-10 h-10 rounded-full flex items-center justify-center shrink-0", hasConflict ? "bg-red-100" : "bg-slate-100")}>
             {hasConflict ? <AlertTriangle className="w-5 h-5 text-red-600" /> : <CheckCircle className="w-5 h-5 text-primary" />}
           </div>
           <div>
@@ -88,7 +88,7 @@ export default function ConflictChecker() {
       )}
       {/* Matching Results */}
       {checked && matchingClients.length > 0 && (
-        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-red-200 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-red-200 rounded-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="px-4 py-3 bg-red-50 border-b border-red-200 flex items-center gap-2">
             <Users className="w-4 h-4 text-red-600" />
             <span className="text-sm font-semibold text-red-700">{t("matching_clients", "Matching Clients (")}{matchingClients.length})</span>
@@ -97,7 +97,7 @@ export default function ConflictChecker() {
             {matchingClients.map(c => {
               return (
                 <div key={c.id} className="px-4 py-3 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-md-full bg-red-100 flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center shrink-0">
                     <User className="w-4 h-4 text-red-600" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -112,7 +112,7 @@ export default function ConflictChecker() {
         </div>
       )}
       {checked && matchingCases.length > 0 && (
-        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-red-200 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-red-200 rounded-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="px-4 py-3 bg-red-50 border-b border-red-200 flex items-center gap-2">
             <Briefcase className="w-4 h-4 text-red-600" />
             <span className="text-sm font-semibold text-red-700">{t("matching_cases", "Matching Cases (")}{matchingCases.length})</span>
@@ -121,7 +121,7 @@ export default function ConflictChecker() {
             {matchingCases.map(c => {
               return (
                 <div key={c.id} className="px-4 py-3 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-md-full bg-red-100 flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center shrink-0">
                     <Briefcase className="w-4 h-4 text-red-600" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -137,7 +137,7 @@ export default function ConflictChecker() {
         </div>
       )}
       {/* Guide */}
-      <div className="bg-muted/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4">
+      <div className="bg-muted/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4">
         <h3 className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wide mb-2 tracking-[0.04em]">{t("what_we_check", "What we check")}</h3>
         <ul className="text-xs text-[#71717a] dark:text-gray-400 space-y-1 tracking-[0.04em]">
           <li>• <strong>{t("existing_clients", "Existing clients")}</strong> {t("name_email_and_id_number", "— name, email, and ID number")}</li>

@@ -155,7 +155,7 @@ export default function CaseDocumentRepo({ caseData, user }) {
       {isLoading ? (
         <div className="p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("loading_documents", "Loading documents...")}</div>
       ) : filtered.length === 0 ? (
-        <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 p-12 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 p-12 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <FolderOpen className="w-10 h-10 mx-auto text-[#71717a] dark:text-gray-400 mb-3" />
           <p className="text-sm font-medium">{t("no_documents_yet", "No documents yet")}</p>
           <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 mb-4 tracking-[0.04em]">{t(
@@ -270,7 +270,7 @@ function DocRow({ doc, canManage, onDelete, onToggleShare, onPreview, highlighte
   const cat = getCategoryMeta(doc.category);
   return (
     <div className={cn(
-      "bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 px-4 py-3 flex items-center gap-3 hover:bg-muted/20 transition-colors",
+      "bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 px-4 py-3 flex items-center gap-3 hover:bg-muted/20 transition-colors",
       highlighted ? "border-red-200" : "border-primary/40"
     )}>
       <div className={cn(
@@ -389,7 +389,7 @@ export function UploadDocumentDialog({ onClose, onSubmit, isUploading: saving, c
           {/* Drop zone */}
           <div
             className={cn(
-              "border-2 border-dashed rounded-md-xl p-6 text-center transition-colors cursor-pointer",
+              "border-2 border-dashed rounded-xl p-6 text-center transition-colors cursor-pointer",
               dragOver ? "border-primary bg-slate-50" : "border-primary/40 hover:border-primary/40"
             )}
             onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}

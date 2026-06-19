@@ -169,7 +169,7 @@ export default function Shipments() {
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  {stats.map(s => {
  return (
- <div key={s.label} className={`stat-card-premium bg-card rounded-md-xl border ${s.border} p-4 flex items-center gap-3`}>
+ <div key={s.label} className={`stat-card-premium bg-card rounded-xl border ${s.border} p-4 flex items-center gap-3`}>
  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${s.color}`}>
  <s.icon className="w-5 h-5" />
  </div>
@@ -182,7 +182,7 @@ export default function Shipments() {
 })}
  </div>
  {/* Table */}
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/40 flex items-center justify-between gap-4">
  <div className="relative max-w-sm w-full">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -249,9 +249,9 @@ export default function Shipments() {
  <div className="flex items-center justify-between relative z-0">
  <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-muted -z-10 translate-y-[-50%]"></div>
  <div className={`absolute top-1/2 left-0 h-0.5 -z-10 translate-y-[-50%] transition-all ${ship.status === 'Pending' ? 'w-0' : ship.status === 'In Transit' ? 'w-1/2 bg-blue-500/10' : ship.status === 'Delivered' ? 'w-full bg-emerald-500/10' : 'w-full bg-red-500/10'}`}></div>
- <div className={`w-3 h-3 rounded-md-full border-2 ${ship.status === 'Pending' ? 'border-amber-500 bg-amber-500' : ship.status === 'Failed' ? 'border-red-500 bg-red-500/10' : 'border-primary bg-primary'}`}></div>
- <div className={`w-3 h-3 rounded-md-full border-2 ${ship.status === 'Pending' ? 'border-muted bg-background' : ship.status === 'In Transit' ? 'border-blue-500 bg-background' : ship.status === 'Delivered' ? 'border-primary bg-primary' : 'border-red-500 bg-red-500/10'}`}></div>
- <div className={`w-3 h-3 rounded-md-full border-2 ${ship.status === 'Delivered' ? 'border-emerald-500 bg-emerald-500/10' : ship.status === 'Failed' ? 'border-red-500 bg-red-500/10' : 'border-muted bg-background'}`}></div>
+ <div className={`w-3 h-3 rounded-full border-2 ${ship.status === 'Pending' ? 'border-amber-500 bg-amber-500' : ship.status === 'Failed' ? 'border-red-500 bg-red-500/10' : 'border-primary bg-primary'}`}></div>
+ <div className={`w-3 h-3 rounded-full border-2 ${ship.status === 'Pending' ? 'border-muted bg-background' : ship.status === 'In Transit' ? 'border-blue-500 bg-background' : ship.status === 'Delivered' ? 'border-primary bg-primary' : 'border-red-500 bg-red-500/10'}`}></div>
+ <div className={`w-3 h-3 rounded-full border-2 ${ship.status === 'Delivered' ? 'border-emerald-500 bg-emerald-500/10' : ship.status === 'Failed' ? 'border-red-500 bg-red-500/10' : 'border-muted bg-background'}`}></div>
  </div>
  <div className="flex justify-between text-[9px] font-semibold uppercase text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">
  <span className={ship.status === 'Pending' ? 'text-amber-600' : ''}>Pend</span>
@@ -259,7 +259,7 @@ export default function Shipments() {
  <span className={ship.status === 'Delivered' ? 'text-emerald-600' : ship.status === 'Failed' ? 'text-red-600' : ''}>{ship.status === 'Failed' ? 'Fail' : 'Deliv'}</span>
  </div>
  {ship.status === 'In Transit' && ship.estimatedDelivery && new Date(ship.estimatedDelivery) < new Date(new Date().setHours(0,0,0,0)) && (
- <span className="text-[9px] font-semibold text-red-600 bg-red-100 px-2 py-0.5 rounded-md-full animate-pulse flex items-center gap-2 w-fit mt-1">
+ <span className="text-[9px] font-semibold text-red-600 bg-red-100 px-2 py-0.5 rounded-full animate-pulse flex items-center gap-2 w-fit mt-1">
  <AlertCircle className="w-3 h-3"/> SLA Delayed
  </span>
  )}
@@ -310,13 +310,13 @@ export default function Shipments() {
  {/* Add/Edit Modal */}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-lg p-6 space-y-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between">
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Package className="w-5 h-5 text-orange-600" />
  {editTarget ? 'Edit Shipment' : 'Add Shipment'}
  </h2>
- <button onClick={closeModal} className="text-[#71717a] dark:text-gray-400 hover:text-foreground p-1 rounded-md-full hover:bg-muted">
+ <button onClick={closeModal} className="text-[#71717a] dark:text-gray-400 hover:text-foreground p-1 rounded-full hover:bg-muted">
  <X className="w-4 h-4" />
  </button>
  </div>

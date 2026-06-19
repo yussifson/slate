@@ -36,7 +36,7 @@ const DATE_TYPE_COLORS = {
 function SectionCard({ icon: Icon, title, count, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-4 py-3 hover:bg-muted/40 transition-colors"
@@ -74,7 +74,7 @@ function CalendarView({ dates, deadlines }) {
         const isPast = isBefore(d, today);
         return (
           <div key={i} className={cn("flex items-center gap-3 p-3 rounded-xl border", isPast ? "opacity-60 bg-muted/30 border-primary/40" : "bg-card border-primary/40")}>
-            <div className={cn("w-12 h-12 rounded-md-xl flex flex-col items-center justify-center shrink-0 text-white", isPast ? "bg-muted-foreground" : "bg-primary")}>
+            <div className={cn("w-12 h-12 rounded-xl flex flex-col items-center justify-center shrink-0 text-white", isPast ? "bg-muted-foreground" : "bg-primary")}>
               <span className="text-[9px] font-semibold leading-none">{format(d, "MMM").toUpperCase()}</span>
               <span className="text-lg font-semibold leading-none">{format(d, "d")}</span>
               <span className="text-[9px] leading-none">{format(d, "yyyy")}</span>
@@ -207,7 +207,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
         className={cn(
-          "border-2 border-dashed rounded-md-xl p-8 text-center transition-colors",
+          "border-2 border-dashed rounded-xl p-8 text-center transition-colors",
           file ? "border-primary bg-slate-50" : "border-primary/40 hover:border-primary/40 hover:bg-muted/30"
         )}
       >
@@ -222,7 +222,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
           </div>
         ) : (
           <div className="flex flex-col items-center gap-3">
-            <div className="w-12 h-12 rounded-md-full bg-slate-100 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center">
               <Upload className="w-6 h-6 text-primary" />
             </div>
             <div>
@@ -279,7 +279,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
           </div>
 
           {/* Summary */}
-          <div className="bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-xl p-4">
+          <div className="bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
               <FileText className="w-4 h-4 text-primary" />
               <span className="text-sm font-semibold">{t("executive_summary", "Executive Summary")}</span>

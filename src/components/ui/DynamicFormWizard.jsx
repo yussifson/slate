@@ -18,7 +18,7 @@ export default function DynamicFormWizard({ fieldDefinitions = [], onRefresh, mo
 }
  
  if (steps.length === 0) {
- return <div className="p-8 text-center text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-xl border-dashed">No fields defined for this form.</div>;
+ return <div className="p-8 text-center text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl border-dashed">No fields defined for this form.</div>;
 }
 
  const currentFields = steps[currentStep];
@@ -80,20 +80,20 @@ export default function DynamicFormWizard({ fieldDefinitions = [], onRefresh, mo
 };
 
  return (
- <div className="max-w-2xl mx-auto mt-8 bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="max-w-2xl mx-auto mt-8 bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Progress Bar */}
  <div className="bg-muted/30 p-6 border-b">
  <div className="flex items-center justify-between mb-2">
  {steps.map((_, idx) => (
  <React.Fragment key={idx}>
  <div className={`flex flex-col items-center ${idx <= currentStep ? 'text-primary' : 'text-[#71717a] dark:text-gray-400'}`}>
- <div className={`w-8 h-8 rounded-md-full flex items-center justify-center font-semibold mb-1 transition-colors ${idx < currentStep ? 'bg-primary text-white' : idx === currentStep ? 'bg-muted dark:bg-primary/70 border-2 border-primary' : 'bg-muted border-2 border-muted-foreground'}`}>
+ <div className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold mb-1 transition-colors ${idx < currentStep ? 'bg-primary text-white' : idx === currentStep ? 'bg-muted dark:bg-primary/70 border-2 border-primary' : 'bg-muted border-2 border-muted-foreground'}`}>
  {idx < currentStep ? <CheckCircle2 className="w-5 h-5" /> : idx + 1}
  </div>
  <span className="text-xs font-medium tracking-[0.04em]">Step {idx + 1}</span>
  </div>
  {idx < steps.length - 1 && (
- <div className={`flex-1 h-1 mx-2 rounded-md-full transition-colors ${idx < currentStep ? 'bg-primary' : 'bg-muted'}`} />
+ <div className={`flex-1 h-1 mx-2 rounded-full transition-colors ${idx < currentStep ? 'bg-primary' : 'bg-muted'}`} />
  )}
  </React.Fragment>
  ))}

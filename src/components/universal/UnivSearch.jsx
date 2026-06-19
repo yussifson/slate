@@ -141,7 +141,7 @@ export default function UnivSearch() {
 
  {/* Search Input */}
  <div className="w-full max-w-2xl relative">
- <div className={`relative flex items-center bg-card border-2 rounded-md-2xl transition-all duration-300 ${isFocused ? 'border-primary ring-4 ring-primary/10 ' : 'border-primary/40 hover:border-primary/40'}`}>
+ <div className={`relative flex items-center bg-card border-2 rounded-2xl transition-all duration-300 ${isFocused ? 'border-primary ring-4 ring-primary/10 ' : 'border-primary/40 hover:border-primary/40'}`}>
  <Search className={`w-6 h-6 absolute left-4 ${isFocused ? 'text-primary' : 'text-[#71717a] dark:text-gray-400'} transition-colors`} />
  <input 
  type="text"
@@ -150,7 +150,7 @@ export default function UnivSearch() {
  onChange={(e) => setQuery(e.target.value)}
  onFocus={() => setIsFocused(true)}
  onBlur={() => setTimeout(() => setIsFocused(false), 250)}
- className="w-full h-16 pl-14 pr-14 bg-transparent rounded-md-2xl text-lg focus:outline-none text-foreground placeholder:text-[#71717a] dark:text-gray-400"
+ className="w-full h-16 pl-14 pr-14 bg-transparent rounded-2xl text-lg focus:outline-none text-foreground placeholder:text-[#71717a] dark:text-gray-400"
  />
  {query && (
  <button onClick={() => setQuery('')} className="absolute right-12 p-1 text-[#71717a] dark:text-gray-400 hover:text-foreground transition-colors">
@@ -168,7 +168,7 @@ export default function UnivSearch() {
  animate={{ opacity: 1, y: 0}}
  exit={{ opacity: 0, y: 10}}
  transition={{ duration: 0.2}}
- className="absolute top-full left-0 w-full mt-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden z-50 flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="absolute top-full left-0 w-full mt-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden z-50 flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  {!query ? (
  <div className="p-4">
@@ -198,8 +198,8 @@ export default function UnivSearch() {
  ) : results.length > 0 ? (
  <div className="p-2">
  {results.map((res, i) => (
- <button key={i} className="w-full text-left p-3 hover:bg-muted/50 rounded-md-xl transition-colors flex items-center gap-4 group">
- <div className={`w-10 h-10 rounded-md-xl flex items-center justify-center shrink-0 ${res.color}`}>
+ <button key={i} className="w-full text-left p-3 hover:bg-muted/50 rounded-xl transition-colors flex items-center gap-4 group">
+ <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${res.color}`}>
  <res.icon className="w-5 h-5" />
  </div>
  <div className="flex-1">
@@ -233,7 +233,7 @@ export default function UnivSearch() {
  {/* Quick Filters */}
  <div className="flex gap-2 mt-6 overflow-x-auto max-w-2xl w-full pb-2 hide-scrollbar justify-center">
  {['All', 'Contacts', 'Invoices', 'Files', 'Projects'].map(filter => (
- <button key={filter} className="px-4 py-1.5 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card text-sm font-medium text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground transition-colors whitespace-nowrap hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <button key={filter} className="px-4 py-1.5 rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card text-sm font-medium text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground transition-colors whitespace-nowrap hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {filter}
  </button>
  ))}
@@ -241,7 +241,7 @@ export default function UnivSearch() {
  </div>
  
  {/* Background Decor */}
- <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/5 rounded-md-full blur-3xl -z-10 pointer-events-none"></div>
+ <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
  </div>
  );
 }

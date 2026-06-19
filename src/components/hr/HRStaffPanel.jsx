@@ -58,7 +58,7 @@ export default function HRStaffPanel({ companyId, staff, currency, isAdmin }) {
           </Button>
         )}
       </div>
-      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         {filtered.length === 0 ? (
           <div className="p-10 text-center text-sm text-[#71717a] dark:text-gray-400">{t("no_staff_found", "No staff found")}</div>
         ) : (
@@ -66,7 +66,7 @@ export default function HRStaffPanel({ companyId, staff, currency, isAdmin }) {
             {filtered.map(s => {
               return (
                 <div key={s.id} className="px-4 py-3 flex items-center gap-4 hover:bg-muted/20 cursor-pointer transition-colors" onClick={() => isAdmin && setEditing(s)}>
-                  <div className="w-9 h-9 rounded-md-full bg-slate-100 flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
                     <span className="text-sm font-semibold text-primary">{s.full_name?.[0]?.toUpperCase()}</span>
                   </div>
                   <div className="flex-1 min-w-0">

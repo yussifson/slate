@@ -174,24 +174,24 @@ export default function Recruitment() {
  </Button>
  </div>
  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <p className="text-xs text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">{t("total_applicants", "Total Applicants")}</p>
  <h2 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{candidates.length}</h2>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <p className="text-xs text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">{t("in_screening", "In Screening")}</p>
  <h2 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{candidates.filter(c => c.stage === 'Screening').length}</h2>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <p className="text-xs text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">{t("interviews", "Interviews")}</p>
  <h2 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{candidates.filter(c => c.stage === 'Interview').length}</h2>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <p className="text-xs text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">{t("offers", "Offers")}</p>
  <h2 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{candidates.filter(c => c.stage === 'Offer').length}</h2>
  </div>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50 flex gap-4 items-center">
  <div className="relative flex-1 max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -211,7 +211,7 @@ export default function Recruitment() {
  return (
  <div key={cand.id} className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 flex items-center justify-between transition- bg-background group">
  <div className="flex items-center gap-4">
- <div className="w-10 h-10 rounded-md-full bg-slate-100 flex items-center justify-center text-primary font-semibold">
+ <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-primary font-semibold">
  {cand.name.charAt(0)}
  </div>
  <div>
@@ -224,7 +224,7 @@ export default function Recruitment() {
  <select
  value={cand.stage}
  onChange={e => handleUpdateStage(cand, e.target.value)}
- className={`text-xs font-semibold px-2 py-1 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 border-input ${
+ className={`text-xs font-semibold px-2 py-1 rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-input ${
  cand.stage === 'Offer' ? 'bg-slate-100 text-primary/90' :
  cand.stage === 'Hired' ? 'bg-slate-100 text-primary/90' :
  cand.stage === 'Interview' ? 'bg-orange-100 text-orange-700' : 
@@ -251,7 +251,7 @@ export default function Recruitment() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editTargetId ? 'Edit Candidate' : 'Add Candidate'}</h2>
  <div className="space-y-3">
  <div>

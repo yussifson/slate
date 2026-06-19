@@ -45,7 +45,7 @@ const BG_BLUE_LIGHT = "bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20";
 
 function ReportMetricCard({ title, value, sub, icon: Icon, trend}) {
  return (
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-6 transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-6 transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-start justify-between gap-3">
  <div className="min-w-0">
  <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider tracking-[0.04em]">{title}</p>
@@ -64,7 +64,7 @@ function ReportMetricCard({ title, value, sub, icon: Icon, trend}) {
  {sub && <span className="text-xs text-slate-500 dark:text-slate-400 tracking-[0.04em]">{sub}</span>}
  </div>
  </div>
- <div className={`w-12 h-12 rounded-md-xl ${BG_BLUE_LIGHT} flex items-center justify-center shrink-0`}>
+ <div className={`w-12 h-12 rounded-xl ${BG_BLUE_LIGHT} flex items-center justify-center shrink-0`}>
  <Icon className={`w-6 h-6 ${THEME_BLUE}`} />
  </div>
  </div>
@@ -74,7 +74,7 @@ function ReportMetricCard({ title, value, sub, icon: Icon, trend}) {
 
 function ReportSection({ title, description, icon: Icon, children, className = ""}) {
  return (
- <section className={`bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden ${className}`}>
+ <section className={`bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden ${className}`}>
  <div className="px-6 py-5 border-b border-primary/40 bg-slate-50/50 dark:bg-transparent dark:bg-slate-900/50">
  <div className="flex items-center gap-3">
  {Icon && <Icon className={`w-5 h-5 ${THEME_BLUE} shrink-0`} />}
@@ -97,7 +97,7 @@ function BlueTooltip({ active, payload, label, prefix = "", suffix = ""}) {
  {payload.map((entry, i) => (
  <div key={i} className="flex justify-between gap-4 text-[#71717a] dark:text-gray-400">
  <span className="flex items-center gap-2.5">
- <span className="w-2 h-2 rounded-md-full" style={{ background: entry.color}} />
+ <span className="w-2 h-2 rounded-full" style={{ background: entry.color}} />
  {entry.name}
  </span>
  <span className="font-semibold text-foreground">
@@ -128,7 +128,7 @@ export default function ReportsDashboard() {
  if (isRetail && !isRetailAdmin(user)) {
  return (
  <div className="flex-1 flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 h-[calc(100vh-100px)]">
- <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-md-full flex items-center justify-center mb-6">
+ <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
  <ShieldAlert className="w-10 h-10 text-red-600 dark:text-red-500" />
  </div>
  <h2 className="text-2xl font-semibold text-foreground mb-3 tracking-[-0.02em]">Access Restricted</h2>
@@ -584,19 +584,19 @@ export default function ReportsDashboard() {
  icon={FileText}
  >
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
- <div className="p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
+ <div className="p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
  <p className={`text-xs font-semibold ${THEME_BLUE} uppercase`}>{t("total_invoices", "Total invoices")}</p>
  <p className="text-3xl font-semibold text-slate-900 dark:text-slate-100 dark:text-white mt-2 tracking-[-0.02em]">{invoices.length}</p>
  </div>
- <div className="p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
+ <div className="p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
  <p className={`text-xs font-semibold ${THEME_BLUE} uppercase`}>{t("paid_invoices", "Paid invoices")}</p>
  <p className="text-3xl font-semibold text-slate-900 dark:text-slate-100 dark:text-white mt-2 tracking-[-0.02em]">{paidCount}</p>
  </div>
- <div className="p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
+ <div className="p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
  <p className={`text-xs font-semibold ${THEME_BLUE} uppercase`}>{t("team_members", "Team members")}</p>
  <p className="text-3xl font-semibold text-slate-900 dark:text-slate-100 dark:text-white mt-2 tracking-[-0.02em]">{staff.length}</p>
  </div>
- <div className="p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
+ <div className="p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
  <p className={`text-xs font-semibold ${THEME_BLUE} uppercase`}>{t("avg_monthly_revenue", "Avg monthly revenue")}</p>
  <p className="text-3xl font-semibold text-slate-900 dark:text-slate-100 dark:text-white mt-2 tracking-[-0.02em]">
  {formatCurrency(months ? Math.round(totalRevenue / months) : 0, currency)}

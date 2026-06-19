@@ -88,15 +88,15 @@ export default function SHSTeachers() {
  </p>
  </div>
  
- <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20">
+ <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20">
  <Plus className="w-4 h-4" /> Add Teacher
  </Button>
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
- <Card className="rounded-md-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="rounded-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-md-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+ <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
  <Users className="w-6 h-6" />
  </div>
  <div>
@@ -106,9 +106,9 @@ export default function SHSTeachers() {
  </CardContent>
  </Card>
  
- <Card className="rounded-md-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="rounded-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary shrink-0">
+ <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-primary shrink-0">
  <User className="w-6 h-6" />
  </div>
  <div>
@@ -120,9 +120,9 @@ export default function SHSTeachers() {
  </CardContent>
  </Card>
  
- <Card className="rounded-md-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-amber-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="rounded-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-amber-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-md-xl bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
+ <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
  <GraduationCap className="w-6 h-6" />
  </div>
  <div>
@@ -135,7 +135,7 @@ export default function SHSTeachers() {
  </Card>
  </div>
 
- <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
@@ -146,7 +146,7 @@ export default function SHSTeachers() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search name or specialization..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -158,7 +158,7 @@ export default function SHSTeachers() {
  <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading staff...</div>
  ) : filteredTeachers.length === 0 ? (
  <div className="p-16 text-center">
- <div className="w-16 h-16 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
  <Users className="w-8 h-8 text-primary dark:text-primary" />
  </div>
  <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No teachers found</h3>
@@ -167,10 +167,10 @@ export default function SHSTeachers() {
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
  {filteredTeachers.map(teacher => (
- <div key={teacher.id} className="group p-5 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:border-primary dark:border-primary/30 -purple-500/5 transition-all duration-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={teacher.id} className="group p-5 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:border-primary dark:border-primary/30 -purple-500/5 transition-all duration-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-start justify-between mb-4">
  <div className="flex items-center gap-3">
- <div className="w-12 h-12 rounded-md-full bg-gradient-to-br from-primary/10 to-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center text-xl font-black text-primary dark:text-primary/70">
+ <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/10 to-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center text-xl font-black text-primary dark:text-primary/70">
  {teacher.title.charAt(0)}
  </div>
  <div>
@@ -202,10 +202,10 @@ export default function SHSTeachers() {
  </div>
  
  <div className="mt-5 pt-4 border-t border-primary/40 flex justify-between gap-2">
- <Button variant="outline" size="sm" className="flex-1 rounded-md-xl border-primary/40 dark:border-primary/40 text-slate-600 dark:text-slate-300 hover:text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
+ <Button variant="outline" size="sm" className="flex-1 rounded-xl border-primary/40 dark:border-primary/40 text-slate-600 dark:text-slate-300 hover:text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
  Profile
  </Button>
- <Button variant="outline" size="sm" className="flex-1 rounded-md-xl border-primary/40 dark:border-primary/40 text-slate-600 dark:text-slate-300 hover:text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
+ <Button variant="outline" size="sm" className="flex-1 rounded-xl border-primary/40 dark:border-primary/40 text-slate-600 dark:text-slate-300 hover:text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
  Subjects
  </Button>
  </div>
@@ -217,7 +217,7 @@ export default function SHSTeachers() {
  </Card>
 
  <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
- <DialogContent className="sm:max-w-[500px] rounded-md-3xl p-0 overflow-hidden border-none ">
+ <DialogContent className="sm:max-w-[500px] rounded-3xl p-0 overflow-hidden border-none ">
  <div className="p-6 bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 text-white">
  <DialogHeader>
  <DialogTitle className="text-2xl font-black tracking-[-0.02em]">Register Teacher</DialogTitle>
@@ -233,7 +233,7 @@ export default function SHSTeachers() {
  <div className="space-y-2">
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">First Name</label>
  <Input 
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newTeacher.firstName}
  onChange={e => setNewTeacher({...newTeacher, firstName: e.target.value})}
  />
@@ -241,7 +241,7 @@ export default function SHSTeachers() {
  <div className="space-y-2">
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Last Name</label>
  <Input 
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newTeacher.lastName}
  onChange={e => setNewTeacher({...newTeacher, lastName: e.target.value})}
  />
@@ -254,7 +254,7 @@ export default function SHSTeachers() {
  <Input 
  type="email"
  placeholder="e.g. teacher@school.edu"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newTeacher.email}
  onChange={e => setNewTeacher({...newTeacher, email: e.target.value})}
  />
@@ -263,7 +263,7 @@ export default function SHSTeachers() {
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Phone</label>
  <Input 
  placeholder="e.g. +233 55 123 4567"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newTeacher.phone}
  onChange={e => setNewTeacher({...newTeacher, phone: e.target.value})}
  />
@@ -274,7 +274,7 @@ export default function SHSTeachers() {
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Specialization</label>
  <Input 
  placeholder="e.g. Mathematics, Science, English"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newTeacher.specialization}
  onChange={e => setNewTeacher({...newTeacher, specialization: e.target.value})}
  />
@@ -285,7 +285,7 @@ export default function SHSTeachers() {
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Qualification</label>
  <Input 
  placeholder="e.g. B.Ed, M.Sc, PhD"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newTeacher.qualification}
  onChange={e => setNewTeacher({...newTeacher, qualification: e.target.value})}
  />
@@ -293,7 +293,7 @@ export default function SHSTeachers() {
  <div className="space-y-2">
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Status</label>
  <select 
- className="w-full h-10 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-10 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newTeacher.status}
  onChange={e => setNewTeacher({...newTeacher, status: e.target.value})}
  >
@@ -307,13 +307,13 @@ export default function SHSTeachers() {
  </ScrollArea>
  
  <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-md-xl font-semibold text-slate-600 dark:text-slate-300">
+ <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
  Cancel
  </Button>
  <Button 
  onClick={handleAddTeacher} 
  disabled={!newTeacher.firstName || !newTeacher.lastName}
- className="rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-semibold"
+ className="rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-semibold"
  >
  Save Teacher
  </Button>

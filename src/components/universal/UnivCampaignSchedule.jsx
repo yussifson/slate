@@ -111,7 +111,7 @@ export default function UnivCampaignSchedule() {
 
  
  
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
@@ -133,7 +133,7 @@ export default function UnivCampaignSchedule() {
  initial={{ opacity: 0, height: 0}}
  animate={{ opacity: 1, height: 'auto'}}
  exit={{ opacity: 0, height: 0}}
- className="bg-card p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-8 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-8 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <h2 className="text-xl font-semibold mb-4 text-foreground">
  {editingId ? 'Edit Campaign' : 'Create Campaign'}
@@ -217,10 +217,10 @@ export default function UnivCampaignSchedule() {
 
  {loading ? (
  <div className="flex justify-center py-12">
- <div className="animate-spin rounded-md-full h-10 w-10 border-b-2 border-indigo-600"></div>
+ <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
  </div>
  ) : (
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-left border-collapse">
  <thead>
  <tr className="bg-background border-b border-primary/40 text-sm font-medium text-[#71717a] dark:text-gray-400">
@@ -244,7 +244,7 @@ export default function UnivCampaignSchedule() {
  ${Number(item.budget).toLocaleString()}
  </td>
  <td className="p-4">
- <span className={`inline-flex items-center px-2.5 py-0.5 rounded-md-full text-xs font-medium ${getStatusColor(item.status)}`}>
+ <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
  {item.status}
  </span>
  </td>

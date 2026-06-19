@@ -130,7 +130,7 @@ export default function StaffPermissionsSettings() {
   return (
     <div className="flex gap-4 items-start">
       {/* Staff list */}
-      <div className="w-48 shrink-0 bg-muted/30 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden">
+      <div className="w-48 shrink-0 bg-muted/30 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden">
         {staff.map(s => {
           return (
             <button
@@ -148,7 +148,7 @@ export default function StaffPermissionsSettings() {
       {activeStaff && (
         <div className="flex-1 space-y-4">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-md-full bg-slate-100 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
               <span className="text-xs font-semibold text-primary tracking-[0.04em]">{activeStaff.full_name?.[0]}</span>
             </div>
             <div>
@@ -159,7 +159,7 @@ export default function StaffPermissionsSettings() {
 
           {PERMISSION_GROUPS.map(group => {
             return (
-              <div key={group.label} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+              <div key={group.label} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                 <div className="px-4 py-2 bg-muted/40 border-b border-primary/40">
                   <p className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{group.label}</p>
                 </div>

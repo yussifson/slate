@@ -99,44 +99,44 @@ export default function VIndustrialAttachments() {
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-primary hover:bg-primary/90 text-white rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
+            <Button className="bg-primary hover:bg-primary/90 text-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
               <Plus className="w-4 h-4 mr-2" /> {t('assign_trainee', 'Assign Trainee')}
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] rounded-md-2xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <DialogContent className="sm:max-w-[425px] rounded-2xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <DialogHeader>
               <DialogTitle>{t('assign_new_trainee', 'Assign New Trainee')}</DialogTitle>
             </DialogHeader>
             <div className="grid gap-4 py-4 max-h-[60vh] overflow-y-auto px-1">
               <div className="space-y-2">
                 <Label htmlFor="trainee">{t('trainee_name', 'Trainee Name')}</Label>
-                <Input id="trainee" placeholder="e.g. John Doe" value={newAttachment.trainee_name} onChange={e => setNewAttachment({...newAttachment, trainee_name: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                <Input id="trainee" placeholder="e.g. John Doe" value={newAttachment.trainee_name} onChange={e => setNewAttachment({...newAttachment, trainee_name: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="org">{t('host_org', 'Host Organization')}</Label>
-                <Input id="org" placeholder="e.g. TechCorp" value={newAttachment.host_org} onChange={e => setNewAttachment({...newAttachment, host_org: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                <Input id="org" placeholder="e.g. TechCorp" value={newAttachment.host_org} onChange={e => setNewAttachment({...newAttachment, host_org: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="industry">{t('industry', 'Industry')}</Label>
-                <Input id="industry" placeholder="e.g. Manufacturing" value={newAttachment.industry} onChange={e => setNewAttachment({...newAttachment, industry: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                <Input id="industry" placeholder="e.g. Manufacturing" value={newAttachment.industry} onChange={e => setNewAttachment({...newAttachment, industry: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="mentor">{t('mentor', 'Technical Mentor')}</Label>
-                <Input id="mentor" placeholder="e.g. Jane Smith" value={newAttachment.mentor_name} onChange={e => setNewAttachment({...newAttachment, mentor_name: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                <Input id="mentor" placeholder="e.g. Jane Smith" value={newAttachment.mentor_name} onChange={e => setNewAttachment({...newAttachment, mentor_name: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="sdate">{t('start_date', 'Start Date')}</Label>
-                  <Input id="sdate" type="date" value={newAttachment.start_date} onChange={e => setNewAttachment({...newAttachment, start_date: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                  <Input id="sdate" type="date" value={newAttachment.start_date} onChange={e => setNewAttachment({...newAttachment, start_date: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="edate">{t('end_date', 'End Date')}</Label>
-                  <Input id="edate" type="date" value={newAttachment.end_date} onChange={e => setNewAttachment({...newAttachment, end_date: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                  <Input id="edate" type="date" value={newAttachment.end_date} onChange={e => setNewAttachment({...newAttachment, end_date: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
                 </div>
               </div>
             </div>
             <DialogFooter>
-              <Button onClick={handleCreateAttachment} className="bg-primary text-white hover:bg-primary/90 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">{t('save', 'Save Assignment')}</Button>
+              <Button onClick={handleCreateAttachment} className="bg-primary text-white hover:bg-primary/90 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">{t('save', 'Save Assignment')}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -144,13 +144,13 @@ export default function VIndustrialAttachments() {
 
       <div className="flex-1 flex gap-6 overflow-hidden">
         {/* Left Panel */}
-        <Card className="w-[350px] shrink-0 flex flex-col rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <Card className="w-[350px] shrink-0 flex flex-col rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="p-4 border-b border-primary/10">
             <div className="relative">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
               <Input 
                 placeholder="Search trainees or orgs..." 
-                className="pl-9 h-10 border-primary/40 rounded-md-xl focus-visible:ring-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none"
+                className="pl-9 h-10 border-primary/40 rounded-xl focus-visible:ring-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -167,13 +167,13 @@ export default function VIndustrialAttachments() {
                   <button
                     key={attachment.id}
                     onClick={() => setSelectedAttachment(attachment)}
-                    className={`w-full text-left p-3 rounded-md-xl transition-all duration-200 flex items-center gap-3 ${
+                    className={`w-full text-left p-3 rounded-xl transition-all duration-200 flex items-center gap-3 ${
                       selectedAttachment?.id === attachment.id 
                         ? 'bg-primary/10 text-primary' 
                         : 'hover:bg-primary/5 text-foreground'
                     }`}
                   >
-                    <div className={`w-10 h-10 rounded-md-xl flex items-center justify-center font-semibold shrink-0 ${
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-semibold shrink-0 ${
                       selectedAttachment?.id === attachment.id ? 'bg-primary text-white' : 'bg-primary/10 text-primary'
                     }`}>
                       <Factory className="w-5 h-5" />
@@ -192,7 +192,7 @@ export default function VIndustrialAttachments() {
         </Card>
 
         {/* Right Panel */}
-        <Card className="flex-1 flex flex-col rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <Card className="flex-1 flex flex-col rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           {selectedAttachment ? (
             <>
               <div className="h-32 bg-primary/10 relative shrink-0 border-b border-primary/10"></div>
@@ -200,8 +200,8 @@ export default function VIndustrialAttachments() {
               <ScrollArea className="flex-1 -mt-12">
                 <div className="px-8 pb-8">
                   <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center relative z-10">
-                    <div className="w-24 h-24 rounded-md-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-2 shrink-0 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                      <div className="w-full h-full rounded-md-xl bg-primary/5 flex items-center justify-center text-primary">
+                    <div className="w-24 h-24 rounded-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-2 shrink-0 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                      <div className="w-full h-full rounded-xl bg-primary/5 flex items-center justify-center text-primary">
                         <LinkIcon className="w-10 h-10" />
                       </div>
                     </div>
@@ -219,7 +219,7 @@ export default function VIndustrialAttachments() {
 
                   <div className="mt-8">
                     <Tabs defaultValue="overview" className="w-full">
-                      <TabsList className="bg-primary/5 p-1 rounded-md-xl w-full sm:w-auto overflow-x-auto justify-start border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
+                      <TabsList className="bg-primary/5 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
                         <TabsTrigger value="overview" className="rounded-xl data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Details</TabsTrigger>
                         <TabsTrigger value="attendance" className="rounded-xl data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Attendance</TabsTrigger>
                         <TabsTrigger value="tasks" className="rounded-xl data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Tasks & Skills</TabsTrigger>
@@ -228,7 +228,7 @@ export default function VIndustrialAttachments() {
                       <div className="mt-6">
                         <TabsContent value="overview" className="space-y-6 outline-none">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <Card className="bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none rounded-md-2xl">
+                            <Card className="bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none rounded-2xl">
                               <CardHeader className="pb-3 border-b border-primary/5">
                                 <CardTitle className="text-sm font-semibold text-primary uppercase tracking-wider tracking-[0.04em]">Host Information</CardTitle>
                               </CardHeader>
@@ -251,7 +251,7 @@ export default function VIndustrialAttachments() {
                               </CardContent>
                             </Card>
                             
-                            <Card className="bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none rounded-md-2xl">
+                            <Card className="bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none rounded-2xl">
                               <CardHeader className="pb-3 border-b border-primary/5">
                                 <CardTitle className="text-sm font-semibold text-primary uppercase tracking-wider tracking-[0.04em]">Schedule</CardTitle>
                               </CardHeader>
@@ -276,23 +276,23 @@ export default function VIndustrialAttachments() {
                         </TabsContent>
                         
                         <TabsContent value="attendance" className="outline-none">
-                          <Card className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 bg-primary/5 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none rounded-md-2xl text-center py-12">
+                          <Card className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 bg-primary/5 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none rounded-2xl text-center py-12">
                             <Activity className="w-12 h-12 text-primary/40 mx-auto mb-4" />
                             <p className="text-[#71717a] dark:text-gray-400 text-sm mb-4">No daily attendance logs recorded yet.</p>
-                            <Button variant="outline" className="border-primary/40 text-primary rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">Log Attendance</Button>
+                            <Button variant="outline" className="border-primary/40 text-primary rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">Log Attendance</Button>
                           </Card>
                         </TabsContent>
                         
                         <TabsContent value="tasks" className="outline-none">
-                          <Card className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 bg-primary/5 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none rounded-md-2xl p-6">
+                          <Card className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 bg-primary/5 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none rounded-2xl p-6">
                             <div className="flex justify-between items-center mb-6">
                               <h3 className="text-sm font-semibold text-primary uppercase tracking-wider tracking-[0.04em]">Logged Tasks</h3>
-                              <Button variant="outline" size="sm" className="border-primary/40 text-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none rounded-md-xl h-8"><Plus className="w-3 h-3 mr-1" /> Add Task</Button>
+                              <Button variant="outline" size="sm" className="border-primary/40 text-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none rounded-xl h-8"><Plus className="w-3 h-3 mr-1" /> Add Task</Button>
                             </div>
                             <ul className="space-y-3">
                               {selectedAttachment.data?.tasks?.length > 0 ? (
                                 selectedAttachment.data.tasks.map((task, idx) => (
-                                  <li key={idx} className="flex items-start gap-3 text-sm text-slate-900 dark:text-white bg-card p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                                  <li key={idx} className="flex items-start gap-3 text-sm text-slate-900 dark:text-white bg-card p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                                     <BookOpen className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                                     <span>{task}</span>
                                   </li>
@@ -311,7 +311,7 @@ export default function VIndustrialAttachments() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-md-full bg-primary/10 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
                 <LinkIcon className="w-10 h-10 text-primary/40" />
               </div>
               <h3 className="text-xl font-semibold text-slate-900 dark:text-white">No Attachment Selected</h3>

@@ -127,7 +127,7 @@ export default function FrontDesk() {
  </div>
  {/* Stats */}
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 border-l-4 border-l-violet-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 border-l-4 border-l-violet-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-3">
  <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
  <TrendingUp className="w-5 h-5 text-primary" />
@@ -138,7 +138,7 @@ export default function FrontDesk() {
  </div>
  </div>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 border-l-4 border-l-green-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 border-l-4 border-l-green-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-3">
  <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
  <LogIn className="w-5 h-5 text-primary" />
@@ -149,7 +149,7 @@ export default function FrontDesk() {
  </div>
  </div>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 border-l-4 border-l-red-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 border-l-4 border-l-red-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-3">
  <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
  <LogOut className="w-5 h-5 text-red-600" />
@@ -160,7 +160,7 @@ export default function FrontDesk() {
  </div>
  </div>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 border-l-4 border-l-violet-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 border-l-4 border-l-violet-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-3">
  <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
  <Users className="w-5 h-5 text-primary" />
@@ -176,7 +176,7 @@ export default function FrontDesk() {
  {(todayArrivals.length > 0 || todayDepartures.length > 0) && (
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
  {todayArrivals.length > 0 && (
- <div className="bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-xl p-4">
+ <div className="bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl p-4">
  <h3 className="font-semibold text-primary/80 flex items-center gap-2 mb-3">
  <LogIn className="w-4 h-4" /> {t("today_s_arrivals", "Today's Arrivals (")}{todayArrivals.length})
  </h3>
@@ -194,7 +194,7 @@ export default function FrontDesk() {
  </div>
  )}
  {todayDepartures.length > 0 && (
- <div className="bg-red-50 border-[0.5px] border-black/9 dark:border-white/8 border-red-200 rounded-md-xl p-4">
+ <div className="bg-red-50 border-[0.5px] border-black/9 dark:border-white/8 border-red-200 rounded-xl p-4">
  <h3 className="font-semibold text-red-800 flex items-center gap-2 mb-3">
  <LogOut className="w-4 h-4" /> {t("today_s_departures", "Today's Departures (")}{todayDepartures.length})
  </h3>
@@ -216,7 +216,7 @@ export default function FrontDesk() {
  {/* Main Grid + Panel */}
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
  {/* Room Grid */}
- <div className="lg:col-span-2 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="lg:col-span-2 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Legend */}
  <div className="flex flex-wrap items-center gap-4 mb-6 pb-4 border-b border-primary/40">
  {Object.entries(statusColors).map(([s]) => {
@@ -264,7 +264,7 @@ export default function FrontDesk() {
  </div>
 
  {/* Side Panel */}
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex flex-col min-h-[400px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex flex-col min-h-[400px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {selectedRoom && selectedRoomInfo ? (
  <div className="space-y-5">
  <div className="flex items-center justify-between">
@@ -361,7 +361,7 @@ export default function FrontDesk() {
  {/* Check-In Modal */}
  {showCheckInModal && selectedRoom && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Key className="w-5 h-5 text-primary" /> {t("walk_in_check_in_room", "Walk-in Check-In — Room")} {selectedRoom}
  </h2>

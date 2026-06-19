@@ -118,7 +118,7 @@ export default function SHSReportCards() {
  </div>
  </div>
 
- <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
  <div className="flex flex-col md:flex-row gap-6 items-end">
  <div className="space-y-2 flex-1">
@@ -126,7 +126,7 @@ export default function SHSReportCards() {
  <FileText className="w-4 h-4 text-primary dark:text-primary/70" /> Select Exam Cycle
  </label>
  <select 
- className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={selectedExamId}
  onChange={(e) => setSelectedExamId(e.target.value)}
  >
@@ -142,7 +142,7 @@ export default function SHSReportCards() {
  <Search className="w-4 h-4 text-primary" /> Target Class
  </label>
  <select 
- className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={selectedClassId}
  onChange={(e) => setSelectedClassId(e.target.value)}
  disabled={!selectedExamId}
@@ -155,7 +155,7 @@ export default function SHSReportCards() {
  </div>
 
  {selectedClassId && (
- <Button className="h-11 px-6 rounded-md-xl bg-slate-800 hover:bg-slate-900 text-white font-semibold">
+ <Button className="h-11 px-6 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-semibold">
  <Calculator className="w-4 h-4 mr-2" /> Process Positions
  </Button>
  )}
@@ -167,7 +167,7 @@ export default function SHSReportCards() {
  <div className="p-16 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading student records...</div>
  ) : !selectedClassId ? (
  <div className="p-20 text-center">
- <div className="w-16 h-16 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
  <FileText className="w-8 h-8 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  </div>
  <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">Select parameters to begin</h3>
@@ -186,12 +186,12 @@ export default function SHSReportCards() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search student..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
  </div>
- <Button variant="outline" className="h-9 rounded-md-xl border-primary/40 dark:border-primary/40 text-slate-600 dark:text-slate-300 font-semibold hover:bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Button variant="outline" className="h-9 rounded-xl border-primary/40 dark:border-primary/40 text-slate-600 dark:text-slate-300 font-semibold hover:bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Printer className="w-4 h-4 mr-2" /> Print All (Class)
  </Button>
  </div>
@@ -214,7 +214,7 @@ export default function SHSReportCards() {
  {index + 1}
  </td>
  <td className="px-6 py-4 flex items-center gap-3">
- <div className="w-10 h-10 rounded-md-full bg-gradient-to-br from-primary/10 to-slate-100 flex items-center justify-center font-semibold text-primary dark:text-primary/70 shrink-0">
+ <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/10 to-slate-100 flex items-center justify-center font-semibold text-primary dark:text-primary/70 shrink-0">
  {student.title.charAt(0)}
  </div>
  <div>
@@ -261,7 +261,7 @@ export default function SHSReportCards() {
 
  {/* Report Card Preview Modal */}
  <Dialog open={!!previewStudent} onOpenChange={(open) => !open && setPreviewStudent(null)}>
- <DialogContent className="sm:max-w-[800px] rounded-md-3xl p-0 overflow-hidden border-none bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
+ <DialogContent className="sm:max-w-[800px] rounded-3xl p-0 overflow-hidden border-none bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
  
  <div className="p-4 bg-slate-800 text-white flex justify-between items-center">
  <div className="flex items-center gap-2">

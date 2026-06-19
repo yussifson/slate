@@ -110,8 +110,8 @@ View in App: ${window.location.origin}/leads`,
  if (submitted) {
  return (
  <div className="min-h-screen bg-gradient-to-br from-slate-50 to-primary/5 flex items-center justify-center p-4">
- <div className="bg-white dark:bg-slate-900/40 rounded-md-2xl p-8 max-w-md w-full text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-16 h-16 bg-slate-100 rounded-md-full flex items-center justify-center mx-auto mb-4">
+ <div className="bg-white dark:bg-slate-900/40 rounded-2xl p-8 max-w-md w-full text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
  <CheckCircle className="w-8 h-8 text-primary" />
  </div>
  <h2 className="text-xl font-semibold text-foreground mb-2">{t("inquiry_received", "Inquiry Received!")}</h2>
@@ -145,7 +145,7 @@ View in App: ${window.location.origin}/leads`,
  {company?.logo_url ? (
  <img src={company.logo_url} alt="Logo" className="h-10 max-w-[200px] object-contain rounded-md" />
  ) : (
- <div className="w-10 h-10 bg-primary rounded-md-xl flex items-center justify-center">
+ <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
  <Scale className="w-5 h-5 text-white" />
  </div>
  )}
@@ -158,7 +158,7 @@ View in App: ${window.location.origin}/leads`,
  )}</p>
  </div>
 
- <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900/40 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 space-y-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900/40 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 space-y-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Personal Info */}
  <div>
  <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">

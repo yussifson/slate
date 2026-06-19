@@ -28,7 +28,7 @@ function PipelineCard({ pipeline, onEdit, onDelete, caseStates}) {
  const activeCases = caseStates.filter(cs => cs.pipeline_id === pipeline.id).length;
 
  return (
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex items-start justify-between gap-3">
  <div>
  <div className="flex items-center gap-2 flex-wrap">
@@ -167,7 +167,7 @@ function PipelineEditor({ pipeline, onClose, onSave}) {
  <div key={stage.id} className="flex items-center gap-2 p-2.5 bg-muted/30 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  <GripVertical className="w-3.5 h-3.5 text-[#71717a] dark:text-gray-400 shrink-0" />
  <div
- className="w-4 h-4 rounded-md-full shrink-0 border-2 border-white cursor-pointer"
+ className="w-4 h-4 rounded-full shrink-0 border-2 border-white cursor-pointer"
  style={{ backgroundColor: stage.color}}
  onClick={() => {
  const nextColor = STAGE_COLORS[(STAGE_COLORS.indexOf(stage.color) + 1) % STAGE_COLORS.length];
@@ -279,7 +279,7 @@ export default function CasePipelinePage() {
  {isLoading ? (
  <div className="text-center text-sm text-[#71717a] dark:text-gray-400 py-8">{t("loading_pipelines", "Loading pipelines...")}</div>
  ) : pipelines.length === 0 ? (
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 p-12 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 p-12 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <GitBranch className="w-10 h-10 text-[#71717a] dark:text-gray-400 mx-auto mb-3" />
  <p className="text-sm font-medium">{t("no_pipelines_yet", "No pipelines yet")}</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 mb-4 tracking-[0.04em]">{t(

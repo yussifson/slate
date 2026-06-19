@@ -113,12 +113,12 @@ export default function UnivParentPortal() {
  <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">Parent Portal Access</h2>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Manage guardian access to student data, fees, and results.</p>
  </div>
- <button onClick={generateAccessCode} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
+ <button onClick={generateAccessCode} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
  <LinkIcon className="w-4 h-4" /> Generate Access Code
  </button>
  </div>
 
- <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
@@ -127,7 +127,7 @@ export default function UnivParentPortal() {
  placeholder="Search parents, students..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>

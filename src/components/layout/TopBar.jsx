@@ -135,7 +135,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  {/* ── NATIVE MOBILE TOP BAR ── */}
  <div className="md:hidden sticky top-0 z-[60] h-[52px] bg-background/80 backdrop-blur-xl border-b border-primary/40 flex items-center justify-between px-4 w-full pt-[env(safe-area-inset-top)]">
  {/* Left: Avatar */}
- <button onClick={() => setShowAvatarDialog(true)} className="relative w-8 h-8 rounded-md-full bg-primary/10 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 flex items-center justify-center overflow-hidden active:scale-95 transition-transform">
+ <button onClick={() => setShowAvatarDialog(true)} className="relative w-8 h-8 rounded-full bg-primary/10 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 flex items-center justify-center overflow-hidden active:scale-95 transition-transform">
  {user?.avatar_url ? (
  <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
  ) : (
@@ -146,14 +146,14 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  {/* Center: Slate Logo */}
  <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 flex items-center gap-2.5 pointer-events-none">
  <div className="w-5 h-5 bg-primary rounded-lg flex items-center justify-center ">
- <div className="w-2.5 h-2.5 bg-white rounded-md-sm transform rotate-45 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+ <div className="w-2.5 h-2.5 bg-white rounded-sm transform rotate-45 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  <span className="font-extrabold text-lg tracking-tight text-foreground">Slate</span>
  </div>
 
  {/* Right: AI & Notifications */}
  <div className="flex items-center gap-2">
- <Button onClick={toggleAI} variant="ghost" size="icon" className={`w-8 h-8 rounded-md-full ${isAIOpen ? "bg-primary/10 text-primary" : "text-[#71717a] dark:text-gray-400"}`}>
+ <Button onClick={toggleAI} variant="ghost" size="icon" className={`w-8 h-8 rounded-full ${isAIOpen ? "bg-primary/10 text-primary" : "text-[#71717a] dark:text-gray-400"}`}>
  <Sparkles className="w-4 h-4" />
  </Button>
  <div className="scale-90 origin-right">
@@ -285,8 +285,8 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  <Sparkles className={`w-4 h-4 sm:w-3.5 sm:h-3.5 ${isAIOpen ? "animate-spin text-white" : "text-primary"} sm:mr-1.5`} style={{ animationDuration: '3s'}} />
  <span className="hidden sm:inline">{t("orbit_ai", "Orbit AI")}</span>
  <span className="flex h-1.5 w-1.5 relative absolute sm:static right-1 top-1 sm:right-auto sm:top-auto">
- <span className="animate-ping absolute inline-flex h-full w-full rounded-md-full bg-primary/70 opacity-75"></span>
- <span className="relative inline-flex rounded-md-full h-1.5 w-1.5 bg-primary"></span>
+ <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary/70 opacity-75"></span>
+ <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary"></span>
  </span>
  </Button>
 
@@ -318,7 +318,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  {/* User */}
  <button onClick={() => setShowAvatarDialog(true)} className="flex items-center gap-2 sm:ml-1 hover:bg-muted/50 p-1 rounded-xl transition-colors">
  <span className="hidden sm:block text-sm font-medium text-foreground">{displayName}</span>
- <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-md-full bg-primary flex items-center justify-center hover:ring-2 hover:ring-primary transition-all overflow-hidden">
+ <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary flex items-center justify-center hover:ring-2 hover:ring-primary transition-all overflow-hidden">
  {user?.avatar_url ? (
  <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
  ) : (

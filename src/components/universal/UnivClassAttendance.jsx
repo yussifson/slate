@@ -86,29 +86,29 @@ export default function UnivClassAttendance() {
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 shrink-0">
- <button onClick={() => handleMarkAttendance('Present')} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 -emerald-500/10 rounded-md-2xl p-4 flex items-center gap-3 hover:bg-emerald-50 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-3 bg-emerald-100 text-emerald-600 rounded-md-xl"><UserCheck className="w-5 h-5" /></div>
+ <button onClick={() => handleMarkAttendance('Present')} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 -emerald-500/10 rounded-2xl p-4 flex items-center gap-3 hover:bg-emerald-50 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-3 bg-emerald-100 text-emerald-600 rounded-xl"><UserCheck className="w-5 h-5" /></div>
  <div className="text-left">
  <h3 className="font-semibold text-emerald-700">Present</h3>
  <p className="text-xs text-emerald-600/70 tracking-[0.04em]">Mark all present</p>
  </div>
  </button>
- <button onClick={() => handleMarkAttendance('Late')} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-orange-200 -orange-500/10 rounded-md-2xl p-4 flex items-center gap-3 hover:bg-orange-50 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-3 bg-orange-100 text-orange-600 rounded-md-xl"><AlertTriangle className="w-5 h-5" /></div>
+ <button onClick={() => handleMarkAttendance('Late')} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-orange-200 -orange-500/10 rounded-2xl p-4 flex items-center gap-3 hover:bg-orange-50 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-3 bg-orange-100 text-orange-600 rounded-xl"><AlertTriangle className="w-5 h-5" /></div>
  <div className="text-left">
  <h3 className="font-semibold text-orange-700">Late</h3>
  <p className="text-xs text-orange-600/70 tracking-[0.04em]">Mark selected</p>
  </div>
  </button>
- <button onClick={() => handleMarkAttendance('Absent')} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-red-200 -red-500/10 rounded-md-2xl p-4 flex items-center gap-3 hover:bg-red-50 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-3 bg-red-100 text-red-600 rounded-md-xl"><UserX className="w-5 h-5" /></div>
+ <button onClick={() => handleMarkAttendance('Absent')} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-red-200 -red-500/10 rounded-2xl p-4 flex items-center gap-3 hover:bg-red-50 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-3 bg-red-100 text-red-600 rounded-xl"><UserX className="w-5 h-5" /></div>
  <div className="text-left">
  <h3 className="font-semibold text-red-700">Absent</h3>
  <p className="text-xs text-red-600/70 tracking-[0.04em]">Mark selected</p>
  </div>
  </button>
- <button onClick={() => handleMarkAttendance('Excused')} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-blue-200 -blue-500/10 rounded-md-2xl p-4 flex items-center gap-3 hover:bg-blue-50 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-3 bg-blue-100 text-blue-600 rounded-md-xl"><UserMinus className="w-5 h-5" /></div>
+ <button onClick={() => handleMarkAttendance('Excused')} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-blue-200 -blue-500/10 rounded-2xl p-4 flex items-center gap-3 hover:bg-blue-50 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-3 bg-blue-100 text-blue-600 rounded-xl"><UserMinus className="w-5 h-5" /></div>
  <div className="text-left">
  <h3 className="font-semibold text-blue-700">Excused</h3>
  <p className="text-xs text-blue-600/70 tracking-[0.04em]">Mark selected</p>
@@ -116,7 +116,7 @@ export default function UnivClassAttendance() {
  </button>
  </div>
 
- <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
@@ -125,10 +125,10 @@ export default function UnivClassAttendance() {
  placeholder="Search students, courses..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
- <div className="flex items-center gap-2 text-sm text-[#71717a] dark:text-gray-400 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 px-3 py-2 rounded-md-xl">
+ <div className="flex items-center gap-2 text-sm text-[#71717a] dark:text-gray-400 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 px-3 py-2 rounded-xl">
  <CalendarDays className="w-4 h-4" /> {new Date().toLocaleDateString()}
  </div>
  </div>

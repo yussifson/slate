@@ -168,7 +168,7 @@ export default function CanteenPOS() {
             <Button 
               disabled={total === 0 || placeOrder.isPending}
               onClick={() => placeOrder.mutate(total)}
-              className="w-full h-20 rounded-md-none bg-emerald-500/10 hover:bg-emerald-400 text-emerald-900 font-black text-2xl uppercase tracking-widest border-2 border-white transition-colors disabled:opacity-50 disabled:bg-emerald-800 disabled:text-emerald-600 disabled:border-emerald-700 tracking-[-0.02em] tracking-[0.04em]"
+              className="w-full h-20 rounded-none bg-emerald-500/10 hover:bg-emerald-400 text-emerald-900 font-black text-2xl uppercase tracking-widest border-2 border-white transition-colors disabled:opacity-50 disabled:bg-emerald-800 disabled:text-emerald-600 disabled:border-emerald-700 tracking-[-0.02em] tracking-[0.04em]"
             >
               <CreditCard className="w-8 h-8 mr-3" /> Pay Now
             </Button>

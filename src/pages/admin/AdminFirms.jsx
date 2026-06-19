@@ -180,7 +180,7 @@ export default function AdminFirms() {
       ) : (
         <div className="space-y-4">
           {filteredCompanies.length === 0 ? (
-            <div className="bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 text-center py-12 text-slate-400 text-sm font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 text-center py-12 text-slate-400 text-sm font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               {t("no_firms_found_matching_query", "No firms found matching query.")}
             </div>
           ) : (
@@ -189,14 +189,14 @@ export default function AdminFirms() {
                 const activeUsers = profiles.filter(p => p.company_id === c.id).length;
                 const activeCases = cases.filter(cs => cs.company_id === c.id).length;
                 return (
-                  <div key={idx} className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300 p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                  <div key={idx} className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300 p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                     <div className="flex-1">
                       <div className="flex items-start justify-between md:justify-start gap-3">
                         <div>
                           <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 leading-tight">{c.name}</h3>
                           <p className="font-mono text-[11px] text-primary mt-1">{c.subdomain}{t("slate_optavel_com", ".slate.optavel.com")}</p>
                         </div>
-                        <span className={`md:hidden inline-flex py-1 px-2.5 rounded-md-full text-[10px] font-semibold uppercase ${c.status === 'active' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40' : 'bg-red-50 text-red-700 border-[0.5px] border-black/9 dark:border-white/8 border-red-100'}`}>
+                        <span className={`md:hidden inline-flex py-1 px-2.5 rounded-full text-[10px] font-semibold uppercase ${c.status === 'active' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40' : 'bg-red-50 text-red-700 border-[0.5px] border-black/9 dark:border-white/8 border-red-100'}`}>
                           {c.status}
                         </span>
                       </div>
@@ -221,7 +221,7 @@ export default function AdminFirms() {
                     </div>
                     
                     <div className="hidden md:flex flex-col items-center justify-center px-4">
-                      <span className={`inline-flex py-1 px-2.5 rounded-md-full text-[10px] font-semibold uppercase ${c.status === 'active' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40' : 'bg-red-50 text-red-700 border-[0.5px] border-black/9 dark:border-white/8 border-red-100'}`}>
+                      <span className={`inline-flex py-1 px-2.5 rounded-full text-[10px] font-semibold uppercase ${c.status === 'active' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40' : 'bg-red-50 text-red-700 border-[0.5px] border-black/9 dark:border-white/8 border-red-100'}`}>
                         {c.status}
                       </span>
                       <span className="text-[10px] text-slate-400 mt-2">{new Date(c.created_date || c.created_at).toLocaleDateString()}</span>
@@ -255,7 +255,7 @@ export default function AdminFirms() {
 
       {/* Message Dialog */}
       <Dialog open={messageDialogOpen} onOpenChange={setMessageDialogOpen}>
-        <DialogContent className="max-w-md rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 p-6 font-sans hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <DialogContent className="max-w-md rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 p-6 font-sans hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <DialogDescription className="sr-only">Details about the firm</DialogDescription>
           <DialogHeader>
             <DialogTitle className="text-slate-900 dark:text-slate-100 font-extrabold text-base flex items-center gap-2.5">
@@ -271,15 +271,15 @@ export default function AdminFirms() {
                 onChange={(e) => setMessageContent(e.target.value)}
                 rows={4}
                 placeholder="Type your message to the firm administrator here..."
-                className="w-full p-3 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm resize-none"
+                className="w-full p-3 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm resize-none"
               />
             </div>
           </div>
           <DialogFooter className="flex gap-2 pt-2">
-            <Button variant="outline" onClick={() => setMessageDialogOpen(false)} className="flex-1 rounded-md-xl text-slate-700 dark:text-slate-300 border-primary/40 h-11">
+            <Button variant="outline" onClick={() => setMessageDialogOpen(false)} className="flex-1 rounded-xl text-slate-700 dark:text-slate-300 border-primary/40 h-11">
               {t("cancel", "Cancel")}
             </Button>
-            <Button onClick={handleSendMessage} disabled={sendingMessage} className="flex-1 bg-primary hover:bg-primary/90 text-white font-semibold rounded-md-xl h-11">
+            <Button onClick={handleSendMessage} disabled={sendingMessage} className="flex-1 bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl h-11">
               {sendingMessage ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send Message"}
             </Button>
           </DialogFooter>
@@ -288,7 +288,7 @@ export default function AdminFirms() {
 
       {/* Edit Quota & Plans Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent className="max-w-md rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 p-6 font-sans hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <DialogContent className="max-w-md rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 p-6 font-sans hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <DialogDescription className="sr-only">Adjust firm quota settings</DialogDescription>
           <DialogHeader>
             <DialogTitle className="text-slate-900 dark:text-slate-100 font-extrabold text-base flex items-center gap-2.5">
@@ -303,7 +303,7 @@ export default function AdminFirms() {
               <select 
                 value={subPlan} 
                 onChange={(e) => setSubPlan(e.target.value)}
-                className="w-full p-2.5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-1 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm"
+                className="w-full p-2.5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-1 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm"
               >
                 <option value="starter">{t("starter_plan_29_mo", "Starter Plan ($29/mo)")}</option>
                 <option value="professional">{t("professional_plan_79_mo", "Professional Plan ($79/mo)")}</option>
@@ -316,7 +316,7 @@ export default function AdminFirms() {
               <select 
                 value={subStatus} 
                 onChange={(e) => setSubStatus(e.target.value)}
-                className="w-full p-2.5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-1 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm"
+                className="w-full p-2.5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-1 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm"
               >
                 <option value="trial">{t("trialing", "Trialing")}</option>
                 <option value="active">{t("active_paid", "Active (Paid)")}</option>
@@ -332,7 +332,7 @@ export default function AdminFirms() {
                   type="number"
                   value={maxUsers}
                   onChange={(e) => setMaxUsers(parseInt(e.target.value) || 0)}
-                  className="rounded-md-xl border-primary/40"
+                  className="rounded-xl border-primary/40"
                 />
               </div>
               <div className="space-y-1.5">
@@ -341,17 +341,17 @@ export default function AdminFirms() {
                   type="number"
                   value={maxCases}
                   onChange={(e) => setMaxCases(parseInt(e.target.value) || 0)}
-                  className="rounded-md-xl border-primary/40"
+                  className="rounded-xl border-primary/40"
                 />
               </div>
             </div>
           </div>
 
           <DialogFooter className="flex gap-2 pt-2">
-            <Button variant="outline" onClick={() => setEditDialogOpen(false)} className="flex-1 rounded-md-xl text-slate-700 dark:text-slate-300 border-primary/40 h-11">
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)} className="flex-1 rounded-xl text-slate-700 dark:text-slate-300 border-primary/40 h-11">
               {t("cancel", "Cancel")}
             </Button>
-            <Button onClick={handleSaveQuotas} disabled={updatingQuota} className="flex-1 bg-primary hover:bg-primary/95 text-white font-semibold rounded-md-xl h-11">
+            <Button onClick={handleSaveQuotas} disabled={updatingQuota} className="flex-1 bg-primary hover:bg-primary/95 text-white font-semibold rounded-xl h-11">
               {updatingQuota ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Limits"}
             </Button>
           </DialogFooter>

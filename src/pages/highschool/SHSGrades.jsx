@@ -210,7 +210,7 @@ export default function SHSGrades() {
  </div>
  </div>
 
- <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
  <div className="flex flex-col md:flex-row gap-6">
  <div className="space-y-2 flex-1">
@@ -218,7 +218,7 @@ export default function SHSGrades() {
  <FileText className="w-4 h-4 text-primary dark:text-primary/70" /> Select Exam Cycle
  </label>
  <select 
- className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={selectedExamId}
  onChange={(e) => setSelectedExamId(e.target.value)}
  >
@@ -234,7 +234,7 @@ export default function SHSGrades() {
  <GraduationCap className="w-4 h-4 text-primary" /> Class
  </label>
  <select 
- className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={selectedClassId}
  onChange={(e) => setSelectedClassId(e.target.value)}
  disabled={!selectedExamId}
@@ -251,7 +251,7 @@ export default function SHSGrades() {
  <BookOpen className="w-4 h-4 text-amber-600" /> Subject
  </label>
  <select 
- className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500 font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500 font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={selectedSubjectId}
  onChange={(e) => setSelectedSubjectId(e.target.value)}
  disabled={!selectedClassId}
@@ -270,7 +270,7 @@ export default function SHSGrades() {
  <div className="p-16 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading grade sheet...</div>
  ) : !selectedSubjectId ? (
  <div className="p-20 text-center">
- <div className="w-16 h-16 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
  <FileText className="w-8 h-8 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  </div>
  <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">Select parameters to begin</h3>
@@ -288,7 +288,7 @@ export default function SHSGrades() {
  <table className="w-full text-sm text-left">
  <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider sticky top-0 z-10  tracking-[0.04em]">
  <tr>
- <th className="px-6 py-4 rounded-md-tl-xl w-12 text-center">#</th>
+ <th className="px-6 py-4 rounded-tl-xl w-12 text-center">#</th>
  <th className="px-6 py-4">Student Name</th>
  <th className="px-6 py-4 text-center w-32">Class Score (30%)</th>
  <th className="px-6 py-4 text-center w-32">Exam Score (70%)</th>
@@ -331,7 +331,7 @@ export default function SHSGrades() {
  />
  </td>
  <td className="px-6 py-3 text-center">
- <div className="h-10 flex items-center justify-center font-black text-slate-700 dark:text-slate-300 dark:text-slate-200 bg-slate-100 dark:bg-slate-800/50 rounded-md-xl">
+ <div className="h-10 flex items-center justify-center font-black text-slate-700 dark:text-slate-300 dark:text-slate-200 bg-slate-100 dark:bg-slate-800/50 rounded-xl">
  {total > 0 ? total : '-'}
  </div>
  </td>
@@ -369,13 +369,13 @@ export default function SHSGrades() {
  </div>
  
  <div className="flex gap-3">
- <Button variant="outline" className="h-12 px-6 rounded-md-xl border-primary/40 dark:border-primary/40 text-slate-600 dark:text-slate-300 font-semibold hover:bg-white dark:bg-slate-900/40 dark:bg-slate-900 hidden sm:flex hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Button variant="outline" className="h-12 px-6 rounded-xl border-primary/40 dark:border-primary/40 text-slate-600 dark:text-slate-300 font-semibold hover:bg-white dark:bg-slate-900/40 dark:bg-slate-900 hidden sm:flex hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <FileSpreadsheet className="w-5 h-5 mr-2" /> Import CSV
  </Button>
  <Button 
  onClick={handleSaveGrades}
  disabled={isSaving}
- className="h-12 px-8 rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20 font-semibold"
+ className="h-12 px-8 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20 font-semibold"
  >
  {isSaving ? 'Saving...' : (
  <><Save className="w-5 h-5 mr-2" /> Save Grades</>

@@ -67,7 +67,7 @@ export default function QueryBuilder({ fields = [], onApply, onClear}) {
  <SlidersHorizontal className="w-4 h-4" />
  {t("filters", "Filters")}
  {activeCount > 0 && (
- <span className="ml-0.5 w-5 h-5 rounded-md-full bg-primary text-primary-foreground text-[10px] font-semibold flex items-center justify-center">
+ <span className="ml-0.5 w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold flex items-center justify-center">
  {activeCount}
  </span>
  )}
@@ -75,7 +75,7 @@ export default function QueryBuilder({ fields = [], onApply, onClear}) {
  </button>
  {/* Panel */}
  {isOpen && (
- <div className="absolute top-full mt-2 left-0 z-30 w-[480px] max-w-[calc(100vw-2rem)] bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 animate-in fade-in slide-in-from-top-2 duration-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="absolute top-full mt-2 left-0 z-30 w-[480px] max-w-[calc(100vw-2rem)] bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 animate-in fade-in slide-in-from-top-2 duration-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Header */}
  <div className="flex items-center justify-between mb-4">
  <h3 className="text-sm font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">

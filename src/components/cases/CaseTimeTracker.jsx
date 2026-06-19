@@ -194,7 +194,7 @@ export default function CaseTimeTracker({ caseData, user }) {
   return (
     <div className="space-y-4">
       {/* Timer card */}
-      <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="flex flex-col sm:flex-row sm:items-end gap-4">
           <div className="flex-1 space-y-3">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -219,7 +219,7 @@ export default function CaseTimeTracker({ caseData, user }) {
               </div>
               {running && (
                 <div className="flex items-center gap-2 mt-5">
-                  <div className="w-2 h-2 rounded-md-full bg-red-500/10 animate-pulse" />
+                  <div className="w-2 h-2 rounded-full bg-red-500/10 animate-pulse" />
                   <span className="text-2xl font-mono font-semibold text-foreground tracking-[-0.02em]">{formatElapsed(elapsed)}</span>
                 </div>
               )}
@@ -243,7 +243,7 @@ export default function CaseTimeTracker({ caseData, user }) {
       </div>
       {/* Summary + create invoice */}
       {unbilledEntries.length > 0 && (
-        <div className="bg-amber-50 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 rounded-md-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="bg-amber-50 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <p className="text-sm font-medium text-amber-800">{unbilledEntries.length} {t("unbilled_entries", "unbilled entries")}</p>
             <p className="text-xs text-amber-700 tracking-[0.04em]">{formatDuration(totalUnbilledMins)} · {formatCurrency(totalUnbilledAmount, currency)}</p>
@@ -255,7 +255,7 @@ export default function CaseTimeTracker({ caseData, user }) {
         </div>
       )}
       {/* Entries list */}
-      <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="px-5 py-3 border-b border-primary/40 bg-muted/30 flex items-center gap-2">
           <Clock className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
           <span className="text-sm font-medium">{t("time_entries", "Time Entries (")}{entries.length})</span>

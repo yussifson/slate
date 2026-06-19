@@ -18,8 +18,8 @@ const OrgNode = ({ employee, allEmployees }) => {
  const children = allEmployees.filter(e => e.reportsTo === employee.id);
  return (
  <div className="flex flex-col items-center">
- <div className="p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm bg-card hover:border-primary/50 transition-colors w-48 relative z-10 flex flex-col items-center text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-12 h-12 rounded-md-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-lg mb-2">
+ <div className="p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm bg-card hover:border-primary/50 transition-colors w-48 relative z-10 flex flex-col items-center text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-lg mb-2">
  {employee.name?.charAt(0).toUpperCase()}
  </div>
  <p className="font-semibold text-sm text-foreground truncate w-full">{employee.name}</p>
@@ -210,18 +210,18 @@ export default function Employees() {
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("manage_staff_profiles_and_dire", "Manage staff profiles and directories")}</p>
  </div>
  <div className="flex gap-2">
- <div className="bg-muted p-1 rounded-md-xl flex">
+ <div className="bg-muted p-1 rounded-xl flex">
  <button onClick={() => setActiveTab('list')} className={`px-4 py-1.5 text-sm font-semibold rounded-xl transition-all ${activeTab === 'list' ? 'bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm text-foreground' : 'text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}><Users className="w-4 h-4 inline-block mr-1.5" /> List</button>
  <button onClick={() => setActiveTab('org')} className={`px-4 py-1.5 text-sm font-semibold rounded-xl transition-all ${activeTab === 'org' ? 'bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm text-foreground' : 'text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}><Network className="w-4 h-4 inline-block mr-1.5" /> Org Chart</button>
  </div>
- <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white rounded-md-xl">
+ <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white rounded-xl">
  <Plus className="w-4 h-4" /> {t("add_employee", "Add Employee")}
  </Button>
  </div>
  </div>
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary">
+ <div className="stat-card-premium bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
  <Users className="w-5 h-5" />
  </div>
  <div>
@@ -229,8 +229,8 @@ export default function Employees() {
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("total_staff", "Total Staff")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary">
+ <div className="stat-card-premium bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
  <Users className="w-5 h-5" />
  </div>
  <div>
@@ -238,8 +238,8 @@ export default function Employees() {
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("active_staff", "Active Staff")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-xl bg-amber-100 flex items-center justify-center text-amber-600">
+ <div className="stat-card-premium bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600">
  <Users className="w-5 h-5" />
  </div>
  <div>
@@ -247,8 +247,8 @@ export default function Employees() {
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("on_leave", "On Leave")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary">
+ <div className="stat-card-premium bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
  <Briefcase className="w-5 h-5" />
  </div>
  <div>
@@ -257,7 +257,7 @@ export default function Employees() {
  </div>
  </div>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -360,7 +360,7 @@ export default function Employees() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 max-h-[90vh] flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 max-h-[90vh] flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground flex-shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editTargetId ? 'Edit Employee' : 'Add Employee'}</h2>
  <div className="space-y-3 overflow-y-auto flex-1 pr-2">
  <div>

@@ -62,7 +62,7 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh})
 
  if (!data || data.length === 0) {
  return (
- <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  No records found. Click "Add Record" to create one.
  </div>
  );
@@ -76,7 +76,7 @@ export default function DynamicGrid({ data, fieldDefinitions, theme, onRefresh})
  <>
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
  {data.map((record) => (
- <div key={record.id} className={`bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 transition- relative overflow-hidden group`}>
+ <div key={record.id} className={`bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 transition- relative overflow-hidden group`}>
  {theme && theme !== 'primary' && (
  <div className={`absolute top-0 left-0 w-full h-1 bg-${theme}-500`} />
  )}

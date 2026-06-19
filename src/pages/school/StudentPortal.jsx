@@ -133,13 +133,13 @@ export default function StudentPortal() {
             {t("welcome_back", "Welcome")}, <span className="text-[var(--primary)]">{user?.user_metadata?.full_name || activeStudent.name.split(' ')[0]}</span>
           </h1>
           <div className="flex items-center gap-3 mt-2">
-            <span className="bg-[var(--primary)] text-[var(--color-surface-0)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[var(--tracking-widest)] rounded-md-full tracking-[0.04em]">{activeStudent.studentId}</span>
+            <span className="bg-[var(--primary)] text-[var(--color-surface-0)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[var(--tracking-widest)] rounded-full tracking-[0.04em]">{activeStudent.studentId}</span>
             <span className="text-[var(--color-text-secondary)] font-semibold text-sm">{activeStudent.class}</span>
           </div>
         </div>
         <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
           {['dashboard', 'courses', 'grades', 'assignments'].map((tab) => (
-            <button key={tab} onClick={() => setActiveTab(tab)} className={`flex items-center gap-2 px-5 py-2.5 font-semibold text-sm transition-colors rounded-md-full whitespace-nowrap ${activeTab === tab ? 'bg-[var(--primary)] text-white' : 'bg-transparent text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--primary)]'}`}>
+            <button key={tab} onClick={() => setActiveTab(tab)} className={`flex items-center gap-2 px-5 py-2.5 font-semibold text-sm transition-colors rounded-full whitespace-nowrap ${activeTab === tab ? 'bg-[var(--primary)] text-white' : 'bg-transparent text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--primary)]'}`}>
               {tab === 'dashboard' && <LayoutDashboard className="w-4 h-4" />}
               {tab === 'courses' && <BookOpen className="w-4 h-4" />}
               {tab === 'grades' && <GraduationCap className="w-4 h-4" />}
@@ -212,17 +212,17 @@ export default function StudentPortal() {
               <div className="p-5">
                 <div className="space-y-4">
                   <div className="relative pl-6 border-l-2 border-[var(--primary)]/30 pb-4">
-                    <div className="absolute w-3 h-3 bg-[var(--primary)] rounded-md-full -left-[7px] top-1"></div>
+                    <div className="absolute w-3 h-3 bg-[var(--primary)] rounded-full -left-[7px] top-1"></div>
                     <p className="font-semibold text-[var(--color-text-primary)] text-sm">08:00 AM - Mathematics</p>
                     <p className="text-xs text-[var(--color-text-secondary)] mt-1 tracking-[0.04em]">Room 101 • Mr. Smith</p>
                   </div>
                   <div className="relative pl-6 border-l-2 border-[var(--primary)] pb-4">
-                    <div className="absolute w-3 h-3 bg-[var(--primary)] rounded-md-full -left-[7px] top-1"></div>
+                    <div className="absolute w-3 h-3 bg-[var(--primary)] rounded-full -left-[7px] top-1"></div>
                     <p className="font-semibold text-[var(--color-text-primary)] text-sm">10:00 AM - Physics</p>
                     <p className="text-xs text-[var(--color-text-secondary)] mt-1 tracking-[0.04em]">Lab A • Mrs. Jones</p>
                   </div>
                   <div className="relative pl-6 border-l-2 border-transparent">
-                    <div className="absolute w-3 h-3 bg-[var(--color-surface-2)] border-2 border-[var(--primary)]/50 rounded-md-full -left-[7px] top-1"></div>
+                    <div className="absolute w-3 h-3 bg-[var(--color-surface-2)] border-2 border-[var(--primary)]/50 rounded-full -left-[7px] top-1"></div>
                     <p className="font-semibold text-[var(--color-text-primary)] text-sm">01:00 PM - Literature</p>
                     <p className="text-xs text-[var(--color-text-secondary)] mt-1 tracking-[0.04em]">Room 205 • Ms. Davis</p>
                   </div>
@@ -266,7 +266,7 @@ export default function StudentPortal() {
               <p className="text-[var(--color-text-secondary)] text-sm mt-1">Manage your enrolled courses for the semester.</p>
             </div>
             {classConfig.allowSelfRegistration && myRegisteredCourses.length === 0 && (
-              <Button onClick={handleRegisterCourses} className="bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white rounded-md-full">
+              <Button onClick={handleRegisterCourses} className="bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white rounded-full">
                 Register All <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             )}
@@ -324,7 +324,7 @@ export default function StudentPortal() {
                         <td className="px-6 py-4 font-medium text-[var(--color-text-primary)]">{g.data?.examName}</td>
                         <td className="px-6 py-4 text-[var(--color-text-secondary)]">{g.data?.subject}</td>
                         <td className="px-6 py-4 text-right">
-                          <span className={`inline-flex items-center font-semibold text-xs px-2.5 py-1 rounded-md-full ${pct >= 50 ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' : 'bg-[var(--color-destructive)]/10 text-[var(--color-destructive)]'}`}>
+                          <span className={`inline-flex items-center font-semibold text-xs px-2.5 py-1 rounded-full ${pct >= 50 ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' : 'bg-[var(--color-destructive)]/10 text-[var(--color-destructive)]'}`}>
                             {score} / {max} ({pct}%)
                           </span>
                         </td>
@@ -362,7 +362,7 @@ export default function StudentPortal() {
                       <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] mb-1 tracking-[0.04em]">Due Date</p>
                       <p className="font-medium text-[var(--color-destructive)] text-sm">{a.data?.dueDate}</p>
                     </div>
-                    <Button variant="outline" className="w-full mt-4 text-xs font-medium border-primary/30 text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white rounded-md-full tracking-[0.04em]">
+                    <Button variant="outline" className="w-full mt-4 text-xs font-medium border-primary/30 text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white rounded-full tracking-[0.04em]">
                       Upload Work
                     </Button>
                   </div>

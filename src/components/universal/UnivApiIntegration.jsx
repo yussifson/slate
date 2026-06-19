@@ -103,7 +103,7 @@ export default function UnivApiIntegration() {
  <div className="view-header flex items-center justify-between flex-wrap gap-4 shrink-0">
  <div>
  <h1 className="text-2xl font-black text-foreground flex items-center gap-3 tracking-[-0.02em]">
- <span className="p-2.5 rounded-md-xl bg-primary/10 text-primary"><Plug className="w-6 h-6" /></span>
+ <span className="p-2.5 rounded-xl bg-primary/10 text-primary"><Plug className="w-6 h-6" /></span>
  API Integrations
  </h1>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1 ml-0.5">Track third-party API integrations, keys, and health status.</p>
@@ -112,14 +112,14 @@ export default function UnivApiIntegration() {
 
  
  
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
  <button
  onClick={openAdd}
- className="h-10 px-5 bg-primary text-white rounded-md-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 active:scale-95 transition-all -primary/30"
+ className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 active:scale-95 transition-all -primary/30"
  >
  <Plus className="w-4 h-4" /> Add Record
  </button>
@@ -133,7 +133,7 @@ export default function UnivApiIntegration() {
  value={search}
  onChange={e => setSearch(e.target.value)}
  placeholder="Search api integrations..."
- className="w-full h-10 pl-9 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-10 pl-9 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
 
@@ -143,7 +143,7 @@ export default function UnivApiIntegration() {
  <Loader2 className="w-8 h-8 animate-spin text-primary" />
  </div>
  ) : (
- <div className="flex-1 overflow-auto rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 overflow-auto rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm min-w-[700px]">
  <thead className="border-b border-primary/40 bg-muted/40 sticky top-0 z-10">
  <tr><th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Integration Name</th><th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Provider</th><th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Auth Type</th><th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Environment</th><th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Last Tested</th><th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Status</th><th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]"></th></tr>
@@ -161,7 +161,7 @@ export default function UnivApiIntegration() {
  <td className="px-4 py-3 text-[#71717a] dark:text-gray-400">{r.auth_type}</td>
  <td className="px-4 py-3 text-[#71717a] dark:text-gray-400">{r.environment}</td>
  <td className="px-4 py-3 text-[#71717a] dark:text-gray-400">{r.last_tested}</td>
- <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded-md-full text-xs font-semibold ${STATUS_COLORS[r.status] || 'bg-muted text-foreground'}`}>{r.status}</span></td>
+ <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${STATUS_COLORS[r.status] || 'bg-muted text-foreground'}`}>{r.status}</span></td>
  <td className="px-4 py-3">
  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
  <button onClick={() => openEdit(r)} className="p-1.5 bg-muted rounded-xl hover:bg-muted/80 transition-colors"><Edit2 className="w-3.5 h-3.5" /></button>
@@ -194,12 +194,12 @@ export default function UnivApiIntegration() {
  return acc;
 }, {})
  ).map(([s, count]) => (
- <div key={s} className={`px-4 py-2 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 text-xs font-semibold flex items-center gap-2 ${STATUS_COLORS[s] || 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
+ <div key={s} className={`px-4 py-2 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 text-xs font-semibold flex items-center gap-2 ${STATUS_COLORS[s] || 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
  <span>{s}</span>
- <span className="bg-card/40 rounded-md-full px-1.5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{count}</span>
+ <span className="bg-card/40 rounded-full px-1.5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{count}</span>
  </div>
  ))}
- <div className="px-4 py-2 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card text-xs font-semibold text-[#71717a] dark:text-gray-400 flex items-center gap-2 tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="px-4 py-2 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card text-xs font-semibold text-[#71717a] dark:text-gray-400 flex items-center gap-2 tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  Total <span className="text-foreground">{records.length}</span>
  </div>
  </div>
@@ -220,66 +220,66 @@ export default function UnivApiIntegration() {
  animate={{ scale: 1, opacity: 1, y: 0}}
  exit={{ scale: 0.95, opacity: 0, y: 10}}
  transition={{ type: 'spring', stiffness: 300, damping: 25}}
- className="bg-card w-full max-w-xl rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 max-h-[90vh] flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card w-full max-w-xl rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 max-h-[90vh] flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0">
  <h2 className="text-xl font-black flex items-center gap-2">
  <Plug className="w-5 h-5 text-primary" />
  {editId ? 'Edit Record' : 'Add API Integrations'}
  </h2>
- <button onClick={closeModal} className="p-2 bg-muted rounded-md-full hover:bg-muted/80 transition-colors">
+ <button onClick={closeModal} className="p-2 bg-muted rounded-full hover:bg-muted/80 transition-colors">
  <XCircle className="w-5 h-5 text-[#71717a] dark:text-gray-400" />
  </button>
  </div>
  <form onSubmit={handleSave} className="p-5 grid grid-cols-2 gap-4 overflow-y-auto flex-1">
  <div className="">
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Integration Name</label>
- <input required type="text" value={form.integration_name || ''} onChange={e => setForm(p => ({ ...p, integration_name: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input required type="text" value={form.integration_name || ''} onChange={e => setForm(p => ({ ...p, integration_name: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div className="">
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Provider</label>
- <input type="text" value={form.provider || ''} onChange={e => setForm(p => ({ ...p, provider: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="text" value={form.provider || ''} onChange={e => setForm(p => ({ ...p, provider: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div className="col-span-2">
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">API Endpoint URL</label>
- <input type="text" value={form.api_endpoint || ''} onChange={e => setForm(p => ({ ...p, api_endpoint: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="text" value={form.api_endpoint || ''} onChange={e => setForm(p => ({ ...p, api_endpoint: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div className="">
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Auth Type</label>
- <select value={form.auth_type} onChange={e => setForm(p => ({ ...p, auth_type: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
+ <select value={form.auth_type} onChange={e => setForm(p => ({ ...p, auth_type: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
  {["API Key","OAuth 2.0","Basic Auth","JWT","Webhook"].map(o => <option key={o}>{o}</option>)}
  </select>
  </div>
  <div className="">
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Environment</label>
- <select value={form.environment} onChange={e => setForm(p => ({ ...p, environment: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
+ <select value={form.environment} onChange={e => setForm(p => ({ ...p, environment: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
  {["Production","Staging","Development"].map(o => <option key={o}>{o}</option>)}
  </select>
  </div>
  <div className="">
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Last Tested</label>
- <input type="date" value={form.last_tested || ''} onChange={e => setForm(p => ({ ...p, last_tested: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="date" value={form.last_tested || ''} onChange={e => setForm(p => ({ ...p, last_tested: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div className="">
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Rate Limit (req/min)</label>
- <input type="number" value={form.rate_limit || ''} onChange={e => setForm(p => ({ ...p, rate_limit: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="number" value={form.rate_limit || ''} onChange={e => setForm(p => ({ ...p, rate_limit: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div className="col-span-2">
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Notes</label>
- <input type="text" value={form.notes || ''} onChange={e => setForm(p => ({ ...p, notes: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <input type="text" value={form.notes || ''} onChange={e => setForm(p => ({ ...p, notes: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
 
  <div className="col-span-2">
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Status</label>
- <select value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
+ <select value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
  {["Active","Degraded","Down","Deprecated"].map(s => <option key={s}>{s}</option>)}
  </select>
  </div>
  <div className="col-span-2 flex justify-end gap-3 pt-4 border-t border-primary/40 shrink-0">
- <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-md-xl text-sm font-semibold hover:bg-muted/80 transition-colors">
+ <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-semibold hover:bg-muted/80 transition-colors">
  Cancel
  </button>
- <button type="submit" disabled={saving} className="h-10 px-6 bg-primary text-white rounded-md-xl text-sm font-semibold hover:bg-primary/90 active:scale-95 transition-all disabled:opacity-60 flex items-center gap-2">
+ <button type="submit" disabled={saving} className="h-10 px-6 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 active:scale-95 transition-all disabled:opacity-60 flex items-center gap-2">
  {saving && <Loader2 className="w-4 h-4 animate-spin" />}
  {editId ? 'Update' : 'Add Record'}
  </button>

@@ -75,7 +75,7 @@ export default function Housekeeping() {
  </div>
  </div>
  {rooms.length === 0 ? (
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-12 text-center text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-12 text-center text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <BedDouble className="w-12 h-12 mx-auto mb-3 opacity-30" />
  <p className="font-semibold">{t("no_configured_rooms_found", "No configured rooms found.")}</p>
  <p className="text-xs mt-1 tracking-[0.04em]">{t(
@@ -86,10 +86,10 @@ export default function Housekeeping() {
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
  {/* Column 1: Dirty */}
- <div className="bg-slate-100 dark:bg-slate-900/50 rounded-md-xl p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 min-h-[500px]">
+ <div className="bg-slate-100 dark:bg-slate-900/50 rounded-xl p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 min-h-[500px]">
  <h3 className="font-semibold text-foreground flex items-center justify-between mb-4">
  <span className="flex items-center gap-2"><AlertCircle className="w-4 h-4 text-red-500"/> {t("dirty", "Dirty")}</span>
- <span className="bg-slate-200 dark:bg-slate-800 text-[#71717a] dark:text-gray-400 px-2 py-0.5 rounded-md-full text-xs tracking-[0.04em]">{columns.dirty.length}</span>
+ <span className="bg-slate-200 dark:bg-slate-800 text-[#71717a] dark:text-gray-400 px-2 py-0.5 rounded-full text-xs tracking-[0.04em]">{columns.dirty.length}</span>
  </h3>
  <div className="space-y-3">
  {columns.dirty.map(room => {
@@ -105,10 +105,10 @@ export default function Housekeeping() {
  </div>
 
  {/* Column 2: In Progress */}
- <div className="bg-slate-500 dark:bg-slate-100 rounded-md-xl p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/30 min-h-[500px]">
+ <div className="bg-slate-500 dark:bg-slate-100 rounded-xl p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/30 min-h-[500px]">
  <h3 className="font-semibold text-primary/70 dark:text-primary/70 flex items-center justify-between mb-4">
  <span className="flex items-center gap-2"><Brush className="w-4 h-4 text-primary dark:text-primary"/> {t("in_progress", "In Progress")}</span>
- <span className="bg-slate-100 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-md-full text-xs tracking-[0.04em]">{columns.inProgress.length}</span>
+ <span className="bg-slate-100 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs tracking-[0.04em]">{columns.inProgress.length}</span>
  </h3>
  <div className="space-y-3">
  {columns.inProgress.map(room => {
@@ -124,10 +124,10 @@ export default function Housekeeping() {
  </div>
 
  {/* Column 3: Inspecting */}
- <div className="bg-slate-500 dark:bg-slate-100 rounded-md-xl p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/30 min-h-[500px]">
+ <div className="bg-slate-500 dark:bg-slate-100 rounded-xl p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/30 min-h-[500px]">
  <h3 className="font-semibold text-primary/70 dark:text-primary/70 flex items-center justify-between mb-4">
  <span className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-primary dark:text-primary"/> {t("inspecting", "Inspecting")}</span>
- <span className="bg-slate-100 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-md-full text-xs tracking-[0.04em]">{columns.inspecting.length}</span>
+ <span className="bg-slate-100 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs tracking-[0.04em]">{columns.inspecting.length}</span>
  </h3>
  <div className="space-y-3">
  {columns.inspecting.map(room => {
@@ -143,10 +143,10 @@ export default function Housekeeping() {
  </div>
 
  {/* Column 4: Clean */}
- <div className="bg-slate-500 dark:bg-slate-100 rounded-md-xl p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/30 min-h-[500px]">
+ <div className="bg-slate-500 dark:bg-slate-100 rounded-xl p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/30 min-h-[500px]">
  <h3 className="font-semibold text-primary/70 dark:text-primary/70 flex items-center justify-between mb-4">
  <span className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary dark:text-primary"/> {t("clean_ready", "Clean & Ready")}</span>
- <span className="bg-slate-100 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-md-full text-xs tracking-[0.04em]">{columns.clean.length}</span>
+ <span className="bg-slate-100 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs tracking-[0.04em]">{columns.clean.length}</span>
  </h3>
  <div className="space-y-3 opacity-80">
  {columns.clean.map(room => {

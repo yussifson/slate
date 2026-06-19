@@ -578,14 +578,14 @@ export default function UnivDataGrid({
  <Button
  variant="outline"
  size="sm"
- className="gap-2 rounded-md-xl"
+ className="gap-2 rounded-xl"
  onClick={() => exportToCSV(filteredData, displayColumns, `${title.toLowerCase().replace(/\s+/g, '_')}.csv`)}
  >
  <FileDown className="w-4 h-4" /> Export CSV
  </Button>
  <Button
  size="sm"
- className="gap-2 rounded-md-xl bg-primary text-white hover:bg-primary/90 -primary/20"
+ className="gap-2 rounded-xl bg-primary text-white hover:bg-primary/90 -primary/20"
  onClick={() => setIsAdding(true)}
  >
  <Plus className="w-4 h-4" /> Add Record
@@ -602,7 +602,7 @@ export default function UnivDataGrid({
  exit={{ opacity: 0, height: 0}}
  className="mb-5 overflow-hidden"
  >
- <div className="p-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-2xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-2xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <form onSubmit={handleAdd} className="flex flex-col sm:flex-row sm:items-end gap-3">
  <div className="flex-1">
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Record Name</label>
@@ -612,11 +612,11 @@ export default function UnivDataGrid({
  value={newRecordName}
  onChange={e => setNewRecordName(e.target.value)}
  placeholder="Enter record name..."
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"
  />
  </div>
- <Button type="button" variant="outline" onClick={() => setIsAdding(false)} className="h-10 rounded-md-xl">Cancel</Button>
- <Button type="submit" disabled={addMutation.isPending} className="h-10 bg-primary text-white rounded-md-xl">
+ <Button type="button" variant="outline" onClick={() => setIsAdding(false)} className="h-10 rounded-xl">Cancel</Button>
+ <Button type="submit" disabled={addMutation.isPending} className="h-10 bg-primary text-white rounded-xl">
  {addMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Record'}
  </Button>
  </form>
@@ -626,14 +626,14 @@ export default function UnivDataGrid({
  </AnimatePresence>
 
  {/* Main card */}
- <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col min-h-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col min-h-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
 
  {/* Saved Views tabs */}
  <div className="px-4 pt-3 pb-0 border-b border-primary/40 flex items-center gap-2 flex-wrap">
  <button
  onClick={() => handleActivateView(-1)}
  className={cn(
- 'px-3 py-1.5 text-xs font-semibold rounded-md-t-lg border-b-2 transition-colors',
+ 'px-3 py-1.5 text-xs font-semibold rounded-t-lg border-b-2 transition-colors',
  activeViewIdx === -1
  ? 'border-primary text-primary bg-primary/5'
  : 'border-transparent text-[#71717a] dark:text-gray-400 hover:text-foreground'
@@ -646,7 +646,7 @@ export default function UnivDataGrid({
  <button
  onClick={() => handleActivateView(i)}
  className={cn(
- 'px-3 py-1.5 text-xs font-semibold rounded-md-t-lg border-b-2 transition-colors',
+ 'px-3 py-1.5 text-xs font-semibold rounded-t-lg border-b-2 transition-colors',
  activeViewIdx === i
  ? 'border-primary text-primary bg-primary/5'
  : 'border-transparent text-[#71717a] dark:text-gray-400 hover:text-foreground'
@@ -702,7 +702,7 @@ export default function UnivDataGrid({
  placeholder={searchPlaceholder}
  value={searchTerm}
  onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1); setActiveViewIdx(-1);}}
- className="h-9 pl-10 pr-4 w-64 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="h-9 pl-10 pr-4 w-64 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  {searchTerm && (
  <span className="absolute right-3 text-xs text-[#71717a] dark:text-gray-400 font-medium tracking-[0.04em]">
@@ -718,7 +718,7 @@ export default function UnivDataGrid({
  <select
  value={groupByCol || ''}
  onChange={e => { setGroupByCol(e.target.value || null); setCollapsedGroups(new Set());}}
- className="h-9 pl-2 pr-6 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-xs text-[#71717a] dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 appearance-none cursor-pointer tracking-[0.04em]"
+ className="h-9 pl-2 pr-6 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-xs text-[#71717a] dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 appearance-none cursor-pointer tracking-[0.04em]"
  >
  <option value="">Group by…</option>
  {displayColumns.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
@@ -735,7 +735,7 @@ export default function UnivDataGrid({
  initial={{ opacity: 0, y: -8}}
  animate={{ opacity: 1, y: 0}}
  exit={{ opacity: 0, y: -8}}
- className="mx-4 mt-3 px-4 py-2.5 bg-primary text-primary-foreground rounded-md-xl flex items-center gap-3 flex-wrap -primary/20"
+ className="mx-4 mt-3 px-4 py-2.5 bg-primary text-primary-foreground rounded-xl flex items-center gap-3 flex-wrap -primary/20"
  >
  <span className="text-sm font-semibold">
  {selectedIds.size} selected
@@ -870,7 +870,7 @@ export default function UnivDataGrid({
  <tr>
  <td colSpan={displayColumns.length + 2} className="py-16 text-center">
  <div className="flex flex-col items-center gap-3 text-[#71717a] dark:text-gray-400">
- <div className="w-12 h-12 rounded-md-full bg-muted flex items-center justify-center">
+ <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
  <Search className="w-5 h-5 opacity-50" />
  </div>
  <p className="text-sm">No records found.{' '}

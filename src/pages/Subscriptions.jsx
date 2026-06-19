@@ -60,7 +60,7 @@ export default function Subscriptions() {
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
  {Object.entries(SUBSCRIPTION_PLANS).map(([key, plan]) => {
  return (
- <div key={key} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={key} className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between mb-4">
  <h3 className="text-lg font-semibold">{plan.name}</h3>
  <Badge variant="secondary" className="text-xs tracking-[0.04em]">{planCounts[key] || 0} {t("firms", "firms")}</Badge>
@@ -83,8 +83,8 @@ export default function Subscriptions() {
  </div>
  </div>
  <div className="mt-4 pt-3 border-t border-primary/40">
- <div className="h-2 bg-muted rounded-md-full overflow-hidden">
- <div className="h-full bg-primary rounded-md-full transition-all" style={{ width: `${companies.length > 0 ? ((planCounts[key] || 0) / companies.length * 100) : 0}%`}} />
+ <div className="h-2 bg-muted rounded-full overflow-hidden">
+ <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${companies.length > 0 ? ((planCounts[key] || 0) / companies.length * 100) : 0}%`}} />
  </div>
  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">
  {companies.length > 0 ? Math.round((planCounts[key] || 0) / companies.length * 100) : 0}{t("of_firms", "% of firms")}
@@ -97,7 +97,7 @@ export default function Subscriptions() {
  {/* Company subscription list */}
  <div>
  <h2 className="text-base font-semibold mb-3">{t("all_firm_subscriptions", "All Firm Subscriptions")}</h2>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm">
  <thead className="bg-muted/50">
  <tr>

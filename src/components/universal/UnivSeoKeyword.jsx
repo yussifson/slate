@@ -113,7 +113,7 @@ export default function UnivSeoKeyword() {
  </button>
  ))}
  </div>
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
@@ -135,7 +135,7 @@ export default function UnivSeoKeyword() {
  initial={{ opacity: 0, y: -20}}
  animate={{ opacity: 1, y: 0}}
  exit={{ opacity: 0, y: -20}}
- className="bg-card p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-stone-200 mb-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-stone-200 mb-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <h2 className="text-xl font-semibold mb-4 text-stone-700">
  {editingId ? 'Edit Keyword' : 'Add New Keyword'}
@@ -222,10 +222,10 @@ export default function UnivSeoKeyword() {
 
  {loading ? (
  <div className="flex justify-center py-12">
- <div className="animate-spin rounded-md-full h-10 w-10 border-b-2 border-teal-600"></div>
+ <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-teal-600"></div>
  </div>
  ) : (
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-stone-200 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-stone-200 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-left border-collapse">
  <thead>
  <tr className="bg-stone-50 border-b border-stone-200 text-sm font-medium text-stone-500">
@@ -248,7 +248,7 @@ export default function UnivSeoKeyword() {
  </td>
  <td className="p-4">
  <div className="flex items-center gap-2">
- <div className="w-16 h-2 bg-stone-200 rounded-md-full overflow-hidden">
+ <div className="w-16 h-2 bg-stone-200 rounded-full overflow-hidden">
  <div 
  className={`h-full ${item.difficulty > 70 ? 'bg-red-500/10' : item.difficulty > 30 ? 'bg-yellow-500/10' : 'bg-green-500/10'}`}
  style={{ width: `${item.difficulty || 0}%`}}
@@ -258,7 +258,7 @@ export default function UnivSeoKeyword() {
  </div>
  </td>
  <td className="p-4">
- <span className="inline-flex items-center justify-center w-8 h-8 rounded-md-full bg-teal-100 text-teal-800 font-semibold text-sm">
+ <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-teal-100 text-teal-800 font-semibold text-sm">
  {item.current_rank || '-'}
  </span>
  </td>

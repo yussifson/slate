@@ -67,7 +67,7 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
   };
 
   return (
-    <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-md-xl p-6 text-center transition-all hover:bg-slate-50 group relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-xl p-6 text-center transition-all hover:bg-slate-50 group relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <input
         type="file"
         ref={fileInputRef}
@@ -78,7 +78,7 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
       {isProcessing ? (
         <div className="flex flex-col items-center justify-center space-y-3">
           <div className="relative">
-            <div className="absolute inset-0 bg-primary/20 blur-xl rounded-md-full"></div>
+            <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full"></div>
             <FileScan className="w-10 h-10 text-primary animate-pulse relative z-10" />
             <Sparkles className="w-4 h-4 text-amber-400 absolute -top-1 -right-1 animate-spin" />
           </div>
@@ -106,7 +106,7 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
           className="flex flex-col items-center cursor-pointer"
           onClick={() => fileInputRef.current?.click()}
         >
-          <div className="w-12 h-12 bg-slate-100 rounded-md-full flex items-center justify-center text-primary mb-3 group-hover:scale-110 transition-transform">
+          <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center text-primary mb-3 group-hover:scale-110 transition-transform">
             <Upload className="w-6 h-6" />
           </div>
           <h4 className="text-sm font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("upload_document_for_ai_auto_fi", "Upload Document for AI Auto-Fill")}</h4>

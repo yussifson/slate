@@ -61,13 +61,13 @@ export default function SHSStudentProfiles() {
 
  <div className="flex-1 flex gap-6 overflow-hidden">
  {/* Left Panel: Student List */}
- <Card className="w-[350px] shrink-0 flex flex-col rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/5">
  <div className="relative">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary dark:text-primary" />
  <Input 
  placeholder="Search students..." 
- className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -84,13 +84,13 @@ export default function SHSStudentProfiles() {
  <button
  key={student.id}
  onClick={() => setSelectedStudent(student)}
- className={`w-full text-left p-3 rounded-md-2xl transition-all duration-200 flex items-center gap-3 ${
+ className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
  selectedStudent?.id === student.id 
  ? 'bg-primary dark:bg-primary text-white -emerald-500/20' 
  : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200'
 }`}
  >
- <div className={`w-10 h-10 rounded-md-full flex items-center justify-center font-semibold shrink-0 ${
+ <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold shrink-0 ${
  selectedStudent?.id === student.id ? 'bg-white dark:bg-slate-900/40 dark:bg-slate-900/20' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
 }`}>
  {student.title?.charAt(0)}
@@ -109,7 +109,7 @@ export default function SHSStudentProfiles() {
  </Card>
 
  {/* Right Panel: Student Details */}
- <Card className="flex-1 flex flex-col rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="flex-1 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {selectedStudent ? (
  <>
  {/* Profile Header Background */}
@@ -121,8 +121,8 @@ export default function SHSStudentProfiles() {
  <div className="px-8 pb-8">
  {/* Profile Avatar & Primary Info */}
  <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center relative z-10">
- <div className="w-24 h-24 rounded-md-3xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-1 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-full h-full rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
+ <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-1 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-full h-full rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
  <UserCircle className="w-12 h-12" />
  </div>
  </div>
@@ -140,7 +140,7 @@ export default function SHSStudentProfiles() {
 
  <div className="mt-8">
  <Tabs defaultValue="overview" className="w-full">
- <TabsList className="bg-slate-500 dark:bg-slate-800/50 p-1 rounded-md-xl w-full sm:w-auto overflow-x-auto justify-start border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
+ <TabsList className="bg-slate-500 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
  <TabsTrigger value="overview" className="rounded-xl data-[state=active]:bg-white dark:bg-slate-900/40 dark:bg-slate-900 data-[state=active]:text-primary dark:text-primary/70 data-[state=active]: hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Overview</TabsTrigger>
  <TabsTrigger value="family" className="rounded-xl data-[state=active]:bg-white dark:bg-slate-900/40 dark:bg-slate-900 data-[state=active]:text-primary dark:text-primary/70 data-[state=active]: hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Family & Contacts</TabsTrigger>
  <TabsTrigger value="medical" className="rounded-xl data-[state=active]:bg-white dark:bg-slate-900/40 dark:bg-slate-900 data-[state=active]:text-primary dark:text-primary/70 data-[state=active]: hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Medical Summary</TabsTrigger>
@@ -150,7 +150,7 @@ export default function SHSStudentProfiles() {
  <div className="mt-6">
  <TabsContent value="overview" className="space-y-6 outline-none">
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
- <div className="p-5 rounded-md-2xl bg-primary/30 dark:bg-slate-800/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 space-y-4">
+ <div className="p-5 rounded-2xl bg-primary/30 dark:bg-slate-800/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 space-y-4">
  <h3 className="text-sm font-semibold text-primary dark:text-primary/70 uppercase tracking-wider tracking-[0.04em]">Demographics</h3>
  <div className="grid grid-cols-2 gap-y-4">
  <div>
@@ -171,7 +171,7 @@ export default function SHSStudentProfiles() {
  </div>
  </div>
  
- <div className="p-5 rounded-md-2xl bg-primary/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 space-y-4">
+ <div className="p-5 rounded-2xl bg-primary/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 space-y-4">
  <h3 className="text-sm font-semibold text-primary uppercase tracking-wider tracking-[0.04em]">Enrollment Info</h3>
  <div className="grid grid-cols-2 gap-y-4">
  <div>
@@ -196,29 +196,29 @@ export default function SHSStudentProfiles() {
  </TabsContent>
  
  <TabsContent value="family" className="outline-none">
- <div className="p-8 text-center border-2 border-dashed border-primary/40 dark:border-primary/40 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/20">
+ <div className="p-8 text-center border-2 border-dashed border-primary/40 dark:border-primary/40 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/20">
  <Users className="w-10 h-10 text-primary/30 mx-auto mb-3" />
  <h4 className="text-slate-700 dark:text-slate-300 dark:text-slate-200 font-semibold">No Family Contacts Added</h4>
  <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 text-sm mt-1 mb-4">You have not added any emergency contacts or guardians for this student.</p>
- <Button variant="outline" className="border-primary/20 dark:border-primary/40 text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 rounded-md-xl">Add Contact</Button>
+ <Button variant="outline" className="border-primary/20 dark:border-primary/40 text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 rounded-xl">Add Contact</Button>
  </div>
  </TabsContent>
 
  <TabsContent value="medical" className="outline-none">
- <div className="p-8 text-center border-2 border-dashed border-rose-100 rounded-md-2xl bg-rose-50/20">
+ <div className="p-8 text-center border-2 border-dashed border-rose-100 rounded-2xl bg-rose-50/20">
  <HeartPulse className="w-10 h-10 text-rose-300 mx-auto mb-3" />
  <h4 className="text-slate-700 dark:text-slate-300 dark:text-slate-200 font-semibold">No Medical Records</h4>
  <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 text-sm mt-1 mb-4">No allergies, conditions, or medical history logged.</p>
- <Button variant="outline" className="border-rose-200 text-rose-600 hover:bg-rose-50 rounded-md-xl">Update Medical Info</Button>
+ <Button variant="outline" className="border-rose-200 text-rose-600 hover:bg-rose-50 rounded-xl">Update Medical Info</Button>
  </div>
  </TabsContent>
 
  <TabsContent value="documents" className="outline-none">
- <div className="p-8 text-center border-2 border-dashed border-primary/40 dark:border-primary/40 rounded-md-2xl">
+ <div className="p-8 text-center border-2 border-dashed border-primary/40 dark:border-primary/40 rounded-2xl">
  <FileText className="w-10 h-10 text-slate-300 mx-auto mb-3" />
  <h4 className="text-slate-700 dark:text-slate-300 dark:text-slate-200 font-semibold">No Documents Uploaded</h4>
  <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 text-sm mt-1 mb-4">Upload birth certificates, previous report cards, etc.</p>
- <Button variant="outline" className="rounded-md-xl">Upload Document</Button>
+ <Button variant="outline" className="rounded-xl">Upload Document</Button>
  </div>
  </TabsContent>
  </div>
@@ -229,7 +229,7 @@ export default function SHSStudentProfiles() {
  </>
  ) : (
  <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
- <div className="w-20 h-20 rounded-md-full bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center mb-6">
+ <div className="w-20 h-20 rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center mb-6">
  <UserCircle className="w-10 h-10 text-primary/30" />
  </div>
  <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No Student Selected</h3>

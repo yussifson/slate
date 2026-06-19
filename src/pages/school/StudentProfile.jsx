@@ -36,7 +36,7 @@ export default function StudentProfile() {
   return (
     <div className="max-w-6xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex items-center justify-between border-b border-primary/40 pb-4">
-        <Button variant="ghost" onClick={() => navigate('/school/students')} className="gap-2 text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--primary)] rounded-md-full">
+        <Button variant="ghost" onClick={() => navigate('/school/students')} className="gap-2 text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--primary)] rounded-full">
           <ArrowLeft className="w-5 h-5" /> Back to Directory
         </Button>
       </div>
@@ -45,12 +45,12 @@ export default function StudentProfile() {
         {/* Profile Sidebar */}
         <div className="space-y-6 md:col-span-1">
           <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 text-center rounded-md-[var(--radius-xl)]">
-            <div className="w-24 h-24 bg-[var(--primary)]/10 text-[var(--primary)] rounded-md-full mx-auto flex items-center justify-center text-3xl font-semibold mb-4 border-[0.5px] border-black/9 dark:border-white/8 border-[var(--primary)]/20 tracking-[-0.02em]">
+            <div className="w-24 h-24 bg-[var(--primary)]/10 text-[var(--primary)] rounded-full mx-auto flex items-center justify-center text-3xl font-semibold mb-4 border-[0.5px] border-black/9 dark:border-white/8 border-[var(--primary)]/20 tracking-[-0.02em]">
               {student.avatar || student.name?.substring(0, 2).toUpperCase()}
             </div>
             <h2 className="text-xl font-display font-semibold text-[var(--color-text-primary)] mb-1 leading-tight tracking-tight">{student.name}</h2>
             <p className="text-xs font-semibold text-[var(--color-text-secondary)] mb-4 tracking-[0.04em]">{student.id_number}</p>
-            <div className="inline-block px-3 py-1 bg-[var(--color-surface-1)] text-[var(--primary)] text-[10px] font-semibold uppercase tracking-[var(--tracking-widest)] border-[0.5px] border-black/9 dark:border-white/8 border-[var(--primary)]/20 rounded-md-full tracking-[0.04em]">
+            <div className="inline-block px-3 py-1 bg-[var(--color-surface-1)] text-[var(--primary)] text-[10px] font-semibold uppercase tracking-[var(--tracking-widest)] border-[0.5px] border-black/9 dark:border-white/8 border-[var(--primary)]/20 rounded-full tracking-[0.04em]">
               {student.status || 'Active'}
             </div>
           </div>
@@ -80,9 +80,9 @@ export default function StudentProfile() {
         <div className="md:col-span-3">
           {/* Custom Tabs */}
           <div className="flex flex-wrap gap-2 mb-6 scrollbar-hide overflow-x-auto">
-            <button onClick={() => setActiveTab('academics')} className={`px-5 py-2.5 font-semibold text-sm transition-colors rounded-md-full whitespace-nowrap ${activeTab === 'academics' ? 'bg-[var(--primary)] text-white' : 'bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 text-[var(--color-text-secondary)] hover:border-primary/40'}`}>Academics</button>
-            <button onClick={() => setActiveTab('contact')} className={`px-5 py-2.5 font-semibold text-sm transition-colors rounded-md-full whitespace-nowrap ${activeTab === 'contact' ? 'bg-[var(--primary)] text-white' : 'bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 text-[var(--color-text-secondary)] hover:border-primary/40'}`}>Contact Info</button>
-            <button onClick={() => setActiveTab('medical')} className={`px-5 py-2.5 font-semibold text-sm transition-colors rounded-md-full whitespace-nowrap ${activeTab === 'medical' ? 'bg-[var(--primary)] text-white' : 'bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 text-[var(--color-text-secondary)] hover:border-primary/40'}`}>Medical</button>
+            <button onClick={() => setActiveTab('academics')} className={`px-5 py-2.5 font-semibold text-sm transition-colors rounded-full whitespace-nowrap ${activeTab === 'academics' ? 'bg-[var(--primary)] text-white' : 'bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 text-[var(--color-text-secondary)] hover:border-primary/40'}`}>Academics</button>
+            <button onClick={() => setActiveTab('contact')} className={`px-5 py-2.5 font-semibold text-sm transition-colors rounded-full whitespace-nowrap ${activeTab === 'contact' ? 'bg-[var(--primary)] text-white' : 'bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 text-[var(--color-text-secondary)] hover:border-primary/40'}`}>Contact Info</button>
+            <button onClick={() => setActiveTab('medical')} className={`px-5 py-2.5 font-semibold text-sm transition-colors rounded-full whitespace-nowrap ${activeTab === 'medical' ? 'bg-[var(--primary)] text-white' : 'bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 text-[var(--color-text-secondary)] hover:border-primary/40'}`}>Medical</button>
           </div>
 
           <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] min-h-[400px]">

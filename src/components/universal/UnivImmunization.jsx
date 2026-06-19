@@ -84,7 +84,7 @@ const UnivImmunization = () => {
  </motion.div>
 
  <div className="view-header grid md:grid-cols-3 gap-8">
- <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="md:col-span-1 bg-card p-6 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="md:col-span-1 bg-card p-6 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
  <Plus className="w-5 h-5 text-blue-500" /> New Record
  </h2>
@@ -128,11 +128,11 @@ const UnivImmunization = () => {
  {loading ? (
  <div className="text-center py-10"><Activity className="w-8 h-8 text-blue-500 animate-spin mx-auto" /></div>
  ) : immunizations.length === 0 ? (
- <div className="text-center py-10 bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">No immunization records found.</div>
+ <div className="text-center py-10 bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">No immunization records found.</div>
  ) : (
  immunizations.map((record, index) => (
- <motion.div key={record.id || index} initial={{ opacity: 0, y: 10}} animate={{ opacity: 1, y: 0}} transition={{ delay: index * 0.05}} className="bg-card p-5 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-start gap-4 transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="bg-blue-100 p-3 rounded-md-xl text-blue-600"><Syringe className="w-6 h-6" /></div>
+ <motion.div key={record.id || index} initial={{ opacity: 0, y: 10}} animate={{ opacity: 1, y: 0}} transition={{ delay: index * 0.05}} className="bg-card p-5 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-start gap-4 transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-blue-100 p-3 rounded-xl text-blue-600"><Syringe className="w-6 h-6" /></div>
  <div className="flex-1">
  <h3 className="text-lg font-semibold text-foreground">{record.patient_name}</h3>
  <div className="flex flex-wrap gap-4 text-sm text-[#71717a] dark:text-gray-400 mt-2">

@@ -113,7 +113,7 @@ export default function UnivNewsletter() {
  </button>
  ))}
  </div>
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
@@ -135,7 +135,7 @@ export default function UnivNewsletter() {
  initial={{ opacity: 0, y: -20}}
  animate={{ opacity: 1, y: 0}}
  exit={{ opacity: 0, y: -20}}
- className="bg-card p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <h2 className="text-xl font-semibold mb-4 text-foreground">
  {editingId ? 'Edit Newsletter' : 'Record Newsletter'}
@@ -223,7 +223,7 @@ export default function UnivNewsletter() {
 
  {loading ? (
  <div className="flex justify-center py-12">
- <div className="animate-spin rounded-md-full h-10 w-10 border-b-2 border-purple-600"></div>
+ <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-purple-600"></div>
  </div>
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -232,7 +232,7 @@ export default function UnivNewsletter() {
  key={item.id}
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
- className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden transition- flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden transition- flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="p-5 flex-grow">
  <div className="flex justify-between items-start mb-3">
@@ -268,7 +268,7 @@ export default function UnivNewsletter() {
  </motion.div>
  ))}
  {data.length === 0 && !isEditing && (
- <div className="col-span-full py-12 text-center bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="col-span-full py-12 text-center bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Mail className="w-12 h-12 text-gray-300 mx-auto mb-3" />
  <p className="text-[#71717a] dark:text-gray-400">No newsletter data available.</p>
  </div>

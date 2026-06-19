@@ -128,7 +128,7 @@ export default function SpotlightSearch() {
  onClick={(e) => { if (e.target === e.currentTarget) setIsOpen(false);}}
  >
  <div
- className="w-full max-w-2xl bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl -[0_32px_64px_rgba(0,0,0,0.15)] flex flex-col max-h-[65vh] overflow-hidden animate-in slide-in-from-top-4 duration-200"
+ className="w-full max-w-2xl bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl shadow-[0_32px_64px_rgba(0,0,0,0.15)] flex flex-col max-h-[65vh] overflow-hidden animate-in slide-in-from-top-4 duration-200"
  onKeyDown={handleKeyNavigation}
  >
  {/* Search Input Bar */}
@@ -138,7 +138,7 @@ export default function SpotlightSearch() {
  ref={inputRef}
  type="text"
  placeholder="Search cases, clients, tasks, or team members..."
- className="flex-1 bg-transparent border-0 text-foreground placeholder:text-[#71717a] dark:text-gray-400/60 outline-none text-[15px] focus:ring-0 focus:outline-none"
+ className="flex-1 bg-transparent border-0 text-foreground placeholder:text-[#71717a] dark:text-gray-400/60 outline-none text-[14px] focus:ring-0 focus:outline-none"
  value={query}
  onChange={(e) => setQuery(e.target.value)}
  />
@@ -157,7 +157,7 @@ export default function SpotlightSearch() {
  <div className="flex-1 overflow-y-auto p-3 space-y-3">
  {loading ? (
  <div className="py-14 text-center text-sm text-[#71717a] dark:text-gray-400 flex flex-col items-center gap-3">
- <span className="w-7 h-7 rounded-md-full border-2 border-primary/30 border-t-primary animate-spin" />
+ <span className="w-4 h-4 rounded-full border-[1.5px] border-primary/30 border-t-primary animate-spin" />
  <span>{t("scanning_records", "Scanning records...")}</span>
  </div>
  ) : flatResults.length === 0 ? (
@@ -176,7 +176,7 @@ export default function SpotlightSearch() {
  ) : (
  <div className="max-w-sm space-y-2 mt-4 px-4">
  <div className="flex items-center justify-center gap-2 mb-3">
- <div className="w-8 h-8 rounded-md-xl bg-slate-100 flex items-center justify-center">
+ <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center">
  <Search className="w-4 h-4 text-primary" />
  </div>
  </div>
@@ -197,7 +197,7 @@ export default function SpotlightSearch() {
  if (catItems.length === 0) return null;
  return (
  <div key={cat} className="space-y-0.5">
- <h4 className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400/70 uppercase tracking-widest px-3 pb-1 select-none tracking-[0.04em]">
+ <h4 className="text-[10px] font-semibold text-foreground/40 uppercase tracking-[0.06em] px-3 pb-1 select-none">
  {cat}
  </h4>
  <div className="space-y-0.5">
@@ -212,27 +212,27 @@ export default function SpotlightSearch() {
  key={item.id + item.category}
  onMouseEnter={() => setHoveredId(item.id + item.category)}
  onMouseLeave={() => setHoveredId(null)}
- className={`flex items-center justify-between px-3 py-2.5 rounded-md-xl cursor-pointer transition-all duration-100 select-none group ${
+ className={`flex items-center justify-between px-3 py-2.5 h-11 rounded-lg cursor-pointer transition-all duration-100 select-none group ${
  isSelected
- ? "bg-primary text-primary-foreground "
+ ? "bg-primary/8 text-foreground"
  : "hover:bg-muted/70 text-foreground"
-}`}
+ }`}
  >
  {/* Left: icon + info */}
  <div
  className="flex items-center gap-3 min-w-0 flex-1"
  onClick={() => { navigate(item.route); setIsOpen(false);}}
  >
- <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
- isSelected ? "bg-white/20" : "bg-muted"
-}`}>
- <IconComp className={`w-4 h-4 ${isSelected ? "text-primary-foreground" : "text-[#71717a] dark:text-gray-400"}`} />
+ <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+ isSelected ? "bg-primary/15" : "bg-muted"
+ }`}>
+ <IconComp className={`w-4 h-4 ${isSelected ? "text-primary" : "text-[#71717a] dark:text-gray-400"}`} />
  </div>
  <div className="min-w-0">
- <p className="text-sm font-semibold truncate leading-tight">
+ <p className="text-sm font-medium truncate leading-tight">
  {item.title || item.name || item.full_name}
  </p>
- <p className={`text-xs truncate leading-tight mt-0.5 ${isSelected ? "text-primary-foreground/70" : "text-[#71717a] dark:text-gray-400"}`}>
+ <p className={`text-xs truncate leading-tight mt-0.5 ${isSelected ? "text-foreground/60" : "text-[#71717a] dark:text-gray-400"}`}>
  {item.case_number || item.email || item.user_email || item.description || item.status || "View details"}
  </p>
  </div>
@@ -253,7 +253,7 @@ export default function SpotlightSearch() {
  {t("ask_ai", "Ask AI")}
  </button>
  )}
- {isSelected && <ArrowRight className="w-4 h-4 text-primary-foreground/80" />}
+ {isSelected && <ArrowRight className="w-4 h-4 text-primary/60" />}
  </div>
  </div>
  );

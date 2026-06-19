@@ -53,7 +53,7 @@ export default function GuestPortal() {
 
  if (!activeRes) {
  return (
- <div className="py-12 text-center max-w-md mx-auto bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
+ <div className="py-12 text-center max-w-md mx-auto bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
  <Key className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary animate-pulse" />
  <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_active_reservations", "No Active Reservations")}</p>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">{t(
@@ -67,7 +67,7 @@ export default function GuestPortal() {
  return (
  <div className="space-y-6 max-w-5xl mx-auto">
  {/* Header */}
- <div className="bg-gradient-to-r from-primary to-orange-700 rounded-md-2xl p-6 md:p-8 text-white relative overflow-hidden">
+ <div className="bg-gradient-to-r from-primary to-orange-700 rounded-2xl p-6 md:p-8 text-white relative overflow-hidden">
  <div className="relative z-10">
  <h1 className="text-2xl md:text-3xl font-semibold mb-2 tracking-[-0.02em]">{t("welcome_back", "Welcome back,")} {activeRes.guest}</h1>
  <p className="text-primary/10 max-w-xl">{t(
@@ -82,7 +82,7 @@ export default function GuestPortal() {
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
  {/* Left Column (Reservation Details) */}
  <div className="col-span-1 lg:col-span-2 space-y-6">
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 md:p-5 border-b border-primary/40 bg-muted/50 flex justify-between items-center">
  <h3 className="font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><Calendar className="w-5 h-5 text-[#71717a] dark:text-gray-400" /> {t("your_stay_details", "Your Stay Details")}</h3>
  <Badge variant="outline" className={`${activeRes.status === 'Checked-in' ? 'bg-slate-100 text-primary/90 border-primary/20' : 'bg-slate-100 text-primary/90 border-primary/20'}`}>{activeRes.status}</Badge>
@@ -115,8 +115,8 @@ export default function GuestPortal() {
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
- <div onClick={() => { setRequestData({ ...requestData, type: 'Room Service'}); setShowRequestModal(true);}} className="bg-card hover:bg-muted/50 cursor-pointer transition-colors rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-12 h-12 rounded-md-full bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+ <div onClick={() => { setRequestData({ ...requestData, type: 'Room Service'}); setShowRequestModal(true);}} className="bg-card hover:bg-muted/50 cursor-pointer transition-colors rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-12 h-12 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
  <Coffee className="w-6 h-6" />
  </div>
  <div>
@@ -125,8 +125,8 @@ export default function GuestPortal() {
  </div>
  </div>
 
- <div onClick={() => { setRequestData({ ...requestData, type: 'Housekeeping'}); setShowRequestModal(true);}} className="bg-card hover:bg-muted/50 cursor-pointer transition-colors rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-12 h-12 rounded-md-full bg-slate-100 text-primary flex items-center justify-center shrink-0">
+ <div onClick={() => { setRequestData({ ...requestData, type: 'Housekeeping'}); setShowRequestModal(true);}} className="bg-card hover:bg-muted/50 cursor-pointer transition-colors rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-12 h-12 rounded-full bg-slate-100 text-primary flex items-center justify-center shrink-0">
  <Bell className="w-6 h-6" />
  </div>
  <div>
@@ -139,7 +139,7 @@ export default function GuestPortal() {
 
  {/* Right Column (Billing info) */}
  <div className="space-y-6">
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <h3 className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("current_bill", "Current Bill")}</h3>
  </div>
@@ -163,7 +163,7 @@ export default function GuestPortal() {
  </div>
  {showRequestModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-sm p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-sm p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Bell className="w-5 h-5 text-primary"/> {t("request", "Request")} {requestData.type}
  </h2>

@@ -35,7 +35,7 @@ import '@xyflow/react/dist/style.css';
 
 const TriggerNode = ({ data }) => {
   return (
-    <div className="bg-white dark:bg-slate-900 border-2 border-indigo-500 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] w-64 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="bg-white dark:bg-slate-900 border-2 border-indigo-500 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] w-64 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <div className="bg-indigo-500/10/10 px-4 py-2 border-b border-indigo-500/20 flex items-center gap-2">
         <Database className="w-4 h-4 text-indigo-500" />
         <span className="text-xs font-semibold text-indigo-700 dark:text-indigo-400 uppercase tracking-wider tracking-[0.04em]">Database Trigger</span>
@@ -61,7 +61,7 @@ const ActionNode = ({ data }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 border-2 border-emerald-500 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] w-64 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="bg-white dark:bg-slate-900 border-2 border-emerald-500 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] w-64 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <Handle type="target" position={Position.Left} className="w-3 h-3 bg-emerald-500/10 border-2 border-white" />
       <div className="bg-emerald-500/10/10 px-4 py-2 border-b border-emerald-500/20 flex items-center gap-2">
         {getIcon()}
@@ -80,7 +80,7 @@ const ActionNode = ({ data }) => {
 
 const ConditionNode = ({ data }) => {
   return (
-    <div className="bg-white dark:bg-slate-900 border-2 border-amber-500 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] w-64 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="bg-white dark:bg-slate-900 border-2 border-amber-500 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] w-64 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <Handle type="target" position={Position.Left} className="w-3 h-3 bg-amber-500 border-2 border-white" />
       <div className="bg-amber-500/10 px-4 py-2 border-b border-amber-500/20 flex items-center gap-2">
         <GitBranch className="w-4 h-4 text-amber-500" />
@@ -101,7 +101,7 @@ const ConditionNode = ({ data }) => {
 
 const DelayNode = ({ data }) => {
   return (
-    <div className="bg-white dark:bg-slate-900 border-2 border-blue-500 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] w-64 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="bg-white dark:bg-slate-900 border-2 border-blue-500 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] w-64 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <Handle type="target" position={Position.Left} className="w-3 h-3 bg-blue-500/10 border-2 border-white" />
       <div className="bg-blue-500/10/10 px-4 py-2 border-b border-blue-500/20 flex items-center gap-2">
         <Clock className="w-4 h-4 text-blue-500" />
@@ -221,7 +221,7 @@ const ExecutionLogs = ({ companyId }) => {
   if (isLoading) return <div className="py-10 text-center">Loading logs...</div>;
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm border-[0.5px] border-black/9 dark:border-white/8 p-6 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm border-[0.5px] border-black/9 dark:border-white/8 p-6 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <Button 
         variant="outline" 
         size="sm" 
@@ -644,11 +644,11 @@ export default function Automations() {
             >
               {isLoading ? (
                 <div className="col-span-full py-20 flex justify-center">
-                  <div className="animate-spin rounded-md-full h-8 w-8 border-b-2 border-primary"></div>
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                 </div>
               ) : automations.length === 0 ? (
-                <div className="col-span-full py-24 flex flex-col items-center justify-center text-center bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                  <div className="w-16 h-16 bg-primary/10 rounded-md-full flex items-center justify-center mb-4">
+                <div className="col-span-full py-24 flex flex-col items-center justify-center text-center bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                     <Zap className="w-8 h-8 text-primary" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">No Active Flows</h3>
@@ -668,7 +668,7 @@ export default function Automations() {
                       <CardHeader className="pb-4">
                         <div className="flex justify-between items-start">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-md-xl bg-primary/10 flex items-center justify-center shrink-0">
+                            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                               <Zap className="w-5 h-5 text-primary" />
                             </div>
                             <div>
@@ -733,7 +733,7 @@ export default function Automations() {
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
-              className="h-[75vh] bg-white dark:bg-slate-950 border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm flex overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+              className="h-[75vh] bg-white dark:bg-slate-950 border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm flex overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
             >
               <ReactFlowProvider>
                 {/* Visual Canvas */}
@@ -772,7 +772,7 @@ export default function Automations() {
                         initial={{ opacity: 0, x: 50 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 50 }}
-                        className="absolute right-4 top-4 w-80 bg-white dark:bg-slate-900 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-2xl border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 overflow-hidden z-50 flex flex-col max-h-[90%] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+                        className="absolute right-4 top-4 w-80 bg-white dark:bg-slate-900 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-2xl border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 overflow-hidden z-50 flex flex-col max-h-[90%] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
                       >
                         <div className="p-4 border-b bg-slate-50 dark:bg-slate-800 flex justify-between items-center">
                           <h3 className="font-semibold">

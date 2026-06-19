@@ -92,7 +92,7 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
 };
 
  return (
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Header */}
  <div className="p-4 border-b border-primary/40 flex items-center justify-between gap-3 flex-wrap">
  <div className="flex items-center gap-2">
@@ -120,9 +120,9 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
  <div key={stage.id} className="w-52 shrink-0 flex flex-col">
  {/* Stage header */}
  <div className="flex items-center gap-2 mb-3 px-1">
- <div className="w-2.5 h-2.5 rounded-md-full shrink-0" style={{ backgroundColor: stage.color}} />
+ <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: stage.color}} />
  <span className="text-xs font-semibold tracking-[0.04em]">{stage.name}</span>
- <span className="ml-auto text-[10px] bg-muted text-[#71717a] dark:text-gray-400 px-1.5 py-0.5 rounded-md-full">
+ <span className="ml-auto text-[10px] bg-muted text-[#71717a] dark:text-gray-400 px-1.5 py-0.5 rounded-full">
  {stageCards[stage.id]?.length || 0}
  </span>
  </div>
@@ -189,9 +189,9 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
  {untrackedCases.length > 0 && (
  <div className="w-52 shrink-0 flex flex-col">
  <div className="flex items-center gap-2 mb-3 px-1">
- <div className="w-2.5 h-2.5 rounded-md-full bg-muted-foreground shrink-0" />
+ <div className="w-2.5 h-2.5 rounded-full bg-muted-foreground shrink-0" />
  <span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("not_tracked", "Not Tracked")}</span>
- <span className="ml-auto text-[10px] bg-muted text-[#71717a] dark:text-gray-400 px-1.5 py-0.5 rounded-md-full">{untrackedCases.length}</span>
+ <span className="ml-auto text-[10px] bg-muted text-[#71717a] dark:text-gray-400 px-1.5 py-0.5 rounded-full">{untrackedCases.length}</span>
  </div>
  <div className="space-y-2 bg-muted/10 rounded-xl p-2 min-h-[120px]">
  {untrackedCases.slice(0, 8).map(c => {

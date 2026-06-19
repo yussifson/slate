@@ -69,7 +69,7 @@ export default function Hostel() {
           <p className="text-emerald-700 font-medium text-lg mt-1">{t("manage_dormitories", "Visual block/room allocation map")}</p>
         </div>
         <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-          <Button onClick={() => { setFormData({name: '', type: 'Boys', warden: '', capacity: '', rooms: ''}); setShowModal(true); }} className="gap-2 bg-emerald-500/10 hover:bg-emerald-600 text-white rounded-md-none border-2 border-emerald-900 font-semibold px-6 py-6 text-lg transition-colors">
+          <Button onClick={() => { setFormData({name: '', type: 'Boys', warden: '', capacity: '', rooms: ''}); setShowModal(true); }} className="gap-2 bg-emerald-500/10 hover:bg-emerald-600 text-white rounded-none border-2 border-emerald-900 font-semibold px-6 py-6 text-lg transition-colors">
             <Plus className="w-6 h-6" /> {t("add_hostel", "New Block")}
           </Button>
         </motion.div>
@@ -81,7 +81,7 @@ export default function Hostel() {
         </div>
         <div className="relative flex-1 w-full">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-700" />
-          <Input placeholder="Search blocks or wardens..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 bg-white border-2 border-emerald-900 rounded-md-none h-16 text-xl font-medium focus-visible:ring-0 focus-visible:border-emerald-600 placeholder:text-emerald-300 w-full hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+          <Input placeholder="Search blocks or wardens..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 bg-white border-2 border-emerald-900 rounded-none h-16 text-xl font-medium focus-visible:ring-0 focus-visible:border-emerald-600 placeholder:text-emerald-300 w-full hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
         </div>
       </div>
 
@@ -100,17 +100,17 @@ export default function Hostel() {
                 <div className="absolute top-4 right-4 z-10">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-10 w-10 p-0 border-2 border-transparent group-hover:border-emerald-900 group-hover:bg-emerald-200 rounded-md-none transition-all">
+                      <Button variant="ghost" className="h-10 w-10 p-0 border-2 border-transparent group-hover:border-emerald-900 group-hover:bg-emerald-200 rounded-none transition-all">
                         <MoreVertical className="h-5 w-5 text-emerald-900" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-40 border-2 border-emerald-900 rounded-md-none p-0 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                      <DropdownMenuItem className="font-semibold cursor-pointer rounded-md-none focus:bg-emerald-100 focus:text-emerald-900 p-3" onClick={() => {
+                    <DropdownMenuContent align="end" className="w-40 border-2 border-emerald-900 rounded-none p-0 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                      <DropdownMenuItem className="font-semibold cursor-pointer rounded-none focus:bg-emerald-100 focus:text-emerald-900 p-3" onClick={() => {
                         setEditingId(h.id);
                         setFormData({ name: h.name, type: h.type, warden: h.warden, capacity: h.capacity, rooms: h.rooms });
                         setShowModal(true);
                       }}>{t("edit", "Edit Block")}</DropdownMenuItem>
-                      <DropdownMenuItem className="font-semibold cursor-pointer rounded-md-none focus:bg-red-100 focus:text-red-900 text-red-600 p-3" onClick={() => {
+                      <DropdownMenuItem className="font-semibold cursor-pointer rounded-none focus:bg-red-100 focus:text-red-900 text-red-600 p-3" onClick={() => {
                         if (window.confirm("Delete this block?")) deleteRecord.mutate({ id: h.id, recordType: 'hostel' });
                       }}>{t("delete", "Demolish")}</DropdownMenuItem>
                     </DropdownMenuContent>
@@ -153,12 +153,12 @@ export default function Hostel() {
             <div className="space-y-6">
               <div>
                 <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">{t("hostel_name", "Block Name")}</label>
-                <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-md-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-emerald-50" placeholder="e.g. Alpha Block" />
+                <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-emerald-50" placeholder="e.g. Alpha Block" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">{t("type", "Type")}</label>
-                  <select value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} className="w-full h-14 border-2 border-emerald-900 bg-emerald-50 px-4 font-semibold text-emerald-900 focus:outline-none focus:border-emerald-500 rounded-md-none appearance-none">
+                  <select value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} className="w-full h-14 border-2 border-emerald-900 bg-emerald-50 px-4 font-semibold text-emerald-900 focus:outline-none focus:border-emerald-500 rounded-none appearance-none">
                     <option>Boys</option>
                     <option>Girls</option>
                     <option>Co-ed</option>
@@ -166,24 +166,24 @@ export default function Hostel() {
                 </div>
                 <div>
                   <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">{t("capacity", "Total Beds")}</label>
-                  <Input type="number" value={formData.capacity} onChange={e => setFormData({...formData, capacity: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-md-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-emerald-50" placeholder="120" />
+                  <Input type="number" value={formData.capacity} onChange={e => setFormData({...formData, capacity: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-emerald-50" placeholder="120" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">{t("rooms", "Total Rooms")}</label>
-                  <Input type="number" value={formData.rooms} onChange={e => setFormData({...formData, rooms: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-md-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-emerald-50" placeholder="30" />
+                  <Input type="number" value={formData.rooms} onChange={e => setFormData({...formData, rooms: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-emerald-50" placeholder="30" />
                 </div>
                 <div>
                   <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">{t("warden", "Warden Name")}</label>
-                  <Input value={formData.warden} onChange={e => setFormData({...formData, warden: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-md-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-emerald-50" placeholder="John Doe" />
+                  <Input value={formData.warden} onChange={e => setFormData({...formData, warden: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-emerald-50" placeholder="John Doe" />
                 </div>
               </div>
             </div>
             
             <div className="flex gap-4 pt-8">
-              <Button variant="outline" className="flex-1 h-14 border-2 border-emerald-900 text-emerald-900 font-black uppercase tracking-widest rounded-md-none hover:bg-emerald-100 tracking-[0.04em]" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 h-14 bg-emerald-600 hover:bg-emerald-700 text-white border-2 border-emerald-900 font-black uppercase tracking-widest rounded-md-none transition-colors tracking-[0.04em]" onClick={handleSave}>
+              <Button variant="outline" className="flex-1 h-14 border-2 border-emerald-900 text-emerald-900 font-black uppercase tracking-widest rounded-none hover:bg-emerald-100 tracking-[0.04em]" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
+              <Button className="flex-1 h-14 bg-emerald-600 hover:bg-emerald-700 text-white border-2 border-emerald-900 font-black uppercase tracking-widest rounded-none transition-colors tracking-[0.04em]" onClick={handleSave}>
                 {mutateRecord.isPending ? 'Saving...' : 'Deploy Block'}
               </Button>
             </div>

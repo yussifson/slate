@@ -191,7 +191,7 @@ export default function Clients() {
  deleting={deleting}
  />
  {isLoading ? (
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Table><TableHeader><TableRow>{["", clientTerm, "Phone", "Type", "Status", "Added"].map((h, i) => {
  return <TableHead key={i}>{h}</TableHead>;
 })}</TableRow></TableHeader>
@@ -205,8 +205,8 @@ export default function Clients() {
  </Table>
  </div>
  ) : filtered.length === 0 ? (
- <div className="bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 p-12 text-center max-w-sm mx-auto my-8 space-y-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-12 h-12 rounded-md-full bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center mx-auto text-primary">
+ <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 p-12 text-center max-w-sm mx-auto my-8 space-y-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center mx-auto text-primary">
  <Users className="w-5 h-5" />
  </div>
  <div className="space-y-1">
@@ -221,14 +221,14 @@ export default function Clients() {
  <div className="pt-2">
  <Button 
  onClick={handleAddClick}
- className="bg-primary hover:bg-primary/95 text-white font-semibold text-xs py-3.5 px-5 rounded-md-xl  tracking-[0.04em]"
+ className="bg-primary hover:bg-primary/95 text-white font-semibold text-xs py-3.5 px-5 rounded-xl  tracking-[0.04em]"
  >
  {t("add_new", "Add New")} {clientTerm}
  </Button>
  </div>
  </div>
  ) : (
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="overflow-x-auto">
  <Table>
  <TableHeader>
@@ -246,7 +246,7 @@ export default function Clients() {
  <TableCell onClick={e => toggleOne(row.id, e)}><Checkbox checked={selected.has(row.id)} onCheckedChange={() => {}} /></TableCell>
  <TableCell>
  <div className="flex items-center gap-3">
- <div className="w-8 h-8 rounded-md-full bg-slate-100 flex items-center justify-center">
+ <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
  <span className="text-xs font-semibold text-primary tracking-[0.04em]">{row.name?.[0]?.toUpperCase()}</span>
  </div>
  <div>

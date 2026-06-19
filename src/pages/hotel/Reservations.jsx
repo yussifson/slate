@@ -161,7 +161,7 @@ export default function Reservations() {
  <Plus className="w-4 h-4" /> {t("new_booking", "New Booking")}
  </Button>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -195,7 +195,7 @@ export default function Reservations() {
  </td>
  <td className="px-6 py-4 text-[#71717a] dark:text-gray-400 font-medium">{res.roomType}</td>
  <td className="px-6 py-4 text-center">
- <span className={`text-xs font-semibold px-2.5 py-1 rounded-md-full ${statusColors[res.status] || 'bg-slate-100 text-primary/90'}`}>{res.status}</span>
+ <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusColors[res.status] || 'bg-slate-100 text-primary/90'}`}>{res.status}</span>
  </td>
  <td className="px-6 py-4 text-center font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${res.total}</td>
  <td className="px-6 py-4 text-right flex justify-end gap-2">
@@ -250,7 +250,7 @@ export default function Reservations() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-lg p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {editTargetId ? <Edit className="w-5 h-5 text-primary"/> : <Calendar className="w-5 h-5 text-primary"/>}
  {editTargetId ? 'Edit Reservation' : 'New Reservation'}
@@ -311,7 +311,7 @@ export default function Reservations() {
  <div>
  <h3 className="text-sm font-semibold text-[#71717a] dark:text-gray-400 mb-2">{t("guest_info", "Guest Info")}</h3>
  <div className="bg-muted/50 p-4 rounded-xl flex items-center gap-4">
- <div className="w-10 h-10 rounded-md-full bg-slate-100 text-primary flex items-center justify-center">
+ <div className="w-10 h-10 rounded-full bg-slate-100 text-primary flex items-center justify-center">
  <User className="w-5 h-5" />
  </div>
  <div>
@@ -339,7 +339,7 @@ export default function Reservations() {
  </div>
  <div className="bg-muted/50 p-3 rounded-xl">
  <p className="text-xs text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">{t("status", "Status")}</p>
- <span className={`inline-flex items-center px-2 py-1 rounded-md-full text-xs font-semibold ${res.status === 'Confirmed' ? 'bg-slate-100 text-primary/90' : res.status === 'Checked-in' ? 'bg-slate-100 text-primary/90' : 'bg-slate-100 text-primary/90'}`}>
+ <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${res.status === 'Confirmed' ? 'bg-slate-100 text-primary/90' : res.status === 'Checked-in' ? 'bg-slate-100 text-primary/90' : 'bg-slate-100 text-primary/90'}`}>
  <Activity className="w-3 h-3 mr-1" /> {res.status}
  </span>
  </div>

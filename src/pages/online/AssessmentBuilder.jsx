@@ -100,7 +100,7 @@ export default function AssessmentBuilder() {
  <div key={optIndex} className="flex items-center gap-3">
  <button 
  onClick={() => updateQuestion(q.id, 'correctIndex', optIndex)}
- className={`flex-shrink-0 w-6 h-6 rounded-md-full flex items-center justify-center transition-colors ${q.correctIndex === optIndex ? 'bg-[var(--color-success)] text-white' : 'border-2 border-primary/40 text-transparent hover:border-[var(--color-success)]'}`}
+ className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors ${q.correctIndex === optIndex ? 'bg-[var(--color-success)] text-white' : 'border-2 border-primary/40 text-transparent hover:border-[var(--color-success)]'}`}
  >
  <CheckCircle2 className="w-4 h-4" />
  </button>

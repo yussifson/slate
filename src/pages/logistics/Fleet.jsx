@@ -164,7 +164,7 @@ export default function Fleet() {
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  {stats.map(s => {
  return (
- <div key={s.label} className={`stat-card-premium bg-card rounded-md-xl border ${s.border} p-4 flex items-center gap-3`}>
+ <div key={s.label} className={`stat-card-premium bg-card rounded-xl border ${s.border} p-4 flex items-center gap-3`}>
  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${s.color}`}>
  <s.icon className="w-5 h-5" />
  </div>
@@ -177,7 +177,7 @@ export default function Fleet() {
 })}
  </div>
  {/* Table */}
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/40">
  <div className="relative max-w-sm w-full">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -248,7 +248,7 @@ export default function Fleet() {
  )}
  </td>
  <td className="px-5 py-4">
- <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-md-full uppercase tracking-wider ${STATUS_COLORS[v.status] || 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
+ <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider ${STATUS_COLORS[v.status] || 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
  {v.status}
  </span>
  </td>
@@ -297,13 +297,13 @@ export default function Fleet() {
  {/* Add/Edit Modal */}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-lg p-6 space-y-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 max-h-[90vh] overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 max-h-[90vh] overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between">
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Truck className="w-5 h-5 text-primary" />
  {editTarget ? 'Edit Vehicle' : 'Add Vehicle'}
  </h2>
- <button onClick={closeModal} className="text-[#71717a] dark:text-gray-400 hover:text-foreground p-1 rounded-md-full hover:bg-muted">
+ <button onClick={closeModal} className="text-[#71717a] dark:text-gray-400 hover:text-foreground p-1 rounded-full hover:bg-muted">
  <X className="w-4 h-4" />
  </button>
  </div>

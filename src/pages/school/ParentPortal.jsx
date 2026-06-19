@@ -142,7 +142,7 @@ export default function ParentPortal() {
         </div>
         <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
           {['dashboard', 'academics', 'finance', 'communications'].map((tab) => (
-            <button key={tab} onClick={() => setActiveTab(tab)} className={`flex items-center gap-2 px-5 py-2.5 font-semibold text-sm transition-colors rounded-md-full whitespace-nowrap ${activeTab === tab ? 'bg-[var(--primary)] text-white' : 'bg-transparent text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--primary)]'}`}>
+            <button key={tab} onClick={() => setActiveTab(tab)} className={`flex items-center gap-2 px-5 py-2.5 font-semibold text-sm transition-colors rounded-full whitespace-nowrap ${activeTab === tab ? 'bg-[var(--primary)] text-white' : 'bg-transparent text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--primary)]'}`}>
               {tab === 'dashboard' && <LayoutDashboard className="w-4 h-4" />}
               {tab === 'academics' && <GraduationCap className="w-4 h-4" />}
               {tab === 'finance' && <CreditCard className="w-4 h-4" />}
@@ -161,11 +161,11 @@ export default function ParentPortal() {
             <button
               key={child.id}
               onClick={() => setSelectedChildId(child.id)}
-              className={`flex items-center gap-2 px-4 py-2 font-medium text-sm transition-colors rounded-md-full whitespace-nowrap border ${
+              className={`flex items-center gap-2 px-4 py-2 font-medium text-sm transition-colors rounded-full whitespace-nowrap border ${
                 activeStudent?.id === child.id ? 'bg-[var(--primary)]/10 border-[var(--primary)] text-[var(--primary)]' : 'bg-[var(--color-surface-0)] border-primary/20 text-[var(--color-text-secondary)] hover:border-primary/40'
               }`}
             >
-              <div className={`w-5 h-5 rounded-md-full flex items-center justify-center text-[10px] font-semibold ${activeStudent?.id === child.id ? 'bg-[var(--primary)] text-white' : 'bg-[var(--color-surface-2)] text-[var(--color-text-tertiary)]'}`}>
+              <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-semibold ${activeStudent?.id === child.id ? 'bg-[var(--primary)] text-white' : 'bg-[var(--color-surface-2)] text-[var(--color-text-tertiary)]'}`}>
                 {child.name.substring(0,2).toUpperCase()}
               </div>
               {child.name}
@@ -177,20 +177,20 @@ export default function ParentPortal() {
       {/* Child Profile Card */}
       <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-8 flex flex-col md:flex-row items-center md:items-start gap-8 relative overflow-hidden">
         <User className="absolute -right-8 -top-8 w-48 h-48 text-[var(--primary)] opacity-5 pointer-events-none" />
-        <div className="w-24 h-24 rounded-md-full bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] text-3xl font-semibold shrink-0 border-[0.5px] border-black/9 dark:border-white/8 border-[var(--primary)]/20 relative z-10 tracking-[-0.02em]">
+        <div className="w-24 h-24 rounded-full bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] text-3xl font-semibold shrink-0 border-[0.5px] border-black/9 dark:border-white/8 border-[var(--primary)]/20 relative z-10 tracking-[-0.02em]">
           {activeStudent.name?.substring(0, 2).toUpperCase()}
         </div>
         <div className="text-center md:text-left flex-1 relative z-10">
           <h2 className="text-3xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight mb-3 tracking-[-0.02em]">{activeStudent.name}</h2>
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
-            <span className="bg-[var(--primary)]/10 text-[var(--primary)] px-3 py-1 text-xs font-semibold uppercase tracking-[var(--tracking-widest)] rounded-md-full tracking-[0.04em]">{activeStudent.class}</span>
-            <span className="bg-[var(--color-surface-2)] text-[var(--color-text-secondary)] px-3 py-1 text-xs font-semibold uppercase tracking-[var(--tracking-widest)] rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 tracking-[0.04em]">ID: {activeStudent.studentId}</span>
+            <span className="bg-[var(--primary)]/10 text-[var(--primary)] px-3 py-1 text-xs font-semibold uppercase tracking-[var(--tracking-widest)] rounded-full tracking-[0.04em]">{activeStudent.class}</span>
+            <span className="bg-[var(--color-surface-2)] text-[var(--color-text-secondary)] px-3 py-1 text-xs font-semibold uppercase tracking-[var(--tracking-widest)] rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 tracking-[0.04em]">ID: {activeStudent.studentId}</span>
           </div>
         </div>
         <div className="shrink-0 flex flex-col items-center md:items-end gap-2 bg-[var(--color-surface-1)] p-5 rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 w-full md:w-auto relative z-10">
           <span className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">Term Balance</span>
           <div className="text-3xl font-display font-semibold text-[var(--color-text-primary)] mb-1 tracking-[-0.02em]">${balance.toLocaleString()}</div>
-          <span className={`text-[10px] font-semibold uppercase tracking-[var(--tracking-widest)] px-2.5 py-1 rounded-md-full ${
+          <span className={`text-[10px] font-semibold uppercase tracking-[var(--tracking-widest)] px-2.5 py-1 rounded-full ${
             feeStatus === 'Paid' ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' :
             feeStatus === 'Partial' ? 'bg-[var(--color-warning)]/10 text-[var(--color-warning)]' : 'bg-[var(--color-destructive)]/10 text-[var(--color-destructive)]'
           }`}>{feeStatus}</span>
@@ -253,7 +253,7 @@ export default function ParentPortal() {
                 <h3 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
                   <FileText className="w-4 h-4 text-[var(--primary)]" /> Documents
                 </h3>
-                <Button variant="outline" size="sm" className="h-8 rounded-md-full border-primary/30 text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white" onClick={() => setShowUpload(true)}>
+                <Button variant="outline" size="sm" className="h-8 rounded-full border-primary/30 text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white" onClick={() => setShowUpload(true)}>
                   <Upload className="w-3.5 h-3.5 mr-1.5" /> Upload
                 </Button>
               </div>
@@ -306,7 +306,7 @@ export default function ParentPortal() {
                         <td className="px-6 py-4 font-medium text-[var(--color-text-primary)]">{g.data?.examName}</td>
                         <td className="px-6 py-4 text-[var(--color-text-secondary)]">{g.data?.subject}</td>
                         <td className="px-6 py-4 text-right">
-                          <span className={`inline-flex items-center font-semibold text-xs px-2.5 py-1 rounded-md-full ${pct >= 50 ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' : 'bg-[var(--color-destructive)]/10 text-[var(--color-destructive)]'}`}>
+                          <span className={`inline-flex items-center font-semibold text-xs px-2.5 py-1 rounded-full ${pct >= 50 ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' : 'bg-[var(--color-destructive)]/10 text-[var(--color-destructive)]'}`}>
                             {score} / {max} ({pct}%)
                           </span>
                         </td>
@@ -322,7 +322,7 @@ export default function ParentPortal() {
 
       {activeTab === 'finance' && (
         <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-16 text-center">
-          <div className="w-20 h-20 mx-auto rounded-md-full bg-[var(--primary)]/10 flex items-center justify-center mb-6">
+          <div className="w-20 h-20 mx-auto rounded-full bg-[var(--primary)]/10 flex items-center justify-center mb-6">
             <CreditCard className="w-10 h-10 text-[var(--primary)]" />
           </div>
           <h3 className="text-2xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight mb-2 tracking-[-0.02em]">Fee Statements</h3>
@@ -331,7 +331,7 @@ export default function ParentPortal() {
             <div className="mt-8 p-8 border-[0.5px] border-black/9 dark:border-white/8 border-[var(--color-destructive)]/30 rounded-md-[var(--radius-xl)] bg-[var(--color-destructive)]/5 max-w-md mx-auto">
               <p className="text-[11px] font-semibold text-[var(--color-destructive)] uppercase tracking-[var(--tracking-widest)] mb-2 tracking-[0.04em]">Outstanding Balance</p>
               <p className="text-4xl font-display font-semibold text-[var(--color-destructive)] mb-6 tracking-[-0.02em]">${balance.toLocaleString()}</p>
-              <Button className="w-full bg-[var(--color-destructive)] hover:bg-[var(--color-destructive)]/90 text-white rounded-md-full">
+              <Button className="w-full bg-[var(--color-destructive)] hover:bg-[var(--color-destructive)]/90 text-white rounded-full">
                 Pay Now <ArrowRight className="w-4 h-4 ml-2"/>
               </Button>
             </div>
@@ -341,12 +341,12 @@ export default function ParentPortal() {
 
       {activeTab === 'communications' && (
         <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-16 text-center">
-          <div className="w-20 h-20 mx-auto rounded-md-full bg-[var(--primary)]/10 flex items-center justify-center mb-6">
+          <div className="w-20 h-20 mx-auto rounded-full bg-[var(--primary)]/10 flex items-center justify-center mb-6">
             <Bell className="w-10 h-10 text-[var(--primary)]" />
           </div>
           <h3 className="text-2xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight mb-2 tracking-[-0.02em]">Announcements</h3>
           <p className="text-[var(--color-text-secondary)] text-sm mb-8">You have no new messages from administration.</p>
-          <Button variant="outline" className="border-primary/40 text-[var(--primary)] rounded-md-full hover:bg-[var(--primary)] hover:text-white px-8">
+          <Button variant="outline" className="border-primary/40 text-[var(--primary)] rounded-full hover:bg-[var(--primary)] hover:text-white px-8">
             Contact Office
           </Button>
         </div>

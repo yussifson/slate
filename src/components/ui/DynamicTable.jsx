@@ -44,9 +44,9 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
         const val = row.original.data?.[field.name];
         if (field.field_type === 'boolean') {
           return val ? (
-            <span className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-md-full tracking-[0.04em]">Yes</span>
+            <span className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full tracking-[0.04em]">Yes</span>
           ) : (
-            <span className="px-2 py-1 bg-muted text-[#71717a] dark:text-gray-400 text-xs rounded-md-full tracking-[0.04em]">No</span>
+            <span className="px-2 py-1 bg-muted text-[#71717a] dark:text-gray-400 text-xs rounded-full tracking-[0.04em]">No</span>
           );
         }
         return <div className="text-sm max-w-[200px] truncate" title={val}>{val || '-'}</div>;
@@ -197,29 +197,29 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
       <div className="rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="text-xs text-[#71717a] dark:text-gray-400 bg-muted/50 border-b border-primary/40 uppercase tracking-[0.04em]">
+            <thead className="text-[11px] text-[#71717a] dark:text-gray-400 bg-muted/50 border-b border-primary/40 uppercase tracking-[0.06em]">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
-                    <th key={header.id} className="px-4 py-3 font-medium">
+                    <th key={header.id} className="px-4 py-3 font-medium text-[11px]">
                       {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </th>
                   ))}
-                  <th className="px-4 py-3 font-medium text-right">Actions</th>
+                  <th className="px-4 py-3 font-medium text-right text-[11px]">Actions</th>
                 </tr>
               ))}
             </thead>
             <tbody className="divide-y divide-border">
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="hover:bg-muted/50 transition-colors">
+                  <tr key={row.id} className="group hover:bg-muted/50 transition-colors h-12">
                     {row.getVisibleCells().map((cell) => (
                       <td key={cell.id} className="px-4 py-3 align-middle text-foreground">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     ))}
                     <td className="px-4 py-3 text-right">
-                      <div className="flex items-center justify-end gap-2">
+                      <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-120">
                         <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-[#71717a] dark:text-gray-400 hover:text-primary" title="View" onClick={() => setSelectedRecord(row.original)}>
                           <Eye className="h-4 w-4" />
                         </Button>
@@ -235,8 +235,12 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
                 ))
               ) : (
                 <tr>
-                  <td colSpan={columns.length + 1} className="h-24 text-center text-[#71717a] dark:text-gray-400">
-                    No records found. Add your first record using the button above.
+                  <td colSpan={columns.length + 1} className="h-32 text-center">
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <Search className="w-8 h-8 text-[#71717a] dark:text-gray-400 opacity-30" />
+                      <p className="text-sm font-medium text-foreground">No records found</p>
+                      <p className="text-xs text-[#71717a] dark:text-gray-400">Add your first record using the button above.</p>
+                    </div>
                   </td>
                 </tr>
               )}

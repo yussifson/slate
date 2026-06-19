@@ -148,7 +148,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
       </div>
       {/* Summary bar */}
       {slips.length > 0 && (
-        <div className="bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-xl px-5 py-3 flex flex-wrap gap-6 items-center">
+        <div className="bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl px-5 py-3 flex flex-wrap gap-6 items-center">
           <div>
             <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("total_net_payroll", "Total Net Payroll")}</p>
             <p className="text-xl font-semibold text-primary">{formatCurrency(totalNet, currency)}</p>
@@ -164,7 +164,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
       {isLoading ? (
         <div className="text-center py-10 text-sm text-[#71717a] dark:text-gray-400">{t("loading", "Loading...")}</div>
       ) : slips.length === 0 ? (
-        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-12 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-12 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <FileText className="w-10 h-10 text-[#71717a] dark:text-gray-400 mx-auto mb-3" />
           <p className="text-sm font-medium">{t("no_payroll_slips_for", "No payroll slips for")} {periodLabel(period)}</p>
           {isAdmin && staff.filter(s => s.status === "active" && s.salary > 0).length > 0 && (
@@ -181,7 +181,7 @@ export default function HRPayrollPanel({ companyId, staff, currency, isAdmin, le
           )}
         </div>
       ) : (
-        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="px-4 py-2.5 bg-muted/30 border-b border-primary/40 grid grid-cols-12 gap-2 text-xs font-semibold uppercase text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
             <span className="col-span-4">{t("staff_member", "Staff Member")}</span>
             <span className="col-span-2">{t("basic", "Basic")}</span>

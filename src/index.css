@@ -197,7 +197,7 @@
     @apply bg-muted/40 backdrop-blur-md sticky top-0 z-20;
   }
   th {
-    @apply px-6 py-4 text-left text-[11px] uppercase tracking-[0.1em] font-bold text-muted-foreground border-b border-border;
+    @apply px-6 py-4 text-left text-[11px] uppercase tracking-[0.06em] font-medium text-muted-foreground border-b border-border;
   }
   td {
     @apply px-6 py-4 border-b border-border/40 text-sm align-middle transition-colors duration-200;
@@ -360,5 +360,132 @@ tr:not(:has(th)):hover, li:hover, [class*="card"][role="button"]:hover, a[class*
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* =============================================
+   ROUND 2 — WORLD-CLASS UI ELEVATION
+   ============================================= */
+
+/* 1. TYPOGRAPHY — Final Layer */
+
+/* Page titles — the largest text on each page */
+h1, [class*="text-3xl"], [class*="text-4xl"], [class*="text-5xl"] {
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+/* Section headings / card titles */
+h2, h3, [class*="text-xl"], [class*="text-2xl"] {
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* Metric / KPI numbers — tabular alignment for dashboards */
+[class*="tabular-nums"], .stat-value, [data-metric] {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+  font-weight: 600;
+}
+
+/* Captions, helper text, timestamps, metadata */
+.text-\[11px\], .text-\[10px\], time, [class*="timestamp"], [class*="helper"], [class*="caption"] {
+  letter-spacing: 0.01em;
+}
+
+/* Monospace: IDs, reference numbers, code, API keys */
+code, kbd, samp, pre, [class*="font-mono"], [class*="monospace"] {
+  font-feature-settings: "tnum";
+  letter-spacing: 0.02em;
+}
+
+/* 2. INTERACTIVE ELEMENTS — Micro-interactions */
+
+/* Button active (click) state — the press-down feel */
+button:active {
+  transform: scale(0.98) !important;
+  opacity: 0.9 !important;
+  transition: transform 80ms ease, opacity 80ms ease !important;
+}
+
+/* Icon buttons — consistent hover surface */
+button[class*="w-8"][class*="h-8"],
+button[class*="w-9"][class*="h-9"],
+button[class*="w-10"][class*="h-10"],
+button[class*="size-icon"],
+button:has(> svg:only-child) {
+  border-radius: 6px;
+  transition: background 120ms ease, transform 80ms ease !important;
+}
+button[class*="w-8"][class*="h-8"]:hover,
+button[class*="w-9"][class*="h-9"]:hover,
+button[class*="w-10"][class*="h-10"]:hover,
+button[class*="size-icon"]:hover,
+button:has(> svg:only-child):hover {
+  background: rgba(0,0,0,0.06);
+}
+.dark button[class*="w-8"][class*="h-8"]:hover,
+.dark button[class*="w-9"][class*="h-9"]:hover,
+.dark button[class*="w-10"][class*="h-10"]:hover,
+.dark button[class*="size-icon"]:hover,
+.dark button:has(> svg:only-child):hover {
+  background: rgba(255,255,255,0.08);
+}
+
+/* 4. TABLE — Enterprise refinements */
+
+/* Fixed 48px row height for data rows */
+tbody tr {
+  height: 48px;
+}
+tbody td {
+  vertical-align: middle;
+}
+
+/* Action column: hide at rest, show on row hover */
+td:last-child > button,
+td:last-child > div > button,
+td[class*="action"] button,
+[class*="action-cell"] button {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease !important;
+}
+tr:hover td:last-child > button,
+tr:hover td:last-child > div > button,
+tr:hover td[class*="action"] button,
+tr:hover [class*="action-cell"] button {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 7. BADGES — Dot indicator size standardization */
+[class*="badge"] span[class*="rounded-full"],
+[class*="Badge"] span[class*="rounded-full"],
+[class*="status"] span[class*="rounded-full"] {
+  width: 5px !important;
+  height: 5px !important;
+  min-width: 5px;
+  min-height: 5px;
+}
+
+/* 10. LOADING — Premium spinner */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.premium-spinner,
+[class*="animate-spin"] {
+  border-radius: 50%;
+}
+
+/* Native select override */
+select:not([class*="hidden"]):not([multiple]) {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 32px;
+  cursor: pointer;
 }
 

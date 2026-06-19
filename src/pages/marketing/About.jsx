@@ -42,8 +42,8 @@ export default function About() {
  <div className="absolute inset-0 bg-slate-50 pointer-events-none" />
  
  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
- <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-md-full bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-xs font-semibold text-slate-600 mb-8  tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <span className="flex h-2 w-2 rounded-md-full bg-primary" />
+ <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-xs font-semibold text-slate-600 mb-8  tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <span className="flex h-2 w-2 rounded-full bg-primary" />
  {t("our_story", "Our Story")}
  </div>
  <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-semibold tracking-tight text-slate-900 leading-[1.1] max-w-4xl mx-auto mb-6 tracking-[-0.02em]">
@@ -101,7 +101,7 @@ export default function About() {
  <div className="relative rounded-md-[2rem] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-white p-2 overflow-hidden aspect-[4/5] transform lg:rotate-2 hover:rotate-0 transition-transform duration-700 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <img src="/images/hero_dashboard_ui.png" alt="Slate Interface" className="w-full h-full object-cover rounded-md-[1.5rem]" />
  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent flex items-end p-8">
- <div className="bg-white backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-white/20 p-6 rounded-md-2xl w-full hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-white backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-white/20 p-6 rounded-2xl w-full hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <p className="text-white font-medium italic">{t(
  "the_single_best_decision_our_o",
  "\"The single best decision our operations team has made this decade.\""
@@ -138,7 +138,7 @@ export default function About() {
  key={i}
  className="bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[2rem] p-10 -slate-200/20 hover:-translate-y-2 -emerald-900/5 transition-all duration-300 group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
- <div className="w-16 h-16 rounded-md-2xl bg-slate-50 group-hover:bg-primary flex items-center justify-center text-primary group-hover:text-white mb-8 transition-colors duration-300">
+ <div className="w-16 h-16 rounded-2xl bg-slate-50 group-hover:bg-primary flex items-center justify-center text-primary group-hover:text-white mb-8 transition-colors duration-300">
  <v.icon className="w-8 h-8" strokeWidth={2} />
  </div>
  <h3 className="font-semibold text-2xl text-slate-900 mb-4 tracking-[-0.02em]">{v.title}</h3>
@@ -162,7 +162,7 @@ export default function About() {
  )}
  </p>
  <Link to="/signup">
- <Button className="bg-primary hover:bg-primary/90 text-white font-semibold py-7 px-12 rounded-md-full transition-all duration-300 text-lg">
+ <Button className="bg-primary hover:bg-primary/90 text-white font-semibold py-7 px-12 rounded-full transition-all duration-300 text-lg">
  {t("start_your_free_trial", "Start Your Free Trial")}
  </Button>
  </Link>

@@ -118,7 +118,7 @@ export default function UnivEnrollment() {
  <div className="p-6 max-w-7xl mx-auto text-foreground dark:text-slate-200 ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
  <div className="flex items-center gap-3">
- <div className="p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-md-xl">
+ <div className="p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl">
  <UserPlus size={24} />
  </div>
  <div>
@@ -142,7 +142,7 @@ export default function UnivEnrollment() {
 
  
  
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
@@ -171,7 +171,7 @@ export default function UnivEnrollment() {
  </div>
  </div>
 
- <div className="bg-card dark:bg-slate-800 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card dark:bg-slate-800 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="overflow-x-auto">
  <table className="w-full text-left border-collapse">
  <thead>
@@ -249,7 +249,7 @@ export default function UnivEnrollment() {
  initial={{ scale: 0.95, opacity: 0}}
  animate={{ scale: 1, opacity: 1}}
  exit={{ scale: 0.95, opacity: 0}}
- className="bg-card dark:bg-slate-800 rounded-md-2xl w-full max-w-md overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card dark:bg-slate-800 rounded-2xl w-full max-w-md overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="flex items-center justify-between p-6 border-b border-primary/40 dark:border-primary/40">
  <h2 className="text-xl font-semibold">
@@ -257,7 +257,7 @@ export default function UnivEnrollment() {
  </h2>
  <button 
  onClick={() => setIsModalOpen(false)}
- className="p-2 text-[#71717a] dark:text-gray-400 hover:text-[#71717a] dark:text-gray-400 hover:bg-muted dark:hover:bg-slate-700 rounded-md-full transition-colors"
+ className="p-2 text-[#71717a] dark:text-gray-400 hover:text-[#71717a] dark:text-gray-400 hover:bg-muted dark:hover:bg-slate-700 rounded-full transition-colors"
  >
  <X size={20} />
  </button>

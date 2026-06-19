@@ -55,19 +55,19 @@ export default function VCertificationRates() {
  Analyze pass rates and certification achievements across programs.
  </p>
  </div>
- <Button className="bg-primary hover:bg-primary/90 text-white rounded-md-xl -emerald-500/30">
+ <Button className="bg-primary hover:bg-primary/90 text-white rounded-xl -emerald-500/30">
  <TrendingUp className="w-4 h-4 mr-2" /> Export Report
  </Button>
  </div>
 
  <div className="flex-1 flex gap-6 overflow-hidden">
- <Card className="w-[350px] shrink-0 flex flex-col rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/5 dark:border-primary/40">
  <div className="relative">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
  <Input 
  placeholder="Search programs..." 
- className="pl-9 h-10 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl focus-visible:ring-primary"
+ className="pl-9 h-10 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -84,13 +84,13 @@ export default function VCertificationRates() {
  <button
  key={rate.id}
  onClick={() => setSelectedRate(rate)}
- className={`w-full text-left p-3 rounded-md-2xl transition-all duration-200 flex items-center gap-3 ${
+ className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
  selectedRate?.id === rate.id 
  ? 'bg-primary text-white -emerald-500/20' 
  : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200'
 }`}
  >
- <div className={`w-10 h-10 rounded-md-xl flex items-center justify-center shrink-0 ${
+ <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
  selectedRate?.id === rate.id ? 'bg-white dark:bg-slate-900/40/20' : 'bg-slate-100 text-primary'
 }`}>
  <ShieldCheck className="w-5 h-5" />
@@ -108,7 +108,7 @@ export default function VCertificationRates() {
  </ScrollArea>
  </Card>
 
- <Card className="flex-1 flex flex-col rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="flex-1 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {selectedRate ? (
  <>
  <div className="h-32 bg-gradient-to-r from-primary to-primary relative shrink-0">
@@ -123,8 +123,8 @@ export default function VCertificationRates() {
  <ScrollArea className="flex-1 -mt-12">
  <div className="px-8 pb-8">
  <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center relative z-10">
- <div className="w-24 h-24 rounded-md-3xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-1 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-full h-full rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center text-primary">
+ <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-1 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-full h-full rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center text-primary">
  <FileCheck className="w-10 h-10" />
  </div>
  </div>
@@ -140,7 +140,7 @@ export default function VCertificationRates() {
 
  <div className="mt-8">
  <Tabs defaultValue="overview" className="w-full">
- <TabsList className="bg-slate-500 dark:bg-slate-800/50 p-1 rounded-md-xl w-full sm:w-auto overflow-x-auto justify-start border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
+ <TabsList className="bg-slate-500 dark:bg-slate-800/50 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
  <TabsTrigger value="overview" className="rounded-xl data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Overview Stats</TabsTrigger>
  <TabsTrigger value="breakdown" className="rounded-xl data-[state=active]:bg-white dark:bg-slate-900/40 data-[state=active]:text-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Cohort Breakdown</TabsTrigger>
  </TabsList>
@@ -148,27 +148,27 @@ export default function VCertificationRates() {
  <div className="mt-6">
  <TabsContent value="overview" className="space-y-6 outline-none">
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- <Card className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 rounded-md-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 rounded-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6 flex flex-col items-center text-center">
- <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-md-full flex items-center justify-center mb-4">
+ <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-full flex items-center justify-center mb-4">
  <BarChart3 className="w-6 h-6" />
  </div>
  <h4 className="text-slate-500 dark:text-slate-400 text-sm font-medium">Total Enrolled</h4>
  <p className="text-3xl font-black text-slate-800 dark:text-slate-100 mt-1 tracking-[-0.02em]">{selectedRate.data?.totalEnrolled || 0}</p>
  </CardContent>
  </Card>
- <Card className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 rounded-md-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 rounded-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6 flex flex-col items-center text-center">
- <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-md-full flex items-center justify-center mb-4">
+ <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-full flex items-center justify-center mb-4">
  <ShieldCheck className="w-6 h-6" />
  </div>
  <h4 className="text-slate-500 dark:text-slate-400 text-sm font-medium">Total Certified</h4>
  <p className="text-3xl font-black text-slate-800 dark:text-slate-100 mt-1 tracking-[-0.02em]">{selectedRate.data?.totalCertified || 0}</p>
  </CardContent>
  </Card>
- <Card className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 dark:border-primary/80 rounded-md-2xl ring-1 ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 dark:border-primary/80 rounded-2xl ring-1 ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6 flex flex-col items-center text-center">
- <div className="w-12 h-12 bg-amber-50 text-amber-500 rounded-md-full flex items-center justify-center mb-4">
+ <div className="w-12 h-12 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mb-4">
  <TrendingUp className="w-6 h-6" />
  </div>
  <h4 className="text-slate-500 dark:text-slate-400 text-sm font-medium">Vs Industry Standard</h4>
@@ -182,10 +182,10 @@ export default function VCertificationRates() {
  </TabsContent>
  
  <TabsContent value="breakdown" className="outline-none">
- <div className="p-8 text-center border-2 border-dashed border-primary/40 dark:border-primary/40 rounded-md-2xl">
+ <div className="p-8 text-center border-2 border-dashed border-primary/40 dark:border-primary/40 rounded-2xl">
  <h4 className="text-slate-700 dark:text-slate-300 dark:text-slate-200 font-semibold mb-2">Demographic Breakdown</h4>
  <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">Detailed view of certification rates by demographic groups and cohorts is not available yet.</p>
- <Button variant="outline" className="border-primary/20 text-primary hover:bg-slate-50 dark:bg-slate-800/50 rounded-md-xl">
+ <Button variant="outline" className="border-primary/20 text-primary hover:bg-slate-50 dark:bg-slate-800/50 rounded-xl">
  Generate Breakdown
  </Button>
  </div>
@@ -198,7 +198,7 @@ export default function VCertificationRates() {
  </>
  ) : (
  <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
- <div className="w-20 h-20 rounded-md-full bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center mb-6">
+ <div className="w-20 h-20 rounded-full bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center mb-6">
  <FileCheck className="w-10 h-10 text-primary/30" />
  </div>
  <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-300">No Program Selected</h3>

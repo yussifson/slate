@@ -39,7 +39,7 @@ export default function ClientBillingReport({ invoices = [], expenses = [], curr
   return (
     <div className="space-y-4">
       {/* Month Navigator */}
-      <div className="flex items-center justify-between bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl px-4 py-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="flex items-center justify-between bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl px-4 py-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <Button variant="ghost" size="icon" onClick={() => setMonthOffset(o => o + 1)} className="h-8 w-8">
           <ChevronLeft className="w-4 h-4" />
         </Button>
@@ -59,7 +59,7 @@ export default function ClientBillingReport({ invoices = [], expenses = [], curr
           { label: "Outstanding", value: formatAmt(outstanding, currency), color: outstanding > 0 ? "bg-red-50 text-red-700" : "bg-muted text-[#71717a] dark:text-gray-400" },
         ].map(k => {
           return (
-            <div key={k.label} className={`rounded-md-xl p-3 text-center ${k.color}`}>
+            <div key={k.label} className={`rounded-xl p-3 text-center ${k.color}`}>
               <p className="text-lg font-semibold">{k.value}</p>
               <p className="text-xs font-medium mt-0.5 tracking-[0.04em]">{k.label}</p>
             </div>
@@ -67,7 +67,7 @@ export default function ClientBillingReport({ invoices = [], expenses = [], curr
         })}
       </div>
       {/* Invoices */}
-      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="px-4 py-3 border-b border-primary/40 flex items-center gap-2">
           <Receipt className="w-4 h-4 text-primary" />
           <p className="text-sm font-semibold">{t("invoices", "Invoices")}</p>
@@ -98,7 +98,7 @@ export default function ClientBillingReport({ invoices = [], expenses = [], curr
       </div>
       {/* Expenses */}
       {monthExpenses.length > 0 && (
-        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="px-4 py-3 border-b border-primary/40 flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-amber-500" />
             <p className="text-sm font-semibold">{t("case_expenses", "Case Expenses")}</p>

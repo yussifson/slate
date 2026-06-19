@@ -181,7 +181,7 @@ export default function Board() {
  
  {/* Left Column: Active / Scheduled */}
  <div className="lg:col-span-2 space-y-6">
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
  <Clock className="w-5 h-5 text-[#71717a] dark:text-gray-400" /> Recent & Active Meetings
  </h2>
@@ -195,11 +195,11 @@ export default function Board() {
  <div className="mt-0.5">
  {room.status === 'active' ? (
  <span className="flex h-3 w-3 relative">
- <span className="animate-ping absolute inline-flex h-full w-full rounded-md-full bg-red-400 opacity-75"></span>
- <span className="relative inline-flex rounded-md-full h-3 w-3 bg-red-500/10"></span>
+ <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+ <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500/10"></span>
  </span>
  ) : (
- <div className="w-3 h-3 rounded-md-full bg-primary/20 border-[0.5px] border-black/9 dark:border-white/8 border-primary"></div>
+ <div className="w-3 h-3 rounded-full bg-primary/20 border-[0.5px] border-black/9 dark:border-white/8 border-primary"></div>
  )}
  </div>
  <div>
@@ -231,20 +231,20 @@ export default function Board() {
 
  {/* Right Column: AI Insights */}
  <div className="space-y-6">
- <div className="bg-primary rounded-md-xl p-5 text-primary-foreground relative overflow-hidden">
- <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-900/40/10 rounded-md-full blur-2xl -mr-10 -mt-10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>
+ <div className="bg-primary rounded-xl p-5 text-primary-foreground relative overflow-hidden">
+ <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-900/40/10 rounded-full blur-2xl -mr-10 -mt-10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>
  <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
  <Sparkles className="w-5 h-5 text-primary/20" /> Orbit Meeting AI
  </h3>
  <p className="text-sm text-primary/10 mb-4">Your AI assistant is ready to join your calls to transcribe, summarize, and extract action items.</p>
  <ul className="space-y-2 text-sm text-primary/5">
- <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-md-full bg-primary/30"></div> Real-time transcription</li>
- <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-md-full bg-primary/30"></div> Post-meeting summaries</li>
- <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-md-full bg-primary/30"></div> Action item detection</li>
+ <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary/30"></div> Real-time transcription</li>
+ <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary/30"></div> Post-meeting summaries</li>
+ <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary/30"></div> Action item detection</li>
  </ul>
  </div>
  
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h3 className="font-semibold mb-3">Quick Connect</h3>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mb-4">Invite external clients or guests instantly without them needing an account.</p>
  <div className="flex gap-2">

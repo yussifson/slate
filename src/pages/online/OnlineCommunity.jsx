@@ -61,7 +61,7 @@ export default function OnlineCommunity() {
  {posts.map(post => (
  <div key={post.id} className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 hover:border-[var(--primary)] transition-colors cursor-pointer">
  <div className="flex items-center gap-3 mb-4">
- <div className={`w-10 h-10 rounded-md-full flex items-center justify-center font-semibold text-white ${post.role === 'Instructor' ? 'bg-[var(--primary)]' : 'bg-[var(--color-surface-3)] text-[var(--color-text-primary)]'}`}>
+ <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-white ${post.role === 'Instructor' ? 'bg-[var(--primary)]' : 'bg-[var(--color-surface-3)] text-[var(--color-text-primary)]'}`}>
  {post.avatar}
  </div>
  <div>

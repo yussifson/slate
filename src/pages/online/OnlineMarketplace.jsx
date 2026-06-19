@@ -83,7 +83,7 @@ export default function OnlineMarketplace() {
  </div>
  </div>
  <div className="md:w-1/2">
- <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Students learning" className="rounded-md-xl " />
+ <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Students learning" className="rounded-xl " />
  </div>
  </div>
  </div>
@@ -95,12 +95,12 @@ export default function OnlineMarketplace() {
  <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
  <Input 
  placeholder="What do you want to learn?" 
- className="pl-12 py-6 text-lg rounded-md-full border-2 border-primary/40 focus-visible:ring-primary w-full"
+ className="pl-12 py-6 text-lg rounded-full border-2 border-primary/40 focus-visible:ring-primary w-full"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
  </div>
- <Button variant="outline" className="hidden md:flex items-center gap-2 py-6 px-6 rounded-md-full border-2 text-gray-700">
+ <Button variant="outline" className="hidden md:flex items-center gap-2 py-6 px-6 rounded-full border-2 text-gray-700">
  <Filter className="h-5 w-5" /> Filters
  </Button>
  </div>
@@ -109,7 +109,7 @@ export default function OnlineMarketplace() {
  
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
  {courses.map(course => (
- <Card key={course.id} className="overflow-hidden transition-all duration-300 border-primary/40 cursor-pointer group rounded-md-xl">
+ <Card key={course.id} className="overflow-hidden transition-all duration-300 border-primary/40 cursor-pointer group rounded-xl">
  <div className="relative h-48 overflow-hidden">
  <img src={course.image} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
  <Badge className="absolute top-4 left-4 bg-white dark:bg-slate-900/40/90 text-primary hover:bg-white dark:bg-slate-900/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{course.tag}</Badge>
@@ -141,22 +141,22 @@ export default function OnlineMarketplace() {
  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
  <h2 className="text-3xl font-semibold text-gray-900 mb-12 tracking-[-0.02em]">World-class learning for anyone, anywhere</h2>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
- <div className="p-6 bg-white dark:bg-slate-900/40 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-md-full flex items-center justify-center mx-auto mb-6 text-primary">
+ <div className="p-6 bg-white dark:bg-slate-900/40 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
  <BookOpen className="h-8 w-8" />
  </div>
  <h3 className="text-xl font-semibold mb-3">Learn anything</h3>
  <p className="text-gray-600">Explore any interest or trending topic, take prerequisites, and advance your skills.</p>
  </div>
- <div className="p-6 bg-white dark:bg-slate-900/40 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-md-full flex items-center justify-center mx-auto mb-6 text-primary">
+ <div className="p-6 bg-white dark:bg-slate-900/40 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
  <Star className="h-8 w-8" />
  </div>
  <h3 className="text-xl font-semibold mb-3">Save money</h3>
  <p className="text-gray-600">Spend less money on your learning if you plan to take multiple courses this year.</p>
  </div>
- <div className="p-6 bg-white dark:bg-slate-900/40 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-md-full flex items-center justify-center mx-auto mb-6 text-primary">
+ <div className="p-6 bg-white dark:bg-slate-900/40 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
  <Clock className="h-8 w-8" />
  </div>
  <h3 className="text-xl font-semibold mb-3">Flexible learning</h3>

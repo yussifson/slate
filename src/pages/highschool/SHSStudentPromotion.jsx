@@ -98,7 +98,7 @@ export default function SHSStudentPromotion() {
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- <Card className="col-span-1 rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="col-span-1 rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="bg-slate-500 dark:bg-slate-800/50 rounded-md-t-3xl border-b border-primary/40 dark:border-primary/40">
  <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100">Promotion Rules</CardTitle>
  <CardDescription>Select the source and target forms</CardDescription>
@@ -107,7 +107,7 @@ export default function SHSStudentPromotion() {
  <div className="space-y-2">
  <label className="text-xs font-semibold text-primary dark:text-primary/70 uppercase tracking-wider tracking-[0.04em]">Current Level (From)</label>
  <select 
- className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={sourceGrade}
  onChange={(e) => {
  setSourceGrade(e.target.value);
@@ -127,7 +127,7 @@ export default function SHSStudentPromotion() {
  <div className="space-y-2">
  <label className="text-xs font-semibold text-primary uppercase tracking-wider tracking-[0.04em]">Next Level (To)</label>
  <select 
- className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={targetGrade}
  onChange={(e) => setTargetGrade(e.target.value)}
  >
@@ -138,7 +138,7 @@ export default function SHSStudentPromotion() {
  </div>
  
  <div className="pt-4 border-t border-primary/5">
- <div className="p-4 rounded-md-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-start gap-3">
+ <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-start gap-3">
  <AlertCircle className="w-5 h-5 text-primary dark:text-primary/70 shrink-0 mt-0.5" />
  <p className="text-xs text-primary/70 font-medium tracking-[0.04em]">
  Promoting students will update their academic level immediately. Ensure end-of-term results are processed before promotion.
@@ -148,7 +148,7 @@ export default function SHSStudentPromotion() {
  </CardContent>
  </Card>
 
- <Card className="col-span-1 md:col-span-2 rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 flex flex-col h-[calc(100vh-250px)] min-h-[500px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="col-span-1 md:col-span-2 rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 flex flex-col h-[calc(100vh-250px)] min-h-[500px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 rounded-md-t-3xl border-b border-primary/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 py-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100">Eligible Students</CardTitle>
@@ -158,7 +158,7 @@ export default function SHSStudentPromotion() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search eligible students..." 
- className="pl-9 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none rounded-md-xl h-9"
+ className="pl-9 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none rounded-xl h-9"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -182,7 +182,7 @@ export default function SHSStudentPromotion() {
  <div className="p-8 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading students...</div>
  ) : eligibleStudents.length === 0 ? (
  <div className="p-12 text-center flex flex-col items-center">
- <div className="w-16 h-16 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center mb-4 text-primary/30">
+ <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center mb-4 text-primary/30">
  <GraduationCap className="w-8 h-8" />
  </div>
  <h3 className="font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No students found in {sourceGrade}</h3>
@@ -224,7 +224,7 @@ export default function SHSStudentPromotion() {
  <Button 
  onClick={handlePromote}
  disabled={selectedStudentIds.size === 0 || isPromoting || promotionSuccess}
- className={`rounded-md-xl px-6 h-11 font-semibold transition-all ${
+ className={`rounded-xl px-6 h-11 font-semibold transition-all ${
  promotionSuccess ? 'bg-primary hover:bg-primary' : 'bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary'
 } text-white`}
  >

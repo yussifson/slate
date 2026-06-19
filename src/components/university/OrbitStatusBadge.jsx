@@ -52,9 +52,9 @@ export default function OrbitStatusBadge({ status, label, pulse = false }) {
     )}>
       <span className="relative flex h-[4px] w-[4px] shrink-0">
         {dotPulse && (
-          <span className={cn("animate-ping absolute inline-flex h-full w-full rounded-md-full opacity-75", dotClass)} />
+          <span className={cn("animate-ping absolute inline-flex h-full w-full rounded-full opacity-75", dotClass)} />
         )}
-        <span className={cn("relative inline-flex rounded-md-full h-[4px] w-[4px]", dotClass)} />
+        <span className={cn("relative inline-flex rounded-full h-[4px] w-[4px]", dotClass)} />
       </span>
       {label || status}
     </div>

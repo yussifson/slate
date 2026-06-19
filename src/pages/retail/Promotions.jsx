@@ -89,7 +89,7 @@ export default function Promotions() {
  if (isLoading) {
  return (
  <div className="flex-1 p-6 flex items-center justify-center">
- <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-md-full animate-spin"></div>
+ <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
  </div>
  );
 }
@@ -117,7 +117,7 @@ export default function Promotions() {
  <RetailStatCard label={t("active_promos", "Active Promotions")} value={activeCount} icon={Percent} />
  </div>
 
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50 flex flex-wrap gap-3 items-center justify-between">
  <div className="relative flex-1 max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -167,7 +167,7 @@ export default function Promotions() {
  {promo.data?.discountType === "percentage" ? `${promo.data?.discountValue}%` : `$${promo.data?.discountValue}`}
  </td>
  <td className="px-6 py-4 text-center">
- <span className={`text-xs font-semibold px-2.5 py-1 rounded-md-full ${promo.data?.isActive ? "bg-slate-100 text-primary" : "bg-muted text-[#71717a] dark:text-gray-400"}`}>
+ <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${promo.data?.isActive ? "bg-slate-100 text-primary" : "bg-muted text-[#71717a] dark:text-gray-400"}`}>
  {promo.data?.isActive ? t("active", "Active") : t("inactive", "Inactive")}
  </span>
  </td>

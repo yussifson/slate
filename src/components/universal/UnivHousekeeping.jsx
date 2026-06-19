@@ -147,12 +147,12 @@ export default function UnivHousekeeping() {
  </button>
  ))}
  </div>
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={() => openModal()} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
+ <button onClick={() => openModal()} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
  <Plus className="w-4 h-4" /> Add Task
  </button>
  </div>
@@ -160,29 +160,29 @@ export default function UnivHousekeeping() {
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6 shrink-0">
- <button className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 flex items-center gap-3 hover:bg-muted/50 transition-colors text-left hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-3 bg-blue-100 text-blue-600 rounded-md-xl"><Sparkles className="w-5 h-5" /></div>
+ <button className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-4 flex items-center gap-3 hover:bg-muted/50 transition-colors text-left hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-3 bg-blue-100 text-blue-600 rounded-xl"><Sparkles className="w-5 h-5" /></div>
  <div>
  <h3 className="font-semibold text-foreground text-lg">{tasks.length}</h3>
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Total Tasks</p>
  </div>
  </button>
- <button className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 -emerald-500/10 rounded-md-2xl p-4 flex items-center gap-3 hover:bg-emerald-50 transition-colors text-left hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-3 bg-emerald-100 text-emerald-600 rounded-md-xl"><CheckCircle2 className="w-5 h-5" /></div>
+ <button className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 -emerald-500/10 rounded-2xl p-4 flex items-center gap-3 hover:bg-emerald-50 transition-colors text-left hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-3 bg-emerald-100 text-emerald-600 rounded-xl"><CheckCircle2 className="w-5 h-5" /></div>
  <div>
  <h3 className="font-semibold text-emerald-700 text-lg">{tasks.filter(t => t.status === 'Completed').length}</h3>
  <p className="text-xs text-emerald-600/70 tracking-[0.04em]">Completed</p>
  </div>
  </button>
- <button className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-orange-200 -orange-500/10 rounded-md-2xl p-4 flex items-center gap-3 hover:bg-orange-50 transition-colors text-left hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-3 bg-orange-100 text-orange-600 rounded-md-xl"><Clock className="w-5 h-5" /></div>
+ <button className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-orange-200 -orange-500/10 rounded-2xl p-4 flex items-center gap-3 hover:bg-orange-50 transition-colors text-left hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-3 bg-orange-100 text-orange-600 rounded-xl"><Clock className="w-5 h-5" /></div>
  <div>
  <h3 className="font-semibold text-orange-700 text-lg">{tasks.filter(t => t.status === 'In Progress').length}</h3>
  <p className="text-xs text-orange-600/70 tracking-[0.04em]">In Progress</p>
  </div>
  </button>
- <button className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-red-200 -red-500/10 rounded-md-2xl p-4 flex items-center gap-3 hover:bg-red-50 transition-colors text-left hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-3 bg-red-100 text-red-600 rounded-md-xl"><AlertTriangle className="w-5 h-5" /></div>
+ <button className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-red-200 -red-500/10 rounded-2xl p-4 flex items-center gap-3 hover:bg-red-50 transition-colors text-left hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-3 bg-red-100 text-red-600 rounded-xl"><AlertTriangle className="w-5 h-5" /></div>
  <div>
  <h3 className="font-semibold text-red-700 text-lg">{tasks.filter(t => t.status === 'Pending').length}</h3>
  <p className="text-xs text-red-600/70 tracking-[0.04em]">Pending</p>
@@ -190,7 +190,7 @@ export default function UnivHousekeeping() {
  </button>
  </div>
 
- <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
@@ -199,7 +199,7 @@ export default function UnivHousekeeping() {
  placeholder="Search tasks..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -266,7 +266,7 @@ export default function UnivHousekeeping() {
 
  {isModalOpen && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <motion.div initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl w-full max-w-md overflow-hidden">
+ <motion.div initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl w-full max-w-md overflow-hidden">
  <div className="flex justify-between items-center p-4 border-b border-primary/40 bg-muted/30">
  <h3 className="font-semibold text-foreground">{editingId ? 'Edit Task' : 'New Task'}</h3>
  <button onClick={() => setIsModalOpen(false)} className="text-[#71717a] dark:text-gray-400 hover:text-foreground"><AlertTriangle className="w-5 h-5 hidden"/>Close</button>
@@ -307,10 +307,10 @@ export default function UnivHousekeeping() {
  <textarea rows="2" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm" />
  </div>
  <div className="flex justify-between gap-2 pt-4">
- {editingId ? <button type="button" onClick={() => handleDelete(editingId)} className="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-md-xl">Delete</button> : <div/>}
+ {editingId ? <button type="button" onClick={() => handleDelete(editingId)} className="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-xl">Delete</button> : <div/>}
  <div className="flex gap-2">
- <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium text-[#71717a] dark:text-gray-400 hover:bg-muted rounded-md-xl">Cancel</button>
- <button type="submit" className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md-xl">Save Task</button>
+ <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium text-[#71717a] dark:text-gray-400 hover:bg-muted rounded-xl">Cancel</button>
+ <button type="submit" className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-xl">Save Task</button>
  </div>
  </div>
  </form>

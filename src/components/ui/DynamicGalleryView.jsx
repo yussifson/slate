@@ -170,8 +170,8 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
 
  if (!data || data.length === 0) {
  return (
- <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
- <div className="w-16 h-16 rounded-md-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 -fuchsia-500/20">
+ <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 -fuchsia-500/20">
  <Image className="w-8 h-8 text-white" />
  </div>
  <h3 className="text-lg font-semibold text-slate-800 mb-1">No Items Yet</h3>
@@ -188,7 +188,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
  <div className="mb-6 space-y-3">
  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-md-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center -fuchsia-500/20">
+ <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center -fuchsia-500/20">
  <Sparkles className="w-5 h-5 text-white" />
  </div>
  <div>
@@ -246,7 +246,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
  ? setActiveFilter(null)
  : setActiveFilter({ field: sf.name, value: val})
 }
- className={`text-xs px-2.5 py-1 rounded-md-full transition-all font-medium ${
+ className={`text-xs px-2.5 py-1 rounded-full transition-all font-medium ${
  activeFilter?.field === sf.name && activeFilter?.value === val
  ? 'bg-primary text-white -fuchsia-500/20'
  : 'bg-muted text-[#71717a] dark:text-gray-400 hover:bg-muted'
@@ -285,16 +285,16 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
  return (
  <div
  key={record.id}
- className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 transition-all duration-300 overflow-hidden group cursor-pointer hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 transition-all duration-300 overflow-hidden group cursor-pointer hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  onClick={() => setViewRecord(record)}
  >
  {/* Gradient Header - varied heights for masonry effect */}
  <div className={`${headerHeight} bg-gradient-to-br ${gradient} relative overflow-hidden`}>
  {/* Decorative shapes */}
  <div className="absolute inset-0">
- <div className="absolute top-3 right-3 w-20 h-20 rounded-md-full bg-card/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
- <div className="absolute -bottom-4 -left-4 w-24 h-24 rounded-md-full bg-card/5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
- <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-md-xl bg-card/10 rotate-12 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+ <div className="absolute top-3 right-3 w-20 h-20 rounded-full bg-card/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+ <div className="absolute -bottom-4 -left-4 w-24 h-24 rounded-full bg-card/5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+ <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-xl bg-card/10 rotate-12 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
 
  {/* Overlay content - title in the gradient */}
@@ -344,7 +344,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
  </span>
  <span className="font-medium text-foreground truncate max-w-[50%] text-right">
  {f.field_type === 'boolean' ? (
- <span className={`px-2 py-0.5 rounded-md-full text-[10px] ${val ? 'bg-primary/10 text-primary' : 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
+ <span className={`px-2 py-0.5 rounded-full text-[10px] ${val ? 'bg-primary/10 text-primary' : 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
  {val ? 'Yes' : 'No'}
  </span>
  ) : f.field_type === 'select' ? (
@@ -377,9 +377,9 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
  const gradient = getCardGradient(data.indexOf(viewRecord));
  return (
  <>
- <div className={`-mx-6 -mt-6 h-28 bg-gradient-to-br ${gradient} rounded-md-t-lg relative overflow-hidden`}>
- <div className="absolute top-4 right-4 w-16 h-16 rounded-md-full bg-card/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
- <div className="absolute -bottom-3 -left-3 w-20 h-20 rounded-md-full bg-card/5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+ <div className={`-mx-6 -mt-6 h-28 bg-gradient-to-br ${gradient} rounded-t-lg relative overflow-hidden`}>
+ <div className="absolute top-4 right-4 w-16 h-16 rounded-full bg-card/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+ <div className="absolute -bottom-3 -left-3 w-20 h-20 rounded-full bg-card/5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  <DialogHeader className="mt-2">
  <DialogTitle>{getRecordTitle(viewRecord, fieldDefinitions)}</DialogTitle>

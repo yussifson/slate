@@ -119,7 +119,7 @@ export default function Sales() {
  </div>
  </div>
  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 col-span-1 md:col-span-2 bg-gradient-to-br from-orange-600 to-orange-800 text-white relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 col-span-1 md:col-span-2 bg-gradient-to-br from-orange-600 to-orange-800 text-white relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="relative z-10">
  <p className="text-sm font-semibold text-orange-200 uppercase tracking-wider mb-2 tracking-[0.04em]">{t("today_s_sales", "Today's Sales")}</p>
  <h2 className="text-4xl font-black mb-1 tracking-[-0.02em]">${stats.totalSales.toFixed(2)}</h2>
@@ -128,19 +128,19 @@ export default function Sales() {
  <TrendingUp className="absolute right-[-20px] bottom-[-20px] w-48 h-48 opacity-10 text-white" />
  </div>
  
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <p className="text-sm font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-2 tracking-[0.04em]">{t("transactions", "Transactions")}</p>
  <h3 className="text-3xl font-black text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{stats.transactions}</h3>
  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-2 font-medium tracking-[0.04em]">{t("total_receipts_registered", "Total receipts registered")}</p>
  </div>
  
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <p className="text-sm font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-2 tracking-[0.04em]">{t("avg_order_value", "Avg. Order Value")}</p>
  <h3 className="text-3xl font-black text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${stats.avgValue.toFixed(2)}</h3>
  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-2 font-medium tracking-[0.04em]">{t("per_transaction", "Per transaction")}</p>
  </div>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50 flex flex-col sm:flex-row gap-4 justify-between">
  <div className="relative max-w-md w-full">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -181,7 +181,7 @@ export default function Sales() {
  <td className="px-6 py-4 font-medium text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{sale.cashier}</td>
  <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">{sale.method}</td>
  <td className="px-6 py-4 text-center">
- <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md-sm uppercase tracking-wider ${sale.status === 'Refunded' ? 'bg-red-100 dark:bg-red-950/20 text-red-700 dark:text-red-400' : 'bg-slate-100 dark:bg-primary/20 text-primary/90 dark:text-primary/70'}`}>
+ <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-sm uppercase tracking-wider ${sale.status === 'Refunded' ? 'bg-red-100 dark:bg-red-950/20 text-red-700 dark:text-red-400' : 'bg-slate-100 dark:bg-primary/20 text-primary/90 dark:text-primary/70'}`}>
  {sale.status}
  </span>
  </td>
@@ -246,7 +246,7 @@ export default function Sales() {
  <div className="grid grid-cols-2 gap-4 border-b pb-4">
  <div className="font-semibold text-[#71717a] dark:text-gray-400">{t("status", "Status")}</div>
  <div className="text-right">
- <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md-sm uppercase tracking-wider ${selectedRecord.status === 'Refunded' ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-primary/90'}`}>
+ <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-sm uppercase tracking-wider ${selectedRecord.status === 'Refunded' ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-primary/90'}`}>
  {selectedRecord.status}
  </span>
  </div>
@@ -292,7 +292,7 @@ export default function Sales() {
  </Sheet>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-sm p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-sm p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("update_sale_status", "Update Sale Status")}</h2>
  <div className="space-y-3">
  <div>

@@ -58,7 +58,7 @@ export default function DynamicRenderer({ schema }) {
                     <h3 className="text-2xl font-semibold mt-1 tracking-[-0.02em]">{props.value}</h3>
                     {props.subtitle && <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">{props.subtitle}</p>}
                   </div>
-                  <div className={`p-3 rounded-md-2xl ${colorClasses}`}>
+                  <div className={`p-3 rounded-2xl ${colorClasses}`}>
                     {renderIcon(props.icon || 'Activity')}
                   </div>
                 </div>

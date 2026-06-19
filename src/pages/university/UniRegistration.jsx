@@ -145,7 +145,7 @@ export default function UniRegistration() {
                 <span className="text-[var(--color-text-secondary)]">Credit Load:</span>
                 <span className="font-mono font-semibold text-[var(--color-accent-primary)]">{registeredCredits} / 18</span>
               </div>
-              <div className="w-full bg-[var(--color-surface-3)] h-2 rounded-md-full overflow-hidden">
+              <div className="w-full bg-[var(--color-surface-3)] h-2 rounded-full overflow-hidden">
                 <div className="bg-[var(--color-accent-primary)] h-full transition-all" style={{ width: `${Math.min(100, (registeredCredits / 18) * 100)}%` }} />
               </div>
             </div>

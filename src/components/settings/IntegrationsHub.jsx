@@ -64,7 +64,7 @@ export function EmailSettings({ activeIndustry, company, onSave, saving}) {
 
  return (
  <SectionCard title="Email Delivery Center" subtitle="Configure SMTP servers or register your own verified sending domains for branded notifications">
- <div className="flex gap-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-muted/20 rounded-md-xl p-1 w-fit mb-6">
+ <div className="flex gap-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-muted/20 rounded-xl p-1 w-fit mb-6">
  <button
  onClick={() => setActiveTab("smtp")}
  className={`px-4 py-2 rounded-xl text-sm font-semibold capitalize transition-all duration-200 ${activeTab === "smtp" ? "bg-foreground text-background " : "text-[#71717a] dark:text-gray-400 hover:text-foreground"}`}
@@ -75,7 +75,7 @@ export function EmailSettings({ activeIndustry, company, onSave, saving}) {
  onClick={() => setActiveTab("domain")}
  className={`px-4 py-2 rounded-xl text-sm font-semibold capitalize flex items-center gap-2.5 transition-all duration-200 ${activeTab === "domain" ? "bg-foreground text-background " : "text-[#71717a] dark:text-gray-400 hover:text-foreground"}`}
  >
- {t("custom_sending_domain", "Custom Sending Domain")} {!isPaidPlan && <span className="text-[10px] bg-amber-500 text-black px-1.5 py-0.5 rounded-md-full font-semibold uppercase tracking-wider tracking-[0.04em]">{t("premium", "Premium")}</span>}
+ {t("custom_sending_domain", "Custom Sending Domain")} {!isPaidPlan && <span className="text-[10px] bg-amber-500 text-black px-1.5 py-0.5 rounded-full font-semibold uppercase tracking-wider tracking-[0.04em]">{t("premium", "Premium")}</span>}
  </button>
  </div>
  {activeTab === "smtp" ? (
@@ -128,8 +128,8 @@ export function EmailSettings({ activeIndustry, company, onSave, saving}) {
  ) : (
  <div className="relative">
  {!isPaidPlan ? (
- <div className="absolute inset-0 z-20 backdrop-blur-md bg-card/65 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 p-8 flex flex-col items-center justify-center text-center space-y-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-14 h-14 rounded-md-full bg-amber-500/10 text-amber-500 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-amber-500/20 animate-pulse">
+ <div className="absolute inset-0 z-20 backdrop-blur-md bg-card/65 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 p-8 flex flex-col items-center justify-center text-center space-y-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-14 h-14 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-amber-500/20 animate-pulse">
  <Lock className="w-6 h-6" />
  </div>
  <div className="max-w-md space-y-1.5">
@@ -144,7 +144,7 @@ export function EmailSettings({ activeIndustry, company, onSave, saving}) {
  )}
  </p>
  </div>
- <Button onClick={() => window.location.href = '#billing'} className="bg-primary hover:bg-primary/90 text-white rounded-md-xl font-semibold px-6 py-5 gap-2 transition-transform hover:-translate-y-0.5 active:translate-y-0">
+ <Button onClick={() => window.location.href = '#billing'} className="bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold px-6 py-5 gap-2 transition-transform hover:-translate-y-0.5 active:translate-y-0">
  <CreditCard className="w-4 h-4" />
  {t("upgrade_subscription_plan", "Upgrade Subscription Plan")}
  </Button>
@@ -152,7 +152,7 @@ export function EmailSettings({ activeIndustry, company, onSave, saving}) {
  ) : null}
 
  <div className={`space-y-6 ${!isPaidPlan ? "opacity-35 pointer-events-none select-none" : ""}`}>
- <div className="bg-muted/15 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-5 space-y-4">
+ <div className="bg-muted/15 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-5 space-y-4">
  <h3 className="text-sm font-semibold text-foreground">{t("configure_domain", "Configure Domain")}</h3>
  <div className="flex flex-col sm:flex-row gap-3">
  <div className="flex-1 relative">
@@ -163,7 +163,7 @@ export function EmailSettings({ activeIndustry, company, onSave, saving}) {
  placeholder="e.g. smithandassociates.com"
  />
  {company?.custom_email_verified && (
- <span className="absolute right-3 top-1/2 -translate-y-1/2 text-primary flex items-center gap-2 text-xs font-semibold bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/40 px-2 py-0.5 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 tracking-[0.04em]">
+ <span className="absolute right-3 top-1/2 -translate-y-1/2 text-primary flex items-center gap-2 text-xs font-semibold bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/40 px-2 py-0.5 rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 tracking-[0.04em]">
  <CheckCircle className="w-3.5 h-3.5" /> {t("verified", "Verified")}
  </span>
  )}
@@ -190,7 +190,7 @@ export function EmailSettings({ activeIndustry, company, onSave, saving}) {
  </Button>
  </div>
 
- <div className="overflow-x-auto rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-muted/10">
+ <div className="overflow-x-auto rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-muted/10">
  <table className="w-full text-left border-collapse text-xs tracking-[0.04em]">
  <thead>
  <tr className="bg-muted/30 border-b border-primary/40 font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 select-none tracking-[0.04em]">
@@ -277,7 +277,7 @@ export function NotificationSettings({ activeIndustry, onSave, saving}) {
  <div className="grid grid-cols-1 gap-4">
  {items.map(item => {
  return (
- <div key={item.key} className="flex items-center justify-between p-4 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card hover:bg-muted/40 transition-all duration-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={item.key} className="flex items-center justify-between p-4 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card hover:bg-muted/40 transition-all duration-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="space-y-1 pr-4">
  <p className="text-sm font-semibold text-foreground">{item.label}</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400/80 leading-relaxed tracking-[0.04em]">{item.desc}</p>
@@ -319,7 +319,7 @@ export function SlackSettings({ activeIndustry, onSave, saving, initialData}) {
  <div className="space-y-4 mt-8">
  {[["notify_new_case", "Realtime " + getTerm(activeIndustry, "case") + " Intake Alerts", "Ping channel whenever a new " + getTerm(activeIndustry, "case").toLowerCase() + " file is successfully created"], ["notify_overdue", "Overdue Balance Webhooks", "Notify Slack channels automatically upon invoice status overdue trigger"]].map(([k, l, d]) => {
  return (
- <div key={k} className="flex items-center justify-between p-4 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card hover:bg-muted/40 transition-all duration-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={k} className="flex items-center justify-between p-4 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card hover:bg-muted/40 transition-all duration-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="space-y-1 pr-4">
  <p className="text-sm font-semibold text-foreground">{l}</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400/80 tracking-[0.04em]">{d}</p>
@@ -361,7 +361,7 @@ export function TwilioSettings({ activeIndustry, onSave, saving, initialData}) {
  <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" value={form.from_number} onChange={e => setForm({ ...form, from_number: e.target.value})} placeholder="+15551234567" />
  </Field>
  </FormRow>
- <div className="flex items-center justify-between p-4 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card hover:bg-muted/40 transition-all duration-200 mt-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex items-center justify-between p-4 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card hover:bg-muted/40 transition-all duration-200 mt-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="space-y-1">
  <p className="text-sm font-semibold text-foreground">{t("global_sms_dispatch", "Global SMS Dispatch")}</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400/80 tracking-[0.04em]">{t(
@@ -415,7 +415,7 @@ export function PaymentSettings({ activeIndustry, onSave, saving, initialData}) 
  <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" type="password" value={form.webhook_secret} onChange={e => setForm({ ...form, webhook_secret: e.target.value})} placeholder="whsec_..." />
  </Field>
  </FormRow>
- <div className="flex items-center justify-between p-4 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card hover:bg-muted/40 transition-all duration-200 mt-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex items-center justify-between p-4 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card hover:bg-muted/40 transition-all duration-200 mt-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="space-y-1">
  <p className="text-sm font-semibold text-foreground">{t("production_live_mode", "Production Live Mode")}</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400/80 tracking-[0.04em]">{t(
@@ -457,7 +457,7 @@ export function GoogleCalendarSettings({ activeIndustry, onSave, saving, initial
  <Input className="h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" value={form.calendar_id} onChange={e => setForm({ ...form, calendar_id: e.target.value})} placeholder="primary or corporate@yourfirm.com" />
  </Field>
  </FormRow>
- <div className="flex items-center justify-between p-4 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card hover:bg-muted/40 transition-all duration-200 mt-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex items-center justify-between p-4 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card hover:bg-muted/40 transition-all duration-200 mt-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="space-y-1">
  <p className="text-sm font-semibold text-foreground">{t("activate_sync_operations", "Activate Sync Operations")}</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400/80 tracking-[0.04em]">{t(

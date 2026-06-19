@@ -74,7 +74,7 @@ export default function UniStudents() {
  header: 'Student', 
  render: (_, row) => (
  <div className="flex items-center gap-3">
- <div className="w-8 h-8 rounded-md-full bg-[var(--color-surface-4)] text-[var(--color-text-secondary)] flex items-center justify-center text-xs font-semibold tracking-[0.04em]">
+ <div className="w-8 h-8 rounded-full bg-[var(--color-surface-4)] text-[var(--color-text-secondary)] flex items-center justify-center text-xs font-semibold tracking-[0.04em]">
  {row.name?.substring(0, 2).toUpperCase() || 'UN'}
  </div>
  <div>
@@ -173,14 +173,14 @@ export default function UniStudents() {
  <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden ">
  <div className="bg-[var(--color-surface-2)] p-6 md:p-8 flex items-center justify-between border-b border-primary/40">
  <div className="flex items-center gap-6">
- <div className="w-20 h-20 rounded-md-full bg-[var(--primary)] text-white flex items-center justify-center font-display text-[var(--text-3xl)] -glow-sm -[var(--primary)] tracking-[-0.02em]">
+ <div className="w-20 h-20 rounded-full bg-[var(--primary)] text-white flex items-center justify-center font-display text-[var(--text-3xl)] -glow-sm -[var(--primary)] tracking-[-0.02em]">
  {selectedStudent.name?.substring(0, 2).toUpperCase()}
  </div>
  <div>
  <h2 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">{selectedStudent.name}</h2>
  <div className="flex items-center gap-3 mt-1.5 text-[var(--color-text-secondary)] font-mono text-[var(--text-sm)]">
  <span className="flex items-center gap-2.5"><FileText className="w-4 h-4" /> {selectedStudent.studentId}</span>
- <span className="w-1 h-1 rounded-md-full bg-[var(--color-border-strong)]" />
+ <span className="w-1 h-1 rounded-full bg-[var(--color-border-strong)]" />
  <span className="flex items-center gap-2.5"><GraduationCap className="w-4 h-4" /> {selectedStudent.major}</span>
  </div>
  </div>
@@ -202,12 +202,12 @@ export default function UniStudents() {
  
  <div className="relative border-l border-[var(--color-border-strong)] ml-3 space-y-8 pb-4">
  <div className="relative pl-6">
- <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-md-full bg-[var(--primary)] -glow-sm -[var(--primary)]" />
+ <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-[var(--primary)] -glow-sm -[var(--primary)]" />
  <h4 className="font-medium text-[var(--color-text-primary)]">Fall Semester 2025 <span className="ml-2 font-mono text-[var(--color-text-tertiary)] text-xs tracking-[0.04em]">Current</span></h4>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">CS-302: HCI (Grade: A) · CS-401: Distributed Systems (Grade: A-)</p>
  </div>
  <div className="relative pl-6">
- <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-md-full bg-[var(--color-border-strong)]" />
+ <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-[var(--color-border-strong)]" />
  <h4 className="font-medium text-[var(--color-text-primary)]">Spring Semester 2025</h4>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">MATH-202: Linear Algebra (Grade: B+) · ENG-102: Rhetoric (Grade: A)</p>
  </div>

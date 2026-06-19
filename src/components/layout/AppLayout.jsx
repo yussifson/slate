@@ -173,8 +173,8 @@ export default function AppLayout() {
  <div className="absolute inset-0 bg-gradient-to-br from-[hsl(158,68%,38%)]/[0.03] via-transparent to-[hsl(158,68%,38%)]/[0.06] dark:from-[hsl(158,68%,38%)]/10 dark:via-[#0A0F1C] dark:to-[hsl(158,68%,38%)]/20" />
  
  {/* Soft Radial Glows - Emerald Green */}
- <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-md-full bg-[hsl(158,68%,38%)]/5 blur-[150px] mix-blend-multiply dark:mix-blend-screen" />
- <div className="absolute bottom-[-15%] right-[-10%] w-[60%] h-[60%] rounded-md-full bg-[hsl(158,68%,38%)]/5 blur-[160px] mix-blend-multiply dark:mix-blend-screen" />
+ <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[hsl(158,68%,38%)]/5 blur-[150px] mix-blend-multiply dark:mix-blend-screen" />
+ <div className="absolute bottom-[-15%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[hsl(158,68%,38%)]/5 blur-[160px] mix-blend-multiply dark:mix-blend-screen" />
  </div>
 
  <div className="z-10 flex">
@@ -186,8 +186,8 @@ export default function AppLayout() {
  <div className="bg-red-600 text-white px-4 py-2 flex items-center justify-between gap-3 text-xs md:text-sm shrink-0 font-sans z-50 tracking-[0.04em]">
  <div className="flex items-center gap-2">
  <span className="relative flex h-2 w-2 shrink-0">
- <span className="animate-ping absolute inline-flex h-full w-full rounded-md-full bg-white opacity-75 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></span>
- <span className="relative inline-flex rounded-md-full h-2 w-2 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></span>
+ <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></span>
+ <span className="relative inline-flex rounded-full h-2 w-2 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></span>
  </span>
  <WifiOff className="w-4 h-4 shrink-0" />
  <span className="font-semibold uppercase tracking-wider text-[11px] tracking-[0.04em]">{t("offline_mode_active", "Offline Mode Active")}</span>
@@ -198,7 +198,7 @@ export default function AppLayout() {
  </div>
  <button 
  onClick={() => setHideOfflineBanner(true)}
- className="p-1 hover:bg-white/10 rounded-md-full transition-colors shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="p-1 hover:bg-white/10 rounded-full transition-colors shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  title="Dismiss"
  >
  <X className="w-3.5 h-3.5" />
@@ -208,7 +208,7 @@ export default function AppLayout() {
 
  {/* Trial Countdown Banner */}
  {subscriptionStatus === 'trial' && !hideTrialBanner && !isSuperAdmin && (
- <div className="mx-3 mt-3 mb-1 rounded-md-xl bg-gradient-to-b from-primary/90 to-primary text-white px-5 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs md:text-sm shrink-0 font-sans border-[0.5px] border-black/9 dark:border-white/8 border-white/20 relative overflow-hidden tracking-[0.04em]">
+ <div className="mx-3 mt-3 mb-1 rounded-xl bg-gradient-to-b from-primary/90 to-primary text-white px-5 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs md:text-sm shrink-0 font-sans border-[0.5px] border-black/9 dark:border-white/8 border-white/20 relative overflow-hidden tracking-[0.04em]">
  {/* Shimmer effect */}
  <div className="absolute inset-0 -translate-x-full animate-[shimmer_3s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
  
@@ -228,7 +228,7 @@ export default function AppLayout() {
  </Link>
  <button 
  onClick={() => setHideTrialBanner(true)}
- className="p-1 hover:bg-white/10 rounded-md-full transition-colors shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="p-1 hover:bg-white/10 rounded-full transition-colors shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <X className="w-3.5 h-3.5" />
  </button>

@@ -92,7 +92,7 @@ const UnivAllergyList = () => {
  </motion.div>
 
  <div className="view-header grid md:grid-cols-3 gap-8">
- <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="md:col-span-1 bg-card p-6 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="md:col-span-1 bg-card p-6 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
  <Plus className="w-5 h-5 text-red-500" /> Log Allergy
  </h2>
@@ -138,17 +138,17 @@ const UnivAllergyList = () => {
  {loading ? (
  <div className="text-center py-10"><AlertCircle className="w-8 h-8 text-red-500 animate-spin mx-auto" /></div>
  ) : allergies.length === 0 ? (
- <div className="text-center py-10 bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">No allergy records found.</div>
+ <div className="text-center py-10 bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">No allergy records found.</div>
  ) : (
  allergies.map((record, index) => (
- <motion.div key={record.id || index} initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className="bg-card p-5 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col sm:flex-row gap-4 transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className={`p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 flex-shrink-0 self-start ${getSeverityColor(record.reaction_severity)}`}>
+ <motion.div key={record.id || index} initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className="bg-card p-5 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col sm:flex-row gap-4 transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className={`p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 flex-shrink-0 self-start ${getSeverityColor(record.reaction_severity)}`}>
  <AlertTriangle className="w-6 h-6" />
  </div>
  <div className="flex-1 min-w-0">
  <div className="flex justify-between items-start mb-2">
  <h3 className="text-lg font-semibold text-foreground truncate">{record.allergen}</h3>
- <span className={`px-2.5 py-1 text-xs font-semibold rounded-md-full border ${getSeverityColor(record.reaction_severity)}`}>{record.reaction_severity}</span>
+ <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${getSeverityColor(record.reaction_severity)}`}>{record.reaction_severity}</span>
  </div>
  <div className="text-sm text-[#71717a] dark:text-gray-400 mb-3"><User className="w-4 h-4 inline mr-1 text-[#71717a] dark:text-gray-400" />{record.patient_name}</div>
  

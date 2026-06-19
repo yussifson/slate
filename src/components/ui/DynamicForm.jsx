@@ -138,7 +138,7 @@ export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSucces
  default:
  return (
  <div className="space-y-2" key={field.id}>
- <Label>{label} {isRequired && <span className="text-red-500">*</span>}</Label>
+ <Label>{label} {isRequired && <span className="text-destructive text-[11px] ml-0.5">*</span>}</Label>
  <Input
  type="text"
  placeholder={`Enter ${label.toLowerCase()}`}
@@ -156,7 +156,7 @@ export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSucces
  {fieldDefinitions.map(renderField)}
  </div>
 
- <div className="flex justify-end gap-3 pt-4 border-t border-primary/40">
+ <div className="flex justify-end gap-2 pt-4 mt-6 border-t border-border/40">
  <Button type="button" variant="outline" onClick={onCancel}>
  Cancel
  </Button>

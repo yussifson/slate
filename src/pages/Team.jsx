@@ -86,7 +86,7 @@ export default function Team() {
       render: row => {
         return (
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-md-full bg-slate-100 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
               <span className="text-xs font-semibold text-primary tracking-[0.04em]">{row.full_name?.[0]?.toUpperCase()}</span>
             </div>
             <div>

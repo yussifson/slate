@@ -92,20 +92,20 @@ export default function AdminBilling() {
         title="Revenue & Billing Management" 
         subtitle="Global platform financial controls and invoice management." 
         action={
-          <Button className="bg-primary hover:bg-primary/90 text-white rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">
+          <Button className="bg-primary hover:bg-primary/90 text-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">
             <Plus className="w-4 h-4 mr-2" /> {t("create_manual_bill", "Create Manual Bill")}
           </Button>
         }
       />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] hover:-translate-y-1 transition-all duration-300 rounded-md-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <Card className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] hover:-translate-y-1 transition-all duration-300 rounded-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-sm font-semibold text-primary/80 uppercase tracking-wider mb-1 tracking-[0.04em]">{t("total_paid_mrr", "Total Paid MRR")}</p>
                 <h3 className="text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{formatCurrency(totalRevenue, 'USD')}</h3>
               </div>
-              <div className="w-12 h-12 rounded-md-2xl bg-primary/10 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
                 <DollarSign className="w-6 h-6 text-primary" />
               </div>
             </div>
@@ -115,14 +115,14 @@ export default function AdminBilling() {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-card to-amber-50/50 dark:from-card dark:to-amber-950/20 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200/50 dark:border-amber-900/50 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] hover:-translate-y-1 transition-all duration-300 rounded-md-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <Card className="bg-gradient-to-br from-card to-amber-50/50 dark:from-card dark:to-amber-950/20 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200/50 dark:border-amber-900/50 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] hover:-translate-y-1 transition-all duration-300 rounded-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-sm font-semibold text-amber-600/80 uppercase tracking-wider mb-1 tracking-[0.04em]">{t("pending_revenue", "Pending Revenue")}</p>
                 <h3 className="text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{formatCurrency(pendingRevenue, 'USD')}</h3>
               </div>
-              <div className="w-12 h-12 rounded-md-2xl bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
                 <TrendingUp className="w-6 h-6 text-amber-600 dark:text-amber-500" />
               </div>
             </div>
@@ -132,14 +132,14 @@ export default function AdminBilling() {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-card to-rose-50/50 dark:from-card dark:to-rose-950/20 border-[0.5px] border-black/9 dark:border-white/8 border-rose-200/50 dark:border-rose-900/50 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] hover:-translate-y-1 transition-all duration-300 rounded-md-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <Card className="bg-gradient-to-br from-card to-rose-50/50 dark:from-card dark:to-rose-950/20 border-[0.5px] border-black/9 dark:border-white/8 border-rose-200/50 dark:border-rose-900/50 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] hover:-translate-y-1 transition-all duration-300 rounded-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-sm font-semibold text-rose-500 uppercase tracking-wider mb-1 tracking-[0.04em]">{t("overdue_failed", "Overdue / Failed")}</p>
                 <h3 className="text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{failedCharges}</h3>
               </div>
-              <div className="w-12 h-12 rounded-md-2xl bg-rose-100 dark:bg-rose-900/50 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-rose-100 dark:bg-rose-900/50 flex items-center justify-center">
                 <CreditCard className="w-6 h-6 text-rose-600 dark:text-rose-500" />
               </div>
             </div>
@@ -150,7 +150,7 @@ export default function AdminBilling() {
         </Card>
       </div>
 
-      <Card className="border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm rounded-md-2xl overflow-hidden bg-transparent border-0 md:border-[0.5px] border-black/9 dark:border-white/8 md:bg-card md:border-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <Card className="border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm rounded-2xl overflow-hidden bg-transparent border-0 md:border-[0.5px] border-black/9 dark:border-white/8 md:bg-card md:border-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <CardHeader className="bg-transparent md:bg-slate-50 dark:md:bg-slate-800/50 border-b-0 md:border-b border-primary/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4 px-0 md:px-6">
           <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("global_invoices", "Global Invoices")}</CardTitle>
           <div className="relative w-full sm:w-72">
@@ -160,7 +160,7 @@ export default function AdminBilling() {
               placeholder="Search firm or status..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-4 h-10 w-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+              className="pl-9 pr-4 h-10 w-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
             />
           </div>
         </CardHeader>
@@ -171,7 +171,7 @@ export default function AdminBilling() {
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
             ) : filteredInvoices.length === 0 ? (
-              <div className="text-center py-12 text-slate-500 dark:text-slate-400 font-medium bg-card md:bg-transparent rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 md:border-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+              <div className="text-center py-12 text-slate-500 dark:text-slate-400 font-medium bg-card md:bg-transparent rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 md:border-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                 {t("no_invoices_found", "No invoices found.")}
               </div>
             ) : (
@@ -207,7 +207,7 @@ export default function AdminBilling() {
                                   <MoreVertical className="h-4 w-4" />
                                 </Button>
                               </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end" className="w-48 rounded-md-xl border-primary/20">
+                              <DropdownMenuContent align="end" className="w-48 rounded-xl border-primary/20">
                                 <DropdownMenuLabel>{t("manage_invoice", "Manage Invoice")}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={() => handleUpdateStatus(inv.id, 'paid')} className="text-emerald-600 dark:text-emerald-400 font-medium cursor-pointer">
@@ -231,7 +231,7 @@ export default function AdminBilling() {
                 {/* Mobile Card View */}
                 <div className="md:hidden space-y-4">
                   {filteredInvoices.map(inv => (
-                    <div key={inv.id} className="bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm flex flex-col gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                    <div key={inv.id} className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm flex flex-col gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                       <div className="flex justify-between items-start">
                         <div>
                           <p className="font-semibold text-slate-900 dark:text-slate-100">{getCompanyName(inv.company_id)}</p>
@@ -253,7 +253,7 @@ export default function AdminBilling() {
                               Manage <MoreVertical className="h-3.5 w-3.5 ml-1" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-48 rounded-md-xl border-primary/20">
+                          <DropdownMenuContent align="end" className="w-48 rounded-xl border-primary/20">
                             <DropdownMenuLabel>{t("manage_invoice", "Manage Invoice")}</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={() => handleUpdateStatus(inv.id, 'paid')} className="text-emerald-600 dark:text-emerald-400 font-medium cursor-pointer">

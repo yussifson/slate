@@ -120,7 +120,7 @@ export default function UnivBilling({
  <p className="text-[#71717a] dark:text-gray-400 mt-1">Manage your subscription, billing details, and view your usage.</p>
  </div>
 
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <div className="flex items-center gap-3 mb-2">
  <h2 className="text-2xl font-semibold text-foreground tracking-[-0.02em]">Current Plan: {plan?.name || 'Free'}</h2>
@@ -136,13 +136,13 @@ export default function UnivBilling({
  : "You do not have an active subscription. Upgrade to unlock premium features."}
  </p>
  </div>
- <div className="bg-muted rounded-md-xl p-4 min-w-[200px]">
+ <div className="bg-muted rounded-xl p-4 min-w-[200px]">
  <div className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-1 flex items-center gap-2.5 tracking-[0.04em]"><Zap className="w-3 h-3 text-amber-500" /> AI Credits (Monthly)</div>
  <div className="flex items-end gap-2 mb-2">
  <span className="text-2xl font-black tracking-[-0.02em]">{aiLimit.current}</span>
  <span className="text-sm font-medium text-[#71717a] dark:text-gray-400 pb-1">/ {aiLimit.max || '∞'}</span>
  </div>
- <div className="w-full h-2 bg-background rounded-md-full overflow-hidden">
+ <div className="w-full h-2 bg-background rounded-full overflow-hidden">
  <div 
  className={cn("h-full transition-all", aiLimit.allowed ? "bg-amber-500" : "bg-red-500/10")} 
  style={{ width: `${Math.min((aiLimit.current / Math.max(aiLimit.max, 1)) * 100, 100)}%`}}
@@ -164,11 +164,11 @@ export default function UnivBilling({
 
  return (
  <div key={p.id} className={cn(
- "bg-card rounded-md-2xl p-6 sm:p-8 flex flex-col relative transition-all",
+ "bg-card rounded-2xl p-6 sm:p-8 flex flex-col relative transition-all",
  isCurrent ? "border-2 border-primary " : "border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary/50"
  )}>
  {isCurrent && (
- <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-white text-[10px] font-semibold uppercase tracking-widest px-3 py-1 rounded-md-full tracking-[0.04em]">
+ <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-white text-[10px] font-semibold uppercase tracking-widest px-3 py-1 rounded-full tracking-[0.04em]">
  Current Plan
  </div>
  )}
@@ -216,7 +216,7 @@ export default function UnivBilling({
  </div>
 
  {/* Transaction History */}
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6 sm:p-8  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-6 sm:p-8  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between mb-6">
  <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
  <History className="w-5 h-5 text-primary" /> Billing History

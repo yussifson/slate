@@ -14,7 +14,7 @@ export default function Careers() {
  return (
  <div className="py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto min-h-screen">
  <div className="text-center max-w-3xl mx-auto mb-20">
- <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-md-full bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-primary/90 text-sm font-semibold mb-6">
+ <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-primary/90 text-sm font-semibold mb-6">
  <Briefcase className="w-4 h-4" /> {t("we_re_hiring", "We're Hiring")}
  </div>
  <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 tracking-tight mb-6 tracking-[-0.02em]">
@@ -58,16 +58,16 @@ export default function Careers() {
  <div className="space-y-4">
  {jobs.map((job, idx) => {
  return (
- <div key={idx} className="group bg-white p-6 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={idx} className="group bg-white p-6 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <h3 className="text-xl font-semibold text-slate-900 group-hover:text-primary transition-colors mb-2">{job.title}</h3>
  <div className="flex items-center gap-4 text-sm text-slate-500 font-medium">
- <span className="bg-slate-100 px-3 py-1 rounded-md-full">{job.department}</span>
+ <span className="bg-slate-100 px-3 py-1 rounded-full">{job.department}</span>
  <span className="flex items-center gap-2"><MapPin className="w-4 h-4" /> {job.location}</span>
  <span>{job.type}</span>
  </div>
  </div>
- <Button variant="outline" className="shrink-0 rounded-md-full group-hover:bg-slate-50 group-hover:text-primary/90 group-hover:border-primary/20 transition-all">
+ <Button variant="outline" className="shrink-0 rounded-full group-hover:bg-slate-50 group-hover:text-primary/90 group-hover:border-primary/20 transition-all">
  {t("apply_now", "Apply Now")} <ArrowRight className="w-4 h-4 ml-2" />
  </Button>
  </div>

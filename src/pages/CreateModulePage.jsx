@@ -374,7 +374,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  <div className={`grid grid-cols-1 ${isSidebarOpen && !isBoltOpen ? 'xl:grid-cols-3' : ''} gap-6 transition-all duration-300`}>
  {isSidebarOpen && (
  <div className="xl:col-span-1 space-y-6 animate-in slide-in-from-left duration-300">
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 space-y-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 space-y-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Slate Details */}
  <div className="space-y-4">
  <h3 className="font-semibold text-foreground border-b border-primary/40 pb-2">Slate Details</h3>
@@ -559,7 +559,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  key={t.id}
  type="button"
  onClick={() => setState({ ...state, theme: t.id})}
- className={`w-8 h-8 rounded-md-full transition-all flex items-center justify-center ${theme === t.id ? 'ring-2 ring-offset-2 ring-offset-background ring-foreground scale-110' : 'hover:scale-105'}`}
+ className={`w-8 h-8 rounded-full transition-all flex items-center justify-center ${theme === t.id ? 'ring-2 ring-offset-2 ring-offset-background ring-foreground scale-110' : 'hover:scale-105'}`}
  style={{ backgroundColor: t.hex}}
  title={t.id.charAt(0).toUpperCase() + t.id.slice(1)}
  >
@@ -585,7 +585,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
 
  {/* Preview Panel */}
  <div className={isSidebarOpen && !isBoltOpen ? "xl:col-span-2" : isSidebarOpen ? "lg:col-span-2 xl:col-span-1" : "xl:col-span-1 h-full"}>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex items-center justify-between bg-muted/30">
  <div className="flex items-center gap-3 text-foreground font-medium">
  <button
@@ -624,7 +624,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
             
             switch (moduleType) {
               case 'universal_component':
-                return state.customConfig?.component_id ? React.createElement(React.lazy(() => import(`@/components/universal/${state.customConfig.component_id}.jsx`).catch(() => ({ default: () => <div className="p-8 border-[0.5px] border-black/9 dark:border-white/8 border-dashed rounded-md-xl border-red-500/50 bg-red-50 text-red-500 text-center">Component not found</div> })))) : null;
+                return state.customConfig?.component_id ? React.createElement(React.lazy(() => import(`@/components/universal/${state.customConfig.component_id}.jsx`).catch(() => ({ default: () => <div className="p-8 border-[0.5px] border-black/9 dark:border-white/8 border-dashed rounded-xl border-red-500/50 bg-red-50 text-red-500 text-center">Component not found</div> })))) : null;
               case 'custom_page':
                 return <PageRenderer schema={state.customConfig || {}} editMode={false} />;
               case 'dashboard':
@@ -672,7 +672,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  <p className="font-medium">Add fields or use OrbitBuild to generate your slate</p>
  <button
  onClick={() => setIsBoltOpen(true)}
- className="mt-4 px-5 py-2.5 rounded-md-xl bg-gradient-to-r from-primary to-primary text-white text-sm font-semibold hover:from-primary/90 hover:to-primary/90 transition-all -emerald-500/30"
+ className="mt-4 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary text-white text-sm font-semibold hover:from-primary/90 hover:to-primary/90 transition-all -emerald-500/30"
  >
  ⚡ Launch OrbitBuild
  </button>

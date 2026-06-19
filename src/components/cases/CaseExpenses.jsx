@@ -112,7 +112,7 @@ export default function CaseExpenses({ caseData, user }) {
           { label: "Expenses Count", value: expenses.length, color: "text-foreground" },
         ].map(s => {
           return (
-            <div key={s.label} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-3 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <div key={s.label} className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-3 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <p className={`text-lg font-semibold ${s.color}`}>{s.value}</p>
               <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{s.label}</p>
             </div>
@@ -137,7 +137,7 @@ export default function CaseExpenses({ caseData, user }) {
       {isLoading ? (
         <div className="p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("loading", "Loading...")}</div>
       ) : expenses.length === 0 ? (
-        <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <Receipt className="w-10 h-10 mx-auto text-[#71717a] dark:text-gray-400 mb-3" />
           <p className="text-sm font-medium">{t("no_expenses_logged_yet", "No expenses logged yet")}</p>
           <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">{t(
@@ -149,7 +149,7 @@ export default function CaseExpenses({ caseData, user }) {
         <div className="space-y-2">
           {expenses.map(exp => {
             return (
-              <div key={exp.id} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 px-4 py-3 flex items-center gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+              <div key={exp.id} className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 px-4 py-3 flex items-center gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                 <div className="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
                   <Receipt className="w-4 h-4 text-amber-600" />
                 </div>

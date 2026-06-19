@@ -162,16 +162,16 @@ export default function UnivDocument() {
       <div className="view-header flex items-center justify-between flex-wrap gap-4 shrink-0">
         <div>
           <h1 className="text-2xl font-black text-foreground flex items-center gap-3 tracking-[-0.02em]">
-            <span className="p-2.5 rounded-md-xl bg-primary/10 text-primary"><FileText className="w-6 h-6" /></span>
+            <span className="p-2.5 rounded-xl bg-primary/10 text-primary"><FileText className="w-6 h-6" /></span>
             Document Library
           </h1>
           <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1 ml-0.5">Securely manage employee contracts, offer letters, NDAs, and files.</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-xl text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 transition-all active:scale-95">
+          <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 transition-all active:scale-95">
             Export CSV
           </button>
-          <button onClick={openAdd} className="h-10 px-5 bg-primary text-white rounded-md-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 active:scale-95 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">
+          <button onClick={openAdd} className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 active:scale-95 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">
             <UploadCloud className="w-4 h-4" /> Upload Document
           </button>
         </div>
@@ -181,7 +181,7 @@ export default function UnivDocument() {
       <div className="flex flex-col sm:flex-row gap-4 shrink-0 justify-between items-start sm:items-center">
         <div className="relative w-full max-w-sm shrink-0">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400 pointer-events-none" />
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search documents..." className="w-full h-11 pl-9 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search documents..." className="w-full h-11 pl-9 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
         </div>
         
         {!loading && records.length > 0 && (
@@ -206,7 +206,7 @@ export default function UnivDocument() {
       {loading ? (
         <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
       ) : (
-        <div className="flex-1 overflow-auto rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card custom-scrollbar hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="flex-1 overflow-auto rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card custom-scrollbar hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <table className="w-full text-sm min-w-[900px]">
             <thead className="border-b border-primary/40 bg-muted/40 sticky top-0 z-10">
               <tr>
@@ -275,17 +275,17 @@ export default function UnivDocument() {
       {/* Modal Form */}
       {modal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-card w-full max-w-2xl rounded-md-2xl flex flex-col border-[0.5px] border-black/9 dark:border-white/8 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-2xl max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-card w-full max-w-2xl rounded-2xl flex flex-col border-[0.5px] border-black/9 dark:border-white/8 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-2xl max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <div className="p-5 border-b flex justify-between items-center bg-muted/20 shrink-0">
               <h2 className="text-xl font-black flex items-center gap-2"><UploadCloud className="w-5 h-5 text-primary" /> {editId ? 'Edit Document' : 'Upload Employee Document'}</h2>
-              <button onClick={closeModal} className="p-2 hover:bg-muted rounded-md-full transition-colors"><XCircle className="w-5 h-5 text-[#71717a] dark:text-gray-400" /></button>
+              <button onClick={closeModal} className="p-2 hover:bg-muted rounded-full transition-colors"><XCircle className="w-5 h-5 text-[#71717a] dark:text-gray-400" /></button>
             </div>
             
             <form onSubmit={handleSave} className="p-5 overflow-y-auto custom-scrollbar flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
                   <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Employee *</label>
-                  <select required value={form.employee_name} onChange={e => setForm({...form, employee_name: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm appearance-none cursor-pointer">
+                  <select required value={form.employee_name} onChange={e => setForm({...form, employee_name: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm appearance-none cursor-pointer">
                     <option value="">-- Select Employee --</option>
                     {employees.map(emp => <option key={emp.id} value={emp.id}>{emp.first_name} {emp.last_name}</option>)}
                   </select>
@@ -295,11 +295,11 @@ export default function UnivDocument() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2 sm:col-span-1">
                   <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Document Title *</label>
-                  <input required type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="e.g. John Doe Offer Letter 2026" className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm" />
+                  <input required type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="e.g. John Doe Offer Letter 2026" className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm" />
                 </div>
                 <div className="col-span-2 sm:col-span-1">
                   <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Document Type</label>
-                  <select value={form.type} onChange={e => setForm({...form, type: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm cursor-pointer">
+                  <select value={form.type} onChange={e => setForm({...form, type: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm cursor-pointer">
                     {Object.keys(TYPE_ICONS).map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
@@ -307,17 +307,17 @@ export default function UnivDocument() {
 
               <div>
                 <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Description</label>
-                <input type="text" value={form.description} onChange={e => setForm({...form, description: e.target.value})} placeholder="Optional summary of document contents" className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm" />
+                <input type="text" value={form.description} onChange={e => setForm({...form, description: e.target.value})} placeholder="Optional summary of document contents" className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm" />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Tags (comma separated)</label>
-                  <input type="text" value={form.tags} onChange={e => setForm({...form, tags: e.target.value})} placeholder="e.g. Finance, 2026, Confidential" className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm" />
+                  <input type="text" value={form.tags} onChange={e => setForm({...form, tags: e.target.value})} placeholder="e.g. Finance, 2026, Confidential" className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm" />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Status</label>
-                  <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm cursor-pointer">
+                  <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm cursor-pointer">
                     {Object.keys(STATUS_COLORS).map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
@@ -325,7 +325,7 @@ export default function UnivDocument() {
 
               <div className="mt-2">
                 <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Document Attachment *</label>
-                <div {...getRootProps()} className={`border-2 border-dashed rounded-md-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-colors ${isDragActive ? 'border-primary bg-primary/5' : 'border-primary/20 hover:border-primary/50'}`}>
+                <div {...getRootProps()} className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-colors ${isDragActive ? 'border-primary bg-primary/5' : 'border-primary/20 hover:border-primary/50'}`}>
                   <input {...getInputProps()} />
                   {uploading ? (
                     <div className="flex flex-col items-center gap-2">
@@ -334,13 +334,13 @@ export default function UnivDocument() {
                     </div>
                   ) : form.file_url ? (
                     <div className="flex flex-col items-center gap-2">
-                      <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-md-full flex items-center justify-center"><FileText className="w-6 h-6" /></div>
+                      <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center"><FileText className="w-6 h-6" /></div>
                       <p className="text-sm font-semibold text-emerald-600">File ready for upload</p>
                       <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Click or drag to replace</p>
                     </div>
                   ) : (
                     <div className="flex flex-col items-center gap-2">
-                      <div className="w-12 h-12 bg-muted text-[#71717a] dark:text-gray-400 rounded-md-full flex items-center justify-center"><UploadCloud className="w-6 h-6" /></div>
+                      <div className="w-12 h-12 bg-muted text-[#71717a] dark:text-gray-400 rounded-full flex items-center justify-center"><UploadCloud className="w-6 h-6" /></div>
                       <p className="text-sm font-semibold">Drag & drop your document here</p>
                       <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">PDF, Word, or Image files supported</p>
                     </div>
@@ -349,8 +349,8 @@ export default function UnivDocument() {
               </div>
 
               <div className="flex justify-end gap-3 mt-4 pt-5 border-t shrink-0">
-                <button type="button" onClick={closeModal} className="h-11 px-6 bg-muted rounded-md-xl text-sm font-semibold hover:bg-muted/80 transition-colors">Cancel</button>
-                <button type="submit" disabled={saving || uploading} className="h-11 px-6 bg-primary text-white rounded-md-xl text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2">
+                <button type="button" onClick={closeModal} className="h-11 px-6 bg-muted rounded-xl text-sm font-semibold hover:bg-muted/80 transition-colors">Cancel</button>
+                <button type="submit" disabled={saving || uploading} className="h-11 px-6 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2">
                   {(saving || uploading) && <Loader2 className="w-4 h-4 animate-spin" />}
                   {editId ? 'Save Changes' : 'Upload Document'}
                 </button>

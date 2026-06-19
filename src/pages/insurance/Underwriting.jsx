@@ -151,24 +151,24 @@ export default function Underwriting() {
  </Button>
  </div>
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 mb-2 text-[#71717a] dark:text-gray-400"><FileSignature className="w-4 h-4"/> {t("total_applications", "Total Applications")}</div>
  <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{applications.length}</p>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 mb-2 text-amber-600"><Clock className="w-4 h-4"/> {t("pending_review", "Pending Review")}</div>
  <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{applications.filter(a => a.decision === 'Pending Review').length}</p>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 mb-2 text-primary"><CheckCircle2 className="w-4 h-4"/> {t("approved", "Approved")}</div>
  <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{applications.filter(a => a.decision === 'Approved' || a.decision === 'Conditionally Approved').length}</p>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 mb-2 text-red-600"><AlertTriangle className="w-4 h-4"/> {t("high_risk", "High Risk")}</div>
  <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{applications.filter(a => a.riskLevel === 'High').length}</p>
  </div>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -212,7 +212,7 @@ export default function Underwriting() {
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{app.productType}</p>
  </td>
  <td className="px-6 py-4 text-center">
- <span className={`text-[10px] font-semibold px-2 py-1 rounded-md-sm uppercase tracking-wide ${
+ <span className={`text-[10px] font-semibold px-2 py-1 rounded-sm uppercase tracking-wide ${
  app.riskLevel === 'Low' ? 'bg-slate-100 text-primary/90' : 
  app.riskLevel === 'Medium' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'
 }`}>
@@ -264,7 +264,7 @@ export default function Underwriting() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editTargetId ? 'Edit Underwriting Application' : 'New Underwriting Application'}</h2>
  <div className="space-y-3">
  <div>
@@ -366,7 +366,7 @@ export default function Underwriting() {
  </div>
  <div>
  <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("risk_level", "Risk Level")}</h4>
- <span className={`text-[10px] font-semibold px-2 py-1 rounded-md-sm uppercase tracking-wide inline-block mt-1 ${
+ <span className={`text-[10px] font-semibold px-2 py-1 rounded-sm uppercase tracking-wide inline-block mt-1 ${
  viewRecord.riskLevel === 'Low' ? 'bg-slate-100 text-primary/90' : 
  viewRecord.riskLevel === 'Medium' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'
 }`}>

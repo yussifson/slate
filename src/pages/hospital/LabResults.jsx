@@ -137,20 +137,20 @@ export default function LabResults() {
  </div>
  </div>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 border-l-4 border-l-amber-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 border-l-4 border-l-amber-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h3 className="font-semibold text-foreground">{t("pending_tests", "Pending Tests")}</h3>
  <p className="text-3xl font-semibold text-amber-600 mt-1 tracking-[-0.02em]">{labResults.filter(r => r.status === 'Pending').length}</p>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 border-l-4 border-l-green-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 border-l-4 border-l-green-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h3 className="font-semibold text-foreground">{t("completed", "Completed")}</h3>
  <p className="text-3xl font-semibold text-primary mt-1 tracking-[-0.02em]">{labResults.filter(r => r.status === 'Completed').length}</p>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 border-l-4 border-l-red-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 border-l-4 border-l-red-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h3 className="font-semibold text-foreground">{t("critical_abnormal", "Critical / Abnormal")}</h3>
  <p className="text-3xl font-semibold text-red-600 mt-1 tracking-[-0.02em]">{labResults.filter(r => r.status === 'Abnormal').length}</p>
  </div>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -184,7 +184,7 @@ export default function LabResults() {
  </td>
  <td className="px-6 py-4">
  <div className="flex justify-center items-center">
- <span className={`flex items-center gap-2.5 text-xs font-semibold px-2.5 py-1 rounded-md-full ${statusColors[res.status] || 'bg-slate-100 text-primary/90'}`}>
+ <span className={`flex items-center gap-2.5 text-xs font-semibold px-2.5 py-1 rounded-full ${statusColors[res.status] || 'bg-slate-100 text-primary/90'}`}>
  {statusIcons[res.status]} {res.status}
  </span>
  </div>
@@ -227,7 +227,7 @@ export default function LabResults() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><Upload className="w-5 h-5 text-primary"/> {t("upload_lab_result", "Upload Lab Result")}</h2>
  <div className="space-y-3">
  <div>

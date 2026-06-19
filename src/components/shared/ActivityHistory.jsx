@@ -33,7 +33,7 @@ export default function ActivityHistory({ recordId, recordType }) {
         {[...Array(3)].map((_, i) => {
           return (
             <div key={i} className="flex items-start gap-3 animate-pulse">
-              <div className="w-8 h-8 rounded-md-full bg-muted" />
+              <div className="w-8 h-8 rounded-full bg-muted" />
               <div className="flex-1 space-y-1.5">
                 <div className="h-3 bg-muted rounded-md w-1/3" />
                 <div className="h-2 bg-muted rounded-md w-2/3" />
@@ -63,7 +63,7 @@ export default function ActivityHistory({ recordId, recordType }) {
           <div key={log.id} className="flex items-start gap-3 group">
             {/* Timeline line */}
             <div className="flex flex-col items-center">
-              <div className={`w-7 h-7 rounded-md-full flex items-center justify-center flex-shrink-0 ${config.color}`}>
+              <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${config.color}`}>
                 <Icon className="w-3.5 h-3.5" />
               </div>
               {idx < logs.length - 1 && <div className="w-px flex-1 min-h-[16px] bg-primary/40 mt-1" />}
@@ -71,7 +71,7 @@ export default function ActivityHistory({ recordId, recordType }) {
             {/* Content */}
             <div className="pb-4 flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md-full ${config.color}`}>
+                <span className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${config.color}`}>
                   {config.label}
                 </span>
                 <span className="text-xs text-[#71717a] dark:text-gray-400 flex items-center gap-2 tracking-[0.04em]">

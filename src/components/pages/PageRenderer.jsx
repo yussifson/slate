@@ -39,7 +39,7 @@ export default function PageRenderer({ schema, onBlockClick, selectedBlockId}) {
  key={block.id} 
  className={cn(
  `md:col-span-${colSpan}`,
- "relative group transition-all rounded-md-xl",
+ "relative group transition-all rounded-xl",
  isSelected ? "ring-2 ring-primary ring-offset-2" : "hover:ring-2 hover:ring-primary/30 hover:ring-offset-1"
  )}
  onClick={() => onBlockClick && onBlockClick(block.id)}

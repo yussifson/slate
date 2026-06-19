@@ -148,7 +148,7 @@ export default function Suppliers() {
  <RetailStatCard label={t("active_suppliers", "Active Suppliers")} value={suppliers.filter(s => s.status === 'Active').length} icon={Star} />
  </div>
 
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -212,7 +212,7 @@ export default function Suppliers() {
  </div>
  </td>
  <td className="px-6 py-4 text-center">
- <span className={`text-xs font-semibold px-2.5 py-1 rounded-md-full ${sup.status === 'Active' ? 'bg-slate-100 dark:bg-primary/20 text-primary/90 dark:text-primary/70' : 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
+ <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${sup.status === 'Active' ? 'bg-slate-100 dark:bg-primary/20 text-primary/90 dark:text-primary/70' : 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
  {sup.status}
  </span>
  </td>
@@ -295,7 +295,7 @@ export default function Suppliers() {
  <div className="grid grid-cols-3 gap-4">
  <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("status", "Status")}</div>
  <div className="col-span-2">
- <span className={`text-xs font-semibold px-2.5 py-1 rounded-md-full ${selectedRecord.status === 'Active' ? 'bg-slate-100 text-primary/90' : 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
+ <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${selectedRecord.status === 'Active' ? 'bg-slate-100 text-primary/90' : 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
  {selectedRecord.status}
  </span>
  </div>
@@ -306,7 +306,7 @@ export default function Suppliers() {
  </Sheet>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><Plus className="w-5 h-5 text-orange-600"/> {editingId ? 'Edit Supplier' : 'Add Supplier'}</h2>
  <div className="space-y-3">
  <div>

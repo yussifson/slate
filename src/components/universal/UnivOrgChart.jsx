@@ -91,15 +91,15 @@ export default function UnivOrgChart() {
  </button>
  ))}
  </div>
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={fetchItems} className="p-2 bg-muted hover:bg-muted/60 rounded-md-full transition-colors">
+ <button onClick={fetchItems} className="p-2 bg-muted hover:bg-muted/60 rounded-full transition-colors">
  <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
  </button>
- <button onClick={() => setShowForm(true)} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md-full hover:bg-blue-700 transition-colors ">
+ <button onClick={() => setShowForm(true)} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-colors ">
  <Plus size={20} /> Add New
  </button>
  </div>
@@ -107,7 +107,7 @@ export default function UnivOrgChart() {
  </div>
 
  {showForm && (
- <motion.div initial={{ opacity: 0, y: -20}} animate={{ opacity: 1, y: 0}} className="bg-card p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-8 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <motion.div initial={{ opacity: 0, y: -20}} animate={{ opacity: 1, y: 0}} className="bg-card p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-8 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <button onClick={() => setShowForm(false)} className="absolute top-4 right-4 text-[#71717a] dark:text-gray-400 hover:text-[#71717a] dark:text-gray-400">
  <X size={20} />
  </button>
@@ -173,7 +173,7 @@ export default function UnivOrgChart() {
 
  <div className="grid gap-4">
  {items.map((item) => (
- <motion.div key={item.id} initial={{ opacity: 0}} animate={{ opacity: 1}} className="bg-card p-5 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <motion.div key={item.id} initial={{ opacity: 0}} animate={{ opacity: 1}} className="bg-card p-5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
  
  <div>
@@ -200,7 +200,7 @@ export default function UnivOrgChart() {
  </motion.div>
  ))}
  {items.length === 0 && !loading && (
- <div className="text-center py-12 text-[#71717a] dark:text-gray-400 bg-background rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40">
+ <div className="text-center py-12 text-[#71717a] dark:text-gray-400 bg-background rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40">
  <p>No org chart records found. Create one to get started.</p>
  </div>
  )}

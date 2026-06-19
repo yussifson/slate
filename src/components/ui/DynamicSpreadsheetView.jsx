@@ -237,8 +237,8 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
 
  if (!data || data.length === 0) {
  return (
- <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
- <div className="w-16 h-16 rounded-md-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 -green-500/20">
+ <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 -green-500/20">
  <Table2 className="w-8 h-8 text-white" />
  </div>
  <h3 className="text-lg font-semibold text-slate-800 mb-1">No Data Yet</h3>
@@ -254,7 +254,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  {/* Toolbar */}
  <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-md-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center -green-500/20">
+ <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center -green-500/20">
  <Table2 className="w-5 h-5 text-white" />
  </div>
  <div>
@@ -290,7 +290,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  </div>
 
  {/* Spreadsheet */}
- <div className="rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="overflow-x-auto">
  <table className="w-full text-sm border-collapse">
  {/* Header */}
@@ -478,7 +478,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  </div>
  <div className="flex items-center gap-3 text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  <span className="flex items-center gap-2">
- <span className="w-2 h-2 rounded-md-full bg-primary" /> Sorted by: {sortField ? getColumnLabel(sortField) : 'Default'}
+ <span className="w-2 h-2 rounded-full bg-primary" /> Sorted by: {sortField ? getColumnLabel(sortField) : 'Default'}
  </span>
  </div>
  </div>

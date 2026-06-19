@@ -79,7 +79,7 @@ export default function CSVImportModal({ isOpen, onClose, recordType, onComplete
 
  return (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  
  {/* Header */}
  <div className="flex items-center justify-between p-5 border-b border-primary/40">
@@ -90,7 +90,7 @@ export default function CSVImportModal({ isOpen, onClose, recordType, onComplete
  "Upload a CSV file to bulk import records."
  )}</p>
  </div>
- <button onClick={onClose} className="text-[#71717a] dark:text-gray-400 hover:bg-muted p-2 rounded-md-full transition-colors">
+ <button onClick={onClose} className="text-[#71717a] dark:text-gray-400 hover:bg-muted p-2 rounded-full transition-colors">
  <X className="w-5 h-5" />
  </button>
  </div>
@@ -98,7 +98,7 @@ export default function CSVImportModal({ isOpen, onClose, recordType, onComplete
  {/* Body */}
  <div className="p-6">
  {step === 1 && (
- <div className="border-2 border-dashed border-primary/40 rounded-md-xl p-12 text-center hover:bg-muted/30 transition-colors">
+ <div className="border-2 border-dashed border-primary/40 rounded-xl p-12 text-center hover:bg-muted/30 transition-colors">
  <UploadCloud className="w-12 h-12 mx-auto text-primary mb-4" />
  <h3 className="text-lg font-semibold mb-2">{t("drag_and_drop_your_csv_here", "Drag and drop your CSV here")}</h3>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mb-6">{t("or_click_to_browse_your_files", "Or click to browse your files")}</p>

@@ -85,9 +85,9 @@ const UnivLuggageClaim = () => {
 
  return (
  <div className="p-6 max-w-7xl mx-auto bg-muted min-h-screen ${view !== 'Default' ? 'hide-default' : ''}">
- <motion.div initial={{ opacity: 0, y: -20}} animate={{ opacity: 1, y: 0}} className="mb-8 flex items-center justify-between bg-card p-6 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <motion.div initial={{ opacity: 0, y: -20}} animate={{ opacity: 1, y: 0}} className="mb-8 flex items-center justify-between bg-card p-6 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="view-header flex items-center gap-4">
- <div className="bg-slate-800 p-4 rounded-md-xl text-white">
+ <div className="bg-slate-800 p-4 rounded-xl text-white">
  <BaggageClaim className="w-8 h-8" />
  </div>
  <div>
@@ -98,7 +98,7 @@ const UnivLuggageClaim = () => {
  </motion.div>
 
  <div className="grid lg:grid-cols-3 gap-6">
- <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="lg:col-span-1 bg-card p-6 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 h-fit hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="lg:col-span-1 bg-card p-6 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 h-fit hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold mb-5 text-foreground border-b pb-2">File New Claim</h2>
  <form onSubmit={handleSubmit} className="space-y-4">
  <div>
@@ -152,12 +152,12 @@ const UnivLuggageClaim = () => {
  {loading ? (
  <div className="flex justify-center py-20"><BaggageClaim className="w-10 h-10 text-[#71717a] dark:text-gray-400 animate-pulse" /></div>
  ) : claims.length === 0 ? (
- <div className="text-center py-20 bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">No active claims.</div>
+ <div className="text-center py-20 bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">No active claims.</div>
  ) : (
  <div className="flex flex-col gap-4">
  {claims.map((claim, index) => (
- <motion.div key={claim.id || index} initial={{ opacity: 0, x: 20}} animate={{ opacity: 1, x: 0}} transition={{ delay: index * 0.05}} className="bg-card p-5 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 transition- flex flex-col sm:flex-row gap-5 items-start hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="bg-background p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex-shrink-0 w-24 text-center">
+ <motion.div key={claim.id || index} initial={{ opacity: 0, x: 20}} animate={{ opacity: 1, x: 0}} transition={{ delay: index * 0.05}} className="bg-card p-5 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 transition- flex flex-col sm:flex-row gap-5 items-start hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-background p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex-shrink-0 w-24 text-center">
  <p className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Tag No.</p>
  <p className="font-mono font-semibold text-foreground text-sm truncate">{claim.claim_tag}</p>
  </div>
@@ -165,7 +165,7 @@ const UnivLuggageClaim = () => {
  <div className="flex-1 min-w-0">
  <div className="flex justify-between items-start mb-2">
  <h3 className="font-semibold text-lg text-foreground truncate">{claim.passenger_name}</h3>
- <div className="flex items-center gap-2 bg-background px-3 py-1 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <div className="flex items-center gap-2 bg-background px-3 py-1 rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  {getStatusIcon(claim.status)}
  <span className="text-xs font-semibold text-foreground tracking-[0.04em]">{claim.status}</span>
  </div>

@@ -151,7 +151,7 @@ export function SecuritySettings() {
  placeholder="Enter secure company-wide passphrase" 
  />
  </Field>
- <div className="p-4 rounded-md-xl bg-amber-500/10 border-[0.5px] border-black/9 dark:border-white/8 border-amber-500/20 text-xs text-amber-600 dark:text-amber-500 leading-relaxed font-semibold tracking-[0.04em]">
+ <div className="p-4 rounded-xl bg-amber-500/10 border-[0.5px] border-black/9 dark:border-white/8 border-amber-500/20 text-xs text-amber-600 dark:text-amber-500 leading-relaxed font-semibold tracking-[0.04em]">
  {t(
  "lexafrica_zero_trust_framework",
  "🔑 Zero-Trust Framework: All sensitive text fields are cryptographically encrypted directly inside your local web browser using AES-GCM-256 before leaving your computer. Store this passphrase securely; if lost, encrypted data cannot be recovered."
@@ -206,12 +206,12 @@ export function BillingSettings({ company, activeIndustry}) {
  <div className="space-y-6">
  <SectionCard title="Active Subscription" subtitle="Verify allocations, check quota summaries, or change plan models">
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
- <div className="bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-900/40 dark:to-slate-900/10 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 space-y-4">
+ <div className="bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-900/40 dark:to-slate-900/10 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 space-y-4">
  <div>
  <span className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-widest block tracking-[0.04em]">{t("firm_plan_level", (getTerm(activeIndustry, "venue") || "Firm") + " Plan Level")}</span>
  <h3 className="font-extrabold text-2xl text-foreground capitalize flex items-center gap-2 mt-1 tracking-[-0.02em]">
  {currentPlan} {t("model", "Model")}
- <span className={`text-[10px] font-extrabold uppercase py-0.5 px-2.5 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 tracking-wider ${
+ <span className={`text-[10px] font-extrabold uppercase py-0.5 px-2.5 rounded-full border-[0.5px] border-black/9 dark:border-white/8 tracking-wider ${
  currentStatus === 'active' 
  ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 border-primary/40' 
  : 'bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-amber-200/50 animate-pulse'
@@ -228,7 +228,7 @@ export function BillingSettings({ company, activeIndustry}) {
  </p>
  </div>
 
- <div className="bg-card/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 space-y-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 space-y-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h4 className="font-semibold text-sm text-foreground">{t("quota_utilization", "Quota Utilization")}</h4>
  
  <div className="space-y-2">
@@ -250,7 +250,7 @@ export function BillingSettings({ company, activeIndustry}) {
  </div>
  </SectionCard>
  
- <div className="bg-card/45 backdrop-blur-xl rounded-md-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-8 space-y-6 -black/5 hover:border-primary/40 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card/45 backdrop-blur-xl rounded-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-8 space-y-6 -black/5 hover:border-primary/40 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <h2 className="text-xl font-extrabold text-foreground">{t("upgrade_platform_model", "Upgrade Platform Model")}</h2>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1.5">{t(
@@ -261,7 +261,7 @@ export function BillingSettings({ company, activeIndustry}) {
  <div className="pt-4 border-t border-primary/40">
  <Button 
  onClick={() => setShowUpgradeModal(true)} 
- className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-semibold px-8 h-12 rounded-md-xl text-sm transition-transform hover:-translate-y-0.5"
+ className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-semibold px-8 h-12 rounded-xl text-sm transition-transform hover:-translate-y-0.5"
  >
  {t("explore_corporate_pricing", "Explore Corporate Pricing")}
  </Button>
@@ -281,7 +281,7 @@ export function BillingSettings({ company, activeIndustry}) {
  />
  )}
  
- <div className="bg-card/45 backdrop-blur-xl rounded-md-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-8 space-y-6 -black/5 hover:border-primary/40 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card/45 backdrop-blur-xl rounded-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-8 space-y-6 -black/5 hover:border-primary/40 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <h2 className="text-xl font-extrabold text-foreground">{t("invoice_ledger", "Invoice Ledger")}</h2>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1.5">{t(
@@ -291,11 +291,11 @@ export function BillingSettings({ company, activeIndustry}) {
  </div>
 
  {invoices.length === 0 ? (
- <div className="text-center py-10 text-sm text-[#71717a] dark:text-gray-400 font-semibold bg-muted/10 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40">
+ <div className="text-center py-10 text-sm text-[#71717a] dark:text-gray-400 font-semibold bg-muted/10 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40">
  {t("no_service_invoices_recorded", "No service invoices recorded.")}
  </div>
  ) : (
- <div className="overflow-x-auto rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 ">
+ <div className="overflow-x-auto rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 ">
  <table className="w-full text-sm text-left border-collapse bg-card/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <thead>
  <tr className="bg-muted/40 border-b border-primary/40 text-[#71717a] dark:text-gray-400 font-semibold text-xs uppercase tracking-wider select-none tracking-[0.04em]">
@@ -317,7 +317,7 @@ export function BillingSettings({ company, activeIndustry}) {
  <td className="px-5 py-3.5 font-extrabold text-foreground">${inv.amount}</td>
  <td className="px-5 py-3.5 font-mono text-xs text-[#71717a] dark:text-gray-400/80 tracking-[0.04em]">{inv.paystack_ref}</td>
  <td className="px-5 py-3.5">
- <span className="inline-flex py-0.5 px-2.5 rounded-md-full text-[10px] font-semibold bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 uppercase select-none tracking-[0.04em]">
+ <span className="inline-flex py-0.5 px-2.5 rounded-full text-[10px] font-semibold bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 uppercase select-none tracking-[0.04em]">
  {inv.status}
  </span>
  </td>
@@ -438,11 +438,11 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 h-[100dvh] w-screen m-0 p-4 animate-in fade-in duration-200">
-      <div className="relative w-full max-w-5xl bg-background rounded-md-xl flex flex-col max-h-[90vh] overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
+      <div className="relative w-full max-w-5xl bg-background rounded-xl flex flex-col max-h-[90vh] overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
         
         {/* Header */}
         <div className="flex flex-col items-center justify-center p-8 md:p-12 border-b border-[0.5px] border-black/9 dark:border-white/8/40 relative">
-          <button onClick={onClose} className="absolute right-6 top-6 p-2 rounded-md-full hover:bg-muted text-[#71717a] dark:text-gray-400 transition-colors">
+          <button onClick={onClose} className="absolute right-6 top-6 p-2 rounded-full hover:bg-muted text-[#71717a] dark:text-gray-400 transition-colors">
             <X className="w-5 h-5" />
           </button>
           <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-foreground tracking-[-0.02em]">Select your plan</h2>
@@ -460,7 +460,7 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
               {plans.map((p) => {
                 const isCurrent = company?.subscription_plan === p.name.toLowerCase().replace(/\s/g, '');
                 return (
-                  <div key={p.id} className={`relative flex flex-col bg-background rounded-md-xl p-8 transition-colors ${isCurrent ? 'border-2 border-primary' : 'border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 hover:border-primary/50'}`}>
+                  <div key={p.id} className={`relative flex flex-col bg-background rounded-xl p-8 transition-colors ${isCurrent ? 'border-2 border-primary' : 'border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 hover:border-primary/50'}`}>
                     <div className="mb-6">
                       <h3 className="font-semibold text-lg text-foreground mb-2">{p.name}</h3>
                       <div className="flex items-end gap-2 mb-2">

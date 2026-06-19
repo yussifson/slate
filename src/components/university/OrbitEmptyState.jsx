@@ -12,7 +12,7 @@ export default function OrbitEmptyState({
  return (
  <div className="flex flex-col items-center justify-center p-12 text-center border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-[var(--color-border-strong)] rounded-md-[var(--radius-xl)] bg-[var(--color-surface-1)] hover:bg-[var(--color-surface-2)] transition-colors duration-300">
  <div 
- className="w-24 h-24 rounded-md-full flex items-center justify-center mb-6 opacity-80"
+ className="w-24 h-24 rounded-full flex items-center justify-center mb-6 opacity-80"
  style={{ backgroundColor: `color-mix(in srgb, ${moduleColor} 10%, transparent)`}}
  >
  <Icon className="w-12 h-12" style={{ color: moduleColor}} />

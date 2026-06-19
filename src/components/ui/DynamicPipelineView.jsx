@@ -50,7 +50,7 @@ function PipelineCard({ record, fieldDefinitions, stageFieldName, onView, colorT
  e.currentTarget.style.opacity = '1';
  e.currentTarget.style.transform = 'rotate(0deg)';
 }}
- className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 cursor-grab active:cursor-grabbing transition-all duration-200 hover:border-primary/40 group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 cursor-grab active:cursor-grabbing transition-all duration-200 hover:border-primary/40 group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="flex items-start justify-between mb-2">
  <div className="flex items-center gap-2 min-w-0">
@@ -95,7 +95,7 @@ function PipelineCard({ record, fieldDefinitions, stageFieldName, onView, colorT
  <span className="text-[10px] text-[#71717a] dark:text-gray-400">
  {record.created_at ? format(new Date(record.created_at), 'MMM d, yyyy') : ''}
  </span>
- <div className="w-5 h-5 rounded-md-full bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center">
+ <div className="w-5 h-5 rounded-full bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center">
  <User className="w-3 h-3 text-[#71717a] dark:text-gray-400" />
  </div>
  </div>
@@ -201,7 +201,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
  if (!stageField && fieldDefinitions.length > 0) {
  return (
  <div className="flex flex-col items-center justify-center py-20 text-center">
- <div className="p-5 rounded-md-2xl bg-gradient-to-br from-primary/5 to-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-5">
+ <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-5">
  <Layers className="w-12 h-12 text-primary/30" />
  </div>
  <h3 className="text-lg font-semibold text-foreground mb-2">No Pipeline Field Found</h3>
@@ -215,7 +215,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
  if (!data || data.length === 0) {
  return (
  <div className="flex flex-col items-center justify-center py-20 text-center">
- <div className="p-5 rounded-md-2xl bg-gradient-to-br from-primary/5 to-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-5">
+ <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-5">
  <Sparkles className="w-12 h-12 text-primary/30" />
  </div>
  <h3 className="text-lg font-semibold text-foreground mb-2">Empty Pipeline</h3>
@@ -231,7 +231,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
  {/* Pipeline Header Stats */}
  <div className="mb-5 flex items-center gap-4 flex-wrap">
  <div className="flex items-center gap-2">
- <div className="p-2 rounded-md-xl bg-gradient-to-br from-primary to-primary -indigo-200">
+ <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-primary -indigo-200">
  <TrendingUp className="w-4 h-4 text-white" />
  </div>
  <div>
@@ -243,7 +243,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
  const total = data.reduce((s, r) => s + (parseFloat(r.data?.[nf.name]) || 0), 0);
  return (
  <div key={nf.name} className="flex items-center gap-2 ml-4">
- <div className="p-2 rounded-md-xl bg-gradient-to-br from-primary to-primary -emerald-200">
+ <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-primary -emerald-200">
  <DollarSign className="w-4 h-4 text-white" />
  </div>
  <div>
@@ -265,7 +265,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
  return (
  <div
  key={stage}
- className={`w-[300px] flex-shrink-0 rounded-md-2xl flex flex-col max-h-[700px] border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-200 ${
+ className={`w-[300px] flex-shrink-0 rounded-2xl flex flex-col max-h-[700px] border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-200 ${
  isDragOver
  ? `${color.border} ring-2 ring-offset-2 ring-primary/30`
  : 'border-primary/40 '
@@ -301,7 +301,7 @@ export default function DynamicPipelineView({ data = [], fieldDefinitions = [], 
  <div className="flex-1 overflow-y-auto p-3 space-y-3" style={{ minHeight: '120px'}}>
  {records.length === 0 && (
  <div className="flex flex-col items-center justify-center py-8 text-center">
- <div className="w-10 h-10 rounded-md-full bg-muted flex items-center justify-center mb-2">
+ <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center mb-2">
  <Plus className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
  </div>
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Drop cards here</p>

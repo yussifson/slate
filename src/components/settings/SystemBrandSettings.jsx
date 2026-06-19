@@ -122,7 +122,7 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
 
  return (
  <SectionCard title="Brand & Identity" subtitle="Manage your company logos, application favicon, custom subdomain address, and theme colors" onSave={handleSaveClick} saving={saving}>
- <div className="flex gap-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-muted/20 rounded-md-xl p-1 w-fit mb-6">
+ <div className="flex gap-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-muted/20 rounded-xl p-1 w-fit mb-6">
  {["logos", "text", "theme"].map(item => {
  return (
  <button
@@ -157,7 +157,7 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
  </Field>
  <Field label="Custom Subdomain">
  <div className="flex items-center rounded-xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus-within:border-primary/80 transition-colors">
- <Input placeholder="yourfirm" value={form.subdomain} onChange={e => setForm({ ...form, subdomain: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '')})} className="h-11 bg-muted/20 border-0 rounded-md-none focus-visible:ring-0" />
+ <Input placeholder="yourfirm" value={form.subdomain} onChange={e => setForm({ ...form, subdomain: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '')})} className="h-11 bg-muted/20 border-0 rounded-none focus-visible:ring-0" />
  <div className="bg-muted text-[#71717a] dark:text-gray-400 px-4 py-3 text-sm font-semibold border-l border-primary/40 whitespace-nowrap overflow-hidden text-ellipsis select-none">.{getSubdomainAndBase().baseDomain}</div>
  </div>
  <p className="text-xs text-amber-600 dark:text-amber-500 font-medium mt-2 flex items-center gap-2 tracking-[0.04em]"><Info className="w-3 h-3" /> {t(
@@ -174,11 +174,11 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
  <div className="space-y-4">
  <Field label="Primary Theme Color">
  <div className="flex items-center gap-4">
- <input type="color" value={form.primary_color} onChange={e => setForm({ ...form, primary_color: e.target.value})} className="w-12 h-12 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 cursor-pointer " />
+ <input type="color" value={form.primary_color} onChange={e => setForm({ ...form, primary_color: e.target.value})} className="w-12 h-12 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 cursor-pointer " />
  <Input value={form.primary_color} onChange={e => setForm({ ...form, primary_color: e.target.value})} className="w-36 h-11 bg-muted/20 border-primary/40 focus:border-primary/80 transition-colors" />
  <div className="flex gap-2">
  {["#16a34a", "#2563eb", "#9333ea", "#dc2626", "#0f766e"].map(c => {
- return (<button key={c} onClick={() => setForm({ ...form, primary_color: c})} className={`w-8 h-8 rounded-md-full border-2 transition-transform hover:scale-110 active:scale-95 ${form.primary_color === c ? "border-primary scale-110" : "border-background"}`} style={{ background: c}} />);
+ return (<button key={c} onClick={() => setForm({ ...form, primary_color: c})} className={`w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 active:scale-95 ${form.primary_color === c ? "border-primary scale-110" : "border-background"}`} style={{ background: c}} />);
 })}
  </div>
  </div>
@@ -186,7 +186,7 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
  </div>
  )}
  <AlertDialog open={showSubdomainAlert} onOpenChange={setShowSubdomainAlert}>
- <AlertDialogContent className="rounded-md-2xl max-w-md">
+ <AlertDialogContent className="rounded-2xl max-w-md">
  <AlertDialogHeader>
  <AlertDialogTitle className="text-lg font-semibold">{t("change_firm_subdomain", "Change firm subdomain?")}</AlertDialogTitle>
  <AlertDialogDescription className="text-sm leading-relaxed">
@@ -197,11 +197,11 @@ export function BrandSettings({ activeIndustry, company, onSave, saving}) {
  </AlertDialogDescription>
  </AlertDialogHeader>
  <AlertDialogFooter className="gap-2">
- <AlertDialogCancel className="rounded-md-xl">{t("cancel", "Cancel")}</AlertDialogCancel>
+ <AlertDialogCancel className="rounded-xl">{t("cancel", "Cancel")}</AlertDialogCancel>
  <AlertDialogAction onClick={() => {
  setShowSubdomainAlert(false);
  onSave(form);
-}} className="bg-primary hover:bg-primary/90 text-white rounded-md-xl">{t("continue_relocate", "Continue & Relocate")}</AlertDialogAction>
+}} className="bg-primary hover:bg-primary/90 text-white rounded-xl">{t("continue_relocate", "Continue & Relocate")}</AlertDialogAction>
  </AlertDialogFooter>
  </AlertDialogContent>
  </AlertDialog>

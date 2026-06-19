@@ -131,7 +131,7 @@ export default function RetainerPanel({ caseData, user }) {
     <div className="space-y-4">
       {/* Low balance / depleted alert banner */}
       {retainer?.alert_triggered && retainer?.status !== "depleted" && (
-        <div className="flex items-start gap-3 bg-amber-50 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 rounded-md-xl p-4">
+        <div className="flex items-start gap-3 bg-amber-50 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 rounded-xl p-4">
           <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-semibold text-amber-800">{t("retainer_balance_low", "Retainer Balance Low")}</p>
@@ -142,7 +142,7 @@ export default function RetainerPanel({ caseData, user }) {
         </div>
       )}
       {retainer?.status === "depleted" && (
-        <div className="flex items-start gap-3 bg-red-50 border-[0.5px] border-black/9 dark:border-white/8 border-red-200 rounded-md-xl p-4">
+        <div className="flex items-start gap-3 bg-red-50 border-[0.5px] border-black/9 dark:border-white/8 border-red-200 rounded-xl p-4">
           <AlertTriangle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-semibold text-red-800">{t("retainer_depleted", "Retainer Depleted")}</p>
@@ -155,7 +155,7 @@ export default function RetainerPanel({ caseData, user }) {
       )}
       {!retainer ? (
         /* No retainer yet */
-        (<div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        (<div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <Wallet className="w-10 h-10 mx-auto text-[#71717a] dark:text-gray-400 mb-3" />
           <p className="text-sm font-medium">{t("no_retainer_set_up", "No Retainer Set Up")}</p>
           <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 mb-4 tracking-[0.04em]">{t(
@@ -169,7 +169,7 @@ export default function RetainerPanel({ caseData, user }) {
       ) : (
         <>
           {/* Balance card */}
-          <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
@@ -189,9 +189,9 @@ export default function RetainerPanel({ caseData, user }) {
                 <span>{t("used", "Used:")} {formatCurrency(retainer.total_deducted || 0, currency)}</span>
                 <span>{t("initial", "Initial:")} {formatCurrency(retainer.initial_deposit, currency)}</span>
               </div>
-              <div className="h-2.5 rounded-md-full bg-muted overflow-hidden">
+              <div className="h-2.5 rounded-full bg-muted overflow-hidden">
                 <div
-                  className={`h-full rounded-md-full transition-all ${percentRemaining < 20 ? "bg-red-500/10" : percentRemaining < 40 ? "bg-amber-500" : "bg-primary"}`}
+                  className={`h-full rounded-full transition-all ${percentRemaining < 20 ? "bg-red-500/10" : percentRemaining < 40 ? "bg-amber-500" : "bg-primary"}`}
                   style={{ width: `${percentRemaining}%` }}
                 />
               </div>

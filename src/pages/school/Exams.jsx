@@ -75,7 +75,7 @@ export default function Exams() {
           <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">{t("exam_schedules", "Exam Calendar")}</h1>
           <p className="text-[var(--color-text-secondary)] font-medium mt-1 text-sm">{t("plan_and_manage_upcoming_exami", "Timeline & Scheduling")}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white rounded-md-full">
+        <Button onClick={() => setShowModal(true)} className="bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white rounded-full">
           <Plus className="w-4 h-4 mr-2" /> {t("schedule_exam", "Schedule Exam")}
         </Button>
       </div>
@@ -83,11 +83,11 @@ export default function Exams() {
       <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 rounded-md-[var(--radius-xl)] flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="relative flex-1 w-full max-w-md">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-secondary)]" />
-          <Input placeholder="Search subject or class..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 rounded-md-full border-primary/30 bg-[var(--color-surface-1)] h-11" />
+          <Input placeholder="Search subject or class..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 rounded-full border-primary/30 bg-[var(--color-surface-1)] h-11" />
         </div>
-        <div className="flex bg-[var(--color-surface-1)] p-1 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shrink-0">
-          <button onClick={() => setViewMode('grid')} className={`px-5 py-2 text-sm font-semibold transition-colors rounded-md-full ${viewMode === 'grid' ? 'bg-[var(--primary)] text-white' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-2)]'}`}>Grid</button>
-          <button onClick={() => setViewMode('list')} className={`px-5 py-2 text-sm font-semibold transition-colors rounded-md-full ${viewMode === 'list' ? 'bg-[var(--primary)] text-white' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-2)]'}`}>Timeline</button>
+        <div className="flex bg-[var(--color-surface-1)] p-1 rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shrink-0">
+          <button onClick={() => setViewMode('grid')} className={`px-5 py-2 text-sm font-semibold transition-colors rounded-full ${viewMode === 'grid' ? 'bg-[var(--primary)] text-white' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-2)]'}`}>Grid</button>
+          <button onClick={() => setViewMode('list')} className={`px-5 py-2 text-sm font-semibold transition-colors rounded-full ${viewMode === 'list' ? 'bg-[var(--primary)] text-white' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-2)]'}`}>Timeline</button>
         </div>
       </div>
 
@@ -103,10 +103,10 @@ export default function Exams() {
           {filtered.map(exam => (
             <div key={exam.id} className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-5 hover:border-[var(--primary)]/50 transition-colors flex flex-col">
               <div className="flex justify-between items-start mb-4">
-                <div className={`px-2.5 py-1 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-full text-[10px] font-semibold uppercase tracking-[var(--tracking-widest)] ${statusColors[exam.status]}`}>{exam.status}</div>
+                <div className={`px-2.5 py-1 border-[0.5px] border-black/9 dark:border-white/8 rounded-full text-[10px] font-semibold uppercase tracking-[var(--tracking-widest)] ${statusColors[exam.status]}`}>{exam.status}</div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0 hover:bg-[var(--color-surface-2)] rounded-md-full text-[var(--color-text-secondary)]"><MoreVertical className="h-4 w-4" /></Button>
+                    <Button variant="ghost" className="h-8 w-8 p-0 hover:bg-[var(--color-surface-2)] rounded-full text-[var(--color-text-secondary)]"><MoreVertical className="h-4 w-4" /></Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-[var(--radius-lg)]">
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setViewDetails(exam)}>View Details</DropdownMenuItem>
@@ -129,13 +129,13 @@ export default function Exams() {
         <div className="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-[2px] before:bg-primary/20">
           {sortedExams.map((exam, index) => (
             <div key={exam.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-              <div className="flex items-center justify-center w-10 h-10 rounded-md-full border-[3px] border-[var(--color-surface-0)] bg-[var(--primary)] shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full border-[3px] border-[var(--color-surface-0)] bg-[var(--primary)] shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">
                 <FileText className="w-4 h-4 text-white" />
               </div>
               <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-[var(--color-surface-0)] p-6 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] hover:border-[var(--primary)]/50 transition-colors shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-semibold text-[var(--primary)] uppercase tracking-[var(--tracking-widest)] bg-[var(--primary)]/10 px-2.5 py-1 rounded-md-full tracking-[0.04em]">{exam.date} • {exam.time}</span>
-                  <span className={`px-2.5 py-1 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-full text-[10px] font-semibold uppercase tracking-[var(--tracking-widest)] ${statusColors[exam.status]}`}>{exam.status}</span>
+                  <span className="text-xs font-semibold text-[var(--primary)] uppercase tracking-[var(--tracking-widest)] bg-[var(--primary)]/10 px-2.5 py-1 rounded-full tracking-[0.04em]">{exam.date} • {exam.time}</span>
+                  <span className={`px-2.5 py-1 border-[0.5px] border-black/9 dark:border-white/8 rounded-full text-[10px] font-semibold uppercase tracking-[var(--tracking-widest)] ${statusColors[exam.status]}`}>{exam.status}</span>
                 </div>
                 <h3 className="font-display font-semibold text-xl text-[var(--color-text-primary)] tracking-tight">{exam.subject}</h3>
                 <p className="font-medium text-[var(--color-text-secondary)] text-sm mb-4 mt-1">{exam.class}</p>
@@ -144,8 +144,8 @@ export default function Exams() {
                   <span className="flex items-center gap-2"><MapPin className="w-4 h-4 text-[var(--primary)]" /> {exam.venue}</span>
                 </div>
                 <div className="mt-4 pt-4 border-t border-primary/10 flex justify-end gap-2">
-                  <Button variant="outline" size="sm" className="rounded-md-full border-primary/30" onClick={() => { setEditingId(exam.id); setFormData({ ...exam }); setShowModal(true); }}>Edit</Button>
-                  <Button variant="ghost" size="sm" className="rounded-md-full text-[var(--color-destructive)] hover:bg-[var(--color-destructive)]/10" onClick={() => setDeleteTargetId(exam.id)}>Delete</Button>
+                  <Button variant="outline" size="sm" className="rounded-full border-primary/30" onClick={() => { setEditingId(exam.id); setFormData({ ...exam }); setShowModal(true); }}>Edit</Button>
+                  <Button variant="ghost" size="sm" className="rounded-full text-[var(--color-destructive)] hover:bg-[var(--color-destructive)]/10" onClick={() => setDeleteTargetId(exam.id)}>Delete</Button>
                 </div>
               </div>
             </div>
@@ -192,8 +192,8 @@ export default function Exams() {
               </div>
             </div>
             <div className="flex gap-3 pt-4">
-              <Button variant="outline" className="flex-1 rounded-md-full border-primary/30" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 rounded-md-full bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white" onClick={handleCreateExam}>Save</Button>
+              <Button variant="outline" className="flex-1 rounded-full border-primary/30" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button className="flex-1 rounded-full bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white" onClick={handleCreateExam}>Save</Button>
             </div>
           </div>
         </div>

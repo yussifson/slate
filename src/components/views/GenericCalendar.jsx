@@ -11,7 +11,7 @@ export default function GenericCalendar({ data, dateKey, titleKey}) {
 });
 
  return (
- <div className="flex-1 flex flex-col min-w-[600px] bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 flex flex-col min-w-[600px] bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="grid grid-cols-7 border-b border-primary/40 bg-muted/30 shrink-0">
  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
  <div key={day} className="py-3 text-center text-[11px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-widest border-r border-primary/40 last:border-r-0 tracking-[0.04em]">
@@ -30,7 +30,7 @@ export default function GenericCalendar({ data, dateKey, titleKey}) {
  return (
  <div key={i} className={`border-r border-b border-primary/40 p-2 ${d.inactive ? 'bg-muted/10' : 'bg-card hover:bg-muted/5'} transition-colors relative min-h-[100px]`}>
  {d.day && (
- <span className={`inline-flex items-center justify-center w-7 h-7 rounded-md-full text-sm font-semibold ${d.isToday ? 'bg-primary text-primary-foreground ' : 'text-foreground'}`}>
+ <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-semibold ${d.isToday ? 'bg-primary text-primary-foreground ' : 'text-foreground'}`}>
  {d.day}
  </span>
  )}

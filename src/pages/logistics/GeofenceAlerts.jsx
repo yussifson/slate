@@ -109,7 +109,7 @@ export default function GeofenceAlerts() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm min-h-[400px] relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm min-h-[400px] relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             {/* Simulated Map Background */}
             <div className="absolute inset-0 bg-slate-100 dark:bg-slate-900 opacity-50 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+CjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0ibm9uZSI+PC9yZWN0Pgo8cGF0aCBkPSJNMjAgMEwwIDBaTTAgMjBMMjAgMjBaIiBzdHJva2U9InJnYmEoMCwgMCwgMCwgMC4wNSkiIHN0cm9rZS13aWR0aD0iMSIvPgo8L3N2Zz4=')]"></div>
             
@@ -122,7 +122,7 @@ export default function GeofenceAlerts() {
 
             <div className="relative z-10 space-y-4">
               {/* New Fence Form inline */}
-              <div className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 flex flex-col sm:flex-row items-end gap-3 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm mb-6">
+              <div className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 flex flex-col sm:flex-row items-end gap-3 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm mb-6">
                 <div className="flex-1 space-y-1">
                    <label className="text-xs font-semibold tracking-[0.04em]">Location Name</label>
                    <Input placeholder="e.g. Tema Port" value={newFence.name} onChange={e => setNewFence({...newFence, name: e.target.value})} />
@@ -141,9 +141,9 @@ export default function GeofenceAlerts() {
               </div>
 
               {geofences?.map(gf => (
-                <div key={gf.id} className="bg-background/90 backdrop-blur-sm border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-xl p-4 flex items-center justify-between shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">
+                <div key={gf.id} className="bg-background/90 backdrop-blur-sm border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl p-4 flex items-center justify-between shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-md-full bg-primary/10 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-primary/30">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-primary/30">
                       <MapPin className="w-6 h-6 text-primary" />
                     </div>
                     <div>
@@ -162,7 +162,7 @@ export default function GeofenceAlerts() {
                 </div>
               ))}
               {geofences?.length === 0 && (
-                 <div className="text-center p-8 bg-background/80 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-[0.5px] border-black/9 dark:border-white/8 text-[#71717a] dark:text-gray-400">
+                 <div className="text-center p-8 bg-background/80 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-[0.5px] border-black/9 dark:border-white/8 text-[#71717a] dark:text-gray-400">
                     No active geofences. Create one above.
                  </div>
               )}
@@ -171,7 +171,7 @@ export default function GeofenceAlerts() {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm h-[600px] flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm h-[600px] flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <h2 className="text-lg font-semibold text-card-foreground mb-4 flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <Activity className="w-5 h-5 text-primary" />
               Recent Trigger Logs
@@ -180,7 +180,7 @@ export default function GeofenceAlerts() {
             <div className="flex-1 space-y-4 overflow-y-auto pr-2">
               {logs?.map((log) => (
                 <div key={log.id} className="border-l-2 border-primary/50 pl-4 py-1 relative">
-                  <div className="absolute -left-[5px] top-2 w-2 h-2 rounded-md-full bg-primary ring-4 ring-background"></div>
+                  <div className="absolute -left-[5px] top-2 w-2 h-2 rounded-full bg-primary ring-4 ring-background"></div>
                   <p className="text-xs text-[#71717a] dark:text-gray-400 font-semibold mb-1 tracking-[0.04em]">
                     {new Date(log.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                   </p>

@@ -91,19 +91,19 @@ export default function UnivLMS() {
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Manage lessons, assignments, quizzes, and course materials.</p>
  </div>
  <div className="flex gap-2">
- <button onClick={() => handleAddContent('Lesson')} className="flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-700 border-[0.5px] border-black/9 dark:border-white/8 border-blue-200 rounded-md-xl text-sm font-semibold hover:bg-blue-100 transition-colors">
+ <button onClick={() => handleAddContent('Lesson')} className="flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-700 border-[0.5px] border-black/9 dark:border-white/8 border-blue-200 rounded-xl text-sm font-semibold hover:bg-blue-100 transition-colors">
  <Video className="w-4 h-4" /> Lesson
  </button>
- <button onClick={() => handleAddContent('Assignment')} className="flex items-center gap-2 px-3 py-2 bg-purple-50 text-purple-700 border-[0.5px] border-black/9 dark:border-white/8 border-purple-200 rounded-md-xl text-sm font-semibold hover:bg-purple-100 transition-colors">
+ <button onClick={() => handleAddContent('Assignment')} className="flex items-center gap-2 px-3 py-2 bg-purple-50 text-purple-700 border-[0.5px] border-black/9 dark:border-white/8 border-purple-200 rounded-xl text-sm font-semibold hover:bg-purple-100 transition-colors">
  <FileText className="w-4 h-4" /> Assignment
  </button>
- <button onClick={() => handleAddContent('Quiz')} className="flex items-center gap-2 px-3 py-2 bg-emerald-50 text-emerald-700 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 rounded-md-xl text-sm font-semibold hover:bg-emerald-100 transition-colors">
+ <button onClick={() => handleAddContent('Quiz')} className="flex items-center gap-2 px-3 py-2 bg-emerald-50 text-emerald-700 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 rounded-xl text-sm font-semibold hover:bg-emerald-100 transition-colors">
  <CheckSquare className="w-4 h-4" /> Quiz
  </button>
  </div>
  </div>
 
- <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
@@ -112,7 +112,7 @@ export default function UnivLMS() {
  placeholder="Search content..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>

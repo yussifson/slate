@@ -124,7 +124,7 @@ export default function UniExams() {
  </div>
  ) : (
  <div className="text-center py-6 space-y-4">
- <div className="w-16 h-16 rounded-md-full flex items-center justify-center mx-auto" style={{ background: 'var(--color-success-subtle)'}}><ClipboardCheck className="w-8 h-8" style={{ color: 'var(--color-success)'}} /></div>
+ <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto" style={{ background: 'var(--color-success-subtle)'}}><ClipboardCheck className="w-8 h-8" style={{ color: 'var(--color-success)'}} /></div>
  <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Exam Graded</h3>
  <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto p-4 bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-lg)]">
  <div><p className="text-[10px] text-[var(--color-text-tertiary)] font-semibold uppercase tracking-[0.04em]">Score</p><p className="text-xl font-display font-semibold text-[var(--color-text-primary)]">{scoreResult.correct}/{scoreResult.total}</p></div>

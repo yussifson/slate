@@ -223,7 +223,7 @@ export default function POS() {
  if (!canAccess) {
  return (
  <div className="flex-1 flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 h-[calc(100vh-100px)]">
- <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-md-full flex items-center justify-center mb-6">
+ <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
  <ShieldAlert className="w-10 h-10 text-red-600 dark:text-red-500" />
  </div>
  <h2 className="text-2xl font-semibold text-foreground mb-3 tracking-[-0.02em]">Access Restricted</h2>
@@ -240,7 +240,7 @@ export default function POS() {
  return (
  <div className="h-[calc(100vh-140px)] flex flex-col md:flex-row gap-6 pb-6">
  {/* Product List */}
- <div className="flex-1 flex flex-col bg-muted/50 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden md:h-full min-h-[40vh]">
+ <div className="flex-1 flex flex-col bg-muted/50 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden md:h-full min-h-[40vh]">
  <div className="p-4 bg-card border-b border-primary/40 flex gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="relative flex-1">
  <ShoppingCart className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#71717a] dark:text-gray-400" />
@@ -251,7 +251,7 @@ export default function POS() {
  {isDbLoading ? (
  <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_pos_register", "Loading POS register...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <ScanBarcode className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse" />
  <p className="font-semibold">{t("no_pos_products_found", "No POS products found.")}</p>
  <p className="text-xs mt-1 tracking-[0.04em]">{t(
@@ -263,7 +263,7 @@ export default function POS() {
  <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
  {filtered.map(product => {
  return (
- <div key={product.sku} onClick={() => addToCart(product)} className="bg-card p-4 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-orange-300 transition-all cursor-pointer flex flex-col h-32 select-none active:scale-95 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={product.sku} onClick={() => addToCart(product)} className="bg-card p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-orange-300 transition-all cursor-pointer flex flex-col h-32 select-none active:scale-95 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex-1">
  <p className="font-semibold text-card-foreground leading-tight line-clamp-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{product.name}</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400 font-mono mt-1 tracking-[0.04em]">{product.sku}</p>
@@ -281,7 +281,7 @@ export default function POS() {
  </div>
  
  {/* Cart Sidebar */}
- <div className="w-full md:w-[450px] flex flex-col bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-xl md:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none z-10 md:h-full flex-shrink-0 flex-grow-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-full md:w-[450px] flex flex-col bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-xl md:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none z-10 md:h-full flex-shrink-0 flex-grow-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-5 border-b border-primary/40 bg-muted/30">
  <h2 className="font-semibold flex items-center gap-2 text-lg"><ShoppingCart className="w-5 h-5"/> {t("current_sale", "Current Sale")}</h2>
  <span className="bg-orange-700 px-2 py-1 rounded-md text-xs font-mono tracking-[0.04em]">{cart.length} {t("items", "items")}</span>

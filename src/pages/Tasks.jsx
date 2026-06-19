@@ -340,7 +340,7 @@ export default function Tasks() {
           { label: "Completed", value: stats.completed, icon: CheckCircle2, color: "text-primary bg-slate-50" },
         ].map(({ label, value, icon: Icon, color }) => {
           return (
-            <div key={label} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <div key={label} className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${color}`}>
                 <Icon className="w-4 h-4" />
               </div>

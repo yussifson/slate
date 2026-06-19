@@ -221,7 +221,7 @@ export default function UnivCRM() {
 
  
  
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
@@ -239,7 +239,7 @@ export default function UnivCRM() {
  <LayoutList className="w-4 h-4" /> List
  </button>
  </div>
- <button onClick={() => handleOpenModal()} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20 whitespace-nowrap">
+ <button onClick={() => handleOpenModal()} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20 whitespace-nowrap">
  <Plus className="w-4 h-4" /> Add Lead
  </button>
  </div>
@@ -248,30 +248,30 @@ export default function UnivCRM() {
 
  {/* KPI Cards */}
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 shrink-0 px-1">
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <p className="text-sm font-medium text-[#71717a] dark:text-gray-400">Total Active Leads</p>
  <h3 className="text-3xl font-black text-foreground mt-1 tracking-[-0.02em]">{leads.length}</h3>
  </div>
- <div className="w-12 h-12 rounded-md-xl bg-blue-100 dark:bg-blue-500/10/10 flex items-center justify-center text-blue-600">
+ <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-500/10/10 flex items-center justify-center text-blue-600">
  <User className="w-6 h-6" />
  </div>
  </div>
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <p className="text-sm font-medium text-[#71717a] dark:text-gray-400">Pipeline Value</p>
  <h3 className="text-3xl font-black text-foreground mt-1 tracking-[-0.02em]">${totalValue.toLocaleString()}</h3>
  </div>
- <div className="w-12 h-12 rounded-md-xl bg-emerald-100 dark:bg-emerald-500/10/10 flex items-center justify-center text-emerald-600">
+ <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-500/10/10 flex items-center justify-center text-emerald-600">
  <DollarSign className="w-6 h-6" />
  </div>
  </div>
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <p className="text-sm font-medium text-[#71717a] dark:text-gray-400">Overall Win Rate</p>
  <h3 className="text-3xl font-black text-foreground mt-1 tracking-[-0.02em]">{winRate}%</h3>
  </div>
- <div className="w-12 h-12 rounded-md-xl bg-purple-100 dark:bg-purple-500/10/10 flex items-center justify-center text-purple-600">
+ <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-500/10/10 flex items-center justify-center text-purple-600">
  <TrendingUp className="w-6 h-6" />
  </div>
  </div>
@@ -285,7 +285,7 @@ export default function UnivCRM() {
  placeholder="Search by name, email, phone, or source..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-11 pl-11 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition-  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 pl-11 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition-  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
 
@@ -302,10 +302,10 @@ export default function UnivCRM() {
  {stages.map(stage => {
  const stageLeads = filteredLeads.filter(l => l.status === stage);
  return (
- <div key={stage} className="flex-shrink-0 w-[320px] max-w-[85vw] bg-muted/40 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl flex flex-col snap-center h-full">
+ <div key={stage} className="flex-shrink-0 w-[320px] max-w-[85vw] bg-muted/40 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl flex flex-col snap-center h-full">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-card/60 rounded-md-t-2xl shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h3 className="font-semibold text-sm text-foreground tracking-tight">{stage}</h3>
- <span className="px-2.5 py-0.5 rounded-md-full bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-xs font-semibold text-[#71717a] dark:text-gray-400  tracking-[0.04em]">
+ <span className="px-2.5 py-0.5 rounded-full bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-xs font-semibold text-[#71717a] dark:text-gray-400  tracking-[0.04em]">
  {stageLeads.length}
  </span>
  </div>
@@ -324,7 +324,7 @@ export default function UnivCRM() {
  {...provided.draggableProps}
  {...provided.dragHandleProps}
  onClick={() => setViewingLead(lead)}
- className={`bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 rounded-md-xl transition-all group cursor-pointer relative overflow-hidden ${snapshot.isDragging ? ' ring-2 ring-primary scale-105 z-50' : ' '}`}
+ className={`bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 rounded-xl transition-all group cursor-pointer relative overflow-hidden ${snapshot.isDragging ? ' ring-2 ring-primary scale-105 z-50' : ' '}`}
  style={provided.draggableProps.style}
  >
  <div className={`absolute top-0 left-0 w-1.5 h-full transition-colors ${stage === 'Won' ? 'bg-emerald-500/10' : stage === 'Lost' ? 'bg-red-500/10' : 'bg-primary/40 group-hover:bg-primary'}`}></div>
@@ -353,7 +353,7 @@ export default function UnivCRM() {
  <span className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-semibold">
  <DollarSign className="w-3.5 h-3.5" /> {Number(lead.value || 0).toLocaleString()}
  </span>
- <span className={`px-2 py-0.5 rounded-md-full font-semibold text-[10px] uppercase tracking-wider ${lead.value > 10000 ? 'bg-red-100 text-red-700' : lead.value > 5000 ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}`}>
+ <span className={`px-2 py-0.5 rounded-full font-semibold text-[10px] uppercase tracking-wider ${lead.value > 10000 ? 'bg-red-100 text-red-700' : lead.value > 5000 ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}`}>
  {lead.value > 10000 ? 'Hot' : lead.value > 5000 ? 'Warm' : 'Cold'}
  </span>
  </div>
@@ -363,7 +363,7 @@ export default function UnivCRM() {
  ))}
  {provided.placeholder}
  {stageLeads.length === 0 && !snapshot.isDraggingOver && (
- <div className="h-24 flex items-center justify-center border-2 border-dashed border-primary/40 rounded-md-xl text-xs text-[#71717a] dark:text-gray-400 font-medium bg-card/20 tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="h-24 flex items-center justify-center border-2 border-dashed border-primary/40 rounded-xl text-xs text-[#71717a] dark:text-gray-400 font-medium bg-card/20 tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  Drop leads here
  </div>
  )}
@@ -374,10 +374,10 @@ export default function UnivCRM() {
  );
 })}
  {/* Add Stage Column */}
- <div className="flex-shrink-0 w-[320px] max-w-[85vw] h-[150px] rounded-md-2xl flex flex-col snap-center border-2 border-dashed border-primary/40 hover:border-primary/40 transition-colors bg-card/30 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-shrink-0 w-[320px] max-w-[85vw] h-[150px] rounded-2xl flex flex-col snap-center border-2 border-dashed border-primary/40 hover:border-primary/40 transition-colors bg-card/30 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {isAddingStage ? (
  <form onSubmit={handleAddStage} className="p-4 flex flex-col gap-3 h-full justify-center">
- <input autoFocus type="text" value={newStageName} onChange={e=>setNewStageName(e.target.value)} placeholder="Stage Name..." className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm " />
+ <input autoFocus type="text" value={newStageName} onChange={e=>setNewStageName(e.target.value)} placeholder="Stage Name..." className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm " />
  <div className="flex gap-2">
  <button type="submit" className="flex-1 h-9 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 -primary/20">Save</button>
  <button type="button" onClick={()=>setIsAddingStage(false)} className="flex-1 h-9 bg-muted text-foreground rounded-xl text-sm font-medium hover:bg-muted/80 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">Cancel</button>
@@ -385,7 +385,7 @@ export default function UnivCRM() {
  </form>
  ) : (
  <button onClick={()=>setIsAddingStage(true)} className="flex-1 flex flex-col items-center justify-center gap-2 text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors">
- <div className="w-10 h-10 rounded-md-full bg-primary/10 flex items-center justify-center">
+ <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
  <Plus className="w-5 h-5" />
  </div>
  <span className="text-sm font-semibold">Add Pipeline Stage</span>
@@ -397,7 +397,7 @@ export default function UnivCRM() {
  </div>
  </DragDropContext>
  ) : (
- <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col mx-1 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col mx-1 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="overflow-x-auto flex-1">
  <table className="w-full text-left text-sm whitespace-nowrap">
  <thead className="bg-muted/50 text-[#71717a] dark:text-gray-400 text-xs uppercase font-semibold tracking-wider border-b border-primary/40 sticky top-0 z-10 tracking-[0.04em]">
@@ -415,7 +415,7 @@ export default function UnivCRM() {
  <tr key={lead.id} onClick={() => setViewingLead(lead)} className="hover:bg-muted/30 transition-colors cursor-pointer group">
  <td className="px-6 py-4">
  <div className="flex items-center gap-3">
- <div className="w-9 h-9 rounded-md-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
+ <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
  {lead.first_name[0]}{lead.last_name?.[0] || ''}
  </div>
  <span className="font-semibold text-foreground">{lead.first_name} {lead.last_name}</span>
@@ -469,7 +469,7 @@ export default function UnivCRM() {
  {/* Add / Edit Modal (Tailwind CSS Modal to ensure zero dependency issues) */}
  {isModalOpen && (
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-primary/20 backdrop-blur-sm animate-in fade-in duration-200">
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-center p-5 sm:p-6 border-b border-primary/40 bg-muted/30 shrink-0">
  <h2 className="text-lg sm:text-xl font-semibold text-foreground flex items-center gap-2">
  {editingLeadId ? <Edit2 className="w-5 h-5 text-primary" /> : <Plus className="w-5 h-5 text-primary" />}
@@ -484,42 +484,42 @@ export default function UnivCRM() {
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-6">
  <div>
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1.5 tracking-[0.04em]">First Name *</label>
- <input required autoFocus type="text" value={formData.first_name} onChange={e => setFormData({...formData, first_name: e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="John" />
+ <input required autoFocus type="text" value={formData.first_name} onChange={e => setFormData({...formData, first_name: e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="John" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1.5 tracking-[0.04em]">Last Name</label>
- <input type="text" value={formData.last_name} onChange={e => setFormData({...formData, last_name: e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="Doe" />
+ <input type="text" value={formData.last_name} onChange={e => setFormData({...formData, last_name: e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="Doe" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1.5 tracking-[0.04em]">Email Address</label>
- <input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="john@example.com" />
+ <input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="john@example.com" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1.5 tracking-[0.04em]">Phone Number</label>
- <input type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="+1 (555) 000-0000" />
+ <input type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="+1 (555) 000-0000" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1.5 tracking-[0.04em]">Company / Source</label>
- <input type="text" value={formData.source} onChange={e => setFormData({...formData, source: e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="Acme Corp" />
+ <input type="text" value={formData.source} onChange={e => setFormData({...formData, source: e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="Acme Corp" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1.5 tracking-[0.04em]">Expected Value ($)</label>
- <input type="number" step="0.01" value={formData.value} onChange={e => setFormData({...formData, value: e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="5000" />
+ <input type="number" step="0.01" value={formData.value} onChange={e => setFormData({...formData, value: e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="5000" />
  </div>
  <div className="sm:col-span-2">
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1.5 tracking-[0.04em]">Pipeline Stage</label>
- <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">
+ <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">
  {stages.map(s => <option key={s} value={s}>{s}</option>)}
  </select>
  </div>
  <div className="sm:col-span-2">
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1.5 tracking-[0.04em]">Notes</label>
- <textarea rows="3" value={formData.notes} onChange={e => setFormData({...formData, notes: e.target.value})} className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none" placeholder="Add any background info here..."></textarea>
+ <textarea rows="3" value={formData.notes} onChange={e => setFormData({...formData, notes: e.target.value})} className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none" placeholder="Add any background info here..."></textarea>
  </div>
  </div>
  <div className="flex items-center justify-end gap-3 pt-4 mt-auto border-t border-primary/40">
- <button type="button" onClick={() => setIsModalOpen(false)} className="h-10 px-5 bg-muted text-foreground rounded-md-xl text-sm font-medium hover:bg-muted/80 transition-colors">Cancel</button>
- <button type="submit" className="h-10 px-5 bg-primary text-white rounded-md-xl text-sm font-semibold hover:bg-primary/90 transition-colors -primary/20">
+ <button type="button" onClick={() => setIsModalOpen(false)} className="h-10 px-5 bg-muted text-foreground rounded-xl text-sm font-medium hover:bg-muted/80 transition-colors">Cancel</button>
+ <button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors -primary/20">
  {editingLeadId ? 'Save Changes' : 'Create Lead'}
  </button>
  </div>
@@ -532,7 +532,7 @@ export default function UnivCRM() {
  <Sheet open={!!viewingLead} onOpenChange={(open) => !open && setViewingLead(null)}>
  <SheetContent className="overflow-y-auto w-full sm:max-w-md border-l border-primary/40 ">
  <SheetHeader className="pb-6 border-b border-primary/40">
- <div className="w-16 h-16 rounded-md-2xl bg-primary/10 flex items-center justify-center text-primary font-black text-2xl mb-4 tracking-[-0.02em]">
+ <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-black text-2xl mb-4 tracking-[-0.02em]">
  {viewingLead?.first_name?.[0]}{viewingLead?.last_name?.[0]}
  </div>
  <SheetTitle className="text-2xl font-semibold tracking-[-0.02em]">{viewingLead?.first_name} {viewingLead?.last_name}</SheetTitle>
@@ -551,7 +551,7 @@ export default function UnivCRM() {
  {viewingLead && (
  <div className="mt-6 space-y-6">
  
- <div className="bg-muted/30 p-4 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 space-y-4">
+ <div className="bg-muted/30 p-4 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 space-y-4">
  <div className="flex items-start gap-3">
  <Building2 className="w-4 h-4 text-[#71717a] dark:text-gray-400 mt-0.5" />
  <div>
@@ -575,7 +575,7 @@ export default function UnivCRM() {
  </div>
  </div>
 
- <div className="bg-emerald-50 dark:bg-emerald-950/20 p-4 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-emerald-100 dark:border-emerald-900 flex items-center justify-between">
+ <div className="bg-emerald-50 dark:bg-emerald-950/20 p-4 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-emerald-100 dark:border-emerald-900 flex items-center justify-between">
  <div>
  <p className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider tracking-[0.04em]">Expected Value</p>
  <p className="text-2xl font-black text-emerald-700 dark:text-emerald-400 mt-0.5 tracking-[-0.02em]">${Number(viewingLead.value || 0).toLocaleString()}</p>
@@ -585,7 +585,7 @@ export default function UnivCRM() {
 
  <div>
  <p className="text-[11px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-2 tracking-[0.04em]">Notes & Context</p>
- <div className="bg-muted/30 p-4 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-sm text-foreground whitespace-pre-wrap min-h-[100px]">
+ <div className="bg-muted/30 p-4 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-sm text-foreground whitespace-pre-wrap min-h-[100px]">
  {viewingLead.notes || <span className="text-[#71717a] dark:text-gray-400 italic">No notes added to this lead yet.</span>}
  </div>
  </div>
@@ -593,13 +593,13 @@ export default function UnivCRM() {
  <div className="pt-6 border-t border-primary/40 flex gap-3">
  <button 
  onClick={() => { handleOpenModal(viewingLead); setViewingLead(null);}}
- className="flex-1 flex items-center justify-center gap-2 h-11 bg-primary text-white rounded-md-xl text-sm font-semibold hover:bg-primary/90 transition-colors "
+ className="flex-1 flex items-center justify-center gap-2 h-11 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors "
  >
  <Edit2 className="w-4 h-4" /> Edit Profile
  </button>
  <button 
  onClick={() => handleDeleteLead(viewingLead.id)}
- className="w-11 h-11 flex items-center justify-center bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400 rounded-md-xl hover:bg-red-100 transition-colors"
+ className="w-11 h-11 flex items-center justify-center bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400 rounded-xl hover:bg-red-100 transition-colors"
  >
  <Trash2 className="w-4 h-4" />
  </button>

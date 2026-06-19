@@ -12,7 +12,7 @@ import { format, isAfter, isBefore, addDays, startOfMonth, endOfMonth } from "da
 
 function StatCard({ icon: IconComp, label, value, sub, color = "bg-slate-50 dark:bg-slate-800/50 text-primary" }) {
   return (
-    <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}>
         <IconComp className="w-5 h-5" />
       </div>
@@ -105,7 +105,7 @@ export default function StaffDashboard() {
         <StatCard icon={TrendingUp} label="Billed Amount" value={formatCurrency(billedAmount, user?.company_currency || "GHS")} sub="This month" color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
       </div>
       {/* Hours vs Target */}
-      <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="flex items-center justify-between mb-3">
           <div>
             <h3 className="text-sm font-semibold">{t("billable_hours", "Billable Hours —")} {format(today, "MMMM yyyy")}</h3>
@@ -141,7 +141,7 @@ export default function StaffDashboard() {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Tasks */}
-        <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="p-4 border-b border-primary/40 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <CheckSquare className="w-4 h-4 text-primary" />
@@ -171,7 +171,7 @@ export default function StaffDashboard() {
               const isDueSoon = !isOverdue && task.due_date && isBefore(new Date(task.due_date), addDays(today, 7));
               return (
                 <div key={task.id} className="px-4 py-3 flex items-start gap-3">
-                  <div className={`w-1.5 h-1.5 rounded-md-full mt-2 flex-shrink-0 ${isOverdue ? "bg-red-500/10" : isDueSoon ? "bg-amber-500" : "bg-primary/70"}`} />
+                  <div className={`w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0 ${isOverdue ? "bg-red-500/10" : isDueSoon ? "bg-amber-500" : "bg-primary/70"}`} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium">{task.title}</p>
                     <div className="flex flex-wrap gap-2.5 mt-1">
@@ -192,7 +192,7 @@ export default function StaffDashboard() {
         </div>
 
         {/* Upcoming Hearings */}
-        <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="p-4 border-b border-primary/40 flex items-center gap-2">
             <Calendar className="w-4 h-4 text-primary" />
             <h3 className="text-sm font-semibold">{t("upcoming_hearings", "Upcoming Hearings")}</h3>
@@ -220,7 +220,7 @@ export default function StaffDashboard() {
         </div>
       </div>
       {/* Active Cases */}
-      <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="p-4 border-b border-primary/40 flex items-center gap-2">
           <Briefcase className="w-4 h-4 text-primary" />
           <h3 className="text-sm font-semibold">{t("my_active_cases", "My Active Cases")}</h3>

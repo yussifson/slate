@@ -217,7 +217,7 @@ export default function UnivAppointments({
  <p className="text-sm mt-1">Create a new appointment to get started.</p>
  </div>
  ) : (
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm text-left">
  <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  <tr>
@@ -246,14 +246,14 @@ export default function UnivAppointments({
  </td>
  <td className="px-6 py-4">
  <div className="flex items-center gap-2">
- <div className="w-6 h-6 rounded-md-full bg-primary/20 flex items-center justify-center text-[10px] font-semibold text-primary">
+ <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-semibold text-primary">
  {apt.staff_name?.charAt(0) || '?'}
  </div>
  <span className="font-medium">{apt.staff_name || 'Unassigned'}</span>
  </div>
  </td>
  <td className="px-6 py-4">
- <span className={cn("px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider rounded-md-full border", STATUS_COLORS[apt.status] || STATUS_COLORS['Scheduled'])}>
+ <span className={cn("px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider rounded-full border", STATUS_COLORS[apt.status] || STATUS_COLORS['Scheduled'])}>
  {apt.status}
  </span>
  </td>
@@ -277,7 +277,7 @@ export default function UnivAppointments({
  )}
 
  {view === 'calendar' && (
- <div className="max-w-6xl mx-auto bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-8 text-center text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="max-w-6xl mx-auto bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-8 text-center text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CalendarIcon className="w-16 h-16 mx-auto mb-4 opacity-20" />
  <h3 className="text-xl font-semibold text-foreground mb-2">Calendar View</h3>
  <p>Full calendar grid implementation goes here. Switch to List view to manage appointments.</p>
@@ -295,7 +295,7 @@ export default function UnivAppointments({
  initial={{ opacity: 0, scale: 0.95, y: 20}}
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: 20}}
- className="relative w-full max-w-lg bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="relative w-full max-w-lg bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="px-6 py-4 border-b border-primary/40 flex items-center justify-between bg-muted/20">
  <h2 className="text-lg font-semibold text-foreground">{editingApt ? 'Edit Appointment' : 'New Appointment'}</h2>

@@ -148,7 +148,7 @@ function OverviewPanel({ record, onSave}) {
 function ActivityPanel() {
  return (
  <div className="flex flex-col items-center justify-center h-full gap-4 text-center px-8">
- <div className="w-14 h-14 rounded-md-full bg-muted flex items-center justify-center">
+ <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center">
  <Activity className="w-7 h-7 text-[#71717a] dark:text-gray-400 opacity-50" />
  </div>
  <div>
@@ -234,7 +234,7 @@ function NotesPanel({ recordId}) {
 function DocumentsPanel() {
  return (
  <div className="flex flex-col items-center justify-center h-full gap-4 text-center px-8">
- <div className="w-14 h-14 rounded-md-full bg-muted flex items-center justify-center">
+ <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center">
  <Paperclip className="w-7 h-7 text-[#71717a] dark:text-gray-400 opacity-50" />
  </div>
  <div>
@@ -288,7 +288,7 @@ function TimelinePanel({ record}) {
  {/* Dot */}
  <div
  className={cn(
- "relative z-10 w-7 h-7 rounded-md-full border-2 flex items-center justify-center flex-shrink-0 -ml-0.5",
+ "relative z-10 w-7 h-7 rounded-full border-2 flex items-center justify-center flex-shrink-0 -ml-0.5",
  m.type === "created"
  ? "border-emerald-500 bg-emerald-500/10/10"
  : m.type === "updated"
@@ -410,7 +410,7 @@ export default function RecordWorkspace({
  {statusEntry && (
  <span
  className={cn(
- "inline-flex items-center px-2.5 py-0.5 rounded-md-full text-[11px] font-semibold border",
+ "inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold border",
  statusColor(statusEntry[1])
  )}
  >

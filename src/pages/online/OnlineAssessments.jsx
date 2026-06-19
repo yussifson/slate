@@ -27,7 +27,7 @@ export default function OnlineAssessments() {
  
  {!started && (
  <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-8 text-center">
- <div className="w-16 h-16 bg-[var(--primary)] text-white rounded-md-full flex items-center justify-center mx-auto mb-6 ">
+ <div className="w-16 h-16 bg-[var(--primary)] text-white rounded-full flex items-center justify-center mx-auto mb-6 ">
  <BookOpen className="w-8 h-8" />
  </div>
  <h1 className="text-2xl font-semibold font-display text-[var(--color-text-primary)] mb-2 tracking-[-0.02em]">Slate 1 Final Assessment</h1>
@@ -86,7 +86,7 @@ export default function OnlineAssessments() {
 
  {started === 'finished' && (
  <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-8 text-center">
- <div className="w-16 h-16 bg-[var(--color-success-subtle)] text-[var(--color-success)] rounded-md-full flex items-center justify-center mx-auto mb-6 border-4 border-white">
+ <div className="w-16 h-16 bg-[var(--color-success-subtle)] text-[var(--color-success)] rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-white">
  <CheckCircle2 className="w-8 h-8" />
  </div>
  <h1 className="text-3xl font-semibold font-display text-[var(--color-text-primary)] mb-2 tracking-[-0.02em]">Congratulations!</h1>

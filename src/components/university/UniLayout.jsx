@@ -92,14 +92,14 @@ export default function UniLayout({ children}) {
  </div>
 
  <div className="flex items-center gap-3">
- <button className="w-8 h-8 flex items-center justify-center rounded-md-full hover:bg-[var(--color-surface-3)] transition-colors text-[var(--color-text-secondary)]">
+ <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[var(--color-surface-3)] transition-colors text-[var(--color-text-secondary)]">
  <Plus className="w-4 h-4" />
  </button>
- <button className="relative w-8 h-8 flex items-center justify-center rounded-md-full hover:bg-[var(--color-surface-3)] transition-colors text-[var(--color-text-secondary)]">
+ <button className="relative w-8 h-8 flex items-center justify-center rounded-full hover:bg-[var(--color-surface-3)] transition-colors text-[var(--color-text-secondary)]">
  <Bell className="w-4 h-4" />
- <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[var(--color-danger)] rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 border-[var(--color-surface-0)]" />
+ <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[var(--color-danger)] rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-[var(--color-surface-0)]" />
  </button>
- <div className="w-7 h-7 rounded-md-full bg-gradient-to-tr from-[var(--color-accent-primary)] to-[var(--primary)] flex items-center justify-center text-xs font-semibold text-white ml-2 tracking-[0.04em]">
+ <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-[var(--color-accent-primary)] to-[var(--primary)] flex items-center justify-center text-xs font-semibold text-white ml-2 tracking-[0.04em]">
  {user?.email?.substring(0, 2).toUpperCase() || 'AD'}
  </div>
  </div>
@@ -169,7 +169,7 @@ export default function UniLayout({ children}) {
  >
  <div className="relative shrink-0">
  <Zap className="w-[18px] h-[18px] text-[var(--color-accent-primary)]" style={{ strokeWidth: 1.5}} />
- <span className="absolute top-0 right-0 w-1.5 h-1.5 rounded-md-full bg-[var(--color-accent-primary)] animate-pulse" />
+ <span className="absolute top-0 right-0 w-1.5 h-1.5 rounded-full bg-[var(--color-accent-primary)] animate-pulse" />
  </div>
  {!isSidebarCollapsed && <span className="text-sm font-medium">Orbit AI</span>}
  </button>

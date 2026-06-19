@@ -127,18 +127,18 @@ export default function UnivClientPortal({
  {/* Hero Banner */}
  <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 px-8 py-10 shrink-0 relative overflow-hidden">
  <div className="absolute inset-0 bg-primary/20"></div>
- <div className="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-md-full blur-3xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>
+ <div className="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>
  <div className="max-w-6xl mx-auto relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
  <div className="text-white">
  <h1 className="text-3xl font-extrabold mb-2 tracking-[-0.02em]">Welcome back, {currentUser?.email?.split('@')[0] || 'Client'}</h1>
  <p className="text-indigo-100 font-medium opacity-90">{title} Account Dashboard</p>
  </div>
  <div className="flex gap-4">
- <div className="bg-white/10 backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-white/20 rounded-md-xl px-4 py-3 text-white min-w-[120px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-white/10 backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-white/20 rounded-xl px-4 py-3 text-white min-w-[120px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="text-indigo-100 text-xs font-semibold uppercase tracking-wider mb-1 tracking-[0.04em]">Total Due</div>
  <div className="text-2xl font-semibold tracking-[-0.02em]">${totalDue.toFixed(2)}</div>
  </div>
- <div className="bg-white/10 backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-white/20 rounded-md-xl px-4 py-3 text-white min-w-[120px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-white/10 backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-white/20 rounded-xl px-4 py-3 text-white min-w-[120px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="text-indigo-100 text-xs font-semibold uppercase tracking-wider mb-1 tracking-[0.04em]">Open Tickets</div>
  <div className="text-2xl font-semibold tracking-[-0.02em]">{tickets.filter(t => t.status === 'Open').length}</div>
  </div>
@@ -157,7 +157,7 @@ export default function UnivClientPortal({
  "flex items-center gap-2 px-5 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
  activeTab === tab.id 
  ? "border-primary text-primary" 
- : "border-transparent text-[#71717a] dark:text-gray-400 hover:text-foreground hover:bg-muted/50 rounded-md-t-lg"
+ : "border-transparent text-[#71717a] dark:text-gray-400 hover:text-foreground hover:bg-muted/50 rounded-t-lg"
  )}
  >
  <tab.icon className="w-4 h-4" />
@@ -181,7 +181,7 @@ export default function UnivClientPortal({
  className="grid grid-cols-1 md:grid-cols-3 gap-6"
  >
  <div className="md:col-span-2 space-y-6">
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
  <CreditCard className="w-5 h-5 text-primary" /> Recent Invoices
  </h3>
@@ -197,7 +197,7 @@ export default function UnivClientPortal({
  </div>
  <div className="text-right">
  <div className="font-semibold">${parseFloat(inv.amount || 0).toFixed(2)}</div>
- <span className={cn("text-[10px] uppercase font-semibold tracking-wider px-2 py-0.5 rounded-md-full", 
+ <span className={cn("text-[10px] uppercase font-semibold tracking-wider px-2 py-0.5 rounded-full", 
  inv.status === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
  )}>
  {inv.status || 'Pending'}
@@ -210,7 +210,7 @@ export default function UnivClientPortal({
  )}
  </div>
  
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
  <FileText className="w-5 h-5 text-primary" /> Shared Documents
  </h3>
@@ -219,7 +219,7 @@ export default function UnivClientPortal({
  ) : (
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
  {documents.slice(0, 4).map(doc => (
- <div key={doc.id} className="flex items-start gap-3 p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary/30 transition-colors bg-muted/10">
+ <div key={doc.id} className="flex items-start gap-3 p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary/30 transition-colors bg-muted/10">
  <div className="w-8 h-8 rounded-md bg-primary/10 flex items-center justify-center text-primary shrink-0">
  <FileText className="w-4 h-4" />
  </div>
@@ -236,19 +236,19 @@ export default function UnivClientPortal({
  </div>
 
  <div className="space-y-6">
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6 relative overflow-hidden group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-md-bl-full -z-10 group-hover:bg-primary/10 transition-colors"></div>
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-6 relative overflow-hidden group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-10 group-hover:bg-primary/10 transition-colors"></div>
  <h3 className="text-lg font-semibold mb-2">Need Support?</h3>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mb-6">Our team is here to help with any questions or issues.</p>
  <button 
  onClick={() => setActiveTab('tickets')}
- className="w-full py-2.5 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors "
+ className="w-full py-2.5 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors "
  >
  Open a Ticket
  </button>
  </div>
  
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h3 className="text-sm font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-4 tracking-[0.04em]">Quick Links</h3>
  <div className="space-y-2">
  <a href="#" className="flex items-center justify-between text-sm p-2 hover:bg-muted rounded-xl text-foreground transition-colors">
@@ -267,14 +267,14 @@ export default function UnivClientPortal({
  )}
 
  {activeTab === 'invoices' && (
- <motion.div key="invoices" initial={{ opacity: 0}} animate={{ opacity: 1}} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <motion.div key="invoices" initial={{ opacity: 0}} animate={{ opacity: 1}} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-6 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div>
  <h2 className="text-xl font-semibold">Invoices & Billing</h2>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Manage your payments and billing history</p>
  </div>
  {totalDue > 0 && (
- <button onClick={handlePay} className="px-5 py-2.5 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 flex items-center gap-2">
+ <button onClick={handlePay} className="px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 flex items-center gap-2">
  <CreditCard className="w-4 h-4" /> Pay ${totalDue.toFixed(2)}
  </button>
  )}
@@ -302,7 +302,7 @@ export default function UnivClientPortal({
  <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">{inv.due_date || 'N/A'}</td>
  <td className="px-6 py-4 font-semibold">${parseFloat(inv.amount || 0).toFixed(2)}</td>
  <td className="px-6 py-4">
- <span className={cn("text-[10px] uppercase font-semibold tracking-wider px-2 py-1 rounded-md-full", 
+ <span className={cn("text-[10px] uppercase font-semibold tracking-wider px-2 py-1 rounded-full", 
  inv.status === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
  )}>
  {inv.status || 'Pending'}
@@ -329,17 +329,17 @@ export default function UnivClientPortal({
  <div className="lg:col-span-2 space-y-4">
  <h2 className="text-xl font-semibold mb-4">Support History</h2>
  {tickets.length === 0 ? (
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-12 text-center  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-12 text-center  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <MessageSquare className="w-12 h-12 text-[#71717a] dark:text-gray-400/30 mx-auto mb-4" />
  <h3 className="text-lg font-semibold text-foreground">No Tickets</h3>
  <p className="text-[#71717a] dark:text-gray-400 text-sm mt-1">You haven't submitted any support requests yet.</p>
  </div>
  ) : (
  tickets.map(ticket => (
- <div key={ticket.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 hover:border-primary/30 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={ticket.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 hover:border-primary/30 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-start mb-2">
  <h4 className="font-semibold text-foreground text-lg">{ticket.subject || 'Support Request'}</h4>
- <span className={cn("text-xs font-semibold px-2.5 py-1 rounded-md-full border", 
+ <span className={cn("text-xs font-semibold px-2.5 py-1 rounded-full border", 
  ticket.status === 'Open' ? 'bg-amber-50 text-amber-600 border-amber-200' : 
  ticket.status === 'Resolved' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 
  'bg-muted text-[#71717a] dark:text-gray-400 border-primary/40'
@@ -356,7 +356,7 @@ export default function UnivClientPortal({
  )}
  </div>
  
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden h-fit hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden h-fit hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-5 border-b border-primary/40 bg-muted/20">
  <h3 className="font-semibold">New Ticket</h3>
  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">Submit a new request to our team</p>
@@ -403,7 +403,7 @@ export default function UnivClientPortal({
 
  {/* Placeholder for Documents/Profile to keep code concise */}
  {(activeTab === 'documents' || activeTab === 'profile') && (
- <motion.div initial={{ opacity: 0}} animate={{ opacity: 1}} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-12 text-center  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <motion.div initial={{ opacity: 0}} animate={{ opacity: 1}} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-12 text-center  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Settings className="w-12 h-12 text-[#71717a] dark:text-gray-400/30 mx-auto mb-4" />
  <h3 className="text-lg font-semibold text-foreground capitalize">{activeTab}</h3>
  <p className="text-[#71717a] dark:text-gray-400 text-sm mt-1">This module is part of the premium workspace expansion.</p>

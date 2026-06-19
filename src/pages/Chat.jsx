@@ -233,7 +233,7 @@ export default function Chat() {
  const activeRoom = rooms.find(r => r.id === activeRoomId);
 
  return (
- <div className="h-[calc(100vh-140px)] md:h-[calc(100vh-100px)] -mt-4 -mb-6 md:-mb-0 md:-mt-0 md:rounded-md-xl overflow-hidden bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col md:flex-row">
+ <div className="h-[calc(100vh-140px)] md:h-[calc(100vh-100px)] -mt-4 -mb-6 md:-mb-0 md:-mt-0 md:rounded-xl overflow-hidden bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col md:flex-row">
  <AddChatDialog 
  open={isAddChatOpen} 
  onOpenChange={setIsAddChatOpen} 
@@ -246,14 +246,14 @@ export default function Chat() {
  {/* Sidebar - Channels & DMs */}
  <div className="w-full md:w-80 lg:w-96 flex-shrink-0 border-r border-primary/40 bg-[#f0f2f5] dark:bg-[#202c33] flex flex-col h-[40%] md:h-full z-10 relative">
  <div className="p-4 bg-background dark:bg-[#202c33] border-b border-primary/40 flex items-center justify-between">
- <div className="w-10 h-10 rounded-md-full bg-primary/20 flex items-center justify-center overflow-hidden">
+ <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden">
  {user?.avatar_url ? <img src={user.avatar_url} className="w-full h-full object-cover"/> : <MessageSquare className="w-5 h-5 text-primary" />}
  </div>
  <div className="flex items-center gap-2 text-[#54656f] dark:text-[#aebac1]">
- <Button variant="ghost" size="icon" className="w-10 h-10 rounded-md-full hover:bg-primary/20" onClick={() => setIsAddChatOpen(true)}>
+ <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full hover:bg-primary/20" onClick={() => setIsAddChatOpen(true)}>
  <Plus className="w-5 h-5" />
  </Button>
- <Button variant="ghost" size="icon" className="w-10 h-10 rounded-md-full hover:bg-primary/20">
+ <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full hover:bg-primary/20">
  <MoreVertical className="w-5 h-5" />
  </Button>
  </div>
@@ -284,11 +284,11 @@ export default function Chat() {
  >
  <div className="relative flex-shrink-0">
  {room.room_type === "group" ? (
- <div className="w-12 h-12 rounded-md-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center">
+ <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center">
  <Users className="w-6 h-6 text-primary dark:text-primary/70" />
  </div>
  ) : (
- <div className="w-12 h-12 rounded-md-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+ <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
  <UserCircle className="w-7 h-7 text-amber-600 dark:text-amber-400" />
  </div>
  )}
@@ -321,11 +321,11 @@ export default function Chat() {
  <div className="px-4 py-3 border-b border-primary/40 flex items-center justify-between bg-[#f0f2f5] dark:bg-[#202c33] z-10 ">
  <div className="flex items-center gap-3">
  {activeRoom.room_type === "group" ? (
- <div className="w-10 h-10 rounded-md-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center">
+ <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center">
  <Users className="w-5 h-5 text-primary dark:text-primary/70" />
  </div>
  ) : (
- <div className="w-10 h-10 rounded-md-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+ <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
  <UserCircle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
  </div>
  )}
@@ -360,16 +360,16 @@ export default function Chat() {
  return (
  <div key={msg.id} id={`msg-${msg.id}`} className={cn("flex items-end gap-2 max-w-[85%] group", isMe ? "ml-auto flex-row-reverse" : "mr-auto")}>
  {!isMe && showTail ? (
- <img src={avatarUrl} alt={senderName} className="w-7 h-7 rounded-md-full shrink-0 " />
+ <img src={avatarUrl} alt={senderName} className="w-7 h-7 rounded-full shrink-0 " />
  ) : (
  !isMe && <div className="w-7 shrink-0" />
  )}
 
  <div className={cn(
- "relative px-3 py-1.5 text-[14.5px] leading-snug rounded-md-xl",
+ "relative px-3 py-1.5 text-[14.5px] leading-snug rounded-xl",
  isMe 
- ? "bg-[#d9fdd3] dark:bg-[#005c4b] text-slate-900 dark:text-slate-100 dark:text-gray-100 rounded-md-tr-none" 
- : "bg-white dark:bg-slate-900/40 dark:bg-[#202c33] text-slate-900 dark:text-slate-100 dark:text-gray-100 rounded-md-tl-none"
+ ? "bg-[#d9fdd3] dark:bg-[#005c4b] text-slate-900 dark:text-slate-100 dark:text-gray-100 rounded-tr-none" 
+ : "bg-white dark:bg-slate-900/40 dark:bg-[#202c33] text-slate-900 dark:text-slate-100 dark:text-gray-100 rounded-tl-none"
  )}>
  {msg.reply_to_id && (
  <div className="bg-primary/20 dark:bg-white dark:bg-slate-900/40/5 border-l-4 border-primary rounded-md p-1.5 mb-1.5 text-xs opacity-80 cursor-pointer tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={() => {
@@ -427,8 +427,8 @@ export default function Chat() {
  </div>
  
  {/* Message Actions */}
- <div className="opacity-40 hover:opacity-100 transition-opacity flex flex-wrap items-center gap-2 bg-white dark:bg-slate-900/40/50 dark:bg-black/20 rounded-md-full px-1 py-0.5 mb-1 self-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <button onClick={() => setReplyTo(msg)} className="p-1 hover:bg-primary/20 rounded-md-full text-[#71717a] dark:text-gray-400" title="Reply">
+ <div className="opacity-40 hover:opacity-100 transition-opacity flex flex-wrap items-center gap-2 bg-white dark:bg-slate-900/40/50 dark:bg-black/20 rounded-full px-1 py-0.5 mb-1 self-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <button onClick={() => setReplyTo(msg)} className="p-1 hover:bg-primary/20 rounded-full text-[#71717a] dark:text-gray-400" title="Reply">
  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
  </button>
  <button 
@@ -447,7 +447,7 @@ export default function Chat() {
  setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, reactions: { ...m.reactions, likes: currentLikes + 1}} : m));
 }
 }} 
- className="p-1 hover:bg-primary/20 rounded-md-full text-[#71717a] dark:text-gray-400 flex items-center gap-0.5" 
+ className="p-1 hover:bg-primary/20 rounded-full text-[#71717a] dark:text-gray-400 flex items-center gap-0.5" 
  title="Like"
  >
  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
@@ -455,11 +455,11 @@ export default function Chat() {
  </button>
  {isMe && (
  <>
- <button onClick={() => { setEditingMsg(msg); setInputValue(msg.content);}} className="p-1 hover:bg-primary/20 rounded-md-full text-[#71717a] dark:text-gray-400" title="Edit">
+ <button onClick={() => { setEditingMsg(msg); setInputValue(msg.content);}} className="p-1 hover:bg-primary/20 rounded-full text-[#71717a] dark:text-gray-400" title="Edit">
  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
  </button>
  <button 
- className="p-1 hover:bg-rose-100 hover:text-rose-500 rounded-md-full text-[#71717a] dark:text-gray-400" 
+ className="p-1 hover:bg-rose-100 hover:text-rose-500 rounded-full text-[#71717a] dark:text-gray-400" 
  title="Delete"
  onClick={() => {
  powerSync.execute(`DELETE FROM chat_messages WHERE id = ?`, [msg.id]).then(() => {
@@ -484,7 +484,7 @@ export default function Chat() {
  <p className="font-semibold text-primary">{editingMsg ? "Editing Message" : `Replying to ${participantProfiles[replyTo?.sender_id]?.full_name || 'User'}`}</p>
  <p className="text-[#71717a] dark:text-gray-400 truncate">{editingMsg ? editingMsg.content : replyTo?.content}</p>
  </div>
- <button onClick={() => { setReplyTo(null); setEditingMsg(null); setInputValue('');}} className="p-2 hover:bg-primary/20 rounded-md-full">
+ <button onClick={() => { setReplyTo(null); setEditingMsg(null); setInputValue('');}} className="p-2 hover:bg-primary/20 rounded-full">
  <X className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
  </button>
  </div>
@@ -498,7 +498,7 @@ export default function Chat() {
  
  <Popover open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
  <PopoverTrigger asChild>
- <Button variant="ghost" size="icon" className="w-10 h-10 rounded-md-full text-[#54656f] dark:text-[#aebac1] hover:bg-primary/20 shrink-0">
+ <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full text-[#54656f] dark:text-[#aebac1] hover:bg-primary/20 shrink-0">
  <Smile className="w-6 h-6" />
  </Button>
  </PopoverTrigger>
@@ -509,21 +509,21 @@ export default function Chat() {
 
  <Popover open={showAttachMenu} onOpenChange={setShowAttachMenu}>
  <PopoverTrigger asChild>
- <Button variant="ghost" size="icon" className="w-10 h-10 rounded-md-full text-[#54656f] dark:text-[#aebac1] hover:bg-primary/20 shrink-0">
+ <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full text-[#54656f] dark:text-[#aebac1] hover:bg-primary/20 shrink-0">
  {isUploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Paperclip className="w-6 h-6" />}
  </Button>
  </PopoverTrigger>
- <PopoverContent side="top" align="start" className="w-48 p-2 mb-2 rounded-md-2xl flex flex-col gap-2 ">
- <Button variant="ghost" className="justify-start gap-3 w-full rounded-md-xl hover:bg-slate-50 dark:bg-slate-800/50 hover:text-primary" onClick={() => document.getElementById('chat-doc-upload')?.click()}>
- <div className="w-8 h-8 rounded-md-full bg-slate-100 flex items-center justify-center text-primary"><FileText className="w-4 h-4"/></div>
+ <PopoverContent side="top" align="start" className="w-48 p-2 mb-2 rounded-2xl flex flex-col gap-2 ">
+ <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-slate-50 dark:bg-slate-800/50 hover:text-primary" onClick={() => document.getElementById('chat-doc-upload')?.click()}>
+ <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary"><FileText className="w-4 h-4"/></div>
  Document
  </Button>
- <Button variant="ghost" className="justify-start gap-3 w-full rounded-md-xl hover:bg-rose-50 hover:text-rose-600" onClick={() => document.getElementById('chat-image-upload')?.click()}>
- <div className="w-8 h-8 rounded-md-full bg-rose-100 flex items-center justify-center text-rose-600"><ImageIcon className="w-4 h-4"/></div>
+ <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-rose-50 hover:text-rose-600" onClick={() => document.getElementById('chat-image-upload')?.click()}>
+ <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-600"><ImageIcon className="w-4 h-4"/></div>
  Photos & Videos
  </Button>
- <Button variant="ghost" className="justify-start gap-3 w-full rounded-md-xl hover:bg-slate-50 dark:bg-slate-800/50 hover:text-primary" onClick={() => fileInputRef.current?.click()}>
- <div className="w-8 h-8 rounded-md-full bg-slate-100 flex items-center justify-center text-primary"><File className="w-4 h-4"/></div>
+ <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-slate-50 dark:bg-slate-800/50 hover:text-primary" onClick={() => fileInputRef.current?.click()}>
+ <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary"><File className="w-4 h-4"/></div>
  File
  </Button>
  </PopoverContent>
@@ -538,7 +538,7 @@ export default function Chat() {
  placeholder="Type a message"
  className="w-full bg-transparent border-none px-4 py-2.5 text-sm focus:ring-0 focus:outline-none"
  />
- <button onClick={handleAiAssist} className="absolute right-3 p-1 text-primary hover:bg-slate-100 rounded-md-full transition-colors" title="AI Magic Rewrite">
+ <button onClick={handleAiAssist} className="absolute right-3 p-1 text-primary hover:bg-slate-100 rounded-full transition-colors" title="AI Magic Rewrite">
  <Sparkles className="w-4 h-4" />
  </button>
  </div>
@@ -547,7 +547,7 @@ export default function Chat() {
  onClick={handleSend}
  disabled={!inputValue.trim()}
  size="icon" 
- className="w-10 h-10 rounded-md-full bg-primary hover:bg-primary/90 shrink-0"
+ className="w-10 h-10 rounded-full bg-primary hover:bg-primary/90 shrink-0"
  >
  <Send className="w-4 h-4" />
  </Button>
@@ -555,7 +555,7 @@ export default function Chat() {
  </>
  ) : (
  <div className="flex-1 flex flex-col items-center justify-center text-center p-8 z-10">
- <div className="w-32 h-32 bg-background/50 rounded-md-full flex items-center justify-center mb-8 ">
+ <div className="w-32 h-32 bg-background/50 rounded-full flex items-center justify-center mb-8 ">
  <MessageSquare className="w-12 h-12 text-[#71717a] dark:text-gray-400/30" />
  </div>
  <h2 className="text-3xl font-light text-[#41525d] dark:text-[#e9edef] mb-4 tracking-[-0.02em]">Slate Web</h2>

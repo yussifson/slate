@@ -128,7 +128,7 @@ export default function Loyalty() {
  <RetailStatCard label="Gold Tier Members" value={members.filter(m => m.tier === 'Gold').length} icon={Award} />
  </div>
 
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -170,7 +170,7 @@ export default function Loyalty() {
  <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">{m.customerName}</td>
  <td className="px-6 py-4 text-center font-semibold text-primary">{m.points}</td>
  <td className="px-6 py-4 text-center">
- <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-md-full uppercase tracking-wider ${m.tier === 'Gold' ? 'bg-amber-100 text-amber-700' : m.tier === 'Silver' ? 'bg-slate-200 text-slate-700 dark:text-slate-300' : 'bg-orange-100 text-orange-800'}`}>{m.tier}</span>
+ <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider ${m.tier === 'Gold' ? 'bg-amber-100 text-amber-700' : m.tier === 'Silver' ? 'bg-slate-200 text-slate-700 dark:text-slate-300' : 'bg-orange-100 text-orange-800'}`}>{m.tier}</span>
  </td>
  <td className="px-6 py-4 text-right">
  <Button variant="ghost" size="icon" onClick={() => openEdit(m)}><Edit className="w-4 h-4" /></Button>
@@ -186,7 +186,7 @@ export default function Loyalty() {
 
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editingId ? 'Edit Member' : 'Add Member(s)'}</h2>
  <div className="space-y-4">
  

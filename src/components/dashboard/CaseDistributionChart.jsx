@@ -22,14 +22,14 @@ export default function CaseDistributionChart({ cases }) {
 
   if (distribution.length === 0) {
     return (
-      <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center justify-center h-[280px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center justify-center h-[280px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <p className="text-sm text-[#71717a] dark:text-gray-400">{t("no_case_data_yet", "No case data yet")}</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <h3 className="text-sm font-semibold mb-4">{t("cases_by_practice_area", "Cases by Practice Area")}</h3>
       <ResponsiveContainer width="100%" height={200}>
         <PieChart>

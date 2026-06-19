@@ -142,7 +142,7 @@ export default function Prayers() {
  <HandHeart className="w-4 h-4" /> {t("submit_request", "Submit Request")}
  </Button>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="relative">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <Input placeholder="Search prayer requests..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-muted border-none" />
@@ -151,7 +151,7 @@ export default function Prayers() {
  {isDbLoading ? (
  <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_prayer_board", "Loading prayer board...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <HandHeart className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
  <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_prayer_requests_listed", "No prayer requests listed")}</p>
  <p className="text-xs mt-1 tracking-[0.04em]">{t(
@@ -163,9 +163,9 @@ export default function Prayers() {
  <div className="space-y-4">
  {filtered.map(prayer => {
  return (
- <div key={prayer.id} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex flex-col sm:flex-row gap-6 relative overflow-hidden group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={prayer.id} className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex flex-col sm:flex-row gap-6 relative overflow-hidden group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {prayer.status === 'Answered' && (
- <div className="absolute top-0 right-0 bg-primary text-white text-[10px] font-semibold uppercase tracking-widest px-3 py-1 rounded-md-bl-lg tracking-[0.04em]">
+ <div className="absolute top-0 right-0 bg-primary text-white text-[10px] font-semibold uppercase tracking-widest px-3 py-1 rounded-bl-lg tracking-[0.04em]">
  {t("answered", "Answered")}
  </div>
  )}
@@ -231,7 +231,7 @@ export default function Prayers() {
  )}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <HandHeart className="w-5 h-5 text-primary" /> {t("submit_prayer_petition", "Submit Prayer Petition")}
  </h2>

@@ -20,10 +20,10 @@ export default function GenericGrid({ data}) {
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
  transition={{ delay: i * 0.02}}
- className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 rounded-md-2xl transition-all group flex flex-col h-full hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 rounded-2xl transition-all group flex flex-col h-full hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="flex items-start justify-between mb-4">
- <div className="w-10 h-10 rounded-md-xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+ <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
  <LayoutGrid className="w-5 h-5" />
  </div>
  </div>

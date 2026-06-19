@@ -42,7 +42,7 @@ export default function PaymentModal({ open, onClose, invoice, onSuccess}) {
  <DialogContent className="max-w-md p-0 overflow-hidden bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {success ? (
  <div className="flex flex-col items-center justify-center p-12 text-center">
- <div className="w-20 h-20 bg-slate-100 rounded-md-full flex items-center justify-center mb-6 animate-in zoom-in duration-300">
+ <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-6 animate-in zoom-in duration-300">
  <CheckCircle className="w-10 h-10 text-primary" />
  </div>
  <h2 className="text-2xl font-semibold text-slate-900 mb-2 tracking-[-0.02em]">{t("payment_successful", "Payment Successful")}</h2>

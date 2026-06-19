@@ -89,34 +89,34 @@ export default function VPracticalModules() {
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-primary hover:bg-primary/90 text-white rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
+            <Button className="bg-primary hover:bg-primary/90 text-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
               <Plus className="w-4 h-4 mr-2" /> {t('add_module', 'Add Module')}
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] rounded-md-2xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <DialogContent className="sm:max-w-[425px] rounded-2xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <DialogHeader>
               <DialogTitle>{t('add_new_module', 'Add New Module')}</DialogTitle>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="space-y-2">
                 <Label htmlFor="title">{t('module_name', 'Module Name')}</Label>
-                <Input id="title" placeholder="e.g. Arc Welding Basics" value={newModule.title} onChange={e => setNewModule({...newModule, title: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                <Input id="title" placeholder="e.g. Arc Welding Basics" value={newModule.title} onChange={e => setNewModule({...newModule, title: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="courseId">{t('course_assoc', 'Course Association')}</Label>
-                <Input id="courseId" placeholder="e.g. WLD-101" value={newModule.courseId} onChange={e => setNewModule({...newModule, courseId: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                <Input id="courseId" placeholder="e.g. WLD-101" value={newModule.courseId} onChange={e => setNewModule({...newModule, courseId: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="durationHours">{t('duration_hours', 'Duration (Hours)')}</Label>
-                <Input id="durationHours" type="number" placeholder="e.g. 15" value={newModule.durationHours} onChange={e => setNewModule({...newModule, durationHours: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                <Input id="durationHours" type="number" placeholder="e.g. 15" value={newModule.durationHours} onChange={e => setNewModule({...newModule, durationHours: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="difficulty">{t('difficulty', 'Difficulty Level')}</Label>
-                <Input id="difficulty" placeholder="e.g. Beginner, Intermediate" value={newModule.difficulty} onChange={e => setNewModule({...newModule, difficulty: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                <Input id="difficulty" placeholder="e.g. Beginner, Intermediate" value={newModule.difficulty} onChange={e => setNewModule({...newModule, difficulty: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
               </div>
             </div>
             <DialogFooter>
-              <Button onClick={handleCreateModule} className="bg-primary text-white hover:bg-primary/90 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">{t('save_module', 'Save Module')}</Button>
+              <Button onClick={handleCreateModule} className="bg-primary text-white hover:bg-primary/90 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">{t('save_module', 'Save Module')}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -124,13 +124,13 @@ export default function VPracticalModules() {
 
       <div className="flex-1 flex gap-6 overflow-hidden">
         {/* Left Panel */}
-        <Card className="w-[350px] shrink-0 flex flex-col rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <Card className="w-[350px] shrink-0 flex flex-col rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="p-4 border-b border-primary/10">
             <div className="relative">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
               <Input 
                 placeholder="Search modules..." 
-                className="pl-9 h-10 border-primary/40 rounded-md-xl focus-visible:ring-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none"
+                className="pl-9 h-10 border-primary/40 rounded-xl focus-visible:ring-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -147,13 +147,13 @@ export default function VPracticalModules() {
                   <button
                     key={module.id}
                     onClick={() => setSelectedModule(module)}
-                    className={`w-full text-left p-3 rounded-md-xl transition-all duration-200 flex items-center gap-3 ${
+                    className={`w-full text-left p-3 rounded-xl transition-all duration-200 flex items-center gap-3 ${
                       selectedModule?.id === module.id 
                         ? 'bg-primary/10 text-primary' 
                         : 'hover:bg-primary/5 text-foreground'
                     }`}
                   >
-                    <div className={`w-10 h-10 rounded-md-xl flex items-center justify-center shrink-0 ${
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
                       selectedModule?.id === module.id ? 'bg-primary text-white' : 'bg-primary/10 text-primary'
                     }`}>
                       <Layers className="w-5 h-5" />
@@ -172,13 +172,13 @@ export default function VPracticalModules() {
         </Card>
 
         {/* Right Panel */}
-        <Card className="flex-1 flex flex-col rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <Card className="flex-1 flex flex-col rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           {selectedModule ? (
             <>
               <div className="h-32 bg-primary/10 relative shrink-0 flex items-center px-8 border-b border-primary/10">
                 <div className="relative z-10 flex items-center gap-6 translate-y-10">
-                  <div className="w-24 h-24 rounded-md-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-2 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                    <div className="w-full h-full rounded-md-xl bg-primary/5 flex items-center justify-center text-primary">
+                  <div className="w-24 h-24 rounded-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-2 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                    <div className="w-full h-full rounded-xl bg-primary/5 flex items-center justify-center text-primary">
                       <Layers className="w-10 h-10" />
                     </div>
                   </div>
@@ -200,13 +200,13 @@ export default function VPracticalModules() {
                         <span>{selectedModule.data?.durationHours || 0} Hours</span>
                       </div>
                     </div>
-                    <Button variant="outline" size="sm" className="rounded-md-xl border-primary/40 text-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:bg-primary/5">
+                    <Button variant="outline" size="sm" className="rounded-xl border-primary/40 text-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:bg-primary/5">
                       <Settings className="w-4 h-4 mr-2" /> Edit Module
                     </Button>
                   </div>
 
                   <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="p-6 rounded-md-2xl bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
+                    <div className="p-6 rounded-2xl bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
                       <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                         <Target className="w-5 h-5 text-primary" /> Required Competencies
                       </h3>
@@ -221,12 +221,12 @@ export default function VPracticalModules() {
                           ))}
                         </ul>
                       )}
-                      <Button variant="outline" size="sm" className="w-full mt-4 rounded-md-xl border-primary/40 border-dashed text-[#71717a] dark:text-gray-400">
+                      <Button variant="outline" size="sm" className="w-full mt-4 rounded-xl border-primary/40 border-dashed text-[#71717a] dark:text-gray-400">
                         + Add Competency
                       </Button>
                     </div>
 
-                    <div className="p-6 rounded-md-2xl bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
+                    <div className="p-6 rounded-2xl bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
                       <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                         <PlayCircle className="w-5 h-5 text-primary" /> Practical Tasks
                       </h3>
@@ -235,13 +235,13 @@ export default function VPracticalModules() {
                       ) : (
                         <ul className="space-y-3">
                           {selectedModule.data.tasks.map((task, idx) => (
-                            <li key={idx} className="p-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 rounded-md-xl text-sm font-medium hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                            <li key={idx} className="p-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 rounded-xl text-sm font-medium hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                               {task}
                             </li>
                           ))}
                         </ul>
                       )}
-                      <Button variant="outline" size="sm" className="w-full mt-4 rounded-md-xl border-primary/40 border-dashed text-[#71717a] dark:text-gray-400">
+                      <Button variant="outline" size="sm" className="w-full mt-4 rounded-xl border-primary/40 border-dashed text-[#71717a] dark:text-gray-400">
                         + Add Task
                       </Button>
                     </div>
@@ -251,7 +251,7 @@ export default function VPracticalModules() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-[#71717a] dark:text-gray-400">
-              <div className="w-20 h-20 rounded-md-full bg-primary/10 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
                 <Layers className="w-10 h-10 text-primary/40" />
               </div>
               <h3 className="text-xl font-semibold text-slate-900 dark:text-white">No Module Selected</h3>

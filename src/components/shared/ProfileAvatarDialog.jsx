@@ -80,7 +80,7 @@ export default function ProfileAvatarDialog({ open, onOpenChange}) {
  <div className="flex flex-col items-center justify-center space-y-6 py-6">
  {/* Current Avatar Display */}
  <div className="relative">
- <div className="w-32 h-32 rounded-md-full overflow-hidden border-4 border-primary/40 bg-slate-50 flex items-center justify-center">
+ <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-primary/40 bg-slate-50 flex items-center justify-center">
  {isSaving ? (
  <Loader2 className="w-8 h-8 animate-spin text-primary" />
  ) : (
@@ -117,7 +117,7 @@ export default function ProfileAvatarDialog({ open, onOpenChange}) {
  key={seed}
  disabled={isSaving}
  onClick={() => handleSaveAvatar(url)}
- className="w-16 h-16 rounded-md-2xl overflow-hidden border-2 border-transparent hover:border-primary transition-all hover:scale-105 focus:outline-none"
+ className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-transparent hover:border-primary transition-all hover:scale-105 focus:outline-none"
  >
  <img src={url} alt={`Robot ${seed}`} className="w-full h-full object-cover bg-slate-100" />
  </button>

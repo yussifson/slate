@@ -255,7 +255,7 @@ export default function UnivSupportTicket({
  const isAgent = msg.sender === 'Support Agent';
  return (
  <div key={idx} className={cn("flex gap-4", isAgent ? "flex-row-reverse" : "flex-row")}>
- <div className={cn("w-10 h-10 rounded-md-full flex items-center justify-center shrink-0 font-semibold text-white ", isAgent ? "bg-primary" : "bg-slate-400")}>
+ <div className={cn("w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-semibold text-white ", isAgent ? "bg-primary" : "bg-slate-400")}>
  {msg.sender.charAt(0)}
  </div>
  <div className={cn("max-w-[80%] space-y-1", isAgent ? "items-end text-right" : "items-start text-left")}>
@@ -263,7 +263,7 @@ export default function UnivSupportTicket({
  <span className="font-semibold text-sm text-foreground">{msg.sender}</span>
  <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{new Date(msg.timestamp).toLocaleString(undefined, {hour: '2-digit', minute:'2-digit'})}</span>
  </div>
- <div className={cn("px-4 py-3 rounded-md-2xl text-sm leading-relaxed whitespace-pre-wrap ", isAgent ? "bg-primary text-white rounded-md-tr-none" : "bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-foreground rounded-md-tl-none")}>
+ <div className={cn("px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ", isAgent ? "bg-primary text-white rounded-tr-none" : "bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-foreground rounded-tl-none")}>
  {msg.content}
  </div>
  </div>
@@ -273,7 +273,7 @@ export default function UnivSupportTicket({
  </div>
 
  <div className="p-4 bg-card border-t border-primary/40 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden">
+ <div className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden">
  <textarea
  value={replyInput}
  onChange={e => setReplyInput(e.target.value)}
@@ -313,7 +313,7 @@ export default function UnivSupportTicket({
  initial={{ opacity: 0, scale: 0.95, y: 20}}
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: 20}}
- className="relative w-full max-w-lg bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="relative w-full max-w-lg bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="px-6 py-4 border-b border-primary/40 bg-muted/20">
  <h2 className="text-lg font-semibold text-foreground">Create New Ticket</h2>

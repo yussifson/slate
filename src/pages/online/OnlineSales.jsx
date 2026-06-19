@@ -67,7 +67,7 @@ export default function OnlineSales() {
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">One-time purchases vs Subscriptions</p>
  </div>
  </div>
- <div className="h-[300px] w-full flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-md-xl">
+ <div className="h-[300px] w-full flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-xl">
  <p className="text-[var(--color-text-secondary)] text-sm">Not enough data to display chart.</p>
  </div>
  </div>
@@ -79,7 +79,7 @@ export default function OnlineSales() {
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">Total lifetime value generated</p>
  </div>
  </div>
- <div className="h-[300px] w-full flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-md-xl">
+ <div className="h-[300px] w-full flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-xl">
  <p className="text-[var(--color-text-secondary)] text-sm">Not enough data to display chart.</p>
  </div>
  </div>
@@ -125,7 +125,7 @@ export default function OnlineSales() {
  ${parseFloat(extra.amount || 0).toLocaleString()}
  </td>
  <td className="px-6 py-4">
- <span className="inline-flex items-center px-2 py-1 rounded-md-full text-[10px] font-semibold bg-[var(--color-success-subtle)] text-[var(--color-success)] border-[0.5px] border-black/9 dark:border-white/8 border-[var(--color-success)]">
+ <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-semibold bg-[var(--color-success-subtle)] text-[var(--color-success)] border-[0.5px] border-black/9 dark:border-white/8 border-[var(--color-success)]">
  Completed
  </span>
  </td>

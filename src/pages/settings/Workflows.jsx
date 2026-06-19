@@ -36,17 +36,17 @@ export default function Workflows() {
  <div className="space-y-4">
  {rules.map(rule => {
  return (
- <div key={rule.id} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={rule.id} className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Header */}
  <div className="flex justify-between items-center border-b border-primary/40 pb-3">
  <div className="flex items-center gap-2">
- <div className="w-8 h-8 rounded-md-full bg-slate-100 flex items-center justify-center text-primary">
+ <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary">
  <Zap className="w-4 h-4" />
  </div>
  <h3 className="font-semibold text-foreground">{t("rule", "Rule #")}{rule.id}</h3>
  </div>
  <div className="flex items-center gap-2">
- <span className="text-xs font-semibold text-primary bg-slate-100 px-2 py-1 rounded-md-full tracking-[0.04em]">{t("active", "Active")}</span>
+ <span className="text-xs font-semibold text-primary bg-slate-100 px-2 py-1 rounded-full tracking-[0.04em]">{t("active", "Active")}</span>
  <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600"><Trash2 className="w-4 h-4"/></Button>
  </div>
  </div>

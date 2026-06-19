@@ -314,23 +314,23 @@ function DynamicGalleryView({ companyId, pageDef, cleanId, tableName}) {
  placeholder="Search gallery..." 
  value={search}
  onChange={e => setSearch(e.target.value)}
- className="w-full h-10 pl-9 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-10 pl-9 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  </div>
 
  {filtered.length === 0 ? (
- <div className="p-12 text-center text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-md-2xl bg-card/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-12 text-center text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-2xl bg-card/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <GalleryIcon className="w-12 h-12 mx-auto text-[#71717a] dark:text-gray-400/30 mb-3" />
  <p className="font-medium">No items found in visual gallery.</p>
  </div>
  ) : (
  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
  {filtered.map((item) => (
- <div key={item.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 hover:border-primary/40 transition-all flex flex-col justify-between min-h-[160px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={item.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 hover:border-primary/40 transition-all flex flex-col justify-between min-h-[160px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <div className="flex justify-between items-start mb-2">
- <span className="text-xs font-semibold px-2 py-0.5 rounded-md-full bg-primary/10 text-primary border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 tracking-[0.04em]">
+ <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 tracking-[0.04em]">
  {item.status || item.type || item.category || 'Record'}
  </span>
  </div>
@@ -949,12 +949,12 @@ export default function OrbitBuildPage() {
  <div className="w-full min-h-[calc(100vh-4rem)] p-6 bg-background flex flex-col gap-4">
  {/* Viewpoint persistence switcher control */}
  {!hideViewpointSwitcher && (
- <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-card/60 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 backdrop-blur-md rounded-md-2xl gap-3 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-card/60 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 backdrop-blur-md rounded-2xl gap-3 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="px-2">
  <span className="text-xs text-[#71717a] dark:text-gray-400 font-semibold uppercase tracking-wider block tracking-[0.04em]">Active Viewpoint</span>
  <span className="text-sm font-semibold text-foreground capitalize">{currentViewpoint} View</span>
  </div>
- <div className="flex flex-wrap items-center bg-muted/40 p-1 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <div className="flex flex-wrap items-center bg-muted/40 p-1 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  {toolbarViews.map((view) => (
  <button
  key={view.id}

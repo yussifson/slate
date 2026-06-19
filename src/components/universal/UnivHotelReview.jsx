@@ -92,7 +92,7 @@ const UnivHotelReview = () => {
  </motion.div>
 
  <div className="view-header grid lg:grid-cols-3 gap-8">
- <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="lg:col-span-1 bg-card p-8 rounded-md-none border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 -[8px_8px_0px_0px_rgba(245,158,11,0.2)] h-fit hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="lg:col-span-1 bg-card p-8 rounded-none border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 -[8px_8px_0px_0px_rgba(245,158,11,0.2)] h-fit hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-serif font-semibold mb-6 text-foreground border-b-2 border-amber-100 pb-2">Submit Feedback</h2>
  <form onSubmit={handleSubmit} className="space-y-5">
  <div>
@@ -172,11 +172,11 @@ const UnivHotelReview = () => {
 
  <div className="grid grid-cols-2 gap-4 mt-6 pt-4 border-t border-primary/40">
  <div className="flex items-center gap-3">
- <div className="w-8 h-8 rounded-md-full bg-amber-50 flex items-center justify-center text-amber-600 font-semibold text-xs tracking-[0.04em]">{rev.cleanliness_score}</div>
+ <div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 font-semibold text-xs tracking-[0.04em]">{rev.cleanliness_score}</div>
  <span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Cleanliness</span>
  </div>
  <div className="flex items-center gap-3">
- <div className="w-8 h-8 rounded-md-full bg-amber-50 flex items-center justify-center text-amber-600 font-semibold text-xs tracking-[0.04em]">{rev.service_score}</div>
+ <div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 font-semibold text-xs tracking-[0.04em]">{rev.service_score}</div>
  <span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Service</span>
  </div>
  </div>

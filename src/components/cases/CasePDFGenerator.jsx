@@ -422,7 +422,7 @@ export default function CasePDFGenerator({ caseData, user }) {
   return (
     <div className="space-y-5">
       {/* Client Report Quick Download */}
-      <div className="bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-start gap-3">
           <div className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
             <BarChart2 className="w-4 h-4 text-primary" />
@@ -451,7 +451,7 @@ export default function CasePDFGenerator({ caseData, user }) {
             <button
               key={item.id}
               onClick={() => setTemplateId(item.id)}
-              className={`text-left p-4 rounded-md-xl border-2 transition-all ${templateId === item.id ? "border-primary bg-slate-50" : "border-primary/40 hover:border-primary/40 bg-card"}`}
+              className={`text-left p-4 rounded-xl border-2 transition-all ${templateId === item.id ? "border-primary bg-slate-50" : "border-primary/40 hover:border-primary/40 bg-card"}`}
             >
               <div className={`w-8 h-8 rounded-xl flex items-center justify-center mb-2 ${templateId === item.id ? "bg-primary text-white" : "bg-muted text-[#71717a] dark:text-gray-400"}`}>
                 <FileText className="w-4 h-4" />
@@ -463,7 +463,7 @@ export default function CasePDFGenerator({ caseData, user }) {
         })}
       </div>
       {/* Case data preview */}
-      <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 grid grid-cols-2 sm:grid-cols-3 gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 grid grid-cols-2 sm:grid-cols-3 gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div><p className="text-[10px] text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{t("case", "Case")}</p><p className="text-sm font-medium">{caseData.title}</p></div>
         <div><p className="text-[10px] text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{t("client", "Client")}</p><p className="text-sm font-medium">{client?.name || caseData.client_name || "—"}</p></div>
         <div><p className="text-[10px] text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{t("case", "Case #")}</p><p className="text-sm font-medium">{caseData.case_number || "—"}</p></div>

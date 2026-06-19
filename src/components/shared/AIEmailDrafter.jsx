@@ -46,7 +46,7 @@ export default function AIEmailDrafter({ recordData, defaultContext = "Write a p
 
  return (
  <div className="fixed inset-0 z-[60] flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  
  {/* Header */}
  <div className="flex items-center justify-between p-4 border-b border-primary/40">
@@ -54,7 +54,7 @@ export default function AIEmailDrafter({ recordData, defaultContext = "Write a p
  <Sparkles className="w-5 h-5" />
  <h2 className="text-lg font-semibold">{t("ai_communication_drafter", "AI Communication Drafter")}</h2>
  </div>
- <button onClick={onClose} className="text-[#71717a] dark:text-gray-400 hover:bg-muted p-1 rounded-md-full transition-colors">
+ <button onClick={onClose} className="text-[#71717a] dark:text-gray-400 hover:bg-muted p-1 rounded-full transition-colors">
  <X className="w-5 h-5" />
  </button>
  </div>

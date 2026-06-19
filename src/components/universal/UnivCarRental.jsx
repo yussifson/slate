@@ -95,7 +95,7 @@ const UnivCarRental = () => {
  </motion.div>
 
  <div className="view-header grid lg:grid-cols-12 gap-8">
- <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="lg:col-span-4 bg-card p-6 rounded-md-3xl -slate-200/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="lg:col-span-4 bg-card p-6 rounded-3xl -slate-200/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-xl font-semibold mb-6 text-foreground flex items-center gap-2 border-b pb-4">
  <Settings className="w-5 h-5 text-blue-500" /> New Booking
  </h2>
@@ -104,37 +104,37 @@ const UnivCarRental = () => {
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Customer Name</label>
  <div className="relative">
  <User className="w-4 h-4 absolute left-3 top-3.5 text-[#71717a] dark:text-gray-400" />
- <input type="text" name="customer_name" value={formData.customer_name} onChange={handleChange} required className="w-full pl-10 p-3 bg-background rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
+ <input type="text" name="customer_name" value={formData.customer_name} onChange={handleChange} required className="w-full pl-10 p-3 bg-background rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
  </div>
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Vehicle Model</label>
- <input type="text" name="vehicle_model" value={formData.vehicle_model} onChange={handleChange} required className="w-full p-3 bg-background rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none" />
+ <input type="text" name="vehicle_model" value={formData.vehicle_model} onChange={handleChange} required className="w-full p-3 bg-background rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">License Plate</label>
- <input type="text" name="license_plate" value={formData.license_plate} onChange={handleChange} required className="w-full p-3 bg-background rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none font-mono uppercase tracking-[0.04em]" />
+ <input type="text" name="license_plate" value={formData.license_plate} onChange={handleChange} required className="w-full p-3 bg-background rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none font-mono uppercase tracking-[0.04em]" />
  </div>
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Pick-up</label>
- <input type="date" name="rental_start_date" value={formData.rental_start_date} onChange={handleChange} required className="w-full p-3 bg-background rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
+ <input type="date" name="rental_start_date" value={formData.rental_start_date} onChange={handleChange} required className="w-full p-3 bg-background rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Drop-off</label>
- <input type="date" name="rental_end_date" value={formData.rental_end_date} onChange={handleChange} required className="w-full p-3 bg-background rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
+ <input type="date" name="rental_end_date" value={formData.rental_end_date} onChange={handleChange} required className="w-full p-3 bg-background rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
  </div>
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Daily Rate ($)</label>
- <input type="number" step="0.01" name="daily_rate" value={formData.daily_rate} onChange={handleChange} required className="w-full p-3 bg-background rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none" />
+ <input type="number" step="0.01" name="daily_rate" value={formData.daily_rate} onChange={handleChange} required className="w-full p-3 bg-background rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none" />
  </div>
  <div>
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Status</label>
- <select name="status" value={formData.status} onChange={handleChange} className="w-full p-3 bg-background rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none font-medium">
+ <select name="status" value={formData.status} onChange={handleChange} className="w-full p-3 bg-background rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus:ring-2 focus:ring-blue-500 outline-none font-medium">
  <option value="Reserved">Reserved</option>
  <option value="Active">Active</option>
  <option value="Completed">Completed</option>
@@ -142,7 +142,7 @@ const UnivCarRental = () => {
  </select>
  </div>
  </div>
- <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-md-xl transition-all -blue-200 mt-4">
+ <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-xl transition-all -blue-200 mt-4">
  Confirm Booking
  </button>
  </form>
@@ -152,11 +152,11 @@ const UnivCarRental = () => {
  {loading ? (
  <div className="flex justify-center py-20"><Car className="w-12 h-12 text-blue-400 animate-bounce" /></div>
  ) : rentals.length === 0 ? (
- <div className="text-center py-20 bg-card rounded-md-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">No rentals recorded.</div>
+ <div className="text-center py-20 bg-card rounded-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">No rentals recorded.</div>
  ) : (
  <div className="grid sm:grid-cols-2 gap-6">
  {rentals.map((rental, index) => (
- <motion.div key={rental.id || index} initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className="bg-card rounded-md-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <motion.div key={rental.id || index} initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className="bg-card rounded-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-5 border-b border-primary/40 flex justify-between items-start">
  <div>
  <h3 className="font-semibold text-lg text-foreground">{rental.vehicle_model}</h3>
@@ -164,7 +164,7 @@ const UnivCarRental = () => {
  {rental.license_plate}
  </div>
  </div>
- <span className={`px-3 py-1 text-xs font-semibold rounded-md-full ${getStatusStyle(rental.status)}`}>
+ <span className={`px-3 py-1 text-xs font-semibold rounded-full ${getStatusStyle(rental.status)}`}>
  {rental.status}
  </span>
  </div>
@@ -175,7 +175,7 @@ const UnivCarRental = () => {
  <span className="font-medium">{rental.customer_name}</span>
  </div>
  
- <div className="bg-background rounded-md-2xl p-4 flex justify-between items-center relative">
+ <div className="bg-background rounded-2xl p-4 flex justify-between items-center relative">
  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-slate-300">
  <MapPin className="w-4 h-4" />
  </div>

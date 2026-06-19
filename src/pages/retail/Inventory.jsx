@@ -218,7 +218,7 @@ export default function Inventory() {
  if (!canAccess) {
  return (
  <div className="flex-1 flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500">
- <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-md-full flex items-center justify-center mb-6">
+ <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
  <ShieldAlert className="w-10 h-10 text-red-600 dark:text-red-500" />
  </div>
  <h2 className="text-2xl font-semibold text-foreground mb-3 tracking-[-0.02em]">Access Restricted</h2>
@@ -259,7 +259,7 @@ export default function Inventory() {
  <RetailStatCard label={t("total_stock_value", "Total Stock Value")} value={`$${stats.totalValue.toFixed(2)}`} icon={DollarSign} />
  </div>
  {/* Table */}
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50 flex gap-4 justify-between items-center">
  <div className="relative max-w-md w-full">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -336,16 +336,16 @@ export default function Inventory() {
  </td>
  <td className="px-5 py-4 text-center">
  <div className="flex flex-col items-center gap-2.5">
- <span className={`text-xs font-semibold px-2.5 py-1 rounded-md-full ${statusColors[item.status] || 'bg-muted'}`}>
+ <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusColors[item.status] || 'bg-muted'}`}>
  {item.status}
  </span>
  {item.status === 'Low Stock' && (
- <span className="text-[10px] font-semibold text-amber-600 bg-amber-100 px-2 py-0.5 rounded-md-full animate-pulse w-full text-center">
+ <span className="text-[10px] font-semibold text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full animate-pulse w-full text-center">
  {t("reorder_needed", "Reorder Needed")}
  </span>
  )}
  {item.status === 'Out of Stock' && (
- <span className="text-[10px] font-semibold text-red-600 bg-red-100 px-2 py-0.5 rounded-md-full animate-pulse w-full text-center">
+ <span className="text-[10px] font-semibold text-red-600 bg-red-100 px-2 py-0.5 rounded-full animate-pulse w-full text-center">
  {t("critical_alert", "Critical Alert")}
  </span>
  )}
@@ -438,7 +438,7 @@ export default function Inventory() {
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
  <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("status", "Status")}</div>
  <div className="col-span-2">
- <span className={`text-xs font-semibold px-2.5 py-1 rounded-md-full ${statusColors[selectedItem.status] || 'bg-muted'}`}>
+ <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusColors[selectedItem.status] || 'bg-muted'}`}>
  {selectedItem.status}
  </span>
  </div>
@@ -448,7 +448,7 @@ export default function Inventory() {
  <div className="col-span-2">{selectedItem.createdBy} on {new Date(selectedItem.createdAt).toLocaleDateString()}</div>
  </div>
 
-  <div className="bg-muted/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 p-4 rounded-md-xl flex flex-col items-center justify-center space-y-2 mt-4">
+  <div className="bg-muted/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 mt-4">
     <div className="flex space-x-[2px] h-12 w-48 opacity-80">
        {/* Pseudo barcode using div borders */}
        {Array.from({length: 30}).map((_, i) => (
@@ -469,7 +469,7 @@ export default function Inventory() {
 
   {showTransferModal && (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className="bg-card rounded-md-2xl w-full max-w-sm p-6 space-y-4 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-xl border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card rounded-2xl w-full max-w-sm p-6 space-y-4 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-xl border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <h3 className="font-semibold text-lg flex items-center gap-2"><ArrowRightLeft className="w-5 h-5 text-amber-600" /> Transfer Stock</h3>
         <p className="text-sm text-[#71717a] dark:text-gray-400">Move inventory from <strong>{selectedItem?.storeLocation}</strong> to another location.</p>
         
@@ -496,7 +496,7 @@ export default function Inventory() {
  {/* Add / Edit Modal */}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between">
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <ShoppingBag className="w-5 h-5 text-primary" />

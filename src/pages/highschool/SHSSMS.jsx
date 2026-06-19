@@ -103,16 +103,16 @@ export default function SHSSMS() {
  </p>
  </div>
  
- <Button onClick={() => setIsSendModalOpen(true)} className="h-9 gap-2 rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20">
+ <Button onClick={() => setIsSendModalOpen(true)} className="h-9 gap-2 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20">
  <Send className="w-4 h-4" /> Compose Message
  </Button>
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
- <Card className="rounded-md-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="rounded-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-5 flex items-center justify-between">
  <div className="flex items-center gap-4">
- <div className="w-12 h-12 rounded-md-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+ <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
  <MessageSquare className="w-6 h-6" />
  </div>
  <div>
@@ -125,7 +125,7 @@ export default function SHSSMS() {
  </Card>
  </div>
 
- <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
@@ -138,7 +138,7 @@ export default function SHSSMS() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search message content..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -150,7 +150,7 @@ export default function SHSSMS() {
  <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading SMS logs...</div>
  ) : filteredMessages.length === 0 ? (
  <div className="p-16 text-center">
- <div className="w-16 h-16 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
  <MessageSquare className="w-8 h-8 text-primary dark:text-primary" />
  </div>
  <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No messages sent</h3>
@@ -173,7 +173,7 @@ export default function SHSSMS() {
  {new Date(msg.data?.sentDate).toLocaleString()}
  </span>
  </div>
- <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 p-4 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 text-sm text-slate-700 dark:text-slate-300 dark:text-slate-200 whitespace-pre-wrap">
+ <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 text-sm text-slate-700 dark:text-slate-300 dark:text-slate-200 whitespace-pre-wrap">
  {msg.data?.messageText}
  </div>
  <div className="mt-3 flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">
@@ -190,7 +190,7 @@ export default function SHSSMS() {
  </Card>
 
  <Dialog open={isSendModalOpen} onOpenChange={setIsSendModalOpen}>
- <DialogContent className="sm:max-w-[500px] rounded-md-3xl p-0 overflow-hidden border-none ">
+ <DialogContent className="sm:max-w-[500px] rounded-3xl p-0 overflow-hidden border-none ">
  <div className="p-6 bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 text-white">
  <DialogHeader>
  <DialogTitle className="text-2xl font-black tracking-[-0.02em]">Compose SMS Blast</DialogTitle>
@@ -204,7 +204,7 @@ export default function SHSSMS() {
  <div className="space-y-2">
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Target Group</label>
  <select 
- className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newSms.targetGroup}
  onChange={e => setNewSms({...newSms, targetGroup: e.target.value})}
  >
@@ -222,7 +222,7 @@ export default function SHSSMS() {
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Custom Numbers (Comma separated)</label>
  <textarea 
  placeholder="e.g. 0241234567, 0501234567"
- className="w-full h-20 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm font-mono hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-20 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm font-mono hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newSms.customNumbers}
  onChange={e => setNewSms({...newSms, customNumbers: e.target.value})}
  />
@@ -238,13 +238,13 @@ export default function SHSSMS() {
  </div>
  <textarea 
  placeholder="Type your message here..."
- className="w-full h-32 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-32 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newSms.messageText}
  onChange={e => setNewSms({...newSms, messageText: e.target.value})}
  />
  </div>
  
- <div className="p-3 rounded-md-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-start gap-3">
+ <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-start gap-3">
  <MessageSquare className="w-5 h-5 text-primary dark:text-primary/70 shrink-0 mt-0.5" />
  <p className="text-xs text-primary/70 dark:text-primary/10 leading-relaxed tracking-[0.04em]">
  Messages exceeding 160 characters will be charged as multiple SMS units per recipient. Estimated cost for this blast will be calculated before sending.
@@ -253,13 +253,13 @@ export default function SHSSMS() {
  </div>
  
  <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Button variant="outline" onClick={() => setIsSendModalOpen(false)} className="rounded-md-xl font-semibold text-slate-600 dark:text-slate-300">
+ <Button variant="outline" onClick={() => setIsSendModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
  Cancel
  </Button>
  <Button 
  onClick={handleSendSms} 
  disabled={!newSms.messageText || (newSms.targetGroup === 'Custom' && !newSms.customNumbers) || isSending}
- className="rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-semibold px-6"
+ className="rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-semibold px-6"
  >
  {isSending ? 'Sending Blast...' : 'Send Message'}
  </Button>

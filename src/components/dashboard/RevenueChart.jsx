@@ -22,7 +22,7 @@ export default function RevenueChart({ invoices, currency }) {
   const symbol = currency === "NGN" ? "₦" : currency === "SLL" ? "Le" : currency === "USD" ? "$" : "GH₵";
 
   return (
-    <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <h3 className="text-sm font-semibold mb-4">{t("revenue_trend_6_months", "Revenue Trend (6 Months)")}</h3>
       <ResponsiveContainer width="100%" height={200}>
         <LineChart data={months} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>

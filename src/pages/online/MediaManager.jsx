@@ -44,7 +44,7 @@ export default function MediaManager() {
  <div className="flex items-center gap-3">
  <Folder className="w-4 h-4" /> All Assets
  </div>
- <span className="text-xs bg-[var(--color-surface-2)] px-2 py-0.5 rounded-md-full tracking-[0.04em]">{assets.length}</span>
+ <span className="text-xs bg-[var(--color-surface-2)] px-2 py-0.5 rounded-full tracking-[0.04em]">{assets.length}</span>
  </button>
  <button className="w-full flex items-center justify-between px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-text-primary)] rounded-md-[var(--radius-md)] transition-colors">
  <div className="flex items-center gap-3">
@@ -60,7 +60,7 @@ export default function MediaManager() {
  </div>
 
  <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 text-center">
- <div className="w-16 h-16 bg-[var(--color-surface-1)] rounded-md-full flex items-center justify-center mx-auto mb-4">
+ <div className="w-16 h-16 bg-[var(--color-surface-1)] rounded-full flex items-center justify-center mx-auto mb-4">
  <UploadCloud className="w-8 h-8 text-[var(--primary)]" />
  </div>
  <h4 className="font-semibold text-[var(--color-text-primary)]">Quick Upload</h4>

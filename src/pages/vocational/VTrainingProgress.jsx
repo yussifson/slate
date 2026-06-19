@@ -119,13 +119,13 @@ export default function VTrainingProgress() {
 
       <div className="flex-1 flex gap-6 overflow-hidden">
         {/* Left Panel */}
-        <Card className="w-[350px] shrink-0 flex flex-col rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <Card className="w-[350px] shrink-0 flex flex-col rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="p-4 border-b border-primary/10">
             <div className="relative">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
               <Input 
                 placeholder="Search progress records..." 
-                className="pl-9 h-10 border-primary/40 rounded-md-xl focus-visible:ring-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none"
+                className="pl-9 h-10 border-primary/40 rounded-xl focus-visible:ring-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -142,13 +142,13 @@ export default function VTrainingProgress() {
                   <button
                     key={record.id}
                     onClick={() => setSelectedRecord(record)}
-                    className={`w-full text-left p-3 rounded-md-xl transition-all duration-200 flex items-center gap-3 ${
+                    className={`w-full text-left p-3 rounded-xl transition-all duration-200 flex items-center gap-3 ${
                       selectedRecord?.id === record.id 
                         ? 'bg-primary/10 text-primary' 
                         : 'hover:bg-primary/5 text-foreground'
                     }`}
                   >
-                    <div className={`w-10 h-10 rounded-md-xl flex items-center justify-center font-semibold shrink-0 ${
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-semibold shrink-0 ${
                       selectedRecord?.id === record.id ? 'bg-primary text-white' : 'bg-primary/10 text-primary'
                     }`}>
                       <Activity className="w-5 h-5" />
@@ -167,13 +167,13 @@ export default function VTrainingProgress() {
         </Card>
 
         {/* Right Panel */}
-        <Card className="flex-1 flex flex-col rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <Card className="flex-1 flex flex-col rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           {selectedRecord ? (
             <>
               <div className="h-32 bg-primary/10 relative shrink-0 border-b border-primary/10 flex items-center px-8">
                 <div className="relative z-10 flex items-center gap-6 translate-y-10">
-                  <div className="w-24 h-24 rounded-md-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-2 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                    <div className="w-full h-full rounded-md-xl bg-primary/5 flex items-center justify-center text-primary">
+                  <div className="w-24 h-24 rounded-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-2 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                    <div className="w-full h-full rounded-xl bg-primary/5 flex items-center justify-center text-primary">
                       <Target className="w-10 h-10" />
                     </div>
                   </div>
@@ -229,19 +229,19 @@ export default function VTrainingProgress() {
                     </Card>
                   </div>
 
-                  <div className="p-5 rounded-md-2xl bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 space-y-4">
+                  <div className="p-5 rounded-2xl bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 space-y-4">
                     <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider tracking-[0.04em]">Instructor Notes</h3>
-                    <p className="text-[#71717a] dark:text-gray-400 text-sm whitespace-pre-wrap bg-card p-4 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                    <p className="text-[#71717a] dark:text-gray-400 text-sm whitespace-pre-wrap bg-card p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                       {selectedRecord.data?.notes || 'No instructor notes available for this progress record.'}
                     </p>
                     <div className="pt-4 flex justify-end">
                       <Dialog open={isUpdateOpen} onOpenChange={setIsUpdateOpen}>
                         <DialogTrigger asChild>
-                          <Button onClick={openUpdate} variant="outline" className="text-primary border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:bg-primary/5 rounded-md-xl">
+                          <Button onClick={openUpdate} variant="outline" className="text-primary border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:bg-primary/5 rounded-xl">
                             Update Progress
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px] rounded-md-2xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                        <DialogContent className="sm:max-w-[425px] rounded-2xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                           <DialogHeader>
                             <DialogTitle>Update Progress</DialogTitle>
                           </DialogHeader>
@@ -249,7 +249,7 @@ export default function VTrainingProgress() {
                             <div className="space-y-2">
                               <Label>Status</Label>
                               <Select value={updateForm.status} onValueChange={v => setUpdateForm({...updateForm, status: v})}>
-                                <SelectTrigger className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none"><SelectValue /></SelectTrigger>
+                                <SelectTrigger className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none"><SelectValue /></SelectTrigger>
                                 <SelectContent>
                                   <SelectItem value="In Progress">In Progress</SelectItem>
                                   <SelectItem value="Completed">Completed</SelectItem>
@@ -260,27 +260,27 @@ export default function VTrainingProgress() {
                             <div className="grid grid-cols-2 gap-4">
                               <div className="space-y-2">
                                 <Label>Hours Completed</Label>
-                                <Input type="number" value={updateForm.hours_completed} onChange={e => setUpdateForm({...updateForm, hours_completed: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                                <Input type="number" value={updateForm.hours_completed} onChange={e => setUpdateForm({...updateForm, hours_completed: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
                               </div>
                               <div className="space-y-2">
                                 <Label>Practical Score</Label>
-                                <Input type="number" value={updateForm.practical_score} onChange={e => setUpdateForm({...updateForm, practical_score: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                                <Input type="number" value={updateForm.practical_score} onChange={e => setUpdateForm({...updateForm, practical_score: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
                               </div>
                             </div>
                             <div className="space-y-2">
                               <Label>Tasks Finished</Label>
-                              <Input type="number" value={updateForm.tasks_finished} onChange={e => setUpdateForm({...updateForm, tasks_finished: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                              <Input type="number" value={updateForm.tasks_finished} onChange={e => setUpdateForm({...updateForm, tasks_finished: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
                             </div>
                             <div className="space-y-2">
                               <Label>Notes</Label>
                               <textarea 
-                                className="w-full h-24 p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card resize-none text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" 
+                                className="w-full h-24 p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card resize-none text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" 
                                 value={updateForm.notes} onChange={e => setUpdateForm({...updateForm, notes: e.target.value})}
                               />
                             </div>
                           </div>
                           <DialogFooter>
-                            <Button onClick={handleUpdateProgress} className="bg-primary text-white hover:bg-primary/90 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">Save Changes</Button>
+                            <Button onClick={handleUpdateProgress} className="bg-primary text-white hover:bg-primary/90 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">Save Changes</Button>
                           </DialogFooter>
                         </DialogContent>
                       </Dialog>
@@ -291,7 +291,7 @@ export default function VTrainingProgress() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-md-full bg-primary/10 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
                 <Target className="w-10 h-10 text-primary/40" />
               </div>
               <h3 className="text-xl font-semibold text-slate-900 dark:text-white">No Record Selected</h3>

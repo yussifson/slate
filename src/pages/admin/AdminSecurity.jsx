@@ -100,13 +100,13 @@ export default function AdminSecurity() {
         subtitle="Global monitoring for impersonation events, access logs, and system alerts." 
       />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300 p-6 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 flex flex-col justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300 p-6 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 flex flex-col justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 tracking-[0.04em]">{t("system_health", "System Health")}</p>
               <h3 className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{t("secure_online", "Secure & Online")}</h3>
             </div>
-            <div className="w-12 h-12 rounded-md-2xl bg-emerald-50 dark:bg-emerald-500/10/10 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-emerald-100 dark:border-emerald-500/20">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-500/10/10 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-emerald-100 dark:border-emerald-500/20">
               <ShieldCheck className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
             </div>
           </div>
@@ -123,13 +123,13 @@ export default function AdminSecurity() {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300 p-6 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 flex flex-col justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300 p-6 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 flex flex-col justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 tracking-[0.04em]">{t("failed_auth", "Failed Auth")}</p>
               <h3 className="text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{t("24", "24")}</h3>
             </div>
-            <div className="w-12 h-12 rounded-md-2xl bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-amber-100 dark:border-amber-500/20">
+            <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-amber-100 dark:border-amber-500/20">
               <AlertTriangle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
             </div>
           </div>
@@ -138,13 +138,13 @@ export default function AdminSecurity() {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300 p-6 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 flex flex-col justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300 p-6 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 flex flex-col justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 tracking-[0.04em]">{t("active_impersonations", "Active Impersonations")}</p>
               <h3 className="text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-[-0.02em]">1</h3>
             </div>
-            <div className="w-12 h-12 rounded-md-2xl bg-blue-50 dark:bg-blue-500/10/10 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-blue-100 dark:border-blue-500/20">
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-500/10/10 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-blue-100 dark:border-blue-500/20">
               <Eye className="w-6 h-6 text-blue-600 dark:text-blue-400" />
             </div>
           </div>
@@ -154,7 +154,7 @@ export default function AdminSecurity() {
         </div>
       </div>
 
-      <Card className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm rounded-md-2xl overflow-hidden mt-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <Card className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm rounded-2xl overflow-hidden mt-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <CardHeader className="bg-transparent border-b border-primary/10 dark:border-primary/20">
           <CardTitle className="text-base font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
             <Eye className="w-4 h-4 text-primary" /> {t("recent_active_sessions", "Recent Active Sessions")}
@@ -199,7 +199,7 @@ export default function AdminSecurity() {
         </CardContent>
       </Card>
 
-      <Card className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm rounded-md-2xl overflow-hidden mt-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <Card className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm rounded-2xl overflow-hidden mt-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <CardHeader className="bg-transparent border-b border-primary/10 dark:border-primary/20">
           <CardTitle className="text-base font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
             <Lock className="w-4 h-4 text-primary" /> {t("global_audit_trail", "Global Audit Trail")}

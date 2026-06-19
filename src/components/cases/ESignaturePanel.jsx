@@ -120,7 +120,7 @@ Slate Law Management`,
       {isLoading ? (
         <div className="p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("loading", "Loading...")}</div>
       ) : requests.length === 0 ? (
-        <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <PenTool className="w-10 h-10 mx-auto text-[#71717a] dark:text-gray-400 mb-3" />
           <p className="text-sm font-medium">{t("no_signature_requests_yet", "No signature requests yet")}</p>
           <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">{t(
@@ -134,7 +134,7 @@ Slate Law Management`,
             const cfg = STATUS_CONFIG[req.status] || STATUS_CONFIG.sent;
             const StatusIcon = cfg.icon;
             return (
-              <div key={req.id} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 px-4 py-3 flex items-center gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+              <div key={req.id} className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 px-4 py-3 flex items-center gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                 <div className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
                   <PenTool className="w-4 h-4 text-primary" />
                 </div>

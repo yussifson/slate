@@ -209,7 +209,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
  const renderModuleContent = () => {
  if (isLoading) {
  return (
- <div className="h-64 flex flex-col items-center justify-center text-[#71717a] dark:text-gray-400 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mt-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="h-64 flex flex-col items-center justify-center text-[#71717a] dark:text-gray-400 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mt-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <RefreshCw className="w-8 h-8 animate-spin mb-4" />
  <p>Loading slate definitions...</p>
  </div>
@@ -217,7 +217,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
 }
  if (!moduleDef) {
  return (
- <div className="h-64 flex flex-col items-center justify-center text-[#71717a] dark:text-gray-400 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mt-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="h-64 flex flex-col items-center justify-center text-[#71717a] dark:text-gray-400 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mt-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Sparkles className="w-12 h-12 text-[#71717a] dark:text-gray-400/50 mb-4" />
  <p className="font-medium text-foreground text-lg">No Dynamic Slates Found</p>
  <p className="text-sm mt-1">Use the AI Assistant to generate a new slate.</p>
@@ -234,7 +234,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
 };
 
  const suspenseFallback = (
- <div className="h-64 flex flex-col items-center justify-center text-[#71717a] dark:text-gray-400 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="h-64 flex flex-col items-center justify-center text-[#71717a] dark:text-gray-400 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <RefreshCw className="w-6 h-6 animate-spin mb-3" />
  <p className="text-sm">Loading view...</p>
  </div>
@@ -252,7 +252,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
   const currentView = activeView === 'default' ? pageType : activeView;
   switch (currentView) {
     case 'universal_component':
-      return moduleDef.config?.component_id ? React.createElement(lazy(() => import(`@/components/universal/${moduleDef.config.component_id}.jsx`).catch(() => ({ default: () => <div className="mt-6 p-8 border-[0.5px] border-black/9 dark:border-white/8 border-dashed rounded-md-xl border-red-500/50 bg-red-50 text-red-500 text-center">Component not found</div> })))) : null;
+      return moduleDef.config?.component_id ? React.createElement(lazy(() => import(`@/components/universal/${moduleDef.config.component_id}.jsx`).catch(() => ({ default: () => <div className="mt-6 p-8 border-[0.5px] border-black/9 dark:border-white/8 border-dashed rounded-xl border-red-500/50 bg-red-50 text-red-500 text-center">Component not found</div> })))) : null;
     case 'custom_page':
       return <PageRenderer schema={moduleDef.config || {}} editMode={false} />;
 
@@ -266,7 +266,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
 
  case 'kanban':
  return (
- <div className="mt-6 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="mt-6 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <DynamicKanbanView 
  records={records} 
  moduleDef={moduleDef} 
@@ -320,7 +320,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
  case 'document_manager':
  default:
  return (
- <div className={`${layoutConfig === 'table' ? 'bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden p-6' : ''} mt-6`}>
+ <div className={`${layoutConfig === 'table' ? 'bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden p-6' : ''} mt-6`}>
  {layoutConfig === 'table' ? (
  <DynamicTable data={records} fieldDefinitions={fieldDefs} moduleDef={moduleDef} onRefresh={fetchDynamicData} />
  ) : (
@@ -354,32 +354,32 @@ export default function GenericModulePage({ title: propTitle, description: propD
  />
 
  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <p className="text-xs text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Total Records</p>
  <p className="text-2xl font-semibold text-foreground tracking-[-0.02em]">{records.length}</p>
  </div>
- <div className="w-11 h-11 rounded-md-full bg-slate-100 flex items-center justify-center">
+ <div className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center">
  <BarChart2 className="w-5 h-5 text-primary" />
  </div>
  </div>
 
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <p className="text-xs text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Slate Status</p>
  <p className="text-2xl font-semibold text-foreground tracking-[-0.02em]">Active</p>
  </div>
- <div className="w-11 h-11 rounded-md-full bg-slate-100 flex items-center justify-center">
+ <div className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center">
  <ShieldCheck className="w-5 h-5 text-primary" />
  </div>
  </div>
 
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <p className="text-xs text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Custom Fields</p>
  <p className="text-2xl font-semibold text-foreground tracking-[-0.02em]">{fieldDefs.length}</p>
  </div>
- <div className="w-11 h-11 rounded-md-full bg-slate-100 flex items-center justify-center">
+ <div className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center">
  <FileText className="w-5 h-5 text-primary" />
  </div>
  </div>
@@ -412,7 +412,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
  setActiveView(view.id);
 });
 }}
- className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap rounded-md-t-lg border-b-2 transition-colors ${
+ className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap rounded-t-lg border-b-2 transition-colors ${
  isActive 
  ? 'border-primary text-primary bg-primary/5' 
  : 'border-transparent text-[#71717a] dark:text-gray-400 hover:text-foreground hover:bg-slate-50'

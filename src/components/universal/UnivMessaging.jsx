@@ -203,14 +203,14 @@ export default function UnivMessaging() {
 
  if (loadingContacts) {
  return (
- <div className="flex h-full items-center justify-center bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl ${view !== 'Default' ? 'hide-default' : ''}">
+ <div className="flex h-full items-center justify-center bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl ${view !== 'Default' ? 'hide-default' : ''}">
  <Loader2 className="w-8 h-8 animate-spin text-primary" />
  </div>
  );
 }
 
  return (
- <div className="view-header flex h-full bg-background overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl ">
+ <div className="view-header flex h-full bg-background overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl ">
  
  {/* Sidebar - Contacts List */}
  <div className="w-80 border-r border-primary/40 bg-card flex flex-col shrink-0 hidden md:flex hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
@@ -232,10 +232,10 @@ export default function UnivMessaging() {
  <div 
  key={c.id} 
  onClick={() => setActiveContact(c)}
- className={`p-3 rounded-md-xl flex items-center gap-3 cursor-pointer transition-colors ${activeContact?.id === c.id ? 'bg-primary/10' : 'hover:bg-muted'}`}
+ className={`p-3 rounded-xl flex items-center gap-3 cursor-pointer transition-colors ${activeContact?.id === c.id ? 'bg-primary/10' : 'hover:bg-muted'}`}
  >
  <div className="relative">
- <div className="w-10 h-10 rounded-md-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center font-semibold text-[#71717a] dark:text-gray-400 dark:text-slate-300">
+ <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center font-semibold text-[#71717a] dark:text-gray-400 dark:text-slate-300">
  {(c.email || 'U').charAt(0).toUpperCase()}
  </div>
  </div>
@@ -260,7 +260,7 @@ export default function UnivMessaging() {
  {/* Chat Header */}
  <div className="h-16 border-b border-primary/40 bg-card/50 backdrop-blur-md flex items-center justify-between px-6 shrink-0 sticky top-0 z-10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-3">
- <div className="w-9 h-9 rounded-md-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center font-semibold text-primary">
+ <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center font-semibold text-primary">
  {(activeContact.email || 'U').charAt(0).toUpperCase()}
  </div>
  <div>
@@ -297,7 +297,7 @@ export default function UnivMessaging() {
  {msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit'}) : ''}
  </span>
  </div>
- <div className={`p-3.5 rounded-md-2xl text-sm ${isMe ? 'bg-primary text-white rounded-md-br-none' : 'bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-foreground rounded-md-bl-none'}`}>
+ <div className={`p-3.5 rounded-2xl text-sm ${isMe ? 'bg-primary text-white rounded-br-none' : 'bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-foreground rounded-bl-none'}`}>
  {msg.content}
  </div>
  </motion.div>
@@ -311,7 +311,7 @@ export default function UnivMessaging() {
 
  {/* Input Area */}
  <form onSubmit={handleSend} className="p-4 border-t border-primary/40 bg-card shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex items-center gap-2 bg-muted/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-2 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+ <div className="flex items-center gap-2 bg-muted/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-2 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
  <button type="button" className="p-2 text-[#71717a] dark:text-gray-400 hover:text-foreground transition-colors"><Paperclip className="w-5 h-5" /></button>
  <input 
  type="text" 

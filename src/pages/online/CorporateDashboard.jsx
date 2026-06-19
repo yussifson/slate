@@ -38,7 +38,7 @@ export default function CorporateDashboard() {
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
  <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 ">
  <div className="flex items-center gap-3 mb-2">
- <div className="w-10 h-10 rounded-md-full bg-[var(--color-surface-2)] flex items-center justify-center text-[var(--color-text-primary)]">
+ <div className="w-10 h-10 rounded-full bg-[var(--color-surface-2)] flex items-center justify-center text-[var(--color-text-primary)]">
  <Briefcase className="w-5 h-5" />
  </div>
  <h3 className="font-semibold text-[var(--color-text-secondary)] text-sm uppercase tracking-wider tracking-[0.04em]">Active Licenses</h3>
@@ -49,7 +49,7 @@ export default function CorporateDashboard() {
  
  <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 ">
  <div className="flex items-center gap-3 mb-2">
- <div className="w-10 h-10 rounded-md-full bg-[var(--color-info-subtle)] flex items-center justify-center text-[var(--color-info)]">
+ <div className="w-10 h-10 rounded-full bg-[var(--color-info-subtle)] flex items-center justify-center text-[var(--color-info)]">
  <Users className="w-5 h-5" />
  </div>
  <h3 className="font-semibold text-[var(--color-text-secondary)] text-sm uppercase tracking-wider tracking-[0.04em]">Enrolled Employees</h3>
@@ -60,13 +60,13 @@ export default function CorporateDashboard() {
  
  <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 ">
  <div className="flex items-center gap-3 mb-2">
- <div className="w-10 h-10 rounded-md-full bg-[var(--color-success-subtle)] flex items-center justify-center text-[var(--color-success)]">
+ <div className="w-10 h-10 rounded-full bg-[var(--color-success-subtle)] flex items-center justify-center text-[var(--color-success)]">
  <BarChart3 className="w-5 h-5" />
  </div>
  <h3 className="font-semibold text-[var(--color-text-secondary)] text-sm uppercase tracking-wider tracking-[0.04em]">Avg Completion</h3>
  </div>
  <p className="text-4xl font-semibold font-display text-[var(--color-text-primary)] mt-2 tracking-[-0.02em]">78%</p>
- <div className="w-full bg-[var(--color-surface-2)] h-1.5 rounded-md-full mt-3 overflow-hidden">
+ <div className="w-full bg-[var(--color-surface-2)] h-1.5 rounded-full mt-3 overflow-hidden">
  <div className="bg-[var(--color-success)] h-full w-[78%]"></div>
  </div>
  </div>
@@ -131,7 +131,7 @@ export default function CorporateDashboard() {
  <td className="px-6 py-4">2</td>
  <td className="px-6 py-4">
  <div className="flex items-center gap-2">
- <div className="w-full max-w-[100px] bg-[var(--color-surface-2)] h-1.5 rounded-md-full overflow-hidden">
+ <div className="w-full max-w-[100px] bg-[var(--color-surface-2)] h-1.5 rounded-full overflow-hidden">
  <div className="bg-[var(--color-success)] h-full w-[60%]"></div>
  </div>
  <span className="text-xs font-semibold text-[var(--color-success)] tracking-[0.04em]">60%</span>

@@ -94,7 +94,7 @@ export default function CalendarPage() {
  />
  {/* Calendar Controls (Admin / Staff visibility toggles) */}
  {isAdminUser && (
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex gap-6 items-center text-sm select-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex gap-6 items-center text-sm select-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <span className="font-semibold text-[#71717a] dark:text-gray-400 uppercase text-[10px] tracking-wider tracking-[0.04em]">{t("toggles", "Toggles:")}</span>
  <label className="flex items-center gap-2 cursor-pointer hover:opacity-90">
  <input
@@ -118,7 +118,7 @@ export default function CalendarPage() {
  )}
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
  {/* Calendar Grid */}
- <div className="lg:col-span-2 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="lg:col-span-2 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between mb-4">
  <h3 className="text-lg font-semibold">{format(currentMonth, "MMMM yyyy")}</h3>
  <div className="flex gap-2">
@@ -169,7 +169,7 @@ export default function CalendarPage() {
  </div>
 
  {/* Upcoming */}
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40">
  <h3 className="text-sm font-semibold flex items-center gap-2">
  <Calendar className="w-4 h-4 text-primary" /> Upcoming {getTerm(activeIndustry, "hearing", true)}s

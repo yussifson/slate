@@ -117,8 +117,8 @@ export default function UniGraduationStats() {
  <span>{sector.name}</span>
  <span>{sector.value}%</span>
  </div>
- <div className="w-full bg-[var(--color-surface-2)] h-2 rounded-md-full overflow-hidden">
- <div className="h-full rounded-md-full" style={{ width: `${sector.value}%`, backgroundColor: sector.color}} />
+ <div className="w-full bg-[var(--color-surface-2)] h-2 rounded-full overflow-hidden">
+ <div className="h-full rounded-full" style={{ width: `${sector.value}%`, backgroundColor: sector.color}} />
  </div>
  </div>
  ))}

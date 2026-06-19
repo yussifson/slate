@@ -19,7 +19,7 @@ const StatusBadge = ({ status }) => {
     'Employed': 'bg-emerald-500/10/10 text-emerald-500'
   };
   return (
-    <span className={`px-2.5 py-1 rounded-md-full text-xs font-semibold ${map[status] || map.Active}`}>
+    <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${map[status] || map.Active}`}>
       {status || 'Active'}
     </span>
   );
@@ -127,7 +127,7 @@ export default function VTraineeProfiles() {
           {view === 'profile' && <p className="text-[#71717a] dark:text-gray-400">{selected?.data?.trade} • {selected?.case_number}</p>}
         </div>
         {view === 'table' && (
-          <Button onClick={() => setView('wizard')} className="bg-primary text-white hover:bg-primary/90 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
+          <Button onClick={() => setView('wizard')} className="bg-primary text-white hover:bg-primary/90 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
             <UserPlus className="w-4 h-4 mr-2" /> {t('enroll_trainee', 'Enroll Trainee')}
           </Button>
         )}
@@ -135,14 +135,14 @@ export default function VTraineeProfiles() {
 
       {/* TABLE VIEW */}
       {view === 'table' && (
-        <Card className="rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <Card className="rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="p-4 border-b border-primary/10 flex flex-wrap gap-4 items-center justify-between">
             <div className="relative w-full max-w-sm">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
               <Input 
                 placeholder="Search trainees..." 
                 value={search} onChange={e => setSearch(e.target.value)}
-                className="pl-9 rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none focus-visible:ring-primary"
+                className="pl-9 rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none focus-visible:ring-primary"
               />
             </div>
             <div className="flex gap-2">
@@ -151,7 +151,7 @@ export default function VTraineeProfiles() {
                   key={s} 
                   variant={filterStatus === s ? 'default' : 'outline'}
                   size="sm"
-                  className={`rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none ${filterStatus !== s ? 'border-primary/40 text-[#71717a] dark:text-gray-400' : 'bg-primary text-white hover:bg-primary/90'}`}
+                  className={`rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none ${filterStatus !== s ? 'border-primary/40 text-[#71717a] dark:text-gray-400' : 'bg-primary text-white hover:bg-primary/90'}`}
                   onClick={() => setFilterStatus(s)}
                 >
                   {s}
@@ -179,7 +179,7 @@ export default function VTraineeProfiles() {
                   filtered.map(t => (
                     <tr key={t.id} onClick={() => loadProfileData(t)} className="hover:bg-primary/5 cursor-pointer transition-colors">
                       <td className="px-6 py-4 font-semibold text-slate-900 dark:text-white flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-md-full bg-primary/20 flex items-center justify-center text-primary font-semibold">
+                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold">
                           {(t.title || 'T')[0]}
                         </div>
                         {t.title}
@@ -201,7 +201,7 @@ export default function VTraineeProfiles() {
       {view === 'profile' && selected && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 space-y-6">
-            <Card className="rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <Card className="rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <CardHeader className="border-b border-primary/10">
                 <CardTitle>{t('assessments', 'Recent Assessments')}</CardTitle>
               </CardHeader>
@@ -231,7 +231,7 @@ export default function VTraineeProfiles() {
             </Card>
           </div>
           <div className="space-y-6">
-            <Card className="rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <Card className="rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <CardHeader className="border-b border-primary/10">
                 <CardTitle>{t('quick_stats', 'Quick Stats')}</CardTitle>
               </CardHeader>
@@ -256,7 +256,7 @@ export default function VTraineeProfiles() {
 
       {/* WIZARD VIEW */}
       {view === 'wizard' && (
-        <Card className="rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card max-w-2xl mx-auto overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <Card className="rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card max-w-2xl mx-auto overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="flex bg-primary/5 border-b border-primary/10">
             {[1, 2, 3].map(step => (
               <div key={step} className={`flex-1 p-4 text-center text-sm font-semibold border-b-2 ${wizardStep === step ? 'border-primary text-primary bg-primary/10' : 'border-transparent text-[#71717a] dark:text-gray-400'}`}>
@@ -269,11 +269,11 @@ export default function VTraineeProfiles() {
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Full Name</label>
-                  <Input value={newTrainee.name} onChange={e => setNewTrainee({...newTrainee, name: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" placeholder="Jane Doe" />
+                  <Input value={newTrainee.name} onChange={e => setNewTrainee({...newTrainee, name: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" placeholder="Jane Doe" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Trainee ID (Optional)</label>
-                  <Input value={newTrainee.case_number} onChange={e => setNewTrainee({...newTrainee, case_number: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" placeholder="TR-001" />
+                  <Input value={newTrainee.case_number} onChange={e => setNewTrainee({...newTrainee, case_number: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" placeholder="TR-001" />
                 </div>
               </motion.div>
             )}
@@ -282,7 +282,7 @@ export default function VTraineeProfiles() {
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Program / Trade</label>
                   <Select value={newTrainee.trade} onValueChange={v => setNewTrainee({...newTrainee, trade: v})}>
-                    <SelectTrigger className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
+                    <SelectTrigger className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
                       <SelectValue placeholder="Select Program" />
                     </SelectTrigger>
                     <SelectContent>
@@ -294,7 +294,7 @@ export default function VTraineeProfiles() {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Cohort</label>
-                  <Input value={newTrainee.cohort} onChange={e => setNewTrainee({...newTrainee, cohort: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" placeholder="e.g. Fall 2026" />
+                  <Input value={newTrainee.cohort} onChange={e => setNewTrainee({...newTrainee, cohort: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" placeholder="e.g. Fall 2026" />
                 </div>
               </motion.div>
             )}
@@ -307,13 +307,13 @@ export default function VTraineeProfiles() {
             )}
           </CardContent>
           <div className="p-4 border-t border-primary/10 bg-primary/5 flex justify-between">
-            <Button variant="outline" className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" onClick={() => wizardStep > 1 ? setWizardStep(wizardStep - 1) : setView('table')}>
+            <Button variant="outline" className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" onClick={() => wizardStep > 1 ? setWizardStep(wizardStep - 1) : setView('table')}>
               {wizardStep === 1 ? 'Cancel' : 'Back'}
             </Button>
             {wizardStep < 3 ? (
-              <Button onClick={() => setWizardStep(wizardStep + 1)} className="rounded-md-xl bg-primary text-white hover:bg-primary/90 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">Next</Button>
+              <Button onClick={() => setWizardStep(wizardStep + 1)} className="rounded-xl bg-primary text-white hover:bg-primary/90 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">Next</Button>
             ) : (
-              <Button onClick={handleEnroll} className="rounded-md-xl bg-primary text-white hover:bg-primary/90 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">Confirm & Enroll</Button>
+              <Button onClick={handleEnroll} className="rounded-xl bg-primary text-white hover:bg-primary/90 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">Confirm & Enroll</Button>
             )}
           </div>
         </Card>

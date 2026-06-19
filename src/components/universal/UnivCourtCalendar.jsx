@@ -98,19 +98,19 @@ export default function UnivCourtCalendar() {
 
  
  
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={handleAddEvent} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
+ <button onClick={handleAddEvent} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
  <Plus className="w-4 h-4" /> Schedule Event
  </button>
  </div>
  </div>
  </div>
 
- <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
@@ -119,7 +119,7 @@ export default function UnivCourtCalendar() {
  placeholder="Search calendar events..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -132,10 +132,10 @@ export default function UnivCourtCalendar() {
  animate={{ opacity: 1, x: 0}}
  transition={{ delay: idx * 0.05}}
  key={e.id} 
- className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 hover:border-primary/40 transition-colors group flex items-center justify-between gap-4"
+ className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-4 hover:border-primary/40 transition-colors group flex items-center justify-between gap-4"
  >
  <div className="flex items-center gap-5">
- <div className="flex flex-col items-center justify-center bg-muted w-16 h-16 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <div className="flex flex-col items-center justify-center bg-muted w-16 h-16 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  <span className="text-xs font-semibold text-primary uppercase tracking-widest tracking-[0.04em]">{new Date(e.event_date).toLocaleDateString('en-US', { month: 'short'})}</span>
  <span className="text-xl font-black text-foreground leading-none mt-1">{new Date(e.event_date).getDate()}</span>
  </div>

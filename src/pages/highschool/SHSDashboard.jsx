@@ -66,7 +66,7 @@ export default function SHSDashboard() {
  <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wide tracking-[0.04em]">{stat.title}</p>
  <h3 className="text-2xl font-black text-slate-900 dark:text-slate-100 mt-1 tracking-[-0.02em]">{stat.value}</h3>
  </div>
- <div className={`w-12 h-12 rounded-md-2xl flex items-center justify-center ${stat.bg}`}>
+ <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${stat.bg}`}>
  <stat.icon className={`w-6 h-6 ${stat.color}`} />
  </div>
  </CardContent>
@@ -105,7 +105,7 @@ export default function SHSDashboard() {
  </h3>
  <div className="space-y-4">
  <div className="flex gap-3">
- <div className="w-8 h-8 rounded-md-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
+ <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
  <CheckCircle2 className="w-4 h-4 text-primary dark:text-primary/70" />
  </div>
  <div>
@@ -114,7 +114,7 @@ export default function SHSDashboard() {
  </div>
  </div>
  <div className="flex gap-3">
- <div className="w-8 h-8 rounded-md-full bg-slate-100 flex items-center justify-center shrink-0">
+ <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
  <UserPlus className="w-4 h-4 text-primary" />
  </div>
  <div>
@@ -123,7 +123,7 @@ export default function SHSDashboard() {
  </div>
  </div>
  <div className="flex gap-3">
- <div className="w-8 h-8 rounded-md-full bg-red-100 flex items-center justify-center shrink-0">
+ <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center shrink-0">
  <Banknote className="w-4 h-4 text-red-600" />
  </div>
  <div>

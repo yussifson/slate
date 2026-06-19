@@ -122,7 +122,7 @@ export default function Teachers() {
         </div>
         <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
           {['command_center', 'directory'].map((tab) => (
-            <button key={tab} onClick={() => setActiveTab(tab)} className={`flex items-center gap-2 px-5 py-2.5 font-semibold text-sm transition-colors rounded-md-full whitespace-nowrap ${activeTab === tab ? 'bg-[var(--primary)] text-white' : 'bg-transparent text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--primary)]'}`}>
+            <button key={tab} onClick={() => setActiveTab(tab)} className={`flex items-center gap-2 px-5 py-2.5 font-semibold text-sm transition-colors rounded-full whitespace-nowrap ${activeTab === tab ? 'bg-[var(--primary)] text-white' : 'bg-transparent text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--primary)]'}`}>
               {tab === 'command_center' ? <ClipboardCheck className="w-4 h-4" /> : <Users className="w-4 h-4" />}
               <span className="capitalize">{tab.replace('_', ' ')}</span>
             </button>
@@ -163,8 +163,8 @@ export default function Teachers() {
                 <h3 className="font-semibold text-[var(--color-text-primary)] text-sm">Action Items</h3>
               </div>
               <div className="space-y-3 mt-2">
-                <Button className="w-full bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white rounded-md-full">Take Attendance</Button>
-                <Button variant="outline" className="w-full border-primary/40 text-[var(--primary)] rounded-md-full hover:bg-[var(--primary)] hover:text-white">Post Notice</Button>
+                <Button className="w-full bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white rounded-full">Take Attendance</Button>
+                <Button variant="outline" className="w-full border-primary/40 text-[var(--primary)] rounded-full hover:bg-[var(--primary)] hover:text-white">Post Notice</Button>
               </div>
             </div>
           </div>
@@ -189,7 +189,7 @@ export default function Teachers() {
                     <p className="font-semibold text-[var(--color-text-primary)]">{item.subject}</p>
                     <p className="text-sm text-[var(--color-text-secondary)] mt-0.5">{item.room}</p>
                   </div>
-                  <Button variant="outline" size="sm" className="rounded-md-full border-primary/30 text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white">Start</Button>
+                  <Button variant="outline" size="sm" className="rounded-full border-primary/30 text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white">Start</Button>
                 </div>
               ))}
             </div>
@@ -203,7 +203,7 @@ export default function Teachers() {
           <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="relative flex-1 w-full max-w-md">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-secondary)]" />
-              <Input placeholder="Search directory..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 rounded-md-full border-primary/30 bg-[var(--color-surface-1)] h-11" />
+              <Input placeholder="Search directory..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 rounded-full border-primary/30 bg-[var(--color-surface-1)] h-11" />
             </div>
             <div className="flex items-center gap-4 w-full md:w-auto">
               <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
@@ -211,13 +211,13 @@ export default function Teachers() {
                   <button
                     key={d}
                     onClick={() => setDepartmentFilter(d)}
-                    className={`px-4 py-2 text-xs font-semibold whitespace-nowrap transition-colors rounded-md-full ${departmentFilter === d ? 'bg-[var(--primary)]/10 text-[var(--primary)]' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-2)]'}`}
+                    className={`px-4 py-2 text-xs font-semibold whitespace-nowrap transition-colors rounded-full ${departmentFilter === d ? 'bg-[var(--primary)]/10 text-[var(--primary)]' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-2)]'}`}
                   >
                     {d}
                   </button>
                 ))}
               </div>
-              <Button onClick={() => { setEditingId(null); setFormData({ full_name: '', email: '', phone: '', department: 'Academics', position: 'Teacher', qualifications: '', subjects: '', defaultPassword: ''}); setShowModal(true); }} className="bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white rounded-md-full shrink-0">
+              <Button onClick={() => { setEditingId(null); setFormData({ full_name: '', email: '', phone: '', department: 'Academics', position: 'Teacher', qualifications: '', subjects: '', defaultPassword: ''}); setShowModal(true); }} className="bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white rounded-full shrink-0">
                 <Plus className="w-4 h-4 mr-2" /> Add Staff
               </Button>
             </div>
@@ -237,7 +237,7 @@ export default function Teachers() {
                   <div className="absolute top-4 right-4">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <button className="h-8 w-8 rounded-md-full flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-2)] transition-colors">
+                        <button className="h-8 w-8 rounded-full flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-2)] transition-colors">
                           <MoreVertical className="h-4 w-4" />
                         </button>
                       </DropdownMenuTrigger>
@@ -254,7 +254,7 @@ export default function Teachers() {
                     </DropdownMenu>
                   </div>
                   
-                  <div className="w-20 h-20 rounded-md-full bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] font-semibold text-2xl mb-4 border-[0.5px] border-black/9 dark:border-white/8 border-[var(--primary)]/20 tracking-[-0.02em]">
+                  <div className="w-20 h-20 rounded-full bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] font-semibold text-2xl mb-4 border-[0.5px] border-black/9 dark:border-white/8 border-[var(--primary)]/20 tracking-[-0.02em]">
                     {teacher.avatar}
                   </div>
                   <h3 className="font-display font-semibold text-[var(--color-text-primary)] text-xl tracking-tight mb-1">{teacher.name}</h3>
@@ -329,8 +329,8 @@ export default function Teachers() {
               )}
             </div>
             <div className="flex gap-3 pt-4">
-              <Button variant="outline" className="flex-1 rounded-md-full border-primary/30" onClick={() => setShowModal(false)} disabled={mutateTeacher.isPending}>Cancel</Button>
-              <Button className="flex-1 rounded-md-full bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white" onClick={handleSave} disabled={mutateTeacher.isPending}>
+              <Button variant="outline" className="flex-1 rounded-full border-primary/30" onClick={() => setShowModal(false)} disabled={mutateTeacher.isPending}>Cancel</Button>
+              <Button className="flex-1 rounded-full bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white" onClick={handleSave} disabled={mutateTeacher.isPending}>
                 {mutateTeacher.isPending ? 'Saving...' : 'Save'}
               </Button>
             </div>

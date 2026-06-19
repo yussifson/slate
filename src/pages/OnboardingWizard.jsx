@@ -524,11 +524,11 @@ export default function OnboardingWizard() {
  <div className="min-h-[100dvh] bg-background flex flex-col justify-center items-center sm:py-12 sm:px-6 relative overflow-hidden font-sans">
  
  {/* Background Decorative Elements */}
- <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-md-full blur-3xl opacity-50 pointer-events-none"></div>
- <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-primary/20 rounded-md-full blur-3xl opacity-50 pointer-events-none"></div>
+ <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+ <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-primary/20 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
  {/* Main Container */}
- <div className={`w-full h-[100dvh] sm:h-auto ${step === 4 ? 'sm:max-w-[95%]' : 'sm:max-w-3xl'} bg-card sm:rounded-md-3xl sm:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm sm:border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8/60 relative z-10 flex flex-col sm:my-10 transition-all duration-500`}>
+ <div className={`w-full h-[100dvh] sm:h-auto ${step === 4 ? 'sm:max-w-[95%]' : 'sm:max-w-3xl'} bg-card sm:rounded-3xl sm:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm sm:border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8/60 relative z-10 flex flex-col sm:my-10 transition-all duration-500`}>
  
  {/* Header Section */}
  <div className="px-5 sm:px-8 pt-6 sm:pt-8 pb-6 border-b border-primary/40 shrink-0">
@@ -541,9 +541,9 @@ export default function OnboardingWizard() {
 
  {/* Progress Indicator */}
  <div className="relative">
- <div className="absolute top-1/2 left-0 w-full h-1 bg-muted -translate-y-1/2 rounded-md-full"></div>
+ <div className="absolute top-1/2 left-0 w-full h-1 bg-muted -translate-y-1/2 rounded-full"></div>
  <div 
- className="absolute top-1/2 left-0 h-1 bg-primary -translate-y-1/2 rounded-md-full transition-all duration-500 ease-in-out"
+ className="absolute top-1/2 left-0 h-1 bg-primary -translate-y-1/2 rounded-full transition-all duration-500 ease-in-out"
  style={{ width: `${((step - 1) / (steps.length - 1)) * 100}%`}}
  ></div>
  
@@ -554,7 +554,7 @@ export default function OnboardingWizard() {
  return (
  <div key={s.num} className="flex flex-col items-center">
  <div 
- className={`w-8 h-8 rounded-md-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ring-4 ring-background
+ className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ring-4 ring-background
  ${isCompleted ? 'bg-primary text-white ' : 
  isCurrent ? 'bg-card border-2 border-primary text-primary ' : 
  'bg-muted text-[#71717a] dark:text-gray-400 border-2 border-primary/40'}`}
@@ -589,10 +589,10 @@ export default function OnboardingWizard() {
 
  <div className="space-y-4">
  {(setupMode === 'template' || setupMode === 'custom') && (
- <div className="space-y-3 p-5 rounded-md-2xl bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <div className="space-y-3 p-5 rounded-2xl bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide tracking-[0.04em]">{t("industry", "Workslate")}</label>
  <Select value={industry} onValueChange={setIndustry}>
- <SelectTrigger className="h-12 bg-card border-primary/40 rounded-md-xl text-slate-900 focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <SelectTrigger className="h-12 bg-card border-primary/40 rounded-xl text-slate-900 focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <SelectValue />
  </SelectTrigger>
  <SelectContent className="bg-card text-slate-900 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
@@ -612,7 +612,7 @@ export default function OnboardingWizard() {
  <div className="space-y-2 mt-4">
  <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide tracking-[0.04em]">Education Level</label>
  <Select value={educationLevel} onValueChange={setEducationLevel}>
- <SelectTrigger className="w-full h-12 bg-card border-primary/40 rounded-md-xl text-slate-900 focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <SelectTrigger className="w-full h-12 bg-card border-primary/40 rounded-xl text-slate-900 focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <SelectValue placeholder="Select level" />
  </SelectTrigger>
  <SelectContent className="bg-card text-slate-900 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
@@ -630,7 +630,7 @@ export default function OnboardingWizard() {
  )}
 
  {/* Template Option */}
- <label className={`block relative p-5 rounded-md-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'template' ? 'border-primary bg-primary/5 ' : 'border-primary/40 hover:border-primary/30 bg-card'}`}>
+ <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'template' ? 'border-primary bg-primary/5 ' : 'border-primary/40 hover:border-primary/30 bg-card'}`}>
  <input 
  type="radio" 
  name="setupMode" 
@@ -640,8 +640,8 @@ export default function OnboardingWizard() {
  className="sr-only" 
  />
  <div className="flex items-start gap-4">
- <div className={`w-5 h-5 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'template' ? 'border-primary bg-primary' : 'border-primary/40'}`}>
- {setupMode === 'template' && <div className="w-2 h-2 rounded-md-full bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>}
+ <div className={`w-5 h-5 rounded-full border-[0.5px] border-black/9 dark:border-white/8 flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'template' ? 'border-primary bg-primary' : 'border-primary/40'}`}>
+ {setupMode === 'template' && <div className="w-2 h-2 rounded-full bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>}
  </div>
  <div>
  <h3 className={`font-semibold ${setupMode === 'template' ? 'text-primary' : 'text-slate-900'}`}>Build with Template</h3>
@@ -651,7 +651,7 @@ export default function OnboardingWizard() {
  </label>
  
  {/* Orbit Option */}
- <label className={`block relative p-5 rounded-md-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'orbit' ? 'border-primary bg-primary/5 ' : 'border-primary/40 hover:border-primary/30 bg-card'}`}>
+ <label className={`block relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${setupMode === 'orbit' ? 'border-primary bg-primary/5 ' : 'border-primary/40 hover:border-primary/30 bg-card'}`}>
  <input 
  type="radio" 
  name="setupMode" 
@@ -661,8 +661,8 @@ export default function OnboardingWizard() {
  className="sr-only" 
  />
  <div className="flex items-start gap-4">
- <div className={`w-5 h-5 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'orbit' ? 'border-primary bg-primary' : 'border-primary/40'}`}>
- {setupMode === 'orbit' && <div className="w-2 h-2 rounded-md-full bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>}
+ <div className={`w-5 h-5 rounded-full border-[0.5px] border-black/9 dark:border-white/8 flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'orbit' ? 'border-primary bg-primary' : 'border-primary/40'}`}>
+ {setupMode === 'orbit' && <div className="w-2 h-2 rounded-full bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>}
  </div>
  <div>
  <div className="flex items-center gap-2">
@@ -675,7 +675,7 @@ export default function OnboardingWizard() {
  </label>
 
  {/* Custom Option */}
- <div className={`relative p-5 rounded-md-2xl border-2 transition-all duration-200 ${setupMode === 'custom' ? 'border-primary bg-primary/5' : 'border-primary/40 hover:border-primary/40 bg-card'}`}>
+ <div className={`relative p-5 rounded-2xl border-2 transition-all duration-200 ${setupMode === 'custom' ? 'border-primary bg-primary/5' : 'border-primary/40 hover:border-primary/40 bg-card'}`}>
  <label className="flex items-start gap-4 cursor-pointer">
  <input 
  type="radio" 
@@ -685,8 +685,8 @@ export default function OnboardingWizard() {
  onChange={() => setSetupMode('custom')} 
  className="sr-only" 
  />
- <div className={`w-5 h-5 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'custom' ? 'border-primary bg-primary' : 'border-primary/40'}`}>
- {setupMode === 'custom' && <div className="w-2 h-2 rounded-md-full bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>}
+ <div className={`w-5 h-5 rounded-full border-[0.5px] border-black/9 dark:border-white/8 flex items-center justify-center mt-0.5 shrink-0 transition-colors ${setupMode === 'custom' ? 'border-primary bg-primary' : 'border-primary/40'}`}>
+ {setupMode === 'custom' && <div className="w-2 h-2 rounded-full bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>}
  </div>
  <div>
  <h3 className={`font-semibold ${setupMode === 'custom' ? 'text-primary' : 'text-slate-900'}`}>Custom Selection</h3>
@@ -698,7 +698,7 @@ export default function OnboardingWizard() {
  <div className="mt-5 pt-5 border-t border-primary/40 pl-9">
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
  {INDUSTRIES[industry]?.nav?.filter(n => !['/', '/settings', '/integrations', '/admin'].includes(n.path)).map((navItem) => (
- <label key={navItem.path} className="flex items-center space-x-3 p-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl cursor-pointer hover:border-primary/40 transition-colors group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <label key={navItem.path} className="flex items-center space-x-3 p-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl cursor-pointer hover:border-primary/40 transition-colors group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="relative flex items-center justify-center">
  <input 
  type="checkbox" 
@@ -770,7 +770,7 @@ export default function OnboardingWizard() {
  <div className="space-y-2">
 
  {setupMode === 'orbit' && (
- <div className="space-y-3 mt-6 p-6 rounded-md-2xl bg-gradient-to-br from-primary/5 to-transparent border-[0.5px] border-black/9 dark:border-white/8 border-primary/20">
+ <div className="space-y-3 mt-6 p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-transparent border-[0.5px] border-black/9 dark:border-white/8 border-primary/20">
  <div>
  <h3 className="text-lg font-semibold text-slate-900 tracking-tight">Describe Your Workslate</h3>
  <p className="text-sm text-slate-500 mt-1">OrbitBuild will assemble the perfect workslate for you.</p>
@@ -779,7 +779,7 @@ export default function OnboardingWizard() {
  value={orbitPrompt}
  onChange={(e) => setOrbitPrompt(e.target.value)}
  placeholder="E.g., Build a veterinary clinic management system with pet records, appointments, and billing..."
- className="w-full h-32 p-4 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 bg-card text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-32 p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 bg-card text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  )}
@@ -792,7 +792,7 @@ export default function OnboardingWizard() {
  <Select value={country} onValueChange={(v) => {
  setCountry(v);
 }}>
- <SelectTrigger className="h-12 bg-card border-primary/40 rounded-md-xl text-slate-900 focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <SelectTrigger className="h-12 bg-card border-primary/40 rounded-xl text-slate-900 focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <SelectValue />
  </SelectTrigger>
  <SelectContent className="bg-card text-slate-900 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
@@ -806,7 +806,7 @@ export default function OnboardingWizard() {
  <div className="space-y-2">
  <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide tracking-[0.04em]">{t("currency", "Currency")}</label>
  <Select value={currency} onValueChange={setCurrency}>
- <SelectTrigger className="h-12 bg-card border-primary/40 rounded-md-xl text-slate-900 focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <SelectTrigger className="h-12 bg-card border-primary/40 rounded-xl text-slate-900 focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <SelectValue />
  </SelectTrigger>
  <SelectContent className="bg-card text-slate-900 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
@@ -836,7 +836,7 @@ export default function OnboardingWizard() {
  </p>
  </div>
 
- <div className="bg-muted/30 rounded-md-2xl p-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 space-y-4">
+ <div className="bg-muted/30 rounded-2xl p-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 space-y-4">
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
  <div className="space-y-2">
  <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide tracking-[0.04em]">Full Name</label>
@@ -845,7 +845,7 @@ export default function OnboardingWizard() {
  placeholder="e.g. Jane Doe"
  value={staffName}
  onChange={(e) => setStaffName(e.target.value)}
- className="h-11 bg-card border-primary/40 focus:bg-card focus-visible:bg-card text-slate-900 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="h-11 bg-card border-primary/40 focus:bg-card focus-visible:bg-card text-slate-900 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  <div className="space-y-2">
@@ -855,7 +855,7 @@ export default function OnboardingWizard() {
  placeholder="jane@example.com"
  value={staffEmail}
  onChange={(e) => setStaffEmail(e.target.value)}
- className="h-11 bg-card border-primary/40 focus:bg-card focus-visible:bg-card text-slate-900 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="h-11 bg-card border-primary/40 focus:bg-card focus-visible:bg-card text-slate-900 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  </div>
@@ -864,7 +864,7 @@ export default function OnboardingWizard() {
  <div className="flex-1 space-y-2">
  <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide tracking-[0.04em]">Role</label>
  <Select value={staffRole} onValueChange={setStaffRole}>
- <SelectTrigger className="h-11 bg-card border-primary/40 rounded-md-xl text-slate-900 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <SelectTrigger className="h-11 bg-card border-primary/40 rounded-xl text-slate-900 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <SelectValue placeholder="Select a role" />
  </SelectTrigger>
  <SelectContent className="bg-card text-slate-900 border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
@@ -879,7 +879,7 @@ export default function OnboardingWizard() {
  <Button 
  onClick={handleAddStaff}
  disabled={!staffEmail || !staffName || !staffRole}
- className="h-11 px-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-md-xl font-semibold transition-all active:scale-95"
+ className="h-11 px-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold transition-all active:scale-95"
  >
  {t("add_team", "Add")}
  </Button>
@@ -888,7 +888,7 @@ export default function OnboardingWizard() {
 
  {/* Invited List */}
  {invitedStaff.length > 0 ? (
- <div className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden bg-card  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden bg-card  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="bg-muted/30 px-4 py-2 border-b border-primary/40">
  <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider tracking-[0.04em]">Pending Invites ({invitedStaff.length})</h4>
  </div>
@@ -896,7 +896,7 @@ export default function OnboardingWizard() {
  {invitedStaff.map((staff, idx) => (
  <div key={idx} className="flex justify-between items-center p-4 hover:bg-muted/30 transition-colors">
  <div className="flex items-center gap-3">
- <div className="w-8 h-8 rounded-md-full bg-orange-100 text-orange-700 flex items-center justify-center font-semibold text-xs tracking-[0.04em]">
+ <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center font-semibold text-xs tracking-[0.04em]">
  {staff.name.charAt(0).toUpperCase()}
  </div>
  <div>
@@ -919,7 +919,7 @@ export default function OnboardingWizard() {
  </div>
  </div>
  ) : (
- <div className="border-2 border-dashed border-primary/40 rounded-md-2xl p-8 text-center bg-muted/30">
+ <div className="border-2 border-dashed border-primary/40 rounded-2xl p-8 text-center bg-muted/30">
  <Users className="w-8 h-8 text-slate-300 mx-auto mb-3" />
  <p className="text-sm text-slate-500 font-medium">No team members added yet.</p>
  <p className="text-xs text-slate-400 mt-1 tracking-[0.04em]">You can always invite them later from settings.</p>
@@ -951,14 +951,14 @@ export default function OnboardingWizard() {
         return (
           <div 
             key={p.id} 
-            className={`relative flex flex-col bg-white rounded-md-3xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 p-8 ${
+            className={`relative flex flex-col bg-white rounded-3xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 p-8 ${
               isHighlight
                 ? 'border-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_8px_30px_rgb(0,0,0,0.08)] md:-translate-y-2'
                 : 'border-primary/20 hover:border-primary/40'
             }`}
           >
             {isHighlight && (
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black px-4 py-1.5 rounded-md-full uppercase tracking-widest whitespace-nowrap tracking-[0.04em]">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest whitespace-nowrap tracking-[0.04em]">
                 Most popular
               </div>
             )}
@@ -983,7 +983,7 @@ export default function OnboardingWizard() {
               </div>
             </div>
             
-            <div className="bg-slate-50/80 rounded-md-2xl p-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 mb-8 space-y-3">
+            <div className="bg-slate-50/80 rounded-2xl p-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 mb-8 space-y-3">
               <div className="flex justify-between items-center text-sm font-semibold">
                 <span className="text-slate-500">Team Size</span>
                 <span className="text-slate-900 text-right">{p.limits?.users || (p.price_monthly === 0 ? 1 : 'Unlimited')}</span>
@@ -1002,7 +1002,7 @@ export default function OnboardingWizard() {
               <Button 
                 disabled={loading}
                 onClick={() => handleSelectPlan(p)}
-                className={`w-full py-6 text-sm rounded-md-2xl font-semibold transition-all ${
+                className={`w-full py-6 text-sm rounded-2xl font-semibold transition-all ${
                   isHighlight
                     ? 'bg-primary hover:bg-primary/90 text-white'
                     : 'bg-white border-2 border-orange-500 text-orange-500 hover:bg-orange-50 hover:text-orange-600'
@@ -1031,7 +1031,7 @@ export default function OnboardingWizard() {
  <Button 
  variant="outline"
  onClick={() => setStep(step - 1)}
- className="h-12 px-6 rounded-md-xl text-slate-700 border-primary/40 bg-card hover:bg-muted/30 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="h-12 px-6 rounded-xl text-slate-700 border-primary/40 bg-card hover:bg-muted/30 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <ArrowLeft className="w-4 h-4 mr-2" /> {t("back", "Back")}
  </Button>
@@ -1045,7 +1045,7 @@ export default function OnboardingWizard() {
                     <Button 
                       variant="outline"
                       onClick={() => setStep(step + 1)}
-                      className="h-12 px-6 rounded-md-xl border-primary/40 bg-card hover:bg-muted/30 transition-colors font-semibold hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+                      className="h-12 px-6 rounded-xl border-primary/40 bg-card hover:bg-muted/30 transition-colors font-semibold hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
                     >
                       {t("skip_for_now", "Skip for now")}
                     </Button>
@@ -1065,7 +1065,7 @@ export default function OnboardingWizard() {
                     disabled={
                       (step === 1 && !setupMode) || (step === 2 && setupMode === 'custom' && selectedModules.length === 0) || (step === 2 && setupMode === 'orbit' && !orbitPrompt)
                     }
-                    className="h-12 px-8 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-md-xl flex items-center group transition-all"
+                    className="h-12 px-8 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl flex items-center group transition-all"
                   >
                     {t("continue_setup", "Continue Setup")}
                     <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />

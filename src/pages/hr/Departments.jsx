@@ -136,36 +136,36 @@ export default function Departments() {
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="stat-card-premium bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mb-1">{t("total_departments", "Total Departments")}</p>
  <h2 className="text-3xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{departments.length}</h2>
  </div>
- <div className="w-12 h-12 rounded-md-full bg-slate-100 flex items-center justify-center text-primary">
+ <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary">
  <Building2 className="w-6 h-6" />
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="stat-card-premium bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mb-1">{t("total_employees", "Total Employees")}</p>
  <h2 className="text-3xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{departments.reduce((sum, d) => sum + d.staffCount, 0)}</h2>
  </div>
- <div className="w-12 h-12 rounded-md-full bg-slate-100 flex items-center justify-center text-primary">
+ <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary">
  <Users className="w-6 h-6" />
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="stat-card-premium bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mb-1">{t("total_budget", "Total Budget")}</p>
  <h2 className="text-3xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${departments.reduce((sum, d) => sum + d.budget, 0).toLocaleString()}</h2>
  </div>
- <div className="w-12 h-12 rounded-md-full bg-slate-100 flex items-center justify-center text-primary">
+ <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary">
  <DollarSign className="w-6 h-6" />
  </div>
  </div>
  </div>
 
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -247,7 +247,7 @@ export default function Departments() {
 
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editTargetId ? 'Edit Department' : 'New Department'}</h2>
  <div className="space-y-4">
  <div>

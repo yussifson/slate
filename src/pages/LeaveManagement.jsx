@@ -87,7 +87,7 @@ export default function LeaveManagement() {
           { label: "Days Remaining", value: myBalance.remaining, color: "bg-slate-50 dark:bg-slate-800/50 text-primary" },
         ].map(s => {
           return (
-            <div key={s.label} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 flex items-center gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <div key={s.label} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 flex items-center gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <div className={cn("w-9 h-9 rounded-xl flex items-center justify-center", s.color)}><Calendar className="w-4 h-4" /></div>
               <div><p className="text-xl font-semibold">{s.value}</p><p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{s.label}</p></div>
             </div>
@@ -109,20 +109,20 @@ export default function LeaveManagement() {
         </TabsContent>
         {isAdmin && (
           <TabsContent value="balances" className="mt-4">
-            <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               {staffRecords.map(s => {
                 const bal = getStaffLeaveBalance(s.user_email);
                 const pct = Math.min((bal.used / bal.total) * 100, 100);
                 return (
                   <div key={s.id} className="px-4 py-3 flex items-center gap-4">
-                    <div className="w-8 h-8 rounded-md-full bg-slate-100 flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
                       <span className="text-xs font-semibold text-primary tracking-[0.04em]">{s.full_name?.[0]}</span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium">{s.full_name}</p>
                       <div className="flex items-center gap-2 mt-1">
-                        <div className="flex-1 bg-muted rounded-md-full h-1.5">
-                          <div className="bg-primary rounded-md-full h-1.5" style={{ width: `${pct}%` }} />
+                        <div className="flex-1 bg-muted rounded-full h-1.5">
+                          <div className="bg-primary rounded-full h-1.5" style={{ width: `${pct}%` }} />
                         </div>
                         <span className="text-xs text-[#71717a] dark:text-gray-400 shrink-0 tracking-[0.04em]">{bal.used}/{bal.total} {t("days_used", "days used")}</span>
                       </div>
@@ -151,13 +151,13 @@ export default function LeaveManagement() {
 function LeaveList({ leaves, isAdmin, onApprove, onReject }) {
   const { t } = useTranslation();
   if (leaves.length === 0) return (
-    <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <Calendar className="w-10 h-10 text-[#71717a] dark:text-gray-400 mx-auto mb-2" />
       <p className="text-sm text-[#71717a] dark:text-gray-400">{t("no_leave_requests_found", "No leave requests found")}</p>
     </div>
   );
   return (
-    <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       {leaves.map(leave => {
         return (
           <div key={leave.id} className="px-4 py-3 flex items-center gap-3">

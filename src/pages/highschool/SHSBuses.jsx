@@ -95,15 +95,15 @@ export default function SHSBuses() {
  </p>
  </div>
  
- <Button onClick={() => setIsModalOpen(true)} className="h-9 gap-2 rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20">
+ <Button onClick={() => setIsModalOpen(true)} className="h-9 gap-2 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20">
  <Plus className="w-4 h-4" /> Register Bus
  </Button>
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
- <Card className="rounded-md-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="rounded-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-md-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+ <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
  <Bus className="w-6 h-6" />
  </div>
  <div>
@@ -114,7 +114,7 @@ export default function SHSBuses() {
  </Card>
  </div>
 
- <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
@@ -125,7 +125,7 @@ export default function SHSBuses() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search registration or driver..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -137,7 +137,7 @@ export default function SHSBuses() {
  <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading fleet...</div>
  ) : filteredBuses.length === 0 ? (
  <div className="p-16 text-center">
- <div className="w-16 h-16 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
  <Bus className="w-8 h-8 text-primary dark:text-primary" />
  </div>
  <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No vehicles registered</h3>
@@ -148,11 +148,11 @@ export default function SHSBuses() {
  <table className="w-full text-sm text-left">
  <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider tracking-[0.04em]">
  <tr>
- <th className="px-6 py-4 rounded-md-tl-xl">Registration</th>
+ <th className="px-6 py-4 rounded-tl-xl">Registration</th>
  <th className="px-6 py-4">Capacity</th>
  <th className="px-6 py-4">Driver Details</th>
  <th className="px-6 py-4">Status</th>
- <th className="px-6 py-4 text-right rounded-md-tr-xl">Actions</th>
+ <th className="px-6 py-4 text-right rounded-tr-xl">Actions</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-slate-100">
@@ -198,7 +198,7 @@ export default function SHSBuses() {
  </Card>
 
  <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
- <DialogContent className="sm:max-w-[450px] rounded-md-3xl p-0 overflow-hidden border-none ">
+ <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none ">
  <div className="p-6 bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 text-white">
  <DialogHeader>
  <DialogTitle className="text-2xl font-black tracking-[-0.02em]">Register Vehicle</DialogTitle>
@@ -214,7 +214,7 @@ export default function SHSBuses() {
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Registration Number</label>
  <Input 
  placeholder="e.g. GR-234-21"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl uppercase tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl uppercase tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newBus.registrationNumber}
  onChange={e => setNewBus({...newBus, registrationNumber: e.target.value.toUpperCase()})}
  />
@@ -224,7 +224,7 @@ export default function SHSBuses() {
  <Input 
  type="number"
  placeholder="e.g. 60"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newBus.capacity}
  onChange={e => setNewBus({...newBus, capacity: e.target.value})}
  />
@@ -235,7 +235,7 @@ export default function SHSBuses() {
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Driver Name</label>
  <Input 
  placeholder="e.g. John Mensah"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newBus.driverName}
  onChange={e => setNewBus({...newBus, driverName: e.target.value})}
  />
@@ -245,7 +245,7 @@ export default function SHSBuses() {
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Driver Phone</label>
  <Input 
  placeholder="e.g. 0541234567"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newBus.driverPhone}
  onChange={e => setNewBus({...newBus, driverPhone: e.target.value})}
  />
@@ -253,13 +253,13 @@ export default function SHSBuses() {
  </div>
  
  <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Button variant="outline" onClick={() => setIsModalOpen(false)} className="rounded-md-xl font-semibold text-slate-600 dark:text-slate-300">
+ <Button variant="outline" onClick={() => setIsModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
  Cancel
  </Button>
  <Button 
  onClick={handleSaveBus} 
  disabled={!newBus.registrationNumber || !newBus.capacity}
- className="rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-semibold"
+ className="rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-semibold"
  >
  Save Vehicle
  </Button>

@@ -173,12 +173,12 @@ export default function UnivSubscription() {
 
  
  
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={handleOpenAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
+ <button onClick={handleOpenAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
  <Plus className="w-4 h-4" /> New Subscription
  </button>
  </div>
@@ -187,30 +187,30 @@ export default function UnivSubscription() {
 
  {/* KPI Row */}
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 shrink-0">
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-4 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <p className="text-sm text-[#71717a] dark:text-gray-400 font-medium">Estimated MRR</p>
  <h3 className="text-2xl font-semibold text-foreground mt-1 tracking-[-0.02em]">${mrr.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
  </div>
- <div className="p-3 bg-emerald-100 dark:bg-emerald-500/10/10 text-emerald-600 rounded-md-xl"><ArrowUpRight className="w-5 h-5" /></div>
+ <div className="p-3 bg-emerald-100 dark:bg-emerald-500/10/10 text-emerald-600 rounded-xl"><ArrowUpRight className="w-5 h-5" /></div>
  </div>
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-4 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <p className="text-sm text-[#71717a] dark:text-gray-400 font-medium">Active Subscribers</p>
  <h3 className="text-2xl font-semibold text-foreground mt-1 tracking-[-0.02em]">{activeCount}</h3>
  </div>
- <div className="p-3 bg-blue-100 dark:bg-blue-500/10/10 text-blue-600 rounded-md-xl"><User className="w-5 h-5" /></div>
+ <div className="p-3 bg-blue-100 dark:bg-blue-500/10/10 text-blue-600 rounded-xl"><User className="w-5 h-5" /></div>
  </div>
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-4 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <p className="text-sm text-[#71717a] dark:text-gray-400 font-medium">Churned</p>
  <h3 className="text-2xl font-semibold text-foreground mt-1 tracking-[-0.02em]">{churnedCount}</h3>
  </div>
- <div className="p-3 bg-red-100 dark:bg-red-500/10/10 text-red-600 rounded-md-xl"><ArrowDownRight className="w-5 h-5" /></div>
+ <div className="p-3 bg-red-100 dark:bg-red-500/10/10 text-red-600 rounded-xl"><ArrowDownRight className="w-5 h-5" /></div>
  </div>
  </div>
 
- <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Toolbar */}
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
@@ -220,7 +220,7 @@ export default function UnivSubscription() {
  placeholder="Search customers, plans..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -304,7 +304,7 @@ export default function UnivSubscription() {
  <motion.div 
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
- className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl max-w-md w-full p-6 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl max-w-md w-full p-6 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <button 
  onClick={() => setIsModalOpen(false)}
@@ -325,7 +325,7 @@ export default function UnivSubscription() {
  value={form.customer_name}
  onChange={(e) => setForm({ ...form, customer_name: e.target.value})}
  placeholder="e.g. Acme Corp"
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
@@ -337,7 +337,7 @@ export default function UnivSubscription() {
  onChange={(e) => setForm({ ...form, plan_name: e.target.value})}
  placeholder="e.g. Pro Tier"
  required
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
@@ -347,7 +347,7 @@ export default function UnivSubscription() {
  <select 
  value={form.billing_cycle}
  onChange={(e) => setForm({ ...form, billing_cycle: e.target.value})}
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  >
  <option value="Monthly">Monthly</option>
  <option value="Annually">Annually</option>
@@ -361,7 +361,7 @@ export default function UnivSubscription() {
  value={form.amount}
  onChange={(e) => setForm({ ...form, amount: e.target.value})}
  required
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
  </div>
@@ -372,7 +372,7 @@ export default function UnivSubscription() {
  <select 
  value={form.status}
  onChange={(e) => setForm({ ...form, status: e.target.value})}
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  >
  <option value="Active">Active</option>
  <option value="Canceled">Canceled</option>
@@ -385,7 +385,7 @@ export default function UnivSubscription() {
  type="date" 
  value={form.next_billing_date}
  onChange={(e) => setForm({ ...form, next_billing_date: e.target.value})}
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
  </div>
@@ -394,13 +394,13 @@ export default function UnivSubscription() {
  <button 
  type="button" 
  onClick={() => setIsModalOpen(false)}
- className="px-4 py-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-foreground hover:bg-muted/50 rounded-md-xl text-sm font-medium transition-colors"
+ className="px-4 py-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-foreground hover:bg-muted/50 rounded-xl text-sm font-medium transition-colors"
  >
  Cancel
  </button>
  <button 
  type="submit" 
- className="px-4 py-2 bg-primary text-white hover:bg-primary/90 rounded-md-xl text-sm font-medium transition-colors "
+ className="px-4 py-2 bg-primary text-white hover:bg-primary/90 rounded-xl text-sm font-medium transition-colors "
  >
  Save
  </button>

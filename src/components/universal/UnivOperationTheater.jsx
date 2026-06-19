@@ -97,7 +97,7 @@ const UnivOperationTheater = () => {
       </motion.div>
 
       <div className="grid lg:grid-cols-3 gap-8">
-        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-1 bg-slate-800 p-6 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-1 bg-slate-800 p-6 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
           <h2 className="text-xl font-semibold mb-6 flex items-center gap-2 text-teal-400">
             <Settings className="w-5 h-5" /> Schedule Procedure
           </h2>
@@ -149,18 +149,18 @@ const UnivOperationTheater = () => {
           {loading ? (
             <div className="text-center py-20"><Activity className="w-10 h-10 text-teal-500 animate-spin mx-auto" /></div>
           ) : operations.length === 0 ? (
-            <div className="text-center py-20 bg-slate-800 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400">No operations scheduled.</div>
+            <div className="text-center py-20 bg-slate-800 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400">No operations scheduled.</div>
           ) : (
             <div className="grid md:grid-cols-2 gap-4">
               {operations.map((op, index) => (
-                <motion.div key={op.id || index} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }} className="bg-slate-800 p-5 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col h-full relative overflow-hidden">
-                  <div className={`absolute top-0 right-0 px-3 py-1 text-xs font-semibold rounded-md-bl-lg ${getStatusColor(op.status)}`}>
+                <motion.div key={op.id || index} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }} className="bg-slate-800 p-5 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col h-full relative overflow-hidden">
+                  <div className={`absolute top-0 right-0 px-3 py-1 text-xs font-semibold rounded-bl-lg ${getStatusColor(op.status)}`}>
                     {op.status}
                   </div>
                   <h3 className="text-xl font-semibold text-teal-300 mb-1 mt-2">{op.procedure_name}</h3>
                   <div className="text-slate-300 flex items-center gap-2 mb-4"><User className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> Patient: {op.patient_name}</div>
                   
-                  <div className="space-y-2 mt-auto text-sm text-[#71717a] dark:text-gray-400 bg-slate-900/50 p-4 rounded-md-xl">
+                  <div className="space-y-2 mt-auto text-sm text-[#71717a] dark:text-gray-400 bg-slate-900/50 p-4 rounded-xl">
                     <div className="flex items-center justify-between">
                       <span className="flex items-center gap-2"><User className="w-4 h-4" /> Surgeon:</span>
                       <span className="text-slate-200">{op.surgeon}</span>

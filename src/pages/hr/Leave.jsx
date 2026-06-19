@@ -181,8 +181,8 @@ export default function Leave() {
  </Button>
  </div>
  <div className="grid grid-cols-3 gap-4">
- <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary">
+ <div className="stat-card-premium bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
  <CalendarDays className="w-5 h-5" />
  </div>
  <div>
@@ -190,8 +190,8 @@ export default function Leave() {
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("total_requests", "Total Requests")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-xl bg-amber-100 flex items-center justify-center text-amber-600">
+ <div className="stat-card-premium bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600">
  <CalendarOff className="w-5 h-5" />
  </div>
  <div>
@@ -199,8 +199,8 @@ export default function Leave() {
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("pending_review", "Pending Review")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary">
+ <div className="stat-card-premium bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
  <Check className="w-5 h-5" />
  </div>
  <div>
@@ -224,7 +224,7 @@ export default function Leave() {
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  {requests.map(req => {
  return (
- <div key={req.id} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden flex flex-col relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={req.id} className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden flex flex-col relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
@@ -254,7 +254,7 @@ export default function Leave() {
  <h3 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Link to="/employees" className="hover:underline text-primary">{req.employeeName}</Link>
  </h3>
- <span className={`text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-md-sm ${
+ <span className={`text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-sm ${
  req.status === 'Pending' ? 'bg-amber-100 text-amber-700' : 
  req.status === 'Approved' ? 'bg-slate-100 text-primary/90' : 'bg-red-100 text-red-700'
 }`}>{req.status}</span>
@@ -285,7 +285,7 @@ export default function Leave() {
  )}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editTargetId ? 'Edit Leave Request' : 'New Leave Request'}</h2>
  <div className="space-y-3">
  <div>

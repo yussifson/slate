@@ -62,8 +62,8 @@ function daysWaiting(dateStr) {
 function StatusBadge({ status}) {
  const meta = STATUS_META[status] || STATUS_META.pending;
  return (
- <span className={cn('inline-flex items-center gap-2.5 px-2.5 py-0.5 rounded-md-full text-xs font-semibold', meta.color)}>
- <span className={cn('w-1.5 h-1.5 rounded-md-full', meta.dot)} />
+ <span className={cn('inline-flex items-center gap-2.5 px-2.5 py-0.5 rounded-full text-xs font-semibold', meta.color)}>
+ <span className={cn('w-1.5 h-1.5 rounded-full', meta.dot)} />
  {meta.label}
  </span>
  );
@@ -90,12 +90,12 @@ function ConfirmActionDialog({ open, action, item, onClose, onConfirm}) {
  >
  <motion.div
  initial={{ scale: 0.95, opacity: 0}} animate={{ scale: 1, opacity: 1}} exit={{ scale: 0.95, opacity: 0}}
- className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 w-full max-w-md rounded-md-2xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 w-full max-w-md rounded-2xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  onClick={e => e.stopPropagation()}
  >
  <div className="p-5 border-b border-primary/40 flex justify-between items-center">
  <h2 className="text-lg font-semibold text-foreground">{m.title}</h2>
- <button onClick={onClose} className="p-1.5 rounded-md-full hover:bg-muted">
+ <button onClick={onClose} className="p-1.5 rounded-full hover:bg-muted">
  <XCircle className="w-5 h-5 text-[#71717a] dark:text-gray-400" />
  </button>
  </div>
@@ -113,16 +113,16 @@ function ConfirmActionDialog({ open, action, item, onClose, onConfirm}) {
  onChange={e => setComment(e.target.value)}
  rows={3}
  placeholder="Add a note for the requestor..."
- className="w-full px-3 py-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full px-3 py-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  <div className="flex justify-end gap-3 pt-1">
- <button onClick={onClose} className="h-10 px-5 rounded-md-xl bg-muted text-sm font-medium hover:bg-muted/80">
+ <button onClick={onClose} className="h-10 px-5 rounded-xl bg-muted text-sm font-medium hover:bg-muted/80">
  Cancel
  </button>
  <button
  onClick={() => { onConfirm(comment); setComment('');}}
- className={cn('h-10 px-5 rounded-md-xl text-sm font-semibold transition-all', m.btn)}
+ className={cn('h-10 px-5 rounded-xl text-sm font-semibold transition-all', m.btn)}
  >
  {m.label}
  </button>
@@ -146,7 +146,7 @@ function ApprovalChain({ steps = [], currentStep = 0}) {
  <div key={idx} className="flex items-center shrink-0">
  <div className="flex flex-col items-center gap-2">
  <div className={cn(
- 'w-8 h-8 rounded-md-full flex items-center justify-center text-xs font-semibold border-2 transition-all',
+ 'w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold border-2 transition-all',
  isComplete ? 'bg-emerald-500/10 border-emerald-500 text-white' :
  isCurrent ? 'bg-primary border-primary text-white animate-pulse' :
  'bg-muted border-primary/40 text-[#71717a] dark:text-gray-400'
@@ -167,7 +167,7 @@ function ApprovalChain({ steps = [], currentStep = 0}) {
  </div>
  {idx < steps.length - 1 && (
  <div className={cn(
- 'h-0.5 w-8 mx-1 rounded-md-full transition-all',
+ 'h-0.5 w-8 mx-1 rounded-full transition-all',
  idx < currentStep ? 'bg-emerald-400' : 'bg-primary/40'
  )} />
  )}
@@ -187,18 +187,18 @@ function InboxCard({ item, onAction}) {
  <motion.div
  initial={{ opacity: 0, y: 10}}
  animate={{ opacity: 1, y: 0}}
- className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-4 transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="flex items-start gap-3">
- <div className="w-10 h-10 rounded-md-xl bg-primary/10 flex items-center justify-center shrink-0">
+ <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
  <CheckCircle className="w-5 h-5 text-primary" />
  </div>
  <div className="flex-1 min-w-0">
  <div className="flex flex-wrap items-center gap-2.5 mb-1">
- <span className={cn('px-2 py-0.5 rounded-md-full text-[10px] font-semibold uppercase tracking-wide', RECORD_TYPE_COLOR(item.record_type))}>
+ <span className={cn('px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide', RECORD_TYPE_COLOR(item.record_type))}>
  {item.record_type}
  </span>
- <span className={cn('px-2 py-0.5 rounded-md-full text-[10px] font-semibold', PRIORITY_META[priority]?.color)}>
+ <span className={cn('px-2 py-0.5 rounded-full text-[10px] font-semibold', PRIORITY_META[priority]?.color)}>
  {priority}
  </span>
  <StatusBadge status={item.status} />
@@ -227,19 +227,19 @@ function InboxCard({ item, onAction}) {
  <div className="flex gap-2 mt-4 pt-3 border-t border-primary/40">
  <button
  onClick={() => onAction('approve', item)}
- className="flex-1 h-9 rounded-md-xl bg-emerald-500/10/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold flex items-center justify-center gap-2.5 hover:bg-emerald-500/10/20 transition-colors border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 dark:border-emerald-800 tracking-[0.04em]"
+ className="flex-1 h-9 rounded-xl bg-emerald-500/10/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold flex items-center justify-center gap-2.5 hover:bg-emerald-500/10/20 transition-colors border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 dark:border-emerald-800 tracking-[0.04em]"
  >
  <CheckCircle className="w-3.5 h-3.5" /> Approve
  </button>
  <button
  onClick={() => onAction('reject', item)}
- className="flex-1 h-9 rounded-md-xl bg-red-500/10/10 text-red-600 dark:text-red-400 text-xs font-semibold flex items-center justify-center gap-2.5 hover:bg-red-500/10/20 transition-colors border-[0.5px] border-black/9 dark:border-white/8 border-red-200 dark:border-red-800 tracking-[0.04em]"
+ className="flex-1 h-9 rounded-xl bg-red-500/10/10 text-red-600 dark:text-red-400 text-xs font-semibold flex items-center justify-center gap-2.5 hover:bg-red-500/10/20 transition-colors border-[0.5px] border-black/9 dark:border-white/8 border-red-200 dark:border-red-800 tracking-[0.04em]"
  >
  <XCircle className="w-3.5 h-3.5" /> Reject
  </button>
  <button
  onClick={() => onAction('changes_requested', item)}
- className="flex-1 h-9 rounded-md-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold flex items-center justify-center gap-2.5 hover:bg-amber-500/20 transition-colors border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 dark:border-amber-800 tracking-[0.04em]"
+ className="flex-1 h-9 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold flex items-center justify-center gap-2.5 hover:bg-amber-500/20 transition-colors border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 dark:border-amber-800 tracking-[0.04em]"
  >
  <RotateCcw className="w-3.5 h-3.5" /> Changes
  </button>
@@ -270,7 +270,7 @@ function AllRequestsRow({ item, expanded, onToggle}) {
  </div>
  </td>
  <td className="px-4 py-3">
- <span className={cn('px-2 py-0.5 rounded-md-full text-[10px] font-semibold uppercase tracking-wide', RECORD_TYPE_COLOR(item.record_type))}>
+ <span className={cn('px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide', RECORD_TYPE_COLOR(item.record_type))}>
  {item.record_type}
  </span>
  </td>
@@ -366,7 +366,7 @@ function TemplatesPanel({ companyId}) {
  return (
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
  {/* Create form */}
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h3 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
  <Plus className="w-4 h-4 text-primary" /> New Template
  </h3>
@@ -377,7 +377,7 @@ function TemplatesPanel({ companyId}) {
  value={form.name}
  onChange={e => setForm(f => ({ ...f, name: e.target.value}))}
  placeholder="e.g. Leave Approval"
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  <div>
@@ -390,20 +390,20 @@ function TemplatesPanel({ companyId}) {
  <div className="space-y-2">
  {form.steps.map((step, i) => (
  <div key={i} className="flex items-center gap-2">
- <div className="w-6 h-6 rounded-md-full bg-primary/10 flex items-center justify-center text-[10px] font-semibold text-primary shrink-0">
+ <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-semibold text-primary shrink-0">
  {i + 1}
  </div>
  <input
  value={step.stepName}
  onChange={e => updateStep(i, 'stepName', e.target.value)}
  placeholder="Step name (e.g. Line Manager)"
- className="flex-1 h-9 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 tracking-[0.04em]"
+ className="flex-1 h-9 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 tracking-[0.04em]"
  />
  <input
  value={step.role}
  onChange={e => updateStep(i, 'role', e.target.value)}
  placeholder="Role (e.g. manager)"
- className="flex-1 h-9 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 tracking-[0.04em]"
+ className="flex-1 h-9 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 tracking-[0.04em]"
  />
  {form.steps.length > 1 && (
  <button type="button" onClick={() => removeStep(i)} className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl">
@@ -417,7 +417,7 @@ function TemplatesPanel({ companyId}) {
  <div className="flex justify-end pt-1">
  <button
  type="submit" disabled={saving}
- className="h-10 px-6 bg-primary text-white rounded-md-xl text-sm font-semibold hover:bg-primary/90 disabled:opacity-50 flex items-center gap-2"
+ className="h-10 px-6 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 disabled:opacity-50 flex items-center gap-2"
  >
  {saving && <Loader2 className="w-4 h-4 animate-spin" />}
  Save Template
@@ -432,7 +432,7 @@ function TemplatesPanel({ companyId}) {
  {isLoading ? (
  <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
  ) : templates.length === 0 ? (
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-md-2xl p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-2xl p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <LayoutTemplate className="w-10 h-10 text-[#71717a] dark:text-gray-400 mx-auto mb-2 opacity-40" />
  <p className="text-sm text-[#71717a] dark:text-gray-400">No templates yet. Create your first one.</p>
  </div>
@@ -442,7 +442,7 @@ function TemplatesPanel({ companyId}) {
  key={t.id}
  initial={{ opacity: 0, y: 8}}
  animate={{ opacity: 1, y: 0}}
- className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="flex items-center justify-between mb-3">
  <h4 className="text-sm font-semibold text-foreground">{t.name}</h4>
@@ -584,7 +584,7 @@ export default function UnivApprovalEngine() {
  <div className="flex items-center justify-between mb-4">
  <div>
  <h1 className="text-2xl font-black text-foreground flex items-center gap-2.5 tracking-[-0.02em]">
- <div className="w-9 h-9 rounded-md-xl bg-primary/10 flex items-center justify-center">
+ <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
  <CheckCircle className="w-5 h-5 text-primary" />
  </div>
  Approval Engine
@@ -594,7 +594,7 @@ export default function UnivApprovalEngine() {
  </p>
  </div>
  <div className="flex items-center gap-2">
- <div className="px-3 py-1.5 rounded-md-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-xs font-semibold flex items-center gap-2.5 tracking-[0.04em]">
+ <div className="px-3 py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-xs font-semibold flex items-center gap-2.5 tracking-[0.04em]">
  <Clock className="w-3.5 h-3.5" />
  {inboxItems.length} Pending
  </div>
@@ -617,7 +617,7 @@ export default function UnivApprovalEngine() {
  <tab.Icon className="w-4 h-4" />
  {tab.label}
  {tab.id === 'inbox' && inboxItems.length > 0 && (
- <span className="w-5 h-5 rounded-md-full bg-primary text-white text-[10px] font-semibold flex items-center justify-center">
+ <span className="w-5 h-5 rounded-full bg-primary text-white text-[10px] font-semibold flex items-center justify-center">
  {inboxItems.length}
  </span>
  )}
@@ -641,7 +641,7 @@ export default function UnivApprovalEngine() {
  animate={{ opacity: 1, y: 0}}
  className="flex flex-col items-center justify-center py-20 text-center"
  >
- <div className="w-16 h-16 rounded-md-2xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center mb-4">
  <CheckCheck className="w-8 h-8 text-emerald-500" />
  </div>
  <h3 className="text-lg font-semibold text-foreground mb-1">All clear!</h3>
@@ -666,7 +666,7 @@ export default function UnivApprovalEngine() {
  value={search}
  onChange={e => setSearch(e.target.value)}
  placeholder="Search requests..."
- className="w-full h-10 pl-9 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-10 pl-9 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
 
@@ -675,7 +675,7 @@ export default function UnivApprovalEngine() {
  <Loader2 className="w-8 h-8 animate-spin text-primary" />
  </div>
  ) : (
- <div className="overflow-auto rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="overflow-auto rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm min-w-[700px]">
  <thead className="border-b border-primary/40 bg-muted/40 sticky top-0">
  <tr>

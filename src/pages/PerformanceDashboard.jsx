@@ -100,8 +100,8 @@ export default function PerformanceDashboard() {
       />
       {/* Top Performer Highlight */}
       {topBiller && (
-        <div className="bg-gradient-to-r from-primary to-primary/70 rounded-md-xl p-5 text-white flex items-center gap-4">
-          <div className="w-12 h-12 rounded-md-full bg-white dark:bg-slate-900/40/20 flex items-center justify-center text-xl font-semibold shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-gradient-to-r from-primary to-primary/70 rounded-xl p-5 text-white flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-white dark:bg-slate-900/40/20 flex items-center justify-center text-xl font-semibold shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             {topBiller.full_name?.[0]}
           </div>
           <div className="flex-1 min-w-0">
@@ -119,7 +119,7 @@ export default function PerformanceDashboard() {
       )}
       {/* Chart */}
       {chartData.length > 0 && (
-        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <h3 className="text-sm font-semibold mb-4">{t("hours_logged_by_lawyer", "Hours Logged by Lawyer")}</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={chartData}>
@@ -136,9 +136,9 @@ export default function PerformanceDashboard() {
       <div className="space-y-3">
         {lawyerMetrics.map((lawyer, idx) => {
           return (
-            <div key={lawyer.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <div key={lawyer.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-9 h-9 rounded-md-full bg-slate-100 flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
                   <span className="text-sm font-semibold text-primary">{lawyer.full_name?.[0]}</span>
                 </div>
                 <div className="flex-1 min-w-0">
@@ -173,7 +173,7 @@ export default function PerformanceDashboard() {
           );
         })}
         {lawyerMetrics.length === 0 && (
-          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-10 text-center text-sm text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_lawyer_records_found", "No lawyer records found")}</div>
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-10 text-center text-sm text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_lawyer_records_found", "No lawyer records found")}</div>
         )}
       </div>
     </div>

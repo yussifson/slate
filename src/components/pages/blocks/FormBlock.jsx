@@ -37,7 +37,7 @@ export default function FormBlock({ dataConfig, styleConfig}) {
  const padClass = padding || 'p-6';
 
  return (
- <div className={cn("rounded-md-xl border ", bgClass, padClass)}>
+ <div className={cn("rounded-xl border ", bgClass, padClass)}>
  <h3 className="font-semibold text-lg mb-4">Create New {table ? table.replace(/_/g, ' ') : 'Record'}</h3>
  <form onSubmit={handleSubmit} className="space-y-4">
  {fields?.map((f, i) => (

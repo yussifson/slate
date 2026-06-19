@@ -112,7 +112,7 @@ export default function FirmFeaturesManager({ firm, onClose}) {
 
  return (
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm animate-in fade-in">
- <div className="bg-card w-full max-w-4xl rounded-md-2xl flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card w-full max-w-4xl rounded-2xl flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  
  <div className="p-5 border-b border-primary/40 flex justify-between items-center bg-muted/20 shrink-0">
  <div>
@@ -121,7 +121,7 @@ export default function FirmFeaturesManager({ firm, onClose}) {
  </h2>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">Assigning universal components to <strong className="text-foreground">{firm.name}</strong></p>
  </div>
- <button onClick={onClose} className="p-2 hover:bg-muted rounded-md-full text-[#71717a] dark:text-gray-400 transition-colors">
+ <button onClick={onClose} className="p-2 hover:bg-muted rounded-full text-[#71717a] dark:text-gray-400 transition-colors">
  <X className="w-5 h-5" />
  </button>
  </div>
@@ -152,7 +152,7 @@ export default function FirmFeaturesManager({ firm, onClose}) {
  <button
  key={comp.id}
  onClick={() => toggleFeature(comp)}
- className={`flex items-start gap-3 p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 text-left transition-all ${
+ className={`flex items-start gap-3 p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 text-left transition-all ${
  isAssigned 
  ? 'bg-primary/5 border-primary/40 ' 
  : 'bg-background border-primary/40 hover:border-primary/30 hover:bg-muted/30'

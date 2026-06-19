@@ -95,7 +95,7 @@ export default function UniAdmissions() {
 };
 
  const columns = [
- { id: 'name', header: 'Candidate Name', render: (_, r) => <div className="flex items-center gap-3"><div className="w-8 h-8 rounded-md-full bg-[var(--primary)] text-white flex items-center justify-center font-semibold text-xs tracking-[0.04em]">{r.name?.substring(0,2).toUpperCase()}</div><span className="font-semibold text-[var(--color-text-primary)]">{r.name}</span></div>},
+ { id: 'name', header: 'Candidate Name', render: (_, r) => <div className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-[var(--primary)] text-white flex items-center justify-center font-semibold text-xs tracking-[0.04em]">{r.name?.substring(0,2).toUpperCase()}</div><span className="font-semibold text-[var(--color-text-primary)]">{r.name}</span></div>},
  { id: 'email', header: 'Contact', render: (_, r) => <span className="text-[var(--color-text-secondary)]">{r.email}</span>},
  { id: 'major', header: 'Intended Major', render: (_, r) => <span className="inline-flex items-center px-2 py-1 rounded-md-[var(--radius-sm)] text-[11px] font-medium bg-[var(--color-surface-2)] text-[var(--color-text-secondary)]">{r.major}</span>},
  { id: 'gpa', header: 'Entrance GPA', render: (_, r) => <span className="font-mono font-semibold text-[var(--color-text-primary)]">{r.gpa}</span>},
@@ -141,9 +141,9 @@ export default function UniAdmissions() {
  <h2 className="font-display font-semibold text-[var(--text-2xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">{selectedApplicant.name}</h2>
  <div className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1 flex items-center gap-3">
  <span>Major: {selectedApplicant.major}</span>
- <span className="w-1 h-1 rounded-md-full bg-[var(--color-border-strong)]" />
+ <span className="w-1 h-1 rounded-full bg-[var(--color-border-strong)]" />
  <span>Entry GPA: <span className="font-mono font-semibold text-[var(--color-text-primary)]">{selectedApplicant.gpa}</span></span>
- <span className="w-1 h-1 rounded-md-full bg-[var(--color-border-strong)]" />
+ <span className="w-1 h-1 rounded-full bg-[var(--color-border-strong)]" />
  <OrbitStatusBadge status={selectedApplicant.status} />
  </div>
  </div>

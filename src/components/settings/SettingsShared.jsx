@@ -16,7 +16,7 @@ export function SectionCard({ title, subtitle, onSave, saving, children}) {
  onClick={onSave} 
  disabled={saving} 
  size="sm" 
- className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 shrink-0 rounded-md-xl px-5 h-10"
+ className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 shrink-0 rounded-xl px-5 h-10"
  >
  {saving ? (
  <Loader2 className="w-4 h-4 animate-spin" />
@@ -40,7 +40,7 @@ export function Field({ label, children, full}) {
  return (
  <div className={`space-y-2.5 ${full ? "md:col-span-2" : ""}`}>
  <Label className="text-xs font-semibold text-foreground/70 tracking-widest uppercase tracking-[0.04em]">{label}</Label>
- <div className="relative rounded-md-xl ">{children}</div>
+ <div className="relative rounded-xl ">{children}</div>
  </div>
  );
 }

@@ -26,17 +26,17 @@ export default function StudentDashboard() {
  className="flex justify-between items-center bg-gradient-to-r from-[var(--primary)] to-[hsl(213,89%,35%)] rounded-md-[var(--radius-xl)] p-8 text-slate-900 dark:text-white overflow-hidden relative"
  >
  {/* Noise overlay removed to fix 404 */}
- <div className="absolute top-[-50%] right-[-10%] w-[50%] h-[200%] bg-white dark:bg-slate-900/40/10 blur-[80px] rounded-md-full pointer-events-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+ <div className="absolute top-[-50%] right-[-10%] w-[50%] h-[200%] bg-white dark:bg-slate-900/40/10 blur-[80px] rounded-full pointer-events-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  <div className="relative z-10">
  <h1 className="text-3xl font-display font-semibold mb-2 tracking-[-0.02em]">Welcome back, Learner!</h1>
  <p className="opacity-90 max-w-lg">Pick up where you left off. You have 2 courses in progress and 1 new certificate available.</p>
  </div>
  <div className="hidden md:flex gap-6 relative z-10">
- <div className="text-center bg-white/50 dark:bg-black/10 p-5 rounded-md-xl backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-white/20 text-slate-900 dark:text-white  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="text-center bg-white/50 dark:bg-black/10 p-5 rounded-xl backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-white/20 text-slate-900 dark:text-white  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h3 className="text-4xl font-semibold font-display tracking-tight tracking-[-0.02em]">0</h3>
  <p className="text-[10px] uppercase tracking-widest font-semibold opacity-80 mt-1 tracking-[0.04em]">Hours Learned</p>
  </div>
- <div className="text-center bg-white/50 dark:bg-black/10 p-5 rounded-md-xl backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-white/20 text-slate-900 dark:text-white  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="text-center bg-white/50 dark:bg-black/10 p-5 rounded-xl backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-white/20 text-slate-900 dark:text-white  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h3 className="text-4xl font-semibold font-display tracking-tight tracking-[-0.02em]">0</h3>
  <p className="text-[10px] uppercase tracking-widest font-semibold opacity-80 mt-1 tracking-[0.04em]">Certificates</p>
  </div>
@@ -60,7 +60,7 @@ export default function StudentDashboard() {
  <BookOpen className="w-12 h-12 mx-auto text-[var(--primary)] opacity-30 mb-4" />
  <h3 className="font-semibold text-lg text-[var(--color-text-primary)]">No active courses</h3>
  <p className="text-sm text-[var(--color-text-secondary)] mt-1 mb-6">You aren't enrolled in any courses yet. Explore our catalog to start learning.</p>
- <button onClick={() => navigate('/o/courses')} className="px-5 py-2.5 bg-[var(--primary)] text-white text-sm font-semibold rounded-md-full hover:opacity-90 transition-opacity ">
+ <button onClick={() => navigate('/o/courses')} className="px-5 py-2.5 bg-[var(--primary)] text-white text-sm font-semibold rounded-full hover:opacity-90 transition-opacity ">
  Browse Catalog
  </button>
  </motion.div>
@@ -90,7 +90,7 @@ export default function StudentDashboard() {
  <span className="text-xs font-medium text-[var(--color-text-tertiary)] flex items-center gap-2.5 tracking-[0.04em]">No progress yet</span>
  </div>
  </div>
- <button onClick={() => navigate(`/o/learn/${course.id}`)} className="w-full sm:w-auto px-5 py-2.5 bg-[var(--color-surface-1)] text-[var(--primary)] border-[0.5px] border-black/9 dark:border-white/8 border-[var(--primary)]/30 text-sm font-semibold rounded-md-full hover:bg-[var(--primary)] hover:text-white hover:border-[var(--primary)] transition-colors whitespace-nowrap group-">
+ <button onClick={() => navigate(`/o/learn/${course.id}`)} className="w-full sm:w-auto px-5 py-2.5 bg-[var(--color-surface-1)] text-[var(--primary)] border-[0.5px] border-black/9 dark:border-white/8 border-[var(--primary)]/30 text-sm font-semibold rounded-full hover:bg-[var(--primary)] hover:text-white hover:border-[var(--primary)] transition-colors whitespace-nowrap group-">
  Resume
  </button>
  </motion.div>

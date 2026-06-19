@@ -164,8 +164,8 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
 
  if (!data || data.length === 0) {
  return (
- <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
- <div className="w-16 h-16 rounded-md-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 -emerald-500/20">
+ <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 -emerald-500/20">
  <CalendarIcon className="w-8 h-8 text-white" />
  </div>
  <h3 className="text-lg font-semibold text-slate-800 mb-1">No Events Yet</h3>
@@ -178,7 +178,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
 
  return (
  <>
- <div className="bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Calendar Header */}
  <div className="bg-gradient-to-r from-primary via-primary to-primary px-6 py-5">
  <div className="flex items-center justify-between">
@@ -250,7 +250,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
  <div className="flex items-center justify-between mb-1">
  <span
  className={`
- text-sm font-medium w-7 h-7 flex items-center justify-center rounded-md-full
+ text-sm font-medium w-7 h-7 flex items-center justify-center rounded-full
  ${!cell.inMonth ? 'text-slate-300' : 'text-foreground'}
  ${isToday ? 'bg-primary text-white font-semibold ' : ''}
  `}
@@ -258,7 +258,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
  {cell.day}
  </span>
  {hasEvents && (
- <span className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400 bg-muted rounded-md-full px-1.5 py-0.5">
+ <span className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400 bg-muted rounded-full px-1.5 py-0.5">
  {cell.events.length}
  </span>
  )}
@@ -274,7 +274,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
  key={evIdx}
  className={`flex items-center gap-2.5 px-1.5 py-0.5 rounded-lg text-[10px] font-medium truncate ${color.light}`}
  >
- <span className={`w-1.5 h-1.5 rounded-md-full ${color.bg} flex-shrink-0`} />
+ <span className={`w-1.5 h-1.5 rounded-full ${color.bg} flex-shrink-0`} />
  <span className="truncate">{getRecordTitle(ev.record, fieldDefinitions)}</span>
  </div>
  );
@@ -299,7 +299,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
  const color = EVENT_COLORS[idx % EVENT_COLORS.length];
  return (
  <div key={df.name} className="flex items-center gap-2.5">
- <span className={`w-2.5 h-2.5 rounded-md-full ${color.bg}`} />
+ <span className={`w-2.5 h-2.5 rounded-full ${color.bg}`} />
  <span className="text-xs text-[#71717a] dark:text-gray-400 font-medium tracking-[0.04em]">
  {df.name.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
  </span>
@@ -328,7 +328,7 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
  return (
  <div
  key={idx}
- className={`p-4 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card transition-all group ring-1 ${color.ring}`}
+ className={`p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card transition-all group ring-1 ${color.ring}`}
  >
  <div className="flex items-start justify-between">
  <div className="flex-1 min-w-0">

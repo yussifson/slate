@@ -74,13 +74,13 @@ export default function CampusMarketplace() {
             <div className="space-y-6">
               <div>
                 <label className="text-xs font-black text-emerald-300 uppercase tracking-widest mb-2 block tracking-[0.04em]">Item Name</label>
-                <Input value={newItemName} onChange={e => setNewItemName(e.target.value)} placeholder="e.g. Physics Book" className="h-14 font-semibold border-2 border-emerald-700 rounded-md-none bg-emerald-800 text-white placeholder:text-emerald-500 focus-visible:ring-0 focus-visible:border-white" />
+                <Input value={newItemName} onChange={e => setNewItemName(e.target.value)} placeholder="e.g. Physics Book" className="h-14 font-semibold border-2 border-emerald-700 rounded-none bg-emerald-800 text-white placeholder:text-emerald-500 focus-visible:ring-0 focus-visible:border-white" />
               </div>
               <div>
                 <label className="text-xs font-black text-emerald-300 uppercase tracking-widest mb-2 block tracking-[0.04em]">Price ($)</label>
-                <Input type="number" value={newItemPrice} onChange={e => setNewItemPrice(e.target.value)} placeholder="0.00" className="h-14 font-semibold border-2 border-emerald-700 rounded-md-none bg-emerald-800 text-white placeholder:text-emerald-500 focus-visible:ring-0 focus-visible:border-white" />
+                <Input type="number" value={newItemPrice} onChange={e => setNewItemPrice(e.target.value)} placeholder="0.00" className="h-14 font-semibold border-2 border-emerald-700 rounded-none bg-emerald-800 text-white placeholder:text-emerald-500 focus-visible:ring-0 focus-visible:border-white" />
               </div>
-              <Button onClick={() => listItem.mutate()} disabled={listItem.isPending} className="w-full h-16 rounded-md-none bg-emerald-400 hover:bg-emerald-300 text-emerald-900 border-2 border-emerald-400 font-black text-xl uppercase tracking-widest mt-6 transition-colors tracking-[0.04em]">
+              <Button onClick={() => listItem.mutate()} disabled={listItem.isPending} className="w-full h-16 rounded-none bg-emerald-400 hover:bg-emerald-300 text-emerald-900 border-2 border-emerald-400 font-black text-xl uppercase tracking-widest mt-6 transition-colors tracking-[0.04em]">
                 <Plus className="w-6 h-6 mr-2" /> List Item
               </Button>
             </div>
@@ -103,7 +103,7 @@ export default function CampusMarketplace() {
                     <p className="text-xs font-black text-emerald-600 uppercase tracking-widest mb-2 border-2 border-emerald-200 inline-block px-2 py-1 tracking-[0.04em]">{item.status}</p>
                     <h3 className="font-black text-2xl text-emerald-900 mb-6 line-clamp-2 uppercase leading-tight tracking-[-0.02em] tracking-[0.04em]">{item.title}</h3>
                   </div>
-                  <Button variant="outline" className="w-full h-14 rounded-md-none border-2 border-emerald-900 font-black text-lg uppercase tracking-widest hover:bg-emerald-900 hover:text-white transition-colors tracking-[0.04em]">
+                  <Button variant="outline" className="w-full h-14 rounded-none border-2 border-emerald-900 font-black text-lg uppercase tracking-widest hover:bg-emerald-900 hover:text-white transition-colors tracking-[0.04em]">
                     <MessageCircle className="w-5 h-5 mr-3" /> Contact
                   </Button>
                 </div>

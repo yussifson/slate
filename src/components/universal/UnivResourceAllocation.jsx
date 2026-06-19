@@ -188,25 +188,25 @@ export default function UnivResourceAllocation({
 
  {/* Global Stats */}
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 flex flex-col justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 flex flex-col justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Avg Utilization</div>
  <div className="flex items-center gap-2">
  <div className="text-2xl font-semibold text-foreground tracking-[-0.02em]">{avgUtilization}%</div>
  <Activity className={cn("w-5 h-5", avgUtilization > 100 ? "text-red-500" : avgUtilization > 80 ? "text-emerald-500" : "text-blue-500")} />
  </div>
- <div className="w-full h-1.5 bg-muted rounded-md-full mt-2 overflow-hidden">
+ <div className="w-full h-1.5 bg-muted rounded-full mt-2 overflow-hidden">
  <div className={cn("h-full transition-all", avgUtilization > 100 ? "bg-red-500/10" : avgUtilization > 80 ? "bg-emerald-500/10" : "bg-blue-500/10")} style={{ width: `${Math.min(avgUtilization, 100)}%`}}></div>
  </div>
  </div>
- <div className="bg-emerald-50 dark:bg-emerald-900/10 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-100 dark:border-emerald-800 rounded-md-xl p-4 flex flex-col justify-center">
+ <div className="bg-emerald-50 dark:bg-emerald-900/10 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-100 dark:border-emerald-800 rounded-xl p-4 flex flex-col justify-center">
  <div className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-1 tracking-[0.04em]">Available</div>
  <div className="text-2xl font-semibold text-emerald-700 dark:text-emerald-300 tracking-[-0.02em]">{available} <span className="text-sm font-medium opacity-70">people</span></div>
  </div>
- <div className="bg-red-50 dark:bg-red-900/10 border-[0.5px] border-black/9 dark:border-white/8 border-red-100 dark:border-red-800 rounded-md-xl p-4 flex flex-col justify-center">
+ <div className="bg-red-50 dark:bg-red-900/10 border-[0.5px] border-black/9 dark:border-white/8 border-red-100 dark:border-red-800 rounded-xl p-4 flex flex-col justify-center">
  <div className="text-xs font-semibold uppercase tracking-wider text-red-600 dark:text-red-400 mb-1 tracking-[0.04em]">Overbooked</div>
  <div className="text-2xl font-semibold text-red-700 dark:text-red-300 tracking-[-0.02em]">{overbooked} <span className="text-sm font-medium opacity-70">people</span></div>
  </div>
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 flex flex-col justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 flex flex-col justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Total Headcount</div>
  <div className="text-2xl font-semibold text-foreground tracking-[-0.02em]">{totalResources}</div>
  </div>
@@ -246,10 +246,10 @@ export default function UnivResourceAllocation({
  const isOverbooked = util > 100;
  
  return (
- <div key={resource.id} className={cn("bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl p-6 transition- group relative flex flex-col", isOverbooked ? "border-red-200 dark:border-red-800" : "border-primary/40")}>
+ <div key={resource.id} className={cn("bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-6 transition- group relative flex flex-col", isOverbooked ? "border-red-200 dark:border-red-800" : "border-primary/40")}>
  <div className="flex justify-between items-start mb-4">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-md-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center font-semibold text-primary shrink-0">
+ <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center font-semibold text-primary shrink-0">
  {resource.name.charAt(0).toUpperCase()}
  </div>
  <div>
@@ -278,7 +278,7 @@ export default function UnivResourceAllocation({
  </span>
  <span className={cn("text-lg font-black", isOverbooked ? "text-red-500" : "text-foreground")}>{util}%</span>
  </div>
- <div className="w-full h-1.5 bg-muted rounded-md-full overflow-hidden">
+ <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
  <div className={cn("h-full transition-all", isOverbooked ? "bg-red-500/10" : util > 80 ? "bg-emerald-500/10" : "bg-blue-500/10")} style={{ width: `${Math.min(util, 100)}%`}}></div>
  </div>
  </div>
@@ -299,7 +299,7 @@ export default function UnivResourceAllocation({
  initial={{ opacity: 0, scale: 0.95, y: 20}}
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: 20}}
- className="relative w-full max-w-lg bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="relative w-full max-w-lg bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="px-6 py-4 border-b border-primary/40 flex items-center justify-between bg-muted/20">
  <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">

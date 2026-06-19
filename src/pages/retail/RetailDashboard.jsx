@@ -48,7 +48,7 @@ export default function RetailDashboard() {
  if (isLoading) {
  return (
  <div className="flex-1 p-6 flex items-center justify-center">
- <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-md-full animate-spin"></div>
+ <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
  </div>
  );
 }
@@ -56,7 +56,7 @@ export default function RetailDashboard() {
  return (
  <div className="flex-1 p-6 overflow-y-auto bg-slate-50/50 dark:bg-transparent">
  <div className="max-w-7xl mx-auto space-y-6">
- <div className="relative overflow-hidden bg-gradient-to-r from-orange-500 to-amber-600 rounded-md-xl p-6 text-white mb-6">
+ <div className="relative overflow-hidden bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl p-6 text-white mb-6">
  <div className="flex flex-col md:flex-row items-center justify-between gap-4">
  <div className="text-center md:text-left">
  <h1 className="text-2xl font-semibold tracking-tight tracking-[-0.02em]">Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Manager'}!</h1>

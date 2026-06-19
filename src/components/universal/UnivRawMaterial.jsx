@@ -97,10 +97,10 @@ const UnivRawMaterial = () => {
  <motion.div 
  initial={{ opacity: 0, y: -20}}
  animate={{ opacity: 1, y: 0}}
- className="flex items-center justify-between mb-8 bg-card p-6 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="flex items-center justify-between mb-8 bg-card p-6 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="view-header flex items-center gap-4">
- <div className="p-3 bg-blue-50 text-blue-600 rounded-md-xl">
+ <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
  <Box size={28} />
  </div>
  <div>
@@ -122,7 +122,7 @@ const UnivRawMaterial = () => {
  </button>
  ))}
  </div>
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
@@ -141,7 +141,7 @@ const UnivRawMaterial = () => {
  <motion.div 
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
- className="mb-8 bg-card p-6 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="mb-8 bg-card p-6 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <h2 className="text-lg font-semibold text-foreground mb-4">
  {editId ? 'Edit Record' : 'Create New Record'}
@@ -215,7 +215,7 @@ const UnivRawMaterial = () => {
  </motion.div>
  )}
 
- <div className="bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-background/50">
  <h3 className="font-semibold text-foreground">Recent Records</h3>
  <button onClick={fetchData} className="text-[#71717a] dark:text-gray-400 hover:text-blue-600 transition-colors p-2 rounded-xl hover:bg-blue-50">
@@ -240,7 +240,7 @@ const UnivRawMaterial = () => {
  <thead>
  <tr className="bg-background text-[#71717a] dark:text-gray-400 text-sm uppercase tracking-wider tracking-[0.04em]">
  <th className="p-4 font-medium">Material Name</th><th className="p-4 font-medium">Supplier</th><th className="p-4 font-medium">Stock Level</th><th className="p-4 font-medium">Reorder Point</th>
- <th className="p-4 font-medium rounded-md-tr-xl">Actions</th>
+ <th className="p-4 font-medium rounded-tr-xl">Actions</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-slate-100">

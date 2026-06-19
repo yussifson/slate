@@ -147,7 +147,7 @@ export default function Events() {
  {isDbLoading ? (
  <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_calendar", "Loading calendar...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Calendar className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
  <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_upcoming_gatherings", "No upcoming gatherings")}</p>
  <p className="text-sm mt-1 max-w-md mx-auto">{t(
@@ -159,14 +159,14 @@ export default function Events() {
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  {filtered.map(event => {
  return (
- <div key={event.id} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex flex-col sm:flex-row gap-5 relative group transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={event.id} className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex flex-col sm:flex-row gap-5 relative group transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 rounded-xl p-4 min-w-[100px] shrink-0 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
  <span className="text-xs font-semibold uppercase tracking-widest tracking-[0.04em]">{event.date?.split(' ')[0] || 'Upcoming'}</span>
  <span className="text-2xl font-black tracking-[-0.02em]">{event.date?.includes(' ') ? event.date.split(' ')[1]?.replace(',', '') : 'Soon'}</span>
  </div>
  <div className="flex-1">
  <div className="flex justify-between items-start">
- <span className="text-[10px] font-semibold uppercase tracking-wider text-primary dark:text-primary/70 bg-slate-100 dark:bg-slate-500 px-2 py-0.5 rounded-md-full mb-2 inline-block tracking-[0.04em]">
+ <span className="text-[10px] font-semibold uppercase tracking-wider text-primary dark:text-primary/70 bg-slate-100 dark:bg-slate-500 px-2 py-0.5 rounded-full mb-2 inline-block tracking-[0.04em]">
  {event.type}
  </span>
  <DropdownMenu>
@@ -202,7 +202,7 @@ export default function Events() {
  )}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Calendar className="w-5 h-5 text-primary" /> {t("schedule_event_service", "Schedule Event / Service")}
  </h2>

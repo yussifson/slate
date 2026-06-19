@@ -208,19 +208,19 @@ export default function UnivTelemedicine() {
 
  
  
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={handleOpenAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
+ <button onClick={handleOpenAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
  <Plus className="w-4 h-4" /> Schedule Visit
  </button>
  </div>
  </div>
  </div>
 
- <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
@@ -229,7 +229,7 @@ export default function UnivTelemedicine() {
  placeholder="Search patients, doctors..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -243,11 +243,11 @@ export default function UnivTelemedicine() {
  animate={{ opacity: 1, y: 0}}
  transition={{ delay: idx * 0.05}}
  key={a.id} 
- className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 hover:border-primary/30 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer"
+ className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 hover:border-primary/30 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer"
  onClick={() => handleOpenEdit(a)}
  >
  <div className="flex items-center gap-4">
- <div className={`w-12 h-12 rounded-md-xl flex items-center justify-center shrink-0 ${
+ <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${
  a.status === 'Ongoing' ? 'bg-blue-100 text-blue-600 animate-pulse' :
  a.status === 'Completed' ? 'bg-muted text-[#71717a] dark:text-gray-400' :
  'bg-primary/10 text-primary'
@@ -322,7 +322,7 @@ export default function UnivTelemedicine() {
  <motion.div 
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
- className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl max-w-md w-full p-6 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl max-w-md w-full p-6 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <button 
  onClick={() => setIsModalOpen(false)}
@@ -344,7 +344,7 @@ export default function UnivTelemedicine() {
  onChange={(e) => setForm({ ...form, patient_name: e.target.value})}
  placeholder="e.g. John Doe"
  required
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
@@ -355,7 +355,7 @@ export default function UnivTelemedicine() {
  value={form.doctor_name}
  onChange={(e) => setForm({ ...form, doctor_name: e.target.value})}
  placeholder="e.g. Dr. Smith"
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
@@ -366,7 +366,7 @@ export default function UnivTelemedicine() {
  value={form.scheduled_time}
  onChange={(e) => setForm({ ...form, scheduled_time: e.target.value})}
  required
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
@@ -377,7 +377,7 @@ export default function UnivTelemedicine() {
  value={form.meeting_link}
  onChange={(e) => setForm({ ...form, meeting_link: e.target.value})}
  placeholder="https://meet.jit.si/..."
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
@@ -387,7 +387,7 @@ export default function UnivTelemedicine() {
  <select 
  value={form.status}
  onChange={(e) => setForm({ ...form, status: e.target.value})}
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  >
  <option value="Scheduled">Scheduled</option>
  <option value="Ongoing">Ongoing</option>
@@ -404,7 +404,7 @@ export default function UnivTelemedicine() {
  onChange={(e) => setForm({ ...form, notes: e.target.value})}
  placeholder="Symptoms, observations, and details..."
  rows="3"
- className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
@@ -412,13 +412,13 @@ export default function UnivTelemedicine() {
  <button 
  type="button" 
  onClick={() => setIsModalOpen(false)}
- className="px-4 py-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-foreground hover:bg-muted/50 rounded-md-xl text-sm font-medium transition-colors"
+ className="px-4 py-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-foreground hover:bg-muted/50 rounded-xl text-sm font-medium transition-colors"
  >
  Cancel
  </button>
  <button 
  type="submit" 
- className="px-4 py-2 bg-primary text-white hover:bg-primary/90 rounded-md-xl text-sm font-medium transition-colors "
+ className="px-4 py-2 bg-primary text-white hover:bg-primary/90 rounded-xl text-sm font-medium transition-colors "
  >
  Save
  </button>

@@ -27,7 +27,7 @@ export default function KanbanBlock({ dataConfig, styleConfig}) {
  const allColumns = columns || Object.keys(groupedData);
 
  return (
- <div className={cn("rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 overflow-x-auto", bgClass, padClass)}>
+ <div className={cn("rounded-xl border-[0.5px] border-black/9 dark:border-white/8 overflow-x-auto", bgClass, padClass)}>
  {isLoading ? (
  <div className="py-10 text-center text-[#71717a] dark:text-gray-400">Loading Kanban...</div>
  ) : (
@@ -35,7 +35,7 @@ export default function KanbanBlock({ dataConfig, styleConfig}) {
  {allColumns.map((colName) => {
  const items = groupedData[colName] || [];
  return (
- <div key={colName} className="w-80 flex-shrink-0 flex flex-col bg-muted/30 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-3">
+ <div key={colName} className="w-80 flex-shrink-0 flex flex-col bg-muted/30 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-3">
  <div className="flex items-center justify-between mb-3 px-1">
  <h3 className="font-semibold text-sm capitalize">{colName.replace(/_/g, ' ')}</h3>
  <Badge variant="secondary" className="text-[10px]">{items.length}</Badge>

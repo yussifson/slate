@@ -42,12 +42,12 @@ export default function HRComplaintsPanel({ companyId, complaints, staff, isAdmi
         <Button size="sm" onClick={() => setShowForm(true)}><Plus className="w-4 h-4 mr-1" /> {t("file_complaint", "File Complaint")}</Button>
       </div>
       {visible.length === 0 ? (
-        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <MessageSquareWarning className="w-10 h-10 text-[#71717a] dark:text-gray-400 mx-auto mb-2" />
           <p className="text-sm text-[#71717a] dark:text-gray-400">{t("no_complaints_filed", "No complaints filed")}</p>
         </div>
       ) : (
-        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           {visible.map(c => {
             return (
               <div key={c.id} className="px-4 py-3 flex items-center gap-3 hover:bg-muted/20 cursor-pointer" onClick={() => setViewing(c)}>

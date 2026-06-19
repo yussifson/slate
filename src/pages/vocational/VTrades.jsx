@@ -122,34 +122,34 @@ export default function VTrades() {
         {/* Create Dialog */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-primary hover:bg-primary/90 text-white rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
+            <Button className="bg-primary hover:bg-primary/90 text-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
               <Plus className="w-4 h-4 mr-2" /> {t('add_trade', 'Add Trade')}
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] rounded-md-2xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
+          <DialogContent className="sm:max-w-[425px] rounded-2xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
             <DialogHeader>
               <DialogTitle>{t('add_new_trade', 'Add New Trade')}</DialogTitle>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="space-y-2">
                 <Label htmlFor="title">{t('trade_name', 'Trade Name')}</Label>
-                <Input id="title" placeholder="e.g. Carpentry" value={newTrade.title} onChange={e => setNewTrade({...newTrade, title: e.target.value})} className="rounded-md-xl border-primary/40" />
+                <Input id="title" placeholder="e.g. Carpentry" value={newTrade.title} onChange={e => setNewTrade({...newTrade, title: e.target.value})} className="rounded-xl border-primary/40" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="industry">{t('industry', 'Industry')}</Label>
-                <Input id="industry" placeholder="e.g. Construction" value={newTrade.industry} onChange={e => setNewTrade({...newTrade, industry: e.target.value})} className="rounded-md-xl border-primary/40" />
+                <Input id="industry" placeholder="e.g. Construction" value={newTrade.industry} onChange={e => setNewTrade({...newTrade, industry: e.target.value})} className="rounded-xl border-primary/40" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="duration">{t('duration_months', 'Duration (Months)')}</Label>
-                <Input id="duration" placeholder="e.g. 12" value={newTrade.duration} onChange={e => setNewTrade({...newTrade, duration: e.target.value})} className="rounded-md-xl border-primary/40" />
+                <Input id="duration" placeholder="e.g. 12" value={newTrade.duration} onChange={e => setNewTrade({...newTrade, duration: e.target.value})} className="rounded-xl border-primary/40" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="description">{t('description', 'Description')}</Label>
-                <Input id="description" placeholder="Short description" value={newTrade.description} onChange={e => setNewTrade({...newTrade, description: e.target.value})} className="rounded-md-xl border-primary/40" />
+                <Input id="description" placeholder="Short description" value={newTrade.description} onChange={e => setNewTrade({...newTrade, description: e.target.value})} className="rounded-xl border-primary/40" />
               </div>
             </div>
             <DialogFooter>
-              <Button onClick={handleCreateTrade} className="bg-primary hover:bg-primary/90 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">{t('save', 'Save Trade')}</Button>
+              <Button onClick={handleCreateTrade} className="bg-primary hover:bg-primary/90 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">{t('save', 'Save Trade')}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -157,13 +157,13 @@ export default function VTrades() {
 
       <div className="flex-1 flex gap-6 overflow-hidden">
         {/* Left Panel: Trade List */}
-        <Card className="w-[350px] shrink-0 flex flex-col rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <Card className="w-[350px] shrink-0 flex flex-col rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="p-4 border-b border-primary/10">
             <div className="relative">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
               <Input 
                 placeholder="Search trades..." 
-                className="pl-9 h-10 border-primary/40 rounded-md-xl focus-visible:ring-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none"
+                className="pl-9 h-10 border-primary/40 rounded-xl focus-visible:ring-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -180,13 +180,13 @@ export default function VTrades() {
                   <button
                     key={trade.id}
                     onClick={() => setSelectedTrade(trade)}
-                    className={`w-full text-left p-3 rounded-md-xl transition-all duration-200 flex items-center gap-3 ${
+                    className={`w-full text-left p-3 rounded-xl transition-all duration-200 flex items-center gap-3 ${
                       selectedTrade?.id === trade.id 
                         ? 'bg-primary/10 text-primary' 
                         : 'hover:bg-primary/5 text-foreground'
                     }`}
                   >
-                    <div className={`w-10 h-10 rounded-md-xl flex items-center justify-center shrink-0 ${
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
                       selectedTrade?.id === trade.id ? 'bg-primary text-white' : 'bg-primary/10 text-primary'
                     }`}>
                       <Briefcase className="w-5 h-5" />
@@ -205,13 +205,13 @@ export default function VTrades() {
         </Card>
 
         {/* Right Panel: Trade Details */}
-        <Card className="flex-1 flex flex-col rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <Card className="flex-1 flex flex-col rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           {selectedTrade ? (
             <>
               <div className="h-32 bg-primary/10 relative shrink-0 flex items-center px-8 border-b border-primary/10">
                 <div className="relative z-10 flex items-center gap-6 translate-y-10">
-                  <div className="w-24 h-24 rounded-md-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-2 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                    <div className="w-full h-full rounded-md-xl bg-primary/5 flex items-center justify-center text-primary">
+                  <div className="w-24 h-24 rounded-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-2 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                    <div className="w-full h-full rounded-xl bg-primary/5 flex items-center justify-center text-primary">
                       <Briefcase className="w-10 h-10" />
                     </div>
                   </div>
@@ -235,35 +235,35 @@ export default function VTrades() {
                     {/* Edit Dialog */}
                     <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
                       <DialogTrigger asChild>
-                        <Button variant="outline" size="sm" className="rounded-md-xl border-primary/40 text-primary hover:bg-primary/5 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" onClick={() => setEditTrade({...selectedTrade})}>
+                        <Button variant="outline" size="sm" className="rounded-xl border-primary/40 text-primary hover:bg-primary/5 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" onClick={() => setEditTrade({...selectedTrade})}>
                           <Settings className="w-4 h-4 mr-2" /> {t('edit_trade', 'Edit Trade')}
                         </Button>
                       </DialogTrigger>
                       {editTrade && (
-                        <DialogContent className="sm:max-w-[425px] rounded-md-2xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
+                        <DialogContent className="sm:max-w-[425px] rounded-2xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
                           <DialogHeader>
                             <DialogTitle>{t('edit_trade', 'Edit Trade')}</DialogTitle>
                           </DialogHeader>
                           <div className="grid gap-4 py-4">
                             <div className="space-y-2">
                               <Label htmlFor="edit-title">{t('trade_name', 'Trade Name')}</Label>
-                              <Input id="edit-title" value={editTrade.title} onChange={e => setEditTrade({...editTrade, title: e.target.value})} className="rounded-md-xl border-primary/40" />
+                              <Input id="edit-title" value={editTrade.title} onChange={e => setEditTrade({...editTrade, title: e.target.value})} className="rounded-xl border-primary/40" />
                             </div>
                             <div className="space-y-2">
                               <Label htmlFor="edit-industry">{t('industry', 'Industry')}</Label>
-                              <Input id="edit-industry" value={editTrade.data?.industry || ''} onChange={e => setEditTrade({...editTrade, data: {...editTrade.data, industry: e.target.value}})} className="rounded-md-xl border-primary/40" />
+                              <Input id="edit-industry" value={editTrade.data?.industry || ''} onChange={e => setEditTrade({...editTrade, data: {...editTrade.data, industry: e.target.value}})} className="rounded-xl border-primary/40" />
                             </div>
                             <div className="space-y-2">
                               <Label htmlFor="edit-duration">{t('duration_months', 'Duration (Months)')}</Label>
-                              <Input id="edit-duration" value={editTrade.data?.duration || ''} onChange={e => setEditTrade({...editTrade, data: {...editTrade.data, duration: e.target.value}})} className="rounded-md-xl border-primary/40" />
+                              <Input id="edit-duration" value={editTrade.data?.duration || ''} onChange={e => setEditTrade({...editTrade, data: {...editTrade.data, duration: e.target.value}})} className="rounded-xl border-primary/40" />
                             </div>
                             <div className="space-y-2">
                               <Label htmlFor="edit-description">{t('description', 'Description')}</Label>
-                              <Input id="edit-description" value={editTrade.data?.description || ''} onChange={e => setEditTrade({...editTrade, data: {...editTrade.data, description: e.target.value}})} className="rounded-md-xl border-primary/40" />
+                              <Input id="edit-description" value={editTrade.data?.description || ''} onChange={e => setEditTrade({...editTrade, data: {...editTrade.data, description: e.target.value}})} className="rounded-xl border-primary/40" />
                             </div>
                           </div>
                           <DialogFooter>
-                            <Button onClick={handleUpdateTrade} className="bg-primary hover:bg-primary/90 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">{t('save_changes', 'Save Changes')}</Button>
+                            <Button onClick={handleUpdateTrade} className="bg-primary hover:bg-primary/90 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">{t('save_changes', 'Save Changes')}</Button>
                           </DialogFooter>
                         </DialogContent>
                       )}
@@ -271,7 +271,7 @@ export default function VTrades() {
                   </div>
 
                   <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="p-6 rounded-md-2xl bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
+                    <div className="p-6 rounded-2xl bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
                       <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                         <FileText className="w-5 h-5 text-primary" /> {t('description', 'Description')}
                       </h3>
@@ -280,7 +280,7 @@ export default function VTrades() {
                       </p>
                     </div>
 
-                    <div className="p-6 rounded-md-2xl bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
+                    <div className="p-6 rounded-2xl bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
                       <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                         <Users className="w-5 h-5 text-primary" /> {t('trainee_stats', 'Trainee Stats')}
                       </h3>
@@ -301,7 +301,7 @@ export default function VTrades() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-md-full bg-primary/10 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
                 <Briefcase className="w-10 h-10 text-primary/40" />
               </div>
               <h3 className="text-xl font-semibold">{t('no_trade_selected', 'No Trade Selected')}</h3>

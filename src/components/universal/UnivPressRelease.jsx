@@ -103,7 +103,7 @@ export default function UnivPressRelease() {
 
  
  
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
@@ -125,7 +125,7 @@ export default function UnivPressRelease() {
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
  exit={{ opacity: 0, scale: 0.95}}
- className="bg-card p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <h2 className="text-xl font-semibold mb-4 text-foreground">
  {editingId ? 'Edit Press Release' : 'Create Press Release'}
@@ -213,7 +213,7 @@ export default function UnivPressRelease() {
 
  {loading ? (
  <div className="flex justify-center py-12">
- <div className="animate-spin rounded-md-full h-10 w-10 border-b-2 border-rose-600"></div>
+ <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-rose-600"></div>
  </div>
  ) : (
  <div className="space-y-4">
@@ -222,11 +222,11 @@ export default function UnivPressRelease() {
  key={item.id}
  initial={{ opacity: 0, x: -20}}
  animate={{ opacity: 1, x: 0}}
- className="bg-card p-5 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col md:flex-row md:items-center justify-between gap-4 transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card p-5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col md:flex-row md:items-center justify-between gap-4 transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="flex-grow">
  <div className="flex items-center gap-3 mb-2">
- <span className={`px-2.5 py-0.5 rounded-md-full text-xs font-semibold ${item.status === 'Published' ? 'bg-green-100 text-green-800' : item.status === 'Scheduled' ? 'bg-amber-100 text-amber-800' : 'bg-muted text-foreground'}`}>
+ <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${item.status === 'Published' ? 'bg-green-100 text-green-800' : item.status === 'Scheduled' ? 'bg-amber-100 text-amber-800' : 'bg-muted text-foreground'}`}>
  {item.status}
  </span>
  <span className="text-sm text-[#71717a] dark:text-gray-400">{item.publish_date}</span>
@@ -251,7 +251,7 @@ export default function UnivPressRelease() {
  </motion.div>
  ))}
  {data.length === 0 && !isEditing && (
- <div className="py-12 text-center bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="py-12 text-center bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Mic className="w-12 h-12 text-slate-300 mx-auto mb-3" />
  <p className="text-[#71717a] dark:text-gray-400">No press releases found.</p>
  </div>

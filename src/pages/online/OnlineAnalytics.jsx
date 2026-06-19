@@ -19,7 +19,7 @@ export default function OnlineAnalytics() {
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
- <Card className="border-0 rounded-md-xl">
+ <Card className="border-0 rounded-xl">
  <CardContent className="p-6">
  <div className="flex items-center space-x-4">
  <div className="p-3 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-xl">
@@ -36,7 +36,7 @@ export default function OnlineAnalytics() {
  </CardContent>
  </Card>
  
- <Card className="border-0 rounded-md-xl">
+ <Card className="border-0 rounded-xl">
  <CardContent className="p-6">
  <div className="flex items-center space-x-4">
  <div className="p-3 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-xl">
@@ -53,7 +53,7 @@ export default function OnlineAnalytics() {
  </CardContent>
  </Card>
 
- <Card className="border-0 rounded-md-xl">
+ <Card className="border-0 rounded-xl">
  <CardContent className="p-6">
  <div className="flex items-center space-x-4">
  <div className="p-3 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-xl">
@@ -70,7 +70,7 @@ export default function OnlineAnalytics() {
  </CardContent>
  </Card>
 
- <Card className="border-0 rounded-md-xl">
+ <Card className="border-0 rounded-xl">
  <CardContent className="p-6">
  <div className="flex items-center space-x-4">
  <div className="p-3 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-xl">
@@ -89,25 +89,25 @@ export default function OnlineAnalytics() {
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
- <Card className="border-0 rounded-md-xl">
+ <Card className="border-0 rounded-xl">
  <CardHeader>
  <CardTitle className="text-xl">Student Engagement</CardTitle>
  <CardDescription>Daily active users over the last 30 days.</CardDescription>
  </CardHeader>
  <CardContent>
- <div className="h-[300px] w-full flex items-center justify-center border-2 border-dashed border-primary/40 rounded-md-xl mt-4">
+ <div className="h-[300px] w-full flex items-center justify-center border-2 border-dashed border-primary/40 rounded-xl mt-4">
  <p className="text-sm text-[#71717a] dark:text-gray-400">Not enough data to display chart.</p>
  </div>
  </CardContent>
  </Card>
 
- <Card className="border-0 rounded-md-xl">
+ <Card className="border-0 rounded-xl">
  <CardHeader>
  <CardTitle className="text-xl">Course Completion Rates</CardTitle>
  <CardDescription>Percentage of enrolled students who finished the course.</CardDescription>
  </CardHeader>
  <CardContent>
- <div className="flex items-center justify-center py-12 border-2 border-dashed border-primary/40 rounded-md-xl mt-4">
+ <div className="flex items-center justify-center py-12 border-2 border-dashed border-primary/40 rounded-xl mt-4">
  <p className="text-sm text-[#71717a] dark:text-gray-400">No course data available.</p>
  </div>
  </CardContent>

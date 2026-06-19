@@ -88,15 +88,15 @@ export default function SHSFees() {
  </p>
  </div>
  
- <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20">
+ <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20">
  <Plus className="w-4 h-4" /> Create Fee Item
  </Button>
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
- <Card className="rounded-md-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="rounded-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-md-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+ <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
  <Layers className="w-6 h-6" />
  </div>
  <div>
@@ -107,7 +107,7 @@ export default function SHSFees() {
  </Card>
  </div>
 
- <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
@@ -118,7 +118,7 @@ export default function SHSFees() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search fees..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -130,7 +130,7 @@ export default function SHSFees() {
  <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading fees...</div>
  ) : filteredFees.length === 0 ? (
  <div className="p-16 text-center">
- <div className="w-16 h-16 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
  <CreditCard className="w-8 h-8 text-primary dark:text-primary" />
  </div>
  <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No fee items found</h3>
@@ -141,11 +141,11 @@ export default function SHSFees() {
  <table className="w-full text-sm text-left">
  <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider tracking-[0.04em]">
  <tr>
- <th className="px-6 py-4 rounded-md-tl-xl">Fee Title</th>
+ <th className="px-6 py-4 rounded-tl-xl">Fee Title</th>
  <th className="px-6 py-4">Category</th>
  <th className="px-6 py-4">Target Group</th>
  <th className="px-6 py-4">Amount</th>
- <th className="px-6 py-4 text-right rounded-md-tr-xl">Status</th>
+ <th className="px-6 py-4 text-right rounded-tr-xl">Status</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-slate-100">
@@ -188,7 +188,7 @@ export default function SHSFees() {
  </Card>
 
  <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
- <DialogContent className="sm:max-w-[450px] rounded-md-3xl p-0 overflow-hidden border-none ">
+ <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none ">
  <div className="p-6 bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 text-white">
  <DialogHeader>
  <DialogTitle className="text-2xl font-black tracking-[-0.02em]">Create Fee Item</DialogTitle>
@@ -203,7 +203,7 @@ export default function SHSFees() {
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Fee Title</label>
  <Input 
  placeholder="e.g. Term 1 Tuition Fee"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newFee.title}
  onChange={e => setNewFee({...newFee, title: e.target.value})}
  />
@@ -213,7 +213,7 @@ export default function SHSFees() {
  <div className="space-y-2">
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Category</label>
  <select 
- className="w-full h-10 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-10 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newFee.category}
  onChange={e => setNewFee({...newFee, category: e.target.value})}
  >
@@ -231,7 +231,7 @@ export default function SHSFees() {
  min="0"
  step="0.01"
  placeholder="0.00"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl font-semibold hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl font-semibold hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newFee.amount}
  onChange={e => setNewFee({...newFee, amount: e.target.value})}
  />
@@ -241,7 +241,7 @@ export default function SHSFees() {
  <div className="space-y-2">
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Target Group</label>
  <select 
- className="w-full h-10 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-10 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newFee.targetGroup}
  onChange={e => setNewFee({...newFee, targetGroup: e.target.value})}
  >
@@ -257,7 +257,7 @@ export default function SHSFees() {
  <div className="space-y-2">
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Academic Year</label>
  <Input 
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newFee.academicYear}
  onChange={e => setNewFee({...newFee, academicYear: e.target.value})}
  />
@@ -265,7 +265,7 @@ export default function SHSFees() {
  <div className="space-y-2">
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Term</label>
  <select 
- className="w-full h-10 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-10 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newFee.term}
  onChange={e => setNewFee({...newFee, term: e.target.value})}
  >
@@ -279,13 +279,13 @@ export default function SHSFees() {
  </div>
  
  <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-md-xl font-semibold text-slate-600 dark:text-slate-300">
+ <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
  Cancel
  </Button>
  <Button 
  onClick={handleCreateFee} 
  disabled={!newFee.title || !newFee.amount}
- className="rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-semibold"
+ className="rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-semibold"
  >
  Save Fee Item
  </Button>

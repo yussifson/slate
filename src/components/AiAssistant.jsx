@@ -771,7 +771,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  >
  {/* Mobile Drag Handle */}
  <div className="md:hidden flex justify-center pt-3 pb-1 shrink-0">
- <div className="w-12 h-1.5 rounded-md-full bg-slate-200 dark:bg-slate-800" />
+ <div className="w-12 h-1.5 rounded-full bg-slate-200 dark:bg-slate-800" />
  </div>
  
  {/* Main Content Wrapper (Needs flex row on desktop, flex col on mobile if history is open) */}
@@ -856,7 +856,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
 
  {/* Page Context Bar */}
  <div className="px-3 py-1.5 flex items-center gap-2.5 bg-primary/60 dark:bg-slate-100 border-b border-primary/40 dark:border-primary/20 shrink-0">
- <div className="w-1.5 h-1.5 rounded-md-full bg-primary shrink-0"></div>
+ <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></div>
  <span className="text-[10px] text-primary dark:text-primary/70 font-semibold truncate">
  {ctx ? `${ctx.suite} ${ctx.title}` : location.pathname} {t("ai_has_full_context", "AI has full context")}
  </span>
@@ -869,17 +869,17 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  {messages.filter(m => m.role !== 'system').map((msg, i) => {
  return (
  <div key={i} className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
- <div className={`w-7 h-7 rounded-md-full flex items-center justify-center shrink-0 mt-0.5 ${
+ <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
  msg.role === 'user'
  ? 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
  : 'bg-gradient-to-br from-primary to-primary text-white'
 }`}>
  {msg.role === 'user' ? <User className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
  </div>
- <div className={`px-3.5 py-2.5 rounded-md-2xl text-sm leading-relaxed max-w-[88%] ${
+ <div className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed max-w-[88%] ${
  msg.role === 'user'
- ? 'bg-primary text-white rounded-md-tr-sm'
- : 'bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-tl-sm text-foreground'
+ ? 'bg-primary text-white rounded-tr-sm'
+ : 'bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-tl-sm text-foreground'
 }`}>
  <FormatMessage content={msg.content} />
  
@@ -905,14 +905,14 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
 })}
  {isLoading && (
  <div className="flex gap-2.5">
- <div className="w-7 h-7 rounded-md-full bg-gradient-to-br from-primary to-primary flex items-center justify-center shrink-0 ">
+ <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-primary flex items-center justify-center shrink-0 ">
  <Sparkles className="w-3.5 h-3.5 text-white animate-spin" />
  </div>
- <div className="px-4 py-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl rounded-md-tl-sm  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="px-4 py-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl rounded-tl-sm  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex gap-2.5 items-center">
- <span className="w-2 h-2 rounded-md-full bg-primary animate-bounce" style={{ animationDelay: '0ms'}} />
- <span className="w-2 h-2 rounded-md-full bg-primary animate-bounce" style={{ animationDelay: '150ms'}} />
- <span className="w-2 h-2 rounded-md-full bg-primary animate-bounce" style={{ animationDelay: '300ms'}} />
+ <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms'}} />
+ <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms'}} />
+ <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms'}} />
  </div>
  <p className="text-[10px] text-[#71717a] dark:text-gray-400 mt-1.5 italic">{t("orbit_is_thinking", "OrbitFlow is thinking...")}</p>
  </div>
@@ -930,7 +930,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <button
  key={i}
  onClick={() => handleSend(s)}
- className="text-[10px] font-medium px-2.5 py-1 rounded-md-full bg-slate-50 dark:bg-primary/30 text-primary/90 dark:text-primary/70 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 hover:bg-slate-100 dark:hover:bg-primary/40 transition-colors truncate max-w-[180px]"
+ className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-slate-50 dark:bg-primary/30 text-primary/90 dark:text-primary/70 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 hover:bg-slate-100 dark:hover:bg-primary/40 transition-colors truncate max-w-[180px]"
  >
  {s}
  </button>
@@ -954,7 +954,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
 
  {/* Input */}
  <div className="p-3 border-t border-primary/40 bg-card/80 backdrop-blur-sm shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus-within:border-primary/70 focus-within:ring-2 focus-within:ring-primary/15 rounded-md-xl bg-background transition-all overflow-hidden ">
+ <div className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus-within:border-primary/70 focus-within:ring-2 focus-within:ring-primary/15 rounded-xl bg-background transition-all overflow-hidden ">
  <textarea
  value={input}
  onChange={e => setInput(e.target.value)}

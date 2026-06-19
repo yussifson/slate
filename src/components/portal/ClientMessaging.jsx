@@ -62,7 +62,7 @@ export default function ClientMessaging({ caseData, user, senderType = "client" 
   const getInitials = (name) => name?.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) || "?";
 
   return (
-    <div className="flex flex-col h-[480px] bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="flex flex-col h-[480px] bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <div className="px-4 py-3 border-b border-primary/40 flex items-center gap-2 bg-muted/20">
         <MessageSquare className="w-4 h-4 text-primary" />
         <span className="text-sm font-semibold">{t("messages", "Messages —")} {caseData?.title}</span>
@@ -83,7 +83,7 @@ export default function ClientMessaging({ caseData, user, senderType = "client" 
           const isClient = msg.sender_type === "client";
           return (
             <div key={msg.id} className={`flex gap-2 ${isMe ? "flex-row-reverse" : ""}`}>
-              <div className={`w-7 h-7 rounded-md-full flex items-center justify-center text-white text-[10px] font-semibold shrink-0 ${isClient ? "bg-amber-500" : "bg-primary"}`}>
+              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-semibold shrink-0 ${isClient ? "bg-amber-500" : "bg-primary"}`}>
                 {getInitials(msg.sender_name)}
               </div>
               <div className={`max-w-[75%] space-y-0.5 ${isMe ? "items-end" : "items-start"} flex flex-col`}>
@@ -91,7 +91,7 @@ export default function ClientMessaging({ caseData, user, senderType = "client" 
                   {!isMe && <span className="text-[10px] font-semibold">{msg.sender_name}</span>}
                   <span className="text-[9px] text-[#71717a] dark:text-gray-400">{format(new Date(msg.created_date), "HH:mm")}</span>
                 </div>
-                <div className={`rounded-md-2xl px-3 py-2 text-sm ${isMe ? "bg-primary text-white rounded-md-tr-sm" : "bg-muted rounded-md-tl-sm"}`}>
+                <div className={`rounded-2xl px-3 py-2 text-sm ${isMe ? "bg-primary text-white rounded-tr-sm" : "bg-muted rounded-tl-sm"}`}>
                   {msg.content}
                 </div>
               </div>
@@ -101,7 +101,7 @@ export default function ClientMessaging({ caseData, user, senderType = "client" 
         <div ref={endRef} />
       </div>
       <div className="px-4 py-3 border-t border-primary/40 bg-background flex items-end gap-2">
-        <div className="flex-1 bg-muted/50 rounded-md-xl px-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus-within:border-primary/40 focus-within:bg-background transition-colors">
+        <div className="flex-1 bg-muted/50 rounded-xl px-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus-within:border-primary/40 focus-within:bg-background transition-colors">
           <textarea
             rows={1}
             className="w-full bg-transparent text-sm outline-none resize-none placeholder:text-[#71717a] dark:text-gray-400"
@@ -113,7 +113,7 @@ export default function ClientMessaging({ caseData, user, senderType = "client" 
             style={{ minHeight: "24px", maxHeight: "80px" }}
           />
         </div>
-        <Button size="icon" onClick={handleSend} disabled={!content.trim() || sendMutation.isPending} className="rounded-md-xl h-9 w-9 shrink-0">
+        <Button size="icon" onClick={handleSend} disabled={!content.trim() || sendMutation.isPending} className="rounded-xl h-9 w-9 shrink-0">
           <Send className="w-4 h-4" />
         </Button>
       </div>

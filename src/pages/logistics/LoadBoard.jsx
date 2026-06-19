@@ -148,7 +148,7 @@ export default function LoadBoard() {
         
         {/* Post Load Form */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm sticky top-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm sticky top-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <h2 className="text-lg font-semibold text-card-foreground mb-4 flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <Plus className="w-5 h-5 text-primary" />
               Post New Load
@@ -193,10 +193,10 @@ export default function LoadBoard() {
             const isMatched = matchesForThisLoad.length > 0;
 
             return (
-              <div key={load.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+              <div key={load.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                  <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center gap-3">
-                       <div className="w-10 h-10 rounded-md-full bg-primary/10 flex items-center justify-center">
+                       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                           <MapPin className="w-5 h-5 text-primary" />
                        </div>
                        <div>
@@ -211,7 +211,7 @@ export default function LoadBoard() {
                        </div>
                     </div>
                     <div>
-                       <span className={`px-3 py-1 rounded-md-full text-xs font-semibold uppercase tracking-wider ${isMatched ? 'bg-indigo-100 text-indigo-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                       <span className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider ${isMatched ? 'bg-indigo-100 text-indigo-700' : 'bg-emerald-100 text-emerald-700'}`}>
                           {isMatched ? 'Matches Found' : 'Open'}
                        </span>
                     </div>
@@ -243,7 +243,7 @@ export default function LoadBoard() {
                       <div className="relative">
                          {!isProOrAbove && (
                             <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/60 backdrop-blur-[1px] rounded-xl">
-                               <div className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 px-4 py-2 rounded-md-full shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm flex items-center gap-2">
+                               <div className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 px-4 py-2 rounded-full shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm flex items-center gap-2">
                                   <Lock className="w-4 h-4 text-amber-500" />
                                   <span className="text-xs font-semibold text-foreground tracking-[0.04em]">Pro Plan Required to Match Trucks</span>
                                </div>
@@ -269,7 +269,7 @@ export default function LoadBoard() {
           })}
           
           {(!loads || loads.length === 0) && (
-             <div className="text-center p-12 border-2 border-dashed border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl text-[#71717a] dark:text-gray-400">
+             <div className="text-center p-12 border-2 border-dashed border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl text-[#71717a] dark:text-gray-400">
                 <PackageSearch className="w-12 h-12 mx-auto mb-4 opacity-20" />
                 <h3 className="font-semibold text-lg">No loads posted yet</h3>
                 <p className="text-sm">Post a load on the left to get started.</p>

@@ -98,7 +98,7 @@ function ProgressionBar({ currentStatus, statuses}) {
  <React.Fragment key={status}>
  <div className="flex flex-col items-center flex-shrink-0">
  <div
- className={`w-7 h-7 rounded-md-full flex items-center justify-center transition-all duration-300 ${
+ className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 ${
  isActive
  ? `bg-gradient-to-br ${config.gradient} ring-2 ${config.ring} ring-offset-1`
  : isPast
@@ -120,7 +120,7 @@ function ProgressionBar({ currentStatus, statuses}) {
  </div>
  {idx < statuses.length - 1 && (
  <div
- className={`flex-1 h-0.5 rounded-md-full transition-all duration-300 mt-[-12px] ${
+ className={`flex-1 h-0.5 rounded-full transition-all duration-300 mt-[-12px] ${
  isPast ? 'bg-gradient-to-r from-primary/70 to-primary/30' : 'bg-muted'
 }`}
  />
@@ -149,7 +149,7 @@ function ApprovalCard({ record, fieldDefinitions, statusFieldName, statuses, onA
 
  return (
  <div
- className={`rounded-md-2xl border ${config.border} ${config.bg} overflow-hidden transition-all duration-300 group`}
+ className={`rounded-2xl border ${config.border} ${config.bg} overflow-hidden transition-all duration-300 group`}
  >
  {/* Top accent bar */}
  <div className={`h-1 bg-gradient-to-r ${config.gradient}`} />
@@ -158,7 +158,7 @@ function ApprovalCard({ record, fieldDefinitions, statusFieldName, statuses, onA
  {/* Header */}
  <div className="flex items-start justify-between mb-4">
  <div className="flex items-center gap-3 min-w-0">
- <div className={`p-2 rounded-md-xl bg-card border ${config.border}`}>
+ <div className={`p-2 rounded-xl bg-card border ${config.border}`}>
  <StatusIcon className={`w-4 h-4 ${config.color}`} />
  </div>
  <div className="min-w-0">
@@ -198,7 +198,7 @@ function ApprovalCard({ record, fieldDefinitions, statusFieldName, statuses, onA
  </div>
 
  {/* Progression Bar */}
- <div className="bg-card rounded-md-xl p-3 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl p-3 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <ProgressionBar currentStatus={status} statuses={statuses} />
  </div>
 
@@ -346,7 +346,7 @@ export default function DynamicApprovalView({ data = [], fieldDefinitions = [], 
  if (!data || data.length === 0) {
  return (
  <div className="flex flex-col items-center justify-center py-20 text-center">
- <div className="p-5 rounded-md-2xl bg-gradient-to-br from-primary/5 to-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-5">
+ <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-5">
  <Inbox className="w-12 h-12 text-primary/30" />
  </div>
  <h3 className="text-lg font-semibold text-foreground mb-2">No Approval Items</h3>
@@ -366,7 +366,7 @@ export default function DynamicApprovalView({ data = [], fieldDefinitions = [], 
  {/* Header Stats */}
  <div className="flex items-center gap-6 mb-6 flex-wrap">
  <div className="flex items-center gap-3">
- <div className="p-2.5 rounded-md-xl bg-gradient-to-br from-primary to-primary -indigo-200">
+ <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary to-primary -indigo-200">
  <Shield className="w-5 h-5 text-white" />
  </div>
  <div>
@@ -405,7 +405,7 @@ export default function DynamicApprovalView({ data = [], fieldDefinitions = [], 
  <div key={status}>
  <button
  onClick={() => toggleSection(status)}
- className={`w-full flex items-center gap-3 p-3 rounded-md-xl ${config.bg} border ${config.border} transition-all mb-3`}
+ className={`w-full flex items-center gap-3 p-3 rounded-xl ${config.bg} border ${config.border} transition-all mb-3`}
  >
  <div className={`p-1.5 rounded-xl bg-gradient-to-br ${config.gradient}`}>
  <StatusIcon className="w-4 h-4 text-white" />

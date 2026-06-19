@@ -85,7 +85,7 @@ export default function UniDashboard() {
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
  {/* Main Chart Area */}
- <div className="col-span-1 lg:col-span-2 bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-8 ">
+ <div className="col-span-1 lg:col-span-2 bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-8 ">
  <div className="flex items-center justify-between mb-8">
  <div>
  <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Admission Growth</h2>
@@ -121,7 +121,7 @@ export default function UniDashboard() {
 
  {/* Quick Actions Panel */}
  <div className="col-span-1 flex flex-col gap-8">
- <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-8 flex-1">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-8 flex-1">
  <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-6">Enterprise Actions</h2>
  <div className="space-y-4">
  <ActionItem icon={UserSquare2} title="Directory Management" desc="Update student & faculty records" color="var(--primary)" />
@@ -133,7 +133,7 @@ export default function UniDashboard() {
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-8 ">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-8 ">
  <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-1">Recent Enrollments</h2>
  <p className="text-sm text-[var(--color-text-secondary)] mb-6">Latest students onboarded into the academic register.</p>
  
@@ -158,7 +158,7 @@ export default function UniDashboard() {
  <tr key={i} className="border-b border-primary/40 hover:bg-[var(--color-surface-1)] transition-colors group">
  <td className="py-4 pl-2">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-md-full bg-[var(--color-surface-2)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[var(--color-text-primary)] flex items-center justify-center font-semibold text-sm">
+ <div className="w-10 h-10 rounded-full bg-[var(--color-surface-2)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[var(--color-text-primary)] flex items-center justify-center font-semibold text-sm">
  {s.name?.substring(0, 2).toUpperCase() || 'UN'}
  </div>
  <div>
@@ -171,7 +171,7 @@ export default function UniDashboard() {
  {extra.major || 'Undeclared'}
  </td>
  <td className="py-4">
- <span className="inline-flex items-center px-2.5 py-0.5 rounded-md-full text-xs font-medium bg-[var(--color-surface-2)] text-[var(--primary)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 tracking-[0.04em]">
+ <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--color-surface-2)] text-[var(--primary)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 tracking-[0.04em]">
  Active
  </span>
  </td>
@@ -195,7 +195,7 @@ export default function UniDashboard() {
 // Utility Components
 function MetricCard({ title, value, icon: Icon, trend, highlight}) {
  return (
- <div className={`p-6 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-200 hover:-translate-y-1 ${highlight ? 'bg-[var(--primary)] border-transparent text-white ' : 'bg-[var(--color-surface-0)] border-primary/40 '}`}>
+ <div className={`p-6 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-200 hover:-translate-y-1 ${highlight ? 'bg-[var(--primary)] border-transparent text-white ' : 'bg-[var(--color-surface-0)] border-primary/40 '}`}>
  <div className="flex justify-between items-start mb-4">
  <h3 className={`text-sm font-medium ${highlight ? 'text-white/90' : 'text-[var(--color-text-secondary)]'}`}>{title}</h3>
  <div className={`p-2 rounded-xl ${highlight ? 'bg-white dark:bg-slate-900/40/20' : 'bg-[var(--color-surface-2)] text-[var(--color-text-primary)]'}`}>
@@ -214,7 +214,7 @@ function MetricCard({ title, value, icon: Icon, trend, highlight}) {
 
 function ActionItem({ icon: Icon, title, desc, color}) {
  return (
- <button className="w-full flex items-center justify-between p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl hover:bg-[var(--color-surface-2)] transition-colors group text-left">
+ <button className="w-full flex items-center justify-between p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl hover:bg-[var(--color-surface-2)] transition-colors group text-left">
  <div className="flex items-center gap-4">
  <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 transition-transform group-hover:scale-105" style={{ color}}>
  <Icon className="w-5 h-5" />

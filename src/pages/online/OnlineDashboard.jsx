@@ -76,7 +76,7 @@ export default function OnlineDashboard() {
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">Platform-wide enrollments over the last 7 days.</p>
  </div>
  </div>
- <div className="h-[300px] w-full flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-md-xl">
+ <div className="h-[300px] w-full flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-xl">
  <p className="text-[var(--color-text-secondary)] text-sm">Not enough data to display chart.</p>
  </div>
  </div>

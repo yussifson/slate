@@ -154,7 +154,7 @@ export default function UnivAuditLog({
  <p className="text-sm mt-1">Adjust your filters or search query.</p>
  </div>
  ) : (
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm text-left">
  <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  <tr>

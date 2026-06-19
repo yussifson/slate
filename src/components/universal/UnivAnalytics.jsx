@@ -164,14 +164,14 @@ export default function UnivAnalytics({
  <button
  onClick={handleRefresh}
  disabled={refreshing || loading}
- className="flex items-center gap-2 px-4 py-2 bg-muted border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm font-medium hover:bg-muted/80 transition-colors disabled:opacity-50"
+ className="flex items-center gap-2 px-4 py-2 bg-muted border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm font-medium hover:bg-muted/80 transition-colors disabled:opacity-50"
  >
  <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} /> Refresh
  </button>
  <button
  onClick={handleExportCSV}
  disabled={loading || !stats.length}
- className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 "
+ className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 "
  >
  <Download className="w-4 h-4" /> Export CSV
  </button>
@@ -184,7 +184,7 @@ export default function UnivAnalytics({
  <p className="text-sm font-medium">Scanning your workslate data...</p>
  </div>
  ) : stats.length === 0 ? (
- <div className="flex-1 flex flex-col items-center justify-center gap-3 text-[#71717a] dark:text-gray-400 py-20 border-2 border-dashed border-primary/40 rounded-md-2xl">
+ <div className="flex-1 flex flex-col items-center justify-center gap-3 text-[#71717a] dark:text-gray-400 py-20 border-2 border-dashed border-primary/40 rounded-2xl">
  <AlertCircle className="w-10 h-10 opacity-40" />
  <p className="text-base font-semibold text-foreground">No data found yet</p>
  <p className="text-sm text-center max-w-sm">Start adding records to your workslate slates and they will appear here automatically.</p>
@@ -194,17 +194,17 @@ export default function UnivAnalytics({
 
  {/* Summary KPI Cards */}
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
- <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Total Records</p>
  <p className="text-4xl font-black text-foreground tracking-[-0.02em]">{totalRecords.toLocaleString()}</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-2 tracking-[0.04em]">Across all active slates</p>
  </motion.div>
- <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.05}} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.05}} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Active Slates</p>
  <p className="text-4xl font-black text-foreground tracking-[-0.02em]">{stats.length}</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-2 tracking-[0.04em]">Slates with data in this workslate</p>
  </motion.div>
- <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.1}} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.1}} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Top Slate</p>
  <p className="text-2xl font-black text-foreground truncate tracking-[-0.02em]">{topModule?.label || '—'}</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-2 tracking-[0.04em]">{topModule ? `${topModule.count.toLocaleString()} records` : 'No data yet'}</p>
@@ -212,7 +212,7 @@ export default function UnivAnalytics({
  </div>
 
  {/* Bar Chart — all modules */}
- <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.15}} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.15}} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 mb-6">
  <BarChart2 className="w-5 h-5 text-primary" />
  <h3 className="text-lg font-semibold text-foreground">Records by Slate</h3>
@@ -224,12 +224,12 @@ export default function UnivAnalytics({
  <span className="text-sm font-semibold text-foreground">{s.label}</span>
  <span className="text-sm font-semibold text-[#71717a] dark:text-gray-400 tabular-nums">{s.count.toLocaleString()}</span>
  </div>
- <div className="h-2.5 bg-muted rounded-md-full overflow-hidden">
+ <div className="h-2.5 bg-muted rounded-full overflow-hidden">
  <motion.div
  initial={{ width: 0}}
  animate={{ width: `${Math.max((s.count / maxCount) * 100, s.count > 0 ? 2 : 0)}%`}}
  transition={{ delay: 0.2 + i * 0.04, duration: 0.5, ease: 'easeOut'}}
- className={`h-full rounded-md-full ${s.color}`}
+ className={`h-full rounded-full ${s.color}`}
  />
  </div>
  </div>
@@ -238,7 +238,7 @@ export default function UnivAnalytics({
  </motion.div>
 
  {/* Breakdown Table */}
- <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.25}} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.25}} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-5 border-b border-primary/40 flex items-center gap-2 bg-muted/20">
  <TrendingUp className="w-5 h-5 text-[#71717a] dark:text-gray-400" />
  <h3 className="text-lg font-semibold text-foreground">Detailed Breakdown</h3>
@@ -257,7 +257,7 @@ export default function UnivAnalytics({
  <tr key={s.table} className="hover:bg-muted/30 transition-colors">
  <td className="p-4">
  <div className="flex items-center gap-2">
- <div className={`w-2.5 h-2.5 rounded-md-full ${s.color} flex-shrink-0`} />
+ <div className={`w-2.5 h-2.5 rounded-full ${s.color} flex-shrink-0`} />
  <span className="font-semibold text-foreground">{s.label}</span>
  </div>
  </td>

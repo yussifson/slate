@@ -169,7 +169,7 @@ export default function Customers() {
  <RetailStatCard label={t("vip_members", "VIP Members")} value={stats.vipCount} icon={Star} />
  </div>
 
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -228,7 +228,7 @@ export default function Customers() {
  </td>
  <td className="px-6 py-4 text-right font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${cust.totalSpent.toFixed(2)}</td>
  <td className="px-6 py-4 text-center">
- <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-md-full uppercase tracking-wider border ${segmentColors[cust.segment] || 'bg-muted'}`}>
+ <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider border ${segmentColors[cust.segment] || 'bg-muted'}`}>
  {cust.segment}
  </span>
  </td>
@@ -300,7 +300,7 @@ export default function Customers() {
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
  <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("segment", "Segment")}</div>
  <div className="col-span-2">
- <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-md-full uppercase tracking-wider border ${segmentColors[selectedRecord.segment] || 'bg-muted'}`}>
+ <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider border ${segmentColors[selectedRecord.segment] || 'bg-muted'}`}>
  {selectedRecord.segment}
  </span>
  </div>
@@ -312,14 +312,14 @@ export default function Customers() {
  <div className="flex gap-3 pt-6 mt-4 border-t border-primary/20">
     <Button 
       onClick={() => { setIsSheetOpen(false); openEdit(selectedRecord); }} 
-      className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-md-xl"
+      className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl"
     >
       <Edit className="w-4 h-4 mr-2" /> {t("edit", "Edit")}
     </Button>
     <Button 
       variant="outline"
       onClick={() => navigate('/pos', { state: { customerId: selectedRecord.id } })} 
-      className="flex-1 rounded-md-xl border-orange-500 text-orange-500 hover:bg-orange-50 font-semibold"
+      className="flex-1 rounded-xl border-orange-500 text-orange-500 hover:bg-orange-50 font-semibold"
     >
       <ShoppingCart className="w-4 h-4 mr-2" /> {t("put_order", "Put Order")}
     </Button>
@@ -330,7 +330,7 @@ export default function Customers() {
  </Sheet>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><Plus className="w-5 h-5 text-orange-600"/> {editingId ? 'Edit Customer' : 'Add Customer'}</h2>
  <div className="space-y-3">
  <div>

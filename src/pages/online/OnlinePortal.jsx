@@ -14,7 +14,7 @@ export default function OnlinePortal() {
 
  <h2 className="text-xl font-semibold text-gray-900 mb-4">In Progress</h2>
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
- <Card className="border-0 rounded-md-xl overflow-hidden transition-">
+ <Card className="border-0 rounded-xl overflow-hidden transition-">
  <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Course" className="h-40 w-full object-cover" />
  <CardContent className="p-5">
  <p className="text-xs font-semibold text-primary mb-1 tracking-[0.04em]">COURSE</p>
@@ -31,7 +31,7 @@ export default function OnlinePortal() {
  </CardContent>
  </Card>
 
- <Card className="border-0 rounded-md-xl overflow-hidden transition-">
+ <Card className="border-0 rounded-xl overflow-hidden transition-">
  <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Course" className="h-40 w-full object-cover" />
  <CardContent className="p-5">
  <p className="text-xs font-semibold text-primary mb-1 tracking-[0.04em]">PROFESSIONAL CERTIFICATE</p>
@@ -52,9 +52,9 @@ export default function OnlinePortal() {
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
  <div className="lg:col-span-2 space-y-6">
  <h2 className="text-xl font-semibold text-gray-900">Up Next for You</h2>
- <Card className="border-0 rounded-md-xl p-0 overflow-hidden">
+ <Card className="border-0 rounded-xl p-0 overflow-hidden">
  <div className="flex flex-col sm:flex-row items-center p-4 group hover:bg-gray-50 transition-colors border-b last:border-0 cursor-pointer">
- <div className="bg-slate-100 p-3 rounded-md-full text-primary mr-4">
+ <div className="bg-slate-100 p-3 rounded-full text-primary mr-4">
  <PlayCircle className="h-6 w-6" />
  </div>
  <div className="flex-1">
@@ -64,7 +64,7 @@ export default function OnlinePortal() {
  <span className="text-sm font-medium text-gray-400 mt-2 sm:mt-0">15 min</span>
  </div>
  <div className="flex flex-col sm:flex-row items-center p-4 group hover:bg-gray-50 transition-colors border-b last:border-0 cursor-pointer">
- <div className="bg-orange-100 p-3 rounded-md-full text-orange-600 mr-4">
+ <div className="bg-orange-100 p-3 rounded-full text-orange-600 mr-4">
  <FileText className="h-6 w-6" />
  </div>
  <div className="flex-1">
@@ -74,7 +74,7 @@ export default function OnlinePortal() {
  <span className="text-sm font-medium text-gray-400 mt-2 sm:mt-0">10 min</span>
  </div>
  <div className="flex flex-col sm:flex-row items-center p-4 group hover:bg-gray-50 transition-colors border-b last:border-0 cursor-pointer">
- <div className="bg-slate-100 p-3 rounded-md-full text-primary mr-4">
+ <div className="bg-slate-100 p-3 rounded-full text-primary mr-4">
  <Award className="h-6 w-6" />
  </div>
  <div className="flex-1">
@@ -88,7 +88,7 @@ export default function OnlinePortal() {
 
  <div className="lg:col-span-1 space-y-6">
  <h2 className="text-xl font-semibold text-gray-900">Upcoming Deadlines</h2>
- <Card className="border-0 rounded-md-xl p-6 bg-white dark:bg-slate-900/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="border-0 rounded-xl p-6 bg-white dark:bg-slate-900/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex gap-4">
  <div className="flex flex-col items-center justify-center bg-red-50 text-red-600 rounded-xl p-2 min-w-[60px]">
  <span className="text-xs font-semibold uppercase tracking-[0.04em]">Oct</span>

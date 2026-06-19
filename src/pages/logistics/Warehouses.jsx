@@ -162,7 +162,7 @@ export default function Warehouses() {
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  {stats.map(s => {
  return (
- <div key={s.label} className={`stat-card-premium bg-card rounded-md-xl border ${s.border} p-4 flex items-center gap-3`}>
+ <div key={s.label} className={`stat-card-premium bg-card rounded-xl border ${s.border} p-4 flex items-center gap-3`}>
  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${s.color}`}>
  <s.icon className="w-5 h-5" />
  </div>
@@ -188,7 +188,7 @@ export default function Warehouses() {
  {isLoading ? (
  <div className="py-16 text-center text-[#71717a] dark:text-gray-400">{t("loading_warehouses", "Loading warehouses...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-16 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="py-16 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Warehouse className="w-12 h-12 mx-auto mb-3 opacity-30" />
  <p className="font-semibold">{t("no_warehouses_found", "No warehouses found.")}</p>
  <p className="text-xs mt-1 tracking-[0.04em]">{t(
@@ -208,7 +208,7 @@ export default function Warehouses() {
  const cats = wh.categories ? wh.categories.split(',').map(c => c.trim()).filter(Boolean) : [];
 
  return (
- <div key={wh.id} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 transition- p-5 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={wh.id} className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 transition- p-5 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Card Header */}
  <div className="flex items-start justify-between">
  <div className="flex items-center gap-3">
@@ -221,7 +221,7 @@ export default function Warehouses() {
  </div>
  </div>
  <div className="flex items-center gap-2.5">
- <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md-full uppercase tracking-wider ${STATUS_COLORS[wh.status] || 'bg-muted'}`}>
+ <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider ${STATUS_COLORS[wh.status] || 'bg-muted'}`}>
  {wh.status}
  </span>
  </div>
@@ -232,9 +232,9 @@ export default function Warehouses() {
  <span className="text-[#71717a] dark:text-gray-400">{t("capacity_used", "Capacity Used")}</span>
  <span className={`font-semibold ${getCapacityLabelColor(pct)}`}>{pct}%</span>
  </div>
- <div className="w-full h-2 bg-muted rounded-md-full overflow-hidden">
+ <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
  <div
- className={`h-full rounded-md-full transition-all duration-500 ${getCapacityColor(pct)}`}
+ className={`h-full rounded-full transition-all duration-500 ${getCapacityColor(pct)}`}
  style={{ width: `${pct}%`}}
  />
  </div>
@@ -271,7 +271,7 @@ export default function Warehouses() {
  <div className="flex flex-wrap gap-2.5">
  {cats.map(cat => {
  return (
- <span key={cat} className="inline-flex items-center gap-2 text-[10px] bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 px-2 py-0.5 rounded-md-full font-medium border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 dark:border-primary/80">
+ <span key={cat} className="inline-flex items-center gap-2 text-[10px] bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 px-2 py-0.5 rounded-full font-medium border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 dark:border-primary/80">
  <Tag className="w-2.5 h-2.5" /> {cat}
  </span>
  );
@@ -307,13 +307,13 @@ export default function Warehouses() {
  {/* Add/Edit Modal */}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-lg p-6 space-y-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 max-h-[90vh] overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 max-h-[90vh] overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between">
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Warehouse className="w-5 h-5 text-primary" />
  {editTarget ? 'Edit Warehouse' : 'Add Warehouse'}
  </h2>
- <button onClick={closeModal} className="text-[#71717a] dark:text-gray-400 hover:text-foreground p-1 rounded-md-full hover:bg-muted">
+ <button onClick={closeModal} className="text-[#71717a] dark:text-gray-400 hover:text-foreground p-1 rounded-full hover:bg-muted">
  <X className="w-4 h-4" />
  </button>
  </div>

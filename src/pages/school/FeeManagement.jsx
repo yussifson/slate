@@ -130,7 +130,7 @@ export default function FeeManagement() {
           <p className="text-emerald-700 font-medium text-lg mt-1">{t("track_student_tuition_and_paym", "Track student tuition, arrears, and payments")}</p>
         </div>
         <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-          <Button onClick={() => setShowEnrollModal(true)} className="gap-2 bg-emerald-500/10 hover:bg-emerald-600 text-white rounded-md-none border-2 border-emerald-900 font-semibold px-6 py-6 text-lg transition-colors">
+          <Button onClick={() => setShowEnrollModal(true)} className="gap-2 bg-emerald-500/10 hover:bg-emerald-600 text-white rounded-none border-2 border-emerald-900 font-semibold px-6 py-6 text-lg transition-colors">
             <Plus className="w-6 h-6" /> {t("quick_enroll", "Quick Enroll")}
           </Button>
         </motion.div>
@@ -181,7 +181,7 @@ export default function FeeManagement() {
         <div className="p-4 border-b-2 border-emerald-900 bg-emerald-50">
           <div className="relative max-w-xl">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-700" />
-            <Input placeholder="Search student tuition listings..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 bg-white border-2 border-emerald-900 rounded-md-none h-14 text-lg font-medium focus-visible:ring-0 focus-visible:border-emerald-600 placeholder:text-emerald-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+            <Input placeholder="Search student tuition listings..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 bg-white border-2 border-emerald-900 rounded-none h-14 text-lg font-medium focus-visible:ring-0 focus-visible:border-emerald-600 placeholder:text-emerald-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
           </div>
         </div>
         
@@ -229,16 +229,16 @@ export default function FeeManagement() {
                       <td className="px-6 py-5 text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-10 w-10 p-0 border-2 border-transparent group-hover:border-emerald-900 group-hover:bg-emerald-100 rounded-md-none transition-all">
+                            <Button variant="ghost" className="h-10 w-10 p-0 border-2 border-transparent group-hover:border-emerald-900 group-hover:bg-emerald-100 rounded-none transition-all">
                               <MoreVertical className="h-5 w-5 text-emerald-900" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-48 border-2 border-emerald-900 rounded-md-none p-0 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                            <DropdownMenuItem className="font-semibold cursor-pointer rounded-md-none focus:bg-emerald-100 focus:text-emerald-900 p-3" onClick={() => setViewDetails(f)}>{t("view_details", "View Details")}</DropdownMenuItem>
+                          <DropdownMenuContent align="end" className="w-48 border-2 border-emerald-900 rounded-none p-0 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                            <DropdownMenuItem className="font-semibold cursor-pointer rounded-none focus:bg-emerald-100 focus:text-emerald-900 p-3" onClick={() => setViewDetails(f)}>{t("view_details", "View Details")}</DropdownMenuItem>
                             {f.balance > 0 ? (
-                              <DropdownMenuItem className="font-semibold cursor-pointer rounded-md-none focus:bg-emerald-100 focus:text-emerald-900 p-3" onClick={() => handlePay(f)}>{t("record_payment", "Record Payment")}</DropdownMenuItem>
+                              <DropdownMenuItem className="font-semibold cursor-pointer rounded-none focus:bg-emerald-100 focus:text-emerald-900 p-3" onClick={() => handlePay(f)}>{t("record_payment", "Record Payment")}</DropdownMenuItem>
                             ) : (
-                              <DropdownMenuItem className="font-semibold cursor-pointer rounded-md-none focus:bg-emerald-100 focus:text-emerald-900 p-3">{t("generate_receipt", "Generate Receipt")}</DropdownMenuItem>
+                              <DropdownMenuItem className="font-semibold cursor-pointer rounded-none focus:bg-emerald-100 focus:text-emerald-900 p-3">{t("generate_receipt", "Generate Receipt")}</DropdownMenuItem>
                             )}
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -272,7 +272,7 @@ export default function FeeManagement() {
               <div>
                 <label className="text-sm font-black text-emerald-900 uppercase tracking-widest block mb-2 tracking-[0.04em]">{t("amount_paying", "Amount Paying ($)")}</label>
                 <Input
-                  className="h-14 text-2xl font-black border-2 border-emerald-900 rounded-md-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-emerald-50 tracking-[-0.02em]"
+                  className="h-14 text-2xl font-black border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-emerald-50 tracking-[-0.02em]"
                   type="number"
                   value={paymentAmount}
                   onChange={e => setPaymentAmount(parseFloat(e.target.value) || 0)}
@@ -280,7 +280,7 @@ export default function FeeManagement() {
               </div>
               <div>
                 <label className="text-sm font-black text-emerald-900 uppercase tracking-widest block mb-2 tracking-[0.04em]">{t("payment_method", "Payment Method")}</label>
-                <select className="w-full h-14 border-2 border-emerald-900 bg-emerald-50 px-4 font-semibold text-emerald-900 focus:outline-none focus:border-emerald-500 rounded-md-none appearance-none">
+                <select className="w-full h-14 border-2 border-emerald-900 bg-emerald-50 px-4 font-semibold text-emerald-900 focus:outline-none focus:border-emerald-500 rounded-none appearance-none">
                   <option>{t("cash", "Cash")}</option>
                   <option>{t("bank_transfer", "Bank Transfer")}</option>
                   <option>{t("mobile_money", "Mobile Money")}</option>
@@ -290,8 +290,8 @@ export default function FeeManagement() {
             </div>
             
             <div className="flex gap-4 pt-8">
-              <Button variant="outline" className="flex-1 h-14 border-2 border-emerald-900 text-emerald-900 font-black uppercase tracking-widest rounded-md-none hover:bg-emerald-100 tracking-[0.04em]" onClick={() => setShowPaymentModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 h-14 bg-emerald-600 hover:bg-emerald-700 text-white border-2 border-emerald-900 font-black uppercase tracking-widest rounded-md-none transition-colors tracking-[0.04em]" onClick={handleConfirmPayment}>
+              <Button variant="outline" className="flex-1 h-14 border-2 border-emerald-900 text-emerald-900 font-black uppercase tracking-widest rounded-none hover:bg-emerald-100 tracking-[0.04em]" onClick={() => setShowPaymentModal(false)}>{t("cancel", "Cancel")}</Button>
+              <Button className="flex-1 h-14 bg-emerald-600 hover:bg-emerald-700 text-white border-2 border-emerald-900 font-black uppercase tracking-widest rounded-none transition-colors tracking-[0.04em]" onClick={handleConfirmPayment}>
                 {isProcessing ? 'Processing...' : t("confirm_payment", "Confirm")}
               </Button>
             </div>
@@ -309,7 +309,7 @@ export default function FeeManagement() {
               <div>
                 <label className="text-sm font-black text-emerald-900 uppercase tracking-widest block mb-2 tracking-[0.04em]">{t("student_full_name", "Student Full Name")}</label>
                 <Input
-                  className="h-14 text-lg font-semibold border-2 border-emerald-900 rounded-md-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-emerald-50"
+                  className="h-14 text-lg font-semibold border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-emerald-50"
                   value={enrollName}
                   onChange={e => setEnrollName(e.target.value)}
                   placeholder="e.g. Kwame Mensah"
@@ -319,8 +319,8 @@ export default function FeeManagement() {
             </div>
             
             <div className="flex gap-4 pt-8">
-              <Button variant="outline" className="flex-1 h-14 border-2 border-emerald-900 text-emerald-900 font-black uppercase tracking-widest rounded-md-none hover:bg-emerald-100 tracking-[0.04em]" onClick={() => setShowEnrollModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 h-14 bg-emerald-600 hover:bg-emerald-700 text-white border-2 border-emerald-900 font-black uppercase tracking-widest rounded-md-none transition-colors tracking-[0.04em]" onClick={() => {
+              <Button variant="outline" className="flex-1 h-14 border-2 border-emerald-900 text-emerald-900 font-black uppercase tracking-widest rounded-none hover:bg-emerald-100 tracking-[0.04em]" onClick={() => setShowEnrollModal(false)}>{t("cancel", "Cancel")}</Button>
+              <Button className="flex-1 h-14 bg-emerald-600 hover:bg-emerald-700 text-white border-2 border-emerald-900 font-black uppercase tracking-widest rounded-none transition-colors tracking-[0.04em]" onClick={() => {
                 if (!enrollName.trim()) return toast.error("Enter student name");
                 const studentId = `STU-${Math.floor(1000 + Math.random() * 9000)}`;
                 mutateRecord.mutate({

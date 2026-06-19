@@ -14,7 +14,7 @@ export const SCHOOL_BRAND = {
 
 export function ViewModeToggle({ viewMode, onChange, className}) {
  return (
- <div className={cn("bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 p-1 rounded-md-xl flex items-center ", className)}>
+ <div className={cn("bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 p-1 rounded-xl flex items-center ", className)}>
  <button
  type="button"
  onClick={() => onChange("list")}
@@ -45,17 +45,17 @@ function CardActions({ onEdit, onDelete, onView}) {
  return (
  <div className="absolute top-3 right-3 flex gap-2.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
  {onView && (
- <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 hover:text-primary rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={onView}>
+ <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 hover:text-primary rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={onView}>
  <Eye className="w-3.5 h-3.5" />
  </Button>
  )}
  {onEdit && (
- <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 hover:text-primary rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={onEdit}>
+ <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 hover:text-primary rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={onEdit}>
  <Edit className="w-3.5 h-3.5" />
  </Button>
  )}
  {onDelete && (
- <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={onDelete}>
+ <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={onDelete}>
  <Trash2 className="w-3.5 h-3.5" />
  </Button>
  )}
@@ -78,7 +78,7 @@ export function StudentGridCard({ student, onEdit, onDelete, onView}) {
 
  return (
  <article className="school-card group relative p-6 hover:-translate-y-1.5 transition-all duration-300 flex flex-col min-h-[260px] text-center overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent dark:from-primary/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-md-2xl" />
+ <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent dark:from-primary/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-2xl" />
  <CardActions onView={onView} onEdit={onEdit} onDelete={onDelete} />
  
  <div className="w-24 h-24 mx-auto rounded-md-[1.5rem] bg-gradient-to-br from-primary/5 to-primary/15 dark:from-primary/20 dark:to-primary/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/20 flex items-center justify-center text-4xl font-black text-primary dark:text-primary mb-5 shrink-0 relative overflow-hidden transform group-hover:scale-105 transition-transform duration-300 tracking-[-0.02em]">
@@ -89,7 +89,7 @@ export function StudentGridCard({ student, onEdit, onDelete, onView}) {
  <h3 className="school-heading font-extrabold text-xl line-clamp-1 tracking-tight group-hover:text-primary transition-colors">{student.name}</h3>
  <p className="text-xs text-[#71717a] dark:text-gray-400 font-semibold tracking-widest mt-1 opacity-70 font-dmsans tracking-[0.04em]">{student.studentId}</p>
  <div className="mt-4 flex items-center justify-center gap-2">
- <span className="text-xs font-semibold px-4 py-1.5 rounded-md-full bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/20 tracking-[0.04em]">{student.class}</span>
+ <span className="text-xs font-semibold px-4 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/20 tracking-[0.04em]">{student.class}</span>
  </div>
  </div>
  
@@ -119,7 +119,7 @@ export function ClassGridCard({ classInfo, onEdit, onDelete, onView}) {
  </div>
  
  <div className="flex justify-between items-start mb-5 relative z-10">
- <div className="w-14 h-14 rounded-md-2xl bg-gradient-to-br from-primary/5 to-primary/15 dark:from-primary/20 dark:to-primary/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/20 text-primary dark:text-primary flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+ <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/15 dark:from-primary/20 dark:to-primary/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/20 text-primary dark:text-primary flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
  <BookOpen className="w-6 h-6" />
  </div>
  <CardActions onView={onView} onEdit={onEdit} onDelete={onDelete} />
@@ -130,7 +130,7 @@ export function ClassGridCard({ classInfo, onEdit, onDelete, onView}) {
  <p className="text-sm font-semibold text-[#71717a] dark:text-gray-400/80 mt-1 tracking-wide uppercase tracking-[0.04em]">{classInfo.subject}</p>
  </div>
 
- <div className="space-y-3 mt-auto relative z-10 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/5 dark:border-primary/40">
+ <div className="space-y-3 mt-auto relative z-10 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/5 dark:border-primary/40">
  <div className="flex justify-between text-sm items-center">
  <span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">Teacher</span>
  <span className="font-semibold text-foreground text-right">{classInfo.teacher}</span>
@@ -155,7 +155,7 @@ export function BookGridCard({ book, onEdit, onDelete, onView, onIssue}) {
  <article className="school-card group relative overflow-hidden flex flex-col min-h-[300px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="h-40 bg-gradient-to-br from-primary/5 to-primary/15 dark:from-slate-800 dark:to-slate-900 border-b border-primary/5 dark:border-primary/40 flex items-center justify-center relative p-4">
  {book.cover_url ? (
- <img src={book.cover_url} alt="Cover" className="h-full object-contain rounded-md-sm" />
+ <img src={book.cover_url} alt="Cover" className="h-full object-contain rounded-sm" />
  ) : (
  <div className="w-24 h-32 bg-white dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-xl flex items-center justify-center text-primary dark:text-slate-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <BookOpen className="w-8 h-8" />
@@ -164,7 +164,7 @@ export function BookGridCard({ book, onEdit, onDelete, onView, onIssue}) {
  
  <span
  className={cn(
- "absolute top-3 left-3 text-[10px] font-semibold px-2.5 py-1 rounded-md-full uppercase tracking-wider border-[0.5px] border-black/9 dark:border-white/8 backdrop-blur-md",
+ "absolute top-3 left-3 text-[10px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider border-[0.5px] border-black/9 dark:border-white/8 backdrop-blur-md",
  isAvailable ? "bg-primary text-white border-primary" : "bg-red-500/10/90 text-white border-red-600"
  )}
  >
@@ -173,17 +173,17 @@ export function BookGridCard({ book, onEdit, onDelete, onView, onIssue}) {
  
  <div className="absolute top-3 right-3 flex gap-2.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
  {onView && (
- <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={onView}>
+ <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={onView}>
  <Eye className="w-3.5 h-3.5" />
  </Button>
  )}
  {onEdit && (
- <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={onEdit}>
+ <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={onEdit}>
  <Edit className="w-3.5 h-3.5" />
  </Button>
  )}
  {onDelete && (
- <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 text-red-600 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={onDelete}>
+ <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/95 dark:bg-slate-800/95 text-red-600 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={onDelete}>
  <Trash2 className="w-3.5 h-3.5" />
  </Button>
  )}
@@ -254,9 +254,9 @@ export function ExamGridCard({ exam, onEdit, onDelete, onView, onStatusChange}) 
 
 export function ModuleBanner({ title, subtitle, dateText, onRefresh, isRefreshing, metrics}) {
  return (
- <div className="bg-gradient-to-r from-primary via-primary/90 to-primary rounded-md-3xl p-6 relative overflow-hidden mb-6 -primary/20">
- <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-md-full blur-3xl opacity-30 -translate-y-1/2 translate-x-1/3 pointer-events-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
- <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/20 rounded-md-full blur-3xl opacity-50 translate-y-1/3 -translate-x-1/4 pointer-events-none" />
+ <div className="bg-gradient-to-r from-primary via-primary/90 to-primary rounded-3xl p-6 relative overflow-hidden mb-6 -primary/20">
+ <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl opacity-30 -translate-y-1/2 translate-x-1/3 pointer-events-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+ <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl opacity-50 translate-y-1/3 -translate-x-1/4 pointer-events-none" />
  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.04] pointer-events-none" />
  
  <div className="relative z-10 flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6">
@@ -275,7 +275,7 @@ export function ModuleBanner({ title, subtitle, dateText, onRefresh, isRefreshin
  </div>
  {onRefresh && (
  <div className="flex items-center gap-2 shrink-0">
- <Button onClick={onRefresh} disabled={isRefreshing} size="sm" className="gap-2.5 text-xs font-semibold bg-white/15 hover:bg-white/25 text-white rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-white/20 backdrop-blur-md tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Button onClick={onRefresh} disabled={isRefreshing} size="sm" className="gap-2.5 text-xs font-semibold bg-white/15 hover:bg-white/25 text-white rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-white/20 backdrop-blur-md tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} /> Refresh
  </Button>
  </div>
@@ -285,7 +285,7 @@ export function ModuleBanner({ title, subtitle, dateText, onRefresh, isRefreshin
  {metrics && metrics.length > 0 && (
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 relative z-10">
  {metrics.map((m, i) => (
- <div key={i} className="bg-white/10 border-[0.5px] border-black/9 dark:border-white/8 border-white/20 rounded-md-2xl p-4 flex flex-col items-center justify-center text-center relative overflow-hidden group backdrop-blur-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={i} className="bg-white/10 border-[0.5px] border-black/9 dark:border-white/8 border-white/20 rounded-2xl p-4 flex flex-col items-center justify-center text-center relative overflow-hidden group backdrop-blur-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors pointer-events-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  <p className="text-2xl font-black text-white mb-1 relative z-10 tracking-[-0.02em]">{m.value}</p>
  <div className="flex items-center gap-2.5 relative z-10">

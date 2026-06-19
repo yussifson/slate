@@ -181,9 +181,9 @@ export default function Wards() {
  </Button>
  </div>
  <div className="flex gap-4">
- <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-md-full bg-primary"></div><span className="text-sm text-[#71717a] dark:text-gray-400 font-medium">{t("available", "Available")}</span></div>
- <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-md-full bg-red-500/10"></div><span className="text-sm text-[#71717a] dark:text-gray-400 font-medium">{t("occupied", "Occupied")}</span></div>
- <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-md-full bg-amber-500"></div><span className="text-sm text-[#71717a] dark:text-gray-400 font-medium">{t("maintenance", "Maintenance")}</span></div>
+ <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-primary"></div><span className="text-sm text-[#71717a] dark:text-gray-400 font-medium">{t("available", "Available")}</span></div>
+ <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-red-500/10"></div><span className="text-sm text-[#71717a] dark:text-gray-400 font-medium">{t("occupied", "Occupied")}</span></div>
+ <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-500"></div><span className="text-sm text-[#71717a] dark:text-gray-400 font-medium">{t("maintenance", "Maintenance")}</span></div>
  </div>
  <div className="space-y-8">
  {wards.map((ward, wIdx) => {
@@ -193,13 +193,13 @@ export default function Wards() {
  const isCritical = occupancyRate >= 90;
 
  return (
- <div key={wIdx} className={`bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 overflow-hidden transition-colors ${isCritical ? 'border-red-300' : 'border-primary/40'}`}>
+ <div key={wIdx} className={`bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 overflow-hidden transition-colors ${isCritical ? 'border-red-300' : 'border-primary/40'}`}>
  <div className={`p-4 border-b flex items-center justify-between transition-colors ${isCritical ? 'bg-red-50/80 border-red-200' : 'bg-muted/50 border-primary/40'}`}>
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <BedDouble className={`w-5 h-5 ${isCritical ? 'text-red-500' : 'text-primary'}`}/> 
  {ward.name}
  {isCritical && (
- <span className="ml-2 inline-flex items-center gap-2 px-2 py-0.5 rounded-md-full text-[10px] font-semibold bg-red-100 text-red-700 uppercase tracking-wider tracking-[0.04em]">
+ <span className="ml-2 inline-flex items-center gap-2 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-100 text-red-700 uppercase tracking-wider tracking-[0.04em]">
  <AlertTriangle className="w-3 h-3" /> {t("near_capacity", "Near Capacity")}
  </span>
  )}
@@ -211,7 +211,7 @@ export default function Wards() {
  <div className="p-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
  {(ward.beds || []).map((bed, bIdx) => {
  return (
- <div key={bed.id} onClick={() => handleBedClick(wIdx, bIdx, bed, ward.id)} className={`p-4 rounded-md-xl border-2 flex flex-col items-center justify-center text-center transition-all cursor-pointer ${bedColors[bed.status]}`}>
+ <div key={bed.id} onClick={() => handleBedClick(wIdx, bIdx, bed, ward.id)} className={`p-4 rounded-xl border-2 flex flex-col items-center justify-center text-center transition-all cursor-pointer ${bedColors[bed.status]}`}>
  {bedIcons[bed.status]}
  <p className="font-semibold mt-2 text-lg">{bed.id}</p>
  <p className="text-xs font-semibold uppercase mt-1 opacity-80 tracking-[0.04em]">{bed.status}</p>
@@ -230,7 +230,7 @@ export default function Wards() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("update_bed", "Update Bed")} {selectedBed?.bed.id}</h2>
  <div className="space-y-4">
  <div>
@@ -257,7 +257,7 @@ export default function Wards() {
  )}
  {showNewWardModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("create_new_ward", "Create New Ward")}</h2>
  <div className="space-y-4">
  <div>

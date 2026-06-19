@@ -99,32 +99,32 @@ export default function VEmployerEvaluations() {
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-primary hover:bg-primary/90 text-white rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
+            <Button className="bg-primary hover:bg-primary/90 text-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
               <Plus className="w-4 h-4 mr-2" /> {t('add_evaluation', 'Add Evaluation')}
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] rounded-md-2xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <DialogContent className="sm:max-w-[425px] rounded-2xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <DialogHeader>
               <DialogTitle>{t('record_eval', 'Record Evaluation')}</DialogTitle>
             </DialogHeader>
             <div className="grid gap-4 py-4 max-h-[60vh] overflow-y-auto px-1">
               <div className="space-y-2">
                 <Label htmlFor="student">{t('student_name', 'Student Name')}</Label>
-                <Input id="student" placeholder="e.g. John Doe" value={newEval.student_name} onChange={e => setNewEval({...newEval, student_name: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                <Input id="student" placeholder="e.g. John Doe" value={newEval.student_name} onChange={e => setNewEval({...newEval, student_name: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="employer">{t('employer_name', 'Employer Name')}</Label>
-                <Input id="employer" placeholder="e.g. TechCorp" value={newEval.employer_name} onChange={e => setNewEval({...newEval, employer_name: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                <Input id="employer" placeholder="e.g. TechCorp" value={newEval.employer_name} onChange={e => setNewEval({...newEval, employer_name: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="rating">{t('rating', 'Overall Rating (1-5)')}</Label>
-                <Input id="rating" type="number" min="1" max="5" value={newEval.rating} onChange={e => setNewEval({...newEval, rating: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                <Input id="rating" type="number" min="1" max="5" value={newEval.rating} onChange={e => setNewEval({...newEval, rating: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="feedback">{t('feedback', 'Feedback')}</Label>
                 <textarea 
                   id="feedback" 
-                  className="w-full h-24 p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card resize-none text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" 
+                  className="w-full h-24 p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card resize-none text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" 
                   placeholder="Supervisor comments..."
                   value={newEval.feedback}
                   onChange={e => setNewEval({...newEval, feedback: e.target.value})}
@@ -132,7 +132,7 @@ export default function VEmployerEvaluations() {
               </div>
             </div>
             <DialogFooter>
-              <Button onClick={handleCreateEval} className="bg-primary text-white hover:bg-primary/90 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">{t('save', 'Save Evaluation')}</Button>
+              <Button onClick={handleCreateEval} className="bg-primary text-white hover:bg-primary/90 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">{t('save', 'Save Evaluation')}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -140,13 +140,13 @@ export default function VEmployerEvaluations() {
 
       <div className="flex-1 flex gap-6 overflow-hidden">
         {/* Left Panel */}
-        <Card className="w-[350px] shrink-0 flex flex-col rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <Card className="w-[350px] shrink-0 flex flex-col rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="p-4 border-b border-primary/10">
             <div className="relative">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
               <Input 
                 placeholder="Search evaluations..." 
-                className="pl-9 h-10 border-primary/40 rounded-md-xl focus-visible:ring-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none"
+                className="pl-9 h-10 border-primary/40 rounded-xl focus-visible:ring-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -163,13 +163,13 @@ export default function VEmployerEvaluations() {
                   <button
                     key={evaluation.id}
                     onClick={() => setSelectedEval(evaluation)}
-                    className={`w-full text-left p-3 rounded-md-xl transition-all duration-200 flex items-center gap-3 ${
+                    className={`w-full text-left p-3 rounded-xl transition-all duration-200 flex items-center gap-3 ${
                       selectedEval?.id === evaluation.id 
                         ? 'bg-primary/10 text-primary' 
                         : 'hover:bg-primary/5 text-foreground'
                     }`}
                   >
-                    <div className={`w-10 h-10 rounded-md-xl flex items-center justify-center font-semibold shrink-0 ${
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-semibold shrink-0 ${
                       selectedEval?.id === evaluation.id ? 'bg-primary text-white' : 'bg-primary/10 text-primary'
                     }`}>
                       <ClipboardCheck className="w-5 h-5" />
@@ -188,7 +188,7 @@ export default function VEmployerEvaluations() {
         </Card>
 
         {/* Right Panel */}
-        <Card className="flex-1 flex flex-col rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <Card className="flex-1 flex flex-col rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           {selectedEval ? (
             <>
               <div className="h-32 bg-primary/10 relative shrink-0 border-b border-primary/10"></div>
@@ -196,8 +196,8 @@ export default function VEmployerEvaluations() {
               <ScrollArea className="flex-1 -mt-12">
                 <div className="px-8 pb-8">
                   <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center relative z-10">
-                    <div className="w-24 h-24 rounded-md-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-2 shrink-0 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                      <div className="w-full h-full rounded-md-xl bg-primary/5 flex items-center justify-center text-primary">
+                    <div className="w-24 h-24 rounded-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-2 shrink-0 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                      <div className="w-full h-full rounded-xl bg-primary/5 flex items-center justify-center text-primary">
                         <ClipboardCheck className="w-10 h-10" />
                       </div>
                     </div>
@@ -213,7 +213,7 @@ export default function VEmployerEvaluations() {
 
                   <div className="mt-8 space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <Card className="bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none rounded-md-2xl flex flex-col items-center justify-center text-center p-6">
+                      <Card className="bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none rounded-2xl flex flex-col items-center justify-center text-center p-6">
                         <p className="text-sm font-semibold text-primary uppercase mb-2 tracking-[0.04em]">Overall Rating</p>
                         <div className="flex items-center gap-2 text-amber-500">
                           <Star className="w-8 h-8 fill-current" />
@@ -221,7 +221,7 @@ export default function VEmployerEvaluations() {
                         </div>
                       </Card>
                       
-                      <Card className="md:col-span-2 p-6 rounded-md-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                      <Card className="md:col-span-2 p-6 rounded-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                         <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2"><MessageSquare className="w-5 h-5 text-primary" /> Supervisor Feedback</h3>
                         <p className="text-[#71717a] dark:text-gray-400 italic leading-relaxed">
                           "{selectedEval.data?.feedback || 'No written feedback provided for this evaluation.'}"
@@ -229,11 +229,11 @@ export default function VEmployerEvaluations() {
                       </Card>
                     </div>
                     
-                    <Card className="p-6 rounded-md-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                    <Card className="p-6 rounded-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                       <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider tracking-[0.04em]">Skill Assessment Breakdown</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                         {['Technical Skills', 'Punctuality', 'Teamwork', 'Problem Solving'].map(skill => (
-                          <div key={skill} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-primary/5 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 gap-2">
+                          <div key={skill} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-primary/5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 gap-2">
                             <span className="text-sm font-semibold text-slate-900 dark:text-white">{skill}</span>
                             <div className="flex gap-2">
                               {[1, 2, 3, 4, 5].map(star => (
@@ -253,7 +253,7 @@ export default function VEmployerEvaluations() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-md-full bg-primary/10 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
                 <ClipboardCheck className="w-10 h-10 text-primary/40" />
               </div>
               <h3 className="text-xl font-semibold text-slate-900 dark:text-white">No Evaluation Selected</h3>

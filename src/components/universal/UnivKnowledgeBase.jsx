@@ -305,7 +305,7 @@ export default function UnivKnowledgeBase({
  <Folder className={cn("w-4 h-4", isActive ? "fill-primary/20 text-primary" : "text-[#71717a] dark:text-gray-400")} />
  <span className="truncate">{cat.name}</span>
  </div>
- <span className="text-xs text-[#71717a] dark:text-gray-400 bg-muted px-1.5 rounded-md-full tracking-[0.04em]">{catArticles.length}</span>
+ <span className="text-xs text-[#71717a] dark:text-gray-400 bg-muted px-1.5 rounded-full tracking-[0.04em]">{catArticles.length}</span>
  </button>
  <AnimatePresence>
  {isExpanded && (
@@ -374,7 +374,7 @@ export default function UnivKnowledgeBase({
  key={art.id}
  onClick={() => { setActiveArticle(art); setIsEditing(false);}}
  className={cn(
- "w-full text-left p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-200",
+ "w-full text-left p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-200",
  activeArticle?.id === art.id 
  ? "bg-primary/5 border-primary/30 " 
  : "bg-background border-transparent hover:border-primary/40 hover:bg-muted/30"
@@ -407,7 +407,7 @@ export default function UnivKnowledgeBase({
  <div className="flex-1 flex flex-col bg-background relative overflow-hidden">
  {!activeArticle && !isEditing ? (
  <div className="flex-1 flex flex-col items-center justify-center text-[#71717a] dark:text-gray-400 p-8 text-center animate-in fade-in duration-500">
- <div className="w-20 h-20 bg-muted rounded-md-full flex items-center justify-center mb-6">
+ <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-6">
  <FileText className="w-10 h-10 text-[#71717a] dark:text-gray-400/50" />
  </div>
  <h2 className="text-xl font-semibold text-foreground mb-2">Knowledge Base</h2>
@@ -416,7 +416,7 @@ export default function UnivKnowledgeBase({
  </p>
  <button 
  onClick={handleCreateArticle}
- className="mt-6 px-6 py-2.5 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20 flex items-center gap-2"
+ className="mt-6 px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20 flex items-center gap-2"
  >
  <Plus className="w-4 h-4" /> Create First Article
  </button>
@@ -460,7 +460,7 @@ export default function UnivKnowledgeBase({
  className="w-full text-4xl font-extrabold bg-transparent border-none outline-none text-foreground placeholder:text-[#71717a] dark:text-gray-400/30 focus:ring-0 px-0 tracking-[-0.02em]"
  />
  
- <div className="flex flex-wrap gap-4 p-4 rounded-md-xl bg-muted/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <div className="flex flex-wrap gap-4 p-4 rounded-xl bg-muted/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  <div className="flex-1 min-w-[200px]">
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Category</label>
  <select 
@@ -545,7 +545,7 @@ export default function UnivKnowledgeBase({
  
  <div className="flex items-center gap-4 text-sm text-[#71717a] dark:text-gray-400 mb-10 pb-6 border-b border-primary/40">
  <div className="flex items-center gap-2.5">
- <div className="w-5 h-5 rounded-md-full bg-primary/20 flex items-center justify-center text-[10px] font-semibold text-primary">
+ <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-semibold text-primary">
  {activeArticle.author?.charAt(0).toUpperCase() || 'U'}
  </div>
  {activeArticle.author || 'Unknown Author'}

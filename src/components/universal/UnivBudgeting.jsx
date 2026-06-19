@@ -167,30 +167,30 @@ export default function UnivBudgeting({
 
  {/* Global Stats */}
  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 text-[#71717a] dark:text-gray-400 mb-1">
  <DollarSign className="w-4 h-4" /> <span className="text-xs font-semibold uppercase tracking-wider tracking-[0.04em]">Total Allocated</span>
  </div>
  <div className="text-2xl font-semibold text-foreground tracking-[-0.02em]">${totalAllocated.toLocaleString()}</div>
  </div>
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 text-[#71717a] dark:text-gray-400 mb-1">
  <TrendingUp className="w-4 h-4 text-red-500" /> <span className="text-xs font-semibold uppercase tracking-wider tracking-[0.04em]">Total Spent</span>
  </div>
  <div className="text-2xl font-semibold text-foreground tracking-[-0.02em]">${totalSpent.toLocaleString()}</div>
  </div>
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 text-[#71717a] dark:text-gray-400 mb-1">
  <Wallet className="w-4 h-4 text-emerald-500" /> <span className="text-xs font-semibold uppercase tracking-wider tracking-[0.04em]">Remaining</span>
  </div>
  <div className="text-2xl font-semibold text-foreground tracking-[-0.02em]">${totalRemaining.toLocaleString()}</div>
  </div>
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 flex flex-col justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 flex flex-col justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-2 tracking-[0.04em]">
  <span>Overall Usage</span>
  <span className={overallUsagePct > 90 ? "text-red-500" : "text-emerald-500"}>{overallUsagePct.toFixed(1)}%</span>
  </div>
- <div className="h-2.5 bg-muted rounded-md-full overflow-hidden">
+ <div className="h-2.5 bg-muted rounded-full overflow-hidden">
  <div 
  className={cn("h-full transition-all duration-500", overallUsagePct > 90 ? "bg-red-500/10" : overallUsagePct > 75 ? "bg-amber-500" : "bg-emerald-500/10")}
  style={{ width: `${Math.min(overallUsagePct, 100)}%`}}
@@ -237,7 +237,7 @@ export default function UnivBudgeting({
  const isWarning = pct > 85 && !isOver;
 
  return (
- <div key={budget.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6 transition- group relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={budget.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-6 transition- group relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Background Progress Bar */}
  <div 
  className={cn("absolute inset-0 opacity-[0.03] pointer-events-none transition-all duration-1000", isOver ? "bg-red-500/10" : isWarning ? "bg-amber-500" : "bg-emerald-500/10")} 
@@ -280,7 +280,7 @@ export default function UnivBudgeting({
  </div>
 
  <div className="relative">
- <div className="h-3 bg-muted rounded-md-full overflow-hidden">
+ <div className="h-3 bg-muted rounded-full overflow-hidden">
  <div 
  className={cn("h-full transition-all duration-1000", isOver ? "bg-red-500/10" : isWarning ? "bg-amber-500" : "bg-emerald-500/10")}
  style={{ width: `${Math.min(pct, 100)}%`}}
@@ -306,7 +306,7 @@ export default function UnivBudgeting({
  initial={{ opacity: 0, scale: 0.95, y: 20}}
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: 20}}
- className="relative w-full max-w-lg bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="relative w-full max-w-lg bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="px-6 py-4 border-b border-primary/40 flex items-center justify-between bg-muted/20">
  <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">

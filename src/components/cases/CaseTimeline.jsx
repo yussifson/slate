@@ -93,10 +93,10 @@ export default function CaseTimeline({ caseData, user}) {
  timeline.map(entry => {
  return (
  <div key={entry.id} className="relative">
- <span className="absolute -left-10 w-8 h-8 rounded-md-full bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center shrink-0 z-10 ">
+ <span className="absolute -left-10 w-8 h-8 rounded-full bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center shrink-0 z-10 ">
  {ACTIVITY_ICONS[entry.activity_type] || ACTIVITY_ICONS.other}
  </span>
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-start justify-between gap-4 mb-2">
  <div>
  <h4 className="font-semibold text-foreground text-base">{entry.title}</h4>
@@ -104,7 +104,7 @@ export default function CaseTimeline({ caseData, user}) {
  <span className="font-medium text-foreground/80">{entry.logged_by_name}</span>
  <span>•</span>
  <span>{format(new Date(entry.created_date), "MMM d, yyyy h:mm a")}</span>
- <span className="capitalize px-2 py-0.5 bg-muted rounded-md-full text-[10px]">{entry.activity_type.replace('_', ' ')}</span>
+ <span className="capitalize px-2 py-0.5 bg-muted rounded-full text-[10px]">{entry.activity_type.replace('_', ' ')}</span>
  </div>
  </div>
  </div>

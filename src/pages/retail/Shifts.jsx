@@ -91,17 +91,17 @@ export default function Shifts() {
  </div>
 
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-xl bg-orange-100 dark:bg-orange-950/20 flex items-center justify-center text-orange-600"><Clock className="w-5 h-5" /></div>
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-950/20 flex items-center justify-center text-orange-600"><Clock className="w-5 h-5" /></div>
  <div><p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{shifts.length}</p><p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Total Shifts</p></div>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-xl bg-slate-100 dark:bg-primary/20 flex items-center justify-center text-primary"><CalendarCheck className="w-5 h-5" /></div>
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-primary/20 flex items-center justify-center text-primary"><CalendarCheck className="w-5 h-5" /></div>
  <div><p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{shifts.filter(s => s.status === 'Completed').length}</p><p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Completed Shifts</p></div>
  </div>
  </div>
 
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -134,7 +134,7 @@ export default function Shifts() {
  <td className="px-6 py-4 font-medium">{s.date}</td>
  <td className="px-6 py-4 text-center">{s.startTime} - {s.endTime}</td>
  <td className="px-6 py-4 text-center">
- <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-md-full uppercase tracking-wider ${s.status === 'Completed' ? 'bg-slate-100 text-primary/90' : s.status === 'Cancelled' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'}`}>{s.status}</span>
+ <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider ${s.status === 'Completed' ? 'bg-slate-100 text-primary/90' : s.status === 'Cancelled' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'}`}>{s.status}</span>
  </td>
  <td className="px-6 py-4 text-right">
  <Button variant="ghost" size="icon" onClick={() => openEdit(s)}><Edit className="w-4 h-4" /></Button>
@@ -150,7 +150,7 @@ export default function Shifts() {
 
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editingId ? 'Edit Shift' : 'Schedule Shift'}</h2>
  <div className="space-y-3">
  <div>

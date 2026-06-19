@@ -148,35 +148,35 @@ export default function VPracticalExams() {
             </div>
             <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
               <DialogTrigger asChild>
-                <Button className="bg-primary hover:bg-primary/90 text-white rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
+                <Button className="bg-primary hover:bg-primary/90 text-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
                   <Plus className="w-4 h-4 mr-2" /> {t('create_assessment', 'Create Assessment')}
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px] rounded-md-2xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+              <DialogContent className="sm:max-w-[425px] rounded-2xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                 <DialogHeader>
                   <DialogTitle>{t('schedule_exam', 'Schedule Practical Exam')}</DialogTitle>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Title</label>
-                    <Input placeholder="e.g. Arc Welding Final" value={newExam.title} onChange={e => setNewExam({...newExam, title: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                    <Input placeholder="e.g. Arc Welding Final" value={newExam.title} onChange={e => setNewExam({...newExam, title: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Room / Bay</label>
-                    <Input placeholder="e.g. Workshop C" value={newExam.room} onChange={e => setNewExam({...newExam, room: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                    <Input placeholder="e.g. Workshop C" value={newExam.room} onChange={e => setNewExam({...newExam, room: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Time Slot</label>
-                    <Input placeholder="e.g. 14:00 - 17:00" value={newExam.time} onChange={e => setNewExam({...newExam, time: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                    <Input placeholder="e.g. 14:00 - 17:00" value={newExam.time} onChange={e => setNewExam({...newExam, time: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Assessor</label>
-                    <Input placeholder="e.g. M. Asante" value={newExam.assessor} onChange={e => setNewExam({...newExam, assessor: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                    <Input placeholder="e.g. M. Asante" value={newExam.assessor} onChange={e => setNewExam({...newExam, assessor: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button variant="outline" onClick={() => setIsCreateOpen(false)} className="rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none border-primary/40">Cancel</Button>
-                  <Button onClick={handleCreateExam} className="rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-primary text-white hover:bg-primary/90">Save</Button>
+                  <Button variant="outline" onClick={() => setIsCreateOpen(false)} className="rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none border-primary/40">Cancel</Button>
+                  <Button onClick={handleCreateExam} className="rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-primary text-white hover:bg-primary/90">Save</Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -185,7 +185,7 @@ export default function VPracticalExams() {
           {/* Metrics Row */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {metrics.map(m => (
-              <Card key={m.label} className="rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+              <Card key={m.label} className="rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                 <CardContent className="p-6 text-center">
                   <div className="text-3xl font-semibold text-primary tracking-[-0.02em]">{m.value}</div>
                   <div className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mt-2 tracking-[0.04em]">{m.label}</div>
@@ -195,10 +195,10 @@ export default function VPracticalExams() {
           </div>
 
           {/* Assessment List */}
-          <Card className="rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <Card className="rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <div className="flex gap-2 p-4 border-b border-primary/10">
               {['upcoming', 'completed'].map(t => (
-                <Button key={t} onClick={() => setTab(t)} variant={tab === t ? 'default' : 'ghost'} className={`rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none ${tab === t ? 'bg-primary/10 text-primary hover:bg-primary/20' : 'text-[#71717a] dark:text-gray-400'}`}>
+                <Button key={t} onClick={() => setTab(t)} variant={tab === t ? 'default' : 'ghost'} className={`rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none ${tab === t ? 'bg-primary/10 text-primary hover:bg-primary/20' : 'text-[#71717a] dark:text-gray-400'}`}>
                   {t.charAt(0).toUpperCase() + t.slice(1)}
                 </Button>
               ))}
@@ -226,9 +226,9 @@ export default function VPracticalExams() {
                       </div>
                     </div>
                     <div className="flex gap-2 shrink-0">
-                      <Button variant="outline" className="rounded-md-xl border-primary/40 text-primary hover:bg-primary/5 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">View Details</Button>
+                      <Button variant="outline" className="rounded-xl border-primary/40 text-primary hover:bg-primary/5 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">View Details</Button>
                       {exam.status !== 'completed' && (
-                        <Button onClick={() => startExam(exam)} className="rounded-md-xl bg-primary text-white hover:bg-primary/90 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">Conduct Exam</Button>
+                        <Button onClick={() => startExam(exam)} className="rounded-xl bg-primary text-white hover:bg-primary/90 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">Conduct Exam</Button>
                       )}
                     </div>
                   </div>
@@ -241,22 +241,22 @@ export default function VPracticalExams() {
 
       {/* ── CONDUCT VIEW (Full-Screen Assessor) ── */}
       {view === 'conduct' && (
-        <div className="h-[calc(100vh-100px)] flex flex-col rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="h-[calc(100vh-100px)] flex flex-col rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           {/* Top bar */}
           <div className="px-6 py-4 bg-primary/5 border-b border-primary/10 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm" onClick={() => setView('dashboard')} className="text-[#71717a] dark:text-gray-400 hover:text-primary rounded-md-xl">
+              <Button variant="ghost" size="sm" onClick={() => setView('dashboard')} className="text-[#71717a] dark:text-gray-400 hover:text-primary rounded-xl">
                 <X className="w-4 h-4 mr-1" /> Exit
               </Button>
               <div className="w-px h-5 bg-primary/20" />
               <span className="font-semibold text-lg text-slate-900 dark:text-white">EXAM: {activeExam?.title}</span>
             </div>
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                 <Timer className="w-4 h-4 text-primary" />
                 <span className="text-sm font-mono font-semibold">00:00:00</span>
               </div>
-              <Button onClick={saveExamScores} className="rounded-md-xl bg-primary text-white hover:bg-primary/90 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
+              <Button onClick={saveExamScores} className="rounded-xl bg-primary text-white hover:bg-primary/90 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
                 <Save className="w-4 h-4 mr-2" /> Complete & Save
               </Button>
             </div>
@@ -277,7 +277,7 @@ export default function VPracticalExams() {
                       key={i} 
                       variant={activeTraineeIdx === i ? 'default' : 'ghost'}
                       onClick={() => setActiveTraineeIdx(i)}
-                      className={`w-full justify-start rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none ${activeTraineeIdx === i ? 'bg-primary text-white' : 'text-foreground hover:bg-primary/5'}`}
+                      className={`w-full justify-start rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none ${activeTraineeIdx === i ? 'bg-primary text-white' : 'text-foreground hover:bg-primary/5'}`}
                     >
                       {scored ? <CheckCircle2 className="w-4 h-4 mr-2" /> : <Clock className="w-4 h-4 mr-2 opacity-50" />}
                       <span className="truncate">{trainee.title}</span>
@@ -305,7 +305,7 @@ export default function VPracticalExams() {
                   {criteria.map((c, ci) => {
                     const currentVal = (scores[activeTraineeIdx] || {})[ci] || 0;
                     return (
-                      <div key={ci} className="p-5 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 bg-primary/5">
+                      <div key={ci} className="p-5 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 bg-primary/5">
                         <div className="flex justify-between items-center mb-4">
                           <h4 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                             <Target className="w-4 h-4 text-primary" /> {c.name}
@@ -317,7 +317,7 @@ export default function VPracticalExams() {
                             <Button
                               key={val}
                               onClick={() => setScore(ci, val)}
-                              className={`flex-1 h-12 rounded-md-xl text-lg font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none ${currentVal === val ? 'bg-primary text-white border-primary' : 'bg-card text-foreground border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 hover:border-primary hover:bg-primary/10'}`}
+                              className={`flex-1 h-12 rounded-xl text-lg font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none ${currentVal === val ? 'bg-primary text-white border-primary' : 'bg-card text-foreground border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 hover:border-primary hover:bg-primary/10'}`}
                             >
                               {val}
                             </Button>
@@ -332,10 +332,10 @@ export default function VPracticalExams() {
                   })}
                 </div>
                 
-                <div className="p-4 bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-2xl">
+                <div className="p-4 bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-2xl">
                   <label className="text-sm font-semibold block mb-2">Assessor Remarks</label>
                   <textarea 
-                    className="w-full h-24 p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none resize-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+                    className="w-full h-24 p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none resize-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
                     placeholder="Add observations, safety violations, or commendations here..."
                   ></textarea>
                 </div>

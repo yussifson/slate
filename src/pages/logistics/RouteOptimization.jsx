@@ -135,7 +135,7 @@ export default function RouteOptimization() {
         
         {/* Left Column: Route Builder */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <div className="mb-6 space-y-4">
               <div>
                 <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">Route Name</label>
@@ -151,7 +151,7 @@ export default function RouteOptimization() {
             <div className="space-y-3">
               {stops.map((stop, index) => (
                 <div key={stop.id} className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-md-full bg-primary/10 text-primary flex items-center justify-center text-xs font-semibold shrink-0 tracking-[0.04em]">
+                  <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-semibold shrink-0 tracking-[0.04em]">
                     {index + 1}
                   </div>
                   <Input 
@@ -176,7 +176,7 @@ export default function RouteOptimization() {
         <div className="lg:col-span-2 space-y-6">
           
           {/* AI Optimization Banner / Paywall */}
-          <div className="relative rounded-md-2xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 bg-gradient-to-r from-primary/10 to-transparent p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="relative rounded-2xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 bg-gradient-to-r from-primary/10 to-transparent p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="space-y-2 flex-1">
               <h3 className="text-lg font-semibold flex items-center gap-2">
                 <Zap className="w-5 h-5 text-primary fill-primary" /> 
@@ -189,7 +189,7 @@ export default function RouteOptimization() {
 
             <div className="relative">
               {!isProOrAbove && (
-                <div className="absolute -inset-2 bg-background/80 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8">
+                <div className="absolute -inset-2 bg-background/80 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8">
                   <Lock className="w-5 h-5 text-amber-500 mb-1" />
                   <span className="text-[10px] font-semibold text-amber-600 uppercase tracking-wider tracking-[0.04em]">Pro Plan Required</span>
                 </div>
@@ -207,7 +207,7 @@ export default function RouteOptimization() {
           </div>
 
           {/* Map Preview Area */}
-          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm h-[500px] flex flex-col relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm h-[500px] flex flex-col relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
              {/* Simulated Map Background */}
              <div className="absolute inset-0 bg-slate-100 dark:bg-slate-900 opacity-50 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxyZWN0IHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0ibm9uZSI+PC9yZWN0Pgo8cGF0aCBkPSJNMCAyMEw0MCAyME0yMCAwTDIwIDQwIiBzdHJva2U9InJnYmEoMCwgMCwgMCwgMC4wNSkiIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4=')]"></div>
              
@@ -220,11 +220,11 @@ export default function RouteOptimization() {
 
              <div className="flex-1 relative z-10 p-6 flex items-center justify-center">
                 {stops.filter(s => s.address).length > 0 ? (
-                  <div className="space-y-6 w-full max-w-md bg-background/90 p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] backdrop-blur-md">
+                  <div className="space-y-6 w-full max-w-md bg-background/90 p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] backdrop-blur-md">
                      {stops.filter(s => s.address).map((stop, i, arr) => (
                        <div key={stop.id} className="relative">
                           <div className="flex items-center gap-4">
-                             <div className="w-8 h-8 rounded-md-full bg-primary flex items-center justify-center text-primary-foreground font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] z-10">
+                             <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] z-10">
                                {i + 1}
                              </div>
                              <div className="flex-1">

@@ -129,7 +129,7 @@ export default function DriverMobileApp() {
       )}
 
       <Tabs defaultValue="deliveries" className="w-full">
-        <TabsList className="w-full rounded-md-none border-b bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <TabsList className="w-full rounded-none border-b bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <TabsTrigger value="deliveries" className="flex-1">Deliveries</TabsTrigger>
           <TabsTrigger value="completed" className="flex-1">Completed</TabsTrigger>
           <TabsTrigger value="map" className="flex-1">Map</TabsTrigger>

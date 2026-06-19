@@ -93,7 +93,7 @@ export default function SmartDocs() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="space-y-4">
-          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <h2 className="text-lg font-semibold text-card-foreground mb-4 flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <UploadCloud className="w-5 h-5 text-primary" />
               Upload Document
@@ -105,7 +105,7 @@ export default function SmartDocs() {
           </div>
           
           {/* Historical Docs */}
-          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
              <h2 className="text-lg font-semibold text-card-foreground mb-4 flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <Database className="w-5 h-5 text-primary" />
               Recently Processed
@@ -114,7 +114,7 @@ export default function SmartDocs() {
               {historicalDocs?.map(doc => {
                 const data = JSON.parse(doc.extracted_data || '{}');
                 return (
-                  <div key={doc.id} className="p-3 border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-xl flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer">
+                  <div key={doc.id} className="p-3 border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                         <FileText className="w-5 h-5 text-primary" />
@@ -128,7 +128,7 @@ export default function SmartDocs() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-medium px-2 py-1 bg-emerald-100 text-emerald-700 rounded-md-full tracking-[0.04em]">
+                      <span className="text-xs font-medium px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full tracking-[0.04em]">
                         {doc.status}
                       </span>
                     </div>
@@ -143,7 +143,7 @@ export default function SmartDocs() {
         </div>
 
         <div className="space-y-4">
-          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm min-h-[400px] flex flex-col sticky top-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm min-h-[400px] flex flex-col sticky top-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <h2 className="text-lg font-semibold text-card-foreground mb-4 flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <CheckCircle className="w-5 h-5 text-primary" />
               Extracted Data Review

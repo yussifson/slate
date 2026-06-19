@@ -34,7 +34,7 @@ const SUB_STATUS_ICONS = { pending: Clock, sent: Send, paid: CheckCircle, overdu
 
 function MetricCard({ icon: IconComp, label, value, color }) {
   return (
-    <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${color}`}>
         <IconComp className="w-5 h-5" />
       </div>
@@ -300,7 +300,7 @@ function CompanyBilling({ companyId }) {
           {isLoading ? (
             <div className="text-center py-12 text-sm text-[#71717a] dark:text-gray-400">{t("loading", "Loading...")}</div>
           ) : Object.keys(grouped).length === 0 ? (
-            <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-12 text-center text-sm text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-12 text-center text-sm text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               {t(
                 "no_invoices_found_create_your_",
                 "No invoices found. Create your first invoice to get started."
@@ -311,7 +311,7 @@ function CompanyBilling({ companyId }) {
               {Object.entries(grouped).map(([key, group]) => {
                 const groupTotal = group.invoices.reduce((s, i) => s + (i.total_amount || 0), 0);
                 return (
-                  <div key={key} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                  <div key={key} className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                     <div className="px-4 py-3 bg-muted/30 border-b border-primary/40 flex items-center justify-between">
                       <p className="text-sm font-semibold">{group.label}</p>
                       <span className="text-xs font-medium text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{formatCurrency(groupTotal, currency)} {t("total", "total")}</span>
@@ -378,14 +378,14 @@ function CompanyBilling({ companyId }) {
           {expensesLoading ? (
             <div className="text-center py-12 text-sm text-[#71717a] dark:text-gray-400">{t("loading", "Loading...")}</div>
           ) : expenses.length === 0 ? (
-            <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-12 text-center text-sm text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-12 text-center text-sm text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               {t(
                 "no_expenses_logged_yet_click_l",
                 "No expenses logged yet. Click \"Log Expense\" to add one."
               )}
             </div>
           ) : (
-            <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <div className="divide-y divide-border">
                 {expenses.map(exp => {
                   return (
@@ -528,7 +528,7 @@ function SuperAdminBilling() {
         <MetricCard icon={AlertCircle} label="Overdue Invoices" value={overdueCount} color="bg-red-50 text-red-600" />
         <MetricCard icon={CreditCard} label="Total Invoices" value={invoices.length} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
       </div>
-      <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="p-4 border-b border-primary/40 flex items-center justify-between gap-3 flex-wrap">
           <h2 className="text-sm font-semibold">{t("subscription_invoices", "Subscription Invoices")}</h2>
           <Select value={statusFilter} onValueChange={setStatusFilter}>

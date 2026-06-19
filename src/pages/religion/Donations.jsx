@@ -133,27 +133,27 @@ export default function Donations() {
  </div>
  </div>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-3 mb-2">
- <div className="w-8 h-8 rounded-md-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
+ <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
  <DollarSign className="w-4 h-4" />
  </div>
  <h3 className="font-semibold text-foreground text-sm">{t("total_donations_logged", "Total Donations logged")}</h3>
  </div>
  <p className="text-3xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${totalDonations.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-3 mb-2">
- <div className="w-8 h-8 rounded-md-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
+ <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
  <DollarSign className="w-4 h-4" />
  </div>
  <h3 className="font-semibold text-foreground text-sm">{t("total_offerings", "Total Offerings")}</h3>
  </div>
  <p className="text-3xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${totalOfferings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-3 mb-2">
- <div className="w-8 h-8 rounded-md-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
+ <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
  <DollarSign className="w-4 h-4" />
  </div>
  <h3 className="font-semibold text-foreground text-sm">{t("special_building_funds", "Special/Building Funds")}</h3>
@@ -161,7 +161,7 @@ export default function Donations() {
  <p className="text-3xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${totalOthers.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
  </div>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -202,7 +202,7 @@ export default function Donations() {
  <Link to="/religion/members" className="text-primary hover:underline">{item.member}</Link>
  </td>
  <td className="px-6 py-4">
- <span className="bg-slate-100 dark:bg-slate-500 text-primary/90 dark:text-primary/70 px-2.5 py-1 rounded-md-full text-xs font-semibold tracking-[0.04em]">
+ <span className="bg-slate-100 dark:bg-slate-500 text-primary/90 dark:text-primary/70 px-2.5 py-1 rounded-full text-xs font-semibold tracking-[0.04em]">
  {item.type}
  </span>
  </td>
@@ -241,7 +241,7 @@ export default function Donations() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <DollarSign className="w-5 h-5 text-primary" /> {t("record_financial_giving", "Record Financial Giving")}
  </h2>

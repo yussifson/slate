@@ -102,8 +102,8 @@ export default function SuperAdminDashboard() {
  <p className="text-primary/10 font-medium text-lg">System Configuration & {getTerm(activeIndustry, "venue") || "Firm"} Setup</p>
  </div>
  {!company && (
- <div className="flex items-center bg-white dark:bg-slate-900/40/10 p-2 rounded-md-2xl backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-white/20  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Button onClick={() => setShowForm(true)} size="sm" className="gap-2.5 text-sm font-semibold bg-white dark:bg-slate-900/40 text-primary/70 hover:bg-white dark:bg-slate-900/40/90 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex items-center bg-white dark:bg-slate-900/40/10 p-2 rounded-2xl backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-white/20  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Button onClick={() => setShowForm(true)} size="sm" className="gap-2.5 text-sm font-semibold bg-white dark:bg-slate-900/40 text-primary/70 hover:bg-white dark:bg-slate-900/40/90 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Plus className="w-4 h-4" /> {t("setup_firm", "Setup " + (getTerm(activeIndustry, "venue") || "Firm"))}
  </Button>
  </div>
@@ -111,9 +111,9 @@ export default function SuperAdminDashboard() {
  </div>
  </div>
  {company ? (
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-5 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-5 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-4">
- <div className="w-12 h-12 rounded-md-xl bg-slate-100 flex items-center justify-center shrink-0">
+ <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
  <span className="text-lg font-semibold text-primary">{company.name?.[0]?.toUpperCase()}</span>
  </div>
  <div className="flex-1">
@@ -155,7 +155,7 @@ export default function SuperAdminDashboard() {
  </div>
  </div>
  ) : (
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-md-xl p-10 text-center space-y-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-xl p-10 text-center space-y-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Building2 className="w-10 h-10 text-[#71717a] dark:text-gray-400/40 mx-auto" />
  <p className="text-sm text-[#71717a] dark:text-gray-400">{t("no_firm_configured_yet", "No " + (getTerm(activeIndustry, "venue") || "firm").toLowerCase() + " configured yet.")}</p>
  <Button onClick={() => setShowForm(true)} size="sm">{t("setup_your_firm", "Setup Your " + (getTerm(activeIndustry, "venue") || "Firm"))}</Button>

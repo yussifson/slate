@@ -509,7 +509,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  {/* Section label */}
  {!collapsed ? (
  <div className="px-4 pt-5 pb-1.5 animate-in fade-in duration-200">
- <p className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-widest whitespace-nowrap tracking-[0.04em]">{t('platform', 'Platform')}</p>
+ <p className="text-[10px] font-semibold text-sidebar-foreground/40 uppercase tracking-[0.08em] whitespace-nowrap">{t('platform', 'Platform')}</p>
  </div>
  ) : (
  <div className="pt-5" />
@@ -517,7 +517,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
  <nav className="flex-1 px-3 pb-3 space-y-1 overflow-y-auto overflow-x-hidden scrollbar-hide">
  {isOrbitMode && !collapsed && dynamicNavItems.length === 0 && orbitBuildNavItems.length === 0 && (
- <div className="mx-1 my-3 p-3 rounded-md-xl bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-center">
+ <div className="mx-1 my-3 p-3 rounded-xl bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-center">
  <div className="text-2xl mb-1 tracking-[-0.02em]">⚡</div>
  <p className="text-xs font-semibold text-primary/90 mb-1 tracking-[0.04em]">Orbit Mode Active</p>
  <p className="text-[11px] text-primary leading-snug mb-2">Use the Slate Builder to create your custom pages with AI.</p>
@@ -535,7 +535,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  <div key={item.path}>
  {showSection && (
  <div className="pt-4 pb-1.5 px-1 first:pt-0">
- <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-[#71717a] dark:text-gray-400/60 tracking-[0.04em]">{t(item.section.toLowerCase().replace(/\s+/g, '_'), item.section)}</p>
+ <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-sidebar-foreground/40">{t(item.section.toLowerCase().replace(/\s+/g, '_'), item.section)}</p>
  </div>
  )}
  <div className="relative group">
@@ -543,20 +543,20 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  to={item.path}
  title={collapsed ? t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label) : undefined}
  className={cn(
- "flex items-center rounded-xl text-sm font-medium transition-all duration-150 relative",
+ "flex items-center rounded-xl text-sm transition-all duration-150 relative",
  collapsed ? "justify-center p-2" : "gap-3 px-3 py-2 pr-8",
  isActive
- ? "bg-primary text-white "
- : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
+ ? "bg-primary/10 text-primary font-medium border-l-2 border-l-primary"
+ : "text-sidebar-foreground/70 font-normal hover:text-sidebar-foreground hover:bg-sidebar-accent"
  )}
  >
- {isActive && !collapsed && <div className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-white rounded-md-r-full hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />}
+
  <span className="relative flex-shrink-0">
  <IconComp className={cn("transition-all", collapsed ? "w-5 h-5" : "w-4 h-4")} />
  {showLiveDot && (
  <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
- <span className="animate-ping absolute inline-flex h-full w-full rounded-md-full bg-green-400 opacity-75" />
- <span className="relative inline-flex rounded-md-full h-2.5 w-2.5 bg-green-500/10" />
+ <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+ <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500/10" />
  </span>
  )}
  </span>
@@ -564,7 +564,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  <div className="flex items-center gap-2 overflow-hidden flex-1 animate-in fade-in duration-200">
  <span className="whitespace-nowrap truncate">{t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label)}</span>
  {item.status === 'draft' && (
- <span className="text-[9px] font-semibold uppercase tracking-wider bg-amber-500/20 text-amber-500 px-1.5 py-0.5 rounded-md-sm tracking-[0.04em]">Draft</span>
+ <span className="text-[9px] font-semibold uppercase tracking-wider bg-amber-500/20 text-amber-500 px-1.5 py-0.5 rounded-sm tracking-[0.04em]">Draft</span>
  )}
  </div>
  )}
@@ -615,11 +615,11 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  {activeRoomUrl && (
  <div
  onClick={() => navigate('/board')}
- className="mx-3 mb-3 cursor-pointer rounded-md-xl bg-green-500/10/10 border-[0.5px] border-black/9 dark:border-white/8 border-green-500/30 p-3 flex items-center gap-2.5 hover:bg-green-500/10/20 transition-colors"
+ className="mx-3 mb-3 cursor-pointer rounded-xl bg-green-500/10/10 border-[0.5px] border-black/9 dark:border-white/8 border-green-500/30 p-3 flex items-center gap-2.5 hover:bg-green-500/10/20 transition-colors"
  >
  <span className="relative flex h-3 w-3 shrink-0">
- <span className="animate-ping absolute inline-flex h-full w-full rounded-md-full bg-green-400 opacity-75" />
- <span className="relative inline-flex rounded-md-full h-3 w-3 bg-green-500/10" />
+ <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+ <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500/10" />
  </span>
  {!collapsed && (
  <div className="flex-1 min-w-0">
@@ -634,8 +634,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  <div className="mt-auto p-3 border-t border-sidebar-border-[0.5px] border-black/9 dark:border-white/8 bg-sidebar">
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
- <button className="w-full flex items-center gap-3 p-2 rounded-md-xl hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20">
- <div className="w-9 h-9 rounded-md-full bg-slate-100 flex items-center justify-center flex-shrink-0 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 overflow-hidden">
+ <button className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20">
+ <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 overflow-hidden">
  {user?.avatar_url ? (
  <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
  ) : (
@@ -647,10 +647,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  
  {!collapsed && (
  <div className="flex-1 text-left min-w-0 animate-in fade-in duration-200">
- <p className="text-sm font-semibold leading-none text-foreground">
+ <p className="text-[13px] font-medium leading-none text-foreground">
  {user?.full_name || user?.company_name || (user?.role === "super_admin" ? "Super Admin" : "Admin")}
  </p>
- <p className="text-[11px] text-[#71717a] dark:text-gray-400 capitalize truncate mt-0.5">
+ <p className="text-[11px] text-foreground/50 capitalize truncate mt-0.5">
  {user?.role?.replace("_", " ")}
  </p>
  </div>

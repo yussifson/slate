@@ -135,7 +135,7 @@ export default function Groups() {
  {isDbLoading ? (
  <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_departments", "Loading departments...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <HeartHandshake className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
  <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_groups_configured", "No groups configured")}</p>
  <p className="text-sm mt-1 max-w-md mx-auto">{t(
@@ -147,9 +147,9 @@ export default function Groups() {
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {filtered.map(min => {
  return (
- <div key={min.id} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 transition- relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={min.id} className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 transition- relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-start mb-4">
- <div className={`w-14 h-14 rounded-md-full border-2 flex items-center justify-center ${min.color || 'border-primary/40 bg-muted'}`}>
+ <div className={`w-14 h-14 rounded-full border-2 flex items-center justify-center ${min.color || 'border-primary/40 bg-muted'}`}>
  {getIcon(min.iconType)}
  </div>
  <DropdownMenu>
@@ -176,7 +176,7 @@ export default function Groups() {
  <div className="space-y-2 text-sm text-[#71717a] dark:text-gray-400">
  <div className="flex justify-between items-center py-2 border-t border-primary/40">
  <span>{t("members", "Members")}</span>
- <span className="font-semibold bg-muted px-2.5 py-0.5 rounded-md-full text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{min.members}</span>
+ <span className="font-semibold bg-muted px-2.5 py-0.5 rounded-full text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{min.members}</span>
  </div>
  <div className="flex justify-between items-center py-2 border-t border-primary/40">
  <span>{t("meetings", "Meetings")}</span>
@@ -190,7 +190,7 @@ export default function Groups() {
  )}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <HeartHandshake className="w-5 h-5 text-primary" /> {t("create_group_dept", "Create Group")}
  </h2>

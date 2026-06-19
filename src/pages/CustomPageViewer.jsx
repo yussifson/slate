@@ -166,7 +166,7 @@ export default function CustomPageViewer() {
  </div>
  </div>
 
- <div className={isEditMode ? "p-4 border-2 border-dashed border-primary/20 rounded-md-2xl bg-slate-50" : ""}>
+ <div className={isEditMode ? "p-4 border-2 border-dashed border-primary/20 rounded-2xl bg-slate-50" : ""}>
  <PageRenderer 
  schema={schema} 
  onBlockClick={isEditMode ? setSelectedBlockId : undefined}

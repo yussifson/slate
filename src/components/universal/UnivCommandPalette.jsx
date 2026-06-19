@@ -114,7 +114,7 @@ export default function UnivCommandPalette({ companyId, workspaceConfig}) {
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: -20}}
  transition={{ duration: 0.2, ease: "easeOut"}}
- className="relative w-full max-w-2xl bg-card/95 backdrop-blur-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col max-h-[70vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="relative w-full max-w-2xl bg-card/95 backdrop-blur-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[70vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  {/* Search Input */}
  <div className="relative border-b border-primary/40 shrink-0">
@@ -160,7 +160,7 @@ export default function UnivCommandPalette({ companyId, workspaceConfig}) {
  onMouseEnter={() => setActiveIndex(globalIndex)}
  onClick={() => { item.action(); setIsOpen(false);}}
  className={cn(
- "flex items-center gap-3 px-3 py-3 rounded-md-xl cursor-pointer transition-colors",
+ "flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer transition-colors",
  isActive ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted/50"
  )}
  >

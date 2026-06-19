@@ -158,8 +158,8 @@ export default function Policies() {
  </Button>
  </div>
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary">
+ <div className="stat-card-premium bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
  <FileText className="w-5 h-5" />
  </div>
  <div>
@@ -167,8 +167,8 @@ export default function Policies() {
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("total_policies", "Total Policies")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary">
+ <div className="stat-card-premium bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
  <CheckCircle className="w-5 h-5" />
  </div>
  <div>
@@ -176,8 +176,8 @@ export default function Policies() {
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("active", "Active")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-xl bg-red-100 flex items-center justify-center text-red-600">
+ <div className="stat-card-premium bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center text-red-600">
  <Shield className="w-5 h-5" />
  </div>
  <div>
@@ -185,8 +185,8 @@ export default function Policies() {
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("lapsed", "Lapsed")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary">
+ <div className="stat-card-premium bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
  <span className="font-semibold text-lg">$</span>
  </div>
  <div>
@@ -195,7 +195,7 @@ export default function Policies() {
  </div>
  </div>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -280,7 +280,7 @@ export default function Policies() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editTargetId ? 'Edit Policy' : 'New Policy'}</h2>
  <div className="space-y-3">
  <div>

@@ -31,8 +31,8 @@ export default function LearnerProfile() {
  <div className="h-32 bg-gradient-to-r from-[var(--color-surface-2)] to-[var(--color-surface-1)]"></div>
  <div className="px-8 pb-8 relative">
  <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-end -mt-12 sm:-mt-16 mb-6">
- <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-md-full bg-[var(--color-surface-0)] border-4 border-[var(--color-surface-0)] flex items-center justify-center flex-shrink-0">
- <div className="w-full h-full rounded-md-full bg-gradient-to-br from-[var(--primary)] to-[var(--color-success)] flex items-center justify-center text-white text-3xl sm:text-4xl font-semibold font-display tracking-[-0.02em]">
+ <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-[var(--color-surface-0)] border-4 border-[var(--color-surface-0)] flex items-center justify-center flex-shrink-0">
+ <div className="w-full h-full rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--color-success)] flex items-center justify-center text-white text-3xl sm:text-4xl font-semibold font-display tracking-[-0.02em]">
  {title.charAt(0)}
  </div>
  </div>
@@ -72,7 +72,7 @@ export default function LearnerProfile() {
  <BookOpen className="w-6 h-6" />
  </div>
  <h3 className="font-semibold text-[var(--text-lg)] text-[var(--color-text-primary)] mb-2">React Foundations</h3>
- <div className="w-full bg-[var(--color-border-default)] h-1.5 rounded-md-full mb-2 overflow-hidden">
+ <div className="w-full bg-[var(--color-border-default)] h-1.5 rounded-full mb-2 overflow-hidden">
  <div className="bg-[var(--primary)] h-full w-[65%]"></div>
  </div>
  <p className="text-xs text-[var(--color-text-secondary)] tracking-[0.04em]">65% Complete</p>
@@ -83,7 +83,7 @@ export default function LearnerProfile() {
  {activeTab === 'certificates' && (
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
  <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-5 flex gap-4 items-center">
- <div className="w-16 h-16 bg-[var(--color-success-subtle)] rounded-md-full flex items-center justify-center text-[var(--color-success)] flex-shrink-0">
+ <div className="w-16 h-16 bg-[var(--color-success-subtle)] rounded-full flex items-center justify-center text-[var(--color-success)] flex-shrink-0">
  <Award className="w-8 h-8" />
  </div>
  <div>
@@ -98,12 +98,12 @@ export default function LearnerProfile() {
  <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 ">
  <div className="relative pl-6 border-l-2 border-primary/40 space-y-8">
  <div className="relative">
- <div className="absolute w-3 h-3 bg-[var(--primary)] rounded-md-full -left-[31px] top-1.5 ring-4 ring-[var(--color-surface-0)]"></div>
+ <div className="absolute w-3 h-3 bg-[var(--primary)] rounded-full -left-[31px] top-1.5 ring-4 ring-[var(--color-surface-0)]"></div>
  <h4 className="font-semibold text-[var(--color-text-primary)]">Completed Slate 4 Assessment</h4>
  <p className="text-xs text-[var(--color-text-secondary)] mt-1 tracking-[0.04em]">Today at 10:45 AM</p>
  </div>
  <div className="relative">
- <div className="absolute w-3 h-3 bg-[var(--color-surface-2)] rounded-md-full -left-[31px] top-1.5 ring-4 ring-[var(--color-surface-0)]"></div>
+ <div className="absolute w-3 h-3 bg-[var(--color-surface-2)] rounded-full -left-[31px] top-1.5 ring-4 ring-[var(--color-surface-0)]"></div>
  <h4 className="font-semibold text-[var(--color-text-primary)]">Enrolled in React Foundations</h4>
  <p className="text-xs text-[var(--color-text-secondary)] mt-1 tracking-[0.04em]">Yesterday</p>
  </div>

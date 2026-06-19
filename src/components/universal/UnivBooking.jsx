@@ -179,26 +179,26 @@ export default function UnivBooking({
  {/* Progress Timeline */}
  <div className="relative border-l-2 border-muted ml-3 space-y-8 pb-4">
  <div className={cn("relative -left-[9px] flex items-center gap-3", step >= 1 ? "text-primary" : "text-[#71717a] dark:text-gray-400")}>
- <div className={cn("w-4 h-4 rounded-md-full border-[3px] bg-background", step >= 1 ? "border-primary" : "border-muted")} />
+ <div className={cn("w-4 h-4 rounded-full border-[3px] bg-background", step >= 1 ? "border-primary" : "border-muted")} />
  <span className={cn("text-sm font-semibold", step === 1 && "text-foreground")}>1. Service</span>
  </div>
  <div className={cn("relative -left-[9px] flex items-center gap-3", step >= 2 ? "text-primary" : "text-[#71717a] dark:text-gray-400")}>
- <div className={cn("w-4 h-4 rounded-md-full border-[3px] bg-background", step >= 2 ? "border-primary" : "border-muted")} />
+ <div className={cn("w-4 h-4 rounded-full border-[3px] bg-background", step >= 2 ? "border-primary" : "border-muted")} />
  <span className={cn("text-sm font-semibold", step === 2 && "text-foreground")}>2. Date & Time</span>
  </div>
  <div className={cn("relative -left-[9px] flex items-center gap-3", step >= 3 ? "text-primary" : "text-[#71717a] dark:text-gray-400")}>
- <div className={cn("w-4 h-4 rounded-md-full border-[3px] bg-background", step >= 3 ? "border-primary" : "border-muted")} />
+ <div className={cn("w-4 h-4 rounded-full border-[3px] bg-background", step >= 3 ? "border-primary" : "border-muted")} />
  <span className={cn("text-sm font-semibold", step === 3 && "text-foreground")}>3. Details</span>
  </div>
  <div className={cn("relative -left-[9px] flex items-center gap-3", step >= 4 ? "text-primary" : "text-[#71717a] dark:text-gray-400")}>
- <div className={cn("w-4 h-4 rounded-md-full border-[3px] bg-background", step >= 4 ? "border-primary" : "border-muted")} />
+ <div className={cn("w-4 h-4 rounded-full border-[3px] bg-background", step >= 4 ? "border-primary" : "border-muted")} />
  <span className={cn("text-sm font-semibold", step === 4 && "text-foreground")}>4. Done</span>
  </div>
  </div>
 
  {/* Booking Summary (if selections made) */}
  {selectedService && (
- <div className="bg-muted/30 rounded-md-xl p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 space-y-3 animate-in fade-in slide-in-from-bottom-4">
+ <div className="bg-muted/30 rounded-xl p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 space-y-3 animate-in fade-in slide-in-from-bottom-4">
  <h3 className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-2 tracking-[0.04em]">Booking Summary</h3>
  <div className="flex items-start gap-2">
  <Tag className="w-4 h-4 text-primary shrink-0 mt-0.5" />
@@ -250,9 +250,9 @@ export default function UnivBooking({
  <button
  key={srv.id}
  onClick={() => { setSelectedService(srv); setStep(2);}}
- className="flex items-center text-left gap-4 p-5 rounded-md-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary/50 transition-all group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="flex items-center text-left gap-4 p-5 rounded-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary/50 transition-all group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
- <div className={cn("w-12 h-12 rounded-md-xl flex items-center justify-center shrink-0 ", srv.color)}>
+ <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ", srv.color)}>
  <Icon className="w-6 h-6 text-white" />
  </div>
  <div className="flex-1 min-w-0">
@@ -285,14 +285,14 @@ export default function UnivBooking({
  </button>
  </div>
 
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Calendar Week Nav */}
  <div className="flex items-center justify-between mb-6">
- <button onClick={handlePrevWeek} className="p-2 hover:bg-muted rounded-md-full transition-colors"><ChevronLeft className="w-5 h-5" /></button>
+ <button onClick={handlePrevWeek} className="p-2 hover:bg-muted rounded-full transition-colors"><ChevronLeft className="w-5 h-5" /></button>
  <h3 className="font-semibold text-foreground">
  {dates[0].toLocaleDateString(undefined, { month: 'long', year: 'numeric'})}
  </h3>
- <button onClick={handleNextWeek} className="p-2 hover:bg-muted rounded-md-full transition-colors"><ChevronRight className="w-5 h-5" /></button>
+ <button onClick={handleNextWeek} className="p-2 hover:bg-muted rounded-full transition-colors"><ChevronRight className="w-5 h-5" /></button>
  </div>
  
  {/* Days Row */}
@@ -306,7 +306,7 @@ export default function UnivBooking({
  disabled={isPast}
  onClick={() => { setSelectedDate(formatDate(d)); setSelectedSlot(null);}}
  className={cn(
- "flex flex-col items-center justify-center p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all",
+ "flex flex-col items-center justify-center p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all",
  isSelected ? "bg-primary text-white border-primary " : "bg-muted/30 border-transparent hover:border-primary/40",
  isPast && "opacity-30 cursor-not-allowed"
  )}
@@ -326,7 +326,7 @@ export default function UnivBooking({
  <div className="space-y-4">
  <h4 className="text-sm font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Available Slots</h4>
  {availableSlots.length === 0 ? (
- <div className="text-center py-8 text-[#71717a] dark:text-gray-400 bg-muted/30 rounded-md-xl">
+ <div className="text-center py-8 text-[#71717a] dark:text-gray-400 bg-muted/30 rounded-xl">
  No slots available on this day.
  </div>
  ) : (
@@ -354,7 +354,7 @@ export default function UnivBooking({
  <button 
  disabled={!selectedSlot}
  onClick={() => setStep(3)}
- className="px-8 py-3 bg-primary text-white rounded-md-xl font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
+ className="px-8 py-3 bg-primary text-white rounded-xl font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
  >
  Continue to Details
  </button>
@@ -381,7 +381,7 @@ export default function UnivBooking({
  </button>
  </div>
 
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
  <div>
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Full Name *</label>
@@ -390,7 +390,7 @@ export default function UnivBooking({
  required
  value={customerForm.name}
  onChange={e => setCustomerForm({...customerForm, name: e.target.value})}
- className="w-full h-11 px-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:outline-none focus:border-primary" 
+ className="w-full h-11 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:outline-none focus:border-primary" 
  />
  </div>
  <div>
@@ -400,7 +400,7 @@ export default function UnivBooking({
  required
  value={customerForm.email}
  onChange={e => setCustomerForm({...customerForm, email: e.target.value})}
- className="w-full h-11 px-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:outline-none focus:border-primary" 
+ className="w-full h-11 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:outline-none focus:border-primary" 
  />
  </div>
  </div>
@@ -410,7 +410,7 @@ export default function UnivBooking({
  type="tel" 
  value={customerForm.phone}
  onChange={e => setCustomerForm({...customerForm, phone: e.target.value})}
- className="w-full h-11 px-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:outline-none focus:border-primary" 
+ className="w-full h-11 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:outline-none focus:border-primary" 
  />
  </div>
  <div>
@@ -418,7 +418,7 @@ export default function UnivBooking({
  <textarea 
  value={customerForm.notes}
  onChange={e => setCustomerForm({...customerForm, notes: e.target.value})}
- className="w-full min-h-[100px] p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:outline-none focus:border-primary resize-y" 
+ className="w-full min-h-[100px] p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:outline-none focus:border-primary resize-y" 
  />
  </div>
  </div>
@@ -427,7 +427,7 @@ export default function UnivBooking({
  <button 
  disabled={bookMutation.isPending}
  onClick={handleConfirm}
- className="px-8 py-3 bg-primary text-white rounded-md-xl font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+ className="px-8 py-3 bg-primary text-white rounded-xl font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2"
  >
  {bookMutation.isPending ? 'Confirming...' : 'Confirm Booking'}
  </button>
@@ -443,7 +443,7 @@ export default function UnivBooking({
  animate={{ opacity: 1, scale: 1}}
  className="text-center py-10"
  >
- <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 rounded-md-full flex items-center justify-center mx-auto mb-6">
+ <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
  <CheckCircle2 className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
  </div>
  <h1 className="text-3xl font-extrabold text-foreground tracking-tight mb-4 tracking-[-0.02em]">Booking Confirmed!</h1>
@@ -455,7 +455,7 @@ export default function UnivBooking({
  </p>
  <button 
  onClick={resetFlow}
- className="px-8 py-3 bg-secondary text-secondary-foreground rounded-md-xl font-semibold hover:bg-secondary/80 transition-colors"
+ className="px-8 py-3 bg-secondary text-secondary-foreground rounded-xl font-semibold hover:bg-secondary/80 transition-colors"
  >
  Book Another Appointment
  </button>

@@ -184,8 +184,8 @@ export default function UnivVendorManagement({
 
  {/* Global Stats */}
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
  <Briefcase className="w-5 h-5" />
  </div>
  <div>
@@ -193,8 +193,8 @@ export default function UnivVendorManagement({
  <div className="text-xl font-semibold text-foreground">{activeVendors}</div>
  </div>
  </div>
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
  <CreditCard className="w-5 h-5" />
  </div>
  <div>
@@ -202,8 +202,8 @@ export default function UnivVendorManagement({
  <div className="text-xl font-semibold text-foreground">${totalSpend.toLocaleString()}</div>
  </div>
  </div>
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
  <Star className="w-5 h-5" />
  </div>
  <div>
@@ -211,14 +211,14 @@ export default function UnivVendorManagement({
  <div className="text-xl font-semibold text-foreground flex items-center gap-2">{avgRating} <Star className="w-4 h-4 fill-amber-500 text-amber-500" /></div>
  </div>
  </div>
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 shrink-0">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 shrink-0">
  <FileText className="w-5 h-5" />
  </div>
  <div>
  <div className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Expiring SOON</div>
  <div className="text-xl font-semibold text-foreground flex items-center gap-2">
- {expiringContracts} {expiringContracts > 0 && <span className="w-2 h-2 rounded-md-full bg-red-500/10 animate-pulse"></span>}
+ {expiringContracts} {expiringContracts > 0 && <span className="w-2 h-2 rounded-full bg-red-500/10 animate-pulse"></span>}
  </div>
  </div>
  </div>
@@ -262,10 +262,10 @@ export default function UnivVendorManagement({
 }
 
  return (
- <div key={vendor.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6 transition- group relative flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={vendor.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-6 transition- group relative flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-start mb-4">
  <div className="flex items-center gap-3">
- <div className="w-12 h-12 rounded-md-xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border-[0.5px] border-black/9 dark:border-white/8 border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-semibold text-lg shrink-0">
+ <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border-[0.5px] border-black/9 dark:border-white/8 border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-semibold text-lg shrink-0">
  {vendor.name.charAt(0).toUpperCase()}
  </div>
  <div>
@@ -323,7 +323,7 @@ export default function UnivVendorManagement({
  initial={{ opacity: 0, scale: 0.95, y: 20}}
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: 20}}
- className="relative w-full max-w-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="relative w-full max-w-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="px-6 py-4 border-b border-primary/40 flex items-center justify-between bg-muted/20">
  <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">

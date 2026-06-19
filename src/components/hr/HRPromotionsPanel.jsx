@@ -42,16 +42,16 @@ export default function HRPromotionsPanel({ companyId, promotions, staff, curren
         </div>
       )}
       {promotions.length === 0 ? (
-        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <ArrowUpCircle className="w-10 h-10 text-[#71717a] dark:text-gray-400 mx-auto mb-2" />
           <p className="text-sm text-[#71717a] dark:text-gray-400">{t("no_promotions_recorded_yet", "No promotions recorded yet")}</p>
         </div>
       ) : (
-        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           {promotions.map(p => {
             return (
               <div key={p.id} className="px-4 py-3 flex items-center gap-4">
-                <div className="w-9 h-9 rounded-md-full bg-slate-100 flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
                   <span className="text-sm font-semibold text-primary">{p.staff_name?.[0]?.toUpperCase()}</span>
                 </div>
                 <div className="flex-1 min-w-0">

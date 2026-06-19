@@ -123,11 +123,11 @@ export default function SHSTimetable() {
  </div>
  </div>
 
- <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-md-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
+ <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
  <CalendarIcon className="w-5 h-5" />
  </div>
  <div>
@@ -138,7 +138,7 @@ export default function SHSTimetable() {
  
  <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
  <select 
- className="h-10 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary w-full sm:w-48 font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="h-10 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary w-full sm:w-48 font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={selectedClassId}
  onChange={(e) => setSelectedClassId(e.target.value)}
  >
@@ -149,7 +149,7 @@ export default function SHSTimetable() {
  <Button 
  onClick={() => setIsAddModalOpen(true)}
  disabled={!selectedClassId}
- className="h-10 rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white w-full sm:w-auto"
+ className="h-10 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white w-full sm:w-auto"
  >
  <Plus className="w-4 h-4 mr-2" /> Schedule Class
  </Button>
@@ -201,7 +201,7 @@ export default function SHSTimetable() {
  return (
  <div key={`${day}-${slot}`} className="p-2 border-r border-primary/40 dark:border-primary/40 dark:border-primary/40 min-h-[100px] relative group">
  {entry ? (
- <div className="h-full rounded-md-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 p-3 flex flex-col gap-2 transition-all hover:border-primary/30">
+ <div className="h-full rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 p-3 flex flex-col gap-2 transition-all hover:border-primary/30">
  <h4 className="font-semibold text-xs text-primary dark:text-primary/70 leading-tight tracking-[0.04em]">{entry.data?.subjectName}</h4>
  <div className="mt-auto space-y-1">
  <p className="text-[10px] text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 flex items-center gap-2 truncate">
@@ -214,7 +214,7 @@ export default function SHSTimetable() {
  )}
  </div>
  
- <button className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-rose-500 hover:text-rose-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 rounded-md-full p-1 transition-opacity hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <button className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-rose-500 hover:text-rose-700 bg-white dark:bg-slate-900/40 dark:bg-slate-900 rounded-full p-1 transition-opacity hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
  </button>
  </div>
@@ -224,7 +224,7 @@ export default function SHSTimetable() {
  setNewEntry(prev => ({ ...prev, day, timeSlot: slot}));
  setIsAddModalOpen(true);
 }}
- className="w-full h-full rounded-md-xl border-2 border-dashed border-transparent hover:border-primary/20 dark:border-primary/40 hover:bg-slate-500 dark:bg-slate-800/50 text-transparent hover:text-primary/30 flex items-center justify-center transition-all"
+ className="w-full h-full rounded-xl border-2 border-dashed border-transparent hover:border-primary/20 dark:border-primary/40 hover:bg-slate-500 dark:bg-slate-800/50 text-transparent hover:text-primary/30 flex items-center justify-center transition-all"
  >
  <Plus className="w-5 h-5" />
  </button>
@@ -242,7 +242,7 @@ export default function SHSTimetable() {
  </Card>
 
  <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
- <DialogContent className="sm:max-w-[450px] rounded-md-3xl p-0 overflow-hidden border-none ">
+ <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none ">
  <div className="p-6 bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 text-white">
  <DialogHeader>
  <DialogTitle className="text-2xl font-black tracking-[-0.02em]">Schedule Class</DialogTitle>
@@ -259,7 +259,7 @@ export default function SHSTimetable() {
  <div className="space-y-2">
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Day</label>
  <select 
- className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newEntry.day}
  onChange={e => setNewEntry({...newEntry, day: e.target.value})}
  >
@@ -269,7 +269,7 @@ export default function SHSTimetable() {
  <div className="space-y-2">
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Time Slot</label>
  <select 
- className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newEntry.timeSlot}
  onChange={e => setNewEntry({...newEntry, timeSlot: e.target.value})}
  >
@@ -283,7 +283,7 @@ export default function SHSTimetable() {
  <div className="space-y-2">
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Course / Subject</label>
  <select 
- className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newEntry.courseId}
  onChange={e => setNewEntry({...newEntry, courseId: e.target.value})}
  >
@@ -301,7 +301,7 @@ export default function SHSTimetable() {
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Room Override (Optional)</label>
  <Input 
  placeholder={`Default: ${selectedClass?.data?.room || 'TBA'}`}
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl h-11 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl h-11 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newEntry.room}
  onChange={e => setNewEntry({...newEntry, room: e.target.value})}
  />
@@ -312,13 +312,13 @@ export default function SHSTimetable() {
  </ScrollArea>
  
  <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-md-xl font-semibold text-slate-600 dark:text-slate-300">
+ <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
  Cancel
  </Button>
  <Button 
  onClick={handleAddEntry} 
  disabled={!newEntry.courseId}
- className="rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-semibold"
+ className="rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-semibold"
  >
  Add to Schedule
  </Button>

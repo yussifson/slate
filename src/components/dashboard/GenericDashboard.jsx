@@ -20,13 +20,13 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tool
 
 function MetricCard({ title, value, icon: Icon, iconBg, iconColor, subtitle, subtitleColor}) {
  return (
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
- <p className="text-xs text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">{title}</p>
- <p className="text-2xl font-semibold text-foreground tracking-[-0.02em]">{value}</p>
+ <p className="text-[11px] font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.05em] uppercase">{title}</p>
+ <p className="text-2xl font-semibold text-foreground tracking-[-0.03em] tabular-nums">{value}</p>
  {subtitle && <p className={`text-xs mt-1 ${subtitleColor || "text-[#71717a] dark:text-gray-400"}`}>{subtitle}</p>}
  </div>
- <div className={`w-11 h-11 rounded-md-full ${iconBg} flex items-center justify-center`}>
+ <div className={`w-11 h-11 rounded-full ${iconBg} flex items-center justify-center`}>
  <Icon className={`w-5 h-5 ${iconColor}`} />
  </div>
  </div>
@@ -40,11 +40,11 @@ function UsageRow({ label, used, max, suffix = ""}) {
  <div className="space-y-1.5">
  <div className="flex items-center justify-between text-sm">
  <span className="text-foreground font-medium">{label}</span>
- <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{used}{suffix} / {max}{suffix}</span>
+ <span className="text-[#71717a] dark:text-gray-400 text-xs tabular-nums tracking-[0.04em]">{used}{suffix} / {max}{suffix}</span>
  </div>
- <div className="h-1.5 bg-muted rounded-md-full overflow-hidden">
+ <div className="h-1.5 bg-muted rounded-full overflow-hidden">
  <div
- className={`h-full rounded-md-full transition-all ${isHigh ? "bg-amber-500" : "bg-primary"}`}
+ className={`h-full rounded-full transition-all ${isHigh ? "bg-amber-500" : "bg-primary"}`}
  style={{ width: `${pct}%`}}
  />
  </div>
@@ -103,7 +103,7 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
  if (!companyId) {
  return (
  <div className="flex flex-col items-center justify-center min-h-[70vh] text-center space-y-6">
- <div className="w-24 h-24 bg-slate-100 rounded-md-full flex items-center justify-center">
+ <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center">
  <Building2 className="w-12 h-12 text-primary" />
  </div>
  <div className="max-w-md space-y-2">
@@ -152,10 +152,10 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
  {/* Analytics Charts */}
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
  {/* Revenue Area Chart */}
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 space-y-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 space-y-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-center">
  <h3 className="text-sm font-semibold text-slate-800">{t("revenue_growth_curve", "Revenue Growth Curve (")}{currency})</h3>
- <span className="text-[10px] bg-slate-100 text-primary py-0.5 px-2 rounded-md-full font-semibold border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 uppercase tracking-[0.04em]">{t("paid_invoices", "Paid Invoices")}</span>
+ <span className="text-[10px] bg-slate-100 text-primary py-0.5 px-2 rounded-full font-semibold border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 uppercase tracking-[0.04em]">{t("paid_invoices", "Paid Invoices")}</span>
  </div>
  <div className="h-64 w-full">
  <ResponsiveContainer width="100%" height="100%">
@@ -177,10 +177,10 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
  </div>
 
  {/* Case Distribution Bar Chart */}
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 space-y-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 space-y-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-center">
  <h3 className="text-sm font-semibold text-slate-800">{caseTerm} {t("distribution_by_stage", "Distribution by Stage")}</h3>
- <span className="text-[10px] bg-slate-100 text-primary py-0.5 px-2 rounded-md-full font-semibold border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 uppercase tracking-[0.04em]">{t("active_pipelines", "Active Pipelines")}</span>
+ <span className="text-[10px] bg-slate-100 text-primary py-0.5 px-2 rounded-full font-semibold border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 uppercase tracking-[0.04em]">{t("active_pipelines", "Active Pipelines")}</span>
  </div>
  <div className="h-64 w-full">
  <ResponsiveContainer width="100%" height="100%">
@@ -198,20 +198,20 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
  {/* Bottom grid */}
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
  {/* Upcoming Hearings */}
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex items-center justify-between">
  <div className="flex items-center gap-2">
  <Calendar className="w-4 h-4 text-primary" />
  <h3 className="text-sm font-semibold">{t("upcoming", "Upcoming")} {hearingsTermPlural}</h3>
  </div>
- <span className="text-xs font-semibold text-primary bg-slate-100 rounded-md-full w-5 h-5 flex items-center justify-center tracking-[0.04em]">
+ <span className="text-xs font-semibold text-primary bg-slate-100 rounded-full w-5 h-5 flex items-center justify-center tracking-[0.04em]">
  {upcomingHearings.length}
  </span>
  </div>
  <div className="divide-y divide-border">
  {upcomingHearings.length === 0 ? (
  <div className="p-10 flex flex-col items-center text-center gap-3">
- <div className="w-10 h-10 rounded-md-xl bg-muted flex items-center justify-center">
+ <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center">
  <Calendar className="w-5 h-5 text-[#71717a] dark:text-gray-400" />
  </div>
  <p className="text-sm text-[#71717a] dark:text-gray-400">{t("no_upcoming", "No upcoming")} {hearingsTermPlural.toLowerCase()}</p>
@@ -235,7 +235,7 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
  </div>
 
  {/* Plan Status */}
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex items-center justify-between">
  <h3 className="text-sm font-semibold">{t("plan_status", "Plan Status")}</h3>
  <span className="text-xs font-medium text-[#71717a] dark:text-gray-400 capitalize tracking-[0.04em]">{plan.name}</span>

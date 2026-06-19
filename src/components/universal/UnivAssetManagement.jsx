@@ -182,25 +182,25 @@ export default function UnivAssetManagement({
 
  {/* Stats Row */}
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
- <div className="bg-muted/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4">
+ <div className="bg-muted/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4">
  <div className="flex items-center gap-2 text-[#71717a] dark:text-gray-400 mb-2">
  <Package className="w-4 h-4" /> <span className="text-xs font-semibold uppercase tracking-[0.04em]">Total Assets</span>
  </div>
  <div className="text-2xl font-semibold text-foreground tracking-[-0.02em]">{totalAssets}</div>
  </div>
- <div className="bg-emerald-50 dark:bg-emerald-950/20 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-100 dark:border-emerald-900 rounded-md-xl p-4">
+ <div className="bg-emerald-50 dark:bg-emerald-950/20 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-100 dark:border-emerald-900 rounded-xl p-4">
  <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 mb-2">
  <CheckCircle2 className="w-4 h-4" /> <span className="text-xs font-semibold uppercase tracking-[0.04em]">Active</span>
  </div>
  <div className="text-2xl font-semibold text-emerald-700 dark:text-emerald-300 tracking-[-0.02em]">{activeAssets}</div>
  </div>
- <div className="bg-amber-50 dark:bg-amber-950/20 border-[0.5px] border-black/9 dark:border-white/8 border-amber-100 dark:border-amber-900 rounded-md-xl p-4">
+ <div className="bg-amber-50 dark:bg-amber-950/20 border-[0.5px] border-black/9 dark:border-white/8 border-amber-100 dark:border-amber-900 rounded-xl p-4">
  <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 mb-2">
  <Wrench className="w-4 h-4" /> <span className="text-xs font-semibold uppercase tracking-[0.04em]">In Maintenance</span>
  </div>
  <div className="text-2xl font-semibold text-amber-700 dark:text-amber-300 tracking-[-0.02em]">{inMaintenance}</div>
  </div>
- <div className="bg-blue-50 dark:bg-blue-950/20 border-[0.5px] border-black/9 dark:border-white/8 border-blue-100 dark:border-blue-900 rounded-md-xl p-4">
+ <div className="bg-blue-50 dark:bg-blue-950/20 border-[0.5px] border-black/9 dark:border-white/8 border-blue-100 dark:border-blue-900 rounded-xl p-4">
  <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 mb-2">
  <DollarSign className="w-4 h-4" /> <span className="text-xs font-semibold uppercase tracking-[0.04em]">Total Value</span>
  </div>
@@ -236,7 +236,7 @@ export default function UnivAssetManagement({
  <p className="text-sm mt-1">Add your first asset to the inventory.</p>
  </div>
  ) : (
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm text-left">
  <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  <tr>
@@ -279,7 +279,7 @@ export default function UnivAssetManagement({
  )}
  </td>
  <td className="px-6 py-4">
- <span className={cn("px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider rounded-md-full border", ASSET_STATUS[asset.status] || ASSET_STATUS['Active'])}>
+ <span className={cn("px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider rounded-full border", ASSET_STATUS[asset.status] || ASSET_STATUS['Active'])}>
  {asset.status}
  </span>
  </td>
@@ -311,7 +311,7 @@ export default function UnivAssetManagement({
  initial={{ opacity: 0, scale: 0.95, y: 20}}
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: 20}}
- className="relative w-full max-w-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="relative w-full max-w-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="px-6 py-4 border-b border-primary/40 flex items-center justify-between bg-muted/20">
  <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">

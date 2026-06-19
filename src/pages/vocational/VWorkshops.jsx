@@ -139,22 +139,22 @@ export default function VWorkshops() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="flex items-center bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <button onClick={prevPeriod} className="p-2 hover:bg-primary/5 transition-colors"><ChevronLeft className="w-4 h-4 text-primary" /></button>
             <span className="px-3 text-sm font-semibold text-slate-900 dark:text-white">{periodLabel}</span>
             <button onClick={nextPeriod} className="p-2 hover:bg-primary/5 transition-colors"><ChevronRight className="w-4 h-4 text-primary" /></button>
           </div>
-          <div className="flex bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="flex bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             {['day', 'week', 'month'].map(v => (
               <button key={v} onClick={() => setViewMode(v)} className={`px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-colors ${viewMode === v ? 'bg-primary/10 text-primary' : 'hover:bg-primary/5 text-[#71717a] dark:text-gray-400'}`}>
                 {v}
               </button>
             ))}
           </div>
-          <Button variant="outline" className="rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:bg-primary/5">
+          <Button variant="outline" className="rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:bg-primary/5">
             <Printer className="w-4 h-4 mr-2" /> Print
           </Button>
-          <Button onClick={() => setIsCreateOpen(true)} className="rounded-md-xl bg-primary text-white hover:bg-primary/90 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
+          <Button onClick={() => setIsCreateOpen(true)} className="rounded-xl bg-primary text-white hover:bg-primary/90 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
             <Plus className="w-4 h-4 mr-2" /> Schedule
           </Button>
         </div>
@@ -162,7 +162,7 @@ export default function VWorkshops() {
 
       {/* Calendar Grid (Week View Only for simplicity here, day/month can be mapped similarly) */}
       {viewMode === 'week' ? (
-        <Card className="rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-x-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <Card className="rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-x-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="min-w-[900px]">
             {/* Day headers */}
             <div className="grid grid-cols-[80px_repeat(6,1fr)] border-b border-primary/10">
@@ -189,7 +189,7 @@ export default function VWorkshops() {
                       {blocks.map((block, idx) => (
                         <div
                           key={block.id}
-                          className="absolute left-1 right-1 rounded-md-xl p-2 cursor-pointer transition-all hover:opacity-90 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+                          className="absolute left-1 right-1 rounded-xl p-2 cursor-pointer transition-all hover:opacity-90 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
                           style={{
                             top: `${idx * 4}px`, // Slight offset if multiple
                             height: `${block.duration * 60 - 8}px`,
@@ -202,8 +202,8 @@ export default function VWorkshops() {
                           <div className="flex items-center gap-2 mb-1">
                             {block.status === 'live' && (
                               <span className="relative flex h-2 w-2 mr-1">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-md-full bg-primary opacity-75" />
-                                <span className="relative inline-flex rounded-md-full h-2 w-2 bg-primary" />
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
                               </span>
                             )}
                             <span className="text-xs font-semibold text-slate-900 dark:text-white truncate tracking-[0.04em]">{block.title}</span>
@@ -222,7 +222,7 @@ export default function VWorkshops() {
           </div>
         </Card>
       ) : (
-        <Card className="rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none p-12 text-center text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <Card className="rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none p-12 text-center text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           {viewMode.charAt(0).toUpperCase() + viewMode.slice(1)} view implemented in full version. Use Week view for now.
         </Card>
       )}
@@ -234,7 +234,7 @@ export default function VWorkshops() {
           <div className="relative w-full max-w-md bg-card border-l border-primary/20 h-full shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-2xl animate-in slide-in-from-right duration-200 flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={e => e.stopPropagation()}>
             <div className="p-6 border-b border-primary/10 flex items-center justify-between bg-primary/5">
               <h2 className="text-xl font-semibold text-slate-900 dark:text-white">{selectedSession.title}</h2>
-              <Button variant="ghost" size="icon" onClick={() => setSelectedSession(null)} className="rounded-md-full hover:bg-primary/10">
+              <Button variant="ghost" size="icon" onClick={() => setSelectedSession(null)} className="rounded-full hover:bg-primary/10">
                 <X className="w-5 h-5 text-[#71717a] dark:text-gray-400" />
               </Button>
             </div>
@@ -247,7 +247,7 @@ export default function VWorkshops() {
                   { label: 'Instructor', value: selectedSession.data?.instructor || 'TBD', icon: Users }, 
                   { label: 'Capacity', value: `${selectedSession.data?.enrolled || 0}/${selectedSession.data?.capacity || 20}`, icon: Users }
                 ].map((d, i) => (
-                  <div key={i} className="p-4 rounded-md-2xl bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
+                  <div key={i} className="p-4 rounded-2xl bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
                     <div className="flex items-center gap-2.5 text-xs text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]"><d.icon className="w-4 h-4 text-primary" />{d.label}</div>
                     <div className="text-sm font-semibold text-slate-900 dark:text-white">{d.value}</div>
                   </div>
@@ -260,12 +260,12 @@ export default function VWorkshops() {
                 </h3>
                 <div className="space-y-2">
                   {getSessionRoster(selectedSession.id).length === 0 ? (
-                    <div className="p-4 text-center text-sm text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 rounded-md-xl border-dashed">
+                    <div className="p-4 text-center text-sm text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 rounded-xl border-dashed">
                       No attendance recorded yet.
                     </div>
                   ) : (
                     getSessionRoster(selectedSession.id).map((record, i) => (
-                      <div key={i} className="flex items-center justify-between p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 bg-card hover:bg-primary/5 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                      <div key={i} className="flex items-center justify-between p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 bg-card hover:bg-primary/5 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                         <span className="text-sm font-medium">{record.data?.trainee_name || `Trainee ${i+1}`}</span>
                         <Badge variant="outline" className={`border-primary/40 ${record.data?.status === 'present' ? 'bg-primary/10 text-primary' : 'bg-slate-100 text-slate-500'}`}>
                           {record.data?.status || 'Unknown'}
@@ -278,8 +278,8 @@ export default function VWorkshops() {
             </div>
             
             <div className="p-6 border-t border-primary/10 bg-primary/5 flex gap-3">
-              <Button variant="outline" className="flex-1 rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card hover:bg-primary/5 text-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Edit Session</Button>
-              <Button className="flex-1 rounded-md-xl bg-primary text-white hover:bg-primary/90 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">Take Attendance</Button>
+              <Button variant="outline" className="flex-1 rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card hover:bg-primary/5 text-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Edit Session</Button>
+              <Button className="flex-1 rounded-xl bg-primary text-white hover:bg-primary/90 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">Take Attendance</Button>
             </div>
           </div>
         </div>
@@ -287,24 +287,24 @@ export default function VWorkshops() {
 
       {/* Create Dialog */}
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="sm:max-w-[425px] rounded-md-2xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <DialogContent className="sm:max-w-[425px] rounded-2xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <DialogHeader>
             <DialogTitle>Schedule Workshop</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Workshop Title</label>
-              <Input placeholder="e.g. Safety Briefing" value={newWorkshop.title} onChange={e => setNewWorkshop({...newWorkshop, title: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+              <Input placeholder="e.g. Safety Briefing" value={newWorkshop.title} onChange={e => setNewWorkshop({...newWorkshop, title: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Trade</label>
-              <Input placeholder="e.g. Welding" value={newWorkshop.trade} onChange={e => setNewWorkshop({...newWorkshop, trade: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+              <Input placeholder="e.g. Welding" value={newWorkshop.trade} onChange={e => setNewWorkshop({...newWorkshop, trade: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Day of Week</label>
                 <Select value={newWorkshop.dayOfWeek} onValueChange={v => setNewWorkshop({...newWorkshop, dayOfWeek: v})}>
-                  <SelectTrigger className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none"><SelectValue placeholder="Select" /></SelectTrigger>
+                  <SelectTrigger className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none"><SelectValue placeholder="Select" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="1">Monday</SelectItem><SelectItem value="2">Tuesday</SelectItem>
                     <SelectItem value="3">Wednesday</SelectItem><SelectItem value="4">Thursday</SelectItem>
@@ -315,7 +315,7 @@ export default function VWorkshops() {
               <div className="space-y-2">
                 <label className="text-sm font-medium">Start Hour</label>
                 <Select value={newWorkshop.startHour} onValueChange={v => setNewWorkshop({...newWorkshop, startHour: v})}>
-                  <SelectTrigger className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none"><SelectValue placeholder="Select" /></SelectTrigger>
+                  <SelectTrigger className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none"><SelectValue placeholder="Select" /></SelectTrigger>
                   <SelectContent>
                     {[8,9,10,11,12,13,14,15,16,17].map(h => <SelectItem key={h} value={`${h}`}>{`${h}:00`}</SelectItem>)}
                   </SelectContent>
@@ -323,21 +323,21 @@ export default function VWorkshops() {
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Duration (Hours)</label>
-                <Input type="number" value={newWorkshop.duration} onChange={e => setNewWorkshop({...newWorkshop, duration: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                <Input type="number" value={newWorkshop.duration} onChange={e => setNewWorkshop({...newWorkshop, duration: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Capacity</label>
-                <Input type="number" value={newWorkshop.capacity} onChange={e => setNewWorkshop({...newWorkshop, capacity: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+                <Input type="number" value={newWorkshop.capacity} onChange={e => setNewWorkshop({...newWorkshop, capacity: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
               </div>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Room</label>
-              <Input placeholder="e.g. Lab 1" value={newWorkshop.room} onChange={e => setNewWorkshop({...newWorkshop, room: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
+              <Input placeholder="e.g. Lab 1" value={newWorkshop.room} onChange={e => setNewWorkshop({...newWorkshop, room: e.target.value})} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsCreateOpen(false)} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">Cancel</Button>
-            <Button onClick={handleCreateWorkshop} className="bg-primary text-white hover:bg-primary/90 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">Schedule</Button>
+            <Button variant="outline" onClick={() => setIsCreateOpen(false)} className="rounded-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">Cancel</Button>
+            <Button onClick={handleCreateWorkshop} className="bg-primary text-white hover:bg-primary/90 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">Schedule</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -133,11 +133,11 @@ export default function UnivCalendar({
 });
 
  return (
- <div className="flex flex-col h-full bg-background rounded-md-2xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 ">
+ <div className="flex flex-col h-full bg-background rounded-2xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 ">
  {/* Header */}
  <div className="p-5 border-b border-primary/40 bg-card flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-4">
- <div className="p-2.5 bg-primary/10 text-primary rounded-md-xl hidden sm:block">
+ <div className="p-2.5 bg-primary/10 text-primary rounded-xl hidden sm:block">
  <CalendarIcon className="w-6 h-6" />
  </div>
  <div>
@@ -179,11 +179,11 @@ export default function UnivCalendar({
  value={newEventTitle} 
  onChange={e => setNewEventTitle(e.target.value)} 
  placeholder="Enter event title..." 
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" 
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" 
  />
  </div>
- <Button type="button" variant="outline" onClick={() => setIsAdding(false)} className="h-10 rounded-md-xl">Cancel</Button>
- <Button type="submit" disabled={addMutation.isPending} className="h-10 bg-primary text-white rounded-md-xl">
+ <Button type="button" variant="outline" onClick={() => setIsAdding(false)} className="h-10 rounded-xl">Cancel</Button>
+ <Button type="submit" disabled={addMutation.isPending} className="h-10 bg-primary text-white rounded-xl">
  {addMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Event'}
  </Button>
  </form>
@@ -214,7 +214,7 @@ export default function UnivCalendar({
  return (
  <div key={i} className={`border-r border-b border-primary/40 p-2 ${d.inactive ? 'bg-muted/10' : 'bg-card hover:bg-muted/5'} transition-colors relative min-h-[100px]`}>
  {d.day && (
- <span className={`inline-flex items-center justify-center w-7 h-7 rounded-md-full text-sm font-semibold ${d.isToday ? 'bg-primary text-white ' : 'text-foreground dark:text-slate-300'}`}>
+ <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-semibold ${d.isToday ? 'bg-primary text-white ' : 'text-foreground dark:text-slate-300'}`}>
  {d.day}
  </span>
  )}
@@ -256,7 +256,7 @@ export default function UnivCalendar({
  </div>
  <div className="p-4 space-y-4 overflow-y-auto custom-scrollbar">
  {displayEvents.filter(ev => (ev.day || 10) === 10).map((ev, i) => (
- <div key={ev.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-3 rounded-md-xl hover:border-primary/30 transition-colors group cursor-pointer relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={ev.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-3 rounded-xl hover:border-primary/30 transition-colors group cursor-pointer relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <button onClick={() => deleteMutation.mutate(ev.id)} className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-[#71717a] dark:text-gray-400 hover:text-red-500">
  <Trash2 className="w-4 h-4" />
  </button>

@@ -131,7 +131,7 @@ export default function UnivGlobalSearch({
  onChange={e => setQuery(e.target.value)}
  onKeyDown={e => e.key === 'Enter' && saveRecentSearch(query)}
  placeholder="Type to search..."
- className="w-full h-16 pl-14 pr-16 bg-muted/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl text-lg font-medium text-foreground placeholder:text-[#71717a] dark:text-gray-400/50 focus:bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all "
+ className="w-full h-16 pl-14 pr-16 bg-muted/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl text-lg font-medium text-foreground placeholder:text-[#71717a] dark:text-gray-400/50 focus:bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all "
  autoFocus
  />
  <div className="absolute inset-y-0 right-0 flex items-center pr-4">
@@ -152,7 +152,7 @@ export default function UnivGlobalSearch({
  key={scope.id}
  onClick={() => setActiveScope(scope.id)}
  className={cn(
- "px-4 py-2 rounded-md-xl text-sm font-semibold transition-colors whitespace-nowrap",
+ "px-4 py-2 rounded-xl text-sm font-semibold transition-colors whitespace-nowrap",
  activeScope === scope.id 
  ? "bg-foreground text-background " 
  : "bg-muted text-[#71717a] dark:text-gray-400 hover:bg-muted/80 hover:text-foreground"
@@ -229,7 +229,7 @@ export default function UnivGlobalSearch({
  const snippet = renderSnippet(data);
  
  return (
- <div key={record.id} className="group bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary/40 rounded-md-2xl p-5 transition-all relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={record.id} className="group bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary/40 rounded-2xl p-5 transition-all relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary/20 group-hover:bg-primary transition-colors"></div>
  
  <div className="flex justify-between items-start mb-2">

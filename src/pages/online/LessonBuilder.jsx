@@ -73,7 +73,7 @@ export default function LessonBuilder() {
  <div className="p-6">
  {lessonType === 'video' ? (
  <div className="border-2 border-dashed border-primary/40 rounded-md-[var(--radius-lg)] p-12 flex flex-col items-center justify-center text-center hover:border-[var(--primary)] transition-colors cursor-pointer bg-[var(--color-surface-1)]">
- <div className="w-16 h-16 bg-[var(--color-surface-0)] rounded-md-full flex items-center justify-center mb-4 ">
+ <div className="w-16 h-16 bg-[var(--color-surface-0)] rounded-full flex items-center justify-center mb-4 ">
  <UploadCloud className="w-8 h-8 text-[var(--primary)]" />
  </div>
  <h3 className="font-semibold text-[var(--color-text-primary)]">Upload Video</h3>

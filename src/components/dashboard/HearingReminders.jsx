@@ -20,7 +20,7 @@ export default function HearingReminders({ hearings, userEmail, isAdmin }) {
   if (urgent.length === 0) return null;
 
   return (
-    <div className="bg-amber-50 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 rounded-md-xl overflow-hidden">
+    <div className="bg-amber-50 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 rounded-xl overflow-hidden">
       <div className="px-4 py-3 bg-amber-100/70 border-b border-amber-200 flex items-center gap-2">
         <Bell className="w-4 h-4 text-amber-600 animate-pulse" />
         <span className="text-sm font-semibold text-amber-800">

@@ -97,7 +97,7 @@ const UnivPalletTracker = () => {
       </motion.div>
 
       <div className="grid lg:grid-cols-12 gap-8">
-        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-4 bg-slate-800 p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 h-fit">
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-4 bg-slate-800 p-6 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 h-fit">
           <h2 className="text-lg font-semibold mb-6 text-white uppercase tracking-wider flex items-center gap-2 tracking-[0.04em]"><Barcode className="w-5 h-5 text-emerald-400" /> Register Pallet</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -153,11 +153,11 @@ const UnivPalletTracker = () => {
           {loading ? (
             <div className="flex justify-center py-20"><Truck className="w-12 h-12 text-emerald-500 animate-pulse" /></div>
           ) : pallets.length === 0 ? (
-            <div className="text-center py-20 bg-slate-800 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400 font-mono">NO DATA AVAILABLE</div>
+            <div className="text-center py-20 bg-slate-800 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400 font-mono">NO DATA AVAILABLE</div>
           ) : (
             <div className="grid md:grid-cols-2 gap-4">
               {pallets.map((pallet, index) => (
-                <motion.div key={pallet.id || index} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: index * 0.05 }} className="bg-slate-800 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:border-primary/40 transition-colors">
+                <motion.div key={pallet.id || index} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: index * 0.05 }} className="bg-slate-800 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:border-primary/40 transition-colors">
                   <div className="p-4 border-b border-primary/40 bg-slate-800/50 flex justify-between items-center">
                     <div className="flex items-center gap-2">
                       <Barcode className="w-5 h-5 text-[#71717a] dark:text-gray-400" />
@@ -180,7 +180,7 @@ const UnivPalletTracker = () => {
                         <p className="text-[10px] text-[#71717a] dark:text-gray-400 uppercase font-semibold mb-1 tracking-[0.04em]">Origin</p>
                         <p className="font-semibold text-slate-300 text-sm">{pallet.origin}</p>
                       </div>
-                      <div className="relative z-10 bg-slate-800 p-1.5 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+                      <div className="relative z-10 bg-slate-800 p-1.5 rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
                         <Truck className="w-4 h-4 text-emerald-400" />
                       </div>
                       <div className="relative z-10 flex-1 text-right">

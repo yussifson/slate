@@ -304,7 +304,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  
  {/* Mobile Drag Handle */}
  <div className="md:hidden flex justify-center pt-3 pb-1 shrink-0">
- <div className="w-12 h-1.5 rounded-md-full bg-slate-200 dark:bg-slate-800" />
+ <div className="w-12 h-1.5 rounded-full bg-slate-200 dark:bg-slate-800" />
  </div>
  
  <div className="flex h-full w-full">
@@ -405,8 +405,8 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  <div className={clsx(
  "max-w-[88%] text-[13px] leading-relaxed",
  m.role === 'user'
- ? 'rounded-md-2xl rounded-md-tr-sm px-4 py-2.5 bg-primary text-white '
- : 'rounded-md-2xl rounded-md-tl-sm px-4 py-3 bg-muted ring-1 ring-border/50 text-foreground prose prose-sm dark:prose-invert max-w-none prose-p:my-1.5 prose-pre:bg-card prose-pre:border-[0.5px] border-black/9 dark:border-white/8 prose-pre:border-primary/40 prose-pre:rounded-xl prose-code:text-primary/90 dark:prose-code:text-primary/80 prose-code:before:content-none prose-code:after:content-none'
+ ? 'rounded-2xl rounded-tr-sm px-4 py-2.5 bg-primary text-white '
+ : 'rounded-2xl rounded-tl-sm px-4 py-3 bg-muted ring-1 ring-border/50 text-foreground prose prose-sm dark:prose-invert max-w-none prose-p:my-1.5 prose-pre:bg-card prose-pre:border-[0.5px] border-black/9 dark:border-white/8 prose-pre:border-primary/40 prose-pre:rounded-xl prose-code:text-primary/90 dark:prose-code:text-primary/80 prose-code:before:content-none prose-code:after:content-none'
  )}>
  <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
  </div>
@@ -417,7 +417,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  <div className="shrink-0 w-7 h-7 rounded-lg bg-primary/10 text-primary/90 flex items-center justify-center ring-1 ring-primary/20 mt-0.5">
  <Zap className="w-3.5 h-3.5 fill-current" />
  </div>
- <div className="flex items-center gap-2.5 px-4 py-3 rounded-md-2xl rounded-md-tl-sm bg-muted ring-1 ring-border/50 text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
+ <div className="flex items-center gap-2.5 px-4 py-3 rounded-2xl rounded-tl-sm bg-muted ring-1 ring-border/50 text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  <RefreshCw className="w-3.5 h-3.5 animate-spin text-primary" />
  <span>Architecting...</span>
  </div>
@@ -429,7 +429,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  {/* Input Area */}
  <div className="p-3 shrink-0 border-t border-primary/40 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <form onSubmit={handleSend}>
- <div className="relative rounded-md-xl overflow-hidden flex flex-col bg-background ring-1 ring-border-[0.5px] border-black/9 dark:border-white/8 focus-within:ring-2 focus-within:ring-primary/50 transition-all ">
+ <div className="relative rounded-xl overflow-hidden flex flex-col bg-background ring-1 ring-border-[0.5px] border-black/9 dark:border-white/8 focus-within:ring-2 focus-within:ring-primary/50 transition-all ">
  <textarea
  value={input}
  onChange={e => setInput(e.target.value)}

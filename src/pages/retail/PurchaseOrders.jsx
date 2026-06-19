@@ -191,16 +191,16 @@ export default function PurchaseOrders() {
 
  const getStatusBadge = (status) => {
  switch (status) {
- case 'received': return <span className="px-2.5 py-0.5 rounded-md-full text-xs font-semibold bg-slate-100 text-primary/90 tracking-[0.04em]">Received</span>;
- case 'sent': return <span className="px-2.5 py-0.5 rounded-md-full text-xs font-semibold bg-orange-100 text-orange-700 tracking-[0.04em]">Sent</span>;
- default: return <span className="px-2.5 py-0.5 rounded-md-full text-xs font-semibold bg-slate-100 text-slate-700 dark:text-slate-300 dark:text-slate-300 tracking-[0.04em]">Draft</span>;
+ case 'received': return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-primary/90 tracking-[0.04em]">Received</span>;
+ case 'sent': return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-100 text-orange-700 tracking-[0.04em]">Sent</span>;
+ default: return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 dark:text-slate-300 dark:text-slate-300 tracking-[0.04em]">Draft</span>;
 }
 };
 
  if (isPOLoading || isSuppliersLoading || isProductsLoading) {
  return (
  <div className="flex-1 p-6 flex items-center justify-center">
- <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-md-full animate-spin"></div>
+ <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
  </div>
  );
 }
@@ -208,7 +208,7 @@ export default function PurchaseOrders() {
  if (!canAccess) {
  return (
  <div className="flex-1 flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500">
- <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-md-full flex items-center justify-center mb-6">
+ <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
  <ShieldAlert className="w-10 h-10 text-red-600 dark:text-red-500" />
  </div>
  <h2 className="text-2xl font-semibold text-foreground mb-3 tracking-[-0.02em]">Access Restricted</h2>
@@ -251,7 +251,7 @@ export default function PurchaseOrders() {
  </div>
 
  {/* Table */}
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="overflow-x-auto">
  <table className="w-full text-sm text-left">
  <thead className="bg-muted/50 text-[#71717a] dark:text-gray-400 text-xs uppercase font-semibold border-b border-primary/40 tracking-[0.04em]">
@@ -449,7 +449,7 @@ export default function PurchaseOrders() {
  </div>
  </div>
 
- <div className="p-4 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-xl bg-slate-50/50 dark:bg-transparent dark:bg-transparent space-y-4">
+ <div className="p-4 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl bg-slate-50/50 dark:bg-transparent dark:bg-transparent space-y-4">
  <h4 className="font-semibold text-sm">{t("add_items", "Add Items")}</h4>
  <div className="flex gap-2 items-end">
  <div className="flex-1">

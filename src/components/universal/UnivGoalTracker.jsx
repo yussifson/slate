@@ -180,25 +180,25 @@ export default function UnivGoalTracker({
 
  {/* Global Stats */}
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Total Goals</div>
  <div className="text-2xl font-semibold text-foreground tracking-[-0.02em]">{totalGoals}</div>
  </div>
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 flex flex-col justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 flex flex-col justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Avg Progress</div>
  <div className="flex items-center gap-2">
  <div className="text-2xl font-semibold text-foreground tracking-[-0.02em]">{avgProgress}%</div>
  <TrendingUp className="w-5 h-5 text-emerald-500" />
  </div>
- <div className="w-full h-1.5 bg-muted rounded-md-full mt-2 overflow-hidden">
+ <div className="w-full h-1.5 bg-muted rounded-full mt-2 overflow-hidden">
  <div className="h-full bg-emerald-500/10 transition-all" style={{ width: `${avgProgress}%`}}></div>
  </div>
  </div>
- <div className="bg-blue-50 dark:bg-blue-900/10 border-[0.5px] border-black/9 dark:border-white/8 border-blue-100 dark:border-blue-800 rounded-md-xl p-4">
+ <div className="bg-blue-50 dark:bg-blue-900/10 border-[0.5px] border-black/9 dark:border-white/8 border-blue-100 dark:border-blue-800 rounded-xl p-4">
  <div className="text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-1 tracking-[0.04em]">Completed</div>
  <div className="text-2xl font-semibold text-blue-700 dark:text-blue-300 tracking-[-0.02em]">{completedGoals}</div>
  </div>
- <div className="bg-amber-50 dark:bg-amber-900/10 border-[0.5px] border-black/9 dark:border-white/8 border-amber-100 dark:border-amber-800 rounded-md-xl p-4">
+ <div className="bg-amber-50 dark:bg-amber-900/10 border-[0.5px] border-black/9 dark:border-white/8 border-amber-100 dark:border-amber-800 rounded-xl p-4">
  <div className="text-xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-1 tracking-[0.04em]">Needs Attention</div>
  <div className="text-2xl font-semibold text-amber-700 dark:text-amber-300 tracking-[-0.02em]">{atRiskGoals}</div>
  </div>
@@ -234,11 +234,11 @@ export default function UnivGoalTracker({
  ) : view === 'grid' ? (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {filteredGoals.map(goal => (
- <div key={goal.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6 transition- group relative flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={goal.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-6 transition- group relative flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-start mb-4">
  <div>
  <div className="flex items-center gap-2 mb-2">
- <span className={cn("w-2 h-2 rounded-md-full", getStatusColor(goal.status))} />
+ <span className={cn("w-2 h-2 rounded-full", getStatusColor(goal.status))} />
  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{goal.type}</span>
  </div>
  <h3 className="text-lg font-semibold text-foreground line-clamp-2">{goal.title}</h3>
@@ -262,7 +262,7 @@ export default function UnivGoalTracker({
  <span className="text-xs font-semibold uppercase text-[#71717a] dark:text-gray-400 tracking-wider tracking-[0.04em]">{goal.status}</span>
  <span className="text-lg font-black text-foreground">{goal.progress}%</span>
  </div>
- <div className="w-full h-2 bg-muted rounded-md-full overflow-hidden">
+ <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
  <div className={cn("h-full transition-all", getStatusColor(goal.status))} style={{ width: `${Math.min(goal.progress, 100)}%`}}></div>
  </div>
  </div>
@@ -270,7 +270,7 @@ export default function UnivGoalTracker({
  ))}
  </div>
  ) : (
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm text-left">
  <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  <tr>
@@ -286,7 +286,7 @@ export default function UnivGoalTracker({
  <tr key={goal.id} className="hover:bg-muted/30 transition-colors group">
  <td className="px-6 py-4">
  <div className="flex items-center gap-2 mb-1">
- <span className={cn("w-2 h-2 rounded-md-full", getStatusColor(goal.status))} />
+ <span className={cn("w-2 h-2 rounded-full", getStatusColor(goal.status))} />
  <div className="font-semibold text-foreground">{goal.title}</div>
  </div>
  <div className="text-xs text-[#71717a] dark:text-gray-400 flex items-center gap-2 tracking-[0.04em]">
@@ -297,7 +297,7 @@ export default function UnivGoalTracker({
  <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">{goal.deadline ? new Date(goal.deadline).toLocaleDateString() : '-'}</td>
  <td className="px-6 py-4">
  <div className="flex items-center gap-3">
- <div className="w-full h-2 bg-muted rounded-md-full overflow-hidden flex-1">
+ <div className="w-full h-2 bg-muted rounded-full overflow-hidden flex-1">
  <div className={cn("h-full transition-all", getStatusColor(goal.status))} style={{ width: `${Math.min(goal.progress, 100)}%`}}></div>
  </div>
  <span className="font-semibold text-xs tracking-[0.04em]">{goal.progress}%</span>
@@ -327,7 +327,7 @@ export default function UnivGoalTracker({
  initial={{ opacity: 0, scale: 0.95, y: 20}}
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: 20}}
- className="relative w-full max-w-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="relative w-full max-w-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="px-6 py-4 border-b border-primary/40 flex items-center justify-between bg-muted/20">
  <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
@@ -374,7 +374,7 @@ export default function UnivGoalTracker({
  </div>
  </div>
 
- <div className="bg-muted/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-5">
+ <div className="bg-muted/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-5">
  <div className="flex justify-between items-end mb-3">
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Progress (%)</label>
  <span className="text-2xl font-black text-foreground tracking-[-0.02em]">{formState.progress}%</span>

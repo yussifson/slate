@@ -123,8 +123,8 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
 
  if (!data || data.length === 0) {
  return (
- <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
- <div className="w-16 h-16 rounded-md-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 -violet-500/20">
+ <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 -violet-500/20">
  <Activity className="w-8 h-8 text-white" />
  </div>
  <h3 className="text-lg font-semibold text-slate-800 mb-1">No Activity Yet</h3>
@@ -142,7 +142,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
  {/* Header */}
  <div className="flex items-center justify-between mb-6">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-md-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center -violet-500/20">
+ <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center -violet-500/20">
  <Activity className="w-5 h-5 text-white" />
  </div>
  <div>
@@ -167,7 +167,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
  <div key={dateKey} className="mb-8">
  {/* Date Header */}
  <div className="flex items-center gap-3 mb-4 relative z-10">
- <div className="bg-gradient-to-r from-slate-800 to-slate-700 text-white text-xs font-semibold px-4 py-2 rounded-md-full  tracking-[0.04em]">
+ <div className="bg-gradient-to-r from-slate-800 to-slate-700 text-white text-xs font-semibold px-4 py-2 rounded-full  tracking-[0.04em]">
  {dateKey !== 'Unknown' ? format(new Date(dateKey), 'EEEE, MMMM d, yyyy') : 'Unknown Date'}
  </div>
  <div className="flex-1 h-px bg-gradient-to-r from-slate-300 to-transparent" />
@@ -219,7 +219,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
 
  {/* Center dot */}
  <div className="absolute left-1/2 -translate-x-1/2 top-4 z-10 flex flex-col items-center">
- <div className={`w-4 h-4 rounded-md-full ${colorSet.dot} ring-4 ring-white transition-transform group-hover:scale-125`} />
+ <div className={`w-4 h-4 rounded-full ${colorSet.dot} ring-4 ring-white transition-transform group-hover:scale-125`} />
  </div>
 
  {/* Right content */}
@@ -252,7 +252,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
  <div className="md:hidden flex gap-4">
  {/* Dot */}
  <div className="flex flex-col items-center flex-shrink-0">
- <div className={`w-3.5 h-3.5 rounded-md-full ${colorSet.dot} ring-4 ring-white mt-4`} />
+ <div className={`w-3.5 h-3.5 rounded-full ${colorSet.dot} ring-4 ring-white mt-4`} />
  </div>
  {/* Card */}
  <div className="flex-1 min-w-0">
@@ -276,7 +276,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
 
  {/* End marker */}
  <div className="flex justify-center md:justify-center">
- <div className="w-8 h-8 rounded-md-full bg-muted flex items-center justify-center">
+ <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
  <GitCommitHorizontal className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
  </div>
  </div>
@@ -399,7 +399,7 @@ function TimelineCard({ record, fieldDefinitions, colorSet, onView, onEdit, onDe
  const otherFields = fieldDefinitions.filter((f) => f.field_type !== 'text').slice(0, 3);
 
  return (
- <div className={`w-full max-w-md bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 transition-all duration-300 overflow-hidden group/card`}>
+ <div className={`w-full max-w-md bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 transition-all duration-300 overflow-hidden group/card`}>
  {/* Gradient accent bar */}
  <div className={`h-1 bg-gradient-to-r ${colorSet.gradient}`} />
 

@@ -42,9 +42,9 @@ export default function CasesKanban({ cases, onStatusChange}) {
  <div key={col.id} className="flex-shrink-0 w-64">
  {/* Column header */}
  <div className="flex items-center gap-2 mb-3">
- <div className={`w-2.5 h-2.5 rounded-md-full ${col.color}`} />
+ <div className={`w-2.5 h-2.5 rounded-full ${col.color}`} />
  <span className="text-sm font-semibold text-foreground">{col.label}</span>
- <span className="ml-auto text-xs font-medium text-[#71717a] dark:text-gray-400 bg-muted rounded-md-full px-2 py-0.5 tracking-[0.04em]">
+ <span className="ml-auto text-xs font-medium text-[#71717a] dark:text-gray-400 bg-muted rounded-full px-2 py-0.5 tracking-[0.04em]">
  {grouped[col.id]?.length || 0}
  </span>
  </div>
@@ -55,7 +55,7 @@ export default function CasesKanban({ cases, onStatusChange}) {
  <div
  ref={provided.innerRef}
  {...provided.droppableProps}
- className={`min-h-[200px] rounded-md-xl border-2 border-dashed p-2 transition-colors space-y-2 ${
+ className={`min-h-[200px] rounded-xl border-2 border-dashed p-2 transition-colors space-y-2 ${
  snapshot.isDraggingOver ? `${col.light}` : "border-primary/40 bg-muted/30"
 }`}
  >
@@ -99,7 +99,7 @@ export default function CasesKanban({ cases, onStatusChange}) {
  </div>
  {c.assigned_lawyer_name && (
  <div className="flex items-center gap-2.5">
- <div className="w-5 h-5 rounded-md-full bg-slate-100 flex items-center justify-center">
+ <div className="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center">
  <span className="text-[8px] font-semibold text-primary">
  {c.assigned_lawyer_name[0].toUpperCase()}
  </span>

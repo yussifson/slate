@@ -166,7 +166,7 @@ export default function Grades() {
           <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">{t("grades_results", "Grades & Transcript")}</h1>
           <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">{t("record_and_manage_student_exam", "Spreadsheet data entry & analytics")}</p>
         </div>
-        <Button onClick={() => { setEditingId(null); setFormData(defaultForm); setShowModal(true); }} className="bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white rounded-md-full">
+        <Button onClick={() => { setEditingId(null); setFormData(defaultForm); setShowModal(true); }} className="bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white rounded-full">
           <Plus className="w-4 h-4 mr-2" /> {t("add_grade_entry", "Quick Add")}
         </Button>
       </div>
@@ -219,7 +219,7 @@ export default function Grades() {
             placeholder="Search by student, subject, or exam..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="pl-12 rounded-md-full border-primary/30 bg-[var(--color-surface-1)] h-11"
+            className="pl-12 rounded-full border-primary/30 bg-[var(--color-surface-1)] h-11"
           />
         </div>
         <div className="flex gap-2 flex-wrap items-center overflow-x-auto scrollbar-hide">
@@ -227,7 +227,7 @@ export default function Grades() {
             <button
               key={c}
               onClick={() => setFilterClass(c)}
-              className={`px-4 py-2 text-xs font-semibold whitespace-nowrap transition-colors rounded-md-full ${
+              className={`px-4 py-2 text-xs font-semibold whitespace-nowrap transition-colors rounded-full ${
                 filterClass === c ? 'bg-[var(--primary)]/10 text-[var(--primary)]' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-2)]'
               }`}
             >
@@ -269,14 +269,14 @@ export default function Grades() {
                       {g.score} <span className="text-[var(--color-text-tertiary)] text-xs font-normal tracking-[0.04em]">/ {g.maxScore}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center justify-center px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[var(--tracking-widest)] rounded-md-full ${GRADE_COLORS[g.grade] || 'bg-[var(--color-surface-2)] text-[var(--color-text-secondary)]'}`}>
+                      <span className={`inline-flex items-center justify-center px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[var(--tracking-widest)] rounded-full ${GRADE_COLORS[g.grade] || 'bg-[var(--color-surface-2)] text-[var(--color-text-secondary)]'}`}>
                         {g.grade}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 rounded-md-full text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-2)]">
+                          <Button variant="ghost" className="h-8 w-8 rounded-full text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-2)]">
                             <MoreVertical className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
@@ -396,7 +396,7 @@ export default function Grades() {
               {formData.score !== '' && (
                 <div className="flex items-center justify-center gap-3 py-3 bg-[var(--color-surface-2)] rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
                   <span className="text-xs font-semibold text-[var(--color-text-secondary)] tracking-[0.04em]">{t("grade", "Grade:")}</span>
-                  <span className={`inline-flex items-center justify-center px-3 py-1 font-semibold text-base rounded-md-full ${GRADE_COLORS[liveGrade]}`}>
+                  <span className={`inline-flex items-center justify-center px-3 py-1 font-semibold text-base rounded-full ${GRADE_COLORS[liveGrade]}`}>
                     {liveGrade}
                   </span>
                   <span className="text-sm font-medium text-[var(--color-text-tertiary)]">
@@ -406,10 +406,10 @@ export default function Grades() {
               )}
             </div>
             <div className="flex gap-3 pt-4">
-              <Button variant="outline" className="flex-1 rounded-md-full border-primary/30" onClick={() => { setShowModal(false); setEditingId(null); setFormData(defaultForm); }} disabled={mutateRecord.isPending}>
+              <Button variant="outline" className="flex-1 rounded-full border-primary/30" onClick={() => { setShowModal(false); setEditingId(null); setFormData(defaultForm); }} disabled={mutateRecord.isPending}>
                 Cancel
               </Button>
-              <Button className="flex-1 rounded-md-full bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white" onClick={handleAdd} disabled={mutateRecord.isPending}>
+              <Button className="flex-1 rounded-full bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white" onClick={handleAdd} disabled={mutateRecord.isPending}>
                 {mutateRecord.isPending ? 'Saving...' : 'Save'}
               </Button>
             </div>

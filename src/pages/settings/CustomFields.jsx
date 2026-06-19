@@ -110,7 +110,7 @@ export default function CustomFields() {
  </div>
  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
  {/* Sidebar */}
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 h-fit hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 h-fit hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h3 className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-3 tracking-[0.04em]">{t("record_types", "Record Types")}</h3>
  <div className="space-y-1">
  {RECORD_TYPES.map(type => {
@@ -133,7 +133,7 @@ export default function CustomFields() {
 
  {/* Main Content */}
  <div className="md:col-span-3 space-y-4">
- <div className="flex items-center justify-between bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 rounded-md-xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex items-center justify-between bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 rounded-xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {t("fields_for", "Fields for")} {RECORD_TYPES.find(item => item.id === selectedType)?.label}
@@ -148,7 +148,7 @@ export default function CustomFields() {
  </Button>
  </div>
 
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {isLoading ? (
  <div className="p-8 text-center text-[#71717a] dark:text-gray-400">{t("loading_custom_schema", "Loading custom schema...")}</div>
  ) : fields.length === 0 ? (
@@ -180,9 +180,9 @@ export default function CustomFields() {
  <td className="px-6 py-4 font-mono text-xs text-primary tracking-[0.04em]">{field.field_name}</td>
  <td className="px-6 py-4">
  <div className="flex items-center gap-2">
- <span className="px-2 py-0.5 rounded-md-full bg-muted text-xs font-medium uppercase tracking-[0.04em]">{field.field_type}</span>
+ <span className="px-2 py-0.5 rounded-full bg-muted text-xs font-medium uppercase tracking-[0.04em]">{field.field_type}</span>
  {field.is_required && (
- <span className="px-2 py-0.5 rounded-md-full bg-red-100 text-red-700 text-[10px] font-semibold uppercase tracking-[0.04em]">{t("required", "Required")}</span>
+ <span className="px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-semibold uppercase tracking-[0.04em]">{t("required", "Required")}</span>
  )}
  </div>
  </td>
@@ -207,7 +207,7 @@ export default function CustomFields() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editingField ? 'Edit Custom Field' : 'New Custom Field'}</h2>
  
  <div className="space-y-4">

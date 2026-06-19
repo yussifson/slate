@@ -93,7 +93,7 @@ const UnivTableReservation = () => {
  </motion.div>
 
  <div className="view-header grid lg:grid-cols-3 gap-8">
- <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="lg:col-span-1 bg-card p-8 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-stone-200 h-fit hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="lg:col-span-1 bg-card p-8 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-stone-200 h-fit hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-xl font-semibold mb-6 text-stone-800 border-b border-stone-100 pb-3 font-sans">Book a Table</h2>
  <form onSubmit={handleSubmit} className="space-y-5 font-sans">
  <div>
@@ -146,17 +146,17 @@ const UnivTableReservation = () => {
  {loading ? (
  <div className="flex justify-center py-20"><Utensils className="w-10 h-10 text-stone-400 animate-pulse" /></div>
  ) : reservations.length === 0 ? (
- <div className="text-center py-20 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-stone-200 text-stone-400 font-sans hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">No reservations for today.</div>
+ <div className="text-center py-20 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-stone-200 text-stone-400 font-sans hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">No reservations for today.</div>
  ) : (
  <div className="grid sm:grid-cols-2 gap-4 font-sans">
  {reservations.map((res, index) => (
- <motion.div key={res.id || index} initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className="bg-card p-5 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-stone-200 relative overflow-hidden group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className={`absolute top-0 right-0 px-3 py-1 text-xs font-semibold rounded-md-bl-lg border-b border-l ${getStatusColor(res.status)}`}>
+ <motion.div key={res.id || index} initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className="bg-card p-5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-stone-200 relative overflow-hidden group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className={`absolute top-0 right-0 px-3 py-1 text-xs font-semibold rounded-bl-lg border-b border-l ${getStatusColor(res.status)}`}>
  {res.status}
  </div>
  
  <div className="flex items-center gap-3 mb-4 mt-2">
- <div className="w-12 h-12 rounded-md-full bg-stone-100 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-stone-200 shrink-0">
+ <div className="w-12 h-12 rounded-full bg-stone-100 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-stone-200 shrink-0">
  <span className="font-serif text-lg font-semibold text-stone-700">{res.table_number}</span>
  </div>
  <div>

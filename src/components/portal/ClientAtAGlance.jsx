@@ -34,8 +34,8 @@ export default function ClientAtAGlance({ hearings = [], signatureRequests = [],
 
   if (allClear) {
     return (
-      <div className="bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-xl p-6 flex items-center gap-4">
-        <div className="w-12 h-12 rounded-md-full bg-slate-100 flex items-center justify-center shrink-0">
+      <div className="bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl p-6 flex items-center gap-4">
+        <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
           <CheckCircle2 className="w-6 h-6 text-primary" />
         </div>
         <div>
@@ -52,7 +52,7 @@ export default function ClientAtAGlance({ hearings = [], signatureRequests = [],
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
       {/* Upcoming Hearings */}
-      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <SectionHeader icon={Calendar} label={`Upcoming Hearings (${upcomingHearings.length})`} color="bg-primary/60 text-primary/90" />
         {upcomingHearings.length === 0 ? (
           <div className="px-4 py-5 text-center">
@@ -67,7 +67,7 @@ export default function ClientAtAGlance({ hearings = [], signatureRequests = [],
               return (
                 <div key={h.id} className="px-4 py-3 flex items-center gap-3">
                   <div className={cn(
-                    "w-11 h-11 rounded-md-xl flex flex-col items-center justify-center shrink-0 text-center",
+                    "w-11 h-11 rounded-xl flex flex-col items-center justify-center shrink-0 text-center",
                     isUrgent ? "bg-red-50" : "bg-slate-100"
                   )}>
                     <span className={cn("text-[9px] font-semibold leading-none", isUrgent ? "text-red-500" : "text-primary")}>
@@ -92,7 +92,7 @@ export default function ClientAtAGlance({ hearings = [], signatureRequests = [],
         )}
       </div>
       {/* Pending Signatures */}
-      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <SectionHeader icon={PenTool} label={`Pending Signatures (${pendingSignatures.length})`} color="bg-amber-50/60 text-amber-700" />
         {pendingSignatures.length === 0 ? (
           <div className="px-4 py-5 text-center">
@@ -128,7 +128,7 @@ export default function ClientAtAGlance({ hearings = [], signatureRequests = [],
         )}
       </div>
       {/* Outstanding Invoices */}
-      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <SectionHeader icon={Receipt} label={`Outstanding Invoices (${outstandingInvoices.length})`} color="bg-red-50/60 text-red-700" />
         {outstandingInvoices.length === 0 ? (
           <div className="px-4 py-5 text-center">

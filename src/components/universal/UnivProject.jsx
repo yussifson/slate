@@ -112,30 +112,30 @@ export default function UnivProject() {
  </button>
  ))}
  </div>
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-md-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 "><Plus className="w-4 h-4" />New Project</button>
+ <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 "><Plus className="w-4 h-4" />New Project</button>
  </div>
  </div>
 
  <div className="grid grid-cols-2 md:grid-cols-5 gap-4 shrink-0">
- {Object.keys(STATUS_COLORS).map(s => <div key={s} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 rounded-md-2xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">{s}</p><p className="text-2xl font-black text-foreground tracking-[-0.02em]">{records.filter(r=>r.status===s).length}</p></div>)}
+ {Object.keys(STATUS_COLORS).map(s => <div key={s} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 rounded-2xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">{s}</p><p className="text-2xl font-black text-foreground tracking-[-0.02em]">{records.filter(r=>r.status===s).length}</p></div>)}
  </div>
 
  <div className="flex flex-col sm:flex-row gap-3 shrink-0">
- <div className="relative flex-1"><Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" /><input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search projects..." className="w-full h-11 pl-10 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" /></div>
+ <div className="relative flex-1"><Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" /><input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search projects..." className="w-full h-11 pl-10 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" /></div>
  <div className="flex gap-2 shrink-0">
- {['All',...Object.keys(STATUS_COLORS)].map(s => <button key={s} onClick={() => setStatusFilter(s)} className={`px-3 h-11 rounded-md-xl text-sm font-semibold border-[0.5px] border-black/9 dark:border-white/8 transition-all whitespace-nowrap ${statusFilter===s?'bg-primary text-white border-primary':'bg-card border-primary/40 text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}>{s}</button>)}
+ {['All',...Object.keys(STATUS_COLORS)].map(s => <button key={s} onClick={() => setStatusFilter(s)} className={`px-3 h-11 rounded-xl text-sm font-semibold border-[0.5px] border-black/9 dark:border-white/8 transition-all whitespace-nowrap ${statusFilter===s?'bg-primary text-white border-primary':'bg-card border-primary/40 text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}>{s}</button>)}
  </div>
  </div>
 
  <div className="flex-1 overflow-auto min-h-0 custom-scrollbar">
  {loading ? <div className="flex h-40 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
  : view === 'Timeline' ? (
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6 overflow-x-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-6 overflow-x-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h3 className="font-semibold text-lg mb-4">Project Gantt Timeline</h3>
  <div className="min-w-[800px]">
  {filtered.map((r, i) => {
@@ -149,8 +149,8 @@ export default function UnivProject() {
  return (
  <div key={r.id} className="flex items-center gap-4 mb-4" onClick={() => setSelected(r)}>
  <div className="w-48 shrink-0 font-medium text-sm truncate">{r.name}</div>
- <div className="flex-1 bg-muted rounded-md-full h-8 relative overflow-hidden group cursor-pointer hover:bg-muted/80">
- <div className={`absolute top-0 bottom-0 left-0 rounded-md-full flex items-center px-3 text-xs font-semibold text-white transition-all ${r.status === 'Completed' ? 'bg-emerald-500/10' : 'bg-primary'}`} style={{ width: `${Math.min(100, Math.max(10, width/10))}%`, left: `${(i%5)*5}%`}}>
+ <div className="flex-1 bg-muted rounded-full h-8 relative overflow-hidden group cursor-pointer hover:bg-muted/80">
+ <div className={`absolute top-0 bottom-0 left-0 rounded-full flex items-center px-3 text-xs font-semibold text-white transition-all ${r.status === 'Completed' ? 'bg-emerald-500/10' : 'bg-primary'}`} style={{ width: `${Math.min(100, Math.max(10, width/10))}%`, left: `${(i%5)*5}%`}}>
  <div className="absolute left-0 top-0 bottom-0 bg-primary/20" style={{ width: `${progress}%`}}></div>
  <span className="relative z-10">{progress}%</span>
  </div>
@@ -166,7 +166,7 @@ export default function UnivProject() {
  {filtered.map(r => {
  const progress = r.progress || Math.floor(Math.random() * 100);
  return (
- <div key={r.id} onClick={() => setSelected(r)} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 transition-all group cursor-pointer flex flex-col gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={r.id} onClick={() => setSelected(r)} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 transition-all group cursor-pointer flex flex-col gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-start">
  <h3 className="font-semibold text-base text-foreground leading-tight">{r.name}</h3>
  <span className={`px-2 py-0.5 text-[10px] font-semibold uppercase border-[0.5px] border-black/9 dark:border-white/8 rounded-lg shrink-0 ml-2 ${STATUS_COLORS[r.status]}`}>{r.status}</span>
@@ -178,7 +178,7 @@ export default function UnivProject() {
  <div className="flex justify-between text-[10px] font-semibold text-[#71717a] dark:text-gray-400 mb-1 uppercase tracking-wider tracking-[0.04em]">
  <span>Progress</span><span>{progress}%</span>
  </div>
- <div className="h-1.5 w-full bg-muted rounded-md-full overflow-hidden">
+ <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
  <div className={`h-full ${progress === 100 ? 'bg-emerald-500/10' : 'bg-primary'}`} style={{ width: `${progress}%`}}></div>
  </div>
  </div>
@@ -195,7 +195,7 @@ export default function UnivProject() {
  </div>
  </div>
  )})}
- {filtered.length === 0 && <div className="col-span-full py-20 text-center text-[#71717a] dark:text-gray-400 border-2 border-dashed border-primary/40 rounded-md-2xl"><Briefcase className="w-12 h-12 mx-auto text-[#71717a] dark:text-gray-400/30 mb-3" /><p className="font-medium">No projects found.</p></div>}
+ {filtered.length === 0 && <div className="col-span-full py-20 text-center text-[#71717a] dark:text-gray-400 border-2 border-dashed border-primary/40 rounded-2xl"><Briefcase className="w-12 h-12 mx-auto text-[#71717a] dark:text-gray-400/30 mb-3" /><p className="font-medium">No projects found.</p></div>}
  </div>
  )}
  </div>
@@ -203,16 +203,16 @@ export default function UnivProject() {
  {selected && (
  <div className="fixed inset-0 z-40 bg-primary/20 backdrop-blur-sm" onClick={() => setSelected(null)}>
  <div className="absolute right-0 top-0 bottom-0 w-80 bg-card border-l border-primary/40 flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={e => e.stopPropagation()}>
- <div className="p-5 border-b border-primary/40 flex justify-between items-center"><h3 className="font-black text-lg">Project Details</h3><button onClick={() => setSelected(null)} className="p-1.5 bg-muted rounded-md-full"><XCircle className="w-4 h-4 text-[#71717a] dark:text-gray-400" /></button></div>
+ <div className="p-5 border-b border-primary/40 flex justify-between items-center"><h3 className="font-black text-lg">Project Details</h3><button onClick={() => setSelected(null)} className="p-1.5 bg-muted rounded-full"><XCircle className="w-4 h-4 text-[#71717a] dark:text-gray-400" /></button></div>
  <div className="flex-1 overflow-y-auto p-5 custom-scrollbar space-y-3">
  <h2 className="font-black text-xl text-foreground">{selected.name}</h2>
- <span className={`px-3 py-1 text-[11px] font-semibold uppercase border-[0.5px] border-black/9 dark:border-white/8 rounded-md-full inline-block ${STATUS_COLORS[selected.status]}`}>{selected.status}</span>
+ <span className={`px-3 py-1 text-[11px] font-semibold uppercase border-[0.5px] border-black/9 dark:border-white/8 rounded-full inline-block ${STATUS_COLORS[selected.status]}`}>{selected.status}</span>
  {selected.description && <p className="text-sm text-[#71717a] dark:text-gray-400">{selected.description}</p>}
- {[{label:'Client',value:selected.client_name},{label:'Assigned To',value:selected.assigned_to},{label:'Start Date',value:selected.start_date},{label:'Due Date',value:selected.due_date},{label:'Budget',value:selected.budget?`$${Number(selected.budget).toLocaleString()}`:null},{label:'Priority',value:selected.priority}].map((f,i)=>f.value?(<div key={i} className="p-3 bg-muted/40 rounded-md-xl"><p className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{f.label}</p><p className="text-sm font-medium">{f.value}</p></div>):null)}
+ {[{label:'Client',value:selected.client_name},{label:'Assigned To',value:selected.assigned_to},{label:'Start Date',value:selected.start_date},{label:'Due Date',value:selected.due_date},{label:'Budget',value:selected.budget?`$${Number(selected.budget).toLocaleString()}`:null},{label:'Priority',value:selected.priority}].map((f,i)=>f.value?(<div key={i} className="p-3 bg-muted/40 rounded-xl"><p className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{f.label}</p><p className="text-sm font-medium">{f.value}</p></div>):null)}
  </div>
  <div className="p-5 border-t border-primary/40 flex gap-2">
- <button onClick={()=>{openModal(selected);setSelected(null);}} className="flex-1 h-9 bg-primary text-white rounded-md-xl text-sm font-semibold flex items-center justify-center gap-2"><Edit2 className="w-3.5 h-3.5"/>Edit</button>
- <button onClick={()=>remove(selected.id)} className="flex-1 h-9 bg-red-50 text-red-600 border-[0.5px] border-black/9 dark:border-white/8 border-red-200 rounded-md-xl text-sm font-semibold flex items-center justify-center gap-2 hover:bg-red-100"><Trash2 className="w-3.5 h-3.5"/>Delete</button>
+ <button onClick={()=>{openModal(selected);setSelected(null);}} className="flex-1 h-9 bg-primary text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2"><Edit2 className="w-3.5 h-3.5"/>Edit</button>
+ <button onClick={()=>remove(selected.id)} className="flex-1 h-9 bg-red-50 text-red-600 border-[0.5px] border-black/9 dark:border-white/8 border-red-200 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 hover:bg-red-100"><Trash2 className="w-3.5 h-3.5"/>Delete</button>
  </div>
  </div>
  </div>
@@ -220,22 +220,22 @@ export default function UnivProject() {
 
  {isModalOpen && (
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
- <div className="bg-card w-full max-w-2xl rounded-md-2xl flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0"><h2 className="text-xl font-black">{editingId?'Edit Project':'New Project'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-md-full text-[#71717a] dark:text-gray-400"><XCircle className="w-5 h-5" /></button></div>
+ <div className="bg-card w-full max-w-2xl rounded-2xl flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0"><h2 className="text-xl font-black">{editingId?'Edit Project':'New Project'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-full text-[#71717a] dark:text-gray-400"><XCircle className="w-5 h-5" /></button></div>
  <form onSubmit={save} className="p-5 overflow-y-auto flex-1 custom-scrollbar">
  <div className="grid grid-cols-2 gap-4">
- <div className="col-span-2"><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Project Name *</label><input required type="text" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Client</label><input type="text" value={form.client_name} onChange={e=>setForm({...form,client_name:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Assigned To</label><input type="text" value={form.assigned_to} onChange={e=>setForm({...form,assigned_to:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Status</label><select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(STATUS_COLORS).map(s=><option key={s}>{s}</option>)}</select></div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Priority</label><select value={form.priority} onChange={e=>setForm({...form,priority:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(PRIORITY_COLORS).map(p=><option key={p}>{p}</option>)}</select></div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Start Date</label><input type="date" value={form.start_date} onChange={e=>setForm({...form,start_date:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Due Date</label><input type="date" value={form.due_date} onChange={e=>setForm({...form,due_date:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Budget ($)</label><input type="number" min="0" value={form.budget} onChange={e=>setForm({...form,budget:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Progress (%)</label><input type="number" min="0" max="100" value={form.progress} onChange={e=>setForm({...form,progress:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div className="col-span-2"><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Description</label><textarea rows="3" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none"/></div>
+ <div className="col-span-2"><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Project Name *</label><input required type="text" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Client</label><input type="text" value={form.client_name} onChange={e=>setForm({...form,client_name:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Assigned To</label><input type="text" value={form.assigned_to} onChange={e=>setForm({...form,assigned_to:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Status</label><select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(STATUS_COLORS).map(s=><option key={s}>{s}</option>)}</select></div>
+ <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Priority</label><select value={form.priority} onChange={e=>setForm({...form,priority:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(PRIORITY_COLORS).map(p=><option key={p}>{p}</option>)}</select></div>
+ <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Start Date</label><input type="date" value={form.start_date} onChange={e=>setForm({...form,start_date:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Due Date</label><input type="date" value={form.due_date} onChange={e=>setForm({...form,due_date:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Budget ($)</label><input type="number" min="0" value={form.budget} onChange={e=>setForm({...form,budget:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Progress (%)</label><input type="number" min="0" max="100" value={form.progress} onChange={e=>setForm({...form,progress:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ <div className="col-span-2"><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Description</label><textarea rows="3" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none"/></div>
  </div>
- <div className="flex justify-end gap-3 mt-5 pt-5 border-t border-primary/40"><button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-md-xl text-sm font-medium">Cancel</button><button type="submit" className="h-10 px-5 bg-primary text-white rounded-md-xl text-sm font-semibold ">{editingId?'Update':'Create Project'}</button></div>
+ <div className="flex justify-end gap-3 mt-5 pt-5 border-t border-primary/40"><button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button><button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-semibold ">{editingId?'Update':'Create Project'}</button></div>
  </form>
  </div>
  </div>

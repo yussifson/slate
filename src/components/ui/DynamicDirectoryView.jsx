@@ -178,8 +178,8 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
 
  if (!data || data.length === 0) {
  return (
- <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
- <div className="w-16 h-16 rounded-md-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 -emerald-500/20">
+ <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 -emerald-500/20">
  <Users className="w-8 h-8 text-white" />
  </div>
  <h3 className="text-lg font-semibold text-slate-800 mb-1">No Contacts Yet</h3>
@@ -196,7 +196,7 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
  <div className="mb-6">
  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-md-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center -emerald-500/20">
+ <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center -emerald-500/20">
  <Users className="w-5 h-5 text-white" />
  </div>
  <div>
@@ -266,7 +266,7 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
  <div
  key={record.id}
  onClick={() => setSelectedRecord(record)}
- className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary/60 transition-all duration-300 cursor-pointer group overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary/60 transition-all duration-300 cursor-pointer group overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  {/* Card top gradient */}
  <div className={`h-16 bg-gradient-to-r ${gradient} relative`}>
@@ -290,7 +290,7 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
 
  <div className="px-4 pb-4 -mt-8 relative">
  {/* Avatar */}
- <div className={`w-14 h-14 rounded-md-xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-lg font-semibold ring-3 ring-white mb-3`}>
+ <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-lg font-semibold ring-3 ring-white mb-3`}>
  {initials}
  </div>
 
@@ -337,11 +337,11 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
  const initials = getInitials(name);
  return (
  <>
- <div className={`-mx-6 -mt-6 h-24 bg-gradient-to-r ${gradient} rounded-md-t-lg relative`}>
- <div className="absolute inset-0 bg-primary/20 rounded-md-t-lg" />
+ <div className={`-mx-6 -mt-6 h-24 bg-gradient-to-r ${gradient} rounded-t-lg relative`}>
+ <div className="absolute inset-0 bg-primary/20 rounded-t-lg" />
  </div>
  <div className="-mt-12 relative px-2">
- <div className={`w-20 h-20 rounded-md-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-2xl font-semibold ring-4 ring-white`}>
+ <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-2xl font-semibold ring-4 ring-white`}>
  {initials}
  </div>
  </div>

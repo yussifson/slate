@@ -48,8 +48,8 @@ export function RetailStatCard({ label, value, icon: Icon, hint, variant = "defa
  success: "bg-slate-100 text-primary",
 };
  return (
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 min-h-[88px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className={cn("w-12 h-12 rounded-md-xl flex items-center justify-center shrink-0", variants[variant])}>
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 min-h-[88px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center shrink-0", variants[variant])}>
  <Icon className="w-6 h-6" />
  </div>
  <div className="min-w-0">
@@ -111,18 +111,18 @@ export function ProductGridCard({ product, onEdit, onDelete, suppliers = []}) {
  const supplierName = suppliers.find((s) => s.id === product.supplierId)?.name;
  const inStock = product.stock > 0;
  return (
- <article className="group relative bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden hover:border-primary/30 transition-all flex flex-col min-h-[320px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <article className="group relative bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden hover:border-primary/30 transition-all flex flex-col min-h-[320px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="h-40 bg-gradient-to-br from-primary/5 to-primary/10 border-b border-primary/40 flex items-center justify-center relative">
- <div className="w-20 h-20 rounded-md-2xl bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center text-primary/40">
+ <div className="w-20 h-20 rounded-2xl bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center text-primary/40">
  {product.image ? (
- <img src={product.image} alt="" className="w-full h-full object-cover rounded-md-2xl" />
+ <img src={product.image} alt="" className="w-full h-full object-cover rounded-2xl" />
  ) : (
  <span className="text-4xl font-semibold text-primary/30 tracking-[-0.02em]">{product.name?.[0]?.toUpperCase()}</span>
  )}
  </div>
  <span
  className={cn(
- "absolute top-3 left-3 text-[10px] font-semibold px-2.5 py-1 rounded-md-full uppercase tracking-wider border",
+ "absolute top-3 left-3 text-[10px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider border",
  inStock ? "bg-slate-100 text-primary border-primary/20" : "bg-red-50 text-red-700 border-red-200"
  )}
  >
@@ -149,11 +149,11 @@ export function PromotionGridCard({ promo, onEdit, onDelete}) {
  const value = promo.discountValue ?? promo.data?.discountValue ?? 0;
  const code = promo.code || promo.data?.code || "PROMO";
  return (
- <article className="group relative bg-card border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-md-2xl overflow-hidden hover:border-solid hover:border-primary/40 transition-all flex flex-col min-h-[220px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <article className="group relative bg-card border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-2xl overflow-hidden hover:border-solid hover:border-primary/40 transition-all flex flex-col min-h-[220px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex-1 p-6 relative">
  <div className="flex justify-between items-start mb-6">
- <div className="bg-slate-100 text-primary text-[10px] font-semibold px-3 py-1.5 rounded-md-full uppercase tracking-widest inline-flex items-center gap-2.5 tracking-[0.04em]">
- <div className={cn("w-1.5 h-1.5 rounded-md-full", active ? "bg-primary animate-pulse" : "bg-muted-foreground")} />
+ <div className="bg-slate-100 text-primary text-[10px] font-semibold px-3 py-1.5 rounded-full uppercase tracking-widest inline-flex items-center gap-2.5 tracking-[0.04em]">
+ <div className={cn("w-1.5 h-1.5 rounded-full", active ? "bg-primary animate-pulse" : "bg-muted-foreground")} />
  {active ? "Active Code" : "Inactive Code"}
  </div>
  <CardActions onEdit={onEdit} onDelete={onDelete} />
@@ -166,8 +166,8 @@ export function PromotionGridCard({ promo, onEdit, onDelete}) {
  </div>
  
  <div className="h-16 bg-muted/40 border-t border-dashed border-primary/40 px-6 flex items-center justify-between relative overflow-hidden">
- <div className="absolute -left-3 -top-3 w-6 h-6 rounded-md-full bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-dashed z-10" />
- <div className="absolute -right-3 -top-3 w-6 h-6 rounded-md-full bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-dashed z-10" />
+ <div className="absolute -left-3 -top-3 w-6 h-6 rounded-full bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-dashed z-10" />
+ <div className="absolute -right-3 -top-3 w-6 h-6 rounded-full bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-dashed z-10" />
  
  <p className="font-mono text-lg font-semibold text-primary tracking-widest">{code}</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{type}</p>
@@ -178,15 +178,15 @@ export function PromotionGridCard({ promo, onEdit, onDelete}) {
 
 export function CustomerGridCard({ customer, onEdit, onDelete, onView, segmentColors = {}}) {
  return (
- <article className="group relative bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6 hover:-translate-y-1 transition-all flex flex-col min-h-[260px] text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <article className="group relative bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-6 hover:-translate-y-1 transition-all flex flex-col min-h-[260px] text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="absolute top-3 right-3">
  <CardActions onView={onView} onEdit={onEdit} onDelete={onDelete} />
  </div>
  
- <div className="w-20 h-20 mx-auto rounded-md-full bg-gradient-to-tr from-primary/20 to-primary/5 border-4 border-background flex items-center justify-center text-3xl font-black text-primary mb-4 shrink-0 relative tracking-[-0.02em]">
+ <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-tr from-primary/20 to-primary/5 border-4 border-background flex items-center justify-center text-3xl font-black text-primary mb-4 shrink-0 relative tracking-[-0.02em]">
  {customer.name?.[0]?.toUpperCase()}
  {customer.segment === 'VIP' && (
- <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-yellow-400 rounded-md-full border-2 border-background flex items-center justify-center ">
+ <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full border-2 border-background flex items-center justify-center ">
  <span className="text-[10px]">⭐</span>
  </div>
  )}
@@ -195,7 +195,7 @@ export function CustomerGridCard({ customer, onEdit, onDelete, onView, segmentCo
  <div className="min-w-0 flex-1 mb-6">
  <h3 className="font-semibold text-xl text-foreground truncate">{customer.name}</h3>
  <p className="text-xs text-[#71717a] dark:text-gray-400 font-mono mt-1 tracking-[0.04em]">{customer.custId || customer.id}</p>
- <p className="text-sm text-primary/80 truncate mt-2 bg-slate-50 inline-block px-3 py-1 rounded-md-full">{customer.email}</p>
+ <p className="text-sm text-primary/80 truncate mt-2 bg-slate-50 inline-block px-3 py-1 rounded-full">{customer.email}</p>
  </div>
  
  <div className="mt-auto grid grid-cols-2 gap-4 pt-4 border-t border-primary/40">
@@ -220,7 +220,7 @@ export function OrderGridCard({ order, onEdit, onDelete}) {
  Processing: "bg-slate-100 text-primary/90",
 };
  return (
- <article className="group relative bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-0 transition-all flex flex-col min-h-[220px] overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <article className="group relative bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-0 transition-all flex flex-col min-h-[220px] overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="bg-muted/30 p-5 border-b border-primary/40 flex justify-between items-start relative">
  <div>
  <p className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-widest mb-1 tracking-[0.04em]">Receipt No.</p>
@@ -256,10 +256,10 @@ export function InventoryGridCard({ item, onEdit, onDelete, onView}) {
  "Out of Stock": "bg-red-500/10/10 text-red-700 border-red-200",
 };
  return (
- <article className="group relative bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden hover:border-primary/30 transition-all flex flex-col min-h-[280px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <article className="group relative bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden hover:border-primary/30 transition-all flex flex-col min-h-[280px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="h-32 bg-muted/30 border-b border-primary/40 flex items-center justify-center relative">
  <span className="text-5xl font-black text-primary/20 tracking-[-0.02em]">{item.name?.[0]}</span>
- <span className={cn("absolute top-3 left-3 text-[10px] font-semibold px-2.5 py-1 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 uppercase", statusClass[item.status])}>
+ <span className={cn("absolute top-3 left-3 text-[10px] font-semibold px-2.5 py-1 rounded-full border-[0.5px] border-black/9 dark:border-white/8 uppercase", statusClass[item.status])}>
  {item.status}
  </span>
  <CardActions onView={onView} onEdit={onEdit} onDelete={onDelete} />
@@ -285,9 +285,9 @@ export function InventoryGridCard({ item, onEdit, onDelete, onView}) {
 
 export function SupplierGridCard({ supplier, onEdit, onDelete, onView}) {
  return (
- <article className="group relative bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6 hover:border-primary/30 transition-all flex flex-col min-h-[220px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <article className="group relative bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-6 hover:border-primary/30 transition-all flex flex-col min-h-[220px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-start gap-4">
- <div className="w-14 h-14 rounded-md-2xl bg-primary text-primary-foreground flex items-center justify-center shrink-0">
+ <div className="w-14 h-14 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center shrink-0">
  <span className="text-xl font-semibold">{supplier.name?.[0]}</span>
  </div>
  <div className="flex-1 min-w-0">
@@ -316,7 +316,7 @@ export function LoyaltyGridCard({ member, onEdit, onDelete}) {
  Platinum: "bg-slate-100 text-primary/70",
 };
  return (
- <article className="group relative bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6 hover:border-primary/30 transition-all min-h-[180px] flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <article className="group relative bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-6 hover:border-primary/30 transition-all min-h-[180px] flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-start">
  <div>
  <p className="text-xs font-semibold text-primary uppercase tracking-[0.04em]">{member.memberId}</p>
@@ -329,7 +329,7 @@ export function LoyaltyGridCard({ member, onEdit, onDelete}) {
  <p className="text-[10px] text-[#71717a] dark:text-gray-400 uppercase font-semibold tracking-[0.04em]">Points</p>
  <p className="text-2xl font-black text-primary tracking-[-0.02em]">{member.points?.toLocaleString()}</p>
  </div>
- <span className={cn("text-xs font-semibold px-3 py-1 rounded-md-full", tierColors[member.tier] || "bg-slate-100 text-primary")}>
+ <span className={cn("text-xs font-semibold px-3 py-1 rounded-full", tierColors[member.tier] || "bg-slate-100 text-primary")}>
  {member.tier}
  </span>
  </div>

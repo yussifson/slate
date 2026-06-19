@@ -71,7 +71,7 @@ export default function SHSApplicantReview() {
 
  <div className="flex-1 flex gap-6 overflow-hidden">
  {/* Left Panel: Pending Applicants */}
- <Card className="w-[350px] shrink-0 flex flex-col rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="w-[350px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/5">
  <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-3 flex items-center justify-between">
  Pending Review <Badge className="bg-amber-100 text-amber-700">{applicants.length}</Badge>
@@ -80,7 +80,7 @@ export default function SHSApplicantReview() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary dark:text-primary" />
  <Input 
  placeholder="Search applicants..." 
- className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -97,13 +97,13 @@ export default function SHSApplicantReview() {
  <button
  key={app.id}
  onClick={() => setSelectedApplicant(app)}
- className={`w-full text-left p-3 rounded-md-2xl transition-all duration-200 flex items-center gap-3 ${
+ className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
  selectedApplicant?.id === app.id 
  ? 'bg-primary dark:bg-primary text-white -emerald-500/20' 
  : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200'
 }`}
  >
- <div className={`w-10 h-10 rounded-md-full flex items-center justify-center font-semibold shrink-0 ${
+ <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold shrink-0 ${
  selectedApplicant?.id === app.id ? 'bg-white dark:bg-slate-900/40 dark:bg-slate-900/20' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
 }`}>
  {app.data?.beceAggregate || '?'}
@@ -122,7 +122,7 @@ export default function SHSApplicantReview() {
  </Card>
 
  {/* Right Panel: Detailed Review */}
- <Card className="flex-1 flex flex-col rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="flex-1 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {selectedApplicant ? (
  <ScrollArea className="flex-1">
  <div className="p-8 max-w-3xl mx-auto space-y-8">
@@ -138,7 +138,7 @@ export default function SHSApplicantReview() {
  </div>
  <div className="text-right">
  <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-1 tracking-[0.04em]">BECE Aggregate</p>
- <div className="inline-flex items-center justify-center w-16 h-16 rounded-md-2xl bg-amber-100 text-amber-700 text-2xl font-black  tracking-[-0.02em]">
+ <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-amber-100 text-amber-700 text-2xl font-black  tracking-[-0.02em]">
  {selectedApplicant.data?.beceAggregate || 'N/A'}
  </div>
  </div>
@@ -150,7 +150,7 @@ export default function SHSApplicantReview() {
  <h3 className="font-semibold text-primary dark:text-primary/70 flex items-center gap-2">
  <FileText className="w-4 h-4" /> Applicant Details
  </h3>
- <div className="p-5 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 space-y-4">
+ <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 space-y-4">
  <div>
  <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">Gender</p>
  <p className="font-medium text-slate-800 dark:text-slate-100">{selectedApplicant.data?.gender || 'N/A'}</p>
@@ -170,7 +170,7 @@ export default function SHSApplicantReview() {
  <h3 className="font-semibold text-primary flex items-center gap-2">
  <Target className="w-4 h-4" /> Programme Choices
  </h3>
- <div className="p-5 rounded-md-2xl bg-slate-500 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 space-y-4">
+ <div className="p-5 rounded-2xl bg-slate-500 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 space-y-4">
  <div>
  <p className="text-xs text-primary/70 font-semibold uppercase tracking-wider tracking-[0.04em]">1st Choice</p>
  <p className="font-semibold text-primary/70 text-lg">{selectedApplicant.data?.programChoice1 || 'None'}</p>
@@ -184,18 +184,18 @@ export default function SHSApplicantReview() {
  </div>
 
  {/* Decision Zone */}
- <div className="mt-8 p-6 rounded-md-2xl border-2 border-dashed border-primary/20 dark:border-primary/40 bg-primary/30 dark:bg-slate-800/30">
+ <div className="mt-8 p-6 rounded-2xl border-2 border-dashed border-primary/20 dark:border-primary/40 bg-primary/30 dark:bg-slate-800/30">
  <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-center mb-6">Make Admission Decision</h3>
  <div className="flex flex-col sm:flex-row gap-4 justify-center">
  <Button 
  onClick={() => handleDecision('Rejected')}
- className="h-12 px-8 rounded-md-xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="h-12 px-8 rounded-xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <XCircle className="w-5 h-5 mr-2" /> Reject Application
  </Button>
  <Button 
  onClick={() => handleDecision('Admitted')}
- className="h-12 px-8 rounded-md-xl bg-primary hover:bg-primary text-white -emerald-500/20 font-semibold"
+ className="h-12 px-8 rounded-xl bg-primary hover:bg-primary text-white -emerald-500/20 font-semibold"
  >
  <CheckCircle2 className="w-5 h-5 mr-2" /> Admit to 1st Choice
  </Button>
@@ -209,7 +209,7 @@ export default function SHSApplicantReview() {
  </ScrollArea>
  ) : (
  <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
- <div className="w-20 h-20 rounded-md-full bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center mb-6">
+ <div className="w-20 h-20 rounded-full bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center mb-6">
  <FileText className="w-10 h-10 text-primary/30" />
  </div>
  <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No Applicant Selected</h3>

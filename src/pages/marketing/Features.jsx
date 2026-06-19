@@ -170,7 +170,7 @@ export default function Features() {
  {/* ── Hero Header ── */}
  <section className="relative pt-8 pb-10 md:pt-14 md:pb-20 bg-slate-50 border-b border-primary/40">
  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
- <span className="inline-flex items-center px-4 py-1.5 rounded-md-full bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-slate-600 text-xs font-semibold uppercase tracking-wider mb-6  tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-slate-600 text-xs font-semibold uppercase tracking-wider mb-6  tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {t("core_features", "Core Features")}
  </span>
  <h1 className="text-3xl sm:text-4xl md:text-6xl font-semibold tracking-tight text-slate-900 mb-6 max-w-4xl mx-auto leading-[1.1] tracking-[-0.02em]">
@@ -203,7 +203,7 @@ export default function Features() {
  >
  {/* Text content */}
  <div className="flex-1 space-y-6">
- <span className="inline-flex px-4 py-1.5 rounded-md-full bg-slate-50 text-primary text-xs font-semibold uppercase tracking-wider tracking-[0.04em]">
+ <span className="inline-flex px-4 py-1.5 rounded-full bg-slate-50 text-primary text-xs font-semibold uppercase tracking-wider tracking-[0.04em]">
  {feature.badge}
  </span>
 
@@ -222,7 +222,7 @@ export default function Features() {
  key={idx}
  className="flex items-start gap-3 text-base text-slate-700 font-medium"
  >
- <div className="w-5 h-5 rounded-md-full bg-slate-50 flex items-center justify-center text-primary mt-0.5 shrink-0">
+ <div className="w-5 h-5 rounded-full bg-slate-50 flex items-center justify-center text-primary mt-0.5 shrink-0">
  <Check className="w-3.5 h-3.5" strokeWidth={3} />
  </div>
  <span>{bullet}</span>
@@ -233,7 +233,7 @@ export default function Features() {
  </div>
  {/* Stylized UI Mockup */}
  <div className="flex-1 w-full">
- <div className="w-full aspect-[4/3] rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden relative group bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-full aspect-[4/3] rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden relative group bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <img 
  src={feature.image} 
  alt={`${feature.badge} Interface`} 
@@ -250,7 +250,7 @@ export default function Features() {
  <section className="py-20 md:py-28 bg-slate-50 border-t border-primary/40">
  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
  <div className="text-center max-w-2xl mx-auto mb-16">
- <span className="inline-flex items-center px-4 py-1.5 rounded-md-full bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-slate-600 text-xs font-semibold uppercase tracking-wider mb-6  tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-slate-600 text-xs font-semibold uppercase tracking-wider mb-6  tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {t("even_more_capabilities", "Even More Capabilities")}
  </span>
  <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-900 tracking-[-0.02em]">
@@ -267,9 +267,9 @@ export default function Features() {
  return (
  <div
  key={index}
- className="rounded-md-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-white p-8 space-y-5 transition- duration-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="rounded-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-white p-8 space-y-5 transition- duration-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
- <div className="w-12 h-12 rounded-md-xl bg-slate-50 flex items-center justify-center text-primary">
+ <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-primary">
  <FeatIcon className="w-6 h-6" />
  </div>
  <h3 className="font-semibold text-xl text-slate-900">
@@ -297,7 +297,7 @@ export default function Features() {
  )}
  </p>
  <Link to="/signup">
- <Button className="bg-primary hover:bg-primary/90 text-white font-semibold py-6 px-10 rounded-md-full transition-all duration-200 text-base">
+ <Button className="bg-primary hover:bg-primary/90 text-white font-semibold py-6 px-10 rounded-full transition-all duration-200 text-base">
  {t("start_free_trial", "Start Free Trial")}
  <ArrowRight className="ml-2 w-5 h-5" />
  </Button>

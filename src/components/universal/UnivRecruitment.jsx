@@ -134,31 +134,31 @@ export default function UnivRecruitment() {
           <p className="text-[#71717a] dark:text-gray-400 text-sm font-medium mt-1">Manage applicants and track hiring pipeline.</p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex items-center bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-1 mr-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="flex items-center bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-1 mr-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <button onClick={() => setViewMode('List')} className={`p-2 rounded-xl flex items-center justify-center transition-all ${viewMode === 'List' ? 'bg-primary text-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm' : 'text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}><List className="w-4 h-4" /></button>
             <button onClick={() => setViewMode('Board')} className={`p-2 rounded-xl flex items-center justify-center transition-all ${viewMode === 'Board' ? 'bg-primary text-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm' : 'text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}><LayoutGrid className="w-4 h-4" /></button>
           </div>
-          <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-xl text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 transition-all active:scale-95">
+          <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 transition-all active:scale-95">
             Export CSV
           </button>
-          <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-md-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors"><Plus className="w-4 h-4"/>Add Candidate</button>
+          <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors"><Plus className="w-4 h-4"/>Add Candidate</button>
         </div>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3 shrink-0">
         <div className="relative flex-1">
           <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400"/>
-          <input type="text" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search candidates, roles..." className="w-full h-11 pl-10 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"/>
+          <input type="text" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search candidates, roles..." className="w-full h-11 pl-10 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"/>
         </div>
         {viewMode === 'List' && (
           <div className="flex gap-2 overflow-x-auto shrink-0 pb-1 sm:pb-0 custom-scrollbar">
-            {['All', ...STAGES].map(s=><button key={s} onClick={()=>setStatusFilter(s)} className={`px-3 h-11 rounded-md-xl text-sm font-semibold border-[0.5px] border-black/9 dark:border-white/8 transition-all whitespace-nowrap ${statusFilter===s?'bg-primary text-white border-primary':'bg-card border-primary/40 text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}>{s}</button>)}
+            {['All', ...STAGES].map(s=><button key={s} onClick={()=>setStatusFilter(s)} className={`px-3 h-11 rounded-xl text-sm font-semibold border-[0.5px] border-black/9 dark:border-white/8 transition-all whitespace-nowrap ${statusFilter===s?'bg-primary text-white border-primary':'bg-card border-primary/40 text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}>{s}</button>)}
           </div>
         )}
       </div>
 
       {viewMode === 'List' ? (
-        <div className="flex-1 overflow-auto min-h-0 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl flex flex-col custom-scrollbar hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="flex-1 overflow-auto min-h-0 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl flex flex-col custom-scrollbar hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="grid grid-cols-12 gap-2 p-4 border-b border-primary/40 bg-muted/50 text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider shrink-0 tracking-[0.04em]">
             <div className="col-span-4">Candidate</div><div className="col-span-3">Position</div><div className="col-span-2">Rating</div><div className="col-span-2">Status</div><div className="col-span-1 text-right">Actions</div>
           </div>
@@ -168,7 +168,7 @@ export default function UnivRecruitment() {
             : filtered.map(c=>(
               <div key={c.id} className="grid grid-cols-12 gap-2 p-4 border-b border-primary/40 hover:bg-muted/30 transition-colors items-center group">
                 <div className="col-span-4 flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-md-full bg-primary/10 text-primary font-semibold flex items-center justify-center shrink-0">{(c.candidate_name||'?').charAt(0).toUpperCase()}</div>
+                  <div className="w-9 h-9 rounded-full bg-primary/10 text-primary font-semibold flex items-center justify-center shrink-0">{(c.candidate_name||'?').charAt(0).toUpperCase()}</div>
                   <div><p className="font-semibold text-sm text-foreground">{c.candidate_name}</p><p className="text-xs text-[#71717a] dark:text-gray-400 flex items-center gap-2 tracking-[0.04em]"><Mail className="w-3 h-3"/> {c.email||'—'}</p></div>
                 </div>
                 <div className="col-span-3 font-medium text-sm text-foreground">{c.position} <span className="text-xs font-normal text-[#71717a] dark:text-gray-400 block tracking-[0.04em]">{c.experience_years} yrs exp</span></div>
@@ -202,11 +202,11 @@ export default function UnivRecruitment() {
                       <div 
                         ref={provided.innerRef}
                         {...provided.droppableProps}
-                        className={`w-80 shrink-0 flex flex-col bg-muted/40 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 transition-colors ${snapshot.isDraggingOver ? 'bg-primary/5 border-primary/40' : ''}`}
+                        className={`w-80 shrink-0 flex flex-col bg-muted/40 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 transition-colors ${snapshot.isDraggingOver ? 'bg-primary/5 border-primary/40' : ''}`}
                       >
                         <div className="p-4 border-b border-primary/20 flex justify-between items-center bg-card rounded-md-t-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                           <h3 className="font-black text-sm uppercase tracking-wider text-foreground tracking-[0.04em]">{stage}</h3>
-                          <span className="bg-primary/10 text-primary text-xs font-semibold px-2 py-0.5 rounded-md-full tracking-[0.04em]">{stageCandidates.length}</span>
+                          <span className="bg-primary/10 text-primary text-xs font-semibold px-2 py-0.5 rounded-full tracking-[0.04em]">{stageCandidates.length}</span>
                         </div>
                         <div className="flex-1 overflow-y-auto p-3 custom-scrollbar flex flex-col gap-3">
                           {stageCandidates.map((c, index) => (
@@ -217,11 +217,11 @@ export default function UnivRecruitment() {
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
                                   onClick={() => openModal(c)}
-                                  className={`bg-card p-4 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm cursor-pointer group hover:border-primary/50 transition-all ${snapshot.isDragging ? 'shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] ring-2 ring-primary scale-105 z-50' : ''}`}
+                                  className={`bg-card p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm cursor-pointer group hover:border-primary/50 transition-all ${snapshot.isDragging ? 'shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] ring-2 ring-primary scale-105 z-50' : ''}`}
                                 >
                                   <div className="flex justify-between items-start mb-3">
                                     <div className="flex items-center gap-2">
-                                      <div className="w-8 h-8 rounded-md-full bg-primary/10 text-primary font-semibold flex items-center justify-center text-xs shrink-0 tracking-[0.04em]">{(c.candidate_name||'?').charAt(0).toUpperCase()}</div>
+                                      <div className="w-8 h-8 rounded-full bg-primary/10 text-primary font-semibold flex items-center justify-center text-xs shrink-0 tracking-[0.04em]">{(c.candidate_name||'?').charAt(0).toUpperCase()}</div>
                                       <div>
                                         <p className="font-semibold text-sm text-foreground line-clamp-1">{c.candidate_name}</p>
                                         <p className="text-[11px] font-medium text-[#71717a] dark:text-gray-400">{c.position}</p>
@@ -251,31 +251,31 @@ export default function UnivRecruitment() {
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
-          <div className="bg-card w-full max-w-2xl rounded-md-2xl flex flex-col max-h-[90vh] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="bg-card w-full max-w-2xl rounded-2xl flex flex-col max-h-[90vh] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0 bg-muted/20">
               <h2 className="text-xl font-black flex items-center gap-2"><UserPlus className="w-5 h-5 text-primary" /> {editingId ? 'Edit Candidate Profile' : 'Add New Candidate'}</h2>
-              <button onClick={closeModal} className="p-2 bg-background hover:bg-muted rounded-md-full text-[#71717a] dark:text-gray-400 transition-colors"><XCircle className="w-5 h-5"/></button>
+              <button onClick={closeModal} className="p-2 bg-background hover:bg-muted rounded-full text-[#71717a] dark:text-gray-400 transition-colors"><XCircle className="w-5 h-5"/></button>
             </div>
             <form onSubmit={save} className="p-5 overflow-y-auto flex-1 custom-scrollbar">
               <div className="grid grid-cols-2 gap-5">
-                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Candidate Name *</label><input required type="text" value={form.candidate_name} onChange={e=>setForm({...form,candidate_name:e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
-                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Position Applied For *</label><input required type="text" value={form.position} onChange={e=>setForm({...form,position:e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
-                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Email Address</label><div className="relative"><Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400"/><input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} className="w-full h-11 pl-9 pr-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div></div>
-                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Phone Number</label><div className="relative"><Phone className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400"/><input type="tel" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} className="w-full h-11 pl-9 pr-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div></div>
-                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Status</label><select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm cursor-pointer">{STAGES.map(s=><option key={s}>{s}</option>)}</select></div>
-                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Source (e.g. LinkedIn)</label><input type="text" value={form.source} onChange={e=>setForm({...form,source:e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
-                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Experience (Years)</label><input type="number" min="0" value={form.experience_years} onChange={e=>setForm({...form,experience_years:Number(e.target.value)})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Candidate Name *</label><input required type="text" value={form.candidate_name} onChange={e=>setForm({...form,candidate_name:e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Position Applied For *</label><input required type="text" value={form.position} onChange={e=>setForm({...form,position:e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Email Address</label><div className="relative"><Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400"/><input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} className="w-full h-11 pl-9 pr-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div></div>
+                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Phone Number</label><div className="relative"><Phone className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400"/><input type="tel" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} className="w-full h-11 pl-9 pr-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div></div>
+                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Status</label><select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm cursor-pointer">{STAGES.map(s=><option key={s}>{s}</option>)}</select></div>
+                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Source (e.g. LinkedIn)</label><input type="text" value={form.source} onChange={e=>setForm({...form,source:e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Experience (Years)</label><input type="number" min="0" value={form.experience_years} onChange={e=>setForm({...form,experience_years:Number(e.target.value)})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
                 
                 <div>
                   <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-2 tracking-[0.04em]">Candidate Rating</label>
                   <StarRating rating={form.rating} onChange={(val) => setForm({...form, rating: val})} />
                 </div>
                 
-                <div className="col-span-2"><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Interview Notes / Links</label><textarea rows="4" value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})} className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none" placeholder="Paste resume link, interviewer feedback, etc."/></div>
+                <div className="col-span-2"><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Interview Notes / Links</label><textarea rows="4" value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})} className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none" placeholder="Paste resume link, interviewer feedback, etc."/></div>
               </div>
               <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-primary/40">
-                <button type="button" onClick={closeModal} className="h-11 px-6 bg-muted rounded-md-xl text-sm font-semibold hover:bg-muted/80 transition-colors">Cancel</button>
-                <button type="submit" className="h-11 px-6 bg-primary text-white rounded-md-xl text-sm font-semibold hover:bg-primary/90 transition-colors shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">{editingId ? 'Update Candidate' : 'Add Candidate'}</button>
+                <button type="button" onClick={closeModal} className="h-11 px-6 bg-muted rounded-xl text-sm font-semibold hover:bg-muted/80 transition-colors">Cancel</button>
+                <button type="submit" className="h-11 px-6 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">{editingId ? 'Update Candidate' : 'Add Candidate'}</button>
               </div>
             </form>
           </div>

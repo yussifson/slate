@@ -88,7 +88,7 @@ export default function UnivRoute() {
 };
 
  return (
- <div className="flex flex-col h-full bg-background overflow-hidden ${view !== 'Default' ? 'hide-default' : ''}">
+ <div className={`flex flex-col h-full bg-background overflow-hidden ${view !== 'Default' ? 'hide-default' : ''}`}>
  <div className="view-header flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
  <div>
  <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">Route Planning</h2>
@@ -109,19 +109,19 @@ export default function UnivRoute() {
  </button>
  ))}
  </div>
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={handleAddRoute} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
+ <button onClick={handleAddRoute} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
  <Plus className="w-4 h-4" /> Plan Route
  </button>
  </div>
  </div>
  </div>
 
- <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
@@ -130,11 +130,12 @@ export default function UnivRoute() {
  placeholder="Search routes..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
 
+ {view === 'Default' && (
  <div className="flex-1 overflow-auto custom-scrollbar p-6">
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {filtered.map((r, idx) => (
@@ -143,11 +144,11 @@ export default function UnivRoute() {
  animate={{ opacity: 1, scale: 1}}
  transition={{ delay: idx * 0.05}}
  key={r.id} 
- className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 hover:border-primary/40 transition-colors flex flex-col h-full group"
+ className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 hover:border-primary/40 transition-colors flex flex-col h-full group"
  >
  <div className="flex justify-between items-start mb-4">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-md-xl bg-primary/10 text-primary flex items-center justify-center">
+ <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
  <Map className="w-5 h-5" />
  </div>
  <div>
@@ -164,11 +165,11 @@ export default function UnivRoute() {
  <button className="opacity-0 group-hover:opacity-100 transition-opacity text-[#71717a] dark:text-gray-400 hover:text-primary"><MoreHorizontal className="w-4 h-4" /></button>
  </div>
 
- <div className="flex-1 bg-muted/30 rounded-md-xl p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 relative">
+ <div className="flex-1 bg-muted/30 rounded-xl p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 relative">
  <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-primary/40 z-0"></div>
  
  <div className="flex items-start gap-3 relative z-10 mb-6">
- <div className="w-4 h-4 rounded-md-full bg-background border-2 border-primary flex-shrink-0 mt-0.5"></div>
+ <div className="w-4 h-4 rounded-full bg-background border-2 border-primary flex-shrink-0 mt-0.5"></div>
  <div>
  <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">Origin</p>
  <p className="text-sm font-medium text-foreground">{r.start_location}</p>
@@ -176,7 +177,7 @@ export default function UnivRoute() {
  </div>
  
  <div className="flex items-start gap-3 relative z-10">
- <div className="w-4 h-4 rounded-md-full bg-primary flex-shrink-0 mt-0.5 flex items-center justify-center">
+ <div className="w-4 h-4 rounded-full bg-primary flex-shrink-0 mt-0.5 flex items-center justify-center">
  <MapPin className="w-2 h-2 text-white" />
  </div>
  <div>
@@ -201,6 +202,10 @@ export default function UnivRoute() {
  </div>
  )}
  </div>
+ )}
+ {view === 'Grid' && <GenericGrid data={routes} />}
+ {view === 'Kanban' && <GenericKanban data={routes} />}
+ {view === 'Dashboard' && <GenericDashboard data={routes} />}
  </div>
  </div>
  );

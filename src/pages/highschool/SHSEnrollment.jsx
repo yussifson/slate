@@ -105,7 +105,7 @@ export default function SHSEnrollment() {
 
  <div className="flex-1 flex flex-col md:flex-row gap-6 overflow-hidden">
  {/* Left Panel: Admitted List */}
- <Card className="w-full md:w-[400px] shrink-0 flex flex-col rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="w-full md:w-[400px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/5">
  <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-3 flex items-center justify-between">
  Ready to Enroll <Badge className="bg-slate-100 text-primary/90">{admittedApplicants.length}</Badge>
@@ -114,7 +114,7 @@ export default function SHSEnrollment() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary dark:text-primary" />
  <Input 
  placeholder="Search admitted students..." 
- className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -132,13 +132,13 @@ export default function SHSEnrollment() {
  <button
  key={app.id}
  onClick={() => setSelectedApplicant(app)}
- className={`w-full text-left p-3 rounded-md-2xl transition-all duration-200 flex items-center gap-3 ${
+ className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
  selectedApplicant?.id === app.id 
  ? 'bg-primary dark:bg-primary text-white -emerald-500/20' 
  : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200'
 }`}
  >
- <div className={`w-10 h-10 rounded-md-full flex items-center justify-center font-semibold shrink-0 ${
+ <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold shrink-0 ${
  selectedApplicant?.id === app.id ? 'bg-white dark:bg-slate-900/40 dark:bg-slate-900/20' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
 }`}>
  <UserCheck className="w-5 h-5" />
@@ -158,7 +158,7 @@ export default function SHSEnrollment() {
  </Card>
 
  {/* Right Panel: Enrollment Form */}
- <Card className="flex-1 flex flex-col rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="flex-1 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {successMsg && (
  <div className="absolute inset-x-0 top-0 bg-primary text-white p-3 text-center text-sm font-semibold animate-in slide-in-from-top flex justify-center items-center gap-2 z-50">
  <CheckCircle className="w-4 h-4" /> {successMsg}
@@ -194,7 +194,7 @@ export default function SHSEnrollment() {
  </label>
  <Input 
  placeholder="e.g. 0010123456"
- className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-md-xl h-12 text-lg font-medium"
+ className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-12 text-lg font-medium"
  value={enrollmentData.indexNumber}
  onChange={(e) => setEnrollmentData({...enrollmentData, indexNumber: e.target.value})}
  />
@@ -207,7 +207,7 @@ export default function SHSEnrollment() {
  <Building className="w-4 h-4" /> Boarding House
  </label>
  <select 
- className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-11 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
  value={enrollmentData.house}
  onChange={(e) => setEnrollmentData({...enrollmentData, house: e.target.value})}
  >
@@ -225,7 +225,7 @@ export default function SHSEnrollment() {
  </label>
  <Input 
  placeholder="e.g. 1 Sci A"
- className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-md-xl h-11"
+ className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
  value={enrollmentData.classRoom}
  onChange={(e) => setEnrollmentData({...enrollmentData, classRoom: e.target.value})}
  />
@@ -236,7 +236,7 @@ export default function SHSEnrollment() {
  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Date of Enrollment</label>
  <Input 
  type="date"
- className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-md-xl h-11"
+ className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
  value={enrollmentData.enrollmentDate}
  onChange={(e) => setEnrollmentData({...enrollmentData, enrollmentDate: e.target.value})}
  />
@@ -247,7 +247,7 @@ export default function SHSEnrollment() {
  <Button 
  onClick={handleEnrollment}
  disabled={isEnrolling || !enrollmentData.house}
- className="rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white px-8 h-12 font-semibold w-full sm:w-auto"
+ className="rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white px-8 h-12 font-semibold w-full sm:w-auto"
  >
  {isEnrolling ? 'Processing...' : (
  <><GraduationCap className="w-5 h-5 mr-2" /> Complete Enrollment</>
@@ -260,7 +260,7 @@ export default function SHSEnrollment() {
  </>
  ) : (
  <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50">
- <div className="w-20 h-20 rounded-md-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-6">
+ <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-6">
  <GraduationCap className="w-10 h-10 text-primary/30" />
  </div>
  <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No Applicant Selected</h3>

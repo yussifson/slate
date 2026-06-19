@@ -62,7 +62,7 @@ export default function PolicyholderPortal() {
  return (
  <div className="space-y-6 max-w-5xl mx-auto">
  {/* Header */}
- <div className="bg-gradient-to-r from-primary/90 to-primary/80 rounded-md-2xl p-6 md:p-8 text-white relative overflow-hidden">
+ <div className="bg-gradient-to-r from-primary/90 to-primary/80 rounded-2xl p-6 md:p-8 text-white relative overflow-hidden">
  <div className="relative z-10">
  <h1 className="text-2xl md:text-3xl font-semibold mb-2 tracking-[-0.02em]">{t("my_coverage_portal", "My Coverage Portal")}</h1>
  <p className="text-primary/10 max-w-xl">{t(
@@ -77,7 +77,7 @@ export default function PolicyholderPortal() {
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
  {/* Left Column (Policies) */}
  <div className="col-span-1 lg:col-span-2 space-y-6">
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 md:p-5 border-b border-primary/40 bg-muted/50 flex justify-between items-center">
  <h3 className="font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><Shield className="w-5 h-5 text-primary" /> {t("active_policies", "Active Policies")}</h3>
  </div>
@@ -123,7 +123,7 @@ export default function PolicyholderPortal() {
 
  {/* Right Column (Claims Info) */}
  <div className="space-y-6">
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <h3 className="font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><FileWarning className="w-5 h-5 text-amber-600" /> {t("claim_center", "Claim Center")}</h3>
  </div>
@@ -147,7 +147,7 @@ export default function PolicyholderPortal() {
  </div>
  <div className="text-right">
  <p className="font-semibold text-xs tracking-[0.04em]">${Number(claim.claimAmount).toLocaleString()}</p>
- <span className={`text-[9px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md-full mt-1 inline-block ${claim.status === 'Paid' || claim.status === 'Approved' ? 'bg-slate-100 text-primary/90' : 'bg-amber-100 text-amber-700'}`}>
+ <span className={`text-[9px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full mt-1 inline-block ${claim.status === 'Paid' || claim.status === 'Approved' ? 'bg-slate-100 text-primary/90' : 'bg-amber-100 text-amber-700'}`}>
  {claim.status}
  </span>
  </div>
@@ -160,7 +160,7 @@ export default function PolicyholderPortal() {
  </div>
  </div>
  
- <div className="bg-gradient-to-br from-card to-muted rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-gradient-to-br from-card to-muted rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CreditCard className="w-8 h-8 text-primary mx-auto mb-2" />
  <h4 className="font-semibold text-sm">{t("need_to_pay_your_premium", "Need to pay your premium?")}</h4>
  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 mb-3 tracking-[0.04em]">{t(
@@ -173,7 +173,7 @@ export default function PolicyholderPortal() {
  </div>
  {showClaimModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <FileWarning className="w-5 h-5 text-red-600"/> {t("file_a_claim", "File a Claim")}
  </h2>

@@ -79,7 +79,7 @@ If no specific filter can be extracted, return an empty conditions array.`
  value={query}
  onChange={(e) => setQuery(e.target.value)}
  placeholder="Ask AI to filter... (e.g. 'Show me pending claims over $5000')"
- className="w-full pl-10 pr-24 py-2.5 bg-card border-2 border-primary/20 rounded-md-xl text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="w-full pl-10 pr-24 py-2.5 bg-card border-2 border-primary/20 rounded-xl text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  disabled={isSearching}
  />
  
@@ -88,7 +88,7 @@ If no specific filter can be extracted, return an empty conditions array.`
  <button 
  type="button" 
  onClick={handleClear}
- className="p-1.5 text-[#71717a] dark:text-gray-400 hover:text-foreground rounded-md-full hover:bg-muted"
+ className="p-1.5 text-[#71717a] dark:text-gray-400 hover:text-foreground rounded-full hover:bg-muted"
  >
  <X className="w-4 h-4" />
  </button>

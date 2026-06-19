@@ -133,7 +133,7 @@ function TabDashboard() {
         <StatCard title="Failed Payments" value={stats?.failedPayments || 0} icon={<XCircle className="w-5 h-5 text-red-500" />} trend="Live Data" alert={(stats?.failedPayments || 0) > 0} />
       </div>
       
-      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-8 h-64 flex items-center justify-center text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-8 h-64 flex items-center justify-center text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <BarChart3 className="w-8 h-8 mr-3 opacity-20" /> MRR Chart Visualization Area (Live data connected)
       </div>
     </div>
@@ -142,7 +142,7 @@ function TabDashboard() {
 
 function StatCard({ title, value, icon, trend, alert}) {
  return (
- <div className={cn("bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-md-xl p-5 ", alert ? "border-red-200 dark:border-red-900" : "border-primary/40")}>
+ <div className={cn("bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-xl p-5 ", alert ? "border-red-200 dark:border-red-900" : "border-primary/40")}>
  <div className="flex justify-between items-start mb-2">
  <div className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{title}</div>
  {icon}
@@ -216,7 +216,7 @@ function TabPlanManager({ queryClient, toast}) {
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="flex justify-between items-center bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 rounded-md-xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex justify-between items-center bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 rounded-xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <p className="text-sm text-[#71717a] dark:text-gray-400">Manage pricing tiers. The <strong>Paystack Plan Code</strong> is critical for synchronization.</p>
  <button onClick={handleAddNew} className="bg-primary text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-primary/90">Add New Plan</button>
  </div>
@@ -230,7 +230,7 @@ function TabPlanManager({ queryClient, toast}) {
  editingId === p.id ? (
  <PlanEditor key={p.id} plan={editForm} setPlan={setEditForm} onSave={handleSave} onCancel={() => setEditingId(null)} isSaving={saveMutation.isPending} />
  ) : (
- <div key={p.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-6 flex flex-col relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={p.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-6 flex flex-col relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
  <button onClick={() => handleEdit(p)} className="p-1.5 bg-muted text-foreground rounded-lg hover:bg-primary hover:text-white transition-colors"><Edit3 className="w-4 h-4" /></button>
  </div>
@@ -296,7 +296,7 @@ function PlanEditor({ plan, setPlan, onSave, onCancel, isSaving}) {
  };
 
  return (
- <div className="bg-card border-2 border-primary rounded-md-xl p-6 flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-2 border-primary rounded-xl p-6 flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="space-y-4 mb-6 flex-1">
  <div className="grid grid-cols-2 gap-4">
  <div>
@@ -400,13 +400,13 @@ function TabCustomerSubscriptions({ setActiveTab, setOverrideCompanyId }) {
 
   return (
     <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 flex gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 flex gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
           <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by company name, ID, or Paystack customer code..." className="w-full h-10 pl-9 pr-4 bg-muted/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:border-primary transition-colors" />
         </div>
       </div>
-      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <table className="w-full text-sm text-left">
           <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
             <tr>
@@ -508,7 +508,7 @@ function TabManualOverrides({ initialTargetCompany }) {
   };
 
   return (
-    <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-2xl mx-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-2xl mx-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <h3 className="text-xl font-semibold mb-4 flex items-center gap-2"><ShieldAlert className="w-5 h-5 text-amber-500" /> Administrative Overrides</h3>
       <p className="text-sm text-[#71717a] dark:text-gray-400 mb-6">Manually adjust a company's subscription status or inject bonus AI credits without charging them via Paystack.</p>
       
@@ -566,7 +566,7 @@ function TabTransactions() {
 
   return (
     <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <table className="w-full text-sm text-left font-mono">
           <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-[#71717a] dark:text-gray-400 font-sans tracking-[0.04em]">
             <tr>
@@ -635,7 +635,7 @@ function TabUsageMonitor() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><Activity className="w-5 h-5 text-primary" /> High Usage Companies</h3>
         <p className="text-sm text-[#71717a] dark:text-gray-400 mb-4">Companies approaching their AI credit limits (Upsell opportunities).</p>
         <div className="space-y-4">
@@ -650,7 +650,7 @@ function TabUsageMonitor() {
              return (
                <div key={m.company_id} className="bg-muted rounded-xl p-4">
                  <div className="flex justify-between font-semibold text-sm mb-2"><span>{m.name}</span> <span className={isHigh ? "text-red-600" : "text-amber-600"}>{m.total_usage} Credits Used</span></div>
-                 <div className="w-full h-2 bg-background rounded-md-full overflow-hidden"><div className={cn("h-full", isHigh ? "bg-red-500/10" : "bg-amber-500")} style={{width: `${percent}%`}}></div></div>
+                 <div className="w-full h-2 bg-background rounded-full overflow-hidden"><div className={cn("h-full", isHigh ? "bg-red-500/10" : "bg-amber-500")} style={{width: `${percent}%`}}></div></div>
                </div>
              )
           })}
@@ -665,7 +665,7 @@ function TabUsageMonitor() {
 // ----------------------------------------------------
 function TabWebhooks() {
  return (
- <div className="bg-slate-950 text-slate-300 rounded-md-xl p-6 font-mono text-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
+ <div className="bg-slate-950 text-slate-300 rounded-xl p-6 font-mono text-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
  <div className="flex items-center justify-between mb-6 border-b border-primary/40 pb-4">
  <h3 className="text-emerald-400 font-semibold flex items-center gap-2"><Plug className="w-5 h-5" /> Webhook Listener Status</h3>
  <span className="px-2 py-1 bg-emerald-900 text-emerald-400 rounded-lg text-xs tracking-[0.04em]">LISTENING : PORT 54321</span>

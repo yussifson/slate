@@ -151,7 +151,7 @@ export default function ClientChecklistManager({ caseData, client, user }) {
                     <button
                       key={item}
                       onClick={() => setForm(f => ({ ...f, title: t }))}
-                      className="text-[11px] px-2 py-1 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-muted hover:bg-muted/80 text-[#71717a] dark:text-gray-400 transition-colors"
+                      className="text-[11px] px-2 py-1 rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-muted hover:bg-muted/80 text-[#71717a] dark:text-gray-400 transition-colors"
                     >
                       {t}
                     </button>

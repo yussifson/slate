@@ -98,7 +98,7 @@ export default function VEquipmentInventory() {
  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
  <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 dark:from-primary/70 dark:to-white bg-clip-text text-transparent flex items-center gap-3 tracking-[-0.02em]">
- <div className="p-2 bg-slate-100 dark:bg-slate-500 rounded-md-xl text-primary dark:text-primary/70">
+ <div className="p-2 bg-slate-100 dark:bg-slate-500 rounded-xl text-primary dark:text-primary/70">
  <Package className="w-6 h-6" />
  </div>
  Equipment Inventory
@@ -111,21 +111,21 @@ export default function VEquipmentInventory() {
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <Input 
  placeholder="Search equipment..." 
- className="pl-9 w-[250px] bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 focus-visible:ring-primary rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-9 w-[250px] bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 focus-visible:ring-primary rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={e => setSearchQuery(e.target.value)}
  />
  </div>
- <Button onClick={() => openModal()} className="gap-2 bg-primary hover:bg-primary/90 text-white rounded-md-xl -indigo-200 transition-all hover:scale-105">
+ <Button onClick={() => openModal()} className="gap-2 bg-primary hover:bg-primary/90 text-white rounded-xl -indigo-200 transition-all hover:scale-105">
  <Plus className="w-4 h-4" /> Add Equipment
  </Button>
  </div>
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- <Card className="bg-white dark:bg-slate-900/40/60 dark:bg-slate-900/60 backdrop-blur-xl border-none rounded-md-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="bg-white dark:bg-slate-900/40/60 dark:bg-slate-900/60 backdrop-blur-xl border-none rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6 flex items-center gap-4">
- <div className="w-14 h-14 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70">
+ <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70">
  <Settings className="w-7 h-7" />
  </div>
  <div>
@@ -134,9 +134,9 @@ export default function VEquipmentInventory() {
  </div>
  </CardContent>
  </Card>
- <Card className="bg-white dark:bg-slate-900/40/60 dark:bg-slate-900/60 backdrop-blur-xl border-none rounded-md-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="bg-white dark:bg-slate-900/40/60 dark:bg-slate-900/60 backdrop-blur-xl border-none rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6 flex items-center gap-4">
- <div className="w-14 h-14 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70">
+ <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70">
  <Package className="w-7 h-7" />
  </div>
  <div>
@@ -145,9 +145,9 @@ export default function VEquipmentInventory() {
  </div>
  </CardContent>
  </Card>
- <Card className="bg-white dark:bg-slate-900/40/60 dark:bg-slate-900/60 backdrop-blur-xl border-none rounded-md-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="bg-white dark:bg-slate-900/40/60 dark:bg-slate-900/60 backdrop-blur-xl border-none rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6 flex items-center gap-4">
- <div className="w-14 h-14 rounded-md-2xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
+ <div className="w-14 h-14 rounded-2xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
  <Wrench className="w-7 h-7" />
  </div>
  <div>
@@ -158,7 +158,7 @@ export default function VEquipmentInventory() {
  </Card>
  </div>
 
- <Card className="bg-white dark:bg-slate-900/40/80 dark:bg-slate-900/80 backdrop-blur-xl border-none rounded-md-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Card className="bg-white dark:bg-slate-900/40/80 dark:bg-slate-900/80 backdrop-blur-xl border-none rounded-3xl ring-1 ring-slate-200/50 dark:ring-slate-800 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <ScrollArea className="h-[500px]">
  {loading ? (
  <div className="p-12 text-center text-[#71717a] dark:text-gray-400">Loading equipment...</div>
@@ -173,7 +173,7 @@ export default function VEquipmentInventory() {
  {filtered.map(item => (
  <div key={item.id} className="flex items-center justify-between p-5 hover:bg-slate-50/50 dark:bg-transparent dark:hover:bg-slate-800/50 transition-colors group">
  <div className="flex items-center gap-5">
- <div className="w-12 h-12 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70 font-semibold shrink-0">
+ <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary/70 font-semibold shrink-0">
  <Settings className="w-6 h-6" />
  </div>
  <div>
@@ -211,24 +211,24 @@ export default function VEquipmentInventory() {
  </Card>
 
  <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
- <DialogContent className="sm:max-w-[425px] rounded-md-3xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-none ring-1 ring-slate-200/50 dark:ring-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <DialogContent className="sm:max-w-[425px] rounded-3xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-none ring-1 ring-slate-200/50 dark:ring-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <DialogHeader>
  <DialogTitle className="text-xl font-semibold">{currentRecord ? 'Edit Equipment' : 'Add Equipment'}</DialogTitle>
  </DialogHeader>
  <div className="grid gap-4 py-4">
  <div className="space-y-2">
  <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Name / Model</label>
- <Input className="rounded-md-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="e.g. Bosch Hammer Drill" />
+ <Input className="rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="e.g. Bosch Hammer Drill" />
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
  <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Serial Number</label>
- <Input className="rounded-md-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none" value={formData.serial} onChange={e => setFormData({...formData, serial: e.target.value})} placeholder="SN-12345" />
+ <Input className="rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none" value={formData.serial} onChange={e => setFormData({...formData, serial: e.target.value})} placeholder="SN-12345" />
  </div>
  <div className="space-y-2">
  <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Status</label>
  <select 
- className="flex h-10 w-full items-center justify-between rounded-md-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 px-3 py-2 text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+ className="flex h-10 w-full items-center justify-between rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 px-3 py-2 text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
  value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})}
  >
  <option value="Available">Available</option>
@@ -241,12 +241,12 @@ export default function VEquipmentInventory() {
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
  <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Category</label>
- <Input className="rounded-md-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} placeholder="Power Tools" />
+ <Input className="rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-none" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} placeholder="Power Tools" />
  </div>
  <div className="space-y-2">
  <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300">Condition</label>
  <select 
- className="flex h-10 w-full items-center justify-between rounded-md-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 px-3 py-2 text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+ className="flex h-10 w-full items-center justify-between rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 px-3 py-2 text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
  value={formData.condition} onChange={e => setFormData({...formData, condition: e.target.value})}
  >
  <option value="New">New</option>
@@ -258,8 +258,8 @@ export default function VEquipmentInventory() {
  </div>
  </div>
  <DialogFooter>
- <Button variant="outline" className="rounded-md-xl" onClick={() => setIsModalOpen(false)}>Cancel</Button>
- <Button className="rounded-md-xl bg-primary hover:bg-primary/90 text-white" onClick={handleSave}>Save Record</Button>
+ <Button variant="outline" className="rounded-xl" onClick={() => setIsModalOpen(false)}>Cancel</Button>
+ <Button className="rounded-xl bg-primary hover:bg-primary/90 text-white" onClick={handleSave}>Save Record</Button>
  </DialogFooter>
  </DialogContent>
  </Dialog>

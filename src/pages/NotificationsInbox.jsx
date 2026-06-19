@@ -152,7 +152,7 @@ export default function NotificationsInbox() {
         </div>
 
         {/* Toolbar */}
-        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm mb-6 flex flex-col sm:flex-row items-center justify-between p-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm mb-6 flex flex-col sm:flex-row items-center justify-between p-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="flex w-full sm:w-auto p-1 bg-muted/50 rounded-xl">
             <button 
               onClick={() => setActiveTab('all')}
@@ -183,14 +183,14 @@ export default function NotificationsInbox() {
           <AnimatePresence>
             {isLoading ? (
               <div className="py-20 flex justify-center">
-                <div className="animate-spin rounded-md-full h-8 w-8 border-b-2 border-primary"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
               </div>
             ) : filteredNotifications.length === 0 ? (
               <motion.div 
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                className="py-24 flex flex-col items-center justify-center text-center bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+                className="py-24 flex flex-col items-center justify-center text-center bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
               >
-                <div className="w-20 h-20 bg-muted rounded-md-full flex items-center justify-center mb-6">
+                <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-6">
                   <Bell className="w-10 h-10 text-[#71717a] dark:text-gray-400 opacity-50" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2 text-foreground">Inbox Zero</h3>
@@ -213,12 +213,12 @@ export default function NotificationsInbox() {
                       if (notification.related_id) window.location.href = notification.related_id;
                     }}
                     className={cn(
-                      "group flex gap-4 p-5 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all cursor-pointer",
+                      "group flex gap-4 p-5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all cursor-pointer",
                       isRead ? "bg-card border-[0.5px] border-black/9 dark:border-white/8 hover:border-primary/30 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm" : "bg-primary/5 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] ring-1 ring-primary/10 hover:bg-primary/10"
                     )}
                   >
                     <div className="shrink-0">
-                      <div className={cn("w-12 h-12 rounded-md-full flex items-center justify-center", isRead ? "bg-muted" : "bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm")}>
+                      <div className={cn("w-12 h-12 rounded-full flex items-center justify-center", isRead ? "bg-muted" : "bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm")}>
                         {getIcon(notification.type)}
                       </div>
                     </div>
@@ -229,10 +229,10 @@ export default function NotificationsInbox() {
                           <h4 className={cn("text-base font-semibold truncate", isRead ? "text-foreground" : "text-primary")}>
                             {notification.title}
                           </h4>
-                          {!isRead && <span className="flex shrink-0 w-2 h-2 rounded-md-full bg-primary" />}
+                          {!isRead && <span className="flex shrink-0 w-2 h-2 rounded-full bg-primary" />}
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
-                          <span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 flex items-center gap-2.5 bg-muted px-2.5 py-1 rounded-md-full tracking-[0.04em]">
+                          <span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 flex items-center gap-2.5 bg-muted px-2.5 py-1 rounded-full tracking-[0.04em]">
                             <Clock className="w-3.5 h-3.5" />
                             {formatTime(notification.created_at || notification.created_date)}
                           </span>

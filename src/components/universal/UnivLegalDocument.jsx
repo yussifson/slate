@@ -80,13 +80,13 @@ export default function UnivLegalDocument() {
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Manage contracts, pleadings, affidavits, and case evidence.</p>
  </div>
  <div className="flex gap-3">
- <button onClick={handleUpload} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
+ <button onClick={handleUpload} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
  <Upload className="w-4 h-4" /> Upload Document
  </button>
  </div>
  </div>
 
- <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
@@ -95,7 +95,7 @@ export default function UnivLegalDocument() {
  placeholder="Search documents..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -108,10 +108,10 @@ export default function UnivLegalDocument() {
  animate={{ opacity: 1, scale: 1}}
  transition={{ delay: idx * 0.05}}
  key={d.id} 
- className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 hover:border-primary/40 transition-colors group flex flex-col h-full cursor-pointer"
+ className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 hover:border-primary/40 transition-colors group flex flex-col h-full cursor-pointer"
  >
  <div className="flex justify-between items-start mb-4">
- <div className="w-10 h-10 rounded-md-xl bg-primary/10 text-primary flex items-center justify-center">
+ <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
  <FileSignature className="w-5 h-5" />
  </div>
  <button className="opacity-0 group-hover:opacity-100 transition-opacity text-[#71717a] dark:text-gray-400 hover:text-primary"><MoreHorizontal className="w-4 h-4" /></button>

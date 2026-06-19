@@ -490,14 +490,14 @@ export default function Integrations() {
  </div>
  </div>
  {/* Top Filter Bar */}
- <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-slate-900/50 dark:backdrop-blur-xl rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 p-4 flex flex-col md:flex-row gap-4 items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-slate-900/50 dark:backdrop-blur-xl rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 p-4 flex flex-col md:flex-row gap-4 items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 hide-scrollbar">
  {categories.map(cat => {
  return (
  <button
  key={cat}
  onClick={() => setActiveCategory(cat)}
- className={`px-5 py-2 rounded-md-full text-sm font-semibold whitespace-nowrap transition-all ${
+ className={`px-5 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all ${
  activeCategory === cat 
  ? 'bg-primary text-white -emerald-600/20' 
  : 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 hover:bg-slate-100 dark:hover:bg-slate-700'
@@ -514,7 +514,7 @@ export default function Integrations() {
  placeholder="Search apps or features..." 
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- className="pl-10 h-11 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 border-primary/40 dark:border-primary/40 text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white placeholder:text-slate-400 rounded-md-xl w-full focus:bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:focus:bg-slate-800 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="pl-10 h-11 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 border-primary/40 dark:border-primary/40 text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white placeholder:text-slate-400 rounded-xl w-full focus:bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:focus:bg-slate-800 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  </div>
@@ -540,7 +540,7 @@ export default function Integrations() {
  return (
  <div 
  key={app.id} 
- className={`bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-slate-900 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 flex flex-col overflow-hidden ${
+ className={`bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-slate-900 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 flex flex-col overflow-hidden ${
  isConnected 
  ? 'border-primary -emerald-500/10 ring-1 ring-primary/20' 
  : 'border-primary/40 dark:border-primary/40 hover:border-primary/40 dark:hover:border-primary/40 hover:-translate-y-1'
@@ -548,7 +548,7 @@ export default function Integrations() {
  >
  <div className="p-6 sm:p-7 flex-1">
  <div className="flex justify-between items-start mb-6">
- <div className="w-16 h-16 rounded-md-2xl bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center p-3 group-hover:scale-105 transition-transform hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-16 h-16 rounded-2xl bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center p-3 group-hover:scale-105 transition-transform hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <img 
  src={app.logo} 
  alt={app.name} 
@@ -560,12 +560,12 @@ export default function Integrations() {
  />
  </div>
  {isConnected && (
- <Badge className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 border-primary/20 dark:border-primary/20 font-extrabold gap-2.5 px-3 py-1.5 rounded-md-full ">
+ <Badge className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 border-primary/20 dark:border-primary/20 font-extrabold gap-2.5 px-3 py-1.5 rounded-full ">
  <CheckCircle2 className="w-4 h-4" /> {t("connected", "Connected")}
  </Badge>
  )}
  {!isConnected && app.popular && (
- <Badge variant="outline" className="text-xs font-semibold text-primary dark:text-primary/70 border-primary/20 dark:border-primary/20 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-100 px-3 py-1 rounded-md-full tracking-[0.04em]">
+ <Badge variant="outline" className="text-xs font-semibold text-primary dark:text-primary/70 border-primary/20 dark:border-primary/20 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-100 px-3 py-1 rounded-full tracking-[0.04em]">
  {t("popular", "Popular")}
  </Badge>
  )}
@@ -592,7 +592,7 @@ export default function Integrations() {
  variant="secondary" 
  disabled={isLoading}
  onClick={() => handleTestSync(app)}
- className="h-10 px-4 rounded-md-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 hover:bg-slate-100 dark:hover:bg-primary/20 font-semibold transition-colors "
+ className="h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 hover:bg-slate-100 dark:hover:bg-primary/20 font-semibold transition-colors "
  >
  {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Test Sync"}
  </Button>
@@ -602,7 +602,7 @@ export default function Integrations() {
  variant="secondary" 
  disabled={isLoading}
  onClick={() => handleTestFeature(app)}
- className="h-10 px-4 rounded-md-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 hover:bg-slate-100 dark:hover:bg-primary/20 font-semibold transition-colors "
+ className="h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 hover:bg-slate-100 dark:hover:bg-primary/20 font-semibold transition-colors "
  >
  {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Test Feature"}
  </Button>
@@ -611,7 +611,7 @@ export default function Integrations() {
  variant="outline" 
  disabled={isLoading}
  onClick={() => handleDisconnect(app)}
- className="h-10 px-4 rounded-md-xl border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-transparent text-slate-700 dark:text-slate-300 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10/10 hover:border-red-200 dark:hover:border-red-500/20 transition-colors font-semibold  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="h-10 px-4 rounded-xl border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-transparent text-slate-700 dark:text-slate-300 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10/10 hover:border-red-200 dark:hover:border-red-500/20 transition-colors font-semibold  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Disconnect"}
  </Button>
@@ -620,7 +620,7 @@ export default function Integrations() {
  <Button 
  disabled={isLoading}
  onClick={() => handleConnect(app)}
- className="h-10 px-6 rounded-md-xl bg-primary hover:bg-primary text-white font-semibold -emerald-600/20 transition-all hover:translate-y-[-1px]"
+ className="h-10 px-6 rounded-xl bg-primary hover:bg-primary text-white font-semibold -emerald-600/20 transition-all hover:translate-y-[-1px]"
  >
  {isLoading ? (
  <Loader2 className="w-4 h-4 animate-spin" />
@@ -638,8 +638,8 @@ export default function Integrations() {
  </div>
  )}
  {!initialLoading && filteredApps.length === 0 && (
- <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-dashed hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800/50 rounded-md-full flex items-center justify-center mb-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
+ <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-dashed hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
  <Search className="w-8 h-8 text-slate-400" />
  </div>
  <h3 className="text-xl font-extrabold text-slate-900 dark:text-slate-100 dark:text-slate-100 mb-2">{t("no_apps_found", "No apps found")}</h3>
@@ -650,7 +650,7 @@ export default function Integrations() {
  </div>
  )}
  <Dialog open={!!modalApp} onOpenChange={(open) => !open && setModalApp(null)}>
- <DialogContent className="max-w-md bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-md-2xl p-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <DialogContent className="max-w-md bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-2xl p-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <DialogHeader>
  <DialogTitle className="text-xl font-semibold text-slate-950 dark:text-white">
  Connect {modalApp?.name}

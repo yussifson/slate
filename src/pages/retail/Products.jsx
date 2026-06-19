@@ -102,7 +102,7 @@ export default function Products() {
  <RetailStatCard label="Total Items in Stock" value={products.reduce((a, b) => a + b.stock, 0)} icon={Package} />
  </div>
 
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -155,7 +155,7 @@ export default function Products() {
  </td>
  <td className="px-6 py-4 text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{suppliers.find(s => s.id === p.supplierId)?.name || 'None'}</td>
  <td className="px-6 py-4 text-center">
- <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-md-full uppercase tracking-wider ${p.stock > 0 ? 'bg-slate-100 text-primary/90' : 'bg-red-100 text-red-700'}`}>{p.status}</span>
+ <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider ${p.stock > 0 ? 'bg-slate-100 text-primary/90' : 'bg-red-100 text-red-700'}`}>{p.status}</span>
  </td>
  <td className="px-6 py-4">
  <p className="text-sm font-medium text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{p.createdBy}</p>
@@ -175,7 +175,7 @@ export default function Products() {
 
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editingId ? 'Edit Product' : 'Add Product'}</h2>
  <div className="space-y-3">
  <div><label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Name</label><Input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value})} className="mt-1" /></div>

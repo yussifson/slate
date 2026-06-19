@@ -45,7 +45,7 @@ export default function OnlineSubscriptions() {
 
  {/* Annual Plan */}
  <div className="bg-[var(--primary)] rounded-md-[var(--radius-xl)] p-8 relative flex flex-col text-white transform md:-translate-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-[var(--primary)]">
- <div className="absolute top-0 right-0 bg-[var(--color-warning)] text-[var(--color-warning-foreground)] text-xs font-semibold px-3 py-1 rounded-md-bl-[var(--radius-lg)] rounded-md-tr-[var(--radius-xl)] uppercase tracking-wider tracking-[0.04em]">
+ <div className="absolute top-0 right-0 bg-[var(--color-warning)] text-[var(--color-warning-foreground)] text-xs font-semibold px-3 py-1 rounded-bl-[var(--radius-lg)] rounded-tr-[var(--radius-xl)] uppercase tracking-wider tracking-[0.04em]">
  Best Value
  </div>
  <h2 className="text-2xl font-semibold font-display mb-2 tracking-[-0.02em]">Annually</h2>

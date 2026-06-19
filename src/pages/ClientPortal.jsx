@@ -21,7 +21,7 @@ import PaymentModal from "@/components/portal/PaymentModal";
 
 function StatCard({ icon: IconComp, label, value, color }) {
   return (
-    <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color}`}>
         <IconComp className="w-5 h-5" />
       </div>
@@ -134,7 +134,7 @@ export default function ClientPortal() {
   if (!client) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center">
-        <div className="w-16 h-16 rounded-md-full bg-muted flex items-center justify-center">
+        <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
           <Scale className="w-8 h-8 text-[#71717a] dark:text-gray-400" />
         </div>
         <div>
@@ -153,9 +153,9 @@ export default function ClientPortal() {
   return (
     <div className="space-y-6">
       {/* Welcome banner */}
-      <div className="bg-gradient-to-r from-primary to-primary/80 rounded-md-xl p-5 text-white">
+      <div className="bg-gradient-to-r from-primary to-primary/80 rounded-xl p-5 text-white">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-md-full bg-white dark:bg-slate-900/40/20 flex items-center justify-center text-lg font-semibold hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="w-12 h-12 rounded-full bg-white dark:bg-slate-900/40/20 flex items-center justify-center text-lg font-semibold hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             {client.name?.[0]?.toUpperCase()}
           </div>
           <div>
@@ -191,7 +191,7 @@ export default function ClientPortal() {
 
         {/* Cases tab */}
         <TabsContent value="cases" className="mt-4">
-          <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             {cases.length === 0 ? (
               <div className="p-10 text-center text-sm text-[#71717a] dark:text-gray-400">{t("no", "No")} {getTerm(user?.company_industry, 'cases').toLowerCase()} {t("found", "found")}</div>
             ) : cases.map(c => {
@@ -227,13 +227,13 @@ export default function ClientPortal() {
 
         {/* Hearings tab */}
         <TabsContent value="hearings" className="mt-4">
-          <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             {upcomingHearings.length === 0 ? (
               <div className="p-10 text-center text-sm text-[#71717a] dark:text-gray-400">{t("no_upcoming_appointments", "No upcoming appointments")}</div>
             ) : upcomingHearings.map(h => {
               return (
                 <div key={h.id} className="p-4 flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-md-xl bg-slate-100 flex flex-col items-center justify-center shrink-0">
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 flex flex-col items-center justify-center shrink-0">
                     <span className="text-[9px] font-semibold text-primary leading-none">{format(new Date(h.date), "MMM")}</span>
                     <span className="text-lg font-semibold text-primary leading-none">{format(new Date(h.date), "d")}</span>
                   </div>
@@ -256,7 +256,7 @@ export default function ClientPortal() {
               <Upload className="w-4 h-4" /> {t("upload_document", "Upload Document")}
             </Button>
           </div>
-          <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             {sharedDocs.length === 0 ? (
               <div className="p-10 text-center text-sm text-[#71717a] dark:text-gray-400">{t("no_documents_shared_with_you_y", "No documents shared with you yet")}</div>
             ) : sharedDocs.map(doc => {
@@ -286,7 +286,7 @@ export default function ClientPortal() {
 
         {/* Invoices tab */}
         <TabsContent value="invoices" className="mt-4">
-          <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             {invoices.length === 0 ? (
               <div className="p-10 text-center text-sm text-[#71717a] dark:text-gray-400">{t("no_invoices_found", "No invoices found")}</div>
             ) : invoices.map(inv => {
@@ -331,7 +331,7 @@ export default function ClientPortal() {
         {/* Messages tab */}
         <TabsContent value="messages" className="mt-4">
           {cases.length === 0 ? (
-            <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-10 text-center text-sm text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-10 text-center text-sm text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               {t("no", "No")} {getTerm(user?.company_industry, 'cases').toLowerCase()} {t("found_to_message_about", "found to message about")}
             </div>
           ) : (
@@ -344,7 +344,7 @@ export default function ClientPortal() {
                         key={c.id}
                         onClick={() => setSelectedCase(c)}
                         className={cn(
-                          "text-xs px-3 py-1.5 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 transition-colors",
+                          "text-xs px-3 py-1.5 rounded-full border-[0.5px] border-black/9 dark:border-white/8 transition-colors",
                           selectedCase?.id === c.id || (!selectedCase && c.id === cases[0].id)
                             ? "bg-primary text-white border-primary"
                             : "bg-card border-primary/40 text-foreground hover:bg-muted"

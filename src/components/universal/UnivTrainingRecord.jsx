@@ -127,16 +127,16 @@ export default function UnivTrainingRecord() {
       <div className="view-header flex items-center justify-between flex-wrap gap-4 shrink-0">
         <div>
           <h1 className="text-2xl font-black text-foreground flex items-center gap-3 tracking-[-0.02em]">
-            <span className="p-2.5 rounded-md-xl bg-primary/10 text-primary"><GraduationCap className="w-6 h-6" /></span>
+            <span className="p-2.5 rounded-xl bg-primary/10 text-primary"><GraduationCap className="w-6 h-6" /></span>
             Training & Certifications
           </h1>
           <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1 ml-0.5">Track employee compliance, certifications, and upskilling.</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-xl text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 transition-all active:scale-95">
+          <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 transition-all active:scale-95">
             Export CSV
           </button>
-          <button onClick={openAdd} className="h-10 px-5 bg-primary text-white rounded-md-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 active:scale-95 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">
+          <button onClick={openAdd} className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 active:scale-95 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">
             <Plus className="w-4 h-4" /> Add Record
           </button>
         </div>
@@ -146,7 +146,7 @@ export default function UnivTrainingRecord() {
       <div className="flex flex-col sm:flex-row gap-4 shrink-0 justify-between items-start sm:items-center">
         <div className="relative w-full max-w-sm shrink-0">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400 pointer-events-none" />
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search training records..." className="w-full h-11 pl-9 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search training records..." className="w-full h-11 pl-9 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
         </div>
         
         {!loading && records.length > 0 && (
@@ -171,7 +171,7 @@ export default function UnivTrainingRecord() {
       {loading ? (
         <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
       ) : (
-        <div className="flex-1 overflow-auto rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card custom-scrollbar hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="flex-1 overflow-auto rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card custom-scrollbar hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <table className="w-full text-sm min-w-[900px]">
             <thead className="border-b border-primary/40 bg-muted/40 sticky top-0 z-10">
               <tr>
@@ -235,16 +235,16 @@ export default function UnivTrainingRecord() {
       {/* Modal Form */}
       {modal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-card w-full max-w-2xl rounded-md-2xl flex flex-col border-[0.5px] border-black/9 dark:border-white/8 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-2xl max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-card w-full max-w-2xl rounded-2xl flex flex-col border-[0.5px] border-black/9 dark:border-white/8 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-2xl max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <div className="p-5 border-b flex justify-between items-center bg-muted/20 shrink-0">
               <h2 className="text-xl font-black flex items-center gap-2"><GraduationCap className="w-5 h-5 text-primary" /> {editId ? 'Edit Training Record' : 'Add Training Record'}</h2>
-              <button onClick={closeModal} className="p-2 hover:bg-muted rounded-md-full transition-colors"><XCircle className="w-5 h-5 text-[#71717a] dark:text-gray-400" /></button>
+              <button onClick={closeModal} className="p-2 hover:bg-muted rounded-full transition-colors"><XCircle className="w-5 h-5 text-[#71717a] dark:text-gray-400" /></button>
             </div>
             
             <form onSubmit={handleSave} className="p-5 overflow-y-auto custom-scrollbar flex flex-col gap-4">
               <div>
                 <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Employee *</label>
-                <select required value={form.employee_name} onChange={e => setForm({...form, employee_name: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm appearance-none cursor-pointer">
+                <select required value={form.employee_name} onChange={e => setForm({...form, employee_name: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm appearance-none cursor-pointer">
                   <option value="">-- Select Employee --</option>
                   {employees.map(emp => <option key={emp.id} value={emp.id}>{emp.first_name} {emp.last_name}</option>)}
                 </select>
@@ -253,15 +253,15 @@ export default function UnivTrainingRecord() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
                   <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Training / Course Title *</label>
-                  <input required type="text" value={form.training_name} onChange={e => setForm({...form, training_name: e.target.value})} placeholder="e.g. Workplace Safety 101" className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm" />
+                  <input required type="text" value={form.training_name} onChange={e => setForm({...form, training_name: e.target.value})} placeholder="e.g. Workplace Safety 101" className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm" />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Provider / Institution</label>
-                  <input type="text" value={form.provider} onChange={e => setForm({...form, provider: e.target.value})} placeholder="e.g. Coursera, Internal" className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm" />
+                  <input type="text" value={form.provider} onChange={e => setForm({...form, provider: e.target.value})} placeholder="e.g. Coursera, Internal" className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm" />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Training Type</label>
-                  <select value={form.training_type} onChange={e => setForm({...form, training_type: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm cursor-pointer">
+                  <select value={form.training_type} onChange={e => setForm({...form, training_type: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm cursor-pointer">
                     {["Compliance", "Technical Skills", "Soft Skills", "Leadership", "Safety", "Onboarding", "Other"].map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
@@ -270,31 +270,31 @@ export default function UnivTrainingRecord() {
               <div className="grid grid-cols-2 gap-4 mt-2">
                 <div>
                   <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Start Date</label>
-                  <input type="date" value={form.start_date} onChange={e => setForm({...form, start_date: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm" />
+                  <input type="date" value={form.start_date} onChange={e => setForm({...form, start_date: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm" />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Completion Date</label>
-                  <input type="date" value={form.completion_date} onChange={e => setForm({...form, completion_date: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm" />
+                  <input type="date" value={form.completion_date} onChange={e => setForm({...form, completion_date: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm" />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Score / Grade</label>
-                  <input type="text" value={form.score} onChange={e => setForm({...form, score: e.target.value})} placeholder="e.g. 95%, Pass, A" className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm" />
+                  <input type="text" value={form.score} onChange={e => setForm({...form, score: e.target.value})} placeholder="e.g. 95%, Pass, A" className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm" />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Status</label>
-                  <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm cursor-pointer">
+                  <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm cursor-pointer">
                     {Object.keys(STATUS_COLORS).map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
                 <div className="col-span-2">
                   <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Certificate URL / Proof</label>
-                  <input type="url" value={form.certificate_url} onChange={e => setForm({...form, certificate_url: e.target.value})} placeholder="https://..." className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm" />
+                  <input type="url" value={form.certificate_url} onChange={e => setForm({...form, certificate_url: e.target.value})} placeholder="https://..." className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm" />
                 </div>
               </div>
 
               <div className="flex justify-end gap-3 mt-4 pt-5 border-t shrink-0">
-                <button type="button" onClick={closeModal} className="h-11 px-6 bg-muted rounded-md-xl text-sm font-semibold hover:bg-muted/80 transition-colors">Cancel</button>
-                <button type="submit" disabled={saving} className="h-11 px-6 bg-primary text-white rounded-md-xl text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2">
+                <button type="button" onClick={closeModal} className="h-11 px-6 bg-muted rounded-xl text-sm font-semibold hover:bg-muted/80 transition-colors">Cancel</button>
+                <button type="submit" disabled={saving} className="h-11 px-6 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2">
                   {saving && <Loader2 className="w-4 h-4 animate-spin" />}
                   {editId ? 'Save Changes' : 'Add Record'}
                 </button>

@@ -43,7 +43,7 @@ export default function DynamicWorkflow({ record, moduleDef, onStatusChange}) {
  return (
  <React.Fragment key={step}>
  <div className="flex flex-col items-center">
- <div className={`w-8 h-8 rounded-md-full flex items-center justify-center text-xs font-semibold transition-colors
+ <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold transition-colors
  ${isCompleted ? 'bg-muted text-primary' : 
  isCurrent ? 'bg-primary text-white ring-2 ring-primary/20' : 
  'bg-muted text-[#71717a] dark:text-gray-400'}`}>

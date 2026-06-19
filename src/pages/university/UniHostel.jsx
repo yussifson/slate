@@ -99,7 +99,7 @@ export default function UniHostel() {
  ) : allocatedStudents.map((s, i) => (
  <div key={i} className="flex justify-between items-center p-3 bg-[var(--color-surface-1)] rounded-md-[var(--radius-md)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  <div className="flex items-center gap-3">
- <div className="w-8 h-8 rounded-md-full bg-[var(--primary)] text-white flex items-center justify-center text-xs font-semibold tracking-[0.04em]">{s.name?.substring(0, 2).toUpperCase()}</div>
+ <div className="w-8 h-8 rounded-full bg-[var(--primary)] text-white flex items-center justify-center text-xs font-semibold tracking-[0.04em]">{s.name?.substring(0, 2).toUpperCase()}</div>
  <span className="font-medium text-[var(--color-text-primary)]">{s.name}</span>
  </div>
  <div className="text-right">

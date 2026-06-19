@@ -189,7 +189,7 @@ export default function Paywall() {
  </div>
  {/* Main Panel */}
  <div className="max-w-6xl mx-auto w-full text-center my-12">
- <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-md-full bg-amber-50 border-[0.5px] border-black/9 dark:border-white/8 border-amber-100 text-amber-800 text-xs font-semibold uppercase tracking-wider mb-6 animate-pulse tracking-[0.04em]">
+ <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full bg-amber-50 border-[0.5px] border-black/9 dark:border-white/8 border-amber-100 text-amber-800 text-xs font-semibold uppercase tracking-wider mb-6 animate-pulse tracking-[0.04em]">
  <Sparkles className="w-3.5 h-3.5" />
  {t("subscription_required", "Subscription Required")}
  </div>
@@ -211,12 +211,12 @@ export default function Paywall() {
  return (
  <div 
  key={idx}
- className={`bg-white dark:bg-slate-900/40 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl p-8 flex flex-col justify-between transition-all duration-300 relative ${
+ className={`bg-white dark:bg-slate-900/40 border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-8 flex flex-col justify-between transition-all duration-300 relative ${
  p.popular ? 'border-primary ' : 'border-primary/40'
 }`}
  >
  {p.popular && (
- <div className="absolute top-0 right-1/2 translate-x-1/2 -translate-y-1/2 bg-primary text-white text-[9px] font-semibold tracking-wider uppercase py-1 px-3 rounded-md-full tracking-[0.04em]">
+ <div className="absolute top-0 right-1/2 translate-x-1/2 -translate-y-1/2 bg-primary text-white text-[9px] font-semibold tracking-wider uppercase py-1 px-3 rounded-full tracking-[0.04em]">
  {t("recommended", "Recommended")}
  </div>
  )}
@@ -246,7 +246,7 @@ export default function Paywall() {
  <Button 
  onClick={() => handleSubscribe(p)}
  disabled={loadingPlan !== null}
- className={`w-full py-5 rounded-md-xl font-semibold text-sm ${
+ className={`w-full py-5 rounded-xl font-semibold text-sm ${
  p.popular 
  ? 'bg-primary hover:bg-primary/95 text-white' 
  : 'bg-slate-950 hover:bg-slate-900 text-white'
@@ -268,7 +268,7 @@ export default function Paywall() {
  </div>
 
  {/* Off-Cloud / Enterprise Horizontal Banner */}
- <div className="bg-white dark:bg-slate-900/40 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-8 text-left flex flex-col md:flex-row items-center justify-between transition-all duration-300 gap-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-white dark:bg-slate-900/40 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-8 text-left flex flex-col md:flex-row items-center justify-between transition-all duration-300 gap-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex-1">
  <h3 className="font-semibold text-xl text-slate-900 dark:text-slate-100 mb-2">{plans[3].displayName}</h3>
  <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-6">{plans[3].description}</p>
@@ -288,7 +288,7 @@ export default function Paywall() {
  <Button 
  onClick={handleCustomPlanClick}
  variant="outline"
- className="w-full py-6 rounded-md-xl font-semibold text-sm border-primary/40 text-slate-900 dark:text-slate-100 hover:bg-slate-50"
+ className="w-full py-6 rounded-xl font-semibold text-sm border-primary/40 text-slate-900 dark:text-slate-100 hover:bg-slate-50"
  >
  {t("learn_more", "Learn More")}
  </Button>
@@ -300,7 +300,7 @@ export default function Paywall() {
  <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden bg-white dark:bg-slate-900/40 border-0 rounded-md-[2rem] flex flex-col max-h-[85vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Header */}
  <div className="bg-slate-50 dark:bg-slate-800/50 px-8 py-5 border-b border-primary/40 dark:border-primary/40 relative shrink-0">
- <div className="mx-auto w-12 h-12 bg-slate-50 dark:bg-slate-800/50 rounded-md-xl flex items-center justify-center mb-3 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 ">
+ <div className="mx-auto w-12 h-12 bg-slate-50 dark:bg-slate-800/50 rounded-xl flex items-center justify-center mb-3 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 ">
  <Server className="w-6 h-6 text-primary" />
  </div>
  <div className="text-center">
@@ -321,7 +321,7 @@ export default function Paywall() {
  <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wider text-xs border-b border-primary/40 dark:border-primary/40 pb-2 tracking-[0.04em]">{t("deployment_architecture", "Deployment & Architecture")}</h4>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  <div className="flex gap-4">
- <div className="w-10 h-10 rounded-md-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center shrink-0 ">
+ <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center shrink-0 ">
  <Server className="w-5 h-5 text-slate-700 dark:text-slate-300" />
  </div>
  <div>
@@ -333,7 +333,7 @@ export default function Paywall() {
  </div>
  </div>
  <div className="flex gap-4">
- <div className="w-10 h-10 rounded-md-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center shrink-0 ">
+ <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center shrink-0 ">
  <Shield className="w-5 h-5 text-slate-700 dark:text-slate-300" />
  </div>
  <div>
@@ -351,7 +351,7 @@ export default function Paywall() {
  <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wider text-xs border-b border-primary/40 dark:border-primary/40 pb-2 tracking-[0.04em]">{t("security_integration", "Security & Integration")}</h4>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  <div className="flex gap-4">
- <div className="w-10 h-10 rounded-md-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center shrink-0 ">
+ <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center shrink-0 ">
  <Database className="w-5 h-5 text-slate-700 dark:text-slate-300" />
  </div>
  <div>
@@ -363,7 +363,7 @@ export default function Paywall() {
  </div>
  </div>
  <div className="flex gap-4">
- <div className="w-10 h-10 rounded-md-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center shrink-0 ">
+ <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center shrink-0 ">
  <Check className="w-5 h-5 text-slate-700 dark:text-slate-300" />
  </div>
  <div>
@@ -381,7 +381,7 @@ export default function Paywall() {
  <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wider text-xs border-b border-primary/40 dark:border-primary/40 pb-2 tracking-[0.04em]">{t("premium_support", "Premium Support")}</h4>
  <div className="grid grid-cols-1 gap-6">
  <div className="flex gap-4">
- <div className="w-10 h-10 rounded-md-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center shrink-0 ">
+ <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center shrink-0 ">
  <Headphones className="w-5 h-5 text-slate-700 dark:text-slate-300" />
  </div>
  <div>
@@ -403,7 +403,7 @@ export default function Paywall() {
  {t("close", "Close")}
  </Button>
  <a href={`${getMainAppUrl()}/enterprise-contact`} className="w-full sm:w-auto block">
- <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-semibold py-6 px-8 rounded-md-full -emerald-600/20 transition-all hover:scale-105">
+ <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-semibold py-6 px-8 rounded-full -emerald-600/20 transition-all hover:scale-105">
  {t("build_custom_quote", "Build Custom Quote")}
  </Button>
  </a>

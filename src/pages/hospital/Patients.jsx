@@ -138,25 +138,25 @@ export default function Patients() {
  </div>
  {/* Stats */}
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary"><Users className="w-5 h-5" /></div>
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary"><Users className="w-5 h-5" /></div>
  <div><p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{patients.length}</p><p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("total_patients", "Total Patients")}</p></div>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-xl bg-red-100 flex items-center justify-center text-red-600"><Activity className="w-5 h-5" /></div>
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center text-red-600"><Activity className="w-5 h-5" /></div>
  <div><p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{patients.filter(p => p.status === 'Admitted').length}</p><p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("currently_admitted", "Currently Admitted")}</p></div>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary"><Stethoscope className="w-5 h-5" /></div>
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary"><Stethoscope className="w-5 h-5" /></div>
  <div><p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{patients.filter(p => p.status === 'Outpatient').length}</p><p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("outpatients", "Outpatients")}</p></div>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary"><Heart className="w-5 h-5" /></div>
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary"><Heart className="w-5 h-5" /></div>
  <div><p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{patients.filter(p => p.status === 'Discharged').length}</p><p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("discharged", "Discharged")}</p></div>
  </div>
  </div>
  {/* Table */}
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -196,7 +196,7 @@ export default function Patients() {
  <td className="px-6 py-4 text-[#71717a] dark:text-gray-400 text-sm">{p.diagnosis || '—'}</td>
  <td className="px-6 py-4 text-center text-[#71717a] dark:text-gray-400 font-medium">{p.lastVisit}</td>
  <td className="px-6 py-4 text-center">
- <span className={`text-xs font-semibold px-2.5 py-1 rounded-md-full ${statusColors[p.status] || 'bg-slate-100 text-primary/90'}`}>{p.status}</span>
+ <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusColors[p.status] || 'bg-slate-100 text-primary/90'}`}>{p.status}</span>
  </td>
  <td className="px-6 py-4 text-right">
  <DropdownMenu>
@@ -235,7 +235,7 @@ export default function Patients() {
  {/* Add / Edit Modal */}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-lg p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {editingPatient ? 'Edit Patient' : 'Register New Patient'}
  </h2>

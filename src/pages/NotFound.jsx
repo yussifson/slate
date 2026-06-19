@@ -8,8 +8,8 @@ export default function NotFound() {
  const { t} = useTranslation();
  return (
  <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-800/50 p-6 font-sans">
- <div className="max-w-md w-full bg-white dark:bg-slate-900/40 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-3xl p-10 text-center -slate-200/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-24 h-24 bg-slate-100 text-slate-400 rounded-md-full flex items-center justify-center mx-auto mb-8 ">
+ <div className="max-w-md w-full bg-white dark:bg-slate-900/40 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-3xl p-10 text-center -slate-200/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-24 h-24 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-8 ">
  <FileQuestion className="w-12 h-12" strokeWidth={1.5} />
  </div>
  <h1 className="text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tight mb-4 tracking-[-0.02em]">
@@ -28,7 +28,7 @@ export default function NotFound() {
  <div className="flex flex-col gap-3">
  <Button 
  asChild
- className="w-full bg-primary hover:bg-primary/90 text-white rounded-md-xl py-6 font-semibold text-lg -emerald-600/20"
+ className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl py-6 font-semibold text-lg -emerald-600/20"
  >
  <Link to="/">
  <ArrowLeft className="w-5 h-5 mr-2" />

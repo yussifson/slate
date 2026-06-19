@@ -58,7 +58,7 @@ Use dates starting from tomorrow.`
 };
 
  return (
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between mb-4">
  <div className="flex items-center gap-2">
  <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-primary">

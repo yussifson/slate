@@ -229,9 +229,9 @@ export default function UnivChat({
  {/* Current User footer */}
  <div className="p-3 border-t border-primary/40 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 px-2">
- <div className="w-8 h-8 rounded-md-full bg-primary/20 flex items-center justify-center text-primary font-semibold text-xs relative tracking-[0.04em]">
+ <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold text-xs relative tracking-[0.04em]">
  {currentUser?.email?.charAt(0).toUpperCase() || 'U'}
- <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500/10 border-2 border-card rounded-md-full hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>
+ <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500/10 border-2 border-card rounded-full hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>
  </div>
  <div className="flex-1 min-w-0">
  <p className="text-sm font-semibold text-foreground truncate">{currentUser?.email?.split('@')[0] || 'User'}</p>
@@ -260,7 +260,7 @@ export default function UnivChat({
  {/* Messages List */}
  <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
  <div className="text-center py-10">
- <div className="w-16 h-16 bg-primary/10 rounded-md-2xl flex items-center justify-center mx-auto mb-4">
+ <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
  <Hash className="w-8 h-8 text-primary" />
  </div>
  <h2 className="text-2xl font-semibold text-foreground mb-2 tracking-[-0.02em]">Welcome to #{activeChannel?.name || 'general'}</h2>
@@ -272,11 +272,11 @@ export default function UnivChat({
  (new Date(msg.created_at) - new Date(messages[idx - 1].created_at) > 300000); // 5 mins
  
  return (
- <div key={msg.id} className={cn("group flex gap-4 hover:bg-muted/30 -mx-4 px-4 py-1 rounded-md-xl transition-colors", showHeader ? "mt-6" : "mt-1")}>
+ <div key={msg.id} className={cn("group flex gap-4 hover:bg-muted/30 -mx-4 px-4 py-1 rounded-xl transition-colors", showHeader ? "mt-6" : "mt-1")}>
  {/* Avatar */}
  <div className="w-10 shrink-0">
  {showHeader ? (
- <div className="w-10 h-10 rounded-md-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-semibold text-sm ">
+ <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-semibold text-sm ">
  {msg.sender_email?.charAt(0).toUpperCase() || 'U'}
  </div>
  ) : (
@@ -314,7 +314,7 @@ export default function UnivChat({
  <div className="p-4 bg-background shrink-0 pb-6">
  <form 
  onSubmit={handleSendMessage}
- className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="px-4 py-3">
  <textarea

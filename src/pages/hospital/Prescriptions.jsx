@@ -151,7 +151,7 @@ export default function Prescriptions() {
  <Plus className="w-4 h-4" /> {t("issue_prescription", "Issue Prescription")}
  </Button>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -190,7 +190,7 @@ export default function Prescriptions() {
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{rx.date}</p>
  </td>
  <td className="px-6 py-4 text-center">
- <span className={`text-xs font-semibold px-2.5 py-1 rounded-md-full ${rx.status === 'Active' ? 'bg-slate-100 text-primary/90' : 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
+ <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${rx.status === 'Active' ? 'bg-slate-100 text-primary/90' : 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
  {rx.status}
  </span>
  </td>
@@ -237,7 +237,7 @@ export default function Prescriptions() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-lg p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><FileText className="w-5 h-5 text-primary"/> {t("new_prescription", "New Prescription")}</h2>
  <div className="space-y-3">
  <div>

@@ -205,7 +205,7 @@ export default function FirmStaffManager({ firm, onClose }) {
           ) : staffRecords.map(staff => {
             return (
               <div key={staff.id} className="flex items-center gap-3 p-3 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                <div className="w-8 h-8 rounded-md-full bg-slate-100 flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
                   <span className="text-xs font-semibold text-primary tracking-[0.04em]">{staff.full_name?.[0]?.toUpperCase() || "?"}</span>
                 </div>
                 <div className="flex-1 min-w-0">

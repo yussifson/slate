@@ -117,9 +117,9 @@ export default function AdminBroadcasts() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Composition Panel */}
-        <div className="lg:col-span-2 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm rounded-md-2xl flex flex-col overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="lg:col-span-2 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm rounded-2xl flex flex-col overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="bg-muted/50 p-4 border-b border-primary/10 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-md-full bg-primary/10 text-primary flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
               <Send className="w-5 h-5" />
             </div>
             <div>
@@ -146,7 +146,7 @@ export default function AdminBroadcasts() {
                 value={announcementText}
                 onChange={(e) => setAnnouncementText(e.target.value)}
                 placeholder="Compose your message here..."
-                className="w-full flex-1 min-h-[300px] p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-xl text-base focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-slate-50/50 dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors resize-y"
+                className="w-full flex-1 min-h-[300px] p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-slate-50/50 dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors resize-y"
               />
             </div>
           </div>
@@ -155,7 +155,7 @@ export default function AdminBroadcasts() {
             <Button 
               onClick={handleBroadcast}
               disabled={broadcasting || !announcementText || !subject || (targetMode === 'specific' && selectedCompanies.length === 0)}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-md-xl px-8 h-12 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl px-8 h-12 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]"
             >
               {broadcasting ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Send className="w-4 h-4 mr-2" />}
               Dispatch Broadcast
@@ -166,32 +166,32 @@ export default function AdminBroadcasts() {
         {/* Targeting & Channels Panel */}
         <div className="space-y-6">
           
-          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm rounded-md-2xl p-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm rounded-2xl p-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <h4 className="font-semibold text-sm uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-4 flex items-center gap-2 tracking-[0.04em]">
               <Bell className="w-4 h-4" /> Delivery Channels
             </h4>
             <div className="space-y-3">
-              <label className={cn("flex items-center gap-3 p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 cursor-pointer transition-all", channel === 'internal' ? "border-primary bg-primary/5" : "border-primary/20 hover:border-primary/50")}>
+              <label className={cn("flex items-center gap-3 p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 cursor-pointer transition-all", channel === 'internal' ? "border-primary bg-primary/5" : "border-primary/20 hover:border-primary/50")}>
                 <input type="radio" name="channel" checked={channel === 'internal'} onChange={() => setChannel('internal')} className="sr-only" />
-                <div className={cn("w-5 h-5 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 flex items-center justify-center", channel === 'internal' ? "border-primary bg-primary text-white" : "border-primary/30")}><CheckCircle2 className="w-3 h-3 opacity-100" /></div>
+                <div className={cn("w-5 h-5 rounded-full border-[0.5px] border-black/9 dark:border-white/8 flex items-center justify-center", channel === 'internal' ? "border-primary bg-primary text-white" : "border-primary/30")}><CheckCircle2 className="w-3 h-3 opacity-100" /></div>
                 <div>
                   <div className="font-semibold text-sm flex items-center gap-2">In-App Notification</div>
                   <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Delivered to user dashboards instantly</div>
                 </div>
               </label>
               
-              <label className={cn("flex items-center gap-3 p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 cursor-pointer transition-all", channel === 'external' ? "border-primary bg-primary/5" : "border-primary/20 hover:border-primary/50")}>
+              <label className={cn("flex items-center gap-3 p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 cursor-pointer transition-all", channel === 'external' ? "border-primary bg-primary/5" : "border-primary/20 hover:border-primary/50")}>
                 <input type="radio" name="channel" checked={channel === 'external'} onChange={() => setChannel('external')} className="sr-only" />
-                <div className={cn("w-5 h-5 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 flex items-center justify-center", channel === 'external' ? "border-primary bg-primary text-white" : "border-primary/30")}><CheckCircle2 className="w-3 h-3 opacity-100" /></div>
+                <div className={cn("w-5 h-5 rounded-full border-[0.5px] border-black/9 dark:border-white/8 flex items-center justify-center", channel === 'external' ? "border-primary bg-primary text-white" : "border-primary/30")}><CheckCircle2 className="w-3 h-3 opacity-100" /></div>
                 <div>
                   <div className="font-semibold text-sm flex items-center gap-2">Email Delivery</div>
                   <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Sent to registered administrator emails</div>
                 </div>
               </label>
 
-              <label className={cn("flex items-center gap-3 p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 cursor-pointer transition-all", channel === 'both' ? "border-primary bg-primary/5" : "border-primary/20 hover:border-primary/50")}>
+              <label className={cn("flex items-center gap-3 p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 cursor-pointer transition-all", channel === 'both' ? "border-primary bg-primary/5" : "border-primary/20 hover:border-primary/50")}>
                 <input type="radio" name="channel" checked={channel === 'both'} onChange={() => setChannel('both')} className="sr-only" />
-                <div className={cn("w-5 h-5 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 flex items-center justify-center", channel === 'both' ? "border-primary bg-primary text-white" : "border-primary/30")}><CheckCircle2 className="w-3 h-3 opacity-100" /></div>
+                <div className={cn("w-5 h-5 rounded-full border-[0.5px] border-black/9 dark:border-white/8 flex items-center justify-center", channel === 'both' ? "border-primary bg-primary text-white" : "border-primary/30")}><CheckCircle2 className="w-3 h-3 opacity-100" /></div>
                 <div>
                   <div className="font-semibold text-sm flex items-center gap-2">Both Channels</div>
                   <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Maximum visibility across platforms</div>
@@ -200,7 +200,7 @@ export default function AdminBroadcasts() {
             </div>
           </div>
 
-          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm rounded-md-2xl p-6 flex flex-col max-h-[500px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm rounded-2xl p-6 flex flex-col max-h-[500px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <h4 className="font-semibold text-sm uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-4 flex items-center gap-2 tracking-[0.04em]">
               <Users className="w-4 h-4" /> Target Audience
             </h4>
@@ -238,7 +238,7 @@ export default function AdminBroadcasts() {
             )}
             
             {targetMode === 'all' && (
-              <div className="flex-1 flex flex-col items-center justify-center text-center p-6 text-[#71717a] dark:text-gray-400 bg-primary/5 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
+              <div className="flex-1 flex flex-col items-center justify-center text-center p-6 text-[#71717a] dark:text-gray-400 bg-primary/5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
                 <Building2 className="w-12 h-12 mb-3 opacity-20 text-primary" />
                 <p className="text-sm font-semibold text-primary">Global Broadcast Active</p>
                 <p className="text-xs mt-1 tracking-[0.04em]">Message will be dispatched to administrators of all {companies.length} registered firms.</p>

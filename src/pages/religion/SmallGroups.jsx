@@ -119,7 +119,7 @@ export default function SmallGroups() {
  {isDbLoading ? (
  <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_groups", "Loading groups...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Users className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
  <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_cell_groups_configured", "No cell groups configured")}</p>
  <p className="text-sm mt-1 max-w-md mx-auto">{t(
@@ -131,13 +131,13 @@ export default function SmallGroups() {
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {filtered.map(group => {
  return (
- <div key={group.id} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 hover:border-primary/20 transition-colors relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={group.id} className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 hover:border-primary/20 transition-colors relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-start mb-4">
- <div className="w-12 h-12 rounded-md-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
+ <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
  <Users className="w-6 h-6" />
  </div>
  <div className="flex items-center gap-2">
- <span className="bg-muted text-[#71717a] dark:text-gray-400 px-3 py-1 rounded-md-full text-xs font-semibold tracking-[0.04em]">{group.members} {t("members", "Members")}</span>
+ <span className="bg-muted text-[#71717a] dark:text-gray-400 px-3 py-1 rounded-full text-xs font-semibold tracking-[0.04em]">{group.members} {t("members", "Members")}</span>
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -177,7 +177,7 @@ export default function SmallGroups() {
  )}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Users className="w-5 h-5 text-primary" /> {t("configure_cell_group", "Configure Cell Group")}
  </h2>

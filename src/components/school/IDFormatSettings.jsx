@@ -69,7 +69,7 @@ export default function IDFormatSettings() {
 });
 
  return (
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 mb-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 mb-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 mb-4">
  <Settings className="w-5 h-5 text-primary" />
  <h3 className="text-lg font-semibold">Dynamic ID Generation Settings</h3>

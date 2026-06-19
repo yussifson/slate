@@ -102,7 +102,7 @@ export default function Settings() {
  case "currency": return <CurrencySettings activeIndustry={activeIndustry} company={company} onSave={company ? d => updateCompany({ currency: d.currency}) : fakeSuccess} saving={saving} />;
  case "security": return <SecuritySettings />;
  case "permissions": return (
- <div className="bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-8 space-y-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-8 space-y-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">{t("staff_access_controls", "Staff Access Controls")}</h2>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-2">{t(
@@ -122,7 +122,7 @@ export default function Settings() {
  const categories = ["General", "Security & Access", "Billing"];
 
  return (
- <div className="flex flex-col h-full bg-background md:flex-row rounded-md-tl-2xl overflow-hidden border-t border-l border-primary/40">
+ <div className="flex flex-col h-full bg-background md:flex-row rounded-tl-2xl overflow-hidden border-t border-l border-primary/40">
  
  {/* Sidebar Navigation */}
  <div className="w-full md:w-64 lg:w-72 shrink-0 border-r border-primary/40 bg-muted/30 overflow-y-auto hidden md:block">
@@ -144,14 +144,14 @@ export default function Settings() {
  <button
  key={s.id}
  onClick={() => setActiveSection(s.id)}
- className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-md-xl transition-all duration-300 text-sm font-semibold relative overflow-hidden group ${
+ className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300 text-sm font-semibold relative overflow-hidden group ${
  isActive 
  ? "text-primary bg-primary/10 " 
  : "text-foreground/70 hover:bg-muted hover:text-foreground"
 }`}
  >
  {isActive && (
- <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-md-r-full" />
+ <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full" />
  )}
  <IconComp className={`w-4 h-4 transition-colors ${isActive ? 'text-primary' : 'text-[#71717a] dark:text-gray-400 group-hover:text-foreground'}`} />
  {s.label}
@@ -171,7 +171,7 @@ export default function Settings() {
  <select 
  value={activeSection}
  onChange={(e) => setActiveSection(e.target.value)}
- className="w-full bg-muted border-none rounded-md-xl px-4 py-3 font-medium text-sm focus:ring-2 focus:ring-foreground"
+ className="w-full bg-muted border-none rounded-xl px-4 py-3 font-medium text-sm focus:ring-2 focus:ring-foreground"
  >
  {SECTIONS.map(s => (
  <option key={s.id} value={s.id}>{s.label}</option>

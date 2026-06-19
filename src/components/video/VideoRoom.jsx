@@ -195,13 +195,13 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
 };
 
  return (
- <div className="flex h-full bg-background rounded-md-xl overflow-hidden relative border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 group">
+ <div className="flex h-full bg-background rounded-xl overflow-hidden relative border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 group">
  
  {/* Video Content Area */}
  <div className="flex-1 flex flex-col relative min-w-0">
  {/* AI Response Overlay */}
  {aiResponse && (
- <div className="absolute top-4 left-4 right-4 z-40 bg-card/95 backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 rounded-md-xl animate-in fade-in max-h-[80%] overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="absolute top-4 left-4 right-4 z-40 bg-card/95 backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 rounded-xl animate-in fade-in max-h-[80%] overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between mb-3 border-b border-primary/40 pb-2">
  <h3 className="font-semibold flex items-center gap-2 text-primary"><Sparkles className="w-4 h-4"/> AI Meeting Notes</h3>
  <Button variant="ghost" size="sm" onClick={() => setAiResponse(null)} className="h-6 px-2 text-xs tracking-[0.04em]">Close</Button>
@@ -215,7 +215,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  variant="secondary" 
  size="icon" 
  onClick={togglePipMode}
- className="absolute top-2 right-2 z-50 rounded-md-full w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity"
+ className="absolute top-2 right-2 z-50 rounded-full w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity"
  >
  {isPipMode ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
  </Button>
@@ -231,7 +231,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  <ParticipantTile key={id} id={id} isLocal={id === localSessionId} />
  )).concat(allParticipants.length === 0 ? (
  <div key="loader" className="absolute inset-0 flex items-center justify-center">
- <div className="w-12 h-12 rounded-md-full border-[3px] border-primary/30 border-t-primary animate-spin"></div>
+ <div className="w-12 h-12 rounded-full border-[3px] border-primary/30 border-t-primary animate-spin"></div>
  </div>
  ) : []);
 })()}
@@ -250,7 +250,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  {chatMessages.map((msg, idx) => (
  <div key={idx} className={`flex flex-col ${msg.from === 'local' ? 'items-end' : 'items-start'}`}>
  <span className="text-[11px] text-[#71717a] dark:text-gray-400 mb-1">{msg.name}</span>
- <div className={`px-3 py-2 rounded-md-xl max-w-[85%] text-sm ${msg.from === 'local' ? 'bg-primary text-primary-foreground rounded-md-tr-none' : 'bg-muted rounded-md-tl-none'}`}>
+ <div className={`px-3 py-2 rounded-xl max-w-[85%] text-sm ${msg.from === 'local' ? 'bg-primary text-primary-foreground rounded-tr-none' : 'bg-muted rounded-tl-none'}`}>
  {msg.text}
  </div>
  </div>
@@ -266,12 +266,12 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  <input 
  type="text" 
  placeholder="Send a message..." 
- className="flex-1 bg-muted/50 rounded-md-full px-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+ className="flex-1 bg-muted/50 rounded-full px-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
  value={chatInput}
  onChange={(e) => setChatInput(e.target.value)}
  onKeyDown={(e) => e.key === 'Enter' && sendChatMessage()}
  />
- <Button size="icon" className="rounded-md-full shrink-0" onClick={sendChatMessage} disabled={!chatInput.trim()}>
+ <Button size="icon" className="rounded-full shrink-0" onClick={sendChatMessage} disabled={!chatInput.trim()}>
  <Send className="w-4 h-4" />
  </Button>
  </div>
@@ -285,7 +285,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  onClick={toggleAudio}
  variant={isMuted ? "destructive" : "secondary"}
  size="icon"
- className={`${isPipMode ? 'w-8 h-8' : 'w-12 h-12'} rounded-md-full`}
+ className={`${isPipMode ? 'w-8 h-8' : 'w-12 h-12'} rounded-full`}
  >
  {isMuted ? <MicOff className={isPipMode ? "w-3 h-3" : "w-5 h-5"} /> : <Mic className={isPipMode ? "w-3 h-3" : "w-5 h-5"} />}
  </Button>
@@ -293,7 +293,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  onClick={toggleVideo}
  variant={isVideoOff ? "destructive" : "secondary"}
  size="icon"
- className={`${isPipMode ? 'w-8 h-8' : 'w-12 h-12'} rounded-md-full`}
+ className={`${isPipMode ? 'w-8 h-8' : 'w-12 h-12'} rounded-full`}
  >
  {isVideoOff ? <VideoOff className={isPipMode ? "w-3 h-3" : "w-5 h-5"} /> : <VideoIcon className={isPipMode ? "w-3 h-3" : "w-5 h-5"} />}
  </Button>
@@ -303,7 +303,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  onClick={toggleScreenShare}
  variant={isSharingScreen ? "default" : "secondary"}
  size="icon"
- className="w-12 h-12 rounded-md-full hidden sm:flex"
+ className="w-12 h-12 rounded-full hidden sm:flex"
  >
  <MonitorUp className="w-5 h-5" />
  </Button>
@@ -311,7 +311,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  onClick={() => setShowChat(!showChat)}
  variant={showChat ? "default" : "secondary"}
  size="icon"
- className="w-12 h-12 rounded-md-full hidden sm:flex relative"
+ className="w-12 h-12 rounded-full hidden sm:flex relative"
  title="Chat"
  >
  <MessageSquare className="w-5 h-5" />
@@ -320,7 +320,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  onClick={() => setShowInvite(!showInvite)}
  variant={showInvite ? "default" : "secondary"}
  size="icon"
- className="w-12 h-12 rounded-md-full hidden sm:flex relative"
+ className="w-12 h-12 rounded-full hidden sm:flex relative"
  title="Quick Connect / Invite"
  >
  <UserPlus className="w-5 h-5" />
@@ -329,7 +329,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  variant="secondary"
  onClick={handleAiAssist}
  disabled={isAiLoading}
- className="h-12 px-6 rounded-md-full font-semibold gap-2 hover:bg-primary hover:text-primary-foreground transition-colors"
+ className="h-12 px-6 rounded-full font-semibold gap-2 hover:bg-primary hover:text-primary-foreground transition-colors"
  >
  <Sparkles className="w-4 h-4" /> {isAiLoading ? "Processing..." : "AI Assistant"}
  </Button>
@@ -338,7 +338,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  <Button 
  onClick={leaveCall}
  variant="destructive"
- className={`${isPipMode ? 'h-8 w-8 p-0' : 'h-12 px-8 ml-4'} rounded-md-full font-semibold flex items-center justify-center`}
+ className={`${isPipMode ? 'h-8 w-8 p-0' : 'h-12 px-8 ml-4'} rounded-full font-semibold flex items-center justify-center`}
  >
  {isPipMode ? <PhoneOff className="w-3 h-3" /> : <><PhoneOff className="w-5 h-5 mr-2" /> Leave</>}
  </Button>
@@ -346,7 +346,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  
  {/* Invite Sidebar/Popup */}
  {showInvite && !isPipMode && (
- <div className="absolute bottom-24 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:right-6 w-[340px] bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 z-50 animate-in fade-in slide-in-from-bottom-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="absolute bottom-24 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:right-6 w-[340px] bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 z-50 animate-in fade-in slide-in-from-bottom-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between mb-3">
  <h3 className="font-semibold flex items-center gap-2"><UserPlus className="w-4 h-4 text-primary"/> Quick Connect</h3>
  <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setShowInvite(false)}><X className="w-4 h-4" /></Button>
@@ -396,7 +396,7 @@ function ScreenShareTile({ screen}) {
  className="w-full h-full object-contain"
  />
  ) : (
- <div className="w-20 h-20 bg-slate-700 rounded-md-full flex items-center justify-center">
+ <div className="w-20 h-20 bg-slate-700 rounded-full flex items-center justify-center">
  <MonitorUp className="w-8 h-8 text-slate-400" />
  </div>
  )}
@@ -439,7 +439,7 @@ function ParticipantTile({ id, isLocal}) {
  className="w-full h-full object-cover"
  />
  ) : (
- <div className="w-20 h-20 bg-slate-700 rounded-md-full flex items-center justify-center">
+ <div className="w-20 h-20 bg-slate-700 rounded-full flex items-center justify-center">
  <span className="text-2xl text-slate-400 font-semibold tracking-[-0.02em]">U</span>
  </div>
  )}
@@ -460,15 +460,15 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
  
  if (roomUrl && (roomUrl.includes('meet.jit.si') || roomUrl.includes('meet.ffmuc.net') || roomUrl.includes('jitsi'))) {
  return (
- <div className="flex flex-col h-full bg-slate-50/50 dark:bg-slate-950 rounded-md-xl relative overflow-hidden items-center justify-center text-foreground border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <div className="flex flex-col h-full bg-slate-50/50 dark:bg-slate-950 rounded-xl relative overflow-hidden items-center justify-center text-foreground border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  <div className="absolute top-0 right-0 z-50 p-2 flex gap-2">
- <Button variant="destructive" size="sm" onClick={onLeave} className="rounded-md-full h-8 px-4 font-semibold opacity-80 hover:opacity-100 ">
+ <Button variant="destructive" size="sm" onClick={onLeave} className="rounded-full h-8 px-4 font-semibold opacity-80 hover:opacity-100 ">
  <PhoneOff className="w-4 h-4 mr-2" /> End Session
  </Button>
  </div>
  
- <div className="flex flex-col items-center max-w-md text-center p-8 bg-white dark:bg-slate-900 rounded-md-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-24 h-24 bg-slate-50 dark:bg-primary/30 rounded-md-full flex items-center justify-center mb-6 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/80">
+ <div className="flex flex-col items-center max-w-md text-center p-8 bg-white dark:bg-slate-900 rounded-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-24 h-24 bg-slate-50 dark:bg-primary/30 rounded-full flex items-center justify-center mb-6 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/80">
  <VideoIcon className="w-10 h-10 text-primary dark:text-primary/70" />
  </div>
  <h2 className="text-2xl font-semibold mb-3 text-slate-800 dark:text-white tracking-tight tracking-[-0.02em]">Secure Video Meeting</h2>
@@ -479,13 +479,13 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
  <div className="flex flex-col gap-3 w-full">
  <Button 
  size="lg" 
- className="w-full bg-primary hover:bg-primary/90 text-white font-semibold h-12 text-[15px] rounded-md-xl transition-all"
+ className="w-full bg-primary hover:bg-primary/90 text-white font-semibold h-12 text-[15px] rounded-xl transition-all"
  onClick={() => window.open(roomUrl, '_blank')}
  >
  Launch Meeting
  <ExternalLink className="w-5 h-5 ml-2 opacity-80" />
  </Button>
- <Button variant="ghost" className="text-slate-500 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md-xl h-11" onClick={() => {
+ <Button variant="ghost" className="text-slate-500 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl h-11" onClick={() => {
  navigator.clipboard.writeText(roomUrl);
  toast({ description: "Meeting link copied to clipboard!"});
 }}>
@@ -539,8 +539,8 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
 
  if (!daily || !roomUrl) {
  return (
- <div className="flex flex-col h-full bg-slate-950 rounded-md-xl items-center justify-center">
- <div className="w-12 h-12 rounded-md-full border-[3px] border-primary/30 border-t-primary animate-spin mb-4"></div>
+ <div className="flex flex-col h-full bg-slate-950 rounded-xl items-center justify-center">
+ <div className="w-12 h-12 rounded-full border-[3px] border-primary/30 border-t-primary animate-spin mb-4"></div>
  <p className="text-slate-400 font-medium">Connecting to secure video server...</p>
  </div>
  );

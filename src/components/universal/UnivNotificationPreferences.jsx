@@ -63,7 +63,7 @@ export default function UnivNotificationPreferences({ title = 'Notification Pref
  </div>
 
  {/* Channels Legend */}
- <div className="flex flex-wrap gap-6 p-4 bg-muted/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl">
+ <div className="flex flex-wrap gap-6 p-4 bg-muted/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl">
  <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
  <Monitor className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> In-App
  <span className="text-xs font-normal text-[#71717a] dark:text-gray-400 tracking-[0.04em]">(Inbox)</span>
@@ -79,7 +79,7 @@ export default function UnivNotificationPreferences({ title = 'Notification Pref
  </div>
 
  {/* Preferences Grid */}
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="divide-y divide-border">
  {categories.map(cat => (
  <div key={cat.id} className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-muted/10 transition-colors">
@@ -94,12 +94,12 @@ export default function UnivNotificationPreferences({ title = 'Notification Pref
  </div>
  </div>
 
- <div className="flex items-center gap-4 shrink-0 bg-muted/30 p-2 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <div className="flex items-center gap-4 shrink-0 bg-muted/30 p-2 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  {/* In-App Toggle */}
  <label className="flex flex-col items-center gap-2 cursor-pointer group">
  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 group-hover:text-foreground transition-colors tracking-[0.04em]">In-App</span>
  <div className={cn(
- "w-10 h-6 rounded-md-full transition-colors relative",
+ "w-10 h-6 rounded-full transition-colors relative",
  preferences[cat.id].in_app ? "bg-primary" : "bg-muted-foreground/30",
  cat.critical ? "opacity-50 cursor-not-allowed" : ""
  )}>
@@ -109,7 +109,7 @@ export default function UnivNotificationPreferences({ title = 'Notification Pref
  onChange={() => !cat.critical && handleToggle(cat.id, 'in_app')}
  disabled={cat.critical}
  />
- <div className={cn("absolute top-1 w-4 h-4 rounded-md-full bg-white transition-all ", preferences[cat.id].in_app ? "left-5" : "left-1")} />
+ <div className={cn("absolute top-1 w-4 h-4 rounded-full bg-white transition-all ", preferences[cat.id].in_app ? "left-5" : "left-1")} />
  </div>
  </label>
 
@@ -119,7 +119,7 @@ export default function UnivNotificationPreferences({ title = 'Notification Pref
  <label className="flex flex-col items-center gap-2 cursor-pointer group">
  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 group-hover:text-foreground transition-colors tracking-[0.04em]">Email</span>
  <div className={cn(
- "w-10 h-6 rounded-md-full transition-colors relative",
+ "w-10 h-6 rounded-full transition-colors relative",
  preferences[cat.id].email ? "bg-primary" : "bg-muted-foreground/30",
  cat.critical ? "opacity-50 cursor-not-allowed" : ""
  )}>
@@ -129,7 +129,7 @@ export default function UnivNotificationPreferences({ title = 'Notification Pref
  onChange={() => !cat.critical && handleToggle(cat.id, 'email')}
  disabled={cat.critical}
  />
- <div className={cn("absolute top-1 w-4 h-4 rounded-md-full bg-white transition-all ", preferences[cat.id].email ? "left-5" : "left-1")} />
+ <div className={cn("absolute top-1 w-4 h-4 rounded-full bg-white transition-all ", preferences[cat.id].email ? "left-5" : "left-1")} />
  </div>
  </label>
  </div>

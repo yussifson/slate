@@ -150,14 +150,14 @@ export default function Warehouse() {
         
         {/* Receiving Dock */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm sticky top-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm sticky top-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <h2 className="text-lg font-semibold text-card-foreground mb-4 flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <ArrowDownToLine className="w-5 h-5 text-primary" />
               Receiving Dock
             </h2>
 
             {/* AI Auto-Receive Paywall */}
-            <div className="relative mb-8 rounded-md-xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 bg-primary/5 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">
+            <div className="relative mb-8 rounded-xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 bg-primary/5 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">
                <h3 className="text-sm font-semibold flex items-center gap-2 mb-2">
                  <Zap className="w-4 h-4 text-primary fill-primary" /> Smart Label Scan
                </h3>
@@ -167,7 +167,7 @@ export default function Warehouse() {
 
                <div className="relative">
                  {!isProOrAbove && (
-                    <div className="absolute -inset-2 bg-background/80 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8">
+                    <div className="absolute -inset-2 bg-background/80 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8">
                        <Lock className="w-5 h-5 text-amber-500 mb-1" />
                        <span className="text-[10px] font-semibold text-amber-600 uppercase tracking-wider tracking-[0.04em]">Pro Plan Required</span>
                     </div>
@@ -228,7 +228,7 @@ export default function Warehouse() {
              </div>
           </div>
 
-          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-2xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
              <div className="overflow-x-auto">
                 <table className="w-full text-sm text-left">
                    <thead className="text-xs text-[#71717a] dark:text-gray-400 uppercase bg-muted/50 border-b border-[0.5px] border-black/9 dark:border-white/8 tracking-[0.04em]">

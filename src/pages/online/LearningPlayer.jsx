@@ -55,9 +55,9 @@ export default function LearningPlayer() {
  <PlayCircle className="w-4 h-4 text-[var(--primary)]" />
  <span>{courseTitle}</span>
  </div>
- <div className="w-full h-1.5 bg-white dark:bg-slate-900/40/30 rounded-md-full overflow-hidden cursor-pointer group/progress hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-full h-1.5 bg-white dark:bg-slate-900/40/30 rounded-full overflow-hidden cursor-pointer group/progress hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="h-full bg-[var(--primary)] w-0 relative group-hover/progress:bg-primary/70 transition-colors">
- <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white dark:bg-slate-900/40 rounded-md-full scale-0 group-hover/progress:scale-100 transition-transform hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+ <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white dark:bg-slate-900/40 rounded-full scale-0 group-hover/progress:scale-100 transition-transform hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  </div>
@@ -91,9 +91,9 @@ export default function LearningPlayer() {
  )}
  {activeTab === 'qna' && (
  <motion.div initial={{ opacity: 0, y: 10}} animate={{ opacity: 1, y: 0}} className="space-y-4">
- <div className="flex gap-4 p-1 bg-[var(--color-surface-1)] rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus-within:border-[var(--primary)] focus-within:ring-1 focus-within:ring-[var(--primary)] transition-all">
+ <div className="flex gap-4 p-1 bg-[var(--color-surface-1)] rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus-within:border-[var(--primary)] focus-within:ring-1 focus-within:ring-[var(--primary)] transition-all">
  <input type="text" placeholder="Ask a new question..." className="bg-transparent border-none outline-none w-full text-sm text-[var(--color-text-primary)] px-4 py-2" />
- <button className="bg-[var(--primary)] text-white rounded-md-full p-2.5 hover:opacity-90 transition-opacity">
+ <button className="bg-[var(--primary)] text-white rounded-full p-2.5 hover:opacity-90 transition-opacity">
  <MessageSquare className="w-4 h-4" />
  </button>
  </div>
@@ -113,7 +113,7 @@ export default function LearningPlayer() {
  <div className="w-80 border-l border-primary/40 bg-[var(--color-surface-1)] flex flex-col flex-shrink-0">
  <div className="p-4 border-b border-primary/40">
  <h2 className="font-semibold text-[var(--color-text-primary)]">Course Content</h2>
- <div className="w-full bg-[var(--color-border-default)] h-1.5 rounded-md-full mt-3 overflow-hidden">
+ <div className="w-full bg-[var(--color-border-default)] h-1.5 rounded-full mt-3 overflow-hidden">
  <div className="bg-[var(--primary)] h-full w-1/3"></div>
  </div>
  <p className="text-xs text-[var(--color-text-secondary)] mt-1.5 tracking-[0.04em]">0% Complete</p>

@@ -84,7 +84,7 @@ export default function Transport() {
           <p className="text-emerald-700 font-medium text-lg mt-1">{t("manage_school_buses", "Map-inspired route & driver assignments")}</p>
         </div>
         <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-          <Button onClick={() => { setFormData({route: '', vehicle: '', driver: '', capacity: '', schedule: ''}); setShowModal(true); }} className="gap-2 bg-emerald-500/10 hover:bg-emerald-600 text-white rounded-md-none border-2 border-emerald-900 font-semibold px-6 py-6 text-lg transition-all hover:translate-y-[2px] hover:translate-x-[2px]">
+          <Button onClick={() => { setFormData({route: '', vehicle: '', driver: '', capacity: '', schedule: ''}); setShowModal(true); }} className="gap-2 bg-emerald-500/10 hover:bg-emerald-600 text-white rounded-none border-2 border-emerald-900 font-semibold px-6 py-6 text-lg transition-all hover:translate-y-[2px] hover:translate-x-[2px]">
             <Plus className="w-6 h-6" /> {t("add_route", "Dispatch Route")}
           </Button>
         </motion.div>
@@ -96,7 +96,7 @@ export default function Transport() {
         </div>
         <div className="relative flex-1 w-full">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-700" />
-          <Input placeholder="Search routes or drivers..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 bg-emerald-50 border-2 border-emerald-900 rounded-md-none h-16 text-xl font-medium focus-visible:ring-0 focus-visible:border-emerald-600 placeholder:text-emerald-400 w-full" />
+          <Input placeholder="Search routes or drivers..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 bg-emerald-50 border-2 border-emerald-900 rounded-none h-16 text-xl font-medium focus-visible:ring-0 focus-visible:border-emerald-600 placeholder:text-emerald-400 w-full" />
         </div>
       </div>
 
@@ -115,17 +115,17 @@ export default function Transport() {
                 <div className="absolute top-4 right-4 z-10">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-10 w-10 p-0 border-2 border-transparent group-hover:border-emerald-900 group-hover:bg-amber-200 rounded-md-none transition-all">
+                      <Button variant="ghost" className="h-10 w-10 p-0 border-2 border-transparent group-hover:border-emerald-900 group-hover:bg-amber-200 rounded-none transition-all">
                         <MoreVertical className="h-5 w-5 text-emerald-900" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48 border-2 border-emerald-900 rounded-md-none p-0 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                      <DropdownMenuItem className="font-semibold cursor-pointer rounded-md-none focus:bg-emerald-100 focus:text-emerald-900 p-3" onClick={() => {
+                    <DropdownMenuContent align="end" className="w-48 border-2 border-emerald-900 rounded-none p-0 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                      <DropdownMenuItem className="font-semibold cursor-pointer rounded-none focus:bg-emerald-100 focus:text-emerald-900 p-3" onClick={() => {
                         setEditingId(r.id);
                         setFormData({ route: r.route, vehicle: r.vehicle, driver: r.driver, capacity: r.capacity, schedule: r.schedule });
                         setShowModal(true);
                       }}>{t("edit", "Modify Route")}</DropdownMenuItem>
-                      <DropdownMenuItem className="font-semibold cursor-pointer rounded-md-none focus:bg-red-100 focus:text-red-900 text-red-600 p-3" onClick={() => {
+                      <DropdownMenuItem className="font-semibold cursor-pointer rounded-none focus:bg-red-100 focus:text-red-900 text-red-600 p-3" onClick={() => {
                         if (window.confirm("Cancel this route?")) deleteRecord.mutate({ id: r.id, recordType: 'transport' });
                       }}>{t("delete", "Terminate Route")}</DropdownMenuItem>
                     </DropdownMenuContent>
@@ -175,31 +175,31 @@ export default function Transport() {
             <div className="space-y-6">
               <div>
                 <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">{t("route_name", "Path / Waypoints")}</label>
-                <Input value={formData.route} onChange={e => setFormData({...formData, route: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-md-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" placeholder="Downtown - North Campus" />
+                <Input value={formData.route} onChange={e => setFormData({...formData, route: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" placeholder="Downtown - North Campus" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">{t("vehicle", "Plate Number")}</label>
-                  <Input value={formData.vehicle} onChange={e => setFormData({...formData, vehicle: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-md-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-white uppercase tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" placeholder="BUS-001" />
+                  <Input value={formData.vehicle} onChange={e => setFormData({...formData, vehicle: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-white uppercase tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" placeholder="BUS-001" />
                 </div>
                 <div>
                   <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">{t("capacity", "Max PAX")}</label>
-                  <Input type="number" value={formData.capacity} onChange={e => setFormData({...formData, capacity: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-md-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" placeholder="45" />
+                  <Input type="number" value={formData.capacity} onChange={e => setFormData({...formData, capacity: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" placeholder="45" />
                 </div>
               </div>
               <div>
                 <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">{t("driver", "Assigned Pilot")}</label>
-                <Input value={formData.driver} onChange={e => setFormData({...formData, driver: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-md-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" placeholder="Driver Name" />
+                <Input value={formData.driver} onChange={e => setFormData({...formData, driver: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" placeholder="Driver Name" />
               </div>
               <div>
                 <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">{t("schedule", "Timeline")}</label>
-                <Input value={formData.schedule} onChange={e => setFormData({...formData, schedule: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-md-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" placeholder="Morn: 6:30AM, Aft: 3:30PM" />
+                <Input value={formData.schedule} onChange={e => setFormData({...formData, schedule: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" placeholder="Morn: 6:30AM, Aft: 3:30PM" />
               </div>
             </div>
             
             <div className="flex gap-4 pt-8">
-              <Button variant="outline" className="flex-1 h-14 border-2 border-emerald-900 bg-white text-emerald-900 font-black uppercase tracking-widest rounded-md-none hover:bg-emerald-100 tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={() => setShowModal(false)}>{t("cancel", "Abort")}</Button>
-              <Button className="flex-1 h-14 bg-emerald-600 hover:bg-emerald-700 text-white border-2 border-emerald-900 font-black uppercase tracking-widest rounded-md-none transition-colors tracking-[0.04em]" onClick={handleSave}>
+              <Button variant="outline" className="flex-1 h-14 border-2 border-emerald-900 bg-white text-emerald-900 font-black uppercase tracking-widest rounded-none hover:bg-emerald-100 tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={() => setShowModal(false)}>{t("cancel", "Abort")}</Button>
+              <Button className="flex-1 h-14 bg-emerald-600 hover:bg-emerald-700 text-white border-2 border-emerald-900 font-black uppercase tracking-widest rounded-none transition-colors tracking-[0.04em]" onClick={handleSave}>
                 {mutateRecord.isPending ? 'Syncing...' : 'Deploy'}
               </Button>
             </div>

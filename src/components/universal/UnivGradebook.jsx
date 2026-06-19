@@ -85,40 +85,40 @@ export default function UnivGradebook() {
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Record assessments, track performance, and publish grades.</p>
  </div>
  <div className="flex gap-3">
- <button className="flex items-center gap-2 px-4 py-2 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm font-medium hover:bg-muted/50 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <button className="flex items-center gap-2 px-4 py-2 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm font-medium hover:bg-muted/50 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Download className="w-4 h-4" /> Export CSV
  </button>
- <button onClick={handleRecordGrade} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
+ <button onClick={handleRecordGrade} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
  <Edit3 className="w-4 h-4" /> Record Grade
  </button>
  </div>
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 shrink-0">
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-4 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <p className="text-sm text-[#71717a] dark:text-gray-400 font-medium">Class Average</p>
  <h3 className="text-2xl font-semibold text-foreground mt-1 tracking-[-0.02em]">86.4%</h3>
  </div>
- <div className="p-3 bg-blue-100 dark:bg-blue-500/10/10 text-blue-600 rounded-md-xl"><Percent className="w-5 h-5" /></div>
+ <div className="p-3 bg-blue-100 dark:bg-blue-500/10/10 text-blue-600 rounded-xl"><Percent className="w-5 h-5" /></div>
  </div>
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-4 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <p className="text-sm text-[#71717a] dark:text-gray-400 font-medium">Top Performers</p>
  <h3 className="text-2xl font-semibold text-foreground mt-1 tracking-[-0.02em]">12</h3>
  </div>
- <div className="p-3 bg-yellow-100 dark:bg-yellow-500/10/10 text-yellow-600 rounded-md-xl"><Star className="w-5 h-5" /></div>
+ <div className="p-3 bg-yellow-100 dark:bg-yellow-500/10/10 text-yellow-600 rounded-xl"><Star className="w-5 h-5" /></div>
  </div>
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-4 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <p className="text-sm text-[#71717a] dark:text-gray-400 font-medium">Assessments Completed</p>
  <h3 className="text-2xl font-semibold text-foreground mt-1 tracking-[-0.02em]">{grades.length}</h3>
  </div>
- <div className="p-3 bg-emerald-100 dark:bg-emerald-500/10/10 text-emerald-600 rounded-md-xl"><Award className="w-5 h-5" /></div>
+ <div className="p-3 bg-emerald-100 dark:bg-emerald-500/10/10 text-emerald-600 rounded-xl"><Award className="w-5 h-5" /></div>
  </div>
  </div>
 
- <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
@@ -127,7 +127,7 @@ export default function UnivGradebook() {
  placeholder="Search students, courses..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -164,8 +164,8 @@ export default function UnivGradebook() {
  </td>
  <td className="p-4">
  <div className="flex items-center gap-2">
- <div className="w-16 h-2 bg-muted dark:bg-slate-800 rounded-md-full overflow-hidden">
- <div className="h-full bg-primary rounded-md-full" style={{ width: `${(g.score / g.max_score) * 100}%`}}></div>
+ <div className="w-16 h-2 bg-muted dark:bg-slate-800 rounded-full overflow-hidden">
+ <div className="h-full bg-primary rounded-full" style={{ width: `${(g.score / g.max_score) * 100}%`}}></div>
  </div>
  <span className="font-semibold text-foreground text-xs tracking-[0.04em]">{g.score}/{g.max_score}</span>
  </div>

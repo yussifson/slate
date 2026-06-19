@@ -34,7 +34,7 @@ export default function CustomerPortal() {
  return (
  <div className="space-y-6 max-w-5xl mx-auto">
  {/* Header Profile */}
- <div className="bg-gradient-to-r from-primary to-primary/90 rounded-md-2xl p-6 md:p-8 text-white relative overflow-hidden">
+ <div className="bg-gradient-to-r from-primary to-primary/90 rounded-2xl p-6 md:p-8 text-white relative overflow-hidden">
  <div className="relative z-10 flex flex-col md:flex-row justify-between md:items-center gap-4">
  <div>
  <h1 className="text-2xl md:text-3xl font-semibold mb-1 tracking-[-0.02em]">{t("welcome_back", "Welcome back,")} {user?.name || 'Shopper'}</h1>
@@ -43,7 +43,7 @@ export default function CustomerPortal() {
  "View your purchase history, track active orders, and check your loyalty rewards."
  )}</p>
  </div>
- <div className="bg-white dark:bg-slate-900/40/10 backdrop-blur-md rounded-md-xl p-4 border-[0.5px] border-black/9 dark:border-white/8 border-white/20 text-center min-w-[150px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-white dark:bg-slate-900/40/10 backdrop-blur-md rounded-xl p-4 border-[0.5px] border-black/9 dark:border-white/8 border-white/20 text-center min-w-[150px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <p className="text-xs uppercase font-semibold tracking-wider text-primary/10 mb-1 tracking-[0.04em]">{t("loyalty_points", "Loyalty Points")}</p>
  <p className="text-3xl font-black flex items-center justify-center gap-2 tracking-[-0.02em]">
  <Star className="w-5 h-5 text-yellow-300 fill-yellow-300" /> {loyaltyPoints}
@@ -57,7 +57,7 @@ export default function CustomerPortal() {
  </div>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
  <div className="col-span-1 md:col-span-2 space-y-6">
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 md:p-5 border-b border-primary/40 bg-muted/50 flex justify-between items-center">
  <h3 className="font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><ShoppingBag className="w-5 h-5 text-primary" /> {t("recent_purchases", "Recent Purchases")}</h3>
  <Button variant="ghost" size="sm" className="text-xs text-primary tracking-[0.04em]">{t("view_all", "View All")}</Button>
@@ -106,11 +106,11 @@ export default function CustomerPortal() {
  </div>
 
  <div className="space-y-6">
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h3 className="font-semibold text-card-foreground flex items-center gap-2 mb-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><Tag className="w-5 h-5 text-amber-500" /> {t("available_offers", "Available Offers")}</h3>
  <div className="space-y-3">
  <div className="border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-amber-300 bg-amber-50 dark:bg-amber-950/20 rounded-xl p-3 relative overflow-hidden">
- <div className="absolute right-[-10px] top-[-10px] w-8 h-8 bg-amber-200 rounded-md-full opacity-50"></div>
+ <div className="absolute right-[-10px] top-[-10px] w-8 h-8 bg-amber-200 rounded-full opacity-50"></div>
  <p className="text-xs font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-1 tracking-[0.04em]">{t("loyalty_reward", "Loyalty Reward")}</p>
  <p className="font-black text-lg text-amber-900 dark:text-amber-100">{t("15_off", "15% OFF")}</p>
  <p className="text-[10px] text-amber-700/80 mt-1">{t("unlock_for_1_000_points", "Unlock for 1,000 points")}</p>
@@ -124,7 +124,7 @@ export default function CustomerPortal() {
  </div>
  </div>
 
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <MapPin className="w-8 h-8 text-primary mx-auto mb-2" />
  <h4 className="font-semibold text-sm">{t("find_a_store", "Find a Store")}</h4>
  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 mb-3 tracking-[0.04em]">{t(

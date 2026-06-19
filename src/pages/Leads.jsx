@@ -154,7 +154,7 @@ export default function Leads() {
         }
       />
       {/* Intake Form Link Banner */}
-      <div className="bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-xl px-4 py-3 flex items-center justify-between gap-4">
+      <div className="bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl px-4 py-3 flex items-center justify-between gap-4">
         <div>
           <p className="text-sm font-medium text-primary/70">{t("your_public_intake_form_is_liv", "Your public intake form is live")}</p>
           <p className="text-xs text-primary/90 mt-0.5 break-all tracking-[0.04em]">{intakeFormUrl}</p>
@@ -349,7 +349,7 @@ function LeadDetailDialog({ lead, onClose, onUpdateStatus, onConvert, onSave, on
                   <button
                     key={s}
                     onClick={() => onUpdateStatus(s)}
-                    className={`px-3 py-1 rounded-md-full text-xs font-medium border-[0.5px] border-black/9 dark:border-white/8 capitalize transition-colors ${lead.status === s ? STATUS_COLORS[s] + " border-transparent" : "border-primary/40 text-[#71717a] dark:text-gray-400 hover:bg-muted"}`}
+                    className={`px-3 py-1 rounded-full text-xs font-medium border-[0.5px] border-black/9 dark:border-white/8 capitalize transition-colors ${lead.status === s ? STATUS_COLORS[s] + " border-transparent" : "border-primary/40 text-[#71717a] dark:text-gray-400 hover:bg-muted"}`}
                   >{s}</button>
                 );
               })}

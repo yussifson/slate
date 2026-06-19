@@ -163,7 +163,7 @@ export default function UnivWarehouse() {
 };
 
  return (
- <div className="flex flex-col h-full bg-background overflow-hidden ${view !== 'Default' ? 'hide-default' : ''}">
+ <div className={`flex flex-col h-full bg-background overflow-hidden ${view !== 'Default' ? 'hide-default' : ''}`}>
  <div className="view-header flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
  <div>
  <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">Warehouse Zones</h2>
@@ -174,19 +174,19 @@ export default function UnivWarehouse() {
 
  
  
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={handleOpenAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
+ <button onClick={handleOpenAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
  <Plus className="w-4 h-4" /> Add Zone/Bay
  </button>
  </div>
  </div>
  </div>
 
- <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
@@ -195,11 +195,12 @@ export default function UnivWarehouse() {
  placeholder="Search zones, bays..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
 
+ {view === 'Default' && (
  <div className="flex-1 overflow-auto custom-scrollbar p-6">
  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
  {filtered.map((z, idx) => {
@@ -214,7 +215,7 @@ export default function UnivWarehouse() {
  animate={{ opacity: 1, scale: 1}}
  transition={{ delay: idx * 0.02}}
  key={z.id} 
- className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 hover:border-primary/40 transition-colors group relative"
+ className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-4 hover:border-primary/40 transition-colors group relative"
  >
  <div className="flex justify-between items-start mb-3">
  <div className="flex flex-col">
@@ -236,8 +237,8 @@ export default function UnivWarehouse() {
  <span className="text-xs font-medium text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Capacity Used</span>
  <span className={`text-xs font-semibold ${isHighUtil ? 'text-red-500' : 'text-emerald-500'}`}>{utilPercent}%</span>
  </div>
- <div className="h-2 w-full bg-muted dark:bg-slate-800 rounded-md-full overflow-hidden">
- <div className={`h-full rounded-md-full ${isHighUtil ? 'bg-red-500/10' : 'bg-emerald-500/10'}`} style={{ width: `${utilPercent}%`}}></div>
+ <div className="h-2 w-full bg-muted dark:bg-slate-800 rounded-full overflow-hidden">
+ <div className={`h-full rounded-full ${isHighUtil ? 'bg-red-500/10' : 'bg-emerald-500/10'}`} style={{ width: `${utilPercent}%`}}></div>
  </div>
  <div className="text-[10px] text-[#71717a] dark:text-gray-400 mt-1 text-right">
  {occ} / {cap} units
@@ -264,6 +265,10 @@ export default function UnivWarehouse() {
  </div>
  )}
  </div>
+ )}
+ {view === 'Grid' && <GenericGrid data={zones} />}
+ {view === 'Kanban' && <GenericKanban data={zones} />}
+ {view === 'Dashboard' && <GenericDashboard data={zones} />}
  </div>
 
  {/* Warehouse Zone/Bay Form Modal */}
@@ -272,7 +277,7 @@ export default function UnivWarehouse() {
  <motion.div 
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
- className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl max-w-md w-full p-6 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl max-w-md w-full p-6 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <button 
  onClick={() => setIsModalOpen(false)}
@@ -294,7 +299,7 @@ export default function UnivWarehouse() {
  onChange={(e) => setForm({ ...form, zone_name: e.target.value})}
  placeholder="e.g. North Sector"
  required
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
@@ -305,7 +310,7 @@ export default function UnivWarehouse() {
  value={form.bay_number}
  onChange={(e) => setForm({ ...form, bay_number: e.target.value})}
  placeholder="e.g. BAY-12"
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
@@ -318,7 +323,7 @@ export default function UnivWarehouse() {
  onChange={(e) => setForm({ ...form, capacity: e.target.value})}
  required
  min="1"
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
  <div>
@@ -328,7 +333,7 @@ export default function UnivWarehouse() {
  value={form.current_occupancy}
  onChange={(e) => setForm({ ...form, current_occupancy: e.target.value})}
  min="0"
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
  </div>
@@ -338,7 +343,7 @@ export default function UnivWarehouse() {
  <select 
  value={form.status}
  onChange={(e) => setForm({ ...form, status: e.target.value})}
- className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  >
  <option value="Active">Active</option>
  <option value="Inactive">Inactive</option>
@@ -349,13 +354,13 @@ export default function UnivWarehouse() {
  <button 
  type="button" 
  onClick={() => setIsModalOpen(false)}
- className="px-4 py-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-foreground hover:bg-muted/50 rounded-md-xl text-sm font-medium transition-colors"
+ className="px-4 py-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-foreground hover:bg-muted/50 rounded-xl text-sm font-medium transition-colors"
  >
  Cancel
  </button>
  <button 
  type="submit" 
- className="px-4 py-2 bg-primary text-white hover:bg-primary/90 rounded-md-xl text-sm font-medium transition-colors "
+ className="px-4 py-2 bg-primary text-white hover:bg-primary/90 rounded-xl text-sm font-medium transition-colors "
  >
  Save
  </button>

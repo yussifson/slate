@@ -101,8 +101,8 @@ export default function UniEnrollment() {
  <span>Application to Interview Rate</span>
  <span>82%</span>
  </div>
- <div className="w-full bg-[var(--color-surface-2)] h-2 rounded-md-full overflow-hidden">
- <div className="bg-[var(--primary)] h-full rounded-md-full" style={{ width: '82%'}} />
+ <div className="w-full bg-[var(--color-surface-2)] h-2 rounded-full overflow-hidden">
+ <div className="bg-[var(--primary)] h-full rounded-full" style={{ width: '82%'}} />
  </div>
  </div>
  <div>
@@ -110,8 +110,8 @@ export default function UniEnrollment() {
  <span>Interview to Offer Yield</span>
  <span>65%</span>
  </div>
- <div className="w-full bg-[var(--color-surface-2)] h-2 rounded-md-full overflow-hidden">
- <div className="bg-[var(--color-success)] h-full rounded-md-full" style={{ width: '65%'}} />
+ <div className="w-full bg-[var(--color-surface-2)] h-2 rounded-full overflow-hidden">
+ <div className="bg-[var(--color-success)] h-full rounded-full" style={{ width: '65%'}} />
  </div>
  </div>
  <div>
@@ -119,8 +119,8 @@ export default function UniEnrollment() {
  <span>Offer Acceptance Rate</span>
  <span>78%</span>
  </div>
- <div className="w-full bg-[var(--color-surface-2)] h-2 rounded-md-full overflow-hidden">
- <div className="bg-[var(--color-info)] h-full rounded-md-full" style={{ width: '78%'}} />
+ <div className="w-full bg-[var(--color-surface-2)] h-2 rounded-full overflow-hidden">
+ <div className="bg-[var(--color-info)] h-full rounded-full" style={{ width: '78%'}} />
  </div>
  </div>
  <div className="p-4 bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-lg)] flex items-center justify-between">

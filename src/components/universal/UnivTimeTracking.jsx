@@ -224,14 +224,14 @@ export default function UnivTimeTracking({
  {activeTimer ? (
  <button 
  onClick={stopTimer}
- className="px-6 py-2 bg-red-500/10 text-white rounded-md-full text-sm font-semibold hover:bg-red-600 transition-colors flex items-center gap-2 animate-pulse"
+ className="px-6 py-2 bg-red-500/10 text-white rounded-full text-sm font-semibold hover:bg-red-600 transition-colors flex items-center gap-2 animate-pulse"
  >
  <Square className="w-4 h-4" /> Stop Timer ({formatSeconds(elapsedTime)})
  </button>
  ) : (
  <button 
  onClick={startLiveTimer}
- className="px-6 py-2 bg-emerald-500/10 text-white rounded-md-full text-sm font-semibold hover:bg-emerald-600 transition-colors flex items-center gap-2"
+ className="px-6 py-2 bg-emerald-500/10 text-white rounded-full text-sm font-semibold hover:bg-emerald-600 transition-colors flex items-center gap-2"
  >
  <Play className="w-4 h-4 fill-white" /> Start Timer
  </button>
@@ -248,11 +248,11 @@ export default function UnivTimeTracking({
 
  {/* Global Stats */}
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Total Hours</div>
  <div className="text-3xl font-black text-foreground tracking-[-0.02em]">{totalHours} <span className="text-lg font-medium text-[#71717a] dark:text-gray-400">hrs</span></div>
  </div>
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 flex flex-col justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 flex flex-col justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Entries</div>
  <div className="text-2xl font-semibold text-foreground tracking-[-0.02em]">{entries.length}</div>
  </div>
@@ -286,14 +286,14 @@ export default function UnivTimeTracking({
  <p className="text-sm mt-1">Start a timer or log hours manually.</p>
  </div>
  ) : (
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="divide-y divide-border">
  {filteredEntries.map(entry => {
  const isRunning = entry.status === 'Running';
  return (
  <div key={entry.id} className={cn("p-4 sm:p-5 flex items-center justify-between group hover:bg-muted/30 transition-colors", isRunning && "bg-emerald-50/50 dark:bg-emerald-900/10")}>
  <div className="flex items-start gap-4">
- <div className={cn("w-10 h-10 rounded-md-full flex items-center justify-center shrink-0 mt-0.5", isRunning ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400" : "bg-muted text-[#71717a] dark:text-gray-400")}>
+ <div className={cn("w-10 h-10 rounded-full flex items-center justify-center shrink-0 mt-0.5", isRunning ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400" : "bg-muted text-[#71717a] dark:text-gray-400")}>
  {isRunning ? <Play className="w-4 h-4 fill-emerald-600 dark:fill-emerald-400" /> : <CheckCircle2 className="w-5 h-5" />}
  </div>
  <div>
@@ -335,7 +335,7 @@ export default function UnivTimeTracking({
  initial={{ opacity: 0, scale: 0.95, y: 20}}
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: 20}}
- className="relative w-full max-w-lg bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="relative w-full max-w-lg bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="px-6 py-4 border-b border-primary/40 flex items-center justify-between bg-muted/20">
  <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">

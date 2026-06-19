@@ -81,17 +81,17 @@ export default function VCompetencyTracking() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="flex bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             {['heatmap', 'framework'].map(v => (
               <button key={v} onClick={() => setView(v)} className={`px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-colors ${view === v ? 'bg-primary/10 text-primary' : 'hover:bg-primary/5 text-[#71717a] dark:text-gray-400'}`}>
                 {v}
               </button>
             ))}
           </div>
-          <Button variant="outline" className="rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:bg-primary/5">
+          <Button variant="outline" className="rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:bg-primary/5">
             <Download className="w-4 h-4 mr-2" /> Export
           </Button>
-          <Button className="rounded-md-xl bg-primary text-white hover:bg-primary/90 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
+          <Button className="rounded-xl bg-primary text-white hover:bg-primary/90 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
             <Sparkles className="w-4 h-4 mr-2" /> Identify Gaps
           </Button>
         </div>
@@ -99,7 +99,7 @@ export default function VCompetencyTracking() {
 
       {/* ── HEATMAP VIEW ── */}
       {view === 'heatmap' && (
-        <Card className="rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <Card className="rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           {/* Legend */}
           <div className="px-6 py-4 border-b border-primary/10 flex items-center justify-between bg-primary/5">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-white tracking-[0.04em]">Cohort Competency Matrix</h2>
@@ -148,7 +148,7 @@ export default function VCompetencyTracking() {
       {/* ── FRAMEWORK VIEW ── */}
       {view === 'framework' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <Card className="lg:col-span-4 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-hidden h-[calc(100vh-250px)] flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <Card className="lg:col-span-4 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-hidden h-[calc(100vh-250px)] flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <div className="px-6 py-4 border-b border-primary/10 bg-primary/5">
               <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-white tracking-[0.04em]">Competency Framework</h2>
             </div>
@@ -156,7 +156,7 @@ export default function VCompetencyTracking() {
               {domains.map((d, di) => (
                 <div key={di} className="mb-2">
                   <button onClick={() => setSelectedDomain(selectedDomain === di ? null : di)}
-                    className={`w-full text-left px-4 py-3 rounded-md-xl flex items-center gap-3 transition-colors ${selectedDomain === di ? 'bg-primary/10 text-primary' : 'hover:bg-primary/5 text-foreground'}`}>
+                    className={`w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 transition-colors ${selectedDomain === di ? 'bg-primary/10 text-primary' : 'hover:bg-primary/5 text-foreground'}`}>
                     <ChevronRight className={`w-4 h-4 transition-transform ${selectedDomain === di ? 'rotate-90' : ''}`} />
                     <span className="text-sm font-semibold uppercase tracking-wider flex-1 tracking-[0.04em]">{d.name}</span>
                     <Badge variant="outline" className="border-primary/40 bg-card text-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{d.competencies.length}</Badge>
@@ -176,7 +176,7 @@ export default function VCompetencyTracking() {
             </div>
           </Card>
 
-          <Card className="lg:col-span-8 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-hidden h-[calc(100vh-250px)] flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <Card className="lg:col-span-8 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-hidden h-[calc(100vh-250px)] flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <div className="px-6 py-4 border-b border-primary/10 bg-primary/5">
               <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-white tracking-[0.04em]">
                 {selectedDomain !== null ? domains[selectedDomain].name : 'Select a Domain'}
@@ -186,7 +186,7 @@ export default function VCompetencyTracking() {
               {selectedDomain !== null ? (
                 <div className="space-y-4">
                   {domains[selectedDomain].competencies.map((c, ci) => (
-                    <div key={ci} className="p-5 rounded-md-2xl bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 transition-all hover:border-primary/30">
+                    <div key={ci} className="p-5 rounded-2xl bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 transition-all hover:border-primary/30">
                       <div className="flex items-center gap-3 mb-3">
                         <Badge variant="outline" className="font-mono bg-card border-primary/40 text-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{c.code}</Badge>
                         <span className="text-lg font-semibold text-slate-900 dark:text-white">{c.name}</span>
@@ -197,7 +197,7 @@ export default function VCompetencyTracking() {
                         <div className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Progression Levels</div>
                         <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
                           {levelLabels.slice(1).map((l, li) => (
-                            <div key={li} className="p-2 rounded-md-xl text-center border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" style={{ borderTop: `3px solid ${levelColors[li + 1]}` }}>
+                            <div key={li} className="p-2 rounded-xl text-center border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" style={{ borderTop: `3px solid ${levelColors[li + 1]}` }}>
                               <div className="text-xs font-semibold text-slate-900 dark:text-white tracking-[0.04em]">{l}</div>
                               <div className="text-[10px] text-[#71717a] dark:text-gray-400 mt-1">Level {li + 1}</div>
                             </div>

@@ -156,7 +156,7 @@ export default function UnivPayroll() {
           <p className="text-[#71717a] dark:text-gray-400 text-sm font-medium mt-1">Manage salaries, taxes, and payslips.</p>
         </div>
         <div className="flex gap-2">
-          <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-md-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors "><Plus className="w-4 h-4" /> Run Payroll</button>
+          <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors "><Plus className="w-4 h-4" /> Run Payroll</button>
         </div>
       </div>
 
@@ -167,21 +167,21 @@ export default function UnivPayroll() {
           {label:'Drafts',value:payrolls.filter(p=>p.status==='Draft').length,icon:<FileText className="w-5 h-5"/>,ib:'bg-muted text-[#71717a] dark:text-gray-400'},
           {label:'Processed',value:payrolls.filter(p=>p.status==='Processed').length,icon:<Clock className="w-5 h-5"/>,ib:'bg-amber-100 text-amber-600'},
         ].map((k,i)=>(
-          <div key={i} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 rounded-md-2xl flex items-center gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-            <div className={`w-11 h-11 rounded-md-xl flex items-center justify-center shrink-0 ${k.ib}`}>{k.icon}</div>
+          <div key={i} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 rounded-2xl flex items-center gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${k.ib}`}>{k.icon}</div>
             <div><p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">{k.label}</p><p className="text-lg font-black text-foreground">{k.value}</p></div>
           </div>
         ))}
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3 shrink-0">
-        <div className="relative flex-1"><Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400"/><input type="text" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search employee..." className="w-full h-11 pl-10 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"/></div>
+        <div className="relative flex-1"><Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400"/><input type="text" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search employee..." className="w-full h-11 pl-10 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"/></div>
         <div className="flex gap-2 shrink-0">
-          {['All',...Object.keys(STATUS_COLORS)].map(s=><button key={s} onClick={()=>setStatusFilter(s)} className={`px-3 h-11 rounded-md-xl text-sm font-semibold border-[0.5px] border-black/9 dark:border-white/8 transition-all whitespace-nowrap ${statusFilter===s?'bg-primary text-white border-primary':'bg-card border-primary/40 text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}>{s}</button>)}
+          {['All',...Object.keys(STATUS_COLORS)].map(s=><button key={s} onClick={()=>setStatusFilter(s)} className={`px-3 h-11 rounded-xl text-sm font-semibold border-[0.5px] border-black/9 dark:border-white/8 transition-all whitespace-nowrap ${statusFilter===s?'bg-primary text-white border-primary':'bg-card border-primary/40 text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}>{s}</button>)}
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto min-h-0 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl flex flex-col custom-scrollbar hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="flex-1 overflow-auto min-h-0 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl flex flex-col custom-scrollbar hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="grid grid-cols-12 gap-2 p-4 border-b border-primary/40 bg-muted/50 text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider shrink-0 tracking-[0.04em]">
           <div className="col-span-3">Employee</div><div className="col-span-3">Period</div><div className="col-span-2 text-right">Net Pay</div><div className="col-span-2">Status</div><div className="col-span-2 text-right">Actions</div>
         </div>
@@ -191,7 +191,7 @@ export default function UnivPayroll() {
           : filtered.map(p=>(
             <div key={p.id} className="grid grid-cols-12 gap-2 p-4 border-b border-primary/40 hover:bg-muted/30 transition-colors items-center group">
               <div className="col-span-3 font-semibold text-sm text-foreground flex items-center gap-2">
-                <div className="w-7 h-7 rounded-md-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-xs tracking-[0.04em]">{getEmployeeName(p.employee_id, p.employee_name).charAt(0).toUpperCase()}</div>
+                <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-xs tracking-[0.04em]">{getEmployeeName(p.employee_id, p.employee_name).charAt(0).toUpperCase()}</div>
                 {getEmployeeName(p.employee_id, p.employee_name)}
               </div>
               <div className="col-span-3 text-sm text-[#71717a] dark:text-gray-400">{p.period_start} to {p.period_end}</div>
@@ -213,15 +213,15 @@ export default function UnivPayroll() {
 
       {isModalOpen&&(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
-          <div className="bg-card w-full max-w-2xl rounded-md-2xl flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-            <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0"><h2 className="text-xl font-black">{editingId?'Edit Payroll':'Create Payroll Entry'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-md-full text-[#71717a] dark:text-gray-400"><XCircle className="w-5 h-5"/></button></div>
+          <div className="bg-card w-full max-w-2xl rounded-2xl flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0"><h2 className="text-xl font-black">{editingId?'Edit Payroll':'Create Payroll Entry'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-full text-[#71717a] dark:text-gray-400"><XCircle className="w-5 h-5"/></button></div>
             <form onSubmit={save} className="p-5 overflow-y-auto flex-1 custom-scrollbar">
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
                   <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Select Employee *</label>
                   <div className="relative">
                     <User className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
-                    <select required value={form.employee_id} onChange={e => handleEmployeeChange(e.target.value)} className="w-full h-10 pl-9 pr-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm appearance-none cursor-pointer">
+                    <select required value={form.employee_id} onChange={e => handleEmployeeChange(e.target.value)} className="w-full h-10 pl-9 pr-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm appearance-none cursor-pointer">
                       <option value="">-- Choose Employee --</option>
                       {employees.map(emp => (
                         <option key={emp.id} value={emp.id}>{emp.first_name} {emp.last_name}</option>
@@ -229,22 +229,22 @@ export default function UnivPayroll() {
                     </select>
                   </div>
                 </div>
-                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Period Start *</label><input required type="date" value={form.period_start} onChange={e=>setForm({...form,period_start:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
-                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Period End *</label><input required type="date" value={form.period_end} onChange={e=>setForm({...form,period_end:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
-                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Basic Salary ($) *</label><input required type="number" min="0" step="0.01" value={form.basic_salary} onChange={e=>setForm({...form,basic_salary:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
-                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Allowances ($)</label><input type="number" min="0" step="0.01" value={form.allowances} onChange={e=>setForm({...form,allowances:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
-                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Deductions ($)</label><input type="number" min="0" step="0.01" value={form.deductions} onChange={e=>setForm({...form,deductions:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
-                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Tax Rate (%)</label><input type="number" min="0" max="100" step="0.1" value={form.tax_rate || 15} onChange={e=>setForm({...form,tax_rate:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
-                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Status</label><select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(STATUS_COLORS).map(s=><option key={s}>{s}</option>)}</select></div>
-                <div className="col-span-2"><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Payment Date</label><input type="date" value={form.payment_date} onChange={e=>setForm({...form,payment_date:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Period Start *</label><input required type="date" value={form.period_start} onChange={e=>setForm({...form,period_start:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Period End *</label><input required type="date" value={form.period_end} onChange={e=>setForm({...form,period_end:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Basic Salary ($) *</label><input required type="number" min="0" step="0.01" value={form.basic_salary} onChange={e=>setForm({...form,basic_salary:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Allowances ($)</label><input type="number" min="0" step="0.01" value={form.allowances} onChange={e=>setForm({...form,allowances:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Deductions ($)</label><input type="number" min="0" step="0.01" value={form.deductions} onChange={e=>setForm({...form,deductions:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Tax Rate (%)</label><input type="number" min="0" max="100" step="0.1" value={form.tax_rate || 15} onChange={e=>setForm({...form,tax_rate:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Status</label><select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(STATUS_COLORS).map(s=><option key={s}>{s}</option>)}</select></div>
+                <div className="col-span-2"><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Payment Date</label><input type="date" value={form.payment_date} onChange={e=>setForm({...form,payment_date:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
               </div>
-              <div className="bg-muted p-4 rounded-md-xl mt-6 flex justify-between items-center">
+              <div className="bg-muted p-4 rounded-xl mt-6 flex justify-between items-center">
                 <span className="font-semibold text-[#71717a] dark:text-gray-400">Calculated Net Pay:</span>
                 <span className="text-xl font-black text-foreground">
                   ${( (Number(form.basic_salary) + Number(form.allowances)) - Number(form.deductions) - ((Number(form.basic_salary) + Number(form.allowances)) * (Number(form.tax_rate||15)/100)) ).toLocaleString()}
                 </span>
               </div>
-              <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-primary/40"><button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-md-xl text-sm font-medium">Cancel</button><button type="submit" className="h-10 px-5 bg-primary text-white rounded-md-xl text-sm font-semibold ">{editingId?'Update Payroll':'Create Payroll'}</button></div>
+              <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-primary/40"><button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button><button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-semibold ">{editingId?'Update Payroll':'Create Payroll'}</button></div>
             </form>
           </div>
         </div>

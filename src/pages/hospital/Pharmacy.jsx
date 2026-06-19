@@ -129,20 +129,20 @@ export default function Pharmacy() {
  </Button>
  </div>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-12 h-12 rounded-md-full bg-slate-100 flex items-center justify-center text-primary"><Pill className="w-6 h-6" /></div>
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary"><Pill className="w-6 h-6" /></div>
  <div><p className="text-3xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{inventory.length}</p><p className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("total_unique_drugs", "Total Unique Drugs")}</p></div>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-12 h-12 rounded-md-full bg-red-100 flex items-center justify-center text-red-600"><AlertTriangle className="w-6 h-6" /></div>
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-red-600"><AlertTriangle className="w-6 h-6" /></div>
  <div><p className="text-3xl font-semibold text-red-600 tracking-[-0.02em]">{lowStockCount}</p><p className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("low_stock_alerts", "Low Stock Alerts")}</p></div>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-12 h-12 rounded-md-full bg-slate-100 flex items-center justify-center text-primary"><ShoppingBag className="w-6 h-6" /></div>
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary"><ShoppingBag className="w-6 h-6" /></div>
  <div><p className="text-3xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{inventory.filter(d => d.stock > d.reorder).length}</p><p className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("well_stocked_drugs", "Well Stocked Drugs")}</p></div>
  </div>
  </div>
- <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div className="relative max-w-md w-full">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -220,7 +220,7 @@ export default function Pharmacy() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><Pill className="w-5 h-5 text-primary"/> {t("add_new_medication", "Add New Medication")}</h2>
  <div className="grid grid-cols-2 gap-3">
  <div className="col-span-2">

@@ -16,7 +16,7 @@ export default function OnlineInstructor() {
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- <Card className="border-0 rounded-md-xl">
+ <Card className="border-0 rounded-xl">
  <CardContent className="p-6">
  <div className="flex items-center space-x-4">
  <div className="p-3 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-xl">
@@ -33,7 +33,7 @@ export default function OnlineInstructor() {
  </CardContent>
  </Card>
  
- <Card className="border-0 rounded-md-xl">
+ <Card className="border-0 rounded-xl">
  <CardContent className="p-6">
  <div className="flex items-center space-x-4">
  <div className="p-3 bg-slate-50 dark:bg-slate-800/50 text-primary rounded-xl">
@@ -50,7 +50,7 @@ export default function OnlineInstructor() {
  </CardContent>
  </Card>
 
- <Card className="border-0 rounded-md-xl">
+ <Card className="border-0 rounded-xl">
  <CardContent className="p-6">
  <div className="flex items-center space-x-4">
  <div className="p-3 bg-yellow-50 text-yellow-600 rounded-xl">
@@ -69,7 +69,7 @@ export default function OnlineInstructor() {
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
- <Card className="lg:col-span-2 border-0 rounded-md-xl">
+ <Card className="lg:col-span-2 border-0 rounded-xl">
  <CardHeader className="flex flex-row items-center justify-between">
  <div>
  <CardTitle className="text-xl">Course Management</CardTitle>
@@ -110,7 +110,7 @@ export default function OnlineInstructor() {
  </CardContent>
  </Card>
 
- <Card className="border-0 rounded-md-xl">
+ <Card className="border-0 rounded-xl">
  <CardHeader>
  <CardTitle className="text-xl">Student Drop-off Analysis</CardTitle>
  <CardDescription>Where students are getting stuck.</CardDescription>

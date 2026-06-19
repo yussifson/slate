@@ -224,7 +224,7 @@ export default function UnivRiskManagement({
  <p className="text-sm mt-1">Add risks to build your register.</p>
  </div>
  ) : (
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm text-left">
  <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  <tr>
@@ -285,7 +285,7 @@ export default function UnivRiskManagement({
  )
  ) : (
  // MATRIX VIEW
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6 sm:p-10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-6 sm:p-10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-end mb-8">
  <div>
  <h2 className="text-xl font-semibold text-foreground">Risk Heatmap</h2>
@@ -294,7 +294,7 @@ export default function UnivRiskManagement({
  <div className="flex gap-4">
  {Object.entries(RISK_SCORES).map(([key, config]) => (
  <div key={key} className="flex items-center gap-2.5 text-xs font-semibold uppercase text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
- <div className={cn("w-3 h-3 rounded-md-full", config.badge)}></div> {key}
+ <div className={cn("w-3 h-3 rounded-full", config.badge)}></div> {key}
  </div>
  ))}
  </div>
@@ -313,7 +313,7 @@ export default function UnivRiskManagement({
  <div 
  key={idx} 
  className={cn(
- "rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 flex flex-col p-2 relative overflow-hidden transition-all hover:ring-2 ring-primary/50",
+ "rounded-xl border-[0.5px] border-black/9 dark:border-white/8 flex flex-col p-2 relative overflow-hidden transition-all hover:ring-2 ring-primary/50",
  levelConfig.color.split(' ')[0], // bg color
  levelConfig.color.split(' ')[2], // border-[0.5px] border-black/9 dark:border-white/8 color
  "bg-opacity-30 dark:bg-opacity-20"
@@ -355,7 +355,7 @@ export default function UnivRiskManagement({
  initial={{ opacity: 0, scale: 0.95, y: 20}}
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: 20}}
- className="relative w-full max-w-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="relative w-full max-w-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="px-6 py-4 border-b border-primary/40 flex items-center justify-between bg-muted/20">
  <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
@@ -388,7 +388,7 @@ export default function UnivRiskManagement({
  </div>
  </div>
 
- <div className="bg-muted/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 grid grid-cols-2 gap-6">
+ <div className="bg-muted/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 grid grid-cols-2 gap-6">
  <div>
  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-3 tracking-[0.04em]">Impact (Severity)</label>
  <input type="range" min="1" max="5" value={formState.impact} onChange={e => setFormState({...formState, impact: parseInt(e.target.value)})} className="w-full accent-primary" />
