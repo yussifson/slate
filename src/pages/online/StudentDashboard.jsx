@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery} from "@tanstack/react-query";
 import { base44} from "@/api/base44Client";
 import { useCompanyId} from "@/hooks/useCompanyId";
-import { BookOpen, PlayCircle, Award, Clock, ArrowRight} from 'lucide-react';
+import { BookOpen, PlayCircle, Award, Clock, ArrowRight, BrainCircuit, Sparkles } from 'lucide-react';
 import { useNavigate} from 'react-router-dom';
 import { motion, AnimatePresence} from 'framer-motion';
+import { generateText } from '@/lib/cloudflareAI';
 
 export default function StudentDashboard() {
  const companyId = useCompanyId();
  const navigate = useNavigate();
+
+ const [aiPath, setAiPath] = useState('');
+ const [isGeneratingPath, setIsGeneratingPath] = useState(false);
 
  const { data: courses = []} = useQuery({
  queryKey: ["cases", companyId, "online_course"],
@@ -17,6 +21,24 @@ export default function StudentDashboard() {
 });
 
  const enrolledCourses = courses;
+
+ useEffect(() => {
+   const fetchPath = async () => {
+     if (enrolledCourses.length === 0) {
+       setIsGeneratingPath(true);
+       try {
+         const prompt = `You are an AI academic advisor. The student currently has no active courses. Recommend a concise 2-sentence learning path or motivational message to get them started with exploring the course catalog.`;
+         const res = await generateText(prompt);
+         setAiPath(res || "Explore our rich catalog of courses to jumpstart your learning journey today.");
+       } catch (err) {
+         setAiPath("Explore our rich catalog of courses to jumpstart your learning journey today.");
+       } finally {
+         setIsGeneratingPath(false);
+       }
+     }
+   };
+   fetchPath();
+ }, [enrolledCourses.length]);
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl mx-auto py-6 px-4">
@@ -29,7 +51,7 @@ export default function StudentDashboard() {
  <div className="absolute top-[-50%] right-[-10%] w-[50%] h-[200%] bg-white dark:bg-slate-900/40/10 blur-[80px] rounded-full pointer-events-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  <div className="relative z-10">
  <h1 className="text-3xl font-display font-semibold mb-2 tracking-[-0.02em]">Welcome back, Learner!</h1>
- <p className="opacity-90 max-w-lg">Pick up where you left off. You have 2 courses in progress and 1 new certificate available.</p>
+ <p className="opacity-90 max-w-lg">Pick up where you left off. You have {enrolledCourses.length} courses in progress.</p>
  </div>
  <div className="hidden md:flex gap-6 relative z-10">
  <div className="text-center bg-white/50 dark:bg-black/10 p-5 rounded-xl backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-white/20 text-slate-900 dark:text-white  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
@@ -55,12 +77,24 @@ export default function StudentDashboard() {
  <motion.div 
  initial={{ opacity: 0}}
  animate={{ opacity: 1}}
- className="p-10 text-center border-2 border-dashed border-primary/40 rounded-md-[var(--radius-xl)] bg-[var(--color-surface-0)] glass-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+ className="p-10 text-center border-2 border-dashed border-primary/40 rounded-md-[var(--radius-xl)] bg-gradient-to-b from-[var(--color-surface-0)] to-primary/5 glass-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200 relative overflow-hidden"
  >
- <BookOpen className="w-12 h-12 mx-auto text-[var(--primary)] opacity-30 mb-4" />
- <h3 className="font-semibold text-lg text-[var(--color-text-primary)]">No active courses</h3>
- <p className="text-sm text-[var(--color-text-secondary)] mt-1 mb-6">You aren't enrolled in any courses yet. Explore our catalog to start learning.</p>
- <button onClick={() => navigate('/o/courses')} className="px-5 py-2.5 bg-[var(--primary)] text-white text-sm font-semibold rounded-full hover:opacity-90 transition-opacity ">
+   <div className="absolute top-0 right-0 p-4 opacity-10">
+     <BrainCircuit className="w-32 h-32 text-primary" />
+   </div>
+ <Sparkles className="w-12 h-12 mx-auto text-[var(--primary)] opacity-80 mb-4" />
+ <h3 className="font-semibold text-lg text-[var(--color-text-primary)]">AI Learning Path Suggestion</h3>
+ <p className="text-sm text-[var(--color-text-secondary)] mt-2 mb-6 max-w-md mx-auto leading-relaxed">
+   {isGeneratingPath ? (
+     <span className="flex items-center justify-center gap-2">
+       <span className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+       Analyzing your profile...
+     </span>
+   ) : (
+     aiPath
+   )}
+ </p>
+ <button onClick={() => navigate('/o/courses')} className="px-5 py-2.5 bg-[var(--primary)] text-white text-sm font-semibold rounded-full hover:opacity-90 transition-opacity relative z-10 shadow-lg shadow-primary/20">
  Browse Catalog
  </button>
  </motion.div>

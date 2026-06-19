@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
 import { powerSync } from "@/api/PowerSyncConnector";
 import { useCompanyId} from "@/hooks/useCompanyId";
 import { useAuth } from '@/lib/AuthContext';
-import { ArrowLeft, PlayCircle, CheckCircle2, ChevronDown, MessageSquare, BookOpen, FileText, Check} from 'lucide-react';
+import { ArrowLeft, PlayCircle, CheckCircle2, ChevronDown, MessageSquare, BookOpen, FileText, Check, BrainCircuit} from 'lucide-react';
 import { motion} from 'framer-motion';
 import { useToast } from "@/components/ui/use-toast";
 
@@ -166,12 +166,41 @@ export default function LearningPlayer() {
  {activeTab === 'qna' && (
  <motion.div initial={{ opacity: 0, y: 10}} animate={{ opacity: 1, y: 0}} className="space-y-4">
  <div className="flex gap-4 p-1 bg-[var(--color-surface-1)] rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus-within:border-[var(--primary)] focus-within:ring-1 focus-within:ring-[var(--primary)] transition-all">
- <input type="text" placeholder="Ask a new question..." className="bg-transparent border-none outline-none w-full text-sm text-[var(--color-text-primary)] px-4 py-2" />
- <button className="bg-[var(--primary)] text-white rounded-full p-2.5 hover:opacity-90 transition-opacity">
- <MessageSquare className="w-4 h-4" />
+ <input 
+   type="text" 
+   id="ai-tutor-input"
+   placeholder="Ask the AI Tutor a question about this lesson..." 
+   className="bg-transparent border-none outline-none w-full text-sm text-[var(--color-text-primary)] px-4 py-2" 
+   onKeyDown={async (e) => {
+     if (e.key === 'Enter') {
+       const val = e.target.value;
+       if (!val) return;
+       e.target.value = '';
+       toast({ title: "Asking AI Tutor...", description: val });
+       try {
+         const { generateText } = await import('@/lib/cloudflareAI');
+         const prompt = `You are a helpful AI tutor for an online course. The current lesson is "${activeLesson?.title || courseTitle}". The student asks: "${val}". Provide a clear, concise, and helpful answer.`;
+         const res = await generateText(prompt);
+         toast({ title: "AI Tutor Response", description: res, duration: 15000 });
+       } catch (err) {
+         toast({ title: "AI Tutor Error", description: "Could not get an answer right now.", variant: "destructive" });
+       }
+     }
+   }}
+ />
+ <button 
+   onClick={() => {
+     const input = document.getElementById('ai-tutor-input');
+     if (input) {
+       input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+     }
+   }}
+   className="bg-[var(--primary)] text-white rounded-full p-2.5 hover:opacity-90 transition-opacity"
+ >
+ <BrainCircuit className="w-4 h-4" />
  </button>
  </div>
- <p className="text-sm text-[var(--color-text-tertiary)] text-center py-12">No questions asked yet. Be the first!</p>
+ <p className="text-sm text-[var(--color-text-tertiary)] text-center py-12">Ask any question about the lesson and our AI Tutor will explain it instantly.</p>
  </motion.div>
  )}
  {activeTab === 'resources' && (

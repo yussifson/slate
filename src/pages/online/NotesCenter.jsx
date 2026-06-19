@@ -1,5 +1,5 @@
 import React, { useState} from 'react';
-import { Search, BookOpen, PlusCircle, Calendar, Trash2} from 'lucide-react';
+import { Search, BookOpen, PlusCircle, Calendar, Trash2, Sparkles} from 'lucide-react';
 import { useToast} from "@/components/ui/use-toast";
 
 export default function NotesCenter() {
@@ -57,9 +57,27 @@ export default function NotesCenter() {
  <span className="flex items-center gap-2"><Calendar className="w-4 h-4" /> Oct 12, 2026</span>
  </div>
  </div>
- <button className="p-2 text-[var(--color-text-tertiary)] hover:text-[var(--color-error)] hover:bg-[var(--color-error-subtle)] rounded-lg transition-colors">
- <Trash2 className="w-5 h-5" />
- </button>
+  <div className="flex gap-2">
+  <button 
+    onClick={async () => {
+      toast({ title: "Summarizing...", description: "AI is expanding your notes..." });
+      try {
+        const { generateText } = await import('@/lib/cloudflareAI');
+        const prompt = `Expand and summarize these brief notes into a comprehensive study guide: "Hooks replace the old lifecycle methods. useEffect is for side effects."`;
+        const res = await generateText(prompt);
+        toast({ title: "AI Summary Complete", description: res, duration: 15000 });
+      } catch (err) {
+        toast({ title: "Error", description: "Failed to generate summary.", variant: "destructive" });
+      }
+    }}
+    className="p-2 text-[var(--primary)] bg-primary/10 hover:bg-primary/20 rounded-lg transition-colors flex items-center gap-2 text-sm font-medium"
+  >
+    <Sparkles className="w-4 h-4" /> AI Expand
+  </button>
+  <button className="p-2 text-[var(--color-text-tertiary)] hover:text-[var(--color-error)] hover:bg-[var(--color-error-subtle)] rounded-lg transition-colors">
+  <Trash2 className="w-5 h-5" />
+  </button>
+  </div>
  </div>
  
  <div className="prose prose-sm max-w-none text-[var(--color-text-primary)] font-body leading-relaxed">
