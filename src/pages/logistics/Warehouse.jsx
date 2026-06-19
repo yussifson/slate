@@ -18,7 +18,7 @@ export default function Warehouse() {
   
   const { data: subData } = useSubscription();
   const plan = subData?.subscription_plan || 'starter';
-  const isProOrAbove = plan === 'pro' || plan === 'enterprise';
+  const isProOrAbove = user?.role === 'super_admin' || plan === 'pro' || plan === 'enterprise';
 
   const [searchQuery, setSearchQuery] = useState('');
   const [manualEntry, setManualEntry] = useState({ sku: '', name: '', quantity: '', location: '' });

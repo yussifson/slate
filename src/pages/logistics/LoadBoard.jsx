@@ -18,7 +18,7 @@ export default function LoadBoard() {
   
   const { data: subData } = useSubscription();
   const plan = subData?.subscription_plan || 'starter';
-  const isProOrAbove = plan === 'pro' || plan === 'enterprise';
+  const isProOrAbove = user?.role === 'super_admin' || plan === 'pro' || plan === 'enterprise';
 
   const [isPosting, setIsPosting] = useState(false);
   const [matchingLoadId, setMatchingLoadId] = useState(null);

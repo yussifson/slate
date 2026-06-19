@@ -19,7 +19,7 @@ export default function RouteOptimization() {
   const { data: subData } = useSubscription();
   // If useSubscription returns null initially, we default to starter to be safe.
   const plan = subData?.subscription_plan || 'starter';
-  const isProOrAbove = plan === 'pro' || plan === 'enterprise';
+  const isProOrAbove = user?.role === 'super_admin' || plan === 'pro' || plan === 'enterprise';
 
   const [stops, setStops] = useState([{ id: crypto.randomUUID(), address: '' }, { id: crypto.randomUUID(), address: '' }]);
   const [isOptimizing, setIsOptimizing] = useState(false);
