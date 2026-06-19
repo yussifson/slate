@@ -146,6 +146,28 @@ export default function Clients() {
 }
 };
 
+const handleInviteClient = async (client) => {
+  if (!client.email) {
+    toast({ title: "Missing Email", description: "This client does not have an email address.", variant: "destructive" });
+    return;
+  }
+  toast({ title: "Sending Invite...", description: `Inviting ${client.name} to the Client Portal.` });
+  try {
+    const tempPassword = Math.random().toString(36).slice(-8) + 'A1!';
+    const { registerSchoolUser } = await import('@/api/authUtils');
+    const res = await registerSchoolUser(client.email, tempPassword, 'client', companyId, client.name);
+    
+    if (res.error) throw res.error;
+    
+    // Update the client record to show they were invited
+    await base44.entities.Client.update(client.id, { portal_invited: true, portal_status: 'active' });
+    queryClient.invalidateQueries({ queryKey: ["clients"] });
+    toast({ title: "Invite Sent!", description: `Temporary password: ${tempPassword}`, duration: 10000 });
+  } catch (err) {
+    toast({ title: "Invite Failed", description: err.message, variant: "destructive" });
+  }
+};
+
  const exportData = clients.map(c => ({
  name: c.name, email: c.email, phone: c.phone, type: c.type,
  status: c.status, city: c.city, country: c.country}));
@@ -271,6 +293,7 @@ export default function Clients() {
  <DropdownMenuContent align="end">
  <DropdownMenuItem onClick={() => setViewingClient(row)}>{t("view_details", "View Details")}</DropdownMenuItem>
  <DropdownMenuItem onClick={() => setEditingClient(row)}>{t("edit", "Edit")}</DropdownMenuItem>
+ <DropdownMenuItem onClick={() => handleInviteClient(row)}>Invite to Portal</DropdownMenuItem>
  <DropdownMenuItem className="text-red-600" onClick={() => handleDeleteOne(row.id)}>{t("delete", "Delete")}</DropdownMenuItem>
  </DropdownMenuContent>
  </DropdownMenu>

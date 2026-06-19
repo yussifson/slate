@@ -207,6 +207,7 @@ export default function Login() {
 }
  if (profile?.role === 'student') url += 'student-portal';
  else if (profile?.role === 'parent') url += 'parent-portal';
+ else if (['client', 'patient', 'guest', 'customer', 'member', 'policyholder'].includes(profile?.role)) url += 'portal';
  window.location.href = url;
  return;
 }
@@ -218,6 +219,9 @@ export default function Login() {
  return;
 } else if (profile?.role === 'parent') {
  window.location.href = '/parent-portal';
+ return;
+} else if (['client', 'patient', 'guest', 'customer', 'member', 'policyholder'].includes(profile?.role)) {
+ window.location.href = '/portal';
  return;
 }
 
@@ -252,6 +256,7 @@ export default function Login() {
  
  if (profile?.role === 'student') url += 'student-portal';
  else if (profile?.role === 'parent') url += 'parent-portal';
+ else if (['client', 'patient', 'guest', 'customer', 'member', 'policyholder'].includes(profile?.role)) url += 'portal';
  
  window.location.href = url;
  return;

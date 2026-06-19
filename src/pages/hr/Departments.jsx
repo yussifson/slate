@@ -106,7 +106,7 @@ export default function Departments() {
 
  const handleDelete = () => {
  if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'department'}, {
+ deleteRecord.mutate(deleteTargetId, {
  onSuccess: () => {
  toast.success('Department removed successfully!');
  setDeleteTargetId(null);

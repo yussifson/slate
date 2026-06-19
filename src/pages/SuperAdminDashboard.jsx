@@ -151,12 +151,15 @@ export default function SuperAdminDashboard() {
  </div>
  </div>
 
- <div className="flex gap-2 pt-1">
+ <div className="flex flex-wrap gap-2 pt-1">
  <Button variant="outline" size="sm" className="gap-2.5" onClick={() => setShowForm(true)}>
  <Settings2 className="w-3.5 h-3.5" /> {t("edit_firm_details", "Edit " + (getTerm(activeIndustry, "venue") || "Firm") + " Details")}
  </Button>
  <Button variant="outline" size="sm" className="gap-2.5" onClick={() => setManagingStaff(true)}>
  <UserCog className="w-3.5 h-3.5" /> {t("manage_team", "Manage Team")}
+ </Button>
+ <Button variant="outline" size="sm" className="gap-2.5 border-primary/40 text-primary hover:bg-primary/5 hover:text-primary" onClick={() => setShowPartners(true)}>
+ <Handshake className="w-3.5 h-3.5" /> Partner Applications
  </Button>
  </div>
  </div>

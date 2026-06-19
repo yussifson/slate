@@ -141,6 +141,7 @@ import Chat from './pages/Chat';
 import Board from './pages/Board';
 import CustomPageViewer from './pages/CustomPageViewer';
 import OrbitComponentTester from './pages/admin/OrbitComponentTester';
+const MasterPortalRouter = React.lazy(() => import('./components/portal/MasterPortalRouter'));
 
 // School Pages
 import SchoolStudents from './pages/school/Students';
@@ -421,6 +422,7 @@ import SuperAdminBilling from './components/orbitbolt/SuperAdminBilling';
 import AdminSecurity from './pages/admin/AdminSecurity';
 import AdminBroadcasts from './pages/admin/AdminBroadcasts';
 import AdminEnterpriseRequests from './pages/admin/AdminEnterpriseRequests';
+import AdminPartners from './pages/admin/AdminPartners';
 import NotificationsInbox from './pages/NotificationsInbox';
 
 function PlatformRoutes() {
@@ -473,7 +475,7 @@ function PlatformRoutes() {
       <Route path="/univ-calendar" element={<UnivCalendar />} />
       <Route path="/case-mgmt" element={<UnivCaseManagement />} />
       <Route path="/class-attendance" element={<UnivClassAttendance />} />
-      <Route path="/portal" element={<UnivClientPortal />} />
+      <Route path="/portal" element={<MasterPortalRouter />} />
       <Route path="/contractors" element={<UnivContractor />} />
       <Route path="/courses" element={<UnivCourse />} />
       <Route path="/court" element={<UnivCourtCalendar />} />
@@ -922,6 +924,7 @@ function App() {
                           <Route path="/admin/security" element={<AdminSecurity />} />
                           <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
                           <Route path="/admin/enterprise-requests" element={<AdminEnterpriseRequests />} />
+                          <Route path="/admin/partners" element={<AdminPartners />} />
 
                           {PlatformRoutes()}
                         </Route>
@@ -948,6 +951,7 @@ function App() {
                           <Route path="/admin/security" element={<AdminSecurity />} />
                           <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
                           <Route path="/admin/enterprise-requests" element={<AdminEnterpriseRequests />} />
+                          <Route path="/admin/partners" element={<AdminPartners />} />
 
                           {PlatformRoutes()}
                         </Route>

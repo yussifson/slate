@@ -120,7 +120,7 @@ export default function Partners() {
 
   {/* Partner Application Dialog */}
   <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-    <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden border-0 shadow-2xl rounded-3xl">
+    <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto p-0 border-0 shadow-2xl rounded-3xl">
       <div className="bg-slate-50/50 p-6 md:p-8 border-b border-slate-100 backdrop-blur-md">
         <DialogHeader>
           <div className="w-12 h-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-4 ring-1 ring-primary/20">

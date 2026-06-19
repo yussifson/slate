@@ -18,7 +18,32 @@ export default function RetailDashboard() {
  const isLoading = isOrdersLoading || isProductsLoading || isShiftsLoading;
 
  // Calculate Metrics
- const today = new Date().toISOString().split('T')[0];
+ 
+  const handleAIBriefing = async () => {
+    if (!isProOrAbove) {
+      // toast.error('AI Insights are available on Pro or Enterprise plans.');
+      return;
+    }
+    setIsGenerating(true);
+    setAiInsight('');
+    try {
+      const prompt = `You are a Retail Store Manager AI. Today's orders: ${orders.length}, Low stock items: ${lowStockProducts.length}. Write a 2-sentence morning briefing to the store team.`;
+      const response = await generateText(prompt);
+      setAiInsight(response);
+    } catch (e) {
+      console.error('AI Briefing failed.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!isLoading && orders.length >= 0) {
+      // Optionally auto-generate or wait for button click. We'll wait for button click.
+    }
+  }, [isLoading]);
+
+  const today = new Date().toISOString().split('T')[0];
  const todaysOrders = orders.filter(o => o.createdAt && o.createdAt.startsWith(today));
  const todayRevenue = todaysOrders.reduce((sum, o) => sum + (Number(o.data?.total) || 0), 0);
  

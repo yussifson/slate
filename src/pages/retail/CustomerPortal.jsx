@@ -20,7 +20,7 @@ export default function CustomerPortal() {
  const customerProfile = dbCustomers.find(c => c.data?.email === user?.email || c.data?.name === user?.name) 
  || { data: { totalSpent: 0, orders: 0, segment: 'New'}};
 
- const loyaltyPoints = Math.floor((parseFloat(customerProfile.data?.totalSpent) || 0) * 10);
+ const loyaltyPoints = Math.floor((parseFloat(customerProfile.total_spent) || 0) * 10);
 
  // Filter sales/orders for this customer (mocked here, should filter properly on backend)
  const myOrders = dbSales.map(r => ({ id: r.id, status: r.status, ...r.data}));
@@ -76,10 +76,10 @@ export default function CustomerPortal() {
  <div className="flex justify-between items-start mb-3">
  <div>
  <div className="flex items-center gap-2 mb-1">
- <h4 className="font-semibold text-base text-foreground">{t("order", "Order")} {order.saleId || `SAL-${order.id.slice(0,4)}`}</h4>
+ <h4 className="font-semibold text-base text-foreground">{t("order", "Order")} {order.sale_id || `SAL-${order.id.slice(0,4)}`}</h4>
  <Badge variant="outline" className={`${order.status === 'Completed' ? 'bg-slate-100 text-primary/90 border-primary/20' : 'bg-muted text-[#71717a] dark:text-gray-400'}`}>{order.status || 'Completed'}</Badge>
  </div>
- <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{order.timestamp ? new Date(order.timestamp).toLocaleString() : 'Recent'}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{order.created_at ? new Date(order.created_at).toLocaleString() : 'Recent'}</p>
  </div>
  <div className="text-right">
  <p className="font-black text-lg text-foreground">${(parseFloat(order.total) || 0).toFixed(2)}</p>
@@ -87,7 +87,11 @@ export default function CustomerPortal() {
  </div>
  </div>
  <div className="bg-muted/50 rounded-xl p-3 space-y-2 text-sm mt-3 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
- {order.items?.map((item, idx) => {
+ {typeof order.items === 'number' ? (
+                            <div className="flex justify-between text-xs tracking-[0.04em]">
+                              <span className="font-medium">{order.items} Items Count</span>
+                            </div>
+                          ) : order.items?.map((item, idx) => {
  return (
  <div key={idx} className="flex justify-between text-xs tracking-[0.04em]">
  <span className="font-medium">{item.qty}x {item.name}</span>

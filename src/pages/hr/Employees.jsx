@@ -181,7 +181,7 @@ export default function Employees() {
 
  const handleDeleteEmployee = () => {
  if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'staff'}, {
+ deleteRecord.mutate(deleteTargetId, {
  onSuccess: () => {
  toast.success('Employee removed successfully!');
  setDeleteTargetId(null);
@@ -392,7 +392,7 @@ export default function Employees() {
  className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground"
  >
  <option value="">Select Department...</option>
- {departmentRecords.map(d => <option key={d.id} value={d.id}>{d.data?.name}</option>)}
+ {departmentRecords.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
  </select>
  </div>
  <div>

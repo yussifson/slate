@@ -19,18 +19,18 @@ export default function Products() {
  
  const suppliers = supplierRecords.map(r => ({
  id: r.id,
- name: r.data?.name || 'Unnamed Supplier'
+ name: r.name || 'Unnamed Supplier'
 }));
 
  const products = dbRecords.map(r => ({
  id: r.id,
- sku: r.data?.sku || `SKU-${r.id?.slice(0, 5).toUpperCase()}`,
- name: r.data?.name || 'Unnamed Product',
- category: r.data?.category || 'General',
- price: parseFloat(r.data?.price) || 0,
- stock: parseInt(r.data?.stock) || 0,
- status: r.data?.stock > 0 ? 'In Stock' : 'Out of Stock',
- supplierId: r.data?.supplierId || '',
+ sku: r.sku || `SKU-${r.id?.slice(0, 5).toUpperCase()}`,
+ name: r.name || 'Unnamed Product',
+ category: r.category || 'General',
+ price: parseFloat(r.price) || 0,
+ stock: parseInt(r.quantity) || 0,
+ status: r.quantity > 0 ? 'In Stock' : 'Out of Stock',
+ supplierId: r.supplier_id || '',
  createdBy: r.created_by || 'System',
  createdAt: r.created_at || new Date().toISOString()
 }));
@@ -51,7 +51,31 @@ export default function Products() {
  setShowModal(true);
 };
 
- const handleSave = () => {
+ 
+  const handleAIGenerator = async () => {
+    if (!isProOrAbove) {
+      toast.error('AI Insights are available on Pro or Enterprise plans.');
+      return;
+    }
+    if (!formData.name) {
+      toast.error('Please enter a product name first.');
+      return;
+    }
+    setIsGenerating(true);
+    try {
+      const prompt = `You are an SEO expert. Write a compelling 2-sentence product description for a retail product named "${formData.name}" in category "${formData.category}".`;
+      const response = await generateText(prompt);
+      toast.success('Description generated!');
+      // Assuming we'd add a description field later, or just alert it
+      alert(response);
+    } catch (e) {
+      toast.error('AI Generator failed.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleSave = () => {
  if (!formData.name.trim()) return toast.error("Name is required");
 
  const existingData = editingId ? dbRecords.find(r => r.id === editingId)?.data || {} : {};
@@ -176,7 +200,13 @@ export default function Products() {
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
  <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editingId ? 'Edit Product' : 'Add Product'}</h2>
+ <div className="flex justify-between items-center">
+            <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editingId ? 'Edit Product' : 'Add Product'}</h2>
+            <Button size="sm" variant="outline" className="gap-2 bg-primary/5 text-primary border-primary/20" onClick={handleAIGenerator} disabled={isGenerating}>
+              {isGenerating ? <Sparkles className="w-4 h-4 animate-spin" /> : (!isProOrAbove ? <Lock className="w-4 h-4" /> : <Bot className="w-4 h-4" />)}
+              {isGenerating ? 'Generating...' : 'AI SEO Writer'}
+            </Button>
+          </div>
  <div className="space-y-3">
  <div><label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Name</label><Input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value})} className="mt-1" /></div>
  <div><label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">SKU</label><Input value={formData.sku} onChange={e => setFormData({ ...formData, sku: e.target.value})} className="mt-1" /></div>

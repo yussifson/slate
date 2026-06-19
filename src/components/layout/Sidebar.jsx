@@ -295,7 +295,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  { label: "Global Invoices", path: "/admin/billing", icon: "DollarSign"},
  { label: "Security", path: "/admin/security", icon: "ShieldCheck"},
  { label: "Broadcasts", path: "/admin/broadcasts", icon: "Megaphone"},
- { label: "Enterprise Requests", path: "/admin/enterprise-requests", icon: "Building2"}
+ { label: "Enterprise Requests", path: "/admin/enterprise-requests", icon: "Building2"},
+ { label: "Partner Applications", path: "/admin/partners", icon: "Handshake"}
  ];
 
  const isSuiteAdmin = ["super_admin", "admin"].includes(user?.role);

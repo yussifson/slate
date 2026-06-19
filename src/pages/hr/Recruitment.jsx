@@ -145,7 +145,7 @@ export default function Recruitment() {
 
  const handleDelete = () => {
  if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'candidate'}, {
+ deleteRecord.mutate(deleteTargetId, {
  onSuccess: () => {
  toast.success('Candidate removed!');
  setDeleteTargetId(null);
