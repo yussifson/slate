@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Users, Search, Plus, GraduationCap, Phone, Mail, Filter, CheckCircle, XCircle, Clock, UserCheck, AlertCircle, MapPin, HeartPulse, FileText, BrainCircuit, TrendingUp, TrendingDown, RefreshCw } from 'lucide-react';
-import { generateText } from '@/api/aiClient';
+import { generateText } from '@/lib/cloudflareAI';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useAuth } from '@/lib/AuthContext';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";

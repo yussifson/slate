@@ -6,7 +6,9 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { powerSync } from '@/api/PowerSyncConnector';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 
@@ -60,7 +62,7 @@ export default function Exams() {
 
   const handleDeleteExam = () => {
     if (!deleteTargetId) return;
-    deleteRecord.mutate({ id: deleteTargetId, recordType: 'exam' }, { onSuccess: () => { toast.success('Exam removed'); setDeleteTargetId(null); } });
+    deleteRecord.mutate(deleteTargetId, { onSuccess: () => { toast.success('Exam removed'); setDeleteTargetId(null); } });
   };
 
   const filtered = exams.filter(e => e.subject?.toLowerCase().includes(search.toLowerCase()) || e.class?.toLowerCase().includes(search.toLowerCase()));

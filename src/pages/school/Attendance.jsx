@@ -1,11 +1,11 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { CalendarDays, Check, X, Clock, Users, ClipboardList } from 'lucide-react';
-import { useIndustryRecords, useMutateIndustryRecord } from '@/hooks/useIndustryData';
-import { toast } from 'react-hot-toast';
-import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCompanyId } from '@/hooks/useCompanyId';
+import { powerSync } from '@/api/PowerSyncConnector';
+import { toast } from 'react-hot-toast';
+import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
 
 const CLASS_LIST = ['Grade 7B', 'Grade 8C', 'Grade 9A', 'Grade 9B', 'Grade 10A', 'Grade 10B', 'Grade 11A', 'Grade 12A'];

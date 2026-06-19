@@ -1,11 +1,11 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Calendar, Plus, MapPin, Search } from 'lucide-react';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { toast } from 'react-hot-toast';
-import { useQuery } from '@tanstack/react-query';
+import { powerSync } from '@/api/PowerSyncConnector';
 import { base44 } from '@/api/base44Client';
+import { toast } from 'react-hot-toast';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];

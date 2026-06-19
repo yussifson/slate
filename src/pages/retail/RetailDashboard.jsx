@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription} from "@/comp
 import { Badge} from "@/components/ui/badge";
 import { useAuth} from "@/lib/AuthContext";
 import { usePaywall } from '@/hooks/usePaywall';
-import { generateText } from '@/api/aiClient';
+import { generateText } from '@/lib/cloudflareAI';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from 'recharts';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 

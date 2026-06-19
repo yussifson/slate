@@ -1,7 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { ShieldAlert, Plus, Calendar, AlertTriangle, ShieldCheck } from 'lucide-react';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { powerSync } from '@/api/PowerSyncConnector';
 import { format } from "date-fns";
 
 export default function Discipline() {

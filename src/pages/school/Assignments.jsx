@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { generateText } from '@/api/aiClient';
+import { generateText } from '@/lib/cloudflareAI';
 import { BrainCircuit, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 import { BookOpen, Search, Plus, Calendar, MoreVertical, FileText, CheckCircle } from 'lucide-react';

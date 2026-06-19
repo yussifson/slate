@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
 import { Calendar, Bell, FileText, CheckCircle, Clock, BookOpen, User, CreditCard, Download, LayoutDashboard, GraduationCap, ArrowRight, Upload } from 'lucide-react';
-import { useIndustryRecords } from '@/hooks/useIndustryData';
+import { useQuery } from '@tanstack/react-query';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { powerSync } from '@/api/PowerSyncConnector';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useCompanyId } from '@/hooks/useCompanyId';
 import { UploadDocumentDialog } from "@/components/cases/CaseDocumentRepo";
 import { Button } from "@/components/ui/button";
 import { toast } from 'react-hot-toast';
