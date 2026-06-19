@@ -176,12 +176,9 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  >
  <PanelLeft className="w-5 h-5" />
  </button>
- <div className="h-4 w-px bg-primary/40 hidden lg:block mx-1"></div>
- <LayoutDashboard className="w-4 h-4 text-[#71717a] dark:text-gray-400 shrink-0" />
- <span className="font-semibold sm:font-medium text-foreground truncate max-w-[150px] text-base sm:text-sm">{title}</span>
  </div>
  {/* Right */}
- <div className="flex items-center justify-end gap-2 sm:gap-2 ml-auto min-w-0 overflow-hidden">
+ <div className="flex items-center justify-end gap-2 sm:gap-2 ml-auto overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
  {/* Super Admin Industry Switcher */}
  {user?.role === 'super_admin' && (
  <DropdownMenu>
