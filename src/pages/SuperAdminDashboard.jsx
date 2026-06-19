@@ -4,14 +4,15 @@ import { base44} from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
 import { useAuth} from "@/lib/AuthContext";
 import { getTerm} from "@/config/industries";
-import { Building2, Settings2, UserCog, Plus} from "lucide-react";
+import { Building2, Settings2, UserCog, Plus, Handshake } from "lucide-react";
 import { Button} from "@/components/ui/button";
 import { Badge} from "@/components/ui/badge";
 import { useToast} from "@/components/ui/use-toast";
 import CompanyFormDialog from "@/components/superadmin/CompanyFormDialog";
 import FirmStaffManager from "@/components/superadmin/FirmStaffManager";
-import { useCompany} from "@/hooks/useCompanyId";
-import { useNavigate} from "react-router-dom";
+import PartnerApplicationsDialog from "@/components/superadmin/PartnerApplicationsDialog";
+import { useCompany } from "@/hooks/useCompanyId";
+import { useNavigate } from "react-router-dom";
 
 export default function SuperAdminDashboard() {
  const { t} = useTranslation();
@@ -21,7 +22,8 @@ export default function SuperAdminDashboard() {
  const { company, isLoading} = useCompany();
  const [showForm, setShowForm] = useState(false);
  const [managingStaff, setManagingStaff] = useState(false);
- const { user, refreshUser} = useAuth();
+ const [showPartners, setShowPartners] = useState(false);
+ const { user, refreshUser } = useAuth();
  const activeIndustry = user?.company_industry || "law";
 
  useEffect(() => {
@@ -99,11 +101,18 @@ export default function SuperAdminDashboard() {
  <p className="text-primary/10 font-medium text-lg">System Configuration & {getTerm(activeIndustry, "venue") || "Firm"} Setup</p>
  </div>
  {!company && (
- <div className="flex items-center bg-white dark:bg-slate-900/40/10 p-2 rounded-2xl backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-white/20  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Button onClick={() => setShowForm(true)} size="sm" className="gap-2.5 text-sm font-semibold bg-white dark:bg-slate-900/40 text-primary/70 hover:bg-white dark:bg-slate-900/40/90 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Plus className="w-4 h-4" /> {t("setup_firm", "Setup " + (getTerm(activeIndustry, "venue") || "Firm"))}
- </Button>
- </div>
+  <div className="flex flex-col sm:flex-row items-center gap-3">
+    <div className="flex items-center bg-white dark:bg-slate-900/40/10 p-2 rounded-2xl backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-white/20  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <Button onClick={() => setShowForm(true)} size="sm" className="gap-2.5 text-sm font-semibold bg-white dark:bg-slate-900/40 text-primary/70 hover:bg-white dark:bg-slate-900/40/90 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <Plus className="w-4 h-4" /> {t("setup_firm", "Setup " + (getTerm(activeIndustry, "venue") || "Firm"))}
+      </Button>
+    </div>
+    <div className="flex items-center bg-white dark:bg-slate-900/40/10 p-2 rounded-2xl backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-white/20  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <Button onClick={() => setShowPartners(true)} size="sm" className="gap-2.5 text-sm font-semibold bg-white dark:bg-slate-900/40 text-primary/70 hover:bg-white dark:bg-slate-900/40/90 rounded-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <Handshake className="w-4 h-4" /> Partner Applications
+      </Button>
+    </div>
+  </div>
  )}
  </div>
  </div>
@@ -171,6 +180,10 @@ export default function SuperAdminDashboard() {
  {managingStaff && company && (
  <FirmStaffManager firm={company} onClose={() => setManagingStaff(false)} />
  )}
+ <PartnerApplicationsDialog
+ open={showPartners}
+ onOpenChange={setShowPartners}
+ />
  </div>
  );
 }

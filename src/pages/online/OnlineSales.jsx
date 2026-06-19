@@ -1,6 +1,6 @@
 import React, { useMemo} from 'react';
 import { useQuery} from "@tanstack/react-query";
-import { base44} from "@/api/base44Client";
+import { powerSync } from "@/api/PowerSyncConnector";
 import { useCompanyId} from "@/hooks/useCompanyId";
 import { Banknote, TrendingUp, CreditCard, ShoppingCart, Download, ArrowUpRight} from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, AreaChart, Area} from 'recharts';
@@ -9,26 +9,31 @@ export default function OnlineSales() {
  const companyId = useCompanyId();
 
  const { data: sales = []} = useQuery({
- queryKey: ["cases", companyId, "online_sale"],
- queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'online_sale'}),
+ queryKey: ["online_sales", companyId],
+ queryFn: async () => {
+   const { data } = await powerSync.execute(`SELECT * FROM billing_transactions WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
+   return data || [];
+ },
  enabled: !!companyId
-});
+ });
 
  const totalRevenue = useMemo(() => {
  return sales.reduce((acc, sale) => {
- let amount = 0;
- try { amount = parseFloat(JSON.parse(sale.notes || '{}').amount) || 0;} catch(e) {}
- return acc + amount;
-}, 0);
-}, [sales]);
+   if (sale.status === 'success') {
+     return acc + (parseFloat(sale.amount) || 0);
+   }
+   return acc;
+ }, 0);
+ }, [sales]);
 
- const revenueHistory = [];
+ const successfulSales = useMemo(() => sales.filter(s => s.status === 'success'), [sales]);
+ const avgOrderValue = successfulSales.length > 0 ? (totalRevenue / successfulSales.length) : 0;
 
  const stats = [
- { label: 'Total Revenue', value: `$${totalRevenue.toLocaleString()}`, icon: Banknote, color: 'var(--color-success)'},
- { label: 'Avg Order Value', value: '$0.00', icon: ShoppingCart, color: 'var(--primary)'},
- { label: 'Monthly Recurring', value: '$0', icon: CreditCard, color: 'var(--color-info)'},
- { label: 'Growth (YoY)', value: '0%', icon: TrendingUp, color: 'var(--color-warning)'},
+ { label: 'Total Revenue', value: `$${totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, icon: Banknote, color: 'var(--color-success)'},
+ { label: 'Avg Order Value', value: `$${avgOrderValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, icon: ShoppingCart, color: 'var(--primary)'},
+ { label: 'Total Transactions', value: sales.length.toString(), icon: CreditCard, color: 'var(--color-info)'},
+ { label: 'Successful', value: successfulSales.length.toString(), icon: TrendingUp, color: 'var(--color-warning)'},
  ];
 
  return (
@@ -95,7 +100,7 @@ export default function OnlineSales() {
  <tr>
  <th className="px-6 py-3 font-semibold">Transaction ID</th>
  <th className="px-6 py-3 font-semibold">Date</th>
- <th className="px-6 py-3 font-semibold">Customer</th>
+ <th className="px-6 py-3 font-semibold">Description</th>
  <th className="px-6 py-3 font-semibold">Amount</th>
  <th className="px-6 py-3 font-semibold">Status</th>
  </tr>
@@ -105,33 +110,36 @@ export default function OnlineSales() {
  <tr>
  <td colSpan="5" className="px-6 py-12 text-center text-[var(--color-text-tertiary)]">
  <Banknote className="w-12 h-12 mx-auto mb-3 opacity-20" />
- <p className="font-medium text-[var(--color-text-secondary)]">No sales recorded</p>
- <p className="text-sm mt-1">Once courses are purchased, transactions will appear here.</p>
+ <p className="font-medium text-[var(--color-text-secondary)]">No transactions recorded</p>
+ <p className="text-sm mt-1">Once payments are processed, transactions will appear here.</p>
  </td>
  </tr>
  ) : (
- sales.slice(0, 5).map((sale, idx) => {
- let extra = {};
- try { extra = JSON.parse(sale.notes || '{}');} catch(e) {}
- 
+ sales.slice(0, 10).map((sale, idx) => {
  return (
  <tr key={idx} className="hover:bg-[var(--color-surface-1)] transition-colors">
- <td className="px-6 py-4 font-mono text-xs tracking-[0.04em]">#{sale.id.split('-')[0]}</td>
+ <td className="px-6 py-4 font-mono text-xs tracking-[0.04em]">#{sale.paystack_reference || sale.id?.split('-')[0] || 'N/A'}</td>
  <td className="px-6 py-4 text-[var(--color-text-secondary)]">
  {new Date(sale.created_at || Date.now()).toLocaleDateString()}
  </td>
- <td className="px-6 py-4 font-medium">{sale.title || 'Unknown Customer'}</td>
- <td className="px-6 py-4 font-semibold text-[var(--color-success)]">
- ${parseFloat(extra.amount || 0).toLocaleString()}
+ <td className="px-6 py-4 font-medium">{sale.description || 'N/A'}</td>
+ <td className={`px-6 py-4 font-semibold ${sale.status === 'success' ? 'text-[var(--color-success)]' : 'text-[var(--color-text-primary)]'}`}>
+ {sale.currency || '$'} {parseFloat(sale.amount || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
  </td>
  <td className="px-6 py-4">
- <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-semibold bg-[var(--color-success-subtle)] text-[var(--color-success)] border-[0.5px] border-black/9 dark:border-white/8 border-[var(--color-success)]">
- Completed
- </span>
+ {sale.status === 'success' ? (
+   <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-semibold bg-[var(--color-success-subtle)] text-[var(--color-success)] border-[0.5px] border-black/9 dark:border-white/8 border-[var(--color-success)]">
+     Completed
+   </span>
+ ) : (
+   <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-semibold bg-[var(--color-surface-2)] text-[var(--color-text-secondary)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+     {sale.status || 'Pending'}
+   </span>
+ )}
  </td>
  </tr>
  );
-})
+ })
  )}
  </tbody>
  </table>

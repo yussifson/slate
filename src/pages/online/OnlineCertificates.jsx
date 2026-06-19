@@ -1,7 +1,29 @@
 import React from 'react';
-import { Award, Download, ExternalLink, ShieldCheck} from 'lucide-react';
+import { Award, Download, ExternalLink, ShieldCheck, Lock} from 'lucide-react';
+import { useAuth } from '@/lib/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function OnlineCertificates() {
+ const { user, currentPlan } = useAuth();
+ const navigate = useNavigate();
+ 
+ const isProOrAbove = ['super_admin', 'admin'].includes(user?.role) || currentPlan === 'pro' || currentPlan === 'enterprise';
+
+ if (!isProOrAbove) {
+   return (
+     <div className="flex flex-col items-center justify-center h-[calc(100vh-12rem)] p-8 text-center animate-in fade-in duration-500 max-w-lg mx-auto">
+       <div className="w-20 h-20 bg-[var(--color-surface-2)] rounded-full flex items-center justify-center mb-6 border-[0.5px] border-black/9 dark:border-white/8 shadow-sm">
+         <Lock className="w-10 h-10 text-[var(--color-text-tertiary)]" />
+       </div>
+       <h2 className="text-2xl font-semibold font-display text-[var(--color-text-primary)] mb-3 tracking-tight">Premium Feature</h2>
+       <p className="text-[var(--text-md)] text-[var(--color-text-secondary)] mb-8 leading-relaxed">Official course certificates are only available on Pro and Enterprise plans. Upgrade your plan to generate, customize, and issue automated certificates.</p>
+       <button onClick={() => navigate('/settings')} className="px-8 py-3 bg-[var(--primary)] text-white font-medium rounded-md-[var(--radius-md)] hover:opacity-90 transition-opacity shadow-sm">
+         Upgrade to Pro
+       </button>
+     </div>
+   );
+ }
+
  const certificates = [
  { id: 1, title: 'React Foundations', issued: 'Sep 15, 2026', grade: '95%', instructor: 'Sarah Jenkins', courseId: 'c1'},
  { id: 2, title: 'Advanced State Management', issued: 'Oct 01, 2026', grade: '92%', instructor: 'Michael Chen', courseId: 'c2'},
@@ -25,7 +47,7 @@ export default function OnlineCertificates() {
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  {certificates.map(cert => (
- <div key={cert.id} className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden flex flex-col group hover:border-[var(--primary)] transition-colors">
+ <div key={cert.id} className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden flex flex-col group hover:border-[var(--primary)] transition-colors shadow-sm hover:shadow-md">
  <div className="p-8 bg-gradient-to-br from-[var(--color-surface-1)] to-[var(--color-surface-2)] flex flex-col items-center justify-center text-center border-b border-primary/40 relative">
  <div className="absolute top-4 right-4 bg-white dark:bg-slate-900/40/50 backdrop-blur rounded-full p-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <ShieldCheck className="w-5 h-5 text-[var(--color-success)]" />
@@ -38,12 +60,12 @@ export default function OnlineCertificates() {
  </div>
  <div className="p-5 flex items-center justify-between bg-[var(--color-surface-0)]">
  <div>
- <p className="text-xs text-[var(--color-text-secondary)] tracking-[0.04em]">Issued On</p>
- <p className="font-semibold text-sm text-[var(--color-text-primary)]">{cert.issued}</p>
+ <p className="text-xs text-[var(--color-text-secondary)] tracking-[0.04em] uppercase font-semibold">Issued On</p>
+ <p className="font-medium text-sm text-[var(--color-text-primary)] mt-0.5">{cert.issued}</p>
  </div>
  <div>
- <p className="text-xs text-[var(--color-text-secondary)] tracking-[0.04em]">Final Grade</p>
- <p className="font-semibold text-sm text-[var(--color-success)]">{cert.grade}</p>
+ <p className="text-xs text-[var(--color-text-secondary)] tracking-[0.04em] uppercase font-semibold text-right">Final Grade</p>
+ <p className="font-bold text-sm text-[var(--color-success)] text-right mt-0.5">{cert.grade}</p>
  </div>
  </div>
  <div className="p-4 border-t border-primary/40 bg-[var(--color-surface-1)] flex gap-3">

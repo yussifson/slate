@@ -409,6 +409,17 @@ export const SCHEMA_COLUMNS = {
     "is_read",
     "email_sent"
   ],
+  "partner_applications": [
+    "id",
+    "created_at",
+    "updated_at",
+    "name",
+    "email",
+    "company_name",
+    "partner_type",
+    "message",
+    "status"
+  ],
   "payroll_slips": [
     "id",
     "created_at",

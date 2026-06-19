@@ -1,24 +1,90 @@
-import React, { useState} from 'react';
+import React, { useState, useEffect} from 'react';
 import { useParams, useNavigate} from 'react-router-dom';
-import { useQuery} from "@tanstack/react-query";
-import { base44} from "@/api/base44Client";
+import { useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
+import { powerSync } from "@/api/PowerSyncConnector";
 import { useCompanyId} from "@/hooks/useCompanyId";
-import { ArrowLeft, PlayCircle, CheckCircle2, ChevronDown, MessageSquare, BookOpen, FileText} from 'lucide-react';
+import { useAuth } from '@/lib/AuthContext';
+import { ArrowLeft, PlayCircle, CheckCircle2, ChevronDown, MessageSquare, BookOpen, FileText, Check} from 'lucide-react';
 import { motion} from 'framer-motion';
+import { useToast } from "@/components/ui/use-toast";
 
 export default function LearningPlayer() {
  const { courseId} = useParams();
  const navigate = useNavigate();
  const companyId = useCompanyId();
+ const { user } = useAuth();
+ const queryClient = useQueryClient();
+ const { toast } = useToast();
  const [activeTab, setActiveTab] = useState('overview');
+ const [activeLessonId, setActiveLessonId] = useState(null);
+
+ const studentId = user?.id || 'unknown';
 
  const { data: course} = useQuery({
- queryKey: ["case", courseId],
- queryFn: () => base44.entities.LegalCase.get(courseId),
+ queryKey: ["online_course", courseId],
+ queryFn: async () => {
+   const { data } = await powerSync.execute(`SELECT * FROM online_courses WHERE id = ?`, [courseId]);
+   return data?.[0] || null;
+ },
  enabled: !!courseId && !!companyId
-});
+ });
+
+ const { data: lessons = []} = useQuery({
+   queryKey: ["online_lessons", courseId],
+   queryFn: async () => {
+     const { data } = await powerSync.execute(`SELECT * FROM online_lessons WHERE course_id = ? ORDER BY order_index ASC`, [courseId]);
+     return data || [];
+   },
+   enabled: !!courseId
+ });
+
+ const { data: enrollment } = useQuery({
+   queryKey: ["online_enrollment", courseId, studentId],
+   queryFn: async () => {
+     let { data } = await powerSync.execute(`SELECT * FROM online_enrollments WHERE course_id = ? AND student_id = ?`, [courseId, studentId]);
+     if (!data || data.length === 0) {
+       // Auto-enroll if not enrolled
+       const newId = `enr_${Math.random().toString(36).substr(2, 9)}`;
+       await powerSync.execute(
+         `INSERT INTO online_enrollments (id, company_id, course_id, student_id, student_name, student_email, enrollment_date, progress_percent, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         [newId, companyId, courseId, studentId, user?.user_metadata?.full_name || 'Student', user?.email || '', new Date().toISOString(), '0', 'in_progress', new Date().toISOString()]
+       );
+       data = [{ id: newId, progress_percent: '0', status: 'in_progress' }];
+     }
+     return data[0];
+   },
+   enabled: !!courseId && !!studentId
+ });
+
+ useEffect(() => {
+   if (lessons.length > 0 && !activeLessonId) {
+     setActiveLessonId(lessons[0].id);
+   }
+ }, [lessons]);
+
+ const completeCourseMutation = useMutation({
+   mutationFn: async () => {
+     if (enrollment?.status === 'completed') return;
+     
+     await powerSync.execute(
+       `UPDATE online_enrollments SET progress_percent = ?, status = ?, last_accessed = ? WHERE id = ?`,
+       ['100', 'completed', new Date().toISOString(), enrollment?.id]
+     );
+
+     const notifId = `ntf_${Math.random().toString(36).substr(2, 9)}`;
+     await powerSync.execute(
+       `INSERT INTO univ_notifications (id, company_id, user_id, title, message, type, is_read, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+       [notifId, companyId, studentId, 'Course Completed!', `Congratulations on completing ${course?.title || 'the course'}!`, 'learning', '0', new Date().toISOString()]
+     );
+   },
+   onSuccess: () => {
+     queryClient.invalidateQueries(["online_enrollment", courseId, studentId]);
+     toast({ title: "Course Completed!", description: "Check your notifications for your certificate." });
+   }
+ });
 
  const courseTitle = course?.title || 'Loading Course...';
+ const activeLesson = lessons.find(l => l.id === activeLessonId) || lessons[0];
 
  return (
  <div className="flex flex-col h-[calc(100vh-4rem)] animate-in fade-in duration-500 bg-[var(--color-surface-0)]">
@@ -31,7 +97,7 @@ export default function LearningPlayer() {
  {courseTitle}
  </h1>
  <div className="ml-4 flex items-center gap-2 text-sm text-[var(--color-text-secondary)]">
- {/* Real module title would go here */}
+ {activeLesson?.title || ''}
  </div>
  </div>
 
@@ -40,7 +106,6 @@ export default function LearningPlayer() {
  
  {/* Player Area */}
  <div className="flex-1 flex flex-col overflow-y-auto bg-[var(--color-surface-0)] relative">
- {/* Noise overlay removed to fix 404 */}
  
  {/* Video Placeholder */}
  <motion.div 
@@ -53,10 +118,10 @@ export default function LearningPlayer() {
  <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end px-6 pb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
  <div className="flex items-center gap-3 mb-2 text-white/90 text-sm font-medium">
  <PlayCircle className="w-4 h-4 text-[var(--primary)]" />
- <span>{courseTitle}</span>
+ <span>{activeLesson?.title || courseTitle}</span>
  </div>
  <div className="w-full h-1.5 bg-white dark:bg-slate-900/40/30 rounded-full overflow-hidden cursor-pointer group/progress hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="h-full bg-[var(--primary)] w-0 relative group-hover/progress:bg-primary/70 transition-colors">
+ <div className="h-full bg-[var(--primary)] w-0 relative group-hover/progress:bg-primary/70 transition-colors" style={{width: enrollment?.progress_percent + '%'}}>
  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white dark:bg-slate-900/40 rounded-full scale-0 group-hover/progress:scale-100 transition-transform hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
@@ -70,7 +135,8 @@ export default function LearningPlayer() {
  transition={{ delay: 0.2}}
  className="p-8 max-w-5xl mx-auto w-full relative z-10"
  >
- <div className="flex items-center gap-6 border-b border-primary/40 pb-0">
+ <div className="flex justify-between items-center border-b border-primary/40 pb-0">
+ <div className="flex items-center gap-6">
  <button onClick={() => setActiveTab('overview')} className={`px-2 py-4 font-semibold text-sm transition-colors border-b-2 -mb-[1px] ${activeTab === 'overview' ? 'border-[var(--primary)] text-[var(--primary)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>
  Overview
  </button>
@@ -81,12 +147,20 @@ export default function LearningPlayer() {
  Resources
  </button>
  </div>
+ <button 
+   onClick={() => completeCourseMutation.mutate()} 
+   disabled={completeCourseMutation.isPending || enrollment?.status === 'completed'}
+   className="px-4 py-1.5 bg-green-500 text-white text-sm font-medium rounded-md flex items-center gap-2 hover:bg-green-600 disabled:opacity-50 transition-colors"
+ >
+   <Check className="w-4 h-4" /> {enrollment?.status === 'completed' ? 'Completed' : 'Mark as Complete'}
+ </button>
+ </div>
 
  <div className="py-8">
  {activeTab === 'overview' && (
  <motion.div initial={{ opacity: 0, y: 10}} animate={{ opacity: 1, y: 0}} className="prose prose-sm max-w-none text-[var(--color-text-secondary)] leading-relaxed">
  <h2 className="text-xl font-semibold text-[var(--color-text-primary)] mb-4 font-display">About this lesson</h2>
- <p>In this lesson, we will cover the foundational concepts required for the rest of the course. Make sure to download the attached resources and take notes. We'll be using practical examples throughout to solidify your understanding.</p>
+ <p>{activeLesson?.content || course?.description || 'No description provided.'}</p>
  </motion.div>
  )}
  {activeTab === 'qna' && (
@@ -114,16 +188,34 @@ export default function LearningPlayer() {
  <div className="p-4 border-b border-primary/40">
  <h2 className="font-semibold text-[var(--color-text-primary)]">Course Content</h2>
  <div className="w-full bg-[var(--color-border-default)] h-1.5 rounded-full mt-3 overflow-hidden">
- <div className="bg-[var(--primary)] h-full w-1/3"></div>
+ <div className="bg-[var(--primary)] h-full transition-all" style={{width: enrollment?.progress_percent + '%'}}></div>
  </div>
- <p className="text-xs text-[var(--color-text-secondary)] mt-1.5 tracking-[0.04em]">0% Complete</p>
+ <p className="text-xs text-[var(--color-text-secondary)] mt-1.5 tracking-[0.04em]">{enrollment?.progress_percent || '0'}% Complete</p>
  </div>
  
  <div className="flex-1 overflow-y-auto p-4 space-y-1">
+ {lessons.length === 0 ? (
  <div className="text-center py-8">
  <BookOpen className="w-8 h-8 text-[var(--color-text-tertiary)] mx-auto mb-2 opacity-50" />
- <p className="text-xs text-[var(--color-text-secondary)] tracking-[0.04em]">No slates found for this course.</p>
+ <p className="text-xs text-[var(--color-text-secondary)] tracking-[0.04em]">No lessons found for this course.</p>
  </div>
+ ) : (
+   lessons.map((lesson, idx) => (
+     <button 
+       key={lesson.id} 
+       onClick={() => setActiveLessonId(lesson.id)}
+       className={`w-full text-left p-3 rounded-md flex items-start gap-3 transition-colors ${activeLessonId === lesson.id ? 'bg-[var(--primary)] text-white' : 'hover:bg-[var(--color-surface-2)] text-[var(--color-text-primary)]'}`}
+     >
+       <div className={`mt-0.5 rounded-full p-1 border ${activeLessonId === lesson.id ? 'border-white/30 text-white' : 'border-primary/20 text-[var(--color-text-secondary)]'}`}>
+         {enrollment?.status === 'completed' ? <CheckCircle2 className="w-3.5 h-3.5" /> : <PlayCircle className="w-3.5 h-3.5" />}
+       </div>
+       <div>
+         <p className="text-sm font-semibold leading-tight">{idx + 1}. {lesson.title}</p>
+         <p className={`text-xs mt-1 ${activeLessonId === lesson.id ? 'text-white/80' : 'text-[var(--color-text-tertiary)]'}`}>Video</p>
+       </div>
+     </button>
+   ))
+ )}
  </div>
  </div>
 
