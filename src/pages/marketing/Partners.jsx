@@ -120,8 +120,8 @@ export default function Partners() {
 
   {/* Partner Application Dialog */}
   <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-    <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto p-0 border-0 shadow-2xl rounded-3xl">
-      <div className="bg-slate-50/50 p-6 md:p-8 border-b border-slate-100 backdrop-blur-md">
+    <DialogContent className="sm:max-w-[500px] max-h-[85vh] p-0 border-0 shadow-2xl rounded-3xl flex flex-col overflow-hidden">
+      <div className="bg-slate-50/50 p-6 md:p-8 border-b border-slate-100 backdrop-blur-md shrink-0">
         <DialogHeader>
           <div className="w-12 h-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-4 ring-1 ring-primary/20">
             <Handshake className="w-6 h-6" />
@@ -137,8 +137,9 @@ export default function Partners() {
         </DialogHeader>
       </div>
       
-      <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-5 bg-white">
-        <div className="space-y-4">
+      <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+        <div className="p-6 md:p-8 space-y-5 bg-white overflow-y-auto custom-scrollbar flex-1">
+          <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label className="text-sm font-semibold text-slate-700">Full Name</label>
@@ -202,19 +203,22 @@ export default function Partners() {
               placeholder={dialogType === 'become' ? "Tell us about your organization..." : "What kind of partner are you looking for?"}
             />
           </div>
+          </div>
         </div>
 
-        <Button 
-          type="submit" 
-          disabled={isSubmitting}
-          className="w-full h-12 rounded-xl text-base font-bold bg-slate-900 hover:bg-slate-800 text-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all hover:-translate-y-0.5"
-        >
-          {isSubmitting ? (
-            <Loader2 className="w-5 h-5 animate-spin" />
-          ) : (
-            dialogType === 'become' ? "Submit Application" : "Find Match"
-          )}
-        </Button>
+        <div className="p-6 md:px-8 md:py-6 bg-slate-50 border-t border-slate-100 shrink-0">
+          <Button 
+            type="submit" 
+            disabled={isSubmitting}
+            className="w-full h-12 rounded-xl text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-[0_8px_30px_rgba(5,150,105,0.2)] transition-all hover:-translate-y-0.5"
+          >
+            {isSubmitting ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              dialogType === 'become' ? "Submit Application" : "Find Match"
+            )}
+          </Button>
+        </div>
       </form>
     </DialogContent>
   </Dialog>
