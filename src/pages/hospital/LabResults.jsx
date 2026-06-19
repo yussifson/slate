@@ -9,6 +9,7 @@ import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/api/supabaseClient';
 
 const statusColors = {
   Completed: 'bg-slate-100 text-primary/90',
@@ -58,6 +59,7 @@ export default function LabResults() {
   const [showModal, setShowModal] = useState(false);
   const [viewResult, setViewResult] = useState(null);
   const [editingResult, setEditingResult] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const [formData, setFormData] = useState({
     patient_id: '',
@@ -141,6 +143,34 @@ export default function LabResults() {
       status: res.status || 'Completed'
     });
     setShowModal(true);
+  };
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!companyId) return toast.error("Company context missing");
+    
+    setIsUploading(true);
+    const fileExt = file.name.split('.').pop();
+    const fileName = "${companyId}/${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}";
+    
+    try {
+      const { data, error } = await supabase.storage
+        .from('hospital-documents')
+        .upload(fileName, file);
+      if (error) throw error;
+      
+      const { data: urlData } = supabase.storage
+        .from('hospital-documents')
+        .getPublicUrl(fileName);
+        
+      setFormData({ ...formData, document_url: urlData.publicUrl });
+      toast.success("File uploaded successfully!");
+    } catch (err) {
+      toast.error("Upload failed: " + err.message);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   if (isLoading) return <div className="flex justify-center p-8">Loading lab results...</div>;
@@ -334,3 +364,5 @@ export default function LabResults() {
     </div>
   );
 }
+
+

@@ -51,7 +51,7 @@ export default function Prescriptions() {
     queryKey: ['univ_pharmacy_list', companyId],
     queryFn: async () => {
       if (!companyId) return [];
-      const res = await powerSync.execute('SELECT id, drug_name, quantity_in_stock FROM univ_pharmacy WHERE company_id = ?', [companyId]);
+      const res = await powerSync.execute('SELECT id, drug_name, stock_level FROM univ_pharmacy WHERE company_id = ?', [companyId]);
       return res.rows._array;
     },
     enabled: !!companyId
@@ -62,6 +62,26 @@ export default function Prescriptions() {
   const [viewRx, setViewRx] = useState(null);
   const [editingRx, setEditingRx] = useState(null);
   const [isChecking, setIsChecking] = useState(false);
+  const [showAddMedModal, setShowAddMedModal] = useState(false);
+  const [newMedName, setNewMedName] = useState('');
+
+  const addMedMutation = useMutation({
+    mutationFn: async (drugName) => {
+      if (!drugName.trim()) throw new Error("Medication name is required");
+      await powerSync.execute(
+        `INSERT INTO univ_pharmacy (id, created_at, company_id, drug_name, category, stock_level, reorder_level, unit_price, status)
+         VALUES (uuid(), datetime('now'), ?, ?, 'General', 100, 10, 0, 'In Stock')`,
+        [companyId, drugName]
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['univ_pharmacy_list']);
+      toast.success("Medication added to inventory!");
+      setNewMedName('');
+      setShowAddMedModal(false);
+    },
+    onError: (err) => toast.error("Failed to add medication: " + err.message)
+  });
   const [alertWarning, setAlertWarning] = useState(null);
 
   const [formData, setFormData] = useState({
@@ -104,7 +124,7 @@ export default function Prescriptions() {
     mutationFn: async (rx) => {
       const drug = pharmacyList.find(d => d.id === rx.medication_id);
       if (!drug) throw new Error("Medication not found in inventory.");
-      if (drug.quantity_in_stock <= 0) throw new Error("Out of stock!");
+      if (drug.stock_level <= 0) throw new Error("Out of stock!");
 
       await powerSync.execute('BEGIN TRANSACTION');
       
@@ -116,7 +136,7 @@ export default function Prescriptions() {
       
       // Reduce inventory
       await powerSync.execute(
-        `UPDATE univ_pharmacy SET quantity_in_stock = quantity_in_stock - 1 WHERE id = ?`,
+        `UPDATE univ_pharmacy SET stock_level = stock_level - 1 WHERE id = ?`,
         [rx.medication_id]
       );
 
@@ -334,10 +354,15 @@ export default function Prescriptions() {
                     <ShieldCheck className="w-3 h-3" /> {isChecking ? 'Checking...' : 'AI Contraindication Check'}
                   </button>
                 </div>
-                <select value={formData.medication_id} onChange={e => {setFormData({ ...formData, medication_id: e.target.value}); setAlertWarning(null);}} className="mt-1 w-full rounded-lg border-[0.5px] border-primary/40 bg-background px-3 py-2 text-sm">
-                  <option value="">-- Select Medication --</option>
-                  {pharmacyList.map(p => <option key={p.id} value={p.id}>{p.drug_name} (Stock: {p.quantity_in_stock})</option>)}
-                </select>
+                                <div className="flex items-center gap-2 mt-1">
+                  <select value={formData.medication_id} onChange={e => {setFormData({ ...formData, medication_id: e.target.value}); setAlertWarning(null);}} className="flex-1 rounded-lg border-[0.5px] border-primary/40 bg-background px-3 py-2 text-sm">
+                    <option value="">-- Select Medication --</option>
+                    {pharmacyList.map(p => <option key={p.id} value={p.id}>{p.drug_name} (Stock: {p.stock_level})</option>)}
+                  </select>
+                  <Button type="button" variant="outline" className="h-9 px-3" onClick={() => setShowAddMedModal(true)}>
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                </div>
                 {alertWarning && (
                   <div className={`mt-2 p-2 rounded text-xs font-semibold ${alertWarning.includes('DANGER') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
                     {alertWarning}
@@ -412,7 +437,33 @@ export default function Prescriptions() {
             </div>
           )}
         </SheetContent>
-      </Sheet>
+            </Sheet>
+
+      {/* Add Medication Modal */}
+      {showAddMedModal && (
+        <div className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-background w-full max-w-sm rounded-2xl shadow-xl overflow-hidden border border-border">
+            <div className="p-5 border-b border-border/50">
+              <h2 className="text-xl font-bold">Quick Add Medication</h2>
+              <p className="text-xs text-muted-foreground mt-1">This will add a new medication to the Pharmacy inventory with a default stock of 100.</p>
+            </div>
+            <div className="p-5 space-y-4">
+              <div>
+                <label className="text-xs font-semibold text-[#71717a] uppercase">Medication Name</label>
+                <Input value={newMedName} onChange={e => setNewMedName(e.target.value)} className="mt-1" placeholder="e.g. Paracetamol 500mg" autoFocus />
+              </div>
+            </div>
+            <div className="p-5 bg-muted/30 flex gap-3 border-t border-border/50">
+              <Button variant="outline" className="flex-1" onClick={() => setShowAddMedModal(false)}>Cancel</Button>
+              <Button className="flex-1" onClick={() => addMedMutation.mutate(newMedName)} disabled={addMedMutation.isPending}>
+                {addMedMutation.isPending ? 'Adding...' : 'Add Medication'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+
