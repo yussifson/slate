@@ -168,7 +168,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  {/* ── DESKTOP TOP BAR ── */}
  <div className="hidden md:flex h-12 border-t-[3px] border-t-primary border-b border-primary/40 bg-background/80 backdrop-blur-xl relative z-30 items-center pl-4 pr-5 lg:px-5 gap-3 shrink-0 w-full hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Sidebar Toggle & Breadcrumb */}
- <div className="flex items-center gap-2 sm:gap-3 text-sm flex-1 min-w-0">
+ <div className="flex items-center gap-2 sm:gap-3 text-sm shrink-0 mr-4">
  <button 
  onClick={toggleSidebar}
  className="hidden lg:flex p-1.5 rounded-lg hover:bg-muted text-[#71717a] dark:text-gray-400 hover:text-foreground transition-colors"
@@ -178,10 +178,10 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  </button>
  <div className="h-4 w-px bg-primary/40 hidden lg:block mx-1"></div>
  <LayoutDashboard className="w-4 h-4 text-[#71717a] dark:text-gray-400 shrink-0" />
- <span className="font-semibold sm:font-medium text-foreground truncate max-w-[100px] sm:max-w-none text-base sm:text-sm">{title}</span>
+ <span className="font-semibold sm:font-medium text-foreground truncate max-w-[150px] text-base sm:text-sm">{title}</span>
  </div>
  {/* Right */}
- <div className="flex items-center gap-2 sm:gap-2 shrink-0">
+ <div className="flex items-center justify-end gap-2 sm:gap-2 ml-auto min-w-0 overflow-hidden">
  {/* Super Admin Industry Switcher */}
  {user?.role === 'super_admin' && (
  <DropdownMenu>
@@ -204,7 +204,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  {/* Super Admin Orbit Component Tester Switcher */}
  {user?.role === 'super_admin' && (
  <DropdownMenu>
- <DropdownMenuTrigger className="hidden md:flex items-center gap-1.5 border-[0.5px] border-black/9 dark:border-white/8 border-indigo-200 dark:border-indigo-900 bg-indigo-500/10 dark:bg-indigo-950/20 px-2 py-1.5 rounded-lg text-xs font-medium text-indigo-700 dark:text-indigo-400 hover:bg-indigo-500/20 transition-colors focus:outline-none">
+ <DropdownMenuTrigger className="hidden lg:flex items-center gap-1.5 border-[0.5px] border-black/9 dark:border-white/8 border-indigo-200 dark:border-indigo-900 bg-indigo-500/10 dark:bg-indigo-950/20 px-2 py-1.5 rounded-lg text-xs font-medium text-indigo-700 dark:text-indigo-400 hover:bg-indigo-500/20 transition-colors focus:outline-none shadow-sm">
  <Component className="w-3.5 h-3.5 shrink-0" />
  <span className="max-w-[80px] truncate tracking-[0.02em]">Orbit Build</span>
  <ChevronDown className="w-3 h-3 opacity-50 shrink-0" />
@@ -239,7 +239,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
 
  {/* Language Switcher */}
  <DropdownMenu>
- <DropdownMenuTrigger className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-2 py-1.5 hover:bg-muted/50 bg-card tracking-[0.02em] transition-colors focus:outline-none shadow-sm">
+ <DropdownMenuTrigger className="hidden lg:flex items-center gap-1.5 text-xs font-medium text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-2 py-1.5 hover:bg-muted/50 bg-card tracking-[0.02em] transition-colors focus:outline-none shadow-sm">
  <Globe className="w-3.5 h-3.5 shrink-0" />
  <span className="max-w-[80px] truncate">{currentLang.name}</span>
  <ChevronDown className="w-3 h-3 opacity-50 shrink-0" />
