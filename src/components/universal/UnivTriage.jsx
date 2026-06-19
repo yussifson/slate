@@ -9,7 +9,9 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { useCompanyId} from '@/hooks/useCompanyId';
 import { motion} from 'framer-motion';
-import { AlertOctagon, Clock, Activity, User, MapPin} from 'lucide-react';
+import { AlertOctagon, Clock, Activity, User, MapPin, Sparkles} from 'lucide-react';
+import { generateText } from '@/lib/cloudflareAI';
+import { toast } from 'react-hot-toast';
 
 import { supabase} from "@/api/supabaseClient";
 
@@ -27,6 +29,7 @@ const UnivTriage = () => {
  assigned_department: '',
  notes: ''
 });
+ const [isAnalyzing, setIsAnalyzing] = useState(false);
 
  useEffect(() => {
  fetchTriageList();
@@ -83,6 +86,47 @@ const UnivTriage = () => {
  return 'bg-blue-100 text-blue-800 border-blue-300';
 };
 
+ const handleAnalyzeSymptoms = async () => {
+   if (!formData.symptoms.trim()) {
+     toast.error('Please enter symptoms first');
+     return;
+   }
+   setIsAnalyzing(true);
+   try {
+     const prompt = [
+       { role: 'system', content: 'You are an expert ER Triage AI. Analyze the patient symptoms. Provide a JSON response with exactly three keys: "priority" (choose from: "Level 1 - Resuscitation", "Level 2 - Emergent", "Level 3 - Urgent", "Level 4 - Less Urgent", "Level 5 - Non-Urgent"), "department" (e.g. "Trauma", "Cardiology", "General ER"), and "notes" (a 1-sentence potential diagnosis or standard lab test recommendation).' },
+       { role: 'user', content: `Patient Symptoms: ${formData.symptoms}` }
+     ];
+     let response = await generateText(prompt);
+     if (typeof response !== 'string') {
+         response = response.response || response.text || JSON.stringify(response);
+     }
+     
+     let parsed = null;
+     try {
+       const jsonMatch = response.match(/\{[\s\S]*\}/);
+       if (jsonMatch) parsed = JSON.parse(jsonMatch[0]);
+     } catch (e) { console.error("JSON parse error:", e); }
+     
+     if (parsed) {
+       setFormData(prev => ({
+         ...prev,
+         priority_level: parsed.priority || prev.priority_level,
+         assigned_department: parsed.department || prev.assigned_department,
+         notes: parsed.notes || prev.notes
+       }));
+       toast.success('AI Triage Complete');
+     } else {
+       toast.error("AI returned invalid format");
+     }
+   } catch (err) {
+     console.error(err);
+     toast.error('Failed to analyze symptoms');
+   } finally {
+     setIsAnalyzing(false);
+   }
+ };
+
  return (
  <div className="p-6 max-w-7xl mx-auto bg-background min-h-screen ${view !== 'Default' ? 'hide-default' : ''}">
  <motion.div initial={{ opacity: 0, y: -20}} animate={{ opacity: 1, y: 0}} className="mb-8 flex flex-col md:flex-row justify-between items-center bg-card p-6 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
@@ -116,8 +160,13 @@ const UnivTriage = () => {
  </select>
  </div>
  <div>
- <label className="block text-sm font-semibold text-foreground mb-1">Chief Symptoms</label>
- <textarea name="symptoms" value={formData.symptoms} onChange={handleChange} required rows={3} className="w-full p-2.5 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-red-500 outline-none"></textarea>
+ <div className="flex items-center justify-between mb-1">
+   <label className="block text-sm font-semibold text-foreground">Chief Symptoms</label>
+   <button type="button" onClick={handleAnalyzeSymptoms} disabled={isAnalyzing} className="text-xs flex items-center gap-1 font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-colors px-2 py-1 rounded-md disabled:opacity-50">
+     {isAnalyzing ? <Sparkles className="w-3.5 h-3.5 animate-pulse" /> : <Sparkles className="w-3.5 h-3.5" />} AI Copilot
+   </button>
+ </div>
+ <textarea name="symptoms" value={formData.symptoms} onChange={handleChange} required rows={3} placeholder="Describe patient symptoms here..." className="w-full p-2.5 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-red-500 outline-none"></textarea>
  </div>
  <div className="grid grid-cols-2 gap-3">
  <div>

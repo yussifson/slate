@@ -48,15 +48,15 @@ export default function Pharmacy() {
       if (payload.id) {
         await powerSync.execute(
           `UPDATE univ_pharmacy SET 
-             drug_name = ?, category = ?, quantity_in_stock = ?, reorder_level = ?, unit_price = ?, expiry_date = ?, status = ?
+             drug_name = ?, category = ?, stock_level = ?, reorder_level = ?, unit_price = ?, expiry_date = ?, status = ?
            WHERE id = ?`,
-          [payload.drug_name, payload.category, payload.quantity_in_stock, payload.reorder_level, payload.unit_price, payload.expiry_date, payload.status, payload.id]
+          [payload.drug_name, payload.category, payload.stock_level, payload.reorder_level, payload.unit_price, payload.expiry_date, payload.status, payload.id]
         );
       } else {
         await powerSync.execute(
-          `INSERT INTO univ_pharmacy (id, created_at, company_id, drug_name, category, quantity_in_stock, reorder_level, unit_price, expiry_date, status)
+          `INSERT INTO univ_pharmacy (id, created_at, company_id, drug_name, category, stock_level, reorder_level, unit_price, expiry_date, status)
            VALUES (uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, ?, ?)`,
-          [companyId, payload.drug_name, payload.category, payload.quantity_in_stock, payload.reorder_level, payload.unit_price, payload.expiry_date, payload.status]
+          [companyId, payload.drug_name, payload.category, payload.stock_level, payload.reorder_level, payload.unit_price, payload.expiry_date, payload.status]
         );
       }
     },
@@ -91,7 +91,7 @@ export default function Pharmacy() {
       id: editingDrug?.id,
       drug_name: formData.name,
       category: formData.category,
-      quantity_in_stock: stock,
+      stock_level: stock,
       reorder_level: reorder,
       unit_price: parseFloat(formData.price) || 0,
       expiry_date: formData.expiry || new Date().toISOString().split('T')[0],
@@ -111,7 +111,7 @@ export default function Pharmacy() {
   );
 
   if (sortByStock) {
-    filtered = [...filtered].sort((a, b) => a.quantity_in_stock - b.quantity_in_stock);
+    filtered = [...filtered].sort((a, b) => a.stock_level - b.stock_level);
   }
 
   const openEdit = (drug) => {
@@ -119,7 +119,7 @@ export default function Pharmacy() {
     setFormData({
       name: drug.drug_name || '',
       category: drug.category || 'Antibiotics',
-      stock: drug.quantity_in_stock || 0,
+      stock: drug.stock_level || 0,
       reorder: drug.reorder_level || 0,
       price: drug.unit_price || 0,
       expiry: drug.expiry_date || ''
@@ -127,7 +127,7 @@ export default function Pharmacy() {
     setShowModal(true);
   };
 
-  const lowStockCount = inventory.filter(d => d.quantity_in_stock <= d.reorder_level).length;
+  const lowStockCount = inventory.filter(d => d.stock_level <= d.reorder_level).length;
 
   if (isLoading) return <div className="flex justify-center p-8">Loading inventory...</div>;
 
@@ -154,7 +154,7 @@ export default function Pharmacy() {
         </div>
         <div className="bg-card rounded-xl border-[0.5px] border-primary/40 p-5 flex items-center gap-4">
           <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary"><ShoppingBag className="w-6 h-6" /></div>
-          <div><p className="text-3xl font-semibold tracking-[-0.02em]">{inventory.filter(d => d.quantity_in_stock > d.reorder_level).length}</p><p className="text-sm font-medium text-[#71717a]">Well Stocked Drugs</p></div>
+          <div><p className="text-3xl font-semibold tracking-[-0.02em]">{inventory.filter(d => d.stock_level > d.reorder_level).length}</p><p className="text-sm font-medium text-[#71717a]">Well Stocked Drugs</p></div>
         </div>
       </div>
 
@@ -182,7 +182,7 @@ export default function Pharmacy() {
             </thead>
             <tbody className="divide-y divide-border">
               {filtered.map(drug => {
-                const isLow = drug.quantity_in_stock <= drug.reorder_level;
+                const isLow = drug.stock_level <= drug.reorder_level;
                 return (
                   <tr key={drug.id} className="hover:bg-muted/50">
                     <td className="px-6 py-4">
@@ -191,7 +191,7 @@ export default function Pharmacy() {
                     <td className="px-6 py-4 text-[#71717a]">{drug.category}</td>
                     <td className="px-6 py-4 text-center">
                       <span className={`font-semibold px-3 py-1 rounded-lg ${isLow ? 'bg-red-100 text-red-700 border-[0.5px] border-red-200' : 'text-foreground bg-muted'}`}>
-                        {(drug.quantity_in_stock || 0).toLocaleString()} units
+                        {(drug.stock_level || 0).toLocaleString()} units
                       </span>
                       {isLow && <p className="text-[10px] text-red-500 font-semibold uppercase mt-1">Reorder: {drug.reorder_level}</p>}
                     </td>
@@ -279,11 +279,11 @@ export default function Pharmacy() {
             <div className="mt-6 space-y-4">
               <div><h3 className="text-sm font-medium text-[#71717a]">Name</h3><p className="text-base font-semibold">{viewDrug.drug_name}</p></div>
               <div><h3 className="text-sm font-medium text-[#71717a]">Category</h3><p className="text-base">{viewDrug.category}</p></div>
-              <div><h3 className="text-sm font-medium text-[#71717a]">Current Stock</h3><p className={`text-base font-semibold ${viewDrug.quantity_in_stock <= viewDrug.reorder_level ? 'text-red-600' : 'text-primary'}`}>{viewDrug.quantity_in_stock} units</p></div>
+              <div><h3 className="text-sm font-medium text-[#71717a]">Current Stock</h3><p className={`text-base font-semibold ${viewDrug.stock_level <= viewDrug.reorder_level ? 'text-red-600' : 'text-primary'}`}>{viewDrug.stock_level} units</p></div>
               <div><h3 className="text-sm font-medium text-[#71717a]">Reorder Level</h3><p className="text-base">{viewDrug.reorder_level} units</p></div>
               <div><h3 className="text-sm font-medium text-[#71717a]">Unit Price</h3><p className="text-base font-semibold">${viewDrug.unit_price}</p></div>
               <div><h3 className="text-sm font-medium text-[#71717a]">Expiry Date</h3><p className="text-base">{viewDrug.expiry_date}</p></div>
-              <div><h3 className="text-sm font-medium text-[#71717a]">Status</h3><span className={`text-xs font-semibold px-2 py-1 rounded-md border ${viewDrug.quantity_in_stock <= viewDrug.reorder_level ? 'bg-red-50 text-red-700 border-red-200' : 'bg-slate-50 text-primary border-primary/20'}`}>{viewDrug.quantity_in_stock <= viewDrug.reorder_level ? 'Low Stock' : 'In Stock'}</span></div>
+              <div><h3 className="text-sm font-medium text-[#71717a]">Status</h3><span className={`text-xs font-semibold px-2 py-1 rounded-md border ${viewDrug.stock_level <= viewDrug.reorder_level ? 'bg-red-50 text-red-700 border-red-200' : 'bg-slate-50 text-primary border-primary/20'}`}>{viewDrug.stock_level <= viewDrug.reorder_level ? 'Low Stock' : 'In Stock'}</span></div>
             </div>
           )}
         </SheetContent>

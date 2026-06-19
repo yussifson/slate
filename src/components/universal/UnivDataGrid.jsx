@@ -47,11 +47,13 @@ function StatusBadge({ value}) {
  const key = String(value).toLowerCase().trim();
  const cls = STATUS_CLASSES[key];
  if (!cls) return <span className="text-foreground">{value}</span>;
+ const isLive = ['active', 'paid', 'live', 'pending'].includes(key);
  return (
  <span className={cn(
- 'inline-flex items-center px-2.5 py-0.5 rounded-lg border-[0.5px] border-black/9 dark:border-white/8 text-[11px] uppercase tracking-wider font-semibold',
+ 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg border-[0.5px] border-black/9 dark:border-white/8 text-[11px] uppercase tracking-wider font-semibold',
  cls
  )}>
+ {isLive && <span className="w-1.5 h-1.5 rounded-full bg-current opacity-75 animate-pulse" />}
  {value}
  </span>
  );
@@ -694,14 +696,14 @@ export default function UnivDataGrid({
  {/* Toolbar */}
  <div className="px-4 py-3 flex flex-wrap items-center justify-between gap-3 bg-muted/10 border-b border-primary/40">
  {/* Search */}
- <div className="relative flex items-center">
- <Search className="w-4 h-4 absolute left-3 text-[#71717a] dark:text-gray-400 pointer-events-none" />
+ <div className="relative flex items-center bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus-within:ring-2 focus-within:ring-primary/40 transition-shadow transition-colors group">
+ <Search className="w-4 h-4 absolute left-3 text-[#71717a] dark:text-gray-400 group-focus-within:text-foreground transition-colors pointer-events-none" />
  <input
  type="text"
  placeholder={searchPlaceholder}
  value={searchTerm}
  onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1); setActiveViewIdx(-1);}}
- className="h-9 pl-10 pr-4 w-64 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="h-9 pl-10 pr-4 w-64 bg-transparent text-sm focus:outline-none"
  />
  {searchTerm && (
  <span className="absolute right-3 text-xs text-[#71717a] dark:text-gray-400 font-medium tracking-[0.04em]">
@@ -796,10 +798,10 @@ export default function UnivDataGrid({
  )}
 
  <table className="w-full text-sm text-left whitespace-nowrap min-w-max border-collapse">
- <thead className="sticky top-0 z-10 bg-muted/70 backdrop-blur border-b border-primary/40 text-xs text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">
+ <thead className="sticky top-0 z-20 bg-muted/70 backdrop-blur border-b border-primary/40 text-xs text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">
  <tr>
  {/* Checkbox header */}
- <th className="sticky left-0 z-20 bg-muted/70 w-10 px-3 py-3.5">
+ <th className="sticky left-0 z-30 bg-muted/70 w-10 px-3 py-3.5">
  <Checkbox
  checked={allSelected}
  onCheckedChange={toggleSelectAll}
@@ -816,7 +818,7 @@ export default function UnivDataGrid({
  onClick={() => handleSort(col.key)}
  className={cn(
  'px-4 py-3.5 font-semibold cursor-pointer hover:bg-muted/80 transition-colors select-none',
- ci === 0 && 'sticky left-10 z-20 bg-muted/70'
+ ci === 0 && 'sticky left-10 z-30 bg-muted/70'
  )}
  >
  <div className="flex items-center gap-2">

@@ -31,15 +31,14 @@ export default function LabResults() {
     queryKey: ['univ_labs', companyId],
     queryFn: async () => {
       if (!companyId) return [];
-      const res = await powerSync.execute(
-        `SELECT l.*, 
-                p.first_name || ' ' || p.last_name as patient_name
-         FROM univ_labs l
-         LEFT JOIN univ_patients p ON l.patient_id = p.id
-         WHERE l.company_id = ?
-         ORDER BY l.test_date DESC`,
-        [companyId]
-      );
+        const res = await powerSync.execute(
+          `SELECT l.*, test_name AS test_type, result_value AS result,
+                  p.first_name || ' ' || p.last_name as patient_name
+           FROM univ_labs l
+           LEFT JOIN univ_patients p ON l.patient_id = p.id
+           WHERE l.company_id = ? ORDER BY l.created_at DESC`,
+          [companyId]
+        );
       return res.rows._array;
     },
     enabled: !!companyId
@@ -73,13 +72,13 @@ export default function LabResults() {
       if (payload.id) {
         await powerSync.execute(
           `UPDATE univ_labs SET 
-             patient_id = ?, test_type = ?, result = ?, reference_range = ?, status = ?
+             patient_id = ?, test_name = ?, result_value = ?, reference_range = ?, status = ?
            WHERE id = ?`,
           [payload.patient_id, payload.testType, payload.result, payload.range, payload.status, payload.id]
         );
       } else {
         await powerSync.execute(
-          `INSERT INTO univ_labs (id, created_at, company_id, patient_id, test_type, test_date, result, reference_range, status)
+          `INSERT INTO univ_labs (id, created_at, company_id, patient_id, test_name, test_date, result_value, reference_range, status)
            VALUES (uuid(), datetime('now'), ?, ?, ?, datetime('now'), ?, ?, ?)`,
           [companyId, payload.patient_id, payload.testType, payload.result, payload.range, payload.status]
         );

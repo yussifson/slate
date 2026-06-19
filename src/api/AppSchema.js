@@ -2931,6 +2931,8 @@ export const AppSchema = new Schema({
         created_at: column.text,
         company_id: column.text,
         ward_name: column.text,
+        type: column.text,
+        capacity: column.text,
         bed_number: column.text,
         status: column.text,
         patient_id: column.text,
@@ -3280,7 +3282,9 @@ export const AppSchema = new Schema({
         category: column.text,
         stock_level: column.integer,
         reorder_level: column.integer,
-        unit_price: column.real}),
+        unit_price: column.real,
+        expiry_date: column.text,
+        status: column.text}),
     univ_admissions: new Table({
         id: column.text,
         company_id: column.text,
@@ -3308,3 +3312,4 @@ export const AppSchema = new Schema({
         soap_assessment: column.text,
         soap_plan: column.text,
         notes: column.text})});
+

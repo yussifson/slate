@@ -325,7 +325,6 @@ export default function UnivChat({
  </span>
  </div>
  )}
- </div>
  <p className="text-foreground text-[15px] leading-relaxed whitespace-pre-wrap">{msg.content}</p>
  
  {extractedIntents[msg.id] && (

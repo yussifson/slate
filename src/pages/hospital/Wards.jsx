@@ -35,10 +35,10 @@ export default function Wards() {
     queryKey: ['univ_wards', companyId],
     queryFn: async () => {
       if (!companyId) return [];
-      const res = await powerSync.execute(
-        'SELECT * FROM univ_wards WHERE company_id = ? ORDER BY name ASC',
-        [companyId]
-      );
+        const res = await powerSync.execute(
+          'SELECT *, ward_name AS name FROM univ_wards WHERE company_id = ? ORDER BY ward_name ASC',
+          [companyId]
+        );
       return res.rows._array;
     },
     enabled: !!companyId
@@ -72,7 +72,7 @@ export default function Wards() {
   const mutateWard = useMutation({
     mutationFn: async (payload) => {
       await powerSync.execute(
-        `INSERT INTO univ_wards (id, created_at, company_id, name, type, capacity, status)
+        `INSERT INTO univ_wards (id, created_at, company_id, ward_name, type, capacity, status)
          VALUES (uuid(), datetime('now'), ?, ?, ?, ?, 'Active')`,
         [companyId, payload.name, payload.type, payload.capacity]
       );
