@@ -1,6 +1,6 @@
 import { useTranslation} from "react-i18next";
 import { useState } from "react";
-import { Handshake, ArrowRight, ShieldCheck, Globe, Rocket, Check, Loader2 } from 'lucide-react';
+import { Handshake, ArrowRight, ShieldCheck, Globe, Rocket, Check, Loader2, User, Mail, Building2, Briefcase, ChevronDown, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import confetti from "canvas-confetti";
@@ -138,68 +138,73 @@ export default function Partners() {
       </div>
       
       <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-        <div className="p-6 md:p-8 space-y-5 bg-white overflow-y-auto custom-scrollbar flex-1">
-          <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-slate-700">Full Name</label>
+        <div className="p-6 md:p-8 space-y-6 bg-white overflow-y-auto custom-scrollbar flex-1">
+          <div className="space-y-5">
+          <div className="grid grid-cols-2 gap-5">
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-700 flex items-center gap-2"><User className="w-4 h-4 text-emerald-600"/> Full Name</label>
               <input 
                 required
                 type="text" 
                 value={formData.name}
                 onChange={e => setFormData({...formData, name: e.target.value})}
-                className="w-full h-11 px-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-medium bg-slate-50/50"
+                className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all text-sm font-medium bg-slate-50 hover:bg-white"
                 placeholder="Jane Doe"
               />
             </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-slate-700">Work Email</label>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-700 flex items-center gap-2"><Mail className="w-4 h-4 text-emerald-600"/> Work Email</label>
               <input 
                 required
                 type="email" 
                 value={formData.email}
                 onChange={e => setFormData({...formData, email: e.target.value})}
-                className="w-full h-11 px-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-medium bg-slate-50/50"
+                className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all text-sm font-medium bg-slate-50 hover:bg-white"
                 placeholder="jane@company.com"
               />
             </div>
           </div>
           
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-slate-700">Company Name</label>
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-slate-700 flex items-center gap-2"><Building2 className="w-4 h-4 text-emerald-600"/> Company Name</label>
             <input 
               required
               type="text" 
               value={formData.company_name}
               onChange={e => setFormData({...formData, company_name: e.target.value})}
-              className="w-full h-11 px-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-medium bg-slate-50/50"
+              className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all text-sm font-medium bg-slate-50 hover:bg-white"
               placeholder="Acme Corp"
             />
           </div>
 
           {dialogType === 'become' && (
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-slate-700">Partnership Type</label>
-              <select 
-                className="w-full h-11 px-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-medium bg-slate-50/50 appearance-none"
-                value={formData.partner_type}
-                onChange={e => setFormData({...formData, partner_type: e.target.value})}
-              >
-                <option value="Technology">Technology Partner</option>
-                <option value="Solutions">Solutions Partner</option>
-                <option value="Referral">Referral Partner</option>
-              </select>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-700 flex items-center gap-2"><Briefcase className="w-4 h-4 text-emerald-600"/> Partnership Type</label>
+              <div className="relative">
+                <select 
+                  className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all text-sm font-medium bg-slate-50 hover:bg-white appearance-none cursor-pointer"
+                  value={formData.partner_type}
+                  onChange={e => setFormData({...formData, partner_type: e.target.value})}
+                >
+                  <option value="Technology">Technology Partner</option>
+                  <option value="Solutions">Solutions Partner</option>
+                  <option value="Referral">Referral Partner</option>
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                  <ChevronDown className="w-4 h-4" />
+                </div>
+              </div>
             </div>
           )}
 
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-slate-700">Message / Requirements</label>
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-slate-700 flex items-center gap-2"><MessageSquare className="w-4 h-4 text-emerald-600"/> Message / Requirements</label>
             <textarea 
               required
               rows={4}
               value={formData.message}
               onChange={e => setFormData({...formData, message: e.target.value})}
-              className="w-full p-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-medium bg-slate-50/50 resize-none"
+              className="w-full p-4 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all text-sm font-medium bg-slate-50 hover:bg-white resize-none"
               placeholder={dialogType === 'become' ? "Tell us about your organization..." : "What kind of partner are you looking for?"}
             />
           </div>
@@ -210,7 +215,8 @@ export default function Partners() {
           <Button 
             type="submit" 
             disabled={isSubmitting}
-            className="w-full h-12 rounded-xl text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-[0_8px_30px_rgba(5,150,105,0.2)] transition-all hover:-translate-y-0.5"
+            style={{ backgroundColor: '#059669', color: 'white' }}
+            className="w-full h-12 rounded-xl text-base font-bold shadow-[0_8px_30px_rgba(5,150,105,0.3)] transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(5,150,105,0.4)] hover:brightness-110"
           >
             {isSubmitting ? (
               <Loader2 className="w-5 h-5 animate-spin" />

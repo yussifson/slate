@@ -3385,5 +3385,62 @@ export const AppSchema = new Schema({
         soap_objective: column.text,
         soap_assessment: column.text,
         soap_plan: column.text,
-        notes: column.text})});
+        notes: column.text})    univ_hotel_reservations: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        reservation_id: column.text,
+        guest_name: column.text,
+        guest_phone: column.text,
+        guest_email: column.text,
+        room_number: column.text,
+        room_type: column.text,
+        check_in: column.text,
+        check_out: column.text,
+        nights: column.integer,
+        total_amount: column.real,
+        status: column.text
+    }),
+    univ_hotel_rooms: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        room_number: column.text,
+        type: column.text,
+        rate: column.real,
+        floor: column.text,
+        status: column.text,
+        amenities: column.text
+    }),
+    univ_hotel_requests: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        room: column.text,
+        type: column.text,
+        detail: column.text,
+        time: column.text,
+        status: column.text
+    }),
+    univ_hotel_menu: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        name: column.text,
+        category: column.text,
+        price: column.real,
+        status: column.text
+    }),
+    univ_hotel_restaurant_orders: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        order_id: column.text,
+        items: column.text,
+        total: column.real,
+        room_number: column.text,
+        payment_method: column.text,
+        status: column.text
+    }),
+});
 
