@@ -346,6 +346,31 @@ function EmailRow({ email, isSelected, onClick, isStarred, onToggleStar}) {
 export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, onReply, onForward}) {
  const senderName = email.sender_name || email.sender_email?.split("@")[0] || "Unknown";
  const avatarUrl = `https://api.dicebear.com/7.x/initials/svg?seed=${senderName}&backgroundColor=e2e8f0`;
+ const [isExtracting, setIsExtracting] = useState(false);
+ const [extractedIntent, setExtractedIntent] = useState(null);
+
+ const handleExtractIntent = async () => {
+   if (extractedIntent) {
+     setExtractedIntent(null);
+     return;
+   }
+   setIsExtracting(true);
+   try {
+     const prompt = [
+       { role: 'system', content: 'You are an AI assistant in an email client. Analyze the following email content. Extract the primary intent and provide a 1-sentence suggested reply or action.' },
+       { role: 'user', content: `Subject: ${email.subject}\nBody: ${email.body_preview}` }
+     ];
+     let response = await generateText(prompt);
+     if (typeof response !== 'string') {
+         response = response.response || response.text || JSON.stringify(response);
+     }
+     setExtractedIntent(response.replace(/```json|```/g, '').trim());
+   } catch (err) {
+     toast.error("Failed to extract intent");
+   } finally {
+     setIsExtracting(false);
+   }
+ };
 
  return (
  <div className="flex flex-col h-full bg-background">
@@ -405,7 +430,7 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
  try {
  const atts = typeof email.attachments === "string" ? JSON.parse(email.attachments) : email.attachments;
  return (
- <div className="border-t border-primary/40 pt-5">
+ <div className="border-t border-primary/40 pt-5 mb-8">
  <h4 className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2.5 tracking-[0.04em]">
  <Paperclip className="w-3.5 h-3.5" /> {atts.length} Attachment{atts.length !== 1 ? "s" : ""}
  </h4>
@@ -428,13 +453,26 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
 } catch { return null;}
 })()}
 
+ {extractedIntent && (
+   <div className="mb-8 p-4 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/30 rounded-xl flex gap-3 items-start w-fit">
+     <Sparkles className="w-5 h-5 text-indigo-500 mt-0.5 shrink-0" />
+     <div className="text-sm text-indigo-900 dark:text-indigo-200 leading-relaxed">
+       <span className="font-semibold block mb-1">AI Suggestion</span>
+       {extractedIntent}
+     </div>
+   </div>
+ )}
+
  {/* Quick reply strip */}
- <div className="mt-8 flex gap-2">
- <Button onClick={onReply} variant="outline" size="sm" className="gap-2.5 text-sm">
- <Reply className="w-3.5 h-3.5" /> Reply
+ <div className="flex gap-2 border-t border-primary/40 pt-6">
+ <Button onClick={handleExtractIntent} disabled={isExtracting} className="gap-2 text-sm bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90 text-white border-none shadow-md">
+ {isExtracting ? <Sparkles className="w-4 h-4 animate-pulse" /> : <Sparkles className="w-4 h-4" />} AI Actions
  </Button>
- <Button onClick={onForward} variant="outline" size="sm" className="gap-2.5 text-sm">
- <CornerUpRight className="w-3.5 h-3.5" /> Forward
+ <Button onClick={onReply} variant="outline" className="gap-2 text-sm bg-card hover:bg-muted/50 border-primary/40 text-foreground">
+ <Reply className="w-4 h-4" /> Reply
+ </Button>
+ <Button onClick={onForward} variant="outline" className="gap-2 text-sm bg-card hover:bg-muted/50 border-primary/40 text-foreground">
+ <CornerUpRight className="w-4 h-4" /> Forward
  </Button>
  </div>
  </div>

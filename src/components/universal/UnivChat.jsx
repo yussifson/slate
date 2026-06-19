@@ -8,9 +8,11 @@ import { motion, AnimatePresence} from 'framer-motion';
 import { cn} from '@/lib/utils';
 import {
  Hash, MessageSquare, Send, Paperclip, Smile,
- MoreVertical, Hash as HashIcon, Plus, X, Search,
- ChevronRight, Reply, ThumbsUp, Heart, Laugh
+ MoreVertical, Plus, X, Search,
+ ChevronRight, Reply, ThumbsUp, Heart, Laugh, Sparkles
 } from 'lucide-react';
+import { generateText } from '@/lib/cloudflareAI';
+import { toast } from 'react-hot-toast';
 
 export default function UnivChat({
  title = 'Internal Chat',
@@ -29,6 +31,8 @@ export default function UnivChat({
  const [messageInput, setMessageInput] = useState('');
  const [isCreatingChannel, setIsCreatingChannel] = useState(false);
  const [newChannelName, setNewChannelName] = useState('');
+ const [extractedIntents, setExtractedIntents] = useState({});
+ const [isExtractingId, setIsExtractingId] = useState(null);
  const messagesEndRef = useRef(null);
 
  useEffect(() => {
@@ -161,6 +165,31 @@ export default function UnivChat({
 }
 };
 
+ const handleExtractIntent = async (msg) => {
+   if (extractedIntents[msg.id]) {
+     const next = {...extractedIntents};
+     delete next[msg.id];
+     setExtractedIntents(next);
+     return;
+   }
+   setIsExtractingId(msg.id);
+   try {
+     const prompt = [
+       { role: 'system', content: 'You are an AI assistant in a workspace chat. Analyze the following message. Extract the primary intent and provide a 1-sentence suggested reply or action that a user could take. Format your response concisely.' },
+       { role: 'user', content: msg.content }
+     ];
+     let response = await generateText(prompt);
+     if (typeof response !== 'string') {
+         response = response.response || response.text || JSON.stringify(response);
+     }
+     setExtractedIntents(prev => ({ ...prev, [msg.id]: response.replace(/```json|```/g, '').trim() }));
+   } catch (err) {
+     toast.error("Failed to extract intent");
+   } finally {
+     setIsExtractingId(null);
+   }
+ };
+
  const activeChannel = channels.find(c => c.id === activeChannelId);
 
  return (
@@ -215,7 +244,7 @@ export default function UnivChat({
  : "text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground"
  )}
  >
- <HashIcon className="w-4 h-4 opacity-70" />
+ <Hash className="w-4 h-4 opacity-70" />
  <span className="truncate">{channel.name || 'general'}</span>
  </button>
  ))}
@@ -296,11 +325,26 @@ export default function UnivChat({
  </span>
  </div>
  )}
+ </div>
  <p className="text-foreground text-[15px] leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+ 
+ {extractedIntents[msg.id] && (
+   <div className="mt-2 p-3 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/30 rounded-xl flex gap-3 items-start w-fit max-w-[90%]">
+     <Sparkles className="w-4 h-4 text-indigo-500 mt-0.5 shrink-0" />
+     <div className="text-sm text-indigo-900 dark:text-indigo-200 leading-relaxed">
+       <span className="font-semibold block mb-1">AI Suggestion</span>
+       {extractedIntents[msg.id]}
+     </div>
+   </div>
+ )}
+ 
  </div>
 
  {/* Quick Actions (Hover) */}
  <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl px-1 py-1 h-8 self-start -mt-3 relative z-10">
+ <button onClick={() => handleExtractIntent(msg)} className="p-1.5 hover:bg-muted rounded-md text-indigo-500 hover:text-indigo-600 transition-colors" title="AI Smart Action">
+   {isExtractingId === msg.id ? <Sparkles className="w-4 h-4 animate-pulse" /> : <Sparkles className="w-4 h-4" />}
+ </button>
  <button className="p-1.5 hover:bg-muted rounded-md text-[#71717a] dark:text-gray-400 hover:text-foreground"><Smile className="w-4 h-4" /></button>
  <button className="p-1.5 hover:bg-muted rounded-md text-[#71717a] dark:text-gray-400 hover:text-foreground"><Reply className="w-4 h-4" /></button>
  </div>

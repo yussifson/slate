@@ -1,22 +1,19 @@
-import React, { useState, useEffect} from 'react';
-
-import GenericGrid from '@/components/views/GenericGrid';
-import GenericKanban from '@/components/views/GenericKanban';
-import GenericCalendar from '@/components/views/GenericCalendar';
-import GenericDashboard from '@/components/views/GenericDashboard';
-
-
-import { supabase} from "@/api/supabaseClient";
-import { useCompanyId} from '@/hooks/useCompanyId';
-import { motion, AnimatePresence} from 'framer-motion';
-import { Bell, Check, Trash2, Settings, Info, AlertTriangle, CheckCircle2, Clock} from 'lucide-react';
-import { toast} from 'react-hot-toast';
+import React, { useState, useEffect } from 'react';
+import { supabase } from "@/api/supabaseClient";
+import { powerSync } from "@/api/PowerSyncConnector";
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Bell, Check, Trash2, Settings, Info, AlertTriangle, CheckCircle2, Clock, Sparkles } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+import { generateText } from '@/lib/cloudflareAI';
 
 export default function UnivNotification() {
  const companyId = useCompanyId();
  const [view, setView] = useState('Default');
  const [notifications, setNotifications] = useState([]);
  const [loading, setLoading] = useState(true);
+ const [aiDigest, setAiDigest] = useState(null);
+ const [isGeneratingDigest, setIsGeneratingDigest] = useState(false);
 
  useEffect(() => {
  if (companyId) {
@@ -60,6 +57,31 @@ export default function UnivNotification() {
  toast.error(err.message || 'Failed to mark all as read');
 }
 };
+
+ const generateSmartDigest = async () => {
+  const unread = notifications.filter(n => !n.read);
+  if (unread.length === 0) {
+    toast.success("No unread notifications to summarize!");
+    return;
+  }
+  setIsGeneratingDigest(true);
+  try {
+    const aiMessages = [
+      { role: 'system', content: 'You are an AI assistant. Summarize the following system notifications into a brief, 2-3 sentence digest. Highlight any urgent or high-priority items. Do not list them, just write a cohesive summary.' },
+      { role: 'user', content: JSON.stringify(unread.map(n => ({ title: n.title, message: n.message, type: n.type, time: n.created_at }))) }
+    ];
+    let digest = await generateText(aiMessages);
+    if (typeof digest !== 'string') {
+        digest = digest.response || digest.text || JSON.stringify(digest);
+    }
+    setAiDigest(digest.replace(/```json|```/g, '').trim());
+  } catch (err) {
+    console.error("AI Digest Error:", err);
+    toast.error("Failed to generate AI digest");
+  } finally {
+    setIsGeneratingDigest(false);
+  }
+ };
 
  const markAsRead = async (id) => {
  try {
@@ -114,7 +136,7 @@ export default function UnivNotification() {
  <div className="flex flex-col h-full bg-background overflow-hidden relative ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header max-w-3xl w-full mx-auto py-12 px-4 sm:px-6 relative z-10 flex flex-col h-full">
  
- <div className="flex items-center justify-between mb-8 shrink-0">
+ <div className="flex items-center justify-between mb-8 shrink-0 flex-wrap gap-4">
  <div className="flex items-center gap-3">
  <div className="p-3 bg-primary/10 text-primary rounded-xl">
  <Bell className="w-6 h-6" />
@@ -125,14 +147,33 @@ export default function UnivNotification() {
  </div>
  </div>
  <div className="flex items-center gap-2">
- <button onClick={markAllRead} className="px-4 py-2 text-sm font-medium text-foreground bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl hover:bg-muted transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <button onClick={generateSmartDigest} disabled={isGeneratingDigest} className="px-4 py-2 flex items-center gap-2 text-sm font-medium text-white bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl hover:opacity-90 transition-opacity hover:shadow-[0_2px_8px_rgba(0,0,0,0.15)] disabled:opacity-50">
+ <Sparkles className="w-4 h-4" />
+ {isGeneratingDigest ? 'Generating...' : 'AI Digest'}
+ </button>
+ <button onClick={markAllRead} className="px-4 py-2 text-sm font-medium text-foreground bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl hover:bg-muted transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)]">
  Mark all as read
  </button>
- <button className="p-2 text-[#71717a] dark:text-gray-400 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl hover:bg-muted transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <button className="p-2 text-[#71717a] dark:text-gray-400 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl hover:bg-muted transition-colors">
  <Settings className="w-5 h-5" />
  </button>
  </div>
  </div>
+
+ {aiDigest && (
+   <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6 p-4 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/30 flex gap-4 items-start shrink-0">
+     <div className="p-2 bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 rounded-lg shrink-0">
+       <Sparkles className="w-5 h-5" />
+     </div>
+     <div className="flex-1">
+       <h4 className="text-sm font-semibold text-indigo-900 dark:text-indigo-300 mb-1">AI Smart Digest</h4>
+       <p className="text-sm text-indigo-800/80 dark:text-indigo-200/80 leading-relaxed">{aiDigest}</p>
+     </div>
+     <button onClick={() => setAiDigest(null)} className="p-1 text-indigo-400 hover:bg-indigo-200 dark:hover:bg-indigo-500/20 rounded-md transition-colors shrink-0">
+       <Trash2 className="w-4 h-4" />
+     </button>
+   </motion.div>
+ )}
 
  <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4">
  {loading ? (

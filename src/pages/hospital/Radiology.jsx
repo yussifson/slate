@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Microscope, Search, Plus, CheckCircle2, FileText, Trash2, MoreVertical, Image as ImageIcon } from 'lucide-react';
+import { Microscope, Search, Plus, CheckCircle2, FileText, Trash2, MoreVertical, Image as ImageIcon, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
