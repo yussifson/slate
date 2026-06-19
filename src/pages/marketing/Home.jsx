@@ -919,25 +919,24 @@ return (
  <section className="py-16 md:py-24 lg:py-32">
  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
  <FadeIn>
- <div className="relative bg-gradient-to-br from-primary to-primary/90 rounded-3xl px-6 py-20 md:py-24 md:px-12 text-center overflow-hidden -[0_20px_60px_hsl(var(--primary)/0.3)]">
+ <div className="relative bg-gradient-to-br from-primary to-primary/90 rounded-[2.5rem] px-8 py-24 md:px-16 text-center overflow-hidden shadow-[0_20px_50px_-12px_rgba(16,185,129,0.3)]">
  {/* Decorative glow circles */}
- <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.2)_0%,transparent_50%)] pointer-events-none" />
- <div className="absolute -bottom-32 -left-20 w-96 h-96 rounded-full bg-white blur-3xl pointer-events-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
-
- <div className="relative z-10 max-w-3xl mx-auto space-y-8">
- <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter leading-[1.1] tracking-[-0.02em]">
+ <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.15)_0%,transparent_70%)] pointer-events-none" />
+ 
+ <div className="relative z-10 max-w-3xl mx-auto space-y-6">
+ <h2 className="text-4xl md:text-5xl lg:text-[3.5rem] font-black text-white tracking-tighter leading-[1] tracking-[-0.03em]">
  {t("ready_to_modernize_your_organi", "Ready to modernize your organization?")}
  </h2>
- <p className="text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl mx-auto font-medium">
+ <p className="text-lg md:text-xl text-white/90 leading-relaxed max-w-xl mx-auto font-medium">
  {t(
  "create_your_workspace_invite_a",
- "Create your workslate, invite associates, and start managing\n cases in minutes."
+ "Create your workslate, invite associates, and start managing cases in minutes."
  )}
  </p>
 
  <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
  <Link to="/signup">
- <Button className="bg-white text-primary hover:bg-slate-50 font-bold tracking-tight text-base py-6 px-10 rounded-2xl group transition-all hover:scale-[1.02] shadow-[0_8px_30px_rgba(0,0,0,0.1)]">
+ <Button className="bg-white text-primary hover:bg-slate-50 font-bold text-lg py-7 px-10 rounded-2xl group transition-all hover:scale-[1.02] shadow-xl">
  {t("start_your_free_trial", "Start Your Free Trial")}
  <ChevronRight className="w-5 h-5 ml-1 transition-transform group-hover:translate-x-1" />
  </Button>
@@ -945,14 +944,14 @@ return (
  <Link to="/contact">
  <Button
  variant="outline"
- className="border-white/20 text-white hover:bg-white/10 font-bold tracking-tight text-base py-6 px-10 rounded-2xl transition-all hover:scale-[1.02] bg-transparent backdrop-blur-sm"
+ className="border-white/20 text-white hover:bg-white/10 font-bold text-lg py-7 px-10 rounded-2xl transition-all hover:scale-[1.02] bg-transparent backdrop-blur-sm"
  >
  {t("contact_sales", "Contact Sales")}
  </Button>
  </Link>
  </div>
  
- <div className="pt-8 flex flex-wrap justify-center gap-6 text-sm text-white/70 font-medium">
+ <div className="pt-8 flex flex-wrap justify-center gap-8 text-sm text-white/80 font-medium">
  <span className="flex items-center gap-2.5"><Shield className="w-4 h-4"/> {t("soc2_certified", "SOC2 Certified")}</span>
  <span className="flex items-center gap-2.5"><Clock className="w-4 h-4"/> {t("5_minute_setup", "5-Minute Setup")}</span>
  <span className="flex items-center gap-2.5"><CreditCard className="w-4 h-4"/> {t("no_credit_card_required", "No Credit Card Required")}</span>
