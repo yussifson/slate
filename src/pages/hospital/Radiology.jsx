@@ -8,6 +8,8 @@ import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { generateText } from '@/lib/cloudflareAI';
+import { Bot, Sparkles } from 'lucide-react';
 
 export default function Radiology() {
   const { t } = useTranslation();
@@ -52,6 +54,22 @@ export default function Radiology() {
     radiologist_name: '',
     report_summary: ''
   });
+
+  const [isSummarizing, setIsSummarizing] = useState(false);
+
+  const handleAISummarize = async () => {
+    if (!formData.scan_type || !formData.body_part) return toast.error("Select scan type and body part first.");
+    setIsSummarizing(true);
+    try {
+      const prompt = `You are an expert Radiologist AI. Write a concise clinical indication and summary of typical things to look out for during a ${formData.scan_type} of the ${formData.body_part}. Keep it under 3 sentences.`;
+      const response = await generateText(prompt);
+      setFormData(prev => ({ ...prev, report_summary: response }));
+    } catch (e) {
+      toast.error('AI Summary generation failed.');
+    } finally {
+      setIsSummarizing(false);
+    }
+  };
 
   const mutateRecord = useMutation({
     mutationFn: async (payload) => {
@@ -254,7 +272,13 @@ export default function Radiology() {
                 <Input type="date" value={formData.scan_date} onChange={e => setFormData({ ...formData, scan_date: e.target.value})} className="mt-1" />
               </div>
               <div className="col-span-2">
-                <label className="text-xs font-semibold text-[#71717a] uppercase">Clinical Indication / Summary</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-[#71717a] uppercase">Clinical Indication / Summary</label>
+                  <Button type="button" variant="outline" size="sm" onClick={handleAISummarize} disabled={isSummarizing} className="h-6 text-xs text-purple-600 border-purple-200 bg-purple-50 hover:bg-purple-100">
+                    {isSummarizing ? <Sparkles className="w-3 h-3 mr-1 animate-spin" /> : <Bot className="w-3 h-3 mr-1" />}
+                    {isSummarizing ? 'Generating...' : 'AI Auto-Fill'}
+                  </Button>
+                </div>
                 <textarea rows={2} value={formData.report_summary} onChange={e => setFormData({ ...formData, report_summary: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/20 dark:border-white/20 bg-background px-3 py-2 text-sm" placeholder="Reason for scan or initial findings..." />
               </div>
             </div>

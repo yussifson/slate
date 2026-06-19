@@ -9,6 +9,9 @@ import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@/lib/AuthContext';
+import { generateText } from '@/lib/cloudflareAI';
+import { Bot, Sparkles, Lock } from 'lucide-react';
 
 export default function HospitalClaims() {
   const { t } = useTranslation();
@@ -43,9 +46,33 @@ export default function HospitalClaims() {
     enabled: !!companyId
   });
 
+  const { user } = useAuth();
+  const isProOrAbove = user?.role === 'system_admin' || user?.subscription_plan === 'Pro' || user?.subscription_plan === 'Enterprise';
+
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [viewClaim, setViewClaim] = useState(null);
+
+  const [isScoring, setIsScoring] = useState(false);
+  const [aiScore, setAiScore] = useState('');
+
+  const handleAIScore = async (claimObj) => {
+    if (!isProOrAbove) {
+      toast.error('AI Claim Predictor is available on Pro or Enterprise plans.');
+      return;
+    }
+    setIsScoring(true);
+    setAiScore('');
+    try {
+      const prompt = `You are an expert Medical Billing AI. Predict the probability of approval for this insurance claim.\nProvider: ${claimObj.insurance_provider}\nAmount: $${claimObj.claim_amount}\nNotes: ${claimObj.notes}\nProvide a single percentage score and a 1-sentence reason.`;
+      const response = await generateText(prompt);
+      setAiScore(response);
+    } catch (e) {
+      toast.error('AI Prediction failed.');
+    } finally {
+      setIsScoring(false);
+    }
+  };
 
   const [formData, setFormData] = useState({
     patient_id: '',
@@ -190,6 +217,7 @@ export default function HospitalClaims() {
                         <Button variant="ghost" className="h-8 w-8 p-0"><MoreVertical className="h-4 w-4" /></Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => setViewClaim(c)}>View Details</DropdownMenuItem>
                         {c.status === 'Pending' && (
                           <>
                             <DropdownMenuItem onClick={() => markStatus.mutate({ id: c.id, status: 'Approved' })} className="text-primary">Approve</DropdownMenuItem>
@@ -252,6 +280,48 @@ export default function HospitalClaims() {
           </div>
         </div>
       )}
+      <Sheet open={!!viewClaim} onOpenChange={(open) => {
+        if (!open) {
+          setViewClaim(null);
+          setAiScore('');
+        }
+      }}>
+        <SheetContent className="overflow-y-auto">
+          <SheetHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <SheetTitle>Claim Details</SheetTitle>
+                <SheetDescription>Insurance claim breakdown</SheetDescription>
+              </div>
+              <Button size="sm" variant="outline" className="gap-2 bg-primary/5 text-primary border-primary/20 hover:bg-primary/10" onClick={() => handleAIScore(viewClaim)} disabled={isScoring}>
+                {isScoring ? <Sparkles className="w-4 h-4 animate-spin" /> : (!isProOrAbove ? <Lock className="w-4 h-4" /> : <Bot className="w-4 h-4" />)}
+                {isScoring ? 'Scoring...' : 'AI Score Predictor'}
+              </Button>
+            </div>
+          </SheetHeader>
+          {viewClaim && (
+            <div className="mt-6 space-y-4">
+              <div><h3 className="text-sm font-medium text-[#71717a]">Patient</h3><p className="text-base font-semibold">{viewClaim.patient_name}</p></div>
+              <div><h3 className="text-sm font-medium text-[#71717a]">Provider</h3><p className="text-base">{viewClaim.insurance_provider}</p></div>
+              <div><h3 className="text-sm font-medium text-[#71717a]">Policy No.</h3><p className="text-base font-mono">{viewClaim.policy_number}</p></div>
+              <div><h3 className="text-sm font-medium text-[#71717a]">Notes</h3><p className="text-base">{viewClaim.notes}</p></div>
+              <div className="pt-2 border-t"><h3 className="text-sm font-medium text-[#71717a]">Claim Amount</h3><p className="text-xl font-bold text-card-foreground">${viewClaim.claim_amount}</p></div>
+              <div><h3 className="text-sm font-medium text-[#71717a]">Status</h3><span className={`text-xs font-semibold px-2 py-1 rounded-md border ${viewClaim.status === 'Approved' ? 'bg-primary/10 text-primary border-primary/20' : viewClaim.status === 'Rejected' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>{viewClaim.status}</span></div>
+            </div>
+          )}
+          
+          {aiScore && (
+            <div className="mt-6 pt-4 border-t">
+              <h3 className="text-sm font-semibold text-[#71717a] uppercase mb-2 flex items-center gap-2"><Bot className="w-4 h-4 text-primary"/> AI Approval Prediction</h3>
+              <div className="bg-primary/5 p-4 rounded-xl border border-primary/20">
+                <div className="text-sm font-medium text-foreground">
+                  {aiScore}
+                </div>
+              </div>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

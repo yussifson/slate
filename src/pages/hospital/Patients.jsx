@@ -12,6 +12,8 @@ import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { v4 as uuidv4 } from 'uuid';
+import { generateText } from '@/lib/cloudflareAI';
+import { Bot, Sparkles } from 'lucide-react';
 
 const statusColors = {
   Admitted: 'bg-red-100 text-red-700',
@@ -72,6 +74,9 @@ export default function Patients() {
   const [showEhrModal, setShowEhrModal] = useState(false);
   const [ehrTargetId, setEhrTargetId] = useState(null);
   const [ehrForm, setEhrForm] = useState({ type: 'General', vitals_bp: '', vitals_hr: '', vitals_temp: '', vitals_weight: '', soap_subjective: '', soap_objective: '', soap_assessment: '', soap_plan: '', notes: '' });
+
+  const [isGeneratingAi, setIsGeneratingAi] = useState(false);
+  const [aiSummary, setAiSummary] = useState('');
 
   const mutateRecord = useMutation({
     mutationFn: async (payload) => {
@@ -180,6 +185,24 @@ export default function Patients() {
 
   const confirmDelete = () => {
     deleteRecord.mutate(deleteTargetId);
+  };
+
+  const handleAiSummary = async (patient) => {
+    setIsGeneratingAi(true);
+    setAiSummary('');
+    try {
+      const pHistory = medicalHistory.filter(m => m.patient_id === patient.id);
+      const prompt = `You are an expert AI clinical assistant. Analyze the following patient history and provide a concise, professional clinical summary. Identify any risks, trends, or recommended follow-ups.
+Patient: ${patient.first_name} ${patient.last_name}, DOB: ${patient.date_of_birth}, Gender: ${patient.gender}.
+History records: ${JSON.stringify(pHistory)}
+Return ONLY the summary in markdown format.`;
+      const response = await generateText(prompt);
+      setAiSummary(response);
+    } catch (error) {
+      toast.error('Failed to generate AI summary.');
+    } finally {
+      setIsGeneratingAi(false);
+    }
   };
 
   const filtered = patients.filter(p => {
@@ -409,7 +432,13 @@ export default function Patients() {
         <SheetContent className="overflow-y-auto w-full sm:max-w-xl">
           <SheetHeader>
             <SheetTitle>Patient File: {viewPatient?.first_name} {viewPatient?.last_name}</SheetTitle>
-            <SheetDescription>ID: {viewPatient?.patient_number}</SheetDescription>
+            <div className="flex items-center justify-between">
+              <SheetDescription>ID: {viewPatient?.patient_number}</SheetDescription>
+              <Button size="sm" variant="outline" className="gap-2 bg-primary/5 text-primary border-primary/20 hover:bg-primary/10" onClick={() => handleAiSummary(viewPatient)} disabled={isGeneratingAi}>
+                {isGeneratingAi ? <Sparkles className="w-4 h-4 animate-spin" /> : <Bot className="w-4 h-4" />}
+                {isGeneratingAi ? 'Analyzing...' : 'AI Health Summary'}
+              </Button>
+            </div>
           </SheetHeader>
           {viewPatient && (
             <div className="mt-6 space-y-6">
@@ -421,12 +450,25 @@ export default function Patients() {
               </div>
               <div className="border-t pt-4">
                 <h3 className="text-lg font-semibold mb-4">Medical History (EHR)</h3>
+                
+                {aiSummary && (
+                  <div className="mb-6 p-4 bg-primary/5 border border-primary/20 rounded-xl">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Bot className="w-5 h-5 text-primary" />
+                      <h4 className="font-semibold text-primary">AI Clinical Summary</h4>
+                    </div>
+                    <div className="text-sm prose prose-sm dark:prose-invert max-w-none">
+                      {aiSummary}
+                    </div>
+                  </div>
+                )}
+
                 <div className="space-y-4">
                   {medicalHistory.filter(m => m.patient_id === viewPatient.id).length === 0 && <p className="text-sm text-gray-500">No medical history records found.</p>}
                   {medicalHistory.filter(m => m.patient_id === viewPatient.id).map(m => (
                     <div key={m.id} className="bg-muted/30 p-4 rounded-xl border border-border">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="font-semibold text-sm">{m.record_date}</span>
+                        <span className="font-semibold text-sm">{new Date(m.record_date).toLocaleString()}</span>
                       </div>
                       <div className="grid grid-cols-4 gap-2 mb-3 text-xs">
                         <div className="bg-card p-1.5 rounded border text-center">BP: {m.vitals_bp || '-'}</div>

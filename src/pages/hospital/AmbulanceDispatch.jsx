@@ -8,6 +8,9 @@ import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@/lib/AuthContext';
+import { generateText } from '@/lib/cloudflareAI';
+import { Bot, Sparkles, Lock } from 'lucide-react';
 
 export default function AmbulanceDispatch() {
   const { t } = useTranslation();
@@ -31,6 +34,9 @@ export default function AmbulanceDispatch() {
 
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const { user } = useAuth();
+  const isProOrAbove = user?.role === 'system_admin' || user?.subscription_plan === 'Pro' || user?.subscription_plan === 'Enterprise';
+
   const [formData, setFormData] = useState({
     vehicle_id: '',
     driver_name: '',
@@ -40,6 +46,28 @@ export default function AmbulanceDispatch() {
     notes: ''
   });
 
+  const [isOptimizing, setIsOptimizing] = useState(false);
+  const [aiRoute, setAiRoute] = useState('');
+
+  const handleAIRoute = async () => {
+    if (!isProOrAbove) {
+      toast.error('AI Route Optimization is available on Pro or Enterprise plans.');
+      return;
+    }
+    if (!formData.destination) return toast.error("Enter destination first.");
+    setIsOptimizing(true);
+    setAiRoute('');
+    try {
+      const prompt = `You are an expert AI Dispatcher. Optimize the route to "${formData.destination}" for a ${formData.emergency_type} emergency. Provide a concise 2-sentence recommended route, estimated time of arrival, and any traffic/road warnings.`;
+      const response = await generateText(prompt);
+      setAiRoute(response);
+    } catch (e) {
+      toast.error('AI Route Optimization failed.');
+    } finally {
+      setIsOptimizing(false);
+    }
+  };
+
   const mutateRecord = useMutation({
     mutationFn: async (payload) => {
       await powerSync.execute(
@@ -47,6 +75,14 @@ export default function AmbulanceDispatch() {
          VALUES (uuid(), datetime('now'), ?, ?, ?, ?, datetime('now'), ?, ?, 'Dispatched', ?)`,
         [companyId, payload.vehicle_id, payload.driver_name, payload.paramedic_name, payload.destination, payload.emergency_type, payload.notes]
       );
+      
+      if (['Cardiac Arrest', 'Trauma', 'Respiratory', 'Accident'].includes(payload.emergency_type)) {
+        await powerSync.execute(
+          `INSERT INTO univ_notifications (id, company_id, created_at, title, message, type, read) 
+           VALUES (uuid(), ?, datetime('now'), 'CRITICAL EMERGENCY', ?, 'error', 0)`,
+          [companyId, `Ambulance ${payload.vehicle_id} dispatched for ${payload.emergency_type} at ${payload.destination}`]
+        ).catch(console.error);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['univ_ambulance_dispatch']);
@@ -219,8 +255,22 @@ export default function AmbulanceDispatch() {
             <h2 className="text-xl font-bold text-card-foreground">New Dispatch Event</h2>
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2">
-                <label className="text-xs font-semibold text-[#71717a] uppercase">Destination / Location</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-[#71717a] uppercase">Destination / Location</label>
+                  <Button type="button" variant="outline" size="sm" onClick={handleAIRoute} disabled={isOptimizing} className="h-6 text-xs text-red-600 border-red-200 bg-red-50 hover:bg-red-100">
+                    {isOptimizing ? <Sparkles className="w-3 h-3 mr-1 animate-spin" /> : (!isProOrAbove ? <Lock className="w-3 h-3 mr-1" /> : <Bot className="w-3 h-3 mr-1" />)}
+                    {isOptimizing ? 'Optimizing...' : 'AI Route Optimizer'}
+                  </Button>
+                </div>
                 <Input placeholder="e.g. 123 Main St, Appt 4" value={formData.destination} onChange={e => setFormData({ ...formData, destination: e.target.value})} className="mt-1" />
+                {aiRoute && (
+                  <div className="mt-2 bg-red-50/50 p-3 rounded-lg border border-red-200/50 text-sm font-medium text-red-900">
+                    <div className="flex items-center gap-1.5 mb-1 text-red-700">
+                      <Bot className="w-4 h-4"/> AI Route Suggestion
+                    </div>
+                    {aiRoute}
+                  </div>
+                )}
               </div>
               <div className="col-span-2">
                 <label className="text-xs font-semibold text-[#71717a] uppercase">Emergency Type</label>

@@ -17,16 +17,16 @@ export default function Loyalty() {
 
  const customers = customerRecords.map(r => ({
  id: r.id,
- name: r.data?.name || 'Unnamed Customer'
+ name: r.name || 'Unnamed Customer'
 }));
 
  const members = dbRecords.map(r => ({
  id: r.id,
- memberId: r.data?.memberId || `MBR-${r.id?.slice(0, 5).toUpperCase()}`,
- customerId: r.data?.customerId || '',
- customerName: r.data?.customerId ? (customers.find(c => c.id === r.data.customerId)?.name || 'Unknown') : (r.data?.customerName || 'Unnamed Member'),
- points: parseInt(r.data?.points) || 0,
- tier: r.data?.tier || 'Bronze'}));
+ memberId: r.member_id || `MBR-${r.id?.slice(0, 5).toUpperCase()}`,
+ customerId: r.customer_id || '',
+ customerName: r.data?.customerId ? (customers.find(c => c.id === r.customer_id)?.name || 'Unknown') : ( 'Unnamed Member'),
+ points: parseInt(r.points) || 0,
+ tier: r.tier || 'Bronze'}));
 
  const [search, setSearch] = useState('');
  const [viewMode, setViewMode] = useState('list');
@@ -56,7 +56,30 @@ export default function Loyalty() {
 });
 };
 
- const handleSave = async () => {
+ 
+  const handleAIAwardCopilot = async (mbr) => {
+    if (!isProOrAbove) {
+      toast.error('AI Insights are available on Pro or Enterprise plans.');
+      return;
+    }
+    setIsGenerating(true);
+    setAiInsight('');
+    try {
+      const prompt = `You are a Retail Loyalty Expert AI. Provide a 2-sentence strategy for this loyalty member:
+Member: ${mbr.customerName}
+Tier: ${mbr.tier}
+Points: ${mbr.points}
+Suggest an exclusive perk or engagement strategy.`;
+      const response = await generateText(prompt);
+      setAiInsight(response);
+    } catch (e) {
+      toast.error('AI Copilot failed.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleSave = async () => {
  if (formData.customerIds.length === 0) {
  toast.error("Please select at least one customer.");
  return;
@@ -186,7 +209,24 @@ export default function Loyalty() {
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
  <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editingId ? 'Edit Member' : 'Add Member(s)'}</h2>
+ <div className="flex justify-between items-center">
+            <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editingId ? 'Edit Member' : 'Add Member(s)'}</h2>
+            {editingId && (
+              <Button size="sm" variant="outline" className="gap-2 bg-primary/5 text-primary border-primary/20" onClick={() => {
+                const mbr = members.find(m => m.id === editingId);
+                if(mbr) handleAIAwardCopilot(mbr);
+              }} disabled={isGenerating}>
+                {isGenerating ? <Sparkles className="w-4 h-4 animate-spin" /> : (!isProOrAbove ? <Lock className="w-4 h-4" /> : <Bot className="w-4 h-4" />)}
+                {isGenerating ? 'Analyzing...' : 'AI Reward Copilot'}
+              </Button>
+            )}
+          </div>
+          {aiInsight && (
+            <div className="bg-primary/5 p-4 rounded-xl border border-primary/20">
+              <h3 className="text-sm font-semibold text-primary mb-2 flex items-center gap-2"><Bot className="w-4 h-4"/> AI Reward Copilot</h3>
+              <p className="text-sm text-foreground font-medium">{aiInsight}</p>
+            </div>
+          )}
  <div className="space-y-4">
  
  <div>

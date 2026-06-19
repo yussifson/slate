@@ -1,13 +1,14 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
-import { Search, Plus, Trash2, FileSignature, CheckCircle2, XCircle, AlertTriangle, MoreVertical, Eye, Edit, Clock} from 'lucide-react';
+import { Search, Plus, Trash2, FileSignature, CheckCircle2, XCircle, AlertTriangle, MoreVertical, Eye, Edit, Clock, Sparkles } from 'lucide-react';
 import { Link} from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
-import { toast} from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
+import { generateText } from '@/lib/cloudflareAI';
 import ConfirmationModal from '@/components/ConfirmationModal';
 
 export default function Underwriting() {
@@ -116,6 +117,37 @@ export default function Underwriting() {
  onSuccess: () => toast.success(`Decision updated to ${newDecision}`)
 });
 };
+
+ const [isUnderwriting, setIsUnderwriting] = useState(false);
+
+ const runAIUnderwriting = async (app) => {
+   setIsUnderwriting(true);
+   const tId = toast.loading('Running AI Underwriting Rules Engine...');
+   try {
+     const prompt = `You are an AI Underwriter for an insurance company. 
+Evaluate this application:
+Applicant: ${app.applicantName}
+Product: ${app.productType}
+Risk Level: ${app.riskLevel}
+Premium Quote: $${app.premiumQuote}
+Sum Requested: $${app.sumInsuredRequested}
+
+Rules:
+- Low risk & premium quote > 0 & sum < 1000000 -> Approved
+- High risk -> Rejected
+- Medium risk -> Conditionally Approved
+- Sum requested > 1000000 -> Conditionally Approved
+
+Output ONLY one of these exact strings based on the rules: Approved, Rejected, Conditionally Approved.`;
+     const decision = await generateText(prompt);
+     handleUpdateDecision(app, decision.trim());
+     toast.success(`AI decided: ${decision.trim()}`, { id: tId });
+   } catch (err) {
+     toast.error('AI Underwriting failed', { id: tId });
+   } finally {
+     setIsUnderwriting(false);
+   }
+ };
 
  const handleDelete = () => {
  if (!deleteTargetId) return;
@@ -249,6 +281,7 @@ export default function Underwriting() {
  </DropdownMenuTrigger>
  <DropdownMenuContent align="end">
  <DropdownMenuItem onClick={() => setViewRecord(app)}>{t("view_details", "View Details")}</DropdownMenuItem>
+                        {app.decision === 'Pending Review' && <DropdownMenuItem onClick={() => runAIUnderwriting(app)} disabled={isUnderwriting} className="text-purple-600 font-semibold"><Sparkles className="w-4 h-4 mr-2"/> AI Auto-Underwrite</DropdownMenuItem>}
  <DropdownMenuItem onClick={() => handleEdit(app)}>{t("edit", "Edit")}</DropdownMenuItem>
  <DropdownMenuItem onClick={() => setDeleteTargetId(app.id)} className="text-red-600">{t("delete", "Delete")}</DropdownMenuItem>
  </DropdownMenuContent>
@@ -392,3 +425,4 @@ export default function Underwriting() {
  </div>
  );
 }
+

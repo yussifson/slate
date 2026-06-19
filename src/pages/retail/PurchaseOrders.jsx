@@ -64,8 +64,8 @@ export default function PurchaseOrders() {
  ...prev.items,
  {
  productId: prod.id,
- name: prod.data?.name,
- sku: prod.data?.sku,
+ name: prod.name,
+ sku: prod.sku,
  quantity: Number(orderQuantity),
  unitCost: Number(orderCost)
 }
@@ -98,7 +98,7 @@ export default function PurchaseOrders() {
  const handleDelete = async () => {
  if (!deleteTargetId) return;
  try {
- await deleteRecord.mutateAsync({ id: deleteTargetId, recordType: 'purchase_order'});
+ await deleteRecord.mutateAsync(deleteTargetId);
  toast.success(t("po_deleted", "Purchase Order deleted"));
  setDeleteTargetId(null);
 } catch (error) {
@@ -106,7 +106,27 @@ export default function PurchaseOrders() {
 }
 };
 
- const handleCreatePO = async () => {
+ 
+  const handleAIPODrafter = async () => {
+    if (!isProOrAbove) {
+      toast.error('AI Insights are available on Pro or Enterprise plans.');
+      return;
+    }
+    setIsGenerating(true);
+    setAiInsight('');
+    try {
+      const lowStockProducts = products.filter(p => Number(p.quantity) < 20).map(p => p.name).join(', ');
+      const prompt = `You are a Retail Inventory AI. We have low stock on: ${lowStockProducts || 'None'}. Write a short 2-sentence rationale for an emergency purchase order to resupply these items quickly.`;
+      const response = await generateText(prompt);
+      setAiInsight(response);
+    } catch (e) {
+      toast.error('AI Drafter failed.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleCreatePO = async () => {
  if (!newPO.supplierId || newPO.items.length === 0) {
  toast.error(t("fill_required_fields", "Please select a supplier and add at least one item."));
  return;
@@ -118,7 +138,7 @@ export default function PurchaseOrders() {
 
  const payload = {
  ...newPO,
- supplierName: supplier?.data?.name,
+ supplierName: supplier?.name,
  total,
  poNumber,
  orderDate: editingPOId ? purchaseOrders.find(po => po.id === editingPOId)?.data?.orderDate : new Date().toISOString()
@@ -130,7 +150,7 @@ export default function PurchaseOrders() {
  recordType: 'purchase_order',
  payload,
  status: newPO.status,
- searchText: `${poNumber} ${supplier?.data?.name} ${newPO.status}`.toLowerCase()
+ searchText: `${poNumber} ${supplier?.name} ${newPO.status}`.toLowerCase()
 });
  toast.success(editingPOId ? t("po_updated", "Purchase Order updated") : t("po_created", "Purchase Order created successfully"));
  setIsNewDialogOpen(false);
@@ -430,7 +450,7 @@ export default function PurchaseOrders() {
  </SelectTrigger>
  <SelectContent>
  {suppliers.map(s => (
- <SelectItem key={s.id} value={s.id}>{s.data?.name}</SelectItem>
+ <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
  ))}
  </SelectContent>
  </Select>
@@ -461,7 +481,7 @@ export default function PurchaseOrders() {
  </SelectTrigger>
  <SelectContent>
  {products.map(p => (
- <SelectItem key={p.id} value={p.id}>{p.data?.name} (Stock: {p.data?.quantity})</SelectItem>
+ <SelectItem key={p.id} value={p.id}>{p.name} (Stock: {p.quantity})</SelectItem>
  ))}
  </SelectContent>
  </Select>

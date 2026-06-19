@@ -21,11 +21,11 @@ export default function Orders() {
  const deleteRecord = useDeleteIndustryRecord();
 
  const customers = customerRecords.map(r => {
- const data = r.data || {};
+ const data = r;
  return {
  id: r.id,
  custId: data.custId || `CUST-${r.id?.slice(0, 4)}`,
- name: data.name || data.customerName || 'Unnamed Customer',
+ name: data.name ||  'Unnamed Customer',
  email: data.email || '',
  phone: data.phone || ''
 };
@@ -33,21 +33,21 @@ export default function Orders() {
 
  const products = productRecords.map(r => ({
  id: r.id,
- sku: r.data?.sku || '',
- name: r.data?.name || '',
- price: parseFloat(r.data?.price) || 0,
- stock: parseInt(r.data?.quantity || r.data?.stock) || 0
+ sku: r.sku || '',
+ name: r.name || '',
+ price: parseFloat(r.price) || 0,
+ stock: parseInt(r.quantity) || 0
 }));
 
  const orders = dbRecords.map(r => ({
  id: r.id,
- orderId: r.data?.orderId || `ORD-${r.id?.slice(0, 5).toUpperCase()}`,
- customerId: r.data?.customerId || '',
- customerName: r.data?.customerId ? (customers.find(c => c.id === r.data.customerId)?.name || 'Unknown') : (r.data?.customerName || 'Walk-in Customer'),
- date: r.data?.date || new Date().toISOString().split('T')[0],
- total: parseFloat(r.data?.total) || 0,
- status: r.data?.status || 'Pending',
- items: r.data?.items || [],
+ orderId: r.order_id || `ORD-${r.id?.slice(0, 5).toUpperCase()}`,
+ customerId: r.customer_id || '',
+ customerName: r.customer_id ? (customers.find(c => c.id === r.customer_id)?.name || 'Unknown') : ( 'Walk-in Customer'),
+ date: r.date || new Date().toISOString().split('T')[0],
+ total: parseFloat(r.total) || 0,
+ status: r.status || 'Pending',
+ items: (typeof r.items === 'string' ? JSON.parse(r.items) : r.items) || [],
  createdBy: r.created_by || 'System',
  createdAt: r.created_at || new Date().toISOString()
 }));

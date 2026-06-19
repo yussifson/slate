@@ -46,7 +46,32 @@ export default function POS() {
  const [promoCode, setPromoCode] = useState('');
  const [appliedPromo, setAppliedPromo] = useState(null);
 
- const addToCart = (product) => {
+ 
+  const handleAIUpsell = async () => {
+    if (!isProOrAbove) {
+      toast.error('AI Insights are available on Pro or Enterprise plans.');
+      return;
+    }
+    if (cart.length === 0) {
+      toast.error('Add items to cart first.');
+      return;
+    }
+    setIsGenerating(true);
+    setAiInsight('');
+    try {
+      const itemsList = cart.map(i => i.name).join(', ');
+      const prompt = `You are a Retail AI Upsell Recommender. The customer has the following items in their cart: ${itemsList}. 
+Suggest 1 or 2 complementary products they might want to buy right now. Keep it brief and persuasive.`;
+      const response = await generateText(prompt);
+      setAiInsight(response);
+    } catch (e) {
+      toast.error('AI Upsell failed.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const addToCart = (product) => {
  if (product.stock <= 0) {
  return toast.error("Product is out of stock!");
 }
@@ -86,9 +111,9 @@ export default function POS() {
 
  const applyPromoCode = () => {
  if (!promoCode.trim()) return;
- const promo = promotions.find(p => p.data?.code === promoCode.toUpperCase() && p.data?.isActive);
+ const promo = promotions.find(p => p.promo_code === promoCode.toUpperCase());
  if (promo) {
- setAppliedPromo(promo.data);
+ setAppliedPromo(promo);
  toast.success(t("promo_applied", "Promo code applied!"));
 } else {
  toast.error(t("promo_invalid", "Invalid or inactive promo code"));
@@ -113,7 +138,7 @@ export default function POS() {
       const payload = {
         orderId: saleId, customerId: selectedCustomerId, date: new Date().toISOString().split('T')[0],
         items: cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price})),
-        subtotal, discount, promoCode: appliedPromo?.code, tax, total: parseFloat(saleTotal.toFixed(2)), paymentMethod: 'Card Terminal', timestamp: new Date().toISOString()
+        subtotal, discount, promoCode: appliedPromo?.promo_code, tax, total: parseFloat(saleTotal.toFixed(2)), paymentMethod: 'Card Terminal', timestamp: new Date().toISOString()
       };
       mutateRecord.mutate({ recordType: 'order', payload, status: 'Completed', searchText: `${saleId} Terminal ${selectedCustomerId}`});
       setCart([]);
@@ -141,7 +166,7 @@ export default function POS() {
  const payload = {
  orderId: saleId, customerId: selectedCustomerId, date: new Date().toISOString().split('T')[0],
  items: cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price})),
- subtotal, discount, promoCode: appliedPromo?.code, tax, total: parseFloat(saleTotal.toFixed(2)), paymentMethod, timestamp: new Date().toISOString()
+ subtotal, discount, promoCode: appliedPromo?.promo_code, tax, total: parseFloat(saleTotal.toFixed(2)), paymentMethod, timestamp: new Date().toISOString()
 };
  mutateRecord.mutate({ recordType: 'order', payload, status: 'Pending', searchText: `${saleId} ${paymentMethod} ${selectedCustomerId}`});
  return; // Stop execution here because the user will be redirected
@@ -157,7 +182,7 @@ export default function POS() {
  items: cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price})),
  subtotal,
  discount,
- promoCode: appliedPromo?.code,
+ promoCode: appliedPromo?.promo_code,
  tax,
  total: parseFloat(saleTotal.toFixed(2)),
  paymentMethod,
@@ -176,16 +201,9 @@ export default function POS() {
  cart.forEach(item => {
  const original = dbRecords.find(r => r.id === item.id);
  if (original) {
- const updatedPayload = {
- ...original.data,
- stock: Math.max(0, (parseInt(original.data?.stock) || 0) - item.qty)
-};
- mutateRecord.mutate({
+ mutateInventory.mutate({
  id: original.id,
- recordType: 'product',
- payload: updatedPayload,
- status: original.status,
- searchText: original.search_text
+ stock: Math.max(0, parseInt(original.quantity) - item.qty)
 });
 }
 });
@@ -204,10 +222,10 @@ export default function POS() {
  
  let discount = 0;
  if (appliedPromo) {
- if (appliedPromo.discountType === 'percentage') {
- discount = subtotal * (appliedPromo.discountValue / 100);
+ if (appliedPromo.discount_type === 'percentage') {
+ discount = subtotal * (appliedPromo.discount_value / 100);
 } else {
- discount = Math.min(appliedPromo.discountValue, subtotal);
+ discount = Math.min(appliedPromo.discount_value, subtotal);
 }
 }
 
@@ -283,7 +301,13 @@ export default function POS() {
  {/* Cart Sidebar */}
  <div className="w-full md:w-[450px] flex flex-col bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-xl md:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none z-10 md:h-full flex-shrink-0 flex-grow-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-5 border-b border-primary/40 bg-muted/30">
- <h2 className="font-semibold flex items-center gap-2 text-lg"><ShoppingCart className="w-5 h-5"/> {t("current_sale", "Current Sale")}</h2>
+ <div className="flex justify-between items-center w-full">
+            <h2 className="font-semibold flex items-center gap-2 text-lg"><ShoppingCart className="w-5 h-5"/> {t("current_sale", "Current Sale")}</h2>
+            <Button size="sm" variant="outline" className="gap-1 bg-primary/5 text-primary border-primary/20 h-8 text-xs" onClick={handleAIUpsell} disabled={isGenerating}>
+              {isGenerating ? <Sparkles className="w-3 h-3 animate-spin" /> : (!isProOrAbove ? <Lock className="w-3 h-3" /> : <Bot className="w-3 h-3" />)}
+              {isGenerating ? 'Analyzing...' : 'AI Upsell'}
+            </Button>
+          </div>
  <span className="bg-orange-700 px-2 py-1 rounded-md text-xs font-mono tracking-[0.04em]">{cart.length} {t("items", "items")}</span>
  </div>
  
@@ -299,6 +323,12 @@ export default function POS() {
  </div>
 
  <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-muted/30 min-h-0">
+          {aiInsight && (
+            <div className="bg-primary/5 p-3 rounded-xl border border-primary/20 mb-3">
+              <h3 className="text-xs font-semibold text-primary mb-1 flex items-center gap-2"><Bot className="w-3 h-3"/> AI Recommended Upsell</h3>
+              <p className="text-xs text-foreground font-medium">{aiInsight}</p>
+            </div>
+          )}
  {cart.length === 0 ? (
  <div className="h-full flex flex-col items-center justify-center text-[#71717a] dark:text-gray-400 opacity-50">
  <ShoppingCart className="w-16 h-16 mb-4 animate-bounce" />

@@ -13,6 +13,8 @@ import { toast } from 'react-hot-toast';
 import { useNotifications } from "@/hooks/integrations/useNotifications";
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { generateText } from '@/lib/cloudflareAI';
+import { Bot, Sparkles } from 'lucide-react';
 
 const typeColors = {
   Consultation: 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20',
@@ -59,8 +61,31 @@ export default function Appointments() {
     doctor: 'Dr. John Mensah',
     date: new Date().toISOString().split('T')[0],
     time: '09:00',
-    type: 'Consultation'
+    type: 'Consultation',
+    notes: ''
   });
+
+  const [isTriaging, setIsTriaging] = useState(false);
+
+  const handleAITriage = async () => {
+    if (!formData.notes) return toast.error("Please enter a reason for the visit first.");
+    setIsTriaging(true);
+    try {
+      const prompt = `You are an expert AI Triage Assistant. Based on the patient's reason for visit, categorize the urgency.
+Reason: "${formData.notes}"
+Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {"type": "Consultation"} or {"type": "Follow-up"}`;
+      const response = await generateText(prompt);
+      const parsed = JSON.parse(response);
+      if (parsed && parsed.type) {
+        setFormData(prev => ({ ...prev, type: parsed.type }));
+        toast.success(`AI Triaged as: ${parsed.type}`);
+      }
+    } catch (e) {
+      toast.error('AI Triage failed to parse result.');
+    } finally {
+      setIsTriaging(false);
+    }
+  };
 
   const mutateRecord = useMutation({
     mutationFn: async (payload) => {
@@ -88,7 +113,8 @@ export default function Appointments() {
         doctor: 'Dr. John Mensah',
         date: new Date().toISOString().split('T')[0],
         time: '09:00',
-        type: 'Consultation'
+        type: 'Consultation',
+        notes: ''
       });
     },
     onError: (err) => toast.error('Failed: ' + err.message)
@@ -127,7 +153,7 @@ export default function Appointments() {
       time: formData.time,
       type: formData.type,
       status: 'Scheduled',
-      notes: ''
+      notes: formData.notes
     };
 
     if (generateZoom) {
@@ -294,6 +320,14 @@ export default function Appointments() {
                   <label className="text-xs font-semibold text-[#71717a] uppercase tracking-[0.04em]">{t("time", "Time")}</label>
                   <Input type="time" value={formData.time} onChange={e => setFormData({ ...formData, time: e.target.value})} className="mt-1" />
                 </div>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-[#71717a] uppercase tracking-[0.04em]">Reason for Visit (Notes)</label>
+                <textarea value={formData.notes} onChange={e => setFormData({ ...formData, notes: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-primary/40 bg-background px-3 py-2 text-sm" rows="2" placeholder="Describe symptoms or reason for visit..." />
+                <Button type="button" variant="outline" size="sm" onClick={handleAITriage} disabled={isTriaging} className="mt-2 text-primary border-primary/20 bg-primary/5 hover:bg-primary/10">
+                  {isTriaging ? <Sparkles className="w-4 h-4 mr-2 animate-spin" /> : <Bot className="w-4 h-4 mr-2" />}
+                  {isTriaging ? 'AI Triaging...' : 'AI Auto-Triage'}
+                </Button>
               </div>
               <div>
                 <label className="text-xs font-semibold text-[#71717a] uppercase tracking-[0.04em]">{t("visit_type", "Visit Type")}</label>

@@ -152,10 +152,25 @@ export default function Wards() {
 
   const handleCreateWard = () => {
     if (!newWardData.name || !newWardData.capacity) return toast.error('Ward name and capacity are required');
+    
+    const isProOrAbove = user?.role === 'system_admin' || user?.subscription_plan === 'Pro' || user?.subscription_plan === 'Enterprise';
+    
+    if (!isProOrAbove) {
+      if (wards.length >= 1) {
+        return toast.error('Free tier limited to 1 Ward. Upgrade to Pro to add more.');
+      }
+      if (newWardData.capacity > 10) {
+        return toast.error('Free tier limited to 10 beds per ward. Upgrade to Pro for more.');
+      }
+    }
+
     mutateWard.mutate(newWardData);
   };
 
   if (isWardsLoading) return <div className="flex items-center justify-center h-64 text-[#71717a]">Loading wards...</div>;
+
+  const isProOrAbove = user?.role === 'system_admin' || user?.subscription_plan === 'Pro' || user?.subscription_plan === 'Enterprise';
+  const isWardLimitReached = !isProOrAbove && wards.length >= 1;
 
   return (
     <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
@@ -164,7 +179,13 @@ export default function Wards() {
           <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em]">{t("ward_management", "Ward Management")}</h1>
           <p className="text-sm text-[#71717a] mt-0.5">{t("manage_inpatient_bed_allocatio", "Manage inpatient bed allocation and admissions")}</p>
         </div>
-        <Button className="bg-primary hover:bg-primary/90 text-white" onClick={() => setShowNewWardModal(true)}>
+        <Button className="bg-primary hover:bg-primary/90 text-white" onClick={() => {
+          if (isWardLimitReached) {
+            toast.error('Free tier limited to 1 Ward. Please upgrade to Pro.');
+          } else {
+            setShowNewWardModal(true);
+          }
+        }}>
           <Plus className="w-4 h-4 mr-2" /> {t("add_ward", "Add Ward")}
         </Button>
       </div>

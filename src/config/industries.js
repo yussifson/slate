@@ -674,3 +674,4 @@ export const clientNav = [
   { label: 'Documents', path: '/documents', icon: 'FolderOpen' },
   { label: 'Settings', path: '/settings', icon: 'Settings' }
 ];
+

@@ -58,9 +58,9 @@ export default function Inventory() {
 }));
 
  const items = dbRecords.map(r => {
- const d = r.data || {};
- const quantity = parseInt(d.stock) || 0;
- const reorderLevel = parseInt(d.reorderLevel) || 10;
+ const d = r;
+ const quantity = parseInt(d.quantity) || 0;
+ const reorderLevel = parseInt(d.reorder_level) || 10;
  return {
  id: r.id,
  sku: d.sku || `SKU-${r.id?.slice(0, 4).toUpperCase()}`,
@@ -69,11 +69,11 @@ export default function Inventory() {
  quantity,
  reorderLevel,
  price: parseFloat(d.price) || 0,
- costPrice: parseFloat(d.costPrice) || 0,
- supplierId: d.supplierId || '',
- supplierName: d.supplierId ? (suppliers.find(s => s.id === d.supplierId)?.name || 'Unknown') : (d.supplier || ''),
- expiryDate: d.expiryDate || '',
- storeLocation: d.storeLocation || 'Main Store',
+ costPrice: parseFloat(d.cost_price) || 0,
+ supplierId: d.supplier || '',
+ supplierName: d.supplier ? (suppliers.find(s => s.id === d.supplier)?.name || 'Unknown') : (d.supplier || ''),
+ expiryDate: d.expiry_date || '',
+ storeLocation: d.store_location || 'Main Store',
  status: getStatus(quantity, reorderLevel),
  createdBy: r.created_by || 'System',
  createdAt: r.created_at || new Date().toISOString()
@@ -108,7 +108,33 @@ export default function Inventory() {
  setShowModal(true);
 };
 
- const handleTransfer = () => {
+ 
+  const handleAIPredictor = async (item) => {
+    if (!isProOrAbove) {
+      toast.error('AI Insights are available on Pro or Enterprise plans.');
+      return;
+    }
+    setIsGenerating(true);
+    setAiInsight('');
+    try {
+      const prompt = `You are an AI Inventory Predictor for retail.
+Product: ${item.name}
+SKU: ${item.sku}
+Current Quantity: ${item.quantity}
+Reorder Level: ${item.reorderLevel}
+Status: ${item.status}
+
+Give a 2-sentence prediction on when this item will stock out and whether the reorder level should be adjusted.`;
+      const response = await generateText(prompt);
+      setAiInsight(response);
+    } catch (e) {
+      toast.error('AI Predictor failed.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleTransfer = () => {
    const qty = parseInt(transferData.qty) || 0;
    if (qty <= 0) return toast.error('Transfer quantity must be greater than 0');
    if (qty > selectedItem.quantity) return toast.error('Insufficient stock for transfer');
@@ -118,18 +144,18 @@ export default function Inventory() {
 
    // 1. Decrement current item
    const currentPayload = { ...selectedItem, quantity: selectedItem.quantity - qty, stock: selectedItem.quantity - qty };
-   mutateRecord.mutate({ id: selectedItem.id, recordType: 'product', payload: currentPayload, status: getStatus(currentPayload.stock, currentPayload.reorderLevel), searchText: `${currentPayload.sku} ${currentPayload.name}` });
+   mutateRecord.mutate({ ...currentPayload, status: getStatus(currentPayload.quantity, currentPayload.reorderLevel) });
 
    // 2. See if item exists in target location
    const targetItem = items.find(i => i.sku === selectedItem.sku && i.storeLocation === transferData.targetLocation);
    if (targetItem) {
      const targetPayload = { ...targetItem, quantity: targetItem.quantity + qty, stock: targetItem.quantity + qty };
-     mutateRecord.mutate({ id: targetItem.id, recordType: 'product', payload: targetPayload, status: getStatus(targetPayload.stock, targetPayload.reorderLevel), searchText: `${targetPayload.sku} ${targetPayload.name}` });
+     mutateRecord.mutate({ ...targetPayload, status: getStatus(targetPayload.quantity, targetPayload.reorderLevel) });
    } else {
      // Create new item in target location
      const newPayload = { ...selectedItem, quantity: qty, stock: qty, storeLocation: transferData.targetLocation };
      delete newPayload.id; delete newPayload.createdAt; delete newPayload.createdBy;
-     mutateRecord.mutate({ recordType: 'product', payload: newPayload, status: getStatus(qty, selectedItem.reorderLevel), searchText: `${newPayload.sku} ${newPayload.name}` });
+     mutateRecord.mutate({ ...newPayload, status: getStatus(qty, selectedItem.reorderLevel) });
    }
 
    toast.success(`Successfully transferred ${qty} items to ${transferData.targetLocation}`);
@@ -441,7 +467,14 @@ export default function Inventory() {
  <div className="col-span-2">{selectedItem.createdBy} on {new Date(selectedItem.createdAt).toLocaleDateString()}</div>
  </div>
 
-  <div className="bg-muted/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 mt-4">
+  
+          {aiInsight && (
+            <div className="bg-primary/5 p-4 rounded-xl border border-primary/20 mt-4 mb-2">
+              <h3 className="text-sm font-semibold text-primary mb-2 flex items-center gap-2"><Bot className="w-4 h-4"/> AI Predictor</h3>
+              <p className="text-sm text-foreground font-medium">{aiInsight}</p>
+            </div>
+          )}
+          <div className="bg-muted/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 mt-4">
     <div className="flex space-x-[2px] h-12 w-48 opacity-80">
        {/* Pseudo barcode using div borders */}
        {Array.from({length: 30}).map((_, i) => (

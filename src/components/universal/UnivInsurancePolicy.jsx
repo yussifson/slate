@@ -54,7 +54,7 @@ const UnivInsurancePolicy = () => {
  e.preventDefault();
  try {
  const { error} = await (async () => {
- const _payload = { ...formData, id: crypto.randomUUID(), company_id: companyId};
+ const _payload = { ...formData, id: crypto.randomUUID(), company_id: companyId, status: 'Active'};
  const _keys = Object.keys(_payload);
  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
  const _plhdr = _keys.map(()=>'?').join(', ');

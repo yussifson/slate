@@ -8,6 +8,8 @@ import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { generateText } from '@/lib/cloudflareAI';
+import { Bot, Sparkles } from 'lucide-react';
 
 export default function Telemedicine() {
   const { t } = useTranslation();
@@ -50,6 +52,22 @@ export default function Telemedicine() {
     meeting_link: '',
     notes: ''
   });
+
+  const [isSummarizing, setIsSummarizing] = useState(false);
+
+  const handleAISummarize = async () => {
+    if (!formData.notes) return toast.error("Enter some rough notes first to summarize.");
+    setIsSummarizing(true);
+    try {
+      const prompt = `You are an expert AI Medical Assistant. Summarize the following rough consultation notes into a professional, concise, structured clinical summary.\nNotes: ${formData.notes}`;
+      const response = await generateText(prompt);
+      setFormData(prev => ({ ...prev, notes: response }));
+    } catch (e) {
+      toast.error('AI Summarization failed.');
+    } finally {
+      setIsSummarizing(false);
+    }
+  };
 
   const mutateRecord = useMutation({
     mutationFn: async (payload) => {
@@ -231,7 +249,13 @@ export default function Telemedicine() {
                 <Input type="url" placeholder="https://zoom.us/j/123..." value={formData.meeting_link} onChange={e => setFormData({ ...formData, meeting_link: e.target.value})} className="mt-1" />
               </div>
               <div>
-                <label className="text-xs font-semibold text-[#71717a] uppercase">Clinical Notes</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-[#71717a] uppercase">Clinical Notes</label>
+                  <Button type="button" variant="outline" size="sm" onClick={handleAISummarize} disabled={isSummarizing} className="h-6 text-xs text-blue-600 border-blue-200 bg-blue-50 hover:bg-blue-100">
+                    {isSummarizing ? <Sparkles className="w-3 h-3 mr-1 animate-spin" /> : <Bot className="w-3 h-3 mr-1" />}
+                    {isSummarizing ? 'Summarizing...' : 'AI Enhance Notes'}
+                  </Button>
+                </div>
                 <textarea rows={3} value={formData.notes} onChange={e => setFormData({ ...formData, notes: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/20 dark:border-white/20 bg-background px-3 py-2 text-sm" placeholder="Reason for consultation..." />
               </div>
             </div>

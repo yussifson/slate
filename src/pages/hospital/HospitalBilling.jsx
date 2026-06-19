@@ -9,6 +9,9 @@ import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@/lib/AuthContext';
+import { generateText } from '@/lib/cloudflareAI';
+import { Bot, Sparkles, Lock } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function HospitalBilling() {
@@ -45,9 +48,33 @@ export default function HospitalBilling() {
     enabled: !!companyId
   });
 
+  const { user } = useAuth();
+  const isProOrAbove = user?.role === 'system_admin' || user?.subscription_plan === 'Pro' || user?.subscription_plan === 'Enterprise';
+
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [viewBill, setViewBill] = useState(null);
+
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [aiAnalysis, setAiAnalysis] = useState('');
+
+  const handleAIAnalyze = async (billObj) => {
+    if (!isProOrAbove) {
+      toast.error('AI Invoice Analysis is available on Pro or Enterprise plans.');
+      return;
+    }
+    setIsAnalyzing(true);
+    setAiAnalysis('');
+    try {
+      const prompt = `You are an expert Medical Billing AI. Analyze the following bill for patient ${billObj.patient_name}.\nService: ${billObj.service_provided}\nTotal Cost: $${billObj.total_cost}\nInsurance Covered: $${billObj.insurance_covered}\nAmount Due: $${billObj.amount_due}\n\nProvide a concise 2-sentence summary of the bill's validity, any potential insurance coding discrepancies to watch out for, and payment collection recommendations.`;
+      const response = await generateText(prompt);
+      setAiAnalysis(response);
+    } catch (e) {
+      toast.error('AI Analysis failed.');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
 
   const [formData, setFormData] = useState({
     patient_id: '',
@@ -278,6 +305,48 @@ export default function HospitalBilling() {
           </div>
         </div>
       )}
+      <Sheet open={!!viewBill} onOpenChange={(open) => {
+        if (!open) {
+          setViewBill(null);
+          setAiAnalysis('');
+        }
+      }}>
+        <SheetContent className="overflow-y-auto">
+          <SheetHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <SheetTitle>Invoice Details</SheetTitle>
+                <SheetDescription>Medical billing breakdown</SheetDescription>
+              </div>
+              <Button size="sm" variant="outline" className="gap-2 bg-primary/5 text-primary border-primary/20 hover:bg-primary/10" onClick={() => handleAIAnalyze(viewBill)} disabled={isAnalyzing}>
+                {isAnalyzing ? <Sparkles className="w-4 h-4 animate-spin" /> : (!isProOrAbove ? <Lock className="w-4 h-4" /> : <Bot className="w-4 h-4" />)}
+                {isAnalyzing ? 'Analyzing...' : 'AI Analyze'}
+              </Button>
+            </div>
+          </SheetHeader>
+          {viewBill && (
+            <div className="mt-6 space-y-4">
+              <div><h3 className="text-sm font-medium text-[#71717a]">Patient</h3><p className="text-base font-semibold">{viewBill.patient_name}</p></div>
+              <div><h3 className="text-sm font-medium text-[#71717a]">Service Provided</h3><p className="text-base">{viewBill.service_provided}</p></div>
+              <div><h3 className="text-sm font-medium text-[#71717a]">Total Cost</h3><p className="text-base font-semibold">${viewBill.total_cost}</p></div>
+              <div><h3 className="text-sm font-medium text-[#71717a]">Insurance Covered</h3><p className="text-base">${viewBill.insurance_covered}</p></div>
+              <div className="pt-2 border-t"><h3 className="text-sm font-medium text-[#71717a]">Amount Due</h3><p className="text-xl font-bold text-red-600">${viewBill.amount_due}</p></div>
+              <div><h3 className="text-sm font-medium text-[#71717a]">Status</h3><span className={`text-xs font-semibold px-2 py-1 rounded-md border ${viewBill.status === 'Paid' ? 'bg-primary/10 text-primary border-primary/20' : 'bg-red-50 text-red-700 border-red-200'}`}>{viewBill.status}</span></div>
+            </div>
+          )}
+          
+          {aiAnalysis && (
+            <div className="mt-6 pt-4 border-t">
+              <h3 className="text-sm font-semibold text-[#71717a] uppercase mb-2 flex items-center gap-2"><Bot className="w-4 h-4 text-primary"/> AI Analysis</h3>
+              <div className="bg-primary/5 p-4 rounded-xl border border-primary/20">
+                <div className="text-sm font-medium text-foreground">
+                  {aiAnalysis}
+                </div>
+              </div>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

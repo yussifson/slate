@@ -8,6 +8,8 @@ import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { generateText } from '@/lib/cloudflareAI';
+import { Bot, Sparkles } from 'lucide-react';
 
 export default function OperationTheater() {
   const { t } = useTranslation();
@@ -52,6 +54,24 @@ export default function OperationTheater() {
     ot_room: '',
     notes: ''
   });
+
+  const [isPredicting, setIsPredicting] = useState(false);
+  const [aiPrediction, setAiPrediction] = useState('');
+
+  const handleAIPredict = async () => {
+    if (!formData.surgery_name) return toast.error("Enter procedure / surgery name first.");
+    setIsPredicting(true);
+    setAiPrediction('');
+    try {
+      const prompt = `You are an expert Surgical AI. Analyze the surgical procedure "${formData.surgery_name}" with clinical notes: "${formData.notes}". Provide a concise 2-sentence prediction of surgical risks, estimated duration, and key preparation requirements.`;
+      const response = await generateText(prompt);
+      setAiPrediction(response);
+    } catch (e) {
+      toast.error('AI Prediction failed.');
+    } finally {
+      setIsPredicting(false);
+    }
+  };
 
   const mutateRecord = useMutation({
     mutationFn: async (payload) => {
@@ -252,8 +272,22 @@ export default function OperationTheater() {
                 <Input type="datetime-local" value={formData.scheduled_date} onChange={e => setFormData({ ...formData, scheduled_date: e.target.value})} className="mt-1" />
               </div>
               <div className="col-span-2">
-                <label className="text-xs font-semibold text-[#71717a] uppercase">Clinical Notes & Requirements</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-[#71717a] uppercase">Clinical Notes & Requirements</label>
+                  <Button type="button" variant="outline" size="sm" onClick={handleAIPredict} disabled={isPredicting} className="h-6 text-xs text-pink-600 border-pink-200 bg-pink-50 hover:bg-pink-100">
+                    {isPredicting ? <Sparkles className="w-3 h-3 mr-1 animate-spin" /> : <Bot className="w-3 h-3 mr-1" />}
+                    {isPredicting ? 'Analyzing...' : 'AI Risk Predictor'}
+                  </Button>
+                </div>
                 <textarea rows={2} value={formData.notes} onChange={e => setFormData({ ...formData, notes: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/20 dark:border-white/20 bg-background px-3 py-2 text-sm" placeholder="Blood requirements, special equipment..." />
+                {aiPrediction && (
+                  <div className="mt-2 bg-pink-50/50 p-3 rounded-lg border border-pink-200/50 text-sm font-medium text-pink-900">
+                    <div className="flex items-center gap-1.5 mb-1 text-pink-700">
+                      <Bot className="w-4 h-4"/> AI Prediction
+                    </div>
+                    {aiPrediction}
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex gap-3 pt-4">

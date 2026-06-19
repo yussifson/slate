@@ -25,16 +25,16 @@ export default function Sales() {
 
  // Map database records
  const sales = dbRecords.map(r => {
- const data = r.data || {};
+ const data = r;
  return {
  id: r.id,
- saleId: data.orderId || data.saleId || `SAL-${r.id?.slice(0, 4)}`,
- date: data.timestamp ? new Date(data.timestamp).toLocaleString() : (data.date || 'Just now'),
- items: data.items || [],
+ saleId: data.sale_id || `SAL-${r.id?.slice(0, 4)}`,
+ date: data.created_at ? new Date(data.created_at).toLocaleString() : (data.date || 'Just now'),
+ items: data.items || 0,
  total: parseFloat(data.total) || 0,
  subtotal: parseFloat(data.subtotal) || 0,
  tax: parseFloat(data.tax) || 0,
- method: data.paymentMethod || 'Cash',
+ method: data.method || 'Cash',
  cashier: 'POS Cashier',
  status: r.status || 'Completed'
 };
@@ -70,7 +70,31 @@ export default function Sales() {
  setShowModal(true);
 };
 
- const handleUpdateStatus = () => {
+ 
+  const handleAITrend = async () => {
+    if (!isProOrAbove) {
+      toast.error('AI Insights are available on Pro or Enterprise plans.');
+      return;
+    }
+    if (sales.length === 0) {
+      toast.error('Not enough sales data.');
+      return;
+    }
+    setIsGenerating(true);
+    setAiInsight('');
+    try {
+      const recentTotal = sales.slice(0, 10).reduce((sum, s) => sum + s.total, 0);
+      const prompt = `You are a Retail Sales AI. Based on recent transactions totaling $${recentTotal.toFixed(2)}, give a 2-sentence trend analysis and strategy recommendation for today's sales.`;
+      const response = await generateText(prompt);
+      setAiInsight(response);
+    } catch (e) {
+      toast.error('AI Trend Analyzer failed.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleUpdateStatus = () => {
  if (!editingId) return;
  const sale = dbRecords.find(r => r.id === editingId);
  if (!sale) return;

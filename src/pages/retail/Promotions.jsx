@@ -48,7 +48,27 @@ export default function Promotions() {
  setIsDialogOpen(true);
 };
 
- const handleSave = async () => {
+ 
+  const handleAIGenerator = async () => {
+    if (!isProOrAbove) {
+      toast.error('AI Insights are available on Pro or Enterprise plans.');
+      return;
+    }
+    setIsGenerating(true);
+    setAiInsight('');
+    try {
+      const activePromos = promotions.filter(p => p.data.isActive).map(p => p.data.code).join(', ');
+      const prompt = `You are a Retail Marketing AI. Current active promos: ${activePromos || 'None'}. Provide a 2-sentence creative promotion campaign idea to boost sales this weekend. Give it a catchy code.`;
+      const response = await generateText(prompt);
+      setAiInsight(response);
+    } catch (e) {
+      toast.error('AI Generator failed.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleSave = async () => {
  if (!promoCode || !discountValue) {
  toast.error(t("fill_required_fields", "Please fill out the code and discount value."));
  return;
@@ -79,7 +99,7 @@ export default function Promotions() {
  const handleDelete = async (id) => {
  if(confirm(t("confirm_delete", "Are you sure you want to delete this promotion?"))) {
  try {
- await deleteRecord.mutateAsync({ id, recordType: 'promotion'});
+ await deleteRecord.mutateAsync(id);
  toast.success(t("deleted", "Deleted successfully"));
 } catch (err) {
  toast.error("Error deleting promotion");
@@ -113,7 +133,14 @@ export default function Promotions() {
  <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
  </div>
 
- <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+ 
+      {aiInsight && (
+        <div className="bg-primary/5 p-4 rounded-xl border border-primary/20">
+          <h3 className="text-sm font-semibold text-primary mb-2 flex items-center gap-2"><Bot className="w-4 h-4"/> AI Campaign Idea</h3>
+          <p className="text-sm text-foreground font-medium">{aiInsight}</p>
+        </div>
+      )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
  <RetailStatCard label={t("total_promos", "Total Promotions")} value={filteredPromos.length} icon={Tag} />
  <RetailStatCard label={t("active_promos", "Active Promotions")} value={activeCount} icon={Percent} />
  </div>

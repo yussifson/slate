@@ -65,7 +65,31 @@ export default function Suppliers() {
  setShowModal(true);
 };
 
- const handleCreateSupplier = () => {
+ 
+  const handleAIRiskAnalyzer = async (sup) => {
+    if (!isProOrAbove) {
+      toast.error('AI Insights are available on Pro or Enterprise plans.');
+      return;
+    }
+    setIsGenerating(true);
+    setAiInsight('');
+    try {
+      const prompt = `You are a Retail Supply Chain AI. Provide a 2-sentence risk analysis for this supplier:
+Name: ${sup.name}
+Category: ${sup.category}
+Rating: ${sup.rating}/5
+Status: ${sup.status}
+Suggest any potential risks and mitigation strategies.`;
+      const response = await generateText(prompt);
+      setAiInsight(response);
+    } catch (e) {
+      toast.error('AI Risk Analyzer failed.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleCreateSupplier = () => {
  if (!formData.name.trim() || !formData.contact.trim() || !formData.email.trim()) {
  return toast.error("Please fill in all required fields");
 }

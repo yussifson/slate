@@ -17,19 +17,19 @@ export default function Shifts() {
 
  const staffList = staffRecords.map(r => ({
  id: r.id,
- name: r.data?.full_name || r.data?.name || 'Unnamed Staff',
- role: r.data?.role || 'Staff'
+ name: r.name || 'Unnamed Staff',
+ role: r.role || 'Staff'
 }));
 
  const shifts = dbRecords.map(r => ({
  id: r.id,
- staffId: r.data?.staffId || '',
- staffName: r.data?.staffId ? (staffList.find(s => s.id === r.data.staffId)?.name || 'Unknown') : (r.data?.staffName || 'Unnamed Staff'),
- role: r.data?.role || 'Cashier',
- date: r.data?.date || new Date().toISOString().split('T')[0],
- startTime: r.data?.startTime || '09:00',
- endTime: r.data?.endTime || '17:00',
- status: r.data?.status || 'Scheduled'
+ staffId: r.staff_id || '',
+ staffName: r.staff_id ? (staffList.find(s => s.id === r.staff_id)?.name || 'Unknown') : ( 'Unnamed Staff'),
+ role: r.role || 'Cashier',
+ date: r.date || new Date().toISOString().split('T')[0],
+ startTime: r.start_time || '09:00',
+ endTime: r.end_time || '17:00',
+ status: r.status || 'Scheduled'
 }));
 
  const [search, setSearch] = useState('');

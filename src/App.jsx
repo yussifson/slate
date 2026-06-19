@@ -211,6 +211,8 @@ import InsuranceClaims from './pages/insurance/Claims';
 import InsuranceClients from './pages/insurance/Clients';
 import InsurancePolicyholderPortal from './pages/insurance/PolicyholderPortal';
 import InsuranceUnderwriting from './pages/insurance/Underwriting';
+import ActuarialDashboard from './pages/insurance/ActuarialDashboard';
+import Reinsurance from './pages/insurance/Reinsurance';
 import InsuranceAgentPerformance from './pages/insurance/AgentPerformance';
 import InsurancePremiums from './pages/insurance/Premiums';
 
@@ -673,6 +675,8 @@ function PlatformRoutes() {
       <Route path="/insurance-clients" element={<InsuranceClients />} />
       <Route path="/policyholder-portal" element={<InsurancePolicyholderPortal />} />
       <Route path="/underwriting" element={<InsuranceUnderwriting />} />
+      <Route path="/actuarial" element={<ActuarialDashboard />} />
+      <Route path="/reinsurance" element={<Reinsurance />} />
       <Route path="/agent-performance" element={<InsuranceAgentPerformance />} />
       <Route path="/premiums" element={<InsurancePremiums />} />
 

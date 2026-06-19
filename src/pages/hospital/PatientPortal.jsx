@@ -1,196 +1,225 @@
-import { useTranslation} from "react-i18next";
-import { useState} from 'react';
-import { Calendar, FileText, Activity, Download, Plus, Pill, Beaker} from 'lucide-react';
-import { useIndustryRecords} from '@/hooks/useIndustryData';
-import { Link} from 'react-router-dom';
-import { base44} from '@/api/base44Client';
-import { useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
-import { UploadDocumentDialog} from "@/components/cases/CaseDocumentRepo";
-import { Button} from "@/components/ui/button";
-import { toast} from 'react-hot-toast';
-import { format} from "date-fns";
-import { useAuth} from '@/lib/AuthContext';
+import { useTranslation } from "react-i18next";
+import { useState, useEffect } from 'react';
+import { Calendar, FileText, Activity, Download, Plus, Pill, Beaker, Bot, Sparkles, Lock } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { toast } from 'react-hot-toast';
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { powerSync } from '@/api/PowerSyncConnector';
+import { useAuth } from '@/lib/AuthContext';
+import { generateText } from '@/lib/cloudflareAI';
 
 export default function PatientPortal() {
- const { t} = useTranslation();
- const { user} = useAuth();
- const queryClient = useQueryClient();
- const [showUpload, setShowUpload] = useState(false);
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const companyId = useCompanyId();
+  const isProOrAbove = user?.role === 'system_admin' || user?.subscription_plan === 'Pro' || user?.subscription_plan === 'Enterprise';
 
- // Real Database Hooks
- const { data: patients = [], isLoading: isPatientsLoading} = useIndustryRecords('patient');
- const { data: appts = [], isLoading: isApptsLoading} = useIndustryRecords('appt');
+  const [aiAdvice, setAiAdvice] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
 
- // A real system would filter by user email, but for demo we just take the first patient record
- const mappedPatients = patients.map(r => ({ id: r.id, ...r.data}));
- const activePatient = mappedPatients[0];
+  // 1. Fetch Patient Profile (assume the logged in user is a patient, mapping by email)
+  const { data: patientProfile, isLoading: isPatientLoading } = useQuery({
+    queryKey: ['portal_patient', companyId, user?.email],
+    queryFn: async () => {
+      if (!companyId || !user?.email) return null;
+      const res = await powerSync.execute(
+        `SELECT id, COALESCE(first_name, '') || ' ' || COALESCE(last_name, '') as name, date_of_birth, blood_type, gender 
+         FROM univ_patients WHERE company_id = ? AND email = ? LIMIT 1`,
+        [companyId, user.email]
+      );
+      return res.rows.item(0) || null;
+    },
+    enabled: !!companyId && !!user?.email
+  });
 
- const mappedAppts = appts.map(r => ({ id: r.id, ...r.data}))
- .filter(a => a.patient === activePatient?.name)
- .slice(0, 3);
+  // 2. Fetch Appointments
+  const { data: appts = [] } = useQuery({
+    queryKey: ['portal_appts', companyId, patientProfile?.name],
+    queryFn: async () => {
+      const res = await powerSync.execute(
+        `SELECT date, time, type, status, doctor_id as doctor FROM univ_appointments WHERE company_id = ? AND client_name = ? ORDER BY date DESC, time ASC LIMIT 3`,
+        [companyId, patientProfile.name]
+      );
+      return res.rows._array;
+    },
+    enabled: !!patientProfile?.name
+  });
 
- const { data: documents = []} = useQuery({
- queryKey: ["patient-docs", activePatient?.id],
- queryFn: () => base44.entities.Document.filter({ client_id: activePatient?.id}),
- enabled: !!activePatient?.id});
+  // 3. Fetch Prescriptions
+  const { data: prescriptions = [] } = useQuery({
+    queryKey: ['portal_prescriptions', companyId, patientProfile?.id],
+    queryFn: async () => {
+      const res = await powerSync.execute(
+        `SELECT medication, dosage FROM univ_prescriptions WHERE company_id = ? AND patient_id = ? AND status = 'Active'`,
+        [companyId, patientProfile.id]
+      );
+      return res.rows._array;
+    },
+    enabled: !!patientProfile?.id
+  });
 
- const createDocMutation = useMutation({
- mutationFn: (data) => base44.entities.Document.create(data),
- onSuccess: () => {
- queryClient.invalidateQueries({ queryKey: ["patient-docs", activePatient?.id]});
- toast.success("Document uploaded successfully");
- setShowUpload(false);
-}});
+  // 4. Fetch Lab Results
+  const { data: labResults = [] } = useQuery({
+    queryKey: ['portal_labs', companyId, patientProfile?.id],
+    queryFn: async () => {
+      const res = await powerSync.execute(
+        `SELECT test_name, status, result_value FROM univ_lab_results WHERE company_id = ? AND patient_id = ? ORDER BY test_date DESC LIMIT 5`,
+        [companyId, patientProfile.id]
+      );
+      return res.rows._array;
+    },
+    enabled: !!patientProfile?.id
+  });
 
- const handleUploadSubmit = (docData) => {
- createDocMutation.mutate({
- ...docData,
- company_id: activePatient?.company_id,
- client_id: activePatient?.id,
- client_name: activePatient?.name,
- uploaded_by: 'Patient',
- shared_with_client: true});
-};
+  const handleAIHealthCoach = async () => {
+    if (!isProOrAbove) {
+      toast.error('AI Health Coach is available on Pro or Enterprise plans.');
+      return;
+    }
+    if (!patientProfile) return;
+    setIsGenerating(true);
+    setAiAdvice('');
+    try {
+      const prompt = `You are an empathetic AI Health Coach. Give a 3-sentence personalized health advice based on the patient's data: 
+Name: ${patientProfile.name}
+Active Prescriptions: ${prescriptions.map(p => p.medication).join(', ') || 'None'}
+Recent Labs: ${labResults.map(l => l.test_name + '('+l.result_value+')').join(', ') || 'None'}`;
+      const response = await generateText(prompt);
+      setAiAdvice(response);
+    } catch (e) {
+      toast.error('AI Health Coach failed.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
- if (isPatientsLoading || isApptsLoading) {
- return <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_your_health_profile", "Loading your health profile...")}</div>;
-}
+  if (isPatientLoading) {
+    return <div className="py-12 text-center text-[#71717a]">Loading your health profile...</div>;
+  }
 
- if (mappedPatients.length === 0) {
- return (
- <div className="py-12 text-center max-w-md mx-auto bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Activity className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary animate-pulse" />
- <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_health_profile_found", "No health profile found")}</p>
- <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1 mb-4">{t(
- "please_contact_your_healthcare",
- "Please contact your healthcare provider to link your account to your medical records."
- )}</p>
- </div>
- );
-}
+  if (!patientProfile) {
+    return (
+      <div className="py-12 text-center max-w-md mx-auto bg-card rounded-xl border border-primary/20 p-6">
+        <Activity className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary animate-pulse" />
+        <p className="font-semibold text-lg text-card-foreground">No health profile found</p>
+        <p className="text-sm text-[#71717a] mt-1 mb-4">Please contact your healthcare provider to link your account to your medical records using email {user?.email}.</p>
+      </div>
+    );
+  }
 
- return (
- <div className="space-y-6 max-w-5xl mx-auto" style={{ background: "linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
- {/* Header */}
- <div className="bg-gradient-to-r from-primary to-primary/90 rounded-2xl p-6 md:p-8 text-white relative overflow-hidden">
- <div className="relative z-10">
- <h1 className="text-2xl md:text-3xl font-semibold mb-2 tracking-[-0.02em]">{t("welcome", "Welcome,")} {activePatient.name}</h1>
- <p className="text-primary/10 max-w-xl">{t(
- "view_your_medical_records_upco",
- "View your medical records, upcoming appointments, and secure lab results in one place."
- )}</p>
- </div>
- <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-x-1/4 translate-y-1/4">
- <Activity className="w-64 h-64" />
- </div>
- </div>
- {/* Patient Profile Card */}
- <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex flex-col md:flex-row items-center md:items-start gap-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-24 h-24 rounded-full bg-slate-100 flex items-center justify-center text-primary/90 text-3xl font-semibold shrink-0 uppercase tracking-[-0.02em] tracking-[0.04em]">
- {activePatient.name?.substring(0, 2)}
- </div>
- <div className="text-center md:text-left flex-1">
- <h2 className="text-2xl font-semibold text-card-foreground mb-1 tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{activePatient.name}</h2>
- <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-sm text-[#71717a] dark:text-gray-400 font-medium">
- <span className="bg-muted px-3 py-1 rounded-full text-foreground">{activePatient.age} {t("yrs", "yrs")}</span>
- <span>{t("blood_type", "Blood Type:")} <strong className="text-red-500">{activePatient.bloodType}</strong></span>
- <span className="text-slate-300">•</span>
- <span>{t("patient_id", "Patient ID:")} {activePatient.patientId}</span>
- </div>
- </div>
- </div>
- <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
- {/* Left Column (Stats & Appts) */}
- <div className="col-span-1 lg:col-span-2 space-y-6">
- <div className="grid grid-cols-2 gap-4">
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex items-center gap-3 mb-3">
- <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-primary/20 flex items-center justify-center text-primary"><Pill className="w-4 h-4" /></div>
- <h3 className="font-semibold text-foreground">{t("active_prescriptions", "Active Prescriptions")}</h3>
- </div>
- <p className="text-3xl font-extrabold text-card-foreground mb-1 tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">2</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("medications", "Medications")}</p>
- </div>
- 
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex items-center gap-3 mb-3">
- <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-primary/20 flex items-center justify-center text-primary"><Beaker className="w-4 h-4" /></div>
- <h3 className="font-semibold text-foreground">{t("lab_results", "Lab Results")}</h3>
- </div>
- <p className="text-3xl font-extrabold text-primary mb-1 tracking-[-0.02em]">{t("new", "New")}</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("ready_for_viewing", "Ready for viewing")}</p>
- </div>
- </div>
+  return (
+    <div className="space-y-6 max-w-5xl mx-auto" style={{ background: "linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
+      {/* Header */}
+      <div className="bg-gradient-to-r from-primary to-primary/90 rounded-2xl p-6 md:p-8 text-white relative overflow-hidden">
+        <div className="relative z-10">
+          <h1 className="text-2xl md:text-3xl font-semibold mb-2 tracking-tight">Welcome, {patientProfile.name}</h1>
+          <p className="text-primary/10 max-w-xl">View your medical records, upcoming appointments, and secure lab results in one place.</p>
+        </div>
+        <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-x-1/4 translate-y-1/4">
+          <Activity className="w-64 h-64" />
+        </div>
+      </div>
 
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-4 md:p-5 border-b border-primary/40 bg-muted/50 flex justify-between items-center">
- <h3 className="font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><Calendar className="w-5 h-5 text-[#71717a] dark:text-gray-400" /> {t("upcoming_appointments", "Upcoming Appointments")}</h3>
- </div>
- <div className="divide-y divide-border-[0.5px] border-black/9 dark:border-white/8 p-2">
- {mappedAppts.map((item, i) => {
- return (
- <div key={i} className="flex items-center gap-4 p-3 hover:bg-muted dark:hover:bg-muted/30 rounded-xl transition-colors">
- <div className="w-20 shrink-0 text-center flex flex-col items-center">
- <span className="text-xs font-semibold text-primary bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 px-2 py-1 rounded-md w-full tracking-[0.04em]">{item.date}</span>
- <span className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400 mt-1">{item.time}</span>
- </div>
- <div className="flex-1">
- <p className="font-semibold text-card-foreground text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{item.type}</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{item.doctor}</p>
- </div>
- <span className="bg-amber-100 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 text-[10px] font-semibold px-2 py-0.5 rounded-sm uppercase tracking-wider tracking-[0.04em]">{item.status}</span>
- </div>
- );
-})}
- {mappedAppts.length === 0 && (
- <div className="py-6 text-center text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("no_upcoming_appointments_sched", "No upcoming appointments scheduled.")}</div>
- )}
- </div>
- </div>
- </div>
+      {/* Patient Profile Card */}
+      <div className="bg-card rounded-2xl border border-primary/20 p-6 flex flex-col md:flex-row items-center md:items-start gap-6 shadow-sm">
+        <div className="w-24 h-24 rounded-full bg-slate-100 flex items-center justify-center text-primary/90 text-3xl font-semibold shrink-0 uppercase tracking-tight">
+          {patientProfile.name?.substring(0, 2)}
+        </div>
+        <div className="text-center md:text-left flex-1">
+          <h2 className="text-2xl font-semibold text-card-foreground mb-1 tracking-tight">{patientProfile.name}</h2>
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-sm text-[#71717a] font-medium">
+            <span>Blood Type: <strong className="text-red-500">{patientProfile.blood_type || 'Unknown'}</strong></span>
+            <span className="text-slate-300">•</span>
+            <span>Gender: {patientProfile.gender || 'Unknown'}</span>
+          </div>
+        </div>
+        <div>
+          <Button onClick={handleAIHealthCoach} disabled={isGenerating} className="gap-2 bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 shadow-sm">
+            {isGenerating ? <Sparkles className="w-4 h-4 animate-spin" /> : (!isProOrAbove ? <Lock className="w-4 h-4" /> : <Bot className="w-4 h-4" />)}
+            {isGenerating ? 'Analyzing...' : 'AI Health Coach'}
+          </Button>
+        </div>
+      </div>
 
- {/* Right Column (Documents & Lab Results) */}
- <div className="space-y-6">
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-4 border-b border-primary/40 bg-muted/50 flex justify-between items-center">
- <h3 className="font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><FileText className="w-5 h-5 text-[#71717a] dark:text-gray-400" /> {t("medical_records_labs", "Medical Records & Labs")}</h3>
- <Button size="sm" variant="outline" className="h-8 gap-2" onClick={() => setShowUpload(true)}>
- <Plus className="w-3.5 h-3.5" /> {t("upload", "Upload")}
- </Button>
- </div>
- <div className="divide-y divide-border-[0.5px] border-black/9 dark:border-white/8 p-2">
- {documents.length === 0 ? (
- <div className="py-6 text-center text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("no_records_available_yet", "No records available yet.")}</div>
- ) : documents.map(doc => {
- return (
- <div key={doc.id} className="p-3 flex items-center justify-between hover:bg-muted dark:hover:bg-muted/30 rounded-xl transition-colors">
- <div>
- <p className="text-sm font-medium text-card-foreground mb-0.5 truncate max-w-[150px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{doc.name}</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{format(new Date(doc.created_date), "MMM d, yyyy")} • {doc.category?.replace('_', ' ')}</p>
- </div>
- {doc.file_url && (
- <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
- <Button variant="ghost" size="icon" className="h-8 w-8 text-primary hover:text-primary/90 hover:bg-slate-50">
- <Download className="w-4 h-4" />
- </Button>
- </a>
- )}
- </div>
- );
-})}
- </div>
- </div>
- </div>
- </div>
- {showUpload && (
- <UploadDocumentDialog
- onClose={() => setShowUpload(false)}
- onSubmit={handleUploadSubmit}
- isUploading={createDocMutation.isPending}
- companyId={activePatient?.company_id}
- caseId={activePatient?.id}
- />
- )}
- </div>
- );
+      {aiAdvice && (
+        <div className="bg-primary/5 rounded-2xl p-5 border border-primary/20 shadow-sm">
+          <h3 className="font-semibold text-primary flex items-center gap-2 mb-2"><Bot className="w-5 h-5"/> Your Personalized Health Advice</h3>
+          <p className="text-sm font-medium text-foreground">{aiAdvice}</p>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column (Stats & Appts) */}
+        <div className="col-span-1 lg:col-span-2 space-y-6">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-card rounded-xl border border-primary/20 p-5 shadow-sm">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary"><Pill className="w-4 h-4" /></div>
+                <h3 className="font-semibold text-foreground">Active Prescriptions</h3>
+              </div>
+              <p className="text-3xl font-extrabold text-card-foreground mb-1">{prescriptions.length}</p>
+              <p className="text-xs text-[#71717a]">Medications</p>
+            </div>
+            
+            <div className="bg-card rounded-xl border border-primary/20 p-5 shadow-sm">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary"><Beaker className="w-4 h-4" /></div>
+                <h3 className="font-semibold text-foreground">Lab Results</h3>
+              </div>
+              <p className="text-3xl font-extrabold text-primary mb-1">{labResults.filter(l => l.status === 'Completed').length}</p>
+              <p className="text-xs text-[#71717a]">Ready for viewing</p>
+            </div>
+          </div>
+
+          <div className="bg-card rounded-xl border border-primary/20 overflow-hidden shadow-sm">
+            <div className="p-4 border-b border-primary/20 bg-muted/50">
+              <h3 className="font-semibold text-card-foreground flex items-center gap-2"><Calendar className="w-5 h-5 text-[#71717a]" /> Recent Appointments</h3>
+            </div>
+            <div className="divide-y divide-border p-2">
+              {appts.map((item, i) => (
+                <div key={i} className="flex items-center gap-4 p-3 hover:bg-muted/50 rounded-xl transition-colors">
+                  <div className="w-20 shrink-0 text-center flex flex-col items-center">
+                    <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-1 rounded-md w-full">{item.date}</span>
+                    <span className="text-[10px] font-semibold text-[#71717a] mt-1">{item.time}</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-card-foreground text-sm">{item.type}</p>
+                    <p className="text-xs text-[#71717a]">{item.doctor}</p>
+                  </div>
+                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-sm uppercase ${item.status === 'Scheduled' ? 'bg-amber-100 text-amber-700' : 'bg-primary/10 text-primary'}`}>{item.status}</span>
+                </div>
+              ))}
+              {appts.length === 0 && (
+                <div className="py-6 text-center text-xs text-[#71717a]">No recent appointments.</div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column (Lab Results) */}
+        <div className="space-y-6">
+          <div className="bg-card rounded-xl border border-primary/20 overflow-hidden shadow-sm">
+            <div className="p-4 border-b border-primary/20 bg-muted/50">
+              <h3 className="font-semibold text-card-foreground flex items-center gap-2"><FileText className="w-5 h-5 text-[#71717a]" /> Recent Lab Tests</h3>
+            </div>
+            <div className="divide-y divide-border p-2">
+              {labResults.length === 0 ? (
+                <div className="py-6 text-center text-xs text-[#71717a]">No results available yet.</div>
+              ) : labResults.map((lab, idx) => (
+                <div key={idx} className="p-3 hover:bg-muted/50 rounded-xl transition-colors">
+                  <p className="text-sm font-semibold text-card-foreground mb-0.5">{lab.test_name}</p>
+                  <p className="text-xs text-[#71717a]">Result: <span className="font-medium text-foreground">{lab.result_value || 'Pending'}</span></p>
+                  <div className="mt-2">
+                    <span className={`text-[10px] font-semibold px-2 py-1 rounded-full ${lab.status === 'Completed' ? 'bg-primary/10 text-primary' : 'bg-amber-100 text-amber-700'}`}>{lab.status}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

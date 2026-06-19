@@ -9,6 +9,9 @@ import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@/lib/AuthContext';
+import { generateText } from '@/lib/cloudflareAI';
+import { Bot, Sparkles, Lock } from 'lucide-react';
 
 export default function Pharmacy() {
   const { t } = useTranslation();
@@ -33,6 +36,35 @@ export default function Pharmacy() {
   const [sortByStock, setSortByStock] = useState(false);
   const [viewDrug, setViewDrug] = useState(null);
   const [editingDrug, setEditingDrug] = useState(null);
+
+  const { user } = useAuth();
+  const isProOrAbove = user?.role === 'system_admin' || user?.subscription_plan === 'Pro' || user?.subscription_plan === 'Enterprise';
+
+  const [isPredicting, setIsPredicting] = useState(false);
+  const [aiPrediction, setAiPrediction] = useState('');
+
+  const handleAIPredict = async (drugObj) => {
+    if (!isProOrAbove) {
+      toast.error('AI Advanced Restock Predictions are available on Pro or Enterprise plans.');
+      return;
+    }
+    setIsPredicting(true);
+    setAiPrediction('');
+    try {
+      const prompt = `You are an expert AI Pharmacist. Analyze the following drug inventory and provide a concise prediction on when to restock or if current stock is healthy based on typical hospital usage.
+Drug: ${drugObj.drug_name}
+Category: ${drugObj.category}
+Current Stock: ${drugObj.stock_level}
+Reorder Level: ${drugObj.reorder_level}
+Return a 1-2 sentence recommendation.`;
+      const response = await generateText(prompt);
+      setAiPrediction(response);
+    } catch (e) {
+      toast.error('AI Prediction failed.');
+    } finally {
+      setIsPredicting(false);
+    }
+  };
 
   const [formData, setFormData] = useState({
     name: '',
@@ -269,13 +301,27 @@ export default function Pharmacy() {
       )}
 
       {/* View Modal */}
-      <Sheet open={!!viewDrug} onOpenChange={(open) => !open && setViewDrug(null)}>
+      <Sheet open={!!viewDrug} onOpenChange={(open) => {
+        if (!open) {
+          setViewDrug(null);
+          setAiPrediction('');
+        }
+      }}>
         <SheetContent className="overflow-y-auto">
           <SheetHeader>
-            <SheetTitle>Medication Details</SheetTitle>
-            <SheetDescription>Inventory tracking info</SheetDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <SheetTitle>Medication Details</SheetTitle>
+                <SheetDescription>Inventory tracking info</SheetDescription>
+              </div>
+              <Button size="sm" variant="outline" className="gap-2 bg-primary/5 text-primary border-primary/20 hover:bg-primary/10" onClick={() => handleAIPredict(viewDrug)} disabled={isPredicting}>
+                {isPredicting ? <Sparkles className="w-4 h-4 animate-spin" /> : (!isProOrAbove ? <Lock className="w-4 h-4" /> : <Bot className="w-4 h-4" />)}
+                {isPredicting ? 'Predicting...' : 'AI Forecast'}
+              </Button>
+            </div>
           </SheetHeader>
           {viewDrug && (
+            <>
             <div className="mt-6 space-y-4">
               <div><h3 className="text-sm font-medium text-[#71717a]">Name</h3><p className="text-base font-semibold">{viewDrug.drug_name}</p></div>
               <div><h3 className="text-sm font-medium text-[#71717a]">Category</h3><p className="text-base">{viewDrug.category}</p></div>
@@ -285,6 +331,18 @@ export default function Pharmacy() {
               <div><h3 className="text-sm font-medium text-[#71717a]">Expiry Date</h3><p className="text-base">{viewDrug.expiry_date}</p></div>
               <div><h3 className="text-sm font-medium text-[#71717a]">Status</h3><span className={`text-xs font-semibold px-2 py-1 rounded-md border ${viewDrug.stock_level <= viewDrug.reorder_level ? 'bg-red-50 text-red-700 border-red-200' : 'bg-slate-50 text-primary border-primary/20'}`}>{viewDrug.stock_level <= viewDrug.reorder_level ? 'Low Stock' : 'In Stock'}</span></div>
             </div>
+            
+            {aiPrediction && (
+              <div className="mt-4 pt-4 border-t">
+                <h3 className="text-sm font-semibold text-[#71717a] uppercase mb-2 flex items-center gap-2"><Bot className="w-4 h-4 text-primary"/> AI Forecast</h3>
+                <div className="bg-primary/5 p-4 rounded-xl border border-primary/20">
+                  <div className="text-sm font-medium text-foreground">
+                    {aiPrediction}
+                  </div>
+                </div>
+              </div>
+            )}
+            </>
           )}
         </SheetContent>
       </Sheet>

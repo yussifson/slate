@@ -27,8 +27,8 @@ export default function Customers() {
  const deleteRecord = useDeleteIndustryRecord();
 
  const customers = dbRecords.map(r => {
- const data = r.data || {};
- const totalSpent = parseFloat(data.totalSpent) || 0;
+ const data = r;
+ const totalSpent = parseFloat(data.total_spent) || 0;
  let segment = 'New';
  if (totalSpent > 1000) segment = 'VIP';
  else if (totalSpent > 200) segment = 'Regular';
@@ -42,7 +42,7 @@ export default function Customers() {
  totalSpent,
  orders: parseInt(data.orders) || 0,
  segment,
- createdBy: r.created_by || 'System',
+ createdBy: 'System',
  createdAt: r.created_at || new Date().toISOString()
 };
 });
@@ -81,7 +81,31 @@ export default function Customers() {
  setShowModal(true);
 };
 
- const handleSaveCustomer = () => {
+ 
+  const handleAIInsight = async (cust) => {
+    if (!isProOrAbove) {
+      toast.error('AI Insights are available on Pro or Enterprise plans.');
+      return;
+    }
+    setIsGenerating(true);
+    setAiInsight('');
+    try {
+      const prompt = `You are a Retail Marketing AI. Provide a 2-sentence marketing insight for this customer:
+Name: ${cust.name}
+Total Spent: $${cust.totalSpent}
+Orders: ${cust.orders}
+Segment: ${cust.segment}
+Suggest a targeted email or promotion idea.`;
+      const response = await generateText(prompt);
+      setAiInsight(response);
+    } catch (e) {
+      toast.error('AI Insight failed.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleSaveCustomer = () => {
  if (!formData.name.trim() || !formData.email.trim()) {
  return toast.error("Please enter a name and email");
 }
@@ -308,7 +332,14 @@ export default function Customers() {
  <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">Added By</div>
  <div className="col-span-2">{selectedRecord.createdBy} on {new Date(selectedRecord.createdAt).toLocaleDateString()}</div>
  </div>
- <div className="flex gap-3 pt-6 mt-4 border-t border-primary/20">
+ 
+          {aiInsight && (
+            <div className="bg-primary/5 p-4 rounded-xl border border-primary/20 mt-4">
+              <h3 className="text-sm font-semibold text-primary mb-2 flex items-center gap-2"><Bot className="w-4 h-4"/> AI Customer Insight</h3>
+              <p className="text-sm text-foreground font-medium">{aiInsight}</p>
+            </div>
+          )}
+          <div className="flex gap-3 pt-6 mt-4 border-t border-primary/20">
     <Button 
       onClick={() => { setIsSheetOpen(false); openEdit(selectedRecord); }} 
       className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl"
