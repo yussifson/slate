@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { useLocation, useNavigate} from 'react-router-dom';
 import { Sparkles, MessageSquare, X, Send, Bot, User, Maximize2, Minimize2, Plus, Clock, Mic, MicOff, Paperclip, Trash2, FileText, Image, Square} from 'lucide-react';
 import { Button} from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { generateText, analyzeImage} from '@/lib/cloudflareAI';
 import { toast} from 'react-hot-toast';
 import { useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
@@ -165,6 +166,7 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
  const [isExpanded, setIsExpanded] = useState(false);
  const [uploadedFile, setUploadedFile] = useState(null);
  const [pendingHiddenContext, setPendingHiddenContext] = useState(null);
+ const [chatMode, setChatMode] = useState('chat');
 
  const [originalInputBeforeVoice, setOriginalInputBeforeVoice] = useState('');
  const messagesEndRef = useRef(null);
@@ -436,9 +438,15 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
  responseText = await analyzeImage(fileSnap.bytes, promptText);
 } else {
  const ctx = PAGE_CONTEXT[location.pathname] || { title: 'Unknown', suite: 'Unknown'};
+  let modeContext = '';
+  if (chatMode === 'flow') {
+    modeContext = '\nCRITICAL MODE ACTIVE: You are in FLOW BUILDER mode. Focus strictly on designing workflows, suggesting step-by-step logic, and helping the user orchestrate system architectures. Ignore casual chat unless it pertains to flow building.';
+  } else if (chatMode === 'automation') {
+    modeContext = '\nCRITICAL MODE ACTIVE: You are in AUTOMATION mode. Focus strictly on generating automation rules, triggers, and condition chains using the `generate_visual_automation` tool. Do not generate unrelated records.';
+  }
  const systemPrompt = `You are OrbitFlow — a highly enthusiastic, intelligent, and entertaining AI workflow engineer embedded in Slate SaaS.
 Your personality is that of a powerful but friendly AI companion—think of a hyper-intelligent digital lion/owl hybrid! Be cheerful, slightly playful, use emojis naturally, but remain highly capable and laser-focused on orchestrating the user's workflows flawlessly.
-Your current context is the ${ctx.suite} suite, specifically the '${ctx.title}' page.
+Your current context is the ${ctx.suite} suite, specifically the '${ctx.title}' page.${modeContext}
 
 CRITICAL INSTRUCTIONS:
 - You are a Workflow Engineer. You can orchestrate complex chains of tasks and build powerful AUTOMATIONS across the system.
@@ -622,7 +630,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
 } finally {
  setIsLoading(false);
 }
-}, [input, uploadedFile, activeId, sessions, addMessages, getPageContext, companyId, queryClient, navigate, location.pathname, executeActionsAsync]);
+}, [input, uploadedFile, activeId, sessions, addMessages, getPageContext, companyId, queryClient, navigate, location.pathname, executeActionsAsync, chatMode]);
 
  // When Spotlight injects a record context, auto-start a new chat about it
  useEffect(() => {
@@ -836,7 +844,8 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <OrbitIcon className="w-3.5 h-3.5" />
  </div>
  <div className="flex items-center gap-2.5 flex-1">
- <p className="text-[11px] font-semibold text-foreground leading-none">{t("orbit", "OrbitFlow")}</p>
+  <p className="text-[11px] font-semibold text-foreground leading-none">{t("orbit", "OrbitFlow")}</p>
+  {chatMode !== 'chat' && <span className="text-[9px] px-1.5 py-0.5 rounded-md bg-primary/10 text-primary font-bold uppercase">{chatMode} Mode</span>}
  </div>
  </div>
  <div className="flex items-center gap-0.5 shrink-0">
@@ -956,7 +965,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <textarea
  value={input}
  onChange={e => setInput(e.target.value)}
- placeholder={isRecording ? ' Listening speak now' : 'Ask anything or give a command'}
+ placeholder={isRecording ? ' Listening speak now' : (chatMode === 'flow' ? 'Design a workflow...' : chatMode === 'automation' ? 'Build an automation...' : 'Ask anything or give a command')}
  rows={2}
  className={`w-full bg-transparent border-none focus:ring-0 resize-none px-3 pt-3 pb-1 text-sm text-foreground outline-none leading-relaxed ${
  isRecording ? 'placeholder:text-red-400 placeholder:animate-pulse' : 'placeholder:text-[#71717a] dark:text-gray-400/50'
@@ -966,6 +975,18 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  />
  <div className="flex items-center justify-between px-2 pb-2">
  <div className="flex items-center gap-0.5">
+ <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <button type="button" className="p-1.5 text-[#71717a] hover:bg-slate-50 hover:text-primary rounded-lg transition-colors" title="Change Mode">
+        <Plus className="w-4 h-4" />
+      </button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent align="start" side="top" className="w-48 z-[100]">
+      <DropdownMenuItem onClick={() => setChatMode('chat')} className="cursor-pointer font-medium"><MessageSquare className="w-4 h-4 mr-2 text-[#71717a]"/> Chat Mode</DropdownMenuItem>
+      <DropdownMenuItem onClick={() => setChatMode('flow')} className="cursor-pointer font-medium"><OrbitIcon className="w-4 h-4 mr-2 text-[#71717a]"/> Flow Builder Mode</DropdownMenuItem>
+      <DropdownMenuItem onClick={() => setChatMode('automation')} className="cursor-pointer font-medium"><Bot className="w-4 h-4 mr-2 text-[#71717a]"/> Automation Mode</DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
  <input ref={fileInputRef} type="file" className="hidden" accept="image/*,.pdf,.txt,.csv,.docx,.xlsx,.json,.md" onChange={handleFileUpload} />
  <button
  type="button"
