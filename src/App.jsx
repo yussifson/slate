@@ -432,7 +432,7 @@ function PlatformRoutes() {
       <Route path="/ob/:pageName" element={<OrbitBuildPage />} />
       <Route path="/" element={<Dashboard />} />
       <Route path="/cases" element={<UnivProject />} />
-      <Route path="/clients" element={<UnivContactManagement />} />
+      <Route path="/clients" element={<Clients />} />
       <Route path="/calendar" element={<CalendarPage />} />
       <Route path="/invoices" element={<UnivInvoice />} />
       <Route path="/tasks" element={<UnivKanban />} />
@@ -637,7 +637,7 @@ function PlatformRoutes() {
       <Route path="/institution-settings" element={<SchoolInstitutionSettings />} />
 
       {/* Hospital Suite */}
-      <Route path="/patients" element={<HospitalPatients />} />
+      <Route path="/patients" element={<Clients />} />
       <Route path="/appointments" element={<HospitalAppointments />} />
       <Route path="/wards" element={<HospitalWards />} />
       <Route path="/prescriptions" element={<HospitalPrescriptions />} />
@@ -661,7 +661,7 @@ function PlatformRoutes() {
       <Route path="/guest-portal" element={<HotelGuestPortal />} />
 
       {/* Religion Suite */}
-      <Route path="/members" element={<ReligionMembers />} />
+      <Route path="/members" element={<Clients />} />
       <Route path="/groups" element={<ReligionGroups />} />
       <Route path="/events" element={<ReligionEvents />} />
       <Route path="/donations" element={<ReligionDonations />} />
@@ -674,7 +674,7 @@ function PlatformRoutes() {
       {/* Insurance Suite */}
       <Route path="/policies" element={<InsurancePolicies />} />
       <Route path="/claims" element={<InsuranceClaims />} />
-      <Route path="/insurance-clients" element={<InsuranceClients />} />
+      <Route path="/insurance-clients" element={<Clients />} />
       <Route path="/policyholder-portal" element={<InsurancePolicyholderPortal />} />
       <Route path="/underwriting" element={<InsuranceUnderwriting />} />
       <Route path="/actuarial" element={<ActuarialDashboard />} />
@@ -690,7 +690,7 @@ function PlatformRoutes() {
       <Route path="/retail-inventory" element={<RetailInventory />} />
       <Route path="/sales" element={<RetailSales />} />
       <Route path="/suppliers" element={<RetailSuppliers />} />
-      <Route path="/retail-customers" element={<RetailCustomers />} />
+      <Route path="/retail-customers" element={<Clients />} />
       <Route path="/customer-portal" element={<RetailCustomerPortal />} />
 
       {/* Logistics Suite */}
