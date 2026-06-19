@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation} from "react-i18next";
 import { DollarSign, Package, Users, TrendingUp, AlertCircle, Clock, ShoppingCart} from 'lucide-react';
 import { useIndustryRecords} from '@/hooks/useIndustryData';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription} from "@/components/ui/card";
 import { Badge} from "@/components/ui/badge";
 import { useAuth} from "@/lib/AuthContext";
+import { usePaywall } from '@/hooks/usePaywall';
+import { generateText } from '@/api/aiClient';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from 'recharts';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 
@@ -16,6 +18,9 @@ export default function RetailDashboard() {
  const { data: shifts = [], isLoading: isShiftsLoading} = useIndustryRecords('shift');
 
  const isLoading = isOrdersLoading || isProductsLoading || isShiftsLoading;
+  const { isProOrAbove } = usePaywall();
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [aiInsight, setAiInsight] = useState('');
 
  // Calculate Metrics
  
