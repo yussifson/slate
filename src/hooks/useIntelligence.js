@@ -6,20 +6,22 @@ import { useState, useCallback, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { runEngine } from '@/lib/intelligence/engine';
+import { runEngine, storeInsight } from '@/lib/intelligence/engine';
+import { submitInsightFeedback } from '@/lib/intelligence/feedback';
+import { computeHealthScore } from '@/lib/intelligence/health-score';
 
 // Import all vertical engines
-import { analyzeUniversal } from '@/lib/intelligence/engines/universal';
-import { analyzeLegal } from '@/lib/intelligence/engines/legal';
-import { analyzeHospital } from '@/lib/intelligence/engines/hospital';
-import { analyzeSchool } from '@/lib/intelligence/engines/school';
-import { analyzeHR } from '@/lib/intelligence/engines/hr';
-import { analyzeRetail } from '@/lib/intelligence/engines/retail';
-import { analyzeHotel } from '@/lib/intelligence/engines/hotel';
-import { analyzeLogistics } from '@/lib/intelligence/engines/logistics';
-import { analyzeInsurance } from '@/lib/intelligence/engines/insurance';
-import { analyzeReligion } from '@/lib/intelligence/engines/religion';
-import { analyzeMarketing } from '@/lib/intelligence/engines/marketing';
+import analyzeUniversal from '@/lib/intelligence/engines/universal';
+import analyzeLegal from '@/lib/intelligence/engines/legal';
+import analyzeHospital from '@/lib/intelligence/engines/hospital';
+import analyzeSchool from '@/lib/intelligence/engines/school';
+import analyzeHR from '@/lib/intelligence/engines/hr';
+import analyzeRetail from '@/lib/intelligence/engines/retail';
+import analyzeHotel from '@/lib/intelligence/engines/hotel';
+import analyzeLogistics from '@/lib/intelligence/engines/logistics';
+import analyzeInsurance from '@/lib/intelligence/engines/insurance';
+import analyzeReligion from '@/lib/intelligence/engines/religion';
+import analyzeMarketing from '@/lib/intelligence/engines/marketing';
 
 const ENGINE_MAP = {
   universal: { fn: analyzeUniversal, name: 'universal-intelligence' },
@@ -104,6 +106,16 @@ export function useIntelligence(vertical, options = {}) {
 
       setLastRunResult(results);
 
+      // Finally compute health score and store it
+      try {
+        const healthInsight = await computeHealthScore(companyId, vertical);
+        if (healthInsight) {
+          await storeInsight(companyId, { ...healthInsight, vertical: 'universal' });
+        }
+      } catch (healthErr) {
+        console.error('Health score error:', healthErr);
+      }
+
       // Refetch insights from the store
       queryClient.invalidateQueries(['workspace_insights']);
       await refetch();
@@ -117,10 +129,17 @@ export function useIntelligence(vertical, options = {}) {
   // Dismiss an insight
   const dismissInsight = useMutation({
     mutationFn: async (insightId) => {
-      await powerSync.execute(
-        `UPDATE workspace_insights SET is_dismissed = 1, dismissed_at = datetime('now') WHERE id = ?`,
-        [insightId]
-      );
+      await submitInsightFeedback(insightId, companyId, 'dismissed', null, null);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['workspace_insights']);
+    },
+  });
+
+  // Submit explicit feedback
+  const submitFeedback = useMutation({
+    mutationFn: async ({ insightId, feedbackType, outcome }) => {
+      await submitInsightFeedback(insightId, companyId, feedbackType, outcome, null);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['workspace_insights']);
@@ -178,6 +197,7 @@ export function useIntelligence(vertical, options = {}) {
     positiveCount,
     runEngine: runVerticalEngine,
     dismissInsight: dismissInsight.mutate,
+    submitFeedback: submitFeedback.mutate,
     getEntityIntelligence,
     refetch,
   };

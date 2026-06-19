@@ -40,6 +40,7 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
     positiveCount,
     runEngine,
     dismissInsight,
+    submitFeedback,
   } = useIntelligence(effectiveVertical);
 
   const [severityFilter, setSeverityFilter] = useState('all');
@@ -104,11 +105,12 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
         ) : (
           <div className="space-y-2">
             {displayInsights.map(insight => (
-              <InsightCard
-                key={insight.id}
-                insight={insight}
-                onDismiss={dismissInsight}
-                compact
+              <InsightCard 
+                key={insight.id} 
+                insight={insight} 
+                onDismiss={dismissInsight} 
+                onFeedback={(id, type) => submitFeedback({ insightId: id, feedbackType: type })}
+                compact={true} 
               />
             ))}
           </div>
@@ -268,6 +270,7 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
               key={insight.id}
               insight={insight}
               onDismiss={dismissInsight}
+              onFeedback={(id, type) => submitFeedback({ insightId: id, feedbackType: type })}
             />
           ))}
         </div>

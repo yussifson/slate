@@ -1,13 +1,28 @@
-import React from 'react';
-import { Award, Download, ExternalLink, ShieldCheck, Lock} from 'lucide-react';
+import React, { useRef } from 'react';
+import { Award, Download, ExternalLink, ShieldCheck, Lock } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from "@tanstack/react-query";
+import { powerSync } from "@/api/PowerSyncConnector";
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function OnlineCertificates() {
  const { user, currentPlan } = useAuth();
  const navigate = useNavigate();
+ const companyId = useCompanyId();
+ const { toast } = useToast();
  
  const isProOrAbove = ['super_admin', 'admin'].includes(user?.role) || currentPlan === 'pro' || currentPlan === 'enterprise';
+
+ const { data: certificates = [] } = useQuery({
+   queryKey: ["online_certificates", companyId, user?.id],
+   queryFn: async () => {
+     const { data } = await powerSync.execute(`SELECT * FROM online_certificates WHERE company_id = ? AND student_id = ? ORDER BY issue_date DESC`, [companyId, user?.id]);
+     return data || [];
+   },
+   enabled: !!companyId && !!user?.id && isProOrAbove
+ });
 
  if (!isProOrAbove) {
    return (
@@ -24,10 +39,14 @@ export default function OnlineCertificates() {
    );
  }
 
- const certificates = [
- { id: 1, title: 'React Foundations', issued: 'Sep 15, 2026', grade: '95%', instructor: 'Sarah Jenkins', courseId: 'c1'},
- { id: 2, title: 'Advanced State Management', issued: 'Oct 01, 2026', grade: '92%', instructor: 'Michael Chen', courseId: 'c2'},
- ];
+ const handleDownload = (cert) => {
+   // Simple print invocation for the certificate
+   // In a real app, you might use jspdf or html2canvas here
+   toast({ title: "Downloading Certificate", description: "Preparing PDF for " + cert.course_title });
+   setTimeout(() => {
+     window.print();
+   }, 500);
+ };
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl mx-auto py-6">
@@ -55,21 +74,21 @@ export default function OnlineCertificates() {
  <Award className="w-16 h-16 text-[var(--primary)] mb-4" />
  <h2 className="font-serif text-2xl font-semibold text-[var(--color-text-primary)] mb-1 tracking-[-0.02em]">Certificate of Completion</h2>
  <p className="text-sm text-[var(--color-text-secondary)] mb-4">This certifies that you have successfully completed</p>
- <h3 className="font-display text-xl font-semibold text-[var(--primary)]">{cert.title}</h3>
- <p className="text-xs text-[var(--color-text-tertiary)] mt-4 tracking-[0.04em]">Instructor: {cert.instructor}</p>
+ <h3 className="font-display text-xl font-semibold text-[var(--primary)]">{cert.course_title}</h3>
+ <p className="text-xs text-[var(--color-text-tertiary)] mt-4 tracking-[0.04em]">Issued to: {cert.student_name || user?.full_name}</p>
  </div>
  <div className="p-5 flex items-center justify-between bg-[var(--color-surface-0)]">
  <div>
  <p className="text-xs text-[var(--color-text-secondary)] tracking-[0.04em] uppercase font-semibold">Issued On</p>
- <p className="font-medium text-sm text-[var(--color-text-primary)] mt-0.5">{cert.issued}</p>
+ <p className="font-medium text-sm text-[var(--color-text-primary)] mt-0.5">{new Date(cert.issue_date).toLocaleDateString()}</p>
  </div>
  <div>
- <p className="text-xs text-[var(--color-text-secondary)] tracking-[0.04em] uppercase font-semibold text-right">Final Grade</p>
- <p className="font-bold text-sm text-[var(--color-success)] text-right mt-0.5">{cert.grade}</p>
+ <p className="text-xs text-[var(--color-text-secondary)] tracking-[0.04em] uppercase font-semibold text-right">Status</p>
+ <p className="font-bold text-sm text-[var(--color-success)] text-right mt-0.5 uppercase tracking-wide">{cert.status}</p>
  </div>
  </div>
  <div className="p-4 border-t border-primary/40 bg-[var(--color-surface-1)] flex gap-3">
- <button className="flex-1 flex justify-center items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-md-[var(--radius-md)] hover:opacity-90 transition-opacity">
+ <button onClick={() => handleDownload(cert)} className="flex-1 flex justify-center items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-md-[var(--radius-md)] hover:opacity-90 transition-opacity">
  <Download className="w-4 h-4" /> Download PDF
  </button>
  <button className="flex justify-center items-center gap-2 px-4 py-2 bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[var(--color-text-primary)] text-sm font-medium rounded-md-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">

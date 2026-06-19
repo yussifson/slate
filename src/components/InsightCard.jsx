@@ -56,8 +56,9 @@ const TYPE_LABELS = {
   pattern: 'Pattern Detected',
 };
 
-export default function InsightCard({ insight, onDismiss, compact = false }) {
+export default function InsightCard({ insight, onDismiss, onFeedback, compact = false }) {
   const [expanded, setExpanded] = useState(false);
+  const [feedbackGiven, setFeedbackGiven] = useState(false);
   const config = SEVERITY_CONFIG[insight.severity] || SEVERITY_CONFIG.info;
   const Icon = config.icon;
 
@@ -155,9 +156,37 @@ export default function InsightCard({ insight, onDismiss, compact = false }) {
 
         <div className="flex items-center justify-between mt-2 pl-11">
           <span className="text-[10px] text-[#71717a] font-medium">{timeAgo}</span>
-          <div className="flex items-center gap-1 text-[10px] text-[#71717a]">
-            <Sparkles className="w-3 h-3" />
-            <span>AI Intelligence</span>
+          
+          <div className="flex items-center gap-3">
+            {expanded && !feedbackGiven && onFeedback && (
+              <div className="flex items-center gap-1.5 border-r border-[#e4e4e7] dark:border-[#27272a] pr-3 mr-1">
+                <button 
+                  onClick={() => { onFeedback(insight.id, 'helpful'); setFeedbackGiven(true); }}
+                  className="text-[10px] px-2 py-0.5 rounded-full hover:bg-emerald-100 text-emerald-700 transition-colors"
+                >
+                  Helpful
+                </button>
+                <button 
+                  onClick={() => { onFeedback(insight.id, 'incorrect'); setFeedbackGiven(true); }}
+                  className="text-[10px] px-2 py-0.5 rounded-full hover:bg-red-100 text-red-700 transition-colors"
+                >
+                  Incorrect
+                </button>
+                <button 
+                  onClick={() => { onFeedback(insight.id, 'acted_on'); setFeedbackGiven(true); }}
+                  className="text-[10px] px-2 py-0.5 rounded-full bg-violet-100 text-violet-700 hover:bg-violet-200 transition-colors font-semibold"
+                >
+                  Acted On
+                </button>
+              </div>
+            )}
+            {feedbackGiven && (
+              <span className="text-[10px] text-emerald-600 font-medium mr-2">Feedback saved</span>
+            )}
+            <div className="flex items-center gap-1 text-[10px] text-[#71717a]">
+              <Sparkles className="w-3 h-3" />
+              <span>AI Intelligence</span>
+            </div>
           </div>
         </div>
       </div>

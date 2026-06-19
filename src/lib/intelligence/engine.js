@@ -25,6 +25,29 @@ export async function generateInsight(prompt, dataContext) {
 }
 
 // ────────────────────────────────────────────────────────
+// Insight Suppression Check
+// ────────────────────────────────────────────────────────
+export async function shouldSurfaceInsight(companyId, insightKey) {
+  const existing = await powerSync.execute(
+    `SELECT accuracy_score, dismissed, total_produced FROM engine_accuracy 
+     WHERE workspace_id = ? AND insight_key = ? LIMIT 1`,
+    [companyId, insightKey]
+  );
+
+  if (existing.rows._array.length === 0) return true; // no history
+
+  const data = existing.rows._array[0];
+  if (data.total_produced < 5) return true; // not enough data
+
+  const dismissRate = data.dismissed / data.total_produced;
+  if (dismissRate > 0.7) return false;
+
+  if (data.accuracy_score !== null && data.accuracy_score < 15) return false;
+
+  return true;
+}
+
+// ────────────────────────────────────────────────────────
 // Insight Storage — write computed insights to PowerSync
 // ────────────────────────────────────────────────────────
 export async function storeInsight(companyId, insight) {
@@ -100,6 +123,9 @@ export async function runEngine(companyId, vertical, engineName, engineFn) {
     const insights = await engineFn(companyId);
 
     for (const insight of insights) {
+      const shouldShow = await shouldSurfaceInsight(companyId, insight.insight_key);
+      if (!shouldShow) continue;
+
       const result = await storeInsight(companyId, { ...insight, vertical });
       if (result === 'created') created++;
       if (result === 'updated') updated++;

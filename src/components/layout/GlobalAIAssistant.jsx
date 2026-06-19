@@ -5,7 +5,8 @@ import { useLocation, useNavigate} from 'react-router-dom';
 import { Sparkles, MessageSquare, X, Send, Bot, User, Maximize2, Minimize2, Plus, Clock, Mic, MicOff, Paperclip, Trash2, FileText, Image, Square} from 'lucide-react';
 import { Button} from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { generateText, analyzeImage} from '@/lib/cloudflareAI';
+import { generateText, analyzeImage } from '@/lib/cloudflareAI';
+import { answerNLQuery } from '@/lib/intelligence/nl-query-engine';
 import { toast} from 'react-hot-toast';
 import { useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
 import { useCompanyId} from '@/hooks/useCompanyId';
@@ -587,6 +588,7 @@ AGENT POWERS (return EXACTLY this JSON format inline to act):
 - Create: <AGENT_ACTION>{"tool":"create_record","recordType":"patient","payload":{"name":"John Doe","age":30,"status":"active"}}</AGENT_ACTION>
 - Update: <AGENT_ACTION>{"tool":"update_record","recordType":"patient","id":"uuid","payload":{"status":"discharged"}}</AGENT_ACTION>
 - Delete: <AGENT_ACTION>{"tool":"delete_record","recordType":"patient","id":"uuid"}</AGENT_ACTION>
+- Query Data: <AGENT_ACTION>{"tool":"query_data","question":"How many patients this month?"}</AGENT_ACTION>
 - Build Visual Automation: <AGENT_ACTION>{"tool":"generate_visual_automation","trigger":{"table":"custom_leads"},"steps":[{"type":"delay","config":{"amount":2,"unit":"days"}},{"type":"condition","config":{"variable":"status","operator":"==","value":"hot"},"true_steps":[{"type":"send_notification","config":{"recipient":"{{email}}","message":"Hot Lead!"}}],"false_steps":[]}]}</AGENT_ACTION>
 - Toast: <AGENT_ACTION>{"tool":"show_toast","message":"Done!"}</AGENT_ACTION>
 - Remember: <AGENT_ACTION>{"tool":"remember","fact":"User prefers dark mode"}</AGENT_ACTION>

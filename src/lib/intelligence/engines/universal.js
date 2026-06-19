@@ -4,6 +4,8 @@
 
 import { generateInsight, groupByWeek, groupByDay } from '@/lib/intelligence/engine';
 import { powerSync } from '@/api/PowerSyncConnector';
+import { detectClientSourcePattern, detectRepeatEngagement, detectDayOfWeekPerformance } from './relationship-engine';
+
 
 // ────────────────────────────────────────────────────────
 // 1. Revenue Anomaly Detection
@@ -285,6 +287,9 @@ export default async function universalEngine(companyId) {
     detectActivityAnomaly(companyId),
     detectOverdueItems(companyId),
     predictCashFlow(companyId),
+    detectClientSourcePattern(companyId),
+    detectRepeatEngagement(companyId),
+    detectDayOfWeekPerformance(companyId)
   ]);
 
   return results.flatMap(r => (r.status === 'fulfilled' ? r.value : []));

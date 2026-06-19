@@ -1,16 +1,23 @@
-import React, { useState} from 'react';
-import { useParams, useNavigate} from 'react-router-dom';
-import { ArrowLeft, Save, PlusCircle, Trash2, CheckCircle2} from 'lucide-react';
-import { useToast} from "@/components/ui/use-toast";
+import React, { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Save, PlusCircle, Trash2, CheckCircle2, BrainCircuit, Sparkles } from 'lucide-react';
+import { useToast } from "@/components/ui/use-toast";
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { useAuth } from "@/lib/AuthContext";
+import { powerSync } from "@/api/PowerSyncConnector";
+import { generateText } from '@/lib/cloudflareAI';
 
 export default function AssessmentBuilder() {
- const { courseId} = useParams();
+ const { courseId } = useParams();
  const navigate = useNavigate();
- const { toast} = useToast();
+ const { toast } = useToast();
+ const companyId = useCompanyId();
+ const { user } = useAuth();
 
  const [assessmentTitle, setAssessmentTitle] = useState('');
+ const [isGeneratingAI, setIsGeneratingAI] = useState(false);
  const [questions, setQuestions] = useState([
- { id: 1, text: '', options: ['', '', '', ''], correctIndex: 0}
+ { id: 1, text: '', options: ['', '', '', ''], correctIndex: 0 }
  ]);
 
  const addQuestion = () => {
@@ -36,14 +43,54 @@ export default function AssessmentBuilder() {
 }));
 };
 
- const handleSave = () => {
- if (!assessmentTitle.trim()) {
- toast({ variant: "destructive", title: "Error", description: "Assessment title is required."});
- return;
-}
- toast({ title: "Success", description: "Assessment saved successfully!"});
- navigate(`/o/builder/course/${courseId}`);
-};
+ const generateAIQuestions = async () => {
+   setIsGeneratingAI(true);
+   toast({ title: "Generating Questions...", description: "AI is crafting your quiz." });
+   try {
+     const prompt = `You are an expert instructional designer. Generate 3 multiple choice questions for a quiz titled "${assessmentTitle || 'General Knowledge'}". Return ONLY a valid JSON array where each element is an object with: "text" (string), "options" (array of 4 strings), and "correctIndex" (integer 0-3).`;
+     const res = await generateText(prompt);
+     try {
+       // Extract JSON if it's wrapped in markdown code blocks
+       const jsonStr = res.replace(/```json\n?|\n?```/g, '').trim();
+       const parsed = JSON.parse(jsonStr);
+       if (Array.isArray(parsed)) {
+         const newQuestions = parsed.map((q, i) => ({
+           id: Date.now() + i,
+           text: q.text,
+           options: q.options,
+           correctIndex: q.correctIndex
+         }));
+         setQuestions(newQuestions);
+         toast({ title: "Success", description: "AI generated 3 questions!" });
+       }
+     } catch (e) {
+       toast({ title: "Error", description: "AI returned invalid format.", variant: "destructive" });
+     }
+   } catch (err) {
+     toast({ title: "Error", description: "Failed to generate questions.", variant: "destructive" });
+   } finally {
+     setIsGeneratingAI(false);
+   }
+ };
+
+ const handleSave = async () => {
+  if (!assessmentTitle.trim()) {
+   toast({ variant: "destructive", title: "Error", description: "Assessment title is required."});
+   return;
+  }
+  
+  try {
+    const id = `ass_${Math.random().toString(36).substr(2, 9)}`;
+    await powerSync.execute(
+      `INSERT INTO online_assessments (id, company_id, course_id, title, type, questions, created_at, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [id, companyId, courseId, assessmentTitle, 'quiz', JSON.stringify(questions), new Date().toISOString(), user?.id]
+    );
+    toast({ title: "Success", description: "Assessment saved successfully!"});
+    navigate(`/o/builder/course/${courseId}`);
+  } catch (err) {
+    toast({ title: "Error", description: err.message, variant: "destructive" });
+  }
+ };
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-4xl mx-auto">
@@ -55,7 +102,15 @@ export default function AssessmentBuilder() {
  <h1 className="font-display font-semibold text-[var(--text-2xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">Assessment Builder</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Create quizzes to test learner knowledge.</p>
  </div>
- <div className="ml-auto">
+ <div className="ml-auto flex items-center gap-2">
+ <button 
+   onClick={generateAIQuestions}
+   disabled={isGeneratingAI}
+   className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)]/10 text-[var(--primary)] text-sm font-medium rounded-md-[var(--radius-md)] hover:bg-[var(--primary)]/20 transition-colors disabled:opacity-50"
+ >
+   {isGeneratingAI ? <span className="w-4 h-4 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin" /> : <Sparkles className="w-4 h-4" />}
+   {isGeneratingAI ? 'Generating...' : 'Generate with AI'}
+ </button>
  <button onClick={handleSave} className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-md-[var(--radius-md)] hover:opacity-90 transition-opacity">
  <Save className="w-4 h-4" /> Save Assessment
  </button>

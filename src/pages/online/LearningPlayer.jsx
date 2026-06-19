@@ -63,20 +63,26 @@ export default function LearningPlayer() {
  }, [lessons]);
 
  const completeCourseMutation = useMutation({
-   mutationFn: async () => {
-     if (enrollment?.status === 'completed') return;
-     
-     await powerSync.execute(
-       `UPDATE online_enrollments SET progress_percent = ?, status = ?, last_accessed = ? WHERE id = ?`,
-       ['100', 'completed', new Date().toISOString(), enrollment?.id]
-     );
+    mutationFn: async () => {
+      if (enrollment?.status === 'completed') return;
+      
+      await powerSync.execute(
+        `UPDATE online_enrollments SET progress_percent = ?, status = ?, last_accessed = ? WHERE id = ?`,
+        ['100', 'completed', new Date().toISOString(), enrollment?.id]
+      );
 
-     const notifId = `ntf_${Math.random().toString(36).substr(2, 9)}`;
-     await powerSync.execute(
-       `INSERT INTO univ_notifications (id, company_id, user_id, title, message, type, is_read, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-       [notifId, companyId, studentId, 'Course Completed!', `Congratulations on completing ${course?.title || 'the course'}!`, 'learning', '0', new Date().toISOString()]
-     );
-   },
+      const notifId = `ntf_${Math.random().toString(36).substr(2, 9)}`;
+      await powerSync.execute(
+        `INSERT INTO univ_notifications (id, company_id, user_id, title, message, type, is_read, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [notifId, companyId, studentId, 'Course Completed!', `Congratulations on completing ${course?.title || 'the course'}!`, 'learning', '0', new Date().toISOString()]
+      );
+
+      const certId = `cert_${Math.random().toString(36).substr(2, 9)}`;
+      await powerSync.execute(
+        `INSERT INTO online_certificates (id, company_id, enrollment_id, student_id, student_name, course_id, course_title, issue_date, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [certId, companyId, enrollment?.id, studentId, user?.full_name || 'Student', courseId, course?.title || 'Course', new Date().toISOString(), 'issued', new Date().toISOString()]
+      );
+    },
    onSuccess: () => {
      queryClient.invalidateQueries(["online_enrollment", courseId, studentId]);
      toast({ title: "Course Completed!", description: "Check your notifications for your certificate." });
