@@ -1,3 +1,4 @@
+import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { supabase} from '@/api/supabaseClient';
 import React, { useState, useEffect, Suspense, lazy, startTransition} from "react";
 import PageHeader from "@/components/shared/PageHeader";
@@ -519,3 +520,4 @@ export default function GenericModulePage({ title: propTitle, description: propD
  </div>
  );
 }
+

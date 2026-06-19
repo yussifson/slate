@@ -13,12 +13,14 @@ import { useNotifications} from '@/hooks/integrations/useNotifications';
 import { useAuth} from '@/lib/AuthContext';
 import { useCompanyId} from "@/hooks/useCompanyId";
 import { Bell} from "lucide-react";
+import { usePowerSync } from '@powersync/react';
 
 export default function Leave() {
  const { t} = useTranslation();
  const companyId = useCompanyId();
  const { user} = useAuth();
  const { notifyTeam} = useNotifications();
+ const powerSync = usePowerSync();
  const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('leave_request');
  const { data: staffRecords = []} = useIndustryRecords('staff');
  const mutateRecord = useMutateIndustryRecord();
@@ -91,6 +93,7 @@ export default function Leave() {
  onSuccess: () => {
  toast.success('Leave request submitted!');
  notifyTeam({ companyId: user?.company_id, provider: 'slack', message: `Leave request submitted by ${employeeName} for ${formData.leaveType}`, channel: '#hr'}).catch(console.error);
+ powerSync.execute(`INSERT INTO univ_notifications (id, company_id, created_at, title, message, type, read) VALUES (?, ?, ?, ?, ?, ?, ?)`, [crypto.randomUUID(), user?.company_id, new Date().toISOString(), "Leave Request", `${employeeName} requested ${formData.leaveType}`, "warning", 0]).catch(console.error);
  setShowModal(false);
  setFormData({
  employeeId: '', leaveType: 'Annual', 
@@ -143,6 +146,7 @@ export default function Leave() {
  toast.success(`Leave request ${newStatus}`);
  if (newStatus === 'Approved') {
  notifyTeam({ companyId: user?.company_id, provider: 'slack', message: `Leave request for ${req.employeeName} has been approved.`, channel: '#hr'}).catch(console.error);
+ powerSync.execute(`INSERT INTO univ_notifications (id, company_id, created_at, title, message, type, read) VALUES (?, ?, ?, ?, ?, ?, ?)`, [crypto.randomUUID(), user?.company_id, new Date().toISOString(), "Leave Approved", `${req.employeeName}'s leave was approved`, "success", 0]).catch(console.error);
 }
 }
 });

@@ -13,6 +13,7 @@ import { useNotifications} from '@/hooks/integrations/useNotifications';
 import { useAuth} from '@/lib/AuthContext';
 import { base44 } from "@/api/base44Client";
 import { supabase } from "@/api/supabaseClient";
+import { usePowerSync } from '@powersync/react';
 
 const OrgNode = ({ employee, allEmployees }) => {
  const children = allEmployees.filter(e => e.reportsTo === employee.id);
@@ -41,6 +42,7 @@ export default function Employees() {
  const { t} = useTranslation();
  const { user} = useAuth();
  const { notifyTeam} = useNotifications();
+ const powerSync = usePowerSync();
  const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('staff');
  const { data: departmentRecords = []} = useIndustryRecords('department');
  const mutateRecord = useMutateIndustryRecord();
@@ -124,6 +126,7 @@ export default function Employees() {
      
      toast.success('Employee added and account created successfully!');
      notifyTeam({ companyId: user?.company_id, provider: 'slack', message: `New employee onboarded: ${formData.name} as ${formData.role}`, channel: '#general'}).catch(console.error);
+     powerSync.execute(`INSERT INTO univ_notifications (id, company_id, created_at, title, message, type, read) VALUES (?, ?, ?, ?, ?, ?, ?)`, [crypto.randomUUID(), user?.company_id, new Date().toISOString(), "New Hire", `${formData.name} was onboarded as ${formData.role}`, "info", 0]).catch(console.error);
      setShowModal(false);
      setFormData({ name: '', departmentId: '', reportsTo: '', role: '', email: '', phone: '', salary: '', startDate: new Date().toISOString().split('T')[0] });
      setPassword('');

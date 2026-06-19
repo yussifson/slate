@@ -1,3 +1,4 @@
+import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { useTranslation } from "react-i18next";
 import { useState, useRef } from 'react';
 import { Upload, FileScan, CheckCircle2, X, Loader2, Sparkles } from 'lucide-react';
@@ -121,3 +122,4 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
     </div>
   );
 }
+

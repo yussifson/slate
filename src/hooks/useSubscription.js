@@ -8,7 +8,7 @@ import { useAuth } from '@/lib/AuthContext';
 export function useSubscription() {
   const companyId = useCompanyId();
   const { user } = useAuth();
-  const isSuperAdmin = user?.role === 'super_admin';
+  const isSuperAdmin = ['super_admin', 'admin'].includes(user?.role);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['subscription_fixed', companyId],

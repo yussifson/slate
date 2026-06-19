@@ -1,12 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import {MapPin, BellRing, Smartphone, Plus, Activity, Settings2, Trash2, CheckCircle} from "lucide-react";
+import {MapPin, BellRing, Smartphone, Plus, Activity, Settings2, Trash2, CheckCircle, Lock} from "lucide-react";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 import { usePowerSync } from '@powersync/react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/lib/AuthContext';
+import { useSubscription } from '@/hooks/useSubscription';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function GeofenceAlerts() {
@@ -14,6 +15,10 @@ export default function GeofenceAlerts() {
   const powerSync = usePowerSync();
   const { user } = useAuth();
   const companyId = user?.app_metadata?.company_id || '00000000-0000-0000-0000-000000000000';
+  
+  const { data: subData } = useSubscription();
+  const plan = subData?.subscription_plan || 'starter';
+  const isProOrAbove = ['super_admin', 'admin'].includes(user?.role) || plan === 'pro' || plan === 'enterprise';
   
   const [isCreating, setIsCreating] = useState(false);
   const [newFence, setNewFence] = useState({ name: '', radius: '', phone: '' });
@@ -123,22 +128,32 @@ export default function GeofenceAlerts() {
 
             <div className="relative z-10 space-y-4">
               {/* New Fence Form inline */}
-              <div className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 flex flex-col sm:flex-row items-end gap-3 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm mb-6">
-                <div className="flex-1 space-y-1">
-                   <label className="text-xs font-semibold tracking-[0.04em]">Location Name</label>
-                   <Input placeholder="e.g. Tema Port" value={newFence.name} onChange={e => setNewFence({...newFence, name: e.target.value})} />
+              <div className="relative">
+                {!isProOrAbove && (
+                   <div className="absolute inset-0 z-10 backdrop-blur-[2px] bg-background/50 flex flex-col items-center justify-center rounded-xl border border-black/9 dark:border-white/8 p-4 text-center">
+                      <div className="bg-amber-100 dark:bg-amber-900/30 p-2 rounded-full mb-2">
+                         <Lock className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                      </div>
+                      <h3 className="font-semibold text-sm text-foreground mb-1">Pro Plan Required to Create Geofences</h3>
+                   </div>
+                )}
+                <div className={`bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 flex flex-col sm:flex-row items-end gap-3 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm mb-6 ${!isProOrAbove ? 'opacity-40 pointer-events-none blur-[1px] transition-all' : ''}`}>
+                  <div className="flex-1 space-y-1">
+                     <label className="text-xs font-semibold tracking-[0.04em]">Location Name</label>
+                     <Input placeholder="e.g. Tema Port" value={newFence.name} onChange={e => setNewFence({...newFence, name: e.target.value})} />
+                  </div>
+                  <div className="w-full sm:w-24 space-y-1">
+                     <label className="text-xs font-semibold tracking-[0.04em]">Radius (m)</label>
+                     <Input placeholder="5000" type="number" value={newFence.radius} onChange={e => setNewFence({...newFence, radius: e.target.value})} />
+                  </div>
+                  <div className="flex-1 space-y-1">
+                     <label className="text-xs font-semibold tracking-[0.04em]">Alert Phone (SMS/WhatsApp)</label>
+                     <Input placeholder="+233..." value={newFence.phone} onChange={e => setNewFence({...newFence, phone: e.target.value})} />
+                  </div>
+                  <Button onClick={handleCreateFence} disabled={isCreating} className="gap-2">
+                    {isCreating ? <OrbitLoader size="sm" /> : <Plus className="w-4 h-4" />} Create
+                  </Button>
                 </div>
-                <div className="w-full sm:w-24 space-y-1">
-                   <label className="text-xs font-semibold tracking-[0.04em]">Radius (m)</label>
-                   <Input placeholder="5000" type="number" value={newFence.radius} onChange={e => setNewFence({...newFence, radius: e.target.value})} />
-                </div>
-                <div className="flex-1 space-y-1">
-                   <label className="text-xs font-semibold tracking-[0.04em]">Alert Phone (SMS/WhatsApp)</label>
-                   <Input placeholder="+233..." value={newFence.phone} onChange={e => setNewFence({...newFence, phone: e.target.value})} />
-                </div>
-                <Button onClick={handleCreateFence} disabled={isCreating} className="gap-2">
-                  {isCreating ? <OrbitLoader size="sm" /> : <Plus className="w-4 h-4" />} Create
-                </Button>
               </div>
 
               {geofences?.map(gf => (
@@ -156,7 +171,13 @@ export default function GeofenceAlerts() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" onClick={() => handleSimulate(gf)} title="Simulate Entry">
+                    {!isProOrAbove && (
+                       <div className="flex items-center gap-1 mr-2 px-2 py-1 bg-amber-50 dark:bg-amber-900/20 text-amber-600 rounded-md">
+                          <Lock className="w-3 h-3" />
+                          <span className="text-[10px] font-semibold uppercase tracking-[0.04em]">Pro Only</span>
+                       </div>
+                    )}
+                    <Button variant="outline" size="sm" onClick={() => handleSimulate(gf)} title="Simulate Entry" disabled={!isProOrAbove}>
                       <Activity className="w-4 h-4 text-primary mr-1" /> Simulate
                     </Button>
                   </div>

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import {Scan, FileText, CheckCircle, Database, Save, UploadCloud, Calendar} from "lucide-react";
+import {Scan, FileText, CheckCircle, Database, Save, UploadCloud, Calendar, Lock} from "lucide-react";
 import { Button } from '@/components/ui/button';
 import AIDocumentParser from '@/components/shared/AIDocumentParser';
 import { toast } from '@/components/ui/use-toast';
@@ -8,6 +8,7 @@ import { usePowerSync } from '@powersync/react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
+import { useSubscription } from '@/hooks/useSubscription';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function SmartDocs() {
@@ -16,6 +17,10 @@ export default function SmartDocs() {
   const { user } = useAuth();
   const companyId = user?.app_metadata?.company_id || '00000000-0000-0000-0000-000000000000';
   
+  const { data: subData } = useSubscription();
+  const plan = subData?.subscription_plan || 'starter';
+  const isProOrAbove = ['super_admin', 'admin'].includes(user?.role) || plan === 'pro' || plan === 'enterprise';
+
   const [extractedData, setExtractedData] = useState(null);
   const [currentFile, setCurrentFile] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -67,6 +72,12 @@ export default function SmartDocs() {
         [docId, companyId, 'bol', fileUrl, JSON.stringify(extractedData), 'verified']
       );
 
+      await powerSync.execute(
+        `INSERT INTO univ_notifications (id, company_id, created_at, title, message, type, read) 
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [crypto.randomUUID(), companyId, new Date().toISOString(), "Document Verified", `Smart Doc saved successfully`, "success", 0]
+      );
+
       toast({ title: "Saved", description: "Document and extracted data saved successfully.", variant: "default" });
       setExtractedData(null);
       setCurrentFile(null);
@@ -99,10 +110,23 @@ export default function SmartDocs() {
               <UploadCloud className="w-5 h-5 text-primary" />
               Upload Document
             </h2>
-            <AIDocumentParser 
-              onExtracted={handleExtracted} 
-              fieldsContext="freight document details such as: Shipper Name, Consignee Name, Delivery Address, Total Weight, Number of Packages, Delivery Date, Driver Signature Present (boolean), and Freight Charge."
-            />
+            <div className="relative">
+              {!isProOrAbove && (
+                 <div className="absolute inset-0 z-10 backdrop-blur-[2px] bg-background/50 flex flex-col items-center justify-center rounded-xl border border-black/9 dark:border-white/8 p-6 text-center">
+                    <div className="bg-amber-100 dark:bg-amber-900/30 p-3 rounded-full mb-3">
+                       <Lock className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                    </div>
+                    <h3 className="font-semibold text-lg text-foreground mb-1">Pro Feature</h3>
+                    <p className="text-sm text-[#71717a] dark:text-gray-400 max-w-[250px]">Upgrade to unlock AI-powered document extraction.</p>
+                 </div>
+              )}
+              <div className={!isProOrAbove ? "opacity-40 pointer-events-none blur-[1px] transition-all" : ""}>
+                <AIDocumentParser 
+                  onExtracted={handleExtracted} 
+                  fieldsContext="freight document details such as: Shipper Name, Consignee Name, Delivery Address, Total Weight, Number of Packages, Delivery Date, Driver Signature Present (boolean), and Freight Charge."
+                />
+              </div>
+            </div>
           </div>
           
           {/* Historical Docs */}

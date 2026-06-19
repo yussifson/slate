@@ -1,8 +1,9 @@
 import { powerSync} from '@/api/PowerSyncConnector';
 import { supabase} from '@/api/supabaseClient';
 import { useTranslation} from "react-i18next";
-import React, { useState, useEffect} from "react";
-import { Outlet, useNavigate, Link} from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Outlet, useNavigate, Link, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 import MobileBottomNav from "./MobileBottomNav";
@@ -19,10 +20,11 @@ import OrbitBoltWorkspace from "@/components/orbitbolt/OrbitBoltWorkspace";
 
 export default function AppLayout() {
  const { t} = useTranslation();
- const { user} = useAuth();
- const { impersonatedCompany, stopImpersonation} = useImpersonation();
- const navigate = useNavigate();
- const [hideTrialBanner, setHideTrialBanner] = useState(false);
+  const { user } = useAuth();
+  const { impersonatedCompany, stopImpersonation } = useImpersonation();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [hideTrialBanner, setHideTrialBanner] = useState(false);
  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
  const [isOffline, setIsOffline] = useState(!navigator.onLine);
  const [hideOfflineBanner, setHideOfflineBanner] = useState(false);
@@ -139,7 +141,7 @@ export default function AppLayout() {
  // Compute subscription state and trial countdown
  const subscriptionStatus = user?.subscription_status || 'trial';
  const companyCreatedDate = user?.company_created_date;
- const isSuperAdmin = user?.role === 'super_admin';
+ const isSuperAdmin = ['super_admin', 'admin'].includes(user?.role);
 
  let isExpired = false;
  let trialDaysLeft = user?.company_trial_days || 14;
@@ -265,10 +267,21 @@ export default function AppLayout() {
  isBoltOpen={isBoltOpen}
  toggleBolt={toggleBolt}
  />
- <div className="flex-1 relative flex overflow-hidden">
-  <main className="flex-1 w-full mx-auto px-6 md:px-8 lg:px-10 pt-6 pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-6 overflow-y-auto">
-    <Outlet />
-  </main>
+  <div className="flex-1 relative flex overflow-hidden">
+   <main className="flex-1 w-full mx-auto px-6 md:px-8 lg:px-10 pt-6 pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-6 overflow-y-auto">
+     <AnimatePresence mode="wait">
+       <motion.div
+         key={location.pathname}
+         initial={{ opacity: 0, y: 10 }}
+         animate={{ opacity: 1, y: 0 }}
+         exit={{ opacity: 0, y: -10 }}
+         transition={{ duration: 0.15, ease: "easeOut" }}
+         className="h-full"
+       >
+         <Outlet />
+       </motion.div>
+     </AnimatePresence>
+   </main>
   <div id="right-docked-panel-portal" className="flex shrink-0 h-full empty:hidden z-40 relative bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[-4px_0_24px_rgba(0,0,0,0.02)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>
   <GlobalVideoOverlay />
  </div>

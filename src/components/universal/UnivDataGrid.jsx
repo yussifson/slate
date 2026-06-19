@@ -15,6 +15,7 @@ import { useToast} from '@/components/ui/use-toast';
 import { cn} from '@/lib/utils';
 import { useCompanyId} from '@/hooks/useCompanyId';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
+import { PremiumEmptyState } from "@/components/ui/premium-empty-state";
 
 /* ─────────────────────────────────────────────
  Helpers
@@ -864,24 +865,18 @@ export default function UnivDataGrid({
  )}
 
  {/* Empty state */}
- {filteredData.length === 0 && !isLoading && (
- <tr>
- <td colSpan={displayColumns.length + 2} className="py-16 text-center">
- <div className="flex flex-col items-center gap-3 text-[#71717a] dark:text-gray-400">
- <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
- <Search className="w-5 h-5 opacity-50" />
- </div>
- <p className="text-sm">No records found.{' '}
- {searchTerm ? (
- <button onClick={() => setSearchTerm('')} className="text-primary underline underline-offset-2">Clear search</button>
- ) : (
- <button onClick={() => setIsAdding(true)} className="text-primary underline underline-offset-2">Add one now</button>
- )}
- </p>
- </div>
- </td>
- </tr>
- )}
+  {filteredData.length === 0 && !isLoading && (
+  <tr>
+  <td colSpan={displayColumns.length + 2} className="py-0">
+  <PremiumEmptyState
+    icon={Search}
+    title="No records found"
+    description={searchTerm ? `No results matching "${searchTerm}"` : "This table is empty. Get started by adding your first record."}
+    action={searchTerm ? { label: "Clear search", onClick: () => setSearchTerm('') } : { label: "Add record", onClick: () => setIsAdding(true) }}
+  />
+  </td>
+  </tr>
+  )}
  </tbody>
  </table>
  </div>

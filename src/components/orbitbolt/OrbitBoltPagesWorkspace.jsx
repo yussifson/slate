@@ -1,3 +1,4 @@
+import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { powerSync} from '@/api/PowerSyncConnector';
 import React, { useState, useRef, useEffect} from 'react';
 import { createPortal} from 'react-dom';
@@ -409,3 +410,4 @@ export default function OrbitBoltPagesWorkspace({ onClose, onApplySchema}) {
 
  return createPortal(workspaceContent, document.getElementById('right-docked-panel-portal') || document.body);
 }
+

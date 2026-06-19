@@ -1,328 +1,359 @@
-import { useTranslation} from "react-i18next";
-import { useState} from 'react';
-import { Link} from 'react-router-dom';
-import { Pill, Search, Plus, FileText, Printer, ShieldCheck, Trash2, MoreVertical, Pencil} from 'lucide-react';
-import { Button} from '@/components/ui/button';
-import { Input} from '@/components/ui/input';
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem} from '@/components/ui/dropdown-menu';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
-import { toast} from 'react-hot-toast';
-import { useNotifications} from "@/hooks/integrations/useNotifications";
-import { MessageCircle} from "lucide-react";
-import { useCompanyId} from "@/hooks/useCompanyId";
+import { useTranslation } from "react-i18next";
+import { useState } from 'react';
+import { Pill, Search, Plus, FileText, Printer, ShieldCheck, Trash2, MoreVertical, Pencil } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { toast } from 'react-hot-toast';
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { powerSync } from '@/api/PowerSyncConnector';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Prescriptions() {
- const { t} = useTranslation();
- const companyId = useCompanyId();
- const { notifyTeam} = useNotifications();
- // Supabase Real-time Sync Hooks
- const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('prescription');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+  const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const queryClient = useQueryClient();
 
- // Map database records
- const prescriptions = dbRecords.map(r => ({ id: r.id, status: r.status || 'Active', ...r.data}));
+  const { data: prescriptions = [], isLoading } = useQuery({
+    queryKey: ['univ_prescriptions', companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const res = await powerSync.execute(
+        `SELECT pr.*, 
+                p.first_name || ' ' || p.last_name as patient_name,
+                ph.drug_name
+         FROM univ_prescriptions pr
+         LEFT JOIN univ_patients p ON pr.patient_id = p.id
+         LEFT JOIN univ_pharmacy ph ON pr.medication_id = ph.id
+         WHERE pr.company_id = ?
+         ORDER BY pr.prescription_date DESC`,
+        [companyId]
+      );
+      return res.rows._array;
+    },
+    enabled: !!companyId
+  });
 
- const [search, setSearch] = useState('');
- const [showModal, setShowModal] = useState(false);
- const [viewRx, setViewRx] = useState(null);
- const [editingRx, setEditingRx] = useState(null);
+  const { data: patientsList = [] } = useQuery({
+    queryKey: ['univ_patients_list', companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const res = await powerSync.execute('SELECT id, first_name || " " || last_name as name FROM univ_patients WHERE company_id = ?', [companyId]);
+      return res.rows._array;
+    },
+    enabled: !!companyId
+  });
 
- // Form State
- const [formData, setFormData] = useState({
- patient: '',
- drug: '',
- dosage: '1 tablet',
- frequency: '3 times daily',
- duration: '7 days',
- doctor: 'Dr. John Mensah'
-});
+  const { data: pharmacyList = [] } = useQuery({
+    queryKey: ['univ_pharmacy_list', companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const res = await powerSync.execute('SELECT id, drug_name, quantity_in_stock FROM univ_pharmacy WHERE company_id = ?', [companyId]);
+      return res.rows._array;
+    },
+    enabled: !!companyId
+  });
 
- // Generic Save Handler for real DB persistence
- const handleSaveToDb = () => {
- if (!formData.patient.trim()) return toast.error("Please enter a patient name");
- if (!formData.drug.trim()) return toast.error("Please enter a drug name");
+  const [search, setSearch] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [viewRx, setViewRx] = useState(null);
+  const [editingRx, setEditingRx] = useState(null);
 
- const rxId = editingRx ? editingRx.rxId : `RX-${Math.floor(1000 + Math.random() * 9000)}`;
- const date = editingRx ? editingRx.date : new Date().toISOString().split('T')[0];
- const status = editingRx ? editingRx.status : 'Active';
+  const [formData, setFormData] = useState({
+    patient_id: '',
+    medication_id: '',
+    dosage: '1 tablet',
+    frequency: '3 times daily',
+    duration: '7 days',
+    doctor: 'Dr. John Mensah'
+  });
 
- const payload = {
- rxId,
- patient: formData.patient,
- drug: formData.drug,
- dosage: formData.dosage,
- frequency: formData.frequency,
- duration: formData.duration,
- doctor: formData.doctor,
- date,
- status
-};
+  const mutateRecord = useMutation({
+    mutationFn: async (payload) => {
+      if (payload.id) {
+        await powerSync.execute(
+          `UPDATE univ_prescriptions SET 
+             patient_id = ?, doctor_id = ?, medication_id = ?, dosage = ?, frequency = ?, duration = ?
+           WHERE id = ?`,
+          [payload.patient_id, payload.doctor_id, payload.medication_id, payload.dosage, payload.frequency, payload.duration, payload.id]
+        );
+      } else {
+        await powerSync.execute(
+          `INSERT INTO univ_prescriptions (id, created_at, company_id, patient_id, doctor_id, medication_id, dosage, frequency, duration, prescription_date, status)
+           VALUES (uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, ?, datetime('now'), 'Active')`,
+          [companyId, payload.patient_id, payload.doctor_id, payload.medication_id, payload.dosage, payload.frequency, payload.duration]
+        );
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['univ_prescriptions']);
+      toast.success(editingRx ? 'Prescription updated!' : 'Prescription issued successfully!');
+      setShowModal(false);
+      setEditingRx(null);
+      setFormData({ patient_id: '', medication_id: '', dosage: '1 tablet', frequency: '3 times daily', duration: '7 days', doctor: 'Dr. John Mensah' });
+    },
+    onError: (err) => toast.error('Failed to issue prescription: ' + err.message)
+  });
 
- mutateRecord.mutate({
- id: editingRx?.id,
- recordType: 'prescription',
- payload,
- status: 'active',
- searchText: `${formData.patient} ${formData.drug} ${rxId}`
-}, {
- onSuccess: () => {
- toast.success(editingRx ? 'Prescription updated!' : 'Prescription issued successfully!');
- setShowModal(false);
- setEditingRx(null);
- setFormData({
- patient: '',
- drug: '',
- dosage: '1 tablet',
- frequency: '3 times daily',
- duration: '7 days',
- doctor: 'Dr. John Mensah'
-});
-},
- onError: (err) => {
- toast.error('Failed to issue prescription: ' + err.message);
+  const dispenseRecord = useMutation({
+    mutationFn: async (rx) => {
+      const drug = pharmacyList.find(d => d.id === rx.medication_id);
+      if (!drug) throw new Error("Medication not found in inventory.");
+      if (drug.quantity_in_stock <= 0) throw new Error("Out of stock!");
+
+      await powerSync.execute('BEGIN TRANSACTION');
+      
+      // Update prescription
+      await powerSync.execute(
+        `UPDATE univ_prescriptions SET status = 'Completed', dispense_date = datetime('now') WHERE id = ?`,
+        [rx.id]
+      );
+      
+      // Reduce inventory
+      await powerSync.execute(
+        `UPDATE univ_pharmacy SET quantity_in_stock = quantity_in_stock - 1 WHERE id = ?`,
+        [rx.medication_id]
+      );
+
+      await powerSync.execute('COMMIT');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['univ_prescriptions']);
+      queryClient.invalidateQueries(['univ_pharmacy_list']);
+      toast.success('Medication marked as Dispensed! Inventory updated.');
+    },
+    onError: async (err) => {
+      await powerSync.execute('ROLLBACK');
+      toast.error('Failed to dispense: ' + err.message);
+    }
+  });
+
+  const deleteRecord = useMutation({
+    mutationFn: async (id) => {
+      await powerSync.execute('DELETE FROM univ_prescriptions WHERE id = ?', [id]);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['univ_prescriptions']);
+      toast.success('Prescription deleted successfully!');
+    },
+    onError: (err) => toast.error('Failed to delete: ' + err.message)
+  });
+
+  const handleSaveToDb = () => {
+    if (!formData.patient_id) return toast.error("Please select a patient");
+    if (!formData.medication_id) return toast.error("Please select a medication");
+
+    mutateRecord.mutate({
+      id: editingRx?.id,
+      patient_id: formData.patient_id,
+      medication_id: formData.medication_id,
+      dosage: formData.dosage,
+      frequency: formData.frequency,
+      duration: formData.duration,
+      doctor_id: formData.doctor
+    });
+  };
+
+  const handleDeleteFromDb = (id) => {
+    if (window.confirm('Are you sure you want to delete this prescription?')) {
+      deleteRecord.mutate(id);
+    }
+  };
+
+  const filtered = prescriptions.filter(rx =>
+    rx.patient_name?.toLowerCase().includes(search.toLowerCase()) ||
+    rx.drug_name?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const openEdit = (rx) => {
+    setEditingRx(rx);
+    setFormData({
+      patient_id: rx.patient_id || '',
+      medication_id: rx.medication_id || '',
+      dosage: rx.dosage || '1 tablet',
+      frequency: rx.frequency || '3 times daily',
+      duration: rx.duration || '7 days',
+      doctor: rx.doctor_id || 'Dr. John Mensah'
+    });
+    setShowModal(true);
+  };
+
+  if (isLoading) return <div className="flex justify-center p-8">Loading prescriptions...</div>;
+
+  return (
+    <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em]">{t("prescriptions", "Prescriptions")}</h1>
+          <p className="text-sm text-[#71717a] mt-0.5">{t("manage_patient_medications_and", "Manage patient medications and pharmacy orders")}</p>
+        </div>
+        <Button onClick={() => { setEditingRx(null); setFormData({ patient_id: '', medication_id: '', dosage: '1 tablet', frequency: '3 times daily', duration: '7 days', doctor: 'Dr. John Mensah' }); setShowModal(true); }} className="gap-2 bg-primary hover:bg-primary/90 text-white">
+          <Plus className="w-4 h-4" /> {t("issue_prescription", "Issue Prescription")}
+        </Button>
+      </div>
+      
+      <div className="bg-card rounded-xl border-[0.5px] border-primary/40 overflow-hidden">
+        <div className="p-4 border-b border-primary/40 bg-muted/50">
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a]" />
+            <Input placeholder="Search patient or drug..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+          </div>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-card border-b border-primary/40">
+              <tr>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] uppercase">Date</th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] uppercase">Patient</th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] uppercase">Medication Details</th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] uppercase">Prescriber</th>
+                <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] uppercase">Status</th>
+                <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] uppercase">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {filtered.map(rx => (
+                <tr key={rx.id} className="hover:bg-muted/50">
+                  <td className="px-6 py-4 font-mono text-xs font-semibold text-primary tracking-[0.04em]">
+                    {new Date(rx.prescription_date).toISOString().split('T')[0]}
+                  </td>
+                  <td className="px-6 py-4 font-semibold text-card-foreground">
+                    <span className="text-primary hover:underline cursor-pointer">{rx.patient_name || 'Unknown Patient'}</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <p className="font-semibold text-card-foreground flex items-center gap-2">
+                      <Pill className="w-3.5 h-3.5 text-primary"/> 
+                      <span className="text-primary hover:underline cursor-pointer">{rx.drug_name || 'Unknown Drug'}</span>
+                    </p>
+                    <p className="text-xs text-[#71717a] mt-1 tracking-[0.04em]">{rx.dosage} • {rx.frequency} • {rx.duration}</p>
+                  </td>
+                  <td className="px-6 py-4">
+                    <p className="text-foreground font-medium">{rx.doctor_id}</p>
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${rx.status === 'Active' ? 'bg-slate-100 text-primary/90' : 'bg-muted text-[#71717a]'}`}>
+                      {rx.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-right flex gap-2 justify-end">
+                    {rx.status === 'Active' && (
+                      <Button onClick={() => dispenseRecord.mutate(rx)} disabled={dispenseRecord.isPending} size="sm" className="h-8 bg-primary hover:bg-primary/90 text-white">
+                        <ShieldCheck className="w-3.5 h-3.5 mr-1"/> {dispenseRecord.isPending ? 'Dispensing' : t("dispense", "Dispense")}
+                      </Button>
+                    )}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0"><MoreVertical className="h-4 w-4" /></Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => setViewRx(rx)}>View Details</DropdownMenuItem>
+                        {rx.status === 'Active' && <DropdownMenuItem onClick={() => openEdit(rx)}>Edit</DropdownMenuItem>}
+                        <DropdownMenuItem onClick={() => handleDeleteFromDb(rx.id)} className="text-red-600">Delete</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </td>
+                </tr>
+              ))}
+              {filtered.length === 0 && (
+                <tr>
+                  <td colSpan="6" className="text-center py-8 text-[#71717a]">No prescriptions found.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
+          <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-xl">
+            <h2 className="text-lg font-semibold text-card-foreground">{editingRx ? 'Edit Prescription' : 'Issue New Prescription'}</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-semibold text-[#71717a] uppercase">Patient</label>
+                <select value={formData.patient_id} onChange={e => setFormData({ ...formData, patient_id: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-primary/40 bg-background px-3 py-2 text-sm">
+                  <option value="">-- Select Patient --</option>
+                  {patientsList.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-[#71717a] uppercase">Medication</label>
+                <select value={formData.medication_id} onChange={e => setFormData({ ...formData, medication_id: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-primary/40 bg-background px-3 py-2 text-sm">
+                  <option value="">-- Select Medication --</option>
+                  {pharmacyList.map(p => <option key={p.id} value={p.id}>{p.drug_name} (Stock: {p.quantity_in_stock})</option>)}
+                </select>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-semibold text-[#71717a] uppercase">Dosage</label>
+                  <Input value={formData.dosage} onChange={e => setFormData({ ...formData, dosage: e.target.value})} className="mt-1" />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-[#71717a] uppercase">Frequency</label>
+                  <Input value={formData.frequency} onChange={e => setFormData({ ...formData, frequency: e.target.value})} className="mt-1" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-semibold text-[#71717a] uppercase">Duration</label>
+                  <Input value={formData.duration} onChange={e => setFormData({ ...formData, duration: e.target.value})} className="mt-1" />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-[#71717a] uppercase">Doctor</label>
+                  <select value={formData.doctor} onChange={e => setFormData({ ...formData, doctor: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-primary/40 bg-background px-3 py-2 text-sm">
+                    <option>Dr. John Mensah</option><option>Dr. Sarah Osei</option><option>Dr. Kwame Addo</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-3 pt-4">
+              <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleSaveToDb} disabled={mutateRecord.isPending}>
+                {mutateRecord.isPending ? 'Processing...' : 'Confirm Prescription'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <Sheet open={!!viewRx} onOpenChange={(open) => !open && setViewRx(null)}>
+        <SheetContent className="overflow-y-auto w-full sm:max-w-md">
+          <SheetHeader>
+            <SheetTitle>Prescription Details</SheetTitle>
+            <SheetDescription>Verify medication orders</SheetDescription>
+          </SheetHeader>
+          {viewRx && (
+            <div className="mt-6 space-y-6">
+              <div className="bg-slate-50 p-4 rounded-xl border border-primary/20 space-y-3">
+                <div className="flex justify-between items-center border-b pb-2">
+                  <span className="font-semibold text-primary">{viewRx.drug_name}</span>
+                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${viewRx.status === 'Active' ? 'bg-primary/10 text-primary' : 'bg-slate-200 text-slate-600'}`}>{viewRx.status}</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div><p className="text-xs text-[#71717a] uppercase font-semibold">Dosage</p><p className="font-medium">{viewRx.dosage}</p></div>
+                  <div><p className="text-xs text-[#71717a] uppercase font-semibold">Frequency</p><p className="font-medium">{viewRx.frequency}</p></div>
+                  <div><p className="text-xs text-[#71717a] uppercase font-semibold">Duration</p><p className="font-medium">{viewRx.duration}</p></div>
+                </div>
+              </div>
+              <div className="space-y-3 border-t pt-4">
+                <div><h3 className="text-sm font-medium text-[#71717a]">Patient</h3><p className="text-base font-semibold">{viewRx.patient_name}</p></div>
+                <div><h3 className="text-sm font-medium text-[#71717a]">Prescriber</h3><p className="text-base font-semibold">{viewRx.doctor_id}</p></div>
+                <div><h3 className="text-sm font-medium text-[#71717a]">Issue Date</h3><p className="text-base">{new Date(viewRx.prescription_date).toLocaleString()}</p></div>
+                {viewRx.dispense_date && <div><h3 className="text-sm font-medium text-[#71717a]">Dispense Date</h3><p className="text-base">{new Date(viewRx.dispense_date).toLocaleString()}</p></div>}
+              </div>
+              {viewRx.status === 'Active' && (
+                <div className="pt-4 border-t">
+                  <Button className="w-full bg-primary hover:bg-primary/90 text-white" onClick={() => { dispenseRecord.mutate(viewRx); setViewRx(null); }} disabled={dispenseRecord.isPending}>
+                    <ShieldCheck className="w-4 h-4 mr-2"/> {dispenseRecord.isPending ? 'Dispensing' : 'Dispense Medication'}
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
+    </div>
+  );
 }
-});
-};
-
- // Dispense Medication
- const handleDispense = (rx) => {
- const updatedPayload = { ...rx, status: 'Completed'};
- delete updatedPayload.id;
-
- mutateRecord.mutate({
- id: rx.id,
- recordType: 'prescription',
- payload: updatedPayload,
- status: 'Completed',
- searchText: `${rx.patient} ${rx.drug}`
-}, {
- onSuccess: () => {
- toast.success('Medication marked as Dispensed!');
-}
-});
-};
-
- // Generic Delete Handler for real DB persistence
- const handleDeleteFromDb = (id) => {
- if (window.confirm('Are you sure you want to delete this prescription record?')) {
- deleteRecord.mutate({ id, recordType: 'prescription'}, {
- onSuccess: () => {
- toast.success('Prescription deleted successfully!');
-},
- onError: (err) => {
- toast.error('Failed to delete prescription: ' + err.message);
-}
-});
-}
-};
-
- const filtered = prescriptions.filter(rx =>
- rx.patient?.toLowerCase().includes(search.toLowerCase()) ||
- rx.drug?.toLowerCase().includes(search.toLowerCase()) ||
- rx.rxId?.includes(search)
- );
-
- const openEdit = (rx) => {
- setEditingRx(rx);
- setFormData({
- patient: rx.patient || '',
- drug: rx.drug || '',
- dosage: rx.dosage || '1 tablet',
- frequency: rx.frequency || '3 times daily',
- duration: rx.duration || '7 days',
- doctor: rx.doctor || 'Dr. John Mensah'
-});
- setShowModal(true);
-};
-
- return (
- <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
- <div className="flex items-center justify-between">
- <div>
- <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("prescriptions", "Prescriptions")}</h1>
- <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
- "manage_patient_medications_and",
- "Manage patient medications and pharmacy orders"
- )}</p>
- </div>
- <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
- <Plus className="w-4 h-4" /> {t("issue_prescription", "Issue Prescription")}
- </Button>
- </div>
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-4 border-b border-primary/40 bg-muted/50">
- <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
- <Input placeholder="Search patient or drug..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
- </div>
- </div>
- <div className="overflow-x-auto">
- <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <tr>
- <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("rx_id", "RX ID")}</th>
- <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("patient", "Patient")}</th>
- <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("medication_details", "Medication Details")}</th>
- <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("prescriber", "Prescriber")}</th>
- <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</th>
- <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("action", "Action")}</th>
- </tr>
- </thead>
- <tbody className="divide-y divide-border">
- {filtered.map(rx => {
- return (
- <tr key={rx.id} className="hover:bg-muted/50">
- <td className="px-6 py-4 font-mono text-xs font-semibold text-primary tracking-[0.04em]">{rx.rxId}</td>
- <td className="px-6 py-4 font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Link to="/hospital/patients" className="text-primary hover:underline">{rx.patient}</Link>
- </td>
- <td className="px-6 py-4">
- <p className="font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Pill className="w-3.5 h-3.5 text-primary"/> 
- <Link to="/hospital/pharmacy" className="text-primary hover:underline">{rx.drug}</Link>
- </p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">{rx.dosage} • {rx.frequency} • {rx.duration}</p>
- </td>
- <td className="px-6 py-4">
- <p className="text-foreground font-medium">{rx.doctor}</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{rx.date}</p>
- </td>
- <td className="px-6 py-4 text-center">
- <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${rx.status === 'Active' ? 'bg-slate-100 text-primary/90' : 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
- {rx.status}
- </span>
- </td>
- <td className="px-6 py-4 text-right flex gap-2 justify-end">
- {rx.status === 'Active' && (
- <Button onClick={() => handleDispense(rx)} size="sm" className="h-8 bg-primary hover:bg-primary/90 text-white">
- <ShieldCheck className="w-3.5 h-3.5 mr-1"/> {t("dispense", "Dispense")}
- </Button>
- )}
- <DropdownMenu>
- <DropdownMenuTrigger asChild>
- <Button variant="ghost" className="h-8 w-8 p-0">
- <MoreVertical className="h-4 w-4" />
- </Button>
- </DropdownMenuTrigger>
- <DropdownMenuContent align="end">
- <DropdownMenuItem onClick={() => setViewRx(rx)}>
- {t("view_details", "View Details")}
- </DropdownMenuItem>
- <DropdownMenuItem onClick={() => openEdit(rx)}>
- {t("edit", "Edit")}
- </DropdownMenuItem>
- <DropdownMenuItem onClick={() => handleDeleteFromDb(rx.id)} className="text-red-600">
- {t("delete", "Delete")}
- </DropdownMenuItem>
- </DropdownMenuContent>
- </DropdownMenu>
- </td>
- </tr>
- );
-})}
- </tbody>
- </table>
- {filtered.length === 0 && (
- <div className="text-center py-12 text-[#71717a] dark:text-gray-400">
- <Pill className="w-10 h-10 mx-auto mb-3 opacity-30" />
- <p>{t(
- "no_prescriptions_found_click_i",
- "No prescriptions found. Click \"Issue Prescription\" to add one."
- )}</p>
- </div>
- )}
- </div>
- </div>
- {showModal && (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><FileText className="w-5 h-5 text-primary"/> {t("new_prescription", "New Prescription")}</h2>
- <div className="space-y-3">
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("patient_name", "Patient Name")}</label>
- <Input value={formData.patient} onChange={e => setFormData({ ...formData, patient: e.target.value})} className="mt-1" placeholder="Search patient..." />
- </div>
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("drug_name_strength", "Drug Name & Strength")}</label>
- <Input value={formData.drug} onChange={e => setFormData({ ...formData, drug: e.target.value})} className="mt-1" placeholder="e.g. Paracetamol 500mg" />
- </div>
- <div className="grid grid-cols-2 gap-3">
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("dosage", "Dosage")}</label>
- <Input value={formData.dosage} onChange={e => setFormData({ ...formData, dosage: e.target.value})} className="mt-1" placeholder="e.g. 2 tablets" />
- </div>
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("frequency", "Frequency")}</label>
- <Input value={formData.frequency} onChange={e => setFormData({ ...formData, frequency: e.target.value})} className="mt-1" placeholder="e.g. 3 times daily" />
- </div>
- </div>
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("duration", "Duration")}</label>
- <Input value={formData.duration} onChange={e => setFormData({ ...formData, duration: e.target.value})} className="mt-1" placeholder="e.g. 5 days" />
- </div>
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("prescribing_doctor", "Prescribing Doctor")}</label>
- <select value={formData.doctor} onChange={e => setFormData({ ...formData, doctor: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm">
- <option>{t("dr_john_mensah", "Dr. John Mensah")}</option>
- <option>{t("dr_jane_doe", "Dr. Jane Doe")}</option>
- <option>{t("dr_sarah_connor", "Dr. Sarah Connor")}</option>
- </select>
- </div>
- </div>
- <div className="flex gap-3 pt-4">
- <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditingRx(null);}}>{t("cancel", "Cancel")}</Button>
- <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleSaveToDb}>{t("sign_issue", "Sign & Issue")}</Button>
- </div>
- </div>
- </div>
- )}
- <Sheet open={!!viewRx} onOpenChange={(open) => !open && setViewRx(null)}>
- <SheetContent className="overflow-y-auto">
- <SheetHeader>
- <SheetTitle>{t("prescription_details", "Prescription Details")}</SheetTitle>
- <SheetDescription>{t("view_complete_prescription_inf", "View complete prescription information")}</SheetDescription>
- </SheetHeader>
- {viewRx && (
- <div className="mt-6 space-y-4">
- <div>
- <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("rx_id", "RX ID")}</h3>
- <p className="text-base font-semibold">{viewRx.rxId}</p>
- </div>
- <div>
- <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("patient", "Patient")}</h3>
- <Link to="/hospital/patients" className="text-base font-semibold text-primary hover:underline">{viewRx.patient}</Link>
- </div>
- <div>
- <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("medication", "Medication")}</h3>
- <Link to="/hospital/pharmacy" className="text-base font-semibold text-primary hover:underline">{viewRx.drug}</Link>
- </div>
- <div>
- <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("dosage_frequency", "Dosage & Frequency")}</h3>
- <p className="text-base">{viewRx.dosage} • {viewRx.frequency}</p>
- </div>
- <div>
- <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("duration", "Duration")}</h3>
- <p className="text-base">{viewRx.duration}</p>
- </div>
- <div>
- <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("prescribing_doctor", "Prescribing Doctor")}</h3>
- <p className="text-base">{viewRx.doctor}</p>
- </div>
- <div>
- <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("status", "Status")}</h3>
- <p className="text-base">{viewRx.status}</p>
- </div>
- <div>
- <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("date_issued", "Date Issued")}</h3>
- <p className="text-base">{viewRx.date}</p>
- </div>
- </div>
- )}
- </SheetContent>
- </Sheet>
- </div>
- );
-}
-

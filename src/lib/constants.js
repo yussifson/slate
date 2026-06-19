@@ -43,9 +43,9 @@ export const TASK_STATUS_COLORS = {
   cancelled: "bg-gray-100 text-[#71717a] dark:text-gray-400"
 };
 
-export const isSuperAdmin = (user) => user?.role === "super_admin";
+export const isSuperAdmin = (user) => ['super_admin', 'admin'].includes(user?.role);
 export const isCompanyAdmin = (user) => user?.role === "company_admin";
-export const isAdmin = (user) => ["super_admin", "company_admin"].includes(user?.role);
+export const isAdmin = (user) => ["super_admin", "admin", "company_admin"].includes(user?.role);
 export const isLawyer = (user) => ["lawyer", "paralegal"].includes(user?.role);
 
 // Retail Role Helpers

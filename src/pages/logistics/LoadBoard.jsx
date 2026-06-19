@@ -19,7 +19,7 @@ export default function LoadBoard() {
   
   const { data: subData } = useSubscription();
   const plan = subData?.subscription_plan || 'starter';
-  const isProOrAbove = user?.role === 'super_admin' || plan === 'pro' || plan === 'enterprise';
+  const isProOrAbove = ['super_admin', 'admin'].includes(user?.role) || plan === 'pro' || plan === 'enterprise';
 
   const [isPosting, setIsPosting] = useState(false);
   const [matchingLoadId, setMatchingLoadId] = useState(null);
@@ -121,6 +121,12 @@ export default function LoadBoard() {
           );
         }
       }
+
+      await powerSync.execute(
+        `INSERT INTO univ_notifications (id, company_id, created_at, title, message, type, read) 
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [crypto.randomUUID(), companyId, new Date().toISOString(), "AI Match Complete", `AI found ${parsed.length} truck matches for load to ${load.destination}`, "info", 0]
+      );
 
       toast({ title: "Matches Found", description: "AI has successfully found the best trucks for this load." });
     } catch (e) {

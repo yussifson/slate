@@ -1,3 +1,4 @@
+import { OrbitLoader } from '@/components/ui/orbit-loader';
 import React from "react";
 import { LayoutGrid, List, Edit, Trash2, Eye, BookOpen, Calendar, Clock, MapPin, FileText, RefreshCw} from "lucide-react";
 import { Button} from "@/components/ui/button";
@@ -298,3 +299,4 @@ export function ModuleBanner({ title, subtitle, dateText, onRefresh, isRefreshin
  </div>
  );
 }
+

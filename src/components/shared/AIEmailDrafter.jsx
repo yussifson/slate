@@ -1,3 +1,4 @@
+import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
 import { generateText} from '@/lib/cloudflareAI';
@@ -120,3 +121,4 @@ export default function AIEmailDrafter({ recordData, defaultContext = "Write a p
  </div>
  );
 }
+

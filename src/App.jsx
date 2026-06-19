@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/toaster"
+import { Toaster as SonnerToaster } from "@/components/ui/sonner"
 import { Toaster as HotToaster } from "react-hot-toast"
 import { useToast } from "@/components/ui/use-toast"
 import { QueryClientProvider, useQueryClient } from '@tanstack/react-query'
@@ -177,6 +178,12 @@ import HospitalPrescriptions from './pages/hospital/Prescriptions';
 import HospitalLabResults from './pages/hospital/LabResults';
 import HospitalPharmacy from './pages/hospital/Pharmacy';
 import HospitalPatientPortal from './pages/hospital/PatientPortal';
+import HospitalBilling from './pages/hospital/HospitalBilling';
+import HospitalClaims from './pages/hospital/HospitalClaims';
+import HospitalTelemedicine from './pages/hospital/Telemedicine';
+import HospitalOperationTheater from './pages/hospital/OperationTheater';
+import HospitalRadiology from './pages/hospital/Radiology';
+import HospitalAmbulanceDispatch from './pages/hospital/AmbulanceDispatch';
 
 // Hotel Pages
 import HotelFrontDesk from './pages/hotel/FrontDesk';
@@ -633,6 +640,12 @@ function PlatformRoutes() {
       <Route path="/lab-results" element={<HospitalLabResults />} />
       <Route path="/pharmacy" element={<HospitalPharmacy />} />
       <Route path="/patient-portal" element={<HospitalPatientPortal />} />
+      <Route path="/hospital-billing" element={<HospitalBilling />} />
+      <Route path="/hospital-claims" element={<HospitalClaims />} />
+      <Route path="/telemedicine" element={<HospitalTelemedicine />} />
+      <Route path="/operation-theater" element={<HospitalOperationTheater />} />
+      <Route path="/radiology" element={<HospitalRadiology />} />
+      <Route path="/ambulance-dispatch" element={<HospitalAmbulanceDispatch />} />
 
       {/* Hotel Suite */}
       <Route path="/front-desk" element={<HotelFrontDesk />} />
@@ -943,6 +956,7 @@ function App() {
                 </React.Suspense>
               </ErrorBoundary>
               <Toaster />
+              <SonnerToaster />
               <HotToaster position="top-right" />
             </Router>
           </QueryClientProvider>

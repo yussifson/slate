@@ -1,3 +1,4 @@
+import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { useState} from 'react';
 import { Search, Sparkles, Loader2, X} from 'lucide-react';
 import { generateText} from '@/lib/cloudflareAI';
@@ -105,3 +106,4 @@ If no specific filter can be extracted, return an empty conditions array.`
  </form>
  );
 }
+
