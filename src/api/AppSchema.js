@@ -1945,6 +1945,9 @@ export const AppSchema = new Schema({
         created_at: column.text,
         company_id: column.text,
         tracking_number: column.text,
+        recipient_name: column.text,
+        delivery_address: column.text,
+        status: column.text,
     }),
     univ_digitalassets: new Table({
         id: column.text,
