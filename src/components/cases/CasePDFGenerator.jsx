@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
-import { FileText, Download, Loader2, Eye, BarChart2 } from "lucide-react";
+import {FileText, Download,, Eye, BarChart2} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { format } from "date-fns";
 import jsPDF from "jspdf";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 function buildBillingHearingPDF(caseData, client, invoices, timeEntries, hearings) {
   const doc = new jsPDF();
@@ -440,7 +441,7 @@ export default function CasePDFGenerator({ caseData, user }) {
           disabled={generatingReport}
           className="gap-2 bg-primary hover:bg-primary/90 text-white shrink-0"
         >
-          {generatingReport ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+          {generatingReport ? <OrbitLoader size="sm" /> : <Download className="w-4 h-4" />}
           {generatingReport ? "Generating..." : "Download Report"}
         </Button>
       </div>
@@ -511,7 +512,7 @@ export default function CasePDFGenerator({ caseData, user }) {
           disabled={generating}
           className="gap-2"
         >
-          {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+          {generating ? <OrbitLoader size="sm" /> : <Download className="w-4 h-4" />}
           {generating ? "Generating..." : `Download ${selectedTemplate?.label}`}
         </Button>
       </div>

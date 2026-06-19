@@ -132,7 +132,7 @@ const UnivDischargeSummary = () => {
 
  <div className="space-y-6">
  {loading ? (
- <div className="text-center py-20"><Activity className="w-10 h-10 text-emerald-500 animate-spin mx-auto" /></div>
+ <div className="text-center py-20"><OrbitLoader size="md" /></div>
  ) : summaries.length === 0 ? (
  <div className="text-center py-20 bg-card rounded-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">No summaries found.</div>
  ) : (

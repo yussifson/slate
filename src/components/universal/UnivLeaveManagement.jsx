@@ -8,8 +8,9 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { Calendar, Plus, Search, Trash2, Edit2, Loader2, XCircle, User, FileText } from 'lucide-react';
+import {Calendar, Plus, Search, Trash2, Edit2,, XCircle, User, FileText} from "lucide-react";
 import { toast } from 'react-hot-toast';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const STATUS_COLORS = { Approved: 'bg-emerald-50 text-emerald-700 border-emerald-200', Pending: 'bg-amber-50 text-amber-700 border-amber-200', Rejected: 'bg-red-50 text-red-700 border-red-200' };
 const EMPTY_FORM = { employee_id: '', leave_type: 'Annual', start_date: new Date().toISOString().split('T')[0], end_date: new Date().toISOString().split('T')[0], status: 'Pending', reason: '' };
@@ -165,7 +166,7 @@ export default function UnivLeaveManagement() {
             </thead>
             <tbody className="divide-y divide-border">
               {loading ? (
-                <tr><td colSpan={7} className="p-8 text-center"><Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" /></td></tr>
+                <tr><td colSpan={7} className="p-8 text-center"><OrbitLoader size="md" /></td></tr>
               ) : filtered.length === 0 ? (
                 <tr><td colSpan={7} className="p-12 text-center text-[#71717a] dark:text-gray-400">No leave records found.</td></tr>
               ) : (

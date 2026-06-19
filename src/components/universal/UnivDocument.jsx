@@ -2,10 +2,11 @@ import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { Plus, Trash2, Edit2, Loader2, XCircle, Search, FileText, Download, Eye, UploadCloud, User } from 'lucide-react';
+import {Plus, Trash2, Edit2,, XCircle, Search, FileText, Download, Eye, UploadCloud, User} from "lucide-react";
 import { toast } from 'react-hot-toast';
 import { useDropzone } from 'react-dropzone';
 import { motion } from 'framer-motion';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const TABLE = 'univ_documents';
 const TYPE_ICONS = { "Offer Letter": '📄', "Contract": '📝', "NDA": '🔒', "Performance Review": '📈', "Tax Form": '🏛️', "Other": '📁' };
@@ -204,7 +205,7 @@ export default function UnivDocument() {
 
       {/* Table */}
       {loading ? (
-        <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
+        <div className="flex-1 flex items-center justify-center"><OrbitLoader size="md" /></div>
       ) : (
         <div className="flex-1 overflow-auto rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card custom-scrollbar hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <table className="w-full text-sm min-w-[900px]">
@@ -329,7 +330,7 @@ export default function UnivDocument() {
                   <input {...getInputProps()} />
                   {uploading ? (
                     <div className="flex flex-col items-center gap-2">
-                      <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                      <OrbitLoader size="md" />
                       <p className="text-sm font-medium">Securing file... {uploadProgress}%</p>
                     </div>
                   ) : form.file_url ? (
@@ -351,7 +352,7 @@ export default function UnivDocument() {
               <div className="flex justify-end gap-3 mt-4 pt-5 border-t shrink-0">
                 <button type="button" onClick={closeModal} className="h-11 px-6 bg-muted rounded-xl text-sm font-semibold hover:bg-muted/80 transition-colors">Cancel</button>
                 <button type="submit" disabled={saving || uploading} className="h-11 px-6 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2">
-                  {(saving || uploading) && <Loader2 className="w-4 h-4 animate-spin" />}
+                  {(saving || uploading) && <OrbitLoader size="sm" />}
                   {editId ? 'Save Changes' : 'Upload Document'}
                 </button>
               </div>

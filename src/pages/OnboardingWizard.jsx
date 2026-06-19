@@ -8,7 +8,7 @@ import { useAuth} from '@/lib/AuthContext';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import { Scale, Building2, Users, Briefcase, ArrowRight, ArrowLeft, Check, Sparkles, Loader2, X} from 'lucide-react';
+import {Scale, Building2, Users, Briefcase, ArrowRight, ArrowLeft, Check, Sparkles,, X} from "lucide-react";
 import confetti from 'canvas-confetti';
 import { useToast} from '@/components/ui/use-toast';
 import { getSubdomainAndBase} from '@/lib/domainUtils';
@@ -17,6 +17,7 @@ import { COUNTRIES_CURRENCIES } from '@/config/countries';
 import { generateOrbitBuildWorkspace } from '@/lib/orbitBuildGenerator';
 import { initiatePaystackSubscription } from "@/lib/paystack";
 import { detectMarketTier } from '@/lib/pricing';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 export default function OnboardingWizard() {
  const { t} = useTranslation();
  const { user, refreshUser} = useAuth();
@@ -942,7 +943,7 @@ export default function OnboardingWizard() {
 
  {plansLoading ? (
    <div className="flex justify-center items-center py-20">
-     <Loader2 className="w-8 h-8 animate-spin text-primary" />
+     <OrbitLoader size="md" />
    </div>
  ) : (
    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-full w-full mx-auto">
@@ -1008,7 +1009,7 @@ export default function OnboardingWizard() {
                     : 'bg-white border-2 border-orange-500 text-orange-500 hover:bg-orange-50 hover:text-orange-600'
                 }`}
               >
-                {loading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : (
+                {loading ? <OrbitLoader size="md" /> : (
                   p.price_monthly === 0 ? "Start for Free" : "Upgrade Now"
                 )}
               </Button>

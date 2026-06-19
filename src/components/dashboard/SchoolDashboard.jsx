@@ -142,7 +142,7 @@ export default function SchoolDashboard({ companyId, company, isAdmin}) {
  <BarChart2 className="w-4 h-4" /> {t("analytics", "Analytics")}
  </Button>
  <Button onClick={handleRefresh} disabled={isRefreshing} size="sm" className="gap-2.5 text-sm font-semibold bg-white text-slate-700 hover:bg-slate-50 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} /> {t("refresh", "Refresh")}
+ { isRefreshing ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" /> } {t("refresh", "Refresh")}
  </Button>
  </div>
  </div>

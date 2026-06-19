@@ -1,11 +1,12 @@
 import { supabase} from '@/api/supabaseClient';
 import React, { useState, useEffect} from "react";
 import { powerSync} from "@/api/PowerSyncConnector";
-import { X, Search, Check, Layers, Loader2} from "lucide-react";
+import {X, Search, Check, Layers,} from "lucide-react";
 import { Button} from "@/components/ui/button";
 import { Input} from "@/components/ui/input";
 import { useToast} from "@/components/ui/use-toast";
 import { UNIVERSAL_COMPONENTS} from "@/config/universal_components";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function FirmFeaturesManager({ firm, onClose}) {
  const { toast} = useToast();
@@ -141,7 +142,7 @@ export default function FirmFeaturesManager({ firm, onClose}) {
  <div className="flex-1 overflow-auto custom-scrollbar p-5 bg-muted/10">
  {loading ? (
  <div className="flex flex-col items-center justify-center h-full text-[#71717a] dark:text-gray-400 gap-3">
- <Loader2 className="w-8 h-8 animate-spin text-primary" />
+ <OrbitLoader size="md" />
  <p>Loading assigned features...</p>
  </div>
  ) : (
@@ -190,7 +191,7 @@ export default function FirmFeaturesManager({ firm, onClose}) {
  <div className="flex gap-3">
  <Button variant="outline" onClick={onClose} disabled={saving}>Cancel</Button>
  <Button onClick={handleSave} disabled={loading || saving} className="">
- {saving ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Saving...</> : 'Save Feature Assignments'}
+ {saving ? <><OrbitLoader size="sm" /> Saving...</> : 'Save Feature Assignments'}
  </Button>
  </div>
  </div>

@@ -1,9 +1,10 @@
-import { useTranslation} from "react-i18next";
-import { useState} from 'react';
-import { generateText} from '@/lib/cloudflareAI';
-import { Sparkles, ShieldAlert, AlertTriangle, Info, CheckCircle, X, Loader2} from 'lucide-react';
-import { Button} from '@/components/ui/button';
-import { toast} from 'react-hot-toast';
+import { useTranslation } from "react-i18next";
+import { useState } from 'react';
+import { generateText } from '@/lib/cloudflareAI';
+import { Sparkles, ShieldAlert, AlertTriangle, Info, CheckCircle, X, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { toast } from 'react-hot-toast';
+import { OrbitLoader } from '@/components/ui/orbit-loader';
 
 const RISK_CONFIG = {
  HIGH: {
@@ -116,8 +117,7 @@ export default function AIRiskAnalyzer({ records = [], recordType = 'record', on
  {isAnalyzing && (
  <div className="text-center py-10">
  <div className="relative w-16 h-16 mx-auto mb-4">
- <div className="absolute inset-0 rounded-full border-4 border-amber-200 dark:border-amber-900/50" />
- <div className="absolute inset-0 rounded-full border-4 border-t-amber-500 animate-spin" />
+ <OrbitLoader size="md" />
  <ShieldAlert className="absolute inset-0 m-auto w-6 h-6 text-amber-500" />
  </div>
  <p className="text-sm font-medium text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("analyzing_records_with_ai", "Analyzing records with AI...")}</p>

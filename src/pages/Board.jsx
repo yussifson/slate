@@ -1,7 +1,7 @@
 import { supabase} from '@/api/supabaseClient';
 import React, { useState, useEffect} from "react";
 import { useTranslation} from "react-i18next";
-import { Video, Plus, Calendar, Clock, Users, Copy, Sparkles, LayoutGrid, Loader2} from "lucide-react";
+import {Video, Plus, Calendar, Clock, Users, Copy, Sparkles, LayoutGrid,} from "lucide-react";
 import { Button} from "@/components/ui/button";
 import VideoRoom from "@/components/video/VideoRoom";
 import { useToast} from "@/components/ui/use-toast";
@@ -10,6 +10,7 @@ import { useAuth} from "@/lib/AuthContext";
 import { useCompanyId} from "@/hooks/useCompanyId";
 import { format} from "date-fns";
 import { useVideo} from "@/lib/VideoContext";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function Board() {
  const { t} = useTranslation();
@@ -171,7 +172,7 @@ export default function Board() {
  <Calendar className="w-4 h-4" /> Schedule Call
  </Button>
  <Button onClick={handleStartCall} disabled={isCreating} className="gap-2 ">
- {isCreating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Video className="w-4 h-4" />} 
+ {isCreating ? <OrbitLoader size="sm" /> : <Video className="w-4 h-4" />} 
  Start Instant Call
  </Button>
  </div>
@@ -187,7 +188,7 @@ export default function Board() {
  </h2>
  <div className="space-y-3">
  {isLoading ? (
- <div className="flex justify-center p-8"><Loader2 className="w-6 h-6 animate-spin text-[#71717a] dark:text-gray-400" /></div>
+ <div className="flex justify-center p-8"><OrbitLoader size="md" /></div>
  ) : rooms.length > 0 ? (
  rooms.map(room => (
  <div key={room.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background hover:border-primary/30 transition-colors">

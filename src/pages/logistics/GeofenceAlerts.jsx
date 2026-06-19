@@ -1,12 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { MapPin, BellRing, Smartphone, Plus, Activity, Settings2, Trash2, CheckCircle, Loader2 } from 'lucide-react';
+import {MapPin, BellRing, Smartphone, Plus, Activity, Settings2, Trash2, CheckCircle,} from "lucide-react";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 import { usePowerSync } from '@powersync/react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/lib/AuthContext';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function GeofenceAlerts() {
   const { t } = useTranslation();
@@ -136,7 +137,7 @@ export default function GeofenceAlerts() {
                    <Input placeholder="+233..." value={newFence.phone} onChange={e => setNewFence({...newFence, phone: e.target.value})} />
                 </div>
                 <Button onClick={handleCreateFence} disabled={isCreating} className="gap-2">
-                  {isCreating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />} Create
+                  {isCreating ? <OrbitLoader size="sm" /> : <Plus className="w-4 h-4" />} Create
                 </Button>
               </div>
 

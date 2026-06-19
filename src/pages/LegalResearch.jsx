@@ -8,11 +8,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import PageHeader from "@/components/shared/PageHeader";
-import { Sparkles, BookOpen, Scale, Loader2, AlertTriangle, ChevronDown, ChevronUp, Search, Clock } from "lucide-react";
+import {Sparkles, BookOpen, Scale,, AlertTriangle, ChevronDown, ChevronUp, Search, Clock} from "lucide-react";
 import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 import { format } from "date-fns";
 import { generateText } from "@/lib/cloudflareAI";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const JURISDICTIONS = ["Ghana", "Nigeria", "Sierra Leone", "West Africa (General)", "International"];
 const CASE_TYPES = ["civil", "criminal", "corporate", "family", "property", "labor", "tax", "other"];
@@ -129,7 +130,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
               </Select>
             </div>
             <Button className="w-full gap-2" onClick={handleResearch} disabled={loading || !question.trim()}>
-              {loading ? <><Loader2 className="w-4 h-4 animate-spin" />{t("researching", "Researching...")}</> : <><Search className="w-4 h-4" />{t("research", "Research")}</>}
+              {loading ? <><OrbitLoader size="sm" />{t("researching", "Researching...")}</> : <><Search className="w-4 h-4" />{t("research", "Research")}</>}
             </Button>
             {loading && <p className="text-xs text-[#71717a] dark:text-gray-400 text-center tracking-[0.04em]">{t(
               "searching_case_law_and_statute",

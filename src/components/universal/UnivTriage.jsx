@@ -140,7 +140,7 @@ const UnivTriage = () => {
 
  <div className="lg:col-span-2">
  {loading ? (
- <div className="flex justify-center py-20"><Activity className="w-12 h-12 text-red-500 animate-spin" /></div>
+ <div className="flex justify-center py-20"><OrbitLoader size="md" /></div>
  ) : triageList.length === 0 ? (
  <div className="text-center py-20 bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">No patients in triage queue.</div>
  ) : (

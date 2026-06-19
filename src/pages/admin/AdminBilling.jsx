@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { DollarSign, TrendingUp, CreditCard, ArrowUpRight, Activity, Plus, Search, MoreVertical, Edit, CheckCircle, Loader2 } from 'lucide-react';
+import {DollarSign, TrendingUp, CreditCard, ArrowUpRight, Activity, Plus, Search, MoreVertical, Edit, CheckCircle,} from "lucide-react";
 import PageHeader from '@/components/shared/PageHeader';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -12,6 +12,7 @@ import { formatCurrency } from '@/lib/constants';
 import { format } from 'date-fns';
 import { useToast } from '@/components/ui/use-toast';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel } from '@/components/ui/dropdown-menu';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function AdminBilling() {
   const { t } = useTranslation();
@@ -168,7 +169,7 @@ export default function AdminBilling() {
           <div className="space-y-4 md:space-y-0 p-0 md:p-0">
             {loadingInvoices ? (
               <div className="flex justify-center py-12">
-                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                <OrbitLoader size="md" />
               </div>
             ) : filteredInvoices.length === 0 ? (
               <div className="text-center py-12 text-slate-500 dark:text-slate-400 font-medium bg-card md:bg-transparent rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 md:border-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">

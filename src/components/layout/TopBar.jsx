@@ -335,7 +335,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  onClick={handleRefresh}
  disabled={isRefreshing}
  >
- <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
+ { isRefreshing ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" /> }
  <span className="hidden sm:block">{isRefreshing ? "Refreshing..." : "Refresh"}</span>
  </Button>
  </div>

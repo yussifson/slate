@@ -2,10 +2,11 @@ import { useTranslation} from "react-i18next";
 import { useState, useEffect} from 'react';
 import { powerSync } from "@/api/PowerSyncConnector";
 import { useQuery } from "@tanstack/react-query";
-import { Database, Scale, Users, Building2, DollarSign, Loader2, Activity, Clock} from 'lucide-react';
+import {Database, Scale, Users, Building2, DollarSign,, Activity, Clock} from "lucide-react";
 import PageHeader from '@/components/shared/PageHeader';
 import Companies from '@/pages/Companies';
 import { supabase } from '@/api/supabaseClient';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function AdminOverview() {
   const { t } = useTranslation();
@@ -86,7 +87,7 @@ export default function AdminOverview() {
   if (loading) {
     return (
       <div className="flex justify-center py-24">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <OrbitLoader size="md" />
       </div>
     );
   }

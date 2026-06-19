@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Edit2, CheckCircle2, AlertOctagon, Loader2, Search, UserCheck, MessageSquare, Layers, Users, Clock } from 'lucide-react';
+import {Edit2, CheckCircle2, AlertOctagon,, Search, UserCheck, MessageSquare, Layers, Users, Clock} from "lucide-react";
 import { useToast } from '@/components/ui/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { useImpersonation } from '@/lib/ImpersonationContext';
@@ -14,6 +14,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import FirmFeaturesManager from '@/components/superadmin/FirmFeaturesManager';
 import { useNotifications } from '@/hooks/useNotifications';
 import { supabase } from '@/api/supabaseClient';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function AdminFirms() {
   const { t } = useTranslation();
@@ -175,7 +176,7 @@ export default function AdminFirms() {
       />
       {loading ? (
         <div className="flex justify-center py-24">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <OrbitLoader size="md" />
         </div>
       ) : (
         <div className="space-y-4">
@@ -280,7 +281,7 @@ export default function AdminFirms() {
               {t("cancel", "Cancel")}
             </Button>
             <Button onClick={handleSendMessage} disabled={sendingMessage} className="flex-1 bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl h-11">
-              {sendingMessage ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send Message"}
+              {sendingMessage ? <OrbitLoader size="sm" /> : "Send Message"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -352,7 +353,7 @@ export default function AdminFirms() {
               {t("cancel", "Cancel")}
             </Button>
             <Button onClick={handleSaveQuotas} disabled={updatingQuota} className="flex-1 bg-primary hover:bg-primary/95 text-white font-semibold rounded-xl h-11">
-              {updatingQuota ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Limits"}
+              {updatingQuota ? <OrbitLoader size="sm" /> : "Save Limits"}
             </Button>
           </DialogFooter>
         </DialogContent>

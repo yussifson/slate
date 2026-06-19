@@ -30,6 +30,7 @@ import {
   Panel
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 // --- CUSTOM NODES ---
 
@@ -644,7 +645,7 @@ export default function Automations() {
             >
               {isLoading ? (
                 <div className="col-span-full py-20 flex justify-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  <OrbitLoader size="md" />
                 </div>
               ) : automations.length === 0 ? (
                 <div className="col-span-full py-24 flex flex-col items-center justify-center text-center bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">

@@ -143,7 +143,7 @@ const UnivVitalSigns = () => {
 
  <div className="lg:col-span-2 space-y-4">
  {loading ? (
- <div className="text-center py-20"><Activity className="w-10 h-10 text-rose-500 animate-spin mx-auto" /></div>
+ <div className="text-center py-20"><OrbitLoader size="md" /></div>
  ) : vitals.length === 0 ? (
  <div className="text-center py-20 bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">No vitals recorded yet.</div>
  ) : (

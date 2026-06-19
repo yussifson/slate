@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Warehouse as WarehouseIcon, Box, ArrowDownToLine, ArrowUpFromLine, ScanBarcode, Zap, Lock, Loader2, CheckCircle, Search } from 'lucide-react';
+import {Warehouse as WarehouseIcon, Box, ArrowDownToLine, ArrowUpFromLine, ScanBarcode, Zap, Lock,, CheckCircle, Search} from "lucide-react";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
@@ -9,6 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/lib/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import AIDocumentParser from '@/components/shared/AIDocumentParser';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function Warehouse() {
   const { t } = useTranslation();
@@ -208,7 +209,7 @@ export default function Warehouse() {
               </div>
 
               <Button onClick={handleManualReceive} disabled={isReceiving} className="w-full mt-2" variant="outline">
-                {isReceiving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <CheckCircle className="w-4 h-4 mr-2" />}
+                {isReceiving ? <OrbitLoader size="sm" /> : <CheckCircle className="w-4 h-4 mr-2" />}
                 Receive Manually
               </Button>
             </div>

@@ -145,7 +145,7 @@ const UnivHotelReview = () => {
 
  <div className="lg:col-span-2">
  {loading ? (
- <div className="flex justify-center py-20"><Sparkles className="w-10 h-10 text-amber-400 animate-spin" /></div>
+ <div className="flex justify-center py-20"><OrbitLoader size="md" /></div>
  ) : reviews.length === 0 ? (
  <div className="text-center py-20 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400 font-serif hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">No reviews inscribed yet.</div>
  ) : (

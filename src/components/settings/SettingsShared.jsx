@@ -1,7 +1,8 @@
 import React from "react";
 import { Label} from "@/components/ui/label";
 import { Button} from "@/components/ui/button";
-import { Loader2, Save} from "lucide-react";
+import {, Save} from "lucide-react";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export function SectionCard({ title, subtitle, onSave, saving, children}) {
  return (
@@ -19,7 +20,7 @@ export function SectionCard({ title, subtitle, onSave, saving, children}) {
  className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 shrink-0 rounded-xl px-5 h-10"
  >
  {saving ? (
- <Loader2 className="w-4 h-4 animate-spin" />
+ <OrbitLoader size="sm" />
  ) : (
  <Save className="w-4 h-4" />
  )}

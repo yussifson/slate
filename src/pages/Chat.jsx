@@ -1,7 +1,7 @@
 import { supabase} from '@/api/supabaseClient';
 import React, { useState, useEffect, useRef} from "react";
 import { useTranslation} from "react-i18next";
-import { Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video, Loader2, CheckCheck, Check, Smile, Paperclip, ImageIcon, FileText, File, X} from "lucide-react";
+import {Search, Plus, MessageSquare, MoreVertical, Send, Sparkles, Hash, Users, UserCircle, Phone, Video,, CheckCheck, Check, Smile, Paperclip, ImageIcon, FileText, File, X} from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import { Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import { Button} from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { powerSync} from "@/api/PowerSyncConnector";
 import AddChatDialog from "@/components/chat/AddChatDialog";
 import { useToast} from "@/components/ui/use-toast";
 import { format} from "date-fns";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function Chat() {
  const { t} = useTranslation();
@@ -272,7 +273,7 @@ export default function Chat() {
 
  <div className="flex-1 overflow-y-auto bg-background dark:bg-[#111b21]">
  {loadingRooms ? (
- <div className="flex justify-center p-8"><Loader2 className="w-6 h-6 animate-spin text-[#71717a] dark:text-gray-400" /></div>
+ <div className="flex justify-center p-8"><OrbitLoader size="md" /></div>
  ) : rooms.map(room => (
  <div 
  key={room.id}
@@ -349,7 +350,7 @@ export default function Chat() {
  </div>
 
  {loadingMessages ? (
- <div className="flex justify-center p-4"><Loader2 className="w-5 h-5 animate-spin text-[#71717a] dark:text-gray-400" /></div>
+ <div className="flex justify-center p-4"><OrbitLoader size="md" /></div>
  ) : messages.map((msg, idx) => {
  const isMe = msg.sender_id === user.id;
  const showTail = idx === 0 || messages[idx-1].sender_id !== msg.sender_id;
@@ -510,7 +511,7 @@ export default function Chat() {
  <Popover open={showAttachMenu} onOpenChange={setShowAttachMenu}>
  <PopoverTrigger asChild>
  <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full text-[#54656f] dark:text-[#aebac1] hover:bg-primary/20 shrink-0">
- {isUploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Paperclip className="w-6 h-6" />}
+ {isUploading ? <OrbitLoader size="md" /> : <Paperclip className="w-6 h-6" />}
  </Button>
  </PopoverTrigger>
  <PopoverContent side="top" align="start" className="w-48 p-2 mb-2 rounded-2xl flex flex-col gap-2 ">

@@ -71,7 +71,7 @@ If no specific filter can be extracted, return an empty conditions array.`
  <form onSubmit={handleAISearch} className="relative w-full max-w-2xl">
  <div className="relative flex items-center w-full group">
  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
- <Sparkles className={`w-4 h-4 ${isSearching ? 'text-primary animate-spin' : 'text-primary'}`} />
+ <OrbitLoader size="sm" />
  </div>
  
  <input

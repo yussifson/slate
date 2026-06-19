@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Switch} from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import { toast} from "sonner";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 export default function Promotions() {
  const { t} = useTranslation();
  const { data: promotions = [], isLoading} = useIndustryRecords('promotion');
@@ -89,7 +90,7 @@ export default function Promotions() {
  if (isLoading) {
  return (
  <div className="flex-1 p-6 flex items-center justify-center">
- <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+ <OrbitLoader size="md" />
  </div>
  );
 }

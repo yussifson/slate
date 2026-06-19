@@ -7,10 +7,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { ShieldAlert, Trash2, Search, Loader2, KeyRound, RefreshCcw, Building2, Calendar, Clock, ChevronDown } from 'lucide-react';
+import {ShieldAlert, Trash2, Search,, KeyRound, RefreshCcw, Building2, Calendar, Clock, ChevronDown} from "lucide-react";
 import { useToast } from '@/components/ui/use-toast';
 import PageHeader from '@/components/shared/PageHeader';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function AdminUsers() {
   const { t } = useTranslation();
@@ -160,7 +161,7 @@ export default function AdminUsers() {
       />
       {loading ? (
         <div className="flex justify-center py-24">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <OrbitLoader size="md" />
         </div>
       ) : (
         <div className="space-y-4">
@@ -241,7 +242,7 @@ export default function AdminUsers() {
                       disabled={suspendingId === user.id || user.role === 'suspended'}
                       className="flex-1 h-8 px-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 border-none text-[10px]"
                     >
-                      {suspendingId === user.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ShieldAlert className="w-3.5 h-3.5 mr-1" />}
+                      {suspendingId === user.id ? <OrbitLoader size="sm" /> : <ShieldAlert className="w-3.5 h-3.5 mr-1" />}
                       {user.role === 'suspended' ? 'Suspended' : 'Suspend'}
                     </Button>
                   </div>
@@ -275,7 +276,7 @@ export default function AdminUsers() {
           <DialogFooter className="flex gap-2 pt-2">
             <Button variant="outline" onClick={() => setRoleDialog(null)} className="flex-1 rounded-xl border-primary/40 h-11">Cancel</Button>
             <Button onClick={handleChangeRole} disabled={updatingRole} className="flex-1 bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl h-11">
-              {updatingRole ? <Loader2 className="w-4 h-4 animate-spin" /> : "Confirm"}
+              {updatingRole ? <OrbitLoader size="sm" /> : "Confirm"}
             </Button>
           </DialogFooter>
         </DialogContent>

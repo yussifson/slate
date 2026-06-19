@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
-import { Loader2, Component } from 'lucide-react';
+import {, Component} from "lucide-react";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const components = {
   UnivAccessControl: React.lazy(() => import('@/components/universal/UnivAccessControl')),
@@ -224,7 +225,7 @@ export default function OrbitComponentTester() {
   return (
     <Suspense fallback={
       <div className="flex items-center justify-center h-full min-h-[50vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <OrbitLoader size="md" />
       </div>
     }>
       <ComponentToRender pageName={componentName} title={componentName} />

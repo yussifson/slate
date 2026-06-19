@@ -6,10 +6,11 @@ import { Input} from "@/components/ui/input";
 import { useToast} from "@/components/ui/use-toast";
 import { powerSync} from "@/api/PowerSyncConnector";
 import { useCompanyId} from "@/hooks/useCompanyId";
-import { Search, Loader2, CheckCircle2, Download, Trash2, ShieldCheck, Blocks} from "lucide-react";
+import {Search,, CheckCircle2, Download, Trash2, ShieldCheck, Blocks} from "lucide-react";
 import PageHeader from "@/components/shared/PageHeader";
 import * as LucideIcons from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter} from "@/components/ui/dialog";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function Marketplace() {
  const { toast} = useToast();
@@ -235,7 +236,7 @@ export default function Marketplace() {
  {/* Slate Grid */}
  {loading ? (
  <div className="py-24 flex justify-center">
- <Loader2 className="w-8 h-8 animate-spin text-primary" />
+ <OrbitLoader size="md" />
  </div>
  ) : filteredModules.length === 0 ? (
  <div className="py-24 flex flex-col items-center justify-center text-center px-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-dashed hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
@@ -311,7 +312,7 @@ export default function Marketplace() {
  className="h-10 px-5 rounded-xl border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-300 font-semibold gap-2 transition-all"
  >
  {isUninstalling ? (
- <Loader2 className="w-4 h-4 animate-spin" />
+ <OrbitLoader size="sm" />
  ) : (
  <><Trash2 className="w-4 h-4" /> Uninstall</>
  )}
@@ -323,7 +324,7 @@ export default function Marketplace() {
  className="h-10 px-6 rounded-xl bg-primary hover:bg-primary text-white font-semibold -emerald-600/20 transition-all hover:translate-y-[-1px]"
  >
  {isInstalling ? (
- <Loader2 className="w-4 h-4 animate-spin" />
+ <OrbitLoader size="sm" />
  ) : (
  <><Download className="w-4 h-4 mr-2 opacity-80" /> Install</>
  )}

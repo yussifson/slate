@@ -3,7 +3,8 @@ import { useCompanyId} from '@/hooks/useCompanyId';
 
 import { supabase} from "@/api/supabaseClient";
 import { motion} from 'framer-motion';
-import { BarChart2, TrendingUp, Download, Loader2, RefreshCw, Database, AlertCircle} from 'lucide-react';
+import {BarChart2, TrendingUp, Download,, RefreshCw, Database, AlertCircle} from "lucide-react";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 // Master map: component_id (from orbit build config) → real Supabase table name
 const COMPONENT_TO_TABLE = {
@@ -166,7 +167,7 @@ export default function UnivAnalytics({
  disabled={refreshing || loading}
  className="flex items-center gap-2 px-4 py-2 bg-muted border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm font-medium hover:bg-muted/80 transition-colors disabled:opacity-50"
  >
- <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} /> Refresh
+ { refreshing ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" /> } Refresh
  </button>
  <button
  onClick={handleExportCSV}
@@ -180,7 +181,7 @@ export default function UnivAnalytics({
 
  {loading ? (
  <div className="flex-1 flex flex-col items-center justify-center gap-3 text-[#71717a] dark:text-gray-400">
- <Loader2 className="w-8 h-8 animate-spin text-primary" />
+ <OrbitLoader size="md" />
  <p className="text-sm font-medium">Scanning your workslate data...</p>
  </div>
  ) : stats.length === 0 ? (

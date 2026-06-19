@@ -329,7 +329,7 @@ export default function Appointments() {
  <div className="flex gap-3 pt-4">
  <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
  <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleSaveToDb} disabled={isGenerating || isSyncing}>
- {(isGenerating || isSyncing) ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : null}
+ {(isGenerating || isSyncing) ? <OrbitLoader size="sm" /> : null}
  {t("book_visit", "Book Visit")}
  </Button>
  </div>

@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { formatDistanceToNow, format } from "date-fns";
 import { useToast } from "@/components/ui/use-toast";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function NotificationsInbox() {
   const { user } = useAuth();
@@ -183,7 +184,7 @@ export default function NotificationsInbox() {
           <AnimatePresence>
             {isLoading ? (
               <div className="py-20 flex justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                <OrbitLoader size="md" />
               </div>
             ) : filteredNotifications.length === 0 ? (
               <motion.div 

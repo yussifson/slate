@@ -752,7 +752,7 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  {isLoading && (
  <div className="absolute inset-0 flex items-center justify-center bg-background/60 z-20">
  <div className="flex items-center gap-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl px-6 py-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <RefreshCw className="w-5 h-5 text-primary animate-spin" />
+ <OrbitLoader size="sm" />
  <span className="text-sm font-semibold">Loading workflow…</span>
  </div>
  </div>

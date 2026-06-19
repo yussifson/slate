@@ -4,12 +4,13 @@ import { useAuth} from '@/lib/AuthContext';
 import { powerSync} from "@/api/PowerSyncConnector";
 import { initiatePaystackSubscription} from '@/lib/paystack';
 import { Button} from '@/components/ui/button';
-import { Scale, Check, LogOut, Loader2, Sparkles, Server, Shield, Database, Headphones} from 'lucide-react';
+import {Scale, Check, LogOut,, Sparkles, Server, Shield, Database, Headphones} from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter} from "@/components/ui/dialog";
 import confetti from 'canvas-confetti';
 import { SUBSCRIPTION_PLANS} from '@/lib/constants';
 import { getMainAppUrl} from '@/lib/domainUtils';
 import { NotificationService} from '@/lib/notifications';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function Paywall() {
  const { t} = useTranslation();
@@ -254,7 +255,7 @@ export default function Paywall() {
  >
  {loadingPlan === p.name ? (
  <>
- <Loader2 className="w-4 h-4 animate-spin mr-1.5" />
+ <OrbitLoader size="sm" />
  {t("processing", "Processing...")}
  </>
  ) : (

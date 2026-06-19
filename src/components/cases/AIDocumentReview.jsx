@@ -4,12 +4,11 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import {
-  Upload, Sparkles, FileText, Calendar, AlertTriangle,
-  Clock, Users, ChevronDown, ChevronUp, Loader2, X, CheckCircle
-} from "lucide-react";
+import {Upload, Sparkles, FileText, Calendar, AlertTriangle,
+  Clock, Users, ChevronDown, ChevronUp,, X, CheckCircle} from "lucide-react";
 import { format, parseISO, isValid, isBefore } from "date-fns";
 import { generateText, analyzeImage } from "@/lib/cloudflareAI";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const URGENCY_COLORS = {
   critical: "bg-red-100 text-red-700 border-red-200",
@@ -246,7 +245,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
         <Button onClick={handleAnalyze} disabled={isLoading} className="w-full gap-2" size="lg">
           {isLoading ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <OrbitLoader size="sm" />
               {uploading ? "Uploading document..." : "AI is analyzing... (this may take 30–60s)"}
             </>
           ) : (

@@ -3,9 +3,10 @@ import React, { useState, useEffect } from 'react';
 
 import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { UserPlus, Plus, Search, Trash2, Edit2, Loader2, XCircle, Briefcase, Mail, Phone, Calendar, User, Star, List, LayoutGrid } from 'lucide-react';
+import {UserPlus, Plus, Search, Trash2, Edit2,, XCircle, Briefcase, Mail, Phone, Calendar, User, Star, List, LayoutGrid} from "lucide-react";
 import { toast } from 'react-hot-toast';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const EMPTY_FORM = { candidate_name: '', email: '', phone: '', position: '', status: 'Applied', source: '', experience_years: 0, rating: 0, notes: '' };
 const STATUS_COLORS = { Applied: 'bg-blue-50 text-blue-700 border-blue-200', Screening: 'bg-violet-50 text-violet-700 border-violet-200', Interviewing: 'bg-amber-50 text-amber-700 border-amber-200', Offered: 'bg-emerald-50 text-emerald-700 border-emerald-200', Hired: 'bg-emerald-100 text-emerald-800 border-emerald-300', Rejected: 'bg-red-50 text-red-700 border-red-200' };
@@ -163,7 +164,7 @@ export default function UnivRecruitment() {
             <div className="col-span-4">Candidate</div><div className="col-span-3">Position</div><div className="col-span-2">Rating</div><div className="col-span-2">Status</div><div className="col-span-1 text-right">Actions</div>
           </div>
           <div className="flex-1 overflow-y-auto custom-scrollbar">
-            {loading ? <div className="flex h-40 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary"/></div>
+            {loading ? <div className="flex h-40 items-center justify-center"><OrbitLoader size="md" /></div>
             : filtered.length === 0 ? <div className="p-12 text-center text-[#71717a] dark:text-gray-400"><UserPlus className="w-12 h-12 mx-auto text-[#71717a] dark:text-gray-400/30 mb-3"/><p className="font-medium">No candidates found.</p></div>
             : filtered.map(c=>(
               <div key={c.id} className="grid grid-cols-12 gap-2 p-4 border-b border-primary/40 hover:bg-muted/30 transition-colors items-center group">
@@ -191,7 +192,7 @@ export default function UnivRecruitment() {
       ) : (
         <div className="flex-1 overflow-x-auto overflow-y-hidden custom-scrollbar flex gap-4 pb-2">
           {loading && candidates.length === 0 ? (
-             <div className="w-full flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary"/></div>
+             <div className="w-full flex items-center justify-center"><OrbitLoader size="md" /></div>
           ) : (
             <DragDropContext onDragEnd={onDragEnd}>
               {STAGES.map(stage => {

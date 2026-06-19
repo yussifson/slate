@@ -5,11 +5,10 @@ import { useCompanyId} from '@/hooks/useCompanyId';
 import { motion, AnimatePresence} from 'framer-motion';
 import { useQuery} from '@tanstack/react-query';
 import { cn} from '@/lib/utils';
-import {
- Search, FileText, Calendar, Users, Briefcase, Command,
- LayoutGrid, ArrowRight, Clock, Loader2, FolderOpen
-} from 'lucide-react';
+import {Search, FileText, Calendar, Users, Briefcase, Command,
+ LayoutGrid, ArrowRight, Clock,, FolderOpen} from "lucide-react";
 import { useDebounce} from '@/hooks/useDebounce';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const SCOPES = [
  { id: 'all', label: 'All Results'},
@@ -136,7 +135,7 @@ export default function UnivGlobalSearch({
  />
  <div className="absolute inset-y-0 right-0 flex items-center pr-4">
  {isFetching ? (
- <Loader2 className="w-5 h-5 animate-spin text-[#71717a] dark:text-gray-400" />
+ <OrbitLoader size="md" />
  ) : (
  <kbd className="hidden sm:inline-flex h-7 items-center gap-2 rounded-md bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 px-2 font-mono text-[11px] font-medium text-[#71717a] dark:text-gray-400 ">
  <Command className="w-3 h-3" /> K

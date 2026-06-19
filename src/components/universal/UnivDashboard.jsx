@@ -12,6 +12,7 @@ import {
  AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer,
 } from 'recharts';
 import { format, subMonths, startOfMonth, endOfMonth} from 'date-fns';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 // ─── Data Sources ──────────────────────────────────────────────────────────────
 const AVAILABLE_SOURCES = [
@@ -352,8 +353,7 @@ export default function UnivDashboard({
 
  {loading ? (
  <div className="flex-1 flex items-center justify-center">
- <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
- </div>
+ <OrbitLoader size="md" />
  ) : (
  <>
  {/* ── AI Insight Banner ─────────────────────────────────────────────── */}

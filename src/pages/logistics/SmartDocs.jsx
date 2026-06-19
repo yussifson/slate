@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Scan, FileText, CheckCircle, Database, Save, UploadCloud, Loader2, Calendar } from 'lucide-react';
+import {Scan, FileText, CheckCircle, Database, Save, UploadCloud,, Calendar} from "lucide-react";
 import { Button } from '@/components/ui/button';
 import AIDocumentParser from '@/components/shared/AIDocumentParser';
 import { toast } from '@/components/ui/use-toast';
@@ -8,6 +8,7 @@ import { usePowerSync } from '@powersync/react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function SmartDocs() {
   const { t } = useTranslation();
@@ -166,7 +167,7 @@ export default function SmartDocs() {
                 
                 <div className="pt-4 border-t border-[0.5px] border-black/9 dark:border-white/8 mt-auto">
                   <Button onClick={handleSave} disabled={isSaving} className="w-full gap-2">
-                    {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} 
+                    {isSaving ? <OrbitLoader size="sm" /> : <Save className="w-4 h-4" />} 
                     {isSaving ? "Saving..." : "Save & Verify"}
                   </Button>
                 </div>

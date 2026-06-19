@@ -1,7 +1,7 @@
 import { useTranslation} from "react-i18next";
 import React, { useState} from "react";
 import { base44} from "@/api/base44Client";
-import { Scale, CheckCircle, Loader2, Phone, Mail, User, Building2, FileText, AlertTriangle} from "lucide-react";
+import {Scale, CheckCircle,, Phone, Mail, User, Building2, FileText, AlertTriangle} from "lucide-react";
 import { Button} from "@/components/ui/button";
 import { Input} from "@/components/ui/input";
 import { Label} from "@/components/ui/label";
@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/
 import { Badge} from "@/components/ui/badge";
 
 import { useQuery} from "@tanstack/react-query";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const CASE_TYPES = [
  { value: "civil", label: "Civil Litigation"},
@@ -260,7 +261,7 @@ View in App: ${window.location.origin}/leads`,
  )}
 
  <Button type="submit" disabled={submitting} className="w-full h-11 text-base font-semibold gap-2">
- {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Scale className="w-5 h-5" />}
+ {submitting ? <OrbitLoader size="md" /> : <Scale className="w-5 h-5" />}
  {submitting ? "Submitting..." : "Submit Inquiry"}
  </Button>
 

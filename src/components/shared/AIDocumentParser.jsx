@@ -80,7 +80,7 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
           <div className="relative">
             <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full"></div>
             <FileScan className="w-10 h-10 text-primary animate-pulse relative z-10" />
-            <Sparkles className="w-4 h-4 text-amber-400 absolute -top-1 -right-1 animate-spin" />
+            <OrbitLoader size="sm" />
           </div>
           <p className="text-sm font-semibold text-primary">{t("ai_is_analyzing_document", "AI is analyzing document...")}</p>
         </div>

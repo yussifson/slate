@@ -14,6 +14,7 @@ import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkle
 import { Button} from "@/components/ui/button";
 import { generateText} from "@/lib/cloudflareAI";
 import { useToast} from "@/components/ui/use-toast";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 // Inner component that actually uses the Daily hooks
 function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
@@ -231,7 +232,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  <ParticipantTile key={id} id={id} isLocal={id === localSessionId} />
  )).concat(allParticipants.length === 0 ? (
  <div key="loader" className="absolute inset-0 flex items-center justify-center">
- <div className="w-12 h-12 rounded-full border-[3px] border-primary/30 border-t-primary animate-spin"></div>
+ <OrbitLoader size="md" />
  </div>
  ) : []);
 })()}
@@ -540,7 +541,7 @@ export default function VideoRoom({ roomUrl, token, onLeave, isPipMode, togglePi
  if (!daily || !roomUrl) {
  return (
  <div className="flex flex-col h-full bg-slate-950 rounded-xl items-center justify-center">
- <div className="w-12 h-12 rounded-full border-[3px] border-primary/30 border-t-primary animate-spin mb-4"></div>
+ <OrbitLoader size="md" />
  <p className="text-slate-400 font-medium">Connecting to secure video server...</p>
  </div>
  );

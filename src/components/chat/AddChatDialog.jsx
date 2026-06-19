@@ -8,8 +8,9 @@ import { powerSync } from "@/api/PowerSyncConnector";
 import { base44 } from "@/api/base44Client";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { useAuth } from "@/lib/AuthContext";
-import { Loader2, Search, Users, Briefcase } from "lucide-react";
+import {, Search, Users, Briefcase} from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
   const { user } = useAuth();
@@ -236,7 +237,7 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
             
             <div className="h-[250px] overflow-y-auto mt-4 border-[0.5px] border-black/9 dark:border-white/8 rounded-lg p-2">
               {loading ? (
-                <div className="flex items-center justify-center h-full"><Loader2 className="w-6 h-6 animate-spin text-[#71717a] dark:text-gray-400" /></div>
+                <div className="flex items-center justify-center h-full"><OrbitLoader size="md" /></div>
               ) : (
                 <div className="space-y-1">
                   {getFilteredList(activeTab === "staff" ? staff : clients).map(item => (
@@ -277,7 +278,7 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
             disabled={selectedUsers.length === 0 || isCreating || (selectedUsers.length > 1 && !groupName.trim())}
             onClick={handleCreateChat}
           >
-            {isCreating ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+            {isCreating ? <OrbitLoader size="sm" /> : null}
             {selectedUsers.length > 1 ? "Create Group Chat" : "Start Chat"}
           </Button>
         </div>

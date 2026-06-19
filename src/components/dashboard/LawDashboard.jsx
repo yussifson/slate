@@ -133,7 +133,7 @@ export default function LawDashboard({ companyId, company, isAdmin}) {
  <BarChart2 className="w-3.5 h-3.5" /> {t('analytics', "Analytics")}
  </Button>
  <Button variant="outline" size="sm" className="gap-2.5 text-xs  tracking-[0.04em]" onClick={handleRefresh} disabled={isRefreshing}>
- <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`} /> 
+ { isRefreshing ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" /> } 
  {isRefreshing ? t('refreshing', "Refreshing...") : t('refresh', "Refresh")}
  </Button>
  </div>

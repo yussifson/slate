@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import React, { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Send, PenTool, Eye, CheckCircle, Clock, XCircle, Loader2, RefreshCw } from "lucide-react";
+import {Send, PenTool, Eye, CheckCircle, Clock, XCircle,, RefreshCw} from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
 import { format } from "date-fns";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const STATUS_CONFIG = {
   draft:    { color: "bg-gray-100 text-gray-600",    icon: Clock },
@@ -248,7 +249,7 @@ function SendSignatureDialog({ open, onClose, onSubmit, documents, caseData, isS
           <div className="flex justify-end gap-2 pt-1">
             <Button variant="outline" onClick={onClose}>{t("cancel", "Cancel")}</Button>
             <Button onClick={() => onSubmit(form)} disabled={isSending || !form.document_id || !form.client_email} className="gap-2.5">
-              {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+              {isSending ? <OrbitLoader size="sm" /> : <Send className="w-4 h-4" />}
               {t("send_for_signature", "Send for Signature")}
             </Button>
           </div>

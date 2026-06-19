@@ -1,5 +1,6 @@
 import { useTranslation} from "react-i18next";
-import React, { useState} from "react";
+import React, { useState, useEffect } from "react";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 import { base44} from "@/api/base44Client";
 import { powerSync} from "@/api/PowerSyncConnector";
 import { useMutation, useQueryClient, useQuery as useTanstackQuery } from "@tanstack/react-query";
@@ -218,7 +219,7 @@ export default function EmailInbox() {
  <div className="flex-1 overflow-y-auto divide-y divide-border">
  {isLoading ? (
  <div className="flex flex-col items-center justify-center h-full gap-3 text-[#71717a] dark:text-gray-400">
- <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+ <OrbitLoader size="md" />
  <p className="text-sm">Loading…</p>
  </div>
  ) : displayedEmails.length === 0 ? (

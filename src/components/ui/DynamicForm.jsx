@@ -15,7 +15,8 @@ import {
 import { supabase} from '@/api/supabaseClient';
 import { useToast} from '@/components/ui/use-toast';
 import { useAuth} from '@/lib/AuthContext';
-import { Loader2} from 'lucide-react';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
+
 
 export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSuccess, onCancel}) {
  const { toast} = useToast();
@@ -163,7 +164,7 @@ export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSucces
  <Button type="submit" disabled={isSubmitting} className="bg-primary hover:bg-primary/90 text-white">
  {isSubmitting ? (
  <>
- <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
+ <OrbitLoader size="sm" /> Saving...
  </>
  ) : (
  'Save Record'

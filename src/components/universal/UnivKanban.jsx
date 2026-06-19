@@ -10,8 +10,9 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
 import { DragDropContext, Droppable, Draggable} from '@hello-pangea/dnd';
-import { LayoutGrid, Plus, Search, Trash2, Edit2, Loader2, XCircle, User, Calendar, Tag} from 'lucide-react';
+import {LayoutGrid, Plus, Search, Trash2, Edit2,, XCircle, User, Calendar, Tag} from "lucide-react";
 import { toast} from 'react-hot-toast';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const DEFAULT_COLS = ['To Do', 'In Progress', 'Review', 'Done'];
 const PRIORITY_COLORS = { Low: 'bg-muted text-[#71717a] dark:text-gray-400', Medium: 'bg-amber-50 text-amber-700', High: 'bg-orange-50 text-orange-700', Urgent: 'bg-red-50 text-red-700'};
@@ -157,7 +158,7 @@ export default function UnivKanban({ title = "Kanban Board", companyId, pageName
 
  <div className="relative shrink-0 max-w-md"><Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" /><input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search tasks..." className="w-full h-10 pl-10 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" /></div>
 
- {loading ? <div className="flex flex-1 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div> : (
+ {loading ? <div className="flex flex-1 items-center justify-center"><OrbitLoader size="md" /></div> : (
  <DragDropContext onDragEnd={onDragEnd}>
  <div className="flex-1 overflow-x-auto overflow-y-hidden flex gap-4 pb-4 custom-scrollbar min-h-0">
  {columns.map((col, ci) => {

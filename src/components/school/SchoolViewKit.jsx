@@ -276,7 +276,7 @@ export function ModuleBanner({ title, subtitle, dateText, onRefresh, isRefreshin
  {onRefresh && (
  <div className="flex items-center gap-2 shrink-0">
  <Button onClick={onRefresh} disabled={isRefreshing} size="sm" className="gap-2.5 text-xs font-semibold bg-white/15 hover:bg-white/25 text-white rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-white/20 backdrop-blur-md tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} /> Refresh
+ { isRefreshing ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" /> } Refresh
  </Button>
  </div>
  )}

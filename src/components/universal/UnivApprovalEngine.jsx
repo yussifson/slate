@@ -1,11 +1,9 @@
 import React, { useState} from 'react';
 import { useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
 import { motion, AnimatePresence} from 'framer-motion';
-import {
- CheckCircle, XCircle, RotateCcw, Clock, ChevronDown, ChevronRight,
- Plus, Trash2, Loader2, Search, CheckCheck, InboxIcon,
- ListFilter, LayoutTemplate, AlertCircle, User, CalendarDays, ArrowRight,
-} from 'lucide-react';
+import {CheckCircle, XCircle, RotateCcw, Clock, ChevronDown, ChevronRight,
+ Plus, Trash2,, Search, CheckCheck, InboxIcon,
+ ListFilter, LayoutTemplate, AlertCircle, User, CalendarDays, ArrowRight,} from "lucide-react";
 import { formatDistanceToNow, format, parseISO} from 'date-fns';
 import { toast} from 'react-hot-toast';
 
@@ -16,6 +14,7 @@ import { useCompanyId} from '@/hooks/useCompanyId';
 import { Badge} from '@/components/ui/badge';
 import { Button} from '@/components/ui/button';
 import { cn} from '@/lib/utils';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -419,7 +418,7 @@ function TemplatesPanel({ companyId}) {
  type="submit" disabled={saving}
  className="h-10 px-6 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 disabled:opacity-50 flex items-center gap-2"
  >
- {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+ {saving && <OrbitLoader size="sm" />}
  Save Template
  </button>
  </div>
@@ -430,7 +429,7 @@ function TemplatesPanel({ companyId}) {
  <div className="space-y-3">
  <h3 className="text-base font-semibold text-foreground">Existing Templates</h3>
  {isLoading ? (
- <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
+ <div className="flex justify-center py-10"><OrbitLoader size="md" /></div>
  ) : templates.length === 0 ? (
  <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-2xl p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <LayoutTemplate className="w-10 h-10 text-[#71717a] dark:text-gray-400 mx-auto mb-2 opacity-40" />
@@ -633,7 +632,7 @@ export default function UnivApprovalEngine() {
  <div className="space-y-3">
  {isLoading ? (
  <div className="flex justify-center items-center py-20">
- <Loader2 className="w-8 h-8 animate-spin text-primary" />
+ <OrbitLoader size="md" />
  </div>
  ) : inboxItems.length === 0 ? (
  <motion.div
@@ -672,7 +671,7 @@ export default function UnivApprovalEngine() {
 
  {isLoading ? (
  <div className="flex justify-center items-center py-20">
- <Loader2 className="w-8 h-8 animate-spin text-primary" />
+ <OrbitLoader size="md" />
  </div>
  ) : (
  <div className="overflow-auto rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">

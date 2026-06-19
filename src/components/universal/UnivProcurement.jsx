@@ -9,8 +9,9 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
-import { ShoppingCart, Plus, Search, Trash2, Edit2, Loader2, XCircle, FileText, Truck} from 'lucide-react';
+import {ShoppingCart, Plus, Search, Trash2, Edit2,, XCircle, FileText, Truck} from "lucide-react";
 import { toast} from 'react-hot-toast';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const STATUS_COLORS = { Draft: 'bg-muted text-[#71717a] dark:text-gray-400 border-primary/40', Pending: 'bg-amber-50 text-amber-700 border-amber-200', Approved: 'bg-emerald-50 text-emerald-700 border-emerald-200', 'PO Created': 'bg-blue-50 text-blue-700 border-blue-200', Canceled: 'bg-red-50 text-red-700 border-red-200'};
 const WORKFLOW_STAGES = ['Draft', 'Pending', 'Approved', 'PO Created'];
@@ -169,7 +170,7 @@ export default function UnivProcurement() {
  </thead>
  <tbody className="divide-y divide-border">
  {loading ? (
- <tr><td colSpan={7} className="p-8 text-center"><Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" /></td></tr>
+ <tr><td colSpan={7} className="p-8 text-center"><OrbitLoader size="md" /></td></tr>
  ) : filtered.length === 0 ? (
  <tr><td colSpan={7} className="p-12 text-center text-[#71717a] dark:text-gray-400">No purchase orders found.</td></tr>
  ) : (

@@ -9,9 +9,10 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
-import { Plus, Trash2, Edit2, Loader2, XCircle, Search, Flag} from 'lucide-react';
+import {Plus, Trash2, Edit2,, XCircle, Search, Flag} from "lucide-react";
 import { toast} from 'react-hot-toast';
 import { motion, AnimatePresence} from 'framer-motion';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const TABLE = 'univ_projectmilestones';
 const STATUS_COLORS = {"Not Started":"bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400","In Progress":"bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400","Completed":"bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400","Delayed":"bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400","Cancelled":"bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"};
@@ -140,7 +141,7 @@ export default function UnivProjectMilestone() {
  {/* Table */}
  {loading ? (
  <div className="flex-1 flex items-center justify-center">
- <Loader2 className="w-8 h-8 animate-spin text-primary" />
+ <OrbitLoader size="md" />
  </div>
  ) : (
  <div className="flex-1 overflow-auto rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
@@ -272,7 +273,7 @@ export default function UnivProjectMilestone() {
  Cancel
  </button>
  <button type="submit" disabled={saving} className="h-10 px-6 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 active:scale-95 transition-all disabled:opacity-60 flex items-center gap-2">
- {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+ {saving && <OrbitLoader size="sm" />}
  {editId ? 'Update' : 'Add Record'}
  </button>
  </div>

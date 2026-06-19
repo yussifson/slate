@@ -418,7 +418,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  <Zap className="w-3.5 h-3.5 fill-current" />
  </div>
  <div className="flex items-center gap-2.5 px-4 py-3 rounded-2xl rounded-tl-sm bg-muted ring-1 ring-border/50 text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
- <RefreshCw className="w-3.5 h-3.5 animate-spin text-primary" />
+ <OrbitLoader size="sm" />
  <span>Architecting...</span>
  </div>
  </motion.div>

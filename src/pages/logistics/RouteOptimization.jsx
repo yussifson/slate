@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Map, MapPin, Zap, Lock, Navigation, ListOrdered, Save, Loader2, Play } from 'lucide-react';
+import {Map, MapPin, Zap, Lock, Navigation, ListOrdered, Save,, Play} from "lucide-react";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
@@ -8,6 +8,7 @@ import { usePowerSync } from '@powersync/react';
 import { useAuth } from '@/lib/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { generateText } from '@/lib/cloudflareAI';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function RouteOptimization() {
   const { t } = useTranslation();
@@ -200,7 +201,7 @@ export default function RouteOptimization() {
                 className="gap-2 relative z-0"
                 size="lg"
               >
-                {isOptimizing ? <Loader2 className="w-5 h-5 animate-spin" /> : <Play className="w-5 h-5" />}
+                {isOptimizing ? <OrbitLoader size="md" /> : <Play className="w-5 h-5" />}
                 {isOptimizing ? "Calculating..." : "AI Optimize Route"}
               </Button>
             </div>
@@ -214,7 +215,7 @@ export default function RouteOptimization() {
              <div className="p-4 border-b border-[0.5px] border-black/9 dark:border-white/8/50 bg-background/80 backdrop-blur-md relative z-10 flex justify-between items-center">
                 <h3 className="font-semibold flex items-center gap-2"><Map className="w-4 h-4" /> Live Route Preview</h3>
                 <Button onClick={handleSaveRoute} disabled={isSaving || stops.filter(s=>s.address).length < 2} size="sm" className="gap-2">
-                   {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Save Route
+                   {isSaving ? <OrbitLoader size="sm" /> : <Save className="w-4 h-4" />} Save Route
                 </Button>
              </div>
 

@@ -11,10 +11,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/
 import { Button} from "@/components/ui/button";
 import { Progress} from "@/components/ui/progress";
 import { SectionCard, FormRow, Field} from "./SettingsShared";
-import { X, Check, Zap, ArrowRight, Loader2} from "lucide-react";
+import {X, Check, Zap, ArrowRight,} from "lucide-react";
 import { initiatePaystackSubscription } from "@/lib/paystack";
 import { NotificationService } from "@/lib/notifications";
 import { COUNTRIES_CURRENCIES } from "@/config/countries";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export function CurrencySettings({ activeIndustry, company, onSave, saving }) {
  const { t} = useTranslation();
@@ -453,7 +454,7 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
         <div className="overflow-y-auto p-6 md:p-10 bg-muted/10">
           {loading ? (
             <div className="flex justify-center items-center py-24">
-              <Loader2 className="w-6 h-6 animate-spin text-primary/50" />
+              <OrbitLoader size="md" />
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
@@ -491,7 +492,7 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
                           disabled={processingId !== null}
                           className={`w-full h-11 rounded-xl font-medium transition-colors ${p.price_monthly === 0 ? 'bg-secondary text-secondary-foreground hover:bg-secondary/80' : 'bg-primary text-primary-foreground hover:bg-primary/90'}`}
                         >
-                          {processingId === p.id ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : (
+                          {processingId === p.id ? <OrbitLoader size="sm" /> : (
                             p.price_monthly === 0 ? "Downgrade to Free" : "Upgrade Plan"
                           )}
                         </Button>

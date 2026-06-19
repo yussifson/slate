@@ -15,7 +15,7 @@ import { PowerSyncContext } from '@powersync/react';
 import { HelmetProvider } from 'react-helmet-async';
 import { powerSync, initPowerSync } from './api/PowerSyncConnector';
 import { supabase } from './api/supabaseClient';
-
+import { OrbitLoader, PageLoader } from '@/components/ui/orbit-loader';
 const UnivCRM = React.lazy(() => import('@/components/universal/UnivCRM'));
 const UnivProject = React.lazy(() => import('@/components/universal/UnivProject'));
 const UnivContactManagement = React.lazy(() => import('@/components/universal/UnivContactManagement'));
@@ -413,6 +413,7 @@ import AdminSecurity from './pages/admin/AdminSecurity';
 import AdminBroadcasts from './pages/admin/AdminBroadcasts';
 import AdminEnterpriseRequests from './pages/admin/AdminEnterpriseRequests';
 import NotificationsInbox from './pages/NotificationsInbox';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 function PlatformRoutes() {
   return (
@@ -814,13 +815,7 @@ function ProtectedRoute() {
   
   // Show spinner while auth is loading OR while auth hasn't been checked yet
   if (isLoadingAuth || !authChecked) {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-        <div className="relative flex items-center justify-center">
-          <div className="w-12 h-12 rounded-full border-[3px] border-primary/20 border-t-primary animate-spin"></div>
-        </div>
-      </div>
-    );
+    return <PageLoader label="Loading Slate" />;
   }
   
   if (!isAuthenticated) {
@@ -876,7 +871,7 @@ function App() {
             <Router>
               <GlobalSystemListener />
               <ErrorBoundary>
-                <React.Suspense fallback={<div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"><div className="w-12 h-12 rounded-full border-[3px] border-primary/20 border-t-primary animate-spin"></div></div>}>
+                <React.Suspense fallback={<PageLoader label="Loading Module..." />}>
                   {isBaseDomain ? (
                     /* Storefront Routes for the Base Domain */
                     <Routes>

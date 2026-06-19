@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription} from "@/comp
 import { Badge} from "@/components/ui/badge";
 import { useAuth} from "@/lib/AuthContext";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from 'recharts';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function RetailDashboard() {
  const { t} = useTranslation();
@@ -48,7 +49,7 @@ export default function RetailDashboard() {
  if (isLoading) {
  return (
  <div className="flex-1 p-6 flex items-center justify-center">
- <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+ <OrbitLoader size="md" />
  </div>
  );
 }

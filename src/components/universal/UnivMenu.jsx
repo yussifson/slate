@@ -10,8 +10,9 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
 import { motion} from 'framer-motion';
-import { Search, UtensilsCrossed, Plus, CheckCircle2, XCircle, Edit3, Trash2, Loader2} from 'lucide-react';
+import {Search, UtensilsCrossed, Plus, CheckCircle2, XCircle, Edit3, Trash2,} from "lucide-react";
 import { toast} from 'react-hot-toast';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const EMPTY_FORM = { item_name: '', category: 'Main Course', description: '', price: 0.00, is_available: true, dietary_info: ''};
 const CATEGORIES = ['Appetizer', 'Main Course', 'Dessert', 'Beverage'];
@@ -182,7 +183,7 @@ export default function UnivMenu() {
 
  <div className="flex-1 overflow-auto custom-scrollbar p-6">
  {loading ? (
- <div className="flex h-40 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
+ <div className="flex h-40 items-center justify-center"><OrbitLoader size="md" /></div>
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {filtered.map((m, idx) => (

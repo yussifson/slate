@@ -77,7 +77,7 @@ export default function AIEmailDrafter({ recordData, defaultContext = "Write a p
  className="w-full bg-primary hover:bg-primary/90 text-white gap-2"
  >
  {isGenerating ? (
- <span className="flex items-center gap-2"><Sparkles className="w-4 h-4 animate-spin" /> {t("generating_magic", "Generating Magic...")}</span>
+ <span className="flex items-center gap-2"><OrbitLoader size="sm" /> {t("generating_magic", "Generating Magic...")}</span>
  ) : (
  <span className="flex items-center gap-2"><Sparkles className="w-4 h-4" /> {t("generate_draft", "Generate Draft")}</span>
  )}

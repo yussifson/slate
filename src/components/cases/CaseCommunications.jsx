@@ -1,12 +1,13 @@
 import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
-import { Send, Mail, MessageSquare, Phone, Loader2 } from "lucide-react";
+import {Send, Mail, MessageSquare, Phone,} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { base44 } from "@/api/base44Client";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function CaseCommunications({ caseData, client, user }) {
   const { t } = useTranslation();
@@ -200,7 +201,7 @@ export default function CaseCommunications({ caseData, client, user }) {
         </div>
         <div className="pt-2">
           <Button onClick={handleSend} disabled={sending} className="gap-2 w-full sm:w-auto">
-            {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+            {sending ? <OrbitLoader size="sm" /> : <Send className="w-4 h-4" />}
             {t("send", "Send")} {activeMode.toUpperCase()}
           </Button>
         </div>

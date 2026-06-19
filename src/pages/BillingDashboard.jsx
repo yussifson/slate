@@ -517,7 +517,7 @@ function SuperAdminBilling() {
               <Send className="w-3.5 h-3.5" /> {t("send_reminders", "Send Reminders")}
             </Button>
             <Button size="sm" onClick={runBilling} disabled={running} className="gap-2.5">
-              <RefreshCw className={`w-3.5 h-3.5 ${running ? "animate-spin" : ""}`} /> {t("run_billing_cycle", "Run Billing Cycle")}
+              { running ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" /> } {t("run_billing_cycle", "Run Billing Cycle")}
             </Button>
           </div>
         }

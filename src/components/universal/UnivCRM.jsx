@@ -11,13 +11,12 @@ import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
 import { DragDropContext, Droppable, Draggable} from '@hello-pangea/dnd';
 import { motion, AnimatePresence} from 'framer-motion';
-import { 
- Plus, Search, Filter, MoreHorizontal, User, Mail, Phone, 
- Calendar as CalendarIcon, Loader2, DollarSign, Trash2, X,
- LayoutList, KanbanSquare, Target, TrendingUp, Building2, Edit2, Eye
-} from 'lucide-react';
+import {Plus, Search, Filter, MoreHorizontal, User, Mail, Phone, 
+ Calendar as CalendarIcon,, DollarSign, Trash2, X,
+ LayoutList, KanbanSquare, Target, TrendingUp, Building2, Edit2, Eye} from "lucide-react";
 import { toast} from 'react-hot-toast';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from "@/components/ui/sheet";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const DEFAULT_STAGES = ['New', 'Contacted', 'Qualified', 'Proposal', 'Won', 'Lost'];
 
@@ -295,7 +294,7 @@ export default function UnivCRM() {
  <div className="flex-1 overflow-x-auto overflow-y-hidden flex gap-5 pb-4 snap-x px-1 min-h-[500px] items-stretch custom-scrollbar">
  {loading && leads.length === 0 ? (
  <div className="w-full h-full flex items-center justify-center">
- <Loader2 className="w-8 h-8 animate-spin text-primary" />
+ <OrbitLoader size="md" />
  </div>
  ) : (
  <>

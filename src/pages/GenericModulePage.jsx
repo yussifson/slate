@@ -210,7 +210,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
  if (isLoading) {
  return (
  <div className="h-64 flex flex-col items-center justify-center text-[#71717a] dark:text-gray-400 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mt-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <RefreshCw className="w-8 h-8 animate-spin mb-4" />
+ <OrbitLoader size="md" />
  <p>Loading slate definitions...</p>
  </div>
  );
@@ -235,7 +235,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
 
  const suspenseFallback = (
  <div className="h-64 flex flex-col items-center justify-center text-[#71717a] dark:text-gray-400 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <RefreshCw className="w-6 h-6 animate-spin mb-3" />
+ <OrbitLoader size="sm" />
  <p className="text-sm">Loading view...</p>
  </div>
  );

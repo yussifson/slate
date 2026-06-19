@@ -6,9 +6,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/
 import { Button} from "@/components/ui/button";
 import { Switch} from "@/components/ui/switch";
 import { useToast} from "@/components/ui/use-toast";
-import { Loader2, RefreshCw, Copy, Info, CheckCircle, CreditCard, Lock, Save} from "lucide-react";
+import {, RefreshCw, Copy, Info, CheckCircle, CreditCard, Lock, Save} from "lucide-react";
 import { SectionCard, FormRow, Field} from "./SettingsShared";
 import { useAuth } from "@/lib/AuthContext";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export function EmailSettings({ activeIndustry, company, onSave, saving}) {
  const { t} = useTranslation();
@@ -120,7 +121,7 @@ export function EmailSettings({ activeIndustry, company, onSave, saving}) {
  </Field>
  <div className="md:col-span-2 pt-4 flex justify-end">
  <Button onClick={() => onSave(smtpForm)} disabled={saving} className="gap-2 bg-foreground text-background hover:bg-foreground/90 font-semibold transition-all duration-200">
- {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+ {saving ? <OrbitLoader size="sm" /> : <Save className="w-4 h-4" />}
  {t("save_smtp_configuration", "Save SMTP Configuration")}
  </Button>
  </div>
@@ -185,7 +186,7 @@ export function EmailSettings({ activeIndustry, company, onSave, saving}) {
  <Info className="w-3.5 h-3.5 text-primary" /> {t("required_dns_records", "Required DNS Records")}
  </h4>
  <Button onClick={handleVerifyDomain} disabled={verifyingDomain} className="gap-2 bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-white font-semibold text-xs h-9 tracking-[0.04em]">
- {verifyingDomain ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
+ {verifyingDomain ? <OrbitLoader size="sm" /> : <RefreshCw className="w-3.5 h-3.5" />}
  {t("verify_dns_records", "Verify DNS Records")}
  </Button>
  </div>

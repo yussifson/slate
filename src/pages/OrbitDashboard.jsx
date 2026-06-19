@@ -4,8 +4,9 @@ import { useQuery } from '@tanstack/react-query';
 import { powerSync } from "@/api/PowerSyncConnector";
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { Loader2, Database, LayoutDashboard, Activity, FileText } from 'lucide-react';
+import {, Database, LayoutDashboard, Activity, FileText} from "lucide-react";
 import UnivDashboard from '@/components/universal/UnivDashboard';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function OrbitDashboard() {
   const companyId = useCompanyId();
@@ -79,7 +80,7 @@ export default function OrbitDashboard() {
   if (configLoading || recordsLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <OrbitLoader size="md" />
       </div>
     );
   }

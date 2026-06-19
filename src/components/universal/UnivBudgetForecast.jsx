@@ -9,9 +9,10 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
-import { Plus, Trash2, Edit2, Loader2, XCircle, Search, TrendingUp} from 'lucide-react';
+import {Plus, Trash2, Edit2,, XCircle, Search, TrendingUp} from "lucide-react";
 import { toast} from 'react-hot-toast';
 import { motion, AnimatePresence} from 'framer-motion';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const TABLE = 'univ_budgetforecasts';
 const STATUS_COLORS = {"Draft":"bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400","Approved":"bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400","Closed":"bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"};
@@ -140,7 +141,7 @@ export default function UnivBudgetForecast() {
  {/* Table */}
  {loading ? (
  <div className="flex-1 flex items-center justify-center">
- <Loader2 className="w-8 h-8 animate-spin text-primary" />
+ <OrbitLoader size="md" />
  </div>
  ) : (
  <div className="flex-1 overflow-auto rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
@@ -275,7 +276,7 @@ export default function UnivBudgetForecast() {
  Cancel
  </button>
  <button type="submit" disabled={saving} className="h-10 px-6 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 active:scale-95 transition-all disabled:opacity-60 flex items-center gap-2">
- {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+ {saving && <OrbitLoader size="sm" />}
  {editId ? 'Update' : 'Add Record'}
  </button>
  </div>

@@ -40,9 +40,11 @@
     --sidebar-accent-foreground: 222 47% 15%;
     --sidebar-border: 214 32% 91%;
     --sidebar-ring: 152 76% 41%;
+    --bg-base-rgb: 255, 255, 255;
   }
 
   .dark {
+    --bg-base-rgb-dark: 20, 25, 40;
 
     ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
     ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
@@ -489,3 +491,112 @@ select:not([class*="hidden"]):not([multiple]) {
   cursor: pointer;
 }
 
+
+/* ── Orbit Loader ─────────────────────────────────────────── */
+
+.orbit-loader__arc {
+  animation: orbit-spin 900ms infinite;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+@keyframes orbit-spin {
+  0%   { 
+    stroke-dashoffset: 0;
+    transform: rotate(0deg);
+  }
+  50% {
+    stroke-dashoffset: -8;
+  }
+  100% { 
+    stroke-dashoffset: 0;
+    transform: rotate(360deg);
+  }
+}
+
+.orbit-loader svg {
+  animation: orbit-rotate 900ms linear infinite;
+}
+
+.orbit-loader__arc {
+  animation: orbit-arc-dash 900ms cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes orbit-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes orbit-arc-dash {
+  0%   { stroke-dashoffset: 56; }
+  50%  { stroke-dashoffset: 14; }
+  100% { stroke-dashoffset: 56; }
+}
+
+.orbit-loader--sm .orbit-loader__arc {
+  animation: orbit-arc-dash-sm 900ms cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+.orbit-loader--md .orbit-loader__arc {
+  animation: orbit-arc-dash-md 900ms cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+.orbit-loader--lg .orbit-loader__arc {
+  animation: orbit-arc-dash-lg 900ms cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes orbit-arc-dash-sm {
+  0%   { stroke-dashoffset: 32; }
+  50%  { stroke-dashoffset: 8;  }
+  100% { stroke-dashoffset: 32; }
+}
+@keyframes orbit-arc-dash-md {
+  0%   { stroke-dashoffset: 48; }
+  50%  { stroke-dashoffset: 12; }
+  100% { stroke-dashoffset: 48; }
+}
+@keyframes orbit-arc-dash-lg {
+  0%   { stroke-dashoffset: 84; }
+  50%  { stroke-dashoffset: 21; }
+  100% { stroke-dashoffset: 84; }
+}
+
+@keyframes overlay-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes page-loader-text {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+[data-theme="dark"] .loading-overlay, .dark .loading-overlay {
+  background: rgba(var(--bg-base-rgb-dark, 12,12,13), 0.7) !important;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-ghost,
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-primary .orbit-loader__arc,
+.btn-primary .orbit-loader circle,
+[class*="bg-primary"] .orbit-loader__arc,
+[class*="bg-primary"] .orbit-loader circle {
+  stroke: currentColor;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit-loader svg,
+  .orbit-loader__arc {
+    animation: none !important;
+  }
+  .orbit-loader__arc {
+    opacity: 0.6;
+    stroke-dashoffset: 14;
+  }
+}

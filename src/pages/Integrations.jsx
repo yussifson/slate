@@ -7,7 +7,7 @@ import { useCompanyId} from '@/hooks/useCompanyId';
 import { Button} from '@/components/ui/button';
 import { Badge} from '@/components/ui/badge';
 import { Input} from '@/components/ui/input';
-import { Search, Loader2, CheckCircle2, Link2, ExternalLink, ShieldCheck, HelpCircle} from 'lucide-react';
+import {Search,, CheckCircle2, Link2, ExternalLink, ShieldCheck, HelpCircle} from "lucide-react";
 import PageHeader from '@/components/shared/PageHeader';
 import { useToast} from '@/components/ui/use-toast';
 import { powerSync} from "@/api/PowerSyncConnector";
@@ -25,6 +25,7 @@ import whatsappLogo from '@/assets/integrations/whatsapp.svg';
 import stripeLogo from '@/assets/integrations/stripe.svg';
 import mailchimpLogo from '@/assets/integrations/mailchimp.svg';
 import shipstationLogo from '@/assets/integrations/shipstation.svg';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const INTEGRATION_CATALOG = [
  {
@@ -521,7 +522,7 @@ export default function Integrations() {
  {/* Integration Grid */}
  {initialLoading ? (
  <div className="py-24 flex justify-center">
- <Loader2 className="w-8 h-8 animate-spin text-primary dark:text-primary" />
+ <OrbitLoader size="md" />
  </div>
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -594,7 +595,7 @@ export default function Integrations() {
  onClick={() => handleTestSync(app)}
  className="h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 hover:bg-slate-100 dark:hover:bg-primary/20 font-semibold transition-colors "
  >
- {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Test Sync"}
+ {isLoading ? <OrbitLoader size="sm" /> : "Test Sync"}
  </Button>
  )}
  {(app.provider === 'zoom' || app.provider === 'slack' || app.provider === 'twilio' || app.provider === 'stripe' || app.provider === 'paystack' || app.provider === 'quickbooks' || app.provider === 'docusign') && (
@@ -604,7 +605,7 @@ export default function Integrations() {
  onClick={() => handleTestFeature(app)}
  className="h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-100 text-primary/90 dark:text-primary/70 hover:bg-slate-100 dark:hover:bg-primary/20 font-semibold transition-colors "
  >
- {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Test Feature"}
+ {isLoading ? <OrbitLoader size="sm" /> : "Test Feature"}
  </Button>
  )}
  <Button 
@@ -613,7 +614,7 @@ export default function Integrations() {
  onClick={() => handleDisconnect(app)}
  className="h-10 px-4 rounded-xl border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900/40 dark:bg-transparent text-slate-700 dark:text-slate-300 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10/10 hover:border-red-200 dark:hover:border-red-500/20 transition-colors font-semibold  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
- {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Disconnect"}
+ {isLoading ? <OrbitLoader size="sm" /> : "Disconnect"}
  </Button>
  </div>
  ) : (
@@ -623,7 +624,7 @@ export default function Integrations() {
  className="h-10 px-6 rounded-xl bg-primary hover:bg-primary text-white font-semibold -emerald-600/20 transition-all hover:translate-y-[-1px]"
  >
  {isLoading ? (
- <Loader2 className="w-4 h-4 animate-spin" />
+ <OrbitLoader size="sm" />
  ) : (
  <>
  {t("connect", "Connect")} <Link2 className="w-4 h-4 ml-2 opacity-80" />
@@ -823,7 +824,7 @@ export default function Integrations() {
  <div className="flex justify-end gap-2.5 mt-4">
  <Button variant="ghost" onClick={() => setModalApp(null)}>Cancel</Button>
  <Button onClick={handleSaveCredentials} disabled={loadingAppId === modalApp?.id} className="bg-primary hover:bg-primary text-white font-semibold px-5">
- {loadingAppId === modalApp?.id ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Connection"}
+ {loadingAppId === modalApp?.id ? <OrbitLoader size="sm" /> : "Save Connection"}
  </Button>
  </div>
  </DialogContent>

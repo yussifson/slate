@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { PackageSearch, Lock, Zap, MapPin, DollarSign, Weight, Truck, CheckCircle, Loader2, Plus, Users } from 'lucide-react';
+import {PackageSearch, Lock, Zap, MapPin, DollarSign, Weight, Truck, CheckCircle,, Plus, Users} from "lucide-react";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
@@ -9,6 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/lib/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { generateText } from '@/lib/cloudflareAI';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function LoadBoard() {
   const { t } = useTranslation();
@@ -179,7 +180,7 @@ export default function LoadBoard() {
               </div>
 
               <Button onClick={handlePostLoad} disabled={isPosting} className="w-full mt-2">
-                {isPosting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                {isPosting ? <OrbitLoader size="sm" /> : null}
                 Post to Board
               </Button>
             </div>
@@ -256,7 +257,7 @@ export default function LoadBoard() {
                             onClick={() => handleMatchTrucks(load)}
                          >
                             {matchingLoadId === load.id ? (
-                               <><Loader2 className="w-4 h-4 animate-spin mr-2" /> AI is scanning fleet...</>
+                               <><OrbitLoader size="sm" /> AI is scanning fleet...</>
                             ) : (
                                <><Zap className="w-4 h-4 mr-2" /> AI Match Trucks</>
                             )}

@@ -1,4 +1,5 @@
-import { useTranslation} from "react-i18next";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect, useRef} from "react";
 import { useNavigate} from "react-router-dom";
 import { Search, FileText, User, Users, Calendar, X, ShieldAlert, ArrowRight, Sparkles, Bot} from "lucide-react";
@@ -157,7 +158,7 @@ export default function SpotlightSearch() {
  <div className="flex-1 overflow-y-auto p-3 space-y-3">
  {loading ? (
  <div className="py-14 text-center text-sm text-[#71717a] dark:text-gray-400 flex flex-col items-center gap-3">
- <span className="w-4 h-4 rounded-full border-[1.5px] border-primary/30 border-t-primary animate-spin" />
+ <OrbitLoader size="md" />
  <span>{t("scanning_records", "Scanning records...")}</span>
  </div>
  ) : flatResults.length === 0 ? (

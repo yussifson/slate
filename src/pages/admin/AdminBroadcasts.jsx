@@ -4,10 +4,11 @@ import { useState } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@powersync/react';
-import { Bell, Loader2, Mail, Send, CheckCircle2, Building2, Users } from 'lucide-react';
+import {Bell,, Mail, Send, CheckCircle2, Building2, Users} from "lucide-react";
 import { useToast } from '@/components/ui/use-toast';
 import PageHeader from '@/components/shared/PageHeader';
 import { cn } from '@/lib/utils';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function AdminBroadcasts() {
   const { t } = useTranslation();
@@ -157,7 +158,7 @@ export default function AdminBroadcasts() {
               disabled={broadcasting || !announcementText || !subject || (targetMode === 'specific' && selectedCompanies.length === 0)}
               className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl px-8 h-12 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]"
             >
-              {broadcasting ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Send className="w-4 h-4 mr-2" />}
+              {broadcasting ? <OrbitLoader size="md" /> : <Send className="w-4 h-4 mr-2" />}
               Dispatch Broadcast
             </Button>
           </div>

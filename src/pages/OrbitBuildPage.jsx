@@ -4,7 +4,7 @@ import { useParams} from 'react-router-dom';
 import { useQuery} from '@tanstack/react-query';
 import { powerSync} from "@/api/PowerSyncConnector";
 import { useCompanyId} from '@/hooks/useCompanyId';
-import { Loader2} from 'lucide-react';
+
 
 // Lazy-load universal components to prevent bloat
 const DynamicTable = React.lazy(() => import("@/components/ui/DynamicTable"));
@@ -267,6 +267,7 @@ import {
  Plus
 } from 'lucide-react';
 import { toast} from 'react-hot-toast';
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 // Dynamic Gallery View component for visual card representation
 function DynamicGalleryView({ companyId, pageDef, cleanId, tableName}) {
@@ -301,7 +302,7 @@ function DynamicGalleryView({ companyId, pageDef, cleanId, tableName}) {
  );
 
  if (loading) {
- return <div className="flex h-40 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
+ return <div className="flex h-40 items-center justify-center"><OrbitLoader size="md" /></div>;
 }
 
  return (
@@ -416,7 +417,7 @@ export default function OrbitBuildPage() {
  if (isLoading) {
  return (
  <div className="flex h-screen items-center justify-center">
- <Loader2 className="w-8 h-8 animate-spin text-primary" />
+ <OrbitLoader size="md" />
  </div>
  );
 }
@@ -975,7 +976,7 @@ export default function OrbitBuildPage() {
  )}
 
  <div className="flex-1">
- <React.Suspense fallback={<div className="p-8 text-center flex justify-center items-center min-h-[50vh]"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>}>
+ <React.Suspense fallback={<div className="p-8 text-center flex justify-center items-center min-h-[50vh]"><OrbitLoader size="md" /></div>}>
  {renderComponent()}
  </React.Suspense>
  </div>

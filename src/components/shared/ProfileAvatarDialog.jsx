@@ -7,7 +7,8 @@ import { useAuth} from "@/lib/AuthContext";
 import { base44} from "@/api/base44Client";
 import { powerSync} from "@/api/PowerSyncConnector";
 import { useToast} from "@/components/ui/use-toast";
-import { Camera, Loader2} from "lucide-react";
+import {Camera,} from "lucide-react";
+import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const ROBOT_SEEDS = ["Felix", "Aneka", "Jack", "Midnight", "Oliver", "Bella"];
 
@@ -82,7 +83,7 @@ export default function ProfileAvatarDialog({ open, onOpenChange}) {
  <div className="relative">
  <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-primary/40 bg-slate-50 flex items-center justify-center">
  {isSaving ? (
- <Loader2 className="w-8 h-8 animate-spin text-primary" />
+ <OrbitLoader size="md" />
  ) : (
  <img src={currentAvatar} alt="Current Avatar" className="w-full h-full object-cover" />
  )}
