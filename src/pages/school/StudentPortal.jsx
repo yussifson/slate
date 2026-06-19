@@ -371,6 +371,34 @@ export default function StudentPortal() {
           )}
         </div>
       )}
+
+      {submitModal.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-slate-900 border border-primary/20 w-full max-w-lg p-6 space-y-4 rounded-2xl shadow-xl">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Submit Assignment</h2>
+            <p className="text-sm text-slate-500">{submitModal.assignment?.title}</p>
+            <div>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Your Answer / Essay</label>
+              <Textarea 
+                value={submitModal.content} 
+                onChange={e => setSubmitModal({...submitModal, content: e.target.value})} 
+                className="mt-1 h-32" 
+                placeholder="Type your answer here..."
+              />
+            </div>
+            <div className="flex gap-4 pt-4">
+              <button className="flex-1 px-4 py-2 bg-slate-100 text-slate-700 font-semibold rounded-lg hover:bg-slate-200" onClick={() => setSubmitModal({ isOpen: false, assignment: null, content: '' })}>Cancel</button>
+              <button 
+                className="flex-1 px-4 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90" 
+                onClick={() => submitAssignment.mutate({ assignmentId: submitModal.assignment.id, content: submitModal.content })}
+                disabled={!submitModal.content || submitAssignment.isPending}
+              >
+                {submitAssignment.isPending ? 'Submitting...' : 'Final Submit'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
