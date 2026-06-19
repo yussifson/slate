@@ -2448,6 +2448,7 @@ export const AppSchema = new Schema({
         dosage: column.text,
         frequency: column.text,
         duration: column.text,
+        prescription_date: column.text,
         status: column.text,
         dispensed_date: column.text}),
     univ_pressrelease: new Table({

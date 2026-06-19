@@ -63,3 +63,4 @@ CREATE TABLE IF NOT EXISTS "public"."univ_admissions" (
 ALTER TABLE public.univ_admissions ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Allow company access on univ_admissions" ON public.univ_admissions;
 CREATE POLICY "Allow company access on univ_admissions" ON public.univ_admissions FOR ALL USING (auth.uid() IS NOT NULL);
+ALTER TABLE "public"."univ_prescriptions" ADD COLUMN IF NOT EXISTS "prescription_date" text;

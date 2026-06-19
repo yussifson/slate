@@ -2,7 +2,13 @@ import { OrbitLoader } from '@/components/ui/orbit-loader';
 import React, { useState} from "react";
 import { useLocation, useNavigate} from "react-router-dom";
 import { useTranslation} from "react-i18next";
-import { LayoutDashboard, RefreshCw, Globe, PanelLeft, Sparkles, Layers, Component} from "lucide-react";
+import { LayoutDashboard, RefreshCw, Globe, PanelLeft, Sparkles, Layers, Component, ChevronDown} from "lucide-react";
+import {
+ DropdownMenu,
+ DropdownMenuContent,
+ DropdownMenuItem,
+ DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button} from "@/components/ui/button";
 import { isSuperAdmin} from "@/lib/constants";
 import { useQueryClient} from "@tanstack/react-query";
@@ -178,78 +184,75 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  <div className="flex items-center gap-2 sm:gap-2 shrink-0">
  {/* Super Admin Industry Switcher */}
  {user?.role === 'super_admin' && (
- <div className="hidden sm:flex items-center gap-2.5 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 dark:border-amber-900 bg-amber-500/10 dark:bg-amber-950/20 px-2 py-1 rounded-lg text-xs font-semibold text-amber-700 dark:text-amber-400 tracking-[0.04em]">
- <Layers className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '6s'}} />
- <select
- value={currentIndustry}
- onChange={e => handleIndustryChange(e.target.value)}
- className="bg-transparent border-none outline-none font-semibold text-xs pr-4 cursor-pointer text-amber-700 dark:text-amber-400 tracking-[0.04em]"
- >
- {Object.entries(INDUSTRIES).map(([key, ind]) => {
- return (
- <option key={key} value={key} className="bg-card text-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- {ind.icon} {ind.name}
- </option>
- );
-})}
- </select>
- </div>
+ <DropdownMenu>
+ <DropdownMenuTrigger className="hidden sm:flex items-center gap-1.5 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 dark:border-amber-900 bg-amber-500/10 dark:bg-amber-950/20 px-2 py-1.5 rounded-lg text-xs font-medium text-amber-700 dark:text-amber-400 hover:bg-amber-500/20 transition-colors focus:outline-none">
+ <Layers className="w-3.5 h-3.5 animate-spin shrink-0" style={{ animationDuration: '6s'}} />
+ <span className="max-w-[80px] truncate tracking-[0.02em]">{INDUSTRIES[currentIndustry]?.name || currentIndustry}</span>
+ <ChevronDown className="w-3 h-3 opacity-50 shrink-0" />
+ </DropdownMenuTrigger>
+ <DropdownMenuContent align="end" className="w-[180px]">
+ {Object.entries(INDUSTRIES).map(([key, ind]) => (
+ <DropdownMenuItem key={key} onClick={() => handleIndustryChange(key)}>
+ <span className="mr-2 text-base">{ind.icon}</span>
+ {ind.name}
+ </DropdownMenuItem>
+ ))}
+ </DropdownMenuContent>
+ </DropdownMenu>
  )}
 
  {/* Super Admin Orbit Component Tester Switcher */}
  {user?.role === 'super_admin' && (
- <div className="hidden md:flex items-center gap-2.5 border-[0.5px] border-black/9 dark:border-white/8 border-indigo-200 dark:border-indigo-900 bg-indigo-500/10/10 dark:bg-indigo-950/20 px-2 py-1 rounded-lg text-xs font-semibold text-indigo-700 dark:text-indigo-400 tracking-[0.04em]">
- <Component className="w-3.5 h-3.5" />
- <select
- value=""
- onChange={e => { if (e.target.value) navigate(`/orbit-test/${e.target.value}`)}}
- className="bg-transparent border-none outline-none font-semibold text-xs pr-2 cursor-pointer text-indigo-700 dark:text-indigo-400 max-w-[140px] tracking-[0.04em]"
- >
- <option value="" disabled>Orbit Build Components</option>
+ <DropdownMenu>
+ <DropdownMenuTrigger className="hidden md:flex items-center gap-1.5 border-[0.5px] border-black/9 dark:border-white/8 border-indigo-200 dark:border-indigo-900 bg-indigo-500/10 dark:bg-indigo-950/20 px-2 py-1.5 rounded-lg text-xs font-medium text-indigo-700 dark:text-indigo-400 hover:bg-indigo-500/20 transition-colors focus:outline-none">
+ <Component className="w-3.5 h-3.5 shrink-0" />
+ <span className="max-w-[80px] truncate tracking-[0.02em]">Orbit Build</span>
+ <ChevronDown className="w-3 h-3 opacity-50 shrink-0" />
+ </DropdownMenuTrigger>
+ <DropdownMenuContent align="end" className="w-[180px]">
  {ORBIT_COMPONENTS_LIST.map(compName => (
- <option key={compName} value={compName} className="bg-card text-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <DropdownMenuItem key={compName} onClick={() => navigate(`/orbit-test/${compName}`)}>
  {compName}
- </option>
+ </DropdownMenuItem>
  ))}
- </select>
- </div>
+ </DropdownMenuContent>
+ </DropdownMenu>
  )}
 
  {/* Workspace Switcher */}
  {user?.available_companies?.length > 1 && (
- <div className="hidden sm:flex items-center gap-2.5 text-xs font-semibold text-foreground border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-2.5 py-1 hover:bg-muted/50 bg-card  tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Layers className="w-3.5 h-3.5 text-primary" />
- <select
- value={user.company_id}
- onChange={e => handleSwitchWorkspace(e.target.value)}
- className="bg-transparent border-none outline-none cursor-pointer focus:ring-0 truncate max-w-[150px]"
- >
+ <DropdownMenu>
+ <DropdownMenuTrigger className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-foreground border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-2 py-1.5 hover:bg-muted/50 bg-card tracking-[0.02em] transition-colors focus:outline-none shadow-sm">
+ <Layers className="w-3.5 h-3.5 text-primary shrink-0" />
+ <span className="max-w-[80px] truncate">{user.available_companies.find(c => c.id === user.company_id)?.name || "Workspace"}</span>
+ <ChevronDown className="w-3 h-3 opacity-50 shrink-0" />
+ </DropdownMenuTrigger>
+ <DropdownMenuContent align="end" className="w-[200px]">
  {user.available_companies.map(comp => (
- <option key={comp.id} value={comp.id} className="bg-card text-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <DropdownMenuItem key={comp.id} onClick={() => handleSwitchWorkspace(comp.id)}>
  {comp.name}
- </option>
+ </DropdownMenuItem>
  ))}
- </select>
- </div>
+ </DropdownMenuContent>
+ </DropdownMenu>
  )}
 
  {/* Language Switcher */}
- <div className="hidden sm:flex items-center gap-2.5 text-xs text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-2.5 py-1 hover:bg-muted/50 bg-card tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Globe className="w-3.5 h-3.5" />
- <select 
- value={i18n.language?.split('-')[0] || 'en'} 
- onChange={(e) => i18n.changeLanguage(e.target.value)}
- className="bg-transparent border-none outline-none cursor-pointer focus:ring-0"
- >
- {Object.entries(LANGUAGES).map(([key, lang]) => {
- return (
- <option key={key} value={key} className="bg-card text-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- {lang.name} {lang.flag}
- </option>
- );
-})}
- </select>
- </div>
+ <DropdownMenu>
+ <DropdownMenuTrigger className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-2 py-1.5 hover:bg-muted/50 bg-card tracking-[0.02em] transition-colors focus:outline-none shadow-sm">
+ <Globe className="w-3.5 h-3.5 shrink-0" />
+ <span className="max-w-[80px] truncate">{currentLang.name}</span>
+ <ChevronDown className="w-3 h-3 opacity-50 shrink-0" />
+ </DropdownMenuTrigger>
+ <DropdownMenuContent align="end" className="w-[150px]">
+ {Object.entries(LANGUAGES).map(([key, lang]) => (
+ <DropdownMenuItem key={key} onClick={() => i18n.changeLanguage(key)}>
+ <span className="mr-2">{lang.flag}</span>
+ {lang.name}
+ </DropdownMenuItem>
+ ))}
+ </DropdownMenuContent>
+ </DropdownMenu>
 
  {/* Orbit Bolt Toggle */}
  <Button

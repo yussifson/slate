@@ -10,6 +10,7 @@ import { useCompanyId } from "@/hooks/useCompanyId";
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { v4 as uuidv4 } from 'uuid';
+import { generateText } from '@/lib/cloudflareAI';
 
 export default function Prescriptions() {
   const { t } = useTranslation();
@@ -60,6 +61,8 @@ export default function Prescriptions() {
   const [showModal, setShowModal] = useState(false);
   const [viewRx, setViewRx] = useState(null);
   const [editingRx, setEditingRx] = useState(null);
+  const [isChecking, setIsChecking] = useState(false);
+  const [alertWarning, setAlertWarning] = useState(null);
 
   const [formData, setFormData] = useState({
     patient_id: '',
@@ -75,15 +78,15 @@ export default function Prescriptions() {
       if (payload.id) {
         await powerSync.execute(
           `UPDATE univ_prescriptions SET 
-             patient_id = ?, doctor_id = ?, medication_id = ?, dosage = ?, frequency = ?, duration = ?
+             patient_id = ?, doctor_id = ?, medication = ?, dosage = ?, frequency = ?, duration = ?
            WHERE id = ?`,
-          [payload.patient_id, payload.doctor_id, payload.medication_id, payload.dosage, payload.frequency, payload.duration, payload.id]
+          [payload.patient_id, payload.doctor_id, payload.medication, payload.dosage, payload.frequency, payload.duration, payload.id]
         );
       } else {
         await powerSync.execute(
-          `INSERT INTO univ_prescriptions (id, created_at, company_id, patient_id, doctor_id, medication_id, dosage, frequency, duration, prescription_date, status)
+          `INSERT INTO univ_prescriptions (id, created_at, company_id, patient_id, doctor_id, medication, dosage, frequency, duration, prescription_date, status)
            VALUES (uuid(), datetime('now'), ?, ?, ?, ?, ?, ?, ?, datetime('now'), 'Active')`,
-          [companyId, payload.patient_id, payload.doctor_id, payload.medication_id, payload.dosage, payload.frequency, payload.duration]
+          [companyId, payload.patient_id, payload.doctor_id, payload.medication, payload.dosage, payload.frequency, payload.duration]
         );
       }
     },
@@ -148,7 +151,7 @@ export default function Prescriptions() {
     mutateRecord.mutate({
       id: editingRx?.id,
       patient_id: formData.patient_id,
-      medication_id: formData.medication_id,
+      medication: formData.medication_id,
       dosage: formData.dosage,
       frequency: formData.frequency,
       duration: formData.duration,
@@ -159,6 +162,52 @@ export default function Prescriptions() {
   const handleDeleteFromDb = (id) => {
     if (window.confirm('Are you sure you want to delete this prescription?')) {
       deleteRecord.mutate(id);
+    }
+  };
+
+  const handleAICheck = async () => {
+    if (!formData.patient_id || !formData.medication_id) {
+      toast.error('Please select both a patient and a medication.');
+      return;
+    }
+    
+    setIsChecking(true);
+    setAlertWarning(null);
+    
+    try {
+      const patientRxs = prescriptions.filter(r => r.patient_id === formData.patient_id && r.status === 'Active');
+      const currentMeds = patientRxs.map(r => r.drug_name).join(', ');
+      const newMed = pharmacyList.find(p => p.id === formData.medication_id)?.drug_name;
+      
+      if (!currentMeds) {
+        setAlertWarning('No current active medications. Safe to prescribe.');
+        setIsChecking(false);
+        return;
+      }
+      
+      const prompt = [
+        { role: 'system', content: 'You are an expert clinical pharmacist AI. Analyze the proposed new medication against the patient\'s current active medications. Output a JSON object: {"safe": boolean, "warning": "A short 1-sentence warning if dangerous interactions exist, or OK if safe"}' },
+        { role: 'user', content: `Current Active Meds: ${currentMeds}\nProposed New Med: ${newMed}` }
+      ];
+      
+      let response = await generateText(prompt);
+      if (typeof response !== 'string') response = response.response || response.text || JSON.stringify(response);
+      
+      const jsonMatch = response.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]);
+        if (!parsed.safe) {
+          setAlertWarning(`DANGER: ${parsed.warning}`);
+          toast.error("Contraindications found!");
+        } else {
+          setAlertWarning('Clear: No known dangerous interactions.');
+          toast.success("Safe to prescribe.");
+        }
+      }
+    } catch (err) {
+      toast.error('Failed to run AI check');
+    } finally {
+      setIsChecking(false);
     }
   };
 
@@ -189,7 +238,7 @@ export default function Prescriptions() {
           <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em]">{t("prescriptions", "Prescriptions")}</h1>
           <p className="text-sm text-[#71717a] mt-0.5">{t("manage_patient_medications_and", "Manage patient medications and pharmacy orders")}</p>
         </div>
-        <Button onClick={() => { setEditingRx(null); setFormData({ patient_id: '', medication_id: '', dosage: '1 tablet', frequency: '3 times daily', duration: '7 days', doctor: 'Dr. John Mensah' }); setShowModal(true); }} className="gap-2 bg-primary hover:bg-primary/90 text-white">
+        <Button onClick={() => { setEditingRx(null); setFormData({ patient_id: '', medication_id: '', dosage: '1 tablet', frequency: '3 times daily', duration: '7 days', doctor: 'Dr. John Mensah' }); setAlertWarning(null); setShowModal(true); }} className="gap-2 bg-primary hover:bg-primary/90 text-white">
           <Plus className="w-4 h-4" /> {t("issue_prescription", "Issue Prescription")}
         </Button>
       </div>
@@ -279,11 +328,21 @@ export default function Prescriptions() {
                 </select>
               </div>
               <div>
-                <label className="text-xs font-semibold text-[#71717a] uppercase">Medication</label>
-                <select value={formData.medication_id} onChange={e => setFormData({ ...formData, medication_id: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-primary/40 bg-background px-3 py-2 text-sm">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-[#71717a] uppercase">Medication</label>
+                  <button type="button" onClick={handleAICheck} disabled={isChecking} className="text-[10px] font-semibold text-red-600 bg-red-50 hover:bg-red-100 px-2 py-0.5 rounded flex items-center gap-1 disabled:opacity-50">
+                    <ShieldCheck className="w-3 h-3" /> {isChecking ? 'Checking...' : 'AI Contraindication Check'}
+                  </button>
+                </div>
+                <select value={formData.medication_id} onChange={e => {setFormData({ ...formData, medication_id: e.target.value}); setAlertWarning(null);}} className="mt-1 w-full rounded-lg border-[0.5px] border-primary/40 bg-background px-3 py-2 text-sm">
                   <option value="">-- Select Medication --</option>
                   {pharmacyList.map(p => <option key={p.id} value={p.id}>{p.drug_name} (Stock: {p.quantity_in_stock})</option>)}
                 </select>
+                {alertWarning && (
+                  <div className={`mt-2 p-2 rounded text-xs font-semibold ${alertWarning.includes('DANGER') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+                    {alertWarning}
+                  </div>
+                )}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>

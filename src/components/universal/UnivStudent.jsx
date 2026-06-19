@@ -10,8 +10,9 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
 import { motion} from 'framer-motion';
-import { Search, GraduationCap, User, BookOpen, Clock, MoreHorizontal, FileText, Download, Plus} from 'lucide-react';
+import { Search, GraduationCap, User, BookOpen, Clock, MoreHorizontal, FileText, Download, Plus, Sparkles, XCircle, AlertTriangle} from 'lucide-react';
 import { toast} from 'react-hot-toast';
+import { generateText } from '@/lib/cloudflareAI';
 
 export default function UnivStudent() {
  const companyId = useCompanyId();
@@ -19,6 +20,8 @@ export default function UnivStudent() {
  const [students, setStudents] = useState([]);
  const [loading, setLoading] = useState(true);
  const [searchTerm, setSearchTerm] = useState('');
+ const [isAnalyzing, setIsAnalyzing] = useState(false);
+ const [riskModal, setRiskModal] = useState(null);
 
  useEffect(() => {
  if (companyId) {
@@ -75,6 +78,30 @@ export default function UnivStudent() {
  `${s.first_name || ''} ${s.last_name || ''} ${s.student_id_number || ''} ${s.grade_level || ''}`.toLowerCase().includes(searchTerm.toLowerCase())
  );
 
+ const handleAnalyzeRisk = async (s) => {
+   setIsAnalyzing(true);
+   toast.loading(`Analyzing risk profile for ${s.first_name}...`, { id: "risk" });
+   try {
+     const prompt = [
+       { role: 'system', content: 'You are an expert Educational Data Analyst AI. Predict the dropout or academic failure risk of the given student based on their profile. Return a JSON object with keys: "riskLevel" ("Low", "Medium", "High"), "reasoning" (2-3 sentences of explanation), and "suggestedIntervention" (1 sentence actionable suggestion).' },
+       { role: 'user', content: `Student: ${s.first_name} ${s.last_name}\nGrade: ${s.grade_level}\nStatus: ${s.status}\nGuardian: ${s.guardian_name || 'None listed'}` }
+     ];
+     let response = await generateText(prompt);
+     if (typeof response !== 'string') response = response.response || response.text || JSON.stringify(response);
+     const jsonMatch = response.match(/\{[\s\S]*\}/);
+     if (jsonMatch) {
+       const parsed = JSON.parse(jsonMatch[0]);
+       setRiskModal({ ...s, analysis: parsed });
+       toast.success("Analysis complete", { id: "risk" });
+     } else {
+       toast.error("Failed to parse analysis", { id: "risk" });
+     }
+   } catch (err) {
+     toast.error("Analysis failed", { id: "risk" });
+   } finally {
+     setIsAnalyzing(false);
+   }
+ };
  
  const handleExport = () => {
  const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
@@ -201,6 +228,9 @@ export default function UnivStudent() {
  </td>
  <td className="p-4 text-right">
  <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+ <button onClick={(e) => { e.stopPropagation(); handleAnalyzeRisk(s); }} disabled={isAnalyzing} className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50 border border-rose-100">
+   {isAnalyzing ? <Sparkles className="w-3.5 h-3.5 animate-pulse" /> : <Sparkles className="w-3.5 h-3.5" />} Analyze Risk
+ </button>
  <button className="text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors p-1.5 rounded-md bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><FileText className="w-3.5 h-3.5" /></button>
  <button className="text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors p-1.5 rounded-md bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><MoreHorizontal className="w-3.5 h-3.5" /></button>
  </div>
@@ -211,6 +241,34 @@ export default function UnivStudent() {
  </table>
  </div>
  </div>
+
+ {riskModal && (
+   <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
+     <div className="bg-card w-full max-w-lg rounded-2xl flex flex-col hover:shadow-xl transition-all">
+       <div className="p-5 border-b border-primary/40 flex justify-between items-center bg-rose-50/50">
+         <h2 className="text-lg font-bold flex items-center gap-2 text-rose-900"><Sparkles className="w-5 h-5 text-rose-600" /> AI Student Risk Analysis</h2>
+         <button onClick={() => setRiskModal(null)} className="p-2 hover:bg-rose-100 rounded-full transition-colors"><XCircle className="w-5 h-5 text-rose-400" /></button>
+       </div>
+       <div className="p-6 space-y-5">
+         <div>
+           <div className="text-xs uppercase font-bold tracking-wider text-rose-400 mb-1">Assessed Risk Level</div>
+           <div className="flex items-center gap-2 text-3xl font-black text-rose-600">
+             {riskModal.analysis.riskLevel === 'High' && <AlertTriangle className="w-8 h-8 text-rose-600" />}
+             {riskModal.analysis.riskLevel}
+           </div>
+         </div>
+         <div className="bg-rose-50/50 p-4 rounded-xl border border-rose-100">
+           <div className="text-xs uppercase font-bold tracking-wider text-rose-400 mb-2">AI Reasoning</div>
+           <p className="text-sm text-rose-900 leading-relaxed font-medium">{riskModal.analysis.reasoning}</p>
+         </div>
+         <div>
+           <div className="text-xs uppercase font-bold tracking-wider text-emerald-600 mb-2 flex items-center gap-2"><Plus className="w-3.5 h-3.5"/> Suggested Intervention</div>
+           <p className="text-sm text-emerald-800 leading-relaxed italic bg-emerald-50/50 p-3 rounded-lg border border-emerald-100">{riskModal.analysis.suggestedIntervention}</p>
+         </div>
+       </div>
+     </div>
+   </div>
+ )}
  </div>
  );
 }
