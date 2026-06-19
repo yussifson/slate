@@ -1,7 +1,8 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
-import { Calendar, Search, Plus, Clock, Trash2} from 'lucide-react';
+import { Calendar, Search, Plus, Clock, Trash2, Sparkles} from 'lucide-react';
 import { Button} from '@/components/ui/button';
+import { generateText } from '@/lib/cloudflareAI';
 import { Input} from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
 import { toast} from 'react-hot-toast';
@@ -59,6 +60,25 @@ export default function Reservations() {
 });
  setShowModal(true);
 };
+
+ const [isAnalyzing, setIsAnalyzing] = useState(false);
+ const handleSmartPricing = async () => {
+   setIsAnalyzing(true);
+   const tId = toast.loading('AI analyzing market demand and occupancy...');
+   try {
+     const prompt = `You are an AI Hotel Yield Manager. Current reservations: ${reservations.length}.
+Suggest an optimized rate for 'Standard Room' and 'Deluxe Room' for today based on high occupancy.
+Format your response exactly as:
+Standard Room: $X
+Deluxe Room: $Y`;
+     const result = await generateText(prompt);
+     toast.success(`AI Pricing Suggestions:\n${result.trim()}`, { id: tId, duration: 6000 });
+   } catch (err) {
+     toast.error('Failed to get pricing from AI', { id: tId });
+   } finally {
+     setIsAnalyzing(false);
+   }
+ };
 
  // Generic Save Handler for real DB persistence
  const handleSaveToDb = () => {
@@ -157,9 +177,14 @@ export default function Reservations() {
  "Manage room bookings and guest arrivals"
  )}</p>
  </div>
- <Button onClick={() => { setEditTargetId(null); setShowModal(true); setFormData({ guest: '', checkIn: new Date().toISOString().split('T')[0], checkOut: new Date(Date.now() + 86400000).toISOString().split('T')[0], roomType: 'Standard Room', guestsCount: 1});}} className="gap-2 bg-primary hover:bg-primary/90 text-white">
- <Plus className="w-4 h-4" /> {t("new_booking", "New Booking")}
- </Button>
+  <div className="flex gap-2">
+  <Button onClick={handleSmartPricing} disabled={isAnalyzing} variant="outline" className="gap-2 border-primary/30 text-primary hover:bg-primary/10">
+    <Sparkles className="w-4 h-4" /> AI Smart Pricing
+  </Button>
+  <Button onClick={() => { setEditTargetId(null); setShowModal(true); setFormData({ guest: '', checkIn: new Date().toISOString().split('T')[0], checkOut: new Date(Date.now() + 86400000).toISOString().split('T')[0], roomType: 'Standard Room', guestsCount: 1});}} className="gap-2 bg-primary hover:bg-primary/90 text-white">
+  <Plus className="w-4 h-4" /> {t("new_booking", "New Booking")}
+  </Button>
+  </div>
  </div>
  <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">

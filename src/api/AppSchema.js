@@ -3465,5 +3465,52 @@ export const AppSchema = new Schema({
         payment_method: column.text,
         status: column.text
     }),
+    workspace_insights: new Table({
+        id: column.text,
+        company_id: column.text,
+        vertical: column.text,
+        insight_type: column.text,
+        insight_key: column.text,
+        entity_type: column.text,
+        entity_id: column.text,
+        title: column.text,
+        body: column.text,
+        severity: column.text,
+        confidence: column.real,
+        data_snapshot: column.text,
+        action_label: column.text,
+        action_url: column.text,
+        is_dismissed: column.integer,
+        dismissed_by: column.text,
+        dismissed_at: column.text,
+        computed_at: column.text,
+        expires_at: column.text,
+        created_at: column.text
+    }),
+    intelligence_runs: new Table({
+        id: column.text,
+        company_id: column.text,
+        vertical: column.text,
+        engine_name: column.text,
+        status: column.text,
+        insights_created: column.integer,
+        insights_updated: column.integer,
+        error_message: column.text,
+        duration_ms: column.integer,
+        started_at: column.text,
+        completed_at: column.text
+    }),
+    entity_intelligence: new Table({
+        id: column.text,
+        company_id: column.text,
+        entity_type: column.text,
+        entity_id: column.text,
+        summary: column.text,
+        risk_score: column.real,
+        risk_factors: column.text,
+        next_actions: column.text,
+        key_signals: column.text,
+        computed_at: column.text
+    }),
 });
 

@@ -1,11 +1,4 @@
 import { OrbitLoader } from '@/components/ui/orbit-loader';
-import { useTranslation} from "react-i18next";
-import React, { useState, useEffect} from "react";
-import { useNavigate} from "react-router-dom";
-import { base44} from "@/api/base44Client";
-import { useQuery} from "@tanstack/react-query";
-import { useAuth} from "@/lib/AuthContext";
-import { useImpersonation} from "@/lib/ImpersonationContext";
 import { useCompanyId} from "@/hooks/useCompanyId";
 import { getTerm} from "@/config/industries";
 import { Briefcase, Users, DollarSign, Clock, Calendar, BarChart2, RefreshCw, Building2, Settings2} from "lucide-react";

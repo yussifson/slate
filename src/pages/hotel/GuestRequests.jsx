@@ -1,7 +1,8 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
-import { Bell, Search, CheckCircle, Clock, AlertTriangle, Coffee, Wrench, Plus, Trash2} from 'lucide-react';
+import { Bell, Search, CheckCircle, Clock, AlertTriangle, Coffee, Wrench, Plus, Trash2, Sparkles} from 'lucide-react';
 import { Button} from '@/components/ui/button';
+import { generateText } from '@/lib/cloudflareAI';
 import { Input} from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
 import { toast} from 'react-hot-toast';
@@ -85,6 +86,38 @@ export default function GuestRequests() {
 });
 };
 
+ const [isAnalyzing, setIsAnalyzing] = useState(false);
+ const handleAIAnalyze = async (req) => {
+   setIsAnalyzing(true);
+   const tId = toast.loading('AI analyzing request urgency...');
+   try {
+     const prompt = `Analyze this hotel guest request for urgency and sentiment.
+Request: "${req.detail}" (Type: ${req.type})
+Reply with EXACTLY ONE of these tags: URGENT (if safety, severe complaint, VIP, immediate maintenance), NORMAL, or LOW.`;
+     const result = await generateText(prompt);
+     const tag = result.trim().toUpperCase();
+     
+     const updatedPayload = { ...req, urgency: tag };
+     delete updatedPayload.id;
+
+     mutateRecord.mutate({
+       id: req.id,
+       recordType: 'request',
+       payload: updatedPayload,
+       status: req.status,
+       searchText: `${req.room} ${req.type} ${req.detail}`
+     }, {
+       onSuccess: () => {
+         toast.success(`AI analyzed: ${tag}`, { id: tId });
+       }
+     });
+   } catch (err) {
+     toast.error('AI analysis failed', { id: tId });
+   } finally {
+     setIsAnalyzing(false);
+   }
+ };
+
  const handleDeleteRequest = (id) => {
  if (window.confirm('Are you sure you want to delete this request?')) {
  deleteRecord.mutate({ id, recordType: 'request'}, {
@@ -146,12 +179,20 @@ export default function GuestRequests() {
  <div className="flex items-center gap-3 mb-1">
  <span className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("room", "Room")} {req.room}</span>
  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider ${statusColors[req.status] || 'bg-muted'}`}>{req.status}</span>
+ {req.urgency === 'URGENT' && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider bg-red-100 text-red-700 flex items-center gap-1"><AlertTriangle className="w-3 h-3"/> URGENT VIP</span>}
+ {req.urgency === 'NORMAL' && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider bg-slate-100 text-slate-700">NORMAL</span>}
+ {req.urgency === 'LOW' && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider bg-slate-100 text-slate-500">LOW</span>}
  </div>
  <p className="text-sm font-medium text-foreground">{req.type}: <span className="font-normal text-[#71717a] dark:text-gray-400">{req.detail}</span></p>
  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 flex items-center gap-2 tracking-[0.04em]"><Clock className="w-3 h-3"/> {req.time || 'Just now'}</p>
  </div>
  </div>
  <div className="flex gap-2 w-full sm:w-auto items-center justify-end">
+ {!req.urgency && (
+   <Button variant="outline" size="sm" onClick={() => handleAIAnalyze(req)} disabled={isAnalyzing} className="gap-2 text-[#71717a] dark:text-gray-400 border-primary/30 hover:text-primary hover:bg-primary/10 transition-colors">
+     <Sparkles className="w-4 h-4" /> AI Triage
+   </Button>
+ )}
  {req.status === 'Pending' && (
  <Button onClick={() => handleUpdateStatus(req, 'In Progress')} size="sm" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white">{t("accept_task", "Accept Task")}</Button>
  )}

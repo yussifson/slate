@@ -1,6 +1,6 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
-import { Calendar, Bell, Coffee, Key, MapPin, Search} from 'lucide-react';
+import { Calendar, Bell, Coffee, Key, MapPin, Search, Sparkles, Send, Bot} from 'lucide-react';
 import { useIndustryRecords, useMutateIndustryRecord} from '@/hooks/useIndustryData';
 import { base44} from '@/api/base44Client';
 import { Button} from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Input} from "@/components/ui/input";
 import { toast} from 'react-hot-toast';
 import { useAuth} from '@/lib/AuthContext';
 import { Badge} from "@/components/ui/badge";
+import { generateText } from '@/lib/cloudflareAI';
 
 export default function GuestPortal() {
  const { t} = useTranslation();
@@ -159,8 +160,33 @@ export default function GuestPortal() {
  <Button className="w-full mt-4 bg-primary hover:bg-primary/90 text-white">{t("view_full_folio", "View Full Folio")}</Button>
  </div>
  </div>
- </div>
- </div>
+
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+  <div className="p-4 border-b border-primary/40 bg-muted/50 flex items-center gap-2">
+    <Sparkles className="w-4 h-4 text-primary" />
+    <h3 className="font-semibold text-card-foreground">AI Concierge</h3>
+  </div>
+  <div className="p-4 space-y-4">
+    <div className="h-[250px] overflow-y-auto space-y-3 p-2 bg-slate-50 dark:bg-slate-900/50 rounded-lg border-[0.5px] border-black/9 dark:border-white/8">
+      {chatLog.map((msg, i) => (
+        <div key={i} className={`flex gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+          {msg.role === 'ai' && <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0"><Bot className="w-3 h-3 text-primary"/></div>}
+          <div className={`p-2 rounded-lg text-sm max-w-[80%] ${msg.role === 'user' ? 'bg-primary text-white' : 'bg-white dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8'}`}>
+            {msg.text}
+          </div>
+        </div>
+      ))}
+      {isChatting && <div className="flex gap-2"><div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0"><Bot className="w-3 h-3 text-primary"/></div><div className="p-2 rounded-lg text-sm bg-white dark:bg-slate-800 border-[0.5px] animate-pulse">...</div></div>}
+    </div>
+    <div className="flex gap-2">
+      <Input value={chatMsg} onChange={e => setChatMsg(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSendChat()} placeholder="Ask for towels, late checkout..." className="flex-1" />
+      <Button onClick={handleSendChat} disabled={isChatting} className="bg-primary hover:bg-primary/90 text-white px-3"><Send className="w-4 h-4"/></Button>
+    </div>
+  </div>
+  </div>
+
+  </div>
+  </div>
  {showRequestModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
  <div className="bg-card rounded-2xl w-full max-w-sm p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
