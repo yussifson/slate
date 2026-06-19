@@ -1,6 +1,7 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
-import { Users, MapPin, Clock, Plus, Trash2, Search} from 'lucide-react';
+import { Users, MapPin, Clock, Plus, Trash2, Search, Sparkles} from 'lucide-react';
+import { generateText } from '@/lib/cloudflareAI';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
@@ -91,10 +92,51 @@ export default function SmallGroups() {
 };
 
  const filtered = groups.filter(g =>
- g.name?.toLowerCase().includes(search.toLowerCase()) ||
- g.leader?.toLowerCase().includes(search.toLowerCase()) ||
- g.location?.toLowerCase().includes(search.toLowerCase())
+  g.name?.toLowerCase().includes(search.toLowerCase()) ||
+  g.leader?.toLowerCase().includes(search.toLowerCase()) ||
+  g.location?.toLowerCase().includes(search.toLowerCase())
  );
+
+ const [isMatching, setIsMatching] = useState(false);
+ const [matchQuery, setMatchQuery] = useState('');
+ const [highlightedGroup, setHighlightedGroup] = useState(null);
+
+ const handleSmartMatch = async () => {
+   if (!matchQuery) {
+     return toast.error("Please enter a location or interest to match.");
+   }
+   if (groups.length === 0) return toast.error("No groups available to match.");
+
+   setIsMatching(true);
+   const tId = toast.loading('Finding the best small group match...');
+   try {
+     const prompt = `You are a church small group coordinator. 
+A member is looking for a group matching: "${matchQuery}".
+Available groups:
+${groups.map(g => `- ID: ${g.id}, Name: ${g.name}, Location: ${g.location}, Time: ${g.time}`).join('\n')}
+
+Based on location proximity and general fit, which group is the best match? Respond with ONLY the exact ID of the best matching group.`;
+     
+     const resultId = await generateText(prompt);
+     const cleanId = resultId.trim();
+     
+     if (groups.some(g => g.id === cleanId)) {
+       setHighlightedGroup(cleanId);
+       toast.success('Found the perfect small group match!', { id: tId });
+       setSearch(''); // clear search so it shows
+       
+       setTimeout(() => {
+         setHighlightedGroup(null);
+       }, 5000); // highlight for 5s
+     } else {
+       toast.error('Could not find a definite match.', { id: tId });
+     }
+   } catch (err) {
+     toast.error('Matching failed.', { id: tId });
+   } finally {
+     setIsMatching(false);
+   }
+ };
 
  return (
  <div className="space-y-6">
@@ -106,16 +148,29 @@ export default function SmallGroups() {
  "Cell groups and home fellowship directory"
  )}</p>
  </div>
- <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
- <Plus className="w-4 h-4" /> {t("add_group", "Add Group")}
- </Button>
- </div>
- <div className="flex items-center gap-3">
- <div className="relative max-w-md flex-1">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
- <Input placeholder="Search cells and host locations..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
- </div>
- </div>
+  </div>
+  <div className="flex gap-2">
+  <div className="flex items-center">
+    <Input 
+      placeholder="Match by location..." 
+      value={matchQuery} 
+      onChange={e => setMatchQuery(e.target.value)} 
+      className="w-48 rounded-r-none border-r-0 h-9"
+    />
+    <Button onClick={handleSmartMatch} disabled={isMatching} variant="outline" className="h-9 rounded-l-none border-l-0 gap-2 border-primary/30 text-primary hover:bg-primary/10">
+      <Sparkles className="w-4 h-4" /> Match
+    </Button>
+  </div>
+  <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white h-9">
+  <Plus className="w-4 h-4" /> {t("add_group", "Add Group")}
+  </Button>
+  </div>
+  <div className="flex items-center gap-3">
+  <div className="relative max-w-md flex-1">
+  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+  <Input placeholder="Search cells and host locations..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+  </div>
+  </div>
  {isDbLoading ? (
  <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_groups", "Loading groups...")}</div>
  ) : filtered.length === 0 ? (
@@ -128,10 +183,12 @@ export default function SmallGroups() {
  )}</p>
  </div>
  ) : (
- <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
- {filtered.map(group => {
- return (
- <div key={group.id} className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 hover:border-primary/20 transition-colors relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  {filtered.map(group => {
+  const isMatch = highlightedGroup === group.id;
+  return (
+  <div key={group.id} className={`bg-card rounded-xl border-[0.5px] p-6 hover:border-primary/20 transition-colors relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200 ${isMatch ? 'ring-2 ring-primary border-primary shadow-lg scale-[1.02] transition-all' : 'border-black/9 dark:border-white/8 border-primary/40'}`}>
+  {isMatch && <div className="absolute -top-3 -right-3 bg-primary text-white rounded-full p-2 shadow-lg"><Sparkles className="w-4 h-4"/></div>}
  <div className="flex justify-between items-start mb-4">
  <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
  <Users className="w-6 h-6" />

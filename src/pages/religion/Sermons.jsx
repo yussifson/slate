@@ -1,6 +1,7 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
-import { PlayCircle, Headphones, BookOpen, Search, Upload, Trash2} from 'lucide-react';
+import { PlayCircle, Headphones, BookOpen, Search, Upload, Trash2, MoreVertical, Eye, Edit, Sparkles} from 'lucide-react';
+import { generateText } from '@/lib/cloudflareAI';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
@@ -27,7 +28,49 @@ export default function Sermons() {
  const [deleteTargetId, setDeleteTargetId] = useState(null);
  const [viewRecord, setViewRecord] = useState(null);
  const [editRecord, setEditRecord] = useState(null);
+ const [isGenerating, setIsGenerating] = useState(false);
 
+ const generateOutline = async () => {
+  if (!viewRecord || !viewRecord.title || !viewRecord.scripture) {
+   toast.error('Sermon title and scripture reference required to generate outline.');
+   return;
+  }
+  
+  setIsGenerating(true);
+  const tId = toast.loading('Generating AI Outline...');
+  try {
+   const prompt = `You are a pastor preparing a sermon outline. 
+Title: ${viewRecord.title}
+Scripture: ${viewRecord.scripture}
+Preacher: ${viewRecord.preacher}
+
+Provide a structured 3-point sermon outline with an introduction, 3 main points with brief explanations, and a conclusion. Keep it concise.`;
+   
+   const outline = await generateText(prompt);
+   
+   // Save it back to the record
+   const payload = { ...viewRecord, outline };
+   delete payload.id;
+   delete payload.status;
+   
+   mutateRecord.mutate({
+    id: viewRecord.id,
+    recordType: 'sermon',
+    payload,
+    status: viewRecord.status || 'Active',
+    searchText: `${viewRecord.title} ${viewRecord.preacher} ${viewRecord.series}`
+   }, {
+    onSuccess: () => {
+     toast.success('AI Outline generated and saved!', { id: tId });
+     setViewRecord({ ...viewRecord, outline });
+    }
+   });
+  } catch (err) {
+   toast.error('Failed to generate outline.', { id: tId });
+  } finally {
+   setIsGenerating(false);
+  }
+ };
  // Form State
  const [formData, setFormData] = useState({
  title: '',
@@ -249,7 +292,7 @@ export default function Sermons() {
  <SheetDescription>{t("read_only_view_of_the_selected", "Read-only view of the selected record.")}</SheetDescription>
  </SheetHeader>
  <div className="mt-6 space-y-4">
- {viewRecord && Object.entries(viewRecord).filter(([k]) => k !== 'id' && k !== 'status').map(([key, value]) => {
+ {viewRecord && Object.entries(viewRecord).filter(([k]) => k !== 'id' && k !== 'status' && k !== 'outline').map(([key, value]) => {
  return (
  <div key={key} className="border-b border-primary/40 pb-2">
  <p className="text-sm font-medium text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
@@ -261,6 +304,25 @@ export default function Sermons() {
  </div>
  );
 })}
+
+{viewRecord && viewRecord.outline && (
+  <div className="border-b border-primary/40 pb-2 mt-4">
+     <p className="text-sm font-medium text-primary uppercase tracking-[0.04em] mb-2 flex items-center gap-2"><Sparkles className="w-4 h-4"/> AI Outline</p>
+     <div className="text-sm whitespace-pre-wrap bg-muted/30 p-3 rounded-lg border-[0.5px] border-primary/20">{viewRecord.outline}</div>
+  </div>
+)}
+
+{viewRecord && !viewRecord.outline && (
+  <Button 
+    onClick={generateOutline} 
+    disabled={isGenerating}
+    className="w-full mt-4 gap-2 bg-primary/10 text-primary hover:bg-primary/20 border border-primary/30"
+    variant="outline"
+  >
+     <Sparkles className="w-4 h-4" /> 
+     {isGenerating ? 'Generating...' : 'Generate AI Outline'}
+  </Button>
+)}
  </div>
  </SheetContent>
  </Sheet>

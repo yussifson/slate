@@ -1,6 +1,6 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
-import { Calendar, Users, ClipboardCheck, Plus, Trash2, Search} from 'lucide-react';
+import { Calendar, Users, ClipboardCheck, Plus, Trash2, Search, Wand2, AlertCircle} from 'lucide-react';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
@@ -90,11 +90,67 @@ export default function Volunteers() {
 });
 };
 
+ const handleAutoSchedule = () => {
+   if (volunteers.length === 0) return toast.error("No volunteers to schedule!");
+   const tId = toast.loading('Running scheduling algorithm...');
+   
+   // Simple Algorithm: Find next 4 Sundays and assign eligible volunteers without double-booking a single date
+   const nextSundays = Array.from({length: 4}).map((_, i) => {
+     const d = new Date();
+     d.setDate(d.getDate() + ((7 - d.getDay()) % 7 || 7) + (i * 7));
+     return d.toISOString().split('T')[0];
+   });
+
+   let createdCount = 0;
+   const booked = new Set(); // tracks "date-volunteerName"
+
+   nextSundays.forEach(date => {
+     // For each group, pick one volunteer
+     const groups = [...new Set(volunteers.map(v => v.group))];
+     groups.forEach(g => {
+       const available = volunteers.filter(v => v.group === g && v.availability.toLowerCase().includes('sunday') && !booked.has(`${date}-${v.name}`));
+       if (available.length > 0) {
+         // pick random
+         const chosen = available[Math.floor(Math.random() * available.length)];
+         booked.add(`${date}-${chosen.name}`);
+         
+         const payload = {
+           name: chosen.name,
+           group: chosen.group,
+           role: chosen.role,
+           availability: chosen.availability,
+           nextService: date
+         };
+         
+         mutateRecord.mutate({
+           recordType: 'volunteer',
+           payload,
+           status: 'active',
+           searchText: `${chosen.name} ${chosen.group} ${chosen.role}`
+         });
+         createdCount++;
+       }
+     });
+   });
+
+   setTimeout(() => {
+     toast.success(`Algorithm generated ${createdCount} new schedule assignments!`, { id: tId });
+   }, 1500);
+ };
+
  const filtered = volunteers.filter(v =>
- v.name?.toLowerCase().includes(search.toLowerCase()) ||
- v.group?.toLowerCase().includes(search.toLowerCase()) ||
- v.role?.toLowerCase().includes(search.toLowerCase())
+  v.name?.toLowerCase().includes(search.toLowerCase()) ||
+  v.group?.toLowerCase().includes(search.toLowerCase()) ||
+  v.role?.toLowerCase().includes(search.toLowerCase())
  );
+
+ // Highlight double bookings
+ const bookingsByDate = {};
+ filtered.forEach(v => {
+   if (!bookingsByDate[v.nextService]) bookingsByDate[v.nextService] = new Set();
+   if (bookingsByDate[v.nextService].has(v.name)) v.doubleBooked = true;
+   bookingsByDate[v.nextService].add(v.name);
+ });
 
  return (
  <div className="space-y-6">
@@ -106,9 +162,14 @@ export default function Volunteers() {
  "Manage religion service volunteers and schedules"
  )}</p>
  </div>
- <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
- <Plus className="w-4 h-4" /> {t("schedule_volunteer", "Schedule Volunteer")}
- </Button>
+  <div className="flex gap-2">
+    <Button onClick={handleAutoSchedule} variant="outline" className="gap-2 border-primary/30 text-primary hover:bg-primary/10">
+      <Wand2 className="w-4 h-4" /> AI Auto-Schedule
+    </Button>
+    <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
+      <Plus className="w-4 h-4" /> {t("schedule_volunteer", "Schedule Volunteer")}
+    </Button>
+  </div>
  </div>
  <div className="flex items-center gap-3">
  <div className="relative max-w-md flex-1">
@@ -155,6 +216,7 @@ export default function Volunteers() {
  <td className="px-6 py-4 text-card-foreground font-semibold hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2">
  <Calendar className="w-4 h-4 text-primary" /> {v.nextService}
+ {v.doubleBooked && <AlertCircle className="w-4 h-4 text-red-500" title="Double Booked" />}
  </div>
  </td>
  <td className="px-6 py-4 text-right">

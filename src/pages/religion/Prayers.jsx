@@ -1,6 +1,7 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
-import { Heart, HandHeart, CheckCircle, Search, Trash2, Plus} from 'lucide-react';
+import { Heart, HandHeart, CheckCircle, Search, Trash2, Plus, Sparkles, AlertTriangle} from 'lucide-react';
+import { generateText } from '@/lib/cloudflareAI';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
@@ -109,6 +110,39 @@ export default function Prayers() {
 });
 };
 
+ const [isAnalyzing, setIsAnalyzing] = useState(false);
+ const handleAnalyzeSentiment = async (prayer) => {
+   setIsAnalyzing(true);
+   const tId = toast.loading('AI analyzing prayer sentiment...');
+   try {
+     const prompt = `Analyze this prayer request and categorize its urgency level for pastoral care. 
+Respond with exactly one word: URGENT (if it involves death, severe sickness, hospital, crisis), NORMAL (if it's a general prayer), or PRAISE (if it's thanksgiving).
+Prayer Request: "${prayer.request}"`;
+     const sentiment = await generateText(prompt);
+     const cleanSentiment = sentiment.trim().toUpperCase();
+     
+     const updatedPayload = { ...prayer, sentiment: cleanSentiment };
+     delete updatedPayload.id;
+     delete updatedPayload.status;
+
+     mutateRecord.mutate({
+       id: prayer.id,
+       recordType: 'prayer',
+       payload: updatedPayload,
+       status: prayer.status,
+       searchText: `${prayer.name} ${prayer.request}`
+     }, {
+       onSuccess: () => {
+         toast.success(`Sentiment analyzed: ${cleanSentiment}`, { id: tId });
+       }
+     });
+   } catch (err) {
+     toast.error('Failed to analyze sentiment', { id: tId });
+   } finally {
+     setIsAnalyzing(false);
+   }
+ };
+
  const handleDeletePrayer = () => {
  if (!deleteTargetId) return;
  deleteRecord.mutate({ id: deleteTargetId, recordType: 'prayer'}, {
@@ -178,6 +212,18 @@ export default function Prayers() {
  )}
  <span className="text-[#71717a] dark:text-gray-400">•</span>
  <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{prayer.date}</span>
+ {prayer.sentiment === 'URGENT' && (
+    <>
+      <span className="text-[#71717a] dark:text-gray-400">•</span>
+      <span className="text-xs text-red-500 font-bold tracking-[0.04em] flex items-center gap-1"><AlertTriangle className="w-3 h-3"/> URGENT PASTORAL CARE</span>
+    </>
+  )}
+  {prayer.sentiment === 'PRAISE' && (
+    <>
+      <span className="text-[#71717a] dark:text-gray-400">•</span>
+      <span className="text-xs text-green-500 font-bold tracking-[0.04em] flex items-center gap-1"><CheckCircle className="w-3 h-3"/> PRAISE REPORT</span>
+    </>
+  )}
  </div>
  <p className="text-foreground text-lg leading-relaxed font-medium">"{prayer.request}"</p>
  </div>
@@ -198,6 +244,16 @@ export default function Prayers() {
  >
  <CheckCircle className="w-4 h-4" /> {t("mark_answered", "Mark Answered")}
  </Button>
+ {!prayer.sentiment && (
+    <Button
+      variant="outline"
+      onClick={() => handleAnalyzeSentiment(prayer)}
+      disabled={isAnalyzing}
+      className="gap-2 text-[#71717a] dark:text-gray-400 hover:text-primary hover:border-primary/20 hover:bg-slate-50"
+    >
+      <Sparkles className="w-4 h-4" /> Analyze Needs
+    </Button>
+  )}
  </>
  ) : (
  <div className="flex flex-col items-center justify-center text-primary h-full py-2">
