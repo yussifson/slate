@@ -1,4 +1,5 @@
 import { OrbitLoader } from '@/components/ui/orbit-loader';
+import IntelligenceDashboard from '@/components/IntelligenceDashboard';
 import React, { useState, useEffect} from "react";
 import { useNavigate} from "react-router-dom";
 import { useTranslation} from "react-i18next";
@@ -138,6 +139,10 @@ export default function LawDashboard({ companyId, company, isAdmin}) {
  {isRefreshing ? t('refreshing', "Refreshing...") : t('refresh', "Refresh")}
  </Button>
  </div>
+ </div>
+ {/* Intelligence Dashboard */}
+ <div className="mb-6">
+   <IntelligenceDashboard vertical="law" compact={true} maxItems={3} />
  </div>
  {/* Metric Cards */}
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

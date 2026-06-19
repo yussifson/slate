@@ -1,4 +1,12 @@
 import { OrbitLoader } from '@/components/ui/orbit-loader';
+import { useTranslation} from "react-i18next";
+import React, { useState, useEffect} from "react";
+import { useNavigate} from "react-router-dom";
+import { base44} from "@/api/base44Client";
+import { useQuery} from "@tanstack/react-query";
+import { useAuth} from "@/lib/AuthContext";
+import { useImpersonation} from "@/lib/ImpersonationContext";
+import IntelligenceDashboard from '@/components/IntelligenceDashboard';
 import { useCompanyId} from "@/hooks/useCompanyId";
 import { getTerm} from "@/config/industries";
 import { Briefcase, Users, DollarSign, Clock, Calendar, BarChart2, RefreshCw, Building2, Settings2} from "lucide-react";
@@ -131,6 +139,10 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
  {isRefreshing ? "Refreshing..." : "Refresh"}
  </Button>
  </div>
+ </div>
+ {/* Intelligence Dashboard */}
+ <div className="mb-6">
+   <IntelligenceDashboard vertical={industry} compact={true} maxItems={3} />
  </div>
  {/* Metric Cards */}
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

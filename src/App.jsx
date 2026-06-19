@@ -11,6 +11,7 @@ import { ThemeProvider } from '@/lib/ThemeContext';
 import { ImpersonationProvider } from '@/lib/ImpersonationContext';
 import { VideoProvider } from '@/lib/VideoContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import Intelligence from '@/pages/Intelligence';
 import React, { useEffect } from 'react';
 import { PowerSyncContext } from '@powersync/react';
 import { HelmetProvider } from 'react-helmet-async';
@@ -431,6 +432,7 @@ function PlatformRoutes() {
       {/* Core / Shared Pages */}
       <Route path="/ob/:pageName" element={<OrbitBuildPage />} />
       <Route path="/" element={<Dashboard />} />
+      <Route path="/intelligence" element={<Intelligence />} />
       <Route path="/cases" element={<UnivProject />} />
       <Route path="/clients" element={<Clients />} />
       <Route path="/calendar" element={<CalendarPage />} />
