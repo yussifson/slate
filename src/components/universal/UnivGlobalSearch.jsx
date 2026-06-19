@@ -94,7 +94,7 @@ export default function UnivGlobalSearch({
  const parts = text.split(new RegExp(`(${debouncedQuery})`, 'gi'));
  return parts.map((part, i) => 
  part.toLowerCase() === debouncedQuery.toLowerCase() ? (
- <span key={i} className="bg-amber-200/50 text-amber-900 dark:bg-amber-900/40 dark:text-amber-200 px-0.5 rounded">{part}</span>
+ <span key={i} className="bg-amber-200/50 text-amber-900 dark:bg-amber-900/40 dark:text-amber-200 px-0.5 rounded-md">{part}</span>
  ) : part
  );
 };
@@ -113,16 +113,16 @@ export default function UnivGlobalSearch({
  return (
  <div className="flex flex-col h-full bg-background font-sans">
  {/* Search Hero */}
- <div className="bg-card border-b border-primary/40 pt-12 pb-6 px-6 sm:px-10 shrink-0 relative overflow-hidden">
+ <div className="bg-card border-b border-primary/40 pt-12 pb-6 px-6 sm:px-10 shrink-0 relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-primary via-indigo-500 to-purple-500"></div>
  <div className="max-w-4xl mx-auto space-y-6">
- <div className="flex flex-col gap-1 text-center md:text-left">
- <h1 className="text-3xl font-extrabold tracking-tight">Global Search</h1>
- <p className="text-muted-foreground">Search across all records, pages, and workspaces.</p>
+ <div className="flex flex-col gap-2 text-center md:text-left">
+ <h1 className="text-3xl font-extrabold tracking-tight tracking-[-0.02em]">Global Search</h1>
+ <p className="text-[#71717a] dark:text-gray-400">Search across all records, pages, and workspaces.</p>
  </div>
 
  <div className="relative group">
- <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors">
+ <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-[#71717a] dark:text-gray-400 group-focus-within:text-primary transition-colors">
  <Search className="w-6 h-6" />
  </div>
  <input 
@@ -131,14 +131,14 @@ export default function UnivGlobalSearch({
  onChange={e => setQuery(e.target.value)}
  onKeyDown={e => e.key === 'Enter' && saveRecentSearch(query)}
  placeholder="Type to search..."
- className="w-full h-16 pl-14 pr-16 bg-muted/50 border border-primary/40 rounded-2xl text-lg font-medium text-foreground placeholder:text-muted-foreground/50 focus:bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all "
+ className="w-full h-16 pl-14 pr-16 bg-muted/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl text-lg font-medium text-foreground placeholder:text-[#71717a] dark:text-gray-400/50 focus:bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all "
  autoFocus
  />
  <div className="absolute inset-y-0 right-0 flex items-center pr-4">
  {isFetching ? (
- <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+ <Loader2 className="w-5 h-5 animate-spin text-[#71717a] dark:text-gray-400" />
  ) : (
- <kbd className="hidden sm:inline-flex h-7 items-center gap-1 rounded bg-background border border-primary/40 px-2 font-mono text-[11px] font-medium text-muted-foreground ">
+ <kbd className="hidden sm:inline-flex h-7 items-center gap-2 rounded-md bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 px-2 font-mono text-[11px] font-medium text-[#71717a] dark:text-gray-400 ">
  <Command className="w-3 h-3" /> K
  </kbd>
  )}
@@ -152,10 +152,10 @@ export default function UnivGlobalSearch({
  key={scope.id}
  onClick={() => setActiveScope(scope.id)}
  className={cn(
- "px-4 py-2 rounded-xl text-sm font-semibold transition-colors whitespace-nowrap",
+ "px-4 py-2 rounded-md-xl text-sm font-semibold transition-colors whitespace-nowrap",
  activeScope === scope.id 
  ? "bg-foreground text-background " 
- : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+ : "bg-muted text-[#71717a] dark:text-gray-400 hover:bg-muted/80 hover:text-foreground"
  )}
  >
  {scope.label}
@@ -174,7 +174,7 @@ export default function UnivGlobalSearch({
  <div className="space-y-8 animate-in fade-in">
  {recentSearches.length > 0 && (
  <div>
- <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4 flex items-center gap-2">
+ <h3 className="text-sm font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-4 flex items-center gap-2 tracking-[0.04em]">
  <History className="w-4 h-4" /> Recent Searches
  </h3>
  <div className="flex flex-wrap gap-2">
@@ -182,7 +182,7 @@ export default function UnivGlobalSearch({
  <button 
  key={s} 
  onClick={() => setQuery(s)}
- className="px-3 py-1.5 bg-card border border-primary/40 rounded-lg text-sm hover:border-primary/50 transition-colors "
+ className="px-3 py-1.5 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm hover:border-primary/50 transition-colors  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  {s}
  </button>
@@ -191,9 +191,9 @@ export default function UnivGlobalSearch({
  </div>
  )}
  
- <div className="text-center py-20 text-muted-foreground">
+ <div className="text-center py-20 text-[#71717a] dark:text-gray-400">
  <Search className="w-16 h-16 mx-auto mb-4 opacity-20" />
- <h2 className="text-xl font-bold text-foreground mb-2">What are you looking for?</h2>
+ <h2 className="text-xl font-semibold text-foreground mb-2">What are you looking for?</h2>
  <p className="max-w-md mx-auto text-sm leading-relaxed">
  Start typing to instantly search across all your enterprise data, documents, CRM records, and workspaces.
  </p>
@@ -202,24 +202,24 @@ export default function UnivGlobalSearch({
  ) : results.length === 0 && !isFetching && debouncedQuery.length > 1 ? (
  /* No Results */
  <div className="text-center py-20 animate-in fade-in">
- <FolderOpen className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
- <h2 className="text-xl font-bold text-foreground mb-2">No results found</h2>
- <p className="text-muted-foreground">We couldn't find anything matching "{debouncedQuery}". Try checking for typos or using different keywords.</p>
+ <FolderOpen className="w-16 h-16 mx-auto mb-4 text-[#71717a] dark:text-gray-400/30" />
+ <h2 className="text-xl font-semibold text-foreground mb-2">No results found</h2>
+ <p className="text-[#71717a] dark:text-gray-400">We couldn't find anything matching "{debouncedQuery}". Try checking for typos or using different keywords.</p>
  </div>
  ) : (
  /* Results Grid */
  <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
  {results.length > 0 && (
- <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+ <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">
  Found {results.length} results in {searchTime}ms
  </p>
  )}
 
  {Object.entries(groupedResults).map(([type, items]) => (
  <div key={type} className="space-y-4">
- <h3 className="text-lg font-bold text-foreground flex items-center gap-2 capitalize">
+ <h3 className="text-lg font-semibold text-foreground flex items-center gap-2 capitalize">
  <LayoutGrid className="w-5 h-5 text-primary" />
- {type.replace(/_/g, ' ')} <span className="text-muted-foreground font-normal text-sm ml-2">({items.length})</span>
+ {type.replace(/_/g, ' ')} <span className="text-[#71717a] dark:text-gray-400 font-normal text-sm ml-2">({items.length})</span>
  </h3>
  
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -229,11 +229,11 @@ export default function UnivGlobalSearch({
  const snippet = renderSnippet(data);
  
  return (
- <div key={record.id} className="group bg-card border border-primary/40 hover:border-primary/40 rounded-2xl p-5 transition-all relative overflow-hidden">
+ <div key={record.id} className="group bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary/40 rounded-md-2xl p-5 transition-all relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary/20 group-hover:bg-primary transition-colors"></div>
  
  <div className="flex justify-between items-start mb-2">
- <h4 className="font-bold text-base text-foreground line-clamp-1 pr-4">
+ <h4 className="font-semibold text-base text-foreground line-clamp-1 pr-4">
  {highlightMatch(title)}
  </h4>
  <a href="#" className="opacity-0 group-hover:opacity-100 transition-opacity text-primary">
@@ -242,15 +242,15 @@ export default function UnivGlobalSearch({
  </div>
  
  {snippet && (
- <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed mb-3">
+ <p className="text-sm text-[#71717a] dark:text-gray-400 line-clamp-2 leading-relaxed mb-3">
  {snippet}
  </p>
  )}
  
- <div className="flex items-center gap-3 text-[10px] uppercase font-bold tracking-wider text-muted-foreground mt-auto pt-3 border-t border-primary/40">
- <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {new Date(record.created_at).toLocaleDateString()}</span>
+ <div className="flex items-center gap-3 text-[10px] uppercase font-semibold tracking-wider text-[#71717a] dark:text-gray-400 mt-auto pt-3 border-t border-primary/40 tracking-[0.04em]">
+ <span className="flex items-center gap-2"><Clock className="w-3 h-3" /> {new Date(record.created_at).toLocaleDateString()}</span>
  {data.status && (
- <span className="px-1.5 py-0.5 bg-muted rounded">{data.status}</span>
+ <span className="px-1.5 py-0.5 bg-muted rounded-md">{data.status}</span>
  )}
  </div>
  </div>

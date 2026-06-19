@@ -51,46 +51,46 @@ export default function DynamicInventoryView({ data = [], fieldDefinitions = [],
 };
 
  if (!qtyField) {
- return <div className="p-8 text-center text-muted-foreground border rounded-xl border-dashed">No number fields found to track inventory. Please add a "Quantity" or "Stock" number field.</div>;
+ return <div className="p-8 text-center text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-xl border-dashed">No number fields found to track inventory. Please add a "Quantity" or "Stock" number field.</div>;
 }
 
  return (
  <div className="space-y-6">
  {/* Stats Bar */}
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- <div className="bg-card border rounded-xl p-4 flex items-center gap-4 ">
- <div className="w-12 h-12 rounded-full bg-muted dark:bg-primary/30 flex items-center justify-center text-primary">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-md-xl p-4 flex items-center gap-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-12 h-12 rounded-md-full bg-muted dark:bg-primary/30 flex items-center justify-center text-primary">
  <Package className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-medium text-muted-foreground">Total SKUs</p>
- <p className="text-2xl font-bold">{totalItems}</p>
+ <p className="text-sm font-medium text-[#71717a] dark:text-gray-400">Total SKUs</p>
+ <p className="text-2xl font-semibold tracking-[-0.02em]">{totalItems}</p>
  </div>
  </div>
- <div className="bg-card border rounded-xl p-4 flex items-center gap-4 ">
- <div className="w-12 h-12 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center text-yellow-600">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-md-xl p-4 flex items-center gap-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-12 h-12 rounded-md-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center text-yellow-600">
  <TrendingDown className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-medium text-muted-foreground">Low Stock (&lt;10)</p>
- <p className="text-2xl font-bold">{lowStock}</p>
+ <p className="text-sm font-medium text-[#71717a] dark:text-gray-400">Low Stock (&lt;10)</p>
+ <p className="text-2xl font-semibold tracking-[-0.02em]">{lowStock}</p>
  </div>
  </div>
- <div className="bg-card border rounded-xl p-4 flex items-center gap-4 ">
- <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-md-xl p-4 flex items-center gap-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-12 h-12 rounded-md-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600">
  <PackageX className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-medium text-muted-foreground">Out of Stock</p>
- <p className="text-2xl font-bold">{outOfStock}</p>
+ <p className="text-sm font-medium text-[#71717a] dark:text-gray-400">Out of Stock</p>
+ <p className="text-2xl font-semibold tracking-[-0.02em]">{outOfStock}</p>
  </div>
  </div>
  </div>
 
  {/* Inventory Table */}
- <div className="bg-card border rounded-xl overflow-hidden">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-left text-sm">
- <thead className="bg-muted/50 text-muted-foreground">
+ <thead className="bg-muted/50 text-[#71717a] dark:text-gray-400">
  <tr>
  <th className="px-4 py-3 font-medium">Item</th>
  <th className="px-4 py-3 font-medium">Stock Level</th>
@@ -108,11 +108,11 @@ export default function DynamicInventoryView({ data = [], fieldDefinitions = [],
  let statusLabel = 'In Stock';
  
  if (q === 0) {
- statusColor = 'bg-red-500';
+ statusColor = 'bg-red-500/10';
  statusBg = 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400';
  statusLabel = 'Out of Stock';
 } else if (q < 10) {
- statusColor = 'bg-yellow-500';
+ statusColor = 'bg-yellow-500/10';
  statusBg = 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400';
  statusLabel = 'Low Stock';
 }
@@ -123,7 +123,7 @@ export default function DynamicInventoryView({ data = [], fieldDefinitions = [],
  <td className="px-4 py-3">
  <div className="flex items-center gap-3 max-w-[200px]">
  <Badge className={statusBg} variant="secondary">{statusLabel}</Badge>
- <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+ <div className="h-2 w-full bg-muted rounded-md-full overflow-hidden">
  <div className={`h-full ${statusColor} transition-all duration-500`} style={{ width: `${Math.min(100, (q / 50) * 100)}%`}} />
  </div>
  </div>
@@ -140,7 +140,7 @@ export default function DynamicInventoryView({ data = [], fieldDefinitions = [],
 })}
  {data.length === 0 && (
  <tr>
- <td colSpan={4} className="px-4 py-8 text-center text-muted-foreground">No items in inventory.</td>
+ <td colSpan={4} className="px-4 py-8 text-center text-[#71717a] dark:text-gray-400">No items in inventory.</td>
  </tr>
  )}
  </tbody>

@@ -45,15 +45,15 @@ const BG_BLUE_LIGHT = "bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20";
 
 function ReportMetricCard({ title, value, sub, icon: Icon, trend}) {
  return (
- <div className="bg-card border border-primary/40 rounded-xl p-6 transition-">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-6 transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-start justify-between gap-3">
  <div className="min-w-0">
- <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{title}</p>
- <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 dark:text-white mt-2 tracking-tight">{value}</p>
+ <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider tracking-[0.04em]">{title}</p>
+ <p className="text-3xl font-semibold text-slate-900 dark:text-slate-100 dark:text-white mt-2 tracking-tight tracking-[-0.02em]">{value}</p>
  <div className="flex items-center gap-2 mt-2 flex-wrap">
  {trend !== undefined && (
  <span
- className={`text-xs font-semibold px-2 py-0.5 rounded-md ${
+ className={`text-xs font-semibold px-2 py-0.5 rounded-lg ${
  trend >= 0 ? "bg-slate-50 dark:bg-slate-800/50 text-primary/90 dark:bg-primary/30 dark:text-primary/70" : "bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400"
 }`}
  >
@@ -61,10 +61,10 @@ function ReportMetricCard({ title, value, sub, icon: Icon, trend}) {
  {trend}% vs prior period
  </span>
  )}
- {sub && <span className="text-xs text-slate-500 dark:text-slate-400">{sub}</span>}
+ {sub && <span className="text-xs text-slate-500 dark:text-slate-400 tracking-[0.04em]">{sub}</span>}
  </div>
  </div>
- <div className={`w-12 h-12 rounded-xl ${BG_BLUE_LIGHT} flex items-center justify-center shrink-0`}>
+ <div className={`w-12 h-12 rounded-md-xl ${BG_BLUE_LIGHT} flex items-center justify-center shrink-0`}>
  <Icon className={`w-6 h-6 ${THEME_BLUE}`} />
  </div>
  </div>
@@ -74,12 +74,12 @@ function ReportMetricCard({ title, value, sub, icon: Icon, trend}) {
 
 function ReportSection({ title, description, icon: Icon, children, className = ""}) {
  return (
- <section className={`bg-card border border-primary/40 rounded-xl overflow-hidden ${className}`}>
+ <section className={`bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden ${className}`}>
  <div className="px-6 py-5 border-b border-primary/40 bg-slate-50/50 dark:bg-transparent dark:bg-slate-900/50">
  <div className="flex items-center gap-3">
  {Icon && <Icon className={`w-5 h-5 ${THEME_BLUE} shrink-0`} />}
  <div>
- <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 dark:text-white">{title}</h2>
+ <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 dark:text-white">{title}</h2>
  {description && <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">{description}</p>}
  </div>
  </div>
@@ -92,12 +92,12 @@ function ReportSection({ title, description, icon: Icon, children, className = "
 function BlueTooltip({ active, payload, label, prefix = "", suffix = ""}) {
  if (!active || !payload?.length) return null;
  return (
- <div className="bg-card border border-primary/40 rounded-lg p-3 text-sm min-w-[140px]">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-3 text-sm min-w-[140px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <p className="font-semibold text-primary mb-2">{label}</p>
  {payload.map((entry, i) => (
- <div key={i} className="flex justify-between gap-4 text-muted-foreground">
- <span className="flex items-center gap-1.5">
- <span className="w-2 h-2 rounded-full" style={{ background: entry.color}} />
+ <div key={i} className="flex justify-between gap-4 text-[#71717a] dark:text-gray-400">
+ <span className="flex items-center gap-2.5">
+ <span className="w-2 h-2 rounded-md-full" style={{ background: entry.color}} />
  {entry.name}
  </span>
  <span className="font-semibold text-foreground">
@@ -128,14 +128,14 @@ export default function ReportsDashboard() {
  if (isRetail && !isRetailAdmin(user)) {
  return (
  <div className="flex-1 flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 h-[calc(100vh-100px)]">
- <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
+ <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-md-full flex items-center justify-center mb-6">
  <ShieldAlert className="w-10 h-10 text-red-600 dark:text-red-500" />
  </div>
- <h2 className="text-2xl font-bold text-foreground mb-3">Access Restricted</h2>
- <p className="text-muted-foreground max-w-md mx-auto mb-8">
+ <h2 className="text-2xl font-semibold text-foreground mb-3 tracking-[-0.02em]">Access Restricted</h2>
+ <p className="text-[#71717a] dark:text-gray-400 max-w-md mx-auto mb-8">
  Your current role does not grant you permission to view the Reports Dashboard.
  </p>
- <div className="bg-card">
+ <div className="bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  </div>
  </div>
  );
@@ -318,7 +318,7 @@ export default function ReportsDashboard() {
  <header className="border-b border-primary/40 pb-6">
  <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
  <div>
- <p className={`text-xs font-bold ${THEME_BLUE} uppercase tracking-widest mb-2`}>
+ <p className={`text-xs font-semibold ${THEME_BLUE} uppercase tracking-widest mb-2`}>
  {t("business_intelligence", "Business Intelligence")}
  </p>
  <h1 className={`text-4xl md:text-5xl font-extrabold ${THEME_BLUE} tracking-tight`}>
@@ -331,7 +331,7 @@ export default function ReportsDashboard() {
  )}
  </p>
  </div>
- <div className="flex items-center gap-3 bg-card border border-primary/40 rounded-lg px-3 py-2 ">
+ <div className="flex items-center gap-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl px-3 py-2  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Clock className="w-4 h-4 text-primary shrink-0" />
  <Select value={period} onValueChange={setPeriod}>
  <SelectTrigger className="w-40 border-0 focus:ring-0 font-medium text-foreground">
@@ -392,7 +392,7 @@ export default function ReportsDashboard() {
  </linearGradient>
  </defs>
  <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border" />
- <XAxis dataKey="month" tick={{ fontSize: 11}} className="text-muted-foreground" />
+ <XAxis dataKey="month" tick={{ fontSize: 11}} className="text-[#71717a] dark:text-gray-400" />
  <YAxis tick={{ fontSize: 11}} tickFormatter={(v) => (v >= 1000 ? `${v / 1000}k` : v)} />
  <Tooltip content={<BlueTooltip prefix={currency === "GHS" ? "₵" : "$"} />} />
  <Area
@@ -508,16 +508,16 @@ export default function ReportsDashboard() {
  <table className="w-full text-sm">
  <thead>
  <tr className="border-b border-primary/40 text-left">
- <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase`}>{isSchool ? 'Student' : isRetail ? 'Customer' : 'Client'}</th>
- <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase text-right`}>Billed</th>
- <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase text-center`}>{isSchool ? 'Classes' : 'Cases'}</th>
- <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase`}>Status</th>
+ <th className={`py-4 px-3 text-xs font-semibold ${THEME_BLUE} uppercase`}>{isSchool ? 'Student' : isRetail ? 'Customer' : 'Client'}</th>
+ <th className={`py-4 px-3 text-xs font-semibold ${THEME_BLUE} uppercase text-right`}>Billed</th>
+ <th className={`py-4 px-3 text-xs font-semibold ${THEME_BLUE} uppercase text-center`}>{isSchool ? 'Classes' : 'Cases'}</th>
+ <th className={`py-4 px-3 text-xs font-semibold ${THEME_BLUE} uppercase`}>Status</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
  {topClients.length === 0 ? (
  <tr>
- <td colSpan={4} className="py-8 text-center text-muted-foreground">
+ <td colSpan={4} className="py-8 text-center text-[#71717a] dark:text-gray-400">
  {t("no_client_data", "No client billing data yet")}
  </td>
  </tr>
@@ -529,7 +529,7 @@ export default function ReportsDashboard() {
  {formatCurrency(row.billed, currency)}
  </td>
  <td className="py-3 px-2 text-center">{row.cases}</td>
- <td className="py-3 px-2 capitalize text-muted-foreground">{row.status}</td>
+ <td className="py-3 px-2 capitalize text-[#71717a] dark:text-gray-400">{row.status}</td>
  </tr>
  ))
  )}
@@ -547,16 +547,16 @@ export default function ReportsDashboard() {
  <table className="w-full text-sm">
  <thead>
  <tr className="border-b border-primary/40 text-left">
- <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase`}>Name</th>
- <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase`}>Role</th>
- <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase`}>Department</th>
- <th className={`py-4 px-3 text-xs font-bold ${THEME_BLUE} uppercase`}>Status</th>
+ <th className={`py-4 px-3 text-xs font-semibold ${THEME_BLUE} uppercase`}>Name</th>
+ <th className={`py-4 px-3 text-xs font-semibold ${THEME_BLUE} uppercase`}>Role</th>
+ <th className={`py-4 px-3 text-xs font-semibold ${THEME_BLUE} uppercase`}>Department</th>
+ <th className={`py-4 px-3 text-xs font-semibold ${THEME_BLUE} uppercase`}>Status</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
  {staffSummary.length === 0 ? (
  <tr>
- <td colSpan={4} className="py-8 text-center text-muted-foreground">
+ <td colSpan={4} className="py-8 text-center text-[#71717a] dark:text-gray-400">
  {t("no_staff_records", "No staff records")}
  </td>
  </tr>
@@ -564,10 +564,10 @@ export default function ReportsDashboard() {
  staffSummary.map((row) => (
  <tr key={row.name} className="hover:bg-muted/40">
  <td className="py-3 px-2 font-medium text-foreground">{row.name}</td>
- <td className="py-3 px-2 capitalize text-muted-foreground">{row.role}</td>
- <td className="py-3 px-2 text-muted-foreground">{row.department}</td>
+ <td className="py-3 px-2 capitalize text-[#71717a] dark:text-gray-400">{row.role}</td>
+ <td className="py-3 px-2 text-[#71717a] dark:text-gray-400">{row.department}</td>
  <td className="py-3 px-2">
- <span className="text-xs font-semibold text-primary capitalize">{row.status}</span>
+ <span className="text-xs font-semibold text-primary capitalize tracking-[0.04em]">{row.status}</span>
  </td>
  </tr>
  ))
@@ -584,26 +584,26 @@ export default function ReportsDashboard() {
  icon={FileText}
  >
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
- <div className="p-6 rounded-xl border border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
- <p className={`text-xs font-bold ${THEME_BLUE} uppercase`}>{t("total_invoices", "Total invoices")}</p>
- <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 dark:text-white mt-2">{invoices.length}</p>
+ <div className="p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
+ <p className={`text-xs font-semibold ${THEME_BLUE} uppercase`}>{t("total_invoices", "Total invoices")}</p>
+ <p className="text-3xl font-semibold text-slate-900 dark:text-slate-100 dark:text-white mt-2 tracking-[-0.02em]">{invoices.length}</p>
  </div>
- <div className="p-6 rounded-xl border border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
- <p className={`text-xs font-bold ${THEME_BLUE} uppercase`}>{t("paid_invoices", "Paid invoices")}</p>
- <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 dark:text-white mt-2">{paidCount}</p>
+ <div className="p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
+ <p className={`text-xs font-semibold ${THEME_BLUE} uppercase`}>{t("paid_invoices", "Paid invoices")}</p>
+ <p className="text-3xl font-semibold text-slate-900 dark:text-slate-100 dark:text-white mt-2 tracking-[-0.02em]">{paidCount}</p>
  </div>
- <div className="p-6 rounded-xl border border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
- <p className={`text-xs font-bold ${THEME_BLUE} uppercase`}>{t("team_members", "Team members")}</p>
- <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 dark:text-white mt-2">{staff.length}</p>
+ <div className="p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
+ <p className={`text-xs font-semibold ${THEME_BLUE} uppercase`}>{t("team_members", "Team members")}</p>
+ <p className="text-3xl font-semibold text-slate-900 dark:text-slate-100 dark:text-white mt-2 tracking-[-0.02em]">{staff.length}</p>
  </div>
- <div className="p-6 rounded-xl border border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
- <p className={`text-xs font-bold ${THEME_BLUE} uppercase`}>{t("avg_monthly_revenue", "Avg monthly revenue")}</p>
- <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 dark:text-white mt-2">
+ <div className="p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900">
+ <p className={`text-xs font-semibold ${THEME_BLUE} uppercase`}>{t("avg_monthly_revenue", "Avg monthly revenue")}</p>
+ <p className="text-3xl font-semibold text-slate-900 dark:text-slate-100 dark:text-white mt-2 tracking-[-0.02em]">
  {formatCurrency(months ? Math.round(totalRevenue / months) : 0, currency)}
  </p>
  </div>
  </div>
- <p className="text-xs text-muted-foreground mt-6 border-t border-primary/40 pt-4">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-6 border-t border-primary/40 pt-4 tracking-[0.04em]">
  {t(
  "report_footer_note",
  "Figures are generated from live workspace data. Export detailed ledgers from Billing or Data Export for audit trails."

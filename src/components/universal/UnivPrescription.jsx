@@ -217,43 +217,43 @@ export default function UnivPrescription() {
  <div className="flex flex-col h-full bg-background overflow-hidden relative ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
  <div>
- <h2 className="text-2xl font-bold text-foreground tracking-tight">Prescriptions</h2>
- <p className="text-sm text-muted-foreground mt-1">Manage e-prescriptions and medication tracking.</p>
+ <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">Prescriptions</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Manage e-prescriptions and medication tracking.</p>
  </div>
  <div className="flex gap-3">
  <div className="flex items-center gap-2">
 
  
  
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={() => handleOpenModal()} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
+ <button onClick={() => handleOpenModal()} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
  <Plus className="w-4 h-4" /> New Rx
  </button>
  </div>
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
  <input 
  type="text"
  placeholder="Search medications, patients..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
 
  <div className="flex-1 overflow-auto custom-scrollbar">
  <table className="w-full text-left text-sm whitespace-nowrap">
- <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground sticky top-0 z-10 backdrop-blur-md">
+ <thead className="bg-muted/50 text-xs uppercase tracking-wider text-[#71717a] dark:text-gray-400 sticky top-0 z-10 backdrop-blur-md tracking-[0.04em]">
  <tr>
  <th className="p-4 font-semibold">Patient / Prescriber</th>
  <th className="p-4 font-semibold">Medication</th>
@@ -276,21 +276,21 @@ export default function UnivPrescription() {
  >
  <td className="p-4">
  <div className="font-semibold text-foreground flex items-center gap-2"><User className="w-4 h-4 text-primary" /> {patientName}</div>
- <div className="text-xs text-muted-foreground flex items-center gap-1.5 mt-1"><Stethoscope className="w-3 h-3" /> Dr. ID: {p.doctor_id?.slice(0, 8) || 'N/A'}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 flex items-center gap-2.5 mt-1 tracking-[0.04em]"><Stethoscope className="w-3 h-3" /> Dr. ID: {p.doctor_id?.slice(0, 8) || 'N/A'}</div>
  </td>
  <td className="p-4">
- <div className="font-bold text-foreground flex items-center gap-2">
+ <div className="font-semibold text-foreground flex items-center gap-2">
  <Pill className="w-4 h-4 text-purple-500" /> {p.medication}
  </div>
  </td>
- <td className="p-4 text-muted-foreground">
+ <td className="p-4 text-[#71717a] dark:text-gray-400">
  <span className="font-semibold text-foreground">{p.dosage}</span> — {p.frequency}
  </td>
- <td className="p-4 text-muted-foreground font-medium">
+ <td className="p-4 text-[#71717a] dark:text-gray-400 font-medium">
  {p.duration}
  </td>
  <td className="p-4">
- <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border flex items-center gap-1 w-fit ${
+ <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-semibold rounded-lg border-[0.5px] border-black/9 dark:border-white/8 flex items-center gap-2 w-fit ${
  p.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
  p.status === 'Completed' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
  'bg-background text-foreground border-primary/40'
@@ -302,10 +302,10 @@ export default function UnivPrescription() {
  </td>
  <td className="p-4 text-right">
  <div className="flex items-center justify-end gap-2">
- <button onClick={() => handleOpenModal(p)} className="p-1.5 hover:bg-muted rounded-md text-muted-foreground hover:text-primary transition-colors">
+ <button onClick={() => handleOpenModal(p)} className="p-1.5 hover:bg-muted rounded-lg text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors">
  <Edit2 className="w-4 h-4" />
  </button>
- <button onClick={() => handleDelete(p.id)} className="p-1.5 hover:bg-muted rounded-md text-muted-foreground hover:text-destructive transition-colors">
+ <button onClick={() => handleDelete(p.id)} className="p-1.5 hover:bg-muted rounded-lg text-[#71717a] dark:text-gray-400 hover:text-destructive transition-colors">
  <Trash2 className="w-4 h-4" />
  </button>
  </div>
@@ -316,7 +316,7 @@ export default function UnivPrescription() {
  </tbody>
  </table>
  {filtered.length === 0 && (
- <div className="text-center py-12 text-muted-foreground">
+ <div className="text-center py-12 text-[#71717a] dark:text-gray-400">
  <Pill className="w-12 h-12 mx-auto mb-3 opacity-20" />
  <p>No prescriptions found.</p>
  </div>
@@ -331,11 +331,11 @@ export default function UnivPrescription() {
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
  exit={{ opacity: 0, scale: 0.95}}
- className="bg-card border border-primary/40 rounded-2xl w-full max-w-md overflow-hidden"
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl w-full max-w-md overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="flex items-center justify-between p-4 border-b border-primary/40">
  <h3 className="font-semibold text-foreground">{editingId ? 'Edit Prescription' : 'New Prescription'}</h3>
- <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:text-foreground">
+ <button onClick={() => setIsModalOpen(false)} className="text-[#71717a] dark:text-gray-400 hover:text-foreground">
  <XCircle className="w-5 h-5" />
  </button>
  </div>
@@ -345,11 +345,11 @@ export default function UnivPrescription() {
  {!editingId && (
  <div>
  <div className="flex justify-between items-center mb-1">
- <label className="text-xs font-medium text-muted-foreground">Patient</label>
+ <label className="text-xs font-medium text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Patient</label>
  <button 
  type="button" 
  onClick={() => setUseExistingPatient(!useExistingPatient)}
- className="text-xs text-primary font-bold hover:underline"
+ className="text-xs text-primary font-semibold hover:underline tracking-[0.04em]"
  >
  {useExistingPatient ? '+ New Patient' : 'Select Existing'}
  </button>
@@ -360,7 +360,7 @@ export default function UnivPrescription() {
  required
  value={form.patient_id} 
  onChange={e => setForm({...form, patient_id: e.target.value})}
- className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm"
+ className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm"
  >
  <option value="" disabled>-- Select Patient --</option>
  {patients.map(pt => (
@@ -377,7 +377,7 @@ export default function UnivPrescription() {
  required
  value={form.new_patient_first}
  onChange={e => setForm({...form, new_patient_first: e.target.value})}
- className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" 
+ className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm" 
  />
  <input 
  type="text" 
@@ -385,7 +385,7 @@ export default function UnivPrescription() {
  required
  value={form.new_patient_last}
  onChange={e => setForm({...form, new_patient_last: e.target.value})}
- className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" 
+ className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm" 
  />
  </div>
  )}
@@ -393,29 +393,29 @@ export default function UnivPrescription() {
  )}
 
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Medication</label>
- <input required value={form.medication} onChange={e => setForm({...form, medication: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" placeholder="e.g. Amoxicillin" />
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Medication</label>
+ <input required value={form.medication} onChange={e => setForm({...form, medication: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm" placeholder="e.g. Amoxicillin" />
  </div>
  
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Dosage</label>
- <input required value={form.dosage} onChange={e => setForm({...form, dosage: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" placeholder="e.g. 500mg" />
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Dosage</label>
+ <input required value={form.dosage} onChange={e => setForm({...form, dosage: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm" placeholder="e.g. 500mg" />
  </div>
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Frequency</label>
- <input required value={form.frequency} onChange={e => setForm({...form, frequency: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" placeholder="e.g. Twice Daily" />
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Frequency</label>
+ <input required value={form.frequency} onChange={e => setForm({...form, frequency: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm" placeholder="e.g. Twice Daily" />
  </div>
  </div>
 
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Duration</label>
- <input required value={form.duration} onChange={e => setForm({...form, duration: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" placeholder="e.g. 7 Days" />
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Duration</label>
+ <input required value={form.duration} onChange={e => setForm({...form, duration: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm" placeholder="e.g. 7 Days" />
  </div>
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Status</label>
- <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm">
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Status</label>
+ <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm">
  <option value="Active">Active</option>
  <option value="Completed">Completed</option>
  <option value="Cancelled">Cancelled</option>
@@ -424,13 +424,13 @@ export default function UnivPrescription() {
  </div>
 
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Doctor ID (UUID - Optional)</label>
- <input value={form.doctor_id} onChange={e => setForm({...form, doctor_id: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm font-mono" placeholder="Optional Doctor UUID" />
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Doctor ID (UUID - Optional)</label>
+ <input value={form.doctor_id} onChange={e => setForm({...form, doctor_id: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm font-mono" placeholder="Optional Doctor UUID" />
  </div>
 
  <div className="pt-4 flex justify-end gap-2">
- <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted rounded-lg">Cancel</button>
- <button type="submit" className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90">Save</button>
+ <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium text-[#71717a] dark:text-gray-400 hover:bg-muted rounded-xl">Cancel</button>
+ <button type="submit" className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary/90">Save</button>
  </div>
  </form>
  </motion.div>

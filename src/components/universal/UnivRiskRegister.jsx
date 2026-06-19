@@ -102,24 +102,24 @@ export default function UnivRiskRegister() {
  {/* Header */}
  <div className="view-header flex items-center justify-between flex-wrap gap-4 shrink-0">
  <div>
- <h1 className="text-2xl font-black text-foreground flex items-center gap-3">
- <span className="p-2.5 rounded-xl bg-primary/10 text-primary"><AlertTriangle className="w-6 h-6" /></span>
+ <h1 className="text-2xl font-black text-foreground flex items-center gap-3 tracking-[-0.02em]">
+ <span className="p-2.5 rounded-md-xl bg-primary/10 text-primary"><AlertTriangle className="w-6 h-6" /></span>
  Risk Register
  </h1>
- <p className="text-sm text-muted-foreground mt-1 ml-0.5">Track, assess, and mitigate organizational risks.</p>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1 ml-0.5">Track, assess, and mitigate organizational risks.</p>
  </div>
  <div className="flex items-center gap-2">
 
  
  
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
  <button
  onClick={openAdd}
- className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 active:scale-95 transition-all -primary/30"
+ className="h-10 px-5 bg-primary text-white rounded-md-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 active:scale-95 transition-all -primary/30"
  >
  <Plus className="w-4 h-4" /> Add Record
  </button>
@@ -128,12 +128,12 @@ export default function UnivRiskRegister() {
 
  {/* Search */}
  <div className="relative max-w-sm shrink-0">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400 pointer-events-none" />
  <input
  value={search}
  onChange={e => setSearch(e.target.value)}
  placeholder="Search risk register..."
- className="w-full h-10 pl-9 pr-4 bg-card border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none transition-"
+ className="w-full h-10 pl-9 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
 
@@ -143,10 +143,10 @@ export default function UnivRiskRegister() {
  <Loader2 className="w-8 h-8 animate-spin text-primary" />
  </div>
  ) : (
- <div className="flex-1 overflow-auto rounded-2xl border border-primary/40 bg-card ">
+ <div className="flex-1 overflow-auto rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm min-w-[700px]">
  <thead className="border-b border-primary/40 bg-muted/40 sticky top-0 z-10">
- <tr><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Risk Title</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Category</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Likelihood</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Impact</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Risk Score</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Owner</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Status</th><th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap"></th></tr>
+ <tr><th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Risk Title</th><th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Category</th><th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Likelihood</th><th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Impact</th><th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Risk Score</th><th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Owner</th><th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Status</th><th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]"></th></tr>
  </thead>
  <tbody>
  {filtered.map(r => (
@@ -157,26 +157,26 @@ export default function UnivRiskRegister() {
  className="border-b border-primary/40 hover:bg-muted/20 transition-colors group"
  >
  <td className="px-4 py-3 font-semibold text-foreground">{r.risk_title}</td>
- <td className="px-4 py-3 text-muted-foreground">{r.category}</td>
- <td className="px-4 py-3 text-muted-foreground">{r.likelihood}</td>
- <td className="px-4 py-3 text-muted-foreground">{r.impact}</td>
- <td className="px-4 py-3 text-muted-foreground">{r.risk_score}</td>
- <td className="px-4 py-3 text-muted-foreground">{r.owner}</td>
- <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded-full text-xs font-bold ${STATUS_COLORS[r.status] || 'bg-muted text-foreground'}`}>{r.status}</span></td>
+ <td className="px-4 py-3 text-[#71717a] dark:text-gray-400">{r.category}</td>
+ <td className="px-4 py-3 text-[#71717a] dark:text-gray-400">{r.likelihood}</td>
+ <td className="px-4 py-3 text-[#71717a] dark:text-gray-400">{r.impact}</td>
+ <td className="px-4 py-3 text-[#71717a] dark:text-gray-400">{r.risk_score}</td>
+ <td className="px-4 py-3 text-[#71717a] dark:text-gray-400">{r.owner}</td>
+ <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded-md-full text-xs font-semibold ${STATUS_COLORS[r.status] || 'bg-muted text-foreground'}`}>{r.status}</span></td>
  <td className="px-4 py-3">
- <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
- <button onClick={() => openEdit(r)} className="p-1.5 bg-muted rounded-lg hover:bg-muted/80 transition-colors"><Edit2 className="w-3.5 h-3.5" /></button>
- <button onClick={() => handleDelete(r.id)} className="p-1.5 bg-red-50 dark:bg-red-900/20 rounded-lg hover:bg-red-100 text-red-500 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+ <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+ <button onClick={() => openEdit(r)} className="p-1.5 bg-muted rounded-xl hover:bg-muted/80 transition-colors"><Edit2 className="w-3.5 h-3.5" /></button>
+ <button onClick={() => handleDelete(r.id)} className="p-1.5 bg-red-50 dark:bg-red-900/20 rounded-xl hover:bg-red-100 text-red-500 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
  </div>
  </td>
  </motion.tr>
  ))}
  {!filtered.length && (
  <tr>
- <td colSpan={8} className="px-4 py-20 text-center text-muted-foreground">
- <AlertTriangle className="w-10 h-10 mx-auto mb-3 text-muted-foreground/30" />
+ <td colSpan={8} className="px-4 py-20 text-center text-[#71717a] dark:text-gray-400">
+ <AlertTriangle className="w-10 h-10 mx-auto mb-3 text-[#71717a] dark:text-gray-400/30" />
  <p className="font-medium">No risk register records yet.</p>
- <p className="text-xs mt-1">Click "Add Record" to get started.</p>
+ <p className="text-xs mt-1 tracking-[0.04em]">Click "Add Record" to get started.</p>
  </td>
  </tr>
  )}
@@ -195,12 +195,12 @@ export default function UnivRiskRegister() {
  return acc;
 }, {})
  ).map(([s, count]) => (
- <div key={s} className={`px-4 py-2 rounded-xl border text-xs font-bold flex items-center gap-2 ${STATUS_COLORS[s] || 'bg-muted text-muted-foreground'}`}>
+ <div key={s} className={`px-4 py-2 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 text-xs font-semibold flex items-center gap-2 ${STATUS_COLORS[s] || 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
  <span>{s}</span>
- <span className="bg-card/40 rounded-full px-1.5">{count}</span>
+ <span className="bg-card/40 rounded-md-full px-1.5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{count}</span>
  </div>
  ))}
- <div className="px-4 py-2 rounded-xl border border-primary/40 bg-card text-xs font-bold text-muted-foreground flex items-center gap-2">
+ <div className="px-4 py-2 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card text-xs font-semibold text-[#71717a] dark:text-gray-400 flex items-center gap-2 tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  Total <span className="text-foreground">{records.length}</span>
  </div>
  </div>
@@ -221,64 +221,64 @@ export default function UnivRiskRegister() {
  animate={{ scale: 1, opacity: 1, y: 0}}
  exit={{ scale: 0.95, opacity: 0, y: 10}}
  transition={{ type: 'spring', stiffness: 300, damping: 25}}
- className="bg-card w-full max-w-xl rounded-2xl border border-primary/40 max-h-[90vh] flex flex-col"
+ className="bg-card w-full max-w-xl rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 max-h-[90vh] flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0">
  <h2 className="text-xl font-black flex items-center gap-2">
  <AlertTriangle className="w-5 h-5 text-primary" />
  {editId ? 'Edit Record' : 'Add Risk Register'}
  </h2>
- <button onClick={closeModal} className="p-2 bg-muted rounded-full hover:bg-muted/80 transition-colors">
- <XCircle className="w-5 h-5 text-muted-foreground" />
+ <button onClick={closeModal} className="p-2 bg-muted rounded-md-full hover:bg-muted/80 transition-colors">
+ <XCircle className="w-5 h-5 text-[#71717a] dark:text-gray-400" />
  </button>
  </div>
  <form onSubmit={handleSave} className="p-5 grid grid-cols-2 gap-4 overflow-y-auto flex-1">
  <div className="col-span-2">
- <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Risk Title</label>
- <input required type="text" value={form.risk_title || ''} onChange={e => setForm(p => ({ ...p, risk_title: e.target.value}))} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Risk Title</label>
+ <input required type="text" value={form.risk_title || ''} onChange={e => setForm(p => ({ ...p, risk_title: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div className="">
- <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Category</label>
- <select value={form.category} onChange={e => setForm(p => ({ ...p, category: e.target.value}))} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Category</label>
+ <select value={form.category} onChange={e => setForm(p => ({ ...p, category: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
  {["Operational","Financial","Legal","Strategic","IT","Other"].map(o => <option key={o}>{o}</option>)}
  </select>
  </div>
  <div className="">
- <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Likelihood (1-5)</label>
- <input type="number" value={form.likelihood || ''} onChange={e => setForm(p => ({ ...p, likelihood: e.target.value}))} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Likelihood (1-5)</label>
+ <input type="number" value={form.likelihood || ''} onChange={e => setForm(p => ({ ...p, likelihood: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div className="">
- <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Impact (1-5)</label>
- <input type="number" value={form.impact || ''} onChange={e => setForm(p => ({ ...p, impact: e.target.value}))} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Impact (1-5)</label>
+ <input type="number" value={form.impact || ''} onChange={e => setForm(p => ({ ...p, impact: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div className="">
- <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Risk Score</label>
- <input type="number" value={form.risk_score || ''} onChange={e => setForm(p => ({ ...p, risk_score: e.target.value}))} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Risk Score</label>
+ <input type="number" value={form.risk_score || ''} onChange={e => setForm(p => ({ ...p, risk_score: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div className="">
- <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Risk Owner</label>
- <input type="text" value={form.owner || ''} onChange={e => setForm(p => ({ ...p, owner: e.target.value}))} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Risk Owner</label>
+ <input type="text" value={form.owner || ''} onChange={e => setForm(p => ({ ...p, owner: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div className="col-span-2">
- <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Mitigation Plan</label>
- <input type="text" value={form.mitigation_plan || ''} onChange={e => setForm(p => ({ ...p, mitigation_plan: e.target.value}))} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Mitigation Plan</label>
+ <input type="text" value={form.mitigation_plan || ''} onChange={e => setForm(p => ({ ...p, mitigation_plan: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
  <div className="">
- <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Review Date</label>
- <input type="date" value={form.review_date || ''} onChange={e => setForm(p => ({ ...p, review_date: e.target.value}))} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Review Date</label>
+ <input type="date" value={form.review_date || ''} onChange={e => setForm(p => ({ ...p, review_date: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
  </div>
 
  <div className="col-span-2">
- <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Status</label>
- <select value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value}))} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Status</label>
+ <select value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value}))} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none">
  {["Open","Mitigated","Accepted","Closed"].map(s => <option key={s}>{s}</option>)}
  </select>
  </div>
  <div className="col-span-2 flex justify-end gap-3 pt-4 border-t border-primary/40 shrink-0">
- <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-semibold hover:bg-muted/80 transition-colors">
+ <button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-md-xl text-sm font-semibold hover:bg-muted/80 transition-colors">
  Cancel
  </button>
- <button type="submit" disabled={saving} className="h-10 px-6 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 active:scale-95 transition-all disabled:opacity-60 flex items-center gap-2">
+ <button type="submit" disabled={saving} className="h-10 px-6 bg-primary text-white rounded-md-xl text-sm font-semibold hover:bg-primary/90 active:scale-95 transition-all disabled:opacity-60 flex items-center gap-2">
  {saving && <Loader2 className="w-4 h-4 animate-spin" />}
  {editId ? 'Update' : 'Add Record'}
  </button>

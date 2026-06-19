@@ -28,7 +28,7 @@ function PipelineCard({ pipeline, onEdit, onDelete, caseStates}) {
  const activeCases = caseStates.filter(cs => cs.pipeline_id === pipeline.id).length;
 
  return (
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex items-start justify-between gap-3">
  <div>
  <div className="flex items-center gap-2 flex-wrap">
@@ -40,9 +40,9 @@ function PipelineCard({ pipeline, onEdit, onDelete, caseStates}) {
  <Badge className="text-[10px] bg-slate-100 text-primary">{t("default", "Default")}</Badge>
  )}
  </div>
- <p className="text-xs text-muted-foreground mt-1">{stagesCount} {t("stages", "stages ·")} {activeCases} {t("active_cases", "active cases")}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">{stagesCount} {t("stages", "stages ·")} {activeCases} {t("active_cases", "active cases")}</p>
  </div>
- <div className="flex gap-1">
+ <div className="flex gap-2">
  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onEdit(pipeline)}>
  <Edit2 className="w-3.5 h-3.5" />
  </Button>
@@ -53,20 +53,20 @@ function PipelineCard({ pipeline, onEdit, onDelete, caseStates}) {
  </div>
  {pipeline.stages?.length > 0 && (
  <div className="p-3">
- <div className="flex items-center gap-1 overflow-x-auto pb-1">
+ <div className="flex items-center gap-2 overflow-x-auto pb-1">
  {pipeline.stages.sort((a, b) => a.order - b.order).map((stage, idx) => {
 
  return (
  <React.Fragment key={stage.id}>
  <div className="flex flex-col items-center shrink-0">
  <div
- className="w-20 h-7 rounded-md flex items-center justify-center text-white text-[10px] font-semibold "
+ className="w-20 h-7 rounded-lg flex items-center justify-center text-white text-[10px] font-semibold "
  style={{ backgroundColor: stage.color || "#3B82F6"}}
  >
  {stage.name}
  </div>
  {stage.deadline_days && (
- <span className="text-[9px] text-muted-foreground mt-0.5 flex items-center gap-0.5">
+ <span className="text-[9px] text-[#71717a] dark:text-gray-400 mt-0.5 flex items-center gap-0.5">
  <Clock className="w-2.5 h-2.5" />{stage.deadline_days}d
  </span>
  )}
@@ -134,7 +134,7 @@ function PipelineEditor({ pipeline, onClose, onSave}) {
  </div>
  <div className="flex items-end pb-0.5">
  <label className="flex items-center gap-2 cursor-pointer">
- <input type="checkbox" checked={form.is_default} onChange={e => setForm(p => ({ ...p, is_default: e.target.checked}))} className="rounded" />
+ <input type="checkbox" checked={form.is_default} onChange={e => setForm(p => ({ ...p, is_default: e.target.checked}))} className="rounded-md" />
  <span className="text-sm">{t("set_as_default_pipeline", "Set as default pipeline")}</span>
  </label>
  </div>
@@ -143,7 +143,7 @@ function PipelineEditor({ pipeline, onClose, onSave}) {
  <div className="border-t border-primary/40 pt-4">
  <div className="flex items-center justify-between mb-3">
  <Label>{t("pipeline_stages", "Pipeline Stages")}</Label>
- <span className="text-xs text-muted-foreground">{form.stages.length} {t("stages", "stages")}</span>
+ <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{form.stages.length} {t("stages", "stages")}</span>
  </div>
 
  {/* Add stage input */}
@@ -155,7 +155,7 @@ function PipelineEditor({ pipeline, onClose, onSave}) {
  onKeyDown={e => e.key === "Enter" && addStage()}
  className="flex-1"
  />
- <Button size="sm" onClick={addStage} className="gap-1.5 shrink-0">
+ <Button size="sm" onClick={addStage} className="gap-2.5 shrink-0">
  <Plus className="w-3.5 h-3.5" /> {t("add", "Add")}
  </Button>
  </div>
@@ -164,10 +164,10 @@ function PipelineEditor({ pipeline, onClose, onSave}) {
  {form.stages.sort((a, b) => a.order - b.order).map((stage, idx) => {
 
  return (
- <div key={stage.id} className="flex items-center gap-2 p-2.5 bg-muted/30 rounded-lg border border-primary/40">
- <GripVertical className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+ <div key={stage.id} className="flex items-center gap-2 p-2.5 bg-muted/30 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <GripVertical className="w-3.5 h-3.5 text-[#71717a] dark:text-gray-400 shrink-0" />
  <div
- className="w-4 h-4 rounded-full shrink-0 border-2 border-white cursor-pointer"
+ className="w-4 h-4 rounded-md-full shrink-0 border-2 border-white cursor-pointer"
  style={{ backgroundColor: stage.color}}
  onClick={() => {
  const nextColor = STAGE_COLORS[(STAGE_COLORS.indexOf(stage.color) + 1) % STAGE_COLORS.length];
@@ -175,20 +175,20 @@ function PipelineEditor({ pipeline, onClose, onSave}) {
 }}
  title="Click to change color"
  />
- <span className="text-xs font-medium flex-1 truncate">{stage.name}</span>
- <div className="flex items-center gap-1 shrink-0">
- <Clock className="w-3 h-3 text-muted-foreground" />
+ <span className="text-xs font-medium flex-1 truncate tracking-[0.04em]">{stage.name}</span>
+ <div className="flex items-center gap-2 shrink-0">
+ <Clock className="w-3 h-3 text-[#71717a] dark:text-gray-400" />
  <Input
  type="number"
  placeholder="days"
  value={stage.deadline_days || ""}
  onChange={e => updateStage(stage.id, "deadline_days", e.target.value ? parseInt(e.target.value) : null)}
- className="w-16 h-7 text-xs"
+ className="w-16 h-7 text-xs tracking-[0.04em]"
  />
  </div>
  <button
  onClick={() => updateStage(stage.id, "notify_team", !stage.notify_team)}
- className={`shrink-0 ${stage.notify_team ? "text-primary" : "text-muted-foreground"}`}
+ className={`shrink-0 ${stage.notify_team ? "text-primary" : "text-[#71717a] dark:text-gray-400"}`}
  title="Toggle team notifications"
  >
  <Bell className="w-3.5 h-3.5" />
@@ -200,14 +200,14 @@ function PipelineEditor({ pipeline, onClose, onSave}) {
  );
 })}
  {form.stages.length === 0 && (
- <p className="text-xs text-muted-foreground text-center py-4">{t("add_stages_to_build_your_pipel", "Add stages to build your pipeline")}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 text-center py-4 tracking-[0.04em]">{t("add_stages_to_build_your_pipel", "Add stages to build your pipeline")}</p>
  )}
  </div>
  </div>
 
  <div className="flex justify-end gap-2 border-t border-primary/40 pt-3">
  <Button variant="outline" onClick={onClose}>{t("cancel", "Cancel")}</Button>
- <Button onClick={() => onSave(form)} className="gap-1.5">
+ <Button onClick={() => onSave(form)} className="gap-2.5">
  <Save className="w-3.5 h-3.5" /> {t("save_pipeline", "Save Pipeline")}
  </Button>
  </div>
@@ -264,7 +264,7 @@ export default function CasePipelinePage() {
  subtitle="Define custom stages for each case type and track progress"
  actions={
  ["super_admin", "company_admin", "managing_partner"].includes(user?.role) && (
- <Button size="sm" onClick={() => setShowNew(true)} className="gap-1.5">
+ <Button size="sm" onClick={() => setShowNew(true)} className="gap-2.5">
  <Plus className="w-4 h-4" /> {t("new_pipeline", "New Pipeline")}
  </Button>
  )
@@ -275,14 +275,14 @@ export default function CasePipelinePage() {
  {/* Pipeline templates - Admin Only */}
  {["super_admin", "company_admin", "managing_partner"].includes(user?.role) && (
  <div>
- <h2 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">{t("pipeline_templates", "Pipeline Templates")}</h2>
+ <h2 className="text-sm font-semibold mb-3 text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{t("pipeline_templates", "Pipeline Templates")}</h2>
  {isLoading ? (
- <div className="text-center text-sm text-muted-foreground py-8">{t("loading_pipelines", "Loading pipelines...")}</div>
+ <div className="text-center text-sm text-[#71717a] dark:text-gray-400 py-8">{t("loading_pipelines", "Loading pipelines...")}</div>
  ) : pipelines.length === 0 ? (
- <div className="bg-card rounded-xl border border-dashed border-primary/40 p-12 text-center">
- <GitBranch className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 p-12 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <GitBranch className="w-10 h-10 text-[#71717a] dark:text-gray-400 mx-auto mb-3" />
  <p className="text-sm font-medium">{t("no_pipelines_yet", "No pipelines yet")}</p>
- <p className="text-xs text-muted-foreground mt-1 mb-4">{t(
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 mb-4 tracking-[0.04em]">{t(
  "create_your_first_pipeline_to_",
  "Create your first pipeline to track case stages"
  )}</p>

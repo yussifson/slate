@@ -100,26 +100,26 @@ export default function PerformanceDashboard() {
       />
       {/* Top Performer Highlight */}
       {topBiller && (
-        <div className="bg-gradient-to-r from-primary to-primary/70 rounded-xl p-5 text-white flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-white dark:bg-slate-900/40/20 flex items-center justify-center text-xl font-bold shrink-0">
+        <div className="bg-gradient-to-r from-primary to-primary/70 rounded-md-xl p-5 text-white flex items-center gap-4">
+          <div className="w-12 h-12 rounded-md-full bg-white dark:bg-slate-900/40/20 flex items-center justify-center text-xl font-semibold shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             {topBiller.full_name?.[0]}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2"><Trophy className="w-4 h-4 text-yellow-300" /><span className="text-xs font-bold text-white/80 uppercase tracking-wide">{t("top_performer", "Top Performer")}</span></div>
-            <p className="text-lg font-bold">{topBiller.full_name}</p>
+            <div className="flex items-center gap-2"><Trophy className="w-4 h-4 text-yellow-300" /><span className="text-xs font-semibold text-white/80 uppercase tracking-wide tracking-[0.04em]">{t("top_performer", "Top Performer")}</span></div>
+            <p className="text-lg font-semibold">{topBiller.full_name}</p>
             <p className="text-sm text-white/80">{topBiller.metrics.totalHours.toFixed(1)}{t("h_logged", "h logged ·")} {formatCurrency(topBiller.metrics.billedAmount, currency)} {t("billed", "billed ·")} {topBiller.metrics.activeCases} {t("active_cases", "active cases")}</p>
           </div>
           {topBiller.metrics.winRate !== null && (
             <div className="text-center shrink-0">
-              <p className="text-3xl font-bold">{topBiller.metrics.winRate}%</p>
-              <p className="text-xs text-white/80">{t("win_rate", "win rate")}</p>
+              <p className="text-3xl font-semibold tracking-[-0.02em]">{topBiller.metrics.winRate}%</p>
+              <p className="text-xs text-white/80 tracking-[0.04em]">{t("win_rate", "win rate")}</p>
             </div>
           )}
         </div>
       )}
       {/* Chart */}
       {chartData.length > 0 && (
-        <div className="bg-card border border-primary/40 rounded-xl p-5">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <h3 className="text-sm font-semibold mb-4">{t("hours_logged_by_lawyer", "Hours Logged by Lawyer")}</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={chartData}>
@@ -136,17 +136,17 @@ export default function PerformanceDashboard() {
       <div className="space-y-3">
         {lawyerMetrics.map((lawyer, idx) => {
           return (
-            <div key={lawyer.id} className="bg-card border border-primary/40 rounded-xl p-4">
+            <div key={lawyer.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
-                  <span className="text-sm font-bold text-primary">{lawyer.full_name?.[0]}</span>
+                <div className="w-9 h-9 rounded-md-full bg-slate-100 flex items-center justify-center shrink-0">
+                  <span className="text-sm font-semibold text-primary">{lawyer.full_name?.[0]}</span>
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     {idx === 0 && <Trophy className="w-3.5 h-3.5 text-yellow-500" />}
                     <p className="text-sm font-semibold truncate">{lawyer.full_name}</p>
                   </div>
-                  <p className="text-xs text-muted-foreground">{lawyer.department || "Lawyer"}</p>
+                  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{lawyer.department || "Lawyer"}</p>
                 </div>
                 {lawyer.metrics.winRate !== null && (
                   <Badge className={cn("text-xs", lawyer.metrics.winRate >= 60 ? "bg-slate-100 text-primary/90" : "bg-amber-100 text-amber-700")}>
@@ -162,9 +162,9 @@ export default function PerformanceDashboard() {
                   { icon: CheckSquare, label: "Tasks Done", value: lawyer.metrics.completedTasks },
                 ].map(m => {
                   return (
-                    <div key={m.label} className="bg-muted/40 rounded-lg p-2.5 flex items-center gap-2">
-                      <m.icon className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                      <div><p className="text-sm font-semibold">{m.value}</p><p className="text-[10px] text-muted-foreground">{m.label}</p></div>
+                    <div key={m.label} className="bg-muted/40 rounded-xl p-2.5 flex items-center gap-2">
+                      <m.icon className="w-3.5 h-3.5 text-[#71717a] dark:text-gray-400 shrink-0" />
+                      <div><p className="text-sm font-semibold">{m.value}</p><p className="text-[10px] text-[#71717a] dark:text-gray-400">{m.label}</p></div>
                     </div>
                   );
                 })}
@@ -173,7 +173,7 @@ export default function PerformanceDashboard() {
           );
         })}
         {lawyerMetrics.length === 0 && (
-          <div className="bg-card border border-primary/40 rounded-xl p-10 text-center text-sm text-muted-foreground">{t("no_lawyer_records_found", "No lawyer records found")}</div>
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-10 text-center text-sm text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_lawyer_records_found", "No lawyer records found")}</div>
         )}
       </div>
     </div>

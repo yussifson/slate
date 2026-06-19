@@ -77,19 +77,19 @@ export default function SHSStudents() {
  {/* Header Section */}
  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
  <div>
- <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 to-primary/80 bg-clip-text text-transparent">
+ <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 to-primary/80 bg-clip-text text-transparent tracking-[-0.02em]">
  Student Directory
  </h1>
- <p className="text-muted-foreground mt-1 text-sm font-medium">
+ <p className="text-[#71717a] dark:text-gray-400 mt-1 text-sm font-medium">
  Manage all enrolled students, their academic programs, and statuses.
  </p>
  </div>
  
  <div className="flex items-center gap-3">
- <Button variant="outline" size="sm" onClick={fetchStudents} className="h-9 gap-2 rounded-xl border-primary/20 dark:border-primary/40 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 hover:text-primary/80 dark:text-primary/20">
+ <Button variant="outline" size="sm" onClick={fetchStudents} className="h-9 gap-2 rounded-md-xl border-primary/20 dark:border-primary/40 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 hover:text-primary/80 dark:text-primary/20">
  <RefreshCw className="w-4 h-4" /> Sync
  </Button>
- <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20">
+ <Button onClick={() => setIsAddModalOpen(true)} className="h-9 gap-2 rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20">
  <Plus className="w-4 h-4" /> Enroll Student
  </Button>
  </div>
@@ -97,51 +97,51 @@ export default function SHSStudents() {
 
  {/* Stats Cards */}
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
- <Card className="rounded-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
+ <Card className="rounded-md-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+ <div className="w-12 h-12 rounded-md-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
  <Users className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-semibold text-muted-foreground">Total Students</p>
- <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">{students.length}</h3>
+ <p className="text-sm font-semibold text-[#71717a] dark:text-gray-400">Total Students</p>
+ <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-[-0.02em]">{students.length}</h3>
  </div>
  </CardContent>
  </Card>
- <Card className="rounded-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
+ <Card className="rounded-md-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-primary shrink-0">
+ <div className="w-12 h-12 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary shrink-0">
  <UserCheck className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-semibold text-muted-foreground">Active</p>
- <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">
+ <p className="text-sm font-semibold text-[#71717a] dark:text-gray-400">Active</p>
+ <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-[-0.02em]">
  {students.filter(s => s.status === 'Active').length}
  </h3>
  </div>
  </CardContent>
  </Card>
- <Card className="rounded-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
+ <Card className="rounded-md-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+ <div className="w-12 h-12 rounded-md-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
  <GraduationCap className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-semibold text-muted-foreground">Graduating Class</p>
- <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">
+ <p className="text-sm font-semibold text-[#71717a] dark:text-gray-400">Graduating Class</p>
+ <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-[-0.02em]">
  {students.filter(s => s.data?.grade === 'Form 3').length}
  </h3>
  </div>
  </CardContent>
  </Card>
- <Card className="rounded-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10">
+ <Card className="rounded-md-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
+ <div className="w-12 h-12 rounded-md-xl bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
  <AlertCircle className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-semibold text-muted-foreground">On Leave</p>
- <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">
+ <p className="text-sm font-semibold text-[#71717a] dark:text-gray-400">On Leave</p>
+ <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-[-0.02em]">
  {students.filter(s => s.status === 'On Leave').length}
  </h3>
  </div>
@@ -150,11 +150,11 @@ export default function SHSStudents() {
  </div>
 
  {/* Main Table Area */}
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
- <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Enrolled Roster</CardTitle>
+ <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100">Enrolled Roster</CardTitle>
  <CardDescription>Comprehensive list of all registered students</CardDescription>
  </div>
  
@@ -163,12 +163,12 @@ export default function SHSStudents() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search name or ID..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
  </div>
- <Button variant="outline" size="icon" className="h-9 w-9 rounded-xl border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900">
+ <Button variant="outline" size="icon" className="h-9 w-9 rounded-md-xl border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Filter className="w-4 h-4 text-slate-600 dark:text-slate-300" />
  </Button>
  </div>
@@ -179,10 +179,10 @@ export default function SHSStudents() {
  <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400 font-medium">Loading roster...</div>
  ) : filteredStudents.length === 0 ? (
  <div className="p-16 text-center">
- <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
  <Users className="w-8 h-8 text-primary dark:text-primary" />
  </div>
- <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200 mb-1">No students found</h3>
+ <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 mb-1">No students found</h3>
  <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
  {searchQuery ? "No students match your search criteria." : "There are currently no students enrolled in the system. Click 'Enroll Student' to add one."}
  </p>
@@ -190,15 +190,15 @@ export default function SHSStudents() {
  ) : (
  <div className="overflow-x-auto">
  <table className="w-full text-sm text-left">
- <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider">
+ <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider tracking-[0.04em]">
  <tr>
- <th className="px-6 py-4 rounded-tl-xl">Student Name</th>
+ <th className="px-6 py-4 rounded-md-tl-xl">Student Name</th>
  <th className="px-6 py-4">Student ID</th>
  <th className="px-6 py-4">Grade / Form</th>
  <th className="px-6 py-4">Programme</th>
  <th className="px-6 py-4">Gender</th>
  <th className="px-6 py-4">Status</th>
- <th className="px-6 py-4 text-right rounded-tr-xl">Actions</th>
+ <th className="px-6 py-4 text-right rounded-md-tr-xl">Actions</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-slate-100">
@@ -206,7 +206,7 @@ export default function SHSStudents() {
  <tr key={student.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors group">
  <td className="px-6 py-4">
  <div className="flex items-center gap-3">
- <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-primary/80 dark:text-primary/20 flex items-center justify-center font-bold text-xs">
+ <div className="w-8 h-8 rounded-md-full bg-slate-100 dark:bg-slate-800 text-primary/80 dark:text-primary/20 flex items-center justify-center font-semibold text-xs tracking-[0.04em]">
  {student.title?.charAt(0) || 'S'}
  </div>
  <div className="font-semibold text-slate-800 dark:text-slate-100">{student.title}</div>
@@ -226,7 +226,7 @@ export default function SHSStudents() {
  </Badge>
  </td>
  <td className="px-6 py-4 text-right">
- <Button variant="ghost" size="sm" className="text-primary dark:text-primary/70 hover:text-primary/70 dark:text-primary/10 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+ <Button variant="ghost" size="sm" className="text-primary dark:text-primary/70 hover:text-primary/70 dark:text-primary/10 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
  View Profile
  </Button>
  </td>
@@ -241,10 +241,10 @@ export default function SHSStudents() {
 
  {/* Add Student Modal */}
  <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
- <DialogContent className="sm:max-w-[500px] rounded-3xl p-0 overflow-hidden border-none ">
+ <DialogContent className="sm:max-w-[500px] rounded-md-3xl p-0 overflow-hidden border-none ">
  <div className="p-6 bg-gradient-to-br from-primary/90 to-primary/80 text-white">
  <DialogHeader>
- <DialogTitle className="text-2xl font-black">Enroll New Student</DialogTitle>
+ <DialogTitle className="text-2xl font-black tracking-[-0.02em]">Enroll New Student</DialogTitle>
  <DialogDescription className="text-primary/10 dark:text-primary/70">
  Enter the details of the student to add them to the directory.
  </DialogDescription>
@@ -254,36 +254,36 @@ export default function SHSStudents() {
  <ScrollArea className="max-h-[60vh] p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">First Name</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">First Name</label>
  <Input 
  value={newStudent.firstName} 
  onChange={e => setNewStudent({...newStudent, firstName: e.target.value})} 
  placeholder="e.g. John"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 focus-visible:ring-primary rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 focus-visible:ring-primary rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Last Name</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Last Name</label>
  <Input 
  value={newStudent.lastName} 
  onChange={e => setNewStudent({...newStudent, lastName: e.target.value})} 
  placeholder="e.g. Doe"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 focus-visible:ring-primary rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 focus-visible:ring-primary rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Student ID</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Student ID</label>
  <Input 
  value={newStudent.studentId} 
  onChange={e => setNewStudent({...newStudent, studentId: e.target.value})} 
  placeholder="e.g. SHS-2026-001"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 focus-visible:ring-primary rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 focus-visible:ring-primary rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Gender</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Gender</label>
  <select 
- className="flex h-10 w-full rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+ className="flex h-10 w-full rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newStudent.gender}
  onChange={e => setNewStudent({...newStudent, gender: e.target.value})}
  >
@@ -292,9 +292,9 @@ export default function SHSStudents() {
  </select>
  </div>
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Form / Grade</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Form / Grade</label>
  <select 
- className="flex h-10 w-full rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+ className="flex h-10 w-full rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newStudent.grade}
  onChange={e => setNewStudent({...newStudent, grade: e.target.value})}
  >
@@ -305,9 +305,9 @@ export default function SHSStudents() {
  </select>
  </div>
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Programme</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Programme</label>
  <select 
- className="flex h-10 w-full rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+ className="flex h-10 w-full rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newStudent.program}
  onChange={e => setNewStudent({...newStudent, program: e.target.value})}
  >
@@ -322,14 +322,14 @@ export default function SHSStudents() {
  </div>
  </ScrollArea>
  
- <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3">
- <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
+ <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-md-xl font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
  Cancel
  </Button>
  <Button 
  onClick={handleAddStudent} 
  disabled={!newStudent.firstName || !newStudent.lastName || !newStudent.studentId}
- className="rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-bold "
+ className="rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-semibold "
  >
  Enroll Student
  </Button>

@@ -42,35 +42,35 @@ export default function HRPromotionsPanel({ companyId, promotions, staff, curren
         </div>
       )}
       {promotions.length === 0 ? (
-        <div className="bg-card border border-primary/40 rounded-xl p-10 text-center">
-          <ArrowUpCircle className="w-10 h-10 text-muted-foreground mx-auto mb-2" />
-          <p className="text-sm text-muted-foreground">{t("no_promotions_recorded_yet", "No promotions recorded yet")}</p>
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <ArrowUpCircle className="w-10 h-10 text-[#71717a] dark:text-gray-400 mx-auto mb-2" />
+          <p className="text-sm text-[#71717a] dark:text-gray-400">{t("no_promotions_recorded_yet", "No promotions recorded yet")}</p>
         </div>
       ) : (
-        <div className="bg-card border border-primary/40 rounded-xl divide-y divide-border">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           {promotions.map(p => {
             return (
               <div key={p.id} className="px-4 py-3 flex items-center gap-4">
-                <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
-                  <span className="text-sm font-bold text-primary">{p.staff_name?.[0]?.toUpperCase()}</span>
+                <div className="w-9 h-9 rounded-md-full bg-slate-100 flex items-center justify-center shrink-0">
+                  <span className="text-sm font-semibold text-primary">{p.staff_name?.[0]?.toUpperCase()}</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-1.5">
+                  <div className="flex flex-wrap items-center gap-2.5">
                     <span className="text-sm font-medium">{p.staff_name}</span>
                     <Badge className={cn("text-[9px] h-4 px-1.5", STATUS_COLORS[p.status])}>{p.status}</Badge>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-0.5">
+                  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">
                     <span className="line-through">{p.from_role?.replace(/_/g, " ")}</span>
                     {" → "}<strong className="text-foreground">{p.to_role?.replace(/_/g, " ")}</strong>
                     {p.from_salary && p.to_salary && ` · ${formatCurrency(p.from_salary, currency)} → ${formatCurrency(p.to_salary, currency)}`}
                     {p.effective_date ? ` · Effective ${format(new Date(p.effective_date), "MMM d, yyyy")}` : ""}
                   </p>
-                  {p.reason && <p className="text-xs text-muted-foreground truncate">{p.reason}</p>}
+                  {p.reason && <p className="text-xs text-[#71717a] dark:text-gray-400 truncate tracking-[0.04em]">{p.reason}</p>}
                 </div>
                 {isAdmin && p.status === "pending" && (
-                  <div className="flex gap-1.5 shrink-0">
-                    <Button size="sm" className="h-7 text-xs bg-primary hover:bg-primary/90 gap-1" onClick={() => handleApprove(p)}><CheckCircle className="w-3 h-3" />{t("approve", "Approve")}</Button>
-                    <Button size="sm" variant="outline" className="h-7 text-xs gap-1 text-red-600 border-red-200" onClick={() => handleReject(p)}><XCircle className="w-3 h-3" />{t("reject", "Reject")}</Button>
+                  <div className="flex gap-2.5 shrink-0">
+                    <Button size="sm" className="h-7 text-xs bg-primary hover:bg-primary/90 gap-2 tracking-[0.04em]" onClick={() => handleApprove(p)}><CheckCircle className="w-3 h-3" />{t("approve", "Approve")}</Button>
+                    <Button size="sm" variant="outline" className="h-7 text-xs gap-2 text-red-600 border-red-200 tracking-[0.04em]" onClick={() => handleReject(p)}><XCircle className="w-3 h-3" />{t("reject", "Reject")}</Button>
                   </div>
                 )}
               </div>

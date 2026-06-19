@@ -40,7 +40,7 @@ export default function UniFinance() {
 
  const columns = [
  { id: 'description', header: 'Description', render: (_, r) => <span className="font-medium text-[var(--color-text-primary)]">{r.description}</span>},
- { id: 'category', header: 'Category', render: (_, r) => <span className="inline-flex items-center px-2 py-1 rounded-[var(--radius-sm)] text-[11px] font-medium bg-[var(--color-surface-2)] text-[var(--color-text-secondary)]">{r.category}</span>},
+ { id: 'category', header: 'Category', render: (_, r) => <span className="inline-flex items-center px-2 py-1 rounded-md-[var(--radius-sm)] text-[11px] font-medium bg-[var(--color-surface-2)] text-[var(--color-text-secondary)]">{r.category}</span>},
  { id: 'date', header: 'Date', render: (_, r) => <span className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">{r.date}</span>},
  { id: 'status', header: 'Status', render: (_, r) => <OrbitStatusBadge status={r.status === 'Completed' ? 'success' : 'pending'} label={r.status} />},
  { id: 'amount', header: 'Amount', align: 'right', render: (_, r) => <span className={cn("font-semibold text-right", r.isIncome ? "text-[var(--color-success)]" : "text-[var(--color-text-primary)]")}>{r.isIncome ? '+' : '-'}${r.amount.toLocaleString()}</span>}
@@ -50,48 +50,48 @@ export default function UniFinance() {
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
  <div className="flex items-end justify-between border-b border-primary/40 pb-4">
  <div>
- <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Financial Management</h1>
+ <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">Financial Management</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Track tuition payments, grants, and operational expenses.</p>
  </div>
- <div className="flex items-center bg-[var(--color-surface-2)] p-1 rounded-[var(--radius-lg)] border border-primary/40">
+ <div className="flex items-center bg-[var(--color-surface-2)] p-1 rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  {[{ id: 'ledger', label: 'Ledger'}, { id: 'tuition', label: 'Tuition Billing'}, { id: 'add', label: 'New Record'}].map(tab => (
- <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={cn("px-4 py-1.5 text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-all", activeTab === tab.id ? "bg-[var(--color-surface-0)] text-[var(--color-text-primary)] border border-primary/40" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border border-transparent")}>{tab.label}</button>
+ <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={cn("px-4 py-1.5 text-[var(--text-sm)] font-medium rounded-md-[var(--radius-md)] transition-all", activeTab === tab.id ? "bg-[var(--color-surface-0)] text-[var(--color-text-primary)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border-[0.5px] border-black/9 dark:border-white/8 border-transparent")}>{tab.label}</button>
  ))}
  </div>
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6">
  <div className="flex items-center justify-between">
  <div>
- <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Total Revenue</p>
- <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight">${totalIncome.toLocaleString()}</h3>
+ <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">Total Revenue</p>
+ <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight tracking-[-0.02em]">${totalIncome.toLocaleString()}</h3>
  </div>
- <div className="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--color-success-subtle)] flex items-center justify-center">
+ <div className="w-12 h-12 rounded-md-[var(--radius-lg)] bg-[var(--color-success-subtle)] flex items-center justify-center">
  <ArrowUpRight className="w-6 h-6 text-[var(--color-success)]" />
  </div>
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6">
  <div className="flex items-center justify-between">
  <div>
- <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Total Expenses</p>
- <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight">${totalExpense.toLocaleString()}</h3>
+ <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">Total Expenses</p>
+ <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight tracking-[-0.02em]">${totalExpense.toLocaleString()}</h3>
  </div>
- <div className="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--color-danger-subtle)] flex items-center justify-center">
+ <div className="w-12 h-12 rounded-md-[var(--radius-lg)] bg-[var(--color-danger-subtle)] flex items-center justify-center">
  <ArrowDownRight className="w-6 h-6 text-[var(--color-danger)]" />
  </div>
  </div>
  </div>
 
- <div className="bg-gradient-to-br from-[var(--primary)] to-[var(--color-accent-primary)] rounded-[var(--radius-xl)] p-6 text-white -[var(--color-accent-glow)]">
+ <div className="bg-gradient-to-br from-[var(--primary)] to-[var(--color-accent-primary)] rounded-md-[var(--radius-xl)] p-6 text-white -[var(--color-accent-glow)]">
  <div className="flex items-center justify-between">
  <div>
- <p className="text-[11px] font-semibold text-white/80 uppercase tracking-[var(--tracking-widest)]">Net Balance</p>
- <h3 className="text-[var(--text-3xl)] font-display font-semibold mt-1 tracking-tight">${(totalIncome - totalExpense).toLocaleString()}</h3>
+ <p className="text-[11px] font-semibold text-white/80 uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">Net Balance</p>
+ <h3 className="text-[var(--text-3xl)] font-display font-semibold mt-1 tracking-tight tracking-[-0.02em]">${(totalIncome - totalExpense).toLocaleString()}</h3>
  </div>
- <div className="w-12 h-12 rounded-[var(--radius-lg)] bg-white dark:bg-slate-900/40/20 flex items-center justify-center">
+ <div className="w-12 h-12 rounded-md-[var(--radius-lg)] bg-white dark:bg-slate-900/40/20 flex items-center justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CreditCard className="w-6 h-6" />
  </div>
  </div>
@@ -114,14 +114,14 @@ export default function UniFinance() {
  )}
  
  {activeTab === 'add' && (
- <div className="max-w-xl mx-auto bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-8 ">
- <h2 className="font-display text-[var(--text-2xl)] font-semibold tracking-tight text-[var(--color-text-primary)] mb-6">Log Transaction</h2>
- <div className="p-4 bg-[var(--color-info-subtle)] border border-[var(--color-info)] text-[var(--color-info)] rounded-[var(--radius-md)] text-sm mb-6 flex gap-2">
+ <div className="max-w-xl mx-auto bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-8 ">
+ <h2 className="font-display text-[var(--text-2xl)] font-semibold tracking-tight text-[var(--color-text-primary)] mb-6 tracking-[-0.02em]">Log Transaction</h2>
+ <div className="p-4 bg-[var(--color-info-subtle)] border-[0.5px] border-black/9 dark:border-white/8 border-[var(--color-info)] text-[var(--color-info)] rounded-md-[var(--radius-md)] text-sm mb-6 flex gap-2">
  <Wallet className="w-4 h-4 shrink-0 mt-0.5" />
  <span>Use the billing form to deduct or credit the general ledger. This form is connected to base44 case engine.</span>
  </div>
  <div className="space-y-4 text-center">
- <button className="flex items-center justify-center gap-2 px-6 py-3 w-full bg-[var(--primary)] hover:opacity-90 text-white rounded-[var(--radius-md)] font-medium transition-all">
+ <button className="flex items-center justify-center gap-2 px-6 py-3 w-full bg-[var(--primary)] hover:opacity-90 text-white rounded-md-[var(--radius-md)] font-medium transition-all">
  <Plus className="w-4 h-4" /> Initialize Form
  </button>
  </div>

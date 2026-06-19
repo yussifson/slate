@@ -92,38 +92,38 @@ export default function SHSDigitalResources() {
  
  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
  <div>
- <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
+ <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent tracking-[-0.02em]">
  E-Library & Resources
  </h1>
- <p className="text-muted-foreground mt-1 text-sm font-medium">
+ <p className="text-[#71717a] dark:text-gray-400 mt-1 text-sm font-medium">
  Manage digital learning materials, past questions, and study guides.
  </p>
  </div>
  
- <Button onClick={() => setIsUploadModalOpen(true)} className="h-9 gap-2 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20">
+ <Button onClick={() => setIsUploadModalOpen(true)} className="h-9 gap-2 rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20">
  <UploadCloud className="w-4 h-4" /> Upload Resource
  </Button>
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
- <Card className="rounded-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100">
+ <Card className="rounded-md-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+ <div className="w-12 h-12 rounded-md-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
  <Cloud className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-semibold text-muted-foreground">Total Files</p>
- <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">{resources.filter(r => r.status === 'Published').length}</h3>
+ <p className="text-sm font-semibold text-[#71717a] dark:text-gray-400">Total Files</p>
+ <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-[-0.02em]">{resources.filter(r => r.status === 'Published').length}</h3>
  </div>
  </CardContent>
  </Card>
  </div>
 
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
- <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+ <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <Folder className="w-5 h-5 text-primary dark:text-primary/70" /> Resource Directory
  </CardTitle>
  </div>
@@ -132,7 +132,7 @@ export default function SHSDigitalResources() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search resources..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -144,18 +144,18 @@ export default function SHSDigitalResources() {
  <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading resources...</div>
  ) : filteredResources.length === 0 ? (
  <div className="p-16 text-center">
- <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
  <FileText className="w-8 h-8 text-primary dark:text-primary" />
  </div>
- <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No resources found</h3>
+ <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No resources found</h3>
  <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Upload study materials to populate the E-Library.</p>
  </div>
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/30">
  {filteredResources.map(resource => (
- <div key={resource.id} className="p-5 rounded-2xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:border-primary dark:border-primary/40 -emerald-500/10 transition-all group">
+ <div key={resource.id} className="p-5 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:border-primary dark:border-primary/40 -emerald-500/10 transition-all group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-start mb-3">
- <div className="w-10 h-10 rounded-lg bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center">
+ <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center">
  <FileText className="w-5 h-5 text-primary" />
  </div>
  <Button 
@@ -168,14 +168,14 @@ export default function SHSDigitalResources() {
  </Button>
  </div>
  
- <h4 className="font-bold text-slate-800 dark:text-slate-100 line-clamp-2 min-h-[40px] mb-1">{resource.title}</h4>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 mb-4">{resource.data?.subject} • {resource.data?.targetClass}</p>
+ <h4 className="font-semibold text-slate-800 dark:text-slate-100 line-clamp-2 min-h-[40px] mb-1">{resource.title}</h4>
+ <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 mb-4 tracking-[0.04em]">{resource.data?.subject} • {resource.data?.targetClass}</p>
  
  <div className="flex justify-between items-center mt-auto">
  <Badge variant="outline" className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-none font-medium text-[10px]">
  {resource.data?.category}
  </Badge>
- <a href={resource.data?.linkUrl || '#'} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-xs font-bold text-primary dark:text-primary/70 hover:underline">
+ <a href={resource.data?.linkUrl || '#'} target="_blank" rel="noreferrer" className="flex items-center gap-2.5 text-xs font-semibold text-primary dark:text-primary/70 hover:underline tracking-[0.04em]">
  View File <ExternalLink className="w-3 h-3" />
  </a>
  </div>
@@ -187,10 +187,10 @@ export default function SHSDigitalResources() {
  </Card>
 
  <Dialog open={isUploadModalOpen} onOpenChange={setIsUploadModalOpen}>
- <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none ">
+ <DialogContent className="sm:max-w-[450px] rounded-md-3xl p-0 overflow-hidden border-none ">
  <div className="p-6 bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 text-white">
  <DialogHeader>
- <DialogTitle className="text-2xl font-black">Upload Resource</DialogTitle>
+ <DialogTitle className="text-2xl font-black tracking-[-0.02em]">Upload Resource</DialogTitle>
  <DialogDescription className="text-primary/10 dark:text-primary/70">
  Add a new study material to the E-Library.
  </DialogDescription>
@@ -199,10 +199,10 @@ export default function SHSDigitalResources() {
  
  <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 space-y-4">
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Resource Title</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Resource Title</label>
  <Input 
  placeholder="e.g. 2022 WASSCE Core Maths Past Questions"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newResource.title}
  onChange={e => setNewResource({...newResource, title: e.target.value})}
  />
@@ -210,9 +210,9 @@ export default function SHSDigitalResources() {
  
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Category</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Category</label>
  <select 
- className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newResource.category}
  onChange={e => setNewResource({...newResource, category: e.target.value})}
  >
@@ -224,9 +224,9 @@ export default function SHSDigitalResources() {
  </select>
  </div>
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Target Class</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Target Class</label>
  <select 
- className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newResource.targetClass}
  onChange={e => setNewResource({...newResource, targetClass: e.target.value})}
  >
@@ -239,20 +239,20 @@ export default function SHSDigitalResources() {
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Subject</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Subject</label>
  <Input 
  placeholder="e.g. Core Mathematics, General Knowledge"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newResource.subject}
  onChange={e => setNewResource({...newResource, subject: e.target.value})}
  />
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Cloud Link (URL)</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Cloud Link (URL)</label>
  <Input 
  placeholder="https://drive.google.com/..."
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newResource.linkUrl}
  onChange={e => setNewResource({...newResource, linkUrl: e.target.value})}
  />
@@ -260,14 +260,14 @@ export default function SHSDigitalResources() {
  </div>
  </div>
  
- <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3">
- <Button variant="outline" onClick={() => setIsUploadModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
+ <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Button variant="outline" onClick={() => setIsUploadModalOpen(false)} className="rounded-md-xl font-semibold text-slate-600 dark:text-slate-300">
  Cancel
  </Button>
  <Button 
  onClick={handleUpload} 
  disabled={!newResource.title || !newResource.linkUrl || isProcessing}
- className="rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-bold"
+ className="rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-semibold"
  >
  {isProcessing ? 'Publishing...' : 'Publish Resource'}
  </Button>

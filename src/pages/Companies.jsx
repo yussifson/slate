@@ -73,12 +73,12 @@ export default function Companies() {
       render: row => {
         return (
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center">
-              <span className="text-sm font-bold text-primary">{row.name?.[0]}</span>
+            <div className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center">
+              <span className="text-sm font-semibold text-primary">{row.name?.[0]}</span>
             </div>
             <div>
               <p className="font-medium text-sm">{row.name}</p>
-              <p className="text-xs text-muted-foreground">{row.email}</p>
+              <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{row.email}</p>
             </div>
           </div>
         );
@@ -116,7 +116,7 @@ export default function Companies() {
     {
       header: "Created",
       render: row => {
-        return <span className="text-xs text-muted-foreground">{format(new Date(row.created_date), "MMM d, yyyy")}</span>;
+        return <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{format(new Date(row.created_date), "MMM d, yyyy")}</span>;
       }
     },
     {
@@ -125,13 +125,13 @@ export default function Companies() {
         return (
           <div className="flex gap-2 justify-end">
             <Button
-              variant="outline" size="sm" className="gap-1.5 h-7 text-xs"
+              variant="outline" size="sm" className="gap-2.5 h-7 text-xs tracking-[0.04em]"
               onClick={(e) => { e.stopPropagation(); setManagingFeaturesFirm(row); }}
             >
               <Layers className="w-3 h-3" /> {t("features", "Features")}
             </Button>
             <Button
-              variant="outline" size="sm" className="gap-1.5 h-7 text-xs"
+              variant="outline" size="sm" className="gap-2.5 h-7 text-xs tracking-[0.04em]"
               onClick={(e) => { e.stopPropagation(); setManagingStaffFirm(row); }}
             >
               <Users className="w-3 h-3" /> {t("team", "Team")}
@@ -151,7 +151,7 @@ export default function Companies() {
       />
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
           <Input placeholder="Search companies..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
         <Select value={countryFilter} onValueChange={setCountryFilter}>

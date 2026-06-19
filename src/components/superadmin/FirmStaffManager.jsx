@@ -116,7 +116,7 @@ export default function FirmStaffManager({ firm, onClose }) {
             <UserCog className="w-4 h-4" />
             {t("team", "Team —")} {firm.name}
           </DialogTitle>
-          <p className="text-xs text-muted-foreground mt-0.5">{t(
+          <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">{t(
             "invite_staff_and_manage_their_",
             "Invite staff and manage their roles for this firm."
           )}</p>
@@ -124,10 +124,10 @@ export default function FirmStaffManager({ firm, onClose }) {
 
         {/* Invite Section */}
         <div className="px-6 py-4 bg-muted/30 border-b border-primary/40 space-y-3">
-          <p className="text-xs font-semibold text-foreground flex items-center gap-1.5"><UserPlus className="w-3.5 h-3.5" />{t("invite_new_team_member", "Invite New Team Member")}</p>
+          <p className="text-xs font-semibold text-foreground flex items-center gap-2.5 tracking-[0.04em]"><UserPlus className="w-3.5 h-3.5" />{t("invite_new_team_member", "Invite New Team Member")}</p>
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <Label className="text-xs">{t("full_name", "Full Name *")}</Label>
+              <Label className="text-xs tracking-[0.04em]">{t("full_name", "Full Name *")}</Label>
               <Input
                 className="mt-1 h-8 text-sm"
                 placeholder="Jane Asante"
@@ -136,7 +136,7 @@ export default function FirmStaffManager({ firm, onClose }) {
               />
             </div>
             <div>
-              <Label className="text-xs">{t("email_address", "Email Address *")}</Label>
+              <Label className="text-xs tracking-[0.04em]">{t("email_address", "Email Address *")}</Label>
               <Input
                 className="mt-1 h-8 text-sm"
                 type="email"
@@ -146,18 +146,18 @@ export default function FirmStaffManager({ firm, onClose }) {
               />
             </div>
             <div>
-              <Label className="text-xs">{t("role", "Role")}</Label>
+              <Label className="text-xs tracking-[0.04em]">{t("role", "Role")}</Label>
               <Select value={invite.role} onValueChange={v => setInvite(p => ({ ...p, role: v }))}>
-                <SelectTrigger className="mt-1 h-8 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="mt-1 h-8 text-xs tracking-[0.04em]"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {ROLES.map(r => {
-                    return <SelectItem key={r.value} value={r.value} className="text-xs">{r.label}</SelectItem>;
+                    return <SelectItem key={r.value} value={r.value} className="text-xs tracking-[0.04em]">{r.label}</SelectItem>;
                   })}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label className="text-xs">{t("department", "Department")} <span className="text-muted-foreground">{t("optional", "(optional)")}</span></Label>
+              <Label className="text-xs tracking-[0.04em]">{t("department", "Department")} <span className="text-[#71717a] dark:text-gray-400">{t("optional", "(optional)")}</span></Label>
               <Input
                 className="mt-1 h-8 text-sm"
                 placeholder="e.g. Litigation"
@@ -167,7 +167,7 @@ export default function FirmStaffManager({ firm, onClose }) {
             </div>
             {["company_admin", "lawyer"].includes(invite.role) && (
               <div className="col-span-2">
-                <Label className="text-xs">{t("bar_number", "Bar Number")} <span className="text-muted-foreground">{t("optional_for_lawyers", "(optional, for lawyers)")}</span></Label>
+                <Label className="text-xs tracking-[0.04em]">{t("bar_number", "Bar Number")} <span className="text-[#71717a] dark:text-gray-400">{t("optional_for_lawyers", "(optional, for lawyers)")}</span></Label>
                 <Input
                   className="mt-1 h-8 text-sm"
                   placeholder="BAR-XXXXXX"
@@ -178,12 +178,12 @@ export default function FirmStaffManager({ firm, onClose }) {
             )}
           </div>
           <div className="flex justify-end">
-            <Button size="sm" onClick={handleInvite} disabled={inviting || !invite.user_email || !invite.full_name} className="gap-1.5">
+            <Button size="sm" onClick={handleInvite} disabled={inviting || !invite.user_email || !invite.full_name} className="gap-2.5">
               <Mail className="w-3.5 h-3.5" />
               {inviting ? "Sending invite..." : "Send Invite & Create Login"}
             </Button>
           </div>
-          <p className="text-[10px] text-muted-foreground">{t(
+          <p className="text-[10px] text-[#71717a] dark:text-gray-400">{t(
             "an_email_invite_will_be_sent_o",
             "An email invite will be sent. Once they log in, their account will be linked to this firm."
           )}</p>
@@ -191,34 +191,34 @@ export default function FirmStaffManager({ firm, onClose }) {
 
         {/* Staff List */}
         <div className="flex-1 overflow-y-auto px-6 py-4 space-y-2">
-          <p className="text-xs font-semibold text-foreground flex items-center gap-1.5 mb-3">
+          <p className="text-xs font-semibold text-foreground flex items-center gap-2.5 mb-3 tracking-[0.04em]">
             <Users className="w-3.5 h-3.5" />
             {t("current_team", "Current Team (")}{staffRecords.length})
                       </p>
           {isLoading ? (
-            <p className="text-center text-sm text-muted-foreground py-6">{t("loading_team", "Loading team...")}</p>
+            <p className="text-center text-sm text-[#71717a] dark:text-gray-400 py-6">{t("loading_team", "Loading team...")}</p>
           ) : staffRecords.length === 0 ? (
-            <div className="text-center py-8 text-sm text-muted-foreground">{t(
+            <div className="text-center py-8 text-sm text-[#71717a] dark:text-gray-400">{t(
               "no_team_members_yet_invite_som",
               "No team members yet. Invite someone above."
             )}</div>
           ) : staffRecords.map(staff => {
             return (
-              <div key={staff.id} className="flex items-center gap-3 p-3 bg-card rounded-lg border border-primary/40">
-                <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
-                  <span className="text-xs font-bold text-primary">{staff.full_name?.[0]?.toUpperCase() || "?"}</span>
+              <div key={staff.id} className="flex items-center gap-3 p-3 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                <div className="w-8 h-8 rounded-md-full bg-slate-100 flex items-center justify-center shrink-0">
+                  <span className="text-xs font-semibold text-primary tracking-[0.04em]">{staff.full_name?.[0]?.toUpperCase() || "?"}</span>
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{staff.full_name}</p>
-                  <p className="text-xs text-muted-foreground truncate">{staff.user_email}</p>
-                  {staff.department && <p className="text-[10px] text-muted-foreground">{staff.department}</p>}
+                  <p className="text-xs text-[#71717a] dark:text-gray-400 truncate tracking-[0.04em]">{staff.user_email}</p>
+                  {staff.department && <p className="text-[10px] text-[#71717a] dark:text-gray-400">{staff.department}</p>}
                 </div>
                 {/* Role selector */}
                 <Select value={staff.role} onValueChange={v => updateRoleMutation.mutate({ id: staff.id, role: v })}>
-                  <SelectTrigger className="w-36 h-7 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-36 h-7 text-xs tracking-[0.04em]"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {ROLES.map(r => {
-                      return <SelectItem key={r.value} value={r.value} className="text-xs">{r.label}</SelectItem>;
+                      return <SelectItem key={r.value} value={r.value} className="text-xs tracking-[0.04em]">{r.label}</SelectItem>;
                     })}
                   </SelectContent>
                 </Select>

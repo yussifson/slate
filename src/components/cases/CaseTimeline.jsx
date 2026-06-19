@@ -16,7 +16,7 @@ const ACTIVITY_ICONS = {
  call: <Activity className="w-4 h-4 text-primary" />,
  meeting: <Clock className="w-4 h-4 text-primary" />,
  status_change: <CheckCircle className="w-4 h-4 text-amber-500" />,
- other: <MessageSquare className="w-4 h-4 text-gray-500" />
+ other: <MessageSquare className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
 };
 
 export default function CaseTimeline({ caseData, user}) {
@@ -74,7 +74,7 @@ export default function CaseTimeline({ caseData, user}) {
  addMutation.mutate(newEntry);
 };
 
- if (isLoading) return <div className="p-8 text-center text-sm text-muted-foreground animate-pulse">{t("loading_timeline", "Loading timeline...")}</div>;
+ if (isLoading) return <div className="p-8 text-center text-sm text-[#71717a] dark:text-gray-400 animate-pulse">{t("loading_timeline", "Loading timeline...")}</div>;
 
  return (
  <div className="space-y-6">
@@ -88,28 +88,28 @@ export default function CaseTimeline({ caseData, user}) {
  </div>
  <div className="relative border-l border-primary/40 ml-3 pl-6 space-y-8">
  {timeline.length === 0 ? (
- <div className="text-sm text-muted-foreground italic py-4">{t("no_timeline_events_recorded_ye", "No timeline events recorded yet.")}</div>
+ <div className="text-sm text-[#71717a] dark:text-gray-400 italic py-4">{t("no_timeline_events_recorded_ye", "No timeline events recorded yet.")}</div>
  ) : (
  timeline.map(entry => {
  return (
  <div key={entry.id} className="relative">
- <span className="absolute -left-10 w-8 h-8 rounded-full bg-background border border-primary/40 flex items-center justify-center shrink-0 z-10 ">
+ <span className="absolute -left-10 w-8 h-8 rounded-md-full bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center shrink-0 z-10 ">
  {ACTIVITY_ICONS[entry.activity_type] || ACTIVITY_ICONS.other}
  </span>
- <div className="bg-card border border-primary/40 rounded-xl p-4 ">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-start justify-between gap-4 mb-2">
  <div>
  <h4 className="font-semibold text-foreground text-base">{entry.title}</h4>
- <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+ <div className="flex items-center gap-2 text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">
  <span className="font-medium text-foreground/80">{entry.logged_by_name}</span>
  <span>•</span>
  <span>{format(new Date(entry.created_date), "MMM d, yyyy h:mm a")}</span>
- <span className="capitalize px-2 py-0.5 bg-muted rounded-full text-[10px]">{entry.activity_type.replace('_', ' ')}</span>
+ <span className="capitalize px-2 py-0.5 bg-muted rounded-md-full text-[10px]">{entry.activity_type.replace('_', ' ')}</span>
  </div>
  </div>
  </div>
  {entry.description && (
- <p className="text-sm text-muted-foreground whitespace-pre-wrap mt-3 bg-muted/30 p-3 rounded-lg border border-primary/40">
+ <p className="text-sm text-[#71717a] dark:text-gray-400 whitespace-pre-wrap mt-3 bg-muted/30 p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  {entry.description}
  </p>
  )}
@@ -126,7 +126,7 @@ export default function CaseTimeline({ caseData, user}) {
  </DialogHeader>
  <form onSubmit={handleAdd} className="space-y-4">
  <div className="space-y-2">
- <label className="text-xs font-semibold uppercase text-muted-foreground">{t("type", "Type")}</label>
+ <label className="text-xs font-semibold uppercase text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("type", "Type")}</label>
  <Select value={newEntry.activity_type} onValueChange={(val) => setNewEntry(prev => ({...prev, activity_type: val}))}>
  <SelectTrigger><SelectValue /></SelectTrigger>
  <SelectContent>
@@ -139,7 +139,7 @@ export default function CaseTimeline({ caseData, user}) {
  </Select>
  </div>
  <div className="space-y-2">
- <label className="text-xs font-semibold uppercase text-muted-foreground">{t("title", "Title")}</label>
+ <label className="text-xs font-semibold uppercase text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("title", "Title")}</label>
  <Input 
  value={newEntry.title} 
  onChange={(e) => setNewEntry(prev => ({...prev, title: e.target.value}))} 
@@ -148,7 +148,7 @@ export default function CaseTimeline({ caseData, user}) {
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-semibold uppercase text-muted-foreground">{t("description_notes", "Description / Notes")}</label>
+ <label className="text-xs font-semibold uppercase text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("description_notes", "Description / Notes")}</label>
  <Textarea 
  value={newEntry.description} 
  onChange={(e) => setNewEntry(prev => ({...prev, description: e.target.value}))} 

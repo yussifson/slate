@@ -422,14 +422,14 @@ export default function CasePDFGenerator({ caseData, user }) {
   return (
     <div className="space-y-5">
       {/* Client Report Quick Download */}
-      <div className="bg-slate-50 border border-primary/20 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
             <BarChart2 className="w-4 h-4 text-primary" />
           </div>
           <div>
             <p className="text-sm font-semibold text-primary/70">{t("client_billing_hearing_report", "Client Billing & Hearing Report")}</p>
-            <p className="text-xs text-primary/90 mt-0.5">{t(
+            <p className="text-xs text-primary/90 mt-0.5 tracking-[0.04em]">{t(
               "download_a_full_summary_of_inv",
               "Download a full summary of invoices, billable hours, and hearing history for this client."
             )}</p>
@@ -451,34 +451,34 @@ export default function CasePDFGenerator({ caseData, user }) {
             <button
               key={item.id}
               onClick={() => setTemplateId(item.id)}
-              className={`text-left p-4 rounded-xl border-2 transition-all ${templateId === item.id ? "border-primary bg-slate-50" : "border-primary/40 hover:border-primary/40 bg-card"}`}
+              className={`text-left p-4 rounded-md-xl border-2 transition-all ${templateId === item.id ? "border-primary bg-slate-50" : "border-primary/40 hover:border-primary/40 bg-card"}`}
             >
-              <div className={`w-8 h-8 rounded-lg flex items-center justify-center mb-2 ${templateId === item.id ? "bg-primary text-white" : "bg-muted text-muted-foreground"}`}>
+              <div className={`w-8 h-8 rounded-xl flex items-center justify-center mb-2 ${templateId === item.id ? "bg-primary text-white" : "bg-muted text-[#71717a] dark:text-gray-400"}`}>
                 <FileText className="w-4 h-4" />
               </div>
               <p className={`text-sm font-semibold ${templateId === item.id ? "text-primary" : "text-foreground"}`}>{item.label}</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">{item.description}</p>
+              <p className="text-[11px] text-[#71717a] dark:text-gray-400 mt-0.5 leading-snug">{item.description}</p>
             </button>
           );
         })}
       </div>
       {/* Case data preview */}
-      <div className="bg-card rounded-xl border border-primary/40 p-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("case", "Case")}</p><p className="text-sm font-medium">{caseData.title}</p></div>
-        <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("client", "Client")}</p><p className="text-sm font-medium">{client?.name || caseData.client_name || "—"}</p></div>
-        <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("case", "Case #")}</p><p className="text-sm font-medium">{caseData.case_number || "—"}</p></div>
-        <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("court", "Court")}</p><p className="text-sm font-medium">{caseData.court_name || "—"}</p></div>
-        <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("lawyer", "Lawyer")}</p><p className="text-sm font-medium">{caseData.assigned_lawyer_name || "—"}</p></div>
-        <div><p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("status", "Status")}</p><p className="text-sm font-medium capitalize">{caseData.status?.replace("_", " ")}</p></div>
+      <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 grid grid-cols-2 sm:grid-cols-3 gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div><p className="text-[10px] text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{t("case", "Case")}</p><p className="text-sm font-medium">{caseData.title}</p></div>
+        <div><p className="text-[10px] text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{t("client", "Client")}</p><p className="text-sm font-medium">{client?.name || caseData.client_name || "—"}</p></div>
+        <div><p className="text-[10px] text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{t("case", "Case #")}</p><p className="text-sm font-medium">{caseData.case_number || "—"}</p></div>
+        <div><p className="text-[10px] text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{t("court", "Court")}</p><p className="text-sm font-medium">{caseData.court_name || "—"}</p></div>
+        <div><p className="text-[10px] text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{t("lawyer", "Lawyer")}</p><p className="text-sm font-medium">{caseData.assigned_lawyer_name || "—"}</p></div>
+        <div><p className="text-[10px] text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{t("status", "Status")}</p><p className="text-sm font-medium capitalize">{caseData.status?.replace("_", " ")}</p></div>
       </div>
       {/* Additional notes */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
-          <Label className="text-xs">{t(
+          <Label className="text-xs tracking-[0.04em]">{t(
             "additional_notes_custom_conten",
             "Additional Notes / Custom Content (optional)"
           )}</Label>
-          <div className="flex gap-1.5 overflow-x-auto pb-1">
+          <div className="flex gap-2.5 overflow-x-auto pb-1">
             {["{client_name}", "{case_number}", "{case_title}", "{lawyer_name}", "{today}"].map(tag => {
               return (
                 <Badge key={tag} variant="outline" className="text-[10px] cursor-pointer hover:bg-muted" onClick={() => setNotes(prev => prev + " " + tag)}>

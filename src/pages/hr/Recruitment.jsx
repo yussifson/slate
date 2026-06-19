@@ -166,65 +166,65 @@ export default function Recruitment() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("recruitment", "Recruitment")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t("manage_job_postings_and_candid", "Manage job postings and candidates")}</p>
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("recruitment", "Recruitment")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("manage_job_postings_and_candid", "Manage job postings and candidates")}</p>
  </div>
  <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white">
  <Briefcase className="w-4 h-4" /> {t("add_candidate", "Add Candidate")}
  </Button>
  </div>
  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-xl border border-primary/40 p-4 ">
- <p className="text-xs text-muted-foreground mb-1">{t("total_applicants", "Total Applicants")}</p>
- <h2 className="text-2xl font-bold text-card-foreground">{candidates.length}</h2>
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">{t("total_applicants", "Total Applicants")}</p>
+ <h2 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{candidates.length}</h2>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-4 ">
- <p className="text-xs text-muted-foreground mb-1">{t("in_screening", "In Screening")}</p>
- <h2 className="text-2xl font-bold text-card-foreground">{candidates.filter(c => c.stage === 'Screening').length}</h2>
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">{t("in_screening", "In Screening")}</p>
+ <h2 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{candidates.filter(c => c.stage === 'Screening').length}</h2>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-4 ">
- <p className="text-xs text-muted-foreground mb-1">{t("interviews", "Interviews")}</p>
- <h2 className="text-2xl font-bold text-card-foreground">{candidates.filter(c => c.stage === 'Interview').length}</h2>
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">{t("interviews", "Interviews")}</p>
+ <h2 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{candidates.filter(c => c.stage === 'Interview').length}</h2>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-4 ">
- <p className="text-xs text-muted-foreground mb-1">{t("offers", "Offers")}</p>
- <h2 className="text-2xl font-bold text-card-foreground">{candidates.filter(c => c.stage === 'Offer').length}</h2>
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">{t("offers", "Offers")}</p>
+ <h2 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{candidates.filter(c => c.stage === 'Offer').length}</h2>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden flex flex-col">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50 flex gap-4 items-center">
  <div className="relative flex-1 max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search candidates..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search candidates..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  <div className="p-4 overflow-y-auto space-y-3">
  {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_pipeline", "Loading pipeline...")}</div>
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_pipeline", "Loading pipeline...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
  <Briefcase className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary" />
- <p className="font-semibold text-lg text-card-foreground">{t("pipeline_is_empty", "Pipeline is empty")}</p>
- <p className="text-xs mt-1">{t("add_a_candidate_to_get_started", "Add a candidate to get started.")}</p>
+ <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("pipeline_is_empty", "Pipeline is empty")}</p>
+ <p className="text-xs mt-1 tracking-[0.04em]">{t("add_a_candidate_to_get_started", "Add a candidate to get started.")}</p>
  </div>
  ) : filtered.map(cand => {
  return (
- <div key={cand.id} className="border border-primary/40 rounded-lg p-4 flex items-center justify-between transition- bg-background group">
+ <div key={cand.id} className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 flex items-center justify-between transition- bg-background group">
  <div className="flex items-center gap-4">
- <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-primary font-bold">
+ <div className="w-10 h-10 rounded-md-full bg-slate-100 flex items-center justify-center text-primary font-semibold">
  {cand.name.charAt(0)}
  </div>
  <div>
- <p className="font-bold text-card-foreground">{cand.name}</p>
- <p className="text-xs text-muted-foreground">{cand.position}• {cand.department} {t("applied", "• Applied:")} {cand.appliedDate}</p>
+ <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{cand.name}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{cand.position}• {cand.department} {t("applied", "• Applied:")} {cand.appliedDate}</p>
  </div>
  </div>
  <div className="text-center px-4">
- <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">{t("stage", "Stage")}</p>
+ <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">{t("stage", "Stage")}</p>
  <select
  value={cand.stage}
  onChange={e => handleUpdateStage(cand, e.target.value)}
- className={`text-xs font-bold px-2 py-1 rounded-full border border-input ${
+ className={`text-xs font-semibold px-2 py-1 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 border-input ${
  cand.stage === 'Offer' ? 'bg-slate-100 text-primary/90' :
  cand.stage === 'Hired' ? 'bg-slate-100 text-primary/90' :
  cand.stage === 'Interview' ? 'bg-orange-100 text-orange-700' : 
@@ -251,37 +251,37 @@ export default function Recruitment() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
- <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Candidate' : 'Add Candidate'}</h2>
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editTargetId ? 'Edit Candidate' : 'Add Candidate'}</h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("candidate_name", "Candidate Name")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("candidate_name", "Candidate Name")}</label>
  <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="e.g. John Doe" className="mt-1" />
  </div>
  <div className="grid grid-cols-2 gap-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("position", "Position")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("position", "Position")}</label>
  <Input value={formData.position} onChange={e => setFormData({...formData, position: e.target.value})} className="mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("department", "Department")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("department", "Department")}</label>
  <Input value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} className="mt-1" />
  </div>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("email", "Email")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("email", "Email")}</label>
  <Input value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("phone", "Phone")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("phone", "Phone")}</label>
  <Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("notes", "Notes")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("notes", "Notes")}</label>
  <textarea 
  value={formData.notes} 
  onChange={e => setFormData({...formData, notes: e.target.value})} 
- className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm h-16 resize-none"
+ className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm h-16 resize-none"
  />
  </div>
  </div>
@@ -305,14 +305,14 @@ export default function Recruitment() {
  if (!cand) return null;
  return (
  <div className="space-y-4 text-sm">
- <div><span className="font-semibold text-muted-foreground">{t("name", "Name:")}</span> <p className="font-medium"><Link to="/employees" className="hover:underline text-primary">{cand.name}</Link></p></div>
- <div><span className="font-semibold text-muted-foreground">{t("position", "Position:")}</span> <p className="font-medium">{cand.position}</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("department", "Department:")}</span> <p className="font-medium">{cand.department}</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("email", "Email:")}</span> <p className="font-medium">{cand.email}</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("phone", "Phone:")}</span> <p className="font-medium">{cand.phone}</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("applied_date", "Applied Date:")}</span> <p className="font-medium">{cand.appliedDate}</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("stage", "Stage:")}</span> <p className="font-medium">{cand.stage}</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("notes", "Notes:")}</span> <p className="font-medium">{cand.notes}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("name", "Name:")}</span> <p className="font-medium"><Link to="/employees" className="hover:underline text-primary">{cand.name}</Link></p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("position", "Position:")}</span> <p className="font-medium">{cand.position}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("department", "Department:")}</span> <p className="font-medium">{cand.department}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("email", "Email:")}</span> <p className="font-medium">{cand.email}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("phone", "Phone:")}</span> <p className="font-medium">{cand.phone}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("applied_date", "Applied Date:")}</span> <p className="font-medium">{cand.appliedDate}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("stage", "Stage:")}</span> <p className="font-medium">{cand.stage}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("notes", "Notes:")}</span> <p className="font-medium">{cand.notes}</p></div>
  </div>
  );
 })()}

@@ -96,26 +96,26 @@ export default function SHSParentAttendance() {
  
  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
  <div>
- <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
+ <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent tracking-[-0.02em]">
  Attendance Records
  </h1>
- <p className="text-muted-foreground mt-1 text-sm font-medium">
+ <p className="text-[#71717a] dark:text-gray-400 mt-1 text-sm font-medium">
  Monitor daily roll calls and boarding house presence.
  </p>
  </div>
  </div>
 
  {loading ? (
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-20 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading attendance data...</CardContent>
  </Card>
  ) : wards.length === 0 ? (
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-20 text-center">
- <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
  <User className="w-8 h-8 text-primary dark:text-primary" />
  </div>
- <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No Wards Linked</h3>
+ <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No Wards Linked</h3>
  <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Contact the school administration to link your child's account.</p>
  </CardContent>
  </Card>
@@ -123,24 +123,24 @@ export default function SHSParentAttendance() {
  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
  
  <div className="lg:col-span-1 space-y-4">
- <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider pl-2">Select Child</h3>
+ <h3 className="text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider pl-2 tracking-[0.04em]">Select Child</h3>
  {wards.map(ward => (
  <button
  key={ward.id}
  onClick={() => setSelectedWardId(ward.id)}
- className={`w-full p-4 rounded-2xl border text-left transition-all duration-300 flex items-center gap-4 ${
+ className={`w-full p-4 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 text-left transition-all duration-300 flex items-center gap-4 ${
  selectedWardId === ward.id 
  ? 'bg-primary dark:bg-primary border-primary dark:border-primary text-white -emerald-500/20 scale-100' 
  : 'bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:border-primary dark:border-primary/40 scale-95'
 }`}
  >
- <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shrink-0 ${
+ <div className={`w-12 h-12 rounded-md-full flex items-center justify-center font-semibold text-lg shrink-0 ${
  selectedWardId === ward.id ? 'bg-white dark:bg-slate-900/40 dark:bg-slate-900/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
 }`}>
  {ward.title.charAt(0)}
  </div>
  <div>
- <h4 className="font-bold">{ward.title}</h4>
+ <h4 className="font-semibold">{ward.title}</h4>
  <p className={`text-xs ${selectedWardId === ward.id ? 'text-primary/20 dark:text-primary/80' : 'text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400'}`}>
  {ward.data?.classRoom || 'Form 1'}
  </p>
@@ -150,9 +150,9 @@ export default function SHSParentAttendance() {
  </div>
 
  <div className="lg:col-span-3 space-y-6">
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50">
- <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+ <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <CalendarIcon className="w-5 h-5 text-primary dark:text-primary/70" /> Recent Attendance Log
  </CardTitle>
  </CardHeader>
@@ -165,11 +165,11 @@ export default function SHSParentAttendance() {
  ) : (
  <div className="overflow-x-auto">
  <table className="w-full text-sm text-left">
- <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider">
+ <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider tracking-[0.04em]">
  <tr>
- <th className="px-6 py-4 rounded-tl-xl">Date</th>
+ <th className="px-6 py-4 rounded-md-tl-xl">Date</th>
  <th className="px-6 py-4">Register Type</th>
- <th className="px-6 py-4 text-right rounded-tr-xl">Status</th>
+ <th className="px-6 py-4 text-right rounded-md-tr-xl">Status</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-slate-100">
@@ -182,7 +182,7 @@ export default function SHSParentAttendance() {
  {record.type}
  </td>
  <td className="px-6 py-4 text-right">
- <Badge variant="outline" className={`gap-1.5 ${getStatusColor(record.status)}`}>
+ <Badge variant="outline" className={`gap-2.5 ${getStatusColor(record.status)}`}>
  {getStatusIcon(record.status)} {record.status}
  </Badge>
  </td>

@@ -54,11 +54,11 @@ export default function DynamicRenderer({ schema }) {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">{props.title}</p>
-                    <h3 className="text-2xl font-bold mt-1">{props.value}</h3>
-                    {props.subtitle && <p className="text-xs text-muted-foreground mt-1">{props.subtitle}</p>}
+                    <p className="text-sm font-medium text-[#71717a] dark:text-gray-400">{props.title}</p>
+                    <h3 className="text-2xl font-semibold mt-1 tracking-[-0.02em]">{props.value}</h3>
+                    {props.subtitle && <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">{props.subtitle}</p>}
                   </div>
-                  <div className={`p-3 rounded-2xl ${colorClasses}`}>
+                  <div className={`p-3 rounded-md-2xl ${colorClasses}`}>
                     {renderIcon(props.icon || 'Activity')}
                   </div>
                 </div>
@@ -116,7 +116,7 @@ export default function DynamicRenderer({ schema }) {
       case 'Input':
         return (
           <div key={index} className="space-y-1">
-            <label className="text-xs font-medium text-muted-foreground">{props.label}</label>
+            <label className="text-xs font-medium text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{props.label}</label>
             <Input type={props.inputType || 'text'} placeholder={props.placeholder} />
           </div>
         );
@@ -130,7 +130,7 @@ export default function DynamicRenderer({ schema }) {
             <CardContent>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm text-left">
-                  <thead className="bg-muted/50 text-xs uppercase text-muted-foreground">
+                  <thead className="bg-muted/50 text-xs uppercase text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
                     <tr>
                       {props.columns?.map((col, i) => <th key={i} className="px-4 py-3 font-semibold">{col}</th>)}
                     </tr>
@@ -155,7 +155,7 @@ export default function DynamicRenderer({ schema }) {
         if (children) {
           return <div key={index} className={props.className}>{renderNode(children)}</div>;
         }
-        return <div key={index} className="text-red-500 text-xs">Unknown component type: {type}</div>;
+        return <div key={index} className="text-red-500 text-xs tracking-[0.04em]">Unknown component type: {type}</div>;
     }
   };
 

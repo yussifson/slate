@@ -25,8 +25,8 @@ export default function SuperAdminBilling({ title = 'Super Admin Billing Center'
    <div className={cn("bg-card border-b md:border-b-0 md:border-r border-primary/40 shrink-0 flex md:flex-col p-4 gap-2 overflow-x-auto md:overflow-y-auto no-scrollbar transition-all duration-300 relative", isCollapsed ? "md:w-20 w-full" : "w-full md:w-64")}>
    
    <div className="flex items-center justify-between mb-4 mt-2 px-2">
-     {!isCollapsed && <h2 className="hidden md:block text-sm font-black uppercase tracking-widest text-muted-foreground">Pricing Engine</h2>}
-     <button onClick={() => setIsCollapsed(!isCollapsed)} className="hidden md:flex p-1.5 hover:bg-muted text-muted-foreground rounded-md ml-auto">
+     {!isCollapsed && <h2 className="hidden md:block text-sm font-black uppercase tracking-widest text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Pricing Engine</h2>}
+     <button onClick={() => setIsCollapsed(!isCollapsed)} className="hidden md:flex p-1.5 hover:bg-muted text-[#71717a] dark:text-gray-400 rounded-lg ml-auto">
        {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
      </button>
    </div>
@@ -44,10 +44,10 @@ export default function SuperAdminBilling({ title = 'Super Admin Billing Center'
   <div className="flex-1 overflow-y-auto bg-muted/10">
  <div className="p-8 max-w-6xl mx-auto">
  <div className="mb-8">
- <h1 className="text-3xl font-extrabold text-foreground flex items-center gap-2">
+ <h1 className="text-3xl font-extrabold text-foreground flex items-center gap-2 tracking-[-0.02em]">
  <Settings className="w-8 h-8 text-primary" /> {title}
  </h1>
- <p className="text-muted-foreground mt-2">Total control over Paystack integrations, revenue, and customer limits.</p>
+ <p className="text-[#71717a] dark:text-gray-400 mt-2">Total control over Paystack integrations, revenue, and customer limits.</p>
  </div>
 
  {activeTab === 'dashboard' && <TabDashboard />}
@@ -70,9 +70,9 @@ function NavButton({ active, onClick, icon, label, isCollapsed }) {
       onClick={onClick}
       title={isCollapsed ? label : undefined}
       className={cn(
-        "flex items-center gap-2 whitespace-nowrap py-2 rounded-lg text-sm font-semibold transition-colors flex-shrink-0 text-left",
+        "flex items-center gap-2 whitespace-nowrap py-2 rounded-xl text-sm font-semibold transition-colors flex-shrink-0 text-left",
         isCollapsed ? "justify-center px-2 md:w-full" : "px-4 md:w-full",
-        active ? "bg-primary text-white shadow-sm" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+        active ? "bg-primary text-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm" : "text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground"
       )}
     >
       {icon} {!isCollapsed && <span className="hidden md:inline">{label}</span>}<span className="md:hidden">{label}</span>
@@ -122,7 +122,7 @@ function TabDashboard() {
     }
   });
 
-  if (isLoading) return <div className="p-8 text-center text-muted-foreground animate-pulse">Calculating Live Metrics...</div>;
+  if (isLoading) return <div className="p-8 text-center text-[#71717a] dark:text-gray-400 animate-pulse">Calculating Live Metrics...</div>;
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -133,7 +133,7 @@ function TabDashboard() {
         <StatCard title="Failed Payments" value={stats?.failedPayments || 0} icon={<XCircle className="w-5 h-5 text-red-500" />} trend="Live Data" alert={(stats?.failedPayments || 0) > 0} />
       </div>
       
-      <div className="bg-card border border-primary/40 rounded-xl p-8 h-64 flex items-center justify-center text-muted-foreground">
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-8 h-64 flex items-center justify-center text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <BarChart3 className="w-8 h-8 mr-3 opacity-20" /> MRR Chart Visualization Area (Live data connected)
       </div>
     </div>
@@ -142,13 +142,13 @@ function TabDashboard() {
 
 function StatCard({ title, value, icon, trend, alert}) {
  return (
- <div className={cn("bg-card border rounded-xl p-5 ", alert ? "border-red-200 dark:border-red-900" : "border-primary/40")}>
+ <div className={cn("bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-md-xl p-5 ", alert ? "border-red-200 dark:border-red-900" : "border-primary/40")}>
  <div className="flex justify-between items-start mb-2">
- <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{title}</div>
+ <div className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{title}</div>
  {icon}
  </div>
- <div className="text-3xl font-black text-foreground mb-1">{value}</div>
- <div className={cn("text-xs font-medium", alert ? "text-red-500" : "text-muted-foreground")}>{trend}</div>
+ <div className="text-3xl font-black text-foreground mb-1 tracking-[-0.02em]">{value}</div>
+ <div className={cn("text-xs font-medium", alert ? "text-red-500" : "text-[#71717a] dark:text-gray-400")}>{trend}</div>
  </div>
  );
 }
@@ -216,9 +216,9 @@ function TabPlanManager({ queryClient, toast}) {
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div className="flex justify-between items-center bg-card border border-primary/40 p-4 rounded-xl ">
- <p className="text-sm text-muted-foreground">Manage pricing tiers. The <strong>Paystack Plan Code</strong> is critical for synchronization.</p>
- <button onClick={handleAddNew} className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary/90">Add New Plan</button>
+ <div className="flex justify-between items-center bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 rounded-md-xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <p className="text-sm text-[#71717a] dark:text-gray-400">Manage pricing tiers. The <strong>Paystack Plan Code</strong> is critical for synchronization.</p>
+ <button onClick={handleAddNew} className="bg-primary text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-primary/90">Add New Plan</button>
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -230,19 +230,19 @@ function TabPlanManager({ queryClient, toast}) {
  editingId === p.id ? (
  <PlanEditor key={p.id} plan={editForm} setPlan={setEditForm} onSave={handleSave} onCancel={() => setEditingId(null)} isSaving={saveMutation.isPending} />
  ) : (
- <div key={p.id} className="bg-card border border-primary/40 rounded-xl p-6 flex flex-col relative group">
+ <div key={p.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-6 flex flex-col relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
- <button onClick={() => handleEdit(p)} className="p-1.5 bg-muted text-foreground rounded-md hover:bg-primary hover:text-white transition-colors"><Edit3 className="w-4 h-4" /></button>
+ <button onClick={() => handleEdit(p)} className="p-1.5 bg-muted text-foreground rounded-lg hover:bg-primary hover:text-white transition-colors"><Edit3 className="w-4 h-4" /></button>
  </div>
  <div className="flex items-center gap-2 mb-4">
- <h3 className="text-xl font-bold">{p.name}</h3>
- {!p.is_active && <span className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] font-bold uppercase rounded border">Archived</span>}
+ <h3 className="text-xl font-semibold">{p.name}</h3>
+ {!p.is_active && <span className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] font-semibold uppercase rounded-md border-[0.5px] border-black/9 dark:border-white/8 tracking-[0.04em]">Archived</span>}
  </div>
- <div className="flex items-end gap-1 mb-4">
- <span className="text-3xl font-black">GH₵{p.price_monthly}</span><span className="text-muted-foreground font-medium text-sm mb-1">/mo</span>
+ <div className="flex items-end gap-2 mb-4">
+ <span className="text-3xl font-black tracking-[-0.02em]">GH₵{p.price_monthly}</span><span className="text-[#71717a] dark:text-gray-400 font-medium text-sm mb-1">/mo</span>
  </div>
- <div className="text-sm font-mono bg-muted px-3 py-1.5 rounded-md text-muted-foreground mb-4 truncate flex items-center gap-2">
- <span className="px-2 py-0.5 bg-primary/10 text-primary font-bold text-[10px] rounded uppercase">{p.market_tier || 'global'}</span>
+ <div className="text-sm font-mono bg-muted px-3 py-1.5 rounded-lg text-[#71717a] dark:text-gray-400 mb-4 truncate flex items-center gap-2">
+ <span className="px-2 py-0.5 bg-primary/10 text-primary font-semibold text-[10px] rounded-md uppercase tracking-[0.04em]">{p.market_tier || 'global'}</span>
  <LinkIcon className="w-3 h-3 ml-1" /> {p.paystack_plan_code || 'No Paystack Code'}
  </div>
  <div className="grid grid-cols-2 gap-2 text-sm border-t border-primary/40 pt-4">
@@ -253,11 +253,11 @@ function TabPlanManager({ queryClient, toast}) {
    }
    lim = lim || {};
    const entries = Object.entries(lim);
-   if (entries.length === 0) return <div className="text-muted-foreground col-span-2 italic text-xs">No custom limits.</div>;
+   if (entries.length === 0) return <div className="text-[#71717a] dark:text-gray-400 col-span-2 italic text-xs tracking-[0.04em]">No custom limits.</div>;
    return entries.map(([k, v]) => (
      <React.Fragment key={k}>
-       <div className="text-muted-foreground truncate" title={k}>{k}:</div>
-       <div className="font-bold text-right truncate" title={String(v)}>{String(v)}</div>
+       <div className="text-[#71717a] dark:text-gray-400 truncate" title={k}>{k}:</div>
+       <div className="font-semibold text-right truncate" title={String(v)}>{String(v)}</div>
      </React.Fragment>
    ));
  })()}
@@ -296,16 +296,16 @@ function PlanEditor({ plan, setPlan, onSave, onCancel, isSaving}) {
  };
 
  return (
- <div className="bg-card border-2 border-primary rounded-xl p-6 flex flex-col">
+ <div className="bg-card border-2 border-primary rounded-md-xl p-6 flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="space-y-4 mb-6 flex-1">
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="text-xs font-bold uppercase text-muted-foreground">Plan Name</label>
- <input type="text" value={plan.name || ''} onChange={e => setPlan({...plan, name: e.target.value})} className="w-full h-9 px-3 border rounded text-sm mt-1" />
+ <label className="text-xs font-semibold uppercase text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Plan Name</label>
+ <input type="text" value={plan.name || ''} onChange={e => setPlan({...plan, name: e.target.value})} className="w-full h-9 px-3 border-[0.5px] border-black/9 dark:border-white/8 rounded-md text-sm mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold uppercase text-muted-foreground">Market Tier</label>
- <select value={plan.market_tier || 'global'} onChange={e => setPlan({...plan, market_tier: e.target.value})} className="w-full h-9 px-3 border rounded text-sm mt-1 bg-background">
+ <label className="text-xs font-semibold uppercase text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Market Tier</label>
+ <select value={plan.market_tier || 'global'} onChange={e => setPlan({...plan, market_tier: e.target.value})} className="w-full h-9 px-3 border-[0.5px] border-black/9 dark:border-white/8 rounded-md text-sm mt-1 bg-background">
  <option value="global">Global</option>
  <option value="emerging">Emerging</option>
  <option value="community">Community</option>
@@ -315,42 +315,42 @@ function PlanEditor({ plan, setPlan, onSave, onCancel, isSaving}) {
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="text-xs font-bold uppercase text-muted-foreground">Monthly (GH₵)</label>
- <input type="number" value={plan.price_monthly || 0} onChange={e => setPlan({...plan, price_monthly: Number(e.target.value)})} className="w-full h-9 px-3 border rounded text-sm mt-1" />
+ <label className="text-xs font-semibold uppercase text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Monthly (GH₵)</label>
+ <input type="number" value={plan.price_monthly || 0} onChange={e => setPlan({...plan, price_monthly: Number(e.target.value)})} className="w-full h-9 px-3 border-[0.5px] border-black/9 dark:border-white/8 rounded-md text-sm mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold uppercase text-muted-foreground">Paystack Code</label>
- <input type="text" value={plan.paystack_plan_code || ''} onChange={e => setPlan({...plan, paystack_plan_code: e.target.value})} className="w-full h-9 px-3 border rounded text-sm font-mono mt-1" placeholder="PLN_xxxxx" />
+ <label className="text-xs font-semibold uppercase text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Paystack Code</label>
+ <input type="text" value={plan.paystack_plan_code || ''} onChange={e => setPlan({...plan, paystack_plan_code: e.target.value})} className="w-full h-9 px-3 border-[0.5px] border-black/9 dark:border-white/8 rounded-md text-sm font-mono mt-1" placeholder="PLN_xxxxx" />
  </div>
  </div>
  
  <div className="border-t border-primary/20 pt-4 mt-2">
    <div className="flex justify-between items-center mb-2">
-     <label className="text-xs font-bold uppercase text-muted-foreground">Capabilities & Limits</label>
-     <button onClick={handleAddLimit} className="flex items-center gap-1 text-xs font-bold text-primary hover:bg-primary/10 px-2 py-1 rounded">
+     <label className="text-xs font-semibold uppercase text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Capabilities & Limits</label>
+     <button onClick={handleAddLimit} className="flex items-center gap-2 text-xs font-semibold text-primary hover:bg-primary/10 px-2 py-1 rounded-md tracking-[0.04em]">
        <Plus className="w-3 h-3" /> Add Feature
      </button>
    </div>
    <div className="space-y-2">
      {Object.entries(limits).map(([key, val], idx) => (
        <div key={idx} className="flex gap-2 items-center">
-         <input type="text" value={key} onChange={e => handleUpdateLimitKey(key, e.target.value)} className="w-1/2 h-8 px-2 border rounded text-xs font-mono" placeholder="feature_key" />
-         <input type="text" value={val} onChange={e => handleUpdateLimitValue(key, e.target.value)} className="w-1/2 h-8 px-2 border rounded text-xs" placeholder="Value or 'true'/'false'" />
-         <button onClick={() => handleRemoveLimit(key)} className="p-1 text-muted-foreground hover:text-red-500 rounded"><Trash className="w-4 h-4" /></button>
+         <input type="text" value={key} onChange={e => handleUpdateLimitKey(key, e.target.value)} className="w-1/2 h-8 px-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-md text-xs font-mono tracking-[0.04em]" placeholder="feature_key" />
+         <input type="text" value={val} onChange={e => handleUpdateLimitValue(key, e.target.value)} className="w-1/2 h-8 px-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-md text-xs tracking-[0.04em]" placeholder="Value or 'true'/'false'" />
+         <button onClick={() => handleRemoveLimit(key)} className="p-1 text-[#71717a] dark:text-gray-400 hover:text-red-500 rounded-md"><Trash className="w-4 h-4" /></button>
        </div>
      ))}
-     {Object.keys(limits).length === 0 && <div className="text-xs text-muted-foreground italic">No custom limits defined.</div>}
+     {Object.keys(limits).length === 0 && <div className="text-xs text-[#71717a] dark:text-gray-400 italic tracking-[0.04em]">No custom limits defined.</div>}
    </div>
  </div>
 
  <div className="flex items-center gap-2 mt-4">
- <input type="checkbox" checked={plan.is_active || false} onChange={e => setPlan({...plan, is_active: e.target.checked})} className="rounded text-primary" />
+ <input type="checkbox" checked={plan.is_active || false} onChange={e => setPlan({...plan, is_active: e.target.checked})} className="rounded-md text-primary" />
  <label className="text-sm font-medium">Active (Visible to users)</label>
  </div>
  </div>
  <div className="flex gap-2">
- <button onClick={onCancel} className="flex-1 py-2 bg-muted text-foreground rounded-lg text-sm font-bold">Cancel</button>
- <button onClick={onSave} disabled={isSaving} className="flex-1 py-2 bg-primary text-white rounded-lg text-sm font-bold">{isSaving ? 'Saving...' : 'Save Plan'}</button>
+ <button onClick={onCancel} className="flex-1 py-2 bg-muted text-foreground rounded-xl text-sm font-semibold">Cancel</button>
+ <button onClick={onSave} disabled={isSaving} className="flex-1 py-2 bg-primary text-white rounded-xl text-sm font-semibold">{isSaving ? 'Saving...' : 'Save Plan'}</button>
  </div>
  </div>
  );
@@ -400,15 +400,15 @@ function TabCustomerSubscriptions({ setActiveTab, setOverrideCompanyId }) {
 
   return (
     <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-card border border-primary/40 rounded-xl p-4 flex gap-4">
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 flex gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by company name, ID, or Paystack customer code..." className="w-full h-10 pl-9 pr-4 bg-muted/50 border border-primary/40 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by company name, ID, or Paystack customer code..." className="w-full h-10 pl-9 pr-4 bg-muted/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:border-primary transition-colors" />
         </div>
       </div>
-      <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <table className="w-full text-sm text-left">
-          <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-muted-foreground">
+          <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
             <tr>
               <th className="px-6 py-4">Company</th>
               <th className="px-6 py-4">Current Plan</th>
@@ -419,23 +419,23 @@ function TabCustomerSubscriptions({ setActiveTab, setOverrideCompanyId }) {
           </thead>
           <tbody className="divide-y divide-border">
             {isLoading ? (
-               <tr><td colSpan="5" className="px-6 py-8 text-center text-muted-foreground">Loading Customers...</td></tr>
+               <tr><td colSpan="5" className="px-6 py-8 text-center text-[#71717a] dark:text-gray-400">Loading Customers...</td></tr>
             ) : filtered.length === 0 ? (
-               <tr><td colSpan="5" className="px-6 py-8 text-center text-muted-foreground">No customers found.</td></tr>
+               <tr><td colSpan="5" className="px-6 py-8 text-center text-[#71717a] dark:text-gray-400">No customers found.</td></tr>
             ) : filtered.map(c => (
               <tr key={c.id} className="hover:bg-muted/30 transition-colors">
-                <td className="px-6 py-4 font-bold text-foreground">{c.name}</td>
+                <td className="px-6 py-4 font-semibold text-foreground">{c.name}</td>
                 <td className="px-6 py-4 capitalize">{c.plan_name || c.subscription_plan || 'No Plan'}</td>
                 <td className="px-6 py-4">
-                  <span className={cn("px-2 py-1 text-xs font-bold rounded border uppercase", 
+                  <span className={cn("px-2 py-1 text-xs font-semibold rounded-md border-[0.5px] border-black/9 dark:border-white/8 uppercase", 
                     c.subscription_status === 'active' ? "bg-emerald-100 text-emerald-700 border-emerald-200" :
                     c.subscription_status === 'past_due' ? "bg-amber-100 text-amber-700 border-amber-200" :
                     "bg-slate-100 text-slate-700 border-slate-200"
                   )}>{c.subscription_status || 'UNKNOWN'}</span>
                 </td>
-                <td className="px-6 py-4 text-muted-foreground font-mono">{c.paystack_customer_code || 'N/A'}</td>
+                <td className="px-6 py-4 text-[#71717a] dark:text-gray-400 font-mono">{c.paystack_customer_code || 'N/A'}</td>
                 <td className="px-6 py-4 text-right">
-                  <button onClick={() => { setOverrideCompanyId(c.id); setActiveTab('overrides'); }} className="text-primary hover:underline text-xs font-bold">Manage</button>
+                  <button onClick={() => { setOverrideCompanyId(c.id); setActiveTab('overrides'); }} className="text-primary hover:underline text-xs font-semibold tracking-[0.04em]">Manage</button>
                 </td>
               </tr>
             ))}
@@ -508,29 +508,29 @@ function TabManualOverrides({ initialTargetCompany }) {
   };
 
   return (
-    <div className="bg-card border border-primary/40 rounded-xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-2xl mx-auto">
-      <h3 className="text-xl font-bold mb-4 flex items-center gap-2"><ShieldAlert className="w-5 h-5 text-amber-500" /> Administrative Overrides</h3>
-      <p className="text-sm text-muted-foreground mb-6">Manually adjust a company's subscription status or inject bonus AI credits without charging them via Paystack.</p>
+    <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-2xl mx-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <h3 className="text-xl font-semibold mb-4 flex items-center gap-2"><ShieldAlert className="w-5 h-5 text-amber-500" /> Administrative Overrides</h3>
+      <p className="text-sm text-[#71717a] dark:text-gray-400 mb-6">Manually adjust a company's subscription status or inject bonus AI credits without charging them via Paystack.</p>
       
       <div className="space-y-4">
         <div>
-          <label className="text-xs font-bold uppercase text-muted-foreground">Target Company ID</label>
-          <input type="text" value={targetCompany} onChange={e => setTargetCompany(e.target.value)} className="w-full h-10 px-3 border rounded-lg text-sm mt-1 font-mono" placeholder="uuid..." />
+          <label className="text-xs font-semibold uppercase text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Target Company ID</label>
+          <input type="text" value={targetCompany} onChange={e => setTargetCompany(e.target.value)} className="w-full h-10 px-3 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm mt-1 font-mono" placeholder="uuid..." />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-bold uppercase text-muted-foreground">Override Plan</label>
-            <select value={selectedPlan} onChange={e => setSelectedPlan(e.target.value)} className="w-full h-10 px-3 border rounded-lg text-sm mt-1 bg-background">
+            <label className="text-xs font-semibold uppercase text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Override Plan</label>
+            <select value={selectedPlan} onChange={e => setSelectedPlan(e.target.value)} className="w-full h-10 px-3 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm mt-1 bg-background">
               <option value="">No Change</option>
               {plans.map(p => <option key={p.id} value={p.id}>Force {p.name} (Comped)</option>)}
             </select>
           </div>
           <div>
-            <label className="text-xs font-bold uppercase text-muted-foreground">Bonus AI Credits</label>
-            <input type="number" value={bonusCredits} onChange={e => setBonusCredits(e.target.value)} className="w-full h-10 px-3 border rounded-lg text-sm mt-1" />
+            <label className="text-xs font-semibold uppercase text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Bonus AI Credits</label>
+            <input type="number" value={bonusCredits} onChange={e => setBonusCredits(e.target.value)} className="w-full h-10 px-3 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm mt-1" />
           </div>
         </div>
-        <button disabled={isApplying} onClick={handleApply} className="w-full py-3 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white font-bold rounded-lg mt-4 transition-colors">
+        <button disabled={isApplying} onClick={handleApply} className="w-full py-3 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white font-semibold rounded-xl mt-4 transition-colors">
           {isApplying ? 'Applying...' : 'Apply System Override'}
         </button>
       </div>
@@ -566,9 +566,9 @@ function TabTransactions() {
 
   return (
     <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <table className="w-full text-sm text-left font-mono">
-          <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-muted-foreground font-sans">
+          <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-[#71717a] dark:text-gray-400 font-sans tracking-[0.04em]">
             <tr>
               <th className="px-6 py-4">Date</th>
               <th className="px-6 py-4">Company</th>
@@ -579,20 +579,20 @@ function TabTransactions() {
           </thead>
           <tbody className="divide-y divide-border">
             {isLoading ? (
-               <tr><td colSpan="5" className="px-6 py-8 text-center text-muted-foreground font-sans">Loading Ledger...</td></tr>
+               <tr><td colSpan="5" className="px-6 py-8 text-center text-[#71717a] dark:text-gray-400 font-sans">Loading Ledger...</td></tr>
             ) : invoices.length === 0 ? (
-               <tr><td colSpan="5" className="px-6 py-8 text-center text-muted-foreground font-sans">No transactions found.</td></tr>
+               <tr><td colSpan="5" className="px-6 py-8 text-center text-[#71717a] dark:text-gray-400 font-sans">No transactions found.</td></tr>
             ) : invoices.map(inv => (
               <tr key={inv.id} className="hover:bg-muted/30">
-                <td className="px-6 py-4 text-muted-foreground">{new Date(inv.created_date).toLocaleString()}</td>
-                <td className="px-6 py-4 font-sans font-bold">{inv.company_name}</td>
+                <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">{new Date(inv.created_date).toLocaleString()}</td>
+                <td className="px-6 py-4 font-sans font-semibold">{inv.company_name}</td>
                 <td className="px-6 py-4 text-foreground">${inv.amount_usd}</td>
                 <td className="px-6 py-4">
-                  <span className={cn("font-bold", inv.status === 'success' ? "text-emerald-500" : inv.status === 'failed' ? "text-red-500" : "text-amber-500")}>
+                  <span className={cn("font-semibold", inv.status === 'success' ? "text-emerald-500" : inv.status === 'failed' ? "text-red-500" : "text-amber-500")}>
                     {(inv.status || 'UNKNOWN').toUpperCase()}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-muted-foreground truncate max-w-[150px]">{inv.reference}</td>
+                <td className="px-6 py-4 text-[#71717a] dark:text-gray-400 truncate max-w-[150px]">{inv.reference}</td>
               </tr>
             ))}
           </tbody>
@@ -635,22 +635,22 @@ function TabUsageMonitor() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-card border border-primary/40 rounded-xl p-6 ">
-        <h3 className="text-lg font-bold mb-4 flex items-center gap-2"><Activity className="w-5 h-5 text-primary" /> High Usage Companies</h3>
-        <p className="text-sm text-muted-foreground mb-4">Companies approaching their AI credit limits (Upsell opportunities).</p>
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><Activity className="w-5 h-5 text-primary" /> High Usage Companies</h3>
+        <p className="text-sm text-[#71717a] dark:text-gray-400 mb-4">Companies approaching their AI credit limits (Upsell opportunities).</p>
         <div className="space-y-4">
           {isLoading ? (
-            <div className="text-center text-muted-foreground py-4">Loading Usage Data...</div>
+            <div className="text-center text-[#71717a] dark:text-gray-400 py-4">Loading Usage Data...</div>
           ) : metrics.length === 0 ? (
-            <div className="text-center text-muted-foreground py-4">No AI usage recorded yet.</div>
+            <div className="text-center text-[#71717a] dark:text-gray-400 py-4">No AI usage recorded yet.</div>
           ) : metrics.map(m => {
              // For display purposes, assume 1000 is a generic limit if we don't have their exact plan limits in this query
              const percent = Math.min(100, Math.round((m.total_usage / 1000) * 100));
              const isHigh = percent >= 90;
              return (
-               <div key={m.company_id} className="bg-muted rounded-lg p-4">
-                 <div className="flex justify-between font-bold text-sm mb-2"><span>{m.name}</span> <span className={isHigh ? "text-red-600" : "text-amber-600"}>{m.total_usage} Credits Used</span></div>
-                 <div className="w-full h-2 bg-background rounded-full overflow-hidden"><div className={cn("h-full", isHigh ? "bg-red-500" : "bg-amber-500")} style={{width: `${percent}%`}}></div></div>
+               <div key={m.company_id} className="bg-muted rounded-xl p-4">
+                 <div className="flex justify-between font-semibold text-sm mb-2"><span>{m.name}</span> <span className={isHigh ? "text-red-600" : "text-amber-600"}>{m.total_usage} Credits Used</span></div>
+                 <div className="w-full h-2 bg-background rounded-md-full overflow-hidden"><div className={cn("h-full", isHigh ? "bg-red-500/10" : "bg-amber-500")} style={{width: `${percent}%`}}></div></div>
                </div>
              )
           })}
@@ -665,14 +665,14 @@ function TabUsageMonitor() {
 // ----------------------------------------------------
 function TabWebhooks() {
  return (
- <div className="bg-slate-950 text-slate-300 rounded-xl p-6 font-mono text-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
+ <div className="bg-slate-950 text-slate-300 rounded-md-xl p-6 font-mono text-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
  <div className="flex items-center justify-between mb-6 border-b border-primary/40 pb-4">
- <h3 className="text-emerald-400 font-bold flex items-center gap-2"><Plug className="w-5 h-5" /> Webhook Listener Status</h3>
- <span className="px-2 py-1 bg-emerald-900 text-emerald-400 rounded-md text-xs">LISTENING : PORT 54321</span>
+ <h3 className="text-emerald-400 font-semibold flex items-center gap-2"><Plug className="w-5 h-5" /> Webhook Listener Status</h3>
+ <span className="px-2 py-1 bg-emerald-900 text-emerald-400 rounded-lg text-xs tracking-[0.04em]">LISTENING : PORT 54321</span>
  </div>
  <div className="space-y-2">
  <div className="flex gap-4"><span className="text-slate-500">[10:14:02]</span> <span className="text-blue-400">POST</span> <span>/api/webhooks/paystack</span> <span className="text-emerald-400">200 OK</span></div>
- <div className="pl-24 text-xs text-slate-500">Event: charge.success | Ref: T123456789</div>
+ <div className="pl-24 text-xs text-slate-500 tracking-[0.04em]">Event: charge.success | Ref: T123456789</div>
  <div className="flex gap-4"><span className="text-slate-500">[10:14:03]</span> <span className="text-amber-400">SYS</span> <span>Updating company_subscriptions table...</span></div>
  <div className="flex gap-4"><span className="text-slate-500">[10:14:03]</span> <span className="text-emerald-400">OK</span> <span>Acme Corp set to ACTIVE</span></div>
  </div>

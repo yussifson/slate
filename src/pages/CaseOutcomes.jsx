@@ -51,7 +51,7 @@ export default function CaseOutcomes() {
       <PageHeader
         title="Case Outcomes"
         subtitle="Track win/loss rates and case results"
-        actions={<Button size="sm" onClick={() => setShowForm(true)} className="gap-1.5"><Plus className="w-4 h-4" />{t("record_outcome", "Record Outcome")}</Button>}
+        actions={<Button size="sm" onClick={() => setShowForm(true)} className="gap-2.5"><Plus className="w-4 h-4" />{t("record_outcome", "Record Outcome")}</Button>}
       />
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
@@ -61,9 +61,9 @@ export default function CaseOutcomes() {
           { label: "Settlement Rate", value: `${settleRate}%`, color: "bg-slate-50 dark:bg-slate-800/50 text-primary" },
         ].map(s => {
           return (
-            <div key={s.label} className="bg-card border border-primary/40 rounded-xl p-4 flex items-center gap-3">
-              <div className={cn("w-9 h-9 rounded-lg flex items-center justify-center shrink-0", s.color)}><Target className="w-4 h-4" /></div>
-              <div><p className="text-xl font-bold">{s.value}</p><p className="text-xs text-muted-foreground">{s.label}</p></div>
+            <div key={s.label} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 flex items-center gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+              <div className={cn("w-9 h-9 rounded-xl flex items-center justify-center shrink-0", s.color)}><Target className="w-4 h-4" /></div>
+              <div><p className="text-xl font-semibold">{s.value}</p><p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{s.label}</p></div>
             </div>
           );
         })}
@@ -71,7 +71,7 @@ export default function CaseOutcomes() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Pie chart */}
         {outcomeStats.length > 0 && (
-          <div className="bg-card border border-primary/40 rounded-xl p-5">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <h3 className="text-sm font-semibold mb-3">{t("outcome_distribution", "Outcome Distribution")}</h3>
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
@@ -87,27 +87,27 @@ export default function CaseOutcomes() {
         )}
 
         {/* Recent outcomes */}
-        <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="p-4 border-b border-primary/40 flex items-center gap-2">
             <Trophy className="w-4 h-4 text-primary" />
             <h3 className="text-sm font-semibold">{t("recent_outcomes", "Recent Outcomes")}</h3>
           </div>
-          <div className="divide-y divide-border max-h-72 overflow-y-auto">
+          <div className="divide-y divide-border-[0.5px] border-black/9 dark:border-white/8 max-h-72 overflow-y-auto">
             {outcomes.slice(0, 10).map(o => {
               return (
                 <div key={o.id} className="px-4 py-3 flex items-center gap-3">
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{o.case_title}</p>
-                    <p className="text-xs text-muted-foreground">{o.client_name} · {o.assigned_lawyer_name}</p>
+                    <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{o.client_name} · {o.assigned_lawyer_name}</p>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    {o.outcome_date && <span className="text-[10px] text-muted-foreground">{format(new Date(o.outcome_date), "MMM d, yyyy")}</span>}
+                    {o.outcome_date && <span className="text-[10px] text-[#71717a] dark:text-gray-400">{format(new Date(o.outcome_date), "MMM d, yyyy")}</span>}
                     <Badge className={cn("text-[10px] capitalize", OUTCOME_COLORS[o.outcome])}>{o.outcome}</Badge>
                   </div>
                 </div>
               );
             })}
-            {outcomes.length === 0 && <div className="p-8 text-center text-sm text-muted-foreground">{t("no_outcomes_recorded_yet", "No outcomes recorded yet")}</div>}
+            {outcomes.length === 0 && <div className="p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("no_outcomes_recorded_yet", "No outcomes recorded yet")}</div>}
           </div>
         </div>
       </div>

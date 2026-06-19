@@ -12,14 +12,14 @@ import { format, isAfter, isBefore, addDays, startOfMonth, endOfMonth } from "da
 
 function StatCard({ icon: IconComp, label, value, sub, color = "bg-slate-50 dark:bg-slate-800/50 text-primary" }) {
   return (
-    <div className="bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
-      <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${color}`}>
+    <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}>
         <IconComp className="w-5 h-5" />
       </div>
       <div>
-        <p className="text-2xl font-bold text-foreground">{value}</p>
-        <p className="text-xs text-muted-foreground">{label}</p>
-        {sub && <p className="text-[11px] text-muted-foreground mt-0.5">{sub}</p>}
+        <p className="text-2xl font-semibold text-foreground tracking-[-0.02em]">{value}</p>
+        <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{label}</p>
+        {sub && <p className="text-[11px] text-[#71717a] dark:text-gray-400 mt-0.5">{sub}</p>}
       </div>
     </div>
   );
@@ -105,16 +105,16 @@ export default function StaffDashboard() {
         <StatCard icon={TrendingUp} label="Billed Amount" value={formatCurrency(billedAmount, user?.company_currency || "GHS")} sub="This month" color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
       </div>
       {/* Hours vs Target */}
-      <div className="bg-card rounded-xl border border-primary/40 p-5">
+      <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="flex items-center justify-between mb-3">
           <div>
             <h3 className="text-sm font-semibold">{t("billable_hours", "Billable Hours —")} {format(today, "MMMM yyyy")}</h3>
-            <p className="text-xs text-muted-foreground mt-0.5">{totalHours.toFixed(1)}{t("h_logged_target", "h logged · Target:")} {TARGET_HOURS}h</p>
+            <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">{totalHours.toFixed(1)}{t("h_logged_target", "h logged · Target:")} {TARGET_HOURS}h</p>
           </div>
-          <span className="text-lg font-bold text-primary">{hoursProgress.toFixed(0)}%</span>
+          <span className="text-lg font-semibold text-primary">{hoursProgress.toFixed(0)}%</span>
         </div>
         <Progress value={hoursProgress} className="h-3" />
-        <div className="flex justify-between mt-2 text-[11px] text-muted-foreground">
+        <div className="flex justify-between mt-2 text-[11px] text-[#71717a] dark:text-gray-400">
           <span>{totalHours.toFixed(1)}{t("h_logged", "h logged")}</span>
           <span>{(TARGET_HOURS - totalHours).toFixed(1)}{t("h_remaining", "h remaining")}</span>
         </div>
@@ -130,8 +130,8 @@ export default function StaffDashboard() {
               }, {})
             ).map(([cat, mins]) => {
               return (
-                <div key={cat} className="bg-muted/40 rounded-lg p-3">
-                  <p className="text-[10px] text-muted-foreground capitalize">{cat.replace("_", " ")}</p>
+                <div key={cat} className="bg-muted/40 rounded-xl p-3">
+                  <p className="text-[10px] text-[#71717a] dark:text-gray-400 capitalize">{cat.replace("_", " ")}</p>
                   <p className="text-sm font-semibold">{(mins / 60).toFixed(1)}h</p>
                 </div>
               );
@@ -141,23 +141,23 @@ export default function StaffDashboard() {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Tasks */}
-        <div className="bg-card rounded-xl border border-primary/40">
+        <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="p-4 border-b border-primary/40 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <CheckSquare className="w-4 h-4 text-primary" />
               <h3 className="text-sm font-semibold">{t("my_tasks", "My Tasks")}</h3>
             </div>
             {overdueTasks.length > 0 && (
-              <Badge className="bg-red-100 text-red-700 text-[10px] gap-1">
+              <Badge className="bg-red-100 text-red-700 text-[10px] gap-2">
                 <AlertTriangle className="w-3 h-3" /> {overdueTasks.length} {t("overdue", "overdue")}
               </Badge>
             )}
           </div>
-          <div className="divide-y divide-border max-h-80 overflow-y-auto">
+          <div className="divide-y divide-border-[0.5px] border-black/9 dark:border-white/8 max-h-80 overflow-y-auto">
             {loadingTasks ? (
-              <div className="p-8 text-center text-sm text-muted-foreground">{t("loading", "Loading...")}</div>
+              <div className="p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("loading", "Loading...")}</div>
             ) : pendingTasks.length === 0 ? (
-              <div className="p-8 text-center text-sm text-muted-foreground">{t("no_pending_tasks", "No pending tasks 🎉")}</div>
+              <div className="p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("no_pending_tasks", "No pending tasks 🎉")}</div>
             ) : pendingTasks
                 .sort((a, b) => {
                   const aOd = a.due_date && isBefore(new Date(a.due_date), today);
@@ -171,17 +171,17 @@ export default function StaffDashboard() {
               const isDueSoon = !isOverdue && task.due_date && isBefore(new Date(task.due_date), addDays(today, 7));
               return (
                 <div key={task.id} className="px-4 py-3 flex items-start gap-3">
-                  <div className={`w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0 ${isOverdue ? "bg-red-500" : isDueSoon ? "bg-amber-500" : "bg-primary/70"}`} />
+                  <div className={`w-1.5 h-1.5 rounded-md-full mt-2 flex-shrink-0 ${isOverdue ? "bg-red-500/10" : isDueSoon ? "bg-amber-500" : "bg-primary/70"}`} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium">{task.title}</p>
-                    <div className="flex flex-wrap gap-1.5 mt-1">
-                      {task.case_title && <span className="text-[10px] text-muted-foreground">{task.case_title}</span>}
+                    <div className="flex flex-wrap gap-2.5 mt-1">
+                      {task.case_title && <span className="text-[10px] text-[#71717a] dark:text-gray-400">{task.case_title}</span>}
                       <Badge className={`${TASK_STATUS_COLORS[task.status]} text-[10px]`}>{task.status?.replace("_", " ")}</Badge>
                       <Badge className={`${PRIORITY_COLORS[task.priority]} text-[10px]`}>{task.priority}</Badge>
                     </div>
                   </div>
                   {task.due_date && (
-                    <span className={`text-[10px] font-medium shrink-0 ${isOverdue ? "text-red-600" : isDueSoon ? "text-amber-600" : "text-muted-foreground"}`}>
+                    <span className={`text-[10px] font-medium shrink-0 ${isOverdue ? "text-red-600" : isDueSoon ? "text-amber-600" : "text-[#71717a] dark:text-gray-400"}`}>
                       {isOverdue ? "OVERDUE" : format(new Date(task.due_date), "MMM d")}
                     </span>
                   )}
@@ -192,25 +192,25 @@ export default function StaffDashboard() {
         </div>
 
         {/* Upcoming Hearings */}
-        <div className="bg-card rounded-xl border border-primary/40">
+        <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="p-4 border-b border-primary/40 flex items-center gap-2">
             <Calendar className="w-4 h-4 text-primary" />
             <h3 className="text-sm font-semibold">{t("upcoming_hearings", "Upcoming Hearings")}</h3>
           </div>
-          <div className="divide-y divide-border max-h-80 overflow-y-auto">
+          <div className="divide-y divide-border-[0.5px] border-black/9 dark:border-white/8 max-h-80 overflow-y-auto">
             {upcomingHearings.length === 0 ? (
-              <div className="p-8 text-center text-sm text-muted-foreground">{t("no_upcoming_hearings", "No upcoming hearings")}</div>
+              <div className="p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("no_upcoming_hearings", "No upcoming hearings")}</div>
             ) : upcomingHearings.map(h => {
               return (
                 <div key={h.id} className="px-4 py-3 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-slate-100 flex flex-col items-center justify-center flex-shrink-0">
-                    <span className="text-[9px] font-bold text-primary leading-none">{format(new Date(h.date), "MMM")}</span>
-                    <span className="text-sm font-bold text-primary leading-none">{format(new Date(h.date), "d")}</span>
+                  <div className="w-10 h-10 rounded-xl bg-slate-100 flex flex-col items-center justify-center flex-shrink-0">
+                    <span className="text-[9px] font-semibold text-primary leading-none">{format(new Date(h.date), "MMM")}</span>
+                    <span className="text-sm font-semibold text-primary leading-none">{format(new Date(h.date), "d")}</span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{h.title}</p>
-                    <p className="text-xs text-muted-foreground">{h.court_name || "—"} · {h.time || "TBD"}</p>
-                    {h.case_title && <p className="text-[11px] text-muted-foreground">{h.case_title}</p>}
+                    <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{h.court_name || "—"} · {h.time || "TBD"}</p>
+                    {h.case_title && <p className="text-[11px] text-[#71717a] dark:text-gray-400">{h.case_title}</p>}
                   </div>
                   <Badge variant="outline" className="text-[10px] capitalize shrink-0">{h.status}</Badge>
                 </div>
@@ -220,25 +220,25 @@ export default function StaffDashboard() {
         </div>
       </div>
       {/* Active Cases */}
-      <div className="bg-card rounded-xl border border-primary/40">
+      <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="p-4 border-b border-primary/40 flex items-center gap-2">
           <Briefcase className="w-4 h-4 text-primary" />
           <h3 className="text-sm font-semibold">{t("my_active_cases", "My Active Cases")}</h3>
-          <span className="ml-auto text-xs text-muted-foreground">{activeCases.length} {t("cases", "cases")}</span>
+          <span className="ml-auto text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{activeCases.length} {t("cases", "cases")}</span>
         </div>
         <div className="divide-y divide-border">
           {activeCases.length === 0 ? (
-            <div className="p-8 text-center text-sm text-muted-foreground">{t("no_active_cases_assigned_to_yo", "No active cases assigned to you")}</div>
+            <div className="p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("no_active_cases_assigned_to_yo", "No active cases assigned to you")}</div>
           ) : activeCases.slice(0, 6).map(c => {
             return (
               <div key={c.id} className="px-4 py-3 flex items-center gap-3">
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{c.title}</p>
-                  <p className="text-xs text-muted-foreground">{c.case_number && `#${c.case_number} · `}{c.client_name} · {c.case_type}</p>
+                  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{c.case_number && `#${c.case_number} · `}{c.client_name} · {c.case_type}</p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   {c.next_hearing_date && (
-                    <span className="text-[10px] text-muted-foreground hidden sm:block">
+                    <span className="text-[10px] text-[#71717a] dark:text-gray-400 hidden sm:block">
                       {t("hearing", "Hearing:")} {format(new Date(c.next_hearing_date), "MMM d")}
                     </span>
                   )}

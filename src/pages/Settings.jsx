@@ -102,10 +102,10 @@ export default function Settings() {
  case "currency": return <CurrencySettings activeIndustry={activeIndustry} company={company} onSave={company ? d => updateCompany({ currency: d.currency}) : fakeSuccess} saving={saving} />;
  case "security": return <SecuritySettings />;
  case "permissions": return (
- <div className="bg-card rounded-2xl border border-primary/40 p-8 space-y-6 ">
+ <div className="bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-8 space-y-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
- <h2 className="text-2xl font-semibold text-foreground tracking-tight">{t("staff_access_controls", "Staff Access Controls")}</h2>
- <p className="text-sm text-muted-foreground mt-2">{t(
+ <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">{t("staff_access_controls", "Staff Access Controls")}</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-2">{t(
  "maintain_granular_security_per",
  "Maintain granular security permissions across internal groups"
  )}</p>
@@ -122,12 +122,12 @@ export default function Settings() {
  const categories = ["General", "Security & Access", "Billing"];
 
  return (
- <div className="flex flex-col h-full bg-background md:flex-row rounded-tl-2xl overflow-hidden border-t border-l border-primary/40">
+ <div className="flex flex-col h-full bg-background md:flex-row rounded-md-tl-2xl overflow-hidden border-t border-l border-primary/40">
  
  {/* Sidebar Navigation */}
  <div className="w-full md:w-64 lg:w-72 shrink-0 border-r border-primary/40 bg-muted/30 overflow-y-auto hidden md:block">
  <div className="p-8 pb-6">
- <h1 className="text-2xl font-bold tracking-tight text-foreground">Settings</h1>
+ <h1 className="text-2xl font-semibold tracking-tight text-foreground tracking-[-0.02em]">Settings</h1>
  </div>
  <div className="px-4 space-y-8 pb-8">
  {categories.map(cat => {
@@ -135,7 +135,7 @@ export default function Settings() {
  if (catSections.length === 0) return null;
  return (
  <div key={cat} className="space-y-1">
- <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest px-4 mb-3">{cat}</h4>
+ <h4 className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-widest px-4 mb-3 tracking-[0.04em]">{cat}</h4>
  <nav className="space-y-1">
  {catSections.map(s => {
  const IconComp = s.icon;
@@ -144,16 +144,16 @@ export default function Settings() {
  <button
  key={s.id}
  onClick={() => setActiveSection(s.id)}
- className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300 text-sm font-semibold relative overflow-hidden group ${
+ className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-md-xl transition-all duration-300 text-sm font-semibold relative overflow-hidden group ${
  isActive 
  ? "text-primary bg-primary/10 " 
  : "text-foreground/70 hover:bg-muted hover:text-foreground"
 }`}
  >
  {isActive && (
- <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full" />
+ <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-md-r-full" />
  )}
- <IconComp className={`w-4 h-4 transition-colors ${isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`} />
+ <IconComp className={`w-4 h-4 transition-colors ${isActive ? 'text-primary' : 'text-[#71717a] dark:text-gray-400 group-hover:text-foreground'}`} />
  {s.label}
  </button>
  );
@@ -167,11 +167,11 @@ export default function Settings() {
 
  {/* Mobile Nav Select (Fallback) */}
  <div className="md:hidden p-4 border-b border-primary/40 w-full bg-background sticky top-0 z-10">
- <h1 className="text-xl font-bold mb-4">Settings</h1>
+ <h1 className="text-xl font-semibold mb-4">Settings</h1>
  <select 
  value={activeSection}
  onChange={(e) => setActiveSection(e.target.value)}
- className="w-full bg-muted border-none rounded-xl px-4 py-3 font-medium text-sm focus:ring-2 focus:ring-foreground"
+ className="w-full bg-muted border-none rounded-md-xl px-4 py-3 font-medium text-sm focus:ring-2 focus:ring-foreground"
  >
  {SECTIONS.map(s => (
  <option key={s.id} value={s.id}>{s.label}</option>

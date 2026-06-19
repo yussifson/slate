@@ -91,13 +91,13 @@ export default function UnivPOS() {
  {/* Product Grid Area */}
  <div className="view-header flex-1 flex flex-col min-h-[400px]">
  <div className="mb-6 relative">
- <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+ <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
  <input 
  type="text"
  placeholder="Search products..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-12 pl-12 pr-4 bg-card border border-primary/40 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground text-lg "
+ className="w-full h-12 pl-12 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground text-lg  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
 
@@ -110,14 +110,14 @@ export default function UnivPOS() {
  transition={{ delay: i * 0.05}}
  key={p.id}
  onClick={() => addToCart(p)}
- className={`p-4 rounded-2xl border border-primary/40 flex flex-col items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all ${p.color}`}
+ className={`p-4 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all ${p.color}`}
  >
- <div className="w-12 h-12 rounded-full bg-card/50 dark:bg-black/20 flex items-center justify-center shrink-0">
+ <div className="w-12 h-12 rounded-md-full bg-card/50 dark:bg-black/20 flex items-center justify-center shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <ShoppingBag className="w-6 h-6 opacity-70" />
  </div>
  <div className="text-center">
- <h3 className="font-bold text-sm leading-tight">{p.name}</h3>
- <p className="text-xs font-semibold opacity-70 mt-1">${p.price.toFixed(2)}</p>
+ <h3 className="font-semibold text-sm leading-tight">{p.name}</h3>
+ <p className="text-xs font-semibold opacity-70 mt-1 tracking-[0.04em]">${p.price.toFixed(2)}</p>
  </div>
  </motion.button>
  ))}
@@ -126,36 +126,36 @@ export default function UnivPOS() {
  </div>
 
  {/* Cart Area */}
- <div className="w-full lg:w-96 flex flex-col bg-card border border-primary/40 rounded-2xl shrink-0 overflow-hidden">
+ <div className="w-full lg:w-96 flex flex-col bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl shrink-0 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/30">
- <h2 className="text-xl font-bold text-foreground">Current Order</h2>
- <p className="text-xs text-muted-foreground mt-1">{cart.length} items</p>
+ <h2 className="text-xl font-semibold text-foreground">Current Order</h2>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">{cart.length} items</p>
  </div>
 
  <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
  {cart.map(item => (
- <div key={item.id} className="flex justify-between items-center bg-background border border-primary/40 p-3 rounded-xl">
+ <div key={item.id} className="flex justify-between items-center bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-3 rounded-md-xl">
  <div className="flex-1">
  <h4 className="font-semibold text-sm text-foreground truncate pr-2">{item.name}</h4>
- <p className="text-xs text-muted-foreground mt-0.5">${item.price.toFixed(2)}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">${item.price.toFixed(2)}</p>
  </div>
  <div className="flex items-center gap-3">
- <div className="flex items-center gap-2 bg-muted rounded-lg p-1">
- <button onClick={() => updateQty(item.id, -1)} className="w-6 h-6 flex items-center justify-center bg-background rounded text-foreground hover:bg-muted transition-colors">-</button>
- <span className="text-xs font-bold w-4 text-center">{item.qty}</span>
- <button onClick={() => updateQty(item.id, 1)} className="w-6 h-6 flex items-center justify-center bg-background rounded text-foreground hover:bg-muted transition-colors">+</button>
+ <div className="flex items-center gap-2 bg-muted rounded-xl p-1">
+ <button onClick={() => updateQty(item.id, -1)} className="w-6 h-6 flex items-center justify-center bg-background rounded-md text-foreground hover:bg-muted transition-colors">-</button>
+ <span className="text-xs font-semibold w-4 text-center tracking-[0.04em]">{item.qty}</span>
+ <button onClick={() => updateQty(item.id, 1)} className="w-6 h-6 flex items-center justify-center bg-background rounded-md text-foreground hover:bg-muted transition-colors">+</button>
  </div>
- <div className="font-bold text-sm w-12 text-right text-foreground">
+ <div className="font-semibold text-sm w-12 text-right text-foreground">
  ${(item.price * item.qty).toFixed(2)}
  </div>
- <button onClick={() => removeFromCart(item.id)} className="text-muted-foreground hover:text-red-500 transition-colors p-1" title="Remove item">
+ <button onClick={() => removeFromCart(item.id)} className="text-[#71717a] dark:text-gray-400 hover:text-red-500 transition-colors p-1" title="Remove item">
  <Trash2 className="w-4 h-4" />
  </button>
  </div>
  </div>
  ))}
  {cart.length === 0 && (
- <div className="flex flex-col items-center justify-center h-full text-muted-foreground opacity-60 min-h-[200px]">
+ <div className="flex flex-col items-center justify-center h-full text-[#71717a] dark:text-gray-400 opacity-60 min-h-[200px]">
  <ShoppingBag className="w-12 h-12 mb-3" />
  <p>Cart is empty</p>
  </div>
@@ -163,7 +163,7 @@ export default function UnivPOS() {
  </div>
 
  <div className="p-4 border-t border-primary/40 bg-muted/10 space-y-4">
- <div className="flex justify-between items-center font-bold text-xl text-foreground">
+ <div className="flex justify-between items-center font-semibold text-xl text-foreground">
  <span>Total</span>
  <span>${totalAmount.toFixed(2)}</span>
  </div>
@@ -171,14 +171,14 @@ export default function UnivPOS() {
  <button 
  disabled={cart.length === 0}
  onClick={() => handleCheckout('Cash')}
- className="flex items-center justify-center gap-2 p-3 bg-card border border-primary/40 rounded-xl text-foreground font-semibold hover:bg-muted transition-colors disabled:opacity-50"
+ className="flex items-center justify-center gap-2 p-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-foreground font-semibold hover:bg-muted transition-colors disabled:opacity-50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <Banknote className="w-5 h-5 text-emerald-600" /> Cash
  </button>
  <button 
  disabled={cart.length === 0}
  onClick={() => handleCheckout('Card')}
- className="flex items-center justify-center gap-2 p-3 bg-primary text-white rounded-xl font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
+ className="flex items-center justify-center gap-2 p-3 bg-primary text-white rounded-md-xl font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
  >
  <CreditCard className="w-5 h-5" /> Card
  </button>

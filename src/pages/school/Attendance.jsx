@@ -83,9 +83,9 @@ export default function Attendance() {
 
   return (
     <div className="space-y-6 font-dmsans max-w-5xl mx-auto">
-      <div className="flex flex-col md:flex-row justify-between items-end gap-4 bg-green-500 p-6 text-white border-2 border-green-600">
+      <div className="flex flex-col md:flex-row justify-between items-end gap-4 bg-green-500/10 p-6 text-white border-2 border-green-600">
         <div>
-          <h1 className="text-3xl font-black tracking-tight uppercase">Daily Roster</h1>
+          <h1 className="text-3xl font-black tracking-tight uppercase tracking-[-0.02em] tracking-[0.04em]">Daily Roster</h1>
           <p className="font-medium text-green-100">Bulk toggle attendance records rapidly</p>
         </div>
         <div className="flex gap-3">
@@ -93,22 +93,22 @@ export default function Attendance() {
             type="date" 
             value={date} 
             onChange={e => { setDate(e.target.value); setStatusMap({}); }} 
-            className="bg-white text-green-900 border-2 border-green-800 px-3 py-2 font-bold focus:outline-none"
+            className="bg-white text-green-900 border-2 border-green-800 px-3 py-2 font-semibold focus:outline-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
           />
           <select 
             value={selectedClass} 
             onChange={e => { setSelectedClass(e.target.value); setStatusMap({}); }} 
-            className="bg-white text-green-900 border-2 border-green-800 px-3 py-2 font-bold focus:outline-none"
+            className="bg-white text-green-900 border-2 border-green-800 px-3 py-2 font-semibold focus:outline-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
           >
             {CLASS_LIST.map(c => <option key={c}>{c}</option>)}
           </select>
         </div>
       </div>
 
-      <div className="bg-white border-2 border-green-800 p-4 flex gap-4 overflow-x-auto">
-        <button onClick={() => handleBulkMark('Present')} className="flex-1 py-3 bg-green-100 border-2 border-green-500 text-green-800 font-bold hover:bg-green-200 transition-colors uppercase tracking-widest text-sm flex items-center justify-center gap-2"><Check className="w-4 h-4"/> Mark All Present</button>
-        <button onClick={() => handleBulkMark('Absent')} className="flex-1 py-3 bg-red-100 border-2 border-red-500 text-red-800 font-bold hover:bg-red-200 transition-colors uppercase tracking-widest text-sm flex items-center justify-center gap-2"><X className="w-4 h-4"/> Mark All Absent</button>
-        <button onClick={() => handleBulkMark('Late')} className="flex-1 py-3 bg-amber-100 border-2 border-amber-500 text-amber-800 font-bold hover:bg-amber-200 transition-colors uppercase tracking-widest text-sm flex items-center justify-center gap-2"><Clock className="w-4 h-4"/> Mark All Late</button>
+      <div className="bg-white border-2 border-green-800 p-4 flex gap-4 overflow-x-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <button onClick={() => handleBulkMark('Present')} className="flex-1 py-3 bg-green-100 border-2 border-green-500 text-green-800 font-semibold hover:bg-green-200 transition-colors uppercase tracking-widest text-sm flex items-center justify-center gap-2 tracking-[0.04em]"><Check className="w-4 h-4"/> Mark All Present</button>
+        <button onClick={() => handleBulkMark('Absent')} className="flex-1 py-3 bg-red-100 border-2 border-red-500 text-red-800 font-semibold hover:bg-red-200 transition-colors uppercase tracking-widest text-sm flex items-center justify-center gap-2 tracking-[0.04em]"><X className="w-4 h-4"/> Mark All Absent</button>
+        <button onClick={() => handleBulkMark('Late')} className="flex-1 py-3 bg-amber-100 border-2 border-amber-500 text-amber-800 font-semibold hover:bg-amber-200 transition-colors uppercase tracking-widest text-sm flex items-center justify-center gap-2 tracking-[0.04em]"><Clock className="w-4 h-4"/> Mark All Late</button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -126,8 +126,8 @@ export default function Attendance() {
               }`}
             >
               <div>
-                <p className="font-bold text-lg text-slate-900 leading-tight">{student.name}</p>
-                <p className="text-xs font-mono font-bold text-slate-500 mt-1">{student.studentId}</p>
+                <p className="font-semibold text-lg text-slate-900 leading-tight">{student.name}</p>
+                <p className="text-xs font-mono font-semibold text-slate-500 mt-1 tracking-[0.04em]">{student.studentId}</p>
               </div>
               <div className="flex justify-between items-end">
                 <span className={`text-xs font-black uppercase tracking-widest px-2 py-1 border-2 ${
@@ -150,7 +150,7 @@ export default function Attendance() {
         <button 
           onClick={handleSubmit} 
           disabled={mutateRecord.isPending}
-          className="w-full py-4 bg-green-600 text-white font-black text-xl tracking-widest uppercase border-4 border-green-900 hover:bg-green-500 transition-colors disabled:opacity-50"
+          className="w-full py-4 bg-green-600 text-white font-black text-xl tracking-widest uppercase border-4 border-green-900 hover:bg-green-500/10 transition-colors disabled:opacity-50 tracking-[0.04em]"
         >
           {mutateRecord.isPending ? 'Saving...' : 'Save Register'}
         </button>

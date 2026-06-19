@@ -43,6 +43,10 @@
   }
 
   .dark {
+
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
     /* Rich Midnight Blue Base (#0B1120) */
     --background: 222 47% 8%;
     
@@ -108,22 +112,15 @@
     background-repeat: repeat;
   }
   
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
+  .scrollbar-hide::-webkit-scrollbar { width: 5px; height: 5px; }
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
   
   /* Premium Global Custom Scrollbar */
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
   /* Dynamic View Switcher Logic */
   .hide-default > :not(.view-header):not(.generic-view) {
     display: none !important;
@@ -135,13 +132,8 @@
     flex-direction: column;
     min-height: 0;
   }
-  ::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--border));
-    border-radius: 10px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(var(--muted-foreground) / 0.5);
-  }
+  ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
   * {
     scrollbar-width: thin;
     scrollbar-color: hsl(var(--border)) transparent;
@@ -179,6 +171,9 @@
 
   body {
     @apply bg-background text-foreground font-inter relative min-h-screen;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
     background-image: radial-gradient(circle at 50% 0%, rgba(var(--primary), 0.05) 0%, transparent 70%),
                       radial-gradient(circle at 0% 100%, rgba(var(--primary), 0.03) 0%, transparent 50%),
                       url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='rgba(100,100,100,0.05)' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
@@ -256,6 +251,10 @@
   }
 
   .dark {
+
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
     --color-module-orbit: hsl(152 76% 50%);
     --color-module-academic: hsl(152 76% 50%);
     --color-module-admissions: hsl(152 76% 50%);
@@ -287,3 +286,79 @@
   0% { width: 0%; }
   100% { width: 100%; }
 }
+
+
+
+/* PREMIUM UI POLISH GLOBAL STYLES */
+
+/* Focus States */
+*:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(25, 184, 110, 0.15) !important;
+}
+
+.dark *:focus-visible {
+  box-shadow: 0 0 0 3px rgba(31, 224, 134, 0.15) !important;
+}
+
+/* Button Refinements */
+button {
+  transition: opacity 150ms ease, transform 150ms ease, background 150ms ease, border-color 150ms ease !important;
+}
+button:active {
+  transform: translateY(0) !important;
+  opacity: 1 !important;
+}
+button[class*="bg-primary"]:hover, button[class*="bg-blue"]:hover, button[class*="primary"]:hover {
+  opacity: 0.92 !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Input Refinements */
+input, select, textarea {
+  transition: border-color 150ms ease, box-shadow 150ms ease !important;
+}
+input:focus, select:focus, textarea:focus {
+  box-shadow: 0 0 0 3px rgba(25, 184, 110, 0.12) !important;
+  border-color: rgba(25, 184, 110, 0.5) !important;
+  outline: none !important;
+}
+.dark input:focus, .dark select:focus, .dark textarea:focus {
+  box-shadow: 0 0 0 3px rgba(31, 224, 134, 0.12) !important;
+  border-color: rgba(31, 224, 134, 0.5) !important;
+}
+
+/* Interactive Rows and Lists */
+tr:not(:has(th)), li, [class*="card"][role="button"], a[class*="card"] {
+  transition: background 120ms ease !important;
+}
+tr:not(:has(th)):hover, li:hover, [class*="card"][role="button"]:hover, a[class*="card"]:hover {
+  background: rgba(0,0,0,0.02);
+}
+.dark tr:not(:has(th)):hover, .dark li:hover, .dark [class*="card"][role="button"]:hover, .dark a[class*="card"]:hover {
+  background: rgba(255,255,255,0.03);
+}
+
+/* Animations */
+@keyframes modal-enter {
+  from { opacity: 0; transform: scale(0.97) translateY(6px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes dropdown-enter {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+[role="dialog"], .modal-content, [class*="Modal"] {
+  animation: modal-enter 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[role="menu"], .dropdown-content, [class*="DropdownMenu"] {
+  animation: dropdown-enter 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+

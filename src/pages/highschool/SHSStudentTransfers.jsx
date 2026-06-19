@@ -104,10 +104,10 @@ export default function SHSStudentTransfers() {
  <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300 flex flex-col h-[calc(100vh-100px)]">
  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
  <div>
- <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
+ <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent tracking-[-0.02em]">
  Student Transfers
  </h1>
- <p className="text-muted-foreground mt-1 text-sm font-medium">
+ <p className="text-[#71717a] dark:text-gray-400 mt-1 text-sm font-medium">
  Process internal programme changes or external school withdrawals.
  </p>
  </div>
@@ -115,14 +115,14 @@ export default function SHSStudentTransfers() {
 
  <div className="flex-1 flex flex-col md:flex-row gap-6 overflow-hidden">
  {/* Left Panel: Student Selection */}
- <Card className="w-full md:w-[400px] shrink-0 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50">
+ <Card className="w-full md:w-[400px] shrink-0 flex flex-col rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/5">
- <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-3">Select Student</h3>
+ <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-3">Select Student</h3>
  <div className="relative">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary dark:text-primary" />
  <Input 
  placeholder="Search active students..." 
- className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+ className="pl-9 h-10 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -140,19 +140,19 @@ export default function SHSStudentTransfers() {
  <button
  key={student.id}
  onClick={() => setSelectedStudent(student)}
- className={`w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center gap-3 ${
+ className={`w-full text-left p-3 rounded-md-2xl transition-all duration-200 flex items-center gap-3 ${
  selectedStudent?.id === student.id 
  ? 'bg-primary dark:bg-primary text-white -emerald-500/20' 
  : 'hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:text-slate-200'
 }`}
  >
- <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${
+ <div className={`w-10 h-10 rounded-md-full flex items-center justify-center font-semibold shrink-0 ${
  selectedStudent?.id === student.id ? 'bg-white dark:bg-slate-900/40 dark:bg-slate-900/20' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
 }`}>
  {student.title?.charAt(0)}
  </div>
  <div className="overflow-hidden flex-1">
- <p className="font-bold truncate">{student.title}</p>
+ <p className="font-semibold truncate">{student.title}</p>
  <p className={`text-xs truncate ${selectedStudent?.id === student.id ? 'text-primary/20 dark:text-primary/80' : 'text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400'}`}>
  {student.case_number} • {student.data?.program}
  </p>
@@ -166,9 +166,9 @@ export default function SHSStudentTransfers() {
  </Card>
 
  {/* Right Panel: Transfer Form */}
- <Card className="flex-1 flex flex-col rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative">
+ <Card className="flex-1 flex flex-col rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/50 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {successMsg && (
- <div className="absolute inset-x-0 top-0 bg-primary text-white p-3 text-center text-sm font-bold animate-in slide-in-from-top flex justify-center items-center gap-2 z-50">
+ <div className="absolute inset-x-0 top-0 bg-primary text-white p-3 text-center text-sm font-semibold animate-in slide-in-from-top flex justify-center items-center gap-2 z-50">
  <CheckCircle2 className="w-4 h-4" /> {successMsg}
  </div>
  )}
@@ -176,10 +176,10 @@ export default function SHSStudentTransfers() {
  {selectedStudent ? (
  <>
  <div className="p-6 bg-slate-500 dark:bg-slate-800/50 border-b border-primary/40 dark:border-primary/40">
- <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Transfer Request for {selectedStudent.title}</h2>
+ <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">Transfer Request for {selectedStudent.title}</h2>
  <div className="flex items-center gap-2 mt-2">
- <Badge variant="outline" className="border-primary/20 dark:border-primary/40 text-primary dark:text-primary/70 bg-white dark:bg-slate-900/40 dark:bg-slate-900">{selectedStudent.case_number}</Badge>
- <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Current: {selectedStudent.data?.program} ({selectedStudent.data?.grade})</span>
+ <Badge variant="outline" className="border-primary/20 dark:border-primary/40 text-primary dark:text-primary/70 bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{selectedStudent.case_number}</Badge>
+ <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">Current: {selectedStudent.data?.program} ({selectedStudent.data?.grade})</span>
  </div>
  </div>
  
@@ -190,43 +190,43 @@ export default function SHSStudentTransfers() {
  <div className="grid grid-cols-2 gap-4">
  <button
  onClick={() => setTransferType('External')}
- className={`p-4 rounded-2xl border-2 text-left transition-all ${
+ className={`p-4 rounded-md-2xl border-2 text-left transition-all ${
  transferType === 'External' 
  ? 'border-primary dark:border-primary bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary dark:text-primary/70' 
  : 'border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:border-primary/20 dark:border-primary/40 text-slate-600 dark:text-slate-300'
 }`}
  >
  <Building className="w-6 h-6 mb-2" />
- <h4 className="font-bold">External Transfer</h4>
- <p className="text-xs opacity-80 mt-1">Transfer out to another school. Marks student as 'Transferred'.</p>
+ <h4 className="font-semibold">External Transfer</h4>
+ <p className="text-xs opacity-80 mt-1 tracking-[0.04em]">Transfer out to another school. Marks student as 'Transferred'.</p>
  </button>
  
  <button
  onClick={() => setTransferType('Internal')}
- className={`p-4 rounded-2xl border-2 text-left transition-all ${
+ className={`p-4 rounded-md-2xl border-2 text-left transition-all ${
  transferType === 'Internal' 
  ? 'border-primary dark:border-primary bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 text-primary dark:text-primary/70' 
  : 'border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:border-primary/20 dark:border-primary/40 text-slate-600 dark:text-slate-300'
 }`}
  >
  <ArrowRightLeft className="w-6 h-6 mb-2" />
- <h4 className="font-bold">Internal Transfer</h4>
- <p className="text-xs opacity-80 mt-1">Change programme or house within the same school.</p>
+ <h4 className="font-semibold">Internal Transfer</h4>
+ <p className="text-xs opacity-80 mt-1 tracking-[0.04em]">Change programme or house within the same school.</p>
  </button>
  </div>
 
- <div className="space-y-4 p-6 rounded-2xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 border border-primary/40 dark:border-primary/40 dark:border-primary/40 ">
- <h3 className="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+ <div className="space-y-4 p-6 rounded-md-2xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h3 className="font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <FileText className="w-4 h-4 text-primary dark:text-primary/70" /> Transfer Details
  </h3>
  
  {transferType === 'External' ? (
  <div className="space-y-4">
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Destination School</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Destination School</label>
  <Input 
  placeholder="e.g. Achimota School"
- className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
+ className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-md-xl h-11"
  value={transferData.destination}
  onChange={(e) => setTransferData({...transferData, destination: e.target.value})}
  />
@@ -235,9 +235,9 @@ export default function SHSStudentTransfers() {
  ) : (
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">New Programme</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">New Programme</label>
  <select 
- className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
  value={transferData.newProgram}
  onChange={(e) => setTransferData({...transferData, newProgram: e.target.value})}
  >
@@ -249,10 +249,10 @@ export default function SHSStudentTransfers() {
  </select>
  </div>
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">New House</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">New House</label>
  <Input 
  placeholder="e.g. Gyamfi House"
- className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
+ className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-md-xl h-11"
  value={transferData.newHouse}
  onChange={(e) => setTransferData({...transferData, newHouse: e.target.value})}
  />
@@ -262,19 +262,19 @@ export default function SHSStudentTransfers() {
  
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Effective Date</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Effective Date</label>
  <Input 
  type="date"
- className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
+ className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-md-xl h-11"
  value={transferData.date}
  onChange={(e) => setTransferData({...transferData, date: e.target.value})}
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Reason for Transfer</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Reason for Transfer</label>
  <Input 
  placeholder="e.g. Relocation, Academic preference"
- className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-xl h-11"
+ className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-primary/40 dark:border-primary/40 focus-visible:ring-primary dark:focus-visible:ring-primary rounded-md-xl h-11"
  value={transferData.reason}
  onChange={(e) => setTransferData({...transferData, reason: e.target.value})}
  />
@@ -286,7 +286,7 @@ export default function SHSStudentTransfers() {
  <Button 
  onClick={handleTransfer}
  disabled={isProcessing}
- className="rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white px-8 h-12 font-bold "
+ className="rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white px-8 h-12 font-semibold "
  >
  {isProcessing ? 'Processing...' : 'Authorize Transfer'}
  </Button>
@@ -296,10 +296,10 @@ export default function SHSStudentTransfers() {
  </>
  ) : (
  <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50">
- <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-6">
+ <div className="w-20 h-20 rounded-md-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-6">
  <ArrowRightLeft className="w-10 h-10 text-primary/30" />
  </div>
- <h3 className="text-xl font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No Student Selected</h3>
+ <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No Student Selected</h3>
  <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 max-w-sm mt-2">
  Select an active student from the left panel to initiate an internal programme change or external school transfer.
  </p>

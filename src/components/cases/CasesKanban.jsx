@@ -42,9 +42,9 @@ export default function CasesKanban({ cases, onStatusChange}) {
  <div key={col.id} className="flex-shrink-0 w-64">
  {/* Column header */}
  <div className="flex items-center gap-2 mb-3">
- <div className={`w-2.5 h-2.5 rounded-full ${col.color}`} />
+ <div className={`w-2.5 h-2.5 rounded-md-full ${col.color}`} />
  <span className="text-sm font-semibold text-foreground">{col.label}</span>
- <span className="ml-auto text-xs font-medium text-muted-foreground bg-muted rounded-full px-2 py-0.5">
+ <span className="ml-auto text-xs font-medium text-[#71717a] dark:text-gray-400 bg-muted rounded-md-full px-2 py-0.5 tracking-[0.04em]">
  {grouped[col.id]?.length || 0}
  </span>
  </div>
@@ -55,7 +55,7 @@ export default function CasesKanban({ cases, onStatusChange}) {
  <div
  ref={provided.innerRef}
  {...provided.droppableProps}
- className={`min-h-[200px] rounded-xl border-2 border-dashed p-2 transition-colors space-y-2 ${
+ className={`min-h-[200px] rounded-md-xl border-2 border-dashed p-2 transition-colors space-y-2 ${
  snapshot.isDraggingOver ? `${col.light}` : "border-primary/40 bg-muted/30"
 }`}
  >
@@ -69,15 +69,15 @@ export default function CasesKanban({ cases, onStatusChange}) {
  {...provided.draggableProps}
  {...provided.dragHandleProps}
  onClick={() => navigate(`/cases/${c.id}`, { state: { caseData: c}})}
- className={`bg-card rounded-lg border border-primary/40 p-3 cursor-pointer space-y-2 transition-all ${
+ className={`bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-3 cursor-pointer space-y-2 transition-all ${
  snapshot.isDragging ? " rotate-1 opacity-90" : " hover:border-primary/30"
 }`}
  >
- <p className="text-xs font-semibold text-foreground leading-snug line-clamp-2">{c.title}</p>
+ <p className="text-xs font-semibold text-foreground leading-snug line-clamp-2 tracking-[0.04em]">{c.title}</p>
  {c.case_number && (
- <p className="text-[10px] text-muted-foreground font-mono">#{c.case_number}</p>
+ <p className="text-[10px] text-[#71717a] dark:text-gray-400 font-mono">#{c.case_number}</p>
  )}
- <div className="flex flex-wrap gap-1">
+ <div className="flex flex-wrap gap-2">
  <Badge variant="outline" className="text-[10px] capitalize px-1.5 py-0">{c.case_type}</Badge>
  {c.priority && (
  <Badge className={`${PRIORITY_COLORS[c.priority]} text-[10px] px-1.5 py-0`}>{c.priority}</Badge>
@@ -85,26 +85,26 @@ export default function CasesKanban({ cases, onStatusChange}) {
  </div>
  <div className="space-y-1">
  {c.client_name && (
- <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+ <div className="flex items-center gap-2.5 text-[10px] text-[#71717a] dark:text-gray-400">
  <User className="w-3 h-3" />
  <span className="truncate">{c.client_name}</span>
  </div>
  )}
  {c.next_hearing_date && (
- <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+ <div className="flex items-center gap-2.5 text-[10px] text-[#71717a] dark:text-gray-400">
  <Calendar className="w-3 h-3" />
  <span>{format(new Date(c.next_hearing_date), "MMM d, yyyy")}</span>
  </div>
  )}
  </div>
  {c.assigned_lawyer_name && (
- <div className="flex items-center gap-1.5">
- <div className="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center">
- <span className="text-[8px] font-bold text-primary">
+ <div className="flex items-center gap-2.5">
+ <div className="w-5 h-5 rounded-md-full bg-slate-100 flex items-center justify-center">
+ <span className="text-[8px] font-semibold text-primary">
  {c.assigned_lawyer_name[0].toUpperCase()}
  </span>
  </div>
- <span className="text-[10px] text-muted-foreground truncate">{c.assigned_lawyer_name}</span>
+ <span className="text-[10px] text-[#71717a] dark:text-gray-400 truncate">{c.assigned_lawyer_name}</span>
  </div>
  )}
  </div>
@@ -115,7 +115,7 @@ export default function CasesKanban({ cases, onStatusChange}) {
 })}
  {provided.placeholder}
  {(grouped[col.id] || []).length === 0 && !snapshot.isDraggingOver && (
- <div className="flex items-center justify-center h-20 text-[11px] text-muted-foreground">
+ <div className="flex items-center justify-center h-20 text-[11px] text-[#71717a] dark:text-gray-400">
  {t("drop_cases_here", "Drop cases here")}
  </div>
  )}

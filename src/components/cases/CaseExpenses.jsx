@@ -112,9 +112,9 @@ export default function CaseExpenses({ caseData, user }) {
           { label: "Expenses Count", value: expenses.length, color: "text-foreground" },
         ].map(s => {
           return (
-            <div key={s.label} className="bg-card rounded-xl border border-primary/40 p-3 text-center">
-              <p className={`text-lg font-bold ${s.color}`}>{s.value}</p>
-              <p className="text-xs text-muted-foreground">{s.label}</p>
+            <div key={s.label} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-3 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+              <p className={`text-lg font-semibold ${s.color}`}>{s.value}</p>
+              <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{s.label}</p>
             </div>
           );
         })}
@@ -123,24 +123,24 @@ export default function CaseExpenses({ caseData, user }) {
         <h3 className="text-sm font-semibold text-foreground">{t("expense_log", "Expense Log")}</h3>
         <div className="flex gap-2">
           {canManage && totalUnbilled > 0 && (
-            <Button variant="outline" size="sm" onClick={handleAddToInvoice} className="gap-1.5 text-xs">
+            <Button variant="outline" size="sm" onClick={handleAddToInvoice} className="gap-2.5 text-xs tracking-[0.04em]">
               <FileText className="w-3.5 h-3.5" /> {t("add_to_invoice", "Add to Invoice")}
             </Button>
           )}
           {canManage && (
-            <Button size="sm" onClick={() => setShowForm(true)} className="gap-1.5 text-xs">
+            <Button size="sm" onClick={() => setShowForm(true)} className="gap-2.5 text-xs tracking-[0.04em]">
               <Plus className="w-3.5 h-3.5" /> {t("log_expense", "Log Expense")}
             </Button>
           )}
         </div>
       </div>
       {isLoading ? (
-        <div className="p-8 text-center text-sm text-muted-foreground">{t("loading", "Loading...")}</div>
+        <div className="p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("loading", "Loading...")}</div>
       ) : expenses.length === 0 ? (
-        <div className="bg-card rounded-xl border border-primary/40 p-10 text-center">
-          <Receipt className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
+        <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <Receipt className="w-10 h-10 mx-auto text-[#71717a] dark:text-gray-400 mb-3" />
           <p className="text-sm font-medium">{t("no_expenses_logged_yet", "No expenses logged yet")}</p>
-          <p className="text-xs text-muted-foreground mt-1">{t(
+          <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">{t(
             "track_case_related_costs_like_",
             "Track case-related costs like travel, filing fees, and more."
           )}</p>
@@ -149,8 +149,8 @@ export default function CaseExpenses({ caseData, user }) {
         <div className="space-y-2">
           {expenses.map(exp => {
             return (
-              <div key={exp.id} className="bg-card rounded-xl border border-primary/40 px-4 py-3 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
+              <div key={exp.id} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 px-4 py-3 flex items-center gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                <div className="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
                   <Receipt className="w-4 h-4 text-amber-600" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -161,13 +161,13 @@ export default function CaseExpenses({ caseData, user }) {
                     {!exp.billable && <Badge className="text-[10px] bg-gray-100 text-gray-600">{t("non_billable", "Non-billable")}</Badge>}
                   </div>
                   <div className="flex flex-wrap gap-2 mt-0.5">
-                    <span className="text-xs text-muted-foreground capitalize">{exp.category?.replace("_", " ")}</span>
-                    {exp.expense_date && <span className="text-xs text-muted-foreground">{format(new Date(exp.expense_date), "MMM d, yyyy")}</span>}
-                    <span className="text-xs text-muted-foreground">{t("by", "by")} {exp.logged_by_name || exp.logged_by}</span>
+                    <span className="text-xs text-[#71717a] dark:text-gray-400 capitalize tracking-[0.04em]">{exp.category?.replace("_", " ")}</span>
+                    {exp.expense_date && <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{format(new Date(exp.expense_date), "MMM d, yyyy")}</span>}
+                    <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("by", "by")} {exp.logged_by_name || exp.logged_by}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-sm font-bold">{formatCurrency(exp.amount, exp.currency)}</span>
+                  <span className="text-sm font-semibold">{formatCurrency(exp.amount, exp.currency)}</span>
                   {exp.receipt_url && (
                     <a href={exp.receipt_url} target="_blank" rel="noopener noreferrer">
                       <Button variant="ghost" size="icon" className="h-7 w-7"><Receipt className="w-3.5 h-3.5" /></Button>
@@ -260,7 +260,7 @@ function ExpenseFormDialog({ open, onClose, onSubmit, currency }) {
           </div>
           <div>
             <Label>{t("receipt_optional", "Receipt (optional)")}</Label>
-            <div className="mt-1 border-2 border-dashed border-primary/40 rounded-lg p-3 text-center">
+            <div className="mt-1 border-2 border-dashed border-primary/40 rounded-xl p-3 text-center">
               <input type="file" id="receipt-upload" className="hidden" onChange={handleReceiptUpload} accept="image/*,.pdf" />
               <label htmlFor="receipt-upload" className="text-sm text-primary cursor-pointer hover:underline">
                 {uploadingReceipt ? "Uploading..." : form.receipt_url ? "✓ Receipt uploaded" : "Upload receipt"}
@@ -271,10 +271,10 @@ function ExpenseFormDialog({ open, onClose, onSubmit, currency }) {
             <Label>{t("notes_optional", "Notes (optional)")}</Label>
             <Input value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} placeholder="Any additional details..." />
           </div>
-          <div className="flex items-center justify-between rounded-lg border border-primary/40 p-3">
+          <div className="flex items-center justify-between rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-3">
             <div>
               <p className="text-sm font-medium">{t("billable_to_client", "Billable to client")}</p>
-              <p className="text-xs text-muted-foreground">{t("include_this_in_client_invoice", "Include this in client invoice")}</p>
+              <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("include_this_in_client_invoice", "Include this in client invoice")}</p>
             </div>
             <Switch checked={form.billable} onCheckedChange={v => setForm({ ...form, billable: v })} />
           </div>

@@ -74,7 +74,7 @@ export default function UniStudents() {
  header: 'Student', 
  render: (_, row) => (
  <div className="flex items-center gap-3">
- <div className="w-8 h-8 rounded-full bg-[var(--color-surface-4)] text-[var(--color-text-secondary)] flex items-center justify-center text-xs font-semibold">
+ <div className="w-8 h-8 rounded-md-full bg-[var(--color-surface-4)] text-[var(--color-text-secondary)] flex items-center justify-center text-xs font-semibold tracking-[0.04em]">
  {row.name?.substring(0, 2).toUpperCase() || 'UN'}
  </div>
  <div>
@@ -88,7 +88,7 @@ export default function UniStudents() {
  id: 'program', 
  header: 'Program', 
  render: (_, row) => (
- <div className="flex items-center gap-1.5 text-[var(--color-text-secondary)] text-[var(--text-sm)]">
+ <div className="flex items-center gap-2.5 text-[var(--color-text-secondary)] text-[var(--text-sm)]">
  <GraduationCap className="w-4 h-4" /> {row.major}
  </div>
  )
@@ -97,7 +97,7 @@ export default function UniStudents() {
  id: 'year', 
  header: 'Year', 
  render: (_, row) => (
- <div className="flex items-center gap-1.5 text-[var(--color-text-secondary)] text-[var(--text-sm)]">
+ <div className="flex items-center gap-2.5 text-[var(--color-text-secondary)] text-[var(--text-sm)]">
  <Calendar className="w-4 h-4" /> {row.year}
  </div>
  )
@@ -105,7 +105,7 @@ export default function UniStudents() {
  { 
  id: 'gpa', 
  header: 'CGPA', 
- render: (_, row) => <span className="font-mono font-bold text-[var(--color-text-primary)]">{row.gpa}</span>
+ render: (_, row) => <span className="font-mono font-semibold text-[var(--color-text-primary)]">{row.gpa}</span>
 },
  { 
  id: 'status', 
@@ -120,11 +120,11 @@ export default function UniStudents() {
  {/* Slate Header */}
  <div className="flex items-end justify-between border-b border-primary/40 pb-4">
  <div>
- <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Student Population</h1>
+ <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">Student Population</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage enrollments, academic standing, and student records.</p>
  </div>
  
- <div className="flex items-center bg-[var(--color-surface-2)] p-1 rounded-[var(--radius-lg)] border border-primary/40">
+ <div className="flex items-center bg-[var(--color-surface-2)] p-1 rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  {[
  { id: 'directory', label: 'Directory'},
  { id: 'standing', label: 'Academic Standing'},
@@ -134,10 +134,10 @@ export default function UniStudents() {
  key={tab.id}
  onClick={() => { setActiveTab(tab.id); setSelectedStudent(null);}}
  className={cn(
- "px-4 py-1.5 text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-all",
+ "px-4 py-1.5 text-[var(--text-sm)] font-medium rounded-md-[var(--radius-md)] transition-all",
  activeTab === tab.id 
- ? "bg-[var(--color-surface-0)] text-[var(--color-text-primary)] border border-primary/40" 
- : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border border-transparent"
+ ? "bg-[var(--color-surface-0)] text-[var(--color-text-primary)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40" 
+ : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border-[0.5px] border-black/9 dark:border-white/8 border-transparent"
  )}
  >
  {tab.label}
@@ -148,7 +148,7 @@ export default function UniStudents() {
 
  <div className="min-h-[500px]">
  {activeTab === 'directory' && !selectedStudent && (
- <div className="bg-[var(--color-surface-0)] rounded-[var(--radius-xl)] ">
+ <div className="bg-[var(--color-surface-0)] rounded-md-[var(--radius-xl)] ">
  {students.length > 0 ? (
  <OrbitTable 
  columns={directoryColumns}
@@ -170,24 +170,24 @@ export default function UniStudents() {
  )}
 
  {activeTab === 'directory' && selectedStudent && (
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden ">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden ">
  <div className="bg-[var(--color-surface-2)] p-6 md:p-8 flex items-center justify-between border-b border-primary/40">
  <div className="flex items-center gap-6">
- <div className="w-20 h-20 rounded-full bg-[var(--primary)] text-white flex items-center justify-center font-display text-[var(--text-3xl)] -glow-sm -[var(--primary)]">
+ <div className="w-20 h-20 rounded-md-full bg-[var(--primary)] text-white flex items-center justify-center font-display text-[var(--text-3xl)] -glow-sm -[var(--primary)] tracking-[-0.02em]">
  {selectedStudent.name?.substring(0, 2).toUpperCase()}
  </div>
  <div>
- <h2 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">{selectedStudent.name}</h2>
+ <h2 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">{selectedStudent.name}</h2>
  <div className="flex items-center gap-3 mt-1.5 text-[var(--color-text-secondary)] font-mono text-[var(--text-sm)]">
- <span className="flex items-center gap-1.5"><FileText className="w-4 h-4" /> {selectedStudent.studentId}</span>
- <span className="w-1 h-1 rounded-full bg-[var(--color-border-strong)]" />
- <span className="flex items-center gap-1.5"><GraduationCap className="w-4 h-4" /> {selectedStudent.major}</span>
+ <span className="flex items-center gap-2.5"><FileText className="w-4 h-4" /> {selectedStudent.studentId}</span>
+ <span className="w-1 h-1 rounded-md-full bg-[var(--color-border-strong)]" />
+ <span className="flex items-center gap-2.5"><GraduationCap className="w-4 h-4" /> {selectedStudent.major}</span>
  </div>
  </div>
  </div>
  <button 
  onClick={() => setSelectedStudent(null)}
- className="px-4 py-2 bg-[var(--color-surface-0)] border border-primary/40 hover:bg-[var(--color-surface-3)] text-[var(--color-text-primary)] text-[var(--text-sm)] font-medium rounded-[var(--radius-md)] transition-colors"
+ className="px-4 py-2 bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:bg-[var(--color-surface-3)] text-[var(--color-text-primary)] text-[var(--text-sm)] font-medium rounded-md-[var(--radius-md)] transition-colors"
  >
  Back to Directory
  </button>
@@ -195,19 +195,19 @@ export default function UniStudents() {
  
  <div className="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8 bg-[var(--color-surface-1)]">
  <div className="lg:col-span-2 space-y-6">
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-lg)] p-6">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-lg)] p-6">
  <h3 className="font-semibold text-[var(--color-text-primary)] mb-6 flex items-center gap-2">
  <Calendar className="w-4 h-4 text-[var(--primary)]" /> Academic History & Transcript
  </h3>
  
  <div className="relative border-l border-[var(--color-border-strong)] ml-3 space-y-8 pb-4">
  <div className="relative pl-6">
- <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-[var(--primary)] -glow-sm -[var(--primary)]" />
- <h4 className="font-medium text-[var(--color-text-primary)]">Fall Semester 2025 <span className="ml-2 font-mono text-[var(--color-text-tertiary)] text-xs">Current</span></h4>
+ <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-md-full bg-[var(--primary)] -glow-sm -[var(--primary)]" />
+ <h4 className="font-medium text-[var(--color-text-primary)]">Fall Semester 2025 <span className="ml-2 font-mono text-[var(--color-text-tertiary)] text-xs tracking-[0.04em]">Current</span></h4>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">CS-302: HCI (Grade: A) · CS-401: Distributed Systems (Grade: A-)</p>
  </div>
  <div className="relative pl-6">
- <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-[var(--color-border-strong)]" />
+ <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-md-full bg-[var(--color-border-strong)]" />
  <h4 className="font-medium text-[var(--color-text-primary)]">Spring Semester 2025</h4>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">MATH-202: Linear Algebra (Grade: B+) · ENG-102: Rhetoric (Grade: A)</p>
  </div>
@@ -216,7 +216,7 @@ export default function UniStudents() {
  </div>
  
  <div className="space-y-6">
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-lg)] p-6">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-lg)] p-6">
  <h3 className="font-semibold text-[var(--color-text-primary)] mb-4">Current Standing</h3>
  <div className="space-y-4">
  <div className="flex justify-between items-center py-2 border-b border-primary/40">
@@ -225,7 +225,7 @@ export default function UniStudents() {
  </div>
  <div className="flex justify-between items-center py-2 border-b border-primary/40">
  <span className="text-[var(--color-text-secondary)] text-[var(--text-sm)]">CGPA</span>
- <span className="font-mono font-bold text-[var(--color-text-primary)]">{selectedStudent.gpa}</span>
+ <span className="font-mono font-semibold text-[var(--color-text-primary)]">{selectedStudent.gpa}</span>
  </div>
  <div className="flex justify-between items-center py-2 border-b border-primary/40">
  <span className="text-[var(--color-text-secondary)] text-[var(--text-sm)]">Status</span>
@@ -240,7 +240,7 @@ export default function UniStudents() {
 
  {activeTab === 'standing' && (
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
- <div className="bg-[var(--color-success-subtle)] border border-[var(--color-success)] rounded-[var(--radius-xl)] p-8">
+ <div className="bg-[var(--color-success-subtle)] border-[0.5px] border-black/9 dark:border-white/8 border-[var(--color-success)] rounded-md-[var(--radius-xl)] p-8">
  <div className="flex items-center gap-3 mb-4">
  <CheckCircle2 className="w-6 h-6 text-[var(--color-success)]" />
  <h3 className="font-display text-[var(--text-xl)] text-[var(--color-success)] font-semibold tracking-tight">Dean's Honor Roll</h3>
@@ -248,15 +248,15 @@ export default function UniStudents() {
  <p className="text-[var(--color-text-primary)] mb-6">Students with CGPA &gt; 3.80 are eligible for academic honors and scholarship endowments.</p>
  <div className="space-y-2">
  {students.filter(s => parseFloat(s.gpa) >= 3.8).map(s => (
- <div key={s.id} className="flex items-center justify-between p-3 bg-white dark:bg-slate-900/40/50 backdrop-blur rounded-[var(--radius-md)]">
+ <div key={s.id} className="flex items-center justify-between p-3 bg-white dark:bg-slate-900/40/50 backdrop-blur rounded-md-[var(--radius-md)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <span className="font-medium">{s.name}</span>
- <span className="font-mono font-bold text-[var(--color-success)]">{s.gpa}</span>
+ <span className="font-mono font-semibold text-[var(--color-success)]">{s.gpa}</span>
  </div>
  ))}
  </div>
  </div>
  
- <div className="bg-[var(--color-danger-subtle)] border border-[var(--color-danger)] rounded-[var(--radius-xl)] p-8">
+ <div className="bg-[var(--color-danger-subtle)] border-[0.5px] border-black/9 dark:border-white/8 border-[var(--color-danger)] rounded-md-[var(--radius-xl)] p-8">
  <div className="flex items-center gap-3 mb-4">
  <AlertCircle className="w-6 h-6 text-[var(--color-danger)]" />
  <h3 className="font-display text-[var(--text-xl)] text-[var(--color-danger)] font-semibold tracking-tight">Academic Probation</h3>
@@ -267,9 +267,9 @@ export default function UniStudents() {
  <div className="p-3 text-[var(--color-text-secondary)] text-sm italic">No students currently on probation.</div>
  ) : (
  students.filter(s => parseFloat(s.gpa) < 2.5).map(s => (
- <div key={s.id} className="flex items-center justify-between p-3 bg-white dark:bg-slate-900/40/50 backdrop-blur rounded-[var(--radius-md)]">
+ <div key={s.id} className="flex items-center justify-between p-3 bg-white dark:bg-slate-900/40/50 backdrop-blur rounded-md-[var(--radius-md)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <span className="font-medium">{s.name}</span>
- <span className="font-mono font-bold text-[var(--color-danger)]">{s.gpa}</span>
+ <span className="font-mono font-semibold text-[var(--color-danger)]">{s.gpa}</span>
  </div>
  ))
  )}
@@ -279,41 +279,41 @@ export default function UniStudents() {
  )}
 
  {activeTab === 'add' && (
- <div className="max-w-2xl mx-auto bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-8 ">
+ <div className="max-w-2xl mx-auto bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-8 ">
  <div className="mb-8">
- <h2 className="font-display text-[var(--text-2xl)] font-semibold tracking-tight text-[var(--color-text-primary)]">Enroll New Undergraduate</h2>
+ <h2 className="font-display text-[var(--text-2xl)] font-semibold tracking-tight text-[var(--color-text-primary)] tracking-[-0.02em]">Enroll New Undergraduate</h2>
  <p className="text-[var(--color-text-secondary)] mt-2">Register a fresh student profile with institutional metadata into the system.</p>
  </div>
  
  <form onSubmit={handleCreateStudent} className="space-y-6">
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  <div className="space-y-2">
- <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Full Name</label>
+ <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">Full Name</label>
  <input 
  type="text"
  value={formData.name} 
  onChange={e => setFormData({ ...formData, name: e.target.value})} 
  placeholder="e.g. Marie Curie" 
- className="w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
+ className="w-full bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
  required
  />
  </div>
  <div className="space-y-2">
- <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Institutional Email</label>
+ <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">Institutional Email</label>
  <input 
  type="email"
  value={formData.email} 
  onChange={e => setFormData({ ...formData, email: e.target.value})} 
  placeholder="e.g. mcurie@university.edu" 
- className="w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
+ className="w-full bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
  />
  </div>
  <div className="space-y-2">
- <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Intended Major</label>
+ <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">Intended Major</label>
  <select 
  value={formData.major} 
  onChange={e => setFormData({ ...formData, major: e.target.value})}
- className="w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
+ className="w-full bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
  >
  <option value="Computer Science">Computer Science</option>
  <option value="Software Engineering">Software Engineering</option>
@@ -323,11 +323,11 @@ export default function UniStudents() {
  </select>
  </div>
  <div className="space-y-2">
- <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Academic Year</label>
+ <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">Academic Year</label>
  <select 
  value={formData.year} 
  onChange={e => setFormData({ ...formData, year: e.target.value})}
- className="w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
+ className="w-full bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
  >
  <option value="Freshman">Freshman</option>
  <option value="Sophomore">Sophomore</option>
@@ -341,7 +341,7 @@ export default function UniStudents() {
  <button 
  type="submit" 
  disabled={createStudentMutation.isPending}
- className="flex items-center gap-2 px-6 py-2.5 bg-[var(--primary)] hover:opacity-90 text-white rounded-[var(--radius-md)] font-medium transition-all disabled:opacity-50"
+ className="flex items-center gap-2 px-6 py-2.5 bg-[var(--primary)] hover:opacity-90 text-white rounded-md-[var(--radius-md)] font-medium transition-all disabled:opacity-50"
  >
  <Plus className="w-4 h-4" />
  {createStudentMutation.isPending ? 'Saving...' : 'Enroll Student'}

@@ -134,7 +134,7 @@ export default function TimeTracker() {
         <Button 
           variant={isRunning ? "default" : "outline"} 
           size="sm" 
-          className={`gap-1.5 h-8 px-2 font-mono text-xs ${isRunning ? 'bg-primary text-white animate-pulse' : 'text-muted-foreground'}`}
+          className={`gap-2.5 h-8 px-2 font-mono text-xs ${isRunning ? 'bg-primary text-white animate-pulse' : 'text-[#71717a] dark:text-gray-400'}`}
         >
           <Clock className="w-3.5 h-3.5" />
           {formatTime(seconds)}
@@ -146,7 +146,7 @@ export default function TimeTracker() {
             <h4 className="font-semibold text-sm flex items-center gap-2">
               <Clock className="w-4 h-4 text-primary" /> {t("time_tracker", "Time Tracker")}
             </h4>
-            <div className="text-2xl font-mono font-bold tracking-tight text-primary">
+            <div className="text-2xl font-mono font-semibold tracking-tight text-primary tracking-[-0.02em]">
               {formatTime(seconds)}
             </div>
           </div>
@@ -187,7 +187,7 @@ export default function TimeTracker() {
             )}
             
             {seconds > 0 && (
-              <Button onClick={resetTimer} variant="ghost" size="icon" className="shrink-0 text-muted-foreground hover:text-destructive">
+              <Button onClick={resetTimer} variant="ghost" size="icon" className="shrink-0 text-[#71717a] dark:text-gray-400 hover:text-destructive">
                 <X className="w-4 h-4" />
               </Button>
             )}

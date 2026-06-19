@@ -28,20 +28,20 @@ export default function UniResearchActivity() {
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
  <div className="flex items-end justify-between border-b border-primary/40 pb-4">
  <div>
- <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Research Activity & Grants Hub</h1>
+ <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">Research Activity & Grants Hub</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage academic research proposals, publication indices, ethics reviews, and external grant awards.</p>
  </div>
  </div>
 
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  {stats.map((stat, i) => (
- <div key={i} className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
+ <div key={i} className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6">
  <div className="flex items-center justify-between">
  <div>
- <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">{stat.label}</p>
- <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight">{stat.value}</h3>
+ <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">{stat.label}</p>
+ <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight tracking-[-0.02em]">{stat.value}</h3>
  </div>
- <div className="w-12 h-12 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: `color-mix(in srgb, ${stat.color} 15%, transparent)`}}>
+ <div className="w-12 h-12 rounded-md-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: `color-mix(in srgb, ${stat.color} 15%, transparent)`}}>
  <stat.icon className="w-6 h-6" style={{ color: stat.color}} />
  </div>
  </div>
@@ -50,37 +50,37 @@ export default function UniResearchActivity() {
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
- <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+ <div className="lg:col-span-2 bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden">
  <div className="p-6 border-b border-primary/40 flex items-center justify-between">
  <div>
  <h2 className="font-semibold text-[var(--color-text-primary)]">Research & Projects Directory</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Academic investigations, field research, and publications portfolio.</p>
  </div>
- <button className="flex items-center gap-1.5 px-4 py-2 bg-[var(--primary)] hover:opacity-90 text-white text-sm font-medium rounded-[var(--radius-md)] transition-all">
+ <button className="flex items-center gap-2.5 px-4 py-2 bg-[var(--primary)] hover:opacity-90 text-white text-sm font-medium rounded-md-[var(--radius-md)] transition-all">
  <Plus className="w-4 h-4" /> Add Proposal
  </button>
  </div>
  <div className="p-6">
  {research.length === 0 ? (
  <div className="space-y-4">
- <div className="p-4 bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-xl)] flex justify-between items-center">
+ <div className="p-4 bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] flex justify-between items-center">
  <div>
- <h4 className="font-bold text-[var(--text-sm)] text-[var(--color-text-primary)] flex items-center gap-1.5"><Sparkles className="w-4 h-4 text-[var(--color-warning)]" /> Quantum Cryptography Initiatives</h4>
- <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)] mt-0.5">Principal Investigator: Dr. Alan Turing · Department of Physics</p>
+ <h4 className="font-semibold text-[var(--text-sm)] text-[var(--color-text-primary)] flex items-center gap-2.5"><Sparkles className="w-4 h-4 text-[var(--color-warning)]" /> Quantum Cryptography Initiatives</h4>
+ <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)] mt-0.5 tracking-[0.04em]">Principal Investigator: Dr. Alan Turing · Department of Physics</p>
  </div>
  <OrbitStatusBadge status="Active" />
  </div>
- <div className="p-4 bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-xl)] flex justify-between items-center">
+ <div className="p-4 bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] flex justify-between items-center">
  <div>
- <h4 className="font-bold text-[var(--text-sm)] text-[var(--color-text-primary)] flex items-center gap-1.5">Machine Learning Ethics & Fairness</h4>
- <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)] mt-0.5">Principal Investigator: Prof. Ada Lovelace · Computer Science School</p>
+ <h4 className="font-semibold text-[var(--text-sm)] text-[var(--color-text-primary)] flex items-center gap-2.5">Machine Learning Ethics & Fairness</h4>
+ <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)] mt-0.5 tracking-[0.04em]">Principal Investigator: Prof. Ada Lovelace · Computer Science School</p>
  </div>
  <OrbitStatusBadge status="Reviewing" label="Ethics Review" />
  </div>
- <div className="p-4 bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-xl)] flex justify-between items-center">
+ <div className="p-4 bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] flex justify-between items-center">
  <div>
- <h4 className="font-bold text-[var(--text-sm)] text-[var(--color-text-primary)] flex items-center gap-1.5">Sustainable Bio-Concrete Development</h4>
- <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)] mt-0.5">Principal Investigator: Dr. Richard Feynman · Department of Materials Engineering</p>
+ <h4 className="font-semibold text-[var(--text-sm)] text-[var(--color-text-primary)] flex items-center gap-2.5">Sustainable Bio-Concrete Development</h4>
+ <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)] mt-0.5 tracking-[0.04em]">Principal Investigator: Dr. Richard Feynman · Department of Materials Engineering</p>
  </div>
  <OrbitStatusBadge status="Active" />
  </div>
@@ -90,10 +90,10 @@ export default function UniResearchActivity() {
  {research.map((item, i) => {
  let info = {}; try { info = JSON.parse(item.notes);} catch(e){}
  return (
- <div key={i} className="p-4 bg-[var(--color-surface-1)] rounded-[var(--radius-xl)] border border-primary/40 flex justify-between items-center">
+ <div key={i} className="p-4 bg-[var(--color-surface-1)] rounded-md-[var(--radius-xl)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex justify-between items-center">
  <div>
- <h4 className="font-bold text-[var(--color-text-primary)] text-[var(--text-sm)]">{info.title || "Research Project"}</h4>
- <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)]">PI: {info.investigator || "Staff"} · Category: {info.category || "General"}</p>
+ <h4 className="font-semibold text-[var(--color-text-primary)] text-[var(--text-sm)]">{info.title || "Research Project"}</h4>
+ <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)] tracking-[0.04em]">PI: {info.investigator || "Staff"} · Category: {info.category || "General"}</p>
  </div>
  <OrbitStatusBadge status={item.status === 'Active' ? 'Active' : 'Reviewing'} label={item.status} />
  </div>
@@ -104,29 +104,29 @@ export default function UniResearchActivity() {
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 h-fit ">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 h-fit ">
  <h2 className="font-semibold text-[var(--color-text-primary)] mb-1">Ethics Approval Pipeline</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-6">Ethics clearances from Institutional Review Board (IRB).</p>
  <div className="space-y-6">
- <div className="p-4 bg-[var(--color-info-subtle)] border border-[var(--color-info)] rounded-[var(--radius-xl)] flex gap-3 items-start">
+ <div className="p-4 bg-[var(--color-info-subtle)] border-[0.5px] border-black/9 dark:border-white/8 border-[var(--color-info)] rounded-md-[var(--radius-xl)] flex gap-3 items-start">
  <CheckCircle2 className="w-5 h-5 text-[var(--color-info)] mt-0.5 shrink-0" />
  <div>
- <h5 className="text-[var(--text-sm)] font-bold text-[var(--color-text-primary)]">IRB Review Meeting</h5>
- <p className="text-[var(--text-xs)] text-[var(--color-info)] opacity-90 mt-0.5">Scheduled for Monday at 10:00 AM. 4 applications are on the agenda.</p>
+ <h5 className="text-[var(--text-sm)] font-semibold text-[var(--color-text-primary)]">IRB Review Meeting</h5>
+ <p className="text-[var(--text-xs)] text-[var(--color-info)] opacity-90 mt-0.5 tracking-[0.04em]">Scheduled for Monday at 10:00 AM. 4 applications are on the agenda.</p>
  </div>
  </div>
  <div className="space-y-3">
- <div className="flex justify-between items-center text-[var(--text-xs)] pb-2 border-b border-primary/40">
+ <div className="flex justify-between items-center text-[var(--text-xs)] pb-2 border-b border-primary/40 tracking-[0.04em]">
  <span className="font-semibold text-[var(--color-text-primary)]">Cognitive Development Analysis</span>
- <span className="text-[var(--color-warning)] font-bold">In Progress</span>
+ <span className="text-[var(--color-warning)] font-semibold">In Progress</span>
  </div>
- <div className="flex justify-between items-center text-[var(--text-xs)] pb-2 border-b border-primary/40">
+ <div className="flex justify-between items-center text-[var(--text-xs)] pb-2 border-b border-primary/40 tracking-[0.04em]">
  <span className="font-semibold text-[var(--color-text-primary)]">Clinical Trial Phase 1</span>
- <span className="text-[var(--color-info)] font-bold">Approved</span>
+ <span className="text-[var(--color-info)] font-semibold">Approved</span>
  </div>
- <div className="flex justify-between items-center text-[var(--text-xs)]">
+ <div className="flex justify-between items-center text-[var(--text-xs)] tracking-[0.04em]">
  <span className="font-semibold text-[var(--color-text-primary)]">Urban Heat Island Mitigation</span>
- <span className="text-[var(--color-danger)] font-bold">Revisions Requested</span>
+ <span className="text-[var(--color-danger)] font-semibold">Revisions Requested</span>
  </div>
  </div>
  </div>

@@ -77,49 +77,49 @@ export default function SHSAcademicAnalytics() {
  
  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
  <div>
- <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
+ <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent tracking-[-0.02em]">
  Academic Insights
  </h1>
- <p className="text-muted-foreground mt-1 text-sm font-medium">
+ <p className="text-[#71717a] dark:text-gray-400 mt-1 text-sm font-medium">
  Analyze school-wide academic performance trends and subject averages.
  </p>
  </div>
  </div>
 
  {loading ? (
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-20 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading academic analytics...</CardContent>
  </Card>
  ) : (
  <>
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
- <Card className="rounded-3xl border-none bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 text-white">
+ <Card className="rounded-md-3xl border-none bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 text-white">
  <CardContent className="p-6">
  <div className="flex items-center gap-4 mb-4">
- <div className="w-12 h-12 rounded-xl bg-white dark:bg-slate-900/40 dark:bg-slate-900/20 flex items-center justify-center text-white">
+ <div className="w-12 h-12 rounded-md-xl bg-white dark:bg-slate-900/40 dark:bg-slate-900/20 flex items-center justify-center text-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Target className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-bold text-primary/20 dark:text-primary/80 uppercase tracking-wider">School Average</p>
+ <p className="text-sm font-semibold text-primary/20 dark:text-primary/80 uppercase tracking-wider tracking-[0.04em]">School Average</p>
  </div>
  </div>
- <h3 className="text-4xl font-black text-white">{avgOverallScore.toFixed(1)}%</h3>
- <p className="text-xs text-primary/20 dark:text-primary/80 mt-2 font-medium">Across all generated report cards</p>
+ <h3 className="text-4xl font-black text-white tracking-[-0.02em]">{avgOverallScore.toFixed(1)}%</h3>
+ <p className="text-xs text-primary/20 dark:text-primary/80 mt-2 font-medium tracking-[0.04em]">Across all generated report cards</p>
  </CardContent>
  </Card>
 
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6">
  <div className="flex items-center gap-4 mb-4">
- <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
+ <div className="w-12 h-12 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary">
  <TrendingUp className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider">Pass Rate (&gt;50%)</p>
+ <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider tracking-[0.04em]">Pass Rate (&gt;50%)</p>
  </div>
  </div>
- <h3 className="text-4xl font-black text-primary">{passRate.toFixed(1)}%</h3>
- <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full mt-4 overflow-hidden">
+ <h3 className="text-4xl font-black text-primary tracking-[-0.02em]">{passRate.toFixed(1)}%</h3>
+ <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-md-full mt-4 overflow-hidden">
  <div 
  className="h-full bg-primary" 
  style={{ width: `${passRate}%`}}
@@ -128,47 +128,47 @@ export default function SHSAcademicAnalytics() {
  </CardContent>
  </Card>
 
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6">
  <div className="flex items-center gap-4 mb-4">
- <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600">
+ <div className="w-12 h-12 rounded-md-xl bg-amber-100 flex items-center justify-center text-amber-600">
  <Award className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider">Top Programme</p>
+ <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider tracking-[0.04em]">Top Programme</p>
  </div>
  </div>
- <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 leading-tight">General Science</h3>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 mt-2 font-medium">Avg Score: 78.4%</p>
+ <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 leading-tight tracking-[-0.02em]">General Science</h3>
+ <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 mt-2 font-medium tracking-[0.04em]">Avg Score: 78.4%</p>
  </CardContent>
  </Card>
 
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6">
  <div className="flex items-center gap-4 mb-4">
- <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
+ <div className="w-12 h-12 rounded-md-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
  <Activity className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider">Records Analyzed</p>
+ <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider tracking-[0.04em]">Records Analyzed</p>
  </div>
  </div>
- <h3 className="text-4xl font-black text-slate-800 dark:text-slate-100">{totalReports}</h3>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 mt-2 font-medium">Report cards in database</p>
+ <h3 className="text-4xl font-black text-slate-800 dark:text-slate-100 tracking-[-0.02em]">{totalReports}</h3>
+ <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 mt-2 font-medium tracking-[0.04em]">Report cards in database</p>
  </CardContent>
  </Card>
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
- <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+ <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <BarChart className="w-5 h-5 text-primary dark:text-primary/70" /> Form Averages
  </CardTitle>
  </CardHeader>
  <CardContent className="p-16 flex items-center justify-center min-h-[300px]">
  <div className="text-center space-y-4">
- <div className="w-20 h-20 rounded-3xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center border border-primary/40 dark:border-primary/40 dark:border-primary/40">
+ <div className="w-20 h-20 rounded-md-3xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40">
  <BarChart className="w-10 h-10 text-slate-300" />
  </div>
  <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-medium">Interactive charts require a Charting Provider.</p>
@@ -177,8 +177,8 @@ export default function SHSAcademicAnalytics() {
  <div className="flex gap-8 justify-center items-end h-32 mt-8 opacity-60">
  {[1, 2, 3].map(f => (
  <div key={f} className="flex flex-col items-center gap-2">
- <div className={`w-16 bg-primary dark:bg-primary rounded-t-lg h-[${60 + f * 5}%] -emerald-500/50`}></div>
- <span className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400">Form {f}</span>
+ <div className={`w-16 bg-primary dark:bg-primary rounded-md-t-lg h-[${60 + f * 5}%] -emerald-500/50`}></div>
+ <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 tracking-[0.04em]">Form {f}</span>
  </div>
  ))}
  </div>
@@ -188,8 +188,8 @@ export default function SHSAcademicAnalytics() {
  const avg = formCounts[form] > 0 ? formAverages[form] / formCounts[form] : 0;
  return (
  <div key={form} className="flex flex-col items-center gap-2">
- <div className="w-16 bg-primary dark:bg-primary rounded-t-lg -emerald-500/50 transition-all" style={{ height: `${Math.max(10, avg)}%`}}></div>
- <span className="text-xs font-bold text-slate-700 dark:text-slate-300 dark:text-slate-300">{form} <br/><span className="text-primary text-[10px]">{avg.toFixed(1)}%</span></span>
+ <div className="w-16 bg-primary dark:bg-primary rounded-md-t-lg -emerald-500/50 transition-all" style={{ height: `${Math.max(10, avg)}%`}}></div>
+ <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-300 tracking-[0.04em]">{form} <br/><span className="text-primary text-[10px]">{avg.toFixed(1)}%</span></span>
  </div>
  );
 })}
@@ -200,9 +200,9 @@ export default function SHSAcademicAnalytics() {
  </CardContent>
  </Card>
 
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 p-6">
- <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+ <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <LineChart className="w-5 h-5 text-primary dark:text-primary/70" /> Core Subject Trends
  </CardTitle>
  </CardHeader>
@@ -211,10 +211,10 @@ export default function SHSAcademicAnalytics() {
  {defaultTopSubjects.map((subj, idx) => (
  <div key={idx}>
  <div className="flex justify-between items-center mb-2">
- <span className="font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">{subj.name}</span>
- <span className="font-bold text-primary dark:text-primary/70">{subj.avg.toFixed(1)}%</span>
+ <span className="font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">{subj.name}</span>
+ <span className="font-semibold text-primary dark:text-primary/70">{subj.avg.toFixed(1)}%</span>
  </div>
- <div className="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
+ <div className="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-md-full overflow-hidden">
  <div className="h-full bg-primary dark:bg-primary transition-all duration-500" style={{ width: `${Math.min(100, subj.avg)}%`}}></div>
  </div>
  </div>

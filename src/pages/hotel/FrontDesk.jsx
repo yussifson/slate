@@ -122,52 +122,52 @@ export default function FrontDesk() {
  <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
  {/* Header */}
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("front_desk", "Front Desk")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t("live_property_overview", "Live property overview —")} {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}</p>
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("front_desk", "Front Desk")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("live_property_overview", "Live property overview —")} {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}</p>
  </div>
  {/* Stats */}
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-xl border border-primary/40 p-4 border-l-4 border-l-violet-500">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 border-l-4 border-l-violet-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
+ <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
  <TrendingUp className="w-5 h-5 text-primary" />
  </div>
  <div>
- <p className="text-xs font-bold text-muted-foreground uppercase">{t("occupancy", "Occupancy")}</p>
- <p className="text-2xl font-bold text-primary">{occupancyRate}%</p>
+ <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("occupancy", "Occupancy")}</p>
+ <p className="text-2xl font-semibold text-primary tracking-[-0.02em]">{occupancyRate}%</p>
  </div>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-4 border-l-4 border-l-green-500">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 border-l-4 border-l-green-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
+ <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
  <LogIn className="w-5 h-5 text-primary" />
  </div>
  <div>
- <p className="text-xs font-bold text-muted-foreground uppercase">{t("arrivals_today", "Arrivals Today")}</p>
- <p className="text-2xl font-bold text-primary">{todayArrivals.length}</p>
+ <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("arrivals_today", "Arrivals Today")}</p>
+ <p className="text-2xl font-semibold text-primary tracking-[-0.02em]">{todayArrivals.length}</p>
  </div>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-4 border-l-4 border-l-red-500">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 border-l-4 border-l-red-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
+ <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
  <LogOut className="w-5 h-5 text-red-600" />
  </div>
  <div>
- <p className="text-xs font-bold text-muted-foreground uppercase">{t("departures_today", "Departures Today")}</p>
- <p className="text-2xl font-bold text-red-600">{todayDepartures.length}</p>
+ <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("departures_today", "Departures Today")}</p>
+ <p className="text-2xl font-semibold text-red-600 tracking-[-0.02em]">{todayDepartures.length}</p>
  </div>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-4 border-l-4 border-l-violet-500">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 border-l-4 border-l-violet-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
+ <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
  <Users className="w-5 h-5 text-primary" />
  </div>
  <div>
- <p className="text-xs font-bold text-muted-foreground uppercase">{t("guests_in_house", "Guests In-House")}</p>
- <p className="text-2xl font-bold text-primary">{checkedIn.length}</p>
+ <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("guests_in_house", "Guests In-House")}</p>
+ <p className="text-2xl font-semibold text-primary tracking-[-0.02em]">{checkedIn.length}</p>
  </div>
  </div>
  </div>
@@ -176,8 +176,8 @@ export default function FrontDesk() {
  {(todayArrivals.length > 0 || todayDepartures.length > 0) && (
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
  {todayArrivals.length > 0 && (
- <div className="bg-slate-50 dark:bg-slate-800/50 border border-primary/20 rounded-xl p-4">
- <h3 className="font-bold text-primary/80 flex items-center gap-2 mb-3">
+ <div className="bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-xl p-4">
+ <h3 className="font-semibold text-primary/80 flex items-center gap-2 mb-3">
  <LogIn className="w-4 h-4" /> {t("today_s_arrivals", "Today's Arrivals (")}{todayArrivals.length})
  </h3>
  <div className="space-y-2">
@@ -185,17 +185,17 @@ export default function FrontDesk() {
  return (
  <div key={r.id} className="flex items-center justify-between text-sm">
  <span className="font-semibold text-primary/70">{r.guestName}</span>
- <span className="text-primary/90 font-mono text-xs">{t("room", "Room")} {r.roomNumber}</span>
+ <span className="text-primary/90 font-mono text-xs tracking-[0.04em]">{t("room", "Room")} {r.roomNumber}</span>
  </div>
  );
 })}
- {todayArrivals.length > 4 && <p className="text-xs text-primary/90 font-medium">+{todayArrivals.length - 4} {t("more", "more")}</p>}
+ {todayArrivals.length > 4 && <p className="text-xs text-primary/90 font-medium tracking-[0.04em]">+{todayArrivals.length - 4} {t("more", "more")}</p>}
  </div>
  </div>
  )}
  {todayDepartures.length > 0 && (
- <div className="bg-red-50 border border-red-200 rounded-xl p-4">
- <h3 className="font-bold text-red-800 flex items-center gap-2 mb-3">
+ <div className="bg-red-50 border-[0.5px] border-black/9 dark:border-white/8 border-red-200 rounded-md-xl p-4">
+ <h3 className="font-semibold text-red-800 flex items-center gap-2 mb-3">
  <LogOut className="w-4 h-4" /> {t("today_s_departures", "Today's Departures (")}{todayDepartures.length})
  </h3>
  <div className="space-y-2">
@@ -203,11 +203,11 @@ export default function FrontDesk() {
  return (
  <div key={r.id} className="flex items-center justify-between text-sm">
  <span className="font-semibold text-red-900">{r.guestName}</span>
- <span className="text-red-700 font-mono text-xs">{t("room", "Room")} {r.roomNumber}</span>
+ <span className="text-red-700 font-mono text-xs tracking-[0.04em]">{t("room", "Room")} {r.roomNumber}</span>
  </div>
  );
 })}
- {todayDepartures.length > 4 && <p className="text-xs text-red-700 font-medium">+{todayDepartures.length - 4} {t("more", "more")}</p>}
+ {todayDepartures.length > 4 && <p className="text-xs text-red-700 font-medium tracking-[0.04em]">+{todayDepartures.length - 4} {t("more", "more")}</p>}
  </div>
  </div>
  )}
@@ -216,28 +216,28 @@ export default function FrontDesk() {
  {/* Main Grid + Panel */}
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
  {/* Room Grid */}
- <div className="lg:col-span-2 bg-card rounded-xl border border-primary/40 p-6">
+ <div className="lg:col-span-2 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Legend */}
  <div className="flex flex-wrap items-center gap-4 mb-6 pb-4 border-b border-primary/40">
  {Object.entries(statusColors).map(([s]) => {
  return (
- <div key={s} className="flex items-center gap-1.5">
+ <div key={s} className="flex items-center gap-2.5">
  {statusIcons[s]}
- <span className="text-xs font-bold text-muted-foreground">{s}</span>
+ <span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{s}</span>
  </div>
  );
 })}
  </div>
 
  {isLoading ? (
- <div className="py-20 text-center text-muted-foreground">{t("loading_room_status", "Loading room status...")}</div>
+ <div className="py-20 text-center text-[#71717a] dark:text-gray-400">{t("loading_room_status", "Loading room status...")}</div>
  ) : (
  <div className="space-y-6">
  {floors.map(floor => {
  return (
  <div key={floor}>
- <p className="text-xs font-bold text-muted-foreground uppercase mb-3 flex items-center gap-2">
- <span className="w-6 h-6 rounded bg-slate-100 text-primary/90 flex items-center justify-center font-bold text-[10px]">{floor}</span>
+ <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-3 flex items-center gap-2 tracking-[0.04em]">
+ <span className="w-6 h-6 rounded-md bg-slate-100 text-primary/90 flex items-center justify-center font-semibold text-[10px]">{floor}</span>
  {t("floor", "Floor")} {floor}
  </p>
  <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2">
@@ -248,10 +248,10 @@ export default function FrontDesk() {
  <button
  key={roomNum}
  onClick={() => setSelectedRoom(isSelected ? null : roomNum)}
- className={`aspect-square rounded-lg border-2 flex flex-col items-center justify-center p-1 cursor-pointer transition-all duration-150 text-center ${statusColors[info.status]} ${isSelected ? 'ring-4 ring-primary/70 scale-110 z-10 relative' : ''}`}
+ className={`aspect-square rounded-xl border-2 flex flex-col items-center justify-center p-1 cursor-pointer transition-all duration-150 text-center ${statusColors[info.status]} ${isSelected ? 'ring-4 ring-primary/70 scale-110 z-10 relative' : ''}`}
  >
  {statusIcons[info.status]}
- <span className="text-[10px] font-bold mt-0.5 leading-tight">{roomNum}</span>
+ <span className="text-[10px] font-semibold mt-0.5 leading-tight">{roomNum}</span>
  </button>
  );
 })}
@@ -264,45 +264,45 @@ export default function FrontDesk() {
  </div>
 
  {/* Side Panel */}
- <div className="bg-card rounded-xl border border-primary/40 p-6 flex flex-col min-h-[400px]">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex flex-col min-h-[400px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {selectedRoom && selectedRoomInfo ? (
  <div className="space-y-5">
  <div className="flex items-center justify-between">
  <div>
- <h3 className="text-xl font-bold text-card-foreground">{t("room", "Room")} {selectedRoom}</h3>
+ <h3 className="text-xl font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("room", "Room")} {selectedRoom}</h3>
  <div className="flex items-center gap-2 mt-1">
  {statusIcons[selectedRoomInfo.status]}
- <span className="text-sm font-semibold text-muted-foreground">{selectedRoomInfo.status}</span>
+ <span className="text-sm font-semibold text-[#71717a] dark:text-gray-400">{selectedRoomInfo.status}</span>
  </div>
  </div>
- <button onClick={() => setSelectedRoom(null)} className="text-muted-foreground hover:text-foreground">
+ <button onClick={() => setSelectedRoom(null)} className="text-[#71717a] dark:text-gray-400 hover:text-foreground">
  <X className="w-5 h-5" />
  </button>
  </div>
 
  {selectedRoomInfo.reservation && (
- <div className="bg-muted/50 rounded-lg p-4 space-y-2">
- <p className="text-xs font-bold text-muted-foreground uppercase">{t("guest_info", "Guest Info")}</p>
- <p className="font-bold text-card-foreground text-lg">{selectedRoomInfo.reservation.guestName}</p>
+ <div className="bg-muted/50 rounded-xl p-4 space-y-2">
+ <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("guest_info", "Guest Info")}</p>
+ <p className="font-semibold text-card-foreground text-lg hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{selectedRoomInfo.reservation.guestName}</p>
  {selectedRoomInfo.reservation.guestPhone && (
- <p className="text-sm text-muted-foreground">{selectedRoomInfo.reservation.guestPhone}</p>
+ <p className="text-sm text-[#71717a] dark:text-gray-400">{selectedRoomInfo.reservation.guestPhone}</p>
  )}
- <div className="pt-2 border-t border-primary/40 grid grid-cols-2 gap-2 text-xs">
+ <div className="pt-2 border-t border-primary/40 grid grid-cols-2 gap-2 text-xs tracking-[0.04em]">
  <div>
- <span className="text-muted-foreground block">{t("check_in", "Check-in")}</span>
- <span className="font-bold">{selectedRoomInfo.reservation.checkIn}</span>
+ <span className="text-[#71717a] dark:text-gray-400 block">{t("check_in", "Check-in")}</span>
+ <span className="font-semibold">{selectedRoomInfo.reservation.checkIn}</span>
  </div>
  <div>
- <span className="text-muted-foreground block">{t("check_out", "Check-out")}</span>
- <span className="font-bold">{selectedRoomInfo.reservation.checkOut}</span>
+ <span className="text-[#71717a] dark:text-gray-400 block">{t("check_out", "Check-out")}</span>
+ <span className="font-semibold">{selectedRoomInfo.reservation.checkOut}</span>
  </div>
  <div>
- <span className="text-muted-foreground block">{t("room_type", "Room Type")}</span>
- <span className="font-bold">{selectedRoomInfo.reservation.roomType}</span>
+ <span className="text-[#71717a] dark:text-gray-400 block">{t("room_type", "Room Type")}</span>
+ <span className="font-semibold">{selectedRoomInfo.reservation.roomType}</span>
  </div>
  <div>
- <span className="text-muted-foreground block">{t("total", "Total")}</span>
- <span className="font-bold text-primary">${selectedRoomInfo.reservation.totalAmount}</span>
+ <span className="text-[#71717a] dark:text-gray-400 block">{t("total", "Total")}</span>
+ <span className="font-semibold text-primary">${selectedRoomInfo.reservation.totalAmount}</span>
  </div>
  </div>
  </div>
@@ -347,10 +347,10 @@ export default function FrontDesk() {
  </div>
  </div>
  ) : (
- <div className="flex-1 flex flex-col items-center justify-center text-center text-muted-foreground">
+ <div className="flex-1 flex flex-col items-center justify-center text-center text-[#71717a] dark:text-gray-400">
  <BedDouble className="w-12 h-12 mb-3 opacity-30" />
  <p className="font-semibold">{t("select_a_room", "Select a room")}</p>
- <p className="text-xs mt-1">{t(
+ <p className="text-xs mt-1 tracking-[0.04em]">{t(
  "click_any_room_on_the_grid_to_",
  "Click any room on the grid to view details and manage check-in/out"
  )}</p>
@@ -361,22 +361,22 @@ export default function FrontDesk() {
  {/* Check-In Modal */}
  {showCheckInModal && selectedRoom && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Key className="w-5 h-5 text-primary" /> {t("walk_in_check_in_room", "Walk-in Check-In — Room")} {selectedRoom}
  </h2>
  <div className="grid grid-cols-2 gap-4">
  <div className="col-span-2">
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("guest_name", "Guest Name *")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("guest_name", "Guest Name *")}</label>
  <Input value={checkInForm.guestName} onChange={e => setCheckInForm({ ...checkInForm, guestName: e.target.value})} className="mt-1" placeholder="e.g. Jane Doe" />
  </div>
  <div className="col-span-2">
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("phone_number", "Phone Number")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("phone_number", "Phone Number")}</label>
  <Input value={checkInForm.guestPhone} onChange={e => setCheckInForm({ ...checkInForm, guestPhone: e.target.value})} className="mt-1" placeholder="e.g. +1 555 0100" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("room_type", "Room Type")}</label>
- <select value={checkInForm.roomType} onChange={e => setCheckInForm({ ...checkInForm, roomType: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("room_type", "Room Type")}</label>
+ <select value={checkInForm.roomType} onChange={e => setCheckInForm({ ...checkInForm, roomType: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm">
  <option>{t("single", "Single")}</option>
  <option>{t("double", "Double")}</option>
  <option>{t("standard", "Standard")}</option>
@@ -385,7 +385,7 @@ export default function FrontDesk() {
  </select>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("check_out_date", "Check-Out Date *")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("check_out_date", "Check-Out Date *")}</label>
  <Input type="date" value={checkInForm.checkOut} min={today} onChange={e => setCheckInForm({ ...checkInForm, checkOut: e.target.value})} className="mt-1" />
  </div>
  </div>

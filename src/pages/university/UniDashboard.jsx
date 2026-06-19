@@ -62,14 +62,14 @@ export default function UniDashboard() {
  <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
  <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-primary/40 pb-6">
  <div>
- <h1 className="font-display font-semibold text-3xl text-[var(--color-text-primary)] tracking-tight">University Workslate</h1>
+ <h1 className="font-display font-semibold text-3xl text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">University Workslate</h1>
  <p className="text-base text-[var(--color-text-secondary)] mt-2">Enterprise command center for academic and operational metrics.</p>
  </div>
  <div className="flex gap-3">
- <button className="px-5 py-2.5 bg-[var(--color-surface-1)] border border-primary/40 text-[var(--color-text-primary)] text-sm font-medium rounded-lg hover:bg-[var(--color-surface-2)] transition-colors">
+ <button className="px-5 py-2.5 bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[var(--color-text-primary)] text-sm font-medium rounded-xl hover:bg-[var(--color-surface-2)] transition-colors">
  Generate Report
  </button>
- <button className="px-5 py-2.5 bg-[var(--primary)] text-white text-sm font-medium rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2">
+ <button className="px-5 py-2.5 bg-[var(--primary)] text-white text-sm font-medium rounded-xl hover:opacity-90 transition-opacity flex items-center gap-2">
  <PlusIcon className="w-4 h-4" /> New Admission
  </button>
  </div>
@@ -85,13 +85,13 @@ export default function UniDashboard() {
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
  {/* Main Chart Area */}
- <div className="col-span-1 lg:col-span-2 bg-[var(--color-surface-0)] border border-primary/40 rounded-2xl p-8 ">
+ <div className="col-span-1 lg:col-span-2 bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-8 ">
  <div className="flex items-center justify-between mb-8">
  <div>
  <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Admission Growth</h2>
  <p className="text-sm text-[var(--color-text-secondary)]">Trailing 5 months trajectory.</p>
  </div>
- <select className="bg-[var(--color-surface-1)] border border-primary/40 rounded-md px-3 py-1.5 text-sm text-[var(--color-text-primary)] outline-none">
+ <select className="bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-3 py-1.5 text-sm text-[var(--color-text-primary)] outline-none">
  <option>This Year</option>
  <option>Last Year</option>
  </select>
@@ -121,7 +121,7 @@ export default function UniDashboard() {
 
  {/* Quick Actions Panel */}
  <div className="col-span-1 flex flex-col gap-8">
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-2xl p-8 flex-1">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-8 flex-1">
  <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-6">Enterprise Actions</h2>
  <div className="space-y-4">
  <ActionItem icon={UserSquare2} title="Directory Management" desc="Update student & faculty records" color="var(--primary)" />
@@ -133,7 +133,7 @@ export default function UniDashboard() {
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-2xl p-8 ">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-8 ">
  <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-1">Recent Enrollments</h2>
  <p className="text-sm text-[var(--color-text-secondary)] mb-6">Latest students onboarded into the academic register.</p>
  
@@ -143,7 +143,7 @@ export default function UniDashboard() {
  <div className="overflow-x-auto">
  <table className="w-full text-left border-collapse">
  <thead>
- <tr className="border-b border-primary/40 text-[11px] uppercase tracking-wider font-semibold text-[var(--color-text-tertiary)]">
+ <tr className="border-b border-primary/40 text-[11px] uppercase tracking-wider font-semibold text-[var(--color-text-tertiary)] tracking-[0.04em]">
  <th className="pb-3 pl-2">Student Identity</th>
  <th className="pb-3">Program</th>
  <th className="pb-3">Status</th>
@@ -158,12 +158,12 @@ export default function UniDashboard() {
  <tr key={i} className="border-b border-primary/40 hover:bg-[var(--color-surface-1)] transition-colors group">
  <td className="py-4 pl-2">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-full bg-[var(--color-surface-2)] border border-primary/40 text-[var(--color-text-primary)] flex items-center justify-center font-bold text-sm">
+ <div className="w-10 h-10 rounded-md-full bg-[var(--color-surface-2)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[var(--color-text-primary)] flex items-center justify-center font-semibold text-sm">
  {s.name?.substring(0, 2).toUpperCase() || 'UN'}
  </div>
  <div>
  <p className="font-medium text-sm text-[var(--color-text-primary)]">{s.name}</p>
- <p className="text-xs text-[var(--color-text-secondary)]">{s.email || 'No email associated'}</p>
+ <p className="text-xs text-[var(--color-text-secondary)] tracking-[0.04em]">{s.email || 'No email associated'}</p>
  </div>
  </div>
  </td>
@@ -171,7 +171,7 @@ export default function UniDashboard() {
  {extra.major || 'Undeclared'}
  </td>
  <td className="py-4">
- <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--color-surface-2)] text-[var(--primary)] border border-primary/40">
+ <span className="inline-flex items-center px-2.5 py-0.5 rounded-md-full text-xs font-medium bg-[var(--color-surface-2)] text-[var(--primary)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 tracking-[0.04em]">
  Active
  </span>
  </td>
@@ -195,10 +195,10 @@ export default function UniDashboard() {
 // Utility Components
 function MetricCard({ title, value, icon: Icon, trend, highlight}) {
  return (
- <div className={`p-6 rounded-2xl border transition-all duration-200 hover:-translate-y-1 ${highlight ? 'bg-[var(--primary)] border-transparent text-white ' : 'bg-[var(--color-surface-0)] border-primary/40 '}`}>
+ <div className={`p-6 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-200 hover:-translate-y-1 ${highlight ? 'bg-[var(--primary)] border-transparent text-white ' : 'bg-[var(--color-surface-0)] border-primary/40 '}`}>
  <div className="flex justify-between items-start mb-4">
  <h3 className={`text-sm font-medium ${highlight ? 'text-white/90' : 'text-[var(--color-text-secondary)]'}`}>{title}</h3>
- <div className={`p-2 rounded-lg ${highlight ? 'bg-white dark:bg-slate-900/40/20' : 'bg-[var(--color-surface-2)] text-[var(--color-text-primary)]'}`}>
+ <div className={`p-2 rounded-xl ${highlight ? 'bg-white dark:bg-slate-900/40/20' : 'bg-[var(--color-surface-2)] text-[var(--color-text-primary)]'}`}>
  <Icon className="w-5 h-5" />
  </div>
  </div>
@@ -214,14 +214,14 @@ function MetricCard({ title, value, icon: Icon, trend, highlight}) {
 
 function ActionItem({ icon: Icon, title, desc, color}) {
  return (
- <button className="w-full flex items-center justify-between p-4 border border-primary/40 rounded-xl hover:bg-[var(--color-surface-2)] transition-colors group text-left">
+ <button className="w-full flex items-center justify-between p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl hover:bg-[var(--color-surface-2)] transition-colors group text-left">
  <div className="flex items-center gap-4">
- <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-[var(--color-surface-0)] border border-primary/40 transition-transform group-hover:scale-105" style={{ color}}>
+ <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 transition-transform group-hover:scale-105" style={{ color}}>
  <Icon className="w-5 h-5" />
  </div>
  <div>
  <h4 className="text-sm font-semibold text-[var(--color-text-primary)]">{title}</h4>
- <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">{desc}</p>
+ <p className="text-xs text-[var(--color-text-secondary)] mt-0.5 tracking-[0.04em]">{desc}</p>
  </div>
  </div>
  <ArrowRight className="w-4 h-4 text-[var(--color-text-tertiary)] group-hover:text-[var(--color-text-primary)] group-hover:translate-x-1 transition-all" />

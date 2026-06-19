@@ -87,7 +87,7 @@ export default function SuperAdminDashboard() {
 
  if (isLoading) {
  return (
- <div className="flex items-center justify-center h-40 text-muted-foreground text-sm">
+ <div className="flex items-center justify-center h-40 text-[#71717a] dark:text-gray-400 text-sm">
  {t("loading_firm_settings", "Loading firm settings...")}
  </div>
  );
@@ -95,15 +95,15 @@ export default function SuperAdminDashboard() {
 
  return (
  <div className="space-y-6 max-w-2xl">
- <div className="relative overflow-hidden bg-gradient-to-br from-primary/90 to-primary/70 rounded-[2.5rem] p-8 md:p-12 text-white border border-white/10">
+ <div className="relative overflow-hidden bg-gradient-to-br from-primary/90 to-primary/70 rounded-md-[2.5rem] p-8 md:p-12 text-white border-[0.5px] border-black/9 dark:border-white/8 border-white/10">
  <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
  <div className="text-center md:text-left">
- <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2">Welcome back, {user?.user_metadata?.full_name || 'Admin'}</h1>
+ <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2 tracking-[-0.02em]">Welcome back, {user?.user_metadata?.full_name || 'Admin'}</h1>
  <p className="text-primary/10 font-medium text-lg">System Configuration & {getTerm(activeIndustry, "venue") || "Firm"} Setup</p>
  </div>
  {!company && (
- <div className="flex items-center bg-white dark:bg-slate-900/40/10 p-2 rounded-2xl backdrop-blur-md border border-white/20 ">
- <Button onClick={() => setShowForm(true)} size="sm" className="gap-1.5 text-sm font-bold bg-white dark:bg-slate-900/40 text-primary/70 hover:bg-white dark:bg-slate-900/40/90 rounded-xl">
+ <div className="flex items-center bg-white dark:bg-slate-900/40/10 p-2 rounded-md-2xl backdrop-blur-md border-[0.5px] border-black/9 dark:border-white/8 border-white/20  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Button onClick={() => setShowForm(true)} size="sm" className="gap-2.5 text-sm font-semibold bg-white dark:bg-slate-900/40 text-primary/70 hover:bg-white dark:bg-slate-900/40/90 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Plus className="w-4 h-4" /> {t("setup_firm", "Setup " + (getTerm(activeIndustry, "venue") || "Firm"))}
  </Button>
  </div>
@@ -111,53 +111,53 @@ export default function SuperAdminDashboard() {
  </div>
  </div>
  {company ? (
- <div className="bg-card border border-primary/40 rounded-xl p-5 space-y-4">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-5 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-4">
- <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
- <span className="text-lg font-bold text-primary">{company.name?.[0]?.toUpperCase()}</span>
+ <div className="w-12 h-12 rounded-md-xl bg-slate-100 flex items-center justify-center shrink-0">
+ <span className="text-lg font-semibold text-primary">{company.name?.[0]?.toUpperCase()}</span>
  </div>
  <div className="flex-1">
  <h2 className="text-base font-semibold">{company.name}</h2>
- <p className="text-sm text-muted-foreground">{company.email}</p>
+ <p className="text-sm text-[#71717a] dark:text-gray-400">{company.email}</p>
  <div className="flex items-center gap-2 mt-1">
  <Badge className="text-[10px] bg-slate-100 text-primary/90">{company.status}</Badge>
- <span className="text-xs text-muted-foreground">{company.country} · {company.city}</span>
+ <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{company.country} · {company.city}</span>
  </div>
  </div>
  </div>
 
  <div className="grid grid-cols-2 gap-3 text-sm">
- <div className="bg-muted/40 rounded-lg p-3">
- <p className="text-xs text-muted-foreground">{t("currency", "Currency")}</p>
+ <div className="bg-muted/40 rounded-xl p-3">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("currency", "Currency")}</p>
  <p className="font-medium mt-0.5">{company.currency}</p>
  </div>
- <div className="bg-muted/40 rounded-lg p-3">
- <p className="text-xs text-muted-foreground">{t("plan", "Plan")}</p>
+ <div className="bg-muted/40 rounded-xl p-3">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("plan", "Plan")}</p>
  <p className="font-medium mt-0.5 capitalize">{company.subscription_plan}</p>
  </div>
- <div className="bg-muted/40 rounded-lg p-3">
- <p className="text-xs text-muted-foreground">{t("max_users", "Max Users")}</p>
+ <div className="bg-muted/40 rounded-xl p-3">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("max_users", "Max Users")}</p>
  <p className="font-medium mt-0.5">{company.max_users}</p>
  </div>
- <div className="bg-muted/40 rounded-lg p-3">
- <p className="text-xs text-muted-foreground">{t("max_cases", "Max " + (getTerm(activeIndustry, "cases") || "Cases"))}</p>
+ <div className="bg-muted/40 rounded-xl p-3">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("max_cases", "Max " + (getTerm(activeIndustry, "cases") || "Cases"))}</p>
  <p className="font-medium mt-0.5">{company.max_cases}</p>
  </div>
  </div>
 
  <div className="flex gap-2 pt-1">
- <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setShowForm(true)}>
+ <Button variant="outline" size="sm" className="gap-2.5" onClick={() => setShowForm(true)}>
  <Settings2 className="w-3.5 h-3.5" /> {t("edit_firm_details", "Edit " + (getTerm(activeIndustry, "venue") || "Firm") + " Details")}
  </Button>
- <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setManagingStaff(true)}>
+ <Button variant="outline" size="sm" className="gap-2.5" onClick={() => setManagingStaff(true)}>
  <UserCog className="w-3.5 h-3.5" /> {t("manage_team", "Manage Team")}
  </Button>
  </div>
  </div>
  ) : (
- <div className="bg-card border border-dashed border-primary/40 rounded-xl p-10 text-center space-y-3">
- <Building2 className="w-10 h-10 text-muted-foreground/40 mx-auto" />
- <p className="text-sm text-muted-foreground">{t("no_firm_configured_yet", "No " + (getTerm(activeIndustry, "venue") || "firm").toLowerCase() + " configured yet.")}</p>
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-md-xl p-10 text-center space-y-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Building2 className="w-10 h-10 text-[#71717a] dark:text-gray-400/40 mx-auto" />
+ <p className="text-sm text-[#71717a] dark:text-gray-400">{t("no_firm_configured_yet", "No " + (getTerm(activeIndustry, "venue") || "firm").toLowerCase() + " configured yet.")}</p>
  <Button onClick={() => setShowForm(true)} size="sm">{t("setup_your_firm", "Setup Your " + (getTerm(activeIndustry, "venue") || "Firm"))}</Button>
  </div>
  )}

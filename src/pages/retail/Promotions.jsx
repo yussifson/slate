@@ -89,7 +89,7 @@ export default function Promotions() {
  if (isLoading) {
  return (
  <div className="flex-1 p-6 flex items-center justify-center">
- <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+ <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-md-full animate-spin"></div>
  </div>
  );
 }
@@ -100,8 +100,8 @@ export default function Promotions() {
  <div className="space-y-6">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
- <h1 className="text-2xl font-bold text-foreground tracking-tight">{t("promotions", "Promotions & Discounts")}</h1>
- <p className="text-sm text-muted-foreground mt-1">{t("promo_desc", "Manage discount codes for point-of-sale.")}</p>
+ <h1 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">{t("promotions", "Promotions & Discounts")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">{t("promo_desc", "Manage discount codes for point-of-sale.")}</p>
  </div>
  <Button onClick={openNewDialog} className="gap-2">
  <Plus className="w-4 h-4" /> {t("new_promo", "New Promo")}
@@ -117,21 +117,21 @@ export default function Promotions() {
  <RetailStatCard label={t("active_promos", "Active Promotions")} value={activeCount} icon={Percent} />
  </div>
 
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50 flex flex-wrap gap-3 items-center justify-between">
  <div className="relative flex-1 max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <Input
  placeholder={t("search_promo", "Search promo codes...")}
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="pl-9 bg-card"
+ className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  </div>
 
  {filteredPromos.length === 0 ? (
- <div className="py-16 text-center text-muted-foreground">
+ <div className="py-16 text-center text-[#71717a] dark:text-gray-400">
  <Tag className="w-12 h-12 mx-auto mb-3 opacity-30" />
  <p>{t("no_promos", "No promotions found.")}</p>
  </div>
@@ -151,23 +151,23 @@ export default function Promotions() {
  <table className="w-full text-sm">
  <thead className="bg-muted/30 border-b border-primary/40">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-primary uppercase">{t("promo_code", "Code")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-primary uppercase">{t("type", "Type")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-primary uppercase">{t("value", "Value")}</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-primary uppercase">{t("status", "Status")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-primary uppercase">{t("actions", "Actions")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-primary uppercase tracking-[0.04em]">{t("promo_code", "Code")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-primary uppercase tracking-[0.04em]">{t("type", "Type")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-primary uppercase tracking-[0.04em]">{t("value", "Value")}</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-primary uppercase tracking-[0.04em]">{t("status", "Status")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-primary uppercase tracking-[0.04em]">{t("actions", "Actions")}</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
  {filteredPromos.map((promo) => (
  <tr key={promo.id} className="hover:bg-muted/40">
- <td className="px-6 py-4 font-bold text-foreground">{promo.data?.code}</td>
- <td className="px-6 py-4 capitalize text-muted-foreground">{promo.data?.discountType}</td>
- <td className="px-6 py-4 text-right font-bold text-primary">
+ <td className="px-6 py-4 font-semibold text-foreground">{promo.data?.code}</td>
+ <td className="px-6 py-4 capitalize text-[#71717a] dark:text-gray-400">{promo.data?.discountType}</td>
+ <td className="px-6 py-4 text-right font-semibold text-primary">
  {promo.data?.discountType === "percentage" ? `${promo.data?.discountValue}%` : `$${promo.data?.discountValue}`}
  </td>
  <td className="px-6 py-4 text-center">
- <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${promo.data?.isActive ? "bg-slate-100 text-primary" : "bg-muted text-muted-foreground"}`}>
+ <span className={`text-xs font-semibold px-2.5 py-1 rounded-md-full ${promo.data?.isActive ? "bg-slate-100 text-primary" : "bg-muted text-[#71717a] dark:text-gray-400"}`}>
  {promo.data?.isActive ? t("active", "Active") : t("inactive", "Inactive")}
  </span>
  </td>
@@ -196,7 +196,7 @@ export default function Promotions() {
  value={promoCode} 
  onChange={e => setPromoCode(e.target.value.toUpperCase())}
  placeholder="e.g. SUMMER20"
- className="uppercase"
+ className="uppercase tracking-[0.04em]"
  />
  </div>
  <div className="grid grid-cols-2 gap-4">

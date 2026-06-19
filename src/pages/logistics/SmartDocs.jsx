@@ -81,11 +81,11 @@ export default function SmartDocs() {
     <div className="p-4 sm:p-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground flex items-center gap-2">
+          <h1 className="text-2xl font-semibold text-card-foreground flex items-center gap-2 tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <Scan className="w-6 h-6 text-primary" />
             {t("smart_docs_ocr", "Smart Docs (OCR)")}
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-[#71717a] dark:text-gray-400 mt-1">
             {t("upload_freight_docs_description", "Upload Bill of Lading, Proof of Delivery, or Commercial Invoices. Our AI will automatically extract the data.")}
           </p>
         </div>
@@ -93,8 +93,8 @@ export default function SmartDocs() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="space-y-4">
-          <div className="bg-card border border-primary/20 rounded-2xl p-6 shadow-sm">
-            <h2 className="text-lg font-bold text-card-foreground mb-4 flex items-center gap-2">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <h2 className="text-lg font-semibold text-card-foreground mb-4 flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <UploadCloud className="w-5 h-5 text-primary" />
               Upload Document
             </h2>
@@ -105,8 +105,8 @@ export default function SmartDocs() {
           </div>
           
           {/* Historical Docs */}
-          <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
-             <h2 className="text-lg font-bold text-card-foreground mb-4 flex items-center gap-2">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+             <h2 className="text-lg font-semibold text-card-foreground mb-4 flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <Database className="w-5 h-5 text-primary" />
               Recently Processed
             </h2>
@@ -114,21 +114,21 @@ export default function SmartDocs() {
               {historicalDocs?.map(doc => {
                 const data = JSON.parse(doc.extracted_data || '{}');
                 return (
-                  <div key={doc.id} className="p-3 border border-border rounded-xl flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer">
+                  <div key={doc.id} className="p-3 border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-xl flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                         <FileText className="w-5 h-5 text-primary" />
                       </div>
                       <div>
                         <p className="text-sm font-semibold truncate max-w-[200px]">{data['Shipper Name'] || data['Consignee Name'] || 'Freight Document'}</p>
-                        <p className="text-xs text-muted-foreground flex items-center gap-1">
+                        <p className="text-xs text-[#71717a] dark:text-gray-400 flex items-center gap-2 tracking-[0.04em]">
                            <Calendar className="w-3 h-3" />
                            {new Date(doc.created_at).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-medium px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full">
+                      <span className="text-xs font-medium px-2 py-1 bg-emerald-100 text-emerald-700 rounded-md-full tracking-[0.04em]">
                         {doc.status}
                       </span>
                     </div>
@@ -136,15 +136,15 @@ export default function SmartDocs() {
                 )
               })}
               {(!historicalDocs || historicalDocs.length === 0) && (
-                <p className="text-sm text-muted-foreground italic">No historical documents found.</p>
+                <p className="text-sm text-[#71717a] dark:text-gray-400 italic">No historical documents found.</p>
               )}
             </div>
           </div>
         </div>
 
         <div className="space-y-4">
-          <div className="bg-card border border-primary/20 rounded-2xl p-6 shadow-sm min-h-[400px] flex flex-col sticky top-4">
-            <h2 className="text-lg font-bold text-card-foreground mb-4 flex items-center gap-2">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm min-h-[400px] flex flex-col sticky top-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <h2 className="text-lg font-semibold text-card-foreground mb-4 flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <CheckCircle className="w-5 h-5 text-primary" />
               Extracted Data Review
             </h2>
@@ -153,8 +153,8 @@ export default function SmartDocs() {
               <div className="flex-1 space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   {Object.entries(extractedData).map(([key, value]) => (
-                    <div key={key} className="bg-muted/30 p-3 rounded-lg border border-border">
-                      <div className="text-xs text-muted-foreground uppercase font-semibold mb-1">
+                    <div key={key} className="bg-muted/30 p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8">
+                      <div className="text-xs text-[#71717a] dark:text-gray-400 uppercase font-semibold mb-1 tracking-[0.04em]">
                         {key.replace(/_/g, ' ')}
                       </div>
                       <div className="text-sm font-medium text-foreground truncate" title={String(value)}>
@@ -164,7 +164,7 @@ export default function SmartDocs() {
                   ))}
                 </div>
                 
-                <div className="pt-4 border-t border-border mt-auto">
+                <div className="pt-4 border-t border-[0.5px] border-black/9 dark:border-white/8 mt-auto">
                   <Button onClick={handleSave} disabled={isSaving} className="w-full gap-2">
                     {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} 
                     {isSaving ? "Saving..." : "Save & Verify"}
@@ -173,9 +173,9 @@ export default function SmartDocs() {
               </div>
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center text-center opacity-50">
-                <FileText className="w-16 h-16 text-muted-foreground mb-4" />
-                <p className="text-muted-foreground font-medium">Awaiting Document</p>
-                <p className="text-sm text-muted-foreground mt-1 max-w-[250px]">
+                <FileText className="w-16 h-16 text-[#71717a] dark:text-gray-400 mb-4" />
+                <p className="text-[#71717a] dark:text-gray-400 font-medium">Awaiting Document</p>
+                <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1 max-w-[250px]">
                   Upload a document on the left to see the AI extracted fields here.
                 </p>
               </div>

@@ -120,57 +120,57 @@ export default function UnivDispatch() {
     <div className={`flex flex-col h-full bg-background overflow-hidden ${view !== 'Default' ? 'hide-default' : ''}`}>
       <div className="view-header flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
         <div>
-          <h2 className="text-2xl font-bold text-foreground tracking-tight">Driver Dispatch</h2>
-          <p className="text-sm text-muted-foreground mt-1">Manage driver assignments and real-time status.</p>
+          <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">Driver Dispatch</h2>
+          <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Manage driver assignments and real-time status.</p>
         </div>
         <div className="flex gap-3">
-          <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors">
+          <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors">
             <Plus className="w-4 h-4" /> Add Dispatch
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 shrink-0">
-        <div className="bg-card border border-primary/40 rounded-2xl p-4 flex items-center justify-between">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div>
-            <p className="text-sm text-muted-foreground font-medium">On Route</p>
-            <h3 className="text-2xl font-bold text-foreground mt-1">{dispatch.filter(d => d.status === 'On Route').length}</h3>
+            <p className="text-sm text-[#71717a] dark:text-gray-400 font-medium">On Route</p>
+            <h3 className="text-2xl font-semibold text-foreground mt-1 tracking-[-0.02em]">{dispatch.filter(d => d.status === 'On Route').length}</h3>
           </div>
-          <div className="p-3 bg-blue-100 dark:bg-blue-500/10 text-blue-600 rounded-xl"><Navigation className="w-5 h-5" /></div>
+          <div className="p-3 bg-blue-100 dark:bg-blue-500/10/10 text-blue-600 rounded-md-xl"><Navigation className="w-5 h-5" /></div>
         </div>
-        <div className="bg-card border border-primary/40 rounded-2xl p-4 flex items-center justify-between">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div>
-            <p className="text-sm text-muted-foreground font-medium">Available</p>
-            <h3 className="text-2xl font-bold text-foreground mt-1">{dispatch.filter(d => d.status === 'Available').length}</h3>
+            <p className="text-sm text-[#71717a] dark:text-gray-400 font-medium">Available</p>
+            <h3 className="text-2xl font-semibold text-foreground mt-1 tracking-[-0.02em]">{dispatch.filter(d => d.status === 'Available').length}</h3>
           </div>
-          <div className="p-3 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 rounded-xl"><CheckCircle2 className="w-5 h-5" /></div>
+          <div className="p-3 bg-emerald-100 dark:bg-emerald-500/10/10 text-emerald-600 rounded-md-xl"><CheckCircle2 className="w-5 h-5" /></div>
         </div>
-        <div className="bg-card border border-primary/40 rounded-2xl p-4 flex items-center justify-between">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div>
-            <p className="text-sm text-muted-foreground font-medium">Delivered</p>
-            <h3 className="text-2xl font-bold text-foreground mt-1">{dispatch.filter(d => d.status === 'Delivered').length}</h3>
+            <p className="text-sm text-[#71717a] dark:text-gray-400 font-medium">Delivered</p>
+            <h3 className="text-2xl font-semibold text-foreground mt-1 tracking-[-0.02em]">{dispatch.filter(d => d.status === 'Delivered').length}</h3>
           </div>
-          <div className="p-3 bg-indigo-100 dark:bg-indigo-500/10 text-indigo-600 rounded-xl"><CheckSquare className="w-5 h-5" /></div>
+          <div className="p-3 bg-indigo-100 dark:bg-indigo-500/10/10 text-indigo-600 rounded-md-xl"><CheckSquare className="w-5 h-5" /></div>
         </div>
       </div>
 
-      <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+      <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
           <div className="relative w-72">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
             <input
               type="text"
               placeholder="Search drivers, locations..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+              className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
             />
           </div>
         </div>
 
         <div className="flex-1 overflow-auto custom-scrollbar">
           <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground sticky top-0 z-10 backdrop-blur-md">
+            <thead className="bg-muted/50 text-xs uppercase tracking-wider text-[#71717a] dark:text-gray-400 sticky top-0 z-10 backdrop-blur-md tracking-[0.04em]">
               <tr>
                 <th className="p-4 font-semibold">Driver Name</th>
                 <th className="p-4 font-semibold">Shipment</th>
@@ -195,18 +195,18 @@ export default function UnivDispatch() {
                     </td>
                     <td className="p-4">
                       {shipment ? (
-                        <div className="flex items-center gap-1.5 text-primary font-bold">
+                        <div className="flex items-center gap-2.5 text-primary font-semibold">
                           <Package className="w-4 h-4" /> {shipment.data?.trackingNumber || 'Active'}
                         </div>
                       ) : (
-                        <span className="text-muted-foreground italic text-xs">Unassigned</span>
+                        <span className="text-[#71717a] dark:text-gray-400 italic text-xs tracking-[0.04em]">Unassigned</span>
                       )}
                     </td>
-                    <td className="p-4 text-muted-foreground">
-                      <div className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" /> {d.current_location || 'Unknown'}</div>
+                    <td className="p-4 text-[#71717a] dark:text-gray-400">
+                      <div className="flex items-center gap-2.5"><MapPin className="w-3.5 h-3.5" /> {d.current_location || 'Unknown'}</div>
                     </td>
                     <td className="p-4">
-                      <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border flex items-center gap-1 w-fit ${
+                      <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-semibold rounded-lg border-[0.5px] border-black/9 dark:border-white/8 flex items-center gap-2 w-fit ${
                           d.status === 'Available' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
                           d.status === 'Delivered' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' :
                           d.status === 'On Route' ? 'bg-blue-50 text-blue-700 border-blue-200' :
@@ -223,11 +223,11 @@ export default function UnivDispatch() {
                     </td>
                     <td className="p-4 text-right">
                       {d.status !== 'Delivered' && d.shipment_id && (
-                        <button onClick={(e) => { e.stopPropagation(); markDelivered(d); }} className="px-3 py-1.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-colors mr-2">
+                        <button onClick={(e) => { e.stopPropagation(); markDelivered(d); }} className="px-3 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm transition-colors mr-2 tracking-[0.04em]">
                           Mark Delivered
                         </button>
                       )}
-                      <button className="text-muted-foreground hover:text-primary transition-colors p-2"><MoreHorizontal className="w-4 h-4" /></button>
+                      <button className="text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors p-2"><MoreHorizontal className="w-4 h-4" /></button>
                     </td>
                   </motion.tr>
                 );
@@ -239,15 +239,15 @@ export default function UnivDispatch() {
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
-          <div className="bg-card w-full max-w-md rounded-2xl shadow-xl border border-primary/40 flex flex-col overflow-hidden">
+          <div className="bg-card w-full max-w-md rounded-md-2xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <div className="p-5 border-b border-primary/40 flex justify-between items-center bg-muted/30">
               <h2 className="text-lg font-black text-foreground">Assign Dispatch</h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:bg-muted p-1.5 rounded-full"><AlertCircle className="w-5 h-5 rotate-45" /></button>
+              <button onClick={() => setIsModalOpen(false)} className="text-[#71717a] dark:text-gray-400 hover:bg-muted p-1.5 rounded-md-full"><AlertCircle className="w-5 h-5 rotate-45" /></button>
             </div>
             <form onSubmit={handleAssign} className="p-5 space-y-4">
               <div>
-                <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Select Driver *</label>
-                <select required value={form.driver_name} onChange={e => setForm({ ...form, driver_name: e.target.value })} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:outline-none text-sm">
+                <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Select Driver *</label>
+                <select required value={form.driver_name} onChange={e => setForm({ ...form, driver_name: e.target.value })} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:outline-none text-sm">
                   <option value="">-- Choose Driver --</option>
                   {drivers.map(drv => (
                     <option key={drv.id} value={drv.data?.driverName}>{drv.data?.driverName} ({drv.data?.driverId})</option>
@@ -255,8 +255,8 @@ export default function UnivDispatch() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Assign Shipment</label>
-                <select value={form.shipment_id} onChange={e => setForm({ ...form, shipment_id: e.target.value })} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:outline-none text-sm">
+                <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Assign Shipment</label>
+                <select value={form.shipment_id} onChange={e => setForm({ ...form, shipment_id: e.target.value })} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:outline-none text-sm">
                   <option value="">-- Unassigned --</option>
                   {shipments.filter(s => s.status !== 'Delivered').map(ship => (
                     <option key={ship.id} value={ship.id}>{ship.data?.trackingNumber} - to {ship.data?.destination}</option>
@@ -264,8 +264,8 @@ export default function UnivDispatch() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Initial Status</label>
-                <select required value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:outline-none text-sm">
+                <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Initial Status</label>
+                <select required value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:outline-none text-sm">
                   <option>Available</option>
                   <option>On Route</option>
                   <option>Resting</option>
@@ -273,12 +273,12 @@ export default function UnivDispatch() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Current Location</label>
-                <input type="text" placeholder="e.g. Main Depot" value={form.current_location} onChange={e => setForm({ ...form, current_location: e.target.value })} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:outline-none text-sm" />
+                <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Current Location</label>
+                <input type="text" placeholder="e.g. Main Depot" value={form.current_location} onChange={e => setForm({ ...form, current_location: e.target.value })} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:outline-none text-sm" />
               </div>
               <div className="pt-4 border-t border-primary/40 flex justify-end gap-3">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 font-medium text-sm text-muted-foreground hover:bg-muted rounded-xl transition-colors">Cancel</button>
-                <button type="submit" className="px-5 py-2 font-bold text-sm bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors">Assign Driver</button>
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 font-medium text-sm text-[#71717a] dark:text-gray-400 hover:bg-muted rounded-md-xl transition-colors">Cancel</button>
+                <button type="submit" className="px-5 py-2 font-semibold text-sm bg-primary text-white rounded-md-xl hover:bg-primary/90 transition-colors">Assign Driver</button>
               </div>
             </form>
           </div>

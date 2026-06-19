@@ -90,43 +90,43 @@ export default function UnivSafety() {
  <div className="flex flex-col h-full bg-background overflow-hidden ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
  <div>
- <h2 className="text-2xl font-bold text-foreground tracking-tight">Safety & Incidents</h2>
- <p className="text-sm text-muted-foreground mt-1">Log and track safety hazards, near misses, and injuries.</p>
+ <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">Safety & Incidents</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Log and track safety hazards, near misses, and injuries.</p>
  </div>
  <div className="flex gap-3">
  <div className="flex items-center gap-2">
 
  
  
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={handleAddIncident} className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-xl text-sm font-medium hover:bg-red-700 transition-colors -red-500/20">
+ <button onClick={handleAddIncident} className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-md-xl text-sm font-medium hover:bg-red-700 transition-colors -red-500/20">
  <Plus className="w-4 h-4" /> Report Incident
  </button>
  </div>
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
  <input 
  type="text"
  placeholder="Search incidents..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
 
  <div className="flex-1 overflow-auto custom-scrollbar">
  <table className="w-full text-left text-sm whitespace-nowrap">
- <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground sticky top-0 z-10 backdrop-blur-md">
+ <thead className="bg-muted/50 text-xs uppercase tracking-wider text-[#71717a] dark:text-gray-400 sticky top-0 z-10 backdrop-blur-md tracking-[0.04em]">
  <tr>
  <th className="p-4 font-semibold">Incident Type</th>
  <th className="p-4 font-semibold">Severity</th>
@@ -146,11 +146,11 @@ export default function UnivSafety() {
  key={i.id} 
  className="hover:bg-muted/30 transition-colors group cursor-pointer"
  >
- <td className="p-4 font-bold text-foreground flex items-center gap-2">
+ <td className="p-4 font-semibold text-foreground flex items-center gap-2">
  <ShieldAlert className={`w-4 h-4 ${i.severity === 'Critical' ? 'text-red-600' : 'text-primary'}`} /> {i.incident_type}
  </td>
  <td className="p-4">
- <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border flex items-center gap-1 w-fit ${
+ <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-semibold rounded-lg border-[0.5px] border-black/9 dark:border-white/8 flex items-center gap-2 w-fit ${
  i.severity === 'Critical' ? 'bg-red-50 text-red-700 border-red-200' : 
  i.severity === 'High' ? 'bg-orange-50 text-orange-700 border-orange-200' : 
  i.severity === 'Medium' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : 
@@ -159,17 +159,17 @@ export default function UnivSafety() {
  {i.severity}
  </span>
  </td>
- <td className="p-4 text-muted-foreground truncate max-w-xs">
+ <td className="p-4 text-[#71717a] dark:text-gray-400 truncate max-w-xs">
  {i.description}
  </td>
  <td className="p-4 font-medium text-foreground">
  {i.reported_by}
  </td>
- <td className="p-4 text-muted-foreground text-xs">
+ <td className="p-4 text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">
  {i.report_date ? new Date(i.report_date).toLocaleString() : '—'}
  </td>
  <td className="p-4">
- <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border flex items-center gap-1 w-fit ${
+ <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-semibold rounded-lg border-[0.5px] border-black/9 dark:border-white/8 flex items-center gap-2 w-fit ${
  i.status === 'Resolved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
  i.status === 'Investigating' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
  'bg-red-50 text-red-700 border-red-200'
@@ -181,7 +181,7 @@ export default function UnivSafety() {
  </span>
  </td>
  <td className="p-4 text-right">
- <button className="text-muted-foreground hover:text-primary transition-colors p-2"><MoreHorizontal className="w-4 h-4" /></button>
+ <button className="text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors p-2"><MoreHorizontal className="w-4 h-4" /></button>
  </td>
  </motion.tr>
  ))}

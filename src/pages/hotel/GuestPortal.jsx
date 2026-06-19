@@ -48,15 +48,15 @@ export default function GuestPortal() {
 };
 
  if (isResLoading) {
- return <div className="py-12 text-center text-muted-foreground">{t("loading_your_guest_profile", "Loading your guest profile...")}</div>;
+ return <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_your_guest_profile", "Loading your guest profile...")}</div>;
 }
 
  if (!activeRes) {
  return (
- <div className="py-12 text-center max-w-md mx-auto bg-card rounded-xl border border-primary/40 p-6 " style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
+ <div className="py-12 text-center max-w-md mx-auto bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
  <Key className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary animate-pulse" />
- <p className="font-semibold text-lg text-card-foreground">{t("no_active_reservations", "No Active Reservations")}</p>
- <p className="text-sm text-muted-foreground mt-1">{t(
+ <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_active_reservations", "No Active Reservations")}</p>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">{t(
  "we_couldn_t_find_any_upcoming_",
  "We couldn't find any upcoming or active reservations linked to your account."
  )}</p>
@@ -67,9 +67,9 @@ export default function GuestPortal() {
  return (
  <div className="space-y-6 max-w-5xl mx-auto">
  {/* Header */}
- <div className="bg-gradient-to-r from-primary to-orange-700 rounded-2xl p-6 md:p-8 text-white relative overflow-hidden">
+ <div className="bg-gradient-to-r from-primary to-orange-700 rounded-md-2xl p-6 md:p-8 text-white relative overflow-hidden">
  <div className="relative z-10">
- <h1 className="text-2xl md:text-3xl font-bold mb-2">{t("welcome_back", "Welcome back,")} {activeRes.guest}</h1>
+ <h1 className="text-2xl md:text-3xl font-semibold mb-2 tracking-[-0.02em]">{t("welcome_back", "Welcome back,")} {activeRes.guest}</h1>
  <p className="text-primary/10 max-w-xl">{t(
  "manage_your_stay_order_room_se",
  "Manage your stay, order room service, and request housekeeping all from your device."
@@ -82,56 +82,56 @@ export default function GuestPortal() {
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
  {/* Left Column (Reservation Details) */}
  <div className="col-span-1 lg:col-span-2 space-y-6">
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 md:p-5 border-b border-primary/40 bg-muted/50 flex justify-between items-center">
- <h3 className="font-bold text-card-foreground flex items-center gap-2"><Calendar className="w-5 h-5 text-muted-foreground" /> {t("your_stay_details", "Your Stay Details")}</h3>
+ <h3 className="font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><Calendar className="w-5 h-5 text-[#71717a] dark:text-gray-400" /> {t("your_stay_details", "Your Stay Details")}</h3>
  <Badge variant="outline" className={`${activeRes.status === 'Checked-in' ? 'bg-slate-100 text-primary/90 border-primary/20' : 'bg-slate-100 text-primary/90 border-primary/20'}`}>{activeRes.status}</Badge>
  </div>
  <div className="p-5 grid grid-cols-2 md:grid-cols-4 gap-6">
  <div>
- <p className="text-xs text-muted-foreground uppercase font-bold mb-1">{t("check_in", "Check In")}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 uppercase font-semibold mb-1 tracking-[0.04em]">{t("check_in", "Check In")}</p>
  <p className="font-semibold text-lg">{activeRes.checkIn}</p>
  </div>
  <div>
- <p className="text-xs text-muted-foreground uppercase font-bold mb-1">{t("check_out", "Check Out")}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 uppercase font-semibold mb-1 tracking-[0.04em]">{t("check_out", "Check Out")}</p>
  <p className="font-semibold text-lg">{activeRes.checkOut}</p>
  </div>
  <div>
- <p className="text-xs text-muted-foreground uppercase font-bold mb-1">{t("room", "Room")}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 uppercase font-semibold mb-1 tracking-[0.04em]">{t("room", "Room")}</p>
  <p className="font-semibold text-lg">{activeRes.roomType}</p>
  </div>
  <div>
- <p className="text-xs text-muted-foreground uppercase font-bold mb-1">{t("guests", "Guests")}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 uppercase font-semibold mb-1 tracking-[0.04em]">{t("guests", "Guests")}</p>
  <p className="font-semibold text-lg">{activeRes.guestsCount} {t("guest_s", "Guest(s)")}</p>
  </div>
  </div>
  <div className="bg-muted/30 p-5 border-t border-primary/40 flex justify-between items-center">
  <div>
  <p className="text-sm font-medium">{t("reservation_id", "Reservation ID")}</p>
- <p className="font-mono text-muted-foreground text-sm">{activeRes.resId}</p>
+ <p className="font-mono text-[#71717a] dark:text-gray-400 text-sm">{activeRes.resId}</p>
  </div>
  <Button variant="outline">{t("modify_booking", "Modify Booking")}</Button>
  </div>
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
- <div onClick={() => { setRequestData({ ...requestData, type: 'Room Service'}); setShowRequestModal(true);}} className="bg-card hover:bg-muted/50 cursor-pointer transition-colors rounded-xl border border-primary/40 p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+ <div onClick={() => { setRequestData({ ...requestData, type: 'Room Service'}); setShowRequestModal(true);}} className="bg-card hover:bg-muted/50 cursor-pointer transition-colors rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-12 h-12 rounded-md-full bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
  <Coffee className="w-6 h-6" />
  </div>
  <div>
- <h3 className="font-bold text-foreground">{t("order_room_service", "Order Room Service")}</h3>
- <p className="text-xs text-muted-foreground">{t("browse_menu_and_order", "Browse menu and order")}</p>
+ <h3 className="font-semibold text-foreground">{t("order_room_service", "Order Room Service")}</h3>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("browse_menu_and_order", "Browse menu and order")}</p>
  </div>
  </div>
 
- <div onClick={() => { setRequestData({ ...requestData, type: 'Housekeeping'}); setShowRequestModal(true);}} className="bg-card hover:bg-muted/50 cursor-pointer transition-colors rounded-xl border border-primary/40 p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-full bg-slate-100 text-primary flex items-center justify-center shrink-0">
+ <div onClick={() => { setRequestData({ ...requestData, type: 'Housekeeping'}); setShowRequestModal(true);}} className="bg-card hover:bg-muted/50 cursor-pointer transition-colors rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-12 h-12 rounded-md-full bg-slate-100 text-primary flex items-center justify-center shrink-0">
  <Bell className="w-6 h-6" />
  </div>
  <div>
- <h3 className="font-bold text-foreground">{t("request_housekeeping", "Request Housekeeping")}</h3>
- <p className="text-xs text-muted-foreground">{t("towels_cleaning_etc", "Towels, cleaning, etc.")}</p>
+ <h3 className="font-semibold text-foreground">{t("request_housekeeping", "Request Housekeeping")}</h3>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("towels_cleaning_etc", "Towels, cleaning, etc.")}</p>
  </div>
  </div>
  </div>
@@ -139,22 +139,22 @@ export default function GuestPortal() {
 
  {/* Right Column (Billing info) */}
  <div className="space-y-6">
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
- <h3 className="font-bold text-card-foreground">{t("current_bill", "Current Bill")}</h3>
+ <h3 className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("current_bill", "Current Bill")}</h3>
  </div>
  <div className="p-4 space-y-3">
  <div className="flex justify-between text-sm">
- <span className="text-muted-foreground">{t("room_charge", "Room Charge (")}{activeRes.nights} {t("nights", "Nights)")}</span>
+ <span className="text-[#71717a] dark:text-gray-400">{t("room_charge", "Room Charge (")}{activeRes.nights} {t("nights", "Nights)")}</span>
  <span className="font-medium">${activeRes.total}</span>
  </div>
  <div className="flex justify-between text-sm">
- <span className="text-muted-foreground">{t("taxes_fees", "Taxes & Fees")}</span>
+ <span className="text-[#71717a] dark:text-gray-400">{t("taxes_fees", "Taxes & Fees")}</span>
  <span className="font-medium">${(activeRes.total * 0.1).toFixed(2)}</span>
  </div>
  <div className="border-t border-primary/40 pt-3 mt-3 flex justify-between items-center">
- <span className="font-bold">{t("total_estimated", "Total Estimated")}</span>
- <span className="text-xl font-bold text-primary">${(activeRes.total * 1.1).toFixed(2)}</span>
+ <span className="font-semibold">{t("total_estimated", "Total Estimated")}</span>
+ <span className="text-xl font-semibold text-primary">${(activeRes.total * 1.1).toFixed(2)}</span>
  </div>
  <Button className="w-full mt-4 bg-primary hover:bg-primary/90 text-white">{t("view_full_folio", "View Full Folio")}</Button>
  </div>
@@ -163,13 +163,13 @@ export default function GuestPortal() {
  </div>
  {showRequestModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-sm p-6 space-y-4">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
+ <div className="bg-card rounded-md-2xl w-full max-w-sm p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Bell className="w-5 h-5 text-primary"/> {t("request", "Request")} {requestData.type}
  </h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("details", "Details")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("details", "Details")}</label>
  <Input value={requestData.detail} onChange={e => setRequestData({ ...requestData, detail: e.target.value})} className="mt-1" placeholder="What do you need?" />
  </div>
  </div>

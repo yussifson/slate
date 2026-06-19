@@ -87,62 +87,62 @@ const UnivEventPlanner = () => {
  return (
  <div className="p-6 max-w-7xl mx-auto bg-fuchsia-50/30 min-h-screen font-sans ${view !== 'Default' ? 'hide-default' : ''}">
  <motion.div initial={{ opacity: 0, y: -20}} animate={{ opacity: 1, y: 0}} className="mb-8">
- <h1 className="text-4xl font-extrabold text-foreground flex items-center gap-3">
+ <h1 className="text-4xl font-extrabold text-foreground flex items-center gap-3 tracking-[-0.02em]">
  <Star className="w-10 h-10 text-fuchsia-500 fill-fuchsia-500/20" />
  Event Master
  </h1>
- <p className="text-muted-foreground mt-2 text-lg">Orchestrate perfect events from start to finish</p>
+ <p className="text-[#71717a] dark:text-gray-400 mt-2 text-lg">Orchestrate perfect events from start to finish</p>
  </motion.div>
 
  <div className="view-header grid lg:grid-cols-12 gap-8">
- <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="lg:col-span-4 bg-card p-6 rounded-3xl border border-primary/40">
- <h2 className="text-2xl font-bold mb-6 text-foreground">New Event</h2>
+ <motion.div initial={{ opacity: 0, x: -20}} animate={{ opacity: 1, x: 0}} className="lg:col-span-4 bg-card p-6 rounded-md-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-2xl font-semibold mb-6 text-foreground tracking-[-0.02em]">New Event</h2>
  <form onSubmit={handleSubmit} className="space-y-4">
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Event Name</label>
- <input type="text" name="event_name" value={formData.event_name} onChange={handleChange} required className="w-full p-3 bg-background rounded-xl border-none focus:ring-2 focus:ring-fuchsia-400 outline-none" />
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Event Name</label>
+ <input type="text" name="event_name" value={formData.event_name} onChange={handleChange} required className="w-full p-3 bg-background rounded-md-xl border-none focus:ring-2 focus:ring-fuchsia-400 outline-none" />
  </div>
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Organizer / Client</label>
- <input type="text" name="organizer" value={formData.organizer} onChange={handleChange} required className="w-full p-3 bg-background rounded-xl border-none focus:ring-2 focus:ring-fuchsia-400 outline-none" />
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Organizer / Client</label>
+ <input type="text" name="organizer" value={formData.organizer} onChange={handleChange} required className="w-full p-3 bg-background rounded-md-xl border-none focus:ring-2 focus:ring-fuchsia-400 outline-none" />
  </div>
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Date & Time</label>
- <input type="datetime-local" name="event_date" value={formData.event_date} onChange={handleChange} required className="w-full p-3 bg-background rounded-xl border-none focus:ring-2 focus:ring-fuchsia-400 outline-none text-foreground" />
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Date & Time</label>
+ <input type="datetime-local" name="event_date" value={formData.event_date} onChange={handleChange} required className="w-full p-3 bg-background rounded-md-xl border-none focus:ring-2 focus:ring-fuchsia-400 outline-none text-foreground" />
  </div>
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Location</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Location</label>
  <div className="relative">
- <MapPin className="w-5 h-5 absolute left-3 top-3 text-muted-foreground" />
- <input type="text" name="location" value={formData.location} onChange={handleChange} required className="w-full pl-10 p-3 bg-background rounded-xl border-none focus:ring-2 focus:ring-fuchsia-400 outline-none" />
+ <MapPin className="w-5 h-5 absolute left-3 top-3 text-[#71717a] dark:text-gray-400" />
+ <input type="text" name="location" value={formData.location} onChange={handleChange} required className="w-full pl-10 p-3 bg-background rounded-md-xl border-none focus:ring-2 focus:ring-fuchsia-400 outline-none" />
  </div>
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Attendees</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Attendees</label>
  <div className="relative">
- <Users className="w-5 h-5 absolute left-3 top-3 text-muted-foreground" />
- <input type="number" name="expected_attendees" value={formData.expected_attendees} onChange={handleChange} className="w-full pl-10 p-3 bg-background rounded-xl border-none focus:ring-2 focus:ring-fuchsia-400 outline-none" />
+ <Users className="w-5 h-5 absolute left-3 top-3 text-[#71717a] dark:text-gray-400" />
+ <input type="number" name="expected_attendees" value={formData.expected_attendees} onChange={handleChange} className="w-full pl-10 p-3 bg-background rounded-md-xl border-none focus:ring-2 focus:ring-fuchsia-400 outline-none" />
  </div>
  </div>
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Budget</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Budget</label>
  <div className="relative">
- <DollarSign className="w-5 h-5 absolute left-3 top-3 text-muted-foreground" />
- <input type="number" name="budget" value={formData.budget} onChange={handleChange} className="w-full pl-10 p-3 bg-background rounded-xl border-none focus:ring-2 focus:ring-fuchsia-400 outline-none" />
+ <DollarSign className="w-5 h-5 absolute left-3 top-3 text-[#71717a] dark:text-gray-400" />
+ <input type="number" name="budget" value={formData.budget} onChange={handleChange} className="w-full pl-10 p-3 bg-background rounded-md-xl border-none focus:ring-2 focus:ring-fuchsia-400 outline-none" />
  </div>
  </div>
  </div>
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Status</label>
- <select name="status" value={formData.status} onChange={handleChange} className="w-full p-3 bg-background rounded-xl border-none focus:ring-2 focus:ring-fuchsia-400 outline-none font-medium">
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Status</label>
+ <select name="status" value={formData.status} onChange={handleChange} className="w-full p-3 bg-background rounded-md-xl border-none focus:ring-2 focus:ring-fuchsia-400 outline-none font-medium">
  <option value="Planning">Planning</option>
  <option value="Confirmed">Confirmed</option>
  <option value="Completed">Completed</option>
  <option value="Cancelled">Cancelled</option>
  </select>
  </div>
- <button type="submit" className="w-full bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-bold py-4 rounded-xl transition-colors mt-4">
+ <button type="submit" className="w-full bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-semibold py-4 rounded-md-xl transition-colors mt-4">
  Create Event
  </button>
  </form>
@@ -152,39 +152,39 @@ const UnivEventPlanner = () => {
  {loading ? (
  <div className="flex justify-center py-20"><CalendarDays className="w-12 h-12 text-fuchsia-300 animate-bounce" /></div>
  ) : events.length === 0 ? (
- <div className="text-center py-20 bg-card rounded-3xl border border-primary/40 text-muted-foreground">No events planned yet. Let's get started!</div>
+ <div className="text-center py-20 bg-card rounded-md-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">No events planned yet. Let's get started!</div>
  ) : (
  <div className="grid md:grid-cols-2 gap-6">
  {events.map((event, index) => (
- <motion.div key={event.id || index} initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className="bg-card p-6 rounded-3xl border border-primary/40 transition-all group">
+ <motion.div key={event.id || index} initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} transition={{ delay: index * 0.05}} className="bg-card p-6 rounded-md-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 transition-all group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-start mb-4">
- <h3 className="text-xl font-bold text-foreground leading-tight pr-4">{event.event_name}</h3>
- <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(event.status)}`}>{event.status}</span>
+ <h3 className="text-xl font-semibold text-foreground leading-tight pr-4">{event.event_name}</h3>
+ <span className={`px-3 py-1 rounded-md-full text-xs font-semibold border ${getStatusColor(event.status)}`}>{event.status}</span>
  </div>
  
  <div className="space-y-3 mb-6">
- <p className="flex items-center text-muted-foreground text-sm">
+ <p className="flex items-center text-[#71717a] dark:text-gray-400 text-sm">
  <CalendarDays className="w-4 h-4 mr-2 text-fuchsia-400" /> 
  {new Date(event.event_date).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short'})}
  </p>
- <p className="flex items-center text-muted-foreground text-sm">
+ <p className="flex items-center text-[#71717a] dark:text-gray-400 text-sm">
  <MapPin className="w-4 h-4 mr-2 text-fuchsia-400" /> {event.location}
  </p>
  </div>
 
- <div className="bg-background rounded-2xl p-4 grid grid-cols-2 gap-4">
+ <div className="bg-background rounded-md-2xl p-4 grid grid-cols-2 gap-4">
  <div>
- <p className="text-xs text-muted-foreground font-semibold uppercase mb-1">Organizer</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 font-semibold uppercase mb-1 tracking-[0.04em]">Organizer</p>
  <p className="font-medium text-foreground text-sm truncate">{event.organizer}</p>
  </div>
  <div>
- <p className="text-xs text-muted-foreground font-semibold uppercase mb-1">Budget</p>
- <p className="font-bold text-emerald-600">${event.budget || '0'}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 font-semibold uppercase mb-1 tracking-[0.04em]">Budget</p>
+ <p className="font-semibold text-emerald-600">${event.budget || '0'}</p>
  </div>
  <div className="col-span-2 border-t border-primary/40 pt-3 flex justify-between items-center">
- <span className="text-xs text-muted-foreground font-semibold uppercase">Est. Attendance</span>
- <span className="font-bold text-foreground flex items-center bg-card px-3 py-1 rounded-full border border-primary/40 ">
- <Users className="w-4 h-4 mr-1 text-muted-foreground" /> {event.expected_attendees || '0'}
+ <span className="text-xs text-[#71717a] dark:text-gray-400 font-semibold uppercase tracking-[0.04em]">Est. Attendance</span>
+ <span className="font-semibold text-foreground flex items-center bg-card px-3 py-1 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Users className="w-4 h-4 mr-1 text-[#71717a] dark:text-gray-400" /> {event.expected_attendees || '0'}
  </span>
  </div>
  </div>

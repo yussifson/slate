@@ -92,35 +92,35 @@ export default function UnivNewsletter() {
  <div className="p-6 max-w-5xl mx-auto bg-background min-h-screen ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex justify-between items-center mb-8">
  <div>
- <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
+ <h1 className="text-3xl font-semibold text-foreground flex items-center gap-3 tracking-[-0.02em]">
  <Mail className="text-purple-600 w-8 h-8" />
  Newsletter Performance
  </h1>
- <p className="text-muted-foreground mt-2">Analyze engagement metrics for your campaigns.</p>
+ <p className="text-[#71717a] dark:text-gray-400 mt-2">Analyze engagement metrics for your campaigns.</p>
  </div>
  {!isEditing && (
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Calendar","Dashboard"].map(v => (
  <button 
  key={v} 
  onClick={() => setView(v)} 
- className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${view === v ? 'bg-background text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+ className={`px-3 py-1 text-xs font-medium rounded-lg transition-all ${view === v ? 'bg-background text-foreground' : 'text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}
  >
  {v}
  </button>
  ))}
  </div>
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
  <button
  onClick={() => setIsEditing(true)}
- className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+ className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-xl hover:bg-purple-700 transition-colors"
  >
  <Plus className="w-5 h-5" />
  Add Newsletter
@@ -135,64 +135,64 @@ export default function UnivNewsletter() {
  initial={{ opacity: 0, y: -20}}
  animate={{ opacity: 1, y: 0}}
  exit={{ opacity: 0, y: -20}}
- className="bg-card p-6 rounded-xl border border-primary/40 mb-8"
+ className="bg-card p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <h2 className="text-xl font-semibold mb-4 text-foreground">
  {editingId ? 'Edit Newsletter' : 'Record Newsletter'}
  </h2>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
  <div className="md:col-span-2">
- <label className="block text-sm font-medium text-muted-foreground mb-1">Subject Line</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Subject Line</label>
  <input
  type="text"
- className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+ className="w-full px-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none"
  value={formData.subject_line}
  onChange={(e) => setFormData({ ...formData, subject_line: e.target.value})}
  placeholder="e.g. Exciting Updates for July!"
  />
  </div>
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Send Date</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Send Date</label>
  <input
  type="date"
- className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+ className="w-full px-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none"
  value={formData.send_date}
  onChange={(e) => setFormData({ ...formData, send_date: e.target.value})}
  />
  </div>
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Recipients</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Recipients</label>
  <div className="relative">
- <Users className="absolute left-3 top-2.5 w-5 h-5 text-muted-foreground" />
+ <Users className="absolute left-3 top-2.5 w-5 h-5 text-[#71717a] dark:text-gray-400" />
  <input
  type="number"
- className="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+ className="w-full pl-10 pr-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none"
  value={formData.recipient_count}
  onChange={(e) => setFormData({ ...formData, recipient_count: e.target.value})}
  />
  </div>
  </div>
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Open Rate (%)</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Open Rate (%)</label>
  <div className="relative">
- <Eye className="absolute left-3 top-2.5 w-5 h-5 text-muted-foreground" />
+ <Eye className="absolute left-3 top-2.5 w-5 h-5 text-[#71717a] dark:text-gray-400" />
  <input
  type="number"
  step="0.1"
- className="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+ className="w-full pl-10 pr-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none"
  value={formData.open_rate}
  onChange={(e) => setFormData({ ...formData, open_rate: e.target.value})}
  />
  </div>
  </div>
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Click Rate (%)</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Click Rate (%)</label>
  <div className="relative">
- <Pointer className="absolute left-3 top-2.5 w-5 h-5 text-muted-foreground" />
+ <Pointer className="absolute left-3 top-2.5 w-5 h-5 text-[#71717a] dark:text-gray-400" />
  <input
  type="number"
  step="0.1"
- className="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+ className="w-full pl-10 pr-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none"
  value={formData.click_rate}
  onChange={(e) => setFormData({ ...formData, click_rate: e.target.value})}
  />
@@ -206,13 +206,13 @@ export default function UnivNewsletter() {
  setEditingId(null);
  setFormData({ subject_line: '', send_date: '', recipient_count: '', open_rate: '', click_rate: ''});
 }}
- className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
+ className="flex items-center gap-2 px-4 py-2 text-[#71717a] dark:text-gray-400 hover:bg-muted rounded-xl transition-colors"
  >
  <X className="w-4 h-4" /> Cancel
  </button>
  <button
  onClick={handleSave}
- className="flex items-center gap-2 bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+ className="flex items-center gap-2 bg-purple-600 text-white px-6 py-2 rounded-xl hover:bg-purple-700 transition-colors"
  >
  <Save className="w-4 h-4" /> Save
  </button>
@@ -223,7 +223,7 @@ export default function UnivNewsletter() {
 
  {loading ? (
  <div className="flex justify-center py-12">
- <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-purple-600"></div>
+ <div className="animate-spin rounded-md-full h-10 w-10 border-b-2 border-purple-600"></div>
  </div>
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -232,7 +232,7 @@ export default function UnivNewsletter() {
  key={item.id}
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
- className="bg-card rounded-xl border border-primary/40 overflow-hidden transition- flex flex-col"
+ className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden transition- flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="p-5 flex-grow">
  <div className="flex justify-between items-start mb-3">
@@ -240,37 +240,37 @@ export default function UnivNewsletter() {
  "{item.subject_line || 'Untitled Newsletter'}"
  </h3>
  <div className="flex gap-2 shrink-0 ml-4">
- <button onClick={() => handleEdit(item)} className="p-1 text-muted-foreground hover:text-purple-600 transition-colors">
+ <button onClick={() => handleEdit(item)} className="p-1 text-[#71717a] dark:text-gray-400 hover:text-purple-600 transition-colors">
  <Edit2 className="w-4 h-4" />
  </button>
- <button onClick={() => handleDelete(item.id)} className="p-1 text-muted-foreground hover:text-red-600 transition-colors">
+ <button onClick={() => handleDelete(item.id)} className="p-1 text-[#71717a] dark:text-gray-400 hover:text-red-600 transition-colors">
  <Trash2 className="w-4 h-4" />
  </button>
  </div>
  </div>
- <div className="text-sm text-muted-foreground mb-5">Sent: {item.send_date}</div>
+ <div className="text-sm text-[#71717a] dark:text-gray-400 mb-5">Sent: {item.send_date}</div>
  
  <div className="grid grid-cols-3 gap-4 text-center mt-auto">
- <div className="bg-purple-50 rounded-lg p-3">
- <span className="block text-xl font-bold text-purple-700">{Number(item.recipient_count).toLocaleString()}</span>
- <span className="text-xs text-purple-600 font-medium uppercase">Recipients</span>
+ <div className="bg-purple-50 rounded-xl p-3">
+ <span className="block text-xl font-semibold text-purple-700">{Number(item.recipient_count).toLocaleString()}</span>
+ <span className="text-xs text-purple-600 font-medium uppercase tracking-[0.04em]">Recipients</span>
  </div>
- <div className="bg-blue-50 rounded-lg p-3">
- <span className="block text-xl font-bold text-blue-700">{item.open_rate}%</span>
- <span className="text-xs text-blue-600 font-medium uppercase">Open Rate</span>
+ <div className="bg-blue-50 rounded-xl p-3">
+ <span className="block text-xl font-semibold text-blue-700">{item.open_rate}%</span>
+ <span className="text-xs text-blue-600 font-medium uppercase tracking-[0.04em]">Open Rate</span>
  </div>
- <div className="bg-emerald-50 rounded-lg p-3">
- <span className="block text-xl font-bold text-emerald-700">{item.click_rate}%</span>
- <span className="text-xs text-emerald-600 font-medium uppercase">Click Rate</span>
+ <div className="bg-emerald-50 rounded-xl p-3">
+ <span className="block text-xl font-semibold text-emerald-700">{item.click_rate}%</span>
+ <span className="text-xs text-emerald-600 font-medium uppercase tracking-[0.04em]">Click Rate</span>
  </div>
  </div>
  </div>
  </motion.div>
  ))}
  {data.length === 0 && !isEditing && (
- <div className="col-span-full py-12 text-center bg-card rounded-xl border border-dashed border-primary/40">
+ <div className="col-span-full py-12 text-center bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Mail className="w-12 h-12 text-gray-300 mx-auto mb-3" />
- <p className="text-muted-foreground">No newsletter data available.</p>
+ <p className="text-[#71717a] dark:text-gray-400">No newsletter data available.</p>
  </div>
  )}
  </div>

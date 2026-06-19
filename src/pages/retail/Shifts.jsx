@@ -82,8 +82,8 @@ export default function Shifts() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">Staff Shifts</h1>
- <p className="text-sm text-muted-foreground mt-0.5">Manage schedules and rosters for your retail staff.</p>
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Staff Shifts</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">Manage schedules and rosters for your retail staff.</p>
  </div>
  <Button onClick={() => { setEditingId(null); setFormData({ staffId: '', role: 'Cashier', date: new Date().toISOString().split('T')[0], startTime: '09:00', endTime: '17:00', status: 'Scheduled'}); setShowModal(true);}} className="gap-2 bg-orange-600 hover:bg-orange-700 text-white">
  <Plus className="w-4 h-4" /> Schedule Shift
@@ -91,50 +91,50 @@ export default function Shifts() {
  </div>
 
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
- <div className="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-950/20 flex items-center justify-center text-orange-600"><Clock className="w-5 h-5" /></div>
- <div><p className="text-2xl font-bold text-card-foreground">{shifts.length}</p><p className="text-xs text-muted-foreground">Total Shifts</p></div>
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-md-xl bg-orange-100 dark:bg-orange-950/20 flex items-center justify-center text-orange-600"><Clock className="w-5 h-5" /></div>
+ <div><p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{shifts.length}</p><p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Total Shifts</p></div>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
- <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-primary/20 flex items-center justify-center text-primary"><CalendarCheck className="w-5 h-5" /></div>
- <div><p className="text-2xl font-bold text-card-foreground">{shifts.filter(s => s.status === 'Completed').length}</p><p className="text-xs text-muted-foreground">Completed Shifts</p></div>
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-md-xl bg-slate-100 dark:bg-primary/20 flex items-center justify-center text-primary"><CalendarCheck className="w-5 h-5" /></div>
+ <div><p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{shifts.filter(s => s.status === 'Completed').length}</p><p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Completed Shifts</p></div>
  </div>
  </div>
 
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search staff name or date..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search staff name or date..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  <div className="overflow-x-auto">
  {isLoading ? <div className="py-12 text-center">Loading...</div> : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
  <Clock className="w-12 h-12 mx-auto mb-3 opacity-30" />
  <p className="font-semibold">No shifts scheduled.</p>
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40">
+ <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Staff Name</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Role</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Date</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Time</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Status</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Actions</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Staff Name</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Role</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Date</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Time</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Status</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Actions</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
  {filtered.map(s => (
  <tr key={s.id} className="hover:bg-muted/50 transition-colors">
- <td className="px-6 py-4 font-bold text-card-foreground">{s.staffName}</td>
- <td className="px-6 py-4 text-muted-foreground">{s.role}</td>
+ <td className="px-6 py-4 font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{s.staffName}</td>
+ <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">{s.role}</td>
  <td className="px-6 py-4 font-medium">{s.date}</td>
  <td className="px-6 py-4 text-center">{s.startTime} - {s.endTime}</td>
  <td className="px-6 py-4 text-center">
- <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${s.status === 'Completed' ? 'bg-slate-100 text-primary/90' : s.status === 'Cancelled' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'}`}>{s.status}</span>
+ <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-md-full uppercase tracking-wider ${s.status === 'Completed' ? 'bg-slate-100 text-primary/90' : s.status === 'Cancelled' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'}`}>{s.status}</span>
  </td>
  <td className="px-6 py-4 text-right">
  <Button variant="ghost" size="icon" onClick={() => openEdit(s)}><Edit className="w-4 h-4" /></Button>
@@ -150,32 +150,32 @@ export default function Shifts() {
 
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4">
- <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Shift' : 'Schedule Shift'}</h2>
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editingId ? 'Edit Shift' : 'Schedule Shift'}</h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">Staff Member</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Staff Member</label>
  <select value={formData.staffId} onChange={e => {
  const sId = e.target.value;
  const role = staffList.find(s => s.id === sId)?.role || formData.role;
  setFormData({...formData, staffId: sId, role: role});
-}} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
+}} className="flex h-10 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm mt-1">
  <option value="">Select Staff...</option>
  {staffList.map(s => <option key={s.id} value={s.id}>{s.name} ({s.role})</option>)}
  </select>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">Role</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Role</label>
  <Input value={formData.role} onChange={e => setFormData({...formData, role: e.target.value})} className="mt-1" placeholder="e.g. Cashier" />
  </div>
- <div><label className="text-xs font-bold text-muted-foreground uppercase">Date</label><Input type="date" value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value})} className="mt-1" /></div>
+ <div><label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Date</label><Input type="date" value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value})} className="mt-1" /></div>
  <div className="grid grid-cols-2 gap-4">
- <div><label className="text-xs font-bold text-muted-foreground uppercase">Start Time</label><Input type="time" value={formData.startTime} onChange={e => setFormData({ ...formData, startTime: e.target.value})} className="mt-1" /></div>
- <div><label className="text-xs font-bold text-muted-foreground uppercase">End Time</label><Input type="time" value={formData.endTime} onChange={e => setFormData({ ...formData, endTime: e.target.value})} className="mt-1" /></div>
+ <div><label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Start Time</label><Input type="time" value={formData.startTime} onChange={e => setFormData({ ...formData, startTime: e.target.value})} className="mt-1" /></div>
+ <div><label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">End Time</label><Input type="time" value={formData.endTime} onChange={e => setFormData({ ...formData, endTime: e.target.value})} className="mt-1" /></div>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">Status</label>
- <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Status</label>
+ <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="flex h-10 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm mt-1">
  <option>Scheduled</option><option>In Progress</option><option>Completed</option><option>Cancelled</option>
  </select>
  </div>

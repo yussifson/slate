@@ -63,19 +63,19 @@ export default function Pricing() {
  ];
 
  return (
- <div className="overflow-x-hidden bg-white min-h-screen">
+ <div className="overflow-x-hidden bg-white min-h-screen hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Helmet>
  <title>Pricing | Slate</title>
  <meta name="description" content="Transparent pricing for Slate. All features included on every plan. Technology for everyone." />
  </Helmet>
 
  {/* ── HERO ── */}
- <section className="pt-8 pb-10 md:pt-16 md:pb-14 bg-white border-b border-primary/40">
+ <section className="pt-8 pb-10 md:pt-16 md:pb-14 bg-white border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
- <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-50 border border-primary/40 text-xs font-semibold text-slate-600 mb-6 uppercase tracking-widest ">
+ <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-md-full bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-xs font-semibold text-slate-600 mb-6 uppercase tracking-widest  tracking-[0.04em]">
  {t('technology_for_everyone', 'Technology For Everyone')}
  </div>
- <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 mb-6 leading-tight">
+ <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-slate-900 mb-6 leading-tight tracking-[-0.02em]">
  {t('one_platform_all_features_fa', 'One platform. All features.')}
  <span className="block text-primary/80">{t('fairly_priced', 'Fairly priced.')}</span>
  </h1>
@@ -84,20 +84,20 @@ export default function Pricing() {
  </p>
 
  {/* Billing Toggle */}
- <div className="flex items-center justify-center gap-4 text-sm md:text-base font-bold text-slate-700 bg-slate-50 inline-flex mx-auto p-1.5 rounded-full border border-primary/40 ">
+ <div className="flex items-center justify-center gap-4 text-sm md:text-base font-semibold text-slate-700 bg-slate-50 inline-flex mx-auto p-1.5 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 ">
  <button
  onClick={() => setBillingCycle('monthly')}
- className={`px-5 py-2.5 rounded-full transition-colors ${billingCycle === 'monthly' ? 'bg-white text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
+ className={`px-5 py-2.5 rounded-md-full transition-colors ${billingCycle === 'monthly' ? 'bg-white text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
  >
  {t('monthly', 'Monthly')}
  </button>
  <button
  onClick={() => setBillingCycle('annual')}
- className={`px-5 py-2.5 rounded-full flex items-center gap-2 transition-colors ${billingCycle === 'annual' ? 'bg-primary text-white ' : 'text-slate-500 hover:text-slate-700'}`}
+ className={`px-5 py-2.5 rounded-md-full flex items-center gap-2 transition-colors ${billingCycle === 'annual' ? 'bg-primary text-white ' : 'text-slate-500 hover:text-slate-700'}`}
  >
  {t('annually', 'Annually')}
  {billingCycle !== 'annual' && (
- <span className="text-[10px] font-black bg-primary/10 text-primary px-2 py-0.5 rounded-full uppercase tracking-widest">
+ <span className="text-[10px] font-black bg-primary/10 text-primary px-2 py-0.5 rounded-md-full uppercase tracking-widest tracking-[0.04em]">
  {t('save_20', 'SAVE 20%')}
  </span>
  )}
@@ -118,26 +118,26 @@ export default function Pricing() {
  <div
  key={planKey}
  id={`plan-card-${planKey}`}
- className={`relative flex flex-col bg-white rounded-3xl border transition-all duration-300 p-8 ${
+ className={`relative flex flex-col bg-white rounded-md-3xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 p-8 ${
  meta.highlight
  ? 'border-primary -primary/5 md:-translate-y-2'
  : 'border-primary/40 hover:border-primary/40'
 }`}
  >
  {meta.popular && (
- <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest whitespace-nowrap">
+ <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black px-4 py-1.5 rounded-md-full uppercase tracking-widest whitespace-nowrap tracking-[0.04em]">
  {t('most_popular', 'Most popular')}
  </div>
  )}
 
  <div className="mb-6 pb-6 border-b border-primary/40">
- <h3 className="font-bold text-2xl text-slate-900 mb-2 tracking-tight">{meta.name}</h3>
+ <h3 className="font-semibold text-2xl text-slate-900 mb-2 tracking-tight tracking-[-0.02em]">{meta.name}</h3>
  <p className="text-sm text-slate-500 font-medium">{meta.tagline}</p>
  </div>
 
  <div className="mb-8">
- <div className="flex items-end gap-1 mb-1">
- <span className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tighter">
+ <div className="flex items-end gap-2 mb-1">
+ <span className="text-4xl md:text-5xl font-semibold text-slate-900 tracking-tighter tracking-[-0.02em]">
  {isEnterprise ? 'Custom' : (price === 0 ? 'Free' : '$' + formatPriceNumber(price))}
  </span>
  {!isEnterprise && price > 0 && (
@@ -145,14 +145,14 @@ export default function Pricing() {
  )}
  </div>
  {!isEnterprise && price > 0 && billingCycle === 'annual' && (
- <p className="text-xs text-primary font-semibold">Billed annually</p>
+ <p className="text-xs text-primary font-semibold tracking-[0.04em]">Billed annually</p>
  )}
  {isEnterprise && (
- <p className="text-xs text-slate-400 font-medium">Tailored quote</p>
+ <p className="text-xs text-slate-400 font-medium tracking-[0.04em]">Tailored quote</p>
  )}
  </div>
 
- <div className="bg-slate-50/80 rounded-2xl p-5 border border-primary/40 mb-8 space-y-3">
+ <div className="bg-slate-50/80 rounded-md-2xl p-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-8 space-y-3">
  <div className="flex justify-between items-center text-sm font-semibold">
  <span className="text-slate-500">{t('internal_users', 'Users')}</span>
  <span className="text-slate-900 text-right">{meta.quota}</span>
@@ -170,7 +170,7 @@ export default function Pricing() {
  <ul className="space-y-3 flex-1 mb-8">
  {UNIVERSAL_FEATURES.map((feature, idx) => (
  <li key={idx} className="flex items-start gap-3 text-sm text-slate-700 font-medium leading-snug">
- <div className="mt-0.5 shrink-0 rounded-full bg-primary/10 flex items-center justify-center p-1">
+ <div className="mt-0.5 shrink-0 rounded-md-full bg-primary/10 flex items-center justify-center p-1">
  <Check className="w-3 h-3 text-primary" strokeWidth={3} />
  </div>
  <span>{feature}</span>
@@ -184,7 +184,7 @@ export default function Pricing() {
  <Button
  id={`cta-${planKey}`}
  variant="outline"
- className="w-full py-6 text-sm font-bold rounded-2xl border-2 border-orange-500 text-orange-500 hover:bg-orange-50 hover:text-orange-600 transition-all"
+ className="w-full py-6 text-sm font-semibold rounded-md-2xl border-2 border-orange-500 text-orange-500 hover:bg-orange-50 hover:text-orange-600 transition-all"
  >
  {meta.cta} <ArrowRight className="w-4 h-4 ml-1.5" />
  </Button>
@@ -193,7 +193,7 @@ export default function Pricing() {
  <Link to={`/signup?plan=${planKey}&billing=${billingCycle}`} className="w-full block">
  <Button
  id={`cta-${planKey}`}
- className={`w-full py-6 text-sm font-bold rounded-2xl transition-all ${
+ className={`w-full py-6 text-sm font-semibold rounded-md-2xl transition-all ${
  meta.highlight
  ? 'bg-primary hover:bg-primary/90 text-white -primary/20'
  : 'bg-white border-2 border-orange-500 text-orange-500 hover:bg-orange-50'
@@ -210,11 +210,11 @@ export default function Pricing() {
  </div>
 
  {/* Paystack badge */}
- <div className="mt-12 flex flex-wrap items-center justify-center gap-4 text-xs text-slate-500">
- <div className="flex items-center gap-2 bg-white border border-primary/40 rounded-full px-4 py-2 font-medium ">
+ <div className="mt-12 flex flex-wrap items-center justify-center gap-4 text-xs text-slate-500 tracking-[0.04em]">
+ <div className="flex items-center gap-2 bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-full px-4 py-2 font-medium  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Shield className="w-4 h-4 text-primary" /> Secured by Paystack
  </div>
- <div className="flex items-center gap-2 bg-white border border-primary/40 rounded-full px-4 py-2 font-medium ">
+ <div className="flex items-center gap-2 bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-full px-4 py-2 font-medium  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Zap className="w-4 h-4 text-amber-500" /> Cards, Bank Transfer, Mobile Money
  </div>
  </div>
@@ -222,31 +222,31 @@ export default function Pricing() {
  </section>
 
  {/* ── COMPARISON TABLE ── */}
- <section className="py-16 md:py-24 bg-white border-t border-primary/40 overflow-hidden">
+ <section className="py-16 md:py-24 bg-white border-t border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
  <div className="text-center mb-12">
- <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">{t('compare_plans', 'Compare Plans')}</h2>
+ <h2 className="text-3xl md:text-4xl font-semibold text-slate-900 tracking-tight tracking-[-0.02em]">{t('compare_plans', 'Compare Plans')}</h2>
  <p className="mt-4 text-slate-500 font-medium max-w-2xl mx-auto">
  Everything you need to scale your organization, no matter your size.
  </p>
  </div>
 
  <div className="overflow-x-auto pb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
- <div className="min-w-[800px] border border-primary/40 rounded-3xl overflow-hidden bg-white ">
+ <div className="min-w-[800px] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-3xl overflow-hidden bg-white  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-left border-collapse">
  <thead>
  <tr className="bg-slate-50 border-b border-primary/40">
- <th className="py-5 px-6 font-bold text-slate-900 text-sm w-1/3">Features</th>
- <th className="py-5 px-6 font-bold text-slate-900 text-center text-sm w-1/6">Starter</th>
- <th className="py-5 px-6 font-bold text-slate-900 text-center text-sm w-1/6">Professional</th>
- <th className="py-5 px-6 font-bold text-slate-900 text-center text-sm w-1/6">Business</th>
- <th className="py-5 px-6 font-bold text-slate-900 text-center text-sm w-1/6">Enterprise</th>
+ <th className="py-5 px-6 font-semibold text-slate-900 text-sm w-1/3">Features</th>
+ <th className="py-5 px-6 font-semibold text-slate-900 text-center text-sm w-1/6">Starter</th>
+ <th className="py-5 px-6 font-semibold text-slate-900 text-center text-sm w-1/6">Professional</th>
+ <th className="py-5 px-6 font-semibold text-slate-900 text-center text-sm w-1/6">Business</th>
+ <th className="py-5 px-6 font-semibold text-slate-900 text-center text-sm w-1/6">Enterprise</th>
  </tr>
  </thead>
  <tbody className="text-sm">
  {/* Core Features */}
  <tr className="bg-slate-50/50">
- <td colSpan="5" className="py-3 px-6 font-bold text-xs text-slate-500 uppercase tracking-widest bg-slate-100/50 border-y border-primary/40">Core Capabilities</td>
+ <td colSpan="5" className="py-3 px-6 font-semibold text-xs text-slate-500 uppercase tracking-widest bg-slate-100/50 border-y border-primary/40 tracking-[0.04em]">Core Capabilities</td>
  </tr>
  <tr className="border-b border-primary/40 hover:bg-slate-50/50 transition-colors">
  <td className="py-4 px-6 font-medium text-slate-700">All 14 Work Slate Modules</td>
@@ -272,7 +272,7 @@ export default function Pricing() {
  
  {/* Infrastructure & Support */}
  <tr>
- <td colSpan="5" className="py-3 px-6 font-bold text-xs text-slate-500 uppercase tracking-widest bg-slate-100/50 border-y border-primary/40">Infrastructure & Support</td>
+ <td colSpan="5" className="py-3 px-6 font-semibold text-xs text-slate-500 uppercase tracking-widest bg-slate-100/50 border-y border-primary/40 tracking-[0.04em]">Infrastructure & Support</td>
  </tr>
  <tr className="border-b border-primary/40 hover:bg-slate-50/50 transition-colors">
  <td className="py-4 px-6 font-medium text-slate-700">Storage Capacity</td>
@@ -298,7 +298,7 @@ export default function Pricing() {
  
  {/* Security & Deployment */}
  <tr>
- <td colSpan="5" className="py-3 px-6 font-bold text-xs text-slate-500 uppercase tracking-widest bg-slate-100/50 border-y border-primary/40">Security & Deployment</td>
+ <td colSpan="5" className="py-3 px-6 font-semibold text-xs text-slate-500 uppercase tracking-widest bg-slate-100/50 border-y border-primary/40 tracking-[0.04em]">Security & Deployment</td>
  </tr>
  <tr className="border-b border-primary/40 hover:bg-slate-50/50 transition-colors">
  <td className="py-4 px-6 font-medium text-slate-700">SSO & Advanced Security</td>
@@ -321,21 +321,21 @@ export default function Pricing() {
  </div>
  </section>
 \n{/* ── OFF-CLOUD ENTERPRISE ── */}
- <section className="py-16 md:py-20 bg-white border-t border-primary/40">
+ <section className="py-16 md:py-20 bg-white border-t border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
- <div className="bg-slate-50 border border-primary/40 rounded-[2rem] p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-10 hover:border-primary/40 transition-colors">
+ <div className="bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[2rem] p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-10 hover:border-primary/40 transition-colors">
  <div className="flex-1">
- <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-primary/40 text-xs font-bold text-slate-600 mb-6 uppercase tracking-wider ">
+ <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md-full bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-xs font-semibold text-slate-600 mb-6 uppercase tracking-wider  tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Server className="w-4 h-4" /> High Security
  </div>
- <h3 className="font-bold text-3xl md:text-4xl text-slate-900 mb-4 tracking-tight">{t('off_cloud_on_premise', 'Off-Cloud Enterprise')}</h3>
+ <h3 className="font-semibold text-3xl md:text-4xl text-slate-900 mb-4 tracking-tight tracking-[-0.02em]">{t('off_cloud_on_premise', 'Off-Cloud Enterprise')}</h3>
  <p className="text-base md:text-lg text-slate-600 leading-relaxed font-medium mb-8 max-w-xl">
  For organizations with strict data sovereignty requirements. Deploy Slate entirely air-gapped on your own private bare-metal servers.
  </p>
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
  {['Self-hosted deployment','Air-gapped network support','Custom database integration','Dedicated solution engineer'].map((f, i) => (
  <div key={i} className="flex items-center gap-3 text-sm text-slate-700 font-medium">
- <div className="shrink-0 rounded-full bg-white border border-primary/40 flex items-center justify-center p-1.5 ">
+ <div className="shrink-0 rounded-md-full bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center p-1.5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Check className="w-3.5 h-3.5 text-primary" strokeWidth={3} />
  </div>
  {f}
@@ -343,12 +343,12 @@ export default function Pricing() {
  ))}
  </div>
  </div>
- <div className="w-full md:w-80 shrink-0 flex flex-col items-center bg-white rounded-3xl p-8 border border-primary/40 ">
- <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Tailored Quote</span>
- <span className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tighter">Custom<span className="text-xl text-slate-500 font-medium tracking-normal"> Pricing</span></span>
+ <div className="w-full md:w-80 shrink-0 flex flex-col items-center bg-white rounded-md-3xl p-8 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <span className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3 tracking-[0.04em]">Tailored Quote</span>
+ <span className="text-4xl md:text-5xl font-semibold text-slate-900 mb-6 tracking-tighter tracking-[-0.02em]">Custom<span className="text-xl text-slate-500 font-medium tracking-normal"> Pricing</span></span>
  <Button
  onClick={() => setShowOffCloudDialog(true)}
- className="w-full py-6 rounded-2xl font-bold text-sm bg-primary text-white hover:bg-primary/90 transition-all "
+ className="w-full py-6 rounded-md-2xl font-semibold text-sm bg-primary text-white hover:bg-primary/90 transition-all "
  >
  {t('build_custom_quote', 'Build Custom Quote')}
  </Button>
@@ -359,17 +359,17 @@ export default function Pricing() {
 
  {/* ── OFF-CLOUD DIALOG ── */}
  <Dialog open={showOffCloudDialog} onOpenChange={setShowOffCloudDialog}>
- <DialogContent className="sm:max-w-[680px] p-0 overflow-hidden bg-white border border-primary/40 rounded-3xl flex flex-col max-h-[85vh]">
+ <DialogContent className="sm:max-w-[680px] p-0 overflow-hidden bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-3xl flex flex-col max-h-[85vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="bg-slate-50 border-b border-primary/40 px-8 py-8 shrink-0 text-center">
- <DialogTitle className="text-2xl font-bold text-slate-900 mb-3 tracking-tight">{t('off_cloud_enterprise', 'Off-Cloud Enterprise')}</DialogTitle>
+ <DialogTitle className="text-2xl font-semibold text-slate-900 mb-3 tracking-tight tracking-[-0.02em]">{t('off_cloud_enterprise', 'Off-Cloud Enterprise')}</DialogTitle>
  <DialogDescription className="text-slate-600 text-sm max-w-md mx-auto leading-relaxed font-medium">
  Deploy Slate securely on your own private infrastructure with custom enterprise pricing.
  </DialogDescription>
  </div>
- <div className="px-8 py-8 overflow-y-auto bg-white flex-1">
+ <div className="px-8 py-8 overflow-y-auto bg-white flex-1 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="space-y-8">
  <div>
- <h4 className="font-bold text-slate-900 mb-5 uppercase tracking-widest text-xs border-b border-primary/40 pb-3">Deployment Details</h4>
+ <h4 className="font-semibold text-slate-900 mb-5 uppercase tracking-widest text-xs border-b border-primary/40 pb-3 tracking-[0.04em]">Deployment Details</h4>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  {[{icon: Server, title:'Self-Hosted / On-Premise', body:'Deploy to internal bare-metal servers or private AWS/Azure VPCs.'},
  {icon: Shield, title:'Air-Gapped Operation', body:'Full offline operation without external API dependencies.'},
@@ -377,12 +377,12 @@ export default function Pricing() {
  {icon: Headphones, title:'Dedicated Engineer', body:'A dedicated engineer for deployment, white-labelling, and maintenance.'},
  ].map(({icon: Icon, title, body}) => (
  <div key={title} className="flex gap-4">
- <div className="w-10 h-10 rounded-2xl bg-slate-50 border border-primary/40 flex items-center justify-center shrink-0 ">
+ <div className="w-10 h-10 rounded-md-2xl bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center shrink-0 ">
  <Icon className="w-4.5 h-4.5 text-slate-700" />
  </div>
  <div>
- <p className="text-sm font-bold text-slate-900 mb-1">{title}</p>
- <p className="text-xs text-slate-500 font-medium leading-relaxed">{body}</p>
+ <p className="text-sm font-semibold text-slate-900 mb-1">{title}</p>
+ <p className="text-xs text-slate-500 font-medium leading-relaxed tracking-[0.04em]">{body}</p>
  </div>
  </div>
  ))}
@@ -391,11 +391,11 @@ export default function Pricing() {
  </div>
  </div>
  <DialogFooter className="p-6 bg-slate-50 border-t border-primary/40 sm:justify-between items-center flex-col sm:flex-row gap-4 shrink-0">
- <Button variant="ghost" onClick={() => setShowOffCloudDialog(false)} className="w-full sm:w-auto font-bold text-slate-600 hover:bg-slate-200">
+ <Button variant="ghost" onClick={() => setShowOffCloudDialog(false)} className="w-full sm:w-auto font-semibold text-slate-600 hover:bg-slate-200">
  {t('close', 'Close')}
  </Button>
  <Link to="/enterprise-contact" onClick={() => setShowOffCloudDialog(false)} className="w-full sm:w-auto block">
- <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-bold py-6 px-8 rounded-2xl flex items-center gap-2">
+ <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-semibold py-6 px-8 rounded-md-2xl flex items-center gap-2">
  {t('contact_sales', 'Contact Sales')} <ArrowRight className="w-4 h-4" />
  </Button>
  </Link>
@@ -407,18 +407,18 @@ export default function Pricing() {
  <section className="bg-slate-50 py-16 md:py-24 border-t border-primary/40">
  <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
  <div className="text-center mb-12">
- <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">{t('frequently_asked_questions', 'Frequently Asked Questions')}</h2>
+ <h2 className="text-3xl md:text-4xl font-semibold text-slate-900 tracking-tight tracking-[-0.02em]">{t('frequently_asked_questions', 'Frequently Asked Questions')}</h2>
  </div>
  <div className="space-y-4">
  {faqs.map((faq, i) => (
- <div key={i} className="bg-white rounded-2xl border border-primary/40 overflow-hidden transition-all">
+ <div key={i} className="bg-white rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <button
  id={`faq-${i}`}
  onClick={() => setOpenFaq(openFaq === i ? null : i)}
  className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left hover:bg-slate-50 transition-colors"
  >
- <span className="text-sm md:text-base font-bold text-slate-900">{faq.q}</span>
- <span className={`text-slate-400 font-bold text-xl transition-transform shrink-0 ${openFaq === i ? 'rotate-45 text-slate-900' : ''}`}>+</span>
+ <span className="text-sm md:text-base font-semibold text-slate-900">{faq.q}</span>
+ <span className={`text-slate-400 font-semibold text-xl transition-transform shrink-0 ${openFaq === i ? 'rotate-45 text-slate-900' : ''}`}>+</span>
  </button>
  {openFaq === i && (
  <div className="px-6 pb-6 pt-2">

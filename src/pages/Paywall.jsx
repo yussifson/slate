@@ -173,15 +173,15 @@ export default function Paywall() {
  {/* Top Bar */}
  <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
  <div className="flex items-center gap-2">
- <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center text-white">
+ <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center text-white">
  <Scale className="w-4.5 h-4.5" />
  </div>
- <span className="font-bold text-lg text-slate-900 dark:text-slate-100 tracking-tight">{t("slate", "Slate")}</span>
+ <span className="font-semibold text-lg text-slate-900 dark:text-slate-100 tracking-tight">{t("slate", "Slate")}</span>
  </div>
  <Button 
  variant="ghost" 
  onClick={() => logout(true)}
- className="text-slate-600 hover:text-slate-900 dark:text-slate-100 gap-1.5"
+ className="text-slate-600 hover:text-slate-900 dark:text-slate-100 gap-2.5"
  >
  <LogOut className="w-4 h-4" />
  {t("sign_out", "Sign Out")}
@@ -189,12 +189,12 @@ export default function Paywall() {
  </div>
  {/* Main Panel */}
  <div className="max-w-6xl mx-auto w-full text-center my-12">
- <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-100 text-amber-800 text-xs font-bold uppercase tracking-wider mb-6 animate-pulse">
+ <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-md-full bg-amber-50 border-[0.5px] border-black/9 dark:border-white/8 border-amber-100 text-amber-800 text-xs font-semibold uppercase tracking-wider mb-6 animate-pulse tracking-[0.04em]">
  <Sparkles className="w-3.5 h-3.5" />
  {t("subscription_required", "Subscription Required")}
  </div>
 
- <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight leading-none mb-4">
+ <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight leading-none mb-4 tracking-[-0.02em]">
  {t("activate_your_firm_s_workspace", "Activate your firm's workslate")}
  </h1>
  <p className="text-slate-600 text-base md:text-lg max-w-xl mx-auto leading-relaxed mb-12">
@@ -211,22 +211,22 @@ export default function Paywall() {
  return (
  <div 
  key={idx}
- className={`bg-white dark:bg-slate-900/40 border rounded-2xl p-8 flex flex-col justify-between transition-all duration-300 relative ${
+ className={`bg-white dark:bg-slate-900/40 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl p-8 flex flex-col justify-between transition-all duration-300 relative ${
  p.popular ? 'border-primary ' : 'border-primary/40'
 }`}
  >
  {p.popular && (
- <div className="absolute top-0 right-1/2 translate-x-1/2 -translate-y-1/2 bg-primary text-white text-[9px] font-bold tracking-wider uppercase py-1 px-3 rounded-full">
+ <div className="absolute top-0 right-1/2 translate-x-1/2 -translate-y-1/2 bg-primary text-white text-[9px] font-semibold tracking-wider uppercase py-1 px-3 rounded-md-full tracking-[0.04em]">
  {t("recommended", "Recommended")}
  </div>
  )}
  <div>
- <h3 className="font-bold text-lg text-slate-900 dark:text-slate-100 mb-1">{p.displayName}</h3>
- <p className="text-xs text-slate-500 dark:text-slate-400 min-h-[32px] leading-relaxed mb-4">{p.description}</p>
+ <h3 className="font-semibold text-lg text-slate-900 dark:text-slate-100 mb-1">{p.displayName}</h3>
+ <p className="text-xs text-slate-500 dark:text-slate-400 min-h-[32px] leading-relaxed mb-4 tracking-[0.04em]">{p.description}</p>
  
  <div className="mb-6">
- <span className="text-3xl font-black text-slate-900 dark:text-slate-100">${p.price}</span>
- <span className="text-slate-400 text-xs font-medium"> {t("month", "/ month")}</span>
+ <span className="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-[-0.02em]">${p.price}</span>
+ <span className="text-slate-400 text-xs font-medium tracking-[0.04em]"> {t("month", "/ month")}</span>
  </div>
 
  <hr className="border-primary/40 dark:border-primary/40 mb-6" />
@@ -234,7 +234,7 @@ export default function Paywall() {
  <ul className="space-y-3 mb-8">
  {p.features.map((feat, fIdx) => {
  return (
- <li key={fIdx} className="flex items-center gap-2.5 text-xs text-slate-600">
+ <li key={fIdx} className="flex items-center gap-2.5 text-xs text-slate-600 tracking-[0.04em]">
  <Check className="w-3.5 h-3.5 text-primary shrink-0" />
  <span>{feat}</span>
  </li>
@@ -246,7 +246,7 @@ export default function Paywall() {
  <Button 
  onClick={() => handleSubscribe(p)}
  disabled={loadingPlan !== null}
- className={`w-full py-5 rounded-xl font-bold text-sm ${
+ className={`w-full py-5 rounded-md-xl font-semibold text-sm ${
  p.popular 
  ? 'bg-primary hover:bg-primary/95 text-white' 
  : 'bg-slate-950 hover:bg-slate-900 text-white'
@@ -268,14 +268,14 @@ export default function Paywall() {
  </div>
 
  {/* Off-Cloud / Enterprise Horizontal Banner */}
- <div className="bg-white dark:bg-slate-900/40 border border-primary/40 rounded-2xl p-8 text-left flex flex-col md:flex-row items-center justify-between transition-all duration-300 gap-8">
+ <div className="bg-white dark:bg-slate-900/40 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-8 text-left flex flex-col md:flex-row items-center justify-between transition-all duration-300 gap-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex-1">
- <h3 className="font-bold text-xl text-slate-900 dark:text-slate-100 mb-2">{plans[3].displayName}</h3>
+ <h3 className="font-semibold text-xl text-slate-900 dark:text-slate-100 mb-2">{plans[3].displayName}</h3>
  <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-6">{plans[3].description}</p>
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
  {plans[3].features.map((feat, fIdx) => {
  return (
- <div key={fIdx} className="flex items-center gap-2.5 text-xs text-slate-600">
+ <div key={fIdx} className="flex items-center gap-2.5 text-xs text-slate-600 tracking-[0.04em]">
  <Check className="w-4 h-4 text-primary shrink-0" />
  <span className="font-medium">{feat}</span>
  </div>
@@ -284,11 +284,11 @@ export default function Paywall() {
  </div>
  </div>
  <div className="w-full md:w-64 shrink-0 flex flex-col items-center justify-center border-t md:border-t-0 md:border-l border-primary/40 dark:border-primary/40 pt-6 md:pt-0 md:pl-8">
- <span className="text-2xl font-black text-slate-900 dark:text-slate-100 mb-4">{t("custom", "Custom")}</span>
+ <span className="text-2xl font-black text-slate-900 dark:text-slate-100 mb-4 tracking-[-0.02em]">{t("custom", "Custom")}</span>
  <Button 
  onClick={handleCustomPlanClick}
  variant="outline"
- className="w-full py-6 rounded-xl font-bold text-sm border-primary/40 text-slate-900 dark:text-slate-100 hover:bg-slate-50"
+ className="w-full py-6 rounded-md-xl font-semibold text-sm border-primary/40 text-slate-900 dark:text-slate-100 hover:bg-slate-50"
  >
  {t("learn_more", "Learn More")}
  </Button>
@@ -297,15 +297,15 @@ export default function Paywall() {
 
  {/* Off-Cloud Dialog Modal */}
  <Dialog open={showOffCloudDialog} onOpenChange={setShowOffCloudDialog}>
- <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden bg-white dark:bg-slate-900/40 border-0 rounded-[2rem] flex flex-col max-h-[85vh]">
+ <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden bg-white dark:bg-slate-900/40 border-0 rounded-md-[2rem] flex flex-col max-h-[85vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Header */}
  <div className="bg-slate-50 dark:bg-slate-800/50 px-8 py-5 border-b border-primary/40 dark:border-primary/40 relative shrink-0">
- <div className="mx-auto w-12 h-12 bg-slate-50 dark:bg-slate-800/50 rounded-xl flex items-center justify-center mb-3 border border-primary/40 ">
+ <div className="mx-auto w-12 h-12 bg-slate-50 dark:bg-slate-800/50 rounded-md-xl flex items-center justify-center mb-3 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 ">
  <Server className="w-6 h-6 text-primary" />
  </div>
  <div className="text-center">
- <DialogTitle className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 mb-1 tracking-tight">{t("off_cloud_enterprise", "Off-Cloud Enterprise")}</DialogTitle>
- <DialogDescription className="text-slate-500 dark:text-slate-400 text-xs max-w-sm mx-auto leading-relaxed font-medium">
+ <DialogTitle className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 mb-1 tracking-tight tracking-[-0.02em]">{t("off_cloud_enterprise", "Off-Cloud Enterprise")}</DialogTitle>
+ <DialogDescription className="text-slate-500 dark:text-slate-400 text-xs max-w-sm mx-auto leading-relaxed font-medium tracking-[0.04em]">
  {t(
  "deploy_slate_securely_on_y",
  "Deploy Slate securely on your own private infrastructure."
@@ -315,30 +315,30 @@ export default function Paywall() {
  </div>
  
  {/* Scrollable Content */}
- <div className="px-8 py-8 overflow-y-auto bg-white dark:bg-slate-900/40 flex-1 custom-scrollbar">
+ <div className="px-8 py-8 overflow-y-auto bg-white dark:bg-slate-900/40 flex-1 custom-scrollbar hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="space-y-8">
  <div>
- <h4 className="font-bold text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wider text-xs border-b border-primary/40 dark:border-primary/40 pb-2">{t("deployment_architecture", "Deployment & Architecture")}</h4>
+ <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wider text-xs border-b border-primary/40 dark:border-primary/40 pb-2 tracking-[0.04em]">{t("deployment_architecture", "Deployment & Architecture")}</h4>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  <div className="flex gap-4">
- <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-primary/40 dark:border-primary/40 flex items-center justify-center shrink-0 ">
+ <div className="w-10 h-10 rounded-md-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center shrink-0 ">
  <Server className="w-5 h-5 text-slate-700 dark:text-slate-300" />
  </div>
  <div>
- <p className="text-sm font-bold text-slate-900 dark:text-slate-100">{t("self_hosted_on_premise", "Self-Hosted / On-Premise")}</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{t(
+ <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{t("self_hosted_on_premise", "Self-Hosted / On-Premise")}</p>
+ <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed tracking-[0.04em]">{t(
  "deploy_the_platform_directly_t",
  "Deploy the platform directly to your internal bare-metal servers or private AWS, Azure, and Google Cloud networks."
  )}</p>
  </div>
  </div>
  <div className="flex gap-4">
- <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-primary/40 dark:border-primary/40 flex items-center justify-center shrink-0 ">
+ <div className="w-10 h-10 rounded-md-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center shrink-0 ">
  <Shield className="w-5 h-5 text-slate-700 dark:text-slate-300" />
  </div>
  <div>
- <p className="text-sm font-bold text-slate-900 dark:text-slate-100">{t("air_gapped_operation", "Air-Gapped Operation")}</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{t(
+ <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{t("air_gapped_operation", "Air-Gapped Operation")}</p>
+ <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed tracking-[0.04em]">{t(
  "slate_can_operate_fully_of",
  "Slate can operate fully offline without external API dependencies, ensuring total data isolation for sensitive sectors."
  )}</p>
@@ -348,27 +348,27 @@ export default function Paywall() {
  </div>
 
  <div>
- <h4 className="font-bold text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wider text-xs border-b border-primary/40 dark:border-primary/40 pb-2">{t("security_integration", "Security & Integration")}</h4>
+ <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wider text-xs border-b border-primary/40 dark:border-primary/40 pb-2 tracking-[0.04em]">{t("security_integration", "Security & Integration")}</h4>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  <div className="flex gap-4">
- <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-primary/40 dark:border-primary/40 flex items-center justify-center shrink-0 ">
+ <div className="w-10 h-10 rounded-md-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center shrink-0 ">
  <Database className="w-5 h-5 text-slate-700 dark:text-slate-300" />
  </div>
  <div>
- <p className="text-sm font-bold text-slate-900 dark:text-slate-100">{t("custom_db_integration", "Custom DB Integration")}</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{t(
+ <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{t("custom_db_integration", "Custom DB Integration")}</p>
+ <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed tracking-[0.04em]">{t(
  "map_slate_to_your_existing",
  "Map Slate to your existing legacy databases. We support PostgreSQL, SQL Server, and custom on-prem storage pipelines."
  )}</p>
  </div>
  </div>
  <div className="flex gap-4">
- <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-primary/40 dark:border-primary/40 flex items-center justify-center shrink-0 ">
+ <div className="w-10 h-10 rounded-md-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center shrink-0 ">
  <Check className="w-5 h-5 text-slate-700 dark:text-slate-300" />
  </div>
  <div>
- <p className="text-sm font-bold text-slate-900 dark:text-slate-100">{t("sla_compliance", "SLA & Compliance")}</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{t(
+ <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{t("sla_compliance", "SLA & Compliance")}</p>
+ <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed tracking-[0.04em]">{t(
  "guaranteed_99_99_uptime_sla_bu",
  "Guaranteed 99.99% uptime SLA. Built to comply with GDPR, HIPAA, SOC2, and government data sovereignty laws."
  )}</p>
@@ -378,15 +378,15 @@ export default function Paywall() {
  </div>
 
  <div>
- <h4 className="font-bold text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wider text-xs border-b border-primary/40 dark:border-primary/40 pb-2">{t("premium_support", "Premium Support")}</h4>
+ <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wider text-xs border-b border-primary/40 dark:border-primary/40 pb-2 tracking-[0.04em]">{t("premium_support", "Premium Support")}</h4>
  <div className="grid grid-cols-1 gap-6">
  <div className="flex gap-4">
- <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-primary/40 dark:border-primary/40 flex items-center justify-center shrink-0 ">
+ <div className="w-10 h-10 rounded-md-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 flex items-center justify-center shrink-0 ">
  <Headphones className="w-5 h-5 text-slate-700 dark:text-slate-300" />
  </div>
  <div>
- <p className="text-sm font-bold text-slate-900 dark:text-slate-100">{t("dedicated_solution_engineer", "Dedicated Solution Engineer")}</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{t(
+ <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{t("dedicated_solution_engineer", "Dedicated Solution Engineer")}</p>
+ <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed tracking-[0.04em]">{t(
  "your_firm_will_be_assigned_a_d",
  "Your firm will be assigned a dedicated engineer to handle deployment, white-labeling, maintenance, and custom feature development. Direct phone line and prioritized ticketing included."
  )}</p>
@@ -399,11 +399,11 @@ export default function Paywall() {
 
  {/* Footer CTA */}
  <DialogFooter className="p-6 bg-slate-50 dark:bg-slate-800/50 border-t border-primary/40 dark:border-primary/40 sm:justify-between items-center flex-col sm:flex-row gap-4 shrink-0">
- <Button type="button" variant="ghost" onClick={() => setShowOffCloudDialog(false)} className="w-full sm:w-auto font-bold text-slate-600 hover:text-slate-900 dark:text-slate-100">
+ <Button type="button" variant="ghost" onClick={() => setShowOffCloudDialog(false)} className="w-full sm:w-auto font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-100">
  {t("close", "Close")}
  </Button>
  <a href={`${getMainAppUrl()}/enterprise-contact`} className="w-full sm:w-auto block">
- <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-bold py-6 px-8 rounded-full -emerald-600/20 transition-all hover:scale-105">
+ <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-semibold py-6 px-8 rounded-md-full -emerald-600/20 transition-all hover:scale-105">
  {t("build_custom_quote", "Build Custom Quote")}
  </Button>
  </a>
@@ -412,7 +412,7 @@ export default function Paywall() {
  </Dialog>
  </div>
  {/* Bottom Bar */}
- <div className="max-w-7xl mx-auto w-full text-center text-xs text-slate-400">© {new Date().getFullYear()} {t(
+ <div className="max-w-7xl mx-auto w-full text-center text-xs text-slate-400 tracking-[0.04em]">© {new Date().getFullYear()} {t(
  "slate_transactions_are_ful",
  "Slate. Transactions are fully secured and processed locally via Paystack."
  )}

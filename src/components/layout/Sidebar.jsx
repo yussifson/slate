@@ -486,19 +486,19 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
  const renderNavContent = (collapsed) => (
  <div className="flex flex-col h-full bg-sidebar overflow-x-hidden">
- <div className={cn("py-5 border-b border-sidebar-border flex items-center transition-all", collapsed ? "px-4 justify-center" : "px-5 gap-3")}>
+ <div className={cn("py-5 border-b border-sidebar-border-[0.5px] border-black/9 dark:border-white/8 flex items-center transition-all", collapsed ? "px-4 justify-center" : "px-5 gap-3")}>
  {activeCompanyLogo ? (
  <img src={activeCompanyLogo} alt="Logo" className={cn("object-contain", collapsed ? "w-8 h-8" : "w-9 h-9")} />
  ) : (
- <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center flex-shrink-0 text-lg">
+ <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center flex-shrink-0 text-lg">
  {industryData.icon}
  </div>
  )}
  {!collapsed && (
  <div className="animate-in fade-in zoom-in duration-200">
  <div className="flex flex-col">
- <span className="font-bold text-foreground leading-tight tracking-tight mt-0.5">orbtal</span>
- <span className="text-[9px] font-extrabold text-muted-foreground uppercase tracking-widest leading-none mt-1">
+ <span className="font-semibold text-foreground leading-tight tracking-tight mt-0.5">orbtal</span>
+ <span className="text-[9px] font-extrabold text-[#71717a] dark:text-gray-400 uppercase tracking-widest leading-none mt-1 tracking-[0.04em]">
  {companyData?.name || (activeIndustry === 'orbit_build' ? (orbitBuildData?.industry_name || 'Custom Wixlate') : industryData.name)}
  </span>
  </div>
@@ -509,7 +509,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  {/* Section label */}
  {!collapsed ? (
  <div className="px-4 pt-5 pb-1.5 animate-in fade-in duration-200">
- <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest whitespace-nowrap">{t('platform', 'Platform')}</p>
+ <p className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-widest whitespace-nowrap tracking-[0.04em]">{t('platform', 'Platform')}</p>
  </div>
  ) : (
  <div className="pt-5" />
@@ -517,9 +517,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
  <nav className="flex-1 px-3 pb-3 space-y-1 overflow-y-auto overflow-x-hidden scrollbar-hide">
  {isOrbitMode && !collapsed && dynamicNavItems.length === 0 && orbitBuildNavItems.length === 0 && (
- <div className="mx-1 my-3 p-3 rounded-xl bg-slate-50 border border-primary/40 text-center">
- <div className="text-2xl mb-1">⚡</div>
- <p className="text-xs font-bold text-primary/90 mb-1">Orbit Mode Active</p>
+ <div className="mx-1 my-3 p-3 rounded-md-xl bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-center">
+ <div className="text-2xl mb-1 tracking-[-0.02em]">⚡</div>
+ <p className="text-xs font-semibold text-primary/90 mb-1 tracking-[0.04em]">Orbit Mode Active</p>
  <p className="text-[11px] text-primary leading-snug mb-2">Use the Slate Builder to create your custom pages with AI.</p>
 
  </div>
@@ -535,7 +535,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  <div key={item.path}>
  {showSection && (
  <div className="pt-4 pb-1.5 px-1 first:pt-0">
- <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/60">{t(item.section.toLowerCase().replace(/\s+/g, '_'), item.section)}</p>
+ <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-[#71717a] dark:text-gray-400/60 tracking-[0.04em]">{t(item.section.toLowerCase().replace(/\s+/g, '_'), item.section)}</p>
  </div>
  )}
  <div className="relative group">
@@ -543,20 +543,20 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  to={item.path}
  title={collapsed ? t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label) : undefined}
  className={cn(
- "flex items-center rounded-lg text-sm font-medium transition-all duration-150 relative",
+ "flex items-center rounded-xl text-sm font-medium transition-all duration-150 relative",
  collapsed ? "justify-center p-2" : "gap-3 px-3 py-2 pr-8",
  isActive
  ? "bg-primary text-white "
  : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
  )}
  >
- {isActive && !collapsed && <div className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-white rounded-r-full" />}
+ {isActive && !collapsed && <div className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-white rounded-md-r-full hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />}
  <span className="relative flex-shrink-0">
  <IconComp className={cn("transition-all", collapsed ? "w-5 h-5" : "w-4 h-4")} />
  {showLiveDot && (
  <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
- <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
- <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500" />
+ <span className="animate-ping absolute inline-flex h-full w-full rounded-md-full bg-green-400 opacity-75" />
+ <span className="relative inline-flex rounded-md-full h-2.5 w-2.5 bg-green-500/10" />
  </span>
  )}
  </span>
@@ -564,7 +564,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  <div className="flex items-center gap-2 overflow-hidden flex-1 animate-in fade-in duration-200">
  <span className="whitespace-nowrap truncate">{t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label)}</span>
  {item.status === 'draft' && (
- <span className="text-[9px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-500 px-1.5 py-0.5 rounded-sm">Draft</span>
+ <span className="text-[9px] font-semibold uppercase tracking-wider bg-amber-500/20 text-amber-500 px-1.5 py-0.5 rounded-md-sm tracking-[0.04em]">Draft</span>
  )}
  </div>
  )}
@@ -574,28 +574,28 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  <div className={cn("absolute right-2 top-1/2 -translate-y-1/2 transition-opacity", openMenuId === item.id ? "opacity-100 z-50" : "opacity-0 group-hover:opacity-100 z-10")}>
  <button 
  onClick={(e) => { e.preventDefault(); setOpenMenuId(openMenuId === item.id ? null : item.id);}}
- className="p-1 rounded hover:bg-sidebar-accent text-sidebar-foreground/50 hover:text-sidebar-foreground"
+ className="p-1 rounded-md hover:bg-sidebar-accent text-sidebar-foreground/50 hover:text-sidebar-foreground"
  >
  <MoreHorizontal className="w-4 h-4" />
  </button>
  
  {openMenuId === item.id && (
- <div className="absolute right-0 mt-1 w-36 bg-sidebar border border-sidebar-border rounded-md overflow-hidden">
+ <div className="absolute right-0 mt-1 w-36 bg-sidebar border-[0.5px] border-black/9 dark:border-white/8 border-sidebar-border-[0.5px] border-black/9 dark:border-white/8 rounded-lg overflow-hidden">
  <div className="py-1">
  {!item.component_id && (
- <button onClick={(e) => { e.preventDefault(); handleTogglePublish(item.id, item.status); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
+ <button onClick={(e) => { e.preventDefault(); handleTogglePublish(item.id, item.status); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors tracking-[0.04em]">
  <Eye className="w-3 h-3" /> {item.status === 'published' ? 'Unpublish' : 'Publish'}
  </button>
  )}
- <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label, !!item.component_id); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
+ <button onClick={(e) => { e.preventDefault(); handleRenameModule(item.id, item.label, !!item.component_id); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors tracking-[0.04em]">
  <Pencil className="w-3 h-3" /> Rename
  </button>
  {!item.component_id && (
  <>
- <button onClick={(e) => { e.preventDefault(); navigate(`/slate/edit/${item.id}`); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors">
+ <button onClick={(e) => { e.preventDefault(); navigate(`/slate/edit/${item.id}`); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-sidebar-foreground hover:bg-sidebar-accent flex items-center gap-2 transition-colors tracking-[0.04em]">
  <Settings className="w-3 h-3" /> Customize
  </button>
- <button onClick={(e) => { e.preventDefault(); handleDeleteModule(item.id, item.label); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-500/10 flex items-center gap-2 transition-colors">
+ <button onClick={(e) => { e.preventDefault(); handleDeleteModule(item.id, item.label); setOpenMenuId(null);}} className="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-500/10/10 flex items-center gap-2 transition-colors tracking-[0.04em]">
  <Trash2 className="w-3 h-3" /> Delete
  </button>
  </>
@@ -615,15 +615,15 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  {activeRoomUrl && (
  <div
  onClick={() => navigate('/board')}
- className="mx-3 mb-3 cursor-pointer rounded-xl bg-green-500/10 border border-green-500/30 p-3 flex items-center gap-2.5 hover:bg-green-500/20 transition-colors"
+ className="mx-3 mb-3 cursor-pointer rounded-md-xl bg-green-500/10/10 border-[0.5px] border-black/9 dark:border-white/8 border-green-500/30 p-3 flex items-center gap-2.5 hover:bg-green-500/10/20 transition-colors"
  >
  <span className="relative flex h-3 w-3 shrink-0">
- <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
- <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500" />
+ <span className="animate-ping absolute inline-flex h-full w-full rounded-md-full bg-green-400 opacity-75" />
+ <span className="relative inline-flex rounded-md-full h-3 w-3 bg-green-500/10" />
  </span>
  {!collapsed && (
  <div className="flex-1 min-w-0">
- <p className="text-xs font-bold text-green-600 dark:text-green-400 leading-tight">Live Call Active</p>
+ <p className="text-xs font-semibold text-green-600 dark:text-green-400 leading-tight tracking-[0.04em]">Live Call Active</p>
  <p className="text-[10px] text-green-600/70 dark:text-green-400/70 truncate">Click to return to call</p>
  </div>
  )}
@@ -631,15 +631,15 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  )}
 
  {/* Modern User Profile & Dropdown Section */}
- <div className="mt-auto p-3 border-t border-sidebar-border bg-sidebar">
+ <div className="mt-auto p-3 border-t border-sidebar-border-[0.5px] border-black/9 dark:border-white/8 bg-sidebar">
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
- <button className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20">
- <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 border border-primary/20 overflow-hidden">
+ <button className="w-full flex items-center gap-3 p-2 rounded-md-xl hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20">
+ <div className="w-9 h-9 rounded-md-full bg-slate-100 flex items-center justify-center flex-shrink-0 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 overflow-hidden">
  {user?.avatar_url ? (
  <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
  ) : (
- <span className="text-xs font-bold text-primary">
+ <span className="text-xs font-semibold text-primary tracking-[0.04em]">
  {(user?.full_name?.[0] || user?.company_name?.[0] || "A").toUpperCase()}
  </span>
  )}
@@ -647,17 +647,17 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  
  {!collapsed && (
  <div className="flex-1 text-left min-w-0 animate-in fade-in duration-200">
- <p className="text-sm font-bold leading-none text-foreground">
+ <p className="text-sm font-semibold leading-none text-foreground">
  {user?.full_name || user?.company_name || (user?.role === "super_admin" ? "Super Admin" : "Admin")}
  </p>
- <p className="text-[11px] text-muted-foreground capitalize truncate mt-0.5">
+ <p className="text-[11px] text-[#71717a] dark:text-gray-400 capitalize truncate mt-0.5">
  {user?.role?.replace("_", " ")}
  </p>
  </div>
  )}
  
  {!collapsed && (
- <MoreHorizontal className="w-4 h-4 text-muted-foreground flex-shrink-0 ml-auto" />
+ <MoreHorizontal className="w-4 h-4 text-[#71717a] dark:text-gray-400 flex-shrink-0 ml-auto" />
  )}
  </button>
  </DropdownMenuTrigger>
@@ -665,7 +665,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  <DropdownMenuLabel className="font-normal">
  <div className="flex flex-col space-y-1">
  <p className="text-sm font-medium leading-none">{user?.full_name || (user?.role === "super_admin" ? "Super Admin" : "Admin")}</p>
- <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+ <p className="text-xs leading-none text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{user?.email}</p>
  </div>
  </DropdownMenuLabel>
  <DropdownMenuSeparator />

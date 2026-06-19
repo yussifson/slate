@@ -168,13 +168,13 @@ export default function AppLayout() {
  return (
  <div className="flex h-[100dvh] bg-slate-50/50 dark:bg-background overflow-hidden relative selection:bg-primary/20 w-full">
  {/* Global Ambient Orbit Background - Unified Optavel Theme */}
- <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-white dark:bg-[#0A0F1C]">
+ <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transition-all duration-1000 bg-white dark:bg-[#0A0F1C] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Clean White Background with subtle Emerald Green accents */}
  <div className="absolute inset-0 bg-gradient-to-br from-[hsl(158,68%,38%)]/[0.03] via-transparent to-[hsl(158,68%,38%)]/[0.06] dark:from-[hsl(158,68%,38%)]/10 dark:via-[#0A0F1C] dark:to-[hsl(158,68%,38%)]/20" />
  
  {/* Soft Radial Glows - Emerald Green */}
- <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[hsl(158,68%,38%)]/5 blur-[150px] mix-blend-multiply dark:mix-blend-screen" />
- <div className="absolute bottom-[-15%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[hsl(158,68%,38%)]/5 blur-[160px] mix-blend-multiply dark:mix-blend-screen" />
+ <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-md-full bg-[hsl(158,68%,38%)]/5 blur-[150px] mix-blend-multiply dark:mix-blend-screen" />
+ <div className="absolute bottom-[-15%] right-[-10%] w-[60%] h-[60%] rounded-md-full bg-[hsl(158,68%,38%)]/5 blur-[160px] mix-blend-multiply dark:mix-blend-screen" />
  </div>
 
  <div className="z-10 flex">
@@ -183,14 +183,14 @@ export default function AppLayout() {
  <div className="flex-1 flex flex-col overflow-hidden h-screen z-30 relative">
  {/* Offline Banner */}
  {isOffline && !hideOfflineBanner && (
- <div className="bg-red-600 text-white px-4 py-2 flex items-center justify-between gap-3 text-xs md:text-sm shrink-0 font-sans z-50">
+ <div className="bg-red-600 text-white px-4 py-2 flex items-center justify-between gap-3 text-xs md:text-sm shrink-0 font-sans z-50 tracking-[0.04em]">
  <div className="flex items-center gap-2">
  <span className="relative flex h-2 w-2 shrink-0">
- <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
- <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+ <span className="animate-ping absolute inline-flex h-full w-full rounded-md-full bg-white opacity-75 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></span>
+ <span className="relative inline-flex rounded-md-full h-2 w-2 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></span>
  </span>
  <WifiOff className="w-4 h-4 shrink-0" />
- <span className="font-semibold uppercase tracking-wider text-[11px]">{t("offline_mode_active", "Offline Mode Active")}</span>
+ <span className="font-semibold uppercase tracking-wider text-[11px] tracking-[0.04em]">{t("offline_mode_active", "Offline Mode Active")}</span>
  <span className="hidden md:inline font-medium text-red-100">{t(
  "you_are_currently_disconnected",
  "· You are currently disconnected. Changes will sync automatically when you reconnect."
@@ -198,7 +198,7 @@ export default function AppLayout() {
  </div>
  <button 
  onClick={() => setHideOfflineBanner(true)}
- className="p-1 hover:bg-white/10 rounded-full transition-colors shrink-0"
+ className="p-1 hover:bg-white/10 rounded-md-full transition-colors shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  title="Dismiss"
  >
  <X className="w-3.5 h-3.5" />
@@ -208,27 +208,27 @@ export default function AppLayout() {
 
  {/* Trial Countdown Banner */}
  {subscriptionStatus === 'trial' && !hideTrialBanner && !isSuperAdmin && (
- <div className="mx-3 mt-3 mb-1 rounded-xl bg-gradient-to-b from-primary/90 to-primary text-white px-5 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs md:text-sm shrink-0 font-sans border border-white/20 relative overflow-hidden">
+ <div className="mx-3 mt-3 mb-1 rounded-md-xl bg-gradient-to-b from-primary/90 to-primary text-white px-5 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs md:text-sm shrink-0 font-sans border-[0.5px] border-black/9 dark:border-white/8 border-white/20 relative overflow-hidden tracking-[0.04em]">
  {/* Shimmer effect */}
  <div className="absolute inset-0 -translate-x-full animate-[shimmer_3s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
  
  <div className="flex items-center gap-2 relative z-10">
  <Clock className="w-5 h-5 shrink-0 animate-pulse text-white/90" />
- <span className="font-bold tracking-tight">{t("free_trial_active", "Free Trial Active:")}</span>
- <span className="text-white/90">{t("you_have", "You have")} <strong className="font-extrabold text-white text-base bg-primary/20 px-1.5 py-0.5 rounded">{trialDaysLeft} {t("days", "days")}</strong> {t("remaining_on_your_slate_trial", "remaining on your Slate trial.")}</span>
+ <span className="font-semibold tracking-tight">{t("free_trial_active", "Free Trial Active:")}</span>
+ <span className="text-white/90">{t("you_have", "You have")} <strong className="font-extrabold text-white text-base bg-primary/20 px-1.5 py-0.5 rounded-md">{trialDaysLeft} {t("days", "days")}</strong> {t("remaining_on_your_slate_trial", "remaining on your Slate trial.")}</span>
  </div>
  <div className="flex items-center gap-3 relative z-10 w-full sm:w-auto">
  <Link to="/settings" className="w-full sm:w-auto">
  <Button
  size="sm"
- className="w-full h-8 bg-white hover:bg-white/90 text-primary font-extrabold text-xs gap-1.5 shrink-0 rounded-lg transition-all hover:scale-105"
+ className="w-full h-8 bg-white hover:bg-white/90 text-primary font-extrabold text-xs gap-2.5 shrink-0 rounded-xl transition-all hover:scale-105 tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <CreditCard className="w-3.5 h-3.5" /> {t("upgrade_plan", "Upgrade Plan")}
  </Button>
  </Link>
  <button 
  onClick={() => setHideTrialBanner(true)}
- className="p-1 hover:bg-white/10 rounded-full transition-colors shrink-0"
+ className="p-1 hover:bg-white/10 rounded-md-full transition-colors shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <X className="w-3.5 h-3.5" />
  </button>
@@ -247,7 +247,7 @@ export default function AppLayout() {
  <Button
  size="sm"
  variant="ghost"
- className="h-7 text-white hover:bg-amber-600 hover:text-white gap-1.5 shrink-0"
+ className="h-7 text-white hover:bg-amber-600 hover:text-white gap-2.5 shrink-0"
  onClick={handleStopImpersonation}
  >
  <X className="w-3.5 h-3.5" /> {t("exit_firm_view", "Exit Firm View")}
@@ -269,7 +269,7 @@ export default function AppLayout() {
   <main className="flex-1 w-full mx-auto px-6 md:px-8 lg:px-10 pt-6 pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-6 overflow-y-auto">
     <Outlet />
   </main>
-  <div id="right-docked-panel-portal" className="flex shrink-0 h-full empty:hidden z-40 relative bg-card shadow-[-4px_0_24px_rgba(0,0,0,0.02)]"></div>
+  <div id="right-docked-panel-portal" className="flex shrink-0 h-full empty:hidden z-40 relative bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[-4px_0_24px_rgba(0,0,0,0.02)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>
   <GlobalVideoOverlay />
  </div>
  </div>

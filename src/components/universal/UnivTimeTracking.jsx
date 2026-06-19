@@ -212,26 +212,26 @@ export default function UnivTimeTracking({
  <div className="flex flex-col h-full bg-background font-sans">
  
  {/* Header */}
- <div className="border-b border-primary/40 bg-card px-6 sm:px-8 py-6 shrink-0 z-10 relative">
+ <div className="border-b border-primary/40 bg-card px-6 sm:px-8 py-6 shrink-0 z-10 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
- <h1 className="text-2xl font-extrabold text-foreground tracking-tight flex items-center gap-2">
+ <h1 className="text-2xl font-extrabold text-foreground tracking-tight flex items-center gap-2 tracking-[-0.02em]">
  <Clock className="w-6 h-6 text-primary" /> {title}
  </h1>
- <p className="text-sm text-muted-foreground mt-1">Track billable hours, timesheets, and project capacity.</p>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Track billable hours, timesheets, and project capacity.</p>
  </div>
  <div className="flex items-center gap-3">
  {activeTimer ? (
  <button 
  onClick={stopTimer}
- className="px-6 py-2 bg-red-500 text-white rounded-full text-sm font-bold hover:bg-red-600 transition-colors flex items-center gap-2 animate-pulse"
+ className="px-6 py-2 bg-red-500/10 text-white rounded-md-full text-sm font-semibold hover:bg-red-600 transition-colors flex items-center gap-2 animate-pulse"
  >
  <Square className="w-4 h-4" /> Stop Timer ({formatSeconds(elapsedTime)})
  </button>
  ) : (
  <button 
  onClick={startLiveTimer}
- className="px-6 py-2 bg-emerald-500 text-white rounded-full text-sm font-bold hover:bg-emerald-600 transition-colors flex items-center gap-2"
+ className="px-6 py-2 bg-emerald-500/10 text-white rounded-md-full text-sm font-semibold hover:bg-emerald-600 transition-colors flex items-center gap-2"
  >
  <Play className="w-4 h-4 fill-white" /> Start Timer
  </button>
@@ -239,7 +239,7 @@ export default function UnivTimeTracking({
  
  <button 
  onClick={openNewModal}
- className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2 ml-2"
+ className="px-4 py-2 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2 ml-2"
  >
  <Plus className="w-4 h-4" /> Manual Entry
  </button>
@@ -248,30 +248,30 @@ export default function UnivTimeTracking({
 
  {/* Global Stats */}
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
- <div className="bg-card border border-primary/40 rounded-xl p-4 ">
- <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">Total Hours</div>
- <div className="text-3xl font-black text-foreground">{totalHours} <span className="text-lg font-medium text-muted-foreground">hrs</span></div>
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Total Hours</div>
+ <div className="text-3xl font-black text-foreground tracking-[-0.02em]">{totalHours} <span className="text-lg font-medium text-[#71717a] dark:text-gray-400">hrs</span></div>
  </div>
- <div className="bg-card border border-primary/40 rounded-xl p-4 flex flex-col justify-center">
- <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">Entries</div>
- <div className="text-2xl font-bold text-foreground">{entries.length}</div>
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 flex flex-col justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Entries</div>
+ <div className="text-2xl font-semibold text-foreground tracking-[-0.02em]">{entries.length}</div>
  </div>
  </div>
  
  {/* Toolbar */}
  <div className="mt-6 flex items-center gap-3">
  <div className="relative flex-1 max-w-sm">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <input 
  type="text" 
  placeholder="Search projects or tasks..."
  value={searchQuery}
  onChange={e => setSearchQuery(e.target.value)}
- className="w-full h-10 pl-9 pr-4 bg-muted/50 border border-primary/40 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+ className="w-full h-10 pl-9 pr-4 bg-muted/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:border-primary transition-colors"
  />
  </div>
- <button className="h-10 px-4 bg-background border border-primary/40 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-muted transition-colors ">
- <Filter className="w-4 h-4 text-muted-foreground" /> Filter
+ <button className="h-10 px-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl flex items-center gap-2 text-sm font-medium hover:bg-muted transition-colors ">
+ <Filter className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> Filter
  </button>
  </div>
  </div>
@@ -280,41 +280,41 @@ export default function UnivTimeTracking({
  <div className="flex-1 overflow-y-auto p-6 sm:p-8 bg-muted/10 custom-scrollbar">
  <div className="max-w-6xl mx-auto space-y-4">
  {filteredEntries.length === 0 ? (
- <div className="text-center py-20 text-muted-foreground">
+ <div className="text-center py-20 text-[#71717a] dark:text-gray-400">
  <Clock className="w-12 h-12 mx-auto mb-4 opacity-20" />
- <h3 className="text-lg font-bold text-foreground">No time entries</h3>
+ <h3 className="text-lg font-semibold text-foreground">No time entries</h3>
  <p className="text-sm mt-1">Start a timer or log hours manually.</p>
  </div>
  ) : (
- <div className="bg-card border border-primary/40 rounded-2xl overflow-hidden">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="divide-y divide-border">
  {filteredEntries.map(entry => {
  const isRunning = entry.status === 'Running';
  return (
  <div key={entry.id} className={cn("p-4 sm:p-5 flex items-center justify-between group hover:bg-muted/30 transition-colors", isRunning && "bg-emerald-50/50 dark:bg-emerald-900/10")}>
  <div className="flex items-start gap-4">
- <div className={cn("w-10 h-10 rounded-full flex items-center justify-center shrink-0 mt-0.5", isRunning ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400" : "bg-muted text-muted-foreground")}>
+ <div className={cn("w-10 h-10 rounded-md-full flex items-center justify-center shrink-0 mt-0.5", isRunning ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400" : "bg-muted text-[#71717a] dark:text-gray-400")}>
  {isRunning ? <Play className="w-4 h-4 fill-emerald-600 dark:fill-emerald-400" /> : <CheckCircle2 className="w-5 h-5" />}
  </div>
  <div>
  <div className="flex items-center gap-2">
- <h3 className={cn("text-base font-bold text-foreground", isRunning && "text-emerald-700 dark:text-emerald-400")}>{entry.project}</h3>
- <span className="text-muted-foreground text-sm px-1.5 py-0.5 bg-muted rounded font-medium">{entry.task}</span>
+ <h3 className={cn("text-base font-semibold text-foreground", isRunning && "text-emerald-700 dark:text-emerald-400")}>{entry.project}</h3>
+ <span className="text-[#71717a] dark:text-gray-400 text-sm px-1.5 py-0.5 bg-muted rounded-md font-medium">{entry.task}</span>
  </div>
- <div className="text-xs text-muted-foreground mt-1 flex items-center gap-3">
- <span className="flex items-center gap-1"><User className="w-3 h-3" /> {entry.user_name}</span>
- <span className="flex items-center gap-1"><CalendarDays className="w-3 h-3" /> {new Date(entry.date).toLocaleDateString()}</span>
- {entry.notes && <span className="flex items-center gap-1"><Tag className="w-3 h-3" /> {entry.notes}</span>}
+ <div className="text-xs text-[#71717a] dark:text-gray-400 mt-1 flex items-center gap-3 tracking-[0.04em]">
+ <span className="flex items-center gap-2"><User className="w-3 h-3" /> {entry.user_name}</span>
+ <span className="flex items-center gap-2"><CalendarDays className="w-3 h-3" /> {new Date(entry.date).toLocaleDateString()}</span>
+ {entry.notes && <span className="flex items-center gap-2"><Tag className="w-3 h-3" /> {entry.notes}</span>}
  </div>
  </div>
  </div>
  <div className="flex items-center gap-6">
- <div className={cn("text-xl font-mono font-bold text-right min-w-[80px]", isRunning ? "text-emerald-600 dark:text-emerald-400" : "text-foreground")}>
+ <div className={cn("text-xl font-mono font-semibold text-right min-w-[80px]", isRunning ? "text-emerald-600 dark:text-emerald-400" : "text-foreground")}>
  {isRunning ? formatSeconds(elapsedTime) : formatDuration(entry.duration_minutes)}
  </div>
- <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
- {!isRunning && <button onClick={() => openEditModal(entry)} className="p-1.5 text-muted-foreground hover:text-primary rounded hover:bg-primary/10"><Edit3 className="w-4 h-4" /></button>}
- <button onClick={() => { if(window.confirm('Delete entry?')) deleteMutation.mutate(entry.id);}} className="p-1.5 text-muted-foreground hover:text-red-500 rounded hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
+ <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+ {!isRunning && <button onClick={() => openEditModal(entry)} className="p-1.5 text-[#71717a] dark:text-gray-400 hover:text-primary rounded-md hover:bg-primary/10"><Edit3 className="w-4 h-4" /></button>}
+ <button onClick={() => { if(window.confirm('Delete entry?')) deleteMutation.mutate(entry.id);}} className="p-1.5 text-[#71717a] dark:text-gray-400 hover:text-red-500 rounded-md hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
  </div>
  </div>
  </div>
@@ -335,10 +335,10 @@ export default function UnivTimeTracking({
  initial={{ opacity: 0, scale: 0.95, y: 20}}
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: 20}}
- className="relative w-full max-w-lg bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
+ className="relative w-full max-w-lg bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="px-6 py-4 border-b border-primary/40 flex items-center justify-between bg-muted/20">
- <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+ <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
  <Clock className="w-5 h-5 text-primary" />
  {formState.status === 'Running' ? 'Start Timer' : editingEntry ? 'Edit Time Entry' : 'Manual Time Entry'}
  </h2>
@@ -348,39 +348,39 @@ export default function UnivTimeTracking({
  <form id="time-form" onSubmit={handleSave} className="space-y-4">
  <div className="grid grid-cols-2 gap-4">
  <div className="col-span-2">
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Project *</label>
- <input required type="text" value={formState.project} onChange={e => setFormState({...formState, project: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Project *</label>
+ <input required type="text" value={formState.project} onChange={e => setFormState({...formState, project: e.target.value})} className="w-full h-10 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div className="col-span-2">
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Task</label>
- <input type="text" value={formState.task} onChange={e => setFormState({...formState, task: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Task</label>
+ <input type="text" value={formState.task} onChange={e => setFormState({...formState, task: e.target.value})} className="w-full h-10 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  </div>
 
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Date</label>
- <input type="date" value={formState.date} onChange={e => setFormState({...formState, date: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Date</label>
+ <input type="date" value={formState.date} onChange={e => setFormState({...formState, date: e.target.value})} className="w-full h-10 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  {formState.status !== 'Running' && (
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Duration (mins)</label>
- <input type="number" min="1" value={formState.duration_minutes} onChange={e => setFormState({...formState, duration_minutes: parseInt(e.target.value)})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm font-mono focus:border-primary focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Duration (mins)</label>
+ <input type="number" min="1" value={formState.duration_minutes} onChange={e => setFormState({...formState, duration_minutes: parseInt(e.target.value)})} className="w-full h-10 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm font-mono focus:border-primary focus:outline-none" />
  </div>
  )}
  </div>
 
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Notes</label>
- <textarea value={formState.notes} onChange={e => setFormState({...formState, notes: e.target.value})} className="w-full h-24 p-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none resize-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Notes</label>
+ <textarea value={formState.notes} onChange={e => setFormState({...formState, notes: e.target.value})} className="w-full h-24 p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none resize-none" />
  </div>
 
  </form>
  </div>
  
  <div className="px-6 py-4 border-t border-primary/40 bg-muted/20 flex justify-end gap-3">
- <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors">Cancel</button>
- <button type="submit" form="time-form" disabled={saveMutation.isPending} className={cn("px-6 py-2 text-white rounded-lg text-sm font-bold transition-colors disabled:opacity-50", formState.status === 'Running' ? "bg-emerald-500 hover:bg-emerald-600" : "bg-primary hover:bg-primary/90")}>
+ <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-xl text-sm font-medium text-foreground hover:bg-muted transition-colors">Cancel</button>
+ <button type="submit" form="time-form" disabled={saveMutation.isPending} className={cn("px-6 py-2 text-white rounded-xl text-sm font-semibold transition-colors disabled:opacity-50", formState.status === 'Running' ? "bg-emerald-500/10 hover:bg-emerald-600" : "bg-primary hover:bg-primary/90")}>
  {saveMutation.isPending ? 'Saving...' : formState.status === 'Running' ? 'Start Timer' : 'Save Entry'}
  </button>
  </div>

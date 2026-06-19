@@ -80,62 +80,62 @@ export default function UnivClassAttendance() {
  <div className="flex flex-col h-full bg-background overflow-hidden ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
  <div>
- <h2 className="text-2xl font-bold text-foreground tracking-tight">Class Attendance</h2>
- <p className="text-sm text-muted-foreground mt-1">Track student presence in individual classes.</p>
+ <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">Class Attendance</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Track student presence in individual classes.</p>
  </div>
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 shrink-0">
- <button onClick={() => handleMarkAttendance('Present')} className="bg-card border border-emerald-200 -emerald-500/10 rounded-2xl p-4 flex items-center gap-3 hover:bg-emerald-50 transition-colors">
- <div className="p-3 bg-emerald-100 text-emerald-600 rounded-xl"><UserCheck className="w-5 h-5" /></div>
+ <button onClick={() => handleMarkAttendance('Present')} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 -emerald-500/10 rounded-md-2xl p-4 flex items-center gap-3 hover:bg-emerald-50 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-3 bg-emerald-100 text-emerald-600 rounded-md-xl"><UserCheck className="w-5 h-5" /></div>
  <div className="text-left">
- <h3 className="font-bold text-emerald-700">Present</h3>
- <p className="text-xs text-emerald-600/70">Mark all present</p>
+ <h3 className="font-semibold text-emerald-700">Present</h3>
+ <p className="text-xs text-emerald-600/70 tracking-[0.04em]">Mark all present</p>
  </div>
  </button>
- <button onClick={() => handleMarkAttendance('Late')} className="bg-card border border-orange-200 -orange-500/10 rounded-2xl p-4 flex items-center gap-3 hover:bg-orange-50 transition-colors">
- <div className="p-3 bg-orange-100 text-orange-600 rounded-xl"><AlertTriangle className="w-5 h-5" /></div>
+ <button onClick={() => handleMarkAttendance('Late')} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-orange-200 -orange-500/10 rounded-md-2xl p-4 flex items-center gap-3 hover:bg-orange-50 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-3 bg-orange-100 text-orange-600 rounded-md-xl"><AlertTriangle className="w-5 h-5" /></div>
  <div className="text-left">
- <h3 className="font-bold text-orange-700">Late</h3>
- <p className="text-xs text-orange-600/70">Mark selected</p>
+ <h3 className="font-semibold text-orange-700">Late</h3>
+ <p className="text-xs text-orange-600/70 tracking-[0.04em]">Mark selected</p>
  </div>
  </button>
- <button onClick={() => handleMarkAttendance('Absent')} className="bg-card border border-red-200 -red-500/10 rounded-2xl p-4 flex items-center gap-3 hover:bg-red-50 transition-colors">
- <div className="p-3 bg-red-100 text-red-600 rounded-xl"><UserX className="w-5 h-5" /></div>
+ <button onClick={() => handleMarkAttendance('Absent')} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-red-200 -red-500/10 rounded-md-2xl p-4 flex items-center gap-3 hover:bg-red-50 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-3 bg-red-100 text-red-600 rounded-md-xl"><UserX className="w-5 h-5" /></div>
  <div className="text-left">
- <h3 className="font-bold text-red-700">Absent</h3>
- <p className="text-xs text-red-600/70">Mark selected</p>
+ <h3 className="font-semibold text-red-700">Absent</h3>
+ <p className="text-xs text-red-600/70 tracking-[0.04em]">Mark selected</p>
  </div>
  </button>
- <button onClick={() => handleMarkAttendance('Excused')} className="bg-card border border-blue-200 -blue-500/10 rounded-2xl p-4 flex items-center gap-3 hover:bg-blue-50 transition-colors">
- <div className="p-3 bg-blue-100 text-blue-600 rounded-xl"><UserMinus className="w-5 h-5" /></div>
+ <button onClick={() => handleMarkAttendance('Excused')} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-blue-200 -blue-500/10 rounded-md-2xl p-4 flex items-center gap-3 hover:bg-blue-50 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-3 bg-blue-100 text-blue-600 rounded-md-xl"><UserMinus className="w-5 h-5" /></div>
  <div className="text-left">
- <h3 className="font-bold text-blue-700">Excused</h3>
- <p className="text-xs text-blue-600/70">Mark selected</p>
+ <h3 className="font-semibold text-blue-700">Excused</h3>
+ <p className="text-xs text-blue-600/70 tracking-[0.04em]">Mark selected</p>
  </div>
  </button>
  </div>
 
- <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
  <input 
  type="text"
  placeholder="Search students, courses..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
- <div className="flex items-center gap-2 text-sm text-muted-foreground bg-background border border-primary/40 px-3 py-2 rounded-xl">
+ <div className="flex items-center gap-2 text-sm text-[#71717a] dark:text-gray-400 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 px-3 py-2 rounded-md-xl">
  <CalendarDays className="w-4 h-4" /> {new Date().toLocaleDateString()}
  </div>
  </div>
 
  <div className="flex-1 overflow-auto custom-scrollbar">
  <table className="w-full text-left text-sm whitespace-nowrap">
- <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground sticky top-0 z-10 backdrop-blur-md">
+ <thead className="bg-muted/50 text-xs uppercase tracking-wider text-[#71717a] dark:text-gray-400 sticky top-0 z-10 backdrop-blur-md tracking-[0.04em]">
  <tr>
  <th className="p-4 font-semibold">Student</th>
  <th className="p-4 font-semibold">Course</th>
@@ -156,14 +156,14 @@ export default function UnivClassAttendance() {
  <td className="p-4 font-semibold text-foreground">
  {a.student_name || 'Unknown Student'}
  </td>
- <td className="p-4 text-muted-foreground font-medium">
+ <td className="p-4 text-[#71717a] dark:text-gray-400 font-medium">
  {a.course_name || 'Course'}
  </td>
- <td className="p-4 text-muted-foreground text-sm">
+ <td className="p-4 text-[#71717a] dark:text-gray-400 text-sm">
  {a.date}
  </td>
  <td className="p-4">
- <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border flex items-center w-fit gap-1 ${
+ <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-semibold rounded-lg border-[0.5px] border-black/9 dark:border-white/8 flex items-center w-fit gap-2 ${
  a.status === 'Present' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
  a.status === 'Late' ? 'bg-orange-50 text-orange-700 border-orange-200' : 
  a.status === 'Excused' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
@@ -177,7 +177,7 @@ export default function UnivClassAttendance() {
  </span>
  </td>
  <td className="p-4 text-right">
- <button className="text-muted-foreground hover:text-primary transition-colors p-2"><MoreHorizontal className="w-4 h-4" /></button>
+ <button className="text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors p-2"><MoreHorizontal className="w-4 h-4" /></button>
  </td>
  </motion.tr>
  ))}

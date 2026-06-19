@@ -78,13 +78,13 @@ export default function WhatsAppMessenger() {
       />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Left: Client & Case selection */}
-        <div className="bg-card border border-primary/40 rounded-xl p-5 space-y-4">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-5 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <h3 className="text-sm font-semibold flex items-center gap-2">
             <User className="w-4 h-4 text-primary" /> {t("select_recipient", "Select Recipient")}
           </h3>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-muted-foreground">{t("client", "Client")}</label>
+            <label className="text-xs font-medium text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("client", "Client")}</label>
             <Select onValueChange={handleClientChange}>
               <SelectTrigger>
                 <SelectValue placeholder="Choose a client..." />
@@ -102,13 +102,13 @@ export default function WhatsAppMessenger() {
           </div>
 
           {selectedClient && (
-            <div className="bg-muted/40 rounded-lg p-3 space-y-1">
-              <p className="text-xs font-semibold">{selectedClient.name}</p>
-              {selectedClient.email && <p className="text-xs text-muted-foreground">{selectedClient.email}</p>}
-              <div className="flex items-center gap-1.5 mt-1">
-                <Phone className="w-3 h-3 text-muted-foreground" />
+            <div className="bg-muted/40 rounded-xl p-3 space-y-1">
+              <p className="text-xs font-semibold tracking-[0.04em]">{selectedClient.name}</p>
+              {selectedClient.email && <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{selectedClient.email}</p>}
+              <div className="flex items-center gap-2.5 mt-1">
+                <Phone className="w-3 h-3 text-[#71717a] dark:text-gray-400" />
                 <input
-                  className="text-xs bg-transparent border-b border-dashed border-muted-foreground/40 focus:outline-none focus:border-primary w-full"
+                  className="text-xs bg-transparent border-b border-dashed border-muted-foreground/40 focus:outline-none focus:border-primary w-full tracking-[0.04em]"
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
                   placeholder="+233200000000"
@@ -125,7 +125,7 @@ export default function WhatsAppMessenger() {
 
           {clientCases.length > 0 && (
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-muted-foreground">{t("related_case_optional", "Related Case (optional)")}</label>
+              <label className="text-xs font-medium text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("related_case_optional", "Related Case (optional)")}</label>
               <Select onValueChange={(id) => setSelectedCase(cases.find(c => c.id === id) || null)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Tag a case..." />
@@ -147,29 +147,29 @@ export default function WhatsAppMessenger() {
           )}
 
           {selectedCase && (
-            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg px-3 py-2 flex items-center gap-2">
+            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl px-3 py-2 flex items-center gap-2">
               <Briefcase className="w-3.5 h-3.5 text-primary" />
-              <span className="text-xs font-medium text-primary">{selectedCase.title}</span>
+              <span className="text-xs font-medium text-primary tracking-[0.04em]">{selectedCase.title}</span>
               <Badge variant="outline" className="text-[9px] ml-auto">{selectedCase.status}</Badge>
             </div>
           )}
         </div>
 
         {/* Right: Message composer */}
-        <div className="bg-card border border-primary/40 rounded-xl p-5 space-y-4">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-5 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <h3 className="text-sm font-semibold flex items-center gap-2">
             <MessageCircle className="w-4 h-4 text-primary" /> {t("compose_message", "Compose Message")}
           </h3>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-muted-foreground">{t("quick_templates", "Quick Templates")}</label>
-            <div className="flex flex-wrap gap-1.5">
+            <label className="text-xs font-medium text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("quick_templates", "Quick Templates")}</label>
+            <div className="flex flex-wrap gap-2.5">
               {MESSAGE_TEMPLATES.map(template => {
                 return (
                   <button
                     key={template.label}
                     onClick={() => handleTemplate(template)}
-                    className="text-[10px] px-2 py-1 rounded-md border border-primary/40 hover:border-primary hover:bg-slate-50 dark:bg-slate-800/50 transition-colors"
+                    className="text-[10px] px-2 py-1 rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary hover:bg-slate-50 dark:bg-slate-800/50 transition-colors"
                   >
                     {template.label}
                   </button>
@@ -179,7 +179,7 @@ export default function WhatsAppMessenger() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-muted-foreground">{t("message", "Message")}</label>
+            <label className="text-xs font-medium text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("message", "Message")}</label>
             <Textarea
               value={message}
               onChange={e => setMessage(e.target.value)}
@@ -187,7 +187,7 @@ export default function WhatsAppMessenger() {
               rows={6}
               className="text-sm resize-none"
             />
-            <p className="text-[10px] text-muted-foreground text-right">{message.length} {t("chars", "chars")}</p>
+            <p className="text-[10px] text-[#71717a] dark:text-gray-400 text-right">{message.length} {t("chars", "chars")}</p>
           </div>
 
           <Button
@@ -200,7 +200,7 @@ export default function WhatsAppMessenger() {
             <ExternalLink className="w-3.5 h-3.5 opacity-70" />
           </Button>
 
-          <p className="text-[10px] text-center text-muted-foreground">
+          <p className="text-[10px] text-center text-[#71717a] dark:text-gray-400">
             {t(
               "opens_whatsapp_with_the_messag",
               "Opens WhatsApp with the message pre-filled. Works on desktop (WhatsApp Web) and mobile."
@@ -210,7 +210,7 @@ export default function WhatsAppMessenger() {
       </div>
       {/* Quick send cards */}
       {clients.filter(c => c.phone).length > 0 && (
-        <div className="bg-card border border-primary/40 rounded-xl p-5">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <h3 className="text-sm font-semibold mb-3">{t("quick_contact_clients_with_wha", "Quick Contact — Clients with WhatsApp")}</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
             {clients.filter(c => c.phone).slice(0, 8).map(c => {
@@ -220,14 +220,14 @@ export default function WhatsAppMessenger() {
                   href={`https://wa.me/${formatPhone(c.phone).replace("+", "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 p-2.5 rounded-lg border border-primary/40 hover:border-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 transition-colors group"
+                  className="flex items-center gap-2 p-2.5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 transition-colors group"
                 >
-                  <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">
-                    <span className="text-[10px] font-bold text-primary/90">{c.name?.[0]?.toUpperCase()}</span>
+                  <div className="w-7 h-7 rounded-md-full bg-slate-100 flex items-center justify-center flex-shrink-0">
+                    <span className="text-[10px] font-semibold text-primary/90">{c.name?.[0]?.toUpperCase()}</span>
                   </div>
                   <div className="min-w-0">
-                    <p className="text-xs font-medium truncate">{c.name}</p>
-                    <p className="text-[10px] text-muted-foreground">{c.phone}</p>
+                    <p className="text-xs font-medium truncate tracking-[0.04em]">{c.name}</p>
+                    <p className="text-[10px] text-[#71717a] dark:text-gray-400">{c.phone}</p>
                   </div>
                 </a>
               );

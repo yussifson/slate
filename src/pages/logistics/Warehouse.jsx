@@ -136,11 +136,11 @@ export default function Warehouse() {
     <div className="p-4 sm:p-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground flex items-center gap-2">
+          <h1 className="text-2xl font-semibold text-card-foreground flex items-center gap-2 tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <WarehouseIcon className="w-6 h-6 text-primary" />
             {t("smart_warehouse", "Smart 3PL Warehouse")}
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-[#71717a] dark:text-gray-400 mt-1">
             {t("warehouse_desc", "Manage inventory levels and automate inbound receiving with AI barcode/label scanning.")}
           </p>
         </div>
@@ -150,26 +150,26 @@ export default function Warehouse() {
         
         {/* Receiving Dock */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="bg-card border border-border rounded-2xl p-6 shadow-sm sticky top-4">
-            <h2 className="text-lg font-bold text-card-foreground mb-4 flex items-center gap-2">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm sticky top-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <h2 className="text-lg font-semibold text-card-foreground mb-4 flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <ArrowDownToLine className="w-5 h-5 text-primary" />
               Receiving Dock
             </h2>
 
             {/* AI Auto-Receive Paywall */}
-            <div className="relative mb-8 rounded-xl overflow-hidden border border-primary/20 bg-primary/5 p-4 shadow-sm">
-               <h3 className="text-sm font-bold flex items-center gap-1 mb-2">
+            <div className="relative mb-8 rounded-md-xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 bg-primary/5 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">
+               <h3 className="text-sm font-semibold flex items-center gap-2 mb-2">
                  <Zap className="w-4 h-4 text-primary fill-primary" /> Smart Label Scan
                </h3>
-               <p className="text-xs text-muted-foreground mb-4">
+               <p className="text-xs text-[#71717a] dark:text-gray-400 mb-4 tracking-[0.04em]">
                  Upload a photo of a box label or packing slip. Our AI will automatically parse the SKU, Name, and Quantity to receive it instantly.
                </p>
 
                <div className="relative">
                  {!isProOrAbove && (
-                    <div className="absolute -inset-2 bg-background/80 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center rounded-xl border border-border">
+                    <div className="absolute -inset-2 bg-background/80 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8">
                        <Lock className="w-5 h-5 text-amber-500 mb-1" />
-                       <span className="text-[10px] font-bold text-amber-600 uppercase tracking-wider">Pro Plan Required</span>
+                       <span className="text-[10px] font-semibold text-amber-600 uppercase tracking-wider tracking-[0.04em]">Pro Plan Required</span>
                     </div>
                  )}
                  <div className="relative z-0">
@@ -182,27 +182,27 @@ export default function Warehouse() {
             </div>
 
             <div className="flex items-center gap-2 mb-4">
-               <div className="h-px bg-border flex-1"></div>
-               <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">OR Manual Entry</span>
-               <div className="h-px bg-border flex-1"></div>
+               <div className="h-px bg-border-[0.5px] border-black/9 dark:border-white/8 flex-1"></div>
+               <span className="text-xs text-[#71717a] dark:text-gray-400 uppercase tracking-wider font-semibold tracking-[0.04em]">OR Manual Entry</span>
+               <div className="h-px bg-border-[0.5px] border-black/9 dark:border-white/8 flex-1"></div>
             </div>
             
             <div className="space-y-4">
               <div className="space-y-1">
-                 <label className="text-xs font-semibold text-muted-foreground">SKU / Barcode</label>
+                 <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 tracking-[0.04em]">SKU / Barcode</label>
                  <Input placeholder="e.g. WH-1002" value={manualEntry.sku} onChange={e => setManualEntry({...manualEntry, sku: e.target.value})} />
               </div>
               <div className="space-y-1">
-                 <label className="text-xs font-semibold text-muted-foreground">Product Name</label>
+                 <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Product Name</label>
                  <Input placeholder="e.g. Industrial Filter" value={manualEntry.name} onChange={e => setManualEntry({...manualEntry, name: e.target.value})} />
               </div>
               <div className="grid grid-cols-2 gap-3">
                  <div className="space-y-1">
-                   <label className="text-xs font-semibold text-muted-foreground">Quantity</label>
+                   <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Quantity</label>
                    <Input type="number" placeholder="50" value={manualEntry.quantity} onChange={e => setManualEntry({...manualEntry, quantity: e.target.value})} />
                  </div>
                  <div className="space-y-1">
-                   <label className="text-xs font-semibold text-muted-foreground">Location (Bin)</label>
+                   <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Location (Bin)</label>
                    <Input placeholder="e.g. A12" value={manualEntry.location} onChange={e => setManualEntry({...manualEntry, location: e.target.value})} />
                  </div>
               </div>
@@ -218,20 +218,20 @@ export default function Warehouse() {
         {/* Inventory List */}
         <div className="lg:col-span-2 space-y-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-2">
-             <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
+             <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                 <Box className="w-5 h-5 text-primary" />
                 Current Inventory
              </h2>
              <div className="relative w-full sm:w-64">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
                 <Input placeholder="Search SKU or Name..." className="pl-9" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
              </div>
           </div>
 
-          <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
              <div className="overflow-x-auto">
                 <table className="w-full text-sm text-left">
-                   <thead className="text-xs text-muted-foreground uppercase bg-muted/50 border-b border-border">
+                   <thead className="text-xs text-[#71717a] dark:text-gray-400 uppercase bg-muted/50 border-b border-[0.5px] border-black/9 dark:border-white/8 tracking-[0.04em]">
                       <tr>
                          <th className="px-6 py-4 font-semibold">Product</th>
                          <th className="px-6 py-4 font-semibold">SKU</th>
@@ -245,14 +245,14 @@ export default function Warehouse() {
                             <td className="px-6 py-4">
                                <div className="font-semibold text-foreground">{item.name}</div>
                             </td>
-                            <td className="px-6 py-4 text-muted-foreground font-mono text-xs">
-                               <div className="flex items-center gap-1"><ScanBarcode className="w-3 h-3" /> {item.sku}</div>
+                            <td className="px-6 py-4 text-[#71717a] dark:text-gray-400 font-mono text-xs tracking-[0.04em]">
+                               <div className="flex items-center gap-2"><ScanBarcode className="w-3 h-3" /> {item.sku}</div>
                             </td>
                             <td className="px-6 py-4">
-                               <span className="bg-primary/10 text-primary px-2 py-1 rounded text-xs font-semibold">{item.location || 'Unassigned'}</span>
+                               <span className="bg-primary/10 text-primary px-2 py-1 rounded-md text-xs font-semibold tracking-[0.04em]">{item.location || 'Unassigned'}</span>
                             </td>
                             <td className="px-6 py-4 text-right">
-                               <span className={`font-bold text-base ${item.quantity < 10 ? 'text-destructive' : 'text-emerald-600'}`}>{item.quantity}</span>
+                               <span className={`font-semibold text-base ${item.quantity < 10 ? 'text-destructive' : 'text-emerald-600'}`}>{item.quantity}</span>
                             </td>
                          </tr>
                       ))}
@@ -260,7 +260,7 @@ export default function Warehouse() {
                 </table>
              </div>
              {(!filteredInventory || filteredInventory.length === 0) && (
-                <div className="text-center p-12 text-muted-foreground">
+                <div className="text-center p-12 text-[#71717a] dark:text-gray-400">
                    <Box className="w-12 h-12 mx-auto mb-4 opacity-20" />
                    <h3 className="font-semibold text-lg">Inventory Empty</h3>
                    <p className="text-sm">Receive items on the dock to populate inventory.</p>

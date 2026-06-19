@@ -85,7 +85,7 @@ export default function DriverMobileApp() {
       {/* Header */}
       <div className="bg-gradient-to-r from-primary to-primary/80 text-white p-4 sticky top-0 z-10">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">Today's Route</h1>
+          <h1 className="text-2xl font-semibold tracking-[-0.02em]">Today's Route</h1>
           <Button
             variant={tracking ? 'destructive' : 'secondary'}
             size="sm"
@@ -129,7 +129,7 @@ export default function DriverMobileApp() {
       )}
 
       <Tabs defaultValue="deliveries" className="w-full">
-        <TabsList className="w-full rounded-none border-b bg-white">
+        <TabsList className="w-full rounded-md-none border-b bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <TabsTrigger value="deliveries" className="flex-1">Deliveries</TabsTrigger>
           <TabsTrigger value="completed" className="flex-1">Completed</TabsTrigger>
           <TabsTrigger value="map" className="flex-1">Map</TabsTrigger>
@@ -154,7 +154,7 @@ export default function DriverMobileApp() {
           ) : (
             <div className="text-center py-12">
               <Package className="w-12 h-12 mx-auto text-gray-300 mb-3" />
-              <p className="text-gray-500">No deliveries assigned</p>
+              <p className="text-[#71717a] dark:text-gray-400">No deliveries assigned</p>
             </div>
           )}
         </TabsContent>
@@ -171,8 +171,8 @@ export default function DriverMobileApp() {
         <TabsContent value="map" className="p-4">
           <Card>
             <CardContent className="pt-6">
-              <div className="w-full h-96 bg-gray-100 rounded-lg flex items-center justify-center">
-                <p className="text-gray-500">Map integration coming soon</p>
+              <div className="w-full h-96 bg-gray-100 rounded-xl flex items-center justify-center">
+                <p className="text-[#71717a] dark:text-gray-400">Map integration coming soon</p>
               </div>
             </CardContent>
           </Card>
@@ -231,7 +231,7 @@ function DeliveryCard({ shipmentId, driverId, isActive, onSelectRoute }) {
           </div>
           <div className="text-right">
             {eta?.etaMinutes && (
-              <div className="flex items-center gap-1 text-sm font-semibold text-primary">
+              <div className="flex items-center gap-2 text-sm font-semibold text-primary">
                 <Clock className="w-4 h-4" />
                 {eta.etaMinutes} min
               </div>
@@ -240,7 +240,7 @@ function DeliveryCard({ shipmentId, driverId, isActive, onSelectRoute }) {
         </div>
 
         {/* Delivery Details */}
-        <div className="bg-white rounded-lg p-3 space-y-2 text-sm">
+        <div className="bg-white rounded-xl p-3 space-y-2 text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="flex items-start gap-2">
             <MapPin className="w-4 h-4 text-primary flex-shrink-0 mt-1" />
             <div>
@@ -290,7 +290,7 @@ function DeliveryCard({ shipmentId, driverId, isActive, onSelectRoute }) {
 
         {/* POD Modal */}
         {showPODModal && (
-          <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+          <div className="mt-4 p-3 bg-amber-50 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 rounded-xl">
             <p className="text-sm font-semibold mb-3">Complete Delivery</p>
             <div className="space-y-2">
               <Button 

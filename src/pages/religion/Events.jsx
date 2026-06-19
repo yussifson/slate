@@ -128,8 +128,8 @@ export default function Events() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("events_services", "Events & Services")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t(
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("events_services", "Events & Services")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
  "religion_calendar_and_upcoming_g",
  "Religion calendar and upcoming gatherings"
  )}</p>
@@ -140,16 +140,16 @@ export default function Events() {
  </div>
  <div className="flex items-center gap-3">
  <div className="relative max-w-md flex-1">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search scheduled events..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search scheduled events..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_calendar", "Loading calendar...")}</div>
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_calendar", "Loading calendar...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-primary/40">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Calendar className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
- <p className="font-semibold text-lg text-card-foreground">{t("no_upcoming_gatherings", "No upcoming gatherings")}</p>
+ <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_upcoming_gatherings", "No upcoming gatherings")}</p>
  <p className="text-sm mt-1 max-w-md mx-auto">{t(
  "schedule_sunday_services_midwe",
  "Schedule Sunday services, midweek prayers, conferences, or fellowship retreats using the top-right button."
@@ -159,14 +159,14 @@ export default function Events() {
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  {filtered.map(event => {
  return (
- <div key={event.id} className="bg-card rounded-xl border border-primary/40 p-5 flex flex-col sm:flex-row gap-5 relative group transition-all">
- <div className="flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 rounded-lg p-4 min-w-[100px] shrink-0 border border-primary/40 dark:border-primary/40">
- <span className="text-xs font-bold uppercase tracking-widest">{event.date?.split(' ')[0] || 'Upcoming'}</span>
- <span className="text-2xl font-black">{event.date?.includes(' ') ? event.date.split(' ')[1]?.replace(',', '') : 'Soon'}</span>
+ <div key={event.id} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex flex-col sm:flex-row gap-5 relative group transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 rounded-xl p-4 min-w-[100px] shrink-0 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
+ <span className="text-xs font-semibold uppercase tracking-widest tracking-[0.04em]">{event.date?.split(' ')[0] || 'Upcoming'}</span>
+ <span className="text-2xl font-black tracking-[-0.02em]">{event.date?.includes(' ') ? event.date.split(' ')[1]?.replace(',', '') : 'Soon'}</span>
  </div>
  <div className="flex-1">
  <div className="flex justify-between items-start">
- <span className="text-[10px] font-bold uppercase tracking-wider text-primary dark:text-primary/70 bg-slate-100 dark:bg-slate-500 px-2 py-0.5 rounded-full mb-2 inline-block">
+ <span className="text-[10px] font-semibold uppercase tracking-wider text-primary dark:text-primary/70 bg-slate-100 dark:bg-slate-500 px-2 py-0.5 rounded-md-full mb-2 inline-block tracking-[0.04em]">
  {event.type}
  </span>
  <DropdownMenu>
@@ -188,11 +188,11 @@ export default function Events() {
  </DropdownMenuContent>
  </DropdownMenu>
  </div>
- <h3 className="text-lg font-bold text-card-foreground mb-3">{event.title}</h3>
- <div className="space-y-2 text-sm text-muted-foreground">
- <div className="flex items-center gap-2"><Clock className="w-4 h-4 text-muted-foreground" /> {event.time}</div>
- <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-muted-foreground" /> {event.venue}</div>
- <div className="flex items-center gap-2"><Users className="w-4 h-4 text-muted-foreground" /> {event.rsvp} {t("expected", "Expected")}</div>
+ <h3 className="text-lg font-semibold text-card-foreground mb-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{event.title}</h3>
+ <div className="space-y-2 text-sm text-[#71717a] dark:text-gray-400">
+ <div className="flex items-center gap-2"><Clock className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> {event.time}</div>
+ <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> {event.venue}</div>
+ <div className="flex items-center gap-2"><Users className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> {event.rsvp} {t("expected", "Expected")}</div>
  </div>
  </div>
  </div>
@@ -202,13 +202,13 @@ export default function Events() {
  )}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Calendar className="w-5 h-5 text-primary" /> {t("schedule_event_service", "Schedule Event / Service")}
  </h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("event_title", "Event Title")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("event_title", "Event Title")}</label>
  <Input
  value={formData.title}
  onChange={e => setFormData({ ...formData, title: e.target.value})}
@@ -218,7 +218,7 @@ export default function Events() {
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("scheduled_date", "Scheduled Date")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("scheduled_date", "Scheduled Date")}</label>
  <Input
  value={formData.date}
  onChange={e => setFormData({ ...formData, date: e.target.value})}
@@ -227,7 +227,7 @@ export default function Events() {
  />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("time", "Time")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("time", "Time")}</label>
  <Input
  value={formData.time}
  onChange={e => setFormData({ ...formData, time: e.target.value})}
@@ -238,7 +238,7 @@ export default function Events() {
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("gathering_venue", "Gathering Venue")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("gathering_venue", "Gathering Venue")}</label>
  <Input
  value={formData.venue}
  onChange={e => setFormData({ ...formData, venue: e.target.value})}
@@ -247,11 +247,11 @@ export default function Events() {
  />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("gathering_type", "Gathering Type")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("gathering_type", "Gathering Type")}</label>
  <select
  value={formData.type}
  onChange={e => setFormData({ ...formData, type: e.target.value})}
- className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
+ className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground"
  >
  <option>{t("service", "Service")}</option>
  <option>{t("event", "Event")}</option>
@@ -261,7 +261,7 @@ export default function Events() {
  </div>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("expected_attendees_rsvp", "Expected Attendees (RSVP)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("expected_attendees_rsvp", "Expected Attendees (RSVP)")}</label>
  <Input
  type="number"
  value={formData.rsvp}
@@ -305,7 +305,7 @@ export default function Events() {
  {viewRecord && Object.entries(viewRecord).filter(([k]) => k !== 'id' && k !== 'status').map(([key, value]) => {
  return (
  <div key={key} className="border-b border-primary/40 pb-2">
- <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
+ <p className="text-sm font-medium text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
  <p className="mt-1 text-base text-foreground font-semibold">
  {typeof value === 'object' ? JSON.stringify(value) : String(value)}
  </p>

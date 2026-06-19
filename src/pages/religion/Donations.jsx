@@ -123,8 +123,8 @@ export default function Donations() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("donations_offerings", "Donations & Offerings")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t("manage_religion_financial_contri", "Manage religion financial contributions")}</p>
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("donations_offerings", "Donations & Offerings")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("manage_religion_financial_contri", "Manage religion financial contributions")}</p>
  </div>
  <div className="flex gap-3">
  <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
@@ -133,82 +133,82 @@ export default function Donations() {
  </div>
  </div>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- <div className="bg-card rounded-xl border border-primary/40 p-5 ">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-3 mb-2">
- <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
+ <div className="w-8 h-8 rounded-md-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
  <DollarSign className="w-4 h-4" />
  </div>
  <h3 className="font-semibold text-foreground text-sm">{t("total_donations_logged", "Total Donations logged")}</h3>
  </div>
- <p className="text-3xl font-bold text-card-foreground">${totalDonations.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+ <p className="text-3xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${totalDonations.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-5 ">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-3 mb-2">
- <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
+ <div className="w-8 h-8 rounded-md-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
  <DollarSign className="w-4 h-4" />
  </div>
  <h3 className="font-semibold text-foreground text-sm">{t("total_offerings", "Total Offerings")}</h3>
  </div>
- <p className="text-3xl font-bold text-card-foreground">${totalOfferings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+ <p className="text-3xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${totalOfferings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-5 ">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-3 mb-2">
- <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
+ <div className="w-8 h-8 rounded-md-full bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
  <DollarSign className="w-4 h-4" />
  </div>
  <h3 className="font-semibold text-foreground text-sm">{t("special_building_funds", "Special/Building Funds")}</h3>
  </div>
- <p className="text-3xl font-bold text-card-foreground">${totalOthers.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+ <p className="text-3xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${totalOthers.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search donor name or transaction ID..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search donor name or transaction ID..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  <div className="overflow-x-auto">
  {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_financial_logs", "Loading financial logs...")}</div>
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_financial_logs", "Loading financial logs...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground bg-card">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <DollarSign className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
- <p className="font-semibold text-lg text-card-foreground">{t("no_financial_ledger_entries", "No financial ledger entries")}</p>
- <p className="text-xs mt-1">{t(
+ <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_financial_ledger_entries", "No financial ledger entries")}</p>
+ <p className="text-xs mt-1 tracking-[0.04em]">{t(
  "record_a_new_donation_weekly_offe",
  "Record a new donation, weekly offering, or building pledge using the top right button."
  )}</p>
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40">
+ <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("trx_id", "Trx ID")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("donor_name", "Donor Name")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("giving_type", "Giving Type")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("payment_method", "Payment Method")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("date", "Date")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("amount", "Amount")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("action", "Action")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("trx_id", "Trx ID")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("donor_name", "Donor Name")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("giving_type", "Giving Type")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("payment_method", "Payment Method")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("date", "Date")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("amount", "Amount")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("action", "Action")}</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
  {filtered.map(item => {
  return (
  <tr key={item.id} className="hover:bg-muted/50 transition-colors">
- <td className="px-6 py-4 font-mono text-xs text-muted-foreground">{item.trxId}</td>
- <td className="px-6 py-4 font-bold text-card-foreground">
+ <td className="px-6 py-4 font-mono text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{item.trxId}</td>
+ <td className="px-6 py-4 font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Link to="/religion/members" className="text-primary hover:underline">{item.member}</Link>
  </td>
  <td className="px-6 py-4">
- <span className="bg-slate-100 dark:bg-slate-500 text-primary/90 dark:text-primary/70 px-2.5 py-1 rounded-full text-xs font-bold">
+ <span className="bg-slate-100 dark:bg-slate-500 text-primary/90 dark:text-primary/70 px-2.5 py-1 rounded-md-full text-xs font-semibold tracking-[0.04em]">
  {item.type}
  </span>
  </td>
- <td className="px-6 py-4 text-muted-foreground">{item.method}</td>
- <td className="px-6 py-4 text-muted-foreground">{item.date}</td>
- <td className="px-6 py-4 text-right font-bold text-card-foreground">
+ <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">{item.method}</td>
+ <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">{item.date}</td>
+ <td className="px-6 py-4 text-right font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  ${(item.amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2})}
  </td>
  <td className="px-6 py-4 text-right">
@@ -241,13 +241,13 @@ export default function Donations() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <DollarSign className="w-5 h-5 text-primary" /> {t("record_financial_giving", "Record Financial Giving")}
  </h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("donor_member_name", "Donor/Member Name")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("donor_member_name", "Donor/Member Name")}</label>
  <Input
  value={formData.member}
  onChange={e => setFormData({ ...formData, member: e.target.value})}
@@ -257,11 +257,11 @@ export default function Donations() {
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("giving_type", "Giving Type")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("giving_type", "Giving Type")}</label>
  <select
  value={formData.type}
  onChange={e => setFormData({ ...formData, type: e.target.value})}
- className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
+ className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground"
  >
  <option>{t("donation", "Donation")}</option>
  <option>{t("offering", "Offering")}</option>
@@ -271,11 +271,11 @@ export default function Donations() {
  </select>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("payment_method", "Payment Method")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("payment_method", "Payment Method")}</label>
  <select
  value={formData.method}
  onChange={e => setFormData({ ...formData, method: e.target.value})}
- className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
+ className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground"
  >
  <option>{t("mobile_money", "Mobile Money")}</option>
  <option>{t("cash", "Cash")}</option>
@@ -285,7 +285,7 @@ export default function Donations() {
  </div>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("amount_given", "Amount Given ($)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("amount_given", "Amount Given ($)")}</label>
  <Input
  type="number"
  value={formData.amount}
@@ -319,7 +319,7 @@ export default function Donations() {
  {viewRecord && Object.entries(viewRecord).filter(([k]) => k !== 'id' && k !== 'status').map(([key, value]) => {
  return (
  <div key={key} className="border-b border-primary/40 pb-2">
- <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
+ <p className="text-sm font-medium text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
  <p className="mt-1 text-base text-foreground font-semibold">
  {key === 'member' ? (
  <Link to="/religion/members" className="text-primary hover:underline">{String(value)}</Link>

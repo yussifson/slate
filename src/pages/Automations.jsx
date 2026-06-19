@@ -35,17 +35,17 @@ import '@xyflow/react/dist/style.css';
 
 const TriggerNode = ({ data }) => {
   return (
-    <div className="bg-white dark:bg-slate-900 border-2 border-indigo-500 rounded-xl shadow-lg w-64 overflow-hidden">
-      <div className="bg-indigo-500/10 px-4 py-2 border-b border-indigo-500/20 flex items-center gap-2">
+    <div className="bg-white dark:bg-slate-900 border-2 border-indigo-500 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] w-64 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="bg-indigo-500/10/10 px-4 py-2 border-b border-indigo-500/20 flex items-center gap-2">
         <Database className="w-4 h-4 text-indigo-500" />
-        <span className="text-xs font-bold text-indigo-700 dark:text-indigo-400 uppercase tracking-wider">Database Trigger</span>
+        <span className="text-xs font-semibold text-indigo-700 dark:text-indigo-400 uppercase tracking-wider tracking-[0.04em]">Database Trigger</span>
       </div>
       <div className="p-4 flex flex-col gap-2">
         <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
           {data.label || 'Select an Event'}
         </span>
       </div>
-      <Handle type="source" position={Position.Right} className="w-3 h-3 bg-indigo-500 border-2 border-white" />
+      <Handle type="source" position={Position.Right} className="w-3 h-3 bg-indigo-500/10 border-2 border-white" />
     </div>
   );
 };
@@ -61,18 +61,18 @@ const ActionNode = ({ data }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 border-2 border-emerald-500 rounded-xl shadow-lg w-64 overflow-hidden">
-      <Handle type="target" position={Position.Left} className="w-3 h-3 bg-emerald-500 border-2 border-white" />
-      <div className="bg-emerald-500/10 px-4 py-2 border-b border-emerald-500/20 flex items-center gap-2">
+    <div className="bg-white dark:bg-slate-900 border-2 border-emerald-500 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] w-64 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <Handle type="target" position={Position.Left} className="w-3 h-3 bg-emerald-500/10 border-2 border-white" />
+      <div className="bg-emerald-500/10/10 px-4 py-2 border-b border-emerald-500/20 flex items-center gap-2">
         {getIcon()}
-        <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Action</span>
+        <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider tracking-[0.04em]">Action</span>
       </div>
       <div className="p-4 flex flex-col gap-2">
         <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
           {data.label || 'Select an Action'}
         </span>
       </div>
-      <Handle type="source" position={Position.Right} className="w-3 h-3 bg-emerald-500 border-2 border-white" />
+      <Handle type="source" position={Position.Right} className="w-3 h-3 bg-emerald-500/10 border-2 border-white" />
     </div>
   );
 };
@@ -80,39 +80,39 @@ const ActionNode = ({ data }) => {
 
 const ConditionNode = ({ data }) => {
   return (
-    <div className="bg-white dark:bg-slate-900 border-2 border-amber-500 rounded-xl shadow-lg w-64 overflow-hidden relative">
+    <div className="bg-white dark:bg-slate-900 border-2 border-amber-500 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] w-64 overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <Handle type="target" position={Position.Left} className="w-3 h-3 bg-amber-500 border-2 border-white" />
       <div className="bg-amber-500/10 px-4 py-2 border-b border-amber-500/20 flex items-center gap-2">
         <GitBranch className="w-4 h-4 text-amber-500" />
-        <span className="text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider">Condition</span>
+        <span className="text-xs font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wider tracking-[0.04em]">Condition</span>
       </div>
       <div className="p-4 flex flex-col gap-2">
         <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
           {data.label || 'If / Else'}
         </span>
       </div>
-      <Handle type="source" position={Position.Right} id="true" style={{ top: '30%' }} className="w-3 h-3 bg-emerald-500 border-2 border-white" />
-      <div className="absolute right-[-24px] top-[22%] text-[10px] font-bold text-emerald-500">TRUE</div>
+      <Handle type="source" position={Position.Right} id="true" style={{ top: '30%' }} className="w-3 h-3 bg-emerald-500/10 border-2 border-white" />
+      <div className="absolute right-[-24px] top-[22%] text-[10px] font-semibold text-emerald-500">TRUE</div>
       <Handle type="source" position={Position.Right} id="false" style={{ top: '70%' }} className="w-3 h-3 bg-rose-500 border-2 border-white" />
-      <div className="absolute right-[-28px] top-[62%] text-[10px] font-bold text-rose-500">FALSE</div>
+      <div className="absolute right-[-28px] top-[62%] text-[10px] font-semibold text-rose-500">FALSE</div>
     </div>
   );
 };
 
 const DelayNode = ({ data }) => {
   return (
-    <div className="bg-white dark:bg-slate-900 border-2 border-blue-500 rounded-xl shadow-lg w-64 overflow-hidden">
-      <Handle type="target" position={Position.Left} className="w-3 h-3 bg-blue-500 border-2 border-white" />
-      <div className="bg-blue-500/10 px-4 py-2 border-b border-blue-500/20 flex items-center gap-2">
+    <div className="bg-white dark:bg-slate-900 border-2 border-blue-500 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] w-64 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <Handle type="target" position={Position.Left} className="w-3 h-3 bg-blue-500/10 border-2 border-white" />
+      <div className="bg-blue-500/10/10 px-4 py-2 border-b border-blue-500/20 flex items-center gap-2">
         <Clock className="w-4 h-4 text-blue-500" />
-        <span className="text-xs font-bold text-blue-700 dark:text-blue-400 uppercase tracking-wider">Delay</span>
+        <span className="text-xs font-semibold text-blue-700 dark:text-blue-400 uppercase tracking-wider tracking-[0.04em]">Delay</span>
       </div>
       <div className="p-4 flex flex-col gap-2">
         <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
           {data.label || 'Wait'}
         </span>
       </div>
-      <Handle type="source" position={Position.Right} className="w-3 h-3 bg-blue-500 border-2 border-white" />
+      <Handle type="source" position={Position.Right} className="w-3 h-3 bg-blue-500/10 border-2 border-white" />
     </div>
   );
 };
@@ -134,11 +134,11 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="w-64 border-l border-border bg-slate-50/50 dark:bg-slate-900/50 p-4 flex flex-col gap-6">
+    <div className="w-64 border-l border-[0.5px] border-black/9 dark:border-white/8 bg-slate-50/50 dark:bg-slate-900/50 p-4 flex flex-col gap-6">
       <div>
-        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Triggers</h3>
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-3 tracking-[0.04em]">Triggers</h3>
         <div 
-          className="bg-white dark:bg-slate-800 border border-indigo-200 dark:border-indigo-900/50 p-3 rounded-lg flex items-center gap-3 cursor-grab hover:border-indigo-400 hover:shadow-md transition-all"
+          className="bg-white dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-indigo-200 dark:border-indigo-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-indigo-400 hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
           onDragStart={(event) => onDragStart(event, 'triggerNode')}
           draggable
         >
@@ -149,10 +149,10 @@ const Sidebar = () => {
 
       
       <div>
-        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Logic</h3>
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-3 tracking-[0.04em]">Logic</h3>
         <div className="space-y-2">
           <div 
-            className="bg-white dark:bg-slate-800 border border-amber-200 dark:border-amber-900/50 p-3 rounded-lg flex items-center gap-3 cursor-grab hover:border-amber-400 hover:shadow-md transition-all"
+            className="bg-white dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 dark:border-amber-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-amber-400 hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
             onDragStart={(event) => onDragStart(event, 'conditionNode')}
             draggable
           >
@@ -160,7 +160,7 @@ const Sidebar = () => {
             <span className="text-sm font-medium">Condition (If/Else)</span>
           </div>
           <div 
-            className="bg-white dark:bg-slate-800 border border-blue-200 dark:border-blue-900/50 p-3 rounded-lg flex items-center gap-3 cursor-grab hover:border-blue-400 hover:shadow-md transition-all"
+            className="bg-white dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-blue-200 dark:border-blue-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-blue-400 hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
             onDragStart={(event) => onDragStart(event, 'delayNode')}
             draggable
           >
@@ -171,10 +171,10 @@ const Sidebar = () => {
       </div>
 
       <div>
-        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Actions</h3>
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-3 tracking-[0.04em]">Actions</h3>
         <div className="space-y-2">
           <div 
-            className="bg-white dark:bg-slate-800 border border-emerald-200 dark:border-emerald-900/50 p-3 rounded-lg flex items-center gap-3 cursor-grab hover:border-emerald-400 hover:shadow-md transition-all"
+            className="bg-white dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 dark:border-emerald-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-emerald-400 hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
             onDragStart={(event) => onDragStart(event, 'actionNode', 'send_notification')}
             draggable
           >
@@ -182,7 +182,7 @@ const Sidebar = () => {
             <span className="text-sm font-medium">Send Notification</span>
           </div>
           <div 
-            className="bg-white dark:bg-slate-800 border border-emerald-200 dark:border-emerald-900/50 p-3 rounded-lg flex items-center gap-3 cursor-grab hover:border-emerald-400 hover:shadow-md transition-all"
+            className="bg-white dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 dark:border-emerald-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-emerald-400 hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
             onDragStart={(event) => onDragStart(event, 'actionNode', 'create_task')}
             draggable
           >
@@ -190,7 +190,7 @@ const Sidebar = () => {
             <span className="text-sm font-medium">Create Task</span>
           </div>
           <div 
-            className="bg-white dark:bg-slate-800 border border-emerald-200 dark:border-emerald-900/50 p-3 rounded-lg flex items-center gap-3 cursor-grab hover:border-emerald-400 hover:shadow-md transition-all"
+            className="bg-white dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 dark:border-emerald-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-emerald-400 hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
             onDragStart={(event) => onDragStart(event, 'actionNode', 'webhook')}
             draggable
           >
@@ -221,7 +221,7 @@ const ExecutionLogs = ({ companyId }) => {
   if (isLoading) return <div className="py-10 text-center">Loading logs...</div>;
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border p-6 relative">
+    <div className="bg-white dark:bg-slate-900 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm border-[0.5px] border-black/9 dark:border-white/8 p-6 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <Button 
         variant="outline" 
         size="sm" 
@@ -230,25 +230,25 @@ const ExecutionLogs = ({ companyId }) => {
       >
         <ArrowLeft className="w-4 h-4 mr-2" /> Back
       </Button>
-      <h3 className="text-lg font-bold mb-4">Recent Executions</h3>
+      <h3 className="text-lg font-semibold mb-4">Recent Executions</h3>
       <div className="space-y-4">
         {logs.map(log => (
-          <div key={log.id} className="border-b border-border pb-4 last:border-0 flex items-start justify-between">
+          <div key={log.id} className="border-b border-[0.5px] border-black/9 dark:border-white/8 pb-4 last:border-0 flex items-start justify-between">
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <Badge variant={log.status === 'success' ? 'default' : log.status === 'delayed' ? 'secondary' : 'destructive'}>
                   {log.status.toUpperCase()}
                 </Badge>
                 <span className="text-sm font-semibold">{log.automation_rules?.table_name}</span>
-                <span className="text-xs text-muted-foreground">{new Date(log.created_at).toLocaleString()}</span>
+                <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{new Date(log.created_at).toLocaleString()}</span>
               </div>
-              <div className="text-xs font-mono bg-slate-100 dark:bg-slate-800 p-2 rounded mt-2">
+              <div className="text-xs font-mono bg-slate-100 dark:bg-slate-800 p-2 rounded-md mt-2 tracking-[0.04em]">
                 {Array.isArray(log.logs) ? log.logs.join(' -> ') : 'No logs recorded.'}
               </div>
             </div>
           </div>
         ))}
-        {logs.length === 0 && <p className="text-muted-foreground">No execution logs found.</p>}
+        {logs.length === 0 && <p className="text-[#71717a] dark:text-gray-400">No execution logs found.</p>}
       </div>
     </div>
   );
@@ -267,12 +267,12 @@ const VariablePicker = ({ triggerTable, onSelect }) => {
         {'{ }'} Insert Variable
       </Button>
       {isOpen && (
-        <div className="absolute z-50 mt-1 w-48 rounded-md bg-white dark:bg-slate-800 shadow-lg border border-border max-h-48 overflow-y-auto">
+        <div className="absolute z-50 mt-1 w-48 rounded-lg bg-white dark:bg-slate-800 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 max-h-48 overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="py-1">
             {columns.map((col) => (
               <button
                 key={col}
-                className="block w-full text-left px-4 py-2 text-xs hover:bg-slate-100 dark:hover:bg-slate-700"
+                className="block w-full text-left px-4 py-2 text-xs hover:bg-slate-100 dark:hover:bg-slate-700 tracking-[0.04em]"
                 onClick={() => { onSelect(`{{${col}}}`); setIsOpen(false); }}
               >
                 {col}
@@ -587,11 +587,11 @@ export default function Automations() {
       {/* Header */}
       <div className="flex-none p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white flex items-center gap-3 tracking-[-0.02em]">
             <Wand2 className="w-8 h-8 text-primary" />
             Slate Flow Builder
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-[#71717a] dark:text-gray-400 mt-1">
             Visually automate your workflows across any module or custom app.
           </p>
         </div>
@@ -613,18 +613,18 @@ export default function Automations() {
                 <Button 
                   onClick={() => setMode('logs')} 
                   variant="outline"
-                  className="gap-2 shadow-md"
+                  className="gap-2 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]"
                 >
                   View Logs
                 </Button>
                 <Button 
                   onClick={() => window.dispatchEvent(new CustomEvent("orbit:inject", { detail: { label: "OrbitFlow Automation Builder", query: "Help me build an automation flow." } }))} 
                   variant="secondary"
-                  className="gap-2 shadow-md text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-900"
+                  className="gap-2 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-900"
                 >
                   <OrbitIcon className="w-4 h-4 fill-current" /> Automate with OrbitFlow
                 </Button>
-                <Button onClick={startNewFlow} className="gap-2 shadow-md">
+                <Button onClick={startNewFlow} className="gap-2 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]">
                   <Plus className="w-4 h-4" /> Create New Flow
                 </Button>
               </div>
@@ -644,15 +644,15 @@ export default function Automations() {
             >
               {isLoading ? (
                 <div className="col-span-full py-20 flex justify-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  <div className="animate-spin rounded-md-full h-8 w-8 border-b-2 border-primary"></div>
                 </div>
               ) : automations.length === 0 ? (
-                <div className="col-span-full py-24 flex flex-col items-center justify-center text-center bg-card border rounded-xl shadow-sm">
-                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                <div className="col-span-full py-24 flex flex-col items-center justify-center text-center bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                  <div className="w-16 h-16 bg-primary/10 rounded-md-full flex items-center justify-center mb-4">
                     <Zap className="w-8 h-8 text-primary" />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">No Active Flows</h3>
-                  <p className="text-muted-foreground max-w-md mx-auto mb-6">
+                  <h3 className="text-xl font-semibold mb-2">No Active Flows</h3>
+                  <p className="text-[#71717a] dark:text-gray-400 max-w-md mx-auto mb-6">
                     Create your first visual automation to connect your custom Orbit modules to notifications, tasks, and webhooks!
                   </p>
                   <Button onClick={startNewFlow}>Start Building</Button>
@@ -664,16 +664,16 @@ export default function Automations() {
                     whileHover={{ y: -4 }}
                     className="group"
                   >
-                    <Card className="h-full flex flex-col hover:border-primary/50 hover:shadow-md transition-all duration-300">
+                    <Card className="h-full flex flex-col hover:border-primary/50 hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300">
                       <CardHeader className="pb-4">
                         <div className="flex justify-between items-start">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                            <div className="w-10 h-10 rounded-md-xl bg-primary/10 flex items-center justify-center shrink-0">
                               <Zap className="w-5 h-5 text-primary" />
                             </div>
                             <div>
                               <CardTitle className="text-base line-clamp-1">{rule.table_name} Flow</CardTitle>
-                              <CardDescription className="uppercase tracking-wider text-[10px] font-bold text-primary mt-1">
+                              <CardDescription className="uppercase tracking-wider text-[10px] font-semibold text-primary mt-1 tracking-[0.04em]">
                                 {rule.action_type.replace('_', ' ')}
                               </CardDescription>
                             </div>
@@ -681,7 +681,7 @@ export default function Automations() {
                           <Button 
                             variant="ghost" 
                             size="icon" 
-                            className="h-8 w-8 text-muted-foreground opacity-0 group-hover:opacity-100 hover:text-destructive hover:bg-destructive/10 transition-all -mt-1 -mr-1"
+                            className="h-8 w-8 text-[#71717a] dark:text-gray-400 opacity-0 group-hover:opacity-100 hover:text-destructive hover:bg-destructive/10 transition-all -mt-1 -mr-1"
                             onClick={() => handleDelete(rule.id)}
                           >
                             <Trash2 className="w-4 h-4" />
@@ -690,8 +690,8 @@ export default function Automations() {
                       </CardHeader>
                       <CardContent className="flex-1 flex flex-col justify-center gap-3">
                         {rule.table_name === 'webhook_inbound' ? (
-                          <div className="flex flex-col gap-1 w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-md border text-[10px]">
-                            <span className="font-semibold text-muted-foreground">Webhook URL:</span>
+                          <div className="flex flex-col gap-2 w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg border-[0.5px] border-black/9 dark:border-white/8 text-[10px]">
+                            <span className="font-semibold text-[#71717a] dark:text-gray-400">Webhook URL:</span>
                             <div className="flex items-center gap-2 w-full">
                               <code className="flex-1 truncate select-all">https://wmabgiafwamxkcgxyhee.supabase.co/functions/v1/automation-webhook?rule_id={rule.id}</code>
                               <Button variant="ghost" size="icon" className="h-5 w-5 shrink-0" onClick={() => {
@@ -702,11 +702,11 @@ export default function Automations() {
                           </div>
                         ) : (
                           <div className="flex items-center gap-3">
-                            <div className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded-md text-xs font-semibold">
+                            <div className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded-lg text-xs font-semibold tracking-[0.04em]">
                               {rule.table_name}
                             </div>
-                            <ArrowRight className="w-4 h-4 text-muted-foreground" />
-                            <div className="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-md text-xs font-semibold">
+                            <ArrowRight className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
+                            <div className="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-lg text-xs font-semibold tracking-[0.04em]">
                               Action
                             </div>
                           </div>
@@ -717,7 +717,7 @@ export default function Automations() {
                           <Badge variant={rule.is_active ? "default" : "secondary"}>
                             {rule.is_active ? "Active" : "Inactive"}
                           </Badge>
-                          <span className="text-xs text-muted-foreground">Flow ID: {rule.id.split('-')[0]}</span>
+                          <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Flow ID: {rule.id.split('-')[0]}</span>
                         </div>
                       </CardFooter>
                     </Card>
@@ -733,7 +733,7 @@ export default function Automations() {
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
-              className="h-[75vh] bg-white dark:bg-slate-950 border border-border rounded-2xl shadow-sm flex overflow-hidden relative"
+              className="h-[75vh] bg-white dark:bg-slate-950 border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm flex overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
             >
               <ReactFlowProvider>
                 {/* Visual Canvas */}
@@ -754,14 +754,14 @@ export default function Automations() {
                     className="bg-slate-50/50 dark:bg-slate-950"
                   >
                     <Background color="#94a3b8" gap={24} size={2} />
-                    <Controls className="bg-white dark:bg-slate-800 shadow-md border-border" />
+                    <Controls className="bg-white dark:bg-slate-800 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] border-[0.5px] border-black/9 dark:border-white/8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
                     
                     {/* Floating Info Panel */}
-                    <Panel position="top-left" className="bg-white/90 dark:bg-slate-900/90 p-3 rounded-lg shadow-md border backdrop-blur-sm">
-                      <h3 className="text-sm font-bold flex items-center gap-2">
+                    <Panel position="top-left" className="bg-white/90 dark:bg-slate-900/90 p-3 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] border-[0.5px] border-black/9 dark:border-white/8 backdrop-blur-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                      <h3 className="text-sm font-semibold flex items-center gap-2">
                         <OrbitIcon className="w-4 h-4 fill-primary" /> Flow Builder
                       </h3>
-                      <p className="text-xs text-muted-foreground mt-1">Drag nodes from the right sidebar.</p>
+                      <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">Drag nodes from the right sidebar.</p>
                     </Panel>
                   </ReactFlow>
 
@@ -772,10 +772,10 @@ export default function Automations() {
                         initial={{ opacity: 0, x: 50 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 50 }}
-                        className="absolute right-4 top-4 w-80 bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-border overflow-hidden z-50 flex flex-col max-h-[90%]"
+                        className="absolute right-4 top-4 w-80 bg-white dark:bg-slate-900 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-2xl border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 overflow-hidden z-50 flex flex-col max-h-[90%] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
                       >
                         <div className="p-4 border-b bg-slate-50 dark:bg-slate-800 flex justify-between items-center">
-                          <h3 className="font-bold">
+                          <h3 className="font-semibold">
                             {selectedNode.type === 'triggerNode' ? 'Configure Trigger' : 'Configure Action'}
                           </h3>
                           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setSelectedNode(null)}>
@@ -786,9 +786,9 @@ export default function Automations() {
                           
                           {selectedNode.type === 'triggerNode' && (
                             <div className="space-y-2">
-                              <label className="text-xs font-semibold text-muted-foreground">When this happens...</label>
+                              <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 tracking-[0.04em]">When this happens...</label>
                               <select 
-                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
+                                className="flex h-10 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm ring-offset-background"
                                 value={selectedNode.data.config?.tableName || ''}
                                 onChange={(e) => handleUpdateNodeConfig('tableName', e.target.value)}
                               >
@@ -802,7 +802,7 @@ export default function Automations() {
                                   </optgroup>
                                 )}
                               </select>
-                              <p className="text-[10px] text-muted-foreground">
+                              <p className="text-[10px] text-[#71717a] dark:text-gray-400">
                                 {selectedNode.data.config?.tableName === 'webhook_inbound' 
                                   ? "Save this flow to generate a unique Webhook URL."
                                   : "The automation will run automatically when this event occurs."}
@@ -813,7 +813,7 @@ export default function Automations() {
                           {selectedNode.type === 'actionNode' && (
                             <>
                               <div className="space-y-2">
-                                <label className="text-xs font-semibold text-muted-foreground">Action Title</label>
+                                <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Action Title</label>
                                 <Input 
                                   placeholder="e.g. Send Welcome Email" 
                                   value={selectedNode.data.config?.actionTitle || ''}
@@ -825,7 +825,7 @@ export default function Automations() {
                                 {selectedNode.data.actionType === 'send_notification' && (
                                   <>
                                     <div className="space-y-1">
-                                      <label className="text-xs font-semibold text-foreground flex justify-between items-center">
+                                      <label className="text-xs font-semibold text-foreground flex justify-between items-center tracking-[0.04em]">
                                         Recipient Email
                                         <VariablePicker 
                                           triggerTable={triggerTableForVars} 
@@ -839,7 +839,7 @@ export default function Automations() {
                                       />
                                     </div>
                                     <div className="space-y-1">
-                                      <label className="text-xs font-semibold text-foreground flex justify-between items-center">
+                                      <label className="text-xs font-semibold text-foreground flex justify-between items-center tracking-[0.04em]">
                                         Message
                                         <VariablePicker 
                                           triggerTable={triggerTableForVars} 
@@ -847,7 +847,7 @@ export default function Automations() {
                                         />
                                       </label>
                                       <textarea 
-                                        className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm h-24 resize-none"
+                                        className="flex w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm h-24 resize-none"
                                         placeholder="Welcome to our platform!" 
                                         value={selectedNode.data.config?.payload?.message || ''}
                                         onChange={(e) => handleUpdateNodeConfig('payload', { ...(selectedNode.data.config.payload || {}), message: e.target.value })}
@@ -859,7 +859,7 @@ export default function Automations() {
                                 {selectedNode.data.actionType === 'create_task' && (
                                   <>
                                     <div className="space-y-1">
-                                      <label className="text-xs font-semibold text-foreground flex justify-between items-center">
+                                      <label className="text-xs font-semibold text-foreground flex justify-between items-center tracking-[0.04em]">
                                         Task Title
                                         <VariablePicker 
                                           triggerTable={triggerTableForVars} 
@@ -873,7 +873,7 @@ export default function Automations() {
                                       />
                                     </div>
                                     <div className="space-y-1">
-                                      <label className="text-xs font-semibold text-foreground flex justify-between items-center">
+                                      <label className="text-xs font-semibold text-foreground flex justify-between items-center tracking-[0.04em]">
                                         Task Description
                                         <VariablePicker 
                                           triggerTable={triggerTableForVars} 
@@ -881,7 +881,7 @@ export default function Automations() {
                                         />
                                       </label>
                                       <textarea 
-                                        className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm h-24 resize-none"
+                                        className="flex w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm h-24 resize-none"
                                         placeholder="Details about the task..." 
                                         value={selectedNode.data.config?.payload?.description || ''}
                                         onChange={(e) => handleUpdateNodeConfig('payload', { ...(selectedNode.data.config.payload || {}), description: e.target.value })}
@@ -893,7 +893,7 @@ export default function Automations() {
                                 {selectedNode.data.actionType === 'webhook' && (
                                   <>
                                     <div className="space-y-1">
-                                      <label className="text-xs font-semibold text-foreground flex justify-between items-center">
+                                      <label className="text-xs font-semibold text-foreground flex justify-between items-center tracking-[0.04em]">
                                         Webhook URL
                                         <VariablePicker 
                                           triggerTable={triggerTableForVars} 
@@ -909,7 +909,7 @@ export default function Automations() {
                                   </>
                                 )}
 
-                                <p className="text-[10px] text-primary font-medium bg-primary/10 p-2 rounded">Tip: You can use {'{{column_name}}'} to inject variables from the triggered row.</p>
+                                <p className="text-[10px] text-primary font-medium bg-primary/10 p-2 rounded-md">Tip: You can use {'{{column_name}}'} to inject variables from the triggered row.</p>
                               </div>
                             </>
                           )}

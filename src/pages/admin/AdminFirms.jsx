@@ -162,13 +162,13 @@ export default function AdminFirms() {
         subtitle="Manage limits, impersonate users, and suspend access." 
         action={
           <div className="relative w-full sm:w-72">
-            <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#71717a] dark:text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <Input 
               type="text" 
               placeholder="Search subdomain or email..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 h-10 rounded-lg border-primary/40"
+              className="pl-9 h-10 rounded-xl border-primary/40"
             />
           </div>
         }
@@ -180,7 +180,7 @@ export default function AdminFirms() {
       ) : (
         <div className="space-y-4">
           {filteredCompanies.length === 0 ? (
-            <div className="bg-card rounded-2xl border border-primary/20 text-center py-12 text-slate-400 text-sm font-semibold shadow-sm">
+            <div className="bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 text-center py-12 text-slate-400 text-sm font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               {t("no_firms_found_matching_query", "No firms found matching query.")}
             </div>
           ) : (
@@ -189,58 +189,58 @@ export default function AdminFirms() {
                 const activeUsers = profiles.filter(p => p.company_id === c.id).length;
                 const activeCases = cases.filter(cs => cs.company_id === c.id).length;
                 return (
-                  <div key={idx} className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 rounded-2xl border border-primary/20 shadow-sm hover:shadow-md transition-all duration-300 p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div key={idx} className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300 p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                     <div className="flex-1">
                       <div className="flex items-start justify-between md:justify-start gap-3">
                         <div>
-                          <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 leading-tight">{c.name}</h3>
+                          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 leading-tight">{c.name}</h3>
                           <p className="font-mono text-[11px] text-primary mt-1">{c.subdomain}{t("slate_optavel_com", ".slate.optavel.com")}</p>
                         </div>
-                        <span className={`md:hidden inline-flex py-1 px-2.5 rounded-full text-[10px] font-bold uppercase ${c.status === 'active' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border border-primary/40' : 'bg-red-50 text-red-700 border border-red-100'}`}>
+                        <span className={`md:hidden inline-flex py-1 px-2.5 rounded-md-full text-[10px] font-semibold uppercase ${c.status === 'active' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40' : 'bg-red-50 text-red-700 border-[0.5px] border-black/9 dark:border-white/8 border-red-100'}`}>
                           {c.status}
                         </span>
                       </div>
-                      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-slate-400">
-                        <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {activeUsers} / {c.max_users || '∞'} Users</span>
-                        <span className="flex items-center gap-1"><Layers className="w-3.5 h-3.5" /> {activeCases} / {c.max_cases || '∞'} Cases</span>
+                      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-slate-400 tracking-[0.04em]">
+                        <span className="flex items-center gap-2"><Users className="w-3.5 h-3.5" /> {activeUsers} / {c.max_users || '∞'} Users</span>
+                        <span className="flex items-center gap-2"><Layers className="w-3.5 h-3.5" /> {activeCases} / {c.max_cases || '∞'} Cases</span>
                         <span>{c.email}</span>
                         {firmLastActivity[c.id] ? (
-                          <span className="flex items-center gap-1 text-emerald-600 font-semibold">
+                          <span className="flex items-center gap-2 text-emerald-600 font-semibold">
                             <Clock className="w-3.5 h-3.5" /> Active {new Date(firmLastActivity[c.id]).toLocaleString()}
                           </span>
                         ) : (
-                          <span className="flex items-center gap-1 italic">
+                          <span className="flex items-center gap-2 italic">
                             <Clock className="w-3.5 h-3.5" /> No recent session
                           </span>
                         )}
                       </div>
                       <div className="mt-3 flex gap-2 items-center">
-                        <Badge className="text-[10px] font-bold uppercase py-0.5 px-2 bg-slate-100 text-slate-700 dark:text-slate-300 border-none">{c.subscription_plan}</Badge>
+                        <Badge className="text-[10px] font-semibold uppercase py-0.5 px-2 bg-slate-100 text-slate-700 dark:text-slate-300 border-none tracking-[0.04em]">{c.subscription_plan}</Badge>
                         <span className="text-[10px] font-semibold text-slate-400 capitalize">({c.subscription_status})</span>
                       </div>
                     </div>
                     
                     <div className="hidden md:flex flex-col items-center justify-center px-4">
-                      <span className={`inline-flex py-1 px-2.5 rounded-full text-[10px] font-bold uppercase ${c.status === 'active' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border border-primary/40' : 'bg-red-50 text-red-700 border border-red-100'}`}>
+                      <span className={`inline-flex py-1 px-2.5 rounded-md-full text-[10px] font-semibold uppercase ${c.status === 'active' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40' : 'bg-red-50 text-red-700 border-[0.5px] border-black/9 dark:border-white/8 border-red-100'}`}>
                         {c.status}
                       </span>
                       <span className="text-[10px] text-slate-400 mt-2">{new Date(c.created_date || c.created_at).toLocaleDateString()}</span>
                     </div>
 
                     <div className="flex flex-wrap md:flex-nowrap items-center gap-2 pt-3 md:pt-0 border-t border-slate-100 dark:border-slate-800/50 md:border-none mt-2 md:mt-0">
-                      <Button variant="outline" size="sm" onClick={() => setFeaturesCompany(c)} className="flex-1 md:flex-none h-9 text-xs gap-1.5 px-3 rounded-lg border-primary/20 text-violet-700 bg-violet-50 hover:bg-violet-100">
+                      <Button variant="outline" size="sm" onClick={() => setFeaturesCompany(c)} className="flex-1 md:flex-none h-9 text-xs gap-2.5 px-3 rounded-xl border-primary/20 text-violet-700 bg-violet-50 hover:bg-violet-100 tracking-[0.04em]">
                         <Layers className="w-3.5 h-3.5" /> Features
                       </Button>
-                      <Button variant="outline" size="sm" onClick={() => handleImpersonate(c)} className="flex-1 md:flex-none h-9 text-xs gap-1.5 px-3 rounded-lg border-primary/20 text-primary/90 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 hover:text-primary/80">
+                      <Button variant="outline" size="sm" onClick={() => handleImpersonate(c)} className="flex-1 md:flex-none h-9 text-xs gap-2.5 px-3 rounded-xl border-primary/20 text-primary/90 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 hover:text-primary/80 tracking-[0.04em]">
                         <UserCheck className="w-3.5 h-3.5" /> {t("impersonate", "Impersonate")}
                       </Button>
-                      <Button variant="outline" size="sm" onClick={() => handleOpenEditDialog(c)} className="flex-1 md:flex-none h-9 text-xs gap-1.5 px-3 rounded-lg border-primary/20 text-amber-700 bg-amber-50 hover:bg-amber-100">
+                      <Button variant="outline" size="sm" onClick={() => handleOpenEditDialog(c)} className="flex-1 md:flex-none h-9 text-xs gap-2.5 px-3 rounded-xl border-primary/20 text-amber-700 bg-amber-50 hover:bg-amber-100 tracking-[0.04em]">
                         <Edit2 className="w-3.5 h-3.5" /> Edit
                       </Button>
-                      <Button variant="outline" size="sm" onClick={() => handleOpenMessageDialog(c)} className="flex-1 md:flex-none h-9 text-xs gap-1.5 px-3 rounded-lg border-primary/20 text-blue-700 bg-blue-50 hover:bg-blue-100">
+                      <Button variant="outline" size="sm" onClick={() => handleOpenMessageDialog(c)} className="flex-1 md:flex-none h-9 text-xs gap-2.5 px-3 rounded-xl border-primary/20 text-blue-700 bg-blue-50 hover:bg-blue-100 tracking-[0.04em]">
                         <MessageSquare className="w-3.5 h-3.5" /> Message
                       </Button>
-                      <Button variant={c.status === 'active' ? 'destructive' : 'default'} size="sm" onClick={() => handleToggleStatus(c)} className="flex-1 md:flex-none h-9 text-xs gap-1.5 px-3 rounded-lg">
+                      <Button variant={c.status === 'active' ? 'destructive' : 'default'} size="sm" onClick={() => handleToggleStatus(c)} className="flex-1 md:flex-none h-9 text-xs gap-2.5 px-3 rounded-xl tracking-[0.04em]">
                         {c.status === 'active' ? <AlertOctagon className="w-3.5 h-3.5" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
                         {c.status === 'active' ? 'Suspend' : 'Activate'}
                       </Button>
@@ -255,31 +255,31 @@ export default function AdminFirms() {
 
       {/* Message Dialog */}
       <Dialog open={messageDialogOpen} onOpenChange={setMessageDialogOpen}>
-        <DialogContent className="max-w-md rounded-2xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 p-6 font-sans">
+        <DialogContent className="max-w-md rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 p-6 font-sans hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <DialogDescription className="sr-only">Details about the firm</DialogDescription>
           <DialogHeader>
-            <DialogTitle className="text-slate-900 dark:text-slate-100 font-extrabold text-base flex items-center gap-1.5">
+            <DialogTitle className="text-slate-900 dark:text-slate-100 font-extrabold text-base flex items-center gap-2.5">
               <MessageSquare className="w-4 h-4 text-primary" />
               {t("message_firm_admin", "Message Firm Admin:")} {selectedCompany?.name}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4 text-sm text-slate-700 dark:text-slate-300">
             <div className="space-y-1.5">
-              <label className="font-bold uppercase tracking-wide text-[10px] text-slate-500 dark:text-slate-400 block">{t("message_content", "Message Content")}</label>
+              <label className="font-semibold uppercase tracking-wide text-[10px] text-slate-500 dark:text-slate-400 block tracking-[0.04em]">{t("message_content", "Message Content")}</label>
               <textarea 
                 value={messageContent} 
                 onChange={(e) => setMessageContent(e.target.value)}
                 rows={4}
                 placeholder="Type your message to the firm administrator here..."
-                className="w-full p-3 border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm resize-none"
+                className="w-full p-3 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm resize-none"
               />
             </div>
           </div>
           <DialogFooter className="flex gap-2 pt-2">
-            <Button variant="outline" onClick={() => setMessageDialogOpen(false)} className="flex-1 rounded-xl text-slate-700 dark:text-slate-300 border-primary/40 h-11">
+            <Button variant="outline" onClick={() => setMessageDialogOpen(false)} className="flex-1 rounded-md-xl text-slate-700 dark:text-slate-300 border-primary/40 h-11">
               {t("cancel", "Cancel")}
             </Button>
-            <Button onClick={handleSendMessage} disabled={sendingMessage} className="flex-1 bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl h-11">
+            <Button onClick={handleSendMessage} disabled={sendingMessage} className="flex-1 bg-primary hover:bg-primary/90 text-white font-semibold rounded-md-xl h-11">
               {sendingMessage ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send Message"}
             </Button>
           </DialogFooter>
@@ -288,10 +288,10 @@ export default function AdminFirms() {
 
       {/* Edit Quota & Plans Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent className="max-w-md rounded-2xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 p-6 font-sans">
+        <DialogContent className="max-w-md rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 p-6 font-sans hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <DialogDescription className="sr-only">Adjust firm quota settings</DialogDescription>
           <DialogHeader>
-            <DialogTitle className="text-slate-900 dark:text-slate-100 font-extrabold text-base flex items-center gap-1.5">
+            <DialogTitle className="text-slate-900 dark:text-slate-100 font-extrabold text-base flex items-center gap-2.5">
               <Edit2 className="w-4 h-4 text-primary" />
               {t("manage_limits", "Manage Limits:")} {selectedCompany?.name}
             </DialogTitle>
@@ -299,11 +299,11 @@ export default function AdminFirms() {
 
           <div className="space-y-4 py-4 text-sm text-slate-700 dark:text-slate-300">
             <div className="space-y-1.5">
-              <label className="font-bold uppercase tracking-wide text-[10px] text-slate-500 dark:text-slate-400 block">{t("subscription_tier", "Subscription Tier")}</label>
+              <label className="font-semibold uppercase tracking-wide text-[10px] text-slate-500 dark:text-slate-400 block tracking-[0.04em]">{t("subscription_tier", "Subscription Tier")}</label>
               <select 
                 value={subPlan} 
                 onChange={(e) => setSubPlan(e.target.value)}
-                className="w-full p-2.5 border border-primary/40 rounded-xl focus:ring-1 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm"
+                className="w-full p-2.5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-1 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm"
               >
                 <option value="starter">{t("starter_plan_29_mo", "Starter Plan ($29/mo)")}</option>
                 <option value="professional">{t("professional_plan_79_mo", "Professional Plan ($79/mo)")}</option>
@@ -312,11 +312,11 @@ export default function AdminFirms() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="font-bold uppercase tracking-wide text-[10px] text-slate-500 dark:text-slate-400 block">{t("subscription_status", "Subscription Status")}</label>
+              <label className="font-semibold uppercase tracking-wide text-[10px] text-slate-500 dark:text-slate-400 block tracking-[0.04em]">{t("subscription_status", "Subscription Status")}</label>
               <select 
                 value={subStatus} 
                 onChange={(e) => setSubStatus(e.target.value)}
-                className="w-full p-2.5 border border-primary/40 rounded-xl focus:ring-1 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm"
+                className="w-full p-2.5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-1 focus:ring-primary focus:outline-none bg-slate-50 dark:bg-slate-800/50 text-sm"
               >
                 <option value="trial">{t("trialing", "Trialing")}</option>
                 <option value="active">{t("active_paid", "Active (Paid)")}</option>
@@ -327,31 +327,31 @@ export default function AdminFirms() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="font-bold uppercase tracking-wide text-[10px] text-slate-500 dark:text-slate-400 block">{t("max_active_users", "Max Active Users")}</label>
+                <label className="font-semibold uppercase tracking-wide text-[10px] text-slate-500 dark:text-slate-400 block tracking-[0.04em]">{t("max_active_users", "Max Active Users")}</label>
                 <Input 
                   type="number"
                   value={maxUsers}
                   onChange={(e) => setMaxUsers(parseInt(e.target.value) || 0)}
-                  className="rounded-xl border-primary/40"
+                  className="rounded-md-xl border-primary/40"
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="font-bold uppercase tracking-wide text-[10px] text-slate-500 dark:text-slate-400 block">{t("max_active_cases", "Max Active Cases")}</label>
+                <label className="font-semibold uppercase tracking-wide text-[10px] text-slate-500 dark:text-slate-400 block tracking-[0.04em]">{t("max_active_cases", "Max Active Cases")}</label>
                 <Input 
                   type="number"
                   value={maxCases}
                   onChange={(e) => setMaxCases(parseInt(e.target.value) || 0)}
-                  className="rounded-xl border-primary/40"
+                  className="rounded-md-xl border-primary/40"
                 />
               </div>
             </div>
           </div>
 
           <DialogFooter className="flex gap-2 pt-2">
-            <Button variant="outline" onClick={() => setEditDialogOpen(false)} className="flex-1 rounded-xl text-slate-700 dark:text-slate-300 border-primary/40 h-11">
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)} className="flex-1 rounded-md-xl text-slate-700 dark:text-slate-300 border-primary/40 h-11">
               {t("cancel", "Cancel")}
             </Button>
-            <Button onClick={handleSaveQuotas} disabled={updatingQuota} className="flex-1 bg-primary hover:bg-primary/95 text-white font-semibold rounded-xl h-11">
+            <Button onClick={handleSaveQuotas} disabled={updatingQuota} className="flex-1 bg-primary hover:bg-primary/95 text-white font-semibold rounded-md-xl h-11">
               {updatingQuota ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Limits"}
             </Button>
           </DialogFooter>

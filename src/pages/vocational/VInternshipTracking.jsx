@@ -92,53 +92,53 @@ export default function VInternshipTracking() {
     <div className="space-y-6 h-[calc(100vh-100px)] flex flex-col">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white tracking-[-0.02em]">
             {t('internship_tracking', 'Internship Tracking')}
           </h1>
-          <p className="text-muted-foreground mt-1 text-sm font-medium">
+          <p className="text-[#71717a] dark:text-gray-400 mt-1 text-sm font-medium">
             {t('internships_desc', 'Manage and track student internship placements and performance.')}
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-primary hover:bg-primary/90 text-white rounded-xl shadow-none">
+            <Button className="bg-primary hover:bg-primary/90 text-white rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
               <Plus className="w-4 h-4 mr-2" /> {t('new_placement', 'New Placement')}
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] rounded-2xl border-primary/40 shadow-none bg-card">
+          <DialogContent className="sm:max-w-[425px] rounded-md-2xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <DialogHeader>
               <DialogTitle>{t('add_placement', 'Add Placement')}</DialogTitle>
             </DialogHeader>
             <div className="grid gap-4 py-4 max-h-[60vh] overflow-y-auto px-1">
               <div className="space-y-2">
                 <Label htmlFor="student">{t('student_name', 'Student Name')}</Label>
-                <Input id="student" placeholder="e.g. John Doe" value={newInternship.student_name} onChange={e => setNewInternship({...newInternship, student_name: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+                <Input id="student" placeholder="e.g. John Doe" value={newInternship.student_name} onChange={e => setNewInternship({...newInternship, student_name: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="company">{t('company', 'Company Name')}</Label>
-                <Input id="company" placeholder="e.g. TechCorp" value={newInternship.company_name} onChange={e => setNewInternship({...newInternship, company_name: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+                <Input id="company" placeholder="e.g. TechCorp" value={newInternship.company_name} onChange={e => setNewInternship({...newInternship, company_name: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="supervisor">{t('supervisor', 'Supervisor Name')}</Label>
-                <Input id="supervisor" placeholder="e.g. Jane Smith" value={newInternship.supervisor_name} onChange={e => setNewInternship({...newInternship, supervisor_name: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+                <Input id="supervisor" placeholder="e.g. Jane Smith" value={newInternship.supervisor_name} onChange={e => setNewInternship({...newInternship, supervisor_name: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="location">{t('location', 'Location')}</Label>
-                <Input id="location" placeholder="e.g. Accra" value={newInternship.location} onChange={e => setNewInternship({...newInternship, location: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+                <Input id="location" placeholder="e.g. Accra" value={newInternship.location} onChange={e => setNewInternship({...newInternship, location: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="sdate">{t('start_date', 'Start Date')}</Label>
-                  <Input id="sdate" type="date" value={newInternship.start_date} onChange={e => setNewInternship({...newInternship, start_date: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+                  <Input id="sdate" type="date" value={newInternship.start_date} onChange={e => setNewInternship({...newInternship, start_date: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="duration">{t('duration', 'Duration (Weeks)')}</Label>
-                  <Input id="duration" type="number" placeholder="12" value={newInternship.duration_weeks} onChange={e => setNewInternship({...newInternship, duration_weeks: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+                  <Input id="duration" type="number" placeholder="12" value={newInternship.duration_weeks} onChange={e => setNewInternship({...newInternship, duration_weeks: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
                 </div>
               </div>
             </div>
             <DialogFooter>
-              <Button onClick={handleCreateInternship} className="bg-primary text-white hover:bg-primary/90 rounded-xl shadow-none">{t('save', 'Save Placement')}</Button>
+              <Button onClick={handleCreateInternship} className="bg-primary text-white hover:bg-primary/90 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">{t('save', 'Save Placement')}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -146,13 +146,13 @@ export default function VInternshipTracking() {
 
       <div className="flex-1 flex gap-6 overflow-hidden">
         {/* Left Panel */}
-        <Card className="w-[350px] shrink-0 flex flex-col rounded-2xl border border-primary/40 bg-card shadow-none">
+        <Card className="w-[350px] shrink-0 flex flex-col rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="p-4 border-b border-primary/10">
             <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
               <Input 
                 placeholder="Search placements..." 
-                className="pl-9 h-10 border-primary/40 rounded-xl focus-visible:ring-primary shadow-none"
+                className="pl-9 h-10 border-primary/40 rounded-md-xl focus-visible:ring-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -160,29 +160,29 @@ export default function VInternshipTracking() {
           </div>
           <ScrollArea className="flex-1">
             {loading ? (
-              <div className="p-8 text-center text-muted-foreground text-sm">Loading placements...</div>
+              <div className="p-8 text-center text-[#71717a] dark:text-gray-400 text-sm">Loading placements...</div>
             ) : filteredInternships.length === 0 ? (
-              <div className="p-8 text-center text-muted-foreground text-sm">No internships found.</div>
+              <div className="p-8 text-center text-[#71717a] dark:text-gray-400 text-sm">No internships found.</div>
             ) : (
               <div className="p-2 space-y-1">
                 {filteredInternships.map(internship => (
                   <button
                     key={internship.id}
                     onClick={() => setSelectedInternship(internship)}
-                    className={`w-full text-left p-3 rounded-xl transition-all duration-200 flex items-center gap-3 ${
+                    className={`w-full text-left p-3 rounded-md-xl transition-all duration-200 flex items-center gap-3 ${
                       selectedInternship?.id === internship.id 
                         ? 'bg-primary/10 text-primary' 
                         : 'hover:bg-primary/5 text-foreground'
                     }`}
                   >
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold shrink-0 ${
+                    <div className={`w-10 h-10 rounded-md-xl flex items-center justify-center font-semibold shrink-0 ${
                       selectedInternship?.id === internship.id ? 'bg-primary text-white' : 'bg-primary/10 text-primary'
                     }`}>
                       <Briefcase className="w-5 h-5" />
                     </div>
                     <div className="overflow-hidden">
-                      <p className="font-bold truncate text-sm">{internship.data?.student_name || internship.title}</p>
-                      <p className={`text-xs truncate ${selectedInternship?.id === internship.id ? 'text-primary' : 'text-muted-foreground'}`}>
+                      <p className="font-semibold truncate text-sm">{internship.data?.student_name || internship.title}</p>
+                      <p className={`text-xs truncate ${selectedInternship?.id === internship.id ? 'text-primary' : 'text-[#71717a] dark:text-gray-400'}`}>
                         {internship.data?.company_name || 'Unassigned'}
                       </p>
                     </div>
@@ -194,7 +194,7 @@ export default function VInternshipTracking() {
         </Card>
 
         {/* Right Panel */}
-        <Card className="flex-1 flex flex-col rounded-2xl border border-primary/40 bg-card shadow-none overflow-hidden relative">
+        <Card className="flex-1 flex flex-col rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           {selectedInternship ? (
             <>
               <div className="h-32 bg-primary/10 relative shrink-0 border-b border-primary/10"></div>
@@ -202,17 +202,17 @@ export default function VInternshipTracking() {
               <ScrollArea className="flex-1 -mt-12">
                 <div className="px-8 pb-8">
                   <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center relative z-10">
-                    <div className="w-24 h-24 rounded-2xl bg-card border border-primary/40 p-2 shrink-0 shadow-none">
-                      <div className="w-full h-full rounded-xl bg-primary/5 flex items-center justify-center text-primary">
+                    <div className="w-24 h-24 rounded-md-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-2 shrink-0 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                      <div className="w-full h-full rounded-md-xl bg-primary/5 flex items-center justify-center text-primary">
                         <Briefcase className="w-10 h-10" />
                       </div>
                     </div>
                     <div className="flex-1 mt-4 sm:mt-12">
-                      <h2 className="text-3xl font-black text-slate-900 dark:text-white">{selectedInternship.data?.student_name || selectedInternship.title}</h2>
-                      <div className="flex items-center gap-3 mt-2 text-sm text-muted-foreground font-medium">
-                        <span className="flex items-center gap-1.5"><Building2 className="w-4 h-4 text-primary" /> {selectedInternship.data?.company_name || 'TBD'}</span>
+                      <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-[-0.02em]">{selectedInternship.data?.student_name || selectedInternship.title}</h2>
+                      <div className="flex items-center gap-3 mt-2 text-sm text-[#71717a] dark:text-gray-400 font-medium">
+                        <span className="flex items-center gap-2.5"><Building2 className="w-4 h-4 text-primary" /> {selectedInternship.data?.company_name || 'TBD'}</span>
                         <span>•</span>
-                        <Badge variant="secondary" className={`shadow-none px-3 py-1 text-xs ${selectedInternship.status === 'Active' ? 'bg-primary text-white' : selectedInternship.status === 'Completed' ? 'bg-primary text-white' : 'bg-slate-200 text-slate-600'}`}>
+                        <Badge variant="secondary" className={`shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none px-3 py-1 text-xs ${selectedInternship.status === 'Active' ? 'bg-primary text-white' : selectedInternship.status === 'Completed' ? 'bg-primary text-white' : 'bg-slate-200 text-slate-600'}`}>
                           {selectedInternship.status || 'Pending'}
                         </Badge>
                       </div>
@@ -221,50 +221,50 @@ export default function VInternshipTracking() {
 
                   <div className="mt-8">
                     <Tabs defaultValue="overview" className="w-full">
-                      <TabsList className="bg-primary/5 p-1 rounded-xl w-full sm:w-auto overflow-x-auto justify-start border border-primary/10">
-                        <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-none">Overview</TabsTrigger>
-                        <TabsTrigger value="supervisor" className="rounded-lg data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-none">Supervisor</TabsTrigger>
-                        <TabsTrigger value="logs" className="rounded-lg data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-none">Daily Logs</TabsTrigger>
+                      <TabsList className="bg-primary/5 p-1 rounded-md-xl w-full sm:w-auto overflow-x-auto justify-start border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
+                        <TabsTrigger value="overview" className="rounded-xl data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Overview</TabsTrigger>
+                        <TabsTrigger value="supervisor" className="rounded-xl data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Supervisor</TabsTrigger>
+                        <TabsTrigger value="logs" className="rounded-xl data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Daily Logs</TabsTrigger>
                       </TabsList>
                       
                       <div className="mt-6">
                         <TabsContent value="overview" className="space-y-6 outline-none">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <Card className="bg-primary/5 border border-primary/10 shadow-none rounded-2xl">
+                            <Card className="bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none rounded-md-2xl">
                               <CardHeader className="pb-3 border-b border-primary/5">
-                                <CardTitle className="text-sm font-bold text-primary uppercase tracking-wider">Placement Details</CardTitle>
+                                <CardTitle className="text-sm font-semibold text-primary uppercase tracking-wider tracking-[0.04em]">Placement Details</CardTitle>
                               </CardHeader>
                               <CardContent className="pt-4 grid grid-cols-2 gap-y-4">
                                 <div>
-                                  <p className="text-xs text-muted-foreground">Start Date</p>
+                                  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Start Date</p>
                                   <p className="font-medium text-slate-900 dark:text-white flex items-center gap-2"><Calendar className="w-4 h-4 text-primary" /> {selectedInternship.data?.start_date || 'N/A'}</p>
                                 </div>
                                 <div>
-                                  <p className="text-xs text-muted-foreground">End Date</p>
+                                  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">End Date</p>
                                   <p className="font-medium text-slate-900 dark:text-white flex items-center gap-2"><Calendar className="w-4 h-4 text-primary" /> {selectedInternship.data?.end_date || 'N/A'}</p>
                                 </div>
                                 <div>
-                                  <p className="text-xs text-muted-foreground">Duration</p>
+                                  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Duration</p>
                                   <p className="font-medium text-slate-900 dark:text-white flex items-center gap-2"><Clock className="w-4 h-4 text-primary" /> {selectedInternship.data?.duration_weeks || 'N/A'} weeks</p>
                                 </div>
                                 <div>
-                                  <p className="text-xs text-muted-foreground">Location</p>
+                                  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Location</p>
                                   <p className="font-medium text-slate-900 dark:text-white flex items-center gap-2"><MapPin className="w-4 h-4 text-primary" /> {selectedInternship.data?.location || 'N/A'}</p>
                                 </div>
                               </CardContent>
                             </Card>
                             
-                            <Card className="bg-primary/5 border border-primary/10 shadow-none rounded-2xl">
+                            <Card className="bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none rounded-md-2xl">
                               <CardHeader className="pb-3 border-b border-primary/5">
-                                <CardTitle className="text-sm font-bold text-primary uppercase tracking-wider">Company Info</CardTitle>
+                                <CardTitle className="text-sm font-semibold text-primary uppercase tracking-wider tracking-[0.04em]">Company Info</CardTitle>
                               </CardHeader>
                               <CardContent className="pt-4 space-y-4">
                                 <div>
-                                  <p className="text-xs text-muted-foreground">Company Name</p>
+                                  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Company Name</p>
                                   <p className="font-medium text-slate-900 dark:text-white">{selectedInternship.data?.company_name || 'N/A'}</p>
                                 </div>
                                 <div>
-                                  <p className="text-xs text-muted-foreground">Supervisor / Mentor</p>
+                                  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Supervisor / Mentor</p>
                                   <p className="font-medium text-slate-900 dark:text-white flex items-center gap-2">
                                     <UserCircle className="w-4 h-4 text-primary" />
                                     {selectedInternship.data?.supervisor_name || 'N/A'}
@@ -276,20 +276,20 @@ export default function VInternshipTracking() {
                         </TabsContent>
                         
                         <TabsContent value="supervisor" className="outline-none">
-                          <Card className="border border-primary/10 bg-primary/5 shadow-none rounded-2xl text-center py-12 flex flex-col items-center">
+                          <Card className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 bg-primary/5 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none rounded-md-2xl text-center py-12 flex flex-col items-center">
                             <UserCircle className="w-12 h-12 text-primary/40 mx-auto mb-4" />
-                            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Supervisor Evaluation</h3>
-                            <p className="text-muted-foreground text-sm max-w-sm mb-6">
+                            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">Supervisor Evaluation</h3>
+                            <p className="text-[#71717a] dark:text-gray-400 text-sm max-w-sm mb-6">
                               The supervisor evaluation has not been submitted yet. Usually completed at the end of the internship period.
                             </p>
-                            <Button variant="outline" className="border-primary/40 text-primary shadow-none rounded-xl">Send Evaluation Request</Button>
+                            <Button variant="outline" className="border-primary/40 text-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none rounded-md-xl">Send Evaluation Request</Button>
                           </Card>
                         </TabsContent>
                         
                         <TabsContent value="logs" className="outline-none">
-                          <Card className="border border-primary/10 bg-primary/5 shadow-none rounded-2xl text-center py-12">
+                          <Card className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 bg-primary/5 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none rounded-md-2xl text-center py-12">
                             <Clock className="w-12 h-12 text-primary/40 mx-auto mb-4" />
-                            <p className="text-muted-foreground text-sm mb-4">No daily logs recorded by the intern yet.</p>
+                            <p className="text-[#71717a] dark:text-gray-400 text-sm mb-4">No daily logs recorded by the intern yet.</p>
                           </Card>
                         </TabsContent>
                       </div>
@@ -300,11 +300,11 @@ export default function VInternshipTracking() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-md-full bg-primary/10 flex items-center justify-center mb-6">
                 <Briefcase className="w-10 h-10 text-primary/40" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white">No Internship Selected</h3>
-              <p className="text-muted-foreground max-w-sm mt-2">
+              <h3 className="text-xl font-semibold text-slate-900 dark:text-white">No Internship Selected</h3>
+              <p className="text-[#71717a] dark:text-gray-400 max-w-sm mt-2">
                 Select an internship placement to view its details, supervisor feedback, and student logs.
               </p>
             </div>

@@ -87,39 +87,39 @@ export default function UnivLMS() {
  <div className="flex flex-col h-full bg-background overflow-hidden ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
  <div>
- <h2 className="text-2xl font-bold text-foreground tracking-tight">Learning Management System</h2>
- <p className="text-sm text-muted-foreground mt-1">Manage lessons, assignments, quizzes, and course materials.</p>
+ <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">Learning Management System</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Manage lessons, assignments, quizzes, and course materials.</p>
  </div>
  <div className="flex gap-2">
- <button onClick={() => handleAddContent('Lesson')} className="flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-700 border border-blue-200 rounded-xl text-sm font-semibold hover:bg-blue-100 transition-colors">
+ <button onClick={() => handleAddContent('Lesson')} className="flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-700 border-[0.5px] border-black/9 dark:border-white/8 border-blue-200 rounded-md-xl text-sm font-semibold hover:bg-blue-100 transition-colors">
  <Video className="w-4 h-4" /> Lesson
  </button>
- <button onClick={() => handleAddContent('Assignment')} className="flex items-center gap-2 px-3 py-2 bg-purple-50 text-purple-700 border border-purple-200 rounded-xl text-sm font-semibold hover:bg-purple-100 transition-colors">
+ <button onClick={() => handleAddContent('Assignment')} className="flex items-center gap-2 px-3 py-2 bg-purple-50 text-purple-700 border-[0.5px] border-black/9 dark:border-white/8 border-purple-200 rounded-md-xl text-sm font-semibold hover:bg-purple-100 transition-colors">
  <FileText className="w-4 h-4" /> Assignment
  </button>
- <button onClick={() => handleAddContent('Quiz')} className="flex items-center gap-2 px-3 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl text-sm font-semibold hover:bg-emerald-100 transition-colors">
+ <button onClick={() => handleAddContent('Quiz')} className="flex items-center gap-2 px-3 py-2 bg-emerald-50 text-emerald-700 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 rounded-md-xl text-sm font-semibold hover:bg-emerald-100 transition-colors">
  <CheckSquare className="w-4 h-4" /> Quiz
  </button>
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
  <input 
  type="text"
  placeholder="Search content..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
 
  <div className="flex-1 overflow-auto custom-scrollbar">
  <table className="w-full text-left text-sm whitespace-nowrap">
- <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground sticky top-0 z-10 backdrop-blur-md">
+ <thead className="bg-muted/50 text-xs uppercase tracking-wider text-[#71717a] dark:text-gray-400 sticky top-0 z-10 backdrop-blur-md tracking-[0.04em]">
  <tr>
  <th className="p-4 font-semibold w-16">Type</th>
  <th className="p-4 font-semibold">Title</th>
@@ -139,21 +139,21 @@ export default function UnivLMS() {
  className="hover:bg-muted/30 transition-colors group cursor-pointer"
  >
  <td className="p-4">
- <div className="p-2 bg-muted dark:bg-slate-800 rounded-lg w-fit">
+ <div className="p-2 bg-muted dark:bg-slate-800 rounded-xl w-fit">
  {getIcon(l.content_type)}
  </div>
  </td>
  <td className="p-4 font-semibold text-foreground">
  {l.title}
  </td>
- <td className="p-4 text-muted-foreground font-medium">
- <div className="flex items-center gap-1.5"><BookOpen className="w-3.5 h-3.5" /> {l.course_name || 'Course'}</div>
+ <td className="p-4 text-[#71717a] dark:text-gray-400 font-medium">
+ <div className="flex items-center gap-2.5"><BookOpen className="w-3.5 h-3.5" /> {l.course_name || 'Course'}</div>
  </td>
- <td className="p-4 text-muted-foreground text-sm">
- {l.due_date ? <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {l.due_date}</span> : '—'}
+ <td className="p-4 text-[#71717a] dark:text-gray-400 text-sm">
+ {l.due_date ? <span className="flex items-center gap-2.5"><Clock className="w-3.5 h-3.5" /> {l.due_date}</span> : '—'}
  </td>
  <td className="p-4">
- <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border ${
+ <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-semibold rounded-lg border ${
  l.status === 'Published' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
  l.status === 'Archived' ? 'bg-background text-foreground border-primary/40' : 
  'bg-orange-50 text-orange-700 border-orange-200'
@@ -162,7 +162,7 @@ export default function UnivLMS() {
  </span>
  </td>
  <td className="p-4 text-right">
- <button className="text-muted-foreground hover:text-primary transition-colors p-2"><MoreHorizontal className="w-4 h-4" /></button>
+ <button className="text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors p-2"><MoreHorizontal className="w-4 h-4" /></button>
  </td>
  </motion.tr>
  ))}

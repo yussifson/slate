@@ -112,23 +112,23 @@ export default function FirmFeaturesManager({ firm, onClose}) {
 
  return (
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm animate-in fade-in">
- <div className="bg-card w-full max-w-4xl rounded-2xl flex flex-col max-h-[90vh]">
+ <div className="bg-card w-full max-w-4xl rounded-md-2xl flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  
  <div className="p-5 border-b border-primary/40 flex justify-between items-center bg-muted/20 shrink-0">
  <div>
  <h2 className="text-xl font-black flex items-center gap-2">
  <Layers className="w-5 h-5 text-primary" /> Manage Firm Features
  </h2>
- <p className="text-sm text-muted-foreground mt-0.5">Assigning universal components to <strong className="text-foreground">{firm.name}</strong></p>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">Assigning universal components to <strong className="text-foreground">{firm.name}</strong></p>
  </div>
- <button onClick={onClose} className="p-2 hover:bg-muted rounded-full text-muted-foreground transition-colors">
+ <button onClick={onClose} className="p-2 hover:bg-muted rounded-md-full text-[#71717a] dark:text-gray-400 transition-colors">
  <X className="w-5 h-5" />
  </button>
  </div>
 
  <div className="p-5 border-b border-primary/40 shrink-0">
  <div className="relative">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <Input 
  placeholder="Search 200+ available features..." 
  className="pl-9 bg-background "
@@ -140,7 +140,7 @@ export default function FirmFeaturesManager({ firm, onClose}) {
 
  <div className="flex-1 overflow-auto custom-scrollbar p-5 bg-muted/10">
  {loading ? (
- <div className="flex flex-col items-center justify-center h-full text-muted-foreground gap-3">
+ <div className="flex flex-col items-center justify-center h-full text-[#71717a] dark:text-gray-400 gap-3">
  <Loader2 className="w-8 h-8 animate-spin text-primary" />
  <p>Loading assigned features...</p>
  </div>
@@ -152,22 +152,22 @@ export default function FirmFeaturesManager({ firm, onClose}) {
  <button
  key={comp.id}
  onClick={() => toggleFeature(comp)}
- className={`flex items-start gap-3 p-3 rounded-xl border text-left transition-all ${
+ className={`flex items-start gap-3 p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 text-left transition-all ${
  isAssigned 
  ? 'bg-primary/5 border-primary/40 ' 
  : 'bg-background border-primary/40 hover:border-primary/30 hover:bg-muted/30'
 }`}
  >
- <div className={`mt-0.5 w-4 h-4 rounded-[4px] border flex items-center justify-center shrink-0 transition-colors ${
+ <div className={`mt-0.5 w-4 h-4 rounded-md-[4px] border-[0.5px] border-black/9 dark:border-white/8 flex items-center justify-center shrink-0 transition-colors ${
  isAssigned ? 'bg-primary border-primary text-white' : 'border-muted-foreground/30 bg-background'
 }`}>
  {isAssigned && <Check className="w-3 h-3" />}
  </div>
  <div className="min-w-0">
- <p className={`text-sm font-bold truncate leading-tight ${isAssigned ? 'text-primary' : 'text-foreground'}`}>
+ <p className={`text-sm font-semibold truncate leading-tight ${isAssigned ? 'text-primary' : 'text-foreground'}`}>
  {comp.label}
  </p>
- <p className="text-[10px] text-muted-foreground truncate mt-0.5 font-mono">
+ <p className="text-[10px] text-[#71717a] dark:text-gray-400 truncate mt-0.5 font-mono">
  {comp.id}
  </p>
  </div>
@@ -175,7 +175,7 @@ export default function FirmFeaturesManager({ firm, onClose}) {
  );
 })}
  {filteredComponents.length === 0 && (
- <div className="col-span-full py-12 text-center text-muted-foreground">
+ <div className="col-span-full py-12 text-center text-[#71717a] dark:text-gray-400">
  No features found matching "{search}"
  </div>
  )}
@@ -183,8 +183,8 @@ export default function FirmFeaturesManager({ firm, onClose}) {
  )}
  </div>
 
- <div className="p-5 border-t border-primary/40 flex justify-between items-center bg-background shrink-0 rounded-b-2xl">
- <p className="text-sm text-muted-foreground font-medium">
+ <div className="p-5 border-t border-primary/40 flex justify-between items-center bg-background shrink-0 rounded-md-b-2xl">
+ <p className="text-sm text-[#71717a] dark:text-gray-400 font-medium">
  <strong className="text-foreground">{assignedFeatures.length}</strong> features assigned
  </p>
  <div className="flex gap-3">

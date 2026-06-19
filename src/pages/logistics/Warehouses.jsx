@@ -36,7 +36,7 @@ function generateCode() {
 }
 
 function getCapacityColor(pct) {
- if (pct >= 90) return 'bg-red-500';
+ if (pct >= 90) return 'bg-red-500/10';
  if (pct >= 70) return 'bg-amber-500';
  return 'bg-primary';
 }
@@ -148,8 +148,8 @@ export default function Warehouses() {
  {/* Header */}
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("warehouse_management", "Warehouse Management")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t(
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("warehouse_management", "Warehouse Management")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
  "monitor_capacity_and_manage_wa",
  "Monitor capacity and manage warehouse locations"
  )}</p>
@@ -162,13 +162,13 @@ export default function Warehouses() {
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  {stats.map(s => {
  return (
- <div key={s.label} className={`stat-card-premium bg-card rounded-xl border ${s.border} p-4 flex items-center gap-3`}>
- <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${s.color}`}>
+ <div key={s.label} className={`stat-card-premium bg-card rounded-md-xl border ${s.border} p-4 flex items-center gap-3`}>
+ <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${s.color}`}>
  <s.icon className="w-5 h-5" />
  </div>
  <div>
- <p className="text-xl font-bold text-card-foreground leading-tight">{s.value}</p>
- <p className="text-xs text-muted-foreground">{s.label}</p>
+ <p className="text-xl font-semibold text-card-foreground leading-tight hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{s.value}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{s.label}</p>
  </div>
  </div>
  );
@@ -176,22 +176,22 @@ export default function Warehouses() {
  </div>
  {/* Search */}
  <div className="relative max-w-sm">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <Input
  placeholder="Search name, code, location..."
  value={search}
  onChange={e => setSearch(e.target.value)}
- className="pl-9 bg-card"
+ className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  {/* Cards Grid */}
  {isLoading ? (
- <div className="py-16 text-center text-muted-foreground">{t("loading_warehouses", "Loading warehouses...")}</div>
+ <div className="py-16 text-center text-[#71717a] dark:text-gray-400">{t("loading_warehouses", "Loading warehouses...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-16 text-center text-muted-foreground bg-card rounded-xl border border-primary/40">
+ <div className="py-16 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Warehouse className="w-12 h-12 mx-auto mb-3 opacity-30" />
  <p className="font-semibold">{t("no_warehouses_found", "No warehouses found.")}</p>
- <p className="text-xs mt-1">{t(
+ <p className="text-xs mt-1 tracking-[0.04em]">{t(
  "click_add_warehouse_to_registe",
  "Click \"Add Warehouse\" to register your first warehouse."
  )}</p>
@@ -208,48 +208,48 @@ export default function Warehouses() {
  const cats = wh.categories ? wh.categories.split(',').map(c => c.trim()).filter(Boolean) : [];
 
  return (
- <div key={wh.id} className="bg-card rounded-xl border border-primary/40 transition- p-5 space-y-4">
+ <div key={wh.id} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 transition- p-5 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Card Header */}
  <div className="flex items-start justify-between">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-primary/30 flex items-center justify-center text-primary">
+ <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-primary/30 flex items-center justify-center text-primary">
  <Warehouse className="w-5 h-5" />
  </div>
  <div>
- <h3 className="font-bold text-card-foreground text-sm leading-tight">{wh.warehouseName}</h3>
- <span className="font-mono text-xs text-primary font-semibold">{wh.code}</span>
+ <h3 className="font-semibold text-card-foreground text-sm leading-tight hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{wh.warehouseName}</h3>
+ <span className="font-mono text-xs text-primary font-semibold tracking-[0.04em]">{wh.code}</span>
  </div>
  </div>
- <div className="flex items-center gap-1.5">
- <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${STATUS_COLORS[wh.status] || 'bg-muted'}`}>
+ <div className="flex items-center gap-2.5">
+ <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md-full uppercase tracking-wider ${STATUS_COLORS[wh.status] || 'bg-muted'}`}>
  {wh.status}
  </span>
  </div>
  </div>
  {/* Capacity Progress */}
  <div className="space-y-1.5">
- <div className="flex items-center justify-between text-xs">
- <span className="text-muted-foreground">{t("capacity_used", "Capacity Used")}</span>
- <span className={`font-bold ${getCapacityLabelColor(pct)}`}>{pct}%</span>
+ <div className="flex items-center justify-between text-xs tracking-[0.04em]">
+ <span className="text-[#71717a] dark:text-gray-400">{t("capacity_used", "Capacity Used")}</span>
+ <span className={`font-semibold ${getCapacityLabelColor(pct)}`}>{pct}%</span>
  </div>
- <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+ <div className="w-full h-2 bg-muted rounded-md-full overflow-hidden">
  <div
- className={`h-full rounded-full transition-all duration-500 ${getCapacityColor(pct)}`}
+ className={`h-full rounded-md-full transition-all duration-500 ${getCapacityColor(pct)}`}
  style={{ width: `${pct}%`}}
  />
  </div>
- <div className="flex justify-between text-xs text-muted-foreground">
+ <div className="flex justify-between text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  <span>{used.toLocaleString()} {t("used", "used")}</span>
  <span>{cap.toLocaleString()} {t("total", "total")}</span>
  </div>
  </div>
  {/* Info Grid */}
- <div className="grid grid-cols-1 gap-1.5 text-xs text-muted-foreground">
- <div className="flex items-center gap-1.5">
+ <div className="grid grid-cols-1 gap-2.5 text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
+ <div className="flex items-center gap-2.5">
  <MapPin className="w-3.5 h-3.5 shrink-0 text-primary" />
  <span className="truncate">{wh.location || '—'}</span>
  </div>
- <div className="flex items-center gap-1.5">
+ <div className="flex items-center gap-2.5">
  <User className="w-3.5 h-3.5 shrink-0 text-primary" />
  <span>
  {wh.manager ? (
@@ -261,17 +261,17 @@ export default function Warehouses() {
  )}
  </span>
  </div>
- <div className="flex items-center gap-1.5">
+ <div className="flex items-center gap-2.5">
  <Phone className="w-3.5 h-3.5 shrink-0 text-primary" />
  <span>{wh.phone || '—'}</span>
  </div>
  </div>
  {/* Categories */}
  {cats.length > 0 && (
- <div className="flex flex-wrap gap-1.5">
+ <div className="flex flex-wrap gap-2.5">
  {cats.map(cat => {
  return (
- <span key={cat} className="inline-flex items-center gap-1 text-[10px] bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 px-2 py-0.5 rounded-full font-medium border border-primary/20 dark:border-primary/80">
+ <span key={cat} className="inline-flex items-center gap-2 text-[10px] bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 px-2 py-0.5 rounded-md-full font-medium border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 dark:border-primary/80">
  <Tag className="w-2.5 h-2.5" /> {cat}
  </span>
  );
@@ -307,66 +307,66 @@ export default function Warehouses() {
  {/* Add/Edit Modal */}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-5 border border-primary/40 max-h-[90vh] overflow-y-auto">
+ <div className="bg-card rounded-md-2xl w-full max-w-lg p-6 space-y-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 max-h-[90vh] overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
+ <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Warehouse className="w-5 h-5 text-primary" />
  {editTarget ? 'Edit Warehouse' : 'Add Warehouse'}
  </h2>
- <button onClick={closeModal} className="text-muted-foreground hover:text-foreground p-1 rounded-full hover:bg-muted">
+ <button onClick={closeModal} className="text-[#71717a] dark:text-gray-400 hover:text-foreground p-1 rounded-md-full hover:bg-muted">
  <X className="w-4 h-4" />
  </button>
  </div>
 
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="text-xs font-semibold text-muted-foreground uppercase">{t("warehouse_name", "Warehouse Name")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("warehouse_name", "Warehouse Name")}</label>
  <Input value={formData.warehouseName} onChange={e => setFormData({ ...formData, warehouseName: e.target.value})}
  className="mt-1" placeholder="e.g. Central Hub A" />
  </div>
  <div>
- <label className="text-xs font-semibold text-muted-foreground uppercase">{t("code", "Code")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("code", "Code")}</label>
  <Input value={formData.code} onChange={e => setFormData({ ...formData, code: e.target.value})}
  className="mt-1" placeholder="WH-XX" />
  </div>
  <div className="col-span-2">
- <label className="text-xs font-semibold text-muted-foreground uppercase">{t("location_address", "Location / Address")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("location_address", "Location / Address")}</label>
  <Input value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value})}
  className="mt-1" placeholder="e.g. Tema Industrial Area, Ghana" />
  </div>
  <div>
- <label className="text-xs font-semibold text-muted-foreground uppercase">{t("total_capacity_units", "Total Capacity (units)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("total_capacity_units", "Total Capacity (units)")}</label>
  <Input type="number" value={formData.capacity} onChange={e => setFormData({ ...formData, capacity: e.target.value})}
  className="mt-1" placeholder="e.g. 5000" />
  </div>
  <div>
- <label className="text-xs font-semibold text-muted-foreground uppercase">{t("used_capacity_units", "Used Capacity (units)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("used_capacity_units", "Used Capacity (units)")}</label>
  <Input type="number" value={formData.usedCapacity} onChange={e => setFormData({ ...formData, usedCapacity: e.target.value})}
  className="mt-1" placeholder="e.g. 2400" />
  </div>
  <div>
- <label className="text-xs font-semibold text-muted-foreground uppercase">{t("manager", "Manager")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("manager", "Manager")}</label>
  <Input value={formData.manager} onChange={e => setFormData({ ...formData, manager: e.target.value})}
  className="mt-1" placeholder="Manager name" />
  </div>
  <div>
- <label className="text-xs font-semibold text-muted-foreground uppercase">{t("phone", "Phone")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("phone", "Phone")}</label>
  <Input value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value})}
  className="mt-1" placeholder="+233 XX XXX XXXX" />
  </div>
  <div className="col-span-2">
- <label className="text-xs font-semibold text-muted-foreground uppercase">{t("categories", "Categories")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("categories", "Categories")}</label>
  <Input value={formData.categories} onChange={e => setFormData({ ...formData, categories: e.target.value})}
  className="mt-1" placeholder="e.g. Electronics, Furniture, Perishables" />
- <p className="text-xs text-muted-foreground mt-1">{t(
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">{t(
  "separate_multiple_categories_w",
  "Separate multiple categories with commas."
  )}</p>
  </div>
  <div className="col-span-2">
- <label className="text-xs font-semibold text-muted-foreground uppercase">{t("status", "Status")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</label>
  <select value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value})}
- className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+ className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-card px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <option>{t("active", "Active")}</option>
  <option>{t("inactive", "Inactive")}</option>
  </select>
@@ -399,31 +399,31 @@ export default function Warehouses() {
  <div className="mt-6 space-y-4 text-sm">
  <div className="grid grid-cols-2 gap-4">
  <div className="col-span-2">
- <div className="text-xs text-muted-foreground">{t("warehouse_name", "Warehouse Name")}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("warehouse_name", "Warehouse Name")}</div>
  <div className="font-medium text-foreground">{viewTarget.warehouseName}</div>
  </div>
  <div>
- <div className="text-xs text-muted-foreground">{t("code", "Code")}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("code", "Code")}</div>
  <div className="font-mono text-primary font-semibold">{viewTarget.code}</div>
  </div>
  <div>
- <div className="text-xs text-muted-foreground">{t("status", "Status")}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("status", "Status")}</div>
  <div className="font-medium text-foreground">{viewTarget.status}</div>
  </div>
  <div className="col-span-2">
- <div className="text-xs text-muted-foreground">{t("location", "Location")}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("location", "Location")}</div>
  <div className="font-medium text-foreground">{viewTarget.location || '—'}</div>
  </div>
  <div>
- <div className="text-xs text-muted-foreground">{t("capacity_units", "Capacity (units)")}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("capacity_units", "Capacity (units)")}</div>
  <div className="font-medium text-foreground">{viewTarget.capacity || '—'}</div>
  </div>
  <div>
- <div className="text-xs text-muted-foreground">{t("used_capacity", "Used Capacity")}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("used_capacity", "Used Capacity")}</div>
  <div className="font-medium text-foreground">{viewTarget.usedCapacity || '0'}</div>
  </div>
  <div>
- <div className="text-xs text-muted-foreground">{t("manager", "Manager")}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("manager", "Manager")}</div>
  <div className="font-medium text-foreground">
  {viewTarget.manager ? (
  <Link to="/team" className="text-primary hover:underline">
@@ -435,11 +435,11 @@ export default function Warehouses() {
  </div>
  </div>
  <div>
- <div className="text-xs text-muted-foreground">{t("phone", "Phone")}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("phone", "Phone")}</div>
  <div className="font-medium text-foreground">{viewTarget.phone || '—'}</div>
  </div>
  <div className="col-span-2">
- <div className="text-xs text-muted-foreground">{t("categories", "Categories")}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("categories", "Categories")}</div>
  <div className="font-medium text-foreground">{viewTarget.categories || '—'}</div>
  </div>
  </div>

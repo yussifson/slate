@@ -105,10 +105,10 @@ export default function SHSReturns() {
  
  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
  <div>
- <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
+ <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent tracking-[-0.02em]">
  Book Returns
  </h1>
- <p className="text-muted-foreground mt-1 text-sm font-medium">
+ <p className="text-[#71717a] dark:text-gray-400 mt-1 text-sm font-medium">
  Process library returns and update book conditions.
  </p>
  </div>
@@ -117,17 +117,17 @@ export default function SHSReturns() {
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
  
  {/* Active Checkouts to Return */}
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-amber-100 overflow-hidden">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-amber-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-amber-50/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
- <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+ <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <BookDown className="w-5 h-5 text-amber-500" /> Awaiting Return
  </CardTitle>
  <div className="relative w-full sm:w-48">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search to return..." 
- className="pl-9 h-8 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-lg text-xs"
+ className="pl-9 h-8 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl text-xs tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -139,21 +139,21 @@ export default function SHSReturns() {
  <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading records...</div>
  ) : filteredActive.length === 0 ? (
  <div className="p-12 text-center">
- <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No active checkouts found</h3>
+ <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No active checkouts found</h3>
  </div>
  ) : (
  <div className="divide-y divide-slate-100 max-h-[500px] overflow-y-auto">
  {filteredActive.map((record) => (
  <div key={record.id} className="p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
  <div>
- <p className="font-bold text-slate-800 dark:text-slate-100 text-sm mb-1">{record.data?.bookTitle}</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Borrowed by: <span className="font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">{record.data?.studentName}</span></p>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Due: {record.data?.dueDate}</p>
+ <p className="font-semibold text-slate-800 dark:text-slate-100 text-sm mb-1">{record.data?.bookTitle}</p>
+ <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">Borrowed by: <span className="font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">{record.data?.studentName}</span></p>
+ <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">Due: {record.data?.dueDate}</p>
  </div>
  <Button 
  size="sm"
  onClick={() => openReturnModal(record.id)}
- className="rounded-lg bg-white dark:bg-slate-900/40 dark:bg-slate-900 border border-amber-200 text-amber-700 hover:bg-amber-50 "
+ className="rounded-xl bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 text-amber-700 hover:bg-amber-50  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  Process Return
  </Button>
@@ -165,9 +165,9 @@ export default function SHSReturns() {
  </Card>
 
  {/* Recently Returned History */}
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/10 overflow-hidden">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-primary/10 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-500 pb-4">
- <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+ <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <History className="w-5 h-5 text-primary" /> Recently Returned
  </CardTitle>
  </CardHeader>
@@ -176,16 +176,16 @@ export default function SHSReturns() {
  <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading history...</div>
  ) : returnedBorrowings.length === 0 ? (
  <div className="p-12 text-center">
- <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No return history</h3>
+ <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No return history</h3>
  </div>
  ) : (
  <div className="divide-y divide-slate-100 max-h-[500px] overflow-y-auto">
  {returnedBorrowings.slice(0, 10).map((record) => (
  <div key={record.id} className="p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
- <p className="font-bold text-slate-800 dark:text-slate-100 text-sm mb-1">{record.data?.bookTitle}</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Returned by: <span className="font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">{record.data?.studentName}</span></p>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">On: {record.data?.returnDate}</p>
+ <p className="font-semibold text-slate-800 dark:text-slate-100 text-sm mb-1">{record.data?.bookTitle}</p>
+ <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">Returned by: <span className="font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">{record.data?.studentName}</span></p>
+ <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">On: {record.data?.returnDate}</p>
  </div>
  <Badge variant="outline" className={`
  ${record.data?.returnCondition === 'Good' ? 'bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20' : ''}
@@ -204,10 +204,10 @@ export default function SHSReturns() {
  </div>
 
  <Dialog open={isReturnModalOpen} onOpenChange={setIsReturnModalOpen}>
- <DialogContent className="sm:max-w-[400px] rounded-3xl p-0 overflow-hidden border-none ">
+ <DialogContent className="sm:max-w-[400px] rounded-md-3xl p-0 overflow-hidden border-none ">
  <div className="p-6 bg-amber-500 text-white">
  <DialogHeader>
- <DialogTitle className="text-2xl font-black">Process Return</DialogTitle>
+ <DialogTitle className="text-2xl font-black tracking-[-0.02em]">Process Return</DialogTitle>
  <DialogDescription className="text-amber-100">
  Update the condition of the returned book.
  </DialogDescription>
@@ -216,9 +216,9 @@ export default function SHSReturns() {
  
  <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 space-y-4">
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Book Condition on Return</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Book Condition on Return</label>
  <select 
- className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500 font-semibold"
+ className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-amber-500 font-semibold hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={returnCondition}
  onChange={e => setReturnCondition(e.target.value)}
  >
@@ -229,21 +229,21 @@ export default function SHSReturns() {
  </div>
  
  {returnCondition !== 'Good' && (
- <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-sm">
- <p className="font-bold mb-1">Note:</p>
+ <div className="p-4 rounded-md-xl bg-amber-50 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 text-amber-800 text-sm">
+ <p className="font-semibold mb-1">Note:</p>
  <p>If damaged or lost, the student may need to be billed for a replacement. The inventory count will not be incremented for lost books.</p>
  </div>
  )}
  </div>
  
- <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3">
- <Button variant="outline" onClick={() => setIsReturnModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
+ <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Button variant="outline" onClick={() => setIsReturnModalOpen(false)} className="rounded-md-xl font-semibold text-slate-600 dark:text-slate-300">
  Cancel
  </Button>
  <Button 
  onClick={handleProcessReturn} 
  disabled={isProcessing}
- className="rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold"
+ className="rounded-md-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold"
  >
  {isProcessing ? 'Processing...' : 'Confirm Return'}
  </Button>

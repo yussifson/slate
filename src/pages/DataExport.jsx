@@ -182,7 +182,7 @@ export default function DataExport() {
         title="Data Export"
         subtitle="Export cases, client data, and billing reports to CSV"
       />
-      <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-xs text-amber-700 flex items-start gap-2">
+      <div className="bg-amber-50 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 rounded-md-xl px-4 py-3 text-xs text-amber-700 flex items-start gap-2 tracking-[0.04em]">
         <Download className="w-4 h-4 shrink-0 mt-0.5" />
         <span>{t(
             "exports_include_all_records_fo",
@@ -198,9 +198,9 @@ export default function DataExport() {
           const count = counts[config.key];
           const isExporting = exporting === config.key;
           return (
-            <div key={config.key} className="bg-card border border-primary/40 rounded-xl p-5 flex flex-col gap-4">
+            <div key={config.key} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-5 flex flex-col gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <div className="flex items-start gap-3">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${config.color}`}>
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${config.color}`}>
                   <Icon className="w-5 h-5" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -208,17 +208,17 @@ export default function DataExport() {
                     <h3 className="text-sm font-semibold text-foreground">{config.label}</h3>
                     <Badge variant="outline" className="text-[10px]">{count} {t("records", "records")}</Badge>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-0.5">{config.description}</p>
+                  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">{config.description}</p>
                 </div>
               </div>
-              <div className="text-xs text-muted-foreground">
+              <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
                 <span className="font-medium">{t("columns", "Columns:")} </span>
                 {config.columns.map(c => c.label).join(", ")}
               </div>
               <Button
                 size="sm"
                 variant="outline"
-                className="gap-1.5 self-start"
+                className="gap-2.5 self-start"
                 onClick={() => handleExport(config)}
                 disabled={isExporting || count === 0}
               >

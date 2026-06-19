@@ -92,35 +92,35 @@ export default function UnivAdSpend() {
  <div className="p-6 max-w-6xl mx-auto bg-background min-h-screen ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex justify-between items-center mb-8">
  <div>
- <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
+ <h1 className="text-3xl font-semibold text-foreground flex items-center gap-3 tracking-[-0.02em]">
  <TrendingUp className="text-emerald-600 w-8 h-8" />
  Ad Spend & ROAS
  </h1>
- <p className="text-muted-foreground mt-2">Track advertising expenditures and return on investment.</p>
+ <p className="text-[#71717a] dark:text-gray-400 mt-2">Track advertising expenditures and return on investment.</p>
  </div>
  {!isEditing && (
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Calendar","Dashboard"].map(v => (
  <button 
  key={v} 
  onClick={() => setView(v)} 
- className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${view === v ? 'bg-background text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+ className={`px-3 py-1 text-xs font-medium rounded-lg transition-all ${view === v ? 'bg-background text-foreground' : 'text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}
  >
  {v}
  </button>
  ))}
  </div>
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
  <button
  onClick={() => setIsEditing(true)}
- className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors"
+ className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-xl hover:bg-emerald-700 transition-colors"
  >
  <Plus className="w-5 h-5" />
  Log Spend
@@ -135,16 +135,16 @@ export default function UnivAdSpend() {
  initial={{ opacity: 0, y: -20}}
  animate={{ opacity: 1, y: 0}}
  exit={{ opacity: 0, y: -20}}
- className="bg-card p-6 rounded-xl border border-primary/40 mb-8"
+ className="bg-card p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <h2 className="text-xl font-semibold mb-4 text-foreground">
  {editingId ? 'Edit Ad Spend Record' : 'Log Ad Spend'}
  </h2>
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Platform</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Platform</label>
  <select
- className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-card"
+ className="w-full px-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={formData.platform}
  onChange={(e) => setFormData({ ...formData, platform: e.target.value})}
  >
@@ -156,38 +156,38 @@ export default function UnivAdSpend() {
  </select>
  </div>
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Spend ($)</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Spend ($)</label>
  <input
  type="number"
- className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+ className="w-full px-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
  value={formData.amount_spent}
  onChange={(e) => setFormData({ ...formData, amount_spent: e.target.value})}
  />
  </div>
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Clicks</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Clicks</label>
  <input
  type="number"
- className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+ className="w-full px-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
  value={formData.clicks}
  onChange={(e) => setFormData({ ...formData, clicks: e.target.value})}
  />
  </div>
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Conversions</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Conversions</label>
  <input
  type="number"
- className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+ className="w-full px-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
  value={formData.conversions}
  onChange={(e) => setFormData({ ...formData, conversions: e.target.value})}
  />
  </div>
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">ROAS (x)</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">ROAS (x)</label>
  <input
  type="number"
  step="0.01"
- className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+ className="w-full px-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
  value={formData.roas}
  onChange={(e) => setFormData({ ...formData, roas: e.target.value})}
  />
@@ -200,13 +200,13 @@ export default function UnivAdSpend() {
  setEditingId(null);
  setFormData({ platform: 'Google', amount_spent: '', clicks: '', conversions: '', roas: ''});
 }}
- className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
+ className="flex items-center gap-2 px-4 py-2 text-[#71717a] dark:text-gray-400 hover:bg-muted rounded-xl transition-colors"
  >
  <X className="w-4 h-4" /> Cancel
  </button>
  <button
  onClick={handleSave}
- className="flex items-center gap-2 bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors"
+ className="flex items-center gap-2 bg-emerald-600 text-white px-6 py-2 rounded-xl hover:bg-emerald-700 transition-colors"
  >
  <Save className="w-4 h-4" /> Save
  </button>
@@ -217,7 +217,7 @@ export default function UnivAdSpend() {
 
  {loading ? (
  <div className="flex justify-center py-12">
- <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600"></div>
+ <div className="animate-spin rounded-md-full h-10 w-10 border-b-2 border-emerald-600"></div>
  </div>
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -226,45 +226,45 @@ export default function UnivAdSpend() {
  key={item.id}
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
- className="bg-card rounded-xl border border-primary/40 overflow-hidden transition- relative"
+ className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden transition- relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="absolute top-0 right-0 p-3 flex gap-2">
- <button onClick={() => handleEdit(item)} className="p-1.5 bg-card/80 text-muted-foreground hover:text-emerald-600 rounded-full hover:bg-emerald-50 transition-colors">
+ <button onClick={() => handleEdit(item)} className="p-1.5 bg-card/80 text-[#71717a] dark:text-gray-400 hover:text-emerald-600 rounded-md-full hover:bg-emerald-50 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Edit2 className="w-3 h-3" />
  </button>
- <button onClick={() => handleDelete(item.id)} className="p-1.5 bg-card/80 text-muted-foreground hover:text-red-600 rounded-full hover:bg-red-50 transition-colors">
+ <button onClick={() => handleDelete(item.id)} className="p-1.5 bg-card/80 text-[#71717a] dark:text-gray-400 hover:text-red-600 rounded-md-full hover:bg-red-50 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Trash2 className="w-3 h-3" />
  </button>
  </div>
  <div className="p-6">
- <h3 className="font-bold text-xl text-foreground mb-4">{item.platform}</h3>
+ <h3 className="font-semibold text-xl text-foreground mb-4">{item.platform}</h3>
  <div className="space-y-4">
- <div className="bg-background p-3 rounded-lg border border-primary/40">
- <span className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Spend</span>
- <span className="text-2xl font-bold text-foreground">${Number(item.amount_spent).toLocaleString()}</span>
+ <div className="bg-background p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <span className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Spend</span>
+ <span className="text-2xl font-semibold text-foreground tracking-[-0.02em]">${Number(item.amount_spent).toLocaleString()}</span>
  </div>
  <div className="grid grid-cols-2 gap-3">
  <div className="flex flex-col">
- <span className="flex items-center gap-1 text-xs text-muted-foreground mb-1"><MousePointerClick className="w-3 h-3"/> Clicks</span>
+ <span className="flex items-center gap-2 text-xs text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]"><MousePointerClick className="w-3 h-3"/> Clicks</span>
  <span className="font-medium text-foreground">{Number(item.clicks).toLocaleString()}</span>
  </div>
  <div className="flex flex-col">
- <span className="flex items-center gap-1 text-xs text-muted-foreground mb-1"><CheckCircle className="w-3 h-3"/> Conv.</span>
+ <span className="flex items-center gap-2 text-xs text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]"><CheckCircle className="w-3 h-3"/> Conv.</span>
  <span className="font-medium text-foreground">{Number(item.conversions).toLocaleString()}</span>
  </div>
  </div>
  <div className="pt-3 border-t border-primary/40 flex justify-between items-center">
- <span className="text-sm font-medium text-muted-foreground">ROAS</span>
- <span className="text-lg font-bold text-emerald-600">{Number(item.roas).toFixed(2)}x</span>
+ <span className="text-sm font-medium text-[#71717a] dark:text-gray-400">ROAS</span>
+ <span className="text-lg font-semibold text-emerald-600">{Number(item.roas).toFixed(2)}x</span>
  </div>
  </div>
  </div>
  </motion.div>
  ))}
  {data.length === 0 && !isEditing && (
- <div className="col-span-full py-12 text-center bg-card rounded-xl border border-dashed border-primary/40">
+ <div className="col-span-full py-12 text-center bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <TrendingUp className="w-12 h-12 text-gray-300 mx-auto mb-3" />
- <p className="text-muted-foreground">No ad spend data available.</p>
+ <p className="text-[#71717a] dark:text-gray-400">No ad spend data available.</p>
  </div>
  )}
  </div>

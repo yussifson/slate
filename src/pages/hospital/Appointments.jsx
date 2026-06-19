@@ -162,42 +162,42 @@ export default function Appointments() {
 
  const filteredAppts = appointments.filter(appt => appt.date === date);
 
- if (isDbLoading) return <div className="flex items-center justify-center h-64 text-muted-foreground">{t("loading_appointments", "Loading appointments...")}</div>;
+ if (isDbLoading) return <div className="flex items-center justify-center h-64 text-[#71717a] dark:text-gray-400">{t("loading_appointments", "Loading appointments...")}</div>;
 
  return (
  <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("appointments", "Appointments")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t(
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("appointments", "Appointments")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
  "manage_doctor_schedules_and_pa",
  "Manage doctor schedules and patient visits"
  )}</p>
  </div>
  <div className="flex items-center gap-3">
- <Input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-auto bg-card" />
+ <Input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-auto bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white"><Plus className="w-4 h-4"/> {t("book_appointment", "Book Appointment")}</Button>
  </div>
  </div>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
  {/* Sidebar Calendar List */}
- <div className="col-span-1 bg-card rounded-xl border border-primary/40 p-4 h-[600px] overflow-y-auto space-y-4">
- <h3 className="font-bold text-card-foreground flex items-center gap-2 border-b border-primary/40 pb-3"><CalendarIcon className="w-4 h-4 text-primary"/> {t("scheduled_visits", "Scheduled Visits (")}{filteredAppts.length})</h3>
+ <div className="col-span-1 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 h-[600px] overflow-y-auto space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h3 className="font-semibold text-card-foreground flex items-center gap-2 border-b border-primary/40 pb-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><CalendarIcon className="w-4 h-4 text-primary"/> {t("scheduled_visits", "Scheduled Visits (")}{filteredAppts.length})</h3>
  <div className="space-y-3">
  {filteredAppts.map(appt => {
  return (
- <div key={appt.id} onClick={() => setSelectedAppt(appt)} className={`p-3 rounded-lg border cursor-pointer transition-all flex flex-col gap-2 ${selectedAppt?.id === appt.id ? 'ring-2 ring-primary border-transparent bg-primary/20' : 'border-primary/40'}`}>
+ <div key={appt.id} onClick={() => setSelectedAppt(appt)} className={`p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 cursor-pointer transition-all flex flex-col gap-2 ${selectedAppt?.id === appt.id ? 'ring-2 ring-primary border-transparent bg-primary/20' : 'border-primary/40'}`}>
  <div className="flex justify-between items-start">
- <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${typeColors[appt.type]}`}>{appt.type}</span>
- <span className={`text-[10px] font-semibold px-2 py-0.5 rounded border ${statusColors[appt.status]}`}>{appt.status}</span>
+ <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border-[0.5px] border-black/9 dark:border-white/8 uppercase tracking-wider ${typeColors[appt.type]}`}>{appt.type}</span>
+ <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border ${statusColors[appt.status]}`}>{appt.status}</span>
  </div>
  <div>
- <Link to="/hospital/patients" className="font-bold text-sm text-primary hover:underline">{appt.patient}</Link>
- <p className="text-xs text-muted-foreground font-medium">{appt.doctor}</p>
+ <Link to="/hospital/patients" className="font-semibold text-sm text-primary hover:underline">{appt.patient}</Link>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 font-medium tracking-[0.04em]">{appt.doctor}</p>
  </div>
- <div className="flex items-center justify-between gap-1 text-xs text-muted-foreground mt-1 border-t border-dashed border-primary/40 pt-2">
- <div className="flex items-center gap-1">
- <Clock className="w-3.5 h-3.5 text-muted-foreground" /> <span>{appt.time}</span>
+ <div className="flex items-center justify-between gap-2 text-xs text-[#71717a] dark:text-gray-400 mt-1 border-t border-dashed border-primary/40 pt-2 tracking-[0.04em]">
+ <div className="flex items-center gap-2">
+ <Clock className="w-3.5 h-3.5 text-[#71717a] dark:text-gray-400" /> <span>{appt.time}</span>
  </div>
  <Button size="icon" variant="ghost" onClick={(e) => handleDeleteFromDb(appt.id, e)} className="h-6 w-6 text-red-500 hover:text-red-700 hover:bg-red-50">
  <Trash2 className="w-3.5 h-3.5" />
@@ -207,9 +207,9 @@ export default function Appointments() {
  );
 })}
  {filteredAppts.length === 0 && (
- <div className="text-center py-12 text-muted-foreground">
+ <div className="text-center py-12 text-[#71717a] dark:text-gray-400">
  <CalendarIcon className="w-8 h-8 mx-auto mb-2 opacity-30" />
- <p className="text-xs">{t("no_appointments_booked_for_thi", "No appointments booked for this day.")}</p>
+ <p className="text-xs tracking-[0.04em]">{t("no_appointments_booked_for_thi", "No appointments booked for this day.")}</p>
  </div>
  )}
  </div>
@@ -218,23 +218,23 @@ export default function Appointments() {
  {/* Main Details Area */}
  <div className="col-span-1 md:col-span-2 space-y-6">
  {selectedAppt ? (
- <div className="bg-card rounded-xl border border-primary/40 p-6 space-y-6">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 space-y-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-start">
  <div>
- <Link to="/hospital/patients" className="text-xl font-bold text-primary hover:underline">{selectedAppt.patient}</Link>
- <p className="text-sm text-muted-foreground mt-0.5">{t("assigned", "Assigned:")} <strong>{selectedAppt.doctor}</strong></p>
+ <Link to="/hospital/patients" className="text-xl font-semibold text-primary hover:underline">{selectedAppt.patient}</Link>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("assigned", "Assigned:")} <strong>{selectedAppt.doctor}</strong></p>
  </div>
- <span className={`text-xs font-bold px-3 py-1 rounded-full border ${statusColors[selectedAppt.status]}`}>{selectedAppt.status}</span>
+ <span className={`text-xs font-semibold px-3 py-1 rounded-md-full border ${statusColors[selectedAppt.status]}`}>{selectedAppt.status}</span>
  </div>
 
  <div className="grid grid-cols-2 gap-4 border-y border-primary/40 py-4 my-4">
  <div>
- <p className="text-xs text-muted-foreground uppercase font-bold">{t("appointment_type", "Appointment Type")}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 uppercase font-semibold tracking-[0.04em]">{t("appointment_type", "Appointment Type")}</p>
  <p className="font-semibold text-foreground">{selectedAppt.type}</p>
  </div>
  <div>
- <p className="text-xs text-muted-foreground uppercase font-bold">{t("schedule_time", "Schedule Time")}</p>
- <p className="font-semibold text-foreground flex items-center gap-1.5"><Clock className="w-4 h-4 text-primary" /> {selectedAppt.time}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 uppercase font-semibold tracking-[0.04em]">{t("schedule_time", "Schedule Time")}</p>
+ <p className="font-semibold text-foreground flex items-center gap-2.5"><Clock className="w-4 h-4 text-primary" /> {selectedAppt.time}</p>
  </div>
  </div>
 
@@ -253,7 +253,7 @@ export default function Appointments() {
  </Button>
  )}
  {selectedAppt.status === 'Completed' && (
- <div className="bg-slate-50 dark:bg-slate-800/50 border border-primary/20 text-primary/90 text-sm p-4 rounded-xl flex items-center gap-2 w-full justify-center font-semibold">
+ <div className="bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 text-primary/90 text-sm p-4 rounded-md-xl flex items-center gap-2 w-full justify-center font-semibold">
  <CheckCircle className="w-5 h-5" /> {t(
  "visit_completed_successfully_c",
  "Visit completed successfully. Clinical chart created."
@@ -263,12 +263,12 @@ export default function Appointments() {
  </div>
  </div>
  ) : (
- <div className="bg-card rounded-xl border border-primary/40 p-6 flex flex-col items-center justify-center min-h-[300px] text-center">
- <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex flex-col items-center justify-center min-h-[300px] text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-md-full flex items-center justify-center mb-4">
  <Stethoscope className="w-8 h-8 text-primary" />
  </div>
- <h2 className="text-lg font-bold text-card-foreground mb-2">{t("select_an_appointment", "Select an appointment")}</h2>
- <p className="text-sm text-muted-foreground max-w-sm">{t(
+ <h2 className="text-lg font-semibold text-card-foreground mb-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("select_an_appointment", "Select an appointment")}</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 max-w-sm">{t(
  "click_on_an_appointment_from_t",
  "Click on an appointment from the schedule to view details, begin consultation, or update status."
  )}</p>
@@ -278,16 +278,16 @@ export default function Appointments() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4">
- <h2 className="text-lg font-bold text-card-foreground">{t("book_appointment", "Book Appointment")}</h2>
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("book_appointment", "Book Appointment")}</h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("patient_name", "Patient Name")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("patient_name", "Patient Name")}</label>
  <Input value={formData.patient} onChange={e => setFormData({ ...formData, patient: e.target.value})} className="mt-1" placeholder="e.g. Kwesi Asante" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("doctor", "Doctor")}</label>
- <select value={formData.doctor} onChange={e => setFormData({ ...formData, doctor: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("doctor", "Doctor")}</label>
+ <select value={formData.doctor} onChange={e => setFormData({ ...formData, doctor: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm">
  <option>{t("dr_john_mensah", "Dr. John Mensah")}</option>
  <option>{t("dr_jane_doe", "Dr. Jane Doe")}</option>
  <option>{t("dr_sarah_connor", "Dr. Sarah Connor")}</option>
@@ -295,24 +295,24 @@ export default function Appointments() {
  </div>
  <div className="grid grid-cols-2 gap-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("date", "Date")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("date", "Date")}</label>
  <Input type="date" value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value})} className="mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("time", "Time")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("time", "Time")}</label>
  <Input type="time" value={formData.time} onChange={e => setFormData({ ...formData, time: e.target.value})} className="mt-1" />
  </div>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("type", "Type")}</label>
- <select value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("type", "Type")}</label>
+ <select value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm">
  <option>{t("consultation", "Consultation")}</option>
  <option>{t("follow_up", "Follow-up")}</option>
  <option>{t("emergency", "Emergency")}</option>
  </select>
  </div>
  </div>
- <div className="flex flex-col gap-2 p-3 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900 rounded-lg border border-primary/40 dark:border-primary/40">
+ <div className="flex flex-col gap-2 p-3 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
  <div className="flex items-center space-x-2">
  <Checkbox id="generateZoom" checked={generateZoom} onCheckedChange={setGenerateZoom} />
  <label htmlFor="generateZoom" className="text-sm font-medium leading-none cursor-pointer">

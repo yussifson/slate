@@ -27,20 +27,20 @@ const SUB_STATUS_COLORS = {
   sent: "bg-orange-100 text-orange-700",
   paid: "bg-slate-100 text-primary/90",
   overdue: "bg-red-100 text-red-700",
-  cancelled: "bg-gray-100 text-gray-500",
+  cancelled: "bg-gray-100 text-[#71717a] dark:text-gray-400",
 };
 
 const SUB_STATUS_ICONS = { pending: Clock, sent: Send, paid: CheckCircle, overdue: AlertCircle, cancelled: AlertCircle };
 
 function MetricCard({ icon: IconComp, label, value, color }) {
   return (
-    <div className="bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
-      <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${color}`}>
+    <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${color}`}>
         <IconComp className="w-5 h-5" />
       </div>
       <div>
-        <p className="text-2xl font-bold">{value}</p>
-        <p className="text-xs text-muted-foreground">{label}</p>
+        <p className="text-2xl font-semibold tracking-[-0.02em]">{value}</p>
+        <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{label}</p>
       </div>
     </div>
   );
@@ -274,7 +274,7 @@ function CompanyBilling({ companyId }) {
         <TabsContent value="invoices" className="space-y-4 mt-4">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
               <Input placeholder="Search by client, case or invoice #..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
             </div>
             <Select value={filterType} onValueChange={setFilterType}>
@@ -298,9 +298,9 @@ function CompanyBilling({ companyId }) {
           </div>
 
           {isLoading ? (
-            <div className="text-center py-12 text-sm text-muted-foreground">{t("loading", "Loading...")}</div>
+            <div className="text-center py-12 text-sm text-[#71717a] dark:text-gray-400">{t("loading", "Loading...")}</div>
           ) : Object.keys(grouped).length === 0 ? (
-            <div className="bg-card rounded-xl border border-primary/40 p-12 text-center text-sm text-muted-foreground">
+            <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-12 text-center text-sm text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               {t(
                 "no_invoices_found_create_your_",
                 "No invoices found. Create your first invoice to get started."
@@ -311,10 +311,10 @@ function CompanyBilling({ companyId }) {
               {Object.entries(grouped).map(([key, group]) => {
                 const groupTotal = group.invoices.reduce((s, i) => s + (i.total_amount || 0), 0);
                 return (
-                  <div key={key} className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+                  <div key={key} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                     <div className="px-4 py-3 bg-muted/30 border-b border-primary/40 flex items-center justify-between">
                       <p className="text-sm font-semibold">{group.label}</p>
-                      <span className="text-xs font-medium text-muted-foreground">{formatCurrency(groupTotal, currency)} {t("total", "total")}</span>
+                      <span className="text-xs font-medium text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{formatCurrency(groupTotal, currency)} {t("total", "total")}</span>
                     </div>
                     <div className="divide-y divide-border">
                       {group.invoices.map(inv => {
@@ -325,11 +325,11 @@ function CompanyBilling({ companyId }) {
                                 <span className="text-sm font-medium">{inv.invoice_number || "No #"}</span>
                                 <Badge className={`text-[10px] ${INVOICE_STATUS_COLORS[inv.status]}`}>{inv.status}</Badge>
                               </div>
-                              <p className="text-xs text-muted-foreground mt-0.5">
+                              <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">
                                 {inv.client_name} {inv.due_date ? `· Due ${format(new Date(inv.due_date), "MMM d, yyyy")}` : ""}{inv.due_time ? ` at ${inv.due_time}` : ""}
                               </p>
                             </div>
-                            <p className="text-sm font-bold shrink-0">{formatCurrency(inv.total_amount, inv.currency)}</p>
+                            <p className="text-sm font-semibold shrink-0">{formatCurrency(inv.total_amount, inv.currency)}</p>
                             <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => setEditingInvoice(inv)}>
                               <Pencil className="w-3.5 h-3.5" />
                             </Button>
@@ -376,16 +376,16 @@ function CompanyBilling({ companyId }) {
         {/* ── Expenses Tab ── */}
         <TabsContent value="expenses" className="mt-4">
           {expensesLoading ? (
-            <div className="text-center py-12 text-sm text-muted-foreground">{t("loading", "Loading...")}</div>
+            <div className="text-center py-12 text-sm text-[#71717a] dark:text-gray-400">{t("loading", "Loading...")}</div>
           ) : expenses.length === 0 ? (
-            <div className="bg-card rounded-xl border border-primary/40 p-12 text-center text-sm text-muted-foreground">
+            <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-12 text-center text-sm text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               {t(
                 "no_expenses_logged_yet_click_l",
                 "No expenses logged yet. Click \"Log Expense\" to add one."
               )}
             </div>
           ) : (
-            <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+            <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <div className="divide-y divide-border">
                 {expenses.map(exp => {
                   return (
@@ -398,14 +398,14 @@ function CompanyBilling({ companyId }) {
                           {exp.billed && <Badge className="text-[10px] bg-slate-100 text-primary/90">{t("billed", "Billed")}</Badge>}
                           {!exp.billable && <Badge className="text-[10px] bg-gray-100 text-gray-600">{t("internal", "Internal")}</Badge>}
                         </div>
-                        <p className="text-xs text-muted-foreground mt-0.5">
+                        <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">
                           {exp.case_title || exp.client_name || "—"}
                           {exp.expense_date ? ` · ${format(new Date(exp.expense_date), "MMM d, yyyy")}` : ""}
                         </p>
                       </div>
-                      <p className="text-sm font-bold shrink-0">{formatCurrency(exp.amount, exp.currency || currency)}</p>
+                      <p className="text-sm font-semibold shrink-0">{formatCurrency(exp.amount, exp.currency || currency)}</p>
                       {exp.billable && !exp.billed && (
-                        <Button size="sm" variant="outline" className="shrink-0 text-xs h-7 gap-1" onClick={() => addExpenseToInvoice(exp)}>
+                        <Button size="sm" variant="outline" className="shrink-0 text-xs h-7 gap-2 tracking-[0.04em]" onClick={() => addExpenseToInvoice(exp)}>
                           <Plus className="w-3 h-3" /> {t("invoice", "Invoice")}
                         </Button>
                       )}
@@ -513,10 +513,10 @@ function SuperAdminBilling() {
         subtitle="Manage firm subscription invoices and payment tracking"
         actions={
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={runReminders} disabled={running} className="gap-1.5">
+            <Button variant="outline" size="sm" onClick={runReminders} disabled={running} className="gap-2.5">
               <Send className="w-3.5 h-3.5" /> {t("send_reminders", "Send Reminders")}
             </Button>
-            <Button size="sm" onClick={runBilling} disabled={running} className="gap-1.5">
+            <Button size="sm" onClick={runBilling} disabled={running} className="gap-2.5">
               <RefreshCw className={`w-3.5 h-3.5 ${running ? "animate-spin" : ""}`} /> {t("run_billing_cycle", "Run Billing Cycle")}
             </Button>
           </div>
@@ -528,7 +528,7 @@ function SuperAdminBilling() {
         <MetricCard icon={AlertCircle} label="Overdue Invoices" value={overdueCount} color="bg-red-50 text-red-600" />
         <MetricCard icon={CreditCard} label="Total Invoices" value={invoices.length} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
       </div>
-      <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+      <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="p-4 border-b border-primary/40 flex items-center justify-between gap-3 flex-wrap">
           <h2 className="text-sm font-semibold">{t("subscription_invoices", "Subscription Invoices")}</h2>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -543,9 +543,9 @@ function SuperAdminBilling() {
           </Select>
         </div>
         {isLoading ? (
-          <div className="p-12 text-center text-sm text-muted-foreground">{t("loading_invoices", "Loading invoices...")}</div>
+          <div className="p-12 text-center text-sm text-[#71717a] dark:text-gray-400">{t("loading_invoices", "Loading invoices...")}</div>
         ) : filtered.length === 0 ? (
-          <div className="p-12 text-center text-sm text-muted-foreground">{t(
+          <div className="p-12 text-center text-sm text-[#71717a] dark:text-gray-400">{t(
             "no_invoices_found_run_a_billin",
             "No invoices found. Run a billing cycle to generate invoices."
           )}</div>
@@ -562,14 +562,14 @@ function SuperAdminBilling() {
                         <StatusIcon className="w-2.5 h-2.5 mr-1" />{inv.status}
                       </Badge>
                     </div>
-                    <div className="flex flex-wrap gap-3 mt-0.5 text-xs text-muted-foreground">
+                    <div className="flex flex-wrap gap-3 mt-0.5 text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
                       <span>{inv.plan_name} {t("plan", "Plan")}</span>
                       <span>{t("period", "Period:")} {inv.billing_period}</span>
                       <span>{t("due", "Due:")} {inv.due_date ? format(new Date(inv.due_date), "MMM d, yyyy") : "—"}</span>
                       {inv.reminder_count > 0 && <span className="text-amber-600">{inv.reminder_count} {t("reminder", "reminder")}{inv.reminder_count > 1 ? "s" : ""} {t("sent", "sent")}</span>}
                     </div>
                   </div>
-                  <p className="text-base font-bold shrink-0">${(inv.amount_usd || 0).toLocaleString()}</p>
+                  <p className="text-base font-semibold shrink-0">${(inv.amount_usd || 0).toLocaleString()}</p>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">

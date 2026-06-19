@@ -114,45 +114,45 @@ export default function SHSPayments() {
  
  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
  <div>
- <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
+ <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent tracking-[-0.02em]">
  Payment Collection
  </h1>
- <p className="text-muted-foreground mt-1 text-sm font-medium">
+ <p className="text-[#71717a] dark:text-gray-400 mt-1 text-sm font-medium">
  Record incoming fee payments and issue receipts.
  </p>
  </div>
  
- <Button onClick={() => setIsPaymentModalOpen(true)} className="h-9 gap-2 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20">
+ <Button onClick={() => setIsPaymentModalOpen(true)} className="h-9 gap-2 rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20">
  <Plus className="w-4 h-4" /> Record Payment
  </Button>
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
- <Card className="rounded-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100">
+ <Card className="rounded-md-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
+ <div className="w-12 h-12 rounded-md-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70 shrink-0">
  <DollarSign className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-semibold text-muted-foreground">Total Transactions</p>
- <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">{payments.length}</h3>
+ <p className="text-sm font-semibold text-[#71717a] dark:text-gray-400">Total Transactions</p>
+ <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-[-0.02em]">{payments.length}</h3>
  </div>
  </CardContent>
  </Card>
  </div>
 
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
- <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Payment History</CardTitle>
+ <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100">Payment History</CardTitle>
  </div>
  
  <div className="relative w-full sm:w-64">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search receipts..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -164,47 +164,47 @@ export default function SHSPayments() {
  <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading transactions...</div>
  ) : filteredPayments.length === 0 ? (
  <div className="p-16 text-center">
- <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
  <History className="w-8 h-8 text-primary dark:text-primary" />
  </div>
- <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No payments recorded</h3>
+ <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No payments recorded</h3>
  <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Record a payment to see it here.</p>
  </div>
  ) : (
  <div className="overflow-x-auto">
  <table className="w-full text-sm text-left">
- <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider">
+ <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider tracking-[0.04em]">
  <tr>
- <th className="px-6 py-4 rounded-tl-xl">Receipt No.</th>
+ <th className="px-6 py-4 rounded-md-tl-xl">Receipt No.</th>
  <th className="px-6 py-4">Student</th>
  <th className="px-6 py-4">Invoice Ref</th>
  <th className="px-6 py-4">Amount Paid</th>
  <th className="px-6 py-4">Method / Date</th>
- <th className="px-6 py-4 text-right rounded-tr-xl">Status</th>
+ <th className="px-6 py-4 text-right rounded-md-tr-xl">Status</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-slate-100">
  {filteredPayments.map((payment) => (
  <tr key={payment.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
  <td className="px-6 py-4">
- <p className="font-bold text-slate-800 dark:text-slate-100">{payment.case_number}</p>
+ <p className="font-semibold text-slate-800 dark:text-slate-100">{payment.case_number}</p>
  </td>
  <td className="px-6 py-4">
  <p className="font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">{payment.data?.studentName || 'Unknown Student'}</p>
  </td>
  <td className="px-6 py-4">
- <span className="text-slate-600 dark:text-slate-300 font-mono text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">{payment.data?.invoiceNumber}</span>
+ <span className="text-slate-600 dark:text-slate-300 font-mono text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md tracking-[0.04em]">{payment.data?.invoiceNumber}</span>
  </td>
  <td className="px-6 py-4">
- <span className="font-black text-primary bg-slate-50 dark:bg-slate-800/50 px-3 py-1 rounded-lg border border-primary/40">
+ <span className="font-black text-primary bg-slate-50 dark:bg-slate-800/50 px-3 py-1 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  ${parseFloat(payment.data?.amountPaid || 0).toFixed(2)}
  </span>
  </td>
  <td className="px-6 py-4">
- <p className="font-medium text-slate-700 dark:text-slate-300 dark:text-slate-200 flex items-center gap-1.5 mb-1">
+ <p className="font-medium text-slate-700 dark:text-slate-300 dark:text-slate-200 flex items-center gap-2.5 mb-1">
  <CreditCard className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 dark:text-slate-400" /> {payment.data?.paymentMethod}
  </p>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">{payment.data?.date}</p>
+ <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">{payment.data?.date}</p>
  </td>
  <td className="px-6 py-4 text-right">
  <Badge variant="outline" className="bg-slate-50 dark:bg-slate-800/50 text-primary/90 border-primary/20">
@@ -221,10 +221,10 @@ export default function SHSPayments() {
  </Card>
 
  <Dialog open={isPaymentModalOpen} onOpenChange={setIsPaymentModalOpen}>
- <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none ">
+ <DialogContent className="sm:max-w-[450px] rounded-md-3xl p-0 overflow-hidden border-none ">
  <div className="p-6 bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 text-white">
  <DialogHeader>
- <DialogTitle className="text-2xl font-black">Record Payment</DialogTitle>
+ <DialogTitle className="text-2xl font-black tracking-[-0.02em]">Record Payment</DialogTitle>
  <DialogDescription className="text-primary/10 dark:text-primary/70">
  Log an incoming fee payment from a student/parent.
  </DialogDescription>
@@ -233,9 +233,9 @@ export default function SHSPayments() {
  
  <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 space-y-4">
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Select Invoice (Unpaid/Partial)</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Select Invoice (Unpaid/Partial)</label>
  <select 
- className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newPayment.invoiceId}
  onChange={e => setNewPayment({...newPayment, invoiceId: e.target.value})}
  >
@@ -255,21 +255,21 @@ export default function SHSPayments() {
 
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Amount Paid ($)</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Amount Paid ($)</label>
  <Input 
  type="number"
  min="0.01"
  step="0.01"
  placeholder="0.00"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl font-bold text-lg h-11"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl font-semibold text-lg h-11 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newPayment.amountPaid}
  onChange={e => setNewPayment({...newPayment, amountPaid: e.target.value})}
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Payment Method</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Payment Method</label>
  <select 
- className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary"
+ className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newPayment.paymentMethod}
  onChange={e => setNewPayment({...newPayment, paymentMethod: e.target.value})}
  >
@@ -283,19 +283,19 @@ export default function SHSPayments() {
 
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Payment Date</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Payment Date</label>
  <Input 
  type="date"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl h-11"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl h-11 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newPayment.date}
  onChange={e => setNewPayment({...newPayment, date: e.target.value})}
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Reference No (Optional)</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Reference No (Optional)</label>
  <Input 
  placeholder="Bank Teller / Momo Ref"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl h-11 text-xs"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl h-11 text-xs tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newPayment.referenceNo}
  onChange={e => setNewPayment({...newPayment, referenceNo: e.target.value})}
  />
@@ -303,14 +303,14 @@ export default function SHSPayments() {
  </div>
  </div>
  
- <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3">
- <Button variant="outline" onClick={() => setIsPaymentModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
+ <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Button variant="outline" onClick={() => setIsPaymentModalOpen(false)} className="rounded-md-xl font-semibold text-slate-600 dark:text-slate-300">
  Cancel
  </Button>
  <Button 
  onClick={handleRecordPayment} 
  disabled={!newPayment.invoiceId || !newPayment.amountPaid || isProcessing}
- className="rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-bold px-6"
+ className="rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-semibold px-6"
  >
  {isProcessing ? 'Processing...' : 'Confirm Payment'}
  </Button>

@@ -39,32 +39,32 @@ export default function PaymentModal({ open, onClose, invoice, onSuccess}) {
 
  return (
  <Dialog open={open} onOpenChange={(val) => !loading && !success && onClose(val)}>
- <DialogContent className="max-w-md p-0 overflow-hidden bg-white">
+ <DialogContent className="max-w-md p-0 overflow-hidden bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {success ? (
  <div className="flex flex-col items-center justify-center p-12 text-center">
- <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-6 animate-in zoom-in duration-300">
+ <div className="w-20 h-20 bg-slate-100 rounded-md-full flex items-center justify-center mb-6 animate-in zoom-in duration-300">
  <CheckCircle className="w-10 h-10 text-primary" />
  </div>
- <h2 className="text-2xl font-bold text-slate-900 mb-2">{t("payment_successful", "Payment Successful")}</h2>
+ <h2 className="text-2xl font-semibold text-slate-900 mb-2 tracking-[-0.02em]">{t("payment_successful", "Payment Successful")}</h2>
  <p className="text-slate-500 mb-6">{t("invoice_marked_paid", "Your invoice has been marked as paid. Thank you!")}</p>
  </div>
  ) : (
  <>
  <div className="bg-slate-50 p-6 border-b border-primary/40 text-center">
- <DialogTitle className="text-xl font-bold mb-1">{t("pay_invoice", "Pay Invoice")}</DialogTitle>
+ <DialogTitle className="text-xl font-semibold mb-1">{t("pay_invoice", "Pay Invoice")}</DialogTitle>
  <DialogDescription className="text-slate-500 mb-4">{invoice.invoice_number}</DialogDescription>
- <div className="text-4xl font-black text-slate-900 tracking-tight">
+ <div className="text-4xl font-black text-slate-900 tracking-tight tracking-[-0.02em]">
  {formatCurrency(invoice.total_amount, invoice.currency)}
  </div>
  </div>
 
  <div className="p-6">
- <div className="flex gap-2 mb-6 p-1 bg-slate-100 rounded-lg">
+ <div className="flex gap-2 mb-6 p-1 bg-slate-100 rounded-xl">
  <button
  type="button"
  onClick={() => setMethod("card")}
  className={cn(
- "flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all",
+ "flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-lg transition-all",
  method === "card" ? "bg-white text-slate-900 " : "text-slate-500 hover:text-slate-700"
  )}
  >
@@ -74,7 +74,7 @@ export default function PaymentModal({ open, onClose, invoice, onSuccess}) {
  type="button"
  onClick={() => setMethod("mobile_money")}
  className={cn(
- "flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all",
+ "flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-lg transition-all",
  method === "mobile_money" ? "bg-white text-slate-900 " : "text-slate-500 hover:text-slate-700"
  )}
  >
@@ -86,7 +86,7 @@ export default function PaymentModal({ open, onClose, invoice, onSuccess}) {
  {method === "card" ? (
  <div className="space-y-4 animate-in fade-in duration-300">
  <div>
- <Label className="text-xs text-slate-500 mb-1.5 block uppercase tracking-wider font-semibold">{t("card_number", "Card Number")}</Label>
+ <Label className="text-xs text-slate-500 mb-1.5 block uppercase tracking-wider font-semibold tracking-[0.04em]">{t("card_number", "Card Number")}</Label>
  <Input
  placeholder="0000 0000 0000 0000"
  value={cardNumber}
@@ -97,11 +97,11 @@ export default function PaymentModal({ open, onClose, invoice, onSuccess}) {
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
- <Label className="text-xs text-slate-500 mb-1.5 block uppercase tracking-wider font-semibold">{t("expiry_date", "Expiry Date")}</Label>
+ <Label className="text-xs text-slate-500 mb-1.5 block uppercase tracking-wider font-semibold tracking-[0.04em]">{t("expiry_date", "Expiry Date")}</Label>
  <Input placeholder="MM/YY" value={expiry} onChange={(e) => setExpiry(e.target.value)} className="font-mono text-base" required />
  </div>
  <div>
- <Label className="text-xs text-slate-500 mb-1.5 block uppercase tracking-wider font-semibold">CVC</Label>
+ <Label className="text-xs text-slate-500 mb-1.5 block uppercase tracking-wider font-semibold tracking-[0.04em]">CVC</Label>
  <Input placeholder="123" type="password" value={cvc} onChange={(e) => setCvc(e.target.value)} className="font-mono text-base" maxLength={4} required />
  </div>
  </div>
@@ -109,9 +109,9 @@ export default function PaymentModal({ open, onClose, invoice, onSuccess}) {
  ) : (
  <div className="space-y-4 animate-in fade-in duration-300">
  <div>
- <Label className="text-xs text-slate-500 mb-1.5 block uppercase tracking-wider font-semibold">{t("network", "Network")}</Label>
+ <Label className="text-xs text-slate-500 mb-1.5 block uppercase tracking-wider font-semibold tracking-[0.04em]">{t("network", "Network")}</Label>
  <select
- className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+ className="flex h-10 w-full items-center justify-between rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-[#71717a] dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
  value={network}
  onChange={(e) => setNetwork(e.target.value)}
  >
@@ -121,7 +121,7 @@ export default function PaymentModal({ open, onClose, invoice, onSuccess}) {
  </select>
  </div>
  <div>
- <Label className="text-xs text-slate-500 mb-1.5 block uppercase tracking-wider font-semibold">{t("phone_number", "Phone Number")}</Label>
+ <Label className="text-xs text-slate-500 mb-1.5 block uppercase tracking-wider font-semibold tracking-[0.04em]">{t("phone_number", "Phone Number")}</Label>
  <Input
  placeholder="024 000 0000"
  type="tel"
@@ -137,7 +137,7 @@ export default function PaymentModal({ open, onClose, invoice, onSuccess}) {
  <div className="pt-4">
  <Button
  type="submit"
- className="w-full h-12 text-base font-bold relative overflow-hidden transition-all bg-primary hover:bg-primary/90 text-white"
+ className="w-full h-12 text-base font-semibold relative overflow-hidden transition-all bg-primary hover:bg-primary/90 text-white"
  disabled={loading}
  >
  {loading ? (
@@ -149,7 +149,7 @@ export default function PaymentModal({ open, onClose, invoice, onSuccess}) {
  </>
  )}
  </Button>
- <p className="text-center text-xs text-slate-400 mt-4 flex items-center justify-center gap-1">
+ <p className="text-center text-xs text-slate-400 mt-4 flex items-center justify-center gap-2 tracking-[0.04em]">
  <Lock className="w-3 h-3" /> Payments are secure and encrypted
  </p>
  </div>

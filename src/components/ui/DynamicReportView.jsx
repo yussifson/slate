@@ -32,23 +32,23 @@ const CHART_COLORS = [
 function StatCard({ icon: Icon, label, value, subtitle, gradient, delay}) {
  return (
  <div
- className="relative overflow-hidden rounded-2xl border border-white/20 p-5 transition-all duration-300 hover:-translate-y-0.5"
+ className="relative overflow-hidden rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-white/20 p-5 transition-all duration-300 hover:-translate-y-0.5"
  style={{
  background: gradient,
  animationDelay: `${delay}ms`,
 }}
  >
- <div className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-10 -mr-8 -mt-8 bg-card" />
+ <div className="absolute top-0 right-0 w-24 h-24 rounded-md-full opacity-10 -mr-8 -mt-8 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  <div className="relative z-10">
  <div className="flex items-center justify-between mb-3">
- <div className="p-2 rounded-xl bg-card/20 backdrop-blur-sm">
+ <div className="p-2 rounded-md-xl bg-card/20 backdrop-blur-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Icon className="w-5 h-5 text-white" />
  </div>
  {subtitle && (
- <span className="text-xs text-white/70 font-medium">{subtitle}</span>
+ <span className="text-xs text-white/70 font-medium tracking-[0.04em]">{subtitle}</span>
  )}
  </div>
- <p className="text-2xl font-bold text-white tracking-tight">{value}</p>
+ <p className="text-2xl font-semibold text-white tracking-tight tracking-[-0.02em]">{value}</p>
  <p className="text-sm text-white/80 mt-1 font-medium">{label}</p>
  </div>
  </div>
@@ -60,24 +60,24 @@ function HorizontalBarChart({ title, data, icon: Icon, maxVal}) {
  const total = data.reduce((sum, d) => sum + d.value, 0);
 
  return (
- <div className="bg-card rounded-2xl border border-primary/40 overflow-hidden transition-all duration-300 ">
+ <div className="bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden transition-all duration-300  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <button
  onClick={() => setCollapsed(!collapsed)}
  className="w-full flex items-center justify-between p-5 pb-4 hover:bg-muted/50/50 transition-colors"
  >
  <div className="flex items-center gap-3">
- <div className="p-2 rounded-xl bg-gradient-to-br from-primary/5 to-primary/5 border border-primary/40">
+ <div className="p-2 rounded-md-xl bg-gradient-to-br from-primary/5 to-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  <Icon className="w-4 h-4 text-primary" />
  </div>
  <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
- <Badge variant="secondary" className="text-xs font-medium">
+ <Badge variant="secondary" className="text-xs font-medium tracking-[0.04em]">
  {data.length} categories
  </Badge>
  </div>
  {collapsed ? (
- <ChevronDown className="w-4 h-4 text-muted-foreground" />
+ <ChevronDown className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
  ) : (
- <ChevronUp className="w-4 h-4 text-muted-foreground" />
+ <ChevronUp className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
  )}
  </button>
 
@@ -91,7 +91,7 @@ function HorizontalBarChart({ title, data, icon: Icon, maxVal}) {
  <div className="flex items-center justify-between mb-1.5">
  <div className="flex items-center gap-2">
  <div
- className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+ className="w-2.5 h-2.5 rounded-md-full flex-shrink-0"
  style={{ backgroundColor: color}}
  />
  <span className="text-sm text-foreground font-medium truncate max-w-[200px]">
@@ -99,15 +99,15 @@ function HorizontalBarChart({ title, data, icon: Icon, maxVal}) {
  </span>
  </div>
  <div className="flex items-center gap-2">
- <span className="text-sm font-bold text-foreground">{item.value}</span>
- <span className="text-xs text-muted-foreground">
+ <span className="text-sm font-semibold text-foreground">{item.value}</span>
+ <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  ({total > 0 ? Math.round((item.value / total) * 100) : 0}%)
  </span>
  </div>
  </div>
- <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden">
+ <div className="w-full h-2.5 bg-muted rounded-md-full overflow-hidden">
  <div
- className="h-full rounded-full transition-all duration-700 ease-out"
+ className="h-full rounded-md-full transition-all duration-700 ease-out"
  style={{
  width: `${pct}%`,
  background: `linear-gradient(90deg, ${color}, ${color}dd)`,
@@ -126,9 +126,9 @@ function HorizontalBarChart({ title, data, icon: Icon, maxVal}) {
 function NumberAggCard({ fieldName, stats}) {
  const label = fieldName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
  return (
- <div className="bg-card rounded-2xl border border-primary/40 p-5 transition-all duration-300 ">
+ <div className="bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 transition-all duration-300  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-3 mb-4">
- <div className="p-2 rounded-xl bg-gradient-to-br from-primary/5 to-primary/5 border border-primary/40">
+ <div className="p-2 rounded-md-xl bg-gradient-to-br from-primary/5 to-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  <Hash className="w-4 h-4 text-primary" />
  </div>
  <h3 className="text-sm font-semibold text-slate-800">{label}</h3>
@@ -142,14 +142,14 @@ function NumberAggCard({ fieldName, stats}) {
  ].map(({ k, v, icon: Ic, color}) => (
  <div
  key={k}
- className="flex items-center gap-2.5 p-3 rounded-xl bg-muted/50/80 border border-primary/40"
+ className="flex items-center gap-2.5 p-3 rounded-md-xl bg-muted/50/80 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40"
  >
- <div className={`p-1.5 rounded-lg ${color}`}>
+ <div className={`p-1.5 rounded-xl ${color}`}>
  <Ic className="w-3.5 h-3.5" />
  </div>
  <div>
- <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{k}</p>
- <p className="text-sm font-bold text-foreground">
+ <p className="text-[10px] uppercase tracking-wider text-[#71717a] dark:text-gray-400 font-semibold tracking-[0.04em]">{k}</p>
+ <p className="text-sm font-semibold text-foreground">
  {typeof v === 'number' ? (Number.isInteger(v) ? v.toLocaleString() : v.toFixed(2)) : '-'}
  </p>
  </div>
@@ -295,11 +295,11 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
  if (!data || data.length === 0) {
  return (
  <div className="flex flex-col items-center justify-center py-20 text-center">
- <div className="p-5 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 border border-primary/40 mb-5">
+ <div className="p-5 rounded-md-2xl bg-gradient-to-br from-slate-50 to-slate-100 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-5">
  <BarChart3 className="w-12 h-12 text-slate-300" />
  </div>
  <h3 className="text-lg font-semibold text-foreground mb-2">No Data to Analyze</h3>
- <p className="text-sm text-muted-foreground max-w-sm">
+ <p className="text-sm text-[#71717a] dark:text-gray-400 max-w-sm">
  Add some records to see auto-generated statistics, breakdowns, and distribution charts.
  </p>
  </div>
@@ -313,14 +313,14 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
  {/* Header */}
  <div className="flex items-center justify-between flex-wrap gap-4">
  <div className="flex items-center gap-3">
- <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary to-primary -indigo-200">
+ <div className="p-2.5 rounded-md-xl bg-gradient-to-br from-primary to-primary -indigo-200">
  <BarChart3 className="w-5 h-5 text-white" />
  </div>
  <div>
- <h2 className="text-xl font-bold text-foreground tracking-tight">
+ <h2 className="text-xl font-semibold text-foreground tracking-tight">
  {moduleName} Report
  </h2>
- <p className="text-xs text-muted-foreground mt-0.5">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">
  Auto-generated analytics •{' '}
  {dateRange
  ? `${format(dateRange.earliest, 'MMM d, yyyy')} — ${format(dateRange.latest, 'MMM d, yyyy')}`
@@ -331,7 +331,7 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
  <Button
  variant="outline"
  onClick={handlePrint}
- className="gap-2 text-muted-foreground border-primary/40 hover:bg-muted/50 "
+ className="gap-2 text-[#71717a] dark:text-gray-400 border-primary/40 hover:bg-muted/50 "
  >
  <Printer className="w-4 h-4" />
  Print Report
@@ -392,7 +392,7 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
  {/* Select Field Breakdowns */}
  {selectBreakdowns.length > 0 && (
  <div>
- <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+ <h3 className="text-sm font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2 tracking-[0.04em]">
  <PieChart className="w-4 h-4" />
  Categorical Breakdowns
  </h3>
@@ -413,7 +413,7 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
  {/* Boolean Breakdowns */}
  {booleanStats.length > 0 && (
  <div>
- <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+ <h3 className="text-sm font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2 tracking-[0.04em]">
  <Activity className="w-4 h-4" />
  Boolean Fields
  </h3>
@@ -434,7 +434,7 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
  {/* Number Aggregations */}
  {numberAggs.length > 0 && (
  <div>
- <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+ <h3 className="text-sm font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2 tracking-[0.04em]">
  <TrendingUp className="w-4 h-4" />
  Numeric Summaries
  </h3>
@@ -453,7 +453,7 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
  {/* Date Distributions */}
  {dateFields.length > 0 && (
  <div>
- <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+ <h3 className="text-sm font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2 tracking-[0.04em]">
  <Calendar className="w-4 h-4" />
  Date Distributions
  </h3>

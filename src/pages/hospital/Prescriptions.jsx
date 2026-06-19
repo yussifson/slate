@@ -141,8 +141,8 @@ export default function Prescriptions() {
  <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("prescriptions", "Prescriptions")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t(
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("prescriptions", "Prescriptions")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
  "manage_patient_medications_and",
  "Manage patient medications and pharmacy orders"
  )}</p>
@@ -151,46 +151,46 @@ export default function Prescriptions() {
  <Plus className="w-4 h-4" /> {t("issue_prescription", "Issue Prescription")}
  </Button>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search patient or drug..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search patient or drug..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  <div className="overflow-x-auto">
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40">
+ <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("rx_id", "RX ID")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("patient", "Patient")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("medication_details", "Medication Details")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("prescriber", "Prescriber")}</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("action", "Action")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("rx_id", "RX ID")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("patient", "Patient")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("medication_details", "Medication Details")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("prescriber", "Prescriber")}</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("action", "Action")}</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
  {filtered.map(rx => {
  return (
  <tr key={rx.id} className="hover:bg-muted/50">
- <td className="px-6 py-4 font-mono text-xs font-bold text-primary">{rx.rxId}</td>
- <td className="px-6 py-4 font-semibold text-card-foreground">
+ <td className="px-6 py-4 font-mono text-xs font-semibold text-primary tracking-[0.04em]">{rx.rxId}</td>
+ <td className="px-6 py-4 font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Link to="/hospital/patients" className="text-primary hover:underline">{rx.patient}</Link>
  </td>
  <td className="px-6 py-4">
- <p className="font-bold text-card-foreground flex items-center gap-2">
+ <p className="font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Pill className="w-3.5 h-3.5 text-primary"/> 
  <Link to="/hospital/pharmacy" className="text-primary hover:underline">{rx.drug}</Link>
  </p>
- <p className="text-xs text-muted-foreground mt-1">{rx.dosage} • {rx.frequency} • {rx.duration}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">{rx.dosage} • {rx.frequency} • {rx.duration}</p>
  </td>
  <td className="px-6 py-4">
  <p className="text-foreground font-medium">{rx.doctor}</p>
- <p className="text-xs text-muted-foreground">{rx.date}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{rx.date}</p>
  </td>
  <td className="px-6 py-4 text-center">
- <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${rx.status === 'Active' ? 'bg-slate-100 text-primary/90' : 'bg-muted text-muted-foreground'}`}>
+ <span className={`text-xs font-semibold px-2.5 py-1 rounded-md-full ${rx.status === 'Active' ? 'bg-slate-100 text-primary/90' : 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
  {rx.status}
  </span>
  </td>
@@ -225,7 +225,7 @@ export default function Prescriptions() {
  </tbody>
  </table>
  {filtered.length === 0 && (
- <div className="text-center py-12 text-muted-foreground">
+ <div className="text-center py-12 text-[#71717a] dark:text-gray-400">
  <Pill className="w-10 h-10 mx-auto mb-3 opacity-30" />
  <p>{t(
  "no_prescriptions_found_click_i",
@@ -237,34 +237,34 @@ export default function Prescriptions() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-4">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><FileText className="w-5 h-5 text-primary"/> {t("new_prescription", "New Prescription")}</h2>
+ <div className="bg-card rounded-md-2xl w-full max-w-lg p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><FileText className="w-5 h-5 text-primary"/> {t("new_prescription", "New Prescription")}</h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("patient_name", "Patient Name")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("patient_name", "Patient Name")}</label>
  <Input value={formData.patient} onChange={e => setFormData({ ...formData, patient: e.target.value})} className="mt-1" placeholder="Search patient..." />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("drug_name_strength", "Drug Name & Strength")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("drug_name_strength", "Drug Name & Strength")}</label>
  <Input value={formData.drug} onChange={e => setFormData({ ...formData, drug: e.target.value})} className="mt-1" placeholder="e.g. Paracetamol 500mg" />
  </div>
  <div className="grid grid-cols-2 gap-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("dosage", "Dosage")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("dosage", "Dosage")}</label>
  <Input value={formData.dosage} onChange={e => setFormData({ ...formData, dosage: e.target.value})} className="mt-1" placeholder="e.g. 2 tablets" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("frequency", "Frequency")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("frequency", "Frequency")}</label>
  <Input value={formData.frequency} onChange={e => setFormData({ ...formData, frequency: e.target.value})} className="mt-1" placeholder="e.g. 3 times daily" />
  </div>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("duration", "Duration")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("duration", "Duration")}</label>
  <Input value={formData.duration} onChange={e => setFormData({ ...formData, duration: e.target.value})} className="mt-1" placeholder="e.g. 5 days" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("prescribing_doctor", "Prescribing Doctor")}</label>
- <select value={formData.doctor} onChange={e => setFormData({ ...formData, doctor: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("prescribing_doctor", "Prescribing Doctor")}</label>
+ <select value={formData.doctor} onChange={e => setFormData({ ...formData, doctor: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm">
  <option>{t("dr_john_mensah", "Dr. John Mensah")}</option>
  <option>{t("dr_jane_doe", "Dr. Jane Doe")}</option>
  <option>{t("dr_sarah_connor", "Dr. Sarah Connor")}</option>
@@ -287,35 +287,35 @@ export default function Prescriptions() {
  {viewRx && (
  <div className="mt-6 space-y-4">
  <div>
- <h3 className="text-sm font-medium text-muted-foreground">{t("rx_id", "RX ID")}</h3>
+ <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("rx_id", "RX ID")}</h3>
  <p className="text-base font-semibold">{viewRx.rxId}</p>
  </div>
  <div>
- <h3 className="text-sm font-medium text-muted-foreground">{t("patient", "Patient")}</h3>
+ <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("patient", "Patient")}</h3>
  <Link to="/hospital/patients" className="text-base font-semibold text-primary hover:underline">{viewRx.patient}</Link>
  </div>
  <div>
- <h3 className="text-sm font-medium text-muted-foreground">{t("medication", "Medication")}</h3>
+ <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("medication", "Medication")}</h3>
  <Link to="/hospital/pharmacy" className="text-base font-semibold text-primary hover:underline">{viewRx.drug}</Link>
  </div>
  <div>
- <h3 className="text-sm font-medium text-muted-foreground">{t("dosage_frequency", "Dosage & Frequency")}</h3>
+ <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("dosage_frequency", "Dosage & Frequency")}</h3>
  <p className="text-base">{viewRx.dosage} • {viewRx.frequency}</p>
  </div>
  <div>
- <h3 className="text-sm font-medium text-muted-foreground">{t("duration", "Duration")}</h3>
+ <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("duration", "Duration")}</h3>
  <p className="text-base">{viewRx.duration}</p>
  </div>
  <div>
- <h3 className="text-sm font-medium text-muted-foreground">{t("prescribing_doctor", "Prescribing Doctor")}</h3>
+ <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("prescribing_doctor", "Prescribing Doctor")}</h3>
  <p className="text-base">{viewRx.doctor}</p>
  </div>
  <div>
- <h3 className="text-sm font-medium text-muted-foreground">{t("status", "Status")}</h3>
+ <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("status", "Status")}</h3>
  <p className="text-base">{viewRx.status}</p>
  </div>
  <div>
- <h3 className="text-sm font-medium text-muted-foreground">{t("date_issued", "Date Issued")}</h3>
+ <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("date_issued", "Date Issued")}</h3>
  <p className="text-base">{viewRx.date}</p>
  </div>
  </div>

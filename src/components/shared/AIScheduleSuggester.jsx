@@ -58,15 +58,15 @@ Use dates starting from tomorrow.`
 };
 
  return (
- <div className="bg-card border border-primary/40 rounded-xl p-5 ">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between mb-4">
  <div className="flex items-center gap-2">
- <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-primary">
+ <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
  <Sparkles className="w-4 h-4" />
  </div>
  <div>
- <h3 className="text-sm font-bold text-card-foreground">{t("smart_scheduling", "Smart Scheduling")}</h3>
- <p className="text-xs text-muted-foreground">{t("find_the_optimal_time_slot", "Find the optimal time slot")}</p>
+ <h3 className="text-sm font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("smart_scheduling", "Smart Scheduling")}</h3>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("find_the_optimal_time_slot", "Find the optimal time slot")}</p>
  </div>
  </div>
  <Button 
@@ -74,31 +74,31 @@ Use dates starting from tomorrow.`
  disabled={isAnalyzing}
  variant="outline" 
  size="sm"
- className="text-xs h-8"
+ className="text-xs h-8 tracking-[0.04em]"
  >
  {isAnalyzing ? 'Analyzing Calendar...' : 'Suggest Times'}
  </Button>
  </div>
  {suggestions.length > 0 && (
  <div className="space-y-2 mt-4 pt-4 border-t border-primary/40">
- <p className="text-xs font-bold text-muted-foreground uppercase mb-2">{t("suggested_slots", "Suggested Slots")}</p>
+ <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-2 tracking-[0.04em]">{t("suggested_slots", "Suggested Slots")}</p>
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
  {suggestions.map((slot, idx) => {
  return (
  <button
  key={idx}
  onClick={() => onSelectSlot({ date: slot.date, time: slot.time})}
- className="flex flex-col items-start p-3 rounded-lg border border-primary/20 bg-slate-50 hover:bg-slate-100 transition-colors text-left group"
+ className="flex flex-col items-start p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 bg-slate-50 hover:bg-slate-100 transition-colors text-left group"
  >
- <div className="flex items-center gap-1.5 text-primary font-bold text-sm mb-1">
+ <div className="flex items-center gap-2.5 text-primary font-semibold text-sm mb-1">
  <CalendarIcon className="w-3.5 h-3.5" />
  {slot.date}
  </div>
- <div className="flex items-center gap-1.5 text-foreground font-medium text-xs mb-2">
- <Clock className="w-3.5 h-3.5 text-muted-foreground" />
+ <div className="flex items-center gap-2.5 text-foreground font-medium text-xs mb-2 tracking-[0.04em]">
+ <Clock className="w-3.5 h-3.5 text-[#71717a] dark:text-gray-400" />
  {slot.time}
  </div>
- <p className="text-[10px] text-muted-foreground leading-tight line-clamp-2 group-hover:text-foreground transition-colors">
+ <p className="text-[10px] text-[#71717a] dark:text-gray-400 leading-tight line-clamp-2 group-hover:text-foreground transition-colors">
  {slot.reason}
  </p>
  </button>

@@ -267,7 +267,7 @@ export default function Login() {
  if (checkingSubdomain) {
  return (
  <div className="flex min-h-screen items-center justify-center bg-background">
- <div className="animate-pulse text-muted-foreground font-medium">{t("checking_workslate_access", "Checking workslate access...")}</div>
+ <div className="animate-pulse text-[#71717a] dark:text-gray-400 font-medium">{t("checking_workslate_access", "Checking workslate access...")}</div>
  </div>
  );
 }
@@ -277,15 +277,15 @@ export default function Login() {
 
  return (
   <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-50/50 dark:bg-slate-900 p-4 font-sans backdrop-blur-sm">
-    <div className="w-full max-w-md bg-white dark:bg-slate-800 rounded-3xl p-8 text-center border border-slate-100 dark:border-slate-800">
-      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-red-50 dark:bg-red-500/10 mb-6">
+    <div className="w-full max-w-md bg-white dark:bg-slate-800 rounded-md-3xl p-8 text-center border-[0.5px] border-black/9 dark:border-white/8 border-slate-100 dark:border-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-md-2xl bg-red-50 dark:bg-red-500/10/10 mb-6">
         <AlertCircle className="h-8 w-8 text-red-500 dark:text-red-400" />
       </div>
-      <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white mb-2">{t("workslate_not_found", "Workslate Not Found")}</h2>
+      <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white mb-2 tracking-[-0.02em]">{t("workslate_not_found", "Workslate Not Found")}</h2>
       <p className="mb-8 text-sm font-medium text-slate-500 dark:text-slate-400 leading-relaxed">
-        {t("we_couldn_t_find_an_organizati", "We couldn't find an organization matching the web address")} <span className="font-bold text-slate-900 dark:text-white">"{currentSubdomain}"</span>.
+        {t("we_couldn_t_find_an_organizati", "We couldn't find an organization matching the web address")} <span className="font-semibold text-slate-900 dark:text-white">"{currentSubdomain}"</span>.
       </p>
-      <button onClick={() => window.location.href = mainUrl} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-3.5 px-6 rounded-xl transition-all">
+      <button onClick={() => window.location.href = mainUrl} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3.5 px-6 rounded-md-xl transition-all">
         {t("go_to_main_login_portal", "Go to Main Login Portal")}
       </button>
     </div>
@@ -294,39 +294,39 @@ export default function Login() {
 }
 
  return (
- <div className="min-h-screen flex flex-col lg:flex-row bg-white">
+ <div className="min-h-screen flex flex-col lg:flex-row bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Left Side: Form */}
  <div className="flex-1 flex flex-col justify-center px-8 lg:px-16 py-12">
  <div className="max-w-md w-full mx-auto">
  <div className="flex flex-col mb-8">
  <Logo className="w-10 h-10" />
- <span className="text-[10px] text-muted-foreground font-bold tracking-[0.2em] uppercase mt-1">by Optavel</span>
+ <span className="text-[10px] text-[#71717a] dark:text-gray-400 font-semibold tracking-[0.2em] uppercase mt-1 tracking-[0.04em]">by Optavel</span>
  </div>
  
  <div className="mb-8">
- <h1 className="text-2xl font-bold text-slate-900">{t("welcome_back", "Welcome back")}</h1>
- <p className="text-xs text-slate-500 font-medium mt-1">{t("enter_your_credentials_to_acce", "Enter your credentials to access your workslate")}</p>
+ <h1 className="text-2xl font-semibold text-slate-900 tracking-[-0.02em]">{t("welcome_back", "Welcome back")}</h1>
+ <p className="text-xs text-slate-500 font-medium mt-1 tracking-[0.04em]">{t("enter_your_credentials_to_acce", "Enter your credentials to access your workslate")}</p>
  </div>
  
  <form className="space-y-4" onSubmit={handleLogin}>
- {error && <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border border-red-100 font-medium">{error}</div>}
+ {error && <div className="rounded-md-xl bg-red-50 p-3 text-xs text-red-600 border-[0.5px] border-black/9 dark:border-white/8 border-red-100 font-medium tracking-[0.04em]">{error}</div>}
  
  <div className="space-y-4">
  <div>
- <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">{t("email", "Email Address")}</label>
+ <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("email", "Email Address")}</label>
  <Input
  type="email"
  required
  placeholder="john@example.com"
  value={email}
  onChange={(e) => setEmail(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
+ className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  <div>
  <div className="flex items-center justify-between mb-1.5">
- <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest">{t("password", "Password")}</label>
- <a href="#" className="text-[11px] font-bold text-primary hover:underline">{t("forgot_password", "Forgot password?")}</a>
+ <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest tracking-[0.04em]">{t("password", "Password")}</label>
+ <a href="#" className="text-[11px] font-semibold text-primary hover:underline">{t("forgot_password", "Forgot password?")}</a>
  </div>
  <Input
  type="password"
@@ -334,7 +334,7 @@ export default function Login() {
  placeholder="••••••••••••"
  value={password}
  onChange={(e) => setPassword(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
+ className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  </div>
@@ -344,8 +344,8 @@ export default function Login() {
  </Button>
 
  <div className="text-center mt-6">
- <span className="text-xs text-slate-500 font-medium">{t("don_t_have_an_account", "Don't have an account?")} </span>
- <a href={`${getMainAppUrl()}/signup`} className="text-xs font-bold text-primary hover:underline">
+ <span className="text-xs text-slate-500 font-medium tracking-[0.04em]">{t("don_t_have_an_account", "Don't have an account?")} </span>
+ <a href={`${getMainAppUrl()}/signup`} className="text-xs font-semibold text-primary hover:underline tracking-[0.04em]">
  {t("create_workspace", "Create Workslate")}
  </a>
  </div>
@@ -357,7 +357,7 @@ export default function Login() {
  {/* Abstract Pattern Background */}
  <div className="absolute inset-0 bg-slate-900/5 mix-blend-overlay"></div>
 
- <div className="relative z-10 w-full max-w-2xl bg-white rounded-[2rem] border border-primary/40 -[0_20px_60px_-15px_rgba(0,0,0,0.05)] p-12 lg:p-16 flex flex-col justify-center relative group">
+ <div className="relative z-10 w-full max-w-2xl bg-white rounded-md-[2rem] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 -[0_20px_60px_-15px_rgba(0,0,0,0.05)] p-12 lg:p-16 flex flex-col justify-center relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="absolute top-0 right-0 p-8 opacity-[0.03] text-[10rem] font-serif leading-none font-black text-primary/70 group-hover:text-primary group-hover:opacity-10 transition-colors duration-700 pointer-events-none">"</div>
  
  <div className="relative z-10">
@@ -367,7 +367,7 @@ export default function Login() {
 })}
  </div>
  
- <p className="text-slate-800 font-medium text-2xl md:text-3xl mb-12 relative z-10 leading-relaxed tracking-tight">
+ <p className="text-slate-800 font-medium text-2xl md:text-3xl mb-12 relative z-10 leading-relaxed tracking-tight tracking-[-0.02em]">
  {t(
  "slate_completely_transform",
  "\"Slate completely transformed how our firm operates. We reduced administrative time by 40% in the very first month, allowing us to focus entirely on our clients.\""
@@ -375,11 +375,11 @@ export default function Login() {
  </p>
  
  <div className="flex items-center gap-5 pt-8 relative z-10">
- <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 flex items-center justify-center text-primary/90 font-bold text-xl ">
+ <div className="w-16 h-16 rounded-md-full bg-gradient-to-br from-primary/5 to-primary/10 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 flex items-center justify-center text-primary/90 font-semibold text-xl ">
  {t("mk", "MK")}
  </div>
  <div>
- <p className="text-xl font-bold text-slate-900 tracking-tight">{t("mariama_kamara", "Mariama Kamara")}</p>
+ <p className="text-xl font-semibold text-slate-900 tracking-tight">{t("mariama_kamara", "Mariama Kamara")}</p>
  <p className="text-base font-medium text-slate-500">{t("managing_partner_kamara_group", "Managing Partner, Kamara Group")}</p>
  </div>
  </div>

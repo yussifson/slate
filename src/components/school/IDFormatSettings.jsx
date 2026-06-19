@@ -69,40 +69,40 @@ export default function IDFormatSettings() {
 });
 
  return (
- <div className="bg-card rounded-xl border border-primary/40 p-6 mb-6">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 mb-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 mb-4">
  <Settings className="w-5 h-5 text-primary" />
- <h3 className="text-lg font-bold">Dynamic ID Generation Settings</h3>
+ <h3 className="text-lg font-semibold">Dynamic ID Generation Settings</h3>
  </div>
  
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  <div className="space-y-4">
- <h4 className="font-semibold text-sm text-muted-foreground border-b border-primary/40 pb-2">Student ID Format</h4>
+ <h4 className="font-semibold text-sm text-[#71717a] dark:text-gray-400 border-b border-primary/40 pb-2">Student ID Format</h4>
  <div>
  <Label>Prefix</Label>
  <Input value={studentPrefix} onChange={e => setStudentPrefix(e.target.value)} placeholder="e.g. STU" className="mt-1" />
  </div>
  <div className="flex items-center gap-2 mt-2">
- <input type="checkbox" id="includeYear" checked={studentIncludeYear} onChange={e => setStudentIncludeYear(e.target.checked)} className="rounded border-input text-primary focus:ring-primary" />
+ <input type="checkbox" id="includeYear" checked={studentIncludeYear} onChange={e => setStudentIncludeYear(e.target.checked)} className="rounded-md border-input text-primary focus:ring-primary" />
  <Label htmlFor="includeYear">Include Current Year (e.g. {new Date().getFullYear()})</Label>
  </div>
- <div className="bg-slate-50 p-3 rounded-lg border border-primary/20">
- <p className="text-xs text-muted-foreground">Preview:</p>
- <p className="font-mono font-bold text-primary">
+ <div className="bg-slate-50 p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Preview:</p>
+ <p className="font-mono font-semibold text-primary">
  {studentPrefix}{studentPrefix ? '-' : ''}{studentIncludeYear ? new Date().getFullYear() + '-' : ''}0001
  </p>
  </div>
  </div>
 
  <div className="space-y-4">
- <h4 className="font-semibold text-sm text-muted-foreground border-b border-primary/40 pb-2">Parent ID Format</h4>
+ <h4 className="font-semibold text-sm text-[#71717a] dark:text-gray-400 border-b border-primary/40 pb-2">Parent ID Format</h4>
  <div>
  <Label>Prefix</Label>
  <Input value={parentPrefix} onChange={e => setParentPrefix(e.target.value)} placeholder="e.g. PAR" className="mt-1" />
  </div>
- <div className="bg-slate-50 p-3 rounded-lg border border-primary/20 mt-8">
- <p className="text-xs text-muted-foreground">Preview:</p>
- <p className="font-mono font-bold text-primary">
+ <div className="bg-slate-50 p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 mt-8">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Preview:</p>
+ <p className="font-mono font-semibold text-primary">
  {parentPrefix}{parentPrefix ? '-' : ''}0001
  </p>
  </div>

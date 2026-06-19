@@ -20,7 +20,7 @@ export default function HearingReminders({ hearings, userEmail, isAdmin }) {
   if (urgent.length === 0) return null;
 
   return (
-    <div className="bg-amber-50 border border-amber-200 rounded-xl overflow-hidden">
+    <div className="bg-amber-50 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 rounded-md-xl overflow-hidden">
       <div className="px-4 py-3 bg-amber-100/70 border-b border-amber-200 flex items-center gap-2">
         <Bell className="w-4 h-4 text-amber-600 animate-pulse" />
         <span className="text-sm font-semibold text-amber-800">
@@ -32,12 +32,12 @@ export default function HearingReminders({ hearings, userEmail, isAdmin }) {
           const hoursUntil = differenceInHours(new Date(h.date), now);
           return (
             <div key={h.id} className="px-4 py-3 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-amber-100 flex flex-col items-center justify-center flex-shrink-0 border border-amber-200">
+              <div className="w-10 h-10 rounded-xl bg-amber-100 flex flex-col items-center justify-center flex-shrink-0 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200">
                 <Calendar className="w-4 h-4 text-amber-600" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-amber-900 truncate">{h.title}</p>
-                <p className="text-xs text-amber-700 truncate">
+                <p className="text-xs text-amber-700 truncate tracking-[0.04em]">
                   {h.court_name || h.case_title} · {h.time || "TBD"}
                 </p>
               </div>

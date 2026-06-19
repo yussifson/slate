@@ -152,36 +152,36 @@ export default function UnivProduction() {
  <div className="flex flex-col h-full bg-background overflow-hidden relative ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
  <div>
- <h2 className="text-2xl font-bold text-foreground tracking-tight">Production Runs</h2>
- <p className="text-sm text-muted-foreground mt-1">Manage manufacturing batches, timelines, and statuses.</p>
+ <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">Production Runs</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Manage manufacturing batches, timelines, and statuses.</p>
  </div>
  <div className="flex gap-3">
  <div className="flex items-center gap-2">
 
  
  
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={() => handleOpenModal()} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
+ <button onClick={() => handleOpenModal()} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
  <Plus className="w-4 h-4" /> Create Batch
  </button>
  </div>
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
  <input 
  type="text"
  placeholder="Search batches, products..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -194,19 +194,19 @@ export default function UnivProduction() {
  animate={{ opacity: 1, scale: 1}}
  transition={{ delay: idx * 0.05}}
  key={p.id} 
- className="bg-background border border-primary/40 rounded-2xl p-5 hover:border-primary/40 transition-colors group relative flex flex-col justify-between"
+ className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 hover:border-primary/40 transition-colors group relative flex flex-col justify-between"
  >
  <div>
  <div className="flex justify-between items-start mb-4 border-b border-primary/40 pb-4">
  <div>
- <h3 className="font-bold text-lg text-foreground flex items-center gap-2">
+ <h3 className="font-semibold text-lg text-foreground flex items-center gap-2">
  <Factory className="w-4 h-4 text-primary" /> {p.batch_number}
  </h3>
- <div className="text-sm font-semibold text-muted-foreground mt-1 uppercase tracking-wider">
+ <div className="text-sm font-semibold text-[#71717a] dark:text-gray-400 mt-1 uppercase tracking-wider tracking-[0.04em]">
  {p.product_name}
  </div>
  </div>
- <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border flex items-center gap-1 ${
+ <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-semibold rounded-lg border-[0.5px] border-black/9 dark:border-white/8 flex items-center gap-2 ${
  p.status === 'In Progress' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
  p.status === 'QA' ? 'bg-purple-50 text-purple-700 border-purple-200' : 
  p.status === 'Completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
@@ -222,25 +222,25 @@ export default function UnivProduction() {
 
  <div className="space-y-3 mb-4">
  <div className="flex justify-between text-sm">
- <span className="text-muted-foreground">Target Quantity</span>
- <span className="font-bold font-mono">{Number(p.quantity).toLocaleString()}</span>
+ <span className="text-[#71717a] dark:text-gray-400">Target Quantity</span>
+ <span className="font-semibold font-mono">{Number(p.quantity).toLocaleString()}</span>
  </div>
  <div className="flex justify-between text-sm">
- <span className="text-muted-foreground">Start Date</span>
+ <span className="text-[#71717a] dark:text-gray-400">Start Date</span>
  <span className="font-medium">{p.start_date || '—'}</span>
  </div>
  <div className="flex justify-between text-sm">
- <span className="text-muted-foreground">Est. End Date</span>
+ <span className="text-[#71717a] dark:text-gray-400">Est. End Date</span>
  <span className="font-medium">{p.end_date || '—'}</span>
  </div>
  </div>
  </div>
 
  <div className="pt-4 border-t border-primary/40 flex justify-end gap-2 shrink-0">
- <button onClick={() => handleOpenModal(p)} className="p-1.5 hover:bg-muted rounded-md text-muted-foreground hover:text-primary transition-colors">
+ <button onClick={() => handleOpenModal(p)} className="p-1.5 hover:bg-muted rounded-lg text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors">
  <Edit2 className="w-4 h-4" />
  </button>
- <button onClick={() => handleDelete(p.id)} className="p-1.5 hover:bg-muted rounded-md text-muted-foreground hover:text-destructive transition-colors">
+ <button onClick={() => handleDelete(p.id)} className="p-1.5 hover:bg-muted rounded-lg text-[#71717a] dark:text-gray-400 hover:text-destructive transition-colors">
  <Trash2 className="w-4 h-4" />
  </button>
  </div>
@@ -249,7 +249,7 @@ export default function UnivProduction() {
  </div>
 
  {filtered.length === 0 && (
- <div className="text-center py-12 text-muted-foreground">
+ <div className="text-center py-12 text-[#71717a] dark:text-gray-400">
  <Factory className="w-12 h-12 mx-auto mb-3 opacity-20" />
  <p>No production batches found.</p>
  </div>
@@ -264,23 +264,23 @@ export default function UnivProduction() {
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
  exit={{ opacity: 0, scale: 0.95}}
- className="bg-card border border-primary/40 rounded-2xl w-full max-w-md overflow-hidden"
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl w-full max-w-md overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="flex items-center justify-between p-4 border-b border-primary/40">
  <h3 className="font-semibold text-foreground">{editingId ? 'Edit Batch' : 'New Production Batch'}</h3>
- <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:text-foreground">
+ <button onClick={() => setIsModalOpen(false)} className="text-[#71717a] dark:text-gray-400 hover:text-foreground">
  <XCircle className="w-5 h-5" />
  </button>
  </div>
  <form onSubmit={handleSave} className="p-4 space-y-4">
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Batch Number</label>
- <input required value={form.batch_number} onChange={e => setForm({...form, batch_number: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Batch Number</label>
+ <input required value={form.batch_number} onChange={e => setForm({...form, batch_number: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm" />
  </div>
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Status</label>
- <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm">
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Status</label>
+ <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm">
  <option value="Planned">Planned</option>
  <option value="In Progress">In Progress</option>
  <option value="QA">QA</option>
@@ -290,29 +290,29 @@ export default function UnivProduction() {
  </div>
 
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Product Name</label>
- <input required value={form.product_name} onChange={e => setForm({...form, product_name: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Product Name</label>
+ <input required value={form.product_name} onChange={e => setForm({...form, product_name: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm" />
  </div>
 
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Quantity</label>
- <input type="number" required value={form.quantity} onChange={e => setForm({...form, quantity: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Quantity</label>
+ <input type="number" required value={form.quantity} onChange={e => setForm({...form, quantity: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm" />
  </div>
 
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Start Date</label>
- <input type="date" value={form.start_date} onChange={e => setForm({...form, start_date: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Start Date</label>
+ <input type="date" value={form.start_date} onChange={e => setForm({...form, start_date: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm" />
  </div>
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">End Date</label>
- <input type="date" value={form.end_date} onChange={e => setForm({...form, end_date: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">End Date</label>
+ <input type="date" value={form.end_date} onChange={e => setForm({...form, end_date: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm" />
  </div>
  </div>
 
  <div className="pt-4 flex justify-end gap-2">
- <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted rounded-lg">Cancel</button>
- <button type="submit" className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90">Save Batch</button>
+ <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium text-[#71717a] dark:text-gray-400 hover:bg-muted rounded-xl">Cancel</button>
+ <button type="submit" className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary/90">Save Batch</button>
  </div>
  </form>
  </motion.div>

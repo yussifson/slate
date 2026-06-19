@@ -169,7 +169,7 @@ export default function Clients() {
  />
  <div className="flex flex-col sm:flex-row gap-3">
  <div className="relative flex-1">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <Input placeholder={`Search ${clientsTerm.toLowerCase()}...`} className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
  </div>
  <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -191,7 +191,7 @@ export default function Clients() {
  deleting={deleting}
  />
  {isLoading ? (
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Table><TableHeader><TableRow>{["", clientTerm, "Phone", "Type", "Status", "Added"].map((h, i) => {
  return <TableHead key={i}>{h}</TableHead>;
 })}</TableRow></TableHeader>
@@ -205,13 +205,13 @@ export default function Clients() {
  </Table>
  </div>
  ) : filtered.length === 0 ? (
- <div className="bg-card rounded-2xl border border-dashed border-primary/40 p-12 text-center max-w-sm mx-auto my-8 space-y-4 ">
- <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800/50 border border-primary/40 flex items-center justify-center mx-auto text-primary">
+ <div className="bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 p-12 text-center max-w-sm mx-auto my-8 space-y-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-12 h-12 rounded-md-full bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center mx-auto text-primary">
  <Users className="w-5 h-5" />
  </div>
  <div className="space-y-1">
- <p className="font-bold text-sm text-slate-900 dark:text-slate-100">{t("no_registered", "No Registered")} {clientsTerm}</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto leading-relaxed">
+ <p className="font-semibold text-sm text-slate-900 dark:text-slate-100">{t("no_registered", "No Registered")} {clientsTerm}</p>
+ <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto leading-relaxed tracking-[0.04em]">
  {t(
  "start_building_your_firm_s_add",
  "Start building your firm's address book, tracking intake forms, and sharing retainers by adding your first"
@@ -221,21 +221,21 @@ export default function Clients() {
  <div className="pt-2">
  <Button 
  onClick={handleAddClick}
- className="bg-primary hover:bg-primary/95 text-white font-semibold text-xs py-3.5 px-5 rounded-xl "
+ className="bg-primary hover:bg-primary/95 text-white font-semibold text-xs py-3.5 px-5 rounded-md-xl  tracking-[0.04em]"
  >
  {t("add_new", "Add New")} {clientTerm}
  </Button>
  </div>
  </div>
  ) : (
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="overflow-x-auto">
  <Table>
  <TableHeader>
  <TableRow className="bg-muted/50">
  <TableHead className="w-10"><Checkbox checked={allSelected} onCheckedChange={toggleAll} /></TableHead>
  {[clientTerm, "Phone", "Type", "Status", "Added", "Actions"].map(h => {
- return (<TableHead key={h} className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{h}</TableHead>);
+ return (<TableHead key={h} className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{h}</TableHead>);
 })}
  </TableRow>
  </TableHeader>
@@ -246,12 +246,12 @@ export default function Clients() {
  <TableCell onClick={e => toggleOne(row.id, e)}><Checkbox checked={selected.has(row.id)} onCheckedChange={() => {}} /></TableCell>
  <TableCell>
  <div className="flex items-center gap-3">
- <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
- <span className="text-xs font-bold text-primary">{row.name?.[0]?.toUpperCase()}</span>
+ <div className="w-8 h-8 rounded-md-full bg-slate-100 flex items-center justify-center">
+ <span className="text-xs font-semibold text-primary tracking-[0.04em]">{row.name?.[0]?.toUpperCase()}</span>
  </div>
  <div>
  <p className="font-medium text-sm">{row.name}</p>
- <p className="text-xs text-muted-foreground">{row.email || "No email"}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{row.email || "No email"}</p>
  </div>
  </div>
  </TableCell>
@@ -262,7 +262,7 @@ export default function Clients() {
  {row.status}
  </Badge>
  </TableCell>
- <TableCell><span className="text-xs text-muted-foreground">{format(new Date(row.created_date), "MMM d, yyyy")}</span></TableCell>
+ <TableCell><span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{format(new Date(row.created_date), "MMM d, yyyy")}</span></TableCell>
  <TableCell>
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
@@ -300,39 +300,39 @@ export default function Clients() {
  {viewingClient && (
  <div className="mt-6 space-y-4">
  <div>
- <Label className="text-muted-foreground">{t("name", "Name")}</Label>
+ <Label className="text-[#71717a] dark:text-gray-400">{t("name", "Name")}</Label>
  <p className="font-medium">{viewingClient.name}</p>
  </div>
  <div>
- <Label className="text-muted-foreground">{t("email", "Email")}</Label>
+ <Label className="text-[#71717a] dark:text-gray-400">{t("email", "Email")}</Label>
  <p className="font-medium">{viewingClient.email || "—"}</p>
  </div>
  <div>
- <Label className="text-muted-foreground">{t("phone", "Phone")}</Label>
+ <Label className="text-[#71717a] dark:text-gray-400">{t("phone", "Phone")}</Label>
  <p className="font-medium">{viewingClient.phone || "—"}</p>
  </div>
  <div>
- <Label className="text-muted-foreground">{t("type", "Type")}</Label>
+ <Label className="text-[#71717a] dark:text-gray-400">{t("type", "Type")}</Label>
  <p className="font-medium capitalize">{viewingClient.type || "—"}</p>
  </div>
  <div>
- <Label className="text-muted-foreground">{t("status", "Status")}</Label>
+ <Label className="text-[#71717a] dark:text-gray-400">{t("status", "Status")}</Label>
  <p className="font-medium capitalize">{viewingClient.status || "—"}</p>
  </div>
  <div>
- <Label className="text-muted-foreground">{t("address", "Address")}</Label>
+ <Label className="text-[#71717a] dark:text-gray-400">{t("address", "Address")}</Label>
  <p className="font-medium">{viewingClient.address || "—"}</p>
  </div>
  <div>
- <Label className="text-muted-foreground">{t("city", "City")}</Label>
+ <Label className="text-[#71717a] dark:text-gray-400">{t("city", "City")}</Label>
  <p className="font-medium">{viewingClient.city || "—"}</p>
  </div>
  <div>
- <Label className="text-muted-foreground">{t("country", "Country")}</Label>
+ <Label className="text-[#71717a] dark:text-gray-400">{t("country", "Country")}</Label>
  <p className="font-medium">{viewingClient.country || "—"}</p>
  </div>
  <div>
- <Label className="text-muted-foreground">{t("notes", "Notes")}</Label>
+ <Label className="text-[#71717a] dark:text-gray-400">{t("notes", "Notes")}</Label>
  <p className="font-medium whitespace-pre-wrap">{viewingClient.notes || "—"}</p>
  </div>
  </div>

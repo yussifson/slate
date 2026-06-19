@@ -27,21 +27,21 @@ export function GeoBanner({ country, tier, onTierChange}) {
 
  return (
  <div className="relative">
- <div className="bg-primary/10 border border-primary/20 rounded-2xl px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+ <div className="bg-primary/10 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-2xl px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-3">
  <div className="flex items-center gap-2 flex-1">
  <Globe className="w-4 h-4 text-primary shrink-0" />
  <p className="text-sm font-semibold text-primary">
  Showing <span className="font-black">{meta.name}</span> pricing
  {country && country !== 'manual' && <span className="font-normal text-primary/70"> — detected from {country}</span>}
  {meta.badge && (
- <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full bg-primary text-white text-[10px] font-black uppercase tracking-wider">{meta.badge}</span>
+ <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-md-full bg-primary text-white text-[10px] font-black uppercase tracking-wider tracking-[0.04em]">{meta.badge}</span>
  )}
  </p>
  </div>
  <div className="flex items-center gap-2 shrink-0">
  <button
  onClick={() => setOpen(v => !v)}
- className="flex items-center gap-1.5 text-xs font-bold text-primary border border-primary/30 bg-white px-3 py-1.5 rounded-xl hover:bg-primary/5 transition-colors"
+ className="flex items-center gap-2.5 text-xs font-semibold text-primary border-[0.5px] border-black/9 dark:border-white/8 border-primary/30 bg-white px-3 py-1.5 rounded-md-xl hover:bg-primary/5 transition-colors tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  Change region
  <ChevronDown className={`w-3.5 h-3.5 transition-transform ${open ? 'rotate-180' : ''}`} />
@@ -50,20 +50,20 @@ export function GeoBanner({ country, tier, onTierChange}) {
  </div>
 
  {open && (
- <div className="absolute top-full mt-2 left-0 right-0 sm:left-auto sm:right-0 sm:w-72 bg-white border border-primary/40 rounded-2xl z-50 p-2 animate-in fade-in slide-in-from-top-2 duration-150">
+ <div className="absolute top-full mt-2 left-0 right-0 sm:left-auto sm:right-0 sm:w-72 bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl z-50 p-2 animate-in fade-in slide-in-from-top-2 duration-150 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="px-3 py-2 mb-1">
- <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Select your region</p>
+ <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest tracking-[0.04em]">Select your region</p>
  </div>
  {ALL_TIERS.map(t => (
  <button
  key={t.value}
  onClick={() => applyOverride(t.value)}
- className={`w-full flex flex-col items-start px-3 py-2.5 rounded-xl text-left transition-colors hover:bg-slate-50 ${
+ className={`w-full flex flex-col items-start px-3 py-2.5 rounded-md-xl text-left transition-colors hover:bg-slate-50 ${
  tier === t.value ? 'bg-primary/5 text-primary' : 'text-slate-700'
 }`}
  >
- <span className="text-sm font-bold">{t.label}</span>
- <span className="text-xs text-slate-500 font-medium">{t.sub}</span>
+ <span className="text-sm font-semibold">{t.label}</span>
+ <span className="text-xs text-slate-500 font-medium tracking-[0.04em]">{t.sub}</span>
  </button>
  ))}
  <div className="border-t border-primary/40 mt-1 pt-1">

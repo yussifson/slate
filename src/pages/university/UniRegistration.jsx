@@ -78,17 +78,17 @@ export default function UniRegistration() {
   };
 
   const registeredCredits = activeStudent ? courses.filter(c => activeStudent.courses.includes(c.code)).reduce((sum, c) => sum + c.credits, 0) : 0;
-  const selectClass = "w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-accent-primary)] focus:ring-1 focus:ring-[var(--color-accent-primary)] font-body";
+  const selectClass = "w-full bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-accent-primary)] focus:ring-1 focus:ring-[var(--color-accent-primary)] font-body";
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="border-b border-primary/40 pb-4">
-        <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Course Registration</h1>
+        <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">Course Registration</h1>
         <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Submit slate choices, validate credit workloads, and satisfy prerequisites.</p>
       </div>
 
-      <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
-        <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Active Student Profile</label>
+      <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6">
+        <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">Active Student Profile</label>
         <select value={selectedStudentId} onChange={e => setSelectedStudentId(e.target.value)} className={cn(selectClass, "mt-2")}>
           <option value="">-- Choose Undergraduate --</option>
           {parsedStudents.map(s => <option key={s.id} value={s.id}>{s.name} ({s.major}) - GPA: {s.gpa}</option>)}
@@ -97,7 +97,7 @@ export default function UniRegistration() {
 
       {activeStudent ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+          <div className="lg:col-span-2 bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden">
             <div className="p-6 border-b border-primary/40">
               <h2 className="font-semibold text-[var(--color-text-primary)]">Registration Grid</h2>
               <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Select courses. System verifies requirements automatically.</p>
@@ -108,13 +108,13 @@ export default function UniRegistration() {
               ) : courses.map((course, idx) => {
                 const isEnrolled = activeStudent.courses.includes(course.code);
                 return (
-                  <div key={idx} className="p-4 bg-[var(--color-surface-1)] rounded-[var(--radius-lg)] border border-primary/40 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                  <div key={idx} className="p-4 bg-[var(--color-surface-1)] rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-mono font-bold text-[var(--color-accent-primary)] bg-[var(--color-accent-subtle)] px-2 py-0.5 rounded-[var(--radius-sm)]">{course.code}</span>
+                        <span className="text-xs font-mono font-semibold text-[var(--color-accent-primary)] bg-[var(--color-accent-subtle)] px-2 py-0.5 rounded-md-[var(--radius-sm)] tracking-[0.04em]">{course.code}</span>
                         <h4 className="font-semibold text-[var(--text-sm)] text-[var(--color-text-primary)]">{course.name}</h4>
                       </div>
-                      <div className="flex flex-wrap gap-4 mt-2 text-[var(--text-xs)] text-[var(--color-text-secondary)] font-medium">
+                      <div className="flex flex-wrap gap-4 mt-2 text-[var(--text-xs)] text-[var(--color-text-secondary)] font-medium tracking-[0.04em]">
                         <span>{course.credits} Credits</span>
                         <span>{course.schedule}</span>
                         {course.prerequisite && <span className="text-[var(--color-warning)]">Prereq: {course.prerequisite}</span>}
@@ -124,10 +124,10 @@ export default function UniRegistration() {
                       {isEnrolled ? (
                         <>
                           <OrbitStatusBadge status="enrolled" />
-                          <button onClick={() => toggleCourse(course.code)} className="px-3 py-1.5 text-xs font-medium text-[var(--color-danger)] hover:bg-[var(--color-danger-subtle)] rounded-[var(--radius-md)] transition-colors">Drop</button>
+                          <button onClick={() => toggleCourse(course.code)} className="px-3 py-1.5 text-xs font-medium text-[var(--color-danger)] hover:bg-[var(--color-danger-subtle)] rounded-md-[var(--radius-md)] transition-colors tracking-[0.04em]">Drop</button>
                         </>
                       ) : (
-                        <button onClick={() => toggleCourse(course.code)} className="flex items-center gap-1 px-3 py-1.5 bg-[var(--color-accent-primary)] hover:opacity-90 text-white text-xs font-medium rounded-[var(--radius-md)] transition-all">
+                        <button onClick={() => toggleCourse(course.code)} className="flex items-center gap-2 px-3 py-1.5 bg-[var(--color-accent-primary)] hover:opacity-90 text-white text-xs font-medium rounded-md-[var(--radius-md)] transition-all tracking-[0.04em]">
                           <Plus className="w-3.5 h-3.5" /> Add
                         </button>
                       )}
@@ -138,14 +138,14 @@ export default function UniRegistration() {
             </div>
           </div>
 
-          <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 h-fit space-y-6">
+          <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 h-fit space-y-6">
             <h3 className="font-semibold text-[var(--color-text-primary)]">Workload Summary</h3>
             <div className="space-y-3">
               <div className="flex justify-between text-[var(--text-sm)]">
                 <span className="text-[var(--color-text-secondary)]">Credit Load:</span>
-                <span className="font-mono font-bold text-[var(--color-accent-primary)]">{registeredCredits} / 18</span>
+                <span className="font-mono font-semibold text-[var(--color-accent-primary)]">{registeredCredits} / 18</span>
               </div>
-              <div className="w-full bg-[var(--color-surface-3)] h-2 rounded-full overflow-hidden">
+              <div className="w-full bg-[var(--color-surface-3)] h-2 rounded-md-full overflow-hidden">
                 <div className="bg-[var(--color-accent-primary)] h-full transition-all" style={{ width: `${Math.min(100, (registeredCredits / 18) * 100)}%` }} />
               </div>
             </div>
@@ -158,13 +158,13 @@ export default function UniRegistration() {
               </div>
               <div className="flex justify-between text-[var(--text-sm)]">
                 <span className="text-[var(--color-text-secondary)]">Advising:</span>
-                <span className="text-[var(--color-success)] font-medium flex items-center gap-1"><CheckCircle2 className="w-3.5 h-3.5" /> Cleared</span>
+                <span className="text-[var(--color-success)] font-medium flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5" /> Cleared</span>
               </div>
             </div>
           </div>
         </div>
       ) : (
-        <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-12 text-center text-[var(--color-text-tertiary)]">
+        <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-12 text-center text-[var(--color-text-tertiary)]">
           Select a student to manage course registration.
         </div>
       )}

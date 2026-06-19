@@ -135,14 +135,14 @@ export default function UnivSearch() {
  <div className="view-header max-w-4xl w-full mx-auto py-12 px-4 sm:px-6 relative z-10 flex flex-col items-center">
  
  <div className="text-center mb-8">
- <h2 className="text-3xl font-bold text-foreground tracking-tight">Global Search</h2>
- <p className="text-sm text-muted-foreground mt-2 max-w-lg mx-auto">Find records, contacts, files, and projects instantly across your entire workslate.</p>
+ <h2 className="text-3xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">Global Search</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-2 max-w-lg mx-auto">Find records, contacts, files, and projects instantly across your entire workslate.</p>
  </div>
 
  {/* Search Input */}
  <div className="w-full max-w-2xl relative">
- <div className={`relative flex items-center bg-card border-2 rounded-2xl transition-all duration-300 ${isFocused ? 'border-primary ring-4 ring-primary/10 ' : 'border-primary/40 hover:border-primary/40'}`}>
- <Search className={`w-6 h-6 absolute left-4 ${isFocused ? 'text-primary' : 'text-muted-foreground'} transition-colors`} />
+ <div className={`relative flex items-center bg-card border-2 rounded-md-2xl transition-all duration-300 ${isFocused ? 'border-primary ring-4 ring-primary/10 ' : 'border-primary/40 hover:border-primary/40'}`}>
+ <Search className={`w-6 h-6 absolute left-4 ${isFocused ? 'text-primary' : 'text-[#71717a] dark:text-gray-400'} transition-colors`} />
  <input 
  type="text"
  placeholder="Search anything..."
@@ -150,14 +150,14 @@ export default function UnivSearch() {
  onChange={(e) => setQuery(e.target.value)}
  onFocus={() => setIsFocused(true)}
  onBlur={() => setTimeout(() => setIsFocused(false), 250)}
- className="w-full h-16 pl-14 pr-14 bg-transparent rounded-2xl text-lg focus:outline-none text-foreground placeholder:text-muted-foreground"
+ className="w-full h-16 pl-14 pr-14 bg-transparent rounded-md-2xl text-lg focus:outline-none text-foreground placeholder:text-[#71717a] dark:text-gray-400"
  />
  {query && (
- <button onClick={() => setQuery('')} className="absolute right-12 p-1 text-muted-foreground hover:text-foreground transition-colors">
+ <button onClick={() => setQuery('')} className="absolute right-12 p-1 text-[#71717a] dark:text-gray-400 hover:text-foreground transition-colors">
  <X className="w-5 h-5" />
  </button>
  )}
- <div className="absolute right-4 text-xs font-semibold text-muted-foreground border border-primary/40 rounded px-1.5 py-0.5 bg-muted hidden sm:block">⌘K</div>
+ <div className="absolute right-4 text-xs font-semibold text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md px-1.5 py-0.5 bg-muted hidden sm:block tracking-[0.04em]">⌘K</div>
  </div>
 
  {/* Dropdown Results */}
@@ -168,22 +168,22 @@ export default function UnivSearch() {
  animate={{ opacity: 1, y: 0}}
  exit={{ opacity: 0, y: 10}}
  transition={{ duration: 0.2}}
- className="absolute top-full left-0 w-full mt-3 bg-card border border-primary/40 rounded-2xl overflow-hidden z-50 flex flex-col"
+ className="absolute top-full left-0 w-full mt-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden z-50 flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  {!query ? (
  <div className="p-4">
- <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+ <h4 className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2 tracking-[0.04em]">
  <History className="w-3.5 h-3.5" /> Recent Searches
  </h4>
  <ul className="space-y-1">
  {recentSearches.map(s => (
  <li key={s}>
  <button 
- className="w-full text-left px-3 py-2 rounded-lg hover:bg-muted transition-colors text-sm font-medium text-foreground flex justify-between items-center group"
+ className="w-full text-left px-3 py-2 rounded-xl hover:bg-muted transition-colors text-sm font-medium text-foreground flex justify-between items-center group"
  onClick={() => setQuery(s)}
  >
  {s}
- <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 text-muted-foreground transition-opacity" />
+ <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 text-[#71717a] dark:text-gray-400 transition-opacity" />
  </button>
  </li>
  ))}
@@ -192,38 +192,38 @@ export default function UnivSearch() {
  ) : (
  <div className="flex flex-col max-h-[400px] overflow-y-auto custom-scrollbar">
  {loading ? (
- <div className="p-8 text-center text-muted-foreground">
+ <div className="p-8 text-center text-[#71717a] dark:text-gray-400">
  <p className="text-sm">Searching workslate...</p>
  </div>
  ) : results.length > 0 ? (
  <div className="p-2">
  {results.map((res, i) => (
- <button key={i} className="w-full text-left p-3 hover:bg-muted/50 rounded-xl transition-colors flex items-center gap-4 group">
- <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${res.color}`}>
+ <button key={i} className="w-full text-left p-3 hover:bg-muted/50 rounded-md-xl transition-colors flex items-center gap-4 group">
+ <div className={`w-10 h-10 rounded-md-xl flex items-center justify-center shrink-0 ${res.color}`}>
  <res.icon className="w-5 h-5" />
  </div>
  <div className="flex-1">
- <h4 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">{res.title}</h4>
- <p className="text-xs text-muted-foreground mt-0.5">{res.subtitle}</p>
+ <h4 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">{res.title}</h4>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">{res.subtitle}</p>
  </div>
- <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+ <ArrowRight className="w-4 h-4 text-[#71717a] dark:text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
  </button>
  ))}
  </div>
  ) : (
- <div className="p-8 text-center text-muted-foreground">
+ <div className="p-8 text-center text-[#71717a] dark:text-gray-400">
  <Search className="w-8 h-8 text-slate-300 mx-auto mb-3" />
  <p className="text-sm font-medium text-foreground">No results found for "{query}"</p>
- <p className="text-xs mt-1">Try adjusting your spelling or filters.</p>
+ <p className="text-xs mt-1 tracking-[0.04em]">Try adjusting your spelling or filters.</p>
  </div>
  )}
  </div>
  )}
  
  {/* Search Footer */}
- <div className="p-3 bg-muted/50 border-t border-primary/40 flex justify-between items-center text-xs text-muted-foreground font-medium">
- <span>Press <kbd className="border border-primary/40 bg-card px-1 rounded mx-1 font-sans">Enter</kbd> to view all results</span>
- <button className="flex items-center gap-1 hover:text-foreground transition-colors"><Filter className="w-3.5 h-3.5" /> Advanced Filters</button>
+ <div className="p-3 bg-muted/50 border-t border-primary/40 flex justify-between items-center text-xs text-[#71717a] dark:text-gray-400 font-medium tracking-[0.04em]">
+ <span>Press <kbd className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card px-1 rounded-md mx-1 font-sans hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Enter</kbd> to view all results</span>
+ <button className="flex items-center gap-2 hover:text-foreground transition-colors"><Filter className="w-3.5 h-3.5" /> Advanced Filters</button>
  </div>
  </motion.div>
  )}
@@ -233,7 +233,7 @@ export default function UnivSearch() {
  {/* Quick Filters */}
  <div className="flex gap-2 mt-6 overflow-x-auto max-w-2xl w-full pb-2 hide-scrollbar justify-center">
  {['All', 'Contacts', 'Invoices', 'Files', 'Projects'].map(filter => (
- <button key={filter} className="px-4 py-1.5 rounded-full border border-primary/40 bg-card text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors whitespace-nowrap">
+ <button key={filter} className="px-4 py-1.5 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card text-sm font-medium text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground transition-colors whitespace-nowrap hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {filter}
  </button>
  ))}
@@ -241,7 +241,7 @@ export default function UnivSearch() {
  </div>
  
  {/* Background Decor */}
- <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+ <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/5 rounded-md-full blur-3xl -z-10 pointer-events-none"></div>
  </div>
  );
 }

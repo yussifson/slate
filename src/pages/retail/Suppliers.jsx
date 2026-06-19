@@ -128,8 +128,8 @@ export default function Suppliers() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("suppliers", "Suppliers")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t(
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("suppliers", "Suppliers")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
  "manage_vendor_relationships_an",
  "Manage vendor relationships and purchase orders"
  )}</p>
@@ -148,21 +148,21 @@ export default function Suppliers() {
  <RetailStatCard label={t("active_suppliers", "Active Suppliers")} value={suppliers.filter(s => s.status === 'Active').length} icon={Star} />
  </div>
 
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search supplier or category..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search supplier or category..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  <div className="overflow-x-auto">
  {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_suppliers", "Loading suppliers...")}</div>
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_suppliers", "Loading suppliers...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
  <Truck className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse" />
  <p className="font-semibold">{t("no_suppliers_configured", "No suppliers configured.")}</p>
- <p className="text-xs mt-1">{t(
+ <p className="text-xs mt-1 tracking-[0.04em]">{t(
  "configure_your_first_retail_ve",
  "Configure your first retail vendor using the \"Add Supplier\" button."
  )}</p>
@@ -181,14 +181,14 @@ export default function Suppliers() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40">
+ <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("supplier", "Supplier")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("contact_person", "Contact Person")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("contact_info", "Contact Info")}</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("rating", "Rating")}</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("action", "Action")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("supplier", "Supplier")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("contact_person", "Contact Person")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("contact_info", "Contact Info")}</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("rating", "Rating")}</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("action", "Action")}</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
@@ -196,23 +196,23 @@ export default function Suppliers() {
  return (
  <tr key={sup.id} className="hover:bg-muted/50 transition-colors">
  <td className="px-6 py-4">
- <p className="font-bold text-card-foreground flex items-center gap-2"><Truck className="w-4 h-4 text-muted-foreground"/> {sup.name}</p>
- <p className="text-xs text-muted-foreground mt-1"><Link to="/retail-inventory" className="text-primary hover:underline">{sup.category}</Link></p>
+ <p className="font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><Truck className="w-4 h-4 text-[#71717a] dark:text-gray-400"/> {sup.name}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]"><Link to="/retail-inventory" className="text-primary hover:underline">{sup.category}</Link></p>
  </td>
  <td className="px-6 py-4 font-medium text-foreground">{sup.contact}</td>
- <td className="px-6 py-4 text-muted-foreground space-y-1">
+ <td className="px-6 py-4 text-[#71717a] dark:text-gray-400 space-y-1">
  <div className="flex items-center gap-2"><Phone className="w-3.5 h-3.5"/> {sup.phone}</div>
  <div className="flex items-center gap-2"><Mail className="w-3.5 h-3.5"/> {sup.email}</div>
  </td>
  <td className="px-6 py-4">
- <div className="flex items-center justify-center gap-1 text-yellow-400">
+ <div className="flex items-center justify-center gap-2 text-yellow-400">
  {[...Array(sup.rating)].map((_, i) => {
  return <Star key={i} className="w-4 h-4 fill-current" />;
 })}
  </div>
  </td>
  <td className="px-6 py-4 text-center">
- <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${sup.status === 'Active' ? 'bg-slate-100 dark:bg-primary/20 text-primary/90 dark:text-primary/70' : 'bg-muted text-muted-foreground'}`}>
+ <span className={`text-xs font-semibold px-2.5 py-1 rounded-md-full ${sup.status === 'Active' ? 'bg-slate-100 dark:bg-primary/20 text-primary/90 dark:text-primary/70' : 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
  {sup.status}
  </span>
  </td>
@@ -265,37 +265,37 @@ export default function Suppliers() {
  {selectedRecord && (
  <div className="mt-6 space-y-4 text-sm">
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("supplier_name", "Supplier Name")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("supplier_name", "Supplier Name")}</div>
  <div className="col-span-2 font-medium">{selectedRecord.name}</div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("category", "Category")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("category", "Category")}</div>
  <div className="col-span-2"><Link to="/retail-inventory" className="text-primary hover:underline">{selectedRecord.category}</Link></div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("contact_person", "Contact Person")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("contact_person", "Contact Person")}</div>
  <div className="col-span-2">{selectedRecord.contact}</div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("email", "Email")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("email", "Email")}</div>
  <div className="col-span-2">{selectedRecord.email}</div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("phone", "Phone")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("phone", "Phone")}</div>
  <div className="col-span-2">{selectedRecord.phone}</div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("rating", "Rating")}</div>
- <div className="col-span-2 flex items-center gap-1 text-yellow-400">
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("rating", "Rating")}</div>
+ <div className="col-span-2 flex items-center gap-2 text-yellow-400">
  {[...Array(selectedRecord.rating)].map((_, i) => {
  return <Star key={i} className="w-4 h-4 fill-current" />;
 })}
  </div>
  </div>
  <div className="grid grid-cols-3 gap-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("status", "Status")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("status", "Status")}</div>
  <div className="col-span-2">
- <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${selectedRecord.status === 'Active' ? 'bg-slate-100 text-primary/90' : 'bg-muted text-muted-foreground'}`}>
+ <span className={`text-xs font-semibold px-2.5 py-1 rounded-md-full ${selectedRecord.status === 'Active' ? 'bg-slate-100 text-primary/90' : 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
  {selectedRecord.status}
  </span>
  </div>
@@ -306,16 +306,16 @@ export default function Suppliers() {
  </Sheet>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Plus className="w-5 h-5 text-orange-600"/> {editingId ? 'Edit Supplier' : 'Add Supplier'}</h2>
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><Plus className="w-5 h-5 text-orange-600"/> {editingId ? 'Edit Supplier' : 'Add Supplier'}</h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("supplier_company_name", "Supplier Company Name")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("supplier_company_name", "Supplier Company Name")}</label>
  <Input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value})} className="mt-1" placeholder="e.g. Acme Wholesale" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("category", "Category")}</label>
- <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("category", "Category")}</label>
+ <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm">
  <option>{t("electronics", "Electronics")}</option>
  <option>{t("apparel", "Apparel")}</option>
  <option>{t("footwear", "Footwear")}</option>
@@ -327,20 +327,20 @@ export default function Suppliers() {
  </select>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("contact_person_name", "Contact Person Name")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("contact_person_name", "Contact Person Name")}</label>
  <Input value={formData.contact} onChange={e => setFormData({ ...formData, contact: e.target.value})} className="mt-1" placeholder="e.g. Robert Smith" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("phone_number", "Phone Number")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("phone_number", "Phone Number")}</label>
  <Input value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value})} className="mt-1" placeholder="e.g. +1 555-0199" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("email_address", "Email Address")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("email_address", "Email Address")}</label>
  <Input value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value})} className="mt-1" placeholder="e.g. orders@acme.com" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("supplier_rating_1_5", "Supplier Rating (1-5)")}</label>
- <select value={formData.rating} onChange={e => setFormData({ ...formData, rating: parseInt(e.target.value) || 5})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("supplier_rating_1_5", "Supplier Rating (1-5)")}</label>
+ <select value={formData.rating} onChange={e => setFormData({ ...formData, rating: parseInt(e.target.value) || 5})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm">
  <option value="5">{t("excellent", "⭐⭐⭐⭐⭐ (Excellent)")}</option>
  <option value="4">{t("very_good", "⭐⭐⭐⭐ (Very Good)")}</option>
  <option value="3">{t("average", "⭐⭐⭐ (Average)")}</option>

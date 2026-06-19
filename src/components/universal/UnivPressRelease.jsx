@@ -92,25 +92,25 @@ export default function UnivPressRelease() {
  <div className="p-6 max-w-6xl mx-auto bg-background min-h-screen ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex justify-between items-center mb-8">
  <div>
- <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
+ <h1 className="text-3xl font-semibold text-foreground flex items-center gap-3 tracking-[-0.02em]">
  <Mic className="text-rose-600 w-8 h-8" />
  Press Releases
  </h1>
- <p className="text-muted-foreground mt-2">Manage and track PR distribution and performance.</p>
+ <p className="text-[#71717a] dark:text-gray-400 mt-2">Manage and track PR distribution and performance.</p>
  </div>
  {!isEditing && (
  <div className="flex items-center gap-2">
 
  
  
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
  <button
  onClick={() => setIsEditing(true)}
- className="flex items-center gap-2 bg-rose-600 text-white px-4 py-2 rounded-lg hover:bg-rose-700 transition-colors"
+ className="flex items-center gap-2 bg-rose-600 text-white px-4 py-2 rounded-xl hover:bg-rose-700 transition-colors"
  >
  <Plus className="w-5 h-5" />
  New Release
@@ -125,19 +125,19 @@ export default function UnivPressRelease() {
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
  exit={{ opacity: 0, scale: 0.95}}
- className="bg-card p-6 rounded-xl border border-primary/40 mb-8"
+ className="bg-card p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <h2 className="text-xl font-semibold mb-4 text-foreground">
  {editingId ? 'Edit Press Release' : 'Create Press Release'}
  </h2>
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
  <div className="lg:col-span-2">
- <label className="block text-sm font-medium text-muted-foreground mb-1">Title / Headline</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Title / Headline</label>
  <div className="relative">
- <FileText className="absolute left-3 top-2.5 w-5 h-5 text-muted-foreground" />
+ <FileText className="absolute left-3 top-2.5 w-5 h-5 text-[#71717a] dark:text-gray-400" />
  <input
  type="text"
- className="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:outline-none"
+ className="w-full pl-10 pr-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-rose-500 focus:outline-none"
  value={formData.title}
  onChange={(e) => setFormData({ ...formData, title: e.target.value})}
  placeholder="e.g. Acme Corp Announces New Product Line"
@@ -145,9 +145,9 @@ export default function UnivPressRelease() {
  </div>
  </div>
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Status</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Status</label>
  <select
- className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:outline-none bg-card"
+ className="w-full px-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-rose-500 focus:outline-none bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={formData.status}
  onChange={(e) => setFormData({ ...formData, status: e.target.value})}
  >
@@ -157,31 +157,31 @@ export default function UnivPressRelease() {
  </select>
  </div>
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Distributor</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Distributor</label>
  <input
  type="text"
- className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:outline-none"
+ className="w-full px-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-rose-500 focus:outline-none"
  value={formData.distributor}
  onChange={(e) => setFormData({ ...formData, distributor: e.target.value})}
  placeholder="e.g. PR Newswire, BusinessWire"
  />
  </div>
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Publish Date</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Publish Date</label>
  <input
  type="date"
- className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:outline-none"
+ className="w-full px-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-rose-500 focus:outline-none"
  value={formData.publish_date}
  onChange={(e) => setFormData({ ...formData, publish_date: e.target.value})}
  />
  </div>
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Total Views</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Total Views</label>
  <div className="relative">
- <BarChart2 className="absolute left-3 top-2.5 w-5 h-5 text-muted-foreground" />
+ <BarChart2 className="absolute left-3 top-2.5 w-5 h-5 text-[#71717a] dark:text-gray-400" />
  <input
  type="number"
- className="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:outline-none"
+ className="w-full pl-10 pr-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-rose-500 focus:outline-none"
  value={formData.views}
  onChange={(e) => setFormData({ ...formData, views: e.target.value})}
  placeholder="0"
@@ -196,13 +196,13 @@ export default function UnivPressRelease() {
  setEditingId(null);
  setFormData({ title: '', publish_date: '', distributor: '', status: 'Draft', views: ''});
 }}
- className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
+ className="flex items-center gap-2 px-4 py-2 text-[#71717a] dark:text-gray-400 hover:bg-muted rounded-xl transition-colors"
  >
  <X className="w-4 h-4" /> Cancel
  </button>
  <button
  onClick={handleSave}
- className="flex items-center gap-2 bg-rose-600 text-white px-6 py-2 rounded-lg hover:bg-rose-700 transition-colors"
+ className="flex items-center gap-2 bg-rose-600 text-white px-6 py-2 rounded-xl hover:bg-rose-700 transition-colors"
  >
  <Save className="w-4 h-4" /> Save
  </button>
@@ -213,7 +213,7 @@ export default function UnivPressRelease() {
 
  {loading ? (
  <div className="flex justify-center py-12">
- <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-rose-600"></div>
+ <div className="animate-spin rounded-md-full h-10 w-10 border-b-2 border-rose-600"></div>
  </div>
  ) : (
  <div className="space-y-4">
@@ -222,28 +222,28 @@ export default function UnivPressRelease() {
  key={item.id}
  initial={{ opacity: 0, x: -20}}
  animate={{ opacity: 1, x: 0}}
- className="bg-card p-5 rounded-xl border border-primary/40 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-"
+ className="bg-card p-5 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col md:flex-row md:items-center justify-between gap-4 transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="flex-grow">
  <div className="flex items-center gap-3 mb-2">
- <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${item.status === 'Published' ? 'bg-green-100 text-green-800' : item.status === 'Scheduled' ? 'bg-amber-100 text-amber-800' : 'bg-muted text-foreground'}`}>
+ <span className={`px-2.5 py-0.5 rounded-md-full text-xs font-semibold ${item.status === 'Published' ? 'bg-green-100 text-green-800' : item.status === 'Scheduled' ? 'bg-amber-100 text-amber-800' : 'bg-muted text-foreground'}`}>
  {item.status}
  </span>
- <span className="text-sm text-muted-foreground">{item.publish_date}</span>
+ <span className="text-sm text-[#71717a] dark:text-gray-400">{item.publish_date}</span>
  </div>
- <h3 className="text-lg font-bold text-foreground mb-1">{item.title || 'Untitled Release'}</h3>
- <div className="text-sm text-muted-foreground">Distributor: {item.distributor || 'N/A'}</div>
+ <h3 className="text-lg font-semibold text-foreground mb-1">{item.title || 'Untitled Release'}</h3>
+ <div className="text-sm text-[#71717a] dark:text-gray-400">Distributor: {item.distributor || 'N/A'}</div>
  </div>
  <div className="flex items-center justify-between md:justify-end gap-6 md:w-1/3">
  <div className="text-center">
- <span className="block text-2xl font-black text-rose-600">{Number(item.views).toLocaleString() || 0}</span>
- <span className="text-xs uppercase font-semibold text-muted-foreground">Views</span>
+ <span className="block text-2xl font-black text-rose-600 tracking-[-0.02em]">{Number(item.views).toLocaleString() || 0}</span>
+ <span className="text-xs uppercase font-semibold text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Views</span>
  </div>
  <div className="flex gap-2">
- <button onClick={() => handleEdit(item)} className="p-2 text-muted-foreground hover:text-rose-600 bg-background hover:bg-rose-50 rounded-lg transition-colors">
+ <button onClick={() => handleEdit(item)} className="p-2 text-[#71717a] dark:text-gray-400 hover:text-rose-600 bg-background hover:bg-rose-50 rounded-xl transition-colors">
  <Edit2 className="w-5 h-5" />
  </button>
- <button onClick={() => handleDelete(item.id)} className="p-2 text-muted-foreground hover:text-red-600 bg-background hover:bg-red-50 rounded-lg transition-colors">
+ <button onClick={() => handleDelete(item.id)} className="p-2 text-[#71717a] dark:text-gray-400 hover:text-red-600 bg-background hover:bg-red-50 rounded-xl transition-colors">
  <Trash2 className="w-5 h-5" />
  </button>
  </div>
@@ -251,9 +251,9 @@ export default function UnivPressRelease() {
  </motion.div>
  ))}
  {data.length === 0 && !isEditing && (
- <div className="py-12 text-center bg-card rounded-xl border border-dashed border-primary/40">
+ <div className="py-12 text-center bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Mic className="w-12 h-12 text-slate-300 mx-auto mb-3" />
- <p className="text-muted-foreground">No press releases found.</p>
+ <p className="text-[#71717a] dark:text-gray-400">No press releases found.</p>
  </div>
  )}
  </div>

@@ -97,29 +97,29 @@ const UnivDamagedGoods = () => {
  <motion.div 
  initial={{ opacity: 0, y: -20}}
  animate={{ opacity: 1, y: 0}}
- className="flex items-center justify-between mb-8 bg-card p-6 rounded-2xl border border-primary/40"
+ className="flex items-center justify-between mb-8 bg-card p-6 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="view-header flex items-center gap-4">
- <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
+ <div className="p-3 bg-blue-50 text-blue-600 rounded-md-xl">
  <PackageX size={28} />
  </div>
  <div>
- <h1 className="text-2xl font-bold text-foreground">Damaged Goods Log</h1>
- <p className="text-muted-foreground text-sm mt-1">Manage and track damaged goods log records</p>
+ <h1 className="text-2xl font-semibold text-foreground tracking-[-0.02em]">Damaged Goods Log</h1>
+ <p className="text-[#71717a] dark:text-gray-400 text-sm mt-1">Manage and track damaged goods log records</p>
  </div>
  </div>
  <div className="flex items-center gap-2">
 
  
  
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
  <button
  onClick={() => { setIsEditing(true); setEditId(null); setFormData({item_id: '', damage_desc: '', quantity: '', claim_status: ''});}}
- className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors "
+ className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors "
  >
  <Plus size={18} />
  <span>New Record</span>
@@ -131,56 +131,56 @@ const UnivDamagedGoods = () => {
  <motion.div 
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
- className="mb-8 bg-card p-6 rounded-2xl border border-primary/40"
+ className="mb-8 bg-card p-6 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <h2 className="text-lg font-semibold text-foreground mb-4">
  {editId ? 'Edit Record' : 'Create New Record'}
  </h2>
  <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
  
- <div className="flex flex-col gap-1">
- <label className="text-sm font-medium text-muted-foreground">Item ID</label>
+ <div className="flex flex-col gap-2">
+ <label className="text-sm font-medium text-[#71717a] dark:text-gray-400">Item ID</label>
  <input
  type="text"
  name="item_id"
  value={formData.item_id}
  onChange={handleInputChange}
- className="p-2.5 border border-primary/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+ className="p-2.5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
  placeholder="Enter item id"
  required
  />
  </div>
- <div className="flex flex-col gap-1">
- <label className="text-sm font-medium text-muted-foreground">Damage Description</label>
+ <div className="flex flex-col gap-2">
+ <label className="text-sm font-medium text-[#71717a] dark:text-gray-400">Damage Description</label>
  <input
  type="text"
  name="damage_desc"
  value={formData.damage_desc}
  onChange={handleInputChange}
- className="p-2.5 border border-primary/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+ className="p-2.5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
  placeholder="Enter damage description"
  required
  />
  </div>
- <div className="flex flex-col gap-1">
- <label className="text-sm font-medium text-muted-foreground">Quantity Damaged</label>
+ <div className="flex flex-col gap-2">
+ <label className="text-sm font-medium text-[#71717a] dark:text-gray-400">Quantity Damaged</label>
  <input
  type="number"
  name="quantity"
  value={formData.quantity}
  onChange={handleInputChange}
- className="p-2.5 border border-primary/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+ className="p-2.5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
  placeholder="Enter quantity damaged"
  required
  />
  </div>
- <div className="flex flex-col gap-1">
- <label className="text-sm font-medium text-muted-foreground">Claim Status</label>
+ <div className="flex flex-col gap-2">
+ <label className="text-sm font-medium text-[#71717a] dark:text-gray-400">Claim Status</label>
  <select
  name="claim_status"
  value={formData.claim_status}
  onChange={handleInputChange}
- className="p-2.5 border border-primary/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-card"
+ className="p-2.5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  required
  >
  <option value="">Select Claim Status...</option>
@@ -191,13 +191,13 @@ const UnivDamagedGoods = () => {
  <button
  type="button"
  onClick={() => { setIsEditing(false); setEditId(null); setFormData({item_id: '', damage_desc: '', quantity: '', claim_status: ''});}}
- className="px-4 py-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors flex items-center gap-2"
+ className="px-4 py-2 text-[#71717a] dark:text-gray-400 hover:bg-muted rounded-xl transition-colors flex items-center gap-2"
  >
  <X size={18} /> Cancel
  </button>
  <button
  type="submit"
- className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 "
+ className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-2 "
  >
  <Save size={18} /> Save Record
  </button>
@@ -206,21 +206,21 @@ const UnivDamagedGoods = () => {
  </motion.div>
  )}
 
- <div className="bg-card rounded-2xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-background/50">
  <h3 className="font-semibold text-foreground">Recent Records</h3>
- <button onClick={fetchData} className="text-muted-foreground hover:text-blue-600 transition-colors p-2 rounded-lg hover:bg-blue-50">
+ <button onClick={fetchData} className="text-[#71717a] dark:text-gray-400 hover:text-blue-600 transition-colors p-2 rounded-xl hover:bg-blue-50">
  <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
  </button>
  </div>
  
  {loading ? (
- <div className="p-8 text-center text-muted-foreground flex flex-col items-center">
+ <div className="p-8 text-center text-[#71717a] dark:text-gray-400 flex flex-col items-center">
  <RefreshCw size={32} className="animate-spin mb-3 text-blue-500" />
  <p>Loading data...</p>
  </div>
  ) : data.length === 0 ? (
- <div className="p-12 text-center text-muted-foreground flex flex-col items-center">
+ <div className="p-12 text-center text-[#71717a] dark:text-gray-400 flex flex-col items-center">
  <PackageX size={48} className="mb-4 text-slate-300 stroke-[1.5]" />
  <p className="text-lg">No records found</p>
  <p className="text-sm mt-1">Click 'New Record' to get started</p>
@@ -229,9 +229,9 @@ const UnivDamagedGoods = () => {
  <div className="overflow-x-auto">
  <table className="w-full text-left border-collapse">
  <thead>
- <tr className="bg-background text-muted-foreground text-sm uppercase tracking-wider">
+ <tr className="bg-background text-[#71717a] dark:text-gray-400 text-sm uppercase tracking-wider tracking-[0.04em]">
  <th className="p-4 font-medium">Item ID</th><th className="p-4 font-medium">Damage Description</th><th className="p-4 font-medium">Quantity Damaged</th><th className="p-4 font-medium">Claim Status</th>
- <th className="p-4 font-medium rounded-tr-xl">Actions</th>
+ <th className="p-4 font-medium rounded-md-tr-xl">Actions</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-slate-100">
@@ -247,7 +247,7 @@ const UnivDamagedGoods = () => {
  <td className="p-4 text-foreground">{record.damage_desc}</td>
  <td className="p-4 text-foreground">{record.quantity}</td>
  <td className="p-4 text-foreground">
- <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-foreground">
+ <span className="inline-flex items-center px-2.5 py-0.5 rounded-md-full text-xs font-medium bg-muted text-foreground tracking-[0.04em]">
  {record.claim_status}
  </span>
  </td>
@@ -255,14 +255,14 @@ const UnivDamagedGoods = () => {
  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
  <button
  onClick={() => handleEdit(record)}
- className="p-1.5 text-muted-foreground hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+ className="p-1.5 text-[#71717a] dark:text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors"
  title="Edit"
  >
  <Edit2 size={16} />
  </button>
  <button
  onClick={() => handleDelete(record.id)}
- className="p-1.5 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+ className="p-1.5 text-[#71717a] dark:text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
  title="Delete"
  >
  <Trash2 size={16} />

@@ -39,17 +39,17 @@ export default function OnlineCourses() {
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
  <div className="border-b border-primary/40 pb-4 flex justify-between items-end">
  <div>
- <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Course Catalog</h1>
+ <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">Course Catalog</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage learning slates, update curriculum, and track course performance.</p>
  </div>
  <div className="flex gap-3">
- <button onClick={() => navigate('/o/builder')} className="px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
+ <button onClick={() => navigate('/o/builder')} className="px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-md-[var(--radius-md)] hover:opacity-90 transition-opacity">
  Create Course
  </button>
  </div>
  </div>
 
- <div className="flex items-center gap-4 bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-4 ">
+ <div className="flex items-center gap-4 bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-4 ">
  <div className="relative flex-1 max-w-md">
  <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-tertiary)]" />
  <input 
@@ -57,7 +57,7 @@ export default function OnlineCourses() {
  placeholder="Search catalog..." 
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
+ className="w-full bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
  />
  </div>
  </div>
@@ -65,15 +65,15 @@ export default function OnlineCourses() {
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {isLoading ? (
  [1, 2, 3].map(i => (
- <div key={i} className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden flex flex-col animate-pulse">
+ <div key={i} className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden flex flex-col animate-pulse">
  <div className="aspect-video bg-[var(--color-surface-2)] w-full"></div>
  <div className="p-5 flex flex-col flex-1 gap-3">
- <div className="h-5 bg-[var(--color-surface-2)] rounded w-3/4"></div>
- <div className="h-4 bg-[var(--color-surface-2)] rounded w-full"></div>
- <div className="h-4 bg-[var(--color-surface-2)] rounded w-5/6 mb-4"></div>
+ <div className="h-5 bg-[var(--color-surface-2)] rounded-md w-3/4"></div>
+ <div className="h-4 bg-[var(--color-surface-2)] rounded-md w-full"></div>
+ <div className="h-4 bg-[var(--color-surface-2)] rounded-md w-5/6 mb-4"></div>
  <div className="grid grid-cols-2 gap-2 mt-auto pt-4 border-t border-primary/40">
- <div className="h-3 bg-[var(--color-surface-2)] rounded w-16"></div>
- <div className="h-3 bg-[var(--color-surface-2)] rounded w-20"></div>
+ <div className="h-3 bg-[var(--color-surface-2)] rounded-md w-16"></div>
+ <div className="h-3 bg-[var(--color-surface-2)] rounded-md w-20"></div>
  </div>
  </div>
  </div>
@@ -82,7 +82,7 @@ export default function OnlineCourses() {
  <motion.div 
  initial={{ opacity: 0, y: 10}}
  animate={{ opacity: 1, y: 0}}
- className="col-span-full py-16 text-center border-2 border-dashed border-primary/40 rounded-[var(--radius-xl)] bg-[var(--color-surface-0)] glass-card"
+ className="col-span-full py-16 text-center border-2 border-dashed border-primary/40 rounded-md-[var(--radius-xl)] bg-[var(--color-surface-0)] glass-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <BookOpen className="w-12 h-12 mx-auto mb-4 opacity-30 text-[var(--primary)]" />
  <h3 className="font-semibold text-lg text-[var(--color-text-primary)] mb-1">No courses found</h3>
@@ -101,44 +101,44 @@ export default function OnlineCourses() {
  exit={{ opacity: 0, scale: 0.95}}
  transition={{ duration: 0.2, delay: idx * 0.05}}
  key={course.id || idx} 
- className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden flex flex-col group hover:border-[var(--primary)] transition-all duration-300 glass-card"
+ className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden flex flex-col group hover:border-[var(--primary)] transition-all duration-300 glass-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="aspect-video bg-gradient-to-br from-[var(--color-surface-2)] to-[var(--color-surface-3)] relative flex items-center justify-center overflow-hidden">
  <div className="absolute inset-0 bg-primary/20 group-hover:bg-primary/20 transition-colors z-10" />
  <PlayCircle className="w-12 h-12 text-[var(--primary)] opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 z-20 " />
- <div className="absolute top-3 right-3 px-2.5 py-1 bg-white dark:bg-slate-900/40/90 dark:bg-black/50 backdrop-blur-sm border border-white/20 dark:border-white/10 text-[10px] font-bold rounded-md text-[var(--color-text-primary)] uppercase tracking-wider z-20">
+ <div className="absolute top-3 right-3 px-2.5 py-1 bg-white dark:bg-slate-900/40/90 dark:bg-black/50 backdrop-blur-sm border-[0.5px] border-black/9 dark:border-white/8 border-white/20 dark:border-white/10 text-[10px] font-semibold rounded-lg text-[var(--color-text-primary)] uppercase tracking-wider z-20 tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {extra.level || 'Beginner'}
  </div>
  </div>
  <div className="p-5 flex flex-col flex-1">
- <h3 className="font-bold text-[var(--text-lg)] text-[var(--color-text-primary)] mb-2 group-hover:text-[var(--primary)] transition-colors">{course.title || 'Untitled Course'}</h3>
+ <h3 className="font-semibold text-[var(--text-lg)] text-[var(--color-text-primary)] mb-2 group-hover:text-[var(--primary)] transition-colors">{course.title || 'Untitled Course'}</h3>
  <p className="text-sm text-[var(--color-text-secondary)] line-clamp-2 mb-4 flex-1 leading-relaxed">
  {extra.description || 'No description provided for this course module.'}
  </p>
  
- <div className="grid grid-cols-2 gap-3 text-xs text-[var(--color-text-secondary)] pt-4 border-t border-primary/40">
- <div className="flex items-center gap-1.5 font-medium">
+ <div className="grid grid-cols-2 gap-3 text-xs text-[var(--color-text-secondary)] pt-4 border-t border-primary/40 tracking-[0.04em]">
+ <div className="flex items-center gap-2.5 font-medium">
  <Clock className="w-4 h-4 text-[var(--color-text-tertiary)]" /> {extra.duration || '4 Weeks'}
  </div>
- <div className="flex items-center gap-1.5 font-medium">
+ <div className="flex items-center gap-2.5 font-medium">
  <Users className="w-4 h-4 text-[var(--color-text-tertiary)]" /> {(extra.enrolled || 0).toLocaleString()} Enrolled
  </div>
- <div className="flex items-center gap-1.5 col-span-2 mt-1">
+ <div className="flex items-center gap-2.5 col-span-2 mt-1">
  <div className="flex items-center">
  {[1,2,3,4,5].map(star => (
  <Star key={star} className={`w-3.5 h-3.5 ${star <= Math.floor(extra.rating || 4) ? 'text-[var(--color-warning)] fill-[var(--color-warning)]' : 'text-[var(--color-border-strong)]'}`} />
  ))}
  </div>
- <span className="font-bold text-[var(--color-text-primary)] ml-1">{extra.rating || '4.8'}</span> 
+ <span className="font-semibold text-[var(--color-text-primary)] ml-1">{extra.rating || '4.8'}</span> 
  <span className="text-[var(--color-text-tertiary)]">({(extra.reviews || 0).toLocaleString()} reviews)</span>
  </div>
  </div>
  </div>
  <div className="bg-[var(--color-surface-1)] border-t border-primary/40 px-5 py-3 group-hover:bg-[var(--primary)] transition-colors duration-300 flex items-center justify-between">
- <button onClick={() => navigate(`/o/builder/course/${course.id}`)} className="text-sm font-semibold text-[var(--primary)] group-hover:text-white flex items-center gap-1 transition-colors">
+ <button onClick={() => navigate(`/o/builder/course/${course.id}`)} className="text-sm font-semibold text-[var(--primary)] group-hover:text-white flex items-center gap-2 transition-colors">
  Manage Course <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
  </button>
- <button onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(course.id);}} className="text-[var(--color-error)] opacity-0 group-hover:opacity-100 hover:text-white transition-all bg-white dark:bg-slate-900/40/50 group-hover:bg-transparent rounded-md p-1.5 backdrop-blur-sm " title="Delete Course">
+ <button onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(course.id);}} className="text-[var(--color-error)] opacity-0 group-hover:opacity-100 hover:text-white transition-all bg-white dark:bg-slate-900/40/50 group-hover:bg-transparent rounded-lg p-1.5 backdrop-blur-sm  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" title="Delete Course">
  <Trash2 className="w-4 h-4" />
  </button>
  </div>

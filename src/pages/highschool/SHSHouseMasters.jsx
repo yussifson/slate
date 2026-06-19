@@ -61,27 +61,27 @@ export default function SHSHouseMasters() {
  
  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
  <div>
- <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
+ <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent tracking-[-0.02em]">
  House Masters Directory
  </h1>
- <p className="text-muted-foreground mt-1 text-sm font-medium">
+ <p className="text-[#71717a] dark:text-gray-400 mt-1 text-sm font-medium">
  Contact directory for boarding house masters and mistresses.
  </p>
  </div>
  </div>
 
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
- <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Assigned Masters</CardTitle>
+ <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100">Assigned Masters</CardTitle>
  </div>
  
  <div className="relative w-full sm:w-64">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search master or house..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -93,27 +93,27 @@ export default function SHSHouseMasters() {
  <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading directory...</div>
  ) : filteredMasters.length === 0 ? (
  <div className="p-16 text-center">
- <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
  <Shield className="w-8 h-8 text-primary dark:text-primary" />
  </div>
- <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No House Masters Assigned</h3>
+ <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No House Masters Assigned</h3>
  <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Go to Boarding Houses to assign masters to houses.</p>
  </div>
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
  {filteredMasters.map(master => (
- <div key={master.id} className="relative group p-6 rounded-3xl border border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 transition-all duration-300 overflow-hidden">
+ <div key={master.id} className="relative group p-6 rounded-md-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 transition-all duration-300 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div 
  className="absolute top-0 left-0 w-full h-2" 
  style={{ backgroundColor: master.houseColor}}
  ></div>
  
  <div className="flex items-center gap-4 mb-6">
- <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-black text-2xl text-slate-400 dark:text-slate-500 dark:text-slate-400">
+ <div className="w-16 h-16 rounded-md-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-black text-2xl text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[-0.02em]">
  {master.title.charAt(0)}
  </div>
  <div>
- <h4 className="font-bold text-lg text-slate-800 dark:text-slate-100">{master.title}</h4>
+ <h4 className="font-semibold text-lg text-slate-800 dark:text-slate-100">{master.title}</h4>
  <Badge variant="outline" className="mt-1 border-none text-white" style={{ backgroundColor: master.houseColor}}>
  {master.houseName} Master
  </Badge>
@@ -136,7 +136,7 @@ export default function SHSHouseMasters() {
  </div>
  
  <div className="mt-6 pt-4 border-t border-primary/40 flex gap-2">
- <Button variant="outline" className="flex-1 rounded-xl font-semibold text-slate-600 dark:text-slate-300 hover:text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 hover:border-primary/20 dark:border-primary/40">
+ <Button variant="outline" className="flex-1 rounded-md-xl font-semibold text-slate-600 dark:text-slate-300 hover:text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 hover:border-primary/20 dark:border-primary/40">
  Send Message
  </Button>
  </div>

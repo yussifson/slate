@@ -30,9 +30,9 @@ export default function ChartBlock({ dataConfig, styleConfig}) {
 }, [data, xAxis, yAxis]);
 
  return (
- <div className={cn("rounded-xl border flex flex-col", bgClass, padClass)}>
+ <div className={cn("rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 flex flex-col", bgClass, padClass)}>
  {isLoading ? (
- <div className="flex-1 flex items-center justify-center text-muted-foreground" style={{ height}}>
+ <div className="flex-1 flex items-center justify-center text-[#71717a] dark:text-gray-400" style={{ height}}>
  Loading chart data...
  </div>
  ) : (

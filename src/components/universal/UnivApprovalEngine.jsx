@@ -62,8 +62,8 @@ function daysWaiting(dateStr) {
 function StatusBadge({ status}) {
  const meta = STATUS_META[status] || STATUS_META.pending;
  return (
- <span className={cn('inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold', meta.color)}>
- <span className={cn('w-1.5 h-1.5 rounded-full', meta.dot)} />
+ <span className={cn('inline-flex items-center gap-2.5 px-2.5 py-0.5 rounded-md-full text-xs font-semibold', meta.color)}>
+ <span className={cn('w-1.5 h-1.5 rounded-md-full', meta.dot)} />
  {meta.label}
  </span>
  );
@@ -90,39 +90,39 @@ function ConfirmActionDialog({ open, action, item, onClose, onConfirm}) {
  >
  <motion.div
  initial={{ scale: 0.95, opacity: 0}} animate={{ scale: 1, opacity: 1}} exit={{ scale: 0.95, opacity: 0}}
- className="bg-card border border-primary/40 w-full max-w-md rounded-2xl "
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 w-full max-w-md rounded-md-2xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  onClick={e => e.stopPropagation()}
  >
  <div className="p-5 border-b border-primary/40 flex justify-between items-center">
- <h2 className="text-lg font-bold text-foreground">{m.title}</h2>
- <button onClick={onClose} className="p-1.5 rounded-full hover:bg-muted">
- <XCircle className="w-5 h-5 text-muted-foreground" />
+ <h2 className="text-lg font-semibold text-foreground">{m.title}</h2>
+ <button onClick={onClose} className="p-1.5 rounded-md-full hover:bg-muted">
+ <XCircle className="w-5 h-5 text-[#71717a] dark:text-gray-400" />
  </button>
  </div>
  <div className="p-5 space-y-4">
- <p className="text-sm text-muted-foreground">
+ <p className="text-sm text-[#71717a] dark:text-gray-400">
  You are about to <strong className="text-foreground">{m.label.toLowerCase()}</strong> the request:{' '}
  <span className="font-semibold text-foreground">"{item.title}"</span>
  </p>
  <div>
- <label className="block text-xs font-bold uppercase text-muted-foreground mb-1.5">
- Comment <span className="font-normal text-muted-foreground/60">(optional)</span>
+ <label className="block text-xs font-semibold uppercase text-[#71717a] dark:text-gray-400 mb-1.5 tracking-[0.04em]">
+ Comment <span className="font-normal text-[#71717a] dark:text-gray-400/60">(optional)</span>
  </label>
  <textarea
  value={comment}
  onChange={e => setComment(e.target.value)}
  rows={3}
  placeholder="Add a note for the requestor..."
- className="w-full px-3 py-2 bg-background border border-primary/40 rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full px-3 py-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  <div className="flex justify-end gap-3 pt-1">
- <button onClick={onClose} className="h-10 px-5 rounded-xl bg-muted text-sm font-medium hover:bg-muted/80">
+ <button onClick={onClose} className="h-10 px-5 rounded-md-xl bg-muted text-sm font-medium hover:bg-muted/80">
  Cancel
  </button>
  <button
  onClick={() => { onConfirm(comment); setComment('');}}
- className={cn('h-10 px-5 rounded-xl text-sm font-bold transition-all', m.btn)}
+ className={cn('h-10 px-5 rounded-md-xl text-sm font-semibold transition-all', m.btn)}
  >
  {m.label}
  </button>
@@ -144,30 +144,30 @@ function ApprovalChain({ steps = [], currentStep = 0}) {
  const isPending = idx > currentStep;
  return (
  <div key={idx} className="flex items-center shrink-0">
- <div className="flex flex-col items-center gap-1">
+ <div className="flex flex-col items-center gap-2">
  <div className={cn(
- 'w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all',
- isComplete ? 'bg-emerald-500 border-emerald-500 text-white' :
+ 'w-8 h-8 rounded-md-full flex items-center justify-center text-xs font-semibold border-2 transition-all',
+ isComplete ? 'bg-emerald-500/10 border-emerald-500 text-white' :
  isCurrent ? 'bg-primary border-primary text-white animate-pulse' :
- 'bg-muted border-primary/40 text-muted-foreground'
+ 'bg-muted border-primary/40 text-[#71717a] dark:text-gray-400'
  )}>
  {isComplete ? <CheckCheck className="w-4 h-4" /> : idx + 1}
  </div>
- <p className="text-[10px] font-semibold text-center text-muted-foreground whitespace-nowrap max-w-[80px] truncate">
+ <p className="text-[10px] font-semibold text-center text-[#71717a] dark:text-gray-400 whitespace-nowrap max-w-[80px] truncate">
  {step.stepName || `Step ${idx + 1}`}
  </p>
- <p className="text-[9px] text-center text-muted-foreground/70 whitespace-nowrap max-w-[80px] truncate">
+ <p className="text-[9px] text-center text-[#71717a] dark:text-gray-400/70 whitespace-nowrap max-w-[80px] truncate">
  {step.role || step.assignee || '—'}
  </p>
  {step.comment && (
- <p className="text-[9px] italic text-center text-muted-foreground/60 max-w-[80px] truncate">
+ <p className="text-[9px] italic text-center text-[#71717a] dark:text-gray-400/60 max-w-[80px] truncate">
  "{step.comment}"
  </p>
  )}
  </div>
  {idx < steps.length - 1 && (
  <div className={cn(
- 'h-0.5 w-8 mx-1 rounded-full transition-all',
+ 'h-0.5 w-8 mx-1 rounded-md-full transition-all',
  idx < currentStep ? 'bg-emerald-400' : 'bg-primary/40'
  )} />
  )}
@@ -187,34 +187,34 @@ function InboxCard({ item, onAction}) {
  <motion.div
  initial={{ opacity: 0, y: 10}}
  animate={{ opacity: 1, y: 0}}
- className="bg-card border border-primary/40 rounded-2xl p-4 transition-"
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="flex items-start gap-3">
- <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+ <div className="w-10 h-10 rounded-md-xl bg-primary/10 flex items-center justify-center shrink-0">
  <CheckCircle className="w-5 h-5 text-primary" />
  </div>
  <div className="flex-1 min-w-0">
- <div className="flex flex-wrap items-center gap-1.5 mb-1">
- <span className={cn('px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide', RECORD_TYPE_COLOR(item.record_type))}>
+ <div className="flex flex-wrap items-center gap-2.5 mb-1">
+ <span className={cn('px-2 py-0.5 rounded-md-full text-[10px] font-semibold uppercase tracking-wide', RECORD_TYPE_COLOR(item.record_type))}>
  {item.record_type}
  </span>
- <span className={cn('px-2 py-0.5 rounded-full text-[10px] font-bold', PRIORITY_META[priority]?.color)}>
+ <span className={cn('px-2 py-0.5 rounded-md-full text-[10px] font-semibold', PRIORITY_META[priority]?.color)}>
  {priority}
  </span>
  <StatusBadge status={item.status} />
  </div>
- <h3 className="text-sm font-bold text-foreground truncate">{item.title}</h3>
+ <h3 className="text-sm font-semibold text-foreground truncate">{item.title}</h3>
  <div className="flex flex-wrap items-center gap-3 mt-1">
- <span className="flex items-center gap-1 text-xs text-muted-foreground">
+ <span className="flex items-center gap-2 text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  <User className="w-3 h-3" /> {item.requestor_name}
  </span>
- <span className="flex items-center gap-1 text-xs text-muted-foreground">
+ <span className="flex items-center gap-2 text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  <CalendarDays className="w-3 h-3" />
  {item.created_at ? format(parseISO(item.created_at), 'MMM d, yyyy') : '—'}
  </span>
  <span className={cn(
- 'flex items-center gap-1 text-xs font-semibold',
- waiting > 3 ? 'text-red-500' : waiting > 1 ? 'text-amber-500' : 'text-muted-foreground'
+ 'flex items-center gap-2 text-xs font-semibold',
+ waiting > 3 ? 'text-red-500' : waiting > 1 ? 'text-amber-500' : 'text-[#71717a] dark:text-gray-400'
  )}>
  <Clock className="w-3 h-3" />
  {waiting === 0 ? 'Today' : `${waiting}d waiting`}
@@ -227,19 +227,19 @@ function InboxCard({ item, onAction}) {
  <div className="flex gap-2 mt-4 pt-3 border-t border-primary/40">
  <button
  onClick={() => onAction('approve', item)}
- className="flex-1 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-emerald-500/20 transition-colors border border-emerald-200 dark:border-emerald-800"
+ className="flex-1 h-9 rounded-md-xl bg-emerald-500/10/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold flex items-center justify-center gap-2.5 hover:bg-emerald-500/10/20 transition-colors border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 dark:border-emerald-800 tracking-[0.04em]"
  >
  <CheckCircle className="w-3.5 h-3.5" /> Approve
  </button>
  <button
  onClick={() => onAction('reject', item)}
- className="flex-1 h-9 rounded-xl bg-red-500/10 text-red-600 dark:text-red-400 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-red-500/20 transition-colors border border-red-200 dark:border-red-800"
+ className="flex-1 h-9 rounded-md-xl bg-red-500/10/10 text-red-600 dark:text-red-400 text-xs font-semibold flex items-center justify-center gap-2.5 hover:bg-red-500/10/20 transition-colors border-[0.5px] border-black/9 dark:border-white/8 border-red-200 dark:border-red-800 tracking-[0.04em]"
  >
  <XCircle className="w-3.5 h-3.5" /> Reject
  </button>
  <button
  onClick={() => onAction('changes_requested', item)}
- className="flex-1 h-9 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-amber-500/20 transition-colors border border-amber-200 dark:border-amber-800"
+ className="flex-1 h-9 rounded-md-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold flex items-center justify-center gap-2.5 hover:bg-amber-500/20 transition-colors border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 dark:border-amber-800 tracking-[0.04em]"
  >
  <RotateCcw className="w-3.5 h-3.5" /> Changes
  </button>
@@ -264,25 +264,25 @@ function AllRequestsRow({ item, expanded, onToggle}) {
  'transition-transform duration-200',
  expanded ? 'rotate-90' : 'rotate-0'
  )}>
- <ChevronRight className="w-4 h-4 text-muted-foreground" />
+ <ChevronRight className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
  </span>
  <span className="text-sm font-semibold text-foreground">{item.title}</span>
  </div>
  </td>
  <td className="px-4 py-3">
- <span className={cn('px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide', RECORD_TYPE_COLOR(item.record_type))}>
+ <span className={cn('px-2 py-0.5 rounded-md-full text-[10px] font-semibold uppercase tracking-wide', RECORD_TYPE_COLOR(item.record_type))}>
  {item.record_type}
  </span>
  </td>
- <td className="px-4 py-3 text-sm text-muted-foreground">{item.requestor_name}</td>
- <td className="px-4 py-3 text-sm text-muted-foreground">
+ <td className="px-4 py-3 text-sm text-[#71717a] dark:text-gray-400">{item.requestor_name}</td>
+ <td className="px-4 py-3 text-sm text-[#71717a] dark:text-gray-400">
  Step {(item.current_step || 0) + 1} of {steps.length || 1}
  </td>
  <td className="px-4 py-3"><StatusBadge status={item.status} /></td>
- <td className="px-4 py-3 text-xs text-muted-foreground whitespace-nowrap">
+ <td className="px-4 py-3 text-xs text-[#71717a] dark:text-gray-400 whitespace-nowrap tracking-[0.04em]">
  {item.updated_at ? formatDistanceToNow(new Date(item.updated_at), { addSuffix: true}) : '—'}
  </td>
- <td className="px-4 py-3 text-xs text-muted-foreground whitespace-nowrap">
+ <td className="px-4 py-3 text-xs text-[#71717a] dark:text-gray-400 whitespace-nowrap tracking-[0.04em]">
  {item.created_at ? format(parseISO(item.created_at), 'MMM d, yyyy') : '—'}
  </td>
  </tr>
@@ -297,11 +297,11 @@ function AllRequestsRow({ item, expanded, onToggle}) {
  className="overflow-hidden"
  >
  <div className="px-6 py-4 bg-muted/30 border-b border-primary/40">
- <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Approval Chain</p>
+ <p className="text-xs font-semibold uppercase tracking-widest text-[#71717a] dark:text-gray-400 mb-2 tracking-[0.04em]">Approval Chain</p>
  {steps.length > 0 ? (
  <ApprovalChain steps={steps} currentStep={item.current_step || 0} />
  ) : (
- <p className="text-xs text-muted-foreground italic">No steps defined for this request.</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 italic tracking-[0.04em]">No steps defined for this request.</p>
  )}
  </div>
  </motion.div>
@@ -366,47 +366,47 @@ function TemplatesPanel({ companyId}) {
  return (
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
  {/* Create form */}
- <div className="bg-card border border-primary/40 rounded-2xl p-5 ">
- <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h3 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
  <Plus className="w-4 h-4 text-primary" /> New Template
  </h3>
  <form onSubmit={handleSave} className="space-y-4">
  <div>
- <label className="block text-xs font-bold uppercase text-muted-foreground mb-1.5">Template Name</label>
+ <label className="block text-xs font-semibold uppercase text-[#71717a] dark:text-gray-400 mb-1.5 tracking-[0.04em]">Template Name</label>
  <input
  value={form.name}
  onChange={e => setForm(f => ({ ...f, name: e.target.value}))}
  placeholder="e.g. Leave Approval"
- className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  <div>
  <div className="flex items-center justify-between mb-2">
- <label className="block text-xs font-bold uppercase text-muted-foreground">Steps</label>
- <button type="button" onClick={addStep} className="text-xs text-primary font-semibold hover:underline flex items-center gap-1">
+ <label className="block text-xs font-semibold uppercase text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Steps</label>
+ <button type="button" onClick={addStep} className="text-xs text-primary font-semibold hover:underline flex items-center gap-2 tracking-[0.04em]">
  <Plus className="w-3 h-3" /> Add Step
  </button>
  </div>
  <div className="space-y-2">
  {form.steps.map((step, i) => (
  <div key={i} className="flex items-center gap-2">
- <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">
+ <div className="w-6 h-6 rounded-md-full bg-primary/10 flex items-center justify-center text-[10px] font-semibold text-primary shrink-0">
  {i + 1}
  </div>
  <input
  value={step.stepName}
  onChange={e => updateStep(i, 'stepName', e.target.value)}
  placeholder="Step name (e.g. Line Manager)"
- className="flex-1 h-9 px-3 bg-background border border-primary/40 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="flex-1 h-9 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 tracking-[0.04em]"
  />
  <input
  value={step.role}
  onChange={e => updateStep(i, 'role', e.target.value)}
  placeholder="Role (e.g. manager)"
- className="flex-1 h-9 px-3 bg-background border border-primary/40 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="flex-1 h-9 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 tracking-[0.04em]"
  />
  {form.steps.length > 1 && (
- <button type="button" onClick={() => removeStep(i)} className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg">
+ <button type="button" onClick={() => removeStep(i)} className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl">
  <Trash2 className="w-3.5 h-3.5" />
  </button>
  )}
@@ -417,7 +417,7 @@ function TemplatesPanel({ companyId}) {
  <div className="flex justify-end pt-1">
  <button
  type="submit" disabled={saving}
- className="h-10 px-6 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 disabled:opacity-50 flex items-center gap-2"
+ className="h-10 px-6 bg-primary text-white rounded-md-xl text-sm font-semibold hover:bg-primary/90 disabled:opacity-50 flex items-center gap-2"
  >
  {saving && <Loader2 className="w-4 h-4 animate-spin" />}
  Save Template
@@ -428,13 +428,13 @@ function TemplatesPanel({ companyId}) {
 
  {/* Templates list */}
  <div className="space-y-3">
- <h3 className="text-base font-bold text-foreground">Existing Templates</h3>
+ <h3 className="text-base font-semibold text-foreground">Existing Templates</h3>
  {isLoading ? (
  <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
  ) : templates.length === 0 ? (
- <div className="bg-card border border-dashed border-primary/40 rounded-2xl p-10 text-center">
- <LayoutTemplate className="w-10 h-10 text-muted-foreground mx-auto mb-2 opacity-40" />
- <p className="text-sm text-muted-foreground">No templates yet. Create your first one.</p>
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-md-2xl p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <LayoutTemplate className="w-10 h-10 text-[#71717a] dark:text-gray-400 mx-auto mb-2 opacity-40" />
+ <p className="text-sm text-[#71717a] dark:text-gray-400">No templates yet. Create your first one.</p>
  </div>
  ) : (
  templates.map(t => (
@@ -442,24 +442,24 @@ function TemplatesPanel({ companyId}) {
  key={t.id}
  initial={{ opacity: 0, y: 8}}
  animate={{ opacity: 1, y: 0}}
- className="bg-card border border-primary/40 rounded-2xl p-4 "
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="flex items-center justify-between mb-3">
- <h4 className="text-sm font-bold text-foreground">{t.name}</h4>
- <button onClick={() => deleteTemplate(t.id)} className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg">
+ <h4 className="text-sm font-semibold text-foreground">{t.name}</h4>
+ <button onClick={() => deleteTemplate(t.id)} className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl">
  <Trash2 className="w-3.5 h-3.5" />
  </button>
  </div>
- <div className="flex items-center gap-1 flex-wrap">
+ <div className="flex items-center gap-2 flex-wrap">
  {(t.steps || []).map((s, i) => (
  <React.Fragment key={i}>
  <div className="flex flex-col items-center gap-0.5">
- <div className="px-2 py-0.5 bg-primary/10 text-primary rounded-lg text-[10px] font-semibold whitespace-nowrap">
+ <div className="px-2 py-0.5 bg-primary/10 text-primary rounded-xl text-[10px] font-semibold whitespace-nowrap">
  {s.stepName || `Step ${i + 1}`}
  </div>
- {s.role && <span className="text-[9px] text-muted-foreground">{s.role}</span>}
+ {s.role && <span className="text-[9px] text-[#71717a] dark:text-gray-400">{s.role}</span>}
  </div>
- {i < (t.steps || []).length - 1 && <ArrowRight className="w-3 h-3 text-muted-foreground/50 shrink-0" />}
+ {i < (t.steps || []).length - 1 && <ArrowRight className="w-3 h-3 text-[#71717a] dark:text-gray-400/50 shrink-0" />}
  </React.Fragment>
  ))}
  </div>
@@ -580,21 +580,21 @@ export default function UnivApprovalEngine() {
  return (
  <div className="h-full flex flex-col bg-background overflow-auto">
  {/* ── Header ── */}
- <div className="px-6 pt-6 pb-0 border-b border-primary/40 bg-card/60 backdrop-blur-sm shrink-0">
+ <div className="px-6 pt-6 pb-0 border-b border-primary/40 bg-card/60 backdrop-blur-sm shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between mb-4">
  <div>
- <h1 className="text-2xl font-black text-foreground flex items-center gap-2.5">
- <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+ <h1 className="text-2xl font-black text-foreground flex items-center gap-2.5 tracking-[-0.02em]">
+ <div className="w-9 h-9 rounded-md-xl bg-primary/10 flex items-center justify-center">
  <CheckCircle className="w-5 h-5 text-primary" />
  </div>
  Approval Engine
  </h1>
- <p className="text-sm text-muted-foreground mt-1">
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">
  Multi-step approval management for any record type
  </p>
  </div>
  <div className="flex items-center gap-2">
- <div className="px-3 py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-xs font-bold flex items-center gap-1.5">
+ <div className="px-3 py-1.5 rounded-md-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-xs font-semibold flex items-center gap-2.5 tracking-[0.04em]">
  <Clock className="w-3.5 h-3.5" />
  {inboxItems.length} Pending
  </div>
@@ -611,13 +611,13 @@ export default function UnivApprovalEngine() {
  'flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 transition-all',
  activeTab === tab.id
  ? 'border-primary text-primary'
- : 'border-transparent text-muted-foreground hover:text-foreground'
+ : 'border-transparent text-[#71717a] dark:text-gray-400 hover:text-foreground'
  )}
  >
  <tab.Icon className="w-4 h-4" />
  {tab.label}
  {tab.id === 'inbox' && inboxItems.length > 0 && (
- <span className="w-5 h-5 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center">
+ <span className="w-5 h-5 rounded-md-full bg-primary text-white text-[10px] font-semibold flex items-center justify-center">
  {inboxItems.length}
  </span>
  )}
@@ -641,11 +641,11 @@ export default function UnivApprovalEngine() {
  animate={{ opacity: 1, y: 0}}
  className="flex flex-col items-center justify-center py-20 text-center"
  >
- <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-md-2xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center mb-4">
  <CheckCheck className="w-8 h-8 text-emerald-500" />
  </div>
- <h3 className="text-lg font-bold text-foreground mb-1">All clear!</h3>
- <p className="text-sm text-muted-foreground">No pending approvals require your action.</p>
+ <h3 className="text-lg font-semibold text-foreground mb-1">All clear!</h3>
+ <p className="text-sm text-[#71717a] dark:text-gray-400">No pending approvals require your action.</p>
  </motion.div>
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -661,12 +661,12 @@ export default function UnivApprovalEngine() {
  {activeTab === 'all' && (
  <div className="space-y-4">
  <div className="relative max-w-sm">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
  <input
  value={search}
  onChange={e => setSearch(e.target.value)}
  placeholder="Search requests..."
- className="w-full h-10 pl-9 pr-4 bg-card border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-9 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
 
@@ -675,12 +675,12 @@ export default function UnivApprovalEngine() {
  <Loader2 className="w-8 h-8 animate-spin text-primary" />
  </div>
  ) : (
- <div className="overflow-auto rounded-2xl border border-primary/40 bg-card ">
+ <div className="overflow-auto rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm min-w-[700px]">
  <thead className="border-b border-primary/40 bg-muted/40 sticky top-0">
  <tr>
  {['Title', 'Type', 'Requestor', 'Current Step', 'Status', 'Last Action', 'Date'].map(col => (
- <th key={col} className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
+ <th key={col} className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">
  {col}
  </th>
  ))}
@@ -689,7 +689,7 @@ export default function UnivApprovalEngine() {
  <tbody>
  {filteredAll.length === 0 ? (
  <tr>
- <td colSpan={7} className="px-4 py-16 text-center text-muted-foreground">
+ <td colSpan={7} className="px-4 py-16 text-center text-[#71717a] dark:text-gray-400">
  <AlertCircle className="w-8 h-8 mx-auto mb-2 opacity-30" />
  No approval requests found.
  </td>
@@ -717,8 +717,8 @@ export default function UnivApprovalEngine() {
  )}
  {activeTab === 'templates' && !isAdmin && (
  <div className="flex flex-col items-center justify-center py-20 text-center">
- <AlertCircle className="w-10 h-10 text-muted-foreground opacity-40 mb-3" />
- <p className="text-sm text-muted-foreground">Administrator access required to manage templates.</p>
+ <AlertCircle className="w-10 h-10 text-[#71717a] dark:text-gray-400 opacity-40 mb-3" />
+ <p className="text-sm text-[#71717a] dark:text-gray-400">Administrator access required to manage templates.</p>
  </div>
  )}
  </div>

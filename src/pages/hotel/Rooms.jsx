@@ -105,14 +105,14 @@ export default function Rooms() {
  room.type?.toLowerCase().includes(search.toLowerCase())
  );
 
- if (isDbLoading) return <div className="flex items-center justify-center h-64 text-muted-foreground">{t("loading_room_data", "Loading room data...")}</div>;
+ if (isDbLoading) return <div className="flex items-center justify-center h-64 text-[#71717a] dark:text-gray-400">{t("loading_room_data", "Loading room data...")}</div>;
 
  return (
  <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("room_management", "Room Management")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t(
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("room_management", "Room Management")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
  "configure_rooms_pricing_and_am",
  "Configure rooms, pricing, and amenities"
  )}</p>
@@ -121,53 +121,53 @@ export default function Rooms() {
  <Plus className="w-4 h-4" /> {t("add_room", "Add Room")}
  </Button>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search room number or type..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search room number or type..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  <div className="overflow-x-auto">
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40">
+ <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("room_number", "Room Number")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("type_floor", "Type & Floor")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("rate_night", "Rate/Night")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("amenities", "Amenities")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("action", "Action")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("room_number", "Room Number")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("type_floor", "Type & Floor")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("rate_night", "Rate/Night")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("amenities", "Amenities")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("action", "Action")}</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
  {filtered.map(room => {
  return (
  <tr key={room.id} className="hover:bg-muted/50 transition-colors">
- <td className="px-6 py-4 font-bold text-card-foreground text-lg flex items-center gap-2">
+ <td className="px-6 py-4 font-semibold text-card-foreground text-lg flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Bed className={`w-5 h-5 ${room.status === 'Maintenance' ? 'text-red-500' : 'text-primary'}`}/> 
  {room.roomNumber}
  </td>
  <td className="px-6 py-4">
- <p className="font-semibold text-card-foreground">{room.type}</p>
- <p className="text-xs text-muted-foreground">{room.floor}</p>
+ <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{room.type}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{room.floor}</p>
  </td>
- <td className="px-6 py-4 font-bold text-card-foreground">${room.rate}</td>
+ <td className="px-6 py-4 font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${room.rate}</td>
  <td className="px-6 py-4">
  {room.status === 'Maintenance' ? (
- <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wider animate-pulse">
+ <span className="inline-flex items-center px-2 py-1 rounded-md-full text-[10px] font-semibold bg-red-100 text-red-700 uppercase tracking-wider animate-pulse tracking-[0.04em]">
  <Activity className="w-3 h-3 mr-1" /> {t("maintenance_alert", "Maintenance Alert")}
  </span>
  ) : (
- <span className={`inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${room.status === 'Available' ? 'bg-slate-100 text-primary/90' : 'bg-slate-100 text-primary/90'}`}>
+ <span className={`inline-flex items-center px-2 py-1 rounded-md-full text-[10px] font-semibold uppercase tracking-wider ${room.status === 'Available' ? 'bg-slate-100 text-primary/90' : 'bg-slate-100 text-primary/90'}`}>
  {room.status}
  </span>
  )}
  </td>
  <td className="px-6 py-4">
- <div className="flex gap-1.5 flex-wrap">
+ <div className="flex gap-2.5 flex-wrap">
  {room.amenities?.map(a => {
- return (<span key={a} className="bg-muted text-muted-foreground px-2 py-1 rounded-md text-[10px] font-bold uppercase">{a}</span>);
+ return (<span key={a} className="bg-muted text-[#71717a] dark:text-gray-400 px-2 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-[0.04em]">{a}</span>);
 })}
  </div>
  </td>
@@ -202,7 +202,7 @@ export default function Rooms() {
  </tbody>
  </table>
  {filtered.length === 0 && (
- <div className="text-center py-12 text-muted-foreground">
+ <div className="text-center py-12 text-[#71717a] dark:text-gray-400">
  <Bed className="w-10 h-10 mx-auto mb-3 opacity-30" />
  <p>{t(
  "no_rooms_configured_click_add_",
@@ -214,38 +214,38 @@ export default function Rooms() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {editTargetId ? <Edit className="w-5 h-5 text-primary"/> : <Plus className="w-5 h-5 text-primary"/>}
  {editTargetId ? 'Edit Room Configuration' : 'Configure New Room'}
  </h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("room_number", "Room Number")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("room_number", "Room Number")}</label>
  <Input value={formData.roomNumber} onChange={e => setFormData({ ...formData, roomNumber: e.target.value})} className="mt-1" placeholder="e.g. 101" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("room_type", "Room Type")}</label>
- <select value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("room_type", "Room Type")}</label>
+ <select value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm">
  <option>{t("standard", "Standard")}</option>
  <option>{t("deluxe", "Deluxe")}</option>
  <option>{t("suite", "Suite")}</option>
  </select>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("rate_per_night", "Rate per Night ($)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("rate_per_night", "Rate per Night ($)")}</label>
  <Input type="number" value={formData.rate} onChange={e => setFormData({ ...formData, rate: parseFloat(e.target.value) || 0})} className="mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("floor", "Floor")}</label>
- <select value={formData.floor} onChange={e => setFormData({ ...formData, floor: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("floor", "Floor")}</label>
+ <select value={formData.floor} onChange={e => setFormData({ ...formData, floor: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm">
  <option>{t("1st_floor", "1st Floor")}</option>
  <option>{t("2nd_floor", "2nd Floor")}</option>
  <option>{t("3rd_floor", "3rd Floor")}</option>
  </select>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("amenities_comma_separated", "Amenities (Comma separated)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("amenities_comma_separated", "Amenities (Comma separated)")}</label>
  <Input value={formData.amenities} onChange={e => setFormData({ ...formData, amenities: e.target.value})} className="mt-1" placeholder="e.g. Wifi, Tv, AC, Coffee" />
  </div>
  </div>
@@ -272,7 +272,7 @@ export default function Rooms() {
  return (
  <>
  <SheetHeader className="mb-6">
- <SheetTitle className="text-2xl flex items-center gap-2">
+ <SheetTitle className="text-2xl flex items-center gap-2 tracking-[-0.02em]">
  <Bed className="w-6 h-6 text-primary" />
  {t("room", "Room")} {room.roomNumber} {t("details", "Details")}
  </SheetTitle>
@@ -282,36 +282,36 @@ export default function Rooms() {
  </SheetHeader>
  <div className="space-y-6">
  <div>
- <h3 className="text-sm font-semibold text-muted-foreground mb-2">{t("basic_info", "Basic Info")}</h3>
+ <h3 className="text-sm font-semibold text-[#71717a] dark:text-gray-400 mb-2">{t("basic_info", "Basic Info")}</h3>
  <div className="grid grid-cols-2 gap-4">
- <div className="bg-muted/50 p-3 rounded-lg">
- <p className="text-xs text-muted-foreground mb-1">{t("type", "Type")}</p>
+ <div className="bg-muted/50 p-3 rounded-xl">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">{t("type", "Type")}</p>
  <p className="font-semibold text-foreground">{room.type}</p>
  </div>
- <div className="bg-muted/50 p-3 rounded-lg">
- <p className="text-xs text-muted-foreground mb-1">{t("floor", "Floor")}</p>
+ <div className="bg-muted/50 p-3 rounded-xl">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">{t("floor", "Floor")}</p>
  <p className="font-semibold text-foreground">{room.floor}</p>
  </div>
- <div className="bg-muted/50 p-3 rounded-lg">
- <p className="text-xs text-muted-foreground mb-1">{t("rate_per_night", "Rate per Night")}</p>
+ <div className="bg-muted/50 p-3 rounded-xl">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">{t("rate_per_night", "Rate per Night")}</p>
  <p className="font-semibold text-primary">${room.rate}</p>
  </div>
- <div className="bg-muted/50 p-3 rounded-lg">
- <p className="text-xs text-muted-foreground mb-1">{t("status", "Status")}</p>
- <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-slate-100 text-primary/90">
+ <div className="bg-muted/50 p-3 rounded-xl">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">{t("status", "Status")}</p>
+ <span className="inline-flex items-center px-2 py-1 rounded-md-full text-xs font-semibold bg-slate-100 text-primary/90 tracking-[0.04em]">
  <Activity className="w-3 h-3 mr-1" /> {room.status}
  </span>
  </div>
  </div>
  </div>
  <div>
- <h3 className="text-sm font-semibold text-muted-foreground mb-2">{t("amenities", "Amenities")}</h3>
+ <h3 className="text-sm font-semibold text-[#71717a] dark:text-gray-400 mb-2">{t("amenities", "Amenities")}</h3>
  <div className="flex flex-wrap gap-2">
  {room.amenities?.map(a => {
- return (<span key={a} className="bg-slate-100 text-primary/80 px-3 py-1 rounded-md text-xs font-bold uppercase">{a}</span>);
+ return (<span key={a} className="bg-slate-100 text-primary/80 px-3 py-1 rounded-lg text-xs font-semibold uppercase tracking-[0.04em]">{a}</span>);
 })}
  {(!room.amenities || room.amenities.length === 0) && (
- <p className="text-sm text-muted-foreground">{t("no_amenities_listed", "No amenities listed.")}</p>
+ <p className="text-sm text-[#71717a] dark:text-gray-400">{t("no_amenities_listed", "No amenities listed.")}</p>
  )}
  </div>
  </div>

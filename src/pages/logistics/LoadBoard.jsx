@@ -134,11 +134,11 @@ export default function LoadBoard() {
     <div className="p-4 sm:p-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-card-foreground flex items-center gap-2">
+          <h1 className="text-2xl font-semibold text-card-foreground flex items-center gap-2 tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <PackageSearch className="w-6 h-6 text-primary" />
             {t("load_board", "Automated Load Board")}
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-[#71717a] dark:text-gray-400 mt-1">
             {t("load_board_desc", "Post shipments and let the AI find the most profitable carrier matches instantly.")}
           </p>
         </div>
@@ -148,33 +148,33 @@ export default function LoadBoard() {
         
         {/* Post Load Form */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="bg-card border border-border rounded-2xl p-6 shadow-sm sticky top-4">
-            <h2 className="text-lg font-bold text-card-foreground mb-4 flex items-center gap-2">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm sticky top-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <h2 className="text-lg font-semibold text-card-foreground mb-4 flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <Plus className="w-5 h-5 text-primary" />
               Post New Load
             </h2>
             
             <div className="space-y-4">
               <div className="space-y-1">
-                 <label className="text-xs font-semibold text-muted-foreground">Origin</label>
+                 <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Origin</label>
                  <Input placeholder="e.g. Chicago, IL" value={newLoad.origin} onChange={e => setNewLoad({...newLoad, origin: e.target.value})} />
               </div>
               <div className="space-y-1">
-                 <label className="text-xs font-semibold text-muted-foreground">Destination</label>
+                 <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Destination</label>
                  <Input placeholder="e.g. Dallas, TX" value={newLoad.destination} onChange={e => setNewLoad({...newLoad, destination: e.target.value})} />
               </div>
               <div className="grid grid-cols-2 gap-3">
                  <div className="space-y-1">
-                   <label className="text-xs font-semibold text-muted-foreground">Weight (lbs)</label>
+                   <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Weight (lbs)</label>
                    <Input type="number" placeholder="40000" value={newLoad.weight} onChange={e => setNewLoad({...newLoad, weight: e.target.value})} />
                  </div>
                  <div className="space-y-1">
-                   <label className="text-xs font-semibold text-muted-foreground">Price ($)</label>
+                   <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Price ($)</label>
                    <Input type="number" placeholder="1500" value={newLoad.price} onChange={e => setNewLoad({...newLoad, price: e.target.value})} />
                  </div>
               </div>
               <div className="space-y-1">
-                 <label className="text-xs font-semibold text-muted-foreground">Equipment Required</label>
+                 <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Equipment Required</label>
                  <Input placeholder="e.g. 53' Dry Van, Reefer" value={newLoad.equipment} onChange={e => setNewLoad({...newLoad, equipment: e.target.value})} />
               </div>
 
@@ -193,46 +193,46 @@ export default function LoadBoard() {
             const isMatched = matchesForThisLoad.length > 0;
 
             return (
-              <div key={load.id} className="bg-card border border-border rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+              <div key={load.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] transition-shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                  <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center gap-3">
-                       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                       <div className="w-10 h-10 rounded-md-full bg-primary/10 flex items-center justify-center">
                           <MapPin className="w-5 h-5 text-primary" />
                        </div>
                        <div>
-                          <h3 className="font-bold text-lg flex items-center gap-2">
-                             {load.origin} <span className="text-muted-foreground font-normal mx-1">→</span> {load.destination}
+                          <h3 className="font-semibold text-lg flex items-center gap-2">
+                             {load.origin} <span className="text-[#71717a] dark:text-gray-400 font-normal mx-1">→</span> {load.destination}
                           </h3>
-                          <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1">
-                             <span className="flex items-center gap-1"><Weight className="w-3 h-3" /> {load.weight_lbs} lbs</span>
-                             <span className="flex items-center gap-1"><Truck className="w-3 h-3" /> {load.equipment_required || 'Any'}</span>
-                             {load.price > 0 && <span className="flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400"><DollarSign className="w-3 h-3" /> {load.price}</span>}
+                          <div className="flex items-center gap-4 text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">
+                             <span className="flex items-center gap-2"><Weight className="w-3 h-3" /> {load.weight_lbs} lbs</span>
+                             <span className="flex items-center gap-2"><Truck className="w-3 h-3" /> {load.equipment_required || 'Any'}</span>
+                             {load.price > 0 && <span className="flex items-center gap-2 font-semibold text-emerald-600 dark:text-emerald-400"><DollarSign className="w-3 h-3" /> {load.price}</span>}
                           </div>
                        </div>
                     </div>
                     <div>
-                       <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${isMatched ? 'bg-indigo-100 text-indigo-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                       <span className={`px-3 py-1 rounded-md-full text-xs font-semibold uppercase tracking-wider ${isMatched ? 'bg-indigo-100 text-indigo-700' : 'bg-emerald-100 text-emerald-700'}`}>
                           {isMatched ? 'Matches Found' : 'Open'}
                        </span>
                     </div>
                  </div>
 
                  {/* Matches Section */}
-                 <div className="mt-4 pt-4 border-t border-border">
+                 <div className="mt-4 pt-4 border-t border-[0.5px] border-black/9 dark:border-white/8">
                     {isMatched ? (
                       <div className="space-y-3">
                         <h4 className="text-sm font-semibold flex items-center gap-2"><Zap className="w-4 h-4 text-primary fill-primary" /> AI Recommended Carriers</h4>
                         {matchesForThisLoad.map(match => (
-                           <div key={match.id} className="flex items-center justify-between bg-muted/40 p-3 rounded-lg border border-border/50">
+                           <div key={match.id} className="flex items-center justify-between bg-muted/40 p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8/50">
                               <div>
-                                 <p className="text-sm font-bold flex items-center gap-1">
-                                    <Users className="w-4 h-4 text-muted-foreground" />
-                                    {match.vehicle_name || 'Fleet Truck'} <span className="text-xs font-normal text-muted-foreground ml-2">({match.license_plate})</span>
+                                 <p className="text-sm font-semibold flex items-center gap-2">
+                                    <Users className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
+                                    {match.vehicle_name || 'Fleet Truck'} <span className="text-xs font-normal text-[#71717a] dark:text-gray-400 ml-2 tracking-[0.04em]">({match.license_plate})</span>
                                  </p>
-                                 <p className="text-xs text-muted-foreground mt-0.5">{match.reasoning}</p>
+                                 <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">{match.reasoning}</p>
                               </div>
                               <div className="text-right shrink-0 ml-4">
-                                 <div className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded border border-emerald-200">
+                                 <div className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 tracking-[0.04em]">
                                     {match.match_score}% Match
                                  </div>
                               </div>
@@ -242,10 +242,10 @@ export default function LoadBoard() {
                     ) : (
                       <div className="relative">
                          {!isProOrAbove && (
-                            <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/60 backdrop-blur-[1px] rounded-lg">
-                               <div className="bg-background border border-border px-4 py-2 rounded-full shadow-sm flex items-center gap-2">
+                            <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/60 backdrop-blur-[1px] rounded-xl">
+                               <div className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 px-4 py-2 rounded-md-full shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm flex items-center gap-2">
                                   <Lock className="w-4 h-4 text-amber-500" />
-                                  <span className="text-xs font-bold text-foreground">Pro Plan Required to Match Trucks</span>
+                                  <span className="text-xs font-semibold text-foreground tracking-[0.04em]">Pro Plan Required to Match Trucks</span>
                                </div>
                             </div>
                          )}
@@ -269,7 +269,7 @@ export default function LoadBoard() {
           })}
           
           {(!loads || loads.length === 0) && (
-             <div className="text-center p-12 border-2 border-dashed border-border rounded-2xl text-muted-foreground">
+             <div className="text-center p-12 border-2 border-dashed border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl text-[#71717a] dark:text-gray-400">
                 <PackageSearch className="w-12 h-12 mx-auto mb-4 opacity-20" />
                 <h3 className="font-semibold text-lg">No loads posted yet</h3>
                 <p className="text-sm">Post a load on the left to get started.</p>

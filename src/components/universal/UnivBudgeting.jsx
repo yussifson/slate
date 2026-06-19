@@ -147,18 +147,18 @@ export default function UnivBudgeting({
  <div className="flex flex-col h-full bg-background font-sans">
  
  {/* Header */}
- <div className="border-b border-primary/40 bg-card px-6 sm:px-8 py-6 shrink-0 z-10 relative">
+ <div className="border-b border-primary/40 bg-card px-6 sm:px-8 py-6 shrink-0 z-10 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
- <h1 className="text-2xl font-extrabold text-foreground tracking-tight flex items-center gap-2">
+ <h1 className="text-2xl font-extrabold text-foreground tracking-tight flex items-center gap-2 tracking-[-0.02em]">
  <Wallet className="w-6 h-6 text-primary" /> {title}
  </h1>
- <p className="text-sm text-muted-foreground mt-1">Track departmental budgets, spending, and allocations.</p>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Track departmental budgets, spending, and allocations.</p>
  </div>
  <div className="flex items-center gap-3">
  <button 
  onClick={openNewModal}
- className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2"
+ className="px-4 py-2 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2"
  >
  <Plus className="w-4 h-4" /> New Budget
  </button>
@@ -167,32 +167,32 @@ export default function UnivBudgeting({
 
  {/* Global Stats */}
  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
- <div className="bg-card border border-primary/40 rounded-xl p-4 ">
- <div className="flex items-center gap-2 text-muted-foreground mb-1">
- <DollarSign className="w-4 h-4" /> <span className="text-xs font-bold uppercase tracking-wider">Total Allocated</span>
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex items-center gap-2 text-[#71717a] dark:text-gray-400 mb-1">
+ <DollarSign className="w-4 h-4" /> <span className="text-xs font-semibold uppercase tracking-wider tracking-[0.04em]">Total Allocated</span>
  </div>
- <div className="text-2xl font-bold text-foreground">${totalAllocated.toLocaleString()}</div>
+ <div className="text-2xl font-semibold text-foreground tracking-[-0.02em]">${totalAllocated.toLocaleString()}</div>
  </div>
- <div className="bg-card border border-primary/40 rounded-xl p-4 ">
- <div className="flex items-center gap-2 text-muted-foreground mb-1">
- <TrendingUp className="w-4 h-4 text-red-500" /> <span className="text-xs font-bold uppercase tracking-wider">Total Spent</span>
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex items-center gap-2 text-[#71717a] dark:text-gray-400 mb-1">
+ <TrendingUp className="w-4 h-4 text-red-500" /> <span className="text-xs font-semibold uppercase tracking-wider tracking-[0.04em]">Total Spent</span>
  </div>
- <div className="text-2xl font-bold text-foreground">${totalSpent.toLocaleString()}</div>
+ <div className="text-2xl font-semibold text-foreground tracking-[-0.02em]">${totalSpent.toLocaleString()}</div>
  </div>
- <div className="bg-card border border-primary/40 rounded-xl p-4 ">
- <div className="flex items-center gap-2 text-muted-foreground mb-1">
- <Wallet className="w-4 h-4 text-emerald-500" /> <span className="text-xs font-bold uppercase tracking-wider">Remaining</span>
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex items-center gap-2 text-[#71717a] dark:text-gray-400 mb-1">
+ <Wallet className="w-4 h-4 text-emerald-500" /> <span className="text-xs font-semibold uppercase tracking-wider tracking-[0.04em]">Remaining</span>
  </div>
- <div className="text-2xl font-bold text-foreground">${totalRemaining.toLocaleString()}</div>
+ <div className="text-2xl font-semibold text-foreground tracking-[-0.02em]">${totalRemaining.toLocaleString()}</div>
  </div>
- <div className="bg-card border border-primary/40 rounded-xl p-4 flex flex-col justify-center">
- <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 flex flex-col justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-2 tracking-[0.04em]">
  <span>Overall Usage</span>
  <span className={overallUsagePct > 90 ? "text-red-500" : "text-emerald-500"}>{overallUsagePct.toFixed(1)}%</span>
  </div>
- <div className="h-2.5 bg-muted rounded-full overflow-hidden">
+ <div className="h-2.5 bg-muted rounded-md-full overflow-hidden">
  <div 
- className={cn("h-full transition-all duration-500", overallUsagePct > 90 ? "bg-red-500" : overallUsagePct > 75 ? "bg-amber-500" : "bg-emerald-500")}
+ className={cn("h-full transition-all duration-500", overallUsagePct > 90 ? "bg-red-500/10" : overallUsagePct > 75 ? "bg-amber-500" : "bg-emerald-500/10")}
  style={{ width: `${Math.min(overallUsagePct, 100)}%`}}
  />
  </div>
@@ -202,17 +202,17 @@ export default function UnivBudgeting({
  {/* Toolbar */}
  <div className="mt-6 flex items-center gap-3">
  <div className="relative flex-1 max-w-sm">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <input 
  type="text" 
  placeholder="Search departments..."
  value={searchQuery}
  onChange={e => setSearchQuery(e.target.value)}
- className="w-full h-10 pl-9 pr-4 bg-muted/50 border border-primary/40 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+ className="w-full h-10 pl-9 pr-4 bg-muted/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:border-primary transition-colors"
  />
  </div>
- <button className="h-10 px-4 bg-background border border-primary/40 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-muted transition-colors ">
- <Filter className="w-4 h-4 text-muted-foreground" /> Filter
+ <button className="h-10 px-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl flex items-center gap-2 text-sm font-medium hover:bg-muted transition-colors ">
+ <Filter className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> Filter
  </button>
  </div>
  </div>
@@ -221,9 +221,9 @@ export default function UnivBudgeting({
  <div className="flex-1 overflow-y-auto p-6 sm:p-8 bg-muted/10 custom-scrollbar">
  <div className="max-w-7xl mx-auto">
  {filteredBudgets.length === 0 ? (
- <div className="text-center py-20 text-muted-foreground">
+ <div className="text-center py-20 text-[#71717a] dark:text-gray-400">
  <PieChart className="w-12 h-12 mx-auto mb-4 opacity-20" />
- <h3 className="text-lg font-bold text-foreground">No budgets found</h3>
+ <h3 className="text-lg font-semibold text-foreground">No budgets found</h3>
  <p className="text-sm mt-1">Create a budget allocation to get started.</p>
  </div>
  ) : (
@@ -237,29 +237,29 @@ export default function UnivBudgeting({
  const isWarning = pct > 85 && !isOver;
 
  return (
- <div key={budget.id} className="bg-card border border-primary/40 rounded-2xl p-6 transition- group relative overflow-hidden">
+ <div key={budget.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6 transition- group relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Background Progress Bar */}
  <div 
- className={cn("absolute inset-0 opacity-[0.03] pointer-events-none transition-all duration-1000", isOver ? "bg-red-500" : isWarning ? "bg-amber-500" : "bg-emerald-500")} 
+ className={cn("absolute inset-0 opacity-[0.03] pointer-events-none transition-all duration-1000", isOver ? "bg-red-500/10" : isWarning ? "bg-amber-500" : "bg-emerald-500/10")} 
  style={{ width: `${Math.min(pct, 100)}%`}} 
  />
 
  <div className="flex items-start justify-between mb-4 relative z-10">
  <div>
- <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+ <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
  {budget.department}
  {isOver && <AlertCircle className="w-4 h-4 text-red-500" />}
  </h3>
- <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
- <span className="flex items-center gap-1"><Building2 className="w-3 h-3" /> {budget.category}</span>
- <span className="flex items-center gap-1"><CalendarDays className="w-3 h-3" /> FY {budget.period}</span>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 flex items-center gap-2 mt-1 tracking-[0.04em]">
+ <span className="flex items-center gap-2"><Building2 className="w-3 h-3" /> {budget.category}</span>
+ <span className="flex items-center gap-2"><CalendarDays className="w-3 h-3" /> FY {budget.period}</span>
  </div>
  </div>
  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
- <button onClick={() => openEditModal(budget)} className="p-1.5 text-muted-foreground hover:text-primary rounded hover:bg-primary/10">
+ <button onClick={() => openEditModal(budget)} className="p-1.5 text-[#71717a] dark:text-gray-400 hover:text-primary rounded-md hover:bg-primary/10">
  <Edit3 className="w-4 h-4" />
  </button>
- <button onClick={() => { if(window.confirm('Delete budget?')) deleteMutation.mutate(budget.id);}} className="p-1.5 text-muted-foreground hover:text-red-500 rounded hover:bg-red-50 dark:hover:bg-red-950/30">
+ <button onClick={() => { if(window.confirm('Delete budget?')) deleteMutation.mutate(budget.id);}} className="p-1.5 text-[#71717a] dark:text-gray-400 hover:text-red-500 rounded-md hover:bg-red-50 dark:hover:bg-red-950/30">
  <Trash2 className="w-4 h-4" />
  </button>
  </div>
@@ -268,25 +268,25 @@ export default function UnivBudgeting({
  <div className="space-y-4 relative z-10">
  <div className="flex justify-between items-end">
  <div>
- <div className="text-2xl font-black text-foreground">${spent.toLocaleString()}</div>
- <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">Spent of ${allocated.toLocaleString()}</div>
+ <div className="text-2xl font-black text-foreground tracking-[-0.02em]">${spent.toLocaleString()}</div>
+ <div className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mt-0.5 tracking-[0.04em]">Spent of ${allocated.toLocaleString()}</div>
  </div>
  <div className="text-right">
- <div className={cn("text-lg font-bold", isOver ? "text-red-500" : "text-emerald-500")}>
+ <div className={cn("text-lg font-semibold", isOver ? "text-red-500" : "text-emerald-500")}>
  {isOver ? `-$${Math.abs(remaining).toLocaleString()}` : `$${remaining.toLocaleString()}`}
  </div>
- <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">Remaining</div>
+ <div className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mt-0.5 tracking-[0.04em]">Remaining</div>
  </div>
  </div>
 
  <div className="relative">
- <div className="h-3 bg-muted rounded-full overflow-hidden">
+ <div className="h-3 bg-muted rounded-md-full overflow-hidden">
  <div 
- className={cn("h-full transition-all duration-1000", isOver ? "bg-red-500" : isWarning ? "bg-amber-500" : "bg-emerald-500")}
+ className={cn("h-full transition-all duration-1000", isOver ? "bg-red-500/10" : isWarning ? "bg-amber-500" : "bg-emerald-500/10")}
  style={{ width: `${Math.min(pct, 100)}%`}}
  />
  </div>
- <div className="absolute right-0 top-4 text-[10px] font-bold text-muted-foreground">{pct.toFixed(1)}% Used</div>
+ <div className="absolute right-0 top-4 text-[10px] font-semibold text-[#71717a] dark:text-gray-400">{pct.toFixed(1)}% Used</div>
  </div>
  </div>
  </div>
@@ -306,26 +306,26 @@ export default function UnivBudgeting({
  initial={{ opacity: 0, scale: 0.95, y: 20}}
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: 20}}
- className="relative w-full max-w-lg bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
+ className="relative w-full max-w-lg bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="px-6 py-4 border-b border-primary/40 flex items-center justify-between bg-muted/20">
- <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+ <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
  <Wallet className="w-5 h-5 text-primary" />
  {editingBudget ? 'Edit Budget' : 'New Budget'}
  </h2>
- <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:text-foreground"><MoreHorizontal className="w-5 h-5" /></button>
+ <button onClick={() => setIsModalOpen(false)} className="text-[#71717a] dark:text-gray-400 hover:text-foreground"><MoreHorizontal className="w-5 h-5" /></button>
  </div>
  
  <div className="flex-1 overflow-y-auto p-6">
  <form id="budget-form" onSubmit={handleSave} className="space-y-4">
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Department / Team *</label>
- <input required type="text" value={formState.department} onChange={e => setFormState({...formState, department: e.target.value})} placeholder="e.g. Engineering, Marketing" className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Department / Team *</label>
+ <input required type="text" value={formState.department} onChange={e => setFormState({...formState, department: e.target.value})} placeholder="e.g. Engineering, Marketing" className="w-full h-10 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Category</label>
- <select value={formState.category} onChange={e => setFormState({...formState, category: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none">
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Category</label>
+ <select value={formState.category} onChange={e => setFormState({...formState, category: e.target.value})} className="w-full h-10 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none">
  <option>Operations</option>
  <option>Payroll</option>
  <option>Marketing</option>
@@ -334,30 +334,30 @@ export default function UnivBudgeting({
  </select>
  </div>
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Financial Period</label>
- <input type="text" value={formState.period} onChange={e => setFormState({...formState, period: e.target.value})} placeholder="e.g. 2024, Q3 2024" className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Financial Period</label>
+ <input type="text" value={formState.period} onChange={e => setFormState({...formState, period: e.target.value})} placeholder="e.g. 2024, Q3 2024" className="w-full h-10 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Allocated Amount ($) *</label>
- <input required type="number" min="0" step="0.01" value={formState.allocated_amount} onChange={e => setFormState({...formState, allocated_amount: parseFloat(e.target.value)})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm font-mono focus:border-primary focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Allocated Amount ($) *</label>
+ <input required type="number" min="0" step="0.01" value={formState.allocated_amount} onChange={e => setFormState({...formState, allocated_amount: parseFloat(e.target.value)})} className="w-full h-10 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm font-mono focus:border-primary focus:outline-none" />
  </div>
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Spent Amount ($)</label>
- <input type="number" min="0" step="0.01" value={formState.spent_amount} onChange={e => setFormState({...formState, spent_amount: parseFloat(e.target.value)})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm font-mono focus:border-primary focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Spent Amount ($)</label>
+ <input type="number" min="0" step="0.01" value={formState.spent_amount} onChange={e => setFormState({...formState, spent_amount: parseFloat(e.target.value)})} className="w-full h-10 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm font-mono focus:border-primary focus:outline-none" />
  </div>
  </div>
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Notes</label>
- <textarea value={formState.notes} onChange={e => setFormState({...formState, notes: e.target.value})} className="w-full h-24 p-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none resize-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Notes</label>
+ <textarea value={formState.notes} onChange={e => setFormState({...formState, notes: e.target.value})} className="w-full h-24 p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none resize-none" />
  </div>
  </form>
  </div>
  
  <div className="px-6 py-4 border-t border-primary/40 bg-muted/20 flex justify-end gap-3">
- <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors">Cancel</button>
- <button type="submit" form="budget-form" disabled={saveMutation.isPending} className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors disabled:opacity-50">
+ <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-xl text-sm font-medium text-foreground hover:bg-muted transition-colors">Cancel</button>
+ <button type="submit" form="budget-form" disabled={saveMutation.isPending} className="px-6 py-2 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50">
  {saveMutation.isPending ? 'Saving...' : 'Save Budget'}
  </button>
  </div>

@@ -111,81 +111,81 @@ export default function Sales() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("sales_history", "Sales History")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t(
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("sales_history", "Sales History")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
  "view_real_time_transactions_re",
  "View real-time transactions, refunds, and daily reports"
  )}</p>
  </div>
  </div>
  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-xl border border-primary/40 p-5 col-span-1 md:col-span-2 bg-gradient-to-br from-orange-600 to-orange-800 text-white relative overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 col-span-1 md:col-span-2 bg-gradient-to-br from-orange-600 to-orange-800 text-white relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="relative z-10">
- <p className="text-sm font-bold text-orange-200 uppercase tracking-wider mb-2">{t("today_s_sales", "Today's Sales")}</p>
- <h2 className="text-4xl font-black mb-1">${stats.totalSales.toFixed(2)}</h2>
- <p className="text-sm text-orange-100 flex items-center gap-1"><ArrowUpRight className="w-4 h-4 text-primary/30"/> {t("real_time_production_transacti", "Real-time production transactions")}</p>
+ <p className="text-sm font-semibold text-orange-200 uppercase tracking-wider mb-2 tracking-[0.04em]">{t("today_s_sales", "Today's Sales")}</p>
+ <h2 className="text-4xl font-black mb-1 tracking-[-0.02em]">${stats.totalSales.toFixed(2)}</h2>
+ <p className="text-sm text-orange-100 flex items-center gap-2"><ArrowUpRight className="w-4 h-4 text-primary/30"/> {t("real_time_production_transacti", "Real-time production transactions")}</p>
  </div>
  <TrendingUp className="absolute right-[-20px] bottom-[-20px] w-48 h-48 opacity-10 text-white" />
  </div>
  
- <div className="bg-card rounded-xl border border-primary/40 p-5 ">
- <p className="text-sm font-bold text-muted-foreground uppercase mb-2">{t("transactions", "Transactions")}</p>
- <h3 className="text-3xl font-black text-card-foreground">{stats.transactions}</h3>
- <p className="text-xs text-muted-foreground mt-2 font-medium">{t("total_receipts_registered", "Total receipts registered")}</p>
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <p className="text-sm font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-2 tracking-[0.04em]">{t("transactions", "Transactions")}</p>
+ <h3 className="text-3xl font-black text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{stats.transactions}</h3>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-2 font-medium tracking-[0.04em]">{t("total_receipts_registered", "Total receipts registered")}</p>
  </div>
  
- <div className="bg-card rounded-xl border border-primary/40 p-5 ">
- <p className="text-sm font-bold text-muted-foreground uppercase mb-2">{t("avg_order_value", "Avg. Order Value")}</p>
- <h3 className="text-3xl font-black text-card-foreground">${stats.avgValue.toFixed(2)}</h3>
- <p className="text-xs text-muted-foreground mt-2 font-medium">{t("per_transaction", "Per transaction")}</p>
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <p className="text-sm font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-2 tracking-[0.04em]">{t("avg_order_value", "Avg. Order Value")}</p>
+ <h3 className="text-3xl font-black text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${stats.avgValue.toFixed(2)}</h3>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-2 font-medium tracking-[0.04em]">{t("per_transaction", "Per transaction")}</p>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50 flex flex-col sm:flex-row gap-4 justify-between">
  <div className="relative max-w-md w-full">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search receipt ID..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search receipt ID..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  <div className="overflow-x-auto">
  {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_sales_history", "Loading sales history...")}</div>
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_sales_history", "Loading sales history...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
  <Calendar className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse" />
  <p className="font-semibold">{t("no_sales_transactions_logged", "No sales transactions logged.")}</p>
- <p className="text-xs mt-1">{t(
+ <p className="text-xs mt-1 tracking-[0.04em]">{t(
  "execute_purchases_in_the_pos_p",
  "Execute purchases in the POS page to record them here."
  )}</p>
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40">
+ <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("receipt_no", "Receipt No.")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("date_time", "Date & Time")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("cashier", "Cashier")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("payment_method", "Payment Method")}</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("total_amount", "Total Amount")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("actions", "Actions")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("receipt_no", "Receipt No.")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("date_time", "Date & Time")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("cashier", "Cashier")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("payment_method", "Payment Method")}</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("total_amount", "Total Amount")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("actions", "Actions")}</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
  {filtered.map(sale => {
  return (
  <tr key={sale.id} className="hover:bg-muted/50 transition-colors">
- <td className="px-6 py-4 font-mono font-bold text-orange-600">{sale.saleId}</td>
- <td className="px-6 py-4 text-muted-foreground">{sale.date}</td>
- <td className="px-6 py-4 font-medium text-card-foreground">{sale.cashier}</td>
- <td className="px-6 py-4 text-muted-foreground">{sale.method}</td>
+ <td className="px-6 py-4 font-mono font-semibold text-orange-600">{sale.saleId}</td>
+ <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">{sale.date}</td>
+ <td className="px-6 py-4 font-medium text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{sale.cashier}</td>
+ <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">{sale.method}</td>
  <td className="px-6 py-4 text-center">
- <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider ${sale.status === 'Refunded' ? 'bg-red-100 dark:bg-red-950/20 text-red-700 dark:text-red-400' : 'bg-slate-100 dark:bg-primary/20 text-primary/90 dark:text-primary/70'}`}>
+ <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md-sm uppercase tracking-wider ${sale.status === 'Refunded' ? 'bg-red-100 dark:bg-red-950/20 text-red-700 dark:text-red-400' : 'bg-slate-100 dark:bg-primary/20 text-primary/90 dark:text-primary/70'}`}>
  {sale.status}
  </span>
  </td>
- <td className="px-6 py-4 text-right font-black text-card-foreground">${sale.total.toFixed(2)}</td>
+ <td className="px-6 py-4 text-right font-black text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${sale.total.toFixed(2)}</td>
  <td className="px-6 py-4 text-right">
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
@@ -232,39 +232,39 @@ export default function Sales() {
  {selectedRecord && (
  <div className="mt-6 space-y-6 text-sm">
  <div className="grid grid-cols-2 gap-4 border-b pb-4">
- <div className="font-semibold text-muted-foreground">{t("date", "Date")}</div>
+ <div className="font-semibold text-[#71717a] dark:text-gray-400">{t("date", "Date")}</div>
  <div className="text-right">{selectedRecord.date}</div>
  </div>
  <div className="grid grid-cols-2 gap-4 border-b pb-4">
- <div className="font-semibold text-muted-foreground">{t("cashier", "Cashier")}</div>
+ <div className="font-semibold text-[#71717a] dark:text-gray-400">{t("cashier", "Cashier")}</div>
  <div className="text-right">{selectedRecord.cashier}</div>
  </div>
  <div className="grid grid-cols-2 gap-4 border-b pb-4">
- <div className="font-semibold text-muted-foreground">{t("payment_method", "Payment Method")}</div>
+ <div className="font-semibold text-[#71717a] dark:text-gray-400">{t("payment_method", "Payment Method")}</div>
  <div className="text-right">{selectedRecord.method}</div>
  </div>
  <div className="grid grid-cols-2 gap-4 border-b pb-4">
- <div className="font-semibold text-muted-foreground">{t("status", "Status")}</div>
+ <div className="font-semibold text-[#71717a] dark:text-gray-400">{t("status", "Status")}</div>
  <div className="text-right">
- <span className={`text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider ${selectedRecord.status === 'Refunded' ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-primary/90'}`}>
+ <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md-sm uppercase tracking-wider ${selectedRecord.status === 'Refunded' ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-primary/90'}`}>
  {selectedRecord.status}
  </span>
  </div>
  </div>
  
  <div>
- <div className="font-bold mb-3 uppercase text-xs text-muted-foreground tracking-wider">{t("items_purchased", "Items Purchased")}</div>
+ <div className="font-semibold mb-3 uppercase text-xs text-[#71717a] dark:text-gray-400 tracking-wider tracking-[0.04em]">{t("items_purchased", "Items Purchased")}</div>
  <div className="space-y-3">
  {selectedRecord.items.map((item, idx) => {
  return (
- <div key={idx} className="flex justify-between items-center bg-muted/30 p-2 rounded">
+ <div key={idx} className="flex justify-between items-center bg-muted/30 p-2 rounded-md">
  <div>
  <div className="font-semibold">{item.name}</div>
- <div className="text-xs text-muted-foreground font-mono"><Link to="/retail-inventory" className="text-primary hover:underline">{item.sku}</Link></div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 font-mono tracking-[0.04em]"><Link to="/retail-inventory" className="text-primary hover:underline">{item.sku}</Link></div>
  </div>
  <div className="text-right">
- <div className="font-bold">${item.price.toFixed(2)}</div>
- <div className="text-xs text-muted-foreground">{t("qty", "Qty:")} {item.qty}</div>
+ <div className="font-semibold">${item.price.toFixed(2)}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("qty", "Qty:")} {item.qty}</div>
  </div>
  </div>
  );
@@ -273,15 +273,15 @@ export default function Sales() {
  </div>
 
  <div className="border-t pt-4 space-y-2">
- <div className="flex justify-between text-muted-foreground">
+ <div className="flex justify-between text-[#71717a] dark:text-gray-400">
  <span>{t("subtotal", "Subtotal")}</span>
  <span>${selectedRecord.subtotal.toFixed(2)}</span>
  </div>
- <div className="flex justify-between text-muted-foreground">
+ <div className="flex justify-between text-[#71717a] dark:text-gray-400">
  <span>{t("tax", "Tax")}</span>
  <span>${selectedRecord.tax.toFixed(2)}</span>
  </div>
- <div className="flex justify-between font-black text-lg text-card-foreground pt-2">
+ <div className="flex justify-between font-black text-lg text-card-foreground pt-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <span>{t("total", "Total")}</span>
  <span>${selectedRecord.total.toFixed(2)}</span>
  </div>
@@ -292,12 +292,12 @@ export default function Sales() {
  </Sheet>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-sm p-6 space-y-4">
- <h2 className="text-lg font-bold text-card-foreground">{t("update_sale_status", "Update Sale Status")}</h2>
+ <div className="bg-card rounded-md-2xl w-full max-w-sm p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("update_sale_status", "Update Sale Status")}</h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</label>
- <select value={formData.status} onChange={e => setFormData({ status: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</label>
+ <select value={formData.status} onChange={e => setFormData({ status: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm">
  <option value="Completed">{t("completed", "Completed")}</option>
  <option value="Refunded">{t("refunded", "Refunded")}</option>
  </select>

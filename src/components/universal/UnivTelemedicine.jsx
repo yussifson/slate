@@ -200,36 +200,36 @@ export default function UnivTelemedicine() {
  <div className="flex flex-col h-full bg-background overflow-hidden ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
  <div>
- <h2 className="text-2xl font-bold text-foreground tracking-tight">Telemedicine</h2>
- <p className="text-sm text-muted-foreground mt-1">Manage remote consultations and video meetings.</p>
+ <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">Telemedicine</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Manage remote consultations and video meetings.</p>
  </div>
  <div className="flex gap-3">
  <div className="flex items-center gap-2">
 
  
  
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={handleOpenAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
+ <button onClick={handleOpenAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
  <Plus className="w-4 h-4" /> Schedule Visit
  </button>
  </div>
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
  <input 
  type="text"
  placeholder="Search patients, doctors..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -243,24 +243,24 @@ export default function UnivTelemedicine() {
  animate={{ opacity: 1, y: 0}}
  transition={{ delay: idx * 0.05}}
  key={a.id} 
- className="bg-background border border-primary/40 rounded-2xl p-5 hover:border-primary/30 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer"
+ className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 hover:border-primary/30 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer"
  onClick={() => handleOpenEdit(a)}
  >
  <div className="flex items-center gap-4">
- <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${
+ <div className={`w-12 h-12 rounded-md-xl flex items-center justify-center shrink-0 ${
  a.status === 'Ongoing' ? 'bg-blue-100 text-blue-600 animate-pulse' :
- a.status === 'Completed' ? 'bg-muted text-muted-foreground' :
+ a.status === 'Completed' ? 'bg-muted text-[#71717a] dark:text-gray-400' :
  'bg-primary/10 text-primary'
 }`}>
  <Video className="w-6 h-6" />
  </div>
  <div>
- <h3 className="font-bold text-foreground text-lg">{parsed.patient_name}</h3>
- <p className="text-sm text-muted-foreground flex items-center gap-1.5 mt-0.5">
+ <h3 className="font-semibold text-foreground text-lg">{parsed.patient_name}</h3>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 flex items-center gap-2.5 mt-0.5">
  <User className="w-3.5 h-3.5" /> {parsed.doctor_name}
  </p>
  {parsed.notes && (
- <p className="text-xs text-muted-foreground mt-1 line-clamp-1 italic">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 line-clamp-1 italic tracking-[0.04em]">
  "{parsed.notes}"
  </p>
  )}
@@ -269,10 +269,10 @@ export default function UnivTelemedicine() {
 
  <div className="flex items-center gap-6" onClick={(e) => e.stopPropagation()}>
  <div className="text-right">
- <p className="text-sm font-semibold text-foreground flex items-center gap-1.5 justify-end">
+ <p className="text-sm font-semibold text-foreground flex items-center gap-2.5 justify-end">
  <Calendar className="w-4 h-4 text-primary" /> {new Date(a.scheduled_time).toLocaleDateString()}
  </p>
- <p className="text-xs text-muted-foreground flex items-center gap-1.5 mt-1 justify-end">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 flex items-center gap-2.5 mt-1 justify-end tracking-[0.04em]">
  <Clock className="w-3.5 h-3.5" /> {new Date(a.scheduled_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
  </p>
  </div>
@@ -280,7 +280,7 @@ export default function UnivTelemedicine() {
  <div className="w-px h-10 bg-primary/40 hidden md:block"></div>
  
  <div className="flex flex-col items-end gap-2 w-32">
- <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border w-fit ${
+ <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-semibold rounded-lg border-[0.5px] border-black/9 dark:border-white/8 w-fit ${
  a.status === 'Ongoing' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
  a.status === 'Completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
  a.status === 'Cancelled' ? 'bg-red-50 text-red-700 border-red-200' :
@@ -290,14 +290,14 @@ export default function UnivTelemedicine() {
  </span>
  <div className="flex items-center gap-2 mt-1">
  {a.status !== 'Completed' && a.meeting_link && (
- <button className="text-xs font-semibold text-primary hover:underline" onClick={() => window.open(a.meeting_link, '_blank')}>
+ <button className="text-xs font-semibold text-primary hover:underline tracking-[0.04em]" onClick={() => window.open(a.meeting_link, '_blank')}>
  Join Call
  </button>
  )}
- <button onClick={() => handleOpenEdit(a)} className="text-xs font-semibold text-muted-foreground hover:text-foreground">
+ <button onClick={() => handleOpenEdit(a)} className="text-xs font-semibold text-[#71717a] dark:text-gray-400 hover:text-foreground tracking-[0.04em]">
  Edit
  </button>
- <button onClick={() => handleDelete(a.id)} className="text-xs font-semibold text-red-500 hover:text-red-700">
+ <button onClick={() => handleDelete(a.id)} className="text-xs font-semibold text-red-500 hover:text-red-700 tracking-[0.04em]">
  Cancel
  </button>
  </div>
@@ -308,7 +308,7 @@ export default function UnivTelemedicine() {
 })}
 
  {filtered.length === 0 && (
- <div className="text-center py-12 text-muted-foreground">
+ <div className="text-center py-12 text-[#71717a] dark:text-gray-400">
  <Video className="w-12 h-12 mx-auto mb-3 opacity-20" />
  <p>No consultations scheduled.</p>
  </div>
@@ -322,72 +322,72 @@ export default function UnivTelemedicine() {
  <motion.div 
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
- className="bg-card border border-primary/40 rounded-2xl max-w-md w-full p-6 relative"
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl max-w-md w-full p-6 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <button 
  onClick={() => setIsModalOpen(false)}
- className="absolute right-4 top-4 text-muted-foreground hover:text-foreground"
+ className="absolute right-4 top-4 text-[#71717a] dark:text-gray-400 hover:text-foreground"
  >
  <X className="w-5 h-5" />
  </button>
  
- <h3 className="text-lg font-bold text-foreground mb-4">
+ <h3 className="text-lg font-semibold text-foreground mb-4">
  {editingApt ? 'Edit Consultation' : 'Schedule Telemedicine Visit'}
  </h3>
  
  <form onSubmit={handleSave} className="space-y-4">
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Patient Name *</label>
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Patient Name *</label>
  <input 
  type="text" 
  value={form.patient_name}
  onChange={(e) => setForm({ ...form, patient_name: e.target.value})}
  placeholder="e.g. John Doe"
  required
- className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Doctor Name</label>
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Doctor Name</label>
  <input 
  type="text" 
  value={form.doctor_name}
  onChange={(e) => setForm({ ...form, doctor_name: e.target.value})}
  placeholder="e.g. Dr. Smith"
- className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Scheduled Date & Time *</label>
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Scheduled Date & Time *</label>
  <input 
  type="datetime-local" 
  value={form.scheduled_time}
  onChange={(e) => setForm({ ...form, scheduled_time: e.target.value})}
  required
- className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Meeting Link</label>
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Meeting Link</label>
  <input 
  type="url" 
  value={form.meeting_link}
  onChange={(e) => setForm({ ...form, meeting_link: e.target.value})}
  placeholder="https://meet.jit.si/..."
- className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
  <div className="grid grid-cols-1 gap-4">
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Status</label>
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Status</label>
  <select 
  value={form.status}
  onChange={(e) => setForm({ ...form, status: e.target.value})}
- className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  >
  <option value="Scheduled">Scheduled</option>
  <option value="Ongoing">Ongoing</option>
@@ -398,13 +398,13 @@ export default function UnivTelemedicine() {
  </div>
 
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Clinical Notes</label>
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Clinical Notes</label>
  <textarea 
  value={form.notes}
  onChange={(e) => setForm({ ...form, notes: e.target.value})}
  placeholder="Symptoms, observations, and details..."
  rows="3"
- className="w-full p-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
@@ -412,13 +412,13 @@ export default function UnivTelemedicine() {
  <button 
  type="button" 
  onClick={() => setIsModalOpen(false)}
- className="px-4 py-2 border border-primary/40 text-foreground hover:bg-muted/50 rounded-xl text-sm font-medium transition-colors"
+ className="px-4 py-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-foreground hover:bg-muted/50 rounded-md-xl text-sm font-medium transition-colors"
  >
  Cancel
  </button>
  <button 
  type="submit" 
- className="px-4 py-2 bg-primary text-white hover:bg-primary/90 rounded-xl text-sm font-medium transition-colors "
+ className="px-4 py-2 bg-primary text-white hover:bg-primary/90 rounded-md-xl text-sm font-medium transition-colors "
  >
  Save
  </button>

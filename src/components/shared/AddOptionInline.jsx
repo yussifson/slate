@@ -20,21 +20,21 @@ export default function AddOptionInline({ onAdd, placeholder = "New option..." }
     <button
       type="button"
       onClick={() => setAdding(true)}
-      className="flex items-center gap-1 px-2 py-1.5 text-xs text-primary hover:bg-slate-50 rounded w-full"
+      className="flex items-center gap-2 px-2 py-1.5 text-xs text-primary hover:bg-slate-50 rounded-md w-full tracking-[0.04em]"
     >
       <Plus className="w-3 h-3" /> {t("add_option", "Add option")}
     </button>
   );
 
   return (
-    <div className="flex items-center gap-1 px-2 py-1">
+    <div className="flex items-center gap-2 px-2 py-1">
       <Input
         autoFocus
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleConfirm(); } if (e.key === "Escape") setAdding(false); }}
         placeholder={placeholder}
-        className="h-7 text-xs"
+        className="h-7 text-xs tracking-[0.04em]"
       />
       <Button type="button" size="icon" className="h-7 w-7" onClick={handleConfirm}><Check className="w-3 h-3" /></Button>
       <Button type="button" size="icon" variant="ghost" className="h-7 w-7" onClick={() => setAdding(false)}><X className="w-3 h-3" /></Button>

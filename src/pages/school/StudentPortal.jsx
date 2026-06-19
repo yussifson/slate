@@ -129,17 +129,17 @@ export default function StudentPortal() {
       {/* Header & Nav */}
       <div className="border-b border-primary/40 pb-4 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">
+          <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">
             {t("welcome_back", "Welcome")}, <span className="text-[var(--primary)]">{user?.user_metadata?.full_name || activeStudent.name.split(' ')[0]}</span>
           </h1>
           <div className="flex items-center gap-3 mt-2">
-            <span className="bg-[var(--primary)] text-[var(--color-surface-0)] px-3 py-1 text-[11px] font-bold uppercase tracking-[var(--tracking-widest)] rounded-full">{activeStudent.studentId}</span>
+            <span className="bg-[var(--primary)] text-[var(--color-surface-0)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[var(--tracking-widest)] rounded-md-full tracking-[0.04em]">{activeStudent.studentId}</span>
             <span className="text-[var(--color-text-secondary)] font-semibold text-sm">{activeStudent.class}</span>
           </div>
         </div>
         <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
           {['dashboard', 'courses', 'grades', 'assignments'].map((tab) => (
-            <button key={tab} onClick={() => setActiveTab(tab)} className={`flex items-center gap-2 px-5 py-2.5 font-semibold text-sm transition-colors rounded-full whitespace-nowrap ${activeTab === tab ? 'bg-[var(--primary)] text-white' : 'bg-transparent text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--primary)]'}`}>
+            <button key={tab} onClick={() => setActiveTab(tab)} className={`flex items-center gap-2 px-5 py-2.5 font-semibold text-sm transition-colors rounded-md-full whitespace-nowrap ${activeTab === tab ? 'bg-[var(--primary)] text-white' : 'bg-transparent text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--primary)]'}`}>
               {tab === 'dashboard' && <LayoutDashboard className="w-4 h-4" />}
               {tab === 'courses' && <BookOpen className="w-4 h-4" />}
               {tab === 'grades' && <GraduationCap className="w-4 h-4" />}
@@ -154,32 +154,32 @@ export default function StudentPortal() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="col-span-1 lg:col-span-2 space-y-6">
             <div className="grid grid-cols-2 gap-6">
-              <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 flex flex-col justify-center relative overflow-hidden stat-card-premium">
+              <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 flex flex-col justify-center relative overflow-hidden stat-card-premium hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                 <Target className="absolute -right-4 -bottom-4 w-32 h-32 text-[var(--primary)] opacity-5" />
                 <div className="flex items-center gap-3 mb-4 relative z-10">
-                  <div className="w-12 h-12 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--primary) 15%, transparent)' }}>
+                  <div className="w-12 h-12 rounded-md-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--primary) 15%, transparent)' }}>
                     <CheckCircle className="w-6 h-6 text-[var(--primary)]" />
                   </div>
                   <h3 className="font-semibold text-[var(--color-text-primary)] text-sm">{t("attendance", "Attendance")}</h3>
                 </div>
-                <p className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mb-1 relative z-10 tracking-tight">{attendancePct}%</p>
-                <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] relative z-10">{t("present_for_the_term", "Present this term")}</p>
+                <p className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mb-1 relative z-10 tracking-tight tracking-[-0.02em]">{attendancePct}%</p>
+                <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] relative z-10 tracking-[0.04em]">{t("present_for_the_term", "Present this term")}</p>
               </div>
               
-              <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 flex flex-col justify-center relative overflow-hidden stat-card-premium">
+              <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 flex flex-col justify-center relative overflow-hidden stat-card-premium hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                 <Zap className="absolute -right-4 -top-4 w-32 h-32 text-[var(--color-info)] opacity-5" />
                 <div className="flex items-center gap-3 mb-4 relative z-10">
-                  <div className="w-12 h-12 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--color-info) 15%, transparent)' }}>
+                  <div className="w-12 h-12 rounded-md-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--color-info) 15%, transparent)' }}>
                     <GraduationCap className="w-6 h-6 text-[var(--color-info)]" />
                   </div>
                   <h3 className="font-semibold text-[var(--color-text-primary)] text-sm">{t("performance", "Performance")}</h3>
                 </div>
-                <p className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-info)] mb-1 relative z-10 tracking-tight">{averageGrade}</p>
-                <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] relative z-10">{t("term_report_card", "Term Average")}</p>
+                <p className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-info)] mb-1 relative z-10 tracking-tight tracking-[-0.02em]">{averageGrade}</p>
+                <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] relative z-10 tracking-[0.04em]">{t("term_report_card", "Term Average")}</p>
               </div>
             </div>
 
-            <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+            <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden">
               <div className="p-5 border-b border-primary/20 bg-[var(--color-surface-1)] flex justify-between items-center">
                 <h3 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-[var(--primary)]" /> Upcoming Exams
@@ -188,12 +188,12 @@ export default function StudentPortal() {
               <div className="divide-y divide-primary/10">
                 {exams.slice(0,3).map((item, i) => (
                   <div key={i} className="flex items-center gap-4 p-5 hover:bg-[var(--color-surface-2)] transition-colors">
-                    <div className="w-20 shrink-0 text-center font-bold text-[var(--primary)] bg-[var(--primary)]/10 rounded-[var(--radius-md)] py-1.5 text-xs">
+                    <div className="w-20 shrink-0 text-center font-semibold text-[var(--primary)] bg-[var(--primary)]/10 rounded-md-[var(--radius-md)] py-1.5 text-xs tracking-[0.04em]">
                       {item.data?.time}
                     </div>
                     <div className="flex-1">
                       <p className="font-semibold text-[var(--color-text-primary)]">{item.data?.subject}</p>
-                      <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">{item.data?.venue}</p>
+                      <p className="text-xs text-[var(--color-text-secondary)] mt-0.5 tracking-[0.04em]">{item.data?.venue}</p>
                     </div>
                   </div>
                 ))}
@@ -203,7 +203,7 @@ export default function StudentPortal() {
           </div>
 
           <div className="col-span-1 space-y-6">
-            <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+            <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden">
               <div className="p-5 border-b border-primary/20 bg-[var(--color-surface-1)]">
                 <h3 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
                   <Clock className="w-4 h-4 text-[var(--primary)]" /> Today's Schedule
@@ -212,25 +212,25 @@ export default function StudentPortal() {
               <div className="p-5">
                 <div className="space-y-4">
                   <div className="relative pl-6 border-l-2 border-[var(--primary)]/30 pb-4">
-                    <div className="absolute w-3 h-3 bg-[var(--primary)] rounded-full -left-[7px] top-1"></div>
+                    <div className="absolute w-3 h-3 bg-[var(--primary)] rounded-md-full -left-[7px] top-1"></div>
                     <p className="font-semibold text-[var(--color-text-primary)] text-sm">08:00 AM - Mathematics</p>
-                    <p className="text-xs text-[var(--color-text-secondary)] mt-1">Room 101 • Mr. Smith</p>
+                    <p className="text-xs text-[var(--color-text-secondary)] mt-1 tracking-[0.04em]">Room 101 • Mr. Smith</p>
                   </div>
                   <div className="relative pl-6 border-l-2 border-[var(--primary)] pb-4">
-                    <div className="absolute w-3 h-3 bg-[var(--primary)] rounded-full -left-[7px] top-1"></div>
+                    <div className="absolute w-3 h-3 bg-[var(--primary)] rounded-md-full -left-[7px] top-1"></div>
                     <p className="font-semibold text-[var(--color-text-primary)] text-sm">10:00 AM - Physics</p>
-                    <p className="text-xs text-[var(--color-text-secondary)] mt-1">Lab A • Mrs. Jones</p>
+                    <p className="text-xs text-[var(--color-text-secondary)] mt-1 tracking-[0.04em]">Lab A • Mrs. Jones</p>
                   </div>
                   <div className="relative pl-6 border-l-2 border-transparent">
-                    <div className="absolute w-3 h-3 bg-[var(--color-surface-2)] border-2 border-[var(--primary)]/50 rounded-full -left-[7px] top-1"></div>
+                    <div className="absolute w-3 h-3 bg-[var(--color-surface-2)] border-2 border-[var(--primary)]/50 rounded-md-full -left-[7px] top-1"></div>
                     <p className="font-semibold text-[var(--color-text-primary)] text-sm">01:00 PM - Literature</p>
-                    <p className="text-xs text-[var(--color-text-secondary)] mt-1">Room 205 • Ms. Davis</p>
+                    <p className="text-xs text-[var(--color-text-secondary)] mt-1 tracking-[0.04em]">Room 205 • Ms. Davis</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+            <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden">
               <div className="p-5 border-b border-primary/20 bg-[var(--color-surface-1)]">
                 <h3 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
                   <FileText className="w-4 h-4 text-[var(--primary)]" /> My Documents
@@ -243,10 +243,10 @@ export default function StudentPortal() {
                   <div key={doc.id} className="p-4 flex items-center justify-between hover:bg-[var(--color-surface-2)] transition-colors">
                     <div>
                       <p className="font-medium text-[var(--color-text-primary)] text-sm mb-0.5 truncate max-w-[150px]">{doc.name}</p>
-                      <p className="text-xs text-[var(--color-text-secondary)]">{format(new Date(doc.created_date), "MMM d")}</p>
+                      <p className="text-xs text-[var(--color-text-secondary)] tracking-[0.04em]">{format(new Date(doc.created_date), "MMM d")}</p>
                     </div>
                     {doc.file_url && (
-                      <a href={doc.file_url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-[var(--radius-md)] bg-[var(--color-surface-1)] flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors border border-primary/20">
+                      <a href={doc.file_url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-md-[var(--radius-md)] bg-[var(--color-surface-1)] flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors border-[0.5px] border-black/9 dark:border-white/8 border-primary/20">
                         <Download className="w-4 h-4" />
                       </a>
                     )}
@@ -259,14 +259,14 @@ export default function StudentPortal() {
       )}
 
       {activeTab === 'courses' && (
-        <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-8">
+        <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
               <h3 className="text-xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight">Course Registration</h3>
               <p className="text-[var(--color-text-secondary)] text-sm mt-1">Manage your enrolled courses for the semester.</p>
             </div>
             {classConfig.allowSelfRegistration && myRegisteredCourses.length === 0 && (
-              <Button onClick={handleRegisterCourses} className="bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white rounded-full">
+              <Button onClick={handleRegisterCourses} className="bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-white rounded-md-full">
                 Register All <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             )}
@@ -275,8 +275,8 @@ export default function StudentPortal() {
           {myRegisteredCourses.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {myRegisteredCourses.map((c, i) => (
-                <div key={i} className="p-4 border border-primary/20 rounded-[var(--radius-lg)] bg-[var(--color-surface-1)] flex items-center gap-3 hover:border-[var(--primary)]/50 transition-colors">
-                  <div className="w-10 h-10 rounded-[var(--radius-md)] bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] shrink-0">
+                <div key={i} className="p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-[var(--radius-lg)] bg-[var(--color-surface-1)] flex items-center gap-3 hover:border-[var(--primary)]/50 transition-colors">
+                  <div className="w-10 h-10 rounded-md-[var(--radius-md)] bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] shrink-0">
                     <BookOpen className="w-5 h-5" />
                   </div>
                   <span className="font-semibold text-[var(--color-text-primary)] text-sm">{c}</span>
@@ -284,7 +284,7 @@ export default function StudentPortal() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 border border-dashed border-primary/30 rounded-[var(--radius-xl)] bg-[var(--color-surface-1)]">
+            <div className="text-center py-16 border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/30 rounded-md-[var(--radius-xl)] bg-[var(--color-surface-1)]">
               <BookOpen className="w-12 h-12 mx-auto text-[var(--color-text-tertiary)] mb-4" />
               <p className="font-semibold text-base text-[var(--color-text-primary)]">No Courses Registered</p>
               {classConfig.allowSelfRegistration ? (
@@ -298,7 +298,7 @@ export default function StudentPortal() {
       )}
 
       {activeTab === 'grades' && (
-        <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+        <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden">
           <div className="p-6 border-b border-primary/20 bg-[var(--color-surface-1)]">
             <h3 className="text-xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight">Academic Transcript</h3>
           </div>
@@ -309,9 +309,9 @@ export default function StudentPortal() {
               <table className="w-full text-sm">
                 <thead className="bg-[var(--color-surface-1)]/50 border-b border-primary/20">
                   <tr>
-                    <th className="px-6 py-4 text-left text-[11px] uppercase tracking-[var(--tracking-widest)] font-semibold text-[var(--color-text-tertiary)]">Exam/Assignment</th>
-                    <th className="px-6 py-4 text-left text-[11px] uppercase tracking-[var(--tracking-widest)] font-semibold text-[var(--color-text-tertiary)]">Subject</th>
-                    <th className="px-6 py-4 text-right text-[11px] uppercase tracking-[var(--tracking-widest)] font-semibold text-[var(--color-text-tertiary)]">Score</th>
+                    <th className="px-6 py-4 text-left text-[11px] uppercase tracking-[var(--tracking-widest)] font-semibold text-[var(--color-text-tertiary)] tracking-[0.04em]">Exam/Assignment</th>
+                    <th className="px-6 py-4 text-left text-[11px] uppercase tracking-[var(--tracking-widest)] font-semibold text-[var(--color-text-tertiary)] tracking-[0.04em]">Subject</th>
+                    <th className="px-6 py-4 text-right text-[11px] uppercase tracking-[var(--tracking-widest)] font-semibold text-[var(--color-text-tertiary)] tracking-[0.04em]">Score</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-primary/10">
@@ -324,7 +324,7 @@ export default function StudentPortal() {
                         <td className="px-6 py-4 font-medium text-[var(--color-text-primary)]">{g.data?.examName}</td>
                         <td className="px-6 py-4 text-[var(--color-text-secondary)]">{g.data?.subject}</td>
                         <td className="px-6 py-4 text-right">
-                          <span className={`inline-flex items-center font-semibold text-xs px-2.5 py-1 rounded-full ${pct >= 50 ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' : 'bg-[var(--color-destructive)]/10 text-[var(--color-destructive)]'}`}>
+                          <span className={`inline-flex items-center font-semibold text-xs px-2.5 py-1 rounded-md-full ${pct >= 50 ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' : 'bg-[var(--color-destructive)]/10 text-[var(--color-destructive)]'}`}>
                             {score} / {max} ({pct}%)
                           </span>
                         </td>
@@ -339,7 +339,7 @@ export default function StudentPortal() {
       )}
 
       {activeTab === 'assignments' && (
-        <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+        <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden">
           <div className="p-6 border-b border-primary/20 bg-[var(--color-surface-1)]">
             <h3 className="text-xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight">My Assignments</h3>
           </div>
@@ -352,17 +352,17 @@ export default function StudentPortal() {
                   <div className="max-w-2xl">
                     <h4 className="font-semibold text-[var(--color-text-primary)] text-lg mb-1">{a.data?.title}</h4>
                     <div className="flex gap-2 mb-3">
-                      <span className="bg-[var(--primary)]/10 text-[var(--primary)] px-2 py-0.5 rounded text-xs font-medium">{a.data?.subject}</span>
-                      <span className="bg-[var(--color-surface-3)] text-[var(--color-text-secondary)] px-2 py-0.5 rounded text-xs font-medium">{a.data?.teacher}</span>
+                      <span className="bg-[var(--primary)]/10 text-[var(--primary)] px-2 py-0.5 rounded-md text-xs font-medium tracking-[0.04em]">{a.data?.subject}</span>
+                      <span className="bg-[var(--color-surface-3)] text-[var(--color-text-secondary)] px-2 py-0.5 rounded-md text-xs font-medium tracking-[0.04em]">{a.data?.teacher}</span>
                     </div>
                     <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">{a.data?.description}</p>
                   </div>
-                  <div className="text-left md:text-right shrink-0 bg-[var(--color-surface-1)] p-4 rounded-[var(--radius-lg)] border border-primary/10 flex flex-col justify-between">
+                  <div className="text-left md:text-right shrink-0 bg-[var(--color-surface-1)] p-4 rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 flex flex-col justify-between">
                     <div>
-                      <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] mb-1">Due Date</p>
+                      <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] mb-1 tracking-[0.04em]">Due Date</p>
                       <p className="font-medium text-[var(--color-destructive)] text-sm">{a.data?.dueDate}</p>
                     </div>
-                    <Button variant="outline" className="w-full mt-4 text-xs font-medium border-primary/30 text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white rounded-full">
+                    <Button variant="outline" className="w-full mt-4 text-xs font-medium border-primary/30 text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white rounded-md-full tracking-[0.04em]">
                       Upload Work
                     </Button>
                   </div>

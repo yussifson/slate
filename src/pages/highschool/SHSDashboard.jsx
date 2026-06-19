@@ -63,10 +63,10 @@ export default function SHSDashboard() {
  <Card key={i} className="border-primary/40 dark:border-primary/40 transition-">
  <CardContent className="p-5 flex items-center justify-between">
  <div>
- <p className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wide">{stat.title}</p>
- <h3 className="text-2xl font-black text-slate-900 dark:text-slate-100 mt-1">{stat.value}</h3>
+ <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wide tracking-[0.04em]">{stat.title}</p>
+ <h3 className="text-2xl font-black text-slate-900 dark:text-slate-100 mt-1 tracking-[-0.02em]">{stat.value}</h3>
  </div>
- <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${stat.bg}`}>
+ <div className={`w-12 h-12 rounded-md-2xl flex items-center justify-center ${stat.bg}`}>
  <stat.icon className={`w-6 h-6 ${stat.color}`} />
  </div>
  </CardContent>
@@ -78,7 +78,7 @@ export default function SHSDashboard() {
  <Card className="lg:col-span-2 border-primary/40 dark:border-primary/40 ">
  <CardContent className="p-6">
  <div className="flex items-center justify-between mb-6">
- <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+ <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
  <Activity className="w-5 h-5 text-primary" /> Academic Performance Trends
  </h3>
  </div>
@@ -100,35 +100,35 @@ export default function SHSDashboard() {
 
  <Card className="border-primary/40 dark:border-primary/40 ">
  <CardContent className="p-6">
- <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 mb-6">
+ <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2 mb-6">
  <Clock className="w-5 h-5 text-amber-500" /> Recent Activities
  </h3>
  <div className="space-y-4">
  <div className="flex gap-3">
- <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
+ <div className="w-8 h-8 rounded-md-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
  <CheckCircle2 className="w-4 h-4 text-primary dark:text-primary/70" />
  </div>
  <div>
  <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Term 3 Results Published</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">2 hours ago</p>
+ <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">2 hours ago</p>
  </div>
  </div>
  <div className="flex gap-3">
- <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
+ <div className="w-8 h-8 rounded-md-full bg-slate-100 flex items-center justify-center shrink-0">
  <UserPlus className="w-4 h-4 text-primary" />
  </div>
  <div>
  <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">5 New CSSPS Placements</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">5 hours ago</p>
+ <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">5 hours ago</p>
  </div>
  </div>
  <div className="flex gap-3">
- <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+ <div className="w-8 h-8 rounded-md-full bg-red-100 flex items-center justify-center shrink-0">
  <Banknote className="w-4 h-4 text-red-600" />
  </div>
  <div>
  <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">PTA Dues Deadline Reminder</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Yesterday</p>
+ <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">Yesterday</p>
  </div>
  </div>
  </div>

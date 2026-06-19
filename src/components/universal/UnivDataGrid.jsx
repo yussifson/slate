@@ -50,7 +50,7 @@ function StatusBadge({ value}) {
  if (!cls) return <span className="text-foreground">{value}</span>;
  return (
  <span className={cn(
- 'inline-flex items-center px-2.5 py-0.5 rounded-md border text-[11px] uppercase tracking-wider font-bold',
+ 'inline-flex items-center px-2.5 py-0.5 rounded-lg border-[0.5px] border-black/9 dark:border-white/8 text-[11px] uppercase tracking-wider font-semibold',
  cls
  )}>
  {value}
@@ -59,7 +59,7 @@ function StatusBadge({ value}) {
 }
 
 function CellValue({ colKey, value}) {
- if (value === null || value === undefined || value === '') return <span className="text-muted-foreground/40">—</span>;
+ if (value === null || value === undefined || value === '') return <span className="text-[#71717a] dark:text-gray-400/40">—</span>;
  if (typeof value === 'string') {
  const key = value.toLowerCase().trim();
  if (STATUS_CLASSES[key]) return <StatusBadge value={value} />;
@@ -149,7 +149,7 @@ function EditableCell({ value, onSave, rowId, colKey, tabIndex}) {
  onBlur={commit}
  onKeyDown={handleKeyDown}
  tabIndex={tabIndex}
- className="w-full min-w-[80px] px-2 py-1 bg-background border border-primary rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full min-w-[80px] px-2 py-1 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  );
 }
@@ -159,7 +159,7 @@ function EditableCell({ value, onSave, rowId, colKey, tabIndex}) {
  onClick={startEdit}
  tabIndex={tabIndex}
  onFocus={startEdit}
- className="cursor-text min-h-[24px] rounded px-1 py-0.5 hover:bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+ className="cursor-text min-h-[24px] rounded-md px-1 py-0.5 hover:bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
  >
  <CellValue colKey={colKey} value={value} />
  </div>
@@ -554,7 +554,7 @@ export default function UnivDataGrid({
  <button
  onClick={() => deleteMutation.mutate(row.id)}
  disabled={deleteMutation.isPending}
- className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-red-500 transition-all p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/30"
+ className="opacity-0 group-hover:opacity-100 text-[#71717a] dark:text-gray-400 hover:text-red-500 transition-all p-1.5 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/30"
  title="Delete"
  >
  <Trash2 className="w-3.5 h-3.5" />
@@ -571,21 +571,21 @@ export default function UnivDataGrid({
  {/* Header */}
  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-5 shrink-0 px-1 gap-4">
  <div>
- <h2 className="text-2xl font-bold text-foreground tracking-tight">{title}</h2>
- <p className="text-sm text-muted-foreground mt-0.5">Manage and organize your records efficiently.</p>
+ <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">{title}</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">Manage and organize your records efficiently.</p>
  </div>
  <div className="flex flex-wrap gap-2">
  <Button
  variant="outline"
  size="sm"
- className="gap-2 rounded-xl"
+ className="gap-2 rounded-md-xl"
  onClick={() => exportToCSV(filteredData, displayColumns, `${title.toLowerCase().replace(/\s+/g, '_')}.csv`)}
  >
  <FileDown className="w-4 h-4" /> Export CSV
  </Button>
  <Button
  size="sm"
- className="gap-2 rounded-xl bg-primary text-white hover:bg-primary/90 -primary/20"
+ className="gap-2 rounded-md-xl bg-primary text-white hover:bg-primary/90 -primary/20"
  onClick={() => setIsAdding(true)}
  >
  <Plus className="w-4 h-4" /> Add Record
@@ -602,21 +602,21 @@ export default function UnivDataGrid({
  exit={{ opacity: 0, height: 0}}
  className="mb-5 overflow-hidden"
  >
- <div className="p-4 bg-card border border-primary/20 rounded-2xl ">
+ <div className="p-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-2xl  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <form onSubmit={handleAdd} className="flex flex-col sm:flex-row sm:items-end gap-3">
  <div className="flex-1">
- <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Record Name</label>
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Record Name</label>
  <input
  autoFocus
  type="text"
  value={newRecordName}
  onChange={e => setNewRecordName(e.target.value)}
  placeholder="Enter record name..."
- className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"
  />
  </div>
- <Button type="button" variant="outline" onClick={() => setIsAdding(false)} className="h-10 rounded-xl">Cancel</Button>
- <Button type="submit" disabled={addMutation.isPending} className="h-10 bg-primary text-white rounded-xl">
+ <Button type="button" variant="outline" onClick={() => setIsAdding(false)} className="h-10 rounded-md-xl">Cancel</Button>
+ <Button type="submit" disabled={addMutation.isPending} className="h-10 bg-primary text-white rounded-md-xl">
  {addMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Record'}
  </Button>
  </form>
@@ -626,17 +626,17 @@ export default function UnivDataGrid({
  </AnimatePresence>
 
  {/* Main card */}
- <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col min-h-0">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col min-h-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
 
  {/* Saved Views tabs */}
- <div className="px-4 pt-3 pb-0 border-b border-primary/40 flex items-center gap-1 flex-wrap">
+ <div className="px-4 pt-3 pb-0 border-b border-primary/40 flex items-center gap-2 flex-wrap">
  <button
  onClick={() => handleActivateView(-1)}
  className={cn(
- 'px-3 py-1.5 text-xs font-semibold rounded-t-lg border-b-2 transition-colors',
+ 'px-3 py-1.5 text-xs font-semibold rounded-md-t-lg border-b-2 transition-colors',
  activeViewIdx === -1
  ? 'border-primary text-primary bg-primary/5'
- : 'border-transparent text-muted-foreground hover:text-foreground'
+ : 'border-transparent text-[#71717a] dark:text-gray-400 hover:text-foreground'
  )}
  >
  All
@@ -646,17 +646,17 @@ export default function UnivDataGrid({
  <button
  onClick={() => handleActivateView(i)}
  className={cn(
- 'px-3 py-1.5 text-xs font-semibold rounded-t-lg border-b-2 transition-colors',
+ 'px-3 py-1.5 text-xs font-semibold rounded-md-t-lg border-b-2 transition-colors',
  activeViewIdx === i
  ? 'border-primary text-primary bg-primary/5'
- : 'border-transparent text-muted-foreground hover:text-foreground'
+ : 'border-transparent text-[#71717a] dark:text-gray-400 hover:text-foreground'
  )}
  >
  {v.name}
  </button>
  <button
  onClick={() => handleDeleteView(i)}
- className="opacity-0 group-hover/view:opacity-100 p-0.5 rounded hover:bg-red-100 dark:hover:bg-red-950/30 text-muted-foreground hover:text-red-500 transition-all"
+ className="opacity-0 group-hover/view:opacity-100 p-0.5 rounded-md hover:bg-red-100 dark:hover:bg-red-950/30 text-[#71717a] dark:text-gray-400 hover:text-red-500 transition-all"
  title="Remove view"
  >
  <X className="w-3 h-3" />
@@ -665,26 +665,26 @@ export default function UnivDataGrid({
  ))}
  {/* Save view button */}
  {showSaveView ? (
- <div className="flex items-center gap-1.5 ml-1">
+ <div className="flex items-center gap-2.5 ml-1">
  <input
  autoFocus
  value={viewNameInput}
  onChange={e => setViewNameInput(e.target.value)}
  onKeyDown={e => { if (e.key === 'Enter') handleSaveView(); if (e.key === 'Escape') setShowSaveView(false);}}
  placeholder="View name…"
- className="h-6 px-2 text-xs bg-background border border-primary/40 rounded focus:outline-none focus:ring-1 focus:ring-primary/40"
+ className="h-6 px-2 text-xs bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md focus:outline-none focus:ring-1 focus:ring-primary/40 tracking-[0.04em]"
  />
- <button onClick={handleSaveView} className="text-primary hover:text-primary/80 text-xs font-semibold">
+ <button onClick={handleSaveView} className="text-primary hover:text-primary/80 text-xs font-semibold tracking-[0.04em]">
  <Save className="w-3.5 h-3.5" />
  </button>
- <button onClick={() => setShowSaveView(false)} className="text-muted-foreground hover:text-foreground">
+ <button onClick={() => setShowSaveView(false)} className="text-[#71717a] dark:text-gray-400 hover:text-foreground">
  <X className="w-3 h-3" />
  </button>
  </div>
  ) : (
  <button
  onClick={() => setShowSaveView(true)}
- className="ml-1 flex items-center gap-1 px-2 py-1 text-xs text-muted-foreground hover:text-foreground transition-colors rounded hover:bg-muted"
+ className="ml-1 flex items-center gap-2 px-2 py-1 text-xs text-[#71717a] dark:text-gray-400 hover:text-foreground transition-colors rounded-md hover:bg-muted tracking-[0.04em]"
  title="Save current view"
  >
  <Bookmark className="w-3 h-3" /> Save view
@@ -696,16 +696,16 @@ export default function UnivDataGrid({
  <div className="px-4 py-3 flex flex-wrap items-center justify-between gap-3 bg-muted/10 border-b border-primary/40">
  {/* Search */}
  <div className="relative flex items-center">
- <Search className="w-4 h-4 absolute left-3 text-muted-foreground pointer-events-none" />
+ <Search className="w-4 h-4 absolute left-3 text-[#71717a] dark:text-gray-400 pointer-events-none" />
  <input
  type="text"
  placeholder={searchPlaceholder}
  value={searchTerm}
  onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1); setActiveViewIdx(-1);}}
- className="h-9 pl-10 pr-4 w-64 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="h-9 pl-10 pr-4 w-64 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  {searchTerm && (
- <span className="absolute right-3 text-xs text-muted-foreground font-medium">
+ <span className="absolute right-3 text-xs text-[#71717a] dark:text-gray-400 font-medium tracking-[0.04em]">
  {matchCount}
  </span>
  )}
@@ -713,17 +713,17 @@ export default function UnivDataGrid({
 
  <div className="flex items-center gap-2">
  {/* Group by */}
- <div className="relative flex items-center gap-1">
- <Layers className="w-4 h-4 text-muted-foreground" />
+ <div className="relative flex items-center gap-2">
+ <Layers className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <select
  value={groupByCol || ''}
  onChange={e => { setGroupByCol(e.target.value || null); setCollapsedGroups(new Set());}}
- className="h-9 pl-2 pr-6 bg-background border border-primary/40 rounded-xl text-xs text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 appearance-none cursor-pointer"
+ className="h-9 pl-2 pr-6 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-xs text-[#71717a] dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 appearance-none cursor-pointer tracking-[0.04em]"
  >
  <option value="">Group by…</option>
  {displayColumns.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
  </select>
- <ChevronDown className="w-3 h-3 text-muted-foreground absolute right-2 pointer-events-none" />
+ <ChevronDown className="w-3 h-3 text-[#71717a] dark:text-gray-400 absolute right-2 pointer-events-none" />
  </div>
  </div>
  </div>
@@ -735,7 +735,7 @@ export default function UnivDataGrid({
  initial={{ opacity: 0, y: -8}}
  animate={{ opacity: 1, y: 0}}
  exit={{ opacity: 0, y: -8}}
- className="mx-4 mt-3 px-4 py-2.5 bg-primary text-primary-foreground rounded-xl flex items-center gap-3 flex-wrap -primary/20"
+ className="mx-4 mt-3 px-4 py-2.5 bg-primary text-primary-foreground rounded-md-xl flex items-center gap-3 flex-wrap -primary/20"
  >
  <span className="text-sm font-semibold">
  {selectedIds.size} selected
@@ -746,14 +746,14 @@ export default function UnivDataGrid({
  <button
  onClick={() => bulkStatusMutation.mutate({ ids: selectedArray, status: 'Active'})}
  disabled={bulkStatusMutation.isPending}
- className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-xs font-semibold transition-colors"
+ className="flex items-center gap-2.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-semibold transition-colors tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <CheckSquare className="w-3.5 h-3.5" /> Set Active
  </button>
  <button
  onClick={() => bulkStatusMutation.mutate({ ids: selectedArray, status: 'Inactive'})}
  disabled={bulkStatusMutation.isPending}
- className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-xs font-semibold transition-colors"
+ className="flex items-center gap-2.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-semibold transition-colors tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <SquareMinus className="w-3.5 h-3.5" /> Set Inactive
  </button>
@@ -765,21 +765,21 @@ export default function UnivDataGrid({
  displayColumns,
  'selected_export.csv'
  )}
- className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-xs font-semibold transition-colors"
+ className="flex items-center gap-2.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-semibold transition-colors tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <Download className="w-3.5 h-3.5" /> Export Selected
  </button>
  <button
  onClick={() => bulkDeleteMutation.mutate(selectedArray)}
  disabled={bulkDeleteMutation.isPending}
- className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/80 hover:bg-red-500 rounded-lg text-xs font-semibold transition-colors"
+ className="flex items-center gap-2.5 px-3 py-1.5 bg-red-500/10/80 hover:bg-red-500/10 rounded-xl text-xs font-semibold transition-colors tracking-[0.04em]"
  >
  <Trash2 className="w-3.5 h-3.5" />
  {bulkDeleteMutation.isPending ? 'Deleting…' : 'Delete'}
  </button>
  <button
  onClick={() => setSelectedIds(new Set())}
- className="p-1 hover:bg-white/20 rounded-lg transition-colors"
+ className="p-1 hover:bg-white/20 rounded-xl transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  title="Clear selection"
  >
  <X className="w-4 h-4" />
@@ -797,7 +797,7 @@ export default function UnivDataGrid({
  )}
 
  <table className="w-full text-sm text-left whitespace-nowrap min-w-max border-collapse">
- <thead className="sticky top-0 z-10 bg-muted/70 backdrop-blur border-b border-primary/40 text-xs text-muted-foreground uppercase">
+ <thead className="sticky top-0 z-10 bg-muted/70 backdrop-blur border-b border-primary/40 text-xs text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">
  <tr>
  {/* Checkbox header */}
  <th className="sticky left-0 z-20 bg-muted/70 w-10 px-3 py-3.5">
@@ -820,7 +820,7 @@ export default function UnivDataGrid({
  ci === 0 && 'sticky left-10 z-20 bg-muted/70'
  )}
  >
- <div className="flex items-center gap-1">
+ <div className="flex items-center gap-2">
  {col.label}
  <SortIcon colKey={col.key} />
  </div>
@@ -845,8 +845,8 @@ export default function UnivDataGrid({
  className="flex items-center gap-2 text-sm font-semibold text-foreground hover:text-primary transition-colors"
  >
  {isCollapsed
- ? <ChevronRight className="w-4 h-4 text-muted-foreground" />
- : <ChevronDown className="w-4 h-4 text-muted-foreground" />
+ ? <ChevronRight className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ : <ChevronDown className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
 }
  <span className="capitalize">{groupKey}</span>
  <Badge variant="secondary" className="text-[10px] h-5 px-1.5">
@@ -869,8 +869,8 @@ export default function UnivDataGrid({
  {filteredData.length === 0 && !isLoading && (
  <tr>
  <td colSpan={displayColumns.length + 2} className="py-16 text-center">
- <div className="flex flex-col items-center gap-3 text-muted-foreground">
- <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+ <div className="flex flex-col items-center gap-3 text-[#71717a] dark:text-gray-400">
+ <div className="w-12 h-12 rounded-md-full bg-muted flex items-center justify-center">
  <Search className="w-5 h-5 opacity-50" />
  </div>
  <p className="text-sm">No records found.{' '}
@@ -889,8 +889,8 @@ export default function UnivDataGrid({
  </div>
 
  {/* Pagination Footer */}
- <div className="px-4 py-3 border-t border-primary/40 flex items-center justify-between text-sm text-muted-foreground bg-muted/10 shrink-0 flex-wrap gap-2">
- <div className="text-xs">
+ <div className="px-4 py-3 border-t border-primary/40 flex items-center justify-between text-sm text-[#71717a] dark:text-gray-400 bg-muted/10 shrink-0 flex-wrap gap-2">
+ <div className="text-xs tracking-[0.04em]">
  {groupByCol ? (
  <span>Showing all {filteredData.length} records (grouped)</span>
  ) : (
@@ -900,11 +900,11 @@ export default function UnivDataGrid({
  )}
  </div>
  {!groupByCol && (
- <div className="flex items-center gap-1">
+ <div className="flex items-center gap-2">
  <button
  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
  disabled={currentPage === 1}
- className="px-3 py-1.5 border border-primary/40 rounded-lg text-xs hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+ className="px-3 py-1.5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-xs hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors tracking-[0.04em]"
  >
  Previous
  </button>
@@ -920,10 +920,10 @@ export default function UnivDataGrid({
  key={page}
  onClick={() => setCurrentPage(page)}
  className={cn(
- 'w-8 h-8 rounded-lg text-xs font-medium transition-colors',
+ 'w-8 h-8 rounded-xl text-xs font-medium transition-colors',
  currentPage === page
- ? 'bg-primary text-white border border-primary'
- : 'border border-primary/40 hover:bg-muted'
+ ? 'bg-primary text-white border-[0.5px] border-black/9 dark:border-white/8 border-primary'
+ : 'border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:bg-muted'
  )}
  >
  {page}
@@ -933,7 +933,7 @@ export default function UnivDataGrid({
  <button
  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
  disabled={currentPage === totalPages}
- className="px-3 py-1.5 border border-primary/40 rounded-lg text-xs hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+ className="px-3 py-1.5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-xs hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors tracking-[0.04em]"
  >
  Next
  </button>

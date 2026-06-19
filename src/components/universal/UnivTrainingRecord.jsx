@@ -126,17 +126,17 @@ export default function UnivTrainingRecord() {
       {/* Header */}
       <div className="view-header flex items-center justify-between flex-wrap gap-4 shrink-0">
         <div>
-          <h1 className="text-2xl font-black text-foreground flex items-center gap-3">
-            <span className="p-2.5 rounded-xl bg-primary/10 text-primary"><GraduationCap className="w-6 h-6" /></span>
+          <h1 className="text-2xl font-black text-foreground flex items-center gap-3 tracking-[-0.02em]">
+            <span className="p-2.5 rounded-md-xl bg-primary/10 text-primary"><GraduationCap className="w-6 h-6" /></span>
             Training & Certifications
           </h1>
-          <p className="text-sm text-muted-foreground mt-1 ml-0.5">Track employee compliance, certifications, and upskilling.</p>
+          <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1 ml-0.5">Track employee compliance, certifications, and upskilling.</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 transition-all active:scale-95">
+          <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-xl text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 transition-all active:scale-95">
             Export CSV
           </button>
-          <button onClick={openAdd} className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 active:scale-95 transition-all shadow-sm">
+          <button onClick={openAdd} className="h-10 px-5 bg-primary text-white rounded-md-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 active:scale-95 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">
             <Plus className="w-4 h-4" /> Add Record
           </button>
         </div>
@@ -145,8 +145,8 @@ export default function UnivTrainingRecord() {
       {/* Search & Stats */}
       <div className="flex flex-col sm:flex-row gap-4 shrink-0 justify-between items-start sm:items-center">
         <div className="relative w-full max-w-sm shrink-0">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search training records..." className="w-full h-11 pl-9 pr-4 bg-card border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all" />
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400 pointer-events-none" />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search training records..." className="w-full h-11 pl-9 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
         </div>
         
         {!loading && records.length > 0 && (
@@ -158,9 +158,9 @@ export default function UnivTrainingRecord() {
                 return acc;
               }, {})
             ).map(([s, count]) => (
-              <div key={s} className={`px-3 py-1.5 rounded-lg border text-[11px] font-bold uppercase tracking-wider flex items-center gap-2 whitespace-nowrap ${STATUS_COLORS[s] || 'bg-muted text-muted-foreground border-muted'}`}>
+              <div key={s} className={`px-3 py-1.5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 text-[11px] font-semibold uppercase tracking-wider flex items-center gap-2 whitespace-nowrap ${STATUS_COLORS[s] || 'bg-muted text-[#71717a] dark:text-gray-400 border-muted'}`}>
                 <span>{s}</span>
-                <span className="bg-background/50 rounded px-1.5">{count}</span>
+                <span className="bg-background/50 rounded-md px-1.5">{count}</span>
               </div>
             ))}
           </div>
@@ -171,16 +171,16 @@ export default function UnivTrainingRecord() {
       {loading ? (
         <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
       ) : (
-        <div className="flex-1 overflow-auto rounded-2xl border border-primary/40 bg-card custom-scrollbar">
+        <div className="flex-1 overflow-auto rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card custom-scrollbar hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <table className="w-full text-sm min-w-[900px]">
             <thead className="border-b border-primary/40 bg-muted/40 sticky top-0 z-10">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Employee</th>
-                <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">Training Details</th>
-                <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Dates</th>
-                <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Score</th>
-                <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Status</th>
-                <th className="px-4 py-3 text-right text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Actions</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Employee</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">Training Details</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Dates</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Score</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Status</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -189,31 +189,31 @@ export default function UnivTrainingRecord() {
                 return (
                   <motion.tr key={r.id} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className="border-b border-primary/40 hover:bg-muted/20 transition-colors group align-middle">
                     <td className="px-4 py-4">
-                      <p className="font-bold text-foreground flex items-center gap-2"><User className="w-4 h-4 text-muted-foreground" /> {empName}</p>
+                      <p className="font-semibold text-foreground flex items-center gap-2"><User className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> {empName}</p>
                     </td>
                     <td className="px-4 py-4 max-w-xs">
                       <p className="font-semibold text-primary line-clamp-1">{r.training_name || '—'}</p>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground border border-primary/20 bg-muted/50 px-1.5 py-0.5 rounded">{r.training_type || 'General'}</span>
-                        <span className="text-xs text-muted-foreground truncate">{r.provider && `via ${r.provider}`}</span>
+                        <span className="text-[10px] font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 bg-muted/50 px-1.5 py-0.5 rounded-md tracking-[0.04em]">{r.training_type || 'General'}</span>
+                        <span className="text-xs text-[#71717a] dark:text-gray-400 truncate tracking-[0.04em]">{r.provider && `via ${r.provider}`}</span>
                       </div>
                     </td>
                     <td className="px-4 py-4">
-                      <div className="flex flex-col gap-1 text-xs text-muted-foreground">
-                        <div className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> <span className="w-10">Start:</span> <span className="font-medium text-foreground">{r.start_date || '—'}</span></div>
-                        <div className="flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5" /> <span className="w-10">End:</span> <span className="font-medium text-foreground">{r.completion_date || '—'}</span></div>
+                      <div className="flex flex-col gap-2 text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
+                        <div className="flex items-center gap-2.5"><Calendar className="w-3.5 h-3.5" /> <span className="w-10">Start:</span> <span className="font-medium text-foreground">{r.start_date || '—'}</span></div>
+                        <div className="flex items-center gap-2.5"><ShieldCheck className="w-3.5 h-3.5" /> <span className="w-10">End:</span> <span className="font-medium text-foreground">{r.completion_date || '—'}</span></div>
                       </div>
                     </td>
                     <td className="px-4 py-4">
-                      {r.score ? <span className="font-bold text-foreground bg-primary/10 text-primary px-2 py-1 rounded-md">{r.score}</span> : <span className="text-muted-foreground text-xs">—</span>}
+                      {r.score ? <span className="font-semibold text-foreground bg-primary/10 text-primary px-2 py-1 rounded-lg">{r.score}</span> : <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">—</span>}
                     </td>
                     <td className="px-4 py-4">
-                      <span className={`px-2 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider border ${STATUS_COLORS[r.status] || 'bg-muted text-foreground'}`}>{r.status}</span>
+                      <span className={`px-2 py-1 rounded-lg text-[11px] font-semibold uppercase tracking-wider border ${STATUS_COLORS[r.status] || 'bg-muted text-foreground'}`}>{r.status}</span>
                     </td>
                     <td className="px-4 py-4">
-                      <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => openEdit(r)} className="p-1.5 bg-muted rounded-lg hover:bg-muted/80 transition-colors"><Edit2 className="w-3.5 h-3.5" /></button>
-                        <button onClick={() => handleDelete(r.id)} className="p-1.5 bg-red-50 dark:bg-red-900/20 rounded-lg hover:bg-red-100 text-red-500 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                      <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onClick={() => openEdit(r)} className="p-1.5 bg-muted rounded-xl hover:bg-muted/80 transition-colors"><Edit2 className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => handleDelete(r.id)} className="p-1.5 bg-red-50 dark:bg-red-900/20 rounded-xl hover:bg-red-100 text-red-500 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
                       </div>
                     </td>
                   </motion.tr>
@@ -221,8 +221,8 @@ export default function UnivTrainingRecord() {
               })}
               {!filtered.length && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-20 text-center text-muted-foreground">
-                    <GraduationCap className="w-10 h-10 mx-auto mb-3 text-muted-foreground/30" />
+                  <td colSpan={6} className="px-4 py-20 text-center text-[#71717a] dark:text-gray-400">
+                    <GraduationCap className="w-10 h-10 mx-auto mb-3 text-[#71717a] dark:text-gray-400/30" />
                     <p className="font-medium">No training records found.</p>
                   </td>
                 </tr>
@@ -235,16 +235,16 @@ export default function UnivTrainingRecord() {
       {/* Modal Form */}
       {modal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-card w-full max-w-2xl rounded-2xl flex flex-col border shadow-2xl max-h-[90vh]">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-card w-full max-w-2xl rounded-md-2xl flex flex-col border-[0.5px] border-black/9 dark:border-white/8 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-2xl max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <div className="p-5 border-b flex justify-between items-center bg-muted/20 shrink-0">
               <h2 className="text-xl font-black flex items-center gap-2"><GraduationCap className="w-5 h-5 text-primary" /> {editId ? 'Edit Training Record' : 'Add Training Record'}</h2>
-              <button onClick={closeModal} className="p-2 hover:bg-muted rounded-full transition-colors"><XCircle className="w-5 h-5 text-muted-foreground" /></button>
+              <button onClick={closeModal} className="p-2 hover:bg-muted rounded-md-full transition-colors"><XCircle className="w-5 h-5 text-[#71717a] dark:text-gray-400" /></button>
             </div>
             
             <form onSubmit={handleSave} className="p-5 overflow-y-auto custom-scrollbar flex flex-col gap-4">
               <div>
-                <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Employee *</label>
-                <select required value={form.employee_name} onChange={e => setForm({...form, employee_name: e.target.value})} className="w-full h-11 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm appearance-none cursor-pointer">
+                <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Employee *</label>
+                <select required value={form.employee_name} onChange={e => setForm({...form, employee_name: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm appearance-none cursor-pointer">
                   <option value="">-- Select Employee --</option>
                   {employees.map(emp => <option key={emp.id} value={emp.id}>{emp.first_name} {emp.last_name}</option>)}
                 </select>
@@ -252,16 +252,16 @@ export default function UnivTrainingRecord() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Training / Course Title *</label>
-                  <input required type="text" value={form.training_name} onChange={e => setForm({...form, training_name: e.target.value})} placeholder="e.g. Workplace Safety 101" className="w-full h-11 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm" />
+                  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Training / Course Title *</label>
+                  <input required type="text" value={form.training_name} onChange={e => setForm({...form, training_name: e.target.value})} placeholder="e.g. Workplace Safety 101" className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Provider / Institution</label>
-                  <input type="text" value={form.provider} onChange={e => setForm({...form, provider: e.target.value})} placeholder="e.g. Coursera, Internal" className="w-full h-11 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm" />
+                  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Provider / Institution</label>
+                  <input type="text" value={form.provider} onChange={e => setForm({...form, provider: e.target.value})} placeholder="e.g. Coursera, Internal" className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Training Type</label>
-                  <select value={form.training_type} onChange={e => setForm({...form, training_type: e.target.value})} className="w-full h-11 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm cursor-pointer">
+                  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Training Type</label>
+                  <select value={form.training_type} onChange={e => setForm({...form, training_type: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm cursor-pointer">
                     {["Compliance", "Technical Skills", "Soft Skills", "Leadership", "Safety", "Onboarding", "Other"].map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
@@ -269,32 +269,32 @@ export default function UnivTrainingRecord() {
 
               <div className="grid grid-cols-2 gap-4 mt-2">
                 <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Start Date</label>
-                  <input type="date" value={form.start_date} onChange={e => setForm({...form, start_date: e.target.value})} className="w-full h-11 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm" />
+                  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Start Date</label>
+                  <input type="date" value={form.start_date} onChange={e => setForm({...form, start_date: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Completion Date</label>
-                  <input type="date" value={form.completion_date} onChange={e => setForm({...form, completion_date: e.target.value})} className="w-full h-11 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm" />
+                  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Completion Date</label>
+                  <input type="date" value={form.completion_date} onChange={e => setForm({...form, completion_date: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Score / Grade</label>
-                  <input type="text" value={form.score} onChange={e => setForm({...form, score: e.target.value})} placeholder="e.g. 95%, Pass, A" className="w-full h-11 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm" />
+                  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Score / Grade</label>
+                  <input type="text" value={form.score} onChange={e => setForm({...form, score: e.target.value})} placeholder="e.g. 95%, Pass, A" className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Status</label>
-                  <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full h-11 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm cursor-pointer">
+                  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Status</label>
+                  <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm cursor-pointer">
                     {Object.keys(STATUS_COLORS).map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Certificate URL / Proof</label>
-                  <input type="url" value={form.certificate_url} onChange={e => setForm({...form, certificate_url: e.target.value})} placeholder="https://..." className="w-full h-11 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm" />
+                  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Certificate URL / Proof</label>
+                  <input type="url" value={form.certificate_url} onChange={e => setForm({...form, certificate_url: e.target.value})} placeholder="https://..." className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm" />
                 </div>
               </div>
 
               <div className="flex justify-end gap-3 mt-4 pt-5 border-t shrink-0">
-                <button type="button" onClick={closeModal} className="h-11 px-6 bg-muted rounded-xl text-sm font-bold hover:bg-muted/80 transition-colors">Cancel</button>
-                <button type="submit" disabled={saving} className="h-11 px-6 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 transition-colors flex items-center gap-2">
+                <button type="button" onClick={closeModal} className="h-11 px-6 bg-muted rounded-md-xl text-sm font-semibold hover:bg-muted/80 transition-colors">Cancel</button>
+                <button type="submit" disabled={saving} className="h-11 px-6 bg-primary text-white rounded-md-xl text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2">
                   {saving && <Loader2 className="w-4 h-4 animate-spin" />}
                   {editId ? 'Save Changes' : 'Add Record'}
                 </button>

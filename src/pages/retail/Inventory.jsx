@@ -19,8 +19,8 @@ const LOCATIONS = ['Main Store', 'Downtown Branch', 'Warehouse A', 'Online Fulfi
 
 const statusColors = {
  'In Stock': 'bg-slate-100 dark:bg-primary/20 text-primary/90 dark:text-primary/70',
- 'Low Stock': 'bg-amber-100 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800',
- 'Out of Stock': 'bg-red-100 dark:bg-red-950/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800',
+ 'Low Stock': 'bg-amber-100 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 dark:border-amber-800',
+ 'Out of Stock': 'bg-red-100 dark:bg-red-950/20 text-red-700 dark:text-red-400 border-[0.5px] border-black/9 dark:border-white/8 border-red-200 dark:border-red-800',
 };
 
 function getStatus(quantity, reorderLevel) {
@@ -204,7 +204,7 @@ export default function Inventory() {
  const field = (label, key, props = {}) => {
  return (
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{label}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{label}</label>
  <Input
  className="mt-1"
  value={formData[key]}
@@ -218,11 +218,11 @@ export default function Inventory() {
  if (!canAccess) {
  return (
  <div className="flex-1 flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500">
- <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
+ <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-md-full flex items-center justify-center mb-6">
  <ShieldAlert className="w-10 h-10 text-red-600 dark:text-red-500" />
  </div>
- <h2 className="text-2xl font-bold text-foreground mb-3">Access Restricted</h2>
- <p className="text-muted-foreground max-w-md mx-auto mb-8">
+ <h2 className="text-2xl font-semibold text-foreground mb-3 tracking-[-0.02em]">Access Restricted</h2>
+ <p className="text-[#71717a] dark:text-gray-400 max-w-md mx-auto mb-8">
  Your current role does not grant you permission to view or manage the Inventory. Please contact your Store Manager if you believe this is an error.
  </p>
  <Button asChild variant="outline">
@@ -237,8 +237,8 @@ export default function Inventory() {
  {/* Header */}
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("inventory_management", "Inventory Management")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t(
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("inventory_management", "Inventory Management")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
  "track_stock_levels_skus_pricin",
  "Track stock levels, SKUs, pricing and suppliers"
  )}</p>
@@ -259,27 +259,27 @@ export default function Inventory() {
  <RetailStatCard label={t("total_stock_value", "Total Stock Value")} value={`$${stats.totalValue.toFixed(2)}`} icon={DollarSign} />
  </div>
  {/* Table */}
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50 flex gap-4 justify-between items-center">
  <div className="relative max-w-md w-full">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <Input
  placeholder="Search by name, SKU, or supplier..."
  value={search}
  onChange={e => setSearch(e.target.value)}
- className="pl-9 bg-card"
+ className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
- <span className="text-xs text-muted-foreground whitespace-nowrap">{filtered.length} {t("item_s", "item(s)")}</span>
+ <span className="text-xs text-[#71717a] dark:text-gray-400 whitespace-nowrap tracking-[0.04em]">{filtered.length} {t("item_s", "item(s)")}</span>
  </div>
  <div className="overflow-x-auto">
  {isLoading ? (
- <div className="py-16 text-center text-muted-foreground">{t("loading_inventory", "Loading inventory...")}</div>
+ <div className="py-16 text-center text-[#71717a] dark:text-gray-400">{t("loading_inventory", "Loading inventory...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-16 text-center text-muted-foreground">
+ <div className="py-16 text-center text-[#71717a] dark:text-gray-400">
  <Package className="w-14 h-14 mx-auto mb-3 opacity-25" />
  <p className="font-semibold text-base">{t("no_inventory_items_found", "No inventory items found.")}</p>
- <p className="text-xs mt-1">{t(
+ <p className="text-xs mt-1 tracking-[0.04em]">{t(
  "click_add_item_to_configure_yo",
  "Click \"Add Item\" to configure your first stock entry."
  )}</p>
@@ -300,16 +300,16 @@ export default function Inventory() {
  <table className="w-full text-sm">
  <thead className="bg-muted/30 border-b border-primary/40">
  <tr>
- <th className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("item", "Item")}</th>
- <th className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("category", "Category")}</th>
- <th className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("location", "Location")}</th>
- <th className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase">{t("supplier", "Supplier")}</th>
- <th className="px-5 py-3 text-right text-xs font-bold text-muted-foreground uppercase">{t("price", "Price")}</th>
- <th className="px-5 py-3 text-right text-xs font-bold text-muted-foreground uppercase">{t("cost", "Cost")}</th>
- <th className="px-5 py-3 text-center text-xs font-bold text-muted-foreground uppercase">{t("qty_reorder", "Qty / Reorder")}</th>
- <th className="px-5 py-3 text-center text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</th>
- <th className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase">Added By</th>
- <th className="px-5 py-3 text-right text-xs font-bold text-muted-foreground uppercase">{t("actions", "Actions")}</th>
+ <th className="px-5 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("item", "Item")}</th>
+ <th className="px-5 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("category", "Category")}</th>
+ <th className="px-5 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("location", "Location")}</th>
+ <th className="px-5 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("supplier", "Supplier")}</th>
+ <th className="px-5 py-3 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("price", "Price")}</th>
+ <th className="px-5 py-3 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("cost", "Cost")}</th>
+ <th className="px-5 py-3 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("qty_reorder", "Qty / Reorder")}</th>
+ <th className="px-5 py-3 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</th>
+ <th className="px-5 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Added By</th>
+ <th className="px-5 py-3 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("actions", "Actions")}</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
@@ -317,43 +317,43 @@ export default function Inventory() {
  return (
  <tr key={item.id} className="hover:bg-muted/40 transition-colors">
  <td className="px-5 py-4">
- <p className="font-bold text-card-foreground">{item.name}</p>
- <p className="text-xs text-muted-foreground font-mono">{item.sku}</p>
+ <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{item.name}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 font-mono tracking-[0.04em]">{item.sku}</p>
  {item.expiryDate && (
  <p className="text-[10px] text-amber-600 font-semibold mt-0.5">{t("exp", "Exp:")} {item.expiryDate}</p>
  )}
  </td>
- <td className="px-5 py-4 text-muted-foreground">{item.category}</td>
- <td className="px-5 py-4 text-xs font-medium text-slate-600"><MapPin className="w-3 h-3 inline mr-1" />{item.storeLocation}</td>
- <td className="px-5 py-4 text-muted-foreground">
+ <td className="px-5 py-4 text-[#71717a] dark:text-gray-400">{item.category}</td>
+ <td className="px-5 py-4 text-xs font-medium text-slate-600 tracking-[0.04em]"><MapPin className="w-3 h-3 inline mr-1" />{item.storeLocation}</td>
+ <td className="px-5 py-4 text-[#71717a] dark:text-gray-400">
  {item.supplierName && item.supplierName !== 'Unknown' ? <Link to="/suppliers" className="text-primary hover:underline">{item.supplierName}</Link> : '—'}
  </td>
- <td className="px-5 py-4 text-right font-bold text-card-foreground">${item.price.toFixed(2)}</td>
- <td className="px-5 py-4 text-right text-muted-foreground">${item.costPrice.toFixed(2)}</td>
+ <td className="px-5 py-4 text-right font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${item.price.toFixed(2)}</td>
+ <td className="px-5 py-4 text-right text-[#71717a] dark:text-gray-400">${item.costPrice.toFixed(2)}</td>
  <td className="px-5 py-4 text-center">
- <span className="font-black text-lg text-card-foreground">{item.quantity}</span>
- <p className="text-[10px] text-muted-foreground uppercase font-bold">{t("min", "Min:")} {item.reorderLevel}</p>
+ <span className="font-black text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{item.quantity}</span>
+ <p className="text-[10px] text-[#71717a] dark:text-gray-400 uppercase font-semibold tracking-[0.04em]">{t("min", "Min:")} {item.reorderLevel}</p>
  </td>
  <td className="px-5 py-4 text-center">
- <div className="flex flex-col items-center gap-1.5">
- <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[item.status] || 'bg-muted'}`}>
+ <div className="flex flex-col items-center gap-2.5">
+ <span className={`text-xs font-semibold px-2.5 py-1 rounded-md-full ${statusColors[item.status] || 'bg-muted'}`}>
  {item.status}
  </span>
  {item.status === 'Low Stock' && (
- <span className="text-[10px] font-bold text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full animate-pulse w-full text-center">
+ <span className="text-[10px] font-semibold text-amber-600 bg-amber-100 px-2 py-0.5 rounded-md-full animate-pulse w-full text-center">
  {t("reorder_needed", "Reorder Needed")}
  </span>
  )}
  {item.status === 'Out of Stock' && (
- <span className="text-[10px] font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-full animate-pulse w-full text-center">
+ <span className="text-[10px] font-semibold text-red-600 bg-red-100 px-2 py-0.5 rounded-md-full animate-pulse w-full text-center">
  {t("critical_alert", "Critical Alert")}
  </span>
  )}
  </div>
  </td>
  <td className="px-5 py-4">
- <p className="text-sm font-medium text-card-foreground">{item.createdBy}</p>
- <p className="text-xs text-muted-foreground">{new Date(item.createdAt).toLocaleDateString()}</p>
+ <p className="text-sm font-medium text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{item.createdBy}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{new Date(item.createdAt).toLocaleDateString()}</p>
  </td>
  <td className="px-5 py-4 text-right">
  <DropdownMenu>
@@ -396,66 +396,66 @@ export default function Inventory() {
  {selectedItem && (
  <div className="mt-6 space-y-4 text-sm">
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("sku", "SKU")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("sku", "SKU")}</div>
  <div className="col-span-2 font-mono">{selectedItem.sku}</div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("name", "Name")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("name", "Name")}</div>
  <div className="col-span-2 font-medium">{selectedItem.name}</div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("category", "Category")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("category", "Category")}</div>
  <div className="col-span-2">{selectedItem.category}</div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
-  <div className="col-span-1 font-semibold text-muted-foreground">{t("location", "Location")}</div>
-  <div className="col-span-2 flex items-center gap-2"><MapPin className="w-4 h-4 text-muted-foreground" /> {selectedItem.storeLocation}</div>
+  <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("location", "Location")}</div>
+  <div className="col-span-2 flex items-center gap-2"><MapPin className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> {selectedItem.storeLocation}</div>
   </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("supplier", "Supplier")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("supplier", "Supplier")}</div>
  <div className="col-span-2">{selectedItem.supplierName && selectedItem.supplierName !== 'Unknown' ? <Link to="/suppliers" className="text-primary hover:underline">{selectedItem.supplierName}</Link> : '—'}</div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("price", "Price")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("price", "Price")}</div>
  <div className="col-span-2">${selectedItem.price.toFixed(2)}</div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("cost_price", "Cost Price")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("cost_price", "Cost Price")}</div>
  <div className="col-span-2">${selectedItem.costPrice.toFixed(2)}</div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("quantity", "Quantity")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("quantity", "Quantity")}</div>
  <div className="col-span-2">{selectedItem.quantity}</div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("reorder_level", "Reorder Level")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("reorder_level", "Reorder Level")}</div>
  <div className="col-span-2">{selectedItem.reorderLevel}</div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("expiry_date", "Expiry Date")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("expiry_date", "Expiry Date")}</div>
  <div className="col-span-2">{selectedItem.expiryDate || '—'}</div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("status", "Status")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("status", "Status")}</div>
  <div className="col-span-2">
- <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${statusColors[selectedItem.status] || 'bg-muted'}`}>
+ <span className={`text-xs font-semibold px-2.5 py-1 rounded-md-full ${statusColors[selectedItem.status] || 'bg-muted'}`}>
  {selectedItem.status}
  </span>
  </div>
  </div>
  <div className="grid grid-cols-3 gap-4">
- <div className="col-span-1 font-semibold text-muted-foreground">Added By</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">Added By</div>
  <div className="col-span-2">{selectedItem.createdBy} on {new Date(selectedItem.createdAt).toLocaleDateString()}</div>
  </div>
 
-  <div className="bg-muted/30 border border-primary/20 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 mt-4">
+  <div className="bg-muted/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 p-4 rounded-md-xl flex flex-col items-center justify-center space-y-2 mt-4">
     <div className="flex space-x-[2px] h-12 w-48 opacity-80">
        {/* Pseudo barcode using div borders */}
        {Array.from({length: 30}).map((_, i) => (
          <div key={i} style={{ width: Math.random() > 0.5 ? '4px' : '2px', backgroundColor: 'currentColor' }} className="h-full text-slate-800"></div>
        ))}
     </div>
-    <div className="font-mono text-xs text-muted-foreground tracking-widest">{selectedItem.sku}</div>
+    <div className="font-mono text-xs text-[#71717a] dark:text-gray-400 tracking-widest tracking-[0.04em]">{selectedItem.sku}</div>
   </div>
 
   <div className="flex gap-2 pt-4">
@@ -469,17 +469,17 @@ export default function Inventory() {
 
   {showTransferModal && (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className="bg-card rounded-2xl w-full max-w-sm p-6 space-y-4 shadow-xl border border-border">
-        <h3 className="font-bold text-lg flex items-center gap-2"><ArrowRightLeft className="w-5 h-5 text-amber-600" /> Transfer Stock</h3>
-        <p className="text-sm text-muted-foreground">Move inventory from <strong>{selectedItem?.storeLocation}</strong> to another location.</p>
+      <div className="bg-card rounded-md-2xl w-full max-w-sm p-6 space-y-4 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-xl border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <h3 className="font-semibold text-lg flex items-center gap-2"><ArrowRightLeft className="w-5 h-5 text-amber-600" /> Transfer Stock</h3>
+        <p className="text-sm text-[#71717a] dark:text-gray-400">Move inventory from <strong>{selectedItem?.storeLocation}</strong> to another location.</p>
         
         <div>
-          <label className="text-xs font-bold text-muted-foreground uppercase">Quantity to Transfer (Max {selectedItem?.quantity})</label>
+          <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Quantity to Transfer (Max {selectedItem?.quantity})</label>
           <Input type="number" value={transferData.qty} onChange={e => setTransferData({...transferData, qty: e.target.value})} className="mt-1" placeholder="e.g. 5" />
         </div>
         <div>
-          <label className="text-xs font-bold text-muted-foreground uppercase">Target Location</label>
-          <select value={transferData.targetLocation} onChange={e => setTransferData({...transferData, targetLocation: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+          <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Target Location</label>
+          <select value={transferData.targetLocation} onChange={e => setTransferData({...transferData, targetLocation: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm">
             <option value="">Select Location</option>
             {LOCATIONS.filter(l => l !== selectedItem?.storeLocation).map(l => <option key={l} value={l}>{l}</option>)}
           </select>
@@ -496,13 +496,13 @@ export default function Inventory() {
  {/* Add / Edit Modal */}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+ <div className="bg-card rounded-md-2xl w-full max-w-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
+ <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <ShoppingBag className="w-5 h-5 text-primary" />
  {editingItem ? 'Edit Inventory Item' : 'Add Inventory Item'}
  </h2>
- <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground">
+ <button onClick={() => setShowModal(false)} className="text-[#71717a] dark:text-gray-400 hover:text-foreground">
  <X className="w-5 h-5" />
  </button>
  </div>
@@ -510,11 +510,11 @@ export default function Inventory() {
  {field('SKU / Barcode', 'sku', { placeholder: 'SKU-1001'})}
  {field('Item Name *', 'name', { placeholder: 'e.g. Wireless Mouse'})}
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("category", "Category")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("category", "Category")}</label>
  <select
  value={formData.category}
  onChange={e => setFormData(p => ({ ...p, category: e.target.value}))}
- className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+ className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm"
  >
  {CATEGORIES.map(c => {
  return <option key={c}>{c}</option>;
@@ -522,21 +522,21 @@ export default function Inventory() {
  </select>
  </div>
  <div>
-  <label className="text-xs font-bold text-muted-foreground uppercase">Location</label>
+  <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Location</label>
   <select
   value={formData.storeLocation}
   onChange={e => setFormData(p => ({ ...p, storeLocation: e.target.value}))}
-  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+  className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm"
   >
   {LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
   </select>
   </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("supplier", "Supplier")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("supplier", "Supplier")}</label>
  <select
  value={formData.supplier}
  onChange={e => setFormData(p => ({ ...p, supplier: e.target.value}))}
- className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+ className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm"
  >
  <option value="">No Supplier Selected</option>
  {suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}

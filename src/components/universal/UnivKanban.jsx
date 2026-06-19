@@ -14,7 +14,7 @@ import { LayoutGrid, Plus, Search, Trash2, Edit2, Loader2, XCircle, User, Calend
 import { toast} from 'react-hot-toast';
 
 const DEFAULT_COLS = ['To Do', 'In Progress', 'Review', 'Done'];
-const PRIORITY_COLORS = { Low: 'bg-muted text-muted-foreground', Medium: 'bg-amber-50 text-amber-700', High: 'bg-orange-50 text-orange-700', Urgent: 'bg-red-50 text-red-700'};
+const PRIORITY_COLORS = { Low: 'bg-muted text-[#71717a] dark:text-gray-400', Medium: 'bg-amber-50 text-amber-700', High: 'bg-orange-50 text-orange-700', Urgent: 'bg-red-50 text-red-700'};
 const COL_COLORS = ['border-primary/40', 'border-blue-400', 'border-violet-400', 'border-emerald-400'];
 const EMPTY_FORM = { title: '', description: '', status: 'To Do', priority: 'Medium', assignee: '', due_date: '', labels: ''};
 
@@ -141,21 +141,21 @@ export default function UnivKanban({ title = "Kanban Board", companyId, pageName
  return (
  <div className="h-full flex flex-col gap-4 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
- <div><h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2"><LayoutGrid className="w-7 h-7 text-primary" />Kanban Board</h1><p className="text-muted-foreground text-sm font-medium mt-1">{tasks.length} tasks across {columns.length} columns.</p></div>
+ <div><h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2 tracking-[-0.02em]"><LayoutGrid className="w-7 h-7 text-primary" />Kanban Board</h1><p className="text-[#71717a] dark:text-gray-400 text-sm font-medium mt-1">{tasks.length} tasks across {columns.length} columns.</p></div>
  <div className="flex items-center gap-2">
 
  
  
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 "><Plus className="w-4 h-4" />Add Task</button>
+ <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-md-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 "><Plus className="w-4 h-4" />Add Task</button>
  </div>
  </div>
 
- <div className="relative shrink-0 max-w-md"><Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search tasks..." className="w-full h-10 pl-10 pr-4 bg-card border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm " /></div>
+ <div className="relative shrink-0 max-w-md"><Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" /><input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search tasks..." className="w-full h-10 pl-10 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" /></div>
 
  {loading ? <div className="flex flex-1 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div> : (
  <DragDropContext onDragEnd={onDragEnd}>
@@ -163,46 +163,46 @@ export default function UnivKanban({ title = "Kanban Board", companyId, pageName
  {columns.map((col, ci) => {
  const colTasks = filtered.filter(t => t.status === col);
  return (
- <div key={col} className={`flex-shrink-0 w-72 rounded-2xl border-t-4 ${COL_COLORS[ci % COL_COLORS.length]} bg-muted/40 border border-primary/40 flex flex-col`} style={{ height: 'calc(100% - 4px)'}}>
+ <div key={col} className={`flex-shrink-0 w-72 rounded-md-2xl border-t-4 ${COL_COLORS[ci % COL_COLORS.length]} bg-muted/40 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col`} style={{ height: 'calc(100% - 4px)'}}>
  <div className="p-3 flex justify-between items-center shrink-0">
- <h3 className="font-bold text-sm text-foreground">{col}</h3>
- <div className="flex items-center gap-1.5">
- <span className="text-xs font-bold px-2 py-0.5 bg-background border border-primary/40 rounded-full text-muted-foreground">{colTasks.length}</span>
- <button onClick={() => openModal(null, col)} className="p-1 text-muted-foreground hover:text-primary transition-colors"><Plus className="w-4 h-4" /></button>
+ <h3 className="font-semibold text-sm text-foreground">{col}</h3>
+ <div className="flex items-center gap-2.5">
+ <span className="text-xs font-semibold px-2 py-0.5 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-full text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{colTasks.length}</span>
+ <button onClick={() => openModal(null, col)} className="p-1 text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors"><Plus className="w-4 h-4" /></button>
  </div>
  </div>
  <Droppable droppableId={col}>
  {(provided, snapshot) => (
- <div ref={provided.innerRef} {...provided.droppableProps} className={`flex-1 overflow-y-auto p-2 space-y-2 custom-scrollbar rounded-b-2xl transition-colors ${snapshot.isDraggingOver ? 'bg-primary/5' : ''}`}>
+ <div ref={provided.innerRef} {...provided.droppableProps} className={`flex-1 overflow-y-auto p-2 space-y-2 custom-scrollbar rounded-md-b-2xl transition-colors ${snapshot.isDraggingOver ? 'bg-primary/5' : ''}`}>
  {colTasks.map((task, index) => (
  <Draggable key={task.id} draggableId={task.id} index={index}>
  {(prov, snap) => {
  const displayTitle = task.title || task.name || task.client_name || task.employee_name || task.room_number || task.id.slice(0,8);
  const displayDesc = task.description || task.notes || task.reason || task.email || '';
  return (
- <div ref={prov.innerRef} {...prov.draggableProps} {...prov.dragHandleProps} style={prov.draggableProps.style} className={`bg-card border border-primary/40 rounded-xl p-3 group transition-all ${snap.isDragging ? ' ring-2 ring-primary scale-105 z-50' : ''}`}>
+ <div ref={prov.innerRef} {...prov.draggableProps} {...prov.dragHandleProps} style={prov.draggableProps.style} className={`bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-3 group transition-all ${snap.isDragging ? ' ring-2 ring-primary scale-105 z-50' : ''}`}>
  <div className="flex justify-between items-start mb-2">
- <p className="text-sm font-bold text-foreground leading-snug flex-1 pr-1">{displayTitle}</p>
- <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
- <button onClick={() => openModal(task)} className="p-1 bg-muted rounded-md text-muted-foreground hover:text-primary"><Edit2 className="w-3 h-3" /></button>
- <button onClick={() => remove(task.id)} className="p-1 bg-red-50 rounded-md text-red-400 hover:text-red-600"><Trash2 className="w-3 h-3" /></button>
+ <p className="text-sm font-semibold text-foreground leading-snug flex-1 pr-1">{displayTitle}</p>
+ <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+ <button onClick={() => openModal(task)} className="p-1 bg-muted rounded-lg text-[#71717a] dark:text-gray-400 hover:text-primary"><Edit2 className="w-3 h-3" /></button>
+ <button onClick={() => remove(task.id)} className="p-1 bg-red-50 rounded-lg text-red-400 hover:text-red-600"><Trash2 className="w-3 h-3" /></button>
  </div>
  </div>
- {displayDesc && <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{displayDesc}</p>}
- <div className="flex flex-wrap gap-1 mt-2">
- {task.priority && <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${PRIORITY_COLORS[task.priority]}`}>{task.priority}</span>}
- {task.labels && task.labels.split(',').map(l => <span key={l} className="text-[10px] px-1.5 py-0.5 bg-primary/10 text-primary rounded-md font-bold">{l.trim()}</span>)}
+ {displayDesc && <p className="text-xs text-[#71717a] dark:text-gray-400 mb-2 line-clamp-2 tracking-[0.04em]">{displayDesc}</p>}
+ <div className="flex flex-wrap gap-2 mt-2">
+ {task.priority && <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-lg ${PRIORITY_COLORS[task.priority]}`}>{task.priority}</span>}
+ {task.labels && task.labels.split(',').map(l => <span key={l} className="text-[10px] px-1.5 py-0.5 bg-primary/10 text-primary rounded-lg font-semibold">{l.trim()}</span>)}
  </div>
- <div className="flex justify-between items-center mt-2 text-xs text-muted-foreground">
- {task.assignee && <span className="flex items-center gap-1"><User className="w-3 h-3" />{task.assignee}</span>}
- {(task.due_date || task.created_at) && <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{task.due_date || task.created_at?.split('T')[0]}</span>}
+ <div className="flex justify-between items-center mt-2 text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
+ {task.assignee && <span className="flex items-center gap-2"><User className="w-3 h-3" />{task.assignee}</span>}
+ {(task.due_date || task.created_at) && <span className="flex items-center gap-2"><Calendar className="w-3 h-3" />{task.due_date || task.created_at?.split('T')[0]}</span>}
  </div>
  </div>
  )}}
  </Draggable>
  ))}
  {provided.placeholder}
- {colTasks.length === 0 && !snapshot.isDraggingOver && <div className="h-20 flex items-center justify-center border-2 border-dashed border-primary/40 rounded-xl text-xs text-muted-foreground">Drop tasks here</div>}
+ {colTasks.length === 0 && !snapshot.isDraggingOver && <div className="h-20 flex items-center justify-center border-2 border-dashed border-primary/40 rounded-md-xl text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Drop tasks here</div>}
  </div>
  )}
  </Droppable>
@@ -210,16 +210,16 @@ export default function UnivKanban({ title = "Kanban Board", companyId, pageName
  );
 })}
  {/* Add Column */}
- <div className="flex-shrink-0 w-56 rounded-2xl border-2 border-dashed border-primary/40 flex flex-col items-center justify-center min-h-[150px] hover:border-primary/40 transition-colors bg-card/30">
+ <div className="flex-shrink-0 w-56 rounded-md-2xl border-2 border-dashed border-primary/40 flex flex-col items-center justify-center min-h-[150px] hover:border-primary/40 transition-colors bg-card/30 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {addingCol ? (
  <form onSubmit={addColumn} className="p-4 w-full flex flex-col gap-2">
- <input autoFocus type="text" value={newColName} onChange={e => setNewColName(e.target.value)} placeholder="Column name..." className="w-full h-9 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
- <div className="flex gap-2"><button type="submit" className="flex-1 h-8 bg-primary text-white rounded-lg text-xs font-bold">Add</button><button type="button" onClick={() => setAddingCol(false)} className="flex-1 h-8 bg-muted rounded-lg text-xs font-bold">Cancel</button></div>
+ <input autoFocus type="text" value={newColName} onChange={e => setNewColName(e.target.value)} placeholder="Column name..." className="w-full h-9 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none" />
+ <div className="flex gap-2"><button type="submit" className="flex-1 h-8 bg-primary text-white rounded-xl text-xs font-semibold tracking-[0.04em]">Add</button><button type="button" onClick={() => setAddingCol(false)} className="flex-1 h-8 bg-muted rounded-xl text-xs font-semibold tracking-[0.04em]">Cancel</button></div>
  </form>
  ) : (
- <button onClick={() => setAddingCol(true)} className="flex flex-col items-center gap-2 text-muted-foreground hover:text-primary transition-colors p-4">
- <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center"><Plus className="w-5 h-5" /></div>
- <span className="text-sm font-bold">Add Column</span>
+ <button onClick={() => setAddingCol(true)} className="flex flex-col items-center gap-2 text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors p-4">
+ <div className="w-9 h-9 rounded-md-full bg-primary/10 flex items-center justify-center"><Plus className="w-5 h-5" /></div>
+ <span className="text-sm font-semibold">Add Column</span>
  </button>
  )}
  </div>
@@ -229,19 +229,19 @@ export default function UnivKanban({ title = "Kanban Board", companyId, pageName
 
  {isModalOpen && (
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
- <div className="bg-card w-full max-w-lg rounded-2xl flex flex-col max-h-[90vh]">
- <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0"><h2 className="text-xl font-black">{editingId ? 'Edit Task' : 'New Task'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-full text-muted-foreground"><XCircle className="w-5 h-5" /></button></div>
+ <div className="bg-card w-full max-w-lg rounded-md-2xl flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0"><h2 className="text-xl font-black">{editingId ? 'Edit Task' : 'New Task'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-md-full text-[#71717a] dark:text-gray-400"><XCircle className="w-5 h-5" /></button></div>
  <form onSubmit={save} className="p-5 overflow-y-auto flex-1 custom-scrollbar">
  <div className="grid grid-cols-2 gap-4">
- <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Task Title *</label><input required type="text" value={form.title} onChange={e=>setForm({...form,title:e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Column / Status</label><select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{columns.map(c=><option key={c}>{c}</option>)}</select></div>
- <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Priority</label><select value={form.priority} onChange={e=>setForm({...form,priority:e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(PRIORITY_COLORS).map(p=><option key={p}>{p}</option>)}</select></div>
- <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Assignee</label><input type="text" value={form.assignee} onChange={e=>setForm({...form,assignee:e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Due Date</label><input type="date" value={form.due_date} onChange={e=>setForm({...form,due_date:e.target.value})} className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Labels (comma-separated)</label><input type="text" value={form.labels} onChange={e=>setForm({...form,labels:e.target.value})} placeholder="bug, feature, design..." className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div className="col-span-2"><label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Description</label><textarea rows="3" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} className="w-full p-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none"/></div>
+ <div className="col-span-2"><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Task Title *</label><input required type="text" value={form.title} onChange={e=>setForm({...form,title:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Column / Status</label><select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{columns.map(c=><option key={c}>{c}</option>)}</select></div>
+ <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Priority</label><select value={form.priority} onChange={e=>setForm({...form,priority:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(PRIORITY_COLORS).map(p=><option key={p}>{p}</option>)}</select></div>
+ <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Assignee</label><input type="text" value={form.assignee} onChange={e=>setForm({...form,assignee:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Due Date</label><input type="date" value={form.due_date} onChange={e=>setForm({...form,due_date:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ <div className="col-span-2"><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Labels (comma-separated)</label><input type="text" value={form.labels} onChange={e=>setForm({...form,labels:e.target.value})} placeholder="bug, feature, design..." className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ <div className="col-span-2"><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Description</label><textarea rows="3" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm resize-none"/></div>
  </div>
- <div className="flex justify-end gap-3 mt-5 pt-5 border-t border-primary/40"><button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button><button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold ">{editingId?'Update':'Add Task'}</button></div>
+ <div className="flex justify-end gap-3 mt-5 pt-5 border-t border-primary/40"><button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-md-xl text-sm font-medium">Cancel</button><button type="submit" className="h-10 px-5 bg-primary text-white rounded-md-xl text-sm font-semibold ">{editingId?'Update':'Add Task'}</button></div>
  </form>
  </div>
  </div>

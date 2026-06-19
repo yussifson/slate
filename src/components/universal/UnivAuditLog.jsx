@@ -102,16 +102,16 @@ export default function UnivAuditLog({
  <div className="flex flex-col h-full bg-background font-sans">
  
  {/* Header */}
- <div className="border-b border-primary/40 bg-card px-6 sm:px-8 py-6 shrink-0 z-10 relative">
+ <div className="border-b border-primary/40 bg-card px-6 sm:px-8 py-6 shrink-0 z-10 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
- <h1 className="text-2xl font-extrabold text-foreground tracking-tight flex items-center gap-2">
+ <h1 className="text-2xl font-extrabold text-foreground tracking-tight flex items-center gap-2 tracking-[-0.02em]">
  <TerminalSquare className="w-6 h-6 text-primary" /> {title}
  </h1>
- <p className="text-sm text-muted-foreground mt-1">Immutable record of all system events and data changes.</p>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Immutable record of all system events and data changes.</p>
  </div>
  <div className="flex items-center gap-3">
- <button className="px-4 py-2 bg-muted text-muted-foreground rounded-lg text-sm font-semibold hover:bg-muted/80 transition-colors flex items-center gap-2">
+ <button className="px-4 py-2 bg-muted text-[#71717a] dark:text-gray-400 rounded-xl text-sm font-semibold hover:bg-muted/80 transition-colors flex items-center gap-2">
  <FileKey className="w-4 h-4" /> Export CSV
  </button>
  </div>
@@ -120,19 +120,19 @@ export default function UnivAuditLog({
  {/* Toolbar */}
  <div className="mt-6 flex items-center gap-3">
  <div className="relative flex-1 max-w-sm">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <input 
  type="text" 
  placeholder="Search by user, resource, or ID..."
  value={searchQuery}
  onChange={e => setSearchQuery(e.target.value)}
- className="w-full h-10 pl-9 pr-4 bg-muted/50 border border-primary/40 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+ className="w-full h-10 pl-9 pr-4 bg-muted/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:border-primary transition-colors"
  />
  </div>
  <select 
  value={filterAction}
  onChange={e => setFilterAction(e.target.value)}
- className="h-10 px-3 bg-background border border-primary/40 rounded-lg text-sm font-medium focus:border-primary focus:outline-none"
+ className="h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm font-medium focus:border-primary focus:outline-none"
  >
  <option value="ALL">All Actions</option>
  <option value="CREATE">Create</option>
@@ -146,17 +146,17 @@ export default function UnivAuditLog({
  <div className="flex-1 overflow-y-auto p-6 sm:p-8 bg-muted/10 custom-scrollbar">
  <div className="max-w-6xl mx-auto">
  {isLoading ? (
- <div className="text-center py-20 text-muted-foreground animate-pulse">Loading logs...</div>
+ <div className="text-center py-20 text-[#71717a] dark:text-gray-400 animate-pulse">Loading logs...</div>
  ) : filteredLogs.length === 0 ? (
- <div className="text-center py-20 text-muted-foreground">
+ <div className="text-center py-20 text-[#71717a] dark:text-gray-400">
  <History className="w-12 h-12 mx-auto mb-4 opacity-20" />
- <h3 className="text-lg font-bold text-foreground">No logs found</h3>
+ <h3 className="text-lg font-semibold text-foreground">No logs found</h3>
  <p className="text-sm mt-1">Adjust your filters or search query.</p>
  </div>
  ) : (
- <div className="bg-card border border-primary/40 rounded-2xl overflow-hidden">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm text-left">
- <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-muted-foreground">
+ <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  <tr>
  <th className="px-6 py-4 font-semibold w-48">Timestamp</th>
  <th className="px-6 py-4 font-semibold">Action</th>
@@ -165,10 +165,10 @@ export default function UnivAuditLog({
  <th className="px-6 py-4 font-semibold text-right">Details</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-border font-mono text-[13px]">
+ <tbody className="divide-y divide-border-[0.5px] border-black/9 dark:border-white/8 font-mono text-[13px]">
  {filteredLogs.map((log, idx) => (
  <tr key={idx} className="hover:bg-muted/30 transition-colors">
- <td className="px-6 py-4 text-muted-foreground whitespace-nowrap">
+ <td className="px-6 py-4 text-[#71717a] dark:text-gray-400 whitespace-nowrap">
  {new Date(log.timestamp).toLocaleString(undefined, { 
  year: 'numeric', month: '2-digit', day: '2-digit', 
  hour: '2-digit', minute:'2-digit', second:'2-digit' 
@@ -176,8 +176,8 @@ export default function UnivAuditLog({
  </td>
  <td className="px-6 py-4">
  <div className="flex items-center gap-2">
- {ACTION_ICONS[log.action] || <Activity className="w-4 h-4 text-muted-foreground" />}
- <span className={cn("font-bold tracking-wider", 
+ {ACTION_ICONS[log.action] || <Activity className="w-4 h-4 text-[#71717a] dark:text-gray-400" />}
+ <span className={cn("font-semibold tracking-wider", 
  log.action === 'CREATE' ? "text-emerald-600 dark:text-emerald-400" :
  log.action === 'UPDATE' ? "text-blue-600 dark:text-blue-400" :
  log.action === 'DELETE' ? "text-red-600 dark:text-red-400" : "text-foreground"
@@ -187,13 +187,13 @@ export default function UnivAuditLog({
  </div>
  </td>
  <td className="px-6 py-4">
- <div className="font-semibold text-foreground flex items-center gap-1.5">
- <Box className="w-3.5 h-3.5 text-muted-foreground" /> {log.resource_type}
+ <div className="font-semibold text-foreground flex items-center gap-2.5">
+ <Box className="w-3.5 h-3.5 text-[#71717a] dark:text-gray-400" /> {log.resource_type}
  </div>
- <div className="text-[10px] text-muted-foreground mt-0.5">ID: {log.resource_id}</div>
+ <div className="text-[10px] text-[#71717a] dark:text-gray-400 mt-0.5">ID: {log.resource_id}</div>
  </td>
  <td className="px-6 py-4 text-foreground">{log.actor}</td>
- <td className="px-6 py-4 text-right text-muted-foreground">
+ <td className="px-6 py-4 text-right text-[#71717a] dark:text-gray-400">
  {log.details}
  </td>
  </tr>

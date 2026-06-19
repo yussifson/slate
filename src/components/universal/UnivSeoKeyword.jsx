@@ -92,7 +92,7 @@ export default function UnivSeoKeyword() {
  <div className="p-6 max-w-6xl mx-auto bg-stone-50 min-h-screen ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex justify-between items-center mb-8">
  <div>
- <h1 className="text-3xl font-bold text-stone-800 flex items-center gap-3">
+ <h1 className="text-3xl font-semibold text-stone-800 flex items-center gap-3 tracking-[-0.02em]">
  <Search className="text-teal-600 w-8 h-8" />
  SEO Keyword Tracker
  </h1>
@@ -102,25 +102,25 @@ export default function UnivSeoKeyword() {
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Calendar","Dashboard"].map(v => (
  <button 
  key={v} 
  onClick={() => setView(v)} 
- className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${view === v ? 'bg-background text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+ className={`px-3 py-1 text-xs font-medium rounded-lg transition-all ${view === v ? 'bg-background text-foreground' : 'text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}
  >
  {v}
  </button>
  ))}
  </div>
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
  <button
  onClick={() => setIsEditing(true)}
- className="flex items-center gap-2 bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors"
+ className="flex items-center gap-2 bg-teal-600 text-white px-4 py-2 rounded-xl hover:bg-teal-700 transition-colors"
  >
  <Plus className="w-5 h-5" />
  Add Keyword
@@ -135,7 +135,7 @@ export default function UnivSeoKeyword() {
  initial={{ opacity: 0, y: -20}}
  animate={{ opacity: 1, y: 0}}
  exit={{ opacity: 0, y: -20}}
- className="bg-card p-6 rounded-xl border border-stone-200 mb-8"
+ className="bg-card p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-stone-200 mb-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <h2 className="text-xl font-semibold mb-4 text-stone-700">
  {editingId ? 'Edit Keyword' : 'Add New Keyword'}
@@ -147,7 +147,7 @@ export default function UnivSeoKeyword() {
  <Hash className="absolute left-3 top-2.5 w-5 h-5 text-stone-400" />
  <input
  type="text"
- className="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+ className="w-full pl-10 pr-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none"
  value={formData.keyword}
  onChange={(e) => setFormData({ ...formData, keyword: e.target.value})}
  placeholder="e.g. b2b marketing software"
@@ -158,7 +158,7 @@ export default function UnivSeoKeyword() {
  <label className="block text-sm font-medium text-stone-600 mb-1">Search Volume</label>
  <input
  type="number"
- className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+ className="w-full px-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none"
  value={formData.search_volume}
  onChange={(e) => setFormData({ ...formData, search_volume: e.target.value})}
  />
@@ -167,7 +167,7 @@ export default function UnivSeoKeyword() {
  <label className="block text-sm font-medium text-stone-600 mb-1">Difficulty (0-100)</label>
  <input
  type="number"
- className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+ className="w-full px-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none"
  value={formData.difficulty}
  onChange={(e) => setFormData({ ...formData, difficulty: e.target.value})}
  />
@@ -178,7 +178,7 @@ export default function UnivSeoKeyword() {
  <Target className="absolute left-3 top-2.5 w-5 h-5 text-stone-400" />
  <input
  type="number"
- className="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+ className="w-full pl-10 pr-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none"
  value={formData.current_rank}
  onChange={(e) => setFormData({ ...formData, current_rank: e.target.value})}
  />
@@ -190,7 +190,7 @@ export default function UnivSeoKeyword() {
  <LinkIcon className="absolute left-3 top-2.5 w-5 h-5 text-stone-400" />
  <input
  type="url"
- className="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+ className="w-full pl-10 pr-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none"
  value={formData.target_url}
  onChange={(e) => setFormData({ ...formData, target_url: e.target.value})}
  placeholder="https://yoursite.com/page"
@@ -205,13 +205,13 @@ export default function UnivSeoKeyword() {
  setEditingId(null);
  setFormData({ keyword: '', search_volume: '', difficulty: '', current_rank: '', target_url: ''});
 }}
- className="flex items-center gap-2 px-4 py-2 text-stone-600 hover:bg-stone-100 rounded-lg transition-colors"
+ className="flex items-center gap-2 px-4 py-2 text-stone-600 hover:bg-stone-100 rounded-xl transition-colors"
  >
  <X className="w-4 h-4" /> Cancel
  </button>
  <button
  onClick={handleSave}
- className="flex items-center gap-2 bg-teal-600 text-white px-6 py-2 rounded-lg hover:bg-teal-700 transition-colors"
+ className="flex items-center gap-2 bg-teal-600 text-white px-6 py-2 rounded-xl hover:bg-teal-700 transition-colors"
  >
  <Save className="w-4 h-4" /> Save
  </button>
@@ -222,10 +222,10 @@ export default function UnivSeoKeyword() {
 
  {loading ? (
  <div className="flex justify-center py-12">
- <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-teal-600"></div>
+ <div className="animate-spin rounded-md-full h-10 w-10 border-b-2 border-teal-600"></div>
  </div>
  ) : (
- <div className="bg-card rounded-xl border border-stone-200 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-stone-200 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-left border-collapse">
  <thead>
  <tr className="bg-stone-50 border-b border-stone-200 text-sm font-medium text-stone-500">
@@ -241,16 +241,16 @@ export default function UnivSeoKeyword() {
  <tr key={item.id} className="border-b border-stone-100 hover:bg-stone-50/50 transition-colors">
  <td className="p-4">
  <div className="font-semibold text-stone-800">{item.keyword || '-'}</div>
- <div className="text-xs text-stone-500 truncate max-w-[200px]" title={item.target_url}>{item.target_url}</div>
+ <div className="text-xs text-stone-500 truncate max-w-[200px] tracking-[0.04em]" title={item.target_url}>{item.target_url}</div>
  </td>
  <td className="p-4 font-medium text-stone-700">
  {Number(item.search_volume).toLocaleString()}
  </td>
  <td className="p-4">
  <div className="flex items-center gap-2">
- <div className="w-16 h-2 bg-stone-200 rounded-full overflow-hidden">
+ <div className="w-16 h-2 bg-stone-200 rounded-md-full overflow-hidden">
  <div 
- className={`h-full ${item.difficulty > 70 ? 'bg-red-500' : item.difficulty > 30 ? 'bg-yellow-500' : 'bg-green-500'}`}
+ className={`h-full ${item.difficulty > 70 ? 'bg-red-500/10' : item.difficulty > 30 ? 'bg-yellow-500/10' : 'bg-green-500/10'}`}
  style={{ width: `${item.difficulty || 0}%`}}
  ></div>
  </div>
@@ -258,16 +258,16 @@ export default function UnivSeoKeyword() {
  </div>
  </td>
  <td className="p-4">
- <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-teal-100 text-teal-800 font-bold text-sm">
+ <span className="inline-flex items-center justify-center w-8 h-8 rounded-md-full bg-teal-100 text-teal-800 font-semibold text-sm">
  {item.current_rank || '-'}
  </span>
  </td>
  <td className="p-4 text-right">
  <div className="flex justify-end gap-2">
- <button onClick={() => handleEdit(item)} className="p-1.5 text-stone-400 hover:text-teal-600 rounded-md hover:bg-teal-50 transition-colors">
+ <button onClick={() => handleEdit(item)} className="p-1.5 text-stone-400 hover:text-teal-600 rounded-lg hover:bg-teal-50 transition-colors">
  <Edit2 className="w-4 h-4" />
  </button>
- <button onClick={() => handleDelete(item.id)} className="p-1.5 text-stone-400 hover:text-red-600 rounded-md hover:bg-red-50 transition-colors">
+ <button onClick={() => handleDelete(item.id)} className="p-1.5 text-stone-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors">
  <Trash2 className="w-4 h-4" />
  </button>
  </div>

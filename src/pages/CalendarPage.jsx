@@ -94,14 +94,14 @@ export default function CalendarPage() {
  />
  {/* Calendar Controls (Admin / Staff visibility toggles) */}
  {isAdminUser && (
- <div className="bg-card rounded-xl border border-primary/40 p-4 flex gap-6 items-center text-sm select-none">
- <span className="font-semibold text-muted-foreground uppercase text-[10px] tracking-wider">{t("toggles", "Toggles:")}</span>
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex gap-6 items-center text-sm select-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <span className="font-semibold text-[#71717a] dark:text-gray-400 uppercase text-[10px] tracking-wider tracking-[0.04em]">{t("toggles", "Toggles:")}</span>
  <label className="flex items-center gap-2 cursor-pointer hover:opacity-90">
  <input
  type="checkbox"
  checked={showAdminCalendar}
  onChange={(e) => setShowAdminCalendar(e.target.checked)}
- className="rounded text-primary focus:ring-primary border-primary/40"
+ className="rounded-md text-primary focus:ring-primary border-primary/40"
  />
  <span className="font-medium text-foreground">{t("firm_admin_calendar", "Firm Admin Calendar")}</span>
  </label>
@@ -110,7 +110,7 @@ export default function CalendarPage() {
  type="checkbox"
  checked={showStaffCalendar}
  onChange={(e) => setShowStaffCalendar(e.target.checked)}
- className="rounded text-primary focus:ring-primary border-primary/40"
+ className="rounded-md text-primary focus:ring-primary border-primary/40"
  />
  <span className="font-medium text-foreground">{t("staff_calendars", "Staff Calendars")}</span>
  </label>
@@ -118,10 +118,10 @@ export default function CalendarPage() {
  )}
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
  {/* Calendar Grid */}
- <div className="lg:col-span-2 bg-card rounded-xl border border-primary/40 p-4 ">
+ <div className="lg:col-span-2 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between mb-4">
  <h3 className="text-lg font-semibold">{format(currentMonth, "MMMM yyyy")}</h3>
- <div className="flex gap-1">
+ <div className="flex gap-2">
  <Button variant="ghost" size="icon" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>
  <ChevronLeft className="w-4 h-4" />
  </Button>
@@ -132,12 +132,12 @@ export default function CalendarPage() {
  </div>
  </div>
 
- <div className="grid grid-cols-7 gap-px bg-primary/40 rounded-lg overflow-hidden">
+ <div className="grid grid-cols-7 gap-px bg-primary/40 rounded-xl overflow-hidden">
  {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(d => {
- return (<div key={d} className="bg-muted/50 p-2 text-center text-xs font-medium text-muted-foreground">{d}</div>);
+ return (<div key={d} className="bg-muted/50 p-2 text-center text-xs font-medium text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{d}</div>);
 })}
  {Array(startPad).fill(null).map((_, i) => {
- return (<div key={`pad-${i}`} className="bg-card min-h-[80px] p-1" />);
+ return (<div key={`pad-${i}`} className="bg-card min-h-[80px] p-1 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />);
 })}
  {days.map(day => {
  const dayHearings = getHearingsForDay(day);
@@ -147,19 +147,19 @@ export default function CalendarPage() {
  className={`bg-card min-h-[80px] p-1.5 hover:bg-muted/50 cursor-pointer transition-colors ${isToday(day) ? "ring-2 ring-primary ring-inset" : ""}`}
  onClick={() => { setSelectedDate(day); setShowForm(true);}}
  >
- <span className={`text-xs font-medium ${isToday(day) ? "text-primary font-bold" : "text-foreground"}`}>
+ <span className={`text-xs font-medium ${isToday(day) ? "text-primary font-semibold" : "text-foreground"}`}>
  {format(day, "d")}
  </span>
  <div className="mt-1 space-y-0.5">
  {dayHearings.slice(0, 2).map(h => {
  return (
- <div key={h.id} className="text-[10px] bg-slate-100 text-primary rounded px-1 py-0.5 truncate">
+ <div key={h.id} className="text-[10px] bg-slate-100 text-primary rounded-md px-1 py-0.5 truncate">
  {h.title}
  </div>
  );
 })}
  {dayHearings.length > 2 && (
- <span className="text-[10px] text-muted-foreground">+{dayHearings.length - 2} more</span>
+ <span className="text-[10px] text-[#71717a] dark:text-gray-400">+{dayHearings.length - 2} more</span>
  )}
  </div>
  </div>
@@ -169,7 +169,7 @@ export default function CalendarPage() {
  </div>
 
  {/* Upcoming */}
- <div className="bg-card rounded-xl border border-primary/40">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40">
  <h3 className="text-sm font-semibold flex items-center gap-2">
  <Calendar className="w-4 h-4 text-primary" /> Upcoming {getTerm(activeIndustry, "hearing", true)}s
@@ -177,15 +177,15 @@ export default function CalendarPage() {
  </div>
  <div className="divide-y divide-border">
  {upcomingHearings.length === 0 ? (
- <div className="p-8 text-center text-sm text-muted-foreground">No upcoming {hearingTerm}s</div>
+ <div className="p-8 text-center text-sm text-[#71717a] dark:text-gray-400">No upcoming {hearingTerm}s</div>
  ) : upcomingHearings.map(h => {
  return (
  <div key={h.id} className="px-4 py-3">
  <p className="text-sm font-medium">{h.title}</p>
- <p className="text-xs text-muted-foreground mt-0.5">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">
  {format(new Date(h.date), "MMM d, yyyy")} · {h.time || "TBD"} · {h.court_name || `${getTerm(activeIndustry, "venue", true)} TBD`}
  </p>
- <div className="flex gap-1 mt-1.5">
+ <div className="flex gap-2 mt-1.5">
  <Badge variant="outline" className="text-[10px]">{h.case_number || h.case_title || "—"}</Badge>
  <Badge className={`text-[10px] ${h.status === "scheduled" ? "bg-orange-100 text-orange-700" : h.status === "completed" ? "bg-slate-100 text-primary/90" : "bg-slate-100 text-slate-600"}`}>
  {h.status}

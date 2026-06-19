@@ -47,19 +47,19 @@ export default function UniRevenue() {
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
  <div className="border-b border-primary/40 pb-4">
- <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Revenue & Financial Operations</h1>
+ <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">Revenue & Financial Operations</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Comprehensive tuition monitoring, scholarship allocations, and billing status.</p>
  </div>
 
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  {stats.map((stat, i) => (
- <div key={i} className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
+ <div key={i} className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6">
  <div className="flex items-center justify-between">
  <div>
- <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">{stat.label}</p>
- <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight">{stat.value}</h3>
+ <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">{stat.label}</p>
+ <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight tracking-[-0.02em]">{stat.value}</h3>
  </div>
- <div className="w-12 h-12 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: `color-mix(in srgb, ${stat.color} 15%, transparent)`}}>
+ <div className="w-12 h-12 rounded-md-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: `color-mix(in srgb, ${stat.color} 15%, transparent)`}}>
  <stat.icon className="w-6 h-6" style={{ color: stat.color}} />
  </div>
  </div>
@@ -68,7 +68,7 @@ export default function UniRevenue() {
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
- <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 ">
+ <div className="lg:col-span-2 bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 ">
  <h2 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2 mb-1">
  <TrendingUp className="w-5 h-5 text-[var(--primary)]" /> Monthly Revenue Breakdown
  </h2>
@@ -88,7 +88,7 @@ export default function UniRevenue() {
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 ">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 ">
  <h2 className="font-semibold text-[var(--color-text-primary)] mb-1">Invoicing Summary</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-6">Current fee structures and collection rates.</p>
  <div className="space-y-4">
@@ -99,13 +99,13 @@ export default function UniRevenue() {
  {finances.slice(0, 5).map((f, i) => {
  let parsed = {}; try { parsed = JSON.parse(f.notes);} catch(e){}
  return (
- <div key={i} className="flex justify-between items-center p-4 bg-[var(--color-surface-1)] rounded-[var(--radius-lg)] border border-primary/40 hover:bg-[var(--color-surface-2)] transition-colors">
+ <div key={i} className="flex justify-between items-center p-4 bg-[var(--color-surface-1)] rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:bg-[var(--color-surface-2)] transition-colors">
  <div>
- <p className="font-bold text-[var(--text-sm)] text-[var(--color-text-primary)]">{parsed.title || "Tuition Invoice"}</p>
- <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)]">Invoice ID: {f.id.substring(0, 8)}</p>
+ <p className="font-semibold text-[var(--text-sm)] text-[var(--color-text-primary)]">{parsed.title || "Tuition Invoice"}</p>
+ <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)] tracking-[0.04em]">Invoice ID: {f.id.substring(0, 8)}</p>
  </div>
  <div className="text-right flex flex-col items-end">
- <p className="font-display font-bold text-[var(--text-sm)] text-[var(--color-text-primary)] mb-1">${parsed.amount || 1200}</p>
+ <p className="font-display font-semibold text-[var(--text-sm)] text-[var(--color-text-primary)] mb-1">${parsed.amount || 1200}</p>
  <OrbitStatusBadge status={f.status === 'Paid' ? 'success' : 'warning'} label={f.status} />
  </div>
  </div>

@@ -145,11 +145,11 @@ const ChartTooltipContent = React.forwardRef((
  (<div
  ref={ref}
  className={cn(
- "grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-primary/40 bg-background px-2.5 py-1.5 text-xs ",
+ "grid min-w-[8rem] items-start gap-2.5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background px-2.5 py-1.5 text-xs ",
  className
  )}>
  {!nestLabel ? tooltipLabel : null}
- <div className="grid gap-1.5">
+ <div className="grid gap-2.5">
  {payload.map((item, index) => {
  const key = `${nameKey || item.name || item.dataKey || "value"}`
  const itemConfig = getPayloadConfigFromPayload(config, item, key)
@@ -159,7 +159,7 @@ const ChartTooltipContent = React.forwardRef((
  (<div
  key={item.dataKey}
  className={cn(
- "flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground",
+ "flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-[#71717a] dark:text-gray-400",
  indicator === "dot" && "items-center"
  )}>
  {formatter && item?.value !== undefined && item.name ? (
@@ -171,7 +171,7 @@ const ChartTooltipContent = React.forwardRef((
  ) : (
  !hideIndicator && (
  <div
- className={cn("shrink-0 rounded-[2px] border-[--color-border] bg-[--color-bg]", {
+ className={cn("shrink-0 rounded-md-[2px] border-[--color-border] bg-[--color-bg]", {
  "h-2.5 w-2.5": indicator === "dot",
  "w-1": indicator === "line",
  "w-0 border-[1.5px] border-dashed bg-transparent":
@@ -191,9 +191,9 @@ const ChartTooltipContent = React.forwardRef((
  "flex flex-1 justify-between leading-none",
  nestLabel ? "items-end" : "items-center"
  )}>
- <div className="grid gap-1.5">
+ <div className="grid gap-2.5">
  {nestLabel ? tooltipLabel : null}
- <span className="text-muted-foreground">
+ <span className="text-[#71717a] dark:text-gray-400">
  {itemConfig?.label || item.name}
  </span>
  </div>
@@ -242,13 +242,13 @@ const ChartLegendContent = React.forwardRef((
  (<div
  key={item.value}
  className={cn(
- "flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-muted-foreground"
+ "flex items-center gap-2.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-[#71717a] dark:text-gray-400"
  )}>
  {itemConfig?.icon && !hideIcon ? (
  <itemConfig.icon />
  ) : (
  <div
- className="h-2 w-2 shrink-0 rounded-[2px]"
+ className="h-2 w-2 shrink-0 rounded-md-[2px]"
  style={{
  backgroundColor: item.color,
 }} />

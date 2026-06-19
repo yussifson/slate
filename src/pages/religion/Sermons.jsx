@@ -101,25 +101,25 @@ export default function Sermons() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("sermon_library", "Sermon Library")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t("manage_audio_and_video_sermon_", "Manage audio and video sermon archives")}</p>
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("sermon_library", "Sermon Library")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("manage_audio_and_video_sermon_", "Manage audio and video sermon archives")}</p>
  </div>
  <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
  <Upload className="w-4 h-4" /> {t("upload_sermon", "Upload Sermon")}
  </Button>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-4">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="relative">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <Input placeholder="Search by title, preacher, or series..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-muted" />
  </div>
  </div>
  {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_archives", "Loading archives...")}</div>
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_archives", "Loading archives...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-primary/40">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <PlayCircle className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
- <p className="font-semibold text-lg text-card-foreground">{t("no_sermons_in_library", "No sermons in library")}</p>
+ <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_sermons_in_library", "No sermons in library")}</p>
  <p className="text-sm mt-1 max-w-md mx-auto">{t(
  "upload_weekly_gospel_records_s",
  "Upload weekly gospel records, scripture outlines, and podcast media links using the button above."
@@ -129,11 +129,11 @@ export default function Sermons() {
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {filtered.map(sermon => {
  return (
- <div key={sermon.id} className="bg-card rounded-xl border border-primary/40 overflow-hidden transition-all group relative flex flex-col justify-between">
+ <div key={sermon.id} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden transition-all group relative flex flex-col justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <div className="h-40 bg-muted dark:bg-muted/50 relative flex items-center justify-center group-hover:bg-slate-100 dark:group-hover:bg-primary/20 transition-colors cursor-pointer">
  <PlayCircle className="w-16 h-16 text-primary dark:text-primary/70 opacity-80 group-hover:scale-110 transition-transform" />
- <span className="absolute bottom-2 right-2 bg-primary/20 text-white text-xs font-bold px-2 py-1 rounded">{sermon.duration || '45:00'}</span>
+ <span className="absolute bottom-2 right-2 bg-primary/20 text-white text-xs font-semibold px-2 py-1 rounded-md tracking-[0.04em]">{sermon.duration || '45:00'}</span>
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
  <Button variant="ghost" size="sm" className="absolute top-2 right-2 h-8 w-8 p-0 text-foreground hover:bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -154,13 +154,13 @@ export default function Sermons() {
  </DropdownMenu>
  </div>
  <div className="p-5">
- <span className="text-xs font-bold uppercase tracking-wider text-primary dark:text-primary/70 mb-2 inline-block">{sermon.series}</span>
- <h3 className="text-lg font-bold text-card-foreground mb-1 leading-tight">{sermon.title}</h3>
- <p className="text-sm text-muted-foreground mb-4"><Link to="/religion/members" className="hover:underline text-primary">{sermon.preacher}</Link> • {sermon.date}</p>
+ <span className="text-xs font-semibold uppercase tracking-wider text-primary dark:text-primary/70 mb-2 inline-block tracking-[0.04em]">{sermon.series}</span>
+ <h3 className="text-lg font-semibold text-card-foreground mb-1 leading-tight hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{sermon.title}</h3>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mb-4"><Link to="/religion/members" className="hover:underline text-primary">{sermon.preacher}</Link> • {sermon.date}</p>
 
- <div className="flex items-center gap-2 bg-muted dark:bg-muted/30 p-2.5 rounded-lg border border-primary/40 mb-4">
- <BookOpen className="w-4 h-4 text-muted-foreground" />
- <span className="text-xs font-medium text-foreground">{sermon.scripture}</span>
+ <div className="flex items-center gap-2 bg-muted dark:bg-muted/30 p-2.5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-4">
+ <BookOpen className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <span className="text-xs font-medium text-foreground tracking-[0.04em]">{sermon.scripture}</span>
  </div>
  </div>
  </div>
@@ -175,13 +175,13 @@ export default function Sermons() {
  )}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Upload className="w-5 h-5 text-primary" /> {t("log_sermon_media", "Log Sermon Media")}
  </h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("sermon_title", "Sermon Title")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("sermon_title", "Sermon Title")}</label>
  <Input
  value={formData.title}
  onChange={e => setFormData({ ...formData, title: e.target.value})}
@@ -190,7 +190,7 @@ export default function Sermons() {
  />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("preacher_pastor_name", "Preacher / Pastor Name")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("preacher_pastor_name", "Preacher / Pastor Name")}</label>
  <Input
  value={formData.preacher}
  onChange={e => setFormData({ ...formData, preacher: e.target.value})}
@@ -199,7 +199,7 @@ export default function Sermons() {
  />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("scripture_reference", "Scripture Reference")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("scripture_reference", "Scripture Reference")}</label>
  <Input
  value={formData.scripture}
  onChange={e => setFormData({ ...formData, scripture: e.target.value})}
@@ -209,7 +209,7 @@ export default function Sermons() {
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("sermon_series", "Sermon Series")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("sermon_series", "Sermon Series")}</label>
  <Input
  value={formData.series}
  onChange={e => setFormData({ ...formData, series: e.target.value})}
@@ -218,7 +218,7 @@ export default function Sermons() {
  />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("duration_mm_ss", "Duration (MM:SS)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("duration_mm_ss", "Duration (MM:SS)")}</label>
  <Input
  value={formData.duration}
  onChange={e => setFormData({ ...formData, duration: e.target.value})}
@@ -252,7 +252,7 @@ export default function Sermons() {
  {viewRecord && Object.entries(viewRecord).filter(([k]) => k !== 'id' && k !== 'status').map(([key, value]) => {
  return (
  <div key={key} className="border-b border-primary/40 pb-2">
- <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
+ <p className="text-sm font-medium text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
  <p className="mt-1 text-base text-foreground font-semibold">
  {key === 'preacher' ? (
  <Link to="/religion/members" className="text-primary hover:underline">{String(value)}</Link>

@@ -168,8 +168,8 @@ export default function UnivChat({
  
  {/* Sidebar - Channels */}
  <div className="w-64 bg-slate-50 dark:bg-slate-900 border-r border-primary/40 flex flex-col shrink-0">
- <div className="h-14 px-4 flex items-center justify-between border-b border-primary/40 bg-card z-10">
- <h2 className="font-bold text-foreground flex items-center gap-2">
+ <div className="h-14 px-4 flex items-center justify-between border-b border-primary/40 bg-card z-10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="font-semibold text-foreground flex items-center gap-2">
  <MessageSquare className="w-5 h-5 text-primary" /> {title}
  </h2>
  </div>
@@ -177,10 +177,10 @@ export default function UnivChat({
  <div className="flex-1 overflow-y-auto p-3 space-y-6 custom-scrollbar">
  <div>
  <div className="flex items-center justify-between px-2 mb-2 group">
- <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Channels</h3>
+ <h3 className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Channels</h3>
  <button 
  onClick={() => setIsCreatingChannel(true)}
- className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-muted text-muted-foreground transition-all"
+ className="opacity-0 group-hover:opacity-100 p-1 rounded-md hover:bg-muted text-[#71717a] dark:text-gray-400 transition-all"
  >
  <Plus className="w-3.5 h-3.5" />
  </button>
@@ -198,7 +198,7 @@ export default function UnivChat({
  if (e.key === 'Enter' && newChannelName.trim()) createChannelMutation.mutate(newChannelName);
  if (e.key === 'Escape') setIsCreatingChannel(false);
 }}
- className="w-full h-8 px-2 text-sm bg-background border border-primary/40 rounded focus:outline-none focus:border-primary"
+ className="w-full h-8 px-2 text-sm bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md focus:outline-none focus:border-primary"
  />
  </div>
  )}
@@ -209,10 +209,10 @@ export default function UnivChat({
  key={channel.id}
  onClick={() => setActiveChannelId(channel.id)}
  className={cn(
- "w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors",
+ "w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm transition-colors",
  activeChannelId === channel.id 
  ? "bg-primary/10 text-primary font-semibold" 
- : "text-muted-foreground hover:bg-muted hover:text-foreground"
+ : "text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground"
  )}
  >
  <HashIcon className="w-4 h-4 opacity-70" />
@@ -220,22 +220,22 @@ export default function UnivChat({
  </button>
  ))}
  {channels.length === 0 && !isCreatingChannel && (
- <div className="px-2 text-xs text-muted-foreground italic">No channels yet.</div>
+ <div className="px-2 text-xs text-[#71717a] dark:text-gray-400 italic tracking-[0.04em]">No channels yet.</div>
  )}
  </div>
  </div>
  </div>
  
  {/* Current User footer */}
- <div className="p-3 border-t border-primary/40 bg-card">
+ <div className="p-3 border-t border-primary/40 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 px-2">
- <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-xs relative">
+ <div className="w-8 h-8 rounded-md-full bg-primary/20 flex items-center justify-center text-primary font-semibold text-xs relative tracking-[0.04em]">
  {currentUser?.email?.charAt(0).toUpperCase() || 'U'}
- <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-card rounded-full"></div>
+ <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500/10 border-2 border-card rounded-md-full hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>
  </div>
  <div className="flex-1 min-w-0">
- <p className="text-sm font-bold text-foreground truncate">{currentUser?.email?.split('@')[0] || 'User'}</p>
- <p className="text-[10px] text-muted-foreground truncate">Online</p>
+ <p className="text-sm font-semibold text-foreground truncate">{currentUser?.email?.split('@')[0] || 'User'}</p>
+ <p className="text-[10px] text-[#71717a] dark:text-gray-400 truncate">Online</p>
  </div>
  </div>
  </div>
@@ -246,12 +246,12 @@ export default function UnivChat({
  {activeChannelId ? (
  <>
  {/* Header */}
- <div className="h-14 px-6 flex items-center justify-between border-b border-primary/40 shrink-0 bg-card/80 backdrop-blur-md z-10">
+ <div className="h-14 px-6 flex items-center justify-between border-b border-primary/40 shrink-0 bg-card/80 backdrop-blur-md z-10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2">
- <Hash className="w-5 h-5 text-muted-foreground" />
- <h3 className="font-bold text-foreground">{activeChannel?.name || 'general'}</h3>
+ <Hash className="w-5 h-5 text-[#71717a] dark:text-gray-400" />
+ <h3 className="font-semibold text-foreground">{activeChannel?.name || 'general'}</h3>
  </div>
- <div className="flex items-center gap-3 text-muted-foreground">
+ <div className="flex items-center gap-3 text-[#71717a] dark:text-gray-400">
  <Search className="w-4 h-4 cursor-pointer hover:text-foreground transition-colors" />
  <MoreVertical className="w-4 h-4 cursor-pointer hover:text-foreground transition-colors" />
  </div>
@@ -260,11 +260,11 @@ export default function UnivChat({
  {/* Messages List */}
  <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
  <div className="text-center py-10">
- <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+ <div className="w-16 h-16 bg-primary/10 rounded-md-2xl flex items-center justify-center mx-auto mb-4">
  <Hash className="w-8 h-8 text-primary" />
  </div>
- <h2 className="text-2xl font-bold text-foreground mb-2">Welcome to #{activeChannel?.name || 'general'}</h2>
- <p className="text-muted-foreground text-sm max-w-md mx-auto">This is the start of the #{activeChannel?.name || 'general'} channel. Messages are real-time.</p>
+ <h2 className="text-2xl font-semibold text-foreground mb-2 tracking-[-0.02em]">Welcome to #{activeChannel?.name || 'general'}</h2>
+ <p className="text-[#71717a] dark:text-gray-400 text-sm max-w-md mx-auto">This is the start of the #{activeChannel?.name || 'general'} channel. Messages are real-time.</p>
  </div>
 
  {messages.map((msg, idx) => {
@@ -272,15 +272,15 @@ export default function UnivChat({
  (new Date(msg.created_at) - new Date(messages[idx - 1].created_at) > 300000); // 5 mins
  
  return (
- <div key={msg.id} className={cn("group flex gap-4 hover:bg-muted/30 -mx-4 px-4 py-1 rounded-xl transition-colors", showHeader ? "mt-6" : "mt-1")}>
+ <div key={msg.id} className={cn("group flex gap-4 hover:bg-muted/30 -mx-4 px-4 py-1 rounded-md-xl transition-colors", showHeader ? "mt-6" : "mt-1")}>
  {/* Avatar */}
  <div className="w-10 shrink-0">
  {showHeader ? (
- <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm ">
+ <div className="w-10 h-10 rounded-md-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-semibold text-sm ">
  {msg.sender_email?.charAt(0).toUpperCase() || 'U'}
  </div>
  ) : (
- <div className="w-10 text-[10px] text-muted-foreground opacity-0 group-hover:opacity-100 text-right pr-2 pt-1">
+ <div className="w-10 text-[10px] text-[#71717a] dark:text-gray-400 opacity-0 group-hover:opacity-100 text-right pr-2 pt-1">
  {new Date(msg.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
  </div>
  )}
@@ -290,8 +290,8 @@ export default function UnivChat({
  <div className="flex-1 min-w-0">
  {showHeader && (
  <div className="flex items-baseline gap-2 mb-1">
- <span className="font-bold text-foreground">{msg.sender_email?.split('@')[0]}</span>
- <span className="text-xs text-muted-foreground font-medium">
+ <span className="font-semibold text-foreground">{msg.sender_email?.split('@')[0]}</span>
+ <span className="text-xs text-[#71717a] dark:text-gray-400 font-medium tracking-[0.04em]">
  {new Date(msg.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
  </span>
  </div>
@@ -300,9 +300,9 @@ export default function UnivChat({
  </div>
 
  {/* Quick Actions (Hover) */}
- <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-background border border-primary/40 rounded-lg px-1 py-1 h-8 self-start -mt-3 relative z-10">
- <button className="p-1.5 hover:bg-muted rounded text-muted-foreground hover:text-foreground"><Smile className="w-4 h-4" /></button>
- <button className="p-1.5 hover:bg-muted rounded text-muted-foreground hover:text-foreground"><Reply className="w-4 h-4" /></button>
+ <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl px-1 py-1 h-8 self-start -mt-3 relative z-10">
+ <button className="p-1.5 hover:bg-muted rounded-md text-[#71717a] dark:text-gray-400 hover:text-foreground"><Smile className="w-4 h-4" /></button>
+ <button className="p-1.5 hover:bg-muted rounded-md text-[#71717a] dark:text-gray-400 hover:text-foreground"><Reply className="w-4 h-4" /></button>
  </div>
  </div>
  );
@@ -314,7 +314,7 @@ export default function UnivChat({
  <div className="p-4 bg-background shrink-0 pb-6">
  <form 
  onSubmit={handleSendMessage}
- className="bg-card border border-primary/40 rounded-xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden"
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="px-4 py-3">
  <textarea
@@ -332,15 +332,15 @@ export default function UnivChat({
  />
  </div>
  <div className="bg-muted/30 px-3 py-2 flex items-center justify-between border-t border-primary/40">
- <div className="flex items-center gap-1 text-muted-foreground">
- <button type="button" className="p-1.5 hover:bg-muted rounded hover:text-foreground transition-colors"><Plus className="w-4 h-4" /></button>
- <button type="button" className="p-1.5 hover:bg-muted rounded hover:text-foreground transition-colors"><Smile className="w-4 h-4" /></button>
- <button type="button" className="p-1.5 hover:bg-muted rounded hover:text-foreground transition-colors"><Paperclip className="w-4 h-4" /></button>
+ <div className="flex items-center gap-2 text-[#71717a] dark:text-gray-400">
+ <button type="button" className="p-1.5 hover:bg-muted rounded-md hover:text-foreground transition-colors"><Plus className="w-4 h-4" /></button>
+ <button type="button" className="p-1.5 hover:bg-muted rounded-md hover:text-foreground transition-colors"><Smile className="w-4 h-4" /></button>
+ <button type="button" className="p-1.5 hover:bg-muted rounded-md hover:text-foreground transition-colors"><Paperclip className="w-4 h-4" /></button>
  </div>
  <button 
  type="submit"
  disabled={!messageInput.trim() || sendMessageMutation.isPending}
- className="p-1.5 bg-primary text-white rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:hover:bg-primary transition-colors flex items-center gap-2 px-3 text-sm font-medium"
+ className="p-1.5 bg-primary text-white rounded-xl hover:bg-primary/90 disabled:opacity-50 disabled:hover:bg-primary transition-colors flex items-center gap-2 px-3 text-sm font-medium"
  >
  <Send className="w-4 h-4" /> 
  <span className="hidden sm:inline">Send</span>
@@ -350,7 +350,7 @@ export default function UnivChat({
  </div>
  </>
  ) : (
- <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground p-8">
+ <div className="flex-1 flex flex-col items-center justify-center text-[#71717a] dark:text-gray-400 p-8">
  <MessageSquare className="w-16 h-16 mb-4 opacity-20" />
  <p>Select a channel or create a new one to start chatting.</p>
  </div>

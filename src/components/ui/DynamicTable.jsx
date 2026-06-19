@@ -44,9 +44,9 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
         const val = row.original.data?.[field.name];
         if (field.field_type === 'boolean') {
           return val ? (
-            <span className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full">Yes</span>
+            <span className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-md-full tracking-[0.04em]">Yes</span>
           ) : (
-            <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full">No</span>
+            <span className="px-2 py-1 bg-muted text-[#71717a] dark:text-gray-400 text-xs rounded-md-full tracking-[0.04em]">No</span>
           );
         }
         return <div className="text-sm max-w-[200px] truncate" title={val}>{val || '-'}</div>;
@@ -121,7 +121,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
             type="checkbox"
             checked={!!val}
             onChange={e => setEditData({ ...editData, [field.name]: e.target.checked })}
-            className="h-4 w-4 rounded border-primary/40"
+            className="h-4 w-4 rounded-md border-primary/40"
           />
         </div>
       );
@@ -131,11 +131,11 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
       try { options = typeof field.options === 'string' ? JSON.parse(field.options) : (field.options || []); } catch { options = []; }
       return (
         <div key={field.name} className="space-y-1">
-          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</label>
+          <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{label}</label>
           <select
             value={val}
             onChange={e => setEditData({ ...editData, [field.name]: e.target.value })}
-            className="w-full rounded-lg border border-primary/40 bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
           >
             <option value="">Select...</option>
             {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
@@ -146,7 +146,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
     if (field.field_type === 'date') {
       return (
         <div key={field.name} className="space-y-1">
-          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</label>
+          <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{label}</label>
           <Input
             type="date"
             value={val}
@@ -158,7 +158,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
     if (field.field_type === 'number') {
       return (
         <div key={field.name} className="space-y-1">
-          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</label>
+          <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{label}</label>
           <Input
             type="number"
             value={val}
@@ -169,7 +169,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
     }
     return (
       <div key={field.name} className="space-y-1">
-        <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</label>
+        <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{label}</label>
         <Input
           type="text"
           value={val}
@@ -183,7 +183,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="relative w-72">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-[#71717a] dark:text-gray-400" />
           <Input
             placeholder="Search all columns..."
             value={globalFilter ?? ''}
@@ -191,13 +191,13 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
             className="pl-9"
           />
         </div>
-        <span className="text-xs text-muted-foreground">{data.length} record{data.length !== 1 ? 's' : ''}</span>
+        <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{data.length} record{data.length !== 1 ? 's' : ''}</span>
       </div>
 
-      <div className="rounded-md border border-primary/40 bg-card">
+      <div className="rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="text-xs text-muted-foreground bg-muted/50 border-b border-primary/40 uppercase">
+            <thead className="text-xs text-[#71717a] dark:text-gray-400 bg-muted/50 border-b border-primary/40 uppercase tracking-[0.04em]">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
@@ -219,14 +219,14 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
                       </td>
                     ))}
                     <td className="px-4 py-3 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-primary" title="View" onClick={() => setSelectedRecord(row.original)}>
+                      <div className="flex items-center justify-end gap-2">
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-[#71717a] dark:text-gray-400 hover:text-primary" title="View" onClick={() => setSelectedRecord(row.original)}>
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-amber-600" title="Edit" onClick={() => openEdit(row.original)}>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-[#71717a] dark:text-gray-400 hover:text-amber-600" title="Edit" onClick={() => openEdit(row.original)}>
                           <Pencil className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-red-600" title="Delete" onClick={() => setDeleteRecord(row.original)}>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-[#71717a] dark:text-gray-400 hover:text-red-600" title="Delete" onClick={() => setDeleteRecord(row.original)}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -235,7 +235,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
                 ))
               ) : (
                 <tr>
-                  <td colSpan={columns.length + 1} className="h-24 text-center text-muted-foreground">
+                  <td colSpan={columns.length + 1} className="h-24 text-center text-[#71717a] dark:text-gray-400">
                     No records found. Add your first record using the button above.
                   </td>
                 </tr>
@@ -249,7 +249,7 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
         <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
           <ChevronLeft className="h-4 w-4 mr-1" /> Previous
         </Button>
-        <span className="text-xs text-muted-foreground px-2">
+        <span className="text-xs text-[#71717a] dark:text-gray-400 px-2 tracking-[0.04em]">
           Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount() || 1}
         </span>
         <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
@@ -268,11 +268,11 @@ export default function DynamicTable({ data = [], fieldDefinitions = [], moduleD
             <div className="mt-2 space-y-2">
               {fieldDefinitions.map(f => (
                 <div key={f.name} className="flex justify-between items-center py-2 border-b border-primary/40 last:border-0">
-                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{f.name.replace(/_/g, ' ')}</span>
+                  <span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{f.name.replace(/_/g, ' ')}</span>
                   <span className="text-sm font-medium text-foreground max-w-[60%] text-right break-words">{String(selectedRecord.data[f.name] ?? '-')}</span>
                 </div>
               ))}
-              <p className="text-[11px] text-muted-foreground pt-2">Created: {new Date(selectedRecord.created_at).toLocaleString()}</p>
+              <p className="text-[11px] text-[#71717a] dark:text-gray-400 pt-2">Created: {new Date(selectedRecord.created_at).toLocaleString()}</p>
             </div>
           )}
           <DialogFooter className="mt-4">

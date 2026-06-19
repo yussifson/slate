@@ -42,19 +42,19 @@ export default function UniEnrollment() {
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
  <div className="border-b border-primary/40 pb-4">
- <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Enrollment Analytics</h1>
+ <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">Enrollment Analytics</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Track enrollment trends, pipeline yield metrics, and historical admissions data.</p>
  </div>
  
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  {stats.map((stat, i) => (
- <div key={i} className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
+ <div key={i} className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6">
  <div className="flex items-center justify-between">
  <div>
- <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">{stat.label}</p>
- <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight">{stat.value}</h3>
+ <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">{stat.label}</p>
+ <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight tracking-[-0.02em]">{stat.value}</h3>
  </div>
- <div className="w-12 h-12 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: `color-mix(in srgb, ${stat.color} 15%, transparent)`}}>
+ <div className="w-12 h-12 rounded-md-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: `color-mix(in srgb, ${stat.color} 15%, transparent)`}}>
  <stat.icon className="w-6 h-6" style={{ color: stat.color}} />
  </div>
  </div>
@@ -63,7 +63,7 @@ export default function UniEnrollment() {
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
- <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 ">
+ <div className="lg:col-span-2 bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 ">
  <h2 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2 mb-1">
  <BarChart4 className="w-5 h-5 text-[var(--primary)]" /> Enrollment & Application Growth
  </h2>
@@ -92,7 +92,7 @@ export default function UniEnrollment() {
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 ">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 ">
  <h2 className="font-semibold text-[var(--color-text-primary)] mb-1">Conversion Overview</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-6">Funnel metrics from initial review to registration.</p>
  <div className="space-y-6">
@@ -101,8 +101,8 @@ export default function UniEnrollment() {
  <span>Application to Interview Rate</span>
  <span>82%</span>
  </div>
- <div className="w-full bg-[var(--color-surface-2)] h-2 rounded-full overflow-hidden">
- <div className="bg-[var(--primary)] h-full rounded-full" style={{ width: '82%'}} />
+ <div className="w-full bg-[var(--color-surface-2)] h-2 rounded-md-full overflow-hidden">
+ <div className="bg-[var(--primary)] h-full rounded-md-full" style={{ width: '82%'}} />
  </div>
  </div>
  <div>
@@ -110,8 +110,8 @@ export default function UniEnrollment() {
  <span>Interview to Offer Yield</span>
  <span>65%</span>
  </div>
- <div className="w-full bg-[var(--color-surface-2)] h-2 rounded-full overflow-hidden">
- <div className="bg-[var(--color-success)] h-full rounded-full" style={{ width: '65%'}} />
+ <div className="w-full bg-[var(--color-surface-2)] h-2 rounded-md-full overflow-hidden">
+ <div className="bg-[var(--color-success)] h-full rounded-md-full" style={{ width: '65%'}} />
  </div>
  </div>
  <div>
@@ -119,14 +119,14 @@ export default function UniEnrollment() {
  <span>Offer Acceptance Rate</span>
  <span>78%</span>
  </div>
- <div className="w-full bg-[var(--color-surface-2)] h-2 rounded-full overflow-hidden">
- <div className="bg-[var(--color-info)] h-full rounded-full" style={{ width: '78%'}} />
+ <div className="w-full bg-[var(--color-surface-2)] h-2 rounded-md-full overflow-hidden">
+ <div className="bg-[var(--color-info)] h-full rounded-md-full" style={{ width: '78%'}} />
  </div>
  </div>
- <div className="p-4 bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-lg)] flex items-center justify-between">
+ <div className="p-4 bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-lg)] flex items-center justify-between">
  <div>
- <p className="text-[11px] font-bold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Current Term Yield</p>
- <p className="text-[var(--text-2xl)] font-display font-black text-[var(--color-text-primary)] mt-1">74.2%</p>
+ <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">Current Term Yield</p>
+ <p className="text-[var(--text-2xl)] font-display font-black text-[var(--color-text-primary)] mt-1 tracking-[-0.02em]">74.2%</p>
  </div>
  <TrendingUp className="w-8 h-8 text-[var(--color-success)]" />
  </div>

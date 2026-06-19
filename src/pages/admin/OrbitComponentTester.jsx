@@ -213,8 +213,8 @@ export default function OrbitComponentTester() {
   if (!componentName || !components[componentName]) {
     return (
       <div className="p-10 text-center flex flex-col items-center justify-center min-h-[50vh]">
-        <h2 className="text-xl font-bold">Component Not Found</h2>
-        <p className="text-muted-foreground mt-2">Please select a valid component from the Orbit Build dropdown.</p>
+        <h2 className="text-xl font-semibold">Component Not Found</h2>
+        <p className="text-[#71717a] dark:text-gray-400 mt-2">Please select a valid component from the Orbit Build dropdown.</p>
       </div>
     );
   }

@@ -111,8 +111,8 @@ export default function Loyalty() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">Loyalty Program</h1>
- <p className="text-sm text-muted-foreground mt-0.5">Manage rewards and tiers for your best customers.</p>
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Loyalty Program</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">Manage rewards and tiers for your best customers.</p>
  </div>
  <Button onClick={() => { setEditingId(null); setFormData({ customerIds: [], points: '', tier: 'Bronze'}); setShowModal(true);}} className="gap-2 bg-orange-600 hover:bg-orange-700 text-white">
  <Plus className="w-4 h-4" /> Add Member(s)
@@ -128,16 +128,16 @@ export default function Loyalty() {
  <RetailStatCard label="Gold Tier Members" value={members.filter(m => m.tier === 'Gold').length} icon={Award} />
  </div>
 
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search members..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search members..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  <div className="overflow-x-auto">
  {isLoading ? <div className="py-12 text-center">Loading...</div> : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
  <Star className="w-12 h-12 mx-auto mb-3 opacity-30" />
  <p className="font-semibold">No loyalty members yet.</p>
  </div>
@@ -154,23 +154,23 @@ export default function Loyalty() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40">
+ <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Member ID</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Customer Name</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Points</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Tier</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Actions</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Member ID</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Customer Name</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Points</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Tier</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Actions</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
  {filtered.map(m => (
  <tr key={m.id} className="hover:bg-muted/50 transition-colors">
- <td className="px-6 py-4 font-bold text-card-foreground">{m.memberId}</td>
- <td className="px-6 py-4 text-muted-foreground">{m.customerName}</td>
- <td className="px-6 py-4 text-center font-bold text-primary">{m.points}</td>
+ <td className="px-6 py-4 font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{m.memberId}</td>
+ <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">{m.customerName}</td>
+ <td className="px-6 py-4 text-center font-semibold text-primary">{m.points}</td>
  <td className="px-6 py-4 text-center">
- <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${m.tier === 'Gold' ? 'bg-amber-100 text-amber-700' : m.tier === 'Silver' ? 'bg-slate-200 text-slate-700 dark:text-slate-300' : 'bg-orange-100 text-orange-800'}`}>{m.tier}</span>
+ <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-md-full uppercase tracking-wider ${m.tier === 'Gold' ? 'bg-amber-100 text-amber-700' : m.tier === 'Silver' ? 'bg-slate-200 text-slate-700 dark:text-slate-300' : 'bg-orange-100 text-orange-800'}`}>{m.tier}</span>
  </td>
  <td className="px-6 py-4 text-right">
  <Button variant="ghost" size="icon" onClick={() => openEdit(m)}><Edit className="w-4 h-4" /></Button>
@@ -186,20 +186,20 @@ export default function Loyalty() {
 
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto">
- <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Member' : 'Add Member(s)'}</h2>
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editingId ? 'Edit Member' : 'Add Member(s)'}</h2>
  <div className="space-y-4">
  
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase mb-2 block">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-2 block tracking-[0.04em]">
  {editingId ? 'Customer' : 'Select Customer(s)'}
  </label>
  {editingId ? (
- <select value={formData.customerIds[0] || ''} onChange={e => setFormData({...formData, customerIds: [e.target.value]})} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
+ <select value={formData.customerIds[0] || ''} onChange={e => setFormData({...formData, customerIds: [e.target.value]})} className="flex h-10 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm mt-1">
  {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
  </select>
  ) : (
- <div className="border rounded-md max-h-48 overflow-y-auto bg-white dark:bg-slate-900/40 p-2 space-y-1">
+ <div className="border-[0.5px] border-black/9 dark:border-white/8 rounded-lg max-h-48 overflow-y-auto bg-white dark:bg-slate-900/40 p-2 space-y-1 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {customers.length === 0 ? (
  <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-2">No customers available.</p>
  ) : (
@@ -207,7 +207,7 @@ export default function Loyalty() {
  <div 
  key={c.id} 
  onClick={() => toggleCustomer(c.id)}
- className={`flex items-center justify-between p-2 rounded cursor-pointer text-sm ${formData.customerIds.includes(c.id) ? 'bg-orange-50 border border-orange-200 text-orange-700 font-medium' : 'hover:bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300'}`}
+ className={`flex items-center justify-between p-2 rounded-md cursor-pointer text-sm ${formData.customerIds.includes(c.id) ? 'bg-orange-50 border-[0.5px] border-black/9 dark:border-white/8 border-orange-200 text-orange-700 font-medium' : 'hover:bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300'}`}
  >
  {c.name}
  {formData.customerIds.includes(c.id) && <Check className="w-4 h-4 text-orange-600" />}
@@ -218,10 +218,10 @@ export default function Loyalty() {
  )}
  </div>
 
- <div><label className="text-xs font-bold text-muted-foreground uppercase">Initial Points</label><Input type="number" value={formData.points} onChange={e => setFormData({ ...formData, points: e.target.value})} className="mt-1" /></div>
+ <div><label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Initial Points</label><Input type="number" value={formData.points} onChange={e => setFormData({ ...formData, points: e.target.value})} className="mt-1" /></div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">Tier</label>
- <select value={formData.tier} onChange={e => setFormData({...formData, tier: e.target.value})} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Tier</label>
+ <select value={formData.tier} onChange={e => setFormData({...formData, tier: e.target.value})} className="flex h-10 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm mt-1">
  <option>Bronze</option><option>Silver</option><option>Gold</option>
  </select>
  </div>

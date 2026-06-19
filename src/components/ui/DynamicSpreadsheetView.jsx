@@ -237,12 +237,12 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
 
  if (!data || data.length === 0) {
  return (
- <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border border-primary/40">
- <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 -green-500/20">
+ <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <div className="w-16 h-16 rounded-md-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 -green-500/20">
  <Table2 className="w-8 h-8 text-white" />
  </div>
  <h3 className="text-lg font-semibold text-slate-800 mb-1">No Data Yet</h3>
- <p className="text-sm text-muted-foreground max-w-sm text-center">
+ <p className="text-sm text-[#71717a] dark:text-gray-400 max-w-sm text-center">
  Add records to start working with the spreadsheet.
  </p>
  </div>
@@ -254,12 +254,12 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  {/* Toolbar */}
  <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center -green-500/20">
+ <div className="w-10 h-10 rounded-md-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center -green-500/20">
  <Table2 className="w-5 h-5 text-white" />
  </div>
  <div>
- <h2 className="text-lg font-bold text-slate-800">Spreadsheet</h2>
- <p className="text-xs text-muted-foreground">
+ <h2 className="text-lg font-semibold text-slate-800">Spreadsheet</h2>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  {sortedData.length} row{sortedData.length !== 1 ? 's' : ''} · {fieldDefinitions.length} column{fieldDefinitions.length !== 1 ? 's' : ''}
  {selectedRows.size > 0 && (
  <span className="ml-2 text-primary font-medium">
@@ -276,13 +276,13 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  variant="destructive"
  size="sm"
  onClick={() => setShowDeleteConfirm(true)}
- className="gap-1.5 text-xs"
+ className="gap-2.5 text-xs tracking-[0.04em]"
  >
  <Trash2 className="w-3.5 h-3.5" />
  Delete ({selectedRows.size})
  </Button>
  )}
- <Button variant="outline" size="sm" onClick={handleExport} className="gap-1.5 text-xs">
+ <Button variant="outline" size="sm" onClick={handleExport} className="gap-2.5 text-xs tracking-[0.04em]">
  <Download className="w-3.5 h-3.5" />
  Export CSV
  </Button>
@@ -290,7 +290,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  </div>
 
  {/* Spreadsheet */}
- <div className="rounded-xl border border-primary/40 bg-card overflow-hidden">
+ <div className="rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="overflow-x-auto">
  <table className="w-full text-sm border-collapse">
  {/* Header */}
@@ -300,7 +300,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  <th className="w-12 px-3 py-3 text-center border-r border-primary/40 sticky left-0 bg-muted/50 z-10">
  <button
  onClick={toggleSelectAll}
- className="text-muted-foreground hover:text-muted-foreground transition-colors"
+ className="text-[#71717a] dark:text-gray-400 hover:text-[#71717a] dark:text-gray-400 transition-colors"
  >
  {allSelected ? (
  <CheckSquare className="w-4 h-4 text-primary" />
@@ -312,7 +312,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  </button>
  </th>
  {/* Row number */}
- <th className="w-12 px-3 py-3 text-center text-[10px] font-bold text-muted-foreground uppercase tracking-wider border-r border-primary/40">
+ <th className="w-12 px-3 py-3 text-center text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider border-r border-primary/40 tracking-[0.04em]">
  #
  </th>
  {/* Field columns */}
@@ -323,7 +323,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  >
  <button
  onClick={() => toggleSort(field.name)}
- className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground transition-colors group"
+ className="flex items-center gap-2.5 text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider hover:text-foreground transition-colors group tracking-[0.04em]"
  >
  {getColumnLabel(field.name)}
  <span className="flex-shrink-0">
@@ -334,10 +334,10 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  <ArrowDown className="w-3 h-3 text-primary" />
  )
  ) : (
- <ArrowUpDown className="w-3 h-3 text-slate-300 group-hover:text-muted-foreground" />
+ <ArrowUpDown className="w-3 h-3 text-slate-300 group-hover:text-[#71717a] dark:text-gray-400" />
  )}
  </span>
- <span className="text-[9px] text-muted-foreground font-normal normal-case ml-1">
+ <span className="text-[9px] text-[#71717a] dark:text-gray-400 font-normal normal-case ml-1">
  {field.field_type}
  </span>
  </button>
@@ -345,7 +345,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  ))}
  {/* Created at */}
  <th className="px-4 py-3 text-left">
- <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Created</span>
+ <span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">Created</span>
  </th>
  </tr>
  </thead>
@@ -367,7 +367,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  >
  {/* Checkbox */}
  <td className="px-3 py-2 text-center border-r border-primary/40 sticky left-0 bg-inherit z-10">
- <button onClick={() => toggleSelect(record.id)} className="text-muted-foreground hover:text-muted-foreground">
+ <button onClick={() => toggleSelect(record.id)} className="text-[#71717a] dark:text-gray-400 hover:text-[#71717a] dark:text-gray-400">
  {isSelected ? (
  <CheckSquare className="w-4 h-4 text-primary" />
  ) : (
@@ -376,7 +376,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  </button>
  </td>
  {/* Row number */}
- <td className="px-3 py-2 text-center text-xs text-muted-foreground font-mono border-r border-primary/40">
+ <td className="px-3 py-2 text-center text-xs text-[#71717a] dark:text-gray-400 font-mono border-r border-primary/40 tracking-[0.04em]">
  {rowIdx + 1}
  </td>
  {/* Field cells */}
@@ -401,7 +401,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  {val ? (
  <CheckSquare className="w-4 h-4 text-primary" />
  ) : (
- <Square className="w-4 h-4 text-slate-300 hover:text-muted-foreground" />
+ <Square className="w-4 h-4 text-slate-300 hover:text-[#71717a] dark:text-gray-400" />
  )}
  </button>
  </div>
@@ -429,7 +429,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  {field.field_type !== 'boolean' && field.field_type !== 'select' && (
  <>
  {isEditing ? (
- <div className="flex items-center gap-1">
+ <div className="flex items-center gap-2">
  <input
  type={field.field_type === 'date' ? 'date' : field.field_type === 'number' ? 'number' : 'text'}
  value={editValue}
@@ -437,13 +437,13 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  onKeyDown={handleKeyDown}
  onBlur={saveCell}
  autoFocus
- className="w-full bg-card border border-primary/30 rounded px-2 py-1 text-sm text-slate-800 focus:outline-none focus:ring-1 focus:ring-primary/70"
+ className="w-full bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/30 rounded-md px-2 py-1 text-sm text-slate-800 focus:outline-none focus:ring-1 focus:ring-primary/70 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  ) : (
  <div
  onClick={() => startEdit(record.id, field.name, val)}
- className="px-3 py-1.5 text-sm text-foreground cursor-text hover:bg-muted/50 rounded min-h-[32px] flex items-center"
+ className="px-3 py-1.5 text-sm text-foreground cursor-text hover:bg-muted/50 rounded-md min-h-[32px] flex items-center"
  title="Click to edit"
  >
  {field.field_type === 'date' && val ? (
@@ -461,7 +461,7 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
  );
 })}
  {/* Created at */}
- <td className="px-4 py-2 text-xs text-muted-foreground whitespace-nowrap">
+ <td className="px-4 py-2 text-xs text-[#71717a] dark:text-gray-400 whitespace-nowrap tracking-[0.04em]">
  {record.created_at ? format(new Date(record.created_at), 'MMM d, yyyy') : '-'}
  </td>
  </tr>
@@ -473,12 +473,12 @@ export default function DynamicSpreadsheetView({ data = [], fieldDefinitions = [
 
  {/* Footer */}
  <div className="px-4 py-3 bg-muted/50/80 border-t border-primary/40 flex items-center justify-between">
- <div className="text-xs text-muted-foreground">
+ <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  {sortedData.length} row{sortedData.length !== 1 ? 's' : ''} · Click any cell to edit
  </div>
- <div className="flex items-center gap-3 text-xs text-muted-foreground">
- <span className="flex items-center gap-1">
- <span className="w-2 h-2 rounded-full bg-primary" /> Sorted by: {sortField ? getColumnLabel(sortField) : 'Default'}
+ <div className="flex items-center gap-3 text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
+ <span className="flex items-center gap-2">
+ <span className="w-2 h-2 rounded-md-full bg-primary" /> Sorted by: {sortField ? getColumnLabel(sortField) : 'Default'}
  </span>
  </div>
  </div>

@@ -123,8 +123,8 @@ export default function Restaurant() {
  <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("restaurant_room_service", "Restaurant & Room Service")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t("manage_food_orders_and_pos", "Manage food orders and POS")}</p>
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("restaurant_room_service", "Restaurant & Room Service")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("manage_food_orders_and_pos", "Manage food orders and POS")}</p>
  </div>
  <Button onClick={() => setShowAddMenuModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
  <Plus className="w-4 h-4" /> {t("add_menu_item", "Add Menu Item")}
@@ -133,15 +133,15 @@ export default function Restaurant() {
  <div className="flex flex-col lg:flex-row gap-6">
  {/* Left: Menu & POS */}
  <div className="flex-1 space-y-4">
- <div className="bg-card p-4 rounded-xl border border-primary/40 flex gap-4">
+ <div className="bg-card p-4 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="relative flex-1">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <Input placeholder="Search menu items..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-muted" />
  </div>
  <select 
  value={selectedCategory} 
  onChange={e => setSelectedCategory(e.target.value)} 
- className="rounded-md border border-input bg-background px-3 py-2 text-sm max-w-[200px]"
+ className="rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm max-w-[200px]"
  >
  <option value="All">{t("all_categories", "All Categories")}</option>
  <option value="Starters">{t("starters", "Starters")}</option>
@@ -152,12 +152,12 @@ export default function Restaurant() {
  </div>
 
  {isMenuLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_menu", "Loading menu...")}</div>
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_menu", "Loading menu...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-primary/40">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Utensils className="w-12 h-12 mx-auto mb-3 opacity-30" />
  <p className="font-semibold">{t("no_menu_items_found", "No menu items found.")}</p>
- <p className="text-xs mt-1">{t(
+ <p className="text-xs mt-1 tracking-[0.04em]">{t(
  "click_add_menu_item_to_get_sta",
  "Click \"Add Menu Item\" to get started."
  )}</p>
@@ -166,20 +166,20 @@ export default function Restaurant() {
  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
  {filtered.map(item => {
  return (
- <div key={item.id} className="group bg-card p-4 rounded-xl border border-primary/40 hover:border-primary/20 cursor-pointer transition-all flex flex-col justify-between h-32 relative">
+ <div key={item.id} className="group bg-card p-4 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary/20 cursor-pointer transition-all flex flex-col justify-between h-32 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <button 
  onClick={(e) => { e.stopPropagation(); handleDeleteMenu(item.id);}} 
- className="absolute top-2 right-2 p-1 text-muted-foreground hover:text-red-500 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+ className="absolute top-2 right-2 p-1 text-[#71717a] dark:text-gray-400 hover:text-red-500 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
  >
  <Trash2 className="w-3.5 h-3.5" />
  </button>
  <div onClick={() => addToOrder(item)}>
- <p className="font-bold text-card-foreground line-clamp-1">{item.name}</p>
- <p className="text-xs text-muted-foreground">{item.category}</p>
+ <p className="font-semibold text-card-foreground line-clamp-1 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{item.name}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{item.category}</p>
  </div>
  <div onClick={() => addToOrder(item)} className="flex justify-between items-center mt-4">
- <span className="font-bold text-primary">${item.price.toFixed(2)}</span>
- <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-muted-foreground group-hover:bg-slate-100 group-hover:text-primary"><Plus className="w-4 h-4"/></div>
+ <span className="font-semibold text-primary">${item.price.toFixed(2)}</span>
+ <div className="w-6 h-6 rounded-md-full bg-muted flex items-center justify-center text-[#71717a] dark:text-gray-400 group-hover:bg-slate-100 group-hover:text-primary"><Plus className="w-4 h-4"/></div>
  </div>
  </div>
  );
@@ -189,14 +189,14 @@ export default function Restaurant() {
  </div>
 
  {/* Right: Current Order */}
- <div className="w-full lg:w-96 bg-card rounded-xl border border-primary/40 flex flex-col h-[600px] overflow-hidden">
+ <div className="w-full lg:w-96 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col h-[600px] overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 bg-primary text-white flex items-center justify-between">
- <h3 className="font-bold flex items-center gap-2"><ShoppingCart className="w-5 h-5"/> {t("current_order", "Current Order")}</h3>
- <Input value={roomNumber} onChange={e => setRoomNumber(e.target.value)} className="w-24 h-8 bg-primary/90 border-none text-white text-xs font-bold text-center" />
+ <h3 className="font-semibold flex items-center gap-2"><ShoppingCart className="w-5 h-5"/> {t("current_order", "Current Order")}</h3>
+ <Input value={roomNumber} onChange={e => setRoomNumber(e.target.value)} className="w-24 h-8 bg-primary/90 border-none text-white text-xs font-semibold text-center tracking-[0.04em]" />
  </div>
  <div className="flex-1 overflow-y-auto p-4 space-y-4">
  {order.length === 0 ? (
- <div className="h-full flex flex-col items-center justify-center text-muted-foreground opacity-50">
+ <div className="h-full flex flex-col items-center justify-center text-[#71717a] dark:text-gray-400 opacity-50">
  <Utensils className="w-12 h-12 mb-2" />
  <p className="text-sm font-medium">{t("order_is_empty", "Order is empty")}</p>
  </div>
@@ -205,12 +205,12 @@ export default function Restaurant() {
  return (
  <div key={item.id} className="flex justify-between items-center">
  <div className="flex-1">
- <p className="font-bold text-sm text-card-foreground">{item.name}</p>
- <p className="text-xs text-muted-foreground">${item.price} x {item.qty}</p>
+ <p className="font-semibold text-sm text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{item.name}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">${item.price} x {item.qty}</p>
  </div>
  <div className="flex items-center gap-3">
- <span className="font-bold text-sm">${(item.price * item.qty).toFixed(2)}</span>
- <button onClick={() => removeFromOrder(item.id)} className="text-red-500 hover:text-red-700 text-xs font-bold">{t("remove", "Remove")}</button>
+ <span className="font-semibold text-sm">${(item.price * item.qty).toFixed(2)}</span>
+ <button onClick={() => removeFromOrder(item.id)} className="text-red-500 hover:text-red-700 text-xs font-semibold tracking-[0.04em]">{t("remove", "Remove")}</button>
  </div>
  </div>
  );
@@ -219,16 +219,16 @@ export default function Restaurant() {
  </div>
  <div className="p-4 border-t border-primary/40 bg-muted space-y-4">
  <div className="flex justify-between items-center text-sm">
- <span className="text-muted-foreground">{t("subtotal", "Subtotal")}</span>
- <span className="font-bold text-card-foreground">${total.toFixed(2)}</span>
+ <span className="text-[#71717a] dark:text-gray-400">{t("subtotal", "Subtotal")}</span>
+ <span className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${total.toFixed(2)}</span>
  </div>
  <div className="flex justify-between items-center text-sm">
- <span className="text-muted-foreground">{t("tax_10", "Tax (10%)")}</span>
- <span className="font-bold text-card-foreground">${(total * 0.1).toFixed(2)}</span>
+ <span className="text-[#71717a] dark:text-gray-400">{t("tax_10", "Tax (10%)")}</span>
+ <span className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${(total * 0.1).toFixed(2)}</span>
  </div>
  <div className="flex justify-between items-center text-lg pt-2 border-t border-primary/40">
- <span className="font-bold text-card-foreground">{t("total", "Total")}</span>
- <span className="font-bold text-primary">${(total * 1.1).toFixed(2)}</span>
+ <span className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("total", "Total")}</span>
+ <span className="font-semibold text-primary">${(total * 1.1).toFixed(2)}</span>
  </div>
  <div className="grid grid-cols-2 gap-2 pt-2">
  <Button onClick={() => handlePlaceOrder('Room')} variant="outline" className="w-full">{t("charge_room", "Charge Room")}</Button>
@@ -239,16 +239,16 @@ export default function Restaurant() {
  </div>
  {showAddMenuModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-sm p-6 space-y-4">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Utensils className="w-5 h-5 text-primary"/> {t("add_menu_item", "Add Menu Item")}</h2>
+ <div className="bg-card rounded-md-2xl w-full max-w-sm p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><Utensils className="w-5 h-5 text-primary"/> {t("add_menu_item", "Add Menu Item")}</h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("item_name", "Item Name")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("item_name", "Item Name")}</label>
  <Input value={newMenu.name} onChange={e => setNewMenu({ ...newMenu, name: e.target.value})} className="mt-1" placeholder="e.g. T-Bone Steak" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("category", "Category")}</label>
- <select value={newMenu.category} onChange={e => setNewMenu({ ...newMenu, category: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("category", "Category")}</label>
+ <select value={newMenu.category} onChange={e => setNewMenu({ ...newMenu, category: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm">
  <option>{t("starters", "Starters")}</option>
  <option>{t("mains", "Mains")}</option>
  <option>{t("desserts", "Desserts")}</option>
@@ -256,7 +256,7 @@ export default function Restaurant() {
  </select>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("price", "Price ($)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("price", "Price ($)")}</label>
  <Input type="number" value={newMenu.price} onChange={e => setNewMenu({ ...newMenu, price: e.target.value})} className="mt-1" placeholder="e.g. 24.99" />
  </div>
  </div>

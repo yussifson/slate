@@ -53,26 +53,26 @@ export default function SHSParentProgress() {
  
  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
  <div>
- <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
+ <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent tracking-[-0.02em]">
  Academic Progress
  </h1>
- <p className="text-muted-foreground mt-1 text-sm font-medium">
+ <p className="text-[#71717a] dark:text-gray-400 mt-1 text-sm font-medium">
  View termly report cards and academic trends for your children.
  </p>
  </div>
  </div>
 
  {loading ? (
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-20 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading academic records...</CardContent>
  </Card>
  ) : wards.length === 0 ? (
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-20 text-center">
- <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
  <User className="w-8 h-8 text-primary dark:text-primary" />
  </div>
- <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No Wards Linked</h3>
+ <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No Wards Linked</h3>
  <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Contact the school administration to link your child's account.</p>
  </CardContent>
  </Card>
@@ -80,24 +80,24 @@ export default function SHSParentProgress() {
  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
  
  <div className="lg:col-span-1 space-y-4">
- <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider pl-2">Select Child</h3>
+ <h3 className="text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider pl-2 tracking-[0.04em]">Select Child</h3>
  {wards.map(ward => (
  <button
  key={ward.id}
  onClick={() => setSelectedWardId(ward.id)}
- className={`w-full p-4 rounded-2xl border text-left transition-all duration-300 flex items-center gap-4 ${
+ className={`w-full p-4 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 text-left transition-all duration-300 flex items-center gap-4 ${
  selectedWardId === ward.id 
  ? 'bg-primary dark:bg-primary border-primary dark:border-primary text-white -emerald-500/20 scale-100' 
  : 'bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:border-primary dark:border-primary/40 scale-95'
 }`}
  >
- <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shrink-0 ${
+ <div className={`w-12 h-12 rounded-md-full flex items-center justify-center font-semibold text-lg shrink-0 ${
  selectedWardId === ward.id ? 'bg-white dark:bg-slate-900/40 dark:bg-slate-900/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'
 }`}>
  {ward.title.charAt(0)}
  </div>
  <div>
- <h4 className="font-bold">{ward.title}</h4>
+ <h4 className="font-semibold">{ward.title}</h4>
  <p className={`text-xs ${selectedWardId === ward.id ? 'text-primary/20 dark:text-primary/80' : 'text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400'}`}>
  {ward.data?.classRoom || 'Form 1'} • {ward.data?.programmeName || 'General'}
  </p>
@@ -107,23 +107,23 @@ export default function SHSParentProgress() {
  </div>
 
  <div className="lg:col-span-3 space-y-6">
- <Card className="rounded-3xl border-none bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 text-white overflow-hidden">
+ <Card className="rounded-md-3xl border-none bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 text-white overflow-hidden">
  <CardContent className="p-8">
  <div className="flex justify-between items-start">
  <div>
- <h2 className="text-2xl font-black mb-1">{selectedWard?.title}'s Performance</h2>
+ <h2 className="text-2xl font-black mb-1 tracking-[-0.02em]">{selectedWard?.title}'s Performance</h2>
  <p className="text-primary/20 dark:text-primary/80 text-sm">Overall Academic Standing: Excellent</p>
  </div>
- <div className="w-16 h-16 rounded-2xl bg-white dark:bg-slate-900/40 dark:bg-slate-900/10 flex items-center justify-center">
+ <div className="w-16 h-16 rounded-md-2xl bg-white dark:bg-slate-900/40 dark:bg-slate-900/10 flex items-center justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <LineChart className="w-8 h-8 text-white" />
  </div>
  </div>
  </CardContent>
  </Card>
 
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50">
- <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+ <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <BookOpen className="w-5 h-5 text-primary dark:text-primary/70" /> Published Report Cards
  </CardTitle>
  </CardHeader>
@@ -138,11 +138,11 @@ export default function SHSParentProgress() {
  {wardReports.map(report => (
  <div key={report.id} className="p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
  <div className="flex items-start gap-4">
- <div className="w-12 h-12 rounded-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center shrink-0">
+ <div className="w-12 h-12 rounded-md-xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center shrink-0">
  <Award className="w-6 h-6 text-primary dark:text-primary/70" />
  </div>
  <div>
- <h4 className="font-bold text-slate-800 dark:text-slate-100 text-lg">{report.title}</h4>
+ <h4 className="font-semibold text-slate-800 dark:text-slate-100 text-lg">{report.title}</h4>
  <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">{report.data?.academicYear} • {report.data?.term}</p>
  <div className="flex gap-4 mt-2 text-sm font-semibold">
  <span className="text-primary">Avg: {report.data?.overallAverage}%</span>
@@ -150,7 +150,7 @@ export default function SHSParentProgress() {
  </div>
  </div>
  </div>
- <Button variant="outline" className="shrink-0 h-10 gap-2 rounded-xl border-primary dark:border-primary/20 text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
+ <Button variant="outline" className="shrink-0 h-10 gap-2 rounded-md-xl border-primary dark:border-primary/20 text-primary dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
  <Download className="w-4 h-4" /> Download PDF
  </Button>
  </div>

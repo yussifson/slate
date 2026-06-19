@@ -18,11 +18,11 @@ export default function DocumentPreviewModal({ fileUrl, fileName, open, onClose}
 
  if (isImage) {
  previewElement = (
- <div className="flex items-center justify-center p-4 bg-muted/20 rounded-lg max-h-[60vh] overflow-hidden">
+ <div className="flex items-center justify-center p-4 bg-muted/20 rounded-xl max-h-[60vh] overflow-hidden">
  <img
  src={fileUrl}
  alt={fileName}
- className="max-w-full max-h-[50vh] object-contain rounded-md animate-in fade-in duration-300"
+ className="max-w-full max-h-[50vh] object-contain rounded-lg animate-in fade-in duration-300"
  />
  </div>
  );
@@ -31,7 +31,7 @@ export default function DocumentPreviewModal({ fileUrl, fileName, open, onClose}
  <iframe
  src={`${fileUrl}#toolbar=0`}
  title={fileName}
- className="w-full h-[60vh] border border-primary/40 rounded-lg "
+ className="w-full h-[60vh] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl "
  />
  );
 } else if (isText) {
@@ -40,7 +40,7 @@ export default function DocumentPreviewModal({ fileUrl, fileName, open, onClose}
  <iframe
  src={fileUrl}
  title={fileName}
- className="w-full h-[60vh] border border-primary/40 rounded-lg bg-card p-4 text-sm font-mono "
+ className="w-full h-[60vh] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl bg-card p-4 text-sm font-mono  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  );
 } else {
@@ -50,7 +50,7 @@ export default function DocumentPreviewModal({ fileUrl, fileName, open, onClose}
  <iframe
  src={googleViewerUrl}
  title={fileName}
- className="w-full h-[60vh] border border-primary/40 rounded-lg "
+ className="w-full h-[60vh] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl "
  />
  );
 }
@@ -60,19 +60,19 @@ export default function DocumentPreviewModal({ fileUrl, fileName, open, onClose}
  <DialogContent className="max-w-3xl max-h-[85vh] p-6 font-sans">
  <DialogHeader className="border-b border-primary/40 pb-3 flex flex-row items-center justify-between gap-4">
  <div>
- <DialogTitle className="text-sm font-bold flex items-center gap-2">
+ <DialogTitle className="text-sm font-semibold flex items-center gap-2">
  <FileText className="w-4 h-4 text-primary" />
  {fileName}
  </DialogTitle>
  </div>
  <div className="flex items-center gap-2 select-none pr-8">
  <a href={fileUrl} download={fileName} target="_blank" rel="noopener noreferrer">
- <Button size="sm" variant="outline" className="h-8 gap-1.5 text-xs">
+ <Button size="sm" variant="outline" className="h-8 gap-2.5 text-xs tracking-[0.04em]">
  <Download className="w-3.5 h-3.5" /> {t("download", "Download")}
  </Button>
  </a>
  <a href={fileUrl} target="_blank" rel="noopener noreferrer">
- <Button size="sm" variant="ghost" className="h-8 gap-1.5 text-xs text-muted-foreground hover:text-foreground">
+ <Button size="sm" variant="ghost" className="h-8 gap-2.5 text-xs text-[#71717a] dark:text-gray-400 hover:text-foreground tracking-[0.04em]">
  <ExternalLink className="w-3.5 h-3.5" /> {t("open_direct", "Open Direct")}
  </Button>
  </a>

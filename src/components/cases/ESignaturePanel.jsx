@@ -18,7 +18,7 @@ const STATUS_CONFIG = {
   opened:   { color: "bg-amber-100 text-amber-700",  icon: Eye },
   signed:   { color: "bg-slate-100 text-primary/90",  icon: CheckCircle },
   declined: { color: "bg-red-100 text-red-700",      icon: XCircle },
-  expired:  { color: "bg-gray-100 text-gray-500",    icon: Clock },
+  expired:  { color: "bg-gray-100 text-[#71717a] dark:text-gray-400",    icon: Clock },
 };
 
 export default function ESignaturePanel({ caseData, user }) {
@@ -106,24 +106,24 @@ Slate Law Management`,
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-sm font-semibold">{t("e_signature_requests", "E-Signature Requests")}</h3>
-          <p className="text-xs text-muted-foreground mt-0.5">{t(
+          <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">{t(
             "send_documents_to_clients_for_",
             "Send documents to clients for legally binding electronic signatures"
           )}</p>
         </div>
         {canManage && (
-          <Button size="sm" onClick={() => setShowSendForm(true)} className="gap-1.5 text-xs">
+          <Button size="sm" onClick={() => setShowSendForm(true)} className="gap-2.5 text-xs tracking-[0.04em]">
             <Send className="w-3.5 h-3.5" /> {t("request_signature", "Request Signature")}
           </Button>
         )}
       </div>
       {isLoading ? (
-        <div className="p-8 text-center text-sm text-muted-foreground">{t("loading", "Loading...")}</div>
+        <div className="p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("loading", "Loading...")}</div>
       ) : requests.length === 0 ? (
-        <div className="bg-card rounded-xl border border-primary/40 p-10 text-center">
-          <PenTool className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
+        <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <PenTool className="w-10 h-10 mx-auto text-[#71717a] dark:text-gray-400 mb-3" />
           <p className="text-sm font-medium">{t("no_signature_requests_yet", "No signature requests yet")}</p>
-          <p className="text-xs text-muted-foreground mt-1">{t(
+          <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">{t(
             "send_documents_to_clients_for_",
             "Send documents to clients for e-signatures and track their status here."
           )}</p>
@@ -134,28 +134,28 @@ Slate Law Management`,
             const cfg = STATUS_CONFIG[req.status] || STATUS_CONFIG.sent;
             const StatusIcon = cfg.icon;
             return (
-              <div key={req.id} className="bg-card rounded-xl border border-primary/40 px-4 py-3 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+              <div key={req.id} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 px-4 py-3 flex items-center gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                <div className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
                   <PenTool className="w-4 h-4 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <p className="text-sm font-medium truncate">{req.document_name}</p>
-                    <Badge className={`text-[10px] gap-1 ${cfg.color}`}>
+                    <Badge className={`text-[10px] gap-2 ${cfg.color}`}>
                       <StatusIcon className="w-2.5 h-2.5" />
                       {req.status}
                     </Badge>
                   </div>
-                  <div className="flex flex-wrap gap-2 mt-0.5 text-xs text-muted-foreground">
+                  <div className="flex flex-wrap gap-2 mt-0.5 text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
                     <span>{t("to", "To:")} {req.client_name}({req.client_email})</span>
                     {req.sent_at && <span>{t("sent", "Sent:")} {format(new Date(req.sent_at), "MMM d, HH:mm")}</span>}
                     {req.opened_at && <span>{t("opened", "Opened:")} {format(new Date(req.opened_at), "MMM d, HH:mm")}</span>}
                     {req.signed_at && <span>{t("signed", "Signed:")} {format(new Date(req.signed_at), "MMM d, HH:mm")}</span>}
                   </div>
                 </div>
-                <div className="flex items-center gap-1 shrink-0">
+                <div className="flex items-center gap-2 shrink-0">
                   {req.signature_data && (
-                    <Button variant="outline" size="sm" className="text-xs h-7 px-2" onClick={() => setViewingSig(req)}>
+                    <Button variant="outline" size="sm" className="text-xs h-7 px-2 tracking-[0.04em]" onClick={() => setViewingSig(req)}>
                       {t("view_signature", "View Signature")}
                     </Button>
                   )}
@@ -183,12 +183,12 @@ Slate Law Management`,
           <DialogContent className="max-w-md">
             <DialogHeader><DialogTitle>{t("signed_signature", "Signed Signature —")} {viewingSig.document_name}</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div className="bg-white border border-primary/40 rounded-lg p-4 flex items-center justify-center min-h-32">
+              <div className="bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 flex items-center justify-center min-h-32 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                 {viewingSig.signature_data
                   ? <img src={viewingSig.signature_data} alt="Client signature" className="max-h-28 object-contain" />
-                  : <p className="text-sm text-muted-foreground">{t("no_signature_image", "No signature image")}</p>}
+                  : <p className="text-sm text-[#71717a] dark:text-gray-400">{t("no_signature_image", "No signature image")}</p>}
               </div>
-              <div className="text-xs text-muted-foreground space-y-1">
+              <div className="text-xs text-[#71717a] dark:text-gray-400 space-y-1 tracking-[0.04em]">
                 <p><strong>{t("signed_by", "Signed by:")}</strong> {viewingSig.client_name} ({viewingSig.client_email})</p>
                 {viewingSig.signed_at && <p><strong>{t("signed_at", "Signed at:")}</strong> {format(new Date(viewingSig.signed_at), "PPP p")}</p>}
                 {viewingSig.signature_ip && <p><strong>{t("ip_address", "IP Address:")}</strong> {viewingSig.signature_ip}</p>}
@@ -247,7 +247,7 @@ function SendSignatureDialog({ open, onClose, onSubmit, documents, caseData, isS
           </div>
           <div className="flex justify-end gap-2 pt-1">
             <Button variant="outline" onClick={onClose}>{t("cancel", "Cancel")}</Button>
-            <Button onClick={() => onSubmit(form)} disabled={isSending || !form.document_id || !form.client_email} className="gap-1.5">
+            <Button onClick={() => onSubmit(form)} disabled={isSending || !form.document_id || !form.client_email} className="gap-2.5">
               {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
               {t("send_for_signature", "Send for Signature")}
             </Button>

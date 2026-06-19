@@ -96,35 +96,35 @@ export default function SHSWhatsapp() {
  
  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
  <div>
- <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
+ <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent tracking-[-0.02em]">
  WhatsApp Integration
  </h1>
- <p className="text-muted-foreground mt-1 text-sm font-medium">
+ <p className="text-[#71717a] dark:text-gray-400 mt-1 text-sm font-medium">
  Send multimedia blasts and automated notifications via WhatsApp Business.
  </p>
  </div>
  
  <div className="flex gap-3">
- <Button variant="outline" className="h-9 gap-2 rounded-xl text-slate-700 dark:text-slate-300 dark:text-slate-200">
+ <Button variant="outline" className="h-9 gap-2 rounded-md-xl text-slate-700 dark:text-slate-300 dark:text-slate-200">
  <Settings2 className="w-4 h-4" /> API Settings
  </Button>
- <Button onClick={() => setIsSendModalOpen(true)} className="h-9 gap-2 rounded-xl bg-primary hover:bg-primary text-white -green-500/20 border-none">
+ <Button onClick={() => setIsSendModalOpen(true)} className="h-9 gap-2 rounded-md-xl bg-primary hover:bg-primary text-white -green-500/20 border-none">
  <Send className="w-4 h-4" /> Launch Broadcast
  </Button>
  </div>
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
- <Card className="rounded-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100">
+ <Card className="rounded-md-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-slate-100 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-5 flex items-center justify-between">
  <div className="flex items-center gap-4">
- <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-primary shrink-0">
+ <div className="w-12 h-12 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary shrink-0">
  <Smartphone className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-semibold text-muted-foreground">API Connection</p>
+ <p className="text-sm font-semibold text-[#71717a] dark:text-gray-400">API Connection</p>
  <div className="flex items-center gap-2 mt-0.5">
- <div className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></div>
+ <div className="w-2.5 h-2.5 rounded-md-full bg-primary animate-pulse"></div>
  <h3 className="text-xl font-black text-slate-800 dark:text-slate-100">{apiStatus}</h3>
  </div>
  </div>
@@ -133,11 +133,11 @@ export default function SHSWhatsapp() {
  </Card>
  </div>
 
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
- <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+ <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <MessageCircle className="w-5 h-5 text-primary" /> Campaign History
  </CardTitle>
  </div>
@@ -146,7 +146,7 @@ export default function SHSWhatsapp() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search campaigns..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -158,10 +158,10 @@ export default function SHSWhatsapp() {
  <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading WhatsApp campaigns...</div>
  ) : filteredCampaigns.length === 0 ? (
  <div className="p-16 text-center">
- <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 mx-auto flex items-center justify-center mb-4">
  <MessageCircle className="w-8 h-8 text-primary" />
  </div>
- <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No campaigns launched</h3>
+ <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No campaigns launched</h3>
  <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Launch a WhatsApp broadcast to see it here.</p>
  </div>
  ) : (
@@ -170,22 +170,22 @@ export default function SHSWhatsapp() {
  <div key={camp.id} className="p-6 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
  <div className="flex justify-between items-start mb-3">
  <div>
- <h4 className="font-bold text-lg text-slate-800 dark:text-slate-100">{camp.title}</h4>
+ <h4 className="font-semibold text-lg text-slate-800 dark:text-slate-100">{camp.title}</h4>
  <div className="flex items-center gap-2 mt-1">
  <Badge variant="secondary" className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-none">
  {camp.data?.targetGroup}
  </Badge>
- <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 flex items-center gap-1 border-l pl-2 border-primary/40 dark:border-primary/40">
+ <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 flex items-center gap-2 border-l pl-2 border-primary/40 dark:border-primary/40 tracking-[0.04em]">
  <Users className="w-3 h-3" /> {camp.data?.successfulDeliveries} / {camp.data?.recipientCount} Delivered
  </span>
  </div>
  </div>
- <span className="text-xs text-slate-400 dark:text-slate-500 dark:text-slate-400 font-medium">
+ <span className="text-xs text-slate-400 dark:text-slate-500 dark:text-slate-400 font-medium tracking-[0.04em]">
  {new Date(camp.data?.sentDate).toLocaleString()}
  </span>
  </div>
  
- <div className="bg-slate-100/50 p-4 rounded-xl border border-primary/20 text-sm text-slate-700 dark:text-slate-300 dark:text-slate-200 whitespace-pre-wrap relative mt-3">
+ <div className="bg-slate-100/50 p-4 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 text-sm text-slate-700 dark:text-slate-300 dark:text-slate-200 whitespace-pre-wrap relative mt-3">
  {/* Simulated WA message bubble tail */}
  <div className="absolute -top-2 left-4 w-4 h-4 bg-slate-100/50 border-t border-l border-primary/20 rotate-45"></div>
  <p className="relative z-10">{camp.data?.messageText || `[Template used: ${camp.data?.templateId}]`}</p>
@@ -198,10 +198,10 @@ export default function SHSWhatsapp() {
  </Card>
 
  <Dialog open={isSendModalOpen} onOpenChange={setIsSendModalOpen}>
- <DialogContent className="sm:max-w-[500px] rounded-3xl p-0 overflow-hidden border-none ">
+ <DialogContent className="sm:max-w-[500px] rounded-md-3xl p-0 overflow-hidden border-none ">
  <div className="p-6 bg-gradient-to-br from-primary to-primary text-white">
  <DialogHeader>
- <DialogTitle className="text-2xl font-black">Launch WhatsApp Broadcast</DialogTitle>
+ <DialogTitle className="text-2xl font-black tracking-[-0.02em]">Launch WhatsApp Broadcast</DialogTitle>
  <DialogDescription className="text-primary/10">
  Send rich-text messages via the official WhatsApp Business API.
  </DialogDescription>
@@ -210,21 +210,21 @@ export default function SHSWhatsapp() {
  
  <div className="p-6 bg-[#EFEAE2] space-y-4"> {/* WA background color */}
  
- <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-4 rounded-2xl space-y-4 border border-primary/40 dark:border-primary/40 dark:border-primary/40">
+ <div className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-4 rounded-md-2xl space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Campaign Name</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Campaign Name</label>
  <Input 
  placeholder="e.g. End of Term Grades Notification"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newCampaign.campaignName}
  onChange={e => setNewCampaign({...newCampaign, campaignName: e.target.value})}
  />
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Target Audience</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Target Audience</label>
  <select 
- className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
+ className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newCampaign.targetGroup}
  onChange={e => setNewCampaign({...newCampaign, targetGroup: e.target.value})}
  >
@@ -236,9 +236,9 @@ export default function SHSWhatsapp() {
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Approved WA Template</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Approved WA Template</label>
  <select 
- className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary"
+ className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newCampaign.templateId}
  onChange={e => setNewCampaign({...newCampaign, templateId: e.target.value})}
  >
@@ -250,10 +250,10 @@ export default function SHSWhatsapp() {
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Message Content (Variables)</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Message Content (Variables)</label>
  <textarea 
  placeholder="Hello {{1}}, this is to inform you that..."
- className="w-full h-32 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary resize-none text-sm"
+ className="w-full h-32 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary resize-none text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newCampaign.customMessage}
  onChange={e => setNewCampaign({...newCampaign, customMessage: e.target.value})}
  />
@@ -262,14 +262,14 @@ export default function SHSWhatsapp() {
  
  </div>
  
- <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3">
- <Button variant="outline" onClick={() => setIsSendModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
+ <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Button variant="outline" onClick={() => setIsSendModalOpen(false)} className="rounded-md-xl font-semibold text-slate-600 dark:text-slate-300">
  Cancel
  </Button>
  <Button 
  onClick={handleLaunchCampaign} 
  disabled={!newCampaign.campaignName || !newCampaign.customMessage || isSending}
- className="rounded-xl bg-primary hover:bg-primary text-white font-bold px-6"
+ className="rounded-md-xl bg-primary hover:bg-primary text-white font-semibold px-6"
  >
  {isSending ? 'Sending...' : 'Launch Broadcast'}
  </Button>

@@ -27,31 +27,31 @@ export default function MediaManager() {
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
  <div className="border-b border-primary/40 pb-4 flex justify-between items-end">
  <div>
- <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Media Library</h1>
+ <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">Media Library</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage all your uploaded videos, documents, and images centrally.</p>
  </div>
- <button onClick={handleUpload} className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
+ <button onClick={handleUpload} className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-md-[var(--radius-md)] hover:opacity-90 transition-opacity">
  <UploadCloud className="w-4 h-4" /> Upload Asset
  </button>
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
  <div className="lg:col-span-1 space-y-4">
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-4">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-4">
  <h3 className="font-semibold text-[var(--color-text-primary)] mb-4">Folders</h3>
  <div className="space-y-1">
- <button className="w-full flex items-center justify-between px-3 py-2 text-sm bg-[var(--color-surface-1)] text-[var(--primary)] rounded-[var(--radius-md)] font-medium">
+ <button className="w-full flex items-center justify-between px-3 py-2 text-sm bg-[var(--color-surface-1)] text-[var(--primary)] rounded-md-[var(--radius-md)] font-medium">
  <div className="flex items-center gap-3">
  <Folder className="w-4 h-4" /> All Assets
  </div>
- <span className="text-xs bg-[var(--color-surface-2)] px-2 py-0.5 rounded-full">{assets.length}</span>
+ <span className="text-xs bg-[var(--color-surface-2)] px-2 py-0.5 rounded-md-full tracking-[0.04em]">{assets.length}</span>
  </button>
- <button className="w-full flex items-center justify-between px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-text-primary)] rounded-[var(--radius-md)] transition-colors">
+ <button className="w-full flex items-center justify-between px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-text-primary)] rounded-md-[var(--radius-md)] transition-colors">
  <div className="flex items-center gap-3">
  <Folder className="w-4 h-4" /> Course Videos
  </div>
  </button>
- <button className="w-full flex items-center justify-between px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-text-primary)] rounded-[var(--radius-md)] transition-colors">
+ <button className="w-full flex items-center justify-between px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--color-text-primary)] rounded-md-[var(--radius-md)] transition-colors">
  <div className="flex items-center gap-3">
  <Folder className="w-4 h-4" /> Documents
  </div>
@@ -59,18 +59,18 @@ export default function MediaManager() {
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 text-center">
- <div className="w-16 h-16 bg-[var(--color-surface-1)] rounded-full flex items-center justify-center mx-auto mb-4">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 text-center">
+ <div className="w-16 h-16 bg-[var(--color-surface-1)] rounded-md-full flex items-center justify-center mx-auto mb-4">
  <UploadCloud className="w-8 h-8 text-[var(--primary)]" />
  </div>
  <h4 className="font-semibold text-[var(--color-text-primary)]">Quick Upload</h4>
- <p className="text-xs text-[var(--color-text-secondary)] mt-1 mb-4">Drag & drop files here</p>
+ <p className="text-xs text-[var(--color-text-secondary)] mt-1 mb-4 tracking-[0.04em]">Drag & drop files here</p>
  <button className="text-sm text-[var(--primary)] font-medium hover:underline">Browse Files</button>
  </div>
  </div>
 
  <div className="lg:col-span-3">
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden flex flex-col h-[600px]">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden flex flex-col h-[600px]">
  <div className="p-4 border-b border-primary/40 flex gap-4 bg-[var(--color-surface-1)]">
  <div className="relative flex-1 max-w-md">
  <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-tertiary)]" />
@@ -79,7 +79,7 @@ export default function MediaManager() {
  placeholder="Search assets..." 
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
+ className="w-full bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
  />
  </div>
  </div>
@@ -107,7 +107,7 @@ export default function MediaManager() {
  <tr key={asset.id} className="hover:bg-[var(--color-surface-1)] transition-colors group">
  <td className="px-6 py-4">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-[var(--radius-md)] bg-[var(--color-surface-2)] flex items-center justify-center">
+ <div className="w-10 h-10 rounded-md-[var(--radius-md)] bg-[var(--color-surface-2)] flex items-center justify-center">
  {getIcon(asset.type)}
  </div>
  <span className="font-medium">{asset.name}</span>
@@ -117,13 +117,13 @@ export default function MediaManager() {
  <td className="px-6 py-4 text-[var(--color-text-secondary)]">{asset.date}</td>
  <td className="px-6 py-4 text-right">
  <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
- <button className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--primary)] hover:bg-[var(--color-surface-2)] rounded-md transition-colors">
+ <button className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--primary)] hover:bg-[var(--color-surface-2)] rounded-lg transition-colors">
  <Download className="w-4 h-4" />
  </button>
- <button className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--color-error)] hover:bg-[var(--color-error-subtle)] rounded-md transition-colors">
+ <button className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--color-error)] hover:bg-[var(--color-error-subtle)] rounded-lg transition-colors">
  <Trash2 className="w-4 h-4" />
  </button>
- <button className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-2)] rounded-md transition-colors">
+ <button className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-2)] rounded-lg transition-colors">
  <MoreVertical className="w-4 h-4" />
  </button>
  </div>

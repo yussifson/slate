@@ -78,9 +78,9 @@ export default function Invoices() {
   const totalPending = invoices.filter(i => ["sent", "draft"].includes(i.status)).reduce((s, i) => s + (i.total_amount || 0), 0);
 
   const getPaymentStatusIcon = (status) => {
-    if (status === "paid") return <span className="flex items-center gap-1 text-primary/90 text-xs font-medium"><CheckCircle2 className="w-3.5 h-3.5" /> {t("paid", "Paid")}</span>;
-    if (status === "overdue") return <span className="flex items-center gap-1 text-red-600 text-xs font-medium"><AlertCircle className="w-3.5 h-3.5" /> {t("overdue", "Overdue")}</span>;
-    return <span className="flex items-center gap-1 text-amber-600 text-xs font-medium"><Clock className="w-3.5 h-3.5" /> {t("pending", "Pending")}</span>;
+    if (status === "paid") return <span className="flex items-center gap-2 text-primary/90 text-xs font-medium tracking-[0.04em]"><CheckCircle2 className="w-3.5 h-3.5" /> {t("paid", "Paid")}</span>;
+    if (status === "overdue") return <span className="flex items-center gap-2 text-red-600 text-xs font-medium tracking-[0.04em]"><AlertCircle className="w-3.5 h-3.5" /> {t("overdue", "Overdue")}</span>;
+    return <span className="flex items-center gap-2 text-amber-600 text-xs font-medium tracking-[0.04em]"><Clock className="w-3.5 h-3.5" /> {t("pending", "Pending")}</span>;
   };
 
   const columns = [
@@ -101,7 +101,7 @@ export default function Invoices() {
       header: "Due Date",
       render: row => {
         return (
-          <span className="text-xs text-muted-foreground">
+          <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
             {row.due_date ? format(new Date(row.due_date), "MMM d, yyyy") : "—"}
             {row.due_time ? ` at ${row.due_time}` : ""}
           </span>
@@ -109,7 +109,7 @@ export default function Invoices() {
       }
     },
     { header: "Paid Date", render: row => {
-      return <span className="text-xs text-muted-foreground">{row.paid_date ? format(new Date(row.paid_date), "MMM d, yyyy") : "—"}</span>;
+      return <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{row.paid_date ? format(new Date(row.paid_date), "MMM d, yyyy") : "—"}</span>;
     } },
     {
       header: "Actions",
@@ -147,7 +147,7 @@ export default function Invoices() {
       />
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
           <Input placeholder="Search invoices..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>

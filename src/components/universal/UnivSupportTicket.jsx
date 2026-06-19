@@ -150,34 +150,34 @@ export default function UnivSupportTicket({
  <div className="flex h-full w-full bg-background font-sans overflow-hidden">
  
  {/* Sidebar - Ticket List */}
- <div className="w-80 md:w-96 border-r border-primary/40 bg-card flex flex-col shrink-0">
+ <div className="w-80 md:w-96 border-r border-primary/40 bg-card flex flex-col shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 z-10">
  <div className="flex items-center justify-between mb-4">
- <h1 className="text-xl font-bold text-foreground flex items-center gap-2">
+ <h1 className="text-xl font-semibold text-foreground flex items-center gap-2">
  <LifeBuoy className="w-5 h-5 text-primary" /> {title}
  </h1>
  <button 
  onClick={() => setIsNewTicketOpen(true)}
- className="p-1.5 bg-primary text-white rounded hover:bg-primary/90 transition-colors"
+ className="p-1.5 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
  >
  <Plus className="w-4 h-4" />
  </button>
  </div>
  <div className="relative">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <input 
  type="text" 
  placeholder="Search tickets..."
  value={searchQuery}
  onChange={e => setSearchQuery(e.target.value)}
- className="w-full h-9 pl-9 pr-3 bg-muted/50 border border-primary/40 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+ className="w-full h-9 pl-9 pr-3 bg-muted/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:border-primary transition-colors"
  />
  </div>
  </div>
 
  <div className="flex-1 overflow-y-auto custom-scrollbar">
  {filteredTickets.length === 0 ? (
- <div className="p-8 text-center text-muted-foreground">
+ <div className="p-8 text-center text-[#71717a] dark:text-gray-400">
  <p className="text-sm">No tickets found.</p>
  </div>
  ) : (
@@ -193,17 +193,17 @@ export default function UnivSupportTicket({
  >
  <div className="flex items-start justify-between gap-2 mb-1">
  <span className="font-semibold text-foreground text-sm line-clamp-1">{ticket.subject}</span>
- <span className="text-[10px] font-mono text-muted-foreground shrink-0">{ticket.ticket_id}</span>
+ <span className="text-[10px] font-mono text-[#71717a] dark:text-gray-400 shrink-0">{ticket.ticket_id}</span>
  </div>
- <div className="text-xs text-muted-foreground mb-2 flex items-center gap-2">
+ <div className="text-xs text-[#71717a] dark:text-gray-400 mb-2 flex items-center gap-2 tracking-[0.04em]">
  <span className="truncate">{ticket.requester}</span> • 
  <span>{new Date(ticket.created_at).toLocaleDateString()}</span>
  </div>
  <div className="flex items-center gap-2">
- <span className={cn("px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md border", STATUS_COLORS[ticket.status] || STATUS_COLORS['Open'])}>
+ <span className={cn("px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-lg border", STATUS_COLORS[ticket.status] || STATUS_COLORS['Open'])}>
  {ticket.status}
  </span>
- <span className={cn("px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md border", PRIORITY_COLORS[ticket.priority] || PRIORITY_COLORS['Medium'])}>
+ <span className={cn("px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-lg border", PRIORITY_COLORS[ticket.priority] || PRIORITY_COLORS['Medium'])}>
  {ticket.priority}
  </span>
  </div>
@@ -218,24 +218,24 @@ export default function UnivSupportTicket({
  <div className="flex-1 flex flex-col bg-muted/10 relative">
  {activeTicket ? (
  <>
- <div className="border-b border-primary/40 bg-card px-6 py-4 z-10 shrink-0">
+ <div className="border-b border-primary/40 bg-card px-6 py-4 z-10 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-start justify-between gap-4">
  <div>
  <div className="flex items-center gap-3 mb-1">
- <h2 className="text-xl font-bold text-foreground">{activeTicket.subject}</h2>
- <span className="px-2 py-0.5 text-[10px] font-mono bg-muted text-muted-foreground rounded border">{activeTicket.ticket_id}</span>
+ <h2 className="text-xl font-semibold text-foreground">{activeTicket.subject}</h2>
+ <span className="px-2 py-0.5 text-[10px] font-mono bg-muted text-[#71717a] dark:text-gray-400 rounded-md border">{activeTicket.ticket_id}</span>
  </div>
- <div className="text-sm text-muted-foreground flex items-center gap-4">
- <span className="flex items-center gap-1.5"><User className="w-4 h-4" /> {activeTicket.requester}</span>
- <span className="flex items-center gap-1.5"><Tag className="w-4 h-4" /> {activeTicket.department}</span>
- <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> {new Date(activeTicket.created_at).toLocaleString()}</span>
+ <div className="text-sm text-[#71717a] dark:text-gray-400 flex items-center gap-4">
+ <span className="flex items-center gap-2.5"><User className="w-4 h-4" /> {activeTicket.requester}</span>
+ <span className="flex items-center gap-2.5"><Tag className="w-4 h-4" /> {activeTicket.department}</span>
+ <span className="flex items-center gap-2.5"><Clock className="w-4 h-4" /> {new Date(activeTicket.created_at).toLocaleString()}</span>
  </div>
  </div>
  <div className="flex items-center gap-2">
  <select 
  value={activeTicket.status} 
  onChange={e => updateStatus(e.target.value)}
- className={cn("h-9 px-3 rounded-lg border text-sm font-bold uppercase tracking-wider outline-none focus:ring-2", STATUS_COLORS[activeTicket.status] || STATUS_COLORS['Open'])}
+ className={cn("h-9 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 text-sm font-semibold uppercase tracking-wider outline-none focus:ring-2", STATUS_COLORS[activeTicket.status] || STATUS_COLORS['Open'])}
  >
  <option value="Open">Open</option>
  <option value="In Progress">In Progress</option>
@@ -243,7 +243,7 @@ export default function UnivSupportTicket({
  <option value="Resolved">Resolved</option>
  <option value="Closed">Closed</option>
  </select>
- <button className="p-2 border border-primary/40 bg-background rounded-lg hover:bg-muted text-muted-foreground transition-colors">
+ <button className="p-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background rounded-xl hover:bg-muted text-[#71717a] dark:text-gray-400 transition-colors">
  <MoreHorizontal className="w-4 h-4" />
  </button>
  </div>
@@ -255,15 +255,15 @@ export default function UnivSupportTicket({
  const isAgent = msg.sender === 'Support Agent';
  return (
  <div key={idx} className={cn("flex gap-4", isAgent ? "flex-row-reverse" : "flex-row")}>
- <div className={cn("w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-bold text-white ", isAgent ? "bg-primary" : "bg-slate-400")}>
+ <div className={cn("w-10 h-10 rounded-md-full flex items-center justify-center shrink-0 font-semibold text-white ", isAgent ? "bg-primary" : "bg-slate-400")}>
  {msg.sender.charAt(0)}
  </div>
  <div className={cn("max-w-[80%] space-y-1", isAgent ? "items-end text-right" : "items-start text-left")}>
  <div className={cn("flex items-baseline gap-2", isAgent && "flex-row-reverse")}>
  <span className="font-semibold text-sm text-foreground">{msg.sender}</span>
- <span className="text-xs text-muted-foreground">{new Date(msg.timestamp).toLocaleString(undefined, {hour: '2-digit', minute:'2-digit'})}</span>
+ <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{new Date(msg.timestamp).toLocaleString(undefined, {hour: '2-digit', minute:'2-digit'})}</span>
  </div>
- <div className={cn("px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ", isAgent ? "bg-primary text-white rounded-tr-none" : "bg-card border border-primary/40 text-foreground rounded-tl-none")}>
+ <div className={cn("px-4 py-3 rounded-md-2xl text-sm leading-relaxed whitespace-pre-wrap ", isAgent ? "bg-primary text-white rounded-md-tr-none" : "bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-foreground rounded-md-tl-none")}>
  {msg.content}
  </div>
  </div>
@@ -272,8 +272,8 @@ export default function UnivSupportTicket({
 })}
  </div>
 
- <div className="p-4 bg-card border-t border-primary/40 shrink-0">
- <div className="bg-background border border-primary/40 rounded-xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden">
+ <div className="p-4 bg-card border-t border-primary/40 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden">
  <textarea
  value={replyInput}
  onChange={e => setReplyInput(e.target.value)}
@@ -281,13 +281,13 @@ export default function UnivSupportTicket({
  className="w-full p-4 bg-transparent border-none outline-none text-foreground resize-none min-h-[100px] focus:ring-0"
  />
  <div className="bg-muted/30 px-3 py-2 flex items-center justify-between border-t border-primary/40">
- <div className="flex items-center gap-1 text-muted-foreground">
- <button className="p-1.5 hover:bg-muted rounded hover:text-foreground transition-colors"><Paperclip className="w-4 h-4" /></button>
+ <div className="flex items-center gap-2 text-[#71717a] dark:text-gray-400">
+ <button className="p-1.5 hover:bg-muted rounded-md hover:text-foreground transition-colors"><Paperclip className="w-4 h-4" /></button>
  </div>
  <button 
  onClick={handleReply}
  disabled={!replyInput.trim() || saveMutation.isPending}
- className="px-4 py-1.5 bg-primary text-white rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:hover:bg-primary transition-colors flex items-center gap-2 text-sm font-medium "
+ className="px-4 py-1.5 bg-primary text-white rounded-xl hover:bg-primary/90 disabled:opacity-50 disabled:hover:bg-primary transition-colors flex items-center gap-2 text-sm font-medium "
  >
  <Send className="w-4 h-4" /> Reply
  </button>
@@ -296,9 +296,9 @@ export default function UnivSupportTicket({
  </div>
  </>
  ) : (
- <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground p-8">
+ <div className="flex-1 flex flex-col items-center justify-center text-[#71717a] dark:text-gray-400 p-8">
  <MessageSquare className="w-16 h-16 mb-4 opacity-20" />
- <h3 className="text-xl font-bold text-foreground mb-1">No ticket selected</h3>
+ <h3 className="text-xl font-semibold text-foreground mb-1">No ticket selected</h3>
  <p>Select a ticket from the sidebar to view details or reply.</p>
  </div>
  )}
@@ -313,26 +313,26 @@ export default function UnivSupportTicket({
  initial={{ opacity: 0, scale: 0.95, y: 20}}
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: 20}}
- className="relative w-full max-w-lg bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
+ className="relative w-full max-w-lg bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="px-6 py-4 border-b border-primary/40 bg-muted/20">
- <h2 className="text-lg font-bold text-foreground">Create New Ticket</h2>
+ <h2 className="text-lg font-semibold text-foreground">Create New Ticket</h2>
  </div>
  
  <div className="flex-1 overflow-y-auto p-6">
  <form id="new-ticket-form" onSubmit={handleCreate} className="space-y-4">
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Subject *</label>
- <input required type="text" value={formState.subject} onChange={e => setFormState({...formState, subject: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Subject *</label>
+ <input required type="text" value={formState.subject} onChange={e => setFormState({...formState, subject: e.target.value})} className="w-full h-10 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Requester Email *</label>
- <input required type="email" value={formState.requester} onChange={e => setFormState({...formState, requester: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Requester Email *</label>
+ <input required type="email" value={formState.requester} onChange={e => setFormState({...formState, requester: e.target.value})} className="w-full h-10 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Priority</label>
- <select value={formState.priority} onChange={e => setFormState({...formState, priority: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none">
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Priority</label>
+ <select value={formState.priority} onChange={e => setFormState({...formState, priority: e.target.value})} className="w-full h-10 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none">
  <option>Low</option>
  <option>Medium</option>
  <option>High</option>
@@ -341,8 +341,8 @@ export default function UnivSupportTicket({
  </div>
  </div>
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Department</label>
- <select value={formState.department} onChange={e => setFormState({...formState, department: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none">
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Department</label>
+ <select value={formState.department} onChange={e => setFormState({...formState, department: e.target.value})} className="w-full h-10 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none">
  <option>IT Support</option>
  <option>Billing</option>
  <option>Sales</option>
@@ -350,15 +350,15 @@ export default function UnivSupportTicket({
  </select>
  </div>
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Initial Description</label>
- <textarea required value={formState.description} onChange={e => setFormState({...formState, description: e.target.value})} className="w-full h-32 p-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none resize-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Initial Description</label>
+ <textarea required value={formState.description} onChange={e => setFormState({...formState, description: e.target.value})} className="w-full h-32 p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none resize-none" />
  </div>
  </form>
  </div>
  
  <div className="px-6 py-4 border-t border-primary/40 bg-muted/20 flex justify-end gap-3">
- <button type="button" onClick={() => setIsNewTicketOpen(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors">Cancel</button>
- <button type="submit" form="new-ticket-form" disabled={saveMutation.isPending} className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors disabled:opacity-50">
+ <button type="button" onClick={() => setIsNewTicketOpen(false)} className="px-4 py-2 rounded-xl text-sm font-medium text-foreground hover:bg-muted transition-colors">Cancel</button>
+ <button type="submit" form="new-ticket-form" disabled={saveMutation.isPending} className="px-6 py-2 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50">
  {saveMutation.isPending ? 'Creating...' : 'Create Ticket'}
  </button>
  </div>

@@ -56,9 +56,9 @@ export function IconPicker({ value, onChange }) {
       </PopoverTrigger>
       <PopoverContent className="w-[300px] p-0" align="start">
         <div className="flex items-center border-b px-3">
-          <Search className="w-4 h-4 text-muted-foreground mr-2 shrink-0" />
+          <Search className="w-4 h-4 text-[#71717a] dark:text-gray-400 mr-2 shrink-0" />
           <input
-            className="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground"
+            className="flex h-10 w-full rounded-lg bg-transparent py-3 text-sm outline-none placeholder:text-[#71717a] dark:text-gray-400"
             placeholder="Search icons..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -75,10 +75,10 @@ export function IconPicker({ value, onChange }) {
                     key={name}
                     title={name}
                     type="button"
-                    className={`flex aspect-square items-center justify-center rounded-md border transition-colors hover:bg-slate-100 hover:text-primary ${
+                    className={`flex aspect-square items-center justify-center rounded-lg border-[0.5px] border-black/9 dark:border-white/8 transition-colors hover:bg-slate-100 hover:text-primary ${
                       value === name
                         ? 'bg-primary/15 border-primary text-primary'
-                        : 'bg-transparent border-transparent text-muted-foreground'
+                        : 'bg-transparent border-transparent text-[#71717a] dark:text-gray-400'
                     }`}
                     onClick={() => {
                       onChange(name);
@@ -91,7 +91,7 @@ export function IconPicker({ value, onChange }) {
                 );
               })
             ) : (
-              <div className="col-span-5 text-center text-sm text-muted-foreground py-4">
+              <div className="col-span-5 text-center text-sm text-[#71717a] dark:text-gray-400 py-4">
                 No icons found.
               </div>
             )}

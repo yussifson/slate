@@ -86,12 +86,12 @@ export default function Team() {
       render: row => {
         return (
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
-              <span className="text-xs font-bold text-primary">{row.full_name?.[0]?.toUpperCase()}</span>
+            <div className="w-8 h-8 rounded-md-full bg-slate-100 flex items-center justify-center">
+              <span className="text-xs font-semibold text-primary tracking-[0.04em]">{row.full_name?.[0]?.toUpperCase()}</span>
             </div>
             <div>
               <p className="font-medium text-sm">{row.full_name}</p>
-              <p className="text-xs text-muted-foreground">{row.user_email}</p>
+              <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{row.user_email}</p>
             </div>
           </div>
         );
@@ -114,15 +114,15 @@ export default function Team() {
       }
     },
     { header: "Joined", render: row => {
-      return <span className="text-xs text-muted-foreground">{row.hire_date ? format(new Date(row.hire_date), "MMM d, yyyy") : "—"}</span>;
+      return <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{row.hire_date ? format(new Date(row.hire_date), "MMM d, yyyy") : "—"}</span>;
     } },
     ...(canManage ? [{
       header: "Actions",
       render: row => {
         return (
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <Button
-              variant="ghost" size="sm" className="h-7 px-2 text-xs"
+              variant="ghost" size="sm" className="h-7 px-2 text-xs tracking-[0.04em]"
               onClick={(e) => { e.stopPropagation(); setEditingStaff(row); }}
             >
               {t("edit", "Edit")}
@@ -145,13 +145,13 @@ export default function Team() {
         title="Team"
         subtitle={`${staff.filter(s => s.status === "active").length} active members`}
         actions={canManage && (
-          <Button onClick={handleAddClick} size="sm" className="gap-1.5">
+          <Button onClick={handleAddClick} size="sm" className="gap-2.5">
             <UserPlus className="w-4 h-4" /> {t("add_team_member", "Add Team Member")}
           </Button>
         )}
       />
       <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
         <Input placeholder="Search team..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
       <DataTable columns={columns} data={filtered} isLoading={isLoading} onRowClick={canManage ? (row) => setEditingStaff(row) : undefined} emptyTitle="No team members" emptyIcon={UserCog} />
@@ -276,7 +276,7 @@ function StaffDialog({ open, onClose, onSubmit, initialData, isNew, industryRole
             <div>
               <Label>{t("email_address", "Email Address *")}</Label>
               <Input className="mt-1" value={form.user_email} onChange={(e) => handleChange("user_email", e.target.value)} type="email" required disabled={!isNew} />
-              {!isNew && <p className="text-[10px] text-muted-foreground mt-0.5">{t("email_cannot_be_changed", "Email cannot be changed.")}</p>}
+              {!isNew && <p className="text-[10px] text-[#71717a] dark:text-gray-400 mt-0.5">{t("email_cannot_be_changed", "Email cannot be changed.")}</p>}
             </div>
             {isNew && (
               <div>
@@ -291,14 +291,14 @@ function StaffDialog({ open, onClose, onSubmit, initialData, isNew, industryRole
                     placeholder="Min 6 characters"
                     className="pr-9"
                   />
-                  <button type="button" className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground" onClick={() => setShowPassword(v => !v)}>
+                  <button type="button" className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400 hover:text-foreground" onClick={() => setShowPassword(v => !v)}>
                     {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                   </button>
                 </div>
               </div>
             )}
             <div>
-              <Label>{t("phone", "Phone")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
+              <Label>{t("phone", "Phone")} <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{t("optional", "(optional)")}</span></Label>
               <Input className="mt-1" value={form.phone} onChange={(e) => handleChange("phone", e.target.value)} />
             </div>
             <div>
@@ -314,15 +314,15 @@ function StaffDialog({ open, onClose, onSubmit, initialData, isNew, industryRole
               </Select>
             </div>
             <div>
-              <Label>{t("department", "Department")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
+              <Label>{t("department", "Department")} <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{t("optional", "(optional)")}</span></Label>
               <Input className="mt-1" value={form.department} onChange={(e) => handleChange("department", e.target.value)} />
             </div>
             <div>
-              <Label>{t("hire_date", "Hire Date")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
+              <Label>{t("hire_date", "Hire Date")} <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{t("optional", "(optional)")}</span></Label>
               <Input className="mt-1" type="date" value={form.hire_date} onChange={(e) => handleChange("hire_date", e.target.value)} />
             </div>
             <div>
-              <Label>{t("bar_number", "Bar Number")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
+              <Label>{t("bar_number", "Bar Number")} <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{t("optional", "(optional)")}</span></Label>
               <Input className="mt-1" value={form.bar_number} onChange={(e) => handleChange("bar_number", e.target.value)} placeholder="For lawyers" />
             </div>
             {!isNew && (
@@ -343,14 +343,14 @@ function StaffDialog({ open, onClose, onSubmit, initialData, isNew, industryRole
           <div className="flex justify-between gap-2 pt-1">
             <div>
               {!isNew && (
-                <Button type="button" variant="outline" onClick={triggerReset} className="text-xs h-9">
+                <Button type="button" variant="outline" onClick={triggerReset} className="text-xs h-9 tracking-[0.04em]">
                   {t("send_password_reset_email", "Send Password Reset Email")}
                 </Button>
               )}
             </div>
             <div className="flex gap-2">
               <Button type="button" variant="outline" onClick={onClose} className="h-9">{t("cancel", "Cancel")}</Button>
-              <Button type="submit" disabled={submitting} className="gap-1.5 h-9">
+              <Button type="submit" disabled={submitting} className="gap-2.5 h-9">
                 {isNew ? (submitting ? "Creating..." : "Create Account") : (submitting ? "Saving..." : "Save Changes")}
               </Button>
             </div>

@@ -151,16 +151,16 @@ export default function UnivTimeline({
  <div className="view-header max-w-4xl w-full mx-auto py-8 px-4 sm:px-6">
  <div className="flex items-center justify-between mb-10">
  <div>
- <h2 className="text-2xl font-bold text-foreground tracking-tight">{title}</h2>
- <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>
+ <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">{title}</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">{subtitle}</p>
  </div>
  {!propMilestones && (
  <div className="flex items-center gap-2">
- <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+ <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
- <button onClick={handleOpenAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
+ <button onClick={handleOpenAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
  <Plus className="w-4 h-4" /> Add Milestone
  </button>
  </div>
@@ -177,49 +177,49 @@ export default function UnivTimeline({
  className="relative pl-8 sm:pl-12 group animate-fade-in"
  >
  {/* Timeline Node */}
- <div className={`absolute -left-[11px] top-1 w-5 h-5 rounded-full flex items-center justify-center ring-4 ring-background transition-colors ${
- ms.status === 'completed' ? 'bg-emerald-500 text-white' : 
+ <div className={`absolute -left-[11px] top-1 w-5 h-5 rounded-md-full flex items-center justify-center ring-4 ring-background transition-colors ${
+ ms.status === 'completed' ? 'bg-emerald-500/10 text-white' : 
  ms.status === 'current' ? 'bg-primary text-white' : 
  'bg-muted border-2 border-primary/40 text-transparent'
 }`}>
  {ms.status === 'completed' && <CheckCircle2 className="w-3 h-3" />}
- {ms.status === 'current' && <div className="w-2 h-2 bg-card rounded-full animate-pulse" />}
+ {ms.status === 'current' && <div className="w-2 h-2 bg-card rounded-md-full animate-pulse hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />}
  </div>
 
  {/* Content Card */}
- <div className={`bg-card border rounded-2xl p-5 sm:p-6 transition-all duration-300 relative ${ms.status === 'current' ? 'border-primary ' : 'border-primary/40 group-hover:border-primary/40'}`}>
+ <div className={`bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-md-2xl p-5 sm:p-6 transition-all duration-300 relative ${ms.status === 'current' ? 'border-primary ' : 'border-primary/40 group-hover:border-primary/40'}`}>
  {!propMilestones && ms.id !== 'm1' && ms.id !== 'm2' && ms.id !== 'm3' && ms.id !== 'm4' && (
  <button 
  onClick={() => handleDelete(ms.id)}
- className="absolute top-4 right-4 text-muted-foreground hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+ className="absolute top-4 right-4 text-[#71717a] dark:text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
  >
  <Trash2 className="w-4 h-4" />
  </button>
  )}
  <div className="flex flex-wrap items-center justify-between gap-4 mb-2">
- <h3 className="text-lg font-bold text-foreground pr-8">{ms.title}</h3>
- <span className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground bg-muted px-2.5 py-1 rounded-md">
+ <h3 className="text-lg font-semibold text-foreground pr-8">{ms.title}</h3>
+ <span className="flex items-center gap-2.5 text-xs font-semibold text-[#71717a] dark:text-gray-400 bg-muted px-2.5 py-1 rounded-lg tracking-[0.04em]">
  <Calendar className="w-3.5 h-3.5" /> {ms.date}
  </span>
  </div>
- <p className="text-sm text-muted-foreground leading-relaxed">
+ <p className="text-sm text-[#71717a] dark:text-gray-400 leading-relaxed">
  {ms.description}
  </p>
  
  {/* Decorative elements based on status */}
  {ms.status === 'completed' && (
- <div className="mt-4 flex items-center gap-2 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+ <div className="mt-4 flex items-center gap-2 text-xs font-medium text-emerald-600 dark:text-emerald-400 tracking-[0.04em]">
  <CheckCircle2 className="w-4 h-4" /> Completed on time
  </div>
  )}
  {ms.status === 'current' && (
  <div className="mt-4">
- <div className="flex justify-between text-xs font-semibold mb-1">
+ <div className="flex justify-between text-xs font-semibold mb-1 tracking-[0.04em]">
  <span className="text-primary">In Progress</span>
- <span className="text-muted-foreground">65%</span>
+ <span className="text-[#71717a] dark:text-gray-400">65%</span>
  </div>
- <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
- <div className="h-full bg-primary rounded-full w-[65%]"></div>
+ <div className="w-full h-1.5 bg-muted rounded-md-full overflow-hidden">
+ <div className="h-full bg-primary rounded-md-full w-[65%]"></div>
  </div>
  </div>
  )}
@@ -228,7 +228,7 @@ export default function UnivTimeline({
  ))}
  
  {/* End Flag */}
- <div className="absolute -left-[11px] bottom-0 w-5 h-5 rounded-full bg-muted border-2 border-primary/40 flex items-center justify-center ring-4 ring-background text-muted-foreground">
+ <div className="absolute -left-[11px] bottom-0 w-5 h-5 rounded-md-full bg-muted border-2 border-primary/40 flex items-center justify-center ring-4 ring-background text-[#71717a] dark:text-gray-400">
  <Flag className="w-3 h-3" />
  </div>
  </div>
@@ -240,46 +240,46 @@ export default function UnivTimeline({
  <motion.div 
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
- className="bg-card border border-primary/40 rounded-2xl max-w-md w-full p-6 relative"
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl max-w-md w-full p-6 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <button 
  onClick={() => setIsModalOpen(false)}
- className="absolute right-4 top-4 text-muted-foreground hover:text-foreground"
+ className="absolute right-4 top-4 text-[#71717a] dark:text-gray-400 hover:text-foreground"
  >
  <X className="w-5 h-5" />
  </button>
  
- <h3 className="text-lg font-bold text-foreground mb-4">Add Project Milestone</h3>
+ <h3 className="text-lg font-semibold text-foreground mb-4">Add Project Milestone</h3>
  
  <form onSubmit={handleSave} className="space-y-4">
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Milestone/Project Title *</label>
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Milestone/Project Title *</label>
  <input 
  type="text" 
  value={form.title}
  onChange={(e) => setForm({ ...form, title: e.target.value})}
  placeholder="e.g. Design Review"
  required
- className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Date</label>
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Date</label>
  <input 
  type="date" 
  value={form.date}
  onChange={(e) => setForm({ ...form, date: e.target.value})}
- className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Status</label>
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Status</label>
  <select 
  value={form.status}
  onChange={(e) => setForm({ ...form, status: e.target.value})}
- className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  >
  <option value="upcoming">Upcoming (Planning)</option>
  <option value="current">Current (Active)</option>
@@ -288,13 +288,13 @@ export default function UnivTimeline({
  </div>
 
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Description</label>
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Description</label>
  <textarea 
  value={form.description}
  onChange={(e) => setForm({ ...form, description: e.target.value})}
  placeholder="Details about milestone deliverables..."
  rows="3"
- className="w-full p-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
@@ -302,13 +302,13 @@ export default function UnivTimeline({
  <button 
  type="button" 
  onClick={() => setIsModalOpen(false)}
- className="px-4 py-2 border border-primary/40 text-foreground hover:bg-muted/50 rounded-xl text-sm font-medium transition-colors"
+ className="px-4 py-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-foreground hover:bg-muted/50 rounded-md-xl text-sm font-medium transition-colors"
  >
  Cancel
  </button>
  <button 
  type="submit" 
- className="px-4 py-2 bg-primary text-white hover:bg-primary/90 rounded-xl text-sm font-medium transition-colors "
+ className="px-4 py-2 bg-primary text-white hover:bg-primary/90 rounded-md-xl text-sm font-medium transition-colors "
  >
  Save
  </button>

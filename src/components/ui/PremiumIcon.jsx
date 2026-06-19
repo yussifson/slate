@@ -103,7 +103,7 @@ export function PremiumIcon({ name, className = ""}) {
 };
 
  return (
- <div className={`relative flex items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br ${getGradientColors()} ${className}`}>
+ <div className={`relative flex items-center justify-center overflow-hidden rounded-md-2xl bg-gradient-to-br ${getGradientColors()} ${className}`}>
  {renderSvgBackground()}
  {/* Glossy overlay effect */}
  <div className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent opacity-50 mix-blend-overlay pointer-events-none"></div>

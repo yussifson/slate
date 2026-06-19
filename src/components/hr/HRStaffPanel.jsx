@@ -49,7 +49,7 @@ export default function HRStaffPanel({ companyId, staff, currency, isAdmin }) {
     <div className="space-y-4">
       <div className="flex items-center gap-3 flex-wrap">
         <div className="relative flex-1 min-w-48">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
           <Input placeholder="Search staff..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
         {isAdmin && (
@@ -58,26 +58,26 @@ export default function HRStaffPanel({ companyId, staff, currency, isAdmin }) {
           </Button>
         )}
       </div>
-      <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         {filtered.length === 0 ? (
-          <div className="p-10 text-center text-sm text-muted-foreground">{t("no_staff_found", "No staff found")}</div>
+          <div className="p-10 text-center text-sm text-[#71717a] dark:text-gray-400">{t("no_staff_found", "No staff found")}</div>
         ) : (
           <div className="divide-y divide-border">
             {filtered.map(s => {
               return (
                 <div key={s.id} className="px-4 py-3 flex items-center gap-4 hover:bg-muted/20 cursor-pointer transition-colors" onClick={() => isAdmin && setEditing(s)}>
-                  <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
-                    <span className="text-sm font-bold text-primary">{s.full_name?.[0]?.toUpperCase()}</span>
+                  <div className="w-9 h-9 rounded-md-full bg-slate-100 flex items-center justify-center shrink-0">
+                    <span className="text-sm font-semibold text-primary">{s.full_name?.[0]?.toUpperCase()}</span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium">{s.full_name}</p>
-                    <p className="text-xs text-muted-foreground">{s.user_email} {s.department ? `· ${s.department}` : ""}</p>
+                    <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{s.user_email} {s.department ? `· ${s.department}` : ""}</p>
                   </div>
                   <Badge className={`${roleColors[s.role] || "bg-slate-100 text-slate-600"} text-[10px] capitalize`}>{s.role?.replace(/_/g, " ")}</Badge>
                   <Badge className={`text-[10px] ${s.status === "active" ? "bg-slate-100 text-primary/90" : s.status === "on_leave" ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"}`}>
                     {s.status?.replace("_", " ")}
                   </Badge>
-                  <span className="text-xs text-muted-foreground shrink-0">{s.hire_date ? format(new Date(s.hire_date), "MMM d, yyyy") : "—"}</span>
+                  <span className="text-xs text-[#71717a] dark:text-gray-400 shrink-0 tracking-[0.04em]">{s.hire_date ? format(new Date(s.hire_date), "MMM d, yyyy") : "—"}</span>
                 </div>
               );
             })}

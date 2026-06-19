@@ -156,21 +156,21 @@ export default function MarketingLayout({ children}) {
  <span className="font-extrabold text-base md:text-lg tracking-tight text-foreground leading-none">
  {t("slate", "Slate")}
  </span>
- <span className="text-[9px] text-muted-foreground font-bold tracking-[0.2em] uppercase leading-none mt-0.5">
+ <span className="text-[9px] text-[#71717a] dark:text-gray-400 font-semibold tracking-[0.2em] uppercase leading-none mt-0.5 tracking-[0.04em]">
  {t("by_optavel", "by Optavel")}
  </span>
  </div>
  </Link>
 
  {/* Desktop Navigation */}
- <nav className="hidden lg:flex items-center gap-1">
+ <nav className="hidden lg:flex items-center gap-2">
  {navItems.map((item) => {
  const isActive = location.pathname === item.path;
  return (
  <Link
  key={item.name}
  to={item.path}
- className={`text-sm font-medium px-4 py-2 rounded-lg transition-all duration-200 relative ${
+ className={`text-sm font-medium px-4 py-2 rounded-xl transition-all duration-200 relative ${
  isActive 
  ? 'text-primary' 
  : 'text-foreground/70 hover:text-primary'
@@ -188,7 +188,7 @@ export default function MarketingLayout({ children}) {
  <div className="relative">
  <button
  onClick={() => setLangDropdownOpen(!langDropdownOpen)}
- className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-all select-none border border-primary/40 bg-white/80 "
+ className="flex items-center gap-2.5 px-3 py-2 rounded-md-xl text-sm font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-all select-none border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-white/80  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <Globe className="w-4 h-4 text-primary" />
  <span>{currentLanguage.flag}</span>
@@ -199,7 +199,7 @@ export default function MarketingLayout({ children}) {
  </button>
  
  {langDropdownOpen && (
- <div className="absolute right-0 mt-2 w-48 bg-white border border-primary/40 rounded-2xl py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
+ <div className="absolute right-0 mt-2 w-48 bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {languages.map((lang) => (
  <button
  key={lang.code}
@@ -215,10 +215,10 @@ export default function MarketingLayout({ children}) {
  </div>
 
  {isLoadingAuth ? (
- <div className="w-24 h-10 rounded-full animate-pulse bg-muted/60"></div>
+ <div className="w-24 h-10 rounded-md-full animate-pulse bg-muted/60"></div>
  ) : isAuthenticated ? (
  <a href={workspaceUrl}>
- <Button className="bg-primary hover:bg-primary/90 text-white font-semibold rounded-full px-6 h-10 flex items-center gap-2 transition-all">
+ <Button className="bg-primary hover:bg-primary/90 text-white font-semibold rounded-md-full px-6 h-10 flex items-center gap-2 transition-all">
  <Building className="w-4 h-4" />
  {t("go_to_workslate", "Go to WorkSlate")}
  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -227,12 +227,12 @@ export default function MarketingLayout({ children}) {
  ) : (
  <>
  <Link to="/login">
- <Button variant="ghost" className="text-muted-foreground hover:text-foreground font-medium h-10 px-4">
+ <Button variant="ghost" className="text-[#71717a] dark:text-gray-400 hover:text-foreground font-medium h-10 px-4">
  {t("sign_in", "Sign In")}
  </Button>
  </Link>
  <Link to="/signup">
- <Button className="bg-primary hover:bg-primary/90 text-white font-semibold rounded-full px-6 h-10 transition-all">
+ <Button className="bg-primary hover:bg-primary/90 text-white font-semibold rounded-md-full px-6 h-10 transition-all">
  {t("start_free_trial", "Start Free Trial")}
  <ArrowRight className="w-4 h-4 ml-1.5 transition-transform group-hover:translate-x-0.5" />
  </Button>
@@ -242,24 +242,24 @@ export default function MarketingLayout({ children}) {
  </div>
 
  {/* Mobile CTA */}
- <div className="flex lg:hidden items-center gap-1.5">
+ <div className="flex lg:hidden items-center gap-2.5">
  <button
  onClick={() => setLangDropdownOpen(!langDropdownOpen)}
- className="p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors bg-white/50 border border-primary/40 backdrop-blur-md"
+ className="p-2 rounded-md-xl text-slate-700 hover:bg-slate-100 transition-colors bg-white/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 backdrop-blur-md hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <Globe className="w-4 h-4 text-primary" />
  </button>
  {isLoadingAuth ? (
- <div className="w-16 h-9 rounded-full animate-pulse bg-muted/60"></div>
+ <div className="w-16 h-9 rounded-md-full animate-pulse bg-muted/60"></div>
  ) : isAuthenticated ? (
  <a href={workspaceUrl}>
- <Button size="sm" className="bg-primary hover:bg-primary/90 text-white font-bold rounded-full px-5 h-9 text-[11px] uppercase tracking-wider -primary/20">
+ <Button size="sm" className="bg-primary hover:bg-primary/90 text-white font-semibold rounded-md-full px-5 h-9 text-[11px] uppercase tracking-wider -primary/20 tracking-[0.04em]">
  {t("app", "App")}
  </Button>
  </a>
  ) : (
  <Link to="/signup">
- <Button size="sm" className="bg-primary hover:bg-primary/90 text-white font-bold rounded-full px-5 h-9 text-[11px] uppercase tracking-wider -primary/20">
+ <Button size="sm" className="bg-primary hover:bg-primary/90 text-white font-semibold rounded-md-full px-5 h-9 text-[11px] uppercase tracking-wider -primary/20 tracking-[0.04em]">
  {t("start", "Start")}
  </Button>
  </Link>
@@ -270,13 +270,13 @@ export default function MarketingLayout({ children}) {
  </div>
  
  {mobileMenuOpen && (
- <div className="fixed inset-0 top-[60px] z-40 bg-white/95 backdrop-blur-md overflow-y-auto pb-24">
+ <div className="fixed inset-0 top-[60px] z-40 bg-white/95 backdrop-blur-md overflow-y-auto pb-24 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <nav className="flex flex-col p-4">
  <hr className="border-primary/40 my-2" />
 
  {/* Mobile Language Selector */}
- <div className="flex flex-col gap-2 my-2 bg-slate-50 p-4 rounded-2xl border border-primary/40">
- <span className="text-xs font-bold text-slate-500 flex items-center gap-1.5 px-1 uppercase tracking-wider">
+ <div className="flex flex-col gap-2 my-2 bg-slate-50 p-4 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <span className="text-xs font-semibold text-slate-500 flex items-center gap-2.5 px-1 uppercase tracking-wider tracking-[0.04em]">
  <Globe className="w-3.5 h-3.5 text-primary" />
  {t("choose_language", "Choose Language")}
  </span>
@@ -285,7 +285,7 @@ export default function MarketingLayout({ children}) {
  <button
  key={lang.code}
  onClick={() => handleLanguageChange(lang.code)}
- className={`text-left px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border ${currentLanguage.code === lang.code ? 'text-primary bg-slate-50 border-primary/20' : 'text-slate-700 bg-white border-primary/40'}`}
+ className={`text-left px-3 py-2 rounded-md-xl text-xs font-semibold transition-all flex items-center gap-2 border ${currentLanguage.code === lang.code ? 'text-primary bg-slate-50 border-primary/20' : 'text-slate-700 bg-white border-primary/40'}`}
  >
  <span>{lang.flag}</span>
  <span>{lang.name}</span>
@@ -296,10 +296,10 @@ export default function MarketingLayout({ children}) {
 
  <div className="flex flex-col gap-2.5 pt-1">
  {isLoadingAuth ? (
- <div className="w-full h-11 rounded-xl animate-pulse bg-muted/60"></div>
+ <div className="w-full h-11 rounded-md-xl animate-pulse bg-muted/60"></div>
  ) : isAuthenticated ? (
  <a href={workspaceUrl} className="w-full">
- <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold h-11 flex items-center justify-center gap-2 rounded-xl">
+ <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold h-11 flex items-center justify-center gap-2 rounded-md-xl">
  <Building className="w-4 h-4" />
  {t("go_to_workslate", "Go to WorkSlate")}
  </Button>
@@ -307,12 +307,12 @@ export default function MarketingLayout({ children}) {
  ) : (
  <>
  <Link to="/login" className="w-full">
- <Button variant="outline" className="w-full font-medium border-primary/40 hover:bg-muted/50 text-foreground h-11 rounded-xl">
+ <Button variant="outline" className="w-full font-medium border-primary/40 hover:bg-muted/50 text-foreground h-11 rounded-md-xl">
  {t("sign_in", "Sign In")}
  </Button>
  </Link>
  <Link to="/signup" className="w-full">
- <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold h-11 rounded-xl">
+ <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold h-11 rounded-md-xl">
  {t("start_free_trial", "Start Free Trial")}
  </Button>
  </Link>
@@ -327,7 +327,7 @@ export default function MarketingLayout({ children}) {
  {children}
  </main>
  {/* ========== MOBILE BOTTOM NAVIGATION ========== */}
- <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:backdrop-blur-2xl border-t border-primary/40 pb-[env(safe-area-inset-bottom)] -[0_-10px_40px_rgba(0,0,0,0.03)]">
+ <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:backdrop-blur-2xl border-t border-primary/40 pb-[env(safe-area-inset-bottom)] -[0_-10px_40px_rgba(0,0,0,0.03)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-around h-[68px] px-1">
  {navItems.map((item) => {
  const isActive = location.pathname === item.path;
@@ -335,16 +335,16 @@ export default function MarketingLayout({ children}) {
  <Link
  key={item.name}
  to={item.path}
- className={`flex flex-col items-center justify-center gap-1 w-full h-full relative transition-colors ${
+ className={`flex flex-col items-center justify-center gap-2 w-full h-full relative transition-colors ${
  isActive 
  ? 'text-primary' 
  : 'text-slate-400 hover:text-slate-600'
 }`}
  >
- <div className={`relative flex items-center justify-center w-8 h-8 rounded-full transition-all duration-400 ease-out ${isActive ? 'bg-primary/10' : 'bg-transparent'}`}>
+ <div className={`relative flex items-center justify-center w-8 h-8 rounded-md-full transition-all duration-400 ease-out ${isActive ? 'bg-primary/10' : 'bg-transparent'}`}>
  <item.icon className={`w-[22px] h-[22px] transition-transform duration-400 ease-out ${isActive ? 'scale-110' : 'scale-100'}`} />
  </div>
- <span className={`text-[10px] font-bold tracking-wide transition-all duration-300 ${isActive ? 'text-primary' : 'text-slate-500 font-semibold'}`}>
+ <span className={`text-[10px] font-semibold tracking-wide transition-all duration-300 ${isActive ? 'text-primary' : 'text-slate-500 font-semibold'}`}>
  {item.name}
  </span>
  </Link>
@@ -366,7 +366,7 @@ export default function MarketingLayout({ children}) {
  <Logo className="w-10 h-10 text-primary" />
  <span className="font-extrabold text-xl text-slate-900 tracking-tight">{t("slate", "Slate")}</span>
  </Link>
- <span className="text-[10px] text-slate-500 font-bold tracking-[0.2em] uppercase ml-[50px] mt-0.5">by Optavel</span>
+ <span className="text-[10px] text-slate-500 font-semibold tracking-[0.2em] uppercase ml-[50px] mt-0.5 tracking-[0.04em]">by Optavel</span>
  </div>
  <p className="text-sm leading-relaxed text-slate-600 font-medium">
  {t(
@@ -376,10 +376,10 @@ export default function MarketingLayout({ children}) {
  </p>
  
  <div className="flex items-center gap-4 mt-2">
- <a href="#" className="w-10 h-10 rounded-full bg-white border border-primary/40 flex items-center justify-center text-slate-500 hover:text-primary hover:border-primary hover:bg-slate-50 transition-all">
+ <a href="#" className="w-10 h-10 rounded-md-full bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center text-slate-500 hover:text-primary hover:border-primary hover:bg-slate-50 transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
  </a>
- <a href="#" className="w-10 h-10 rounded-full bg-white border border-primary/40 flex items-center justify-center text-slate-500 hover:text-primary hover:border-primary hover:bg-slate-50 transition-all">
+ <a href="#" className="w-10 h-10 rounded-md-full bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center text-slate-500 hover:text-primary hover:border-primary hover:bg-slate-50 transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
  </a>
  </div>
@@ -387,7 +387,7 @@ export default function MarketingLayout({ children}) {
 
  {/* Product Links */}
  <div className="col-span-1 md:col-span-2 lg:col-span-2 lg:col-start-6 space-y-5">
- <h4 className="text-slate-900 font-bold text-sm uppercase tracking-wider">{t("product", "Product")}</h4>
+ <h4 className="text-slate-900 font-semibold text-sm uppercase tracking-wider tracking-[0.04em]">{t("product", "Product")}</h4>
  <ul className="flex flex-col gap-3.5">
  <li><Link to="/features" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("core_features", "Core Features")}</Link></li>
  <li><Link to="/pricing" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("pricing_plans", "Pricing Plans")}</Link></li>
@@ -398,10 +398,10 @@ export default function MarketingLayout({ children}) {
 
  {/* Company Links */}
  <div className="col-span-1 md:col-span-2 lg:col-span-2 space-y-5">
- <h4 className="text-slate-900 font-bold text-sm uppercase tracking-wider">{t("company", "Company")}</h4>
+ <h4 className="text-slate-900 font-semibold text-sm uppercase tracking-wider tracking-[0.04em]">{t("company", "Company")}</h4>
  <ul className="flex flex-col gap-3.5">
  <li><Link to="/about" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("about_us", "About Us")}</Link></li>
- <li><Link to="/careers" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("careers", "Careers")} <span className="ml-1 inline-block px-1.5 py-0.5 rounded-full bg-slate-100 text-primary border border-primary/20 text-[9px] font-bold">{t("hiring", "HIRING")}</span></Link></li>
+ <li><Link to="/careers" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("careers", "Careers")} <span className="ml-1 inline-block px-1.5 py-0.5 rounded-md-full bg-slate-100 text-primary border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 text-[9px] font-semibold">{t("hiring", "HIRING")}</span></Link></li>
  <li><Link to="/contact" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("contact_sales", "Contact Sales")}</Link></li>
  <li><Link to="/partners" className="text-sm font-medium text-slate-600 hover:text-primary hover:translate-x-1 transition-all inline-block">{t("partner_program", "Partner Program")}</Link></li>
  </ul>
@@ -409,20 +409,20 @@ export default function MarketingLayout({ children}) {
 
  {/* Regional Offices */}
  <div className="col-span-2 md:col-span-3 lg:col-span-2 space-y-5">
- <h4 className="text-slate-900 font-bold text-sm uppercase tracking-wider">{t("offices", "Offices")}</h4>
+ <h4 className="text-slate-900 font-semibold text-sm uppercase tracking-wider tracking-[0.04em]">{t("offices", "Offices")}</h4>
  <ul className="flex flex-col gap-4">
  <li className="flex items-start gap-3 group">
- <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 group-hover:scale-150 transition-transform"></div>
+ <div className="w-1.5 h-1.5 rounded-md-full bg-primary mt-1.5 group-hover:scale-150 transition-transform"></div>
  <div>
- <span className="text-slate-800 text-sm font-bold block">{t("san_francisco_ca", "San Francisco, CA")}</span>
- <span className="text-xs text-slate-500 mt-0.5 block">{t("global_hq", "Global HQ")}</span>
+ <span className="text-slate-800 text-sm font-semibold block">{t("san_francisco_ca", "San Francisco, CA")}</span>
+ <span className="text-xs text-slate-500 mt-0.5 block tracking-[0.04em]">{t("global_hq", "Global HQ")}</span>
  </div>
  </li>
  <li className="flex items-start gap-3 group">
- <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 group-hover:scale-150 transition-transform"></div>
+ <div className="w-1.5 h-1.5 rounded-md-full bg-primary mt-1.5 group-hover:scale-150 transition-transform"></div>
  <div>
- <span className="text-slate-800 text-sm font-bold block">{t("london_uk", "London, UK")}</span>
- <span className="text-xs text-slate-500 mt-0.5 block">{t("emea_hub", "EMEA Hub")}</span>
+ <span className="text-slate-800 text-sm font-semibold block">{t("london_uk", "London, UK")}</span>
+ <span className="text-xs text-slate-500 mt-0.5 block tracking-[0.04em]">{t("emea_hub", "EMEA Hub")}</span>
  </div>
  </li>
  </ul>
@@ -432,14 +432,14 @@ export default function MarketingLayout({ children}) {
  <div className="pt-8 border-t border-primary/40 flex flex-col md:flex-row items-center justify-between gap-6">
  <div className="flex items-center gap-6">
  <div className="flex -space-x-2">
- <div className="w-8 h-8 rounded-full bg-white border border-primary/40 flex items-center justify-center">
+ <div className="w-8 h-8 rounded-md-full bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Shield className="w-3.5 h-3.5 text-slate-600" />
  </div>
- <div className="w-8 h-8 rounded-full bg-white border border-primary/40 flex items-center justify-center">
+ <div className="w-8 h-8 rounded-md-full bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Clock className="w-3.5 h-3.5 text-slate-600" />
  </div>
  </div>
- <div className="text-xs text-slate-600 font-medium">
+ <div className="text-xs text-slate-600 font-medium tracking-[0.04em]">
  {t("soc_2_type_ii_certified", "SOC-2 Type II Certified")} <br/> {t("99_99_uptime_sla", "99.99% Uptime SLA")}
  </div>
  </div>
@@ -452,7 +452,7 @@ export default function MarketingLayout({ children}) {
  </div>
  </div>
  
- <div className="mt-8 text-center md:text-left text-xs text-slate-500 font-medium">© {new Date().getFullYear()} {t(
+ <div className="mt-8 text-center md:text-left text-xs text-slate-500 font-medium tracking-[0.04em]">© {new Date().getFullYear()} {t(
  "slate_technologies_inc_all",
  "Slate Technologies Inc. All rights reserved."
  )}
@@ -463,17 +463,17 @@ export default function MarketingLayout({ children}) {
  {/* Geolocation Language Recommendation Modal */}
  {geoPopup && (
  <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
- <div className="relative bg-white w-full max-w-md rounded-[2rem] p-8 sm:p-10 border border-primary/40 flex flex-col items-center text-center transform transition-all animate-in zoom-in-95 duration-200">
- <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center text-primary mb-6 ">
+ <div className="relative bg-white w-full max-w-md rounded-md-[2rem] p-8 sm:p-10 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col items-center text-center transform transition-all animate-in zoom-in-95 duration-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-16 h-16 rounded-md-2xl bg-slate-100 flex items-center justify-center text-primary mb-6 ">
  <Globe className="w-8 h-8 animate-pulse" />
  </div>
  
- <h3 className="text-2xl font-black text-slate-900 tracking-tight mb-4">
+ <h3 className="text-2xl font-black text-slate-900 tracking-tight mb-4 tracking-[-0.02em]">
  {t("choose_your_language", "Choose Your Language")}
  </h3>
  
  <p className="text-slate-500 font-semibold text-sm leading-relaxed mb-8">
- We noticed you are visiting from <span className="font-bold text-slate-800">{geoPopup.country}</span>. Would you like to view Slate in your local language or continue in English?
+ We noticed you are visiting from <span className="font-semibold text-slate-800">{geoPopup.country}</span>. Would you like to view Slate in your local language or continue in English?
  </p>
  
  <div className="flex flex-col w-full gap-3">
@@ -483,7 +483,7 @@ export default function MarketingLayout({ children}) {
  localStorage.setItem('slate_lang_pref', geoPopup.langCode);
  setGeoPopup(null);
 }}
- className="bg-primary hover:bg-primary/90 text-white font-bold py-6 rounded-xl -primary/20 transition-all w-full"
+ className="bg-primary hover:bg-primary/90 text-white font-semibold py-6 rounded-md-xl -primary/20 transition-all w-full"
  >
  Use {geoPopup.langName}
  </Button>
@@ -495,7 +495,7 @@ export default function MarketingLayout({ children}) {
  setGeoPopup(null);
 }}
  variant="outline"
- className="border-primary/40 hover:bg-slate-50 text-slate-600 font-bold py-6 rounded-xl transition-all w-full bg-transparent"
+ className="border-primary/40 hover:bg-slate-50 text-slate-600 font-semibold py-6 rounded-md-xl transition-all w-full bg-transparent"
  >
  Continue in English
  </Button>

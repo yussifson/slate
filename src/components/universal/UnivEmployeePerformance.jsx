@@ -17,13 +17,13 @@ const EMPTY = { employee_name: "", reviewer_name: "", review_period: "Q1 2026", 
 
 const StarRating = ({ rating, onChange }) => {
   return (
-    <div className="flex gap-1">
+    <div className="flex gap-2">
       {[1, 2, 3, 4, 5].map((star) => (
         <button
           key={star}
           type="button"
           onClick={() => onChange(star.toString())}
-          className={`focus:outline-none transition-colors ${Number(rating) >= star ? 'text-amber-400' : 'text-muted-foreground/30 hover:text-amber-200'}`}
+          className={`focus:outline-none transition-colors ${Number(rating) >= star ? 'text-amber-400' : 'text-[#71717a] dark:text-gray-400/30 hover:text-amber-200'}`}
         >
           <Star className="w-6 h-6 fill-current" />
         </button>
@@ -34,7 +34,7 @@ const StarRating = ({ rating, onChange }) => {
 
 const DisplayStars = ({ rating }) => {
   const r = Number(rating) || 0;
-  if (!r) return <span className="text-muted-foreground text-xs font-bold">Unrated</span>;
+  if (!r) return <span className="text-[#71717a] dark:text-gray-400 text-xs font-semibold tracking-[0.04em]">Unrated</span>;
   return (
     <div className="flex gap-0.5">
       {[...Array(5)].map((_, i) => (
@@ -153,17 +153,17 @@ export default function UnivEmployeePerformance() {
       {/* Header */}
       <div className="view-header flex items-center justify-between flex-wrap gap-4 shrink-0">
         <div>
-          <h1 className="text-2xl font-black text-foreground flex items-center gap-3">
-            <span className="p-2.5 rounded-xl bg-primary/10 text-primary"><Award className="w-6 h-6" /></span>
+          <h1 className="text-2xl font-black text-foreground flex items-center gap-3 tracking-[-0.02em]">
+            <span className="p-2.5 rounded-md-xl bg-primary/10 text-primary"><Award className="w-6 h-6" /></span>
             Employee Performance
           </h1>
-          <p className="text-sm text-muted-foreground mt-1 ml-0.5">Track employee performance reviews and OKR goals.</p>
+          <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1 ml-0.5">Track employee performance reviews and OKR goals.</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 transition-all active:scale-95">
+          <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-xl text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 transition-all active:scale-95">
             Export CSV
           </button>
-          <button onClick={openAdd} className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-primary/90 active:scale-95 transition-all">
+          <button onClick={openAdd} className="h-10 px-5 bg-primary text-white rounded-md-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 active:scale-95 transition-all">
             <Plus className="w-4 h-4" /> Add Record
           </button>
         </div>
@@ -171,24 +171,24 @@ export default function UnivEmployeePerformance() {
 
       {/* Search */}
       <div className="relative max-w-sm shrink-0">
-        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search employee performance..." className="w-full h-10 pl-9 pr-4 bg-card border border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all" />
+        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400 pointer-events-none" />
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search employee performance..." className="w-full h-10 pl-9 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
       </div>
 
       {/* Table */}
       {loading ? (
         <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
       ) : (
-        <div className="flex-1 overflow-auto rounded-2xl border border-primary/40 bg-card custom-scrollbar">
+        <div className="flex-1 overflow-auto rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card custom-scrollbar hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <table className="w-full text-sm min-w-[900px]">
             <thead className="border-b border-primary/40 bg-muted/40 sticky top-0 z-10">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Employee</th>
-                <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Reviewer</th>
-                <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Rating</th>
-                <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">Goals / OKRs</th>
-                <th className="px-4 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Status</th>
-                <th className="px-4 py-3 text-right text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Actions</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Employee</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Reviewer</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Rating</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">Goals / OKRs</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Status</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -198,36 +198,36 @@ export default function UnivEmployeePerformance() {
                 return (
                   <motion.tr key={r.id} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className="border-b border-primary/40 hover:bg-muted/20 transition-colors group align-top">
                     <td className="px-4 py-4">
-                      <p className="font-bold text-foreground flex items-center gap-2"><User className="w-4 h-4 text-muted-foreground" /> {empName}</p>
-                      <p className="text-xs text-muted-foreground mt-1 ml-6">{r.review_period}</p>
+                      <p className="font-semibold text-foreground flex items-center gap-2"><User className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> {empName}</p>
+                      <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 ml-6 tracking-[0.04em]">{r.review_period}</p>
                     </td>
-                    <td className="px-4 py-4 text-muted-foreground font-medium">{revName}</td>
+                    <td className="px-4 py-4 text-[#71717a] dark:text-gray-400 font-medium">{revName}</td>
                     <td className="px-4 py-4">
                       <DisplayStars rating={r.overall_rating} />
                     </td>
                     <td className="px-4 py-4 max-w-xs">
                       <div className="mb-2">
-                        <span className="text-[10px] uppercase font-bold text-primary tracking-wider block mb-0.5">Goals</span>
-                        <p className="text-muted-foreground text-xs line-clamp-2">{r.goals || '—'}</p>
+                        <span className="text-[10px] uppercase font-semibold text-primary tracking-wider block mb-0.5 tracking-[0.04em]">Goals</span>
+                        <p className="text-[#71717a] dark:text-gray-400 text-xs line-clamp-2 tracking-[0.04em]">{r.goals || '—'}</p>
                       </div>
                       <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-primary/10">
                         <div>
-                          <span className="text-[10px] uppercase font-bold text-emerald-600 tracking-wider block">Strengths</span>
-                          <p className="text-xs text-muted-foreground truncate">{r.strengths || '—'}</p>
+                          <span className="text-[10px] uppercase font-semibold text-emerald-600 tracking-wider block tracking-[0.04em]">Strengths</span>
+                          <p className="text-xs text-[#71717a] dark:text-gray-400 truncate tracking-[0.04em]">{r.strengths || '—'}</p>
                         </div>
                         <div>
-                          <span className="text-[10px] uppercase font-bold text-amber-600 tracking-wider block">To Improve</span>
-                          <p className="text-xs text-muted-foreground truncate">{r.areas_for_improvement || '—'}</p>
+                          <span className="text-[10px] uppercase font-semibold text-amber-600 tracking-wider block tracking-[0.04em]">To Improve</span>
+                          <p className="text-xs text-[#71717a] dark:text-gray-400 truncate tracking-[0.04em]">{r.areas_for_improvement || '—'}</p>
                         </div>
                       </div>
                     </td>
                     <td className="px-4 py-4">
-                      <span className={`px-2 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider ${STATUS_COLORS[r.status] || 'bg-muted text-foreground'}`}>{r.status}</span>
+                      <span className={`px-2 py-1 rounded-lg text-[11px] font-semibold uppercase tracking-wider ${STATUS_COLORS[r.status] || 'bg-muted text-foreground'}`}>{r.status}</span>
                     </td>
                     <td className="px-4 py-4">
-                      <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => openEdit(r)} className="p-1.5 bg-muted rounded-lg hover:bg-muted/80 transition-colors"><Edit2 className="w-3.5 h-3.5" /></button>
-                        <button onClick={() => handleDelete(r.id)} className="p-1.5 bg-red-50 dark:bg-red-900/20 rounded-lg hover:bg-red-100 text-red-500 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                      <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onClick={() => openEdit(r)} className="p-1.5 bg-muted rounded-xl hover:bg-muted/80 transition-colors"><Edit2 className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => handleDelete(r.id)} className="p-1.5 bg-red-50 dark:bg-red-900/20 rounded-xl hover:bg-red-100 text-red-500 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
                       </div>
                     </td>
                   </motion.tr>
@@ -235,8 +235,8 @@ export default function UnivEmployeePerformance() {
               })}
               {!filtered.length && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-20 text-center text-muted-foreground">
-                    <Award className="w-10 h-10 mx-auto mb-3 text-muted-foreground/30" />
+                  <td colSpan={6} className="px-4 py-20 text-center text-[#71717a] dark:text-gray-400">
+                    <Award className="w-10 h-10 mx-auto mb-3 text-[#71717a] dark:text-gray-400/30" />
                     <p className="font-medium">No employee performance records found.</p>
                   </td>
                 </tr>
@@ -256,9 +256,9 @@ export default function UnivEmployeePerformance() {
               return acc;
             }, {})
           ).map(([s, count]) => (
-            <div key={s} className={`px-4 py-2 rounded-xl border text-xs font-bold flex items-center gap-2 ${STATUS_COLORS[s] || 'bg-muted text-muted-foreground'}`}>
+            <div key={s} className={`px-4 py-2 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 text-xs font-semibold flex items-center gap-2 ${STATUS_COLORS[s] || 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
               <span>{s}</span>
-              <span className="bg-card/40 rounded-full px-1.5">{count}</span>
+              <span className="bg-card/40 rounded-md-full px-1.5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{count}</span>
             </div>
           ))}
         </div>
@@ -267,24 +267,24 @@ export default function UnivEmployeePerformance() {
       {/* Modal Form */}
       {modal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-card w-full max-w-2xl rounded-2xl flex flex-col border shadow-2xl max-h-[90vh]">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-card w-full max-w-2xl rounded-md-2xl flex flex-col border-[0.5px] border-black/9 dark:border-white/8 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-2xl max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <div className="p-5 border-b flex justify-between items-center bg-muted/20 shrink-0">
               <h2 className="text-xl font-black flex items-center gap-2"><Award className="w-5 h-5 text-primary" /> {editId ? 'Edit Review' : 'Add Performance Review'}</h2>
-              <button onClick={closeModal} className="p-2 hover:bg-muted rounded-full transition-colors"><XCircle className="w-5 h-5 text-muted-foreground" /></button>
+              <button onClick={closeModal} className="p-2 hover:bg-muted rounded-md-full transition-colors"><XCircle className="w-5 h-5 text-[#71717a] dark:text-gray-400" /></button>
             </div>
             
             <form onSubmit={handleSave} className="p-5 overflow-y-auto custom-scrollbar flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Employee *</label>
-                  <select required value={form.employee_name} onChange={e => setForm({...form, employee_name: e.target.value})} className="w-full h-11 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm appearance-none cursor-pointer">
+                  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Employee *</label>
+                  <select required value={form.employee_name} onChange={e => setForm({...form, employee_name: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm appearance-none cursor-pointer">
                     <option value="">-- Select Employee --</option>
                     {employees.map(emp => <option key={emp.id} value={emp.id}>{emp.first_name} {emp.last_name}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Reviewer *</label>
-                  <select required value={form.reviewer_name} onChange={e => setForm({...form, reviewer_name: e.target.value})} className="w-full h-11 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm appearance-none cursor-pointer">
+                  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Reviewer *</label>
+                  <select required value={form.reviewer_name} onChange={e => setForm({...form, reviewer_name: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm appearance-none cursor-pointer">
                     <option value="">-- Select Reviewer --</option>
                     {employees.map(emp => <option key={emp.id} value={emp.id}>{emp.first_name} {emp.last_name}</option>)}
                   </select>
@@ -293,41 +293,41 @@ export default function UnivEmployeePerformance() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Review Period</label>
-                  <input type="text" value={form.review_period} onChange={e => setForm({...form, review_period: e.target.value})} placeholder="e.g. Q1 2026, Annual 2025" className="w-full h-11 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm" />
+                  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Review Period</label>
+                  <input type="text" value={form.review_period} onChange={e => setForm({...form, review_period: e.target.value})} placeholder="e.g. Q1 2026, Annual 2025" className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">Status</label>
-                  <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full h-11 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm cursor-pointer">
+                  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Status</label>
+                  <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm cursor-pointer">
                     {Object.keys(STATUS_COLORS).map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Overall Rating</label>
+                <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-2 tracking-[0.04em]">Overall Rating</label>
                 <StarRating rating={form.overall_rating} onChange={val => setForm({...form, overall_rating: val})} />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-primary uppercase mb-1.5">Goals / OKRs</label>
-                <textarea rows="3" value={form.goals} onChange={e => setForm({...form, goals: e.target.value})} className="w-full p-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm resize-none" placeholder="What are the key objectives for the next period?" />
+                <label className="block text-xs font-semibold text-primary uppercase mb-1.5 tracking-[0.04em]">Goals / OKRs</label>
+                <textarea rows="3" value={form.goals} onChange={e => setForm({...form, goals: e.target.value})} className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm resize-none" placeholder="What are the key objectives for the next period?" />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-emerald-600 uppercase mb-1.5">Strengths</label>
-                  <textarea rows="3" value={form.strengths} onChange={e => setForm({...form, strengths: e.target.value})} className="w-full p-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm resize-none" placeholder="Key achievements..." />
+                  <label className="block text-xs font-semibold text-emerald-600 uppercase mb-1.5 tracking-[0.04em]">Strengths</label>
+                  <textarea rows="3" value={form.strengths} onChange={e => setForm({...form, strengths: e.target.value})} className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm resize-none" placeholder="Key achievements..." />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-amber-600 uppercase mb-1.5">Areas for Improvement</label>
-                  <textarea rows="3" value={form.areas_for_improvement} onChange={e => setForm({...form, areas_for_improvement: e.target.value})} className="w-full p-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm resize-none" placeholder="Skills to develop..." />
+                  <label className="block text-xs font-semibold text-amber-600 uppercase mb-1.5 tracking-[0.04em]">Areas for Improvement</label>
+                  <textarea rows="3" value={form.areas_for_improvement} onChange={e => setForm({...form, areas_for_improvement: e.target.value})} className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 text-sm resize-none" placeholder="Skills to develop..." />
                 </div>
               </div>
 
               <div className="flex justify-end gap-3 mt-4 pt-5 border-t shrink-0">
-                <button type="button" onClick={closeModal} className="h-11 px-6 bg-muted rounded-xl text-sm font-bold hover:bg-muted/80 transition-colors">Cancel</button>
-                <button type="submit" disabled={saving} className="h-11 px-6 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 transition-colors flex items-center gap-2">
+                <button type="button" onClick={closeModal} className="h-11 px-6 bg-muted rounded-md-xl text-sm font-semibold hover:bg-muted/80 transition-colors">Cancel</button>
+                <button type="submit" disabled={saving} className="h-11 px-6 bg-primary text-white rounded-md-xl text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2">
                   {saving && <Loader2 className="w-4 h-4 animate-spin" />}
                   {editId ? 'Save Changes' : 'Create Review'}
                 </button>

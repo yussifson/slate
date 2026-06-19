@@ -147,8 +147,8 @@ export default function AgentPerformance() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("agent_performance", "Agent Performance")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t(
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("agent_performance", "Agent Performance")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
  "track_agent_sales_commissions_",
  "Track agent sales, commissions, and ratings"
  )}</p>
@@ -158,53 +158,53 @@ export default function AgentPerformance() {
  </Button>
  </div>
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-xl border border-primary/40 p-4 ">
- <div className="flex items-center gap-2 mb-2 text-muted-foreground"><Users className="w-4 h-4"/> {t("total_agents", "Total Agents")}</div>
- <p className="text-2xl font-bold text-card-foreground">{agents.length}</p>
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex items-center gap-2 mb-2 text-[#71717a] dark:text-gray-400"><Users className="w-4 h-4"/> {t("total_agents", "Total Agents")}</div>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{agents.length}</p>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-4 ">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 mb-2 text-primary"><TrendingUp className="w-4 h-4"/> {t("avg_policies_sold", "Avg Policies Sold")}</div>
- <p className="text-2xl font-bold text-card-foreground">{avgPolicies}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{avgPolicies}</p>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-4 ">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 mb-2 text-primary"><DollarSign className="w-4 h-4"/> {t("total_commission", "Total Commission")}</div>
- <p className="text-2xl font-bold text-card-foreground">${totalCommission.toLocaleString()}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${totalCommission.toLocaleString()}</p>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-4 ">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 mb-2 text-amber-600"><Award className="w-4 h-4"/> {t("top_performer", "Top Performer")}</div>
- <p className="text-lg font-bold text-card-foreground truncate">{topPerformer ? topPerformer.agentName : 'N/A'}</p>
- <p className="text-xs text-muted-foreground">{topPerformer ? `${topPerformer.policiesSold} policies` : ''}</p>
+ <p className="text-lg font-semibold text-card-foreground truncate hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{topPerformer ? topPerformer.agentName : 'N/A'}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{topPerformer ? `${topPerformer.policiesSold} policies` : ''}</p>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search agent name or code..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search agent name or code..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  <div className="overflow-x-auto">
  {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_agents", "Loading agents...")}</div>
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_agents", "Loading agents...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
  <Users className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary" />
- <p className="font-semibold text-lg text-card-foreground">{t("no_agents_found", "No agents found")}</p>
- <p className="text-xs mt-1">{t(
+ <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_agents_found", "No agents found")}</p>
+ <p className="text-xs mt-1 tracking-[0.04em]">{t(
  "add_an_agent_to_start_tracking",
  "Add an agent to start tracking performance."
  )}</p>
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40">
+ <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("agent_info", "Agent Info")}</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("policies_sold", "Policies Sold")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("premium_collected", "Premium Collected")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("commission", "Commission")}</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("action", "Action")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("agent_info", "Agent Info")}</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("policies_sold", "Policies Sold")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("premium_collected", "Premium Collected")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("commission", "Commission")}</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("action", "Action")}</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
@@ -212,29 +212,29 @@ export default function AgentPerformance() {
  return (
  <tr key={agent.id} className="hover:bg-muted/50 transition-colors">
  <td className="px-6 py-4">
- <p className="font-bold text-card-foreground">{agent.agentName}</p>
- <p className="text-xs text-muted-foreground mt-0.5">{agent.agentCode} • {agent.region}</p>
+ <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{agent.agentName}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">{agent.agentCode} • {agent.region}</p>
  <div className="flex gap-0.5 mt-1">
  {[...Array(5)].map((_, i) => {
- return (<Award key={i} className={`w-3 h-3 ${i < Number(agent.rating) ? 'text-amber-500 fill-amber-500' : 'text-muted-foreground/30'}`} />);
+ return (<Award key={i} className={`w-3 h-3 ${i < Number(agent.rating) ? 'text-amber-500 fill-amber-500' : 'text-[#71717a] dark:text-gray-400/30'}`} />);
 })}
  </div>
  </td>
  <td className="px-6 py-4 text-center">
- <span className="font-bold text-card-foreground text-lg">{agent.policiesSold}</span>
+ <span className="font-semibold text-card-foreground text-lg hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{agent.policiesSold}</span>
  </td>
- <td className="px-6 py-4 text-right text-muted-foreground font-medium">
+ <td className="px-6 py-4 text-right text-[#71717a] dark:text-gray-400 font-medium">
  ${Number(agent.premiumCollected).toLocaleString()}
  </td>
  <td className="px-6 py-4 text-right">
- <p className="font-bold text-primary">${Number(agent.commissionEarned).toLocaleString()}</p>
+ <p className="font-semibold text-primary">${Number(agent.commissionEarned).toLocaleString()}</p>
  </td>
  <td className="px-6 py-4 text-center">
  <select
  value={agent.status}
  onChange={e => handleUpdateStatus(agent, e.target.value)}
- className={`rounded-md border border-input px-2 py-1 text-xs font-bold ${
- agent.status === 'Active' ? 'bg-slate-100 text-primary/90' : 'bg-muted text-muted-foreground'
+ className={`rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input px-2 py-1 text-xs font-semibold ${
+ agent.status === 'Active' ? 'bg-slate-100 text-primary/90' : 'bg-muted text-[#71717a] dark:text-gray-400'
 }`}
  >
  <option value="Active">{t("active", "Active")}</option>
@@ -266,16 +266,16 @@ export default function AgentPerformance() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
- <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Agent' : 'Add New Agent'}</h2>
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editTargetId ? 'Edit Agent' : 'Add New Agent'}</h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("agent_name", "Agent Name")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("agent_name", "Agent Name")}</label>
  <Input value={formData.agentName} onChange={e => setFormData({...formData, agentName: e.target.value})} placeholder="John Doe" className="mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("region", "Region")}</label>
- <select value={formData.region} onChange={e => setFormData({...formData, region: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("region", "Region")}</label>
+ <select value={formData.region} onChange={e => setFormData({...formData, region: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground">
  <option>{t("north", "North")}</option>
  <option>{t("south", "South")}</option>
  <option>{t("east", "East")}</option>
@@ -285,26 +285,26 @@ export default function AgentPerformance() {
  </div>
  <div className="grid grid-cols-2 gap-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("policies_sold", "Policies Sold")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("policies_sold", "Policies Sold")}</label>
  <Input type="number" value={formData.policiesSold} onChange={e => setFormData({...formData, policiesSold: e.target.value})} className="mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("claims_handled", "Claims Handled")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("claims_handled", "Claims Handled")}</label>
  <Input type="number" value={formData.claimsHandled} onChange={e => setFormData({...formData, claimsHandled: e.target.value})} className="mt-1" />
  </div>
  </div>
  <div className="grid grid-cols-2 gap-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("premium_collected", "Premium Collected ($)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("premium_collected", "Premium Collected ($)")}</label>
  <Input type="number" value={formData.premiumCollected} onChange={e => setFormData({...formData, premiumCollected: e.target.value})} className="mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("commission", "Commission ($)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("commission", "Commission ($)")}</label>
  <Input type="number" value={formData.commissionEarned} onChange={e => setFormData({...formData, commissionEarned: e.target.value})} className="mt-1" />
  </div>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("rating_1_5", "Rating (1-5)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("rating_1_5", "Rating (1-5)")}</label>
  <Input type="number" min="1" max="5" value={formData.rating} onChange={e => setFormData({...formData, rating: e.target.value})} className="mt-1" />
  </div>
  </div>
@@ -316,7 +316,7 @@ export default function AgentPerformance() {
  </div>
  )}
  <Sheet open={viewDetailsId !== null} onOpenChange={(open) => !open && setViewDetailsId(null)}>
- <SheetContent className="bg-card text-card-foreground">
+ <SheetContent className="bg-card text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <SheetHeader>
  <SheetTitle>{t("record_details", "Record Details")}</SheetTitle>
  </SheetHeader>
@@ -328,7 +328,7 @@ export default function AgentPerformance() {
  if (key === 'id') return null;
  return (
  <div key={key}>
- <label className="text-xs font-bold text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{key.replace(/([A-Z])/g, ' $1').trim()}</label>
  <p className="font-medium">{String(value)}</p>
  </div>
  );
@@ -356,43 +356,43 @@ export default function AgentPerformance() {
  {viewRecord && (
  <div className="mt-6 space-y-4">
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("agent_name", "Agent Name")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("agent_name", "Agent Name")}</h4>
  <p className="text-base font-semibold">{viewRecord.agentName}</p>
  </div>
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("agent_code", "Agent Code")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("agent_code", "Agent Code")}</h4>
  <p className="text-base">{viewRecord.agentCode}</p>
  </div>
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("region", "Region")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("region", "Region")}</h4>
  <p className="text-base">{viewRecord.region}</p>
  </div>
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("status", "Status")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("status", "Status")}</h4>
  <p className="text-base">{viewRecord.status}</p>
  </div>
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("rating", "Rating")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("rating", "Rating")}</h4>
  <div className="flex gap-0.5 mt-1">
  {[...Array(5)].map((_, i) => {
- return (<Award key={i} className={`w-4 h-4 ${i < Number(viewRecord.rating) ? 'text-amber-500 fill-amber-500' : 'text-muted-foreground/30'}`} />);
+ return (<Award key={i} className={`w-4 h-4 ${i < Number(viewRecord.rating) ? 'text-amber-500 fill-amber-500' : 'text-[#71717a] dark:text-gray-400/30'}`} />);
 })}
  </div>
  </div>
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("policies_sold", "Policies Sold")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("policies_sold", "Policies Sold")}</h4>
  <p className="text-base">{viewRecord.policiesSold}</p>
  </div>
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("claims_handled", "Claims Handled")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("claims_handled", "Claims Handled")}</h4>
  <p className="text-base">{viewRecord.claimsHandled}</p>
  </div>
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("premium_collected", "Premium Collected")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("premium_collected", "Premium Collected")}</h4>
  <p className="text-base">${Number(viewRecord.premiumCollected).toLocaleString()}</p>
  </div>
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("commission_earned", "Commission Earned")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("commission_earned", "Commission Earned")}</h4>
  <p className="text-base">${Number(viewRecord.commissionEarned).toLocaleString()}</p>
  </div>
  </div>

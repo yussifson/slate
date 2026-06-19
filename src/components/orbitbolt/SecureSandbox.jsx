@@ -68,9 +68,9 @@ export default function SecureSandbox({ code, initialData = {}}) {
 }, []);
 
  return (
- <div className="w-full h-full min-h-[400px] rounded-xl border border-primary/40 bg-muted/30 overflow-hidden relative ring-1 ring-border/50 ">
+ <div className="w-full h-full min-h-[400px] rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-muted/30 overflow-hidden relative ring-1 ring-border/50 ">
  {error && (
- <div className="absolute top-0 left-0 right-0 p-3 bg-destructive/10 text-destructive text-xs font-mono z-10 break-all border-b border-destructive/20">
+ <div className="absolute top-0 left-0 right-0 p-3 bg-destructive/10 text-destructive text-xs font-mono z-10 break-all border-b border-destructive/20 tracking-[0.04em]">
  Sandbox Error: {error}
  </div>
  )}

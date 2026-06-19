@@ -23,8 +23,8 @@ export default function Workflows() {
  <div className="space-y-6 max-w-4xl mx-auto p-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("automated_workflows", "Automated Workflows")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t(
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("automated_workflows", "Automated Workflows")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
  "build_zapier_style_triggers_an",
  "Build Zapier-style triggers and actions for your app."
  )}</p>
@@ -36,27 +36,27 @@ export default function Workflows() {
  <div className="space-y-4">
  {rules.map(rule => {
  return (
- <div key={rule.id} className="bg-card rounded-xl border border-primary/40 p-5 space-y-4">
+ <div key={rule.id} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Header */}
  <div className="flex justify-between items-center border-b border-primary/40 pb-3">
  <div className="flex items-center gap-2">
- <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary">
+ <div className="w-8 h-8 rounded-md-full bg-slate-100 flex items-center justify-center text-primary">
  <Zap className="w-4 h-4" />
  </div>
- <h3 className="font-bold text-foreground">{t("rule", "Rule #")}{rule.id}</h3>
+ <h3 className="font-semibold text-foreground">{t("rule", "Rule #")}{rule.id}</h3>
  </div>
  <div className="flex items-center gap-2">
- <span className="text-xs font-semibold text-primary bg-slate-100 px-2 py-1 rounded-full">{t("active", "Active")}</span>
+ <span className="text-xs font-semibold text-primary bg-slate-100 px-2 py-1 rounded-md-full tracking-[0.04em]">{t("active", "Active")}</span>
  <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600"><Trash2 className="w-4 h-4"/></Button>
  </div>
  </div>
  {/* Trigger Setup */}
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- <div className="md:col-span-1 p-4 bg-muted/30 rounded-lg border border-primary/40">
- <h4 className="text-xs font-bold uppercase text-muted-foreground mb-3">{t("1_when_this_happens", "1. When this happens...")}</h4>
+ <div className="md:col-span-1 p-4 bg-muted/30 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <h4 className="text-xs font-semibold uppercase text-[#71717a] dark:text-gray-400 mb-3 tracking-[0.04em]">{t("1_when_this_happens", "1. When this happens...")}</h4>
  <div className="space-y-3 text-sm">
  <div>
- <label className="text-xs text-muted-foreground">{t("table", "Table")}</label>
+ <label className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("table", "Table")}</label>
  <Select defaultValue={rule.table_name}>
  <SelectTrigger className="mt-1 bg-background"><SelectValue /></SelectTrigger>
  <SelectContent>
@@ -67,7 +67,7 @@ export default function Workflows() {
  </Select>
  </div>
  <div>
- <label className="text-xs text-muted-foreground">{t("event", "Event")}</label>
+ <label className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("event", "Event")}</label>
  <Select defaultValue={rule.trigger_event}>
  <SelectTrigger className="mt-1 bg-background"><SelectValue /></SelectTrigger>
  <SelectContent>
@@ -81,12 +81,12 @@ export default function Workflows() {
 
  {/* Arrow */}
  <div className="hidden md:flex items-center justify-center">
- <ArrowRight className="w-6 h-6 text-muted-foreground/50" />
+ <ArrowRight className="w-6 h-6 text-[#71717a] dark:text-gray-400/50" />
  </div>
 
  {/* Condition Setup */}
- <div className="md:col-span-1 p-4 bg-muted/30 rounded-lg border border-primary/40">
- <h4 className="text-xs font-bold uppercase text-muted-foreground mb-3">{t("2_if_conditions_match", "2. If conditions match...")}</h4>
+ <div className="md:col-span-1 p-4 bg-muted/30 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <h4 className="text-xs font-semibold uppercase text-[#71717a] dark:text-gray-400 mb-3 tracking-[0.04em]">{t("2_if_conditions_match", "2. If conditions match...")}</h4>
  {rule.conditions.map((cond, i) => {
  return (
  <div key={i} className="space-y-2 text-sm">
@@ -105,11 +105,11 @@ export default function Workflows() {
  </div>
  </div>
  {/* Action Setup */}
- <div className="p-4 bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 rounded-lg border border-primary/40 dark:border-primary/30">
- <h4 className="text-xs font-bold uppercase text-primary dark:text-primary/70 mb-3">{t("3_then_do_this", "3. Then do this...")}</h4>
+ <div className="p-4 bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/30">
+ <h4 className="text-xs font-semibold uppercase text-primary dark:text-primary/70 mb-3 tracking-[0.04em]">{t("3_then_do_this", "3. Then do this...")}</h4>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
  <div>
- <label className="text-xs text-muted-foreground">{t("action_type", "Action Type")}</label>
+ <label className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("action_type", "Action Type")}</label>
  <Select defaultValue={rule.action_type}>
  <SelectTrigger className="mt-1 bg-background"><SelectValue /></SelectTrigger>
  <SelectContent>
@@ -119,7 +119,7 @@ export default function Workflows() {
  </Select>
  </div>
  <div>
- <label className="text-xs text-muted-foreground">{t("action_details", "Action Details")}</label>
+ <label className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("action_details", "Action Details")}</label>
  {rule.action_type === 'send_email' && (
  <div className="space-y-2 mt-1">
  <Input defaultValue={rule.action_payload.to} placeholder="To Address" className="bg-background" />

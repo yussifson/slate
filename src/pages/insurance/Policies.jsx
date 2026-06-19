@@ -150,103 +150,103 @@ export default function Policies() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("policies", "Policies")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t("manage_insurance_policies_and_", "Manage insurance policies and coverage")}</p>
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("policies", "Policies")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("manage_insurance_policies_and_", "Manage insurance policies and coverage")}</p>
  </div>
  <Button onClick={openNewModal} className="gap-2 bg-primary hover:bg-primary text-white">
  <Plus className="w-4 h-4" /> {t("new_policy", "New Policy")}
  </Button>
  </div>
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
- <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
+ <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary">
  <FileText className="w-5 h-5" />
  </div>
  <div>
- <p className="text-2xl font-bold text-card-foreground">{policies.length}</p>
- <p className="text-xs text-muted-foreground">{t("total_policies", "Total Policies")}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{policies.length}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("total_policies", "Total Policies")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
- <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
+ <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary">
  <CheckCircle className="w-5 h-5" />
  </div>
  <div>
- <p className="text-2xl font-bold text-card-foreground">{policies.filter(p => p.status === 'Active').length}</p>
- <p className="text-xs text-muted-foreground">{t("active", "Active")}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{policies.filter(p => p.status === 'Active').length}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("active", "Active")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
- <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center text-red-600">
+ <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-md-xl bg-red-100 flex items-center justify-center text-red-600">
  <Shield className="w-5 h-5" />
  </div>
  <div>
- <p className="text-2xl font-bold text-card-foreground">{policies.filter(p => p.status === 'Lapsed').length}</p>
- <p className="text-xs text-muted-foreground">{t("lapsed", "Lapsed")}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{policies.filter(p => p.status === 'Lapsed').length}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("lapsed", "Lapsed")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
- <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
- <span className="font-bold text-lg">$</span>
+ <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary">
+ <span className="font-semibold text-lg">$</span>
  </div>
  <div>
- <p className="text-2xl font-bold text-card-foreground">${totalPremium.toLocaleString()}</p>
- <p className="text-xs text-muted-foreground">{t("total_premium_value", "Total Premium Value")}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${totalPremium.toLocaleString()}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("total_premium_value", "Total Premium Value")}</p>
  </div>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search policy number or holder..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search policy number or holder..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  <div className="overflow-x-auto">
  {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_policies", "Loading policies...")}</div>
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_policies", "Loading policies...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
  <Shield className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary" />
- <p className="font-semibold text-lg text-card-foreground">{t("no_policies_found", "No policies found")}</p>
- <p className="text-xs mt-1">{t("create_a_new_policy_to_get_sta", "Create a new policy to get started.")}</p>
+ <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_policies_found", "No policies found")}</p>
+ <p className="text-xs mt-1 tracking-[0.04em]">{t("create_a_new_policy_to_get_sta", "Create a new policy to get started.")}</p>
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40">
+ <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("policy_no", "Policy No.")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("holder_type", "Holder & Type")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("coverage_dates", "Coverage Dates")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("premium", "Premium")}</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("action", "Action")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("policy_no", "Policy No.")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("holder_type", "Holder & Type")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("coverage_dates", "Coverage Dates")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("premium", "Premium")}</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("action", "Action")}</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
  {filtered.map(policy => {
  return (
  <tr key={policy.id} className="hover:bg-muted/50 transition-colors">
- <td className="px-6 py-4 font-mono font-bold text-primary">{policy.policyNumber}</td>
+ <td className="px-6 py-4 font-mono font-semibold text-primary">{policy.policyNumber}</td>
  <td className="px-6 py-4">
- <p className="font-bold text-card-foreground">{policy.holderName}</p>
- <p className="text-xs text-muted-foreground">{policy.policyType} {t("insurance", "Insurance")}</p>
+ <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{policy.holderName}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{policy.policyType} {t("insurance", "Insurance")}</p>
  </td>
- <td className="px-6 py-4 text-muted-foreground font-medium">
+ <td className="px-6 py-4 text-[#71717a] dark:text-gray-400 font-medium">
  {policy.startDate} {t("to", "to")} {policy.endDate}
  </td>
  <td className="px-6 py-4 text-right">
- <p className="font-bold text-card-foreground">${Number(policy.premium).toLocaleString()}</p>
- <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("sum", "Sum: $")}{Number(policy.sumInsured).toLocaleString()}</p>
+ <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${Number(policy.premium).toLocaleString()}</p>
+ <p className="text-[10px] text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{t("sum", "Sum: $")}{Number(policy.sumInsured).toLocaleString()}</p>
  </td>
  <td className="px-6 py-4 text-center">
  <select
  value={policy.status}
  onChange={e => handleUpdateStatus(policy, e.target.value)}
- className={`rounded-md border border-input px-2 py-1 text-xs font-bold ${
+ className={`rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input px-2 py-1 text-xs font-semibold ${
  policy.status === 'Active' ? 'bg-slate-100 text-primary/90' : 
  policy.status === 'Lapsed' ? 'bg-red-100 text-red-700' : 
- policy.status === 'Cancelled' ? 'bg-muted text-muted-foreground' : 'bg-amber-100 text-amber-700'
+ policy.status === 'Cancelled' ? 'bg-muted text-[#71717a] dark:text-gray-400' : 'bg-amber-100 text-amber-700'
 }`}
  >
  <option value="Active">{t("active", "Active")}</option>
@@ -280,16 +280,16 @@ export default function Policies() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
- <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Policy' : 'New Policy'}</h2>
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editTargetId ? 'Edit Policy' : 'New Policy'}</h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("holder_name", "Holder Name")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("holder_name", "Holder Name")}</label>
  <Input value={formData.holderName} onChange={e => setFormData({...formData, holderName: e.target.value})} placeholder="Jane Doe" className="mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("policy_type", "Policy Type")}</label>
- <select value={formData.policyType} onChange={e => setFormData({...formData, policyType: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("policy_type", "Policy Type")}</label>
+ <select value={formData.policyType} onChange={e => setFormData({...formData, policyType: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground">
  <option>{t("life", "Life")}</option>
  <option>{t("health", "Health")}</option>
  <option>{t("auto", "Auto")}</option>
@@ -299,21 +299,21 @@ export default function Policies() {
  </div>
  <div className="grid grid-cols-2 gap-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("premium", "Premium ($)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("premium", "Premium ($)")}</label>
  <Input type="number" value={formData.premium} onChange={e => setFormData({...formData, premium: e.target.value})} placeholder="500" className="mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("sum_insured", "Sum Insured ($)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("sum_insured", "Sum Insured ($)")}</label>
  <Input type="number" value={formData.sumInsured} onChange={e => setFormData({...formData, sumInsured: e.target.value})} placeholder="50000" className="mt-1" />
  </div>
  </div>
  <div className="grid grid-cols-2 gap-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("start_date", "Start Date")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("start_date", "Start Date")}</label>
  <Input type="date" value={formData.startDate} onChange={e => setFormData({...formData, startDate: e.target.value})} className="mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("end_date", "End Date")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("end_date", "End Date")}</label>
  <Input type="date" value={formData.endDate} onChange={e => setFormData({...formData, endDate: e.target.value})} className="mt-1" />
  </div>
  </div>
@@ -326,7 +326,7 @@ export default function Policies() {
  </div>
  )}
  <Sheet open={viewDetailsId !== null} onOpenChange={(open) => !open && setViewDetailsId(null)}>
- <SheetContent className="bg-card text-card-foreground">
+ <SheetContent className="bg-card text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <SheetHeader>
  <SheetTitle>{t("record_details", "Record Details")}</SheetTitle>
  </SheetHeader>
@@ -338,7 +338,7 @@ export default function Policies() {
  if (key === 'id') return null;
  return (
  <div key={key}>
- <label className="text-xs font-bold text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{key.replace(/([A-Z])/g, ' $1').trim()}</label>
  <p className="font-medium">{String(value)}</p>
  </div>
  );
@@ -366,31 +366,31 @@ export default function Policies() {
  {viewRecord && (
  <div className="mt-6 space-y-4">
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("policy_number", "Policy Number")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("policy_number", "Policy Number")}</h4>
  <p className="text-base font-semibold">{viewRecord.policyNumber}</p>
  </div>
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("holder_name", "Holder Name")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("holder_name", "Holder Name")}</h4>
  <p className="text-base font-semibold">{viewRecord.holderName}</p>
  </div>
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("policy_type", "Policy Type")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("policy_type", "Policy Type")}</h4>
  <p className="text-base">{viewRecord.policyType}</p>
  </div>
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("status", "Status")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("status", "Status")}</h4>
  <p className="text-base">{viewRecord.status}</p>
  </div>
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("premium", "Premium")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("premium", "Premium")}</h4>
  <p className="text-base">${Number(viewRecord.premium).toLocaleString()}</p>
  </div>
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("sum_insured", "Sum Insured")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("sum_insured", "Sum Insured")}</h4>
  <p className="text-base">${Number(viewRecord.sumInsured).toLocaleString()}</p>
  </div>
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("coverage_period", "Coverage Period")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("coverage_period", "Coverage Period")}</h4>
  <p className="text-base">{viewRecord.startDate} {t("to", "to")} {viewRecord.endDate}</p>
  </div>
  </div>

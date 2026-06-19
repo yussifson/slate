@@ -160,11 +160,11 @@ export default function Board() {
  {/* Header */}
  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
- <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
+ <h1 className="text-2xl font-semibold tracking-tight text-foreground flex items-center gap-2 tracking-[-0.02em]">
  <LayoutGrid className="w-6 h-6 text-primary" />
  {t("custom_board", "Meeting Board")}
  </h1>
- <p className="text-muted-foreground mt-1">Start or schedule enterprise-grade video calls instantly.</p>
+ <p className="text-[#71717a] dark:text-gray-400 mt-1">Start or schedule enterprise-grade video calls instantly.</p>
  </div>
  <div className="flex items-center gap-3">
  <Button variant="outline" className="gap-2">
@@ -181,32 +181,32 @@ export default function Board() {
  
  {/* Left Column: Active / Scheduled */}
  <div className="lg:col-span-2 space-y-6">
- <div className="bg-card border border-primary/40 rounded-xl p-5">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
- <Clock className="w-5 h-5 text-muted-foreground" /> Recent & Active Meetings
+ <Clock className="w-5 h-5 text-[#71717a] dark:text-gray-400" /> Recent & Active Meetings
  </h2>
  <div className="space-y-3">
  {isLoading ? (
- <div className="flex justify-center p-8"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>
+ <div className="flex justify-center p-8"><Loader2 className="w-6 h-6 animate-spin text-[#71717a] dark:text-gray-400" /></div>
  ) : rooms.length > 0 ? (
  rooms.map(room => (
- <div key={room.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-lg border border-primary/40 bg-background hover:border-primary/30 transition-colors">
+ <div key={room.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background hover:border-primary/30 transition-colors">
  <div className="flex items-start gap-3">
  <div className="mt-0.5">
  {room.status === 'active' ? (
  <span className="flex h-3 w-3 relative">
- <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
- <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+ <span className="animate-ping absolute inline-flex h-full w-full rounded-md-full bg-red-400 opacity-75"></span>
+ <span className="relative inline-flex rounded-md-full h-3 w-3 bg-red-500/10"></span>
  </span>
  ) : (
- <div className="w-3 h-3 rounded-full bg-primary/20 border border-primary"></div>
+ <div className="w-3 h-3 rounded-md-full bg-primary/20 border-[0.5px] border-black/9 dark:border-white/8 border-primary"></div>
  )}
  </div>
  <div>
  <h3 className="font-semibold text-foreground leading-tight">{room.title}</h3>
- <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground">
- <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {format(new Date(room.created_at), 'MMM d, h:mm a')}</span>
- <span className="flex items-center gap-1"><Users className="w-3 h-3" /> Room ID: {room.id.slice(0,6)}</span>
+ <div className="flex items-center gap-3 mt-1.5 text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
+ <span className="flex items-center gap-2"><Clock className="w-3 h-3" /> {format(new Date(room.created_at), 'MMM d, h:mm a')}</span>
+ <span className="flex items-center gap-2"><Users className="w-3 h-3" /> Room ID: {room.id.slice(0,6)}</span>
  </div>
  </div>
  </div>
@@ -223,7 +223,7 @@ export default function Board() {
  </div>
  ))
  ) : (
- <div className="text-center text-muted-foreground p-8">No meetings found. Start an instant call above!</div>
+ <div className="text-center text-[#71717a] dark:text-gray-400 p-8">No meetings found. Start an instant call above!</div>
  )}
  </div>
  </div>
@@ -231,27 +231,27 @@ export default function Board() {
 
  {/* Right Column: AI Insights */}
  <div className="space-y-6">
- <div className="bg-primary rounded-xl p-5 text-primary-foreground relative overflow-hidden">
- <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-900/40/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
- <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
+ <div className="bg-primary rounded-md-xl p-5 text-primary-foreground relative overflow-hidden">
+ <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-900/40/10 rounded-md-full blur-2xl -mr-10 -mt-10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>
+ <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
  <Sparkles className="w-5 h-5 text-primary/20" /> Orbit Meeting AI
  </h3>
  <p className="text-sm text-primary/10 mb-4">Your AI assistant is ready to join your calls to transcribe, summarize, and extract action items.</p>
  <ul className="space-y-2 text-sm text-primary/5">
- <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary/30"></div> Real-time transcription</li>
- <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary/30"></div> Post-meeting summaries</li>
- <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary/30"></div> Action item detection</li>
+ <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-md-full bg-primary/30"></div> Real-time transcription</li>
+ <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-md-full bg-primary/30"></div> Post-meeting summaries</li>
+ <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-md-full bg-primary/30"></div> Action item detection</li>
  </ul>
  </div>
  
- <div className="bg-card border border-primary/40 rounded-xl p-5">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h3 className="font-semibold mb-3">Quick Connect</h3>
- <p className="text-sm text-muted-foreground mb-4">Invite external clients or guests instantly without them needing an account.</p>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mb-4">Invite external clients or guests instantly without them needing an account.</p>
  <div className="flex gap-2">
  <input 
  type="email" 
  placeholder="guest@email.com" 
- className="flex-1 bg-background border border-primary/40 rounded-md px-3 text-sm focus:outline-none focus:border-primary"
+ className="flex-1 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-3 text-sm focus:outline-none focus:border-primary"
  value={quickConnectEmail}
  onChange={(e) => setQuickConnectEmail(e.target.value)}
  onKeyDown={(e) => e.key === 'Enter' && handleQuickConnect()}

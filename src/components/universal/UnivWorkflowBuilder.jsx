@@ -176,7 +176,7 @@ function WorkflowNode({
  userSelect: 'none',
 }}
  className={cn(
- 'rounded-xl border border-primary/40 border-l-4 bg-card transition- duration-150',
+ 'rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-l-4 bg-card transition- duration-150',
  def.borderClass,
  selected && ' ring-2 ring-primary ring-offset-1',
  'group'
@@ -188,17 +188,17 @@ function WorkflowNode({
 }}
  >
  {/* Header */}
- <div className={cn('flex items-center gap-2 px-3 pt-3 pb-2 rounded-t-xl', def.bgClass)}>
- <span className={cn('flex items-center justify-center w-6 h-6 rounded-md', def.badgeClass)}>
+ <div className={cn('flex items-center gap-2 px-3 pt-3 pb-2 rounded-md-t-xl', def.bgClass)}>
+ <span className={cn('flex items-center justify-center w-6 h-6 rounded-lg', def.badgeClass)}>
  <IconComp className="w-3.5 h-3.5" />
  </span>
- <span className={cn('text-[11px] font-bold uppercase tracking-wider', def.badgeClass.split(' ').filter(c => c.startsWith('text-')).join(' '))}>
+ <span className={cn('text-[11px] font-semibold uppercase tracking-wider', def.badgeClass.split(' ').filter(c => c.startsWith('text-')).join(' '))}>
  {def.label}
  </span>
  <button
  onMouseDown={(e) => e.stopPropagation()}
  onClick={(e) => { e.stopPropagation(); onDelete(node.id);}}
- className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity w-5 h-5 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center text-red-500 hover:bg-red-200"
+ className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity w-5 h-5 rounded-md-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center text-red-500 hover:bg-red-200"
  title="Delete node"
  >
  <X className="w-3 h-3" />
@@ -207,13 +207,13 @@ function WorkflowNode({
 
  {/* Body */}
  <div className="px-3 pb-3 pt-1">
- <p className="text-xs text-foreground font-semibold leading-snug truncate">
+ <p className="text-xs text-foreground font-semibold leading-snug truncate tracking-[0.04em]">
  {node.config?.label || node.config?.option
  ? optionLabel
  : def.description}
  </p>
  {node.config?.value && (
- <p className="text-[10px] text-muted-foreground mt-0.5 truncate">
+ <p className="text-[10px] text-[#71717a] dark:text-gray-400 mt-0.5 truncate">
  {node.config.value}
  </p>
  )}
@@ -227,7 +227,7 @@ function WorkflowNode({
  title="Input port"
  className={cn(
  'absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2',
- 'w-3.5 h-3.5 rounded-full border-2 border-primary/40 bg-background',
+ 'w-3.5 h-3.5 rounded-md-full border-2 border-primary/40 bg-background',
  'hover:border-primary hover:bg-primary/20 transition-colors cursor-crosshair',
  connecting?.targetId === node.id && 'border-primary bg-primary/30'
  )}
@@ -242,7 +242,7 @@ function WorkflowNode({
  title="Output port — click to start connection"
  className={cn(
  'absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2',
- 'w-3.5 h-3.5 rounded-full border-2 border-primary bg-background',
+ 'w-3.5 h-3.5 rounded-md-full border-2 border-primary bg-background',
  'hover:bg-primary/20 transition-colors cursor-crosshair',
  connecting?.sourceId === node.id && 'bg-primary/40 scale-125'
  )}
@@ -270,13 +270,13 @@ function ConfigPanel({ node, onUpdate, onClose}) {
  animate={{ x: 0, opacity: 1}}
  exit={{ x: 40, opacity: 0}}
  transition={{ duration: 0.18}}
- className="w-72 shrink-0 border-l border-primary/40 bg-card flex flex-col overflow-hidden"
+ className="w-72 shrink-0 border-l border-primary/40 bg-card flex flex-col overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  {/* Panel header */}
  <div className={cn('flex items-center gap-2 px-4 py-3 border-b border-primary/40', def.bgClass)}>
  <def.icon className="w-4 h-4" />
- <span className="text-sm font-bold flex-1">{def.label} Config</span>
- <button onClick={onClose} className="p-1 rounded-lg hover:bg-primary/20 text-muted-foreground">
+ <span className="text-sm font-semibold flex-1">{def.label} Config</span>
+ <button onClick={onClose} className="p-1 rounded-xl hover:bg-primary/20 text-[#71717a] dark:text-gray-400">
  <X className="w-4 h-4" />
  </button>
  </div>
@@ -284,7 +284,7 @@ function ConfigPanel({ node, onUpdate, onClose}) {
  <div className="flex-1 overflow-y-auto p-4 space-y-4">
  {/* Node label */}
  <div>
- <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+ <label className="block text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1.5 tracking-[0.04em]">
  Node Label
  </label>
  <input
@@ -292,20 +292,20 @@ function ConfigPanel({ node, onUpdate, onClose}) {
  value={cfg.label || ''}
  onChange={(e) => commit({ label: e.target.value})}
  placeholder={def.description}
- className="w-full h-9 px-3 bg-background border border-primary/40 rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"
+ className="w-full h-9 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"
  />
  </div>
 
  {/* Option select */}
  {def.options.length > 0 && (
  <div>
- <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+ <label className="block text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1.5 tracking-[0.04em]">
  {node.type === 'trigger' ? 'Trigger Event' : node.type === 'condition' ? 'Condition Type' : 'Action Type'}
  </label>
  <select
  value={cfg.option || ''}
  onChange={(e) => commit({ option: e.target.value})}
- className="w-full h-9 px-3 bg-background border border-primary/40 rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"
+ className="w-full h-9 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"
  >
  <option value="">— Select —</option>
  {def.options.map((o) => (
@@ -318,7 +318,7 @@ function ConfigPanel({ node, onUpdate, onClose}) {
  {/* Value field (for condition/trigger where a value is relevant) */}
  {(node.type === 'condition' || node.type === 'trigger') && (
  <div>
- <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+ <label className="block text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1.5 tracking-[0.04em]">
  {node.type === 'condition' ? 'Compare Value' : 'Filter Value (optional)'}
  </label>
  <input
@@ -326,7 +326,7 @@ function ConfigPanel({ node, onUpdate, onClose}) {
  value={cfg.value || ''}
  onChange={(e) => commit({ value: e.target.value})}
  placeholder="Enter value..."
- className="w-full h-9 px-3 bg-background border border-primary/40 rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"
+ className="w-full h-9 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"
  />
  </div>
  )}
@@ -334,7 +334,7 @@ function ConfigPanel({ node, onUpdate, onClose}) {
  {/* Assignee field for action */}
  {node.type === 'action' && cfg.option === 'assign_to' && (
  <div>
- <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+ <label className="block text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1.5 tracking-[0.04em]">
  Assign To (name or email)
  </label>
  <input
@@ -342,7 +342,7 @@ function ConfigPanel({ node, onUpdate, onClose}) {
  value={cfg.assignee || ''}
  onChange={(e) => commit({ assignee: e.target.value})}
  placeholder="john@example.com"
- className="w-full h-9 px-3 bg-background border border-primary/40 rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"
+ className="w-full h-9 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none"
  />
  </div>
  )}
@@ -350,7 +350,7 @@ function ConfigPanel({ node, onUpdate, onClose}) {
  {/* Email body for send_email action */}
  {node.type === 'action' && cfg.option === 'send_email' && (
  <div>
- <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+ <label className="block text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1.5 tracking-[0.04em]">
  Email Subject
  </label>
  <input
@@ -358,9 +358,9 @@ function ConfigPanel({ node, onUpdate, onClose}) {
  value={cfg.emailSubject || ''}
  onChange={(e) => commit({ emailSubject: e.target.value})}
  placeholder="Subject..."
- className="w-full h-9 px-3 bg-background border border-primary/40 rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none mb-2"
+ className="w-full h-9 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none mb-2"
  />
- <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+ <label className="block text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1.5 tracking-[0.04em]">
  Email Body
  </label>
  <textarea
@@ -368,14 +368,14 @@ function ConfigPanel({ node, onUpdate, onClose}) {
  value={cfg.emailBody || ''}
  onChange={(e) => commit({ emailBody: e.target.value})}
  placeholder="Email content..."
- className="w-full p-3 bg-background border border-primary/40 rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none resize-none"
+ className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none resize-none"
  />
  </div>
  )}
 
  {/* Notes */}
  <div>
- <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+ <label className="block text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1.5 tracking-[0.04em]">
  Notes (optional)
  </label>
  <textarea
@@ -383,7 +383,7 @@ function ConfigPanel({ node, onUpdate, onClose}) {
  value={cfg.notes || ''}
  onChange={(e) => commit({ notes: e.target.value})}
  placeholder="Add a note..."
- className="w-full p-3 bg-background border border-primary/40 rounded-lg text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none resize-none"
+ className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none resize-none"
  />
  </div>
  </div>
@@ -610,7 +610,7 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  return (
  <div className="h-full flex flex-col bg-background overflow-hidden">
  {/* ── Toolbar ── */}
- <div className="shrink-0 h-14 border-b border-primary/40 bg-card flex items-center gap-3 px-4">
+ <div className="shrink-0 h-14 border-b border-primary/40 bg-card flex items-center gap-3 px-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2">
  <Workflow className="w-5 h-5 text-primary" />
  {editingName ? (
@@ -621,12 +621,12 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  onChange={(e) => setWorkflowName(e.target.value)}
  onBlur={() => setEditingName(false)}
  onKeyDown={(e) => e.key === 'Enter' && setEditingName(false)}
- className="h-8 px-2 bg-background border border-primary rounded-lg text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/40 w-48"
+ className="h-8 px-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary/40 w-48"
  />
  ) : (
  <button
  onClick={() => setEditingName(true)}
- className="text-sm font-bold text-foreground hover:text-primary transition-colors"
+ className="text-sm font-semibold text-foreground hover:text-primary transition-colors"
  title="Click to rename"
  >
  {workflowName}
@@ -635,15 +635,15 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  </div>
 
  {/* Node count badge */}
- <span className="text-[11px] font-bold px-2 py-0.5 bg-muted text-muted-foreground rounded-full">
+ <span className="text-[11px] font-semibold px-2 py-0.5 bg-muted text-[#71717a] dark:text-gray-400 rounded-md-full">
  {nodes.length} node{nodes.length !== 1 ? 's' : ''}
  </span>
- <span className="text-[11px] font-bold px-2 py-0.5 bg-muted text-muted-foreground rounded-full">
+ <span className="text-[11px] font-semibold px-2 py-0.5 bg-muted text-[#71717a] dark:text-gray-400 rounded-md-full">
  {edges.length} edge{edges.length !== 1 ? 's' : ''}
  </span>
 
  {connecting && (
- <span className="flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 bg-primary/10 text-primary rounded-full animate-pulse">
+ <span className="flex items-center gap-2.5 text-[11px] font-semibold px-2.5 py-1 bg-primary/10 text-primary rounded-md-full animate-pulse">
  <Link2 className="w-3 h-3" />
  Click an input port to connect
  </span>
@@ -653,7 +653,7 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  {selectedEdgeId && (
  <button
  onClick={() => handleDeleteEdge(selectedEdgeId)}
- className="h-8 px-3 flex items-center gap-1.5 text-xs font-bold bg-red-50 text-red-600 hover:bg-red-100 rounded-lg border border-red-200 transition-colors"
+ className="h-8 px-3 flex items-center gap-2.5 text-xs font-semibold bg-red-50 text-red-600 hover:bg-red-100 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-red-200 transition-colors tracking-[0.04em]"
  >
  <Unlink2 className="w-3.5 h-3.5" />
  Delete Edge
@@ -661,7 +661,7 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  )}
  <button
  onClick={handleClear}
- className="h-8 px-3 flex items-center gap-1.5 text-xs font-bold bg-muted text-muted-foreground hover:bg-muted/70 rounded-lg transition-colors"
+ className="h-8 px-3 flex items-center gap-2.5 text-xs font-semibold bg-muted text-[#71717a] dark:text-gray-400 hover:bg-muted/70 rounded-xl transition-colors tracking-[0.04em]"
  >
  <RotateCcw className="w-3.5 h-3.5" />
  Clear
@@ -669,7 +669,7 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  <button
  onClick={handleSave}
  disabled={isSaving}
- className="h-8 px-4 flex items-center gap-1.5 text-xs font-bold bg-primary text-white hover:bg-primary/90 rounded-lg transition-colors disabled:opacity-60"
+ className="h-8 px-4 flex items-center gap-2.5 text-xs font-semibold bg-primary text-white hover:bg-primary/90 rounded-xl transition-colors disabled:opacity-60 tracking-[0.04em]"
  >
  <Save className="w-3.5 h-3.5" />
  {isSaving ? 'Saving...' : 'Save'}
@@ -680,9 +680,9 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  {/* ── Main area ── */}
  <div className="flex-1 flex min-h-0 overflow-hidden">
  {/* ── Left Palette ── */}
- <div className="shrink-0 w-52 border-r border-primary/40 bg-card flex flex-col">
+ <div className="shrink-0 w-52 border-r border-primary/40 bg-card flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="px-3 pt-4 pb-2">
- <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+ <p className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">
  Node Types
  </p>
  </div>
@@ -694,20 +694,20 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  key={type}
  onClick={() => addNodeFromPalette(type)}
  className={cn(
- 'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-primary/40 text-left',
+ 'w-full flex items-center gap-3 px-3 py-2.5 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-left',
  'hover:border-primary/40 transition-all duration-150',
  'bg-background group'
  )}
  title={`Add ${label} node`}
  >
- <span className={cn('w-7 h-7 rounded-lg flex items-center justify-center shrink-0', def.badgeClass)}>
+ <span className={cn('w-7 h-7 rounded-xl flex items-center justify-center shrink-0', def.badgeClass)}>
  <Icon className="w-4 h-4" />
  </span>
  <div>
- <p className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">{label}</p>
- <p className="text-[10px] text-muted-foreground leading-tight">{def.description}</p>
+ <p className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors tracking-[0.04em]">{label}</p>
+ <p className="text-[10px] text-[#71717a] dark:text-gray-400 leading-tight">{def.description}</p>
  </div>
- <Plus className="ml-auto w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+ <Plus className="ml-auto w-3.5 h-3.5 text-[#71717a] dark:text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
  </button>
  );
 })}
@@ -715,16 +715,16 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
 
  {/* Legend */}
  <div className="border-t border-primary/40 px-3 py-3">
- <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2">
+ <p className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-2 tracking-[0.04em]">
  How to connect
  </p>
- <div className="space-y-1.5 text-[10px] text-muted-foreground">
+ <div className="space-y-1.5 text-[10px] text-[#71717a] dark:text-gray-400">
  <div className="flex items-center gap-2">
  <Circle className="w-2.5 h-2.5 text-primary fill-primary shrink-0" />
  <span>Click right port to start</span>
  </div>
  <div className="flex items-center gap-2">
- <Circle className="w-2.5 h-2.5 border border-primary/40 shrink-0" />
+ <Circle className="w-2.5 h-2.5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 shrink-0" />
  <span>Click left port to connect</span>
  </div>
  <div className="flex items-center gap-2">
@@ -751,9 +751,9 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  >
  {isLoading && (
  <div className="absolute inset-0 flex items-center justify-center bg-background/60 z-20">
- <div className="flex items-center gap-3 bg-card border border-primary/40 rounded-2xl px-6 py-4 ">
+ <div className="flex items-center gap-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl px-6 py-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <RefreshCw className="w-5 h-5 text-primary animate-spin" />
- <span className="text-sm font-bold">Loading workflow…</span>
+ <span className="text-sm font-semibold">Loading workflow…</span>
  </div>
  </div>
  )}
@@ -762,11 +762,11 @@ export default function UnivWorkflowBuilder({ companyId, workflowId, onSave}) {
  {!isLoading && nodes.length === 0 && (
  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
  <div className="text-center space-y-3 opacity-50">
- <Workflow className="w-12 h-12 text-muted-foreground mx-auto" />
- <p className="text-sm font-bold text-muted-foreground">
+ <Workflow className="w-12 h-12 text-[#71717a] dark:text-gray-400 mx-auto" />
+ <p className="text-sm font-semibold text-[#71717a] dark:text-gray-400">
  Click a node type in the panel to add it
  </p>
- <p className="text-xs text-muted-foreground">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  Drag nodes to position them, then connect ports
  </p>
  </div>

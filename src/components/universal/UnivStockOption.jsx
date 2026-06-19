@@ -118,48 +118,48 @@ export default function UnivStockOption() {
  <div className="p-6 max-w-7xl mx-auto text-foreground dark:text-slate-200 ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
  <div className="flex items-center gap-3">
- <div className="p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl">
+ <div className="p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-md-xl">
  <TrendingUp size={24} />
  </div>
  <div>
- <h1 className="text-2xl font-bold">Stock Option Management</h1>
- <p className="text-sm text-muted-foreground dark:text-muted-foreground">Manage your stock option records efficiently</p>
+ <h1 className="text-2xl font-semibold tracking-[-0.02em]">Stock Option Management</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 dark:text-[#71717a] dark:text-gray-400">Manage your stock option records efficiently</p>
  </div>
  </div>
  
  <div className="flex items-center gap-3">
  <div className="relative">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" size={18} />
  <input 
  type="text"
  placeholder="Search..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="pl-10 pr-4 py-2 bg-card dark:bg-slate-800 border border-primary/40 dark:border-primary/40 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none w-full md:w-64"
+ className="pl-10 pr-4 py-2 bg-card dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none w-full md:w-64 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Calendar","Dashboard"].map(v => (
  <button 
  key={v} 
  onClick={() => setView(v)} 
- className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${view === v ? 'bg-background text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+ className={`px-3 py-1 text-xs font-medium rounded-lg transition-all ${view === v ? 'bg-background text-foreground' : 'text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}
  >
  {v}
  </button>
  ))}
  </div>
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
  <button 
  onClick={fetchData}
- className="p-2 bg-card dark:bg-slate-800 border border-primary/40 dark:border-primary/40 rounded-lg hover:bg-background dark:hover:bg-slate-700 transition-colors"
+ className="p-2 bg-card dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-xl hover:bg-background dark:hover:bg-slate-700 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
  </button>
@@ -172,7 +172,7 @@ export default function UnivStockOption() {
  setEditingId(null);
  setIsModalOpen(true);
 }}
- className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors -blue-600/20"
+ className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors -blue-600/20"
  >
  <Plus size={18} />
  <span>Add New</span>
@@ -181,30 +181,30 @@ export default function UnivStockOption() {
  </div>
  </div>
 
- <div className="bg-card dark:bg-slate-800 rounded-xl border border-primary/40 dark:border-primary/40 overflow-hidden">
+ <div className="bg-card dark:bg-slate-800 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="overflow-x-auto">
  <table className="w-full text-left border-collapse">
  <thead>
  <tr className="bg-background dark:bg-slate-800/50 border-b border-primary/40 dark:border-primary/40">
- <th className="p-4 font-medium text-muted-foreground dark:text-muted-foreground">Employee Name</th>
- <th className="p-4 font-medium text-muted-foreground dark:text-muted-foreground">Shares Granted</th>
- <th className="p-4 font-medium text-muted-foreground dark:text-muted-foreground">Strike Price</th>
- <th className="p-4 font-medium text-muted-foreground dark:text-muted-foreground">Vesting Date</th>
- <th className="p-4 font-medium text-muted-foreground dark:text-muted-foreground">Actions</th>
+ <th className="p-4 font-medium text-[#71717a] dark:text-gray-400 dark:text-[#71717a] dark:text-gray-400">Employee Name</th>
+ <th className="p-4 font-medium text-[#71717a] dark:text-gray-400 dark:text-[#71717a] dark:text-gray-400">Shares Granted</th>
+ <th className="p-4 font-medium text-[#71717a] dark:text-gray-400 dark:text-[#71717a] dark:text-gray-400">Strike Price</th>
+ <th className="p-4 font-medium text-[#71717a] dark:text-gray-400 dark:text-[#71717a] dark:text-gray-400">Vesting Date</th>
+ <th className="p-4 font-medium text-[#71717a] dark:text-gray-400 dark:text-[#71717a] dark:text-gray-400">Actions</th>
  </tr>
  </thead>
  <tbody>
  <AnimatePresence>
  {loading ? (
  <tr>
- <td colSpan="5" className="p-8 text-center text-muted-foreground">
+ <td colSpan="5" className="p-8 text-center text-[#71717a] dark:text-gray-400">
  <RefreshCw className="animate-spin mx-auto mb-2" />
  Loading records...
  </td>
  </tr>
  ) : filteredData.length === 0 ? (
  <tr>
- <td colSpan="5" className="p-8 text-center text-muted-foreground">
+ <td colSpan="5" className="p-8 text-center text-[#71717a] dark:text-gray-400">
  No records found.
  </td>
  </tr>
@@ -226,13 +226,13 @@ export default function UnivStockOption() {
  <div className="flex items-center gap-2">
  <button 
  onClick={() => handleEdit(item)}
- className="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-md transition-colors"
+ className="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
  >
  <Edit2 size={16} />
  </button>
  <button 
  onClick={() => handleDelete(item.id)}
- className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-md transition-colors"
+ className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
  >
  <Trash2 size={16} />
  </button>
@@ -259,7 +259,7 @@ export default function UnivStockOption() {
  initial={{ scale: 0.95, opacity: 0}}
  animate={{ scale: 1, opacity: 1}}
  exit={{ scale: 0.95, opacity: 0}}
- className="bg-card dark:bg-slate-800 rounded-2xl w-full max-w-md overflow-hidden border border-primary/40 dark:border-primary/40"
+ className="bg-card dark:bg-slate-800 rounded-md-2xl w-full max-w-md overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="flex items-center justify-between p-6 border-b border-primary/40 dark:border-primary/40">
  <h2 className="text-xl font-semibold">
@@ -267,7 +267,7 @@ export default function UnivStockOption() {
  </h2>
  <button 
  onClick={() => setIsModalOpen(false)}
- className="p-2 text-muted-foreground hover:text-muted-foreground hover:bg-muted dark:hover:bg-slate-700 rounded-full transition-colors"
+ className="p-2 text-[#71717a] dark:text-gray-400 hover:text-[#71717a] dark:text-gray-400 hover:bg-muted dark:hover:bg-slate-700 rounded-md-full transition-colors"
  >
  <X size={20} />
  </button>
@@ -281,7 +281,7 @@ export default function UnivStockOption() {
  name="employee_name"
  value={formData.employee_name}
  onChange={handleInputChange}
- className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border border-primary/40 dark:border-primary/40 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+ className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
  required
  />
  </div>
@@ -292,7 +292,7 @@ export default function UnivStockOption() {
  name="shares"
  value={formData.shares}
  onChange={handleInputChange}
- className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border border-primary/40 dark:border-primary/40 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+ className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
  required
  />
  </div>
@@ -303,7 +303,7 @@ export default function UnivStockOption() {
  name="strike_price"
  value={formData.strike_price}
  onChange={handleInputChange}
- className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border border-primary/40 dark:border-primary/40 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+ className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
  required
  />
  </div>
@@ -314,7 +314,7 @@ export default function UnivStockOption() {
  name="vesting_date"
  value={formData.vesting_date}
  onChange={handleInputChange}
- className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border border-primary/40 dark:border-primary/40 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+ className="w-full px-3 py-2 bg-background dark:bg-slate-900/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
  required
  />
  </div>
@@ -324,13 +324,13 @@ export default function UnivStockOption() {
  <button 
  type="button"
  onClick={() => setIsModalOpen(false)}
- className="flex-1 px-4 py-2 border border-primary/40 dark:border-primary/40 text-muted-foreground dark:text-slate-300 rounded-lg hover:bg-background dark:hover:bg-slate-700 transition-colors"
+ className="flex-1 px-4 py-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 text-[#71717a] dark:text-gray-400 dark:text-slate-300 rounded-xl hover:bg-background dark:hover:bg-slate-700 transition-colors"
  >
  Cancel
  </button>
  <button 
  type="submit"
- className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center justify-center gap-2 transition-colors"
+ className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl flex items-center justify-center gap-2 transition-colors"
  >
  <Check size={18} />
  <span>{editingId ? 'Update' : 'Save'}</span>

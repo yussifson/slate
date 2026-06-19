@@ -127,8 +127,8 @@ export default function Departments() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("departments", "Departments")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t("manage_organizational_structur", "Manage organizational structure and teams")}</p>
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("departments", "Departments")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("manage_organizational_structur", "Manage organizational structure and teams")}</p>
  </div>
  <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white">
  <Plus className="w-4 h-4" /> {t("new_department", "New Department")}
@@ -136,60 +136,60 @@ export default function Departments() {
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-6 flex items-center justify-between">
+ <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
- <p className="text-sm text-muted-foreground mb-1">{t("total_departments", "Total Departments")}</p>
- <h2 className="text-3xl font-bold text-card-foreground">{departments.length}</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mb-1">{t("total_departments", "Total Departments")}</p>
+ <h2 className="text-3xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{departments.length}</h2>
  </div>
- <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary">
+ <div className="w-12 h-12 rounded-md-full bg-slate-100 flex items-center justify-center text-primary">
  <Building2 className="w-6 h-6" />
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-6 flex items-center justify-between">
+ <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
- <p className="text-sm text-muted-foreground mb-1">{t("total_employees", "Total Employees")}</p>
- <h2 className="text-3xl font-bold text-card-foreground">{departments.reduce((sum, d) => sum + d.staffCount, 0)}</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mb-1">{t("total_employees", "Total Employees")}</p>
+ <h2 className="text-3xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{departments.reduce((sum, d) => sum + d.staffCount, 0)}</h2>
  </div>
- <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary">
+ <div className="w-12 h-12 rounded-md-full bg-slate-100 flex items-center justify-center text-primary">
  <Users className="w-6 h-6" />
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-6 flex items-center justify-between">
+ <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
- <p className="text-sm text-muted-foreground mb-1">{t("total_budget", "Total Budget")}</p>
- <h2 className="text-3xl font-bold text-card-foreground">${departments.reduce((sum, d) => sum + d.budget, 0).toLocaleString()}</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mb-1">{t("total_budget", "Total Budget")}</p>
+ <h2 className="text-3xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${departments.reduce((sum, d) => sum + d.budget, 0).toLocaleString()}</h2>
  </div>
- <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary">
+ <div className="w-12 h-12 rounded-md-full bg-slate-100 flex items-center justify-center text-primary">
  <DollarSign className="w-6 h-6" />
  </div>
  </div>
  </div>
 
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search departments..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search departments..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  <div className="overflow-x-auto">
  {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_departments", "Loading departments...")}</div>
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_departments", "Loading departments...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
  <Building2 className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary" />
- <p className="font-semibold text-lg text-card-foreground">{t("no_departments_found", "No departments found")}</p>
- <p className="text-xs mt-1">{t("add_your_first_department_to_g", "Add your first department to get started.")}</p>
+ <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_departments_found", "No departments found")}</p>
+ <p className="text-xs mt-1 tracking-[0.04em]">{t("add_your_first_department_to_g", "Add your first department to get started.")}</p>
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40">
+ <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("department", "Department")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("manager", "Manager")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("staff_count", "Staff Count")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("salary_budget", "Salary Budget")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("action", "Action")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("department", "Department")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("manager", "Manager")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("staff_count", "Staff Count")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("salary_budget", "Salary Budget")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("action", "Action")}</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
@@ -197,20 +197,20 @@ export default function Departments() {
  return (
  <tr key={dept.id} className="hover:bg-muted/50 transition-colors">
  <td className="px-6 py-4">
- <p className="font-bold text-card-foreground">{dept.name}</p>
- <p className="text-xs text-muted-foreground mt-0.5 truncate max-w-xs">{dept.description}</p>
+ <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{dept.name}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 truncate max-w-xs tracking-[0.04em]">{dept.description}</p>
  </td>
  <td className="px-6 py-4">
- <p className="font-semibold text-card-foreground">{dept.managerName}</p>
+ <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{dept.managerName}</p>
  </td>
  <td className="px-6 py-4">
  <div className="flex items-center gap-2">
- <Users className="w-4 h-4 text-muted-foreground" />
- <span className="font-bold">{dept.staffCount}</span>
+ <Users className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <span className="font-semibold">{dept.staffCount}</span>
  </div>
  </td>
  <td className="px-6 py-4 text-right">
- <p className="font-bold text-primary dark:text-primary/70">${dept.budget.toLocaleString()}</p>
+ <p className="font-semibold text-primary dark:text-primary/70">${dept.budget.toLocaleString()}</p>
  </td>
  <td className="px-6 py-4 text-right">
  <DropdownMenu>
@@ -247,31 +247,31 @@ export default function Departments() {
 
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
- <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Department' : 'New Department'}</h2>
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editTargetId ? 'Edit Department' : 'New Department'}</h2>
  <div className="space-y-4">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("department_name", "Department Name")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("department_name", "Department Name")}</label>
  <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="e.g. Engineering" className="mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("department_head_manager", "Department Head (Manager)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("department_head_manager", "Department Head (Manager)")}</label>
  <select 
  value={formData.managerId} 
  onChange={e => setFormData({...formData, managerId: e.target.value})} 
- className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
+ className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground"
  >
  <option value="">{t("select_manager", "Select Manager...")}</option>
  {staffList.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
  </select>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("description", "Description")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("description", "Description")}</label>
  <textarea 
  value={formData.description} 
  onChange={e => setFormData({...formData, description: e.target.value})} 
  placeholder="Responsibilities and overview..." 
- className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm h-24 resize-none"
+ className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm h-24 resize-none"
  />
  </div>
  </div>
@@ -296,11 +296,11 @@ export default function Departments() {
  if (!dept) return null;
  return (
  <div className="space-y-4 text-sm">
- <div><span className="font-semibold text-muted-foreground">{t("name", "Name:")}</span> <p className="font-bold text-lg">{dept.name}</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("manager", "Manager:")}</span> <p className="font-medium text-primary"><Link to="/employees" className="hover:underline">{dept.managerName}</Link></p></div>
- <div><span className="font-semibold text-muted-foreground">{t("staff_count", "Staff Count:")}</span> <p className="font-medium">{dept.staffCount} employees</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("salary_budget", "Salary Budget:")}</span> <p className="font-medium text-primary font-bold">${dept.budget.toLocaleString()} / mo</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("description", "Description:")}</span> <p className="font-medium bg-muted p-3 rounded-lg border border-primary/40 mt-1">{dept.description || 'No description provided.'}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("name", "Name:")}</span> <p className="font-semibold text-lg">{dept.name}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("manager", "Manager:")}</span> <p className="font-medium text-primary"><Link to="/employees" className="hover:underline">{dept.managerName}</Link></p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("staff_count", "Staff Count:")}</span> <p className="font-medium">{dept.staffCount} employees</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("salary_budget", "Salary Budget:")}</span> <p className="font-medium text-primary font-semibold">${dept.budget.toLocaleString()} / mo</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("description", "Description:")}</span> <p className="font-medium bg-muted p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mt-1">{dept.description || 'No description provided.'}</p></div>
  </div>
  );
 })()}

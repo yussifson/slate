@@ -21,10 +21,10 @@ const CONFIDENCE_COLORS = { high: "bg-slate-100 text-primary/90", medium: "bg-ye
 function Section({ icon: Icon, title, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
+    <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between px-4 py-3 hover:bg-muted/30 transition-colors">
         <div className="flex items-center gap-2"><Icon className="w-4 h-4 text-primary" /><span className="text-sm font-semibold">{title}</span></div>
-        {open ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+        {open ? <ChevronUp className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> : <ChevronDown className="w-4 h-4 text-[#71717a] dark:text-gray-400" />}
       </button>
       {open && <div className="px-4 pb-4">{children}</div>}
     </div>
@@ -93,13 +93,13 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Query Panel */}
         <div className="lg:col-span-1 space-y-4">
-          <div className="bg-card border border-primary/40 rounded-xl p-4 space-y-4">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <div className="flex items-center gap-2 mb-1">
               <Sparkles className="w-4 h-4 text-primary" />
               <h2 className="text-sm font-semibold">{t("ask_a_legal_question", "Ask a Legal Question")}</h2>
             </div>
             <div>
-              <Label className="text-xs mb-1">{t("your_question", "Your Question *")}</Label>
+              <Label className="text-xs mb-1 tracking-[0.04em]">{t("your_question", "Your Question *")}</Label>
               <Textarea
                 placeholder="e.g. What are the requirements for filing a caveat against probate in Ghana?"
                 value={question}
@@ -108,7 +108,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
               />
             </div>
             <div>
-              <Label className="text-xs mb-1">{t("jurisdiction", "Jurisdiction")}</Label>
+              <Label className="text-xs mb-1 tracking-[0.04em]">{t("jurisdiction", "Jurisdiction")}</Label>
               <Select value={jurisdiction} onValueChange={setJurisdiction}>
                 <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
                 <SelectContent>{JURISDICTIONS.map(j => {
@@ -117,7 +117,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
               </Select>
             </div>
             <div>
-              <Label className="text-xs mb-1">{t("case_type_optional", "Case Type (optional)")}</Label>
+              <Label className="text-xs mb-1 tracking-[0.04em]">{t("case_type_optional", "Case Type (optional)")}</Label>
               <Select value={caseType} onValueChange={setCaseType}>
                 <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="Any" /></SelectTrigger>
                 <SelectContent>
@@ -131,7 +131,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
             <Button className="w-full gap-2" onClick={handleResearch} disabled={loading || !question.trim()}>
               {loading ? <><Loader2 className="w-4 h-4 animate-spin" />{t("researching", "Researching...")}</> : <><Search className="w-4 h-4" />{t("research", "Research")}</>}
             </Button>
-            {loading && <p className="text-xs text-muted-foreground text-center">{t(
+            {loading && <p className="text-xs text-[#71717a] dark:text-gray-400 text-center tracking-[0.04em]">{t(
               "searching_case_law_and_statute",
               "Searching case law and statutes... (~30s)"
             )}</p>}
@@ -139,14 +139,14 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
 
           {/* History */}
           {history.length > 0 && (
-            <div className="bg-card border border-primary/40 rounded-xl p-4 space-y-2">
+            <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 space-y-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <div className="flex items-center gap-2 mb-2"><Clock className="w-4 h-4 text-primary" /><h3 className="text-sm font-semibold">{t("recent_queries", "Recent Queries")}</h3></div>
               {history.map((h, i) => {
                 return (
                   <button key={i} onClick={() => { setQuestion(h.question); setResult(h.result); }}
-                    className="w-full text-left p-2.5 rounded-lg hover:bg-muted/40 border border-primary/40 transition-colors">
-                    <p className="text-xs font-medium truncate">{h.question}</p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">{h.jurisdiction} · {format(h.timestamp, "h:mm a")}</p>
+                    className="w-full text-left p-2.5 rounded-xl hover:bg-muted/40 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 transition-colors">
+                    <p className="text-xs font-medium truncate tracking-[0.04em]">{h.question}</p>
+                    <p className="text-[10px] text-[#71717a] dark:text-gray-400 mt-0.5">{h.jurisdiction} · {format(h.timestamp, "h:mm a")}</p>
                   </button>
                 );
               })}
@@ -157,22 +157,22 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
         {/* Results Panel */}
         <div className="lg:col-span-2 space-y-4">
           {error && (
-            <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 flex items-center gap-2 text-sm text-destructive">
+            <div className="bg-destructive/10 border-[0.5px] border-black/9 dark:border-white/8 border-destructive/20 rounded-md-xl p-4 flex items-center gap-2 text-sm text-destructive">
               <AlertTriangle className="w-4 h-4 shrink-0" />{error}
             </div>
           )}
 
           {!result && !loading && !error && (
-            <div className="bg-card border border-primary/40 rounded-xl p-12 text-center">
-              <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4"><BookOpen className="w-7 h-7 text-primary" /></div>
+            <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-12 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+              <div className="w-14 h-14 rounded-md-full bg-slate-100 flex items-center justify-center mx-auto mb-4"><BookOpen className="w-7 h-7 text-primary" /></div>
               <h3 className="text-sm font-semibold mb-1">{t("ask_your_first_question", "Ask your first question")}</h3>
-              <p className="text-xs text-muted-foreground max-w-xs mx-auto">{t(
+              <p className="text-xs text-[#71717a] dark:text-gray-400 max-w-xs mx-auto tracking-[0.04em]">{t(
                 "get_instant_research_on_statut",
                 "Get instant research on statutes, case law, and legal procedures across Ghana, Nigeria, and Sierra Leone."
               )}</p>
               <div className="mt-4 flex flex-wrap gap-2 justify-center">
                 {["Requirements for bail in Nigeria", "Tenancy termination notice periods Ghana", "Corporate registration requirements Sierra Leone"].map(s => {
-                  return (<button key={s} onClick={() => setQuestion(s)} className="text-xs px-3 py-1.5 rounded-full border border-primary/30 text-primary hover:bg-slate-50 dark:bg-slate-800/50 transition-colors">{s}</button>);
+                  return (<button key={s} onClick={() => setQuestion(s)} className="text-xs px-3 py-1.5 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/30 text-primary hover:bg-slate-50 dark:bg-slate-800/50 transition-colors tracking-[0.04em]">{s}</button>);
                 })}
               </div>
             </div>
@@ -189,7 +189,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
               </div>
 
               {/* Main Answer */}
-              <div className="bg-slate-50 dark:bg-slate-800/50 border border-primary/20 rounded-xl p-4">
+              <div className="bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-xl p-4">
                 <div className="flex items-center gap-2 mb-2"><Scale className="w-4 h-4 text-primary" /><span className="text-sm font-semibold">{t("answer", "Answer")}</span></div>
                 <div className="text-sm text-foreground leading-relaxed prose prose-sm max-w-none">
                   <ReactMarkdown>{result.answer}</ReactMarkdown>
@@ -202,9 +202,9 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
                   <div className="space-y-2 pt-1">
                     {result.legislation.map((l, i) => {
                       return (
-                        <div key={i} className="p-3 bg-slate-50 dark:bg-slate-800/50 border border-primary/20 rounded-lg">
+                        <div key={i} className="p-3 bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl">
                           <p className="text-sm font-medium text-primary/80">{l.name}{l.section && ` — ${l.section}`}</p>
-                          {l.relevance && <p className="text-xs text-primary/90 mt-0.5">{l.relevance}</p>}
+                          {l.relevance && <p className="text-xs text-primary/90 mt-0.5 tracking-[0.04em]">{l.relevance}</p>}
                         </div>
                       );
                     })}
@@ -218,9 +218,9 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
                   <div className="space-y-2 pt-1">
                     {result.case_law.map((c, i) => {
                       return (
-                        <div key={i} className="p-3 bg-slate-50 dark:bg-slate-800/50 border border-primary/20 rounded-lg">
+                        <div key={i} className="p-3 bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl">
                           <p className="text-sm font-medium text-primary/80">{c.case_name}{c.year && ` (${c.year})`}</p>
-                          {c.principle && <p className="text-xs text-primary/90 mt-0.5">{c.principle}</p>}
+                          {c.principle && <p className="text-xs text-primary/90 mt-0.5 tracking-[0.04em]">{c.principle}</p>}
                         </div>
                       );
                     })}
@@ -235,7 +235,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
                     {result.next_steps.map((s, i) => {
                       return (
                         <div key={i} className="flex items-start gap-2 text-sm">
-                          <span className="w-5 h-5 rounded-full bg-slate-100 text-primary text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
+                          <span className="w-5 h-5 rounded-md-full bg-slate-100 text-primary text-[10px] font-semibold flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
                           <span>{s}</span>
                         </div>
                       );
@@ -249,7 +249,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
                 <Section icon={AlertTriangle} title="Practical Notes & Caveats" defaultOpen={false}>
                   <div className="space-y-2 pt-1">
                     {result.practical_notes && <div className="text-sm text-foreground"><ReactMarkdown>{result.practical_notes}</ReactMarkdown></div>}
-                    {result.caveats && <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800"><AlertTriangle className="w-3.5 h-3.5 inline mr-1.5" />{result.caveats}</div>}
+                    {result.caveats && <div className="p-3 bg-amber-50 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 rounded-xl text-sm text-amber-800"><AlertTriangle className="w-3.5 h-3.5 inline mr-1.5" />{result.caveats}</div>}
                   </div>
                 </Section>
               )}

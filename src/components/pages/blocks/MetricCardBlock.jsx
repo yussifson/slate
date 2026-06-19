@@ -34,12 +34,12 @@ export default function MetricCardBlock({ dataConfig, styleConfig}) {
  const padClass = padding || 'p-5';
 
  return (
- <div className={cn("rounded-xl border flex items-center gap-4", bgClass, padClass)}>
- <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-primary shrink-0">
+ <div className={cn("rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 flex items-center gap-4", bgClass, padClass)}>
+ <div className="w-12 h-12 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary shrink-0">
  <IconComponent className="w-6 h-6" />
  </div>
  <div>
- <p className="text-3xl font-bold">{isLoading ? '...' : value}</p>
+ <p className="text-3xl font-semibold tracking-[-0.02em]">{isLoading ? '...' : value}</p>
  <p className="text-sm opacity-80 font-medium">{label || 'Metric'}</p>
  </div>
  </div>

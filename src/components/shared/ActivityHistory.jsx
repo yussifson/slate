@@ -33,10 +33,10 @@ export default function ActivityHistory({ recordId, recordType }) {
         {[...Array(3)].map((_, i) => {
           return (
             <div key={i} className="flex items-start gap-3 animate-pulse">
-              <div className="w-8 h-8 rounded-full bg-muted" />
+              <div className="w-8 h-8 rounded-md-full bg-muted" />
               <div className="flex-1 space-y-1.5">
-                <div className="h-3 bg-muted rounded w-1/3" />
-                <div className="h-2 bg-muted rounded w-2/3" />
+                <div className="h-3 bg-muted rounded-md w-1/3" />
+                <div className="h-2 bg-muted rounded-md w-2/3" />
               </div>
             </div>
           );
@@ -47,7 +47,7 @@ export default function ActivityHistory({ recordId, recordType }) {
 
   if (logs.length === 0) {
     return (
-      <div className="text-center py-8 text-muted-foreground">
+      <div className="text-center py-8 text-[#71717a] dark:text-gray-400">
         <Clock className="w-8 h-8 mx-auto mb-2 opacity-30" />
         <p className="text-sm">{t("no_activity_recorded_yet", "No activity recorded yet")}</p>
       </div>
@@ -63,7 +63,7 @@ export default function ActivityHistory({ recordId, recordType }) {
           <div key={log.id} className="flex items-start gap-3 group">
             {/* Timeline line */}
             <div className="flex flex-col items-center">
-              <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${config.color}`}>
+              <div className={`w-7 h-7 rounded-md-full flex items-center justify-center flex-shrink-0 ${config.color}`}>
                 <Icon className="w-3.5 h-3.5" />
               </div>
               {idx < logs.length - 1 && <div className="w-px flex-1 min-h-[16px] bg-primary/40 mt-1" />}
@@ -71,19 +71,19 @@ export default function ActivityHistory({ recordId, recordType }) {
             {/* Content */}
             <div className="pb-4 flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${config.color}`}>
+                <span className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md-full ${config.color}`}>
                   {config.label}
                 </span>
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                <span className="text-xs text-[#71717a] dark:text-gray-400 flex items-center gap-2 tracking-[0.04em]">
                   <UserCircle className="w-3 h-3" />
                   {log.user_email || 'System'}
                 </span>
-                <span className="text-xs text-muted-foreground ml-auto whitespace-nowrap">
+                <span className="text-xs text-[#71717a] dark:text-gray-400 ml-auto whitespace-nowrap tracking-[0.04em]">
                   {formatDistanceToNow(new Date(log.created_at), { addSuffix: true })}
                 </span>
               </div>
               {log.changes && Object.keys(log.changes).length > 0 && (
-                <div className="mt-1.5 text-xs text-muted-foreground bg-muted/40 rounded-md p-2 font-mono overflow-x-auto">
+                <div className="mt-1.5 text-xs text-[#71717a] dark:text-gray-400 bg-muted/40 rounded-lg p-2 font-mono overflow-x-auto tracking-[0.04em]">
                   {Object.entries(log.changes).map(([key, val]) => {
                     return (<div key={key}><span className="text-primary">{key}</span>: {String(val)}</div>);
                   })}

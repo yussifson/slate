@@ -128,7 +128,7 @@ export default function SpotlightSearch() {
  onClick={(e) => { if (e.target === e.currentTarget) setIsOpen(false);}}
  >
  <div
- className="w-full max-w-2xl bg-background border border-primary/40 rounded-2xl -[0_32px_64px_rgba(0,0,0,0.15)] flex flex-col max-h-[65vh] overflow-hidden animate-in slide-in-from-top-4 duration-200"
+ className="w-full max-w-2xl bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl -[0_32px_64px_rgba(0,0,0,0.15)] flex flex-col max-h-[65vh] overflow-hidden animate-in slide-in-from-top-4 duration-200"
  onKeyDown={handleKeyNavigation}
  >
  {/* Search Input Bar */}
@@ -138,17 +138,17 @@ export default function SpotlightSearch() {
  ref={inputRef}
  type="text"
  placeholder="Search cases, clients, tasks, or team members..."
- className="flex-1 bg-transparent border-0 text-foreground placeholder:text-muted-foreground/60 outline-none text-[15px] focus:ring-0 focus:outline-none"
+ className="flex-1 bg-transparent border-0 text-foreground placeholder:text-[#71717a] dark:text-gray-400/60 outline-none text-[15px] focus:ring-0 focus:outline-none"
  value={query}
  onChange={(e) => setQuery(e.target.value)}
  />
  <div className="flex items-center gap-2 shrink-0 select-none">
- <kbd className="text-[10px] bg-muted text-muted-foreground border border-primary/40 rounded-md px-1.5 py-0.5 font-semibold">{t("esc", "ESC")}</kbd>
+ <kbd className="text-[10px] bg-muted text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-1.5 py-0.5 font-semibold">{t("esc", "ESC")}</kbd>
  <button
  onClick={() => setIsOpen(false)}
- className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+ className="p-1.5 hover:bg-muted rounded-xl transition-colors"
  >
- <X className="w-4 h-4 text-muted-foreground" />
+ <X className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
  </button>
  </div>
  </div>
@@ -156,8 +156,8 @@ export default function SpotlightSearch() {
  {/* Results Body */}
  <div className="flex-1 overflow-y-auto p-3 space-y-3">
  {loading ? (
- <div className="py-14 text-center text-sm text-muted-foreground flex flex-col items-center gap-3">
- <span className="w-7 h-7 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
+ <div className="py-14 text-center text-sm text-[#71717a] dark:text-gray-400 flex flex-col items-center gap-3">
+ <span className="w-7 h-7 rounded-md-full border-2 border-primary/30 border-t-primary animate-spin" />
  <span>{t("scanning_records", "Scanning records...")}</span>
  </div>
  ) : flatResults.length === 0 ? (
@@ -166,7 +166,7 @@ export default function SpotlightSearch() {
  <>
  <ShieldAlert className="w-9 h-9 text-amber-500/70" />
  <p className="font-semibold text-foreground text-sm">{t("no_matches_found", "No matches found")}</p>
- <p className="text-xs text-muted-foreground max-w-xs leading-relaxed">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 max-w-xs leading-relaxed tracking-[0.04em]">
  {t("no_records_matching", "No records matching \"")}{query}{t(
  "were_found_across_cases_client",
  "\" were found across cases, clients, tasks, or team."
@@ -176,12 +176,12 @@ export default function SpotlightSearch() {
  ) : (
  <div className="max-w-sm space-y-2 mt-4 px-4">
  <div className="flex items-center justify-center gap-2 mb-3">
- <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center">
+ <div className="w-8 h-8 rounded-md-xl bg-slate-100 flex items-center justify-center">
  <Search className="w-4 h-4 text-primary" />
  </div>
  </div>
- <p className="font-bold text-foreground text-base">{t("ecosystem_spotlight", "Ecosystem Spotlight")}</p>
- <p className="text-xs text-muted-foreground/80 leading-relaxed">
+ <p className="font-semibold text-foreground text-base">{t("ecosystem_spotlight", "Ecosystem Spotlight")}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400/80 leading-relaxed tracking-[0.04em]">
  {t(
  "search_across_all_records_inst",
  "Search across all records instantly. Type a name, case number, or task title to begin. Results can be opened or sent directly to Orbit AI."
@@ -197,7 +197,7 @@ export default function SpotlightSearch() {
  if (catItems.length === 0) return null;
  return (
  <div key={cat} className="space-y-0.5">
- <h4 className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest px-3 pb-1 select-none">
+ <h4 className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400/70 uppercase tracking-widest px-3 pb-1 select-none tracking-[0.04em]">
  {cat}
  </h4>
  <div className="space-y-0.5">
@@ -212,7 +212,7 @@ export default function SpotlightSearch() {
  key={item.id + item.category}
  onMouseEnter={() => setHoveredId(item.id + item.category)}
  onMouseLeave={() => setHoveredId(null)}
- className={`flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-100 select-none group ${
+ className={`flex items-center justify-between px-3 py-2.5 rounded-md-xl cursor-pointer transition-all duration-100 select-none group ${
  isSelected
  ? "bg-primary text-primary-foreground "
  : "hover:bg-muted/70 text-foreground"
@@ -223,26 +223,26 @@ export default function SpotlightSearch() {
  className="flex items-center gap-3 min-w-0 flex-1"
  onClick={() => { navigate(item.route); setIsOpen(false);}}
  >
- <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+ <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
  isSelected ? "bg-white/20" : "bg-muted"
 }`}>
- <IconComp className={`w-4 h-4 ${isSelected ? "text-primary-foreground" : "text-muted-foreground"}`} />
+ <IconComp className={`w-4 h-4 ${isSelected ? "text-primary-foreground" : "text-[#71717a] dark:text-gray-400"}`} />
  </div>
  <div className="min-w-0">
  <p className="text-sm font-semibold truncate leading-tight">
  {item.title || item.name || item.full_name}
  </p>
- <p className={`text-xs truncate leading-tight mt-0.5 ${isSelected ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
+ <p className={`text-xs truncate leading-tight mt-0.5 ${isSelected ? "text-primary-foreground/70" : "text-[#71717a] dark:text-gray-400"}`}>
  {item.case_number || item.email || item.user_email || item.description || item.status || "View details"}
  </p>
  </div>
  </div>
  {/* Right: Ask AI button + arrow */}
- <div className="flex items-center gap-1.5 shrink-0 ml-2">
+ <div className="flex items-center gap-2.5 shrink-0 ml-2">
  {(isHovered || isSelected) && (
  <button
  onClick={(e) => { e.stopPropagation(); handleAskAI(item);}}
- className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all duration-150 ${
+ className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-[11px] font-semibold transition-all duration-150 ${
  isSelected
  ? "bg-white/20 text-primary-foreground hover:bg-white/30"
  : "bg-slate-100 text-primary hover:bg-primary/20"
@@ -267,18 +267,18 @@ export default function SpotlightSearch() {
  </div>
 
  {/* Footer */}
- <div className="px-5 py-2.5 bg-muted/30 border-t border-primary/40 text-[10px] text-muted-foreground flex items-center justify-between select-none">
+ <div className="px-5 py-2.5 bg-muted/30 border-t border-primary/40 text-[10px] text-[#71717a] dark:text-gray-400 flex items-center justify-between select-none">
  <div className="flex items-center gap-3">
- <span className="flex items-center gap-1">↑↓ <span className="text-foreground/60">{t("navigate", "navigate")}</span></span>
+ <span className="flex items-center gap-2">↑↓ <span className="text-foreground/60">{t("navigate", "navigate")}</span></span>
  <span>·</span>
- <span className="flex items-center gap-1">↵ <span className="text-foreground/60">{t("open", "open")}</span></span>
+ <span className="flex items-center gap-2">↵ <span className="text-foreground/60">{t("open", "open")}</span></span>
  <span>·</span>
- <span className="flex items-center gap-1">
+ <span className="flex items-center gap-2">
  <Bot className="w-3 h-3 text-primary" />
  <span className="text-foreground/60">{t("ask_ai_on_hover", "Ask AI on hover")}</span>
  </span>
  </div>
- <div className="flex items-center gap-1">
+ <div className="flex items-center gap-2">
  <Sparkles className="w-3 h-3 text-primary/60" />
  <span>{t("spotlight_console", "Spotlight Console")}</span>
  </div>

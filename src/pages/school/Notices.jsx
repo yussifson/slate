@@ -54,22 +54,22 @@ export default function Notices() {
   const selectedNotice = notices.find(n => n.id === selectedId);
 
   return (
-    <div className="h-[calc(100vh-80px)] flex flex-col font-dmsans bg-emerald-50 rounded-3xl overflow-hidden border border-emerald-100 max-w-7xl mx-auto">
+    <div className="h-[calc(100vh-80px)] flex flex-col font-dmsans bg-emerald-50 rounded-md-3xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-emerald-100 max-w-7xl mx-auto">
       <div className="bg-emerald-600 text-white p-6 md:p-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight">{t("noticeboard", "Noticeboard")}</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight tracking-[-0.02em]">{t("noticeboard", "Noticeboard")}</h1>
           <p className="text-emerald-100 mt-1">{t("manage_announcements", "Manage school announcements and communications")}</p>
         </div>
         <Button 
           onClick={() => { setSelectedId(null); setIsEditing(true); setFormData({title: '', audience: 'All', content: ''}); }} 
-          className="bg-emerald-500 hover:bg-emerald-400 text-white border border-emerald-400 rounded-xl px-6 h-12 text-lg font-bold transition-all"
+          className="bg-emerald-500/10 hover:bg-emerald-400 text-white border-[0.5px] border-black/9 dark:border-white/8 border-emerald-400 rounded-md-xl px-6 h-12 text-lg font-semibold transition-all"
         >
           <Plus className="w-5 h-5 mr-2" /> {t("new_notice", "New Notice")}
         </Button>
       </div>
 
       <div className="flex flex-1 overflow-hidden">
-        <div className="w-full md:w-1/3 bg-white border-r border-emerald-100 flex flex-col">
+        <div className="w-full md:w-1/3 bg-white border-r border-emerald-100 flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="p-4 border-b border-emerald-100 bg-emerald-50/50">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-600" />
@@ -77,17 +77,17 @@ export default function Notices() {
                 placeholder="Search notices..." 
                 value={search} 
                 onChange={e => setSearch(e.target.value)} 
-                className="pl-12 bg-white border-emerald-200 focus-visible:ring-emerald-500 rounded-2xl h-12 text-md" 
+                className="pl-12 bg-white border-emerald-200 focus-visible:ring-emerald-500 rounded-md-2xl h-12 text-md hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" 
               />
             </div>
           </div>
           <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
             {isLoading ? (
-              <div className="p-4 text-center text-emerald-600 font-bold">{t("loading", "Loading...")}</div>
+              <div className="p-4 text-center text-emerald-600 font-semibold">{t("loading", "Loading...")}</div>
             ) : filtered.length === 0 ? (
               <div className="p-10 text-center text-emerald-400">
                 <Inbox className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                <p className="font-bold text-lg">{t("no_notices", "No notices published")}</p>
+                <p className="font-semibold text-lg">{t("no_notices", "No notices published")}</p>
               </div>
             ) : (
               filtered.map(n => (
@@ -95,10 +95,10 @@ export default function Notices() {
                   whileHover={{ scale: 1.02 }}
                   key={n.id} 
                   onClick={() => { setSelectedId(n.id); setIsEditing(false); }}
-                  className={`p-5 rounded-2xl cursor-pointer border-2 transition-all ${selectedId === n.id ? 'bg-emerald-50 border-emerald-400' : 'bg-white border-emerald-100 hover:bg-emerald-50'}`}
+                  className={`p-5 rounded-md-2xl cursor-pointer border-2 transition-all ${selectedId === n.id ? 'bg-emerald-50 border-emerald-400' : 'bg-white border-emerald-100 hover:bg-emerald-50'}`}
                 >
                   <h3 className="font-extrabold text-emerald-900 line-clamp-1 text-lg">{n.title}</h3>
-                  <p className="text-xs font-bold text-emerald-600 mt-2 uppercase tracking-wider">{t("audience", "Audience:")} {n.audience}</p>
+                  <p className="text-xs font-semibold text-emerald-600 mt-2 uppercase tracking-wider tracking-[0.04em]">{t("audience", "Audience:")} {n.audience}</p>
                   <p className="text-sm text-emerald-500 mt-2 line-clamp-2 font-medium">{n.content}</p>
                 </motion.div>
               ))
@@ -114,17 +114,17 @@ export default function Notices() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="bg-white rounded-3xl border border-emerald-200 p-10 max-w-3xl mx-auto w-full shadow-none"
+                className="bg-white rounded-md-3xl border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 p-10 max-w-3xl mx-auto w-full shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
               >
-                <h2 className="text-3xl font-extrabold text-emerald-900 mb-8">{selectedId ? 'Edit Notice' : 'Compose Notice'}</h2>
+                <h2 className="text-3xl font-extrabold text-emerald-900 mb-8 tracking-[-0.02em]">{selectedId ? 'Edit Notice' : 'Compose Notice'}</h2>
                 <div className="space-y-6">
                   <div>
-                    <label className="text-sm font-bold text-emerald-700 uppercase tracking-wide">Title</label>
-                    <Input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="mt-2 border-emerald-200 focus-visible:ring-emerald-500 rounded-xl h-12 text-lg" placeholder="Enter notice title..." />
+                    <label className="text-sm font-semibold text-emerald-700 uppercase tracking-wide tracking-[0.04em]">Title</label>
+                    <Input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="mt-2 border-emerald-200 focus-visible:ring-emerald-500 rounded-md-xl h-12 text-lg" placeholder="Enter notice title..." />
                   </div>
                   <div>
-                    <label className="text-sm font-bold text-emerald-700 uppercase tracking-wide">Audience</label>
-                    <select value={formData.audience} onChange={e => setFormData({...formData, audience: e.target.value})} className="mt-2 w-full rounded-xl border border-emerald-200 bg-white px-4 py-3 text-lg text-emerald-900 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <label className="text-sm font-semibold text-emerald-700 uppercase tracking-wide tracking-[0.04em]">Audience</label>
+                    <select value={formData.audience} onChange={e => setFormData({...formData, audience: e.target.value})} className="mt-2 w-full rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 bg-white px-4 py-3 text-lg text-emerald-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                       <option>All</option>
                       <option>Students Only</option>
                       <option>Parents Only</option>
@@ -132,13 +132,13 @@ export default function Notices() {
                     </select>
                   </div>
                   <div>
-                    <label className="text-sm font-bold text-emerald-700 uppercase tracking-wide">Content</label>
-                    <textarea value={formData.content} onChange={e => setFormData({...formData, content: e.target.value})} className="mt-2 w-full rounded-xl border border-emerald-200 bg-white p-4 text-lg text-emerald-900 resize-none h-64 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Type your message here..." />
+                    <label className="text-sm font-semibold text-emerald-700 uppercase tracking-wide tracking-[0.04em]">Content</label>
+                    <textarea value={formData.content} onChange={e => setFormData({...formData, content: e.target.value})} className="mt-2 w-full rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 bg-white p-4 text-lg text-emerald-900 resize-none h-64 focus:outline-none focus:ring-2 focus:ring-emerald-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" placeholder="Type your message here..." />
                   </div>
                 </div>
                 <div className="flex gap-4 mt-10">
-                  <Button variant="outline" className="flex-1 border-emerald-200 text-emerald-700 hover:bg-emerald-50 rounded-xl h-14 text-lg font-bold" onClick={() => setIsEditing(false)}>Cancel</Button>
-                  <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl h-14 text-lg font-bold" onClick={handleSave}>
+                  <Button variant="outline" className="flex-1 border-emerald-200 text-emerald-700 hover:bg-emerald-50 rounded-md-xl h-14 text-lg font-semibold" onClick={() => setIsEditing(false)}>Cancel</Button>
+                  <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md-xl h-14 text-lg font-semibold" onClick={handleSave}>
                     {mutateRecord.isPending ? 'Publishing...' : 'Publish Notice'}
                   </Button>
                 </div>
@@ -149,21 +149,21 @@ export default function Notices() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="bg-white rounded-3xl border border-emerald-200 p-10 max-w-3xl mx-auto w-full shadow-none"
+                className="bg-white rounded-md-3xl border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 p-10 max-w-3xl mx-auto w-full shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
               >
                 <div className="flex justify-between items-start mb-8 pb-8 border-b border-emerald-100">
                   <div>
-                    <h2 className="text-4xl font-extrabold text-emerald-900 leading-tight">{selectedNotice.title}</h2>
+                    <h2 className="text-4xl font-extrabold text-emerald-900 leading-tight tracking-[-0.02em]">{selectedNotice.title}</h2>
                     <div className="flex items-center gap-4 mt-4">
-                      <span className="text-sm font-bold bg-emerald-100 text-emerald-800 px-4 py-1.5 rounded-full uppercase tracking-wider">{selectedNotice.audience}</span>
-                      <span className="text-sm font-bold text-emerald-500 flex items-center gap-2"><Calendar className="w-4 h-4" /> {selectedNotice.datePublished ? format(new Date(selectedNotice.datePublished), 'MMMM d, yyyy') : 'No Date'}</span>
+                      <span className="text-sm font-semibold bg-emerald-100 text-emerald-800 px-4 py-1.5 rounded-md-full uppercase tracking-wider tracking-[0.04em]">{selectedNotice.audience}</span>
+                      <span className="text-sm font-semibold text-emerald-500 flex items-center gap-2"><Calendar className="w-4 h-4" /> {selectedNotice.datePublished ? format(new Date(selectedNotice.datePublished), 'MMMM d, yyyy') : 'No Date'}</span>
                     </div>
                   </div>
                   <div className="flex gap-2 shrink-0">
-                    <Button variant="outline" size="icon" className="h-12 w-12 border-emerald-200 text-emerald-700 hover:bg-emerald-50 rounded-xl" onClick={() => { setFormData({ title: selectedNotice.title, audience: selectedNotice.audience, content: selectedNotice.content }); setIsEditing(true); }}>
+                    <Button variant="outline" size="icon" className="h-12 w-12 border-emerald-200 text-emerald-700 hover:bg-emerald-50 rounded-md-xl" onClick={() => { setFormData({ title: selectedNotice.title, audience: selectedNotice.audience, content: selectedNotice.content }); setIsEditing(true); }}>
                       <Edit2 className="w-5 h-5" />
                     </Button>
-                    <Button variant="outline" size="icon" className="h-12 w-12 border-red-200 text-red-600 hover:bg-red-50 rounded-xl" onClick={() => { if(window.confirm('Delete this notice?')) deleteRecord.mutate({ id: selectedNotice.id, recordType: 'notice' }, { onSuccess: () => setSelectedId(null) }); }}>
+                    <Button variant="outline" size="icon" className="h-12 w-12 border-red-200 text-red-600 hover:bg-red-50 rounded-md-xl" onClick={() => { if(window.confirm('Delete this notice?')) deleteRecord.mutate({ id: selectedNotice.id, recordType: 'notice' }, { onSuccess: () => setSelectedId(null) }); }}>
                       <Trash2 className="w-5 h-5" />
                     </Button>
                   </div>
@@ -174,10 +174,10 @@ export default function Notices() {
               </motion.div>
             ) : (
               <div className="h-full w-full flex flex-col items-center justify-center text-emerald-400">
-                <div className="bg-emerald-100 p-8 rounded-full mb-6">
+                <div className="bg-emerald-100 p-8 rounded-md-full mb-6">
                   <Megaphone className="w-20 h-20 text-emerald-500" />
                 </div>
-                <p className="text-2xl font-extrabold text-emerald-700">Select a notice to read</p>
+                <p className="text-2xl font-extrabold text-emerald-700 tracking-[-0.02em]">Select a notice to read</p>
                 <p className="text-emerald-500 font-medium mt-2">Or compose a new one from the top right</p>
               </div>
             )}

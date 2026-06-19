@@ -35,23 +35,23 @@ export default function OnlineSales() {
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
  <div className="border-b border-primary/40 pb-4 flex justify-between items-end">
  <div>
- <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Sales & Revenue</h1>
+ <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">Sales & Revenue</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Track course purchases, subscriptions, and financial metrics.</p>
  </div>
- <button className="flex items-center gap-2 px-4 py-2 bg-[var(--color-surface-1)] border border-primary/40 text-[var(--color-text-primary)] text-sm font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
+ <button className="flex items-center gap-2 px-4 py-2 bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[var(--color-text-primary)] text-sm font-medium rounded-md-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
  <Download className="w-4 h-4" /> Export Report
  </button>
  </div>
 
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  {stats.map((stat, i) => (
- <div key={i} className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 ">
+ <div key={i} className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 ">
  <div className="flex items-center justify-between">
  <div>
- <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">{stat.label}</p>
- <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight">{stat.value}</h3>
+ <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">{stat.label}</p>
+ <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight tracking-[-0.02em]">{stat.value}</h3>
  </div>
- <div className="w-12 h-12 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: `color-mix(in srgb, ${stat.color} 15%, transparent)`}}>
+ <div className="w-12 h-12 rounded-md-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: `color-mix(in srgb, ${stat.color} 15%, transparent)`}}>
  <stat.icon className="w-6 h-6" style={{ color: stat.color}} />
  </div>
  </div>
@@ -60,32 +60,32 @@ export default function OnlineSales() {
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 ">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 ">
  <div className="flex justify-between items-center mb-6">
  <div>
  <h2 className="font-semibold text-[var(--color-text-primary)]">Revenue Breakdown</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">One-time purchases vs Subscriptions</p>
  </div>
  </div>
- <div className="h-[300px] w-full flex items-center justify-center border border-dashed border-primary/40 rounded-xl">
+ <div className="h-[300px] w-full flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-md-xl">
  <p className="text-[var(--color-text-secondary)] text-sm">Not enough data to display chart.</p>
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 ">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 ">
  <div className="flex justify-between items-center mb-6">
  <div>
  <h2 className="font-semibold text-[var(--color-text-primary)]">Cumulative Growth</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)]">Total lifetime value generated</p>
  </div>
  </div>
- <div className="h-[300px] w-full flex items-center justify-center border border-dashed border-primary/40 rounded-xl">
+ <div className="h-[300px] w-full flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-md-xl">
  <p className="text-[var(--color-text-secondary)] text-sm">Not enough data to display chart.</p>
  </div>
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden">
  <div className="p-4 border-b border-primary/40 bg-[var(--color-surface-1)]">
  <h2 className="font-semibold text-[var(--color-text-primary)]">Recent Transactions</h2>
  </div>
@@ -116,16 +116,16 @@ export default function OnlineSales() {
  
  return (
  <tr key={idx} className="hover:bg-[var(--color-surface-1)] transition-colors">
- <td className="px-6 py-4 font-mono text-xs">#{sale.id.split('-')[0]}</td>
+ <td className="px-6 py-4 font-mono text-xs tracking-[0.04em]">#{sale.id.split('-')[0]}</td>
  <td className="px-6 py-4 text-[var(--color-text-secondary)]">
  {new Date(sale.created_at || Date.now()).toLocaleDateString()}
  </td>
  <td className="px-6 py-4 font-medium">{sale.title || 'Unknown Customer'}</td>
- <td className="px-6 py-4 font-bold text-[var(--color-success)]">
+ <td className="px-6 py-4 font-semibold text-[var(--color-success)]">
  ${parseFloat(extra.amount || 0).toLocaleString()}
  </td>
  <td className="px-6 py-4">
- <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold bg-[var(--color-success-subtle)] text-[var(--color-success)] border border-[var(--color-success)]">
+ <span className="inline-flex items-center px-2 py-1 rounded-md-full text-[10px] font-semibold bg-[var(--color-success-subtle)] text-[var(--color-success)] border-[0.5px] border-black/9 dark:border-white/8 border-[var(--color-success)]">
  Completed
  </span>
  </td>

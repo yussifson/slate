@@ -77,23 +77,23 @@ export default function AITutor() {
  return (
  <div className="flex flex-col h-[85vh] space-y-4">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+ <div className="w-10 h-10 rounded-md-xl bg-primary/20 flex items-center justify-center">
  <Bot className="w-6 h-6 text-primary" />
  </div>
  <div>
- <h1 className="text-2xl school-heading font-extrabold tracking-tight">AI Tutor</h1>
- <p className="text-sm text-muted-foreground">Personalized 24/7 academic assistance (Live DB Sync)</p>
+ <h1 className="text-2xl school-heading font-extrabold tracking-tight tracking-[-0.02em]">AI Tutor</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400">Personalized 24/7 academic assistance (Live DB Sync)</p>
  </div>
  </div>
 
- <div className="flex-1 bg-card rounded-2xl border border-primary/40 flex flex-col overflow-hidden">
+ <div className="flex-1 bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex-1 p-6 overflow-y-auto space-y-6 custom-scrollbar flex flex-col">
  {messages.map((msg, i) => (
  <div key={i} className={`flex gap-4 ${msg.role === 'user' ? 'self-end flex-row-reverse' : 'self-start'}`}>
- <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${msg.role === 'user' ? 'bg-primary text-white' : 'bg-primary/20 text-primary'}`}>
+ <div className={`w-8 h-8 rounded-md-full flex items-center justify-center flex-shrink-0 ${msg.role === 'user' ? 'bg-primary text-white' : 'bg-primary/20 text-primary'}`}>
  {msg.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
  </div>
- <div className={`max-w-[70%] p-4 rounded-2xl ${msg.role === 'user' ? 'bg-primary text-white rounded-tr-none' : 'bg-muted rounded-tl-none'}`}>
+ <div className={`max-w-[70%] p-4 rounded-md-2xl ${msg.role === 'user' ? 'bg-primary text-white rounded-md-tr-none' : 'bg-muted rounded-md-tl-none'}`}>
  <p className="text-sm leading-relaxed">{msg.content}</p>
  </div>
  </div>
@@ -108,7 +108,7 @@ export default function AITutor() {
  onChange={e => setInput(e.target.value)} 
  onKeyDown={e => e.key === 'Enter' && handleSend()}
  placeholder="Ask a question about math, science, history..." 
- className="flex-1 bg-card border-primary/40"
+ className="flex-1 bg-card border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  <Button onClick={handleSend} className="bg-primary hover:bg-primary/90 text-white gap-2 px-6">
  <Send className="w-4 h-4" /> Send

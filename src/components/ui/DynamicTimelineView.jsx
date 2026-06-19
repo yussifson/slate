@@ -123,12 +123,12 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
 
  if (!data || data.length === 0) {
  return (
- <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border border-primary/40">
- <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 -violet-500/20">
+ <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <div className="w-16 h-16 rounded-md-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 -violet-500/20">
  <Activity className="w-8 h-8 text-white" />
  </div>
  <h3 className="text-lg font-semibold text-slate-800 mb-1">No Activity Yet</h3>
- <p className="text-sm text-muted-foreground max-w-sm text-center">
+ <p className="text-sm text-[#71717a] dark:text-gray-400 max-w-sm text-center">
  Add records to see them appear on the timeline.
  </p>
  </div>
@@ -142,19 +142,19 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
  {/* Header */}
  <div className="flex items-center justify-between mb-6">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center -violet-500/20">
+ <div className="w-10 h-10 rounded-md-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center -violet-500/20">
  <Activity className="w-5 h-5 text-white" />
  </div>
  <div>
- <h2 className="text-lg font-bold text-slate-800">Activity Timeline</h2>
- <p className="text-xs text-muted-foreground">{data.length} record{data.length !== 1 ? 's' : ''}</p>
+ <h2 className="text-lg font-semibold text-slate-800">Activity Timeline</h2>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{data.length} record{data.length !== 1 ? 's' : ''}</p>
  </div>
  </div>
  <Button
  variant="outline"
  size="sm"
  onClick={() => setSortAsc(!sortAsc)}
- className="gap-2 text-xs"
+ className="gap-2 text-xs tracking-[0.04em]"
  >
  <ArrowUpDown className="w-3.5 h-3.5" />
  {sortAsc ? 'Oldest First' : 'Newest First'}
@@ -167,7 +167,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
  <div key={dateKey} className="mb-8">
  {/* Date Header */}
  <div className="flex items-center gap-3 mb-4 relative z-10">
- <div className="bg-gradient-to-r from-slate-800 to-slate-700 text-white text-xs font-bold px-4 py-2 rounded-full ">
+ <div className="bg-gradient-to-r from-slate-800 to-slate-700 text-white text-xs font-semibold px-4 py-2 rounded-md-full  tracking-[0.04em]">
  {dateKey !== 'Unknown' ? format(new Date(dateKey), 'EEEE, MMMM d, yyyy') : 'Unknown Date'}
  </div>
  <div className="flex-1 h-px bg-gradient-to-r from-slate-300 to-transparent" />
@@ -209,7 +209,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
  )}
  {!isLeft && (
  <div className="flex items-center justify-end h-full pt-4">
- <span className="text-xs text-muted-foreground font-medium flex items-center gap-1.5">
+ <span className="text-xs text-[#71717a] dark:text-gray-400 font-medium flex items-center gap-2.5 tracking-[0.04em]">
  <Clock className="w-3 h-3" />
  {record.created_at ? format(new Date(record.created_at), 'h:mm a') : ''}
  </span>
@@ -219,7 +219,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
 
  {/* Center dot */}
  <div className="absolute left-1/2 -translate-x-1/2 top-4 z-10 flex flex-col items-center">
- <div className={`w-4 h-4 rounded-full ${colorSet.dot} ring-4 ring-white transition-transform group-hover:scale-125`} />
+ <div className={`w-4 h-4 rounded-md-full ${colorSet.dot} ring-4 ring-white transition-transform group-hover:scale-125`} />
  </div>
 
  {/* Right content */}
@@ -239,7 +239,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
  )}
  {isLeft && (
  <div className="flex items-center h-full pt-4">
- <span className="text-xs text-muted-foreground font-medium flex items-center gap-1.5">
+ <span className="text-xs text-[#71717a] dark:text-gray-400 font-medium flex items-center gap-2.5 tracking-[0.04em]">
  <Clock className="w-3 h-3" />
  {record.created_at ? format(new Date(record.created_at), 'h:mm a') : ''}
  </span>
@@ -252,7 +252,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
  <div className="md:hidden flex gap-4">
  {/* Dot */}
  <div className="flex flex-col items-center flex-shrink-0">
- <div className={`w-3.5 h-3.5 rounded-full ${colorSet.dot} ring-4 ring-white mt-4`} />
+ <div className={`w-3.5 h-3.5 rounded-md-full ${colorSet.dot} ring-4 ring-white mt-4`} />
  </div>
  {/* Card */}
  <div className="flex-1 min-w-0">
@@ -276,8 +276,8 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
 
  {/* End marker */}
  <div className="flex justify-center md:justify-center">
- <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
- <GitCommitHorizontal className="w-4 h-4 text-muted-foreground" />
+ <div className="w-8 h-8 rounded-md-full bg-muted flex items-center justify-center">
+ <GitCommitHorizontal className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
  </div>
  </div>
  </div>
@@ -293,7 +293,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
  <div className="mt-2 space-y-2">
  {fieldDefinitions.map((f) => (
  <div key={f.name} className="flex justify-between items-center py-2 border-b border-primary/40 last:border-0">
- <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{f.name.replace(/_/g, ' ')}</span>
+ <span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{f.name.replace(/_/g, ' ')}</span>
  <span className="text-sm font-medium text-foreground max-w-[60%] text-right break-words">
  {f.field_type === 'boolean' ? (viewRecord.data[f.name] ? 'Yes' : 'No') :
  f.field_type === 'date' && viewRecord.data[f.name] ? format(new Date(viewRecord.data[f.name]), 'MMM d, yyyy') :
@@ -301,7 +301,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
  </span>
  </div>
  ))}
- <p className="text-[11px] text-muted-foreground pt-2">Created: {new Date(viewRecord.created_at).toLocaleString()}</p>
+ <p className="text-[11px] text-[#71717a] dark:text-gray-400 pt-2">Created: {new Date(viewRecord.created_at).toLocaleString()}</p>
  </div>
  )}
  <DialogFooter className="mt-4">
@@ -328,7 +328,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
  return (
  <div key={f.name} className="flex items-center justify-between py-2 border-b border-primary/40 last:border-0">
  <label className="text-sm font-medium text-foreground">{label}</label>
- <input type="checkbox" checked={!!val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.checked})} className="h-4 w-4 rounded border-primary/40" />
+ <input type="checkbox" checked={!!val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.checked})} className="h-4 w-4 rounded-md border-primary/40" />
  </div>
  );
 }
@@ -337,8 +337,8 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
  try { options = typeof f.options === 'string' ? JSON.parse(f.options) : (f.options || []);} catch { options = [];}
  return (
  <div key={f.name} className="space-y-1">
- <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</label>
- <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value})} className="w-full rounded-lg border border-primary/40 bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{label}</label>
+ <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value})} className="w-full rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <option value="">Select...</option>
  {options.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
  </select>
@@ -347,7 +347,7 @@ export default function DynamicTimelineView({ data = [], fieldDefinitions = [], 
 }
  return (
  <div key={f.name} className="space-y-1">
- <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{label}</label>
  <Input type={f.field_type === 'date' ? 'date' : f.field_type === 'number' ? 'number' : 'text'} value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value})} />
  </div>
  );
@@ -399,7 +399,7 @@ function TimelineCard({ record, fieldDefinitions, colorSet, onView, onEdit, onDe
  const otherFields = fieldDefinitions.filter((f) => f.field_type !== 'text').slice(0, 3);
 
  return (
- <div className={`w-full max-w-md bg-card rounded-xl border border-primary/40 transition-all duration-300 overflow-hidden group/card`}>
+ <div className={`w-full max-w-md bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 transition-all duration-300 overflow-hidden group/card`}>
  {/* Gradient accent bar */}
  <div className={`h-1 bg-gradient-to-r ${colorSet.gradient}`} />
 
@@ -408,17 +408,17 @@ function TimelineCard({ record, fieldDefinitions, colorSet, onView, onEdit, onDe
  <div className="flex-1 min-w-0">
  <h4 className="font-semibold text-slate-800 text-sm truncate">{title}</h4>
  {subtitle && (
- <p className="text-xs text-muted-foreground mt-0.5 truncate">{subtitle}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 truncate tracking-[0.04em]">{subtitle}</p>
  )}
  </div>
- <div className="flex gap-1 opacity-0 group-hover/card:opacity-100 transition-opacity ml-2 flex-shrink-0">
- <button onClick={onView} className="p-1.5 rounded-lg bg-muted text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors">
+ <div className="flex gap-2 opacity-0 group-hover/card:opacity-100 transition-opacity ml-2 flex-shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <button onClick={onView} className="p-1.5 rounded-xl bg-muted text-[#71717a] dark:text-gray-400 hover:text-primary hover:bg-muted/50 transition-colors">
  <Eye className="w-3.5 h-3.5" />
  </button>
- <button onClick={onEdit} className="p-1.5 rounded-lg bg-muted text-muted-foreground hover:text-amber-600 hover:bg-amber-50 transition-colors">
+ <button onClick={onEdit} className="p-1.5 rounded-xl bg-muted text-[#71717a] dark:text-gray-400 hover:text-amber-600 hover:bg-amber-50 transition-colors">
  <Pencil className="w-3.5 h-3.5" />
  </button>
- <button onClick={onDelete} className="p-1.5 rounded-lg bg-muted text-muted-foreground hover:text-red-600 hover:bg-red-50 transition-colors">
+ <button onClick={onDelete} className="p-1.5 rounded-xl bg-muted text-[#71717a] dark:text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors">
  <Trash2 className="w-3.5 h-3.5" />
  </button>
  </div>
@@ -426,13 +426,13 @@ function TimelineCard({ record, fieldDefinitions, colorSet, onView, onEdit, onDe
 
  {/* Field values */}
  {otherFields.length > 0 && (
- <div className="mt-3 flex flex-wrap gap-1.5">
+ <div className="mt-3 flex flex-wrap gap-2.5">
  {otherFields.map((f) => {
  const val = record.data?.[f.name];
  if (val === undefined || val === null || val === '') return null;
  return (
- <span key={f.name} className={`inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-md ${colorSet.lightBg} ${colorSet.text}`}>
- <span className="text-muted-foreground">{f.name.replace(/_/g, ' ')}:</span>
+ <span key={f.name} className={`inline-flex items-center gap-2 text-[10px] font-medium px-2 py-0.5 rounded-lg ${colorSet.lightBg} ${colorSet.text}`}>
+ <span className="text-[#71717a] dark:text-gray-400">{f.name.replace(/_/g, ' ')}:</span>
  {f.field_type === 'boolean' ? (val ? 'Yes' : 'No') :
  f.field_type === 'date' ? (() => { try { return format(new Date(val), 'MMM d');} catch { return String(val);}})() :
  String(val)}
@@ -443,7 +443,7 @@ function TimelineCard({ record, fieldDefinitions, colorSet, onView, onEdit, onDe
  )}
 
  {/* Timestamp */}
- <div className="mt-3 pt-2 border-t border-primary/40 flex items-center gap-1.5 text-[10px] text-muted-foreground">
+ <div className="mt-3 pt-2 border-t border-primary/40 flex items-center gap-2.5 text-[10px] text-[#71717a] dark:text-gray-400">
  <Clock className="w-3 h-3" />
  {record.created_at ? format(new Date(record.created_at), 'MMM d, yyyy · h:mm a') : 'Unknown'}
  </div>

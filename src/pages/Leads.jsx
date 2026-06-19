@@ -20,7 +20,7 @@ const STATUS_COLORS = {
   contacted: "bg-amber-100 text-amber-700",
   qualified: "bg-slate-100 text-primary/90",
   converted: "bg-slate-100 text-primary/90",
-  lost: "bg-gray-100 text-gray-500",
+  lost: "bg-gray-100 text-[#71717a] dark:text-gray-400",
 };
 
 const URGENCY_COLORS = {
@@ -98,7 +98,7 @@ export default function Leads() {
         return (
           <div>
             <p className="font-medium text-sm">{row.full_name}</p>
-            <p className="text-xs text-muted-foreground">{row.email}</p>
+            <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{row.email}</p>
           </div>
         );
       }
@@ -113,13 +113,13 @@ export default function Leads() {
       return <Badge className={`text-[10px] ${STATUS_COLORS[row.status]}`}>{row.status}</Badge>;
     } },
     { header: "Submitted", render: row => {
-      return <span className="text-xs text-muted-foreground">{format(new Date(row.created_date), "MMM d, yyyy")}</span>;
+      return <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{format(new Date(row.created_date), "MMM d, yyyy")}</span>;
     } },
     {
       header: "Actions",
       render: row => {
         return (
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" className="h-7 w-7" title="Email lead" onClick={e => { e.stopPropagation(); window.open(`mailto:${row.email}`); }}>
               <Mail className="w-3.5 h-3.5" />
             </Button>
@@ -148,16 +148,16 @@ export default function Leads() {
         title="Leads"
         subtitle={`${leads.filter(l => l.status === "new").length} new leads from intake form`}
         actions={
-          <Button variant="outline" size="sm" className="gap-1.5" onClick={() => window.open(intakeFormUrl, "_blank")}>
+          <Button variant="outline" size="sm" className="gap-2.5" onClick={() => window.open(intakeFormUrl, "_blank")}>
             <ExternalLink className="w-3.5 h-3.5" /> {t("view_intake_form", "View Intake Form")}
           </Button>
         }
       />
       {/* Intake Form Link Banner */}
-      <div className="bg-slate-50 dark:bg-slate-800/50 border border-primary/20 rounded-xl px-4 py-3 flex items-center justify-between gap-4">
+      <div className="bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-xl px-4 py-3 flex items-center justify-between gap-4">
         <div>
           <p className="text-sm font-medium text-primary/70">{t("your_public_intake_form_is_liv", "Your public intake form is live")}</p>
-          <p className="text-xs text-primary/90 mt-0.5 break-all">{intakeFormUrl}</p>
+          <p className="text-xs text-primary/90 mt-0.5 break-all tracking-[0.04em]">{intakeFormUrl}</p>
         </div>
         <Button size="sm" variant="outline" className="shrink-0 text-primary/90 border-primary/30" onClick={() => { navigator.clipboard.writeText(intakeFormUrl); toast({ title: "Link copied!" }); }}>
           {t("copy_link", "Copy Link")}
@@ -165,7 +165,7 @@ export default function Leads() {
       </div>
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
           <Input placeholder="Search leads..." className="pl-9" value={search} onChange={e => setSearch(e.target.value)} />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -237,13 +237,13 @@ function LeadDetailDialog({ lead, onClose, onUpdateStatus, onConvert, onSave, on
               <Input 
                 value={formData.full_name} 
                 onChange={(e) => setFormData({ ...formData, full_name: e.target.value })} 
-                className="h-8 w-48 font-bold"
+                className="h-8 w-48 font-semibold"
               />
             ) : (
               lead.full_name
             )}
             <Badge className={`text-[10px] ${STATUS_COLORS[lead.status]}`}>{lead.status}</Badge>
-            <div className="ml-auto flex items-center gap-1">
+            <div className="ml-auto flex items-center gap-2">
               {!isEditing ? (
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setIsEditing(true)}>
                   <Pencil className="w-3.5 h-3.5" />
@@ -262,34 +262,34 @@ function LeadDetailDialog({ lead, onClose, onUpdateStatus, onConvert, onSave, on
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div>
-              <Label className="text-xs">{t("email", "Email")}</Label>
+              <Label className="text-xs tracking-[0.04em]">{t("email", "Email")}</Label>
               {isEditing ? (
-                <Input value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="h-7 text-xs mt-1" />
+                <Input value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="h-7 text-xs mt-1 tracking-[0.04em]" />
               ) : (
                 <p className="mt-0.5">{lead.email}</p>
               )}
             </div>
             <div>
-              <Label className="text-xs">{t("phone", "Phone")}</Label>
+              <Label className="text-xs tracking-[0.04em]">{t("phone", "Phone")}</Label>
               {isEditing ? (
-                <Input value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="h-7 text-xs mt-1" />
+                <Input value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="h-7 text-xs mt-1 tracking-[0.04em]" />
               ) : (
                 <p className="mt-0.5">{lead.phone || "—"}</p>
               )}
             </div>
             <div>
-              <Label className="text-xs">{t("organization", "Organization")}</Label>
+              <Label className="text-xs tracking-[0.04em]">{t("organization", "Organization")}</Label>
               {isEditing ? (
-                <Input value={formData.organization} onChange={(e) => setFormData({ ...formData, organization: e.target.value })} className="h-7 text-xs mt-1" />
+                <Input value={formData.organization} onChange={(e) => setFormData({ ...formData, organization: e.target.value })} className="h-7 text-xs mt-1 tracking-[0.04em]" />
               ) : (
                 <p className="mt-0.5">{lead.organization || "Individual"}</p>
               )}
             </div>
             <div>
-              <Label className="text-xs">{t("case_type", "Case Type")}</Label>
+              <Label className="text-xs tracking-[0.04em]">{t("case_type", "Case Type")}</Label>
               {isEditing ? (
                 <Select value={formData.case_type} onValueChange={(val) => setFormData({ ...formData, case_type: val })}>
-                  <SelectTrigger className="h-7 text-xs mt-1"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="h-7 text-xs mt-1 tracking-[0.04em]"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="litigation">Litigation</SelectItem>
                     <SelectItem value="corporate">Corporate</SelectItem>
@@ -303,10 +303,10 @@ function LeadDetailDialog({ lead, onClose, onUpdateStatus, onConvert, onSave, on
               )}
             </div>
             <div>
-              <Label className="text-xs">{t("urgency", "Urgency")}</Label>
+              <Label className="text-xs tracking-[0.04em]">{t("urgency", "Urgency")}</Label>
               {isEditing ? (
                 <Select value={formData.urgency} onValueChange={(val) => setFormData({ ...formData, urgency: val })}>
-                  <SelectTrigger className="h-7 text-xs mt-1"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="h-7 text-xs mt-1 tracking-[0.04em]"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="low">Low</SelectItem>
                     <SelectItem value="medium">Medium</SelectItem>
@@ -319,10 +319,10 @@ function LeadDetailDialog({ lead, onClose, onUpdateStatus, onConvert, onSave, on
               )}
             </div>
             <div>
-              <Label className="text-xs">{t("preferred_contact", "Preferred Contact")}</Label>
+              <Label className="text-xs tracking-[0.04em]">{t("preferred_contact", "Preferred Contact")}</Label>
               {isEditing ? (
                 <Select value={formData.preferred_contact} onValueChange={(val) => setFormData({ ...formData, preferred_contact: val })}>
-                  <SelectTrigger className="h-7 text-xs mt-1"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="h-7 text-xs mt-1 tracking-[0.04em]"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="email">Email</SelectItem>
                     <SelectItem value="phone">Phone</SelectItem>
@@ -334,22 +334,22 @@ function LeadDetailDialog({ lead, onClose, onUpdateStatus, onConvert, onSave, on
             </div>
           </div>
           <div>
-            <Label className="text-xs">{t("case_description", "Case Description")}</Label>
+            <Label className="text-xs tracking-[0.04em]">{t("case_description", "Case Description")}</Label>
             {isEditing ? (
               <Input value={formData.case_description} onChange={(e) => setFormData({ ...formData, case_description: e.target.value })} className="mt-1" />
             ) : (
-              <p className="mt-1 text-sm bg-muted/40 rounded-lg p-3">{lead.case_description}</p>
+              <p className="mt-1 text-sm bg-muted/40 rounded-xl p-3">{lead.case_description}</p>
             )}
           </div>
           <div>
-            <Label className="text-xs">{t("update_status", "Update Status")}</Label>
+            <Label className="text-xs tracking-[0.04em]">{t("update_status", "Update Status")}</Label>
             <div className="flex flex-wrap gap-2 mt-1.5">
               {["new", "contacted", "qualified", "lost"].map(s => {
                 return (
                   <button
                     key={s}
                     onClick={() => onUpdateStatus(s)}
-                    className={`px-3 py-1 rounded-full text-xs font-medium border capitalize transition-colors ${lead.status === s ? STATUS_COLORS[s] + " border-transparent" : "border-primary/40 text-muted-foreground hover:bg-muted"}`}
+                    className={`px-3 py-1 rounded-md-full text-xs font-medium border-[0.5px] border-black/9 dark:border-white/8 capitalize transition-colors ${lead.status === s ? STATUS_COLORS[s] + " border-transparent" : "border-primary/40 text-[#71717a] dark:text-gray-400 hover:bg-muted"}`}
                   >{s}</button>
                 );
               })}
@@ -358,7 +358,7 @@ function LeadDetailDialog({ lead, onClose, onUpdateStatus, onConvert, onSave, on
           <div className="flex justify-between items-center pt-2 border-t border-primary/40">
             <Button variant="outline" onClick={onClose}>{t("close", "Close")}</Button>
             {lead.status !== "converted" && (
-              <Button onClick={onConvert} disabled={isConverting} className="gap-1.5 bg-primary hover:bg-primary/90 text-white">
+              <Button onClick={onConvert} disabled={isConverting} className="gap-2.5 bg-primary hover:bg-primary/90 text-white">
                 {isConverting ? "Converting..." : <><CheckCircle className="w-4 h-4" /> {t("convert_to_client", "Convert to Client")}</>}
               </Button>
             )}

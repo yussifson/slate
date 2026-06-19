@@ -72,7 +72,7 @@ export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSucces
  switch (field.field_type) {
  case 'boolean':
  return (
- <div className="flex flex-row items-center justify-between rounded-lg border p-4 " key={field.id}>
+ <div className="flex flex-row items-center justify-between rounded-xl border-[0.5px] border-black/9 dark:border-white/8 p-4 " key={field.id}>
  <div className="space-y-0.5">
  <Label className="text-base">{label} {isRequired && <span className="text-red-500">*</span>}</Label>
  </div>
@@ -105,7 +105,7 @@ export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSucces
  </SelectContent>
  </Select>
  <input type="hidden" {...register(fieldName, { required: isRequired})} />
- {errors[fieldName] && <span className="text-xs text-red-500">This field is required</span>}
+ {errors[fieldName] && <span className="text-xs text-red-500 tracking-[0.04em]">This field is required</span>}
  </div>
  );
 
@@ -118,7 +118,7 @@ export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSucces
  placeholder={`Enter ${label.toLowerCase()}`}
  {...register(fieldName, { required: isRequired, valueAsNumber: true})}
  />
- {errors[fieldName] && <span className="text-xs text-red-500">This field is required</span>}
+ {errors[fieldName] && <span className="text-xs text-red-500 tracking-[0.04em]">This field is required</span>}
  </div>
  );
 
@@ -130,7 +130,7 @@ export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSucces
  type="date"
  {...register(fieldName, { required: isRequired})}
  />
- {errors[fieldName] && <span className="text-xs text-red-500">This field is required</span>}
+ {errors[fieldName] && <span className="text-xs text-red-500 tracking-[0.04em]">This field is required</span>}
  </div>
  );
 
@@ -144,7 +144,7 @@ export default function DynamicForm({ moduleDef, fieldDefinitions = [], onSucces
  placeholder={`Enter ${label.toLowerCase()}`}
  {...register(fieldName, { required: isRequired})}
  />
- {errors[fieldName] && <span className="text-xs text-red-500">This field is required</span>}
+ {errors[fieldName] && <span className="text-xs text-red-500 tracking-[0.04em]">This field is required</span>}
  </div>
  );
 }

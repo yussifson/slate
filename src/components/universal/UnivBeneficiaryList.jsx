@@ -73,33 +73,33 @@ export default function UnivBeneficiaryList() {
  return (
  <div className="p-6 max-w-4xl mx-auto font-sans ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex justify-between items-center mb-6">
- <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
+ <h1 className="text-3xl font-semibold text-foreground flex items-center gap-2 tracking-[-0.02em]">
  <User className="text-blue-600" /> Beneficiary List
  </h1>
  <div className="flex gap-2">
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Kanban","Dashboard"].map(v => (
  <button 
  key={v} 
  onClick={() => setView(v)} 
- className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${view === v ? 'bg-background text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+ className={`px-3 py-1 text-xs font-medium rounded-lg transition-all ${view === v ? 'bg-background text-foreground' : 'text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}
  >
  {v}
  </button>
  ))}
  </div>
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={fetchItems} className="p-2 bg-muted hover:bg-muted/60 rounded-full transition-colors">
+ <button onClick={fetchItems} className="p-2 bg-muted hover:bg-muted/60 rounded-md-full transition-colors">
  <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
  </button>
- <button onClick={() => setShowForm(true)} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-colors ">
+ <button onClick={() => setShowForm(true)} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md-full hover:bg-blue-700 transition-colors ">
  <Plus size={20} /> Add New
  </button>
  </div>
@@ -107,65 +107,65 @@ export default function UnivBeneficiaryList() {
  </div>
 
  {showForm && (
- <motion.div initial={{ opacity: 0, y: -20}} animate={{ opacity: 1, y: 0}} className="bg-card p-6 rounded-xl border border-primary/40 mb-8 relative">
- <button onClick={() => setShowForm(false)} className="absolute top-4 right-4 text-muted-foreground hover:text-muted-foreground">
+ <motion.div initial={{ opacity: 0, y: -20}} animate={{ opacity: 1, y: 0}} className="bg-card p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-8 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <button onClick={() => setShowForm(false)} className="absolute top-4 right-4 text-[#71717a] dark:text-gray-400 hover:text-[#71717a] dark:text-gray-400">
  <X size={20} />
  </button>
  <h2 className="text-xl font-semibold mb-4 text-foreground">New Beneficiary List Entry</h2>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
  
  <div className="flex flex-col">
- <label className="text-sm font-medium text-muted-foreground mb-1 capitalize">beneficiary name</label>
+ <label className="text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1 capitalize">beneficiary name</label>
  <input
  type="text"
  value={formData.beneficiary_name}
  onChange={(e) => setFormData({ ...formData, beneficiary_name: e.target.value})}
- className="border border-primary/40 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+ className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
  placeholder={`Enter beneficiary name`}
  />
  </div>
  <div className="flex flex-col">
- <label className="text-sm font-medium text-muted-foreground mb-1 capitalize">contact info</label>
+ <label className="text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1 capitalize">contact info</label>
  <input
  type="text"
  value={formData.contact_info}
  onChange={(e) => setFormData({ ...formData, contact_info: e.target.value})}
- className="border border-primary/40 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+ className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
  placeholder={`Enter contact info`}
  />
  </div>
  <div className="flex flex-col">
- <label className="text-sm font-medium text-muted-foreground mb-1 capitalize">needs</label>
+ <label className="text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1 capitalize">needs</label>
  <input
  type="text"
  value={formData.needs}
  onChange={(e) => setFormData({ ...formData, needs: e.target.value})}
- className="border border-primary/40 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+ className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
  placeholder={`Enter needs`}
  />
  </div>
  <div className="flex flex-col">
- <label className="text-sm font-medium text-muted-foreground mb-1 capitalize">status</label>
+ <label className="text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1 capitalize">status</label>
  <input
  type="text"
  value={formData.status}
  onChange={(e) => setFormData({ ...formData, status: e.target.value})}
- className="border border-primary/40 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+ className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
  placeholder={`Enter status`}
  />
  </div>
  <div className="flex flex-col">
- <label className="text-sm font-medium text-muted-foreground mb-1 capitalize">assigned to</label>
+ <label className="text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1 capitalize">assigned to</label>
  <input
  type="text"
  value={formData.assigned_to}
  onChange={(e) => setFormData({ ...formData, assigned_to: e.target.value})}
- className="border border-primary/40 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+ className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
  placeholder={`Enter assigned to`}
  />
  </div>
  </div>
- <button onClick={handleSave} disabled={loading} className="mt-6 flex items-center gap-2 bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50">
+ <button onClick={handleSave} disabled={loading} className="mt-6 flex items-center gap-2 bg-green-500/10 text-white px-6 py-2 rounded-xl hover:bg-green-600 transition-colors disabled:opacity-50">
  <Save size={20} /> Save Entry
  </button>
  </motion.div>
@@ -173,34 +173,34 @@ export default function UnivBeneficiaryList() {
 
  <div className="grid gap-4">
  {items.map((item) => (
- <motion.div key={item.id} initial={{ opacity: 0}} animate={{ opacity: 1}} className="bg-card p-5 rounded-xl border border-primary/40 transition-">
+ <motion.div key={item.id} initial={{ opacity: 0}} animate={{ opacity: 1}} className="bg-card p-5 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
  
  <div>
- <p className="text-xs text-muted-foreground uppercase font-semibold">beneficiary name</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 uppercase font-semibold tracking-[0.04em]">beneficiary name</p>
  <p className="text-foreground font-medium">{item.beneficiary_name || '-'}</p>
  </div>
  <div>
- <p className="text-xs text-muted-foreground uppercase font-semibold">contact info</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 uppercase font-semibold tracking-[0.04em]">contact info</p>
  <p className="text-foreground font-medium">{item.contact_info || '-'}</p>
  </div>
  <div>
- <p className="text-xs text-muted-foreground uppercase font-semibold">needs</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 uppercase font-semibold tracking-[0.04em]">needs</p>
  <p className="text-foreground font-medium">{item.needs || '-'}</p>
  </div>
  <div>
- <p className="text-xs text-muted-foreground uppercase font-semibold">status</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 uppercase font-semibold tracking-[0.04em]">status</p>
  <p className="text-foreground font-medium">{item.status || '-'}</p>
  </div>
  <div>
- <p className="text-xs text-muted-foreground uppercase font-semibold">assigned to</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 uppercase font-semibold tracking-[0.04em]">assigned to</p>
  <p className="text-foreground font-medium">{item.assigned_to || '-'}</p>
  </div>
  </div>
  </motion.div>
  ))}
  {items.length === 0 && !loading && (
- <div className="text-center py-12 text-muted-foreground bg-background rounded-xl border border-dashed border-primary/40">
+ <div className="text-center py-12 text-[#71717a] dark:text-gray-400 bg-background rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40">
  <p>No beneficiary list records found. Create one to get started.</p>
  </div>
  )}

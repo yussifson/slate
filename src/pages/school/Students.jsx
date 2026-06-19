@@ -68,10 +68,10 @@ export default function Students() {
       <motion.div 
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        className="w-full md:w-1/3 flex flex-col bg-green-50 border-2 border-green-200 rounded-none overflow-hidden"
+        className="w-full md:w-1/3 flex flex-col bg-green-50 border-2 border-green-200 rounded-md-none overflow-hidden"
       >
-        <div className="p-5 border-b-2 border-green-200 bg-green-500 text-white">
-          <h2 className="text-xl font-bold tracking-tight mb-4 flex items-center gap-2">
+        <div className="p-5 border-b-2 border-green-200 bg-green-500/10 text-white">
+          <h2 className="text-xl font-semibold tracking-tight mb-4 flex items-center gap-2">
             <Users className="w-6 h-6" /> Student Directory
           </h2>
           <div className="space-y-3">
@@ -81,21 +81,21 @@ export default function Students() {
                 placeholder="Search students..." 
                 value={search} 
                 onChange={e => setSearch(e.target.value)} 
-                className="w-full pl-9 pr-3 py-2 bg-white text-green-900 placeholder:text-green-700 border-2 border-transparent focus:border-green-300 focus:outline-none rounded-none text-sm"
+                className="w-full pl-9 pr-3 py-2 bg-white text-green-900 placeholder:text-green-700 border-2 border-transparent focus:border-green-300 focus:outline-none rounded-md-none text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
               />
             </div>
             <div className="flex gap-2">
               <select 
                 value={filterClass}
                 onChange={(e) => setFilterClass(e.target.value)}
-                className="flex-1 bg-white border-2 border-transparent focus:border-green-300 rounded-none px-2 py-1.5 text-xs text-green-900 font-semibold focus:outline-none"
+                className="flex-1 bg-white border-2 border-transparent focus:border-green-300 rounded-md-none px-2 py-1.5 text-xs text-green-900 font-semibold focus:outline-none tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
               >
                 {classes.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
               <select 
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="flex-1 bg-white border-2 border-transparent focus:border-green-300 rounded-none px-2 py-1.5 text-xs text-green-900 font-semibold focus:outline-none"
+                className="flex-1 bg-white border-2 border-transparent focus:border-green-300 rounded-md-none px-2 py-1.5 text-xs text-green-900 font-semibold focus:outline-none tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
               >
                 <option value="All">All Status</option>
                 <option value="Active">Active</option>
@@ -106,7 +106,7 @@ export default function Students() {
           </div>
         </div>
         
-        <div className="flex-1 overflow-y-auto p-3 space-y-2 bg-white custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-3 space-y-2 bg-white custom-scrollbar hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           {isLoading ? (
             <div className="text-center py-10 text-green-600 font-medium animate-pulse">Loading directory...</div>
           ) : filtered.length === 0 ? (
@@ -122,14 +122,14 @@ export default function Students() {
                     : 'border-green-100 hover:border-green-300 bg-white'
                 }`}
               >
-                <div className="w-10 h-10 bg-green-200 text-green-800 font-bold flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 bg-green-200 text-green-800 font-semibold flex items-center justify-center shrink-0">
                   {student.avatar}
                 </div>
                 <div className="flex-1 overflow-hidden">
-                  <p className="font-bold text-green-900 truncate">{student.name}</p>
-                  <p className="text-xs text-green-600 truncate font-mono">{student.studentId} • {student.class}</p>
+                  <p className="font-semibold text-green-900 truncate">{student.name}</p>
+                  <p className="text-xs text-green-600 truncate font-mono tracking-[0.04em]">{student.studentId} • {student.class}</p>
                 </div>
-                <div className={`w-3 h-3 shrink-0 rounded-full border-2 border-white ${student.status === 'Active' ? 'bg-green-500' : student.status === 'Graduated' ? 'bg-blue-500' : 'bg-red-500'}`} />
+                <div className={`w-3 h-3 shrink-0 rounded-md-full border-2 border-white ${student.status === 'Active' ? 'bg-green-500/10' : student.status === 'Graduated' ? 'bg-blue-500/10' : 'bg-red-500/10'}`} />
               </button>
             ))
           )}
@@ -140,36 +140,36 @@ export default function Students() {
       <motion.div 
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
-        className="flex-1 flex flex-col bg-white border-2 border-green-200 overflow-hidden"
+        className="flex-1 flex flex-col bg-white border-2 border-green-200 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
       >
         {selectedStudent ? (
           <div className="flex flex-col h-full">
             {/* Header */}
             <div className="p-6 border-b-2 border-green-200 bg-green-50/50 flex items-start gap-6">
-              <div className="w-24 h-24 bg-green-200 text-green-800 text-3xl font-bold flex items-center justify-center border-4 border-white">
+              <div className="w-24 h-24 bg-green-200 text-green-800 text-3xl font-semibold flex items-center justify-center border-4 border-white tracking-[-0.02em]">
                 {selectedStudent.avatar}
               </div>
               <div className="flex-1 pt-2">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h1 className="text-3xl font-extrabold text-green-900 tracking-tight">{selectedStudent.name}</h1>
+                    <h1 className="text-3xl font-extrabold text-green-900 tracking-tight tracking-[-0.02em]">{selectedStudent.name}</h1>
                     <p className="text-green-700 font-mono mt-1">{selectedStudent.studentId}</p>
                   </div>
                   <div className="flex gap-2">
-                    <span className={`px-3 py-1 border-2 text-xs font-bold uppercase tracking-wider ${statusColors[selectedStudent.status] || statusColors.Active}`}>
+                    <span className={`px-3 py-1 border-2 text-xs font-semibold uppercase tracking-wider ${statusColors[selectedStudent.status] || statusColors.Active}`}>
                       {selectedStudent.status}
                     </span>
                   </div>
                 </div>
                 <div className="flex gap-4 mt-4 text-sm font-semibold text-green-800">
-                  <span className="flex items-center gap-1.5"><GraduationCap className="w-4 h-4 text-green-500" /> {selectedStudent.class}</span>
-                  <span className="flex items-center gap-1.5"><UserCheck className="w-4 h-4 text-green-500" /> {selectedStudent.gender}, {selectedStudent.age} yrs</span>
+                  <span className="flex items-center gap-2.5"><GraduationCap className="w-4 h-4 text-green-500" /> {selectedStudent.class}</span>
+                  <span className="flex items-center gap-2.5"><UserCheck className="w-4 h-4 text-green-500" /> {selectedStudent.gender}, {selectedStudent.age} yrs</span>
                 </div>
               </div>
             </div>
 
             {/* Navigation Tabs */}
-            <div className="flex border-b-2 border-green-200 bg-white px-6 gap-6">
+            <div className="flex border-b-2 border-green-200 bg-white px-6 gap-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               {[
                 { id: 'academics', label: 'Academics', icon: FileText },
                 { id: 'medical', label: 'Medical & Health', icon: HeartPulse },
@@ -178,7 +178,7 @@ export default function Students() {
                 <button
                   key={tab.id}
                   onClick={() => setProfileTab(tab.id)}
-                  className={`py-4 px-2 font-bold text-sm flex items-center gap-2 border-b-4 transition-colors ${
+                  className={`py-4 px-2 font-semibold text-sm flex items-center gap-2 border-b-4 transition-colors ${
                     profileTab === tab.id 
                       ? 'border-green-500 text-green-900' 
                       : 'border-transparent text-green-600 hover:text-green-800'
@@ -190,24 +190,24 @@ export default function Students() {
             </div>
 
             {/* Tab Content */}
-            <div className="flex-1 overflow-y-auto p-6 bg-white custom-scrollbar">
+            <div className="flex-1 overflow-y-auto p-6 bg-white custom-scrollbar hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <AnimatePresence mode="wait">
                 {profileTab === 'academics' && (
                   <motion.div key="academics" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="p-4 border-2 border-green-100 bg-green-50">
-                        <p className="text-xs font-bold text-green-600 uppercase mb-1">Current Class</p>
-                        <p className="text-lg font-bold text-green-900">{selectedStudent.class}</p>
+                        <p className="text-xs font-semibold text-green-600 uppercase mb-1 tracking-[0.04em]">Current Class</p>
+                        <p className="text-lg font-semibold text-green-900">{selectedStudent.class}</p>
                       </div>
                       <div className="p-4 border-2 border-green-100 bg-green-50">
-                        <p className="text-xs font-bold text-green-600 uppercase mb-1">Fee Status</p>
-                        <span className={`inline-block px-2 py-1 text-xs font-bold uppercase border-2 ${feeColors[selectedStudent.feeStatus] || feeColors.Owing}`}>
+                        <p className="text-xs font-semibold text-green-600 uppercase mb-1 tracking-[0.04em]">Fee Status</p>
+                        <span className={`inline-block px-2 py-1 text-xs font-semibold uppercase border-2 ${feeColors[selectedStudent.feeStatus] || feeColors.Owing}`}>
                           {selectedStudent.feeStatus}
                         </span>
                       </div>
                     </div>
                     <div className="p-4 border-2 border-green-200">
-                      <h3 className="font-bold text-green-900 mb-3 uppercase tracking-wide text-sm border-b-2 border-green-100 pb-2">Academic History</h3>
+                      <h3 className="font-semibold text-green-900 mb-3 uppercase tracking-wide text-sm border-b-2 border-green-100 pb-2 tracking-[0.04em]">Academic History</h3>
                       <p className="text-sm font-medium text-green-800"><span className="text-green-600">Previous School:</span> {selectedStudent.previousSchool || 'None recorded'}</p>
                     </div>
                   </motion.div>
@@ -216,7 +216,7 @@ export default function Students() {
                 {profileTab === 'medical' && (
                   <motion.div key="medical" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
                     <div className="p-5 border-2 border-red-200 bg-red-50">
-                      <h3 className="font-bold text-red-900 flex items-center gap-2 mb-3">
+                      <h3 className="font-semibold text-red-900 flex items-center gap-2 mb-3">
                         <HeartPulse className="w-5 h-5 text-red-500" /> Medical Notes & Allergies
                       </h3>
                       <p className="text-sm font-medium text-red-800 whitespace-pre-wrap">
@@ -230,28 +230,28 @@ export default function Students() {
                   <motion.div key="contact" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
                     <div className="grid md:grid-cols-2 gap-6">
                       <div className="p-4 border-2 border-green-200">
-                        <h3 className="font-bold text-green-900 mb-4 uppercase tracking-wide text-sm flex items-center gap-2 border-b-2 border-green-100 pb-2">
+                        <h3 className="font-semibold text-green-900 mb-4 uppercase tracking-wide text-sm flex items-center gap-2 border-b-2 border-green-100 pb-2 tracking-[0.04em]">
                           <Users className="w-4 h-4 text-green-500" /> Guardian Info
                         </h3>
                         <div className="space-y-3 text-sm font-medium text-green-800">
-                          <p><span className="text-green-600 block text-xs uppercase mb-0.5">Name</span> {selectedStudent.parent || '—'}</p>
-                          <p><span className="text-green-600 block text-xs uppercase mb-0.5">Phone</span> {selectedStudent.parentPhone || '—'}</p>
-                          <p><span className="text-green-600 block text-xs uppercase mb-0.5">Email</span> {selectedStudent.parentEmail || '—'}</p>
+                          <p><span className="text-green-600 block text-xs uppercase mb-0.5 tracking-[0.04em]">Name</span> {selectedStudent.parent || '—'}</p>
+                          <p><span className="text-green-600 block text-xs uppercase mb-0.5 tracking-[0.04em]">Phone</span> {selectedStudent.parentPhone || '—'}</p>
+                          <p><span className="text-green-600 block text-xs uppercase mb-0.5 tracking-[0.04em]">Email</span> {selectedStudent.parentEmail || '—'}</p>
                         </div>
                       </div>
 
                       <div className="p-4 border-2 border-amber-200 bg-amber-50">
-                        <h3 className="font-bold text-amber-900 mb-4 uppercase tracking-wide text-sm flex items-center gap-2 border-b-2 border-amber-200/50 pb-2">
+                        <h3 className="font-semibold text-amber-900 mb-4 uppercase tracking-wide text-sm flex items-center gap-2 border-b-2 border-amber-200/50 pb-2 tracking-[0.04em]">
                           <AlertCircle className="w-4 h-4 text-amber-500" /> Emergency Contact
                         </h3>
                         <div className="space-y-3 text-sm font-medium text-amber-900">
-                          <p><span className="text-amber-700/70 block text-xs uppercase mb-0.5">Name</span> {selectedStudent.emergencyContactName || '—'}</p>
-                          <p><span className="text-amber-700/70 block text-xs uppercase mb-0.5">Phone</span> {selectedStudent.emergencyContactPhone || '—'}</p>
+                          <p><span className="text-amber-700/70 block text-xs uppercase mb-0.5 tracking-[0.04em]">Name</span> {selectedStudent.emergencyContactName || '—'}</p>
+                          <p><span className="text-amber-700/70 block text-xs uppercase mb-0.5 tracking-[0.04em]">Phone</span> {selectedStudent.emergencyContactPhone || '—'}</p>
                         </div>
                       </div>
 
                       <div className="col-span-1 md:col-span-2 p-4 border-2 border-green-200">
-                        <h3 className="font-bold text-green-900 mb-3 uppercase tracking-wide text-sm flex items-center gap-2 border-b-2 border-green-100 pb-2">
+                        <h3 className="font-semibold text-green-900 mb-3 uppercase tracking-wide text-sm flex items-center gap-2 border-b-2 border-green-100 pb-2 tracking-[0.04em]">
                           <MapPin className="w-4 h-4 text-green-500" /> Home Address
                         </h3>
                         <p className="text-sm font-medium text-green-800">
@@ -267,7 +267,7 @@ export default function Students() {
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center text-green-300 p-8 text-center">
             <Users className="w-20 h-20 mb-4 opacity-50" />
-            <h3 className="text-2xl font-bold text-green-800 mb-2">No Student Selected</h3>
+            <h3 className="text-2xl font-semibold text-green-800 mb-2 tracking-[-0.02em]">No Student Selected</h3>
             <p className="text-green-600 font-medium">Select a student from the directory to view their rich profile.</p>
           </div>
         )}

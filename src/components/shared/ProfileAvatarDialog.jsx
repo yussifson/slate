@@ -80,7 +80,7 @@ export default function ProfileAvatarDialog({ open, onOpenChange}) {
  <div className="flex flex-col items-center justify-center space-y-6 py-6">
  {/* Current Avatar Display */}
  <div className="relative">
- <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-primary/40 bg-slate-50 flex items-center justify-center">
+ <div className="w-32 h-32 rounded-md-full overflow-hidden border-4 border-primary/40 bg-slate-50 flex items-center justify-center">
  {isSaving ? (
  <Loader2 className="w-8 h-8 animate-spin text-primary" />
  ) : (
@@ -108,7 +108,7 @@ export default function ProfileAvatarDialog({ open, onOpenChange}) {
 
  {/* Robots Grid */}
  <div className="w-full pt-4 border-t border-primary/40">
- <p className="text-sm font-medium text-muted-foreground mb-4">{t("or_choose_a_robot_avatar", "Or choose a Robot Avatar:")}</p>
+ <p className="text-sm font-medium text-[#71717a] dark:text-gray-400 mb-4">{t("or_choose_a_robot_avatar", "Or choose a Robot Avatar:")}</p>
  <div className="flex flex-wrap justify-center gap-4">
  {ROBOT_SEEDS.map(seed => {
  const url = `https://api.dicebear.com/7.x/bottts/svg?seed=${seed}&backgroundColor=e2e8f0`;
@@ -117,7 +117,7 @@ export default function ProfileAvatarDialog({ open, onOpenChange}) {
  key={seed}
  disabled={isSaving}
  onClick={() => handleSaveAvatar(url)}
- className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-transparent hover:border-primary transition-all hover:scale-105 focus:outline-none"
+ className="w-16 h-16 rounded-md-2xl overflow-hidden border-2 border-transparent hover:border-primary transition-all hover:scale-105 focus:outline-none"
  >
  <img src={url} alt={`Robot ${seed}`} className="w-full h-full object-cover bg-slate-100" />
  </button>

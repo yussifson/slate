@@ -15,10 +15,10 @@ export default function NotesCenter() {
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto py-6">
  <div className="border-b border-primary/40 pb-4 flex justify-between items-end">
  <div>
- <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">My Notes</h1>
+ <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">My Notes</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Review all the notes you've taken during your courses.</p>
  </div>
- <button className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
+ <button className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-md-[var(--radius-md)] hover:opacity-90 transition-opacity">
  <PlusCircle className="w-4 h-4" /> New Note
  </button>
  </div>
@@ -32,15 +32,15 @@ export default function NotesCenter() {
  placeholder="Search notes..." 
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
+ className="w-full bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
  />
  </div>
 
  <div className="space-y-2">
  {notes.map(note => (
- <div key={note.id} className="p-4 bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-md)] cursor-pointer hover:border-[var(--primary)] transition-colors">
+ <div key={note.id} className="p-4 bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-md)] cursor-pointer hover:border-[var(--primary)] transition-colors">
  <h3 className="font-semibold text-[var(--color-text-primary)] text-sm line-clamp-1">{note.title}</h3>
- <div className="flex items-center gap-2 mt-2 text-xs text-[var(--color-text-secondary)]">
+ <div className="flex items-center gap-2 mt-2 text-xs text-[var(--color-text-secondary)] tracking-[0.04em]">
  <BookOpen className="w-3.5 h-3.5" /> <span className="truncate">{note.course}</span>
  </div>
  </div>
@@ -48,16 +48,16 @@ export default function NotesCenter() {
  </div>
  </div>
 
- <div className="flex-1 bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-8 min-h-[500px]">
+ <div className="flex-1 bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-8 min-h-[500px]">
  <div className="flex justify-between items-start mb-6">
  <div>
- <h2 className="text-2xl font-bold font-display text-[var(--color-text-primary)]">Component Lifecycle</h2>
+ <h2 className="text-2xl font-semibold font-display text-[var(--color-text-primary)] tracking-[-0.02em]">Component Lifecycle</h2>
  <div className="flex items-center gap-4 mt-2 text-sm text-[var(--color-text-secondary)]">
- <span className="flex items-center gap-1"><BookOpen className="w-4 h-4" /> React Foundations</span>
- <span className="flex items-center gap-1"><Calendar className="w-4 h-4" /> Oct 12, 2026</span>
+ <span className="flex items-center gap-2"><BookOpen className="w-4 h-4" /> React Foundations</span>
+ <span className="flex items-center gap-2"><Calendar className="w-4 h-4" /> Oct 12, 2026</span>
  </div>
  </div>
- <button className="p-2 text-[var(--color-text-tertiary)] hover:text-[var(--color-error)] hover:bg-[var(--color-error-subtle)] rounded-md transition-colors">
+ <button className="p-2 text-[var(--color-text-tertiary)] hover:text-[var(--color-error)] hover:bg-[var(--color-error-subtle)] rounded-lg transition-colors">
  <Trash2 className="w-5 h-5" />
  </button>
  </div>

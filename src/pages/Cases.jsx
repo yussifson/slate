@@ -155,9 +155,9 @@ export default function Cases() {
  subtitle={`${activeCasesCount(cases)} active cases`}
  actions={
  <div className="flex items-center gap-2">
- <div className="flex items-center border border-primary/40 rounded-lg overflow-hidden">
- <button onClick={() => setViewMode("list")} className={`p-2 transition-colors ${viewMode === "list" ? "bg-primary text-white" : "hover:bg-muted text-muted-foreground"}`}><List className="w-4 h-4" /></button>
- <button onClick={() => setViewMode("kanban")} className={`p-2 transition-colors ${viewMode === "kanban" ? "bg-primary text-white" : "hover:bg-muted text-muted-foreground"}`}><LayoutGrid className="w-4 h-4" /></button>
+ <div className="flex items-center border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden">
+ <button onClick={() => setViewMode("list")} className={`p-2 transition-colors ${viewMode === "list" ? "bg-primary text-white" : "hover:bg-muted text-[#71717a] dark:text-gray-400"}`}><List className="w-4 h-4" /></button>
+ <button onClick={() => setViewMode("kanban")} className={`p-2 transition-colors ${viewMode === "kanban" ? "bg-primary text-white" : "hover:bg-muted text-[#71717a] dark:text-gray-400"}`}><LayoutGrid className="w-4 h-4" /></button>
  </div>
  <ExportButton data={exportData} filename="cases_export" label="Export" />
  <Button onClick={() => setShowForm(true)} size="sm"><Plus className="w-4 h-4 mr-1" /> {t("new_case", "New Case")}</Button>
@@ -168,7 +168,7 @@ export default function Cases() {
  <>
  <div className="flex flex-col sm:flex-row gap-3">
  <div className="relative flex-1">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <Input placeholder="Search cases..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
  </div>
  <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -192,7 +192,7 @@ export default function Cases() {
  />
 
  {isLoading ? (
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Table>
  <TableHeader><TableRow className="bg-muted/50">{["", "Case", "Client", "Type", "Status", "Priority", "Lawyer", "Filed"].map((h, i) => {
  return <TableHead key={i}>{h}</TableHead>;
@@ -207,13 +207,13 @@ export default function Cases() {
  </Table>
  </div>
  ) : filtered.length === 0 ? (
- <div className="bg-card rounded-2xl border border-dashed border-primary/40 p-12 text-center max-w-sm mx-auto my-8 space-y-4 ">
- <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800/50 border border-primary/40 flex items-center justify-center mx-auto text-primary">
+ <div className="bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 p-12 text-center max-w-sm mx-auto my-8 space-y-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-12 h-12 rounded-md-full bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center mx-auto text-primary">
  <Briefcase className="w-5 h-5" />
  </div>
  <div className="space-y-1">
- <p className="font-bold text-sm text-slate-900 dark:text-slate-100">{t("no_active_case_matters", "No Active Case Matters")}</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto leading-relaxed">
+ <p className="font-semibold text-sm text-slate-900 dark:text-slate-100">{t("no_active_case_matters", "No Active Case Matters")}</p>
+ <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto leading-relaxed tracking-[0.04em]">
  {t(
  "start_tracking_client_pipeline",
  "Start tracking client pipelines, court filings, and milestones by creating your first legal case."
@@ -223,21 +223,21 @@ export default function Cases() {
  <div className="pt-2">
  <Button 
  onClick={() => setShowForm(true)}
- className="bg-primary hover:bg-primary/95 text-white font-semibold text-xs py-3.5 px-5 rounded-xl "
+ className="bg-primary hover:bg-primary/95 text-white font-semibold text-xs py-3.5 px-5 rounded-md-xl  tracking-[0.04em]"
  >
  {t("initialize_first_case", "Initialize First Case")}
  </Button>
  </div>
  </div>
  ) : (
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="overflow-x-auto">
  <Table>
  <TableHeader>
  <TableRow className="bg-muted/50">
  <TableHead className="w-10"><Checkbox checked={allSelected} onCheckedChange={toggleAll} /></TableHead>
  {["Case", "Client", "Type", "Status", "Priority", "Lawyer", "Filed", ""].map((h, i) => {
- return (<TableHead key={i} className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{h}</TableHead>);
+ return (<TableHead key={i} className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{h}</TableHead>);
 })}
  </TableRow>
  </TableHeader>
@@ -246,10 +246,10 @@ export default function Cases() {
  return (
  <TableRow key={row.id} className="hover:bg-muted/50 transition-colors">
  <TableCell onClick={e => toggleOne(row.id, e)}><Checkbox checked={selected.has(row.id)} onCheckedChange={() => {}} /></TableCell>
- <TableCell className="cursor-pointer" onClick={() => navigate(`/cases/${row.id}`, { state: { caseData: row}})}><div><p className="font-medium text-sm">{row.title}</p><p className="text-xs text-muted-foreground">{row.case_number || "No case #"}</p></div></TableCell>
+ <TableCell className="cursor-pointer" onClick={() => navigate(`/cases/${row.id}`, { state: { caseData: row}})}><div><p className="font-medium text-sm">{row.title}</p><p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{row.case_number || "No case #"}</p></div></TableCell>
  <TableCell>
  {row.client_id ? (
- <Link to="/clients" className="text-primary hover:underline text-sm inline-flex items-center gap-1">
+ <Link to="/clients" className="text-primary hover:underline text-sm inline-flex items-center gap-2">
  {row.client_name} <ExternalLink className="w-3 h-3" />
  </Link>
  ) : (
@@ -261,14 +261,14 @@ export default function Cases() {
  <TableCell><Badge className={`${PRIORITY_COLORS[row.priority]} text-[10px]`}>{row.priority}</Badge></TableCell>
  <TableCell>
  {row.assigned_lawyer_id ? (
- <Link to="/team" className="text-primary hover:underline text-sm inline-flex items-center gap-1">
+ <Link to="/team" className="text-primary hover:underline text-sm inline-flex items-center gap-2">
  {row.assigned_lawyer_name} <ExternalLink className="w-3 h-3" />
  </Link>
  ) : (
  <span className="text-sm">{row.assigned_lawyer_name || "Unassigned"}</span>
  )}
  </TableCell>
- <TableCell><span className="text-xs text-muted-foreground">{row.filing_date ? format(new Date(row.filing_date), "MMM d, yyyy") : "—"}</span></TableCell>
+ <TableCell><span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{row.filing_date ? format(new Date(row.filing_date), "MMM d, yyyy") : "—"}</span></TableCell>
  <TableCell>
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
@@ -315,30 +315,30 @@ export default function Cases() {
  </SheetHeader>
  {viewingCase && (
  <div className="space-y-4">
- <div><span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("title", "Title")}</span><p className="font-medium mt-1">{viewingCase.title}</p></div>
- <div><span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("case_number", "Case Number")}</span><p className="mt-1">{viewingCase.case_number || "—"}</p></div>
+ <div><span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">{t("title", "Title")}</span><p className="font-medium mt-1">{viewingCase.title}</p></div>
+ <div><span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">{t("case_number", "Case Number")}</span><p className="mt-1">{viewingCase.case_number || "—"}</p></div>
  <div>
- <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">{t("client", "Client")}</span>
+ <span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider block mb-1 tracking-[0.04em]">{t("client", "Client")}</span>
  {viewingCase.client_id ? (
- <Link to="/clients" className="text-primary hover:underline text-sm inline-flex items-center gap-1">
+ <Link to="/clients" className="text-primary hover:underline text-sm inline-flex items-center gap-2">
  {viewingCase.client_name} <ExternalLink className="w-3 h-3" />
  </Link>
  ) : <span className="text-sm">—</span>}
  </div>
  <div>
- <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">{t("assigned_lawyer", "Assigned Lawyer")}</span>
+ <span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider block mb-1 tracking-[0.04em]">{t("assigned_lawyer", "Assigned Lawyer")}</span>
  {viewingCase.assigned_lawyer_id ? (
- <Link to="/team" className="text-primary hover:underline text-sm inline-flex items-center gap-1">
+ <Link to="/team" className="text-primary hover:underline text-sm inline-flex items-center gap-2">
  {viewingCase.assigned_lawyer_name} <ExternalLink className="w-3 h-3" />
  </Link>
  ) : <span className="text-sm">{t("unassigned", "Unassigned")}</span>}
  </div>
- <div><span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">{t("status", "Status")}</span><Badge className={`${CASE_STATUS_COLORS[viewingCase.status]} capitalize`}>{viewingCase.status?.replace("_", " ")}</Badge></div>
- <div><span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">{t("priority", "Priority")}</span><Badge className={`${PRIORITY_COLORS[viewingCase.priority]} capitalize`}>{viewingCase.priority}</Badge></div>
- <div><span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("case_type", "Case Type")}</span><p className="capitalize mt-1">{viewingCase.case_type}</p></div>
- <div><span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("filing_date", "Filing Date")}</span><p className="mt-1">{viewingCase.filing_date ? format(new Date(viewingCase.filing_date), "MMM d, yyyy") : "—"}</p></div>
+ <div><span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider block mb-1 tracking-[0.04em]">{t("status", "Status")}</span><Badge className={`${CASE_STATUS_COLORS[viewingCase.status]} capitalize`}>{viewingCase.status?.replace("_", " ")}</Badge></div>
+ <div><span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider block mb-1 tracking-[0.04em]">{t("priority", "Priority")}</span><Badge className={`${PRIORITY_COLORS[viewingCase.priority]} capitalize`}>{viewingCase.priority}</Badge></div>
+ <div><span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">{t("case_type", "Case Type")}</span><p className="capitalize mt-1">{viewingCase.case_type}</p></div>
+ <div><span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">{t("filing_date", "Filing Date")}</span><p className="mt-1">{viewingCase.filing_date ? format(new Date(viewingCase.filing_date), "MMM d, yyyy") : "—"}</p></div>
  {viewingCase.description && (
- <div><span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("description", "Description")}</span><p className="text-sm whitespace-pre-wrap mt-1">{viewingCase.description}</p></div>
+ <div><span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">{t("description", "Description")}</span><p className="text-sm whitespace-pre-wrap mt-1">{viewingCase.description}</p></div>
  )}
  </div>
  )}

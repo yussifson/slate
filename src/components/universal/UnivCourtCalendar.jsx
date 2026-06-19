@@ -90,36 +90,36 @@ export default function UnivCourtCalendar() {
  <div className="flex flex-col h-full bg-background overflow-hidden ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
  <div>
- <h2 className="text-2xl font-bold text-foreground tracking-tight">Court Calendar</h2>
- <p className="text-sm text-muted-foreground mt-1">Manage hearings, trials, depositions, and filing deadlines.</p>
+ <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">Court Calendar</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Manage hearings, trials, depositions, and filing deadlines.</p>
  </div>
  <div className="flex gap-3">
  <div className="flex items-center gap-2">
 
  
  
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={handleAddEvent} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
+ <button onClick={handleAddEvent} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
  <Plus className="w-4 h-4" /> Schedule Event
  </button>
  </div>
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
  <input 
  type="text"
  placeholder="Search calendar events..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -132,38 +132,38 @@ export default function UnivCourtCalendar() {
  animate={{ opacity: 1, x: 0}}
  transition={{ delay: idx * 0.05}}
  key={e.id} 
- className="bg-background border border-primary/40 rounded-2xl p-4 hover:border-primary/40 transition-colors group flex items-center justify-between gap-4"
+ className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 hover:border-primary/40 transition-colors group flex items-center justify-between gap-4"
  >
  <div className="flex items-center gap-5">
- <div className="flex flex-col items-center justify-center bg-muted w-16 h-16 rounded-xl border border-primary/40">
- <span className="text-xs font-bold text-primary uppercase tracking-widest">{new Date(e.event_date).toLocaleDateString('en-US', { month: 'short'})}</span>
+ <div className="flex flex-col items-center justify-center bg-muted w-16 h-16 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <span className="text-xs font-semibold text-primary uppercase tracking-widest tracking-[0.04em]">{new Date(e.event_date).toLocaleDateString('en-US', { month: 'short'})}</span>
  <span className="text-xl font-black text-foreground leading-none mt-1">{new Date(e.event_date).getDate()}</span>
  </div>
  <div>
- <h3 className="font-bold text-foreground text-lg mb-1">{e.event_title}</h3>
- <div className="flex items-center gap-4 text-sm text-muted-foreground">
- <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {new Date(e.event_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit'})}</span>
- <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {e.location}</span>
+ <h3 className="font-semibold text-foreground text-lg mb-1">{e.event_title}</h3>
+ <div className="flex items-center gap-4 text-sm text-[#71717a] dark:text-gray-400">
+ <span className="flex items-center gap-2"><Clock className="w-3.5 h-3.5" /> {new Date(e.event_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit'})}</span>
+ <span className="flex items-center gap-2"><MapPin className="w-3.5 h-3.5" /> {e.location}</span>
  </div>
  </div>
  </div>
 
  <div className="flex flex-col items-end gap-2">
- <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border flex items-center gap-1 w-fit ${
+ <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-semibold rounded-lg border-[0.5px] border-black/9 dark:border-white/8 flex items-center gap-2 w-fit ${
  e.status === 'Completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
  e.status === 'Scheduled' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
  'bg-background text-foreground border-primary/40'
 }`}>
  {e.status}
  </span>
- <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{e.event_type}</span>
+ <span className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">{e.event_type}</span>
  </div>
  </motion.div>
  ))}
  </div>
 
  {filtered.length === 0 && (
- <div className="text-center py-12 text-muted-foreground">
+ <div className="text-center py-12 text-[#71717a] dark:text-gray-400">
  <CalendarDays className="w-12 h-12 mx-auto mb-3 opacity-20" />
  <p>No court calendar events found.</p>
  </div>

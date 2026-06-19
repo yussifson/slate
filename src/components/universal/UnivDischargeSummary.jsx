@@ -77,54 +77,54 @@ const UnivDischargeSummary = () => {
 
  return (
  <div className="p-6 max-w-6xl mx-auto bg-muted min-h-screen ${view !== 'Default' ? 'hide-default' : ''}">
- <motion.div initial={{ opacity: 0, y: -20}} animate={{ opacity: 1, y: 0}} className="mb-8 text-center bg-card p-8 rounded-3xl border border-primary/40">
- <h1 className="text-4xl font-extrabold text-foreground flex items-center justify-center gap-3">
+ <motion.div initial={{ opacity: 0, y: -20}} animate={{ opacity: 1, y: 0}} className="mb-8 text-center bg-card p-8 rounded-md-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h1 className="text-4xl font-extrabold text-foreground flex items-center justify-center gap-3 tracking-[-0.02em]">
  <Home className="w-10 h-10 text-emerald-500" />
  Discharge Summaries
  </h1>
- <p className="text-muted-foreground mt-2 text-lg">Patient transition and aftercare planning</p>
+ <p className="text-[#71717a] dark:text-gray-400 mt-2 text-lg">Patient transition and aftercare planning</p>
  </motion.div>
 
  <div className="view-header grid md:grid-cols-2 gap-8">
- <motion.div initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} className="bg-card p-6 rounded-3xl border border-primary/40">
- <h2 className="text-2xl font-bold mb-6 text-foreground flex items-center gap-2">
+ <motion.div initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} className="bg-card p-6 rounded-md-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-2xl font-semibold mb-6 text-foreground flex items-center gap-2 tracking-[-0.02em]">
  <FileText className="w-6 h-6 text-emerald-500" /> New Summary
  </h2>
  <form onSubmit={handleSubmit} className="space-y-5">
  <div>
  <label className="block text-sm font-semibold text-foreground mb-1">Patient Name</label>
  <div className="relative">
- <User className="w-5 h-5 absolute left-3 top-3 text-muted-foreground" />
- <input type="text" name="patient_name" value={formData.patient_name} onChange={handleChange} required className="w-full pl-10 p-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
+ <User className="w-5 h-5 absolute left-3 top-3 text-[#71717a] dark:text-gray-400" />
+ <input type="text" name="patient_name" value={formData.patient_name} onChange={handleChange} required className="w-full pl-10 p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
  </div>
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
  <label className="block text-sm font-semibold text-foreground mb-1">Admission Date</label>
- <input type="date" name="admission_date" value={formData.admission_date} onChange={handleChange} required className="w-full p-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
+ <input type="date" name="admission_date" value={formData.admission_date} onChange={handleChange} required className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
  </div>
  <div>
  <label className="block text-sm font-semibold text-foreground mb-1">Discharge Date</label>
- <input type="date" name="discharge_date" value={formData.discharge_date} onChange={handleChange} required className="w-full p-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
+ <input type="date" name="discharge_date" value={formData.discharge_date} onChange={handleChange} required className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
  </div>
  </div>
  <div>
  <label className="block text-sm font-semibold text-foreground mb-1">Final Diagnosis</label>
- <input type="text" name="final_diagnosis" value={formData.final_diagnosis} onChange={handleChange} required className="w-full p-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
+ <input type="text" name="final_diagnosis" value={formData.final_diagnosis} onChange={handleChange} required className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
  </div>
  <div>
  <label className="block text-sm font-semibold text-foreground mb-1">Treatment Given</label>
- <textarea name="treatment_given" value={formData.treatment_given} onChange={handleChange} rows="2" className="w-full p-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"></textarea>
+ <textarea name="treatment_given" value={formData.treatment_given} onChange={handleChange} rows="2" className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"></textarea>
  </div>
  <div>
  <label className="block text-sm font-semibold text-foreground mb-1">Discharge Meds</label>
- <textarea name="discharge_medications" value={formData.discharge_medications} onChange={handleChange} rows="2" className="w-full p-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"></textarea>
+ <textarea name="discharge_medications" value={formData.discharge_medications} onChange={handleChange} rows="2" className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"></textarea>
  </div>
  <div>
  <label className="block text-sm font-semibold text-foreground mb-1">Follow-up Instructions</label>
- <textarea name="follow_up_instructions" value={formData.follow_up_instructions} onChange={handleChange} rows="2" className="w-full p-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"></textarea>
+ <textarea name="follow_up_instructions" value={formData.follow_up_instructions} onChange={handleChange} rows="2" className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"></textarea>
  </div>
- <button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-lg">
+ <button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-4 rounded-md-xl transition-colors flex items-center justify-center gap-2 text-lg">
  <CheckCircle2 className="w-6 h-6" /> Finalize Discharge
  </button>
  </form>
@@ -134,41 +134,41 @@ const UnivDischargeSummary = () => {
  {loading ? (
  <div className="text-center py-20"><Activity className="w-10 h-10 text-emerald-500 animate-spin mx-auto" /></div>
  ) : summaries.length === 0 ? (
- <div className="text-center py-20 bg-card rounded-3xl border border-primary/40 text-muted-foreground">No summaries found.</div>
+ <div className="text-center py-20 bg-card rounded-md-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">No summaries found.</div>
  ) : (
  summaries.map((summary, index) => (
- <motion.div key={summary.id || index} initial={{ opacity: 0, y: 20}} animate={{ opacity: 1, y: 0}} transition={{ delay: index * 0.1}} className="bg-card p-6 rounded-3xl border border-primary/40 relative overflow-hidden group">
+ <motion.div key={summary.id || index} initial={{ opacity: 0, y: 20}} animate={{ opacity: 1, y: 0}} transition={{ delay: index * 0.1}} className="bg-card p-6 rounded-md-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 relative overflow-hidden group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="absolute top-0 left-0 w-2 h-full bg-emerald-400"></div>
- <h3 className="text-xl font-bold text-foreground mb-2 pl-2">{summary.patient_name}</h3>
- <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-4 pl-2 font-medium">
- <span className="flex items-center gap-1 bg-muted px-3 py-1 rounded-full"><Calendar className="w-4 h-4" /> Admitted: {summary.admission_date}</span>
- <span className="flex items-center gap-1 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full"><Home className="w-4 h-4" /> Discharged: {summary.discharge_date}</span>
+ <h3 className="text-xl font-semibold text-foreground mb-2 pl-2">{summary.patient_name}</h3>
+ <div className="flex flex-wrap gap-4 text-sm text-[#71717a] dark:text-gray-400 mb-4 pl-2 font-medium">
+ <span className="flex items-center gap-2 bg-muted px-3 py-1 rounded-md-full"><Calendar className="w-4 h-4" /> Admitted: {summary.admission_date}</span>
+ <span className="flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-md-full"><Home className="w-4 h-4" /> Discharged: {summary.discharge_date}</span>
  </div>
  
  <div className="space-y-3 pl-2">
- <div className="bg-background p-3 rounded-xl border border-primary/40">
- <span className="text-xs uppercase font-bold text-muted-foreground tracking-wider">Final Diagnosis</span>
+ <div className="bg-background p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <span className="text-xs uppercase font-semibold text-[#71717a] dark:text-gray-400 tracking-wider tracking-[0.04em]">Final Diagnosis</span>
  <p className="text-foreground font-medium mt-1">{summary.final_diagnosis}</p>
  </div>
  {(summary.treatment_given || summary.discharge_medications) && (
  <div className="grid grid-cols-2 gap-3">
  {summary.treatment_given && (
- <div className="bg-blue-50 p-3 rounded-xl border border-blue-100">
- <span className="text-xs uppercase font-bold text-blue-400 tracking-wider">Treatment</span>
+ <div className="bg-blue-50 p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-blue-100">
+ <span className="text-xs uppercase font-semibold text-blue-400 tracking-wider tracking-[0.04em]">Treatment</span>
  <p className="text-foreground text-sm mt-1 line-clamp-2" title={summary.treatment_given}>{summary.treatment_given}</p>
  </div>
  )}
  {summary.discharge_medications && (
- <div className="bg-orange-50 p-3 rounded-xl border border-orange-100">
- <span className="text-xs uppercase font-bold text-orange-400 tracking-wider flex items-center gap-1"><Pill className="w-3 h-3"/> Meds</span>
+ <div className="bg-orange-50 p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-orange-100">
+ <span className="text-xs uppercase font-semibold text-orange-400 tracking-wider flex items-center gap-2 tracking-[0.04em]"><Pill className="w-3 h-3"/> Meds</span>
  <p className="text-foreground text-sm mt-1 line-clamp-2" title={summary.discharge_medications}>{summary.discharge_medications}</p>
  </div>
  )}
  </div>
  )}
  {summary.follow_up_instructions && (
- <div className="bg-slate-800 text-white p-3 rounded-xl">
- <span className="text-xs uppercase font-bold text-muted-foreground tracking-wider">Follow-up</span>
+ <div className="bg-slate-800 text-white p-3 rounded-md-xl">
+ <span className="text-xs uppercase font-semibold text-[#71717a] dark:text-gray-400 tracking-wider tracking-[0.04em]">Follow-up</span>
  <p className="text-slate-200 text-sm mt-1">{summary.follow_up_instructions}</p>
  </div>
  )}

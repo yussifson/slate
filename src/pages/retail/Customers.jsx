@@ -17,7 +17,7 @@ import { UploadCloud} from 'lucide-react';
 const segmentColors = {
  VIP: 'bg-primary/15 text-primary border-primary/25',
  Regular: 'bg-slate-100 text-primary border-primary/20',
- New: 'bg-muted text-muted-foreground border-primary/40',
+ New: 'bg-muted text-[#71717a] dark:text-gray-400 border-primary/40',
 };
 
 export default function Customers() {
@@ -147,8 +147,8 @@ export default function Customers() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("customers", "Customers")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t("manage_customer_profiles_and_l", "Manage customer profiles and loyalty tiers")}</p>
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("customers", "Customers")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("manage_customer_profiles_and_l", "Manage customer profiles and loyalty tiers")}</p>
  </div>
  <div className="flex gap-2">
  <Button onClick={() => setShowImportModal(true)} variant="outline" className="gap-2 text-primary border-primary hover:bg-slate-50">
@@ -169,21 +169,21 @@ export default function Customers() {
  <RetailStatCard label={t("vip_members", "VIP Members")} value={stats.vipCount} icon={Star} />
  </div>
 
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search name or email..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search name or email..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  <div className="overflow-x-auto">
  {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_customers", "Loading customers...")}</div>
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_customers", "Loading customers...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
  <Users className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse" />
  <p className="font-semibold">{t("no_customers_registered", "No customers registered.")}</p>
- <p className="text-xs mt-1">{t("add_your_first_retail_customer", "Add your first retail customer using the \"Add Customer\" button.")}</p>
+ <p className="text-xs mt-1 tracking-[0.04em]">{t("add_your_first_retail_customer", "Add your first retail customer using the \"Add Customer\" button.")}</p>
  </div>
  ) : viewMode === 'grid' ? (
  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 p-6">
@@ -200,15 +200,15 @@ export default function Customers() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40">
+ <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("customer_name", "Customer Name")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("contact_info", "Contact Info")}</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("total_orders", "Total Orders")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("lifetime_value", "Lifetime Value")}</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("segment", "Segment")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Added By</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("actions", "Actions")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("customer_name", "Customer Name")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("contact_info", "Contact Info")}</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("total_orders", "Total Orders")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("lifetime_value", "Lifetime Value")}</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("segment", "Segment")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Added By</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("actions", "Actions")}</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
@@ -216,25 +216,25 @@ export default function Customers() {
  return (
  <tr key={cust.id} className="hover:bg-muted/50 transition-colors">
  <td className="px-6 py-4">
- <p className="font-bold text-card-foreground">{cust.name}</p>
- <p className="text-xs text-muted-foreground mt-0.5">{cust.custId}</p>
+ <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{cust.name}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">{cust.custId}</p>
  </td>
- <td className="px-6 py-4 text-muted-foreground space-y-1">
+ <td className="px-6 py-4 text-[#71717a] dark:text-gray-400 space-y-1">
  <p>{cust.email}</p>
- <p className="text-xs">{cust.phone}</p>
+ <p className="text-xs tracking-[0.04em]">{cust.phone}</p>
  </td>
  <td className="px-6 py-4 text-center">
  <Link to="/sales" className="text-primary hover:underline">{cust.orders}</Link>
  </td>
- <td className="px-6 py-4 text-right font-bold text-card-foreground">${cust.totalSpent.toFixed(2)}</td>
+ <td className="px-6 py-4 text-right font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${cust.totalSpent.toFixed(2)}</td>
  <td className="px-6 py-4 text-center">
- <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border ${segmentColors[cust.segment] || 'bg-muted'}`}>
+ <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-md-full uppercase tracking-wider border ${segmentColors[cust.segment] || 'bg-muted'}`}>
  {cust.segment}
  </span>
  </td>
  <td className="px-6 py-4">
- <p className="text-sm font-medium text-card-foreground">{cust.createdBy}</p>
- <p className="text-xs text-muted-foreground">{new Date(cust.createdAt).toLocaleDateString()}</p>
+ <p className="text-sm font-medium text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{cust.createdBy}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{new Date(cust.createdAt).toLocaleDateString()}</p>
  </td>
  <td className="px-6 py-4 text-right">
  <DropdownMenu>
@@ -274,52 +274,52 @@ export default function Customers() {
  {selectedRecord && (
  <div className="mt-6 space-y-4 text-sm">
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("id", "ID")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("id", "ID")}</div>
  <div className="col-span-2">{selectedRecord.custId}</div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("name", "Name")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("name", "Name")}</div>
  <div className="col-span-2 font-medium">{selectedRecord.name}</div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("email", "Email")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("email", "Email")}</div>
  <div className="col-span-2">{selectedRecord.email}</div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("phone", "Phone")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("phone", "Phone")}</div>
  <div className="col-span-2">{selectedRecord.phone}</div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("total_orders", "Total Orders")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("total_orders", "Total Orders")}</div>
  <div className="col-span-2"><Link to="/sales" className="text-primary hover:underline">{selectedRecord.orders}</Link></div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("lifetime_spend", "Lifetime Spend")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("lifetime_spend", "Lifetime Spend")}</div>
  <div className="col-span-2">${selectedRecord.totalSpent.toFixed(2)}</div>
  </div>
  <div className="grid grid-cols-3 gap-4 border-b pb-4">
- <div className="col-span-1 font-semibold text-muted-foreground">{t("segment", "Segment")}</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">{t("segment", "Segment")}</div>
  <div className="col-span-2">
- <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border ${segmentColors[selectedRecord.segment] || 'bg-muted'}`}>
+ <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-md-full uppercase tracking-wider border ${segmentColors[selectedRecord.segment] || 'bg-muted'}`}>
  {selectedRecord.segment}
  </span>
  </div>
  </div>
  <div className="grid grid-cols-3 gap-4">
- <div className="col-span-1 font-semibold text-muted-foreground">Added By</div>
+ <div className="col-span-1 font-semibold text-[#71717a] dark:text-gray-400">Added By</div>
  <div className="col-span-2">{selectedRecord.createdBy} on {new Date(selectedRecord.createdAt).toLocaleDateString()}</div>
  </div>
  <div className="flex gap-3 pt-6 mt-4 border-t border-primary/20">
     <Button 
       onClick={() => { setIsSheetOpen(false); openEdit(selectedRecord); }} 
-      className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl"
+      className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-md-xl"
     >
       <Edit className="w-4 h-4 mr-2" /> {t("edit", "Edit")}
     </Button>
     <Button 
       variant="outline"
       onClick={() => navigate('/pos', { state: { customerId: selectedRecord.id } })} 
-      className="flex-1 rounded-xl border-orange-500 text-orange-500 hover:bg-orange-50 font-bold"
+      className="flex-1 rounded-md-xl border-orange-500 text-orange-500 hover:bg-orange-50 font-semibold"
     >
       <ShoppingCart className="w-4 h-4 mr-2" /> {t("put_order", "Put Order")}
     </Button>
@@ -330,27 +330,27 @@ export default function Customers() {
  </Sheet>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Plus className="w-5 h-5 text-orange-600"/> {editingId ? 'Edit Customer' : 'Add Customer'}</h2>
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><Plus className="w-5 h-5 text-orange-600"/> {editingId ? 'Edit Customer' : 'Add Customer'}</h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("customer_name", "Customer Name")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("customer_name", "Customer Name")}</label>
  <Input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value})} className="mt-1" placeholder="e.g. Jane Doe" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("email_address", "Email Address")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("email_address", "Email Address")}</label>
  <Input value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value})} className="mt-1" placeholder="e.g. jane@example.com" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("phone_number", "Phone Number")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("phone_number", "Phone Number")}</label>
  <Input value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value})} className="mt-1" placeholder="e.g. +1 555-0188" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("initial_lifetime_spend", "Initial Lifetime Spend ($)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("initial_lifetime_spend", "Initial Lifetime Spend ($)")}</label>
  <Input type="number" value={formData.totalSpent} onChange={e => setFormData({ ...formData, totalSpent: e.target.value})} className="mt-1" placeholder="e.g. 150.00" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("initial_orders_count", "Initial Orders Count")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("initial_orders_count", "Initial Orders Count")}</label>
  <Input type="number" value={formData.orders} onChange={e => setFormData({ ...formData, orders: e.target.value})} className="mt-1" placeholder="e.g. 2" />
  </div>
  </div>

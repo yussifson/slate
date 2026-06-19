@@ -33,28 +33,28 @@ export default function UniFaculties() {
 
  const filtered = faculties.filter(f => f.name?.toLowerCase().includes(search.toLowerCase()));
 
- const inputClass = "w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body";
+ const inputClass = "w-full bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body";
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
  <div className="flex items-end justify-between border-b border-primary/40 pb-4">
  <div>
- <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Faculties & Departments</h1>
+ <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">Faculties & Departments</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage university faculties, departments, and leadership.</p>
  </div>
  <div className="flex items-center gap-3">
- <button className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] hover:opacity-90 text-white text-sm font-medium rounded-[var(--radius-md)] transition-all">
+ <button className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] hover:opacity-90 text-white text-sm font-medium rounded-md-[var(--radius-md)] transition-all">
  <Plus className="w-4 h-4" /> Add Faculty
  </button>
  </div>
  </div>
  
- <div className="bg-[var(--color-surface-0)] rounded-[var(--radius-xl)] border border-primary/40 p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+ <div className="bg-[var(--color-surface-0)] rounded-md-[var(--radius-xl)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex flex-col md:flex-row items-center justify-between gap-4">
  <div className="relative flex-1 w-full max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)]" />
  <input placeholder="Search faculties..." value={search} onChange={e => setSearch(e.target.value)} className={inputClass} />
  </div>
- <div className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">
+ <div className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">
  Total Faculties: {faculties.length}
  </div>
  </div>
@@ -66,15 +66,15 @@ export default function UniFaculties() {
  </div>
  ) : (
  filtered.map(faculty => (
- <div key={faculty.id} className="bg-[var(--color-surface-0)] border border-primary/40 hover:border-[var(--primary)] transition-colors rounded-[var(--radius-xl)] overflow-hidden flex flex-col">
+ <div key={faculty.id} className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-[var(--primary)] transition-colors rounded-md-[var(--radius-xl)] overflow-hidden flex flex-col">
  <div className="h-2 w-full" style={{ backgroundColor: faculty.color}} />
  <div className="p-6 flex-1 flex flex-col">
  <div className="flex justify-between items-start mb-4">
  <div>
- <h3 className="text-[var(--text-xl)] font-display font-bold text-[var(--color-text-primary)] mb-1">
+ <h3 className="text-[var(--text-xl)] font-display font-semibold text-[var(--color-text-primary)] mb-1">
  {faculty.name}
  </h3>
- <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)] flex items-center">
+ <p className="text-[var(--text-xs)] text-[var(--color-text-secondary)] flex items-center tracking-[0.04em]">
  <MapPin className="w-3 h-3 mr-1" /> {faculty.building}
  </p>
  </div>
@@ -91,19 +91,19 @@ export default function UniFaculties() {
  </div>
 
  <div className="grid grid-cols-2 gap-4 border-t border-primary/40 pt-4 mt-auto">
- <div className="text-center p-3 rounded-[var(--radius-lg)] bg-[var(--color-surface-1)]">
+ <div className="text-center p-3 rounded-md-[var(--radius-lg)] bg-[var(--color-surface-1)]">
  <div className="flex items-center justify-center text-[var(--color-text-tertiary)] mb-1">
  <BookOpen className="w-4 h-4 mr-1" />
  </div>
- <p className="text-[var(--text-lg)] font-bold text-[var(--color-text-primary)]">{faculty.departments}</p>
- <p className="text-[10px] uppercase font-semibold text-[var(--color-text-tertiary)] tracking-wider">Depts</p>
+ <p className="text-[var(--text-lg)] font-semibold text-[var(--color-text-primary)]">{faculty.departments}</p>
+ <p className="text-[10px] uppercase font-semibold text-[var(--color-text-tertiary)] tracking-wider tracking-[0.04em]">Depts</p>
  </div>
- <div className="text-center p-3 rounded-[var(--radius-lg)] bg-[var(--color-surface-1)]">
+ <div className="text-center p-3 rounded-md-[var(--radius-lg)] bg-[var(--color-surface-1)]">
  <div className="flex items-center justify-center text-[var(--color-text-tertiary)] mb-1">
  <Users className="w-4 h-4 mr-1" />
  </div>
- <p className="text-[var(--text-lg)] font-bold text-[var(--color-text-primary)]">{faculty.staffCount}</p>
- <p className="text-[10px] uppercase font-semibold text-[var(--color-text-tertiary)] tracking-wider">Staff</p>
+ <p className="text-[var(--text-lg)] font-semibold text-[var(--color-text-primary)]">{faculty.staffCount}</p>
+ <p className="text-[10px] uppercase font-semibold text-[var(--color-text-tertiary)] tracking-wider tracking-[0.04em]">Staff</p>
  </div>
  </div>
  </div>

@@ -21,7 +21,7 @@ const STATUS_ICONS = {
 };
 
 const STATUS_COLORS = {
-  pending: "bg-muted text-muted-foreground",
+  pending: "bg-muted text-[#71717a] dark:text-gray-400",
   in_progress: "bg-orange-100 text-orange-700",
   completed: "bg-slate-100 text-primary/90",
   waived: "bg-amber-100 text-amber-700",
@@ -89,12 +89,12 @@ export default function ClientChecklistManager({ caseData, client, user }) {
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <p className="text-sm font-semibold">{t("client_checklist", "Client Checklist")}</p>
-        <Button size="sm" variant="outline" className="h-7 text-xs gap-1" onClick={() => setShowForm(true)}>
+        <Button size="sm" variant="outline" className="h-7 text-xs gap-2 tracking-[0.04em]" onClick={() => setShowForm(true)}>
           <Plus className="w-3 h-3" /> {t("add_item", "Add Item")}
         </Button>
       </div>
       {items.length === 0 ? (
-        <div className="bg-muted/40 rounded-lg p-4 text-center text-xs text-muted-foreground">
+        <div className="bg-muted/40 rounded-xl p-4 text-center text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
           {t(
             "no_checklist_items_yet_add_ite",
             "No checklist items yet. Add items to request documents or actions from the client."
@@ -105,17 +105,17 @@ export default function ClientChecklistManager({ caseData, client, user }) {
           {items.map(item => {
             const Icon = STATUS_ICONS[item.status] || Square;
             return (
-              <div key={item.id} className="bg-card border border-primary/40 rounded-lg px-3 py-2.5 flex items-start gap-2.5">
-                <Icon className={cn("w-4 h-4 mt-0.5 shrink-0", item.status === "completed" ? "text-primary" : "text-muted-foreground")} />
+              <div key={item.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl px-3 py-2.5 flex items-start gap-2.5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                <Icon className={cn("w-4 h-4 mt-0.5 shrink-0", item.status === "completed" ? "text-primary" : "text-[#71717a] dark:text-gray-400")} />
                 <div className="flex-1 min-w-0">
-                  <p className={cn("text-sm font-medium", item.status === "completed" && "line-through text-muted-foreground")}>{item.title}</p>
-                  {item.description && <p className="text-xs text-muted-foreground mt-0.5">{item.description}</p>}
+                  <p className={cn("text-sm font-medium", item.status === "completed" && "line-through text-[#71717a] dark:text-gray-400")}>{item.title}</p>
+                  {item.description && <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">{item.description}</p>}
                   <div className="flex items-center gap-2 mt-1">
                     <Badge className={cn("text-[10px]", STATUS_COLORS[item.status])}>{item.status}</Badge>
-                    {item.due_date && <span className="text-[10px] text-muted-foreground">{t("due", "Due")} {format(new Date(item.due_date), "MMM d")}</span>}
+                    {item.due_date && <span className="text-[10px] text-[#71717a] dark:text-gray-400">{t("due", "Due")} {format(new Date(item.due_date), "MMM d")}</span>}
                   </div>
                 </div>
-                <div className="flex items-center gap-1 shrink-0">
+                <div className="flex items-center gap-2 shrink-0">
                   <Select value={item.status} onValueChange={(val) => updateMutation.mutate({ id: item.id, status: val })}>
                     <SelectTrigger className="h-6 text-[11px] w-24 px-2">
                       <SelectValue />
@@ -144,14 +144,14 @@ export default function ClientChecklistManager({ caseData, client, user }) {
           <div className="space-y-3">
             {/* Quick templates */}
             <div>
-              <Label className="text-xs text-muted-foreground mb-1 block">{t("quick_templates", "Quick templates")}</Label>
-              <div className="flex flex-wrap gap-1.5">
+              <Label className="text-xs text-[#71717a] dark:text-gray-400 mb-1 block tracking-[0.04em]">{t("quick_templates", "Quick templates")}</Label>
+              <div className="flex flex-wrap gap-2.5">
                 {DEFAULT_TEMPLATES.map(item => {
                   return (
                     <button
                       key={item}
                       onClick={() => setForm(f => ({ ...f, title: t }))}
-                      className="text-[11px] px-2 py-1 rounded-full border border-primary/40 bg-muted hover:bg-muted/80 text-muted-foreground transition-colors"
+                      className="text-[11px] px-2 py-1 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-muted hover:bg-muted/80 text-[#71717a] dark:text-gray-400 transition-colors"
                     >
                       {t}
                     </button>
@@ -160,15 +160,15 @@ export default function ClientChecklistManager({ caseData, client, user }) {
               </div>
             </div>
             <div>
-              <Label className="text-xs mb-1 block">{t("title", "Title *")}</Label>
+              <Label className="text-xs mb-1 block tracking-[0.04em]">{t("title", "Title *")}</Label>
               <Input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} placeholder="e.g. Submit national ID document" />
             </div>
             <div>
-              <Label className="text-xs mb-1 block">{t("description", "Description")}</Label>
+              <Label className="text-xs mb-1 block tracking-[0.04em]">{t("description", "Description")}</Label>
               <Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Additional instructions for the client..." className="h-20" />
             </div>
             <div>
-              <Label className="text-xs mb-1 block">{t("due_date", "Due Date")}</Label>
+              <Label className="text-xs mb-1 block tracking-[0.04em]">{t("due_date", "Due Date")}</Label>
               <Input type="date" value={form.due_date} onChange={e => setForm(f => ({ ...f, due_date: e.target.value }))} />
             </div>
             <div className="flex justify-end gap-2 pt-1">

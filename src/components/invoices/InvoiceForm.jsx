@@ -69,7 +69,7 @@ export default function InvoiceForm({ open, onClose, onSubmit, initialData, clie
           <div className="grid grid-cols-2 gap-4">
             <div><Label>{t("invoice", "Invoice #")}</Label><Input value={form.invoice_number} onChange={(e) => handleChange("invoice_number", e.target.value)} /></div>
             <div>
-              <Label>{t("client", "Client")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
+              <Label>{t("client", "Client")} <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{t("optional", "(optional)")}</span></Label>
               <Select value={form.client_id} onValueChange={handleClientChange}>
                 <SelectTrigger><SelectValue placeholder="Select client" /></SelectTrigger>
                 <SelectContent>{clients?.map(c => {
@@ -158,7 +158,7 @@ export default function InvoiceForm({ open, onClose, onSubmit, initialData, clie
                 );
               })}
             </div>
-            <div className="flex justify-end mt-3 text-lg font-bold">
+            <div className="flex justify-end mt-3 text-lg font-semibold">
               {t("total", "Total:")} {formatCurrency(subtotal, form.currency)}
             </div>
           </div>

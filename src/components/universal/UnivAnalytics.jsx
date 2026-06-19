@@ -46,9 +46,9 @@ const COMPONENT_TO_TABLE = {
 };
 
 const COLORS = [
- 'bg-blue-500', 'bg-violet-500', 'bg-emerald-500', 'bg-amber-500',
- 'bg-rose-500', 'bg-cyan-500', 'bg-pink-500', 'bg-indigo-500',
- 'bg-teal-500', 'bg-orange-500', 'bg-fuchsia-500', 'bg-lime-500',
+ 'bg-blue-500/10', 'bg-violet-500', 'bg-emerald-500/10', 'bg-amber-500',
+ 'bg-rose-500', 'bg-cyan-500', 'bg-pink-500', 'bg-indigo-500/10',
+ 'bg-teal-500', 'bg-orange-500/10', 'bg-fuchsia-500', 'bg-lime-500',
 ];
 
 export default function UnivAnalytics({
@@ -157,21 +157,21 @@ export default function UnivAnalytics({
  {/* Header */}
  <div className="view-header flex flex-wrap items-center justify-between mb-6 shrink-0 px-1 gap-4">
  <div>
- <h2 className="text-2xl font-bold text-foreground tracking-tight">{title}</h2>
- <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>
+ <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">{title}</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">{subtitle}</p>
  </div>
  <div className="flex gap-3">
  <button
  onClick={handleRefresh}
  disabled={refreshing || loading}
- className="flex items-center gap-2 px-4 py-2 bg-muted border border-primary/40 rounded-xl text-sm font-medium hover:bg-muted/80 transition-colors disabled:opacity-50"
+ className="flex items-center gap-2 px-4 py-2 bg-muted border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm font-medium hover:bg-muted/80 transition-colors disabled:opacity-50"
  >
  <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} /> Refresh
  </button>
  <button
  onClick={handleExportCSV}
  disabled={loading || !stats.length}
- className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 "
+ className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 "
  >
  <Download className="w-4 h-4" /> Export CSV
  </button>
@@ -179,14 +179,14 @@ export default function UnivAnalytics({
  </div>
 
  {loading ? (
- <div className="flex-1 flex flex-col items-center justify-center gap-3 text-muted-foreground">
+ <div className="flex-1 flex flex-col items-center justify-center gap-3 text-[#71717a] dark:text-gray-400">
  <Loader2 className="w-8 h-8 animate-spin text-primary" />
  <p className="text-sm font-medium">Scanning your workslate data...</p>
  </div>
  ) : stats.length === 0 ? (
- <div className="flex-1 flex flex-col items-center justify-center gap-3 text-muted-foreground py-20 border-2 border-dashed border-primary/40 rounded-2xl">
+ <div className="flex-1 flex flex-col items-center justify-center gap-3 text-[#71717a] dark:text-gray-400 py-20 border-2 border-dashed border-primary/40 rounded-md-2xl">
  <AlertCircle className="w-10 h-10 opacity-40" />
- <p className="text-base font-bold text-foreground">No data found yet</p>
+ <p className="text-base font-semibold text-foreground">No data found yet</p>
  <p className="text-sm text-center max-w-sm">Start adding records to your workslate slates and they will appear here automatically.</p>
  </div>
  ) : (
@@ -194,42 +194,42 @@ export default function UnivAnalytics({
 
  {/* Summary KPI Cards */}
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
- <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} className="bg-card border border-primary/40 rounded-2xl p-5 ">
- <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Total Records</p>
- <p className="text-4xl font-black text-foreground">{totalRecords.toLocaleString()}</p>
- <p className="text-xs text-muted-foreground mt-2">Across all active slates</p>
+ <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Total Records</p>
+ <p className="text-4xl font-black text-foreground tracking-[-0.02em]">{totalRecords.toLocaleString()}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-2 tracking-[0.04em]">Across all active slates</p>
  </motion.div>
- <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.05}} className="bg-card border border-primary/40 rounded-2xl p-5 ">
- <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Active Slates</p>
- <p className="text-4xl font-black text-foreground">{stats.length}</p>
- <p className="text-xs text-muted-foreground mt-2">Slates with data in this workslate</p>
+ <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.05}} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Active Slates</p>
+ <p className="text-4xl font-black text-foreground tracking-[-0.02em]">{stats.length}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-2 tracking-[0.04em]">Slates with data in this workslate</p>
  </motion.div>
- <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.1}} className="bg-card border border-primary/40 rounded-2xl p-5 ">
- <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Top Slate</p>
- <p className="text-2xl font-black text-foreground truncate">{topModule?.label || '—'}</p>
- <p className="text-xs text-muted-foreground mt-2">{topModule ? `${topModule.count.toLocaleString()} records` : 'No data yet'}</p>
+ <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.1}} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Top Slate</p>
+ <p className="text-2xl font-black text-foreground truncate tracking-[-0.02em]">{topModule?.label || '—'}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-2 tracking-[0.04em]">{topModule ? `${topModule.count.toLocaleString()} records` : 'No data yet'}</p>
  </motion.div>
  </div>
 
  {/* Bar Chart — all modules */}
- <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.15}} className="bg-card border border-primary/40 rounded-2xl p-6 ">
+ <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.15}} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 mb-6">
  <BarChart2 className="w-5 h-5 text-primary" />
- <h3 className="text-lg font-bold text-foreground">Records by Slate</h3>
+ <h3 className="text-lg font-semibold text-foreground">Records by Slate</h3>
  </div>
  <div className="space-y-3">
  {stats.map((s, i) => (
  <div key={s.table}>
  <div className="flex justify-between items-center mb-1">
  <span className="text-sm font-semibold text-foreground">{s.label}</span>
- <span className="text-sm font-bold text-muted-foreground tabular-nums">{s.count.toLocaleString()}</span>
+ <span className="text-sm font-semibold text-[#71717a] dark:text-gray-400 tabular-nums">{s.count.toLocaleString()}</span>
  </div>
- <div className="h-2.5 bg-muted rounded-full overflow-hidden">
+ <div className="h-2.5 bg-muted rounded-md-full overflow-hidden">
  <motion.div
  initial={{ width: 0}}
  animate={{ width: `${Math.max((s.count / maxCount) * 100, s.count > 0 ? 2 : 0)}%`}}
  transition={{ delay: 0.2 + i * 0.04, duration: 0.5, ease: 'easeOut'}}
- className={`h-full rounded-full ${s.color}`}
+ className={`h-full rounded-md-full ${s.color}`}
  />
  </div>
  </div>
@@ -238,13 +238,13 @@ export default function UnivAnalytics({
  </motion.div>
 
  {/* Breakdown Table */}
- <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.25}} className="bg-card border border-primary/40 rounded-2xl overflow-hidden ">
+ <motion.div initial={{ opacity: 0, y: 8}} animate={{ opacity: 1, y: 0}} transition={{ delay: 0.25}} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-5 border-b border-primary/40 flex items-center gap-2 bg-muted/20">
- <TrendingUp className="w-5 h-5 text-muted-foreground" />
- <h3 className="text-lg font-bold text-foreground">Detailed Breakdown</h3>
+ <TrendingUp className="w-5 h-5 text-[#71717a] dark:text-gray-400" />
+ <h3 className="text-lg font-semibold text-foreground">Detailed Breakdown</h3>
  </div>
  <table className="w-full text-left text-sm">
- <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground border-b border-primary/40">
+ <thead className="bg-muted/50 text-xs uppercase tracking-wider text-[#71717a] dark:text-gray-400 border-b border-primary/40 tracking-[0.04em]">
  <tr>
  <th className="p-4 font-semibold">Slate</th>
  <th className="p-4 font-semibold">Table</th>
@@ -257,14 +257,14 @@ export default function UnivAnalytics({
  <tr key={s.table} className="hover:bg-muted/30 transition-colors">
  <td className="p-4">
  <div className="flex items-center gap-2">
- <div className={`w-2.5 h-2.5 rounded-full ${s.color} flex-shrink-0`} />
+ <div className={`w-2.5 h-2.5 rounded-md-full ${s.color} flex-shrink-0`} />
  <span className="font-semibold text-foreground">{s.label}</span>
  </div>
  </td>
- <td className="p-4 font-mono text-xs text-muted-foreground">{s.table}</td>
- <td className="p-4 text-right font-bold tabular-nums">{s.count.toLocaleString()}</td>
+ <td className="p-4 font-mono text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{s.table}</td>
+ <td className="p-4 text-right font-semibold tabular-nums">{s.count.toLocaleString()}</td>
  <td className="p-4 text-right">
- <span className="inline-block px-2 py-0.5 rounded text-xs font-bold bg-primary/10 text-primary">
+ <span className="inline-block px-2 py-0.5 rounded-md text-xs font-semibold bg-primary/10 text-primary tracking-[0.04em]">
  {totalRecords > 0 ? ((s.count / totalRecords) * 100).toFixed(1) : '0.0'}%
  </span>
  </td>

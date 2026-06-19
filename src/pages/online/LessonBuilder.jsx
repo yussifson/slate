@@ -25,17 +25,17 @@ export default function LessonBuilder() {
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto">
  <div className="flex items-center gap-4 pb-4 border-b border-primary/40">
- <button onClick={() => navigate(-1)} className="p-2 hover:bg-[var(--color-surface-2)] rounded-[var(--radius-md)] text-[var(--color-text-secondary)] transition-colors">
+ <button onClick={() => navigate(-1)} className="p-2 hover:bg-[var(--color-surface-2)] rounded-md-[var(--radius-md)] text-[var(--color-text-secondary)] transition-colors">
  <ArrowLeft className="w-5 h-5" />
  </button>
  <div>
- <h1 className="font-display font-semibold text-[var(--text-2xl)] text-[var(--color-text-primary)] tracking-tight">
+ <h1 className="font-display font-semibold text-[var(--text-2xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">
  {moduleId ? 'Edit Lesson' : 'Create New Lesson'}
  </h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Configure your lesson content and media.</p>
  </div>
  <div className="ml-auto flex gap-3">
- <button onClick={handleSave} className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
+ <button onClick={handleSave} className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-md-[var(--radius-md)] hover:opacity-90 transition-opacity">
  <Save className="w-4 h-4" /> Save Lesson
  </button>
  </div>
@@ -43,28 +43,28 @@ export default function LessonBuilder() {
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
  <div className="lg:col-span-2 space-y-6">
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6">
  <label className="block text-sm font-semibold text-[var(--color-text-primary)] mb-2">Lesson Title</label>
  <input 
  type="text" 
  value={lessonTitle}
  onChange={(e) => setLessonTitle(e.target.value)}
  placeholder="e.g., Introduction to the Platform" 
- className="w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
+ className="w-full bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
  />
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden">
  <div className="flex border-b border-primary/40 bg-[var(--color-surface-1)] p-2 gap-2">
  <button 
  onClick={() => setLessonType('video')}
- className={`flex-1 py-2 px-4 text-sm font-medium rounded-[var(--radius-md)] flex justify-center items-center gap-2 transition-colors ${lessonType === 'video' ? 'bg-[var(--color-surface-0)] text-[var(--primary)]' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}
+ className={`flex-1 py-2 px-4 text-sm font-medium rounded-md-[var(--radius-md)] flex justify-center items-center gap-2 transition-colors ${lessonType === 'video' ? 'bg-[var(--color-surface-0)] text-[var(--primary)]' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}
  >
  <Video className="w-4 h-4" /> Video Content
  </button>
  <button 
  onClick={() => setLessonType('text')}
- className={`flex-1 py-2 px-4 text-sm font-medium rounded-[var(--radius-md)] flex justify-center items-center gap-2 transition-colors ${lessonType === 'text' ? 'bg-[var(--color-surface-0)] text-[var(--primary)]' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}
+ className={`flex-1 py-2 px-4 text-sm font-medium rounded-md-[var(--radius-md)] flex justify-center items-center gap-2 transition-colors ${lessonType === 'text' ? 'bg-[var(--color-surface-0)] text-[var(--primary)]' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}
  >
  <FileText className="w-4 h-4" /> Text Content
  </button>
@@ -72,8 +72,8 @@ export default function LessonBuilder() {
 
  <div className="p-6">
  {lessonType === 'video' ? (
- <div className="border-2 border-dashed border-primary/40 rounded-[var(--radius-lg)] p-12 flex flex-col items-center justify-center text-center hover:border-[var(--primary)] transition-colors cursor-pointer bg-[var(--color-surface-1)]">
- <div className="w-16 h-16 bg-[var(--color-surface-0)] rounded-full flex items-center justify-center mb-4 ">
+ <div className="border-2 border-dashed border-primary/40 rounded-md-[var(--radius-lg)] p-12 flex flex-col items-center justify-center text-center hover:border-[var(--primary)] transition-colors cursor-pointer bg-[var(--color-surface-1)]">
+ <div className="w-16 h-16 bg-[var(--color-surface-0)] rounded-md-full flex items-center justify-center mb-4 ">
  <UploadCloud className="w-8 h-8 text-[var(--primary)]" />
  </div>
  <h3 className="font-semibold text-[var(--color-text-primary)]">Upload Video</h3>
@@ -88,7 +88,7 @@ export default function LessonBuilder() {
  value={textContent}
  onChange={(e) => setTextContent(e.target.value)}
  rows={12}
- className="w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
+ className="w-full bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-md)] px-4 py-3 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body"
  placeholder="Write your lesson content here..."
  />
  </div>
@@ -98,7 +98,7 @@ export default function LessonBuilder() {
  </div>
 
  <div className="space-y-6">
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-5">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-5">
  <h3 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2 mb-4">
  <Settings className="w-4 h-4 text-[var(--color-text-tertiary)]" /> Lesson Settings
  </h3>
@@ -107,23 +107,23 @@ export default function LessonBuilder() {
  <div>
  <label className="flex items-center justify-between text-sm text-[var(--color-text-secondary)]">
  <span>Is this a free preview?</span>
- <input type="checkbox" className="rounded text-[var(--primary)] focus:ring-[var(--primary)]" />
+ <input type="checkbox" className="rounded-md text-[var(--primary)] focus:ring-[var(--primary)]" />
  </label>
  </div>
  <div className="pt-4 border-t border-primary/40">
  <label className="flex items-center justify-between text-sm text-[var(--color-text-secondary)]">
  <span>Enable Discussions</span>
- <input type="checkbox" defaultChecked className="rounded text-[var(--primary)] focus:ring-[var(--primary)]" />
+ <input type="checkbox" defaultChecked className="rounded-md text-[var(--primary)] focus:ring-[var(--primary)]" />
  </label>
  </div>
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-xl)] p-5 flex items-start gap-4">
+ <div className="bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-5 flex items-start gap-4">
  <MonitorPlay className="w-8 h-8 text-[var(--primary)] flex-shrink-0 mt-1" />
  <div>
  <h4 className="font-semibold text-[var(--color-text-primary)] text-sm">Preview Layout</h4>
- <p className="text-xs text-[var(--color-text-secondary)] mt-1 leading-relaxed">
+ <p className="text-xs text-[var(--color-text-secondary)] mt-1 leading-relaxed tracking-[0.04em]">
  Save your lesson to preview how it will look in the Learning Player for your students.
  </p>
  </div>

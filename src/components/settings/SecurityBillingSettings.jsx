@@ -151,7 +151,7 @@ export function SecuritySettings() {
  placeholder="Enter secure company-wide passphrase" 
  />
  </Field>
- <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-600 dark:text-amber-500 leading-relaxed font-semibold">
+ <div className="p-4 rounded-md-xl bg-amber-500/10 border-[0.5px] border-black/9 dark:border-white/8 border-amber-500/20 text-xs text-amber-600 dark:text-amber-500 leading-relaxed font-semibold tracking-[0.04em]">
  {t(
  "lexafrica_zero_trust_framework",
  "🔑 Zero-Trust Framework: All sensitive text fields are cryptographically encrypted directly inside your local web browser using AES-GCM-256 before leaving your computer. Store this passphrase securely; if lost, encrypted data cannot be recovered."
@@ -206,12 +206,12 @@ export function BillingSettings({ company, activeIndustry}) {
  <div className="space-y-6">
  <SectionCard title="Active Subscription" subtitle="Verify allocations, check quota summaries, or change plan models">
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
- <div className="bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-900/40 dark:to-slate-900/10 border border-primary/40 rounded-2xl p-5 space-y-4">
+ <div className="bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-900/40 dark:to-slate-900/10 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 space-y-4">
  <div>
- <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block">{t("firm_plan_level", (getTerm(activeIndustry, "venue") || "Firm") + " Plan Level")}</span>
- <h3 className="font-extrabold text-2xl text-foreground capitalize flex items-center gap-2 mt-1">
+ <span className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-widest block tracking-[0.04em]">{t("firm_plan_level", (getTerm(activeIndustry, "venue") || "Firm") + " Plan Level")}</span>
+ <h3 className="font-extrabold text-2xl text-foreground capitalize flex items-center gap-2 mt-1 tracking-[-0.02em]">
  {currentPlan} {t("model", "Model")}
- <span className={`text-[10px] font-extrabold uppercase py-0.5 px-2.5 rounded-full border tracking-wider ${
+ <span className={`text-[10px] font-extrabold uppercase py-0.5 px-2.5 rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 tracking-wider ${
  currentStatus === 'active' 
  ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 border-primary/40' 
  : 'bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-amber-200/50 animate-pulse'
@@ -220,7 +220,7 @@ export function BillingSettings({ company, activeIndustry}) {
  </span>
  </h3>
  </div>
- <p className="text-xs text-muted-foreground leading-relaxed">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 leading-relaxed tracking-[0.04em]">
  {t(
  "process_payments_directly_usin",
  "Process payments directly using our secure local checkout system. Upgrades propagate instantly."
@@ -228,11 +228,11 @@ export function BillingSettings({ company, activeIndustry}) {
  </p>
  </div>
 
- <div className="bg-card/30 border border-primary/40 rounded-2xl p-5 space-y-4 ">
- <h4 className="font-bold text-sm text-foreground">{t("quota_utilization", "Quota Utilization")}</h4>
+ <div className="bg-card/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 space-y-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h4 className="font-semibold text-sm text-foreground">{t("quota_utilization", "Quota Utilization")}</h4>
  
  <div className="space-y-2">
- <div className="flex justify-between text-xs font-semibold text-muted-foreground">
+ <div className="flex justify-between text-xs font-semibold text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  <span>{t("team_members", "Team Members")}</span>
  <span className="text-foreground">{activeUsersCount} / {currentPlan === 'starter' ? 3 : currentPlan === 'professional' ? 10 : 'Unlimited'}</span>
  </div>
@@ -240,7 +240,7 @@ export function BillingSettings({ company, activeIndustry}) {
  </div>
 
  <div className="space-y-2">
- <div className="flex justify-between text-xs font-semibold text-muted-foreground">
+ <div className="flex justify-between text-xs font-semibold text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  <span>{t("active_case_files", "Active Files")}</span>
  <span className="text-foreground">{activeCasesCount} / {currentPlan === 'starter' ? 10 : 'Unlimited'}</span>
  </div>
@@ -250,10 +250,10 @@ export function BillingSettings({ company, activeIndustry}) {
  </div>
  </SectionCard>
  
- <div className="bg-card/45 backdrop-blur-xl rounded-3xl border border-primary/40 p-8 space-y-6 -black/5 hover:border-primary/40 transition-colors">
+ <div className="bg-card/45 backdrop-blur-xl rounded-md-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-8 space-y-6 -black/5 hover:border-primary/40 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <h2 className="text-xl font-extrabold text-foreground">{t("upgrade_platform_model", "Upgrade Platform Model")}</h2>
- <p className="text-sm text-muted-foreground mt-1.5">{t(
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1.5">{t(
  "scale_up_features_team_counts_",
  "Scale up features, team counts, and client space instantly."
  )}</p>
@@ -261,7 +261,7 @@ export function BillingSettings({ company, activeIndustry}) {
  <div className="pt-4 border-t border-primary/40">
  <Button 
  onClick={() => setShowUpgradeModal(true)} 
- className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-bold px-8 h-12 rounded-xl text-sm transition-transform hover:-translate-y-0.5"
+ className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-semibold px-8 h-12 rounded-md-xl text-sm transition-transform hover:-translate-y-0.5"
  >
  {t("explore_corporate_pricing", "Explore Corporate Pricing")}
  </Button>
@@ -281,24 +281,24 @@ export function BillingSettings({ company, activeIndustry}) {
  />
  )}
  
- <div className="bg-card/45 backdrop-blur-xl rounded-3xl border border-primary/40 p-8 space-y-6 -black/5 hover:border-primary/40 transition-colors">
+ <div className="bg-card/45 backdrop-blur-xl rounded-md-3xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-8 space-y-6 -black/5 hover:border-primary/40 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <h2 className="text-xl font-extrabold text-foreground">{t("invoice_ledger", "Invoice Ledger")}</h2>
- <p className="text-sm text-muted-foreground mt-1.5">{t(
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1.5">{t(
  "view_platform_service_receipts",
  "View platform service receipts processed via the payment gateway."
  )}</p>
  </div>
 
  {invoices.length === 0 ? (
- <div className="text-center py-10 text-sm text-muted-foreground font-semibold bg-muted/10 rounded-2xl border border-dashed border-primary/40">
+ <div className="text-center py-10 text-sm text-[#71717a] dark:text-gray-400 font-semibold bg-muted/10 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40">
  {t("no_service_invoices_recorded", "No service invoices recorded.")}
  </div>
  ) : (
- <div className="overflow-x-auto rounded-xl border border-primary/40 ">
- <table className="w-full text-sm text-left border-collapse bg-card/10">
+ <div className="overflow-x-auto rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 ">
+ <table className="w-full text-sm text-left border-collapse bg-card/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <thead>
- <tr className="bg-muted/40 border-b border-primary/40 text-muted-foreground font-bold text-xs uppercase tracking-wider select-none">
+ <tr className="bg-muted/40 border-b border-primary/40 text-[#71717a] dark:text-gray-400 font-semibold text-xs uppercase tracking-wider select-none tracking-[0.04em]">
  <th className="px-5 py-3.5">{t("settlement_date", "Settlement Date")}</th>
  <th className="px-5 py-3.5">{t("plan_tier", "Plan tier")}</th>
  <th className="px-5 py-3.5">{t("amount", "Amount")}</th>
@@ -310,14 +310,14 @@ export function BillingSettings({ company, activeIndustry}) {
  {invoices.map((inv, idx) => {
  return (
  <tr key={idx} className="hover:bg-muted/10 transition-colors">
- <td className="px-5 py-3.5 text-muted-foreground font-semibold">
+ <td className="px-5 py-3.5 text-[#71717a] dark:text-gray-400 font-semibold">
  {new Date(inv.created_date || inv.created_at).toLocaleDateString()}
  </td>
- <td className="px-5 py-3.5 font-bold text-foreground">{inv.plan_name}</td>
+ <td className="px-5 py-3.5 font-semibold text-foreground">{inv.plan_name}</td>
  <td className="px-5 py-3.5 font-extrabold text-foreground">${inv.amount}</td>
- <td className="px-5 py-3.5 font-mono text-xs text-muted-foreground/80">{inv.paystack_ref}</td>
+ <td className="px-5 py-3.5 font-mono text-xs text-[#71717a] dark:text-gray-400/80 tracking-[0.04em]">{inv.paystack_ref}</td>
  <td className="px-5 py-3.5">
- <span className="inline-flex py-0.5 px-2.5 rounded-full text-[10px] font-bold bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 border border-primary/40 uppercase select-none">
+ <span className="inline-flex py-0.5 px-2.5 rounded-md-full text-[10px] font-semibold bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 text-primary/90 dark:text-primary/70 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 uppercase select-none tracking-[0.04em]">
  {inv.status}
  </span>
  </td>
@@ -438,15 +438,15 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 h-[100dvh] w-screen m-0 p-4 animate-in fade-in duration-200">
-      <div className="relative w-full max-w-5xl bg-background rounded-xl flex flex-col max-h-[90vh] overflow-hidden border border-border shadow-none">
+      <div className="relative w-full max-w-5xl bg-background rounded-md-xl flex flex-col max-h-[90vh] overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
         
         {/* Header */}
-        <div className="flex flex-col items-center justify-center p-8 md:p-12 border-b border-border/40 relative">
-          <button onClick={onClose} className="absolute right-6 top-6 p-2 rounded-full hover:bg-muted text-muted-foreground transition-colors">
+        <div className="flex flex-col items-center justify-center p-8 md:p-12 border-b border-[0.5px] border-black/9 dark:border-white/8/40 relative">
+          <button onClick={onClose} className="absolute right-6 top-6 p-2 rounded-md-full hover:bg-muted text-[#71717a] dark:text-gray-400 transition-colors">
             <X className="w-5 h-5" />
           </button>
-          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-foreground">Select your plan</h2>
-          <p className="text-base text-muted-foreground mt-3 max-w-xl text-center">Transparent pricing for every stage of your firm's growth. Upgrade anytime.</p>
+          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-foreground tracking-[-0.02em]">Select your plan</h2>
+          <p className="text-base text-[#71717a] dark:text-gray-400 mt-3 max-w-xl text-center">Transparent pricing for every stage of your firm's growth. Upgrade anytime.</p>
         </div>
 
         {/* Content */}
@@ -460,21 +460,21 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
               {plans.map((p) => {
                 const isCurrent = company?.subscription_plan === p.name.toLowerCase().replace(/\s/g, '');
                 return (
-                  <div key={p.id} className={`relative flex flex-col bg-background rounded-xl p-8 transition-colors ${isCurrent ? 'border-2 border-primary' : 'border border-border hover:border-primary/50'}`}>
+                  <div key={p.id} className={`relative flex flex-col bg-background rounded-md-xl p-8 transition-colors ${isCurrent ? 'border-2 border-primary' : 'border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 hover:border-primary/50'}`}>
                     <div className="mb-6">
                       <h3 className="font-semibold text-lg text-foreground mb-2">{p.name}</h3>
-                      <div className="flex items-end gap-1 mb-2">
-                        <span className="text-4xl font-bold tracking-tight">GH₵{p.price_monthly}</span>
-                        <span className="text-muted-foreground font-medium text-sm mb-1.5">/mo</span>
+                      <div className="flex items-end gap-2 mb-2">
+                        <span className="text-4xl font-semibold tracking-tight tracking-[-0.02em]">GH₵{p.price_monthly}</span>
+                        <span className="text-[#71717a] dark:text-gray-400 font-medium text-sm mb-1.5">/mo</span>
                       </div>
                     </div>
                     
                     <div className="flex-1 space-y-4 text-sm text-foreground/80 mb-8">
-                      <div className="flex justify-between items-center py-2 border-b border-border/40">
+                      <div className="flex justify-between items-center py-2 border-b border-[0.5px] border-black/9 dark:border-white/8/40">
                         <span>Team Size</span>
                         <span className="font-semibold">{p.limits?.users || 'Unlimited'}</span>
                       </div>
-                      <div className="flex justify-between items-center py-2 border-b border-border/40">
+                      <div className="flex justify-between items-center py-2 border-b border-[0.5px] border-black/9 dark:border-white/8/40">
                         <span>AI Credits</span>
                         <span className="font-semibold">{p.limits?.ai_credits_monthly || 0}</span>
                       </div>
@@ -482,14 +482,14 @@ function UpgradeModal({ company, companyId, onClose, onUpgradeSuccess }) {
 
                     <div className="mt-auto">
                       {isCurrent ? (
-                        <Button disabled variant="outline" className="w-full h-11 rounded-lg font-medium border-border text-muted-foreground bg-muted/30">
+                        <Button disabled variant="outline" className="w-full h-11 rounded-xl font-medium border-[0.5px] border-black/9 dark:border-white/8 text-[#71717a] dark:text-gray-400 bg-muted/30">
                           Current Plan
                         </Button>
                       ) : (
                         <Button 
                           onClick={() => handleUpgrade(p)}
                           disabled={processingId !== null}
-                          className={`w-full h-11 rounded-lg font-medium transition-colors ${p.price_monthly === 0 ? 'bg-secondary text-secondary-foreground hover:bg-secondary/80' : 'bg-primary text-primary-foreground hover:bg-primary/90'}`}
+                          className={`w-full h-11 rounded-xl font-medium transition-colors ${p.price_monthly === 0 ? 'bg-secondary text-secondary-foreground hover:bg-secondary/80' : 'bg-primary text-primary-foreground hover:bg-primary/90'}`}
                         >
                           {processingId === p.id ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : (
                             p.price_monthly === 0 ? "Downgrade to Free" : "Upgrade Plan"

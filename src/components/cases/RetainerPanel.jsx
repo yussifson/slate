@@ -15,7 +15,7 @@ import { format } from "date-fns";
 const RETAINER_STATUS_COLORS = {
   active: "bg-slate-100 text-primary/90",
   depleted: "bg-red-100 text-red-700",
-  closed: "bg-gray-100 text-gray-500",
+  closed: "bg-gray-100 text-[#71717a] dark:text-gray-400",
 };
 
 export default function RetainerPanel({ caseData, user }) {
@@ -125,28 +125,28 @@ export default function RetainerPanel({ caseData, user }) {
   const percentUsed = retainer ? Math.min(100, ((retainer.total_deducted || 0) / retainer.initial_deposit) * 100) : 0;
   const percentRemaining = 100 - percentUsed;
 
-  if (isLoading) return <div className="p-8 text-center text-sm text-muted-foreground">{t("loading_retainer", "Loading retainer...")}</div>;
+  if (isLoading) return <div className="p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("loading_retainer", "Loading retainer...")}</div>;
 
   return (
     <div className="space-y-4">
       {/* Low balance / depleted alert banner */}
       {retainer?.alert_triggered && retainer?.status !== "depleted" && (
-        <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4">
+        <div className="flex items-start gap-3 bg-amber-50 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 rounded-md-xl p-4">
           <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-semibold text-amber-800">{t("retainer_balance_low", "Retainer Balance Low")}</p>
-            <p className="text-xs text-amber-700 mt-0.5">
+            <p className="text-xs text-amber-700 mt-0.5 tracking-[0.04em]">
               {t("current_balance_of", "Current balance of")} {formatCurrency(retainer.current_balance, currency)} {t("is_below_the_alert_threshold_o", "is below the alert threshold of")} {formatCurrency(retainer.alert_threshold, currency)}{t("request_a_top_up_from_the_clie", ". Request a top-up from the client.")}
             </p>
           </div>
         </div>
       )}
       {retainer?.status === "depleted" && (
-        <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl p-4">
+        <div className="flex items-start gap-3 bg-red-50 border-[0.5px] border-black/9 dark:border-white/8 border-red-200 rounded-md-xl p-4">
           <AlertTriangle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-semibold text-red-800">{t("retainer_depleted", "Retainer Depleted")}</p>
-            <p className="text-xs text-red-700 mt-0.5">{t(
+            <p className="text-xs text-red-700 mt-0.5 tracking-[0.04em]">{t(
               "the_retainer_balance_has_been_",
               "The retainer balance has been fully used. Client needs to replenish."
             )}</p>
@@ -155,10 +155,10 @@ export default function RetainerPanel({ caseData, user }) {
       )}
       {!retainer ? (
         /* No retainer yet */
-        (<div className="bg-card rounded-xl border border-primary/40 p-10 text-center">
-          <Wallet className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
+        (<div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <Wallet className="w-10 h-10 mx-auto text-[#71717a] dark:text-gray-400 mb-3" />
           <p className="text-sm font-medium">{t("no_retainer_set_up", "No Retainer Set Up")}</p>
-          <p className="text-xs text-muted-foreground mt-1 mb-4">{t(
+          <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 mb-4 tracking-[0.04em]">{t(
             "set_an_initial_deposit_and_tra",
             "Set an initial deposit and track balance deductions against this case."
           )}</p>
@@ -169,15 +169,15 @@ export default function RetainerPanel({ caseData, user }) {
       ) : (
         <>
           {/* Balance card */}
-          <div className="bg-card rounded-xl border border-primary/40 p-5 space-y-4">
+          <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
                   <Wallet className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">{t("current_balance", "Current Balance")}</p>
-                  <p className="text-2xl font-bold text-foreground">{formatCurrency(retainer.current_balance, currency)}</p>
+                  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("current_balance", "Current Balance")}</p>
+                  <p className="text-2xl font-semibold text-foreground tracking-[-0.02em]">{formatCurrency(retainer.current_balance, currency)}</p>
                 </div>
               </div>
               <Badge className={`text-[10px] capitalize ${RETAINER_STATUS_COLORS[retainer.status]}`}>{retainer.status}</Badge>
@@ -185,36 +185,36 @@ export default function RetainerPanel({ caseData, user }) {
 
             {/* Progress bar */}
             <div className="space-y-1.5">
-              <div className="flex justify-between text-xs text-muted-foreground">
+              <div className="flex justify-between text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
                 <span>{t("used", "Used:")} {formatCurrency(retainer.total_deducted || 0, currency)}</span>
                 <span>{t("initial", "Initial:")} {formatCurrency(retainer.initial_deposit, currency)}</span>
               </div>
-              <div className="h-2.5 rounded-full bg-muted overflow-hidden">
+              <div className="h-2.5 rounded-md-full bg-muted overflow-hidden">
                 <div
-                  className={`h-full rounded-full transition-all ${percentRemaining < 20 ? "bg-red-500" : percentRemaining < 40 ? "bg-amber-500" : "bg-primary"}`}
+                  className={`h-full rounded-md-full transition-all ${percentRemaining < 20 ? "bg-red-500/10" : percentRemaining < 40 ? "bg-amber-500" : "bg-primary"}`}
                   style={{ width: `${percentRemaining}%` }}
                 />
               </div>
-              <p className="text-[10px] text-muted-foreground text-right">{percentRemaining.toFixed(0)}{t("remaining", "% remaining")}</p>
+              <p className="text-[10px] text-[#71717a] dark:text-gray-400 text-right">{percentRemaining.toFixed(0)}{t("remaining", "% remaining")}</p>
             </div>
 
             {/* Stats row */}
             <div className="grid grid-cols-3 gap-3 pt-1">
-              <div className="bg-muted/40 rounded-lg p-3 text-center">
-                <p className="text-xs text-muted-foreground">{t("initial_deposit", "Initial Deposit")}</p>
+              <div className="bg-muted/40 rounded-xl p-3 text-center">
+                <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("initial_deposit", "Initial Deposit")}</p>
                 <p className="text-sm font-semibold">{formatCurrency(retainer.initial_deposit, currency)}</p>
               </div>
-              <div className="bg-muted/40 rounded-lg p-3 text-center">
-                <p className="text-xs text-muted-foreground">{t("total_deducted", "Total Deducted")}</p>
+              <div className="bg-muted/40 rounded-xl p-3 text-center">
+                <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("total_deducted", "Total Deducted")}</p>
                 <p className="text-sm font-semibold">{formatCurrency(retainer.total_deducted || 0, currency)}</p>
               </div>
-              <div className="bg-muted/40 rounded-lg p-3 text-center">
-                <p className="text-xs text-muted-foreground">{t("alert_threshold", "Alert Threshold")}</p>
+              <div className="bg-muted/40 rounded-xl p-3 text-center">
+                <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("alert_threshold", "Alert Threshold")}</p>
                 <p className="text-sm font-semibold">{retainer.alert_threshold > 0 ? formatCurrency(retainer.alert_threshold, currency) : "—"}</p>
               </div>
             </div>
 
-            {retainer.notes && <p className="text-xs text-muted-foreground border-t border-primary/40 pt-3">{retainer.notes}</p>}
+            {retainer.notes && <p className="text-xs text-[#71717a] dark:text-gray-400 border-t border-primary/40 pt-3 tracking-[0.04em]">{retainer.notes}</p>}
 
             {/* Actions */}
             <div className="flex gap-2 pt-1">
@@ -225,7 +225,7 @@ export default function RetainerPanel({ caseData, user }) {
                 <Settings className="w-3.5 h-3.5" /> {t("edit_top_up", "Edit / Top-Up")}
               </Button>
               {retainer.alert_triggered && (
-                <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground"
+                <Button variant="ghost" size="sm" className="gap-2 text-[#71717a] dark:text-gray-400"
                   onClick={() => updateMutation.mutate({ id: retainer.id, data: { alert_triggered: false } })}>
                   <CheckCircle className="w-3.5 h-3.5" /> {t("dismiss_alert", "Dismiss Alert")}
                 </Button>
@@ -269,7 +269,7 @@ export default function RetainerPanel({ caseData, user }) {
                 onChange={e => setSetupForm({ ...setupForm, initial_deposit: e.target.value })}
                 required={!retainer}
               />
-              {retainer && <p className="text-xs text-muted-foreground mt-1">{t(
+              {retainer && <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">{t(
                 "increasing_this_adds_to_the_cu",
                 "Increasing this adds to the current balance (top-up)."
               )}</p>}
@@ -282,7 +282,7 @@ export default function RetainerPanel({ caseData, user }) {
                 value={setupForm.alert_threshold}
                 onChange={e => setSetupForm({ ...setupForm, alert_threshold: e.target.value })}
               />
-              <p className="text-xs text-muted-foreground mt-1">{t(
+              <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">{t(
                 "you_ll_be_alerted_when_balance",
                 "You'll be alerted when balance falls below this amount."
               )}</p>
@@ -307,7 +307,7 @@ export default function RetainerPanel({ caseData, user }) {
         <DialogContent className="max-w-sm">
           <DialogHeader><DialogTitle>{t("deduct_from_retainer", "Deduct from Retainer")}</DialogTitle></DialogHeader>
           <form onSubmit={handleDeduct} className="space-y-3">
-            <div className="bg-muted/40 rounded-lg p-3 text-sm">
+            <div className="bg-muted/40 rounded-xl p-3 text-sm">
               {t("available_balance", "Available balance:")} <span className="font-semibold">{formatCurrency(retainer?.current_balance || 0, currency)}</span>
             </div>
             <div>

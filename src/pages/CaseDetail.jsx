@@ -50,11 +50,11 @@ export default function CaseDetail() {
         </Button>
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2 mb-1">
-            <h1 className="text-xl font-bold text-foreground truncate">{caseData.title}</h1>
+            <h1 className="text-xl font-semibold text-foreground truncate">{caseData.title}</h1>
             <Badge className={`${CASE_STATUS_COLORS[caseData.status]} text-[10px]`}>{caseData.status?.replace("_", " ")}</Badge>
             <Badge className={`${PRIORITY_COLORS[caseData.priority]} text-[10px]`}>{caseData.priority}</Badge>
           </div>
-          <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+          <div className="flex flex-wrap gap-3 text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
             {caseData.case_number && <span>#{caseData.case_number}</span>}
             {caseData.client_name && <span>{t("client", "Client:")} {caseData.client_name}</span>}
             {caseData.assigned_lawyer_name && <span>{t("lawyer", "Lawyer:")} {caseData.assigned_lawyer_name}</span>}
@@ -66,18 +66,18 @@ export default function CaseDetail() {
       <Tabs defaultValue="time" className="w-full">
         <div className="w-full overflow-x-auto scrollbar-hide pb-2">
           <TabsList className="w-max min-w-full justify-start">
-            <TabsTrigger value="time" className="gap-1.5"><Clock className="w-3.5 h-3.5" />{t("billable_hours", "Billable Hours")}</TabsTrigger>
-          <TabsTrigger value="retainer" className="gap-1.5"><Wallet className="w-3.5 h-3.5" />{t("retainer", "Retainer")}</TabsTrigger>
-          <TabsTrigger value="documents" className="gap-1.5"><FolderOpen className="w-3.5 h-3.5" />{t("documents", "Documents")}</TabsTrigger>
-          <TabsTrigger value="messages" className="gap-1.5"><MessageSquare className="w-3.5 h-3.5" />{t("team_chat", "Team Chat")}</TabsTrigger>
-          <TabsTrigger value="client-messages" className="gap-1.5"><MessageSquare className="w-3.5 h-3.5" />{t("client_chat", "Client Chat")}</TabsTrigger>
-          <TabsTrigger value="expenses" className="gap-1.5"><Receipt className="w-3.5 h-3.5" />{t("expenses", "Expenses")}</TabsTrigger>
-          <TabsTrigger value="esign" className="gap-1.5"><PenTool className="w-3.5 h-3.5" />{t("e_signatures", "E-Signatures")}</TabsTrigger>
-          <TabsTrigger value="pdf" className="gap-1.5"><FileText className="w-3.5 h-3.5" />{t("generate_pdf", "Generate PDF")}</TabsTrigger>
-          <TabsTrigger value="ai-review" className="gap-1.5"><Sparkles className="w-3.5 h-3.5" />{t("ai_review", "AI Review")}</TabsTrigger>
-          <TabsTrigger value="checklist" className="gap-1.5"><CheckSquare className="w-3.5 h-3.5" />{t("client_checklist", "Client Checklist")}</TabsTrigger>
-          <TabsTrigger value="comms" className="gap-1.5"><Send className="w-3.5 h-3.5" />{t("communications", "Communications")}</TabsTrigger>
-          <TabsTrigger value="timeline" className="gap-1.5"><Clock className="w-3.5 h-3.5" />{t("diary_timeline", "Diary / Timeline")}</TabsTrigger>
+            <TabsTrigger value="time" className="gap-2.5"><Clock className="w-3.5 h-3.5" />{t("billable_hours", "Billable Hours")}</TabsTrigger>
+          <TabsTrigger value="retainer" className="gap-2.5"><Wallet className="w-3.5 h-3.5" />{t("retainer", "Retainer")}</TabsTrigger>
+          <TabsTrigger value="documents" className="gap-2.5"><FolderOpen className="w-3.5 h-3.5" />{t("documents", "Documents")}</TabsTrigger>
+          <TabsTrigger value="messages" className="gap-2.5"><MessageSquare className="w-3.5 h-3.5" />{t("team_chat", "Team Chat")}</TabsTrigger>
+          <TabsTrigger value="client-messages" className="gap-2.5"><MessageSquare className="w-3.5 h-3.5" />{t("client_chat", "Client Chat")}</TabsTrigger>
+          <TabsTrigger value="expenses" className="gap-2.5"><Receipt className="w-3.5 h-3.5" />{t("expenses", "Expenses")}</TabsTrigger>
+          <TabsTrigger value="esign" className="gap-2.5"><PenTool className="w-3.5 h-3.5" />{t("e_signatures", "E-Signatures")}</TabsTrigger>
+          <TabsTrigger value="pdf" className="gap-2.5"><FileText className="w-3.5 h-3.5" />{t("generate_pdf", "Generate PDF")}</TabsTrigger>
+          <TabsTrigger value="ai-review" className="gap-2.5"><Sparkles className="w-3.5 h-3.5" />{t("ai_review", "AI Review")}</TabsTrigger>
+          <TabsTrigger value="checklist" className="gap-2.5"><CheckSquare className="w-3.5 h-3.5" />{t("client_checklist", "Client Checklist")}</TabsTrigger>
+          <TabsTrigger value="comms" className="gap-2.5"><Send className="w-3.5 h-3.5" />{t("communications", "Communications")}</TabsTrigger>
+          <TabsTrigger value="timeline" className="gap-2.5"><Clock className="w-3.5 h-3.5" />{t("diary_timeline", "Diary / Timeline")}</TabsTrigger>
           </TabsList>
         </div>
         <TabsContent value="time" className="mt-4">

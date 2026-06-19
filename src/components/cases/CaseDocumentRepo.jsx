@@ -35,7 +35,7 @@ function getCategoryMeta(value) {
 }
 
 function getFileIcon(fileType, name) {
-  if (!fileType && !name) return <File className="w-4 h-4 text-muted-foreground" />;
+  if (!fileType && !name) return <File className="w-4 h-4 text-[#71717a] dark:text-gray-400" />;
   const type = fileType?.toLowerCase() || "";
   const ext = name?.split(".").pop()?.toLowerCase() || "";
   if (type.includes("image") || ["jpg", "jpeg", "png", "gif", "webp"].includes(ext))
@@ -44,7 +44,7 @@ function getFileIcon(fileType, name) {
     return <FileText className="w-4 h-4 text-red-500" />;
   if (["doc", "docx"].includes(ext))
     return <FileText className="w-4 h-4 text-primary" />;
-  return <File className="w-4 h-4 text-muted-foreground" />;
+  return <File className="w-4 h-4 text-[#71717a] dark:text-gray-400" />;
 }
 
 function fileSize(bytes) {
@@ -121,7 +121,7 @@ export default function CaseDocumentRepo({ caseData, user }) {
   return (
     <div className="space-y-4">
       {/* Access notice */}
-      <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/40 rounded-lg px-3 py-2">
+      <div className="flex items-center gap-2 text-xs text-[#71717a] dark:text-gray-400 bg-muted/40 rounded-xl px-3 py-2 tracking-[0.04em]">
         <Lock className="w-3.5 h-3.5 shrink-0" />
         <span>{t(
           "documents_are_restricted_to_au",
@@ -133,7 +133,7 @@ export default function CaseDocumentRepo({ caseData, user }) {
       <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center justify-between">
         <div className="flex gap-2 flex-1 w-full sm:w-auto">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#71717a] dark:text-gray-400" />
             <Input placeholder="Search documents..." className="pl-9 h-9" value={search} onChange={e => setSearch(e.target.value)} />
           </div>
           <Select value={categoryFilter} onValueChange={setCategoryFilter}>
@@ -153,12 +153,12 @@ export default function CaseDocumentRepo({ caseData, user }) {
         )}
       </div>
       {isLoading ? (
-        <div className="p-8 text-center text-sm text-muted-foreground">{t("loading_documents", "Loading documents...")}</div>
+        <div className="p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("loading_documents", "Loading documents...")}</div>
       ) : filtered.length === 0 ? (
-        <div className="bg-card rounded-xl border border-dashed border-primary/40 p-12 text-center">
-          <FolderOpen className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
+        <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 p-12 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <FolderOpen className="w-10 h-10 mx-auto text-[#71717a] dark:text-gray-400 mb-3" />
           <p className="text-sm font-medium">{t("no_documents_yet", "No documents yet")}</p>
-          <p className="text-xs text-muted-foreground mt-1 mb-4">{t(
+          <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 mb-4 tracking-[0.04em]">{t(
             "upload_court_filings_scanned_d",
             "Upload court filings, scanned documents, and case files to keep everything in one place."
           )}</p>
@@ -172,7 +172,7 @@ export default function CaseDocumentRepo({ caseData, user }) {
               <div className="flex items-center gap-2 mb-2">
                 <Gavel className="w-4 h-4 text-red-600" />
                 <h3 className="text-sm font-semibold text-red-700">{t("court_filings_orders", "Court Filings & Orders")}</h3>
-                <span className="text-xs text-muted-foreground">({courtFilings.length})</span>
+                <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">({courtFilings.length})</span>
               </div>
               <div className="grid grid-cols-1 gap-2">
                 {courtFilings.map(doc => {
@@ -197,9 +197,9 @@ export default function CaseDocumentRepo({ caseData, user }) {
             <div>
               {courtFilings.length > 0 && (
                 <div className="flex items-center gap-2 mb-2">
-                  <FolderOpen className="w-4 h-4 text-muted-foreground" />
-                  <h3 className="text-sm font-semibold text-muted-foreground">{t("other_documents", "Other Documents")}</h3>
-                  <span className="text-xs text-muted-foreground">({otherDocs.length})</span>
+                  <FolderOpen className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
+                  <h3 className="text-sm font-semibold text-[#71717a] dark:text-gray-400">{t("other_documents", "Other Documents")}</h3>
+                  <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">({otherDocs.length})</span>
                 </div>
               )}
               <div className="grid grid-cols-1 gap-2">
@@ -240,15 +240,15 @@ export default function CaseDocumentRepo({ caseData, user }) {
                 {previewDoc.name}
               </DialogTitle>
             </DialogHeader>
-            <div className="overflow-auto max-h-[60vh] flex items-center justify-center bg-muted/30 rounded-lg p-4">
+            <div className="overflow-auto max-h-[60vh] flex items-center justify-center bg-muted/30 rounded-xl p-4">
               {isImageUrl(previewDoc.file_url) ? (
-                <img src={previewDoc.file_url} alt={previewDoc.name} className="max-w-full rounded" />
+                <img src={previewDoc.file_url} alt={previewDoc.name} className="max-w-full rounded-md" />
               ) : isPdfUrl(previewDoc.file_url) ? (
-                <iframe src={previewDoc.file_url} title={previewDoc.name} className="w-full h-[55vh] rounded border" />
+                <iframe src={previewDoc.file_url} title={previewDoc.name} className="w-full h-[55vh] rounded-md border" />
               ) : (
                 <div className="text-center py-10">
-                  <FileText className="w-12 h-12 mx-auto text-muted-foreground mb-3" />
-                  <p className="text-sm text-muted-foreground mb-3">{t(
+                  <FileText className="w-12 h-12 mx-auto text-[#71717a] dark:text-gray-400 mb-3" />
+                  <p className="text-sm text-[#71717a] dark:text-gray-400 mb-3">{t(
                     "preview_not_available_for_this",
                     "Preview not available for this file type."
                   )}</p>
@@ -270,27 +270,27 @@ function DocRow({ doc, canManage, onDelete, onToggleShare, onPreview, highlighte
   const cat = getCategoryMeta(doc.category);
   return (
     <div className={cn(
-      "bg-card rounded-xl border px-4 py-3 flex items-center gap-3 hover:bg-muted/20 transition-colors",
+      "bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 px-4 py-3 flex items-center gap-3 hover:bg-muted/20 transition-colors",
       highlighted ? "border-red-200" : "border-primary/40"
     )}>
       <div className={cn(
-        "w-9 h-9 rounded-lg flex items-center justify-center shrink-0",
+        "w-9 h-9 rounded-xl flex items-center justify-center shrink-0",
         highlighted ? "bg-red-50" : "bg-slate-100"
       )}>
         {getFileIcon(doc.file_type, doc.name)}
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium truncate">{doc.name}</p>
-        <div className="flex flex-wrap gap-1.5 mt-0.5 items-center">
+        <div className="flex flex-wrap gap-2.5 mt-0.5 items-center">
           <Badge className={`text-[10px] ${cat.color}`}>{cat.label}</Badge>
-          {doc.file_size && <span className="text-[10px] text-muted-foreground">{fileSize(doc.file_size)}</span>}
-          {doc.uploaded_by && <span className="text-[10px] text-muted-foreground">{t("by", "by")} {doc.uploaded_by.split("@")[0]}</span>}
-          <span className="text-[10px] text-muted-foreground">{format(new Date(doc.created_date), "MMM d, yyyy")}</span>
-          {doc.shared_with_client && <Badge className="text-[10px] bg-orange-100 text-orange-700 gap-1"><Share2 className="w-2.5 h-2.5" />{t("shared", "Shared")}</Badge>}
+          {doc.file_size && <span className="text-[10px] text-[#71717a] dark:text-gray-400">{fileSize(doc.file_size)}</span>}
+          {doc.uploaded_by && <span className="text-[10px] text-[#71717a] dark:text-gray-400">{t("by", "by")} {doc.uploaded_by.split("@")[0]}</span>}
+          <span className="text-[10px] text-[#71717a] dark:text-gray-400">{format(new Date(doc.created_date), "MMM d, yyyy")}</span>
+          {doc.shared_with_client && <Badge className="text-[10px] bg-orange-100 text-orange-700 gap-2"><Share2 className="w-2.5 h-2.5" />{t("shared", "Shared")}</Badge>}
         </div>
-        {doc.notes && <p className="text-xs text-muted-foreground mt-0.5 truncate">{doc.notes}</p>}
+        {doc.notes && <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 truncate tracking-[0.04em]">{doc.notes}</p>}
       </div>
-      <div className="flex items-center gap-1 shrink-0">
+      <div className="flex items-center gap-2 shrink-0">
         <Button variant="ghost" size="icon" className="h-7 w-7" title="Preview" onClick={onPreview}>
           <Eye className="w-3.5 h-3.5" />
         </Button>
@@ -308,7 +308,7 @@ function DocRow({ doc, canManage, onDelete, onToggleShare, onPreview, highlighte
               title={doc.shared_with_client ? "Unshare with client" : "Share with client"}
               onClick={onToggleShare}
             >
-              <Share2 className={`w-3.5 h-3.5 ${doc.shared_with_client ? "text-primary" : "text-muted-foreground"}`} />
+              <Share2 className={`w-3.5 h-3.5 ${doc.shared_with_client ? "text-primary" : "text-[#71717a] dark:text-gray-400"}`} />
             </Button>
             <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onDelete} title="Delete">
               <Trash2 className="w-3.5 h-3.5 text-destructive" />
@@ -389,7 +389,7 @@ export function UploadDocumentDialog({ onClose, onSubmit, isUploading: saving, c
           {/* Drop zone */}
           <div
             className={cn(
-              "border-2 border-dashed rounded-xl p-6 text-center transition-colors cursor-pointer",
+              "border-2 border-dashed rounded-md-xl p-6 text-center transition-colors cursor-pointer",
               dragOver ? "border-primary bg-slate-50" : "border-primary/40 hover:border-primary/40"
             )}
             onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
@@ -398,9 +398,9 @@ export function UploadDocumentDialog({ onClose, onSubmit, isUploading: saving, c
             onClick={() => inputRef.current?.click()}
           >
             <input ref={inputRef} type="file" multiple className="hidden" onChange={handleFileInput} accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,.txt,.xls,.xlsx" />
-            <Upload className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
+            <Upload className="w-8 h-8 mx-auto text-[#71717a] dark:text-gray-400 mb-2" />
             <p className="text-sm font-medium">{uploading ? "Uploading..." : "Drag & drop files here, or click to browse"}</p>
-            <p className="text-xs text-muted-foreground mt-1">{t(
+            <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">{t(
               "pdf_word_images_spreadsheets_m",
               "PDF, Word, images, spreadsheets — multiple files supported"
             )}</p>
@@ -411,11 +411,11 @@ export function UploadDocumentDialog({ onClose, onSubmit, isUploading: saving, c
             <div className="space-y-1.5">
               {files.map((f, idx) => {
                 return (
-                  <div key={idx} className="flex items-center gap-2 bg-muted/40 rounded-lg px-3 py-2 text-sm">
+                  <div key={idx} className="flex items-center gap-2 bg-muted/40 rounded-xl px-3 py-2 text-sm">
                     {getFileIcon(f.type, f.name)}
-                    <span className="flex-1 truncate text-xs">{f.name}</span>
-                    <span className="text-xs text-muted-foreground shrink-0">{fileSize(f.size)}</span>
-                    <button type="button" onClick={() => removeFile(idx)} className="text-muted-foreground hover:text-destructive">
+                    <span className="flex-1 truncate text-xs tracking-[0.04em]">{f.name}</span>
+                    <span className="text-xs text-[#71717a] dark:text-gray-400 shrink-0 tracking-[0.04em]">{fileSize(f.size)}</span>
+                    <button type="button" onClick={() => removeFile(idx)} className="text-[#71717a] dark:text-gray-400 hover:text-destructive">
                       <X className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -426,7 +426,7 @@ export function UploadDocumentDialog({ onClose, onSubmit, isUploading: saving, c
 
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2">
-              <Label>{t("document_name", "Document Name")} {files.length > 1 && <span className="text-muted-foreground text-xs">{t("applied_to_first_file_only", "(applied to first file only)")}</span>}</Label>
+              <Label>{t("document_name", "Document Name")} {files.length > 1 && <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{t("applied_to_first_file_only", "(applied to first file only)")}</span>}</Label>
               <Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="e.g. Writ of Summons" className="mt-1" />
             </div>
             <div>
@@ -441,20 +441,20 @@ export function UploadDocumentDialog({ onClose, onSubmit, isUploading: saving, c
               </Select>
             </div>
             <div>
-              <Label>{t("filing_date", "Filing Date")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
+              <Label>{t("filing_date", "Filing Date")} <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{t("optional", "(optional)")}</span></Label>
               <Input type="date" value={form.filing_date} onChange={e => setForm({ ...form, filing_date: e.target.value })} className="mt-1" />
             </div>
           </div>
 
           <div>
-            <Label>{t("notes", "Notes")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
+            <Label>{t("notes", "Notes")} <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{t("optional", "(optional)")}</span></Label>
             <Input value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} placeholder="Brief description..." className="mt-1" />
           </div>
 
-          <div className="flex items-center justify-between rounded-lg border border-primary/40 p-3">
+          <div className="flex items-center justify-between rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-3">
             <div>
               <p className="text-sm font-medium">{t("share_with_client_portal", "Share with client portal")}</p>
-              <p className="text-xs text-muted-foreground">{t("client_can_view_this_in_their_", "Client can view this in their portal")}</p>
+              <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("client_can_view_this_in_their_", "Client can view this in their portal")}</p>
             </div>
             <Switch checked={form.shared_with_client} onCheckedChange={v => setForm({ ...form, shared_with_client: v })} />
           </div>

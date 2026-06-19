@@ -109,7 +109,7 @@ export default function NotificationsInbox() {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
+            <h1 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white flex items-center gap-3 tracking-[-0.02em]">
               <Bell className="w-8 h-8 text-primary" />
               Inbox
               {unreadCount > 0 && (
@@ -118,7 +118,7 @@ export default function NotificationsInbox() {
                 </Badge>
               )}
             </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-[#71717a] dark:text-gray-400 mt-1">
               Manage your alerts, mentions, and system updates.
             </p>
           </div>
@@ -152,28 +152,28 @@ export default function NotificationsInbox() {
         </div>
 
         {/* Toolbar */}
-        <div className="bg-card border border-border rounded-xl shadow-sm mb-6 flex flex-col sm:flex-row items-center justify-between p-2">
-          <div className="flex w-full sm:w-auto p-1 bg-muted/50 rounded-lg">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm mb-6 flex flex-col sm:flex-row items-center justify-between p-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="flex w-full sm:w-auto p-1 bg-muted/50 rounded-xl">
             <button 
               onClick={() => setActiveTab('all')}
-              className={cn("flex-1 sm:flex-none px-6 py-2 text-sm font-semibold rounded-md transition-all", activeTab === 'all' ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
+              className={cn("flex-1 sm:flex-none px-6 py-2 text-sm font-semibold rounded-lg transition-all", activeTab === 'all' ? "bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm text-foreground" : "text-[#71717a] dark:text-gray-400 hover:text-foreground")}
             >
               All Notifications
             </button>
             <button 
               onClick={() => setActiveTab('unread')}
-              className={cn("flex-1 sm:flex-none px-6 py-2 text-sm font-semibold rounded-md transition-all flex items-center justify-center gap-2", activeTab === 'unread' ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
+              className={cn("flex-1 sm:flex-none px-6 py-2 text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2", activeTab === 'unread' ? "bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm text-foreground" : "text-[#71717a] dark:text-gray-400 hover:text-foreground")}
             >
               Unread
             </button>
           </div>
           <div className="w-full sm:w-72 mt-2 sm:mt-0 p-1 relative">
-            <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
             <Input 
               placeholder="Search notifications..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 bg-background border-border h-10 w-full"
+              className="pl-9 bg-background border-[0.5px] border-black/9 dark:border-white/8 h-10 w-full"
             />
           </div>
         </div>
@@ -183,18 +183,18 @@ export default function NotificationsInbox() {
           <AnimatePresence>
             {isLoading ? (
               <div className="py-20 flex justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                <div className="animate-spin rounded-md-full h-8 w-8 border-b-2 border-primary"></div>
               </div>
             ) : filteredNotifications.length === 0 ? (
               <motion.div 
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                className="py-24 flex flex-col items-center justify-center text-center bg-card border rounded-xl shadow-sm"
+                className="py-24 flex flex-col items-center justify-center text-center bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
               >
-                <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-6">
-                  <Bell className="w-10 h-10 text-muted-foreground opacity-50" />
+                <div className="w-20 h-20 bg-muted rounded-md-full flex items-center justify-center mb-6">
+                  <Bell className="w-10 h-10 text-[#71717a] dark:text-gray-400 opacity-50" />
                 </div>
-                <h3 className="text-xl font-bold mb-2 text-foreground">Inbox Zero</h3>
-                <p className="text-muted-foreground max-w-md mx-auto">
+                <h3 className="text-xl font-semibold mb-2 text-foreground">Inbox Zero</h3>
+                <p className="text-[#71717a] dark:text-gray-400 max-w-md mx-auto">
                   {searchQuery ? "No notifications match your search query." : "You're all caught up! There are no new notifications to review."}
                 </p>
               </motion.div>
@@ -213,12 +213,12 @@ export default function NotificationsInbox() {
                       if (notification.related_id) window.location.href = notification.related_id;
                     }}
                     className={cn(
-                      "group flex gap-4 p-5 rounded-xl border transition-all cursor-pointer",
-                      isRead ? "bg-card border-border hover:border-primary/30 shadow-sm" : "bg-primary/5 border-primary/20 shadow-md ring-1 ring-primary/10 hover:bg-primary/10"
+                      "group flex gap-4 p-5 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all cursor-pointer",
+                      isRead ? "bg-card border-[0.5px] border-black/9 dark:border-white/8 hover:border-primary/30 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm" : "bg-primary/5 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] ring-1 ring-primary/10 hover:bg-primary/10"
                     )}
                   >
                     <div className="shrink-0">
-                      <div className={cn("w-12 h-12 rounded-full flex items-center justify-center", isRead ? "bg-muted" : "bg-background shadow-sm")}>
+                      <div className={cn("w-12 h-12 rounded-md-full flex items-center justify-center", isRead ? "bg-muted" : "bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm")}>
                         {getIcon(notification.type)}
                       </div>
                     </div>
@@ -226,26 +226,26 @@ export default function NotificationsInbox() {
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-1">
                         <div className="flex items-center gap-2">
-                          <h4 className={cn("text-base font-bold truncate", isRead ? "text-foreground" : "text-primary")}>
+                          <h4 className={cn("text-base font-semibold truncate", isRead ? "text-foreground" : "text-primary")}>
                             {notification.title}
                           </h4>
-                          {!isRead && <span className="flex shrink-0 w-2 h-2 rounded-full bg-primary" />}
+                          {!isRead && <span className="flex shrink-0 w-2 h-2 rounded-md-full bg-primary" />}
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
-                          <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5 bg-muted px-2.5 py-1 rounded-full">
+                          <span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 flex items-center gap-2.5 bg-muted px-2.5 py-1 rounded-md-full tracking-[0.04em]">
                             <Clock className="w-3.5 h-3.5" />
                             {formatTime(notification.created_at || notification.created_date)}
                           </span>
                         </div>
                       </div>
                       
-                      <p className={cn("text-sm max-w-4xl", isRead ? "text-muted-foreground" : "text-slate-700 dark:text-slate-300 font-medium")}>
+                      <p className={cn("text-sm max-w-4xl", isRead ? "text-[#71717a] dark:text-gray-400" : "text-slate-700 dark:text-slate-300 font-medium")}>
                         {notification.message}
                       </p>
                       
                       <div className="mt-4 flex items-center gap-3">
                         {notification.related_id && (
-                          <Button variant="ghost" size="sm" className="h-8 px-3 text-xs gap-1.5 bg-primary/5 text-primary hover:bg-primary/10">
+                          <Button variant="ghost" size="sm" className="h-8 px-3 text-xs gap-2.5 bg-primary/5 text-primary hover:bg-primary/10 tracking-[0.04em]">
                             View Details <ArrowRight className="w-3 h-3" />
                           </Button>
                         )}
@@ -253,7 +253,7 @@ export default function NotificationsInbox() {
                           <Button 
                             variant="ghost" 
                             size="sm" 
-                            className="h-8 px-3 text-xs gap-1.5 text-muted-foreground hover:text-primary"
+                            className="h-8 px-3 text-xs gap-2.5 text-[#71717a] dark:text-gray-400 hover:text-primary tracking-[0.04em]"
                             onClick={(e) => { e.stopPropagation(); markReadMutation.mutate(notification.id); }}
                           >
                             <CheckCircle2 className="w-3.5 h-3.5" /> Mark as Read
@@ -262,7 +262,7 @@ export default function NotificationsInbox() {
                         <Button 
                           variant="ghost" 
                           size="icon" 
-                          className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-red-50 ml-auto opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="h-8 w-8 text-[#71717a] dark:text-gray-400 hover:text-red-500 hover:bg-red-50 ml-auto opacity-0 group-hover:opacity-100 transition-opacity"
                           onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(notification.id); }}
                         >
                           <Trash2 className="w-4 h-4" />

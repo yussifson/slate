@@ -65,14 +65,14 @@ export default function UnivForm({
  <div className="flex flex-col h-full bg-background overflow-y-auto custom-scrollbar ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header max-w-3xl w-full mx-auto py-8 px-4 sm:px-6">
  <div className="mb-8">
- <h2 className="text-2xl font-bold text-foreground tracking-tight">{title}</h2>
- <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>
+ <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">{title}</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">{subtitle}</p>
  </div>
 
- <form onSubmit={handleSubmit} className="bg-card border border-primary/40 rounded-2xl p-6 sm:p-8 space-y-6">
+ <form onSubmit={handleSubmit} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6 sm:p-8 space-y-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {fields.map((field) => (
  <div key={field.id} className="space-y-2">
- <label className="text-sm font-semibold text-foreground flex items-center gap-1">
+ <label className="text-sm font-semibold text-foreground flex items-center gap-2">
  {field.label} {field.required && <span className="text-red-500">*</span>}
  </label>
  
@@ -83,7 +83,7 @@ export default function UnivForm({
  required={field.required}
  value={formData[field.id] || ''}
  onChange={(e) => handleChange(field.id, e.target.value)}
- className="w-full h-11 px-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition-"
+ className="w-full h-11 px-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition-"
  />
  ) : field.type === 'textarea' ? (
  <textarea 
@@ -92,7 +92,7 @@ export default function UnivForm({
  value={formData[field.id] || ''}
  onChange={(e) => handleChange(field.id, e.target.value)}
  rows={4}
- className="w-full p-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition- resize-none"
+ className="w-full p-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition- resize-none"
  />
  ) : field.type === 'select' ? (
  <div className="relative">
@@ -100,7 +100,7 @@ export default function UnivForm({
  required={field.required}
  value={formData[field.id] || ''}
  onChange={(e) => handleChange(field.id, e.target.value)}
- className="w-full h-11 pl-4 pr-10 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 appearance-none"
+ className="w-full h-11 pl-4 pr-10 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 appearance-none"
  >
  <option value="" disabled>Select an option</option>
  {field.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
@@ -108,18 +108,18 @@ export default function UnivForm({
  </div>
  ) : field.type === 'date' ? (
  <div className="relative">
- <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+ <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <input 
  type="date"
  required={field.required}
  value={formData[field.id] || ''}
  onChange={(e) => handleChange(field.id, e.target.value)}
- className="w-full h-11 pl-11 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-11 pl-11 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
  ) : field.type === 'file' ? (
  <div 
- className={`w-full border-2 border-dashed rounded-xl p-8 text-center transition-colors ${dragActive ? 'border-primary bg-primary/5' : 'border-primary/40 bg-background hover:bg-muted/30'} relative`}
+ className={`w-full border-2 border-dashed rounded-md-xl p-8 text-center transition-colors ${dragActive ? 'border-primary bg-primary/5' : 'border-primary/40 bg-background hover:bg-muted/30'} relative`}
  onDragOver={(e) => { e.preventDefault(); setDragActive(true);}}
  onDragLeave={() => setDragActive(false)}
  onDrop={(e) => {
@@ -139,19 +139,19 @@ export default function UnivForm({
  />
  {formData[field.id] ? (
  <div className="flex flex-col items-center gap-2 pointer-events-none">
- <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center">
+ <div className="w-12 h-12 bg-primary/10 text-primary rounded-md-xl flex items-center justify-center">
  <Check className="w-6 h-6" />
  </div>
  <p className="text-sm font-semibold text-foreground">{formData[field.id].name}</p>
- <p className="text-xs text-muted-foreground">{(formData[field.id].size / 1024).toFixed(1)} KB</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{(formData[field.id].size / 1024).toFixed(1)} KB</p>
  </div>
  ) : (
  <div className="flex flex-col items-center gap-2 pointer-events-none">
- <div className="w-12 h-12 bg-muted text-muted-foreground rounded-xl flex items-center justify-center">
+ <div className="w-12 h-12 bg-muted text-[#71717a] dark:text-gray-400 rounded-md-xl flex items-center justify-center">
  <Upload className="w-6 h-6" />
  </div>
  <p className="text-sm font-semibold text-foreground">Click to upload or drag and drop</p>
- <p className="text-xs text-muted-foreground">SVG, PNG, JPG or PDF (max. 10MB)</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">SVG, PNG, JPG or PDF (max. 10MB)</p>
  </div>
  )}
  </div>
@@ -160,17 +160,17 @@ export default function UnivForm({
  ))}
 
  <div className="pt-4 flex justify-end gap-3 border-t border-primary/40 mt-8">
- <button type="button" className="px-5 py-2.5 rounded-xl text-sm font-medium text-foreground bg-muted hover:bg-muted/60 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors">
+ <button type="button" className="px-5 py-2.5 rounded-md-xl text-sm font-medium text-foreground bg-muted hover:bg-muted/60 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors">
  Cancel
  </button>
  <button 
  type="submit" 
  disabled={isSubmitting}
- className="px-6 py-2.5 rounded-xl text-sm font-medium text-white bg-primary hover:bg-primary/90 transition-colors -primary/20 flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+ className="px-6 py-2.5 rounded-md-xl text-sm font-medium text-white bg-primary hover:bg-primary/90 transition-colors -primary/20 flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
  >
  {isSubmitting ? (
  <>
- <motion.div animate={{ rotate: 360}} transition={{ repeat: Infinity, duration: 1, ease: "linear"}} className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full" />
+ <motion.div animate={{ rotate: 360}} transition={{ repeat: Infinity, duration: 1, ease: "linear"}} className="w-4 h-4 border-2 border-white/30 border-t-white rounded-md-full" />
  Saving...
  </>
  ) : (

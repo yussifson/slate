@@ -18,13 +18,13 @@ const OrgNode = ({ employee, allEmployees }) => {
  const children = allEmployees.filter(e => e.reportsTo === employee.id);
  return (
  <div className="flex flex-col items-center">
- <div className="p-4 border border-primary/20 rounded-xl shadow-sm bg-card hover:border-primary/50 transition-colors w-48 relative z-10 flex flex-col items-center text-center">
- <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg mb-2">
+ <div className="p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm bg-card hover:border-primary/50 transition-colors w-48 relative z-10 flex flex-col items-center text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-12 h-12 rounded-md-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-lg mb-2">
  {employee.name?.charAt(0).toUpperCase()}
  </div>
- <p className="font-bold text-sm text-foreground truncate w-full">{employee.name}</p>
- <p className="text-xs text-primary font-medium truncate w-full">{employee.role}</p>
- <p className="text-[10px] text-muted-foreground uppercase tracking-wider truncate w-full mt-1">{employee.departmentName}</p>
+ <p className="font-semibold text-sm text-foreground truncate w-full">{employee.name}</p>
+ <p className="text-xs text-primary font-medium truncate w-full tracking-[0.04em]">{employee.role}</p>
+ <p className="text-[10px] text-[#71717a] dark:text-gray-400 uppercase tracking-wider truncate w-full mt-1 tracking-[0.04em]">{employee.departmentName}</p>
  </div>
  {children.length > 0 && (
  <div className="flex gap-6 pt-6 mt-0 border-t-2 border-primary/20 relative">
@@ -206,72 +206,72 @@ export default function Employees() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("employees", "Employees")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t("manage_staff_profiles_and_dire", "Manage staff profiles and directories")}</p>
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("employees", "Employees")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("manage_staff_profiles_and_dire", "Manage staff profiles and directories")}</p>
  </div>
  <div className="flex gap-2">
- <div className="bg-muted p-1 rounded-xl flex">
- <button onClick={() => setActiveTab('list')} className={`px-4 py-1.5 text-sm font-bold rounded-lg transition-all ${activeTab === 'list' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}><Users className="w-4 h-4 inline-block mr-1.5" /> List</button>
- <button onClick={() => setActiveTab('org')} className={`px-4 py-1.5 text-sm font-bold rounded-lg transition-all ${activeTab === 'org' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}><Network className="w-4 h-4 inline-block mr-1.5" /> Org Chart</button>
+ <div className="bg-muted p-1 rounded-md-xl flex">
+ <button onClick={() => setActiveTab('list')} className={`px-4 py-1.5 text-sm font-semibold rounded-xl transition-all ${activeTab === 'list' ? 'bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm text-foreground' : 'text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}><Users className="w-4 h-4 inline-block mr-1.5" /> List</button>
+ <button onClick={() => setActiveTab('org')} className={`px-4 py-1.5 text-sm font-semibold rounded-xl transition-all ${activeTab === 'org' ? 'bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm text-foreground' : 'text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}><Network className="w-4 h-4 inline-block mr-1.5" /> Org Chart</button>
  </div>
- <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white rounded-xl">
+ <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white rounded-md-xl">
  <Plus className="w-4 h-4" /> {t("add_employee", "Add Employee")}
  </Button>
  </div>
  </div>
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
- <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
+ <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary">
  <Users className="w-5 h-5" />
  </div>
  <div>
- <p className="text-2xl font-bold text-card-foreground">{totalStaff}</p>
- <p className="text-xs text-muted-foreground">{t("total_staff", "Total Staff")}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{totalStaff}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("total_staff", "Total Staff")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
- <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
+ <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary">
  <Users className="w-5 h-5" />
  </div>
  <div>
- <p className="text-2xl font-bold text-card-foreground">{activeStaff}</p>
- <p className="text-xs text-muted-foreground">{t("active_staff", "Active Staff")}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{activeStaff}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("active_staff", "Active Staff")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
- <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600">
+ <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-md-xl bg-amber-100 flex items-center justify-center text-amber-600">
  <Users className="w-5 h-5" />
  </div>
  <div>
- <p className="text-2xl font-bold text-card-foreground">{onLeave}</p>
- <p className="text-xs text-muted-foreground">{t("on_leave", "On Leave")}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{onLeave}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("on_leave", "On Leave")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
- <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
+ <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary">
  <Briefcase className="w-5 h-5" />
  </div>
  <div>
- <p className="text-2xl font-bold text-card-foreground">{departmentsCount}</p>
- <p className="text-xs text-muted-foreground">{t("departments", "Departments")}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{departmentsCount}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("departments", "Departments")}</p>
  </div>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search employee name or department..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search employee name or department..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  <div className="overflow-x-auto">
  {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_employees", "Loading employees...")}</div>
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_employees", "Loading employees...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
  <Users className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary" />
- <p className="font-semibold text-lg text-card-foreground">{t("no_employees_found", "No employees found")}</p>
- <p className="text-xs mt-1">{t(
+ <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_employees_found", "No employees found")}</p>
+ <p className="text-xs mt-1 tracking-[0.04em]">{t(
  "add_your_first_employee_to_get",
  "Add your first employee to get started."
  )}</p>
@@ -282,18 +282,18 @@ export default function Employees() {
  <div key={root.id} className="mx-8"><OrgNode employee={root} allEmployees={employees} /></div>
  ))}
  {employees.length > 0 && employees.filter(e => !e.reportsTo || e.reportsTo === '' || e.reportsTo === 'None' || !employees.find(x => x.id === e.reportsTo)).length === 0 && (
- <div className="text-center text-muted-foreground mt-20">Could not find any root employees (no manager).</div>
+ <div className="text-center text-[#71717a] dark:text-gray-400 mt-20">Could not find any root employees (no manager).</div>
  )}
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40">
+ <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("employee", "Employee")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("role_department", "Role & Department")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("contact_info", "Contact Info")}</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("action", "Action")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("employee", "Employee")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("role_department", "Role & Department")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("contact_info", "Contact Info")}</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("action", "Action")}</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
@@ -301,17 +301,17 @@ export default function Employees() {
  return (
  <tr key={emp.id} className="hover:bg-muted/50 transition-colors">
  <td className="px-6 py-4">
- <p className="font-bold text-card-foreground">{emp.name}</p>
- <p className="text-xs text-muted-foreground mt-0.5">{emp.employeeId}</p>
+ <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{emp.name}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">{emp.employeeId}</p>
  </td>
  <td className="px-6 py-4">
- <p className="font-semibold text-card-foreground">{emp.role}</p>
- <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5"><Briefcase className="w-3 h-3"/> {emp.departmentName}</p>
+ <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{emp.role}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 flex items-center gap-2 mt-0.5 tracking-[0.04em]"><Briefcase className="w-3 h-3"/> {emp.departmentName}</p>
  {emp.reportsToName !== 'None' && (
- <p className="text-[10px] text-muted-foreground/80 mt-1 uppercase tracking-wider font-bold">Reports to: {emp.reportsToName}</p>
+ <p className="text-[10px] text-[#71717a] dark:text-gray-400/80 mt-1 uppercase tracking-wider font-semibold tracking-[0.04em]">Reports to: {emp.reportsToName}</p>
  )}
  </td>
- <td className="px-6 py-4 text-muted-foreground space-y-1">
+ <td className="px-6 py-4 text-[#71717a] dark:text-gray-400 space-y-1">
  <div className="flex items-center gap-2"><Mail className="w-3.5 h-3.5"/> {emp.email}</div>
  <div className="flex items-center gap-2"><Phone className="w-3.5 h-3.5"/> {emp.phone}</div>
  </td>
@@ -319,7 +319,7 @@ export default function Employees() {
  <select
  value={emp.status}
  onChange={e => handleUpdateStatus(emp, e.target.value)}
- className="rounded-md border border-input bg-background px-2 py-1 text-xs font-bold"
+ className="rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-2 py-1 text-xs font-semibold tracking-[0.04em]"
  >
  <option>{t("active", "Active")}</option>
  <option>{t("on_leave", "On Leave")}</option>
@@ -360,50 +360,50 @@ export default function Employees() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40 max-h-[90vh] flex flex-col">
- <h2 className="text-lg font-bold text-card-foreground flex-shrink-0">{editTargetId ? 'Edit Employee' : 'Add Employee'}</h2>
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 max-h-[90vh] flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground flex-shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editTargetId ? 'Edit Employee' : 'Add Employee'}</h2>
  <div className="space-y-3 overflow-y-auto flex-1 pr-2">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("full_name", "Full Name")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("full_name", "Full Name")}</label>
  <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="e.g. Alice Johnson" className="mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("email", "Email")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("email", "Email")}</label>
  <Input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} placeholder="alice@example.com" className="mt-1" disabled={!!editTargetId} />
  </div>
  {!editTargetId && (
    <div>
-     <label className="text-xs font-bold text-muted-foreground uppercase">{t("temporary_password", "Temporary Password *")}</label>
+     <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("temporary_password", "Temporary Password *")}</label>
      <Input type="text" value={password} onChange={e => setPassword(e.target.value)} placeholder="Min 6 characters" className="mt-1" />
    </div>
  )}
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("phone", "Phone")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("phone", "Phone")}</label>
  <Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} placeholder="+1 234 567 8900" className="mt-1" />
  </div>
  <div className="grid grid-cols-2 gap-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("department", "Department")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("department", "Department")}</label>
  <select 
  value={formData.departmentId} 
  onChange={e => setFormData({...formData, departmentId: e.target.value})} 
- className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
+ className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground"
  >
  <option value="">Select Department...</option>
  {departmentRecords.map(d => <option key={d.id} value={d.id}>{d.data?.name}</option>)}
  </select>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("role", "Role")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("role", "Role")}</label>
  <Input value={formData.role} onChange={e => setFormData({...formData, role: e.target.value})} placeholder="Senior Developer" className="mt-1" />
  </div>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("reports_to", "Reports To (Manager/Senior)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("reports_to", "Reports To (Manager/Senior)")}</label>
  <select 
  value={formData.reportsTo} 
  onChange={e => setFormData({...formData, reportsTo: e.target.value})} 
- className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
+ className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground"
  >
  <option value="">Select Manager/Senior...</option>
  {employees.filter(e => e.id !== editTargetId).map(e => <option key={e.id} value={e.id}>{e.name} - {e.role}</option>)}
@@ -411,11 +411,11 @@ export default function Employees() {
  </div>
  <div className="grid grid-cols-2 gap-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("salary", "Salary")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("salary", "Salary")}</label>
  <Input type="number" value={formData.salary} onChange={e => setFormData({...formData, salary: e.target.value})} placeholder="6000" className="mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("start_date", "Start Date")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("start_date", "Start Date")}</label>
  <Input type="date" value={formData.startDate} onChange={e => setFormData({...formData, startDate: e.target.value})} className="mt-1" />
  </div>
  </div>
@@ -440,16 +440,16 @@ export default function Employees() {
  if (!emp) return null;
  return (
  <div className="space-y-4 text-sm">
- <div><span className="font-semibold text-muted-foreground">{t("id", "ID:")}</span> <p className="font-medium">{emp.employeeId}</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("name", "Name:")}</span> <p className="font-medium">{emp.name}</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("department", "Department:")}</span> <p className="font-medium">{emp.departmentName}</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("reports_to", "Reports To:")}</span> <p className="font-medium">{emp.reportsToName}</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("role", "Role:")}</span> <p className="font-medium">{emp.role}</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("email", "Email:")}</span> <p className="font-medium">{emp.email}</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("phone", "Phone:")}</span> <p className="font-medium">{emp.phone}</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("salary", "Salary:")}</span> <p className="font-medium">${emp.salary}</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("start_date", "Start Date:")}</span> <p className="font-medium">{emp.startDate}</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("status", "Status:")}</span> <p className="font-medium">{emp.status}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("id", "ID:")}</span> <p className="font-medium">{emp.employeeId}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("name", "Name:")}</span> <p className="font-medium">{emp.name}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("department", "Department:")}</span> <p className="font-medium">{emp.departmentName}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("reports_to", "Reports To:")}</span> <p className="font-medium">{emp.reportsToName}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("role", "Role:")}</span> <p className="font-medium">{emp.role}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("email", "Email:")}</span> <p className="font-medium">{emp.email}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("phone", "Phone:")}</span> <p className="font-medium">{emp.phone}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("salary", "Salary:")}</span> <p className="font-medium">${emp.salary}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("start_date", "Start Date:")}</span> <p className="font-medium">{emp.startDate}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("status", "Status:")}</span> <p className="font-medium">{emp.status}</p></div>
  </div>
  );
 })()}

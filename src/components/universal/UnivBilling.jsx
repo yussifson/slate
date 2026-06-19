@@ -105,7 +105,7 @@ export default function UnivBilling({
 };
 
  if (subLoading || plansLoading) {
- return <div className="p-8 text-center text-muted-foreground animate-pulse">Loading billing details...</div>;
+ return <div className="p-8 text-center text-[#71717a] dark:text-gray-400 animate-pulse">Loading billing details...</div>;
 }
 
  const currentPlanId = plan?.id;
@@ -116,35 +116,35 @@ export default function UnivBilling({
  
  {/* Header & Current Status */}
  <div>
- <h1 className="text-3xl font-extrabold text-foreground tracking-tight">{title}</h1>
- <p className="text-muted-foreground mt-1">Manage your subscription, billing details, and view your usage.</p>
+ <h1 className="text-3xl font-extrabold text-foreground tracking-tight tracking-[-0.02em]">{title}</h1>
+ <p className="text-[#71717a] dark:text-gray-400 mt-1">Manage your subscription, billing details, and view your usage.</p>
  </div>
 
- <div className="bg-card border border-primary/40 rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <div className="flex items-center gap-3 mb-2">
- <h2 className="text-2xl font-bold text-foreground">Current Plan: {plan?.name || 'Free'}</h2>
- <span className={cn("px-2.5 py-1 text-xs font-bold uppercase tracking-wider rounded-md border", 
+ <h2 className="text-2xl font-semibold text-foreground tracking-[-0.02em]">Current Plan: {plan?.name || 'Free'}</h2>
+ <span className={cn("px-2.5 py-1 text-xs font-semibold uppercase tracking-wider rounded-lg border", 
  isActive ? "bg-emerald-100 text-emerald-700 border-emerald-200" : "bg-amber-100 text-amber-700 border-amber-200"
  )}>
  {status}
  </span>
  </div>
- <p className="text-muted-foreground max-w-xl">
+ <p className="text-[#71717a] dark:text-gray-400 max-w-xl">
  {isActive 
  ? `You are currently on the ${plan?.name} plan. Your next billing date is ${subscription?.current_period_end ? new Date(subscription.current_period_end).toLocaleDateString() : 'N/A'}.` 
  : "You do not have an active subscription. Upgrade to unlock premium features."}
  </p>
  </div>
- <div className="bg-muted rounded-xl p-4 min-w-[200px]">
- <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1 flex items-center gap-1.5"><Zap className="w-3 h-3 text-amber-500" /> AI Credits (Monthly)</div>
- <div className="flex items-end gap-1 mb-2">
- <span className="text-2xl font-black">{aiLimit.current}</span>
- <span className="text-sm font-medium text-muted-foreground pb-1">/ {aiLimit.max || '∞'}</span>
+ <div className="bg-muted rounded-md-xl p-4 min-w-[200px]">
+ <div className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-1 flex items-center gap-2.5 tracking-[0.04em]"><Zap className="w-3 h-3 text-amber-500" /> AI Credits (Monthly)</div>
+ <div className="flex items-end gap-2 mb-2">
+ <span className="text-2xl font-black tracking-[-0.02em]">{aiLimit.current}</span>
+ <span className="text-sm font-medium text-[#71717a] dark:text-gray-400 pb-1">/ {aiLimit.max || '∞'}</span>
  </div>
- <div className="w-full h-2 bg-background rounded-full overflow-hidden">
+ <div className="w-full h-2 bg-background rounded-md-full overflow-hidden">
  <div 
- className={cn("h-full transition-all", aiLimit.allowed ? "bg-amber-500" : "bg-red-500")} 
+ className={cn("h-full transition-all", aiLimit.allowed ? "bg-amber-500" : "bg-red-500/10")} 
  style={{ width: `${Math.min((aiLimit.current / Math.max(aiLimit.max, 1)) * 100, 100)}%`}}
  ></div>
  </div>
@@ -153,7 +153,7 @@ export default function UnivBilling({
 
  {/* Pricing Table */}
  <div>
- <h3 className="text-xl font-bold text-foreground mb-4">Available Plans</h3>
+ <h3 className="text-xl font-semibold text-foreground mb-4">Available Plans</h3>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
  {availablePlans.map((p) => {
  const isCurrent = p.id === currentPlanId;
@@ -164,18 +164,18 @@ export default function UnivBilling({
 
  return (
  <div key={p.id} className={cn(
- "bg-card rounded-2xl p-6 sm:p-8 flex flex-col relative transition-all",
- isCurrent ? "border-2 border-primary " : "border border-primary/40 hover:border-primary/50"
+ "bg-card rounded-md-2xl p-6 sm:p-8 flex flex-col relative transition-all",
+ isCurrent ? "border-2 border-primary " : "border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary/50"
  )}>
  {isCurrent && (
- <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">
+ <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-white text-[10px] font-semibold uppercase tracking-widest px-3 py-1 rounded-md-full tracking-[0.04em]">
  Current Plan
  </div>
  )}
- <h4 className="text-xl font-bold text-foreground mb-2">{p.name}</h4>
- <div className="flex items-end gap-1 mb-6">
- <span className="text-4xl font-black">GH₵{p.price_monthly}</span>
- <span className="text-muted-foreground font-medium mb-1">/ mo</span>
+ <h4 className="text-xl font-semibold text-foreground mb-2">{p.name}</h4>
+ <div className="flex items-end gap-2 mb-6">
+ <span className="text-4xl font-black tracking-[-0.02em]">GH₵{p.price_monthly}</span>
+ <span className="text-[#71717a] dark:text-gray-400 font-medium mb-1">/ mo</span>
  </div>
 
  <ul className="space-y-3 mb-8 flex-1">
@@ -192,7 +192,7 @@ export default function UnivBilling({
  <span><strong>{limits.storage_gb || 0}GB</strong> Storage</span>
  </li>
  {features.map((f, i) => (
- <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+ <li key={i} className="flex items-start gap-2 text-sm text-[#71717a] dark:text-gray-400">
  <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
  <span className="capitalize">{f.replace(/_/g, ' ')}</span>
  </li>
@@ -203,8 +203,8 @@ export default function UnivBilling({
  onClick={() => handleSubscribe(p)}
  disabled={isCurrent || isProcessing}
  className={cn(
- "w-full py-2.5 rounded-lg text-sm font-bold transition-colors",
- isCurrent ? "bg-muted text-muted-foreground cursor-not-allowed" : "bg-primary text-white hover:bg-primary/90 "
+ "w-full py-2.5 rounded-xl text-sm font-semibold transition-colors",
+ isCurrent ? "bg-muted text-[#71717a] dark:text-gray-400 cursor-not-allowed" : "bg-primary text-white hover:bg-primary/90 "
  )}
  >
  {isProcessing && !isCurrent ? 'Processing...' : isCurrent ? 'Active Plan' : 'Subscribe via Paystack'}
@@ -216,13 +216,13 @@ export default function UnivBilling({
  </div>
 
  {/* Transaction History */}
- <div className="bg-card border border-primary/40 rounded-2xl p-6 sm:p-8 ">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6 sm:p-8  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between mb-6">
- <h3 className="text-xl font-bold text-foreground flex items-center gap-2">
+ <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
  <History className="w-5 h-5 text-primary" /> Billing History
  </h3>
  </div>
- <div className="text-center py-10 text-muted-foreground">
+ <div className="text-center py-10 text-[#71717a] dark:text-gray-400">
  <CreditCard className="w-10 h-10 mx-auto mb-3 opacity-20" />
  <p className="text-sm">No recent transactions found.</p>
  </div>

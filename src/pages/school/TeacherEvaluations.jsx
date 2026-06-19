@@ -53,12 +53,12 @@ export default function TeacherEvaluations() {
  <div className="space-y-8 pb-20 max-w-5xl mx-auto">
  <div className="flex items-center justify-between mb-6">
  <div>
- <h1 className="text-2xl school-heading font-extrabold tracking-tight">Teacher Evaluations</h1>
- <p className="text-sm text-muted-foreground mt-0.5">Anonymous feedback to improve academic quality</p>
+ <h1 className="text-2xl school-heading font-extrabold tracking-tight tracking-[-0.02em]">Teacher Evaluations</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">Anonymous feedback to improve academic quality</p>
  </div>
  </div>
 
- <div className="bg-card rounded-xl border border-primary/40 p-6 ">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h3 className="text-xl font-extrabold mb-6 text-slate-900 dark:text-slate-100 dark:text-white flex items-center gap-2">
  <Award className="text-amber-500" /> Pending Evaluations
  </h3>
@@ -66,11 +66,11 @@ export default function TeacherEvaluations() {
  {teachers.map((teacher, i) => {
  const done = hasEvaluated(teacher);
  return (
- <div key={i} className={`p-6 rounded-3xl border ${done ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900/50 border-primary/40 dark:border-primary/40 dark:border-primary/40' : 'bg-white dark:bg-slate-900/40 dark:bg-background border-primary/40 dark:border-primary/40 '} flex flex-col md:flex-row items-center justify-between gap-4 transition-all`}>
- <div className="font-bold text-lg text-slate-900 dark:text-slate-100 dark:text-white">{teacher}</div>
+ <div key={i} className={`p-6 rounded-md-3xl border ${done ? 'bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900/50 border-primary/40 dark:border-primary/40 dark:border-primary/40' : 'bg-white dark:bg-slate-900/40 dark:bg-background border-primary/40 dark:border-primary/40 '} flex flex-col md:flex-row items-center justify-between gap-4 transition-all`}>
+ <div className="font-semibold text-lg text-slate-900 dark:text-slate-100 dark:text-white">{teacher}</div>
  
  {done ? (
- <div className="flex items-center gap-2 text-primary dark:text-primary/70 bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 dark:bg-primary/20 px-4 py-2 rounded-full font-bold text-sm">
+ <div className="flex items-center gap-2 text-primary dark:text-primary/70 bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20 dark:bg-primary/20 px-4 py-2 rounded-md-full font-semibold text-sm">
  <CheckCircle className="w-4 h-4" /> Completed
  </div>
  ) : (
@@ -86,12 +86,12 @@ export default function TeacherEvaluations() {
  />
  ))}
  </div>
- <Button onClick={() => submitEval.mutate()} disabled={submitEval.isPending || rating === 0} className="w-full md:w-auto rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold">
+ <Button onClick={() => submitEval.mutate()} disabled={submitEval.isPending || rating === 0} className="w-full md:w-auto rounded-md-full bg-slate-900 hover:bg-slate-800 text-white font-semibold">
  Submit
  </Button>
  </>
  ) : (
- <Button onClick={() => { setSelectedTeacher(teacher); setRating(0);}} variant="outline" className="w-full md:w-auto rounded-full border-amber-200 text-amber-700 hover:bg-amber-50">
+ <Button onClick={() => { setSelectedTeacher(teacher); setRating(0);}} variant="outline" className="w-full md:w-auto rounded-md-full border-amber-200 text-amber-700 hover:bg-amber-50">
  Start Evaluation
  </Button>
  )}

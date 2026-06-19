@@ -218,13 +218,13 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
 
         <div className="space-y-4">
           <div className="relative">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-[#71717a] dark:text-gray-400" />
             <input 
               type="text" 
               placeholder="Search by name..." 
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-sm border rounded-md focus:ring-2 focus:ring-primary/20"
+              className="w-full pl-9 pr-4 py-2 text-sm border-[0.5px] border-black/9 dark:border-white/8 rounded-lg focus:ring-2 focus:ring-primary/20"
             />
           </div>
 
@@ -234,25 +234,25 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
               <TabsTrigger value="clients" className="flex items-center gap-2"><Users className="w-4 h-4"/> Clients</TabsTrigger>
             </TabsList>
             
-            <div className="h-[250px] overflow-y-auto mt-4 border rounded-md p-2">
+            <div className="h-[250px] overflow-y-auto mt-4 border-[0.5px] border-black/9 dark:border-white/8 rounded-lg p-2">
               {loading ? (
-                <div className="flex items-center justify-center h-full"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>
+                <div className="flex items-center justify-center h-full"><Loader2 className="w-6 h-6 animate-spin text-[#71717a] dark:text-gray-400" /></div>
               ) : (
                 <div className="space-y-1">
                   {getFilteredList(activeTab === "staff" ? staff : clients).map(item => (
-                    <div key={item.id} className="flex items-center space-x-3 p-2 hover:bg-muted/50 rounded-lg cursor-pointer" onClick={() => handleToggleUser(item.id)}>
+                    <div key={item.id} className="flex items-center space-x-3 p-2 hover:bg-muted/50 rounded-xl cursor-pointer" onClick={() => handleToggleUser(item.id)}>
                       <Checkbox checked={selectedUsers.includes(item.id)} onCheckedChange={() => handleToggleUser(item.id)} />
-                      <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
-                         <span className="text-xs font-bold text-primary">{(item.full_name || item.name || item.first_name || 'U')[0].toUpperCase()}</span>
+                      <div className="w-8 h-8 rounded-md-full bg-slate-100 flex items-center justify-center shrink-0">
+                         <span className="text-xs font-semibold text-primary tracking-[0.04em]">{(item.full_name || item.name || item.first_name || 'U')[0].toUpperCase()}</span>
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium leading-none">{item.full_name || item.name || item.first_name}</p>
-                        <p className="text-xs text-muted-foreground mt-1 truncate">{item.user_email || item.email || "No email"}</p>
+                        <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 truncate tracking-[0.04em]">{item.user_email || item.email || "No email"}</p>
                       </div>
                     </div>
                   ))}
                   {getFilteredList(activeTab === "staff" ? staff : clients).length === 0 && (
-                    <div className="text-center text-sm text-muted-foreground py-8">No {activeTab} found.</div>
+                    <div className="text-center text-sm text-[#71717a] dark:text-gray-400 py-8">No {activeTab} found.</div>
                   )}
                 </div>
               )}
@@ -267,7 +267,7 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
                 placeholder="E.g., Project Alpha Team" 
                 value={groupName}
                 onChange={e => setGroupName(e.target.value)}
-                className="w-full px-3 py-2 text-sm border rounded-md focus:ring-2 focus:ring-primary/20"
+                className="w-full px-3 py-2 text-sm border-[0.5px] border-black/9 dark:border-white/8 rounded-lg focus:ring-2 focus:ring-primary/20"
               />
             </div>
           )}

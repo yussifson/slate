@@ -147,27 +147,27 @@ export default function UnivSOP({
  <div className="flex h-full w-full bg-background font-sans overflow-hidden">
  
  {/* Sidebar - SOP Library */}
- <div className="w-80 border-r border-primary/40 bg-card flex flex-col shrink-0 hidden md:flex">
+ <div className="w-80 border-r border-primary/40 bg-card flex flex-col shrink-0 hidden md:flex hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40">
  <div className="flex items-center justify-between mb-4">
- <h1 className="text-lg font-bold text-foreground flex items-center gap-2">
+ <h1 className="text-lg font-semibold text-foreground flex items-center gap-2">
  <BookOpen className="w-5 h-5 text-primary" /> {title}
  </h1>
  <button 
  onClick={handleCreateNew}
- className="p-1.5 bg-primary/10 text-primary rounded hover:bg-primary/20 transition-colors"
+ className="p-1.5 bg-primary/10 text-primary rounded-md hover:bg-primary/20 transition-colors"
  >
  <Plus className="w-4 h-4" />
  </button>
  </div>
  <div className="relative">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <input 
  type="text" 
  placeholder="Search procedures..."
  value={searchQuery}
  onChange={e => setSearchQuery(e.target.value)}
- className="w-full h-9 pl-9 pr-3 bg-muted/50 border border-primary/40 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+ className="w-full h-9 pl-9 pr-3 bg-muted/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:border-primary transition-colors"
  />
  </div>
  </div>
@@ -178,18 +178,18 @@ export default function UnivSOP({
  key={sop.id}
  onClick={() => { setActiveSOPId(sop.id); setIsEditMode(false); resetExecution();}}
  className={cn(
- "w-full text-left p-3 rounded-xl transition-all",
+ "w-full text-left p-3 rounded-md-xl transition-all",
  activeSOPId === sop.id ? "bg-primary text-primary-foreground " : "hover:bg-muted"
  )}
  >
  <div className="font-semibold text-sm line-clamp-1">{sop.title}</div>
- <div className={cn("text-xs mt-1", activeSOPId === sop.id ? "text-primary-foreground/80" : "text-muted-foreground")}>
+ <div className={cn("text-xs mt-1", activeSOPId === sop.id ? "text-primary-foreground/80" : "text-[#71717a] dark:text-gray-400")}>
  {sop.department} • {sop.steps?.length || 0} steps
  </div>
  </button>
  ))}
  {filteredSOPs.length === 0 && (
- <div className="text-center py-10 text-muted-foreground text-sm">
+ <div className="text-center py-10 text-[#71717a] dark:text-gray-400 text-sm">
  No procedures found.
  </div>
  )}
@@ -205,45 +205,45 @@ export default function UnivSOP({
  <div className="max-w-4xl mx-auto space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h2 className="text-2xl font-bold text-foreground">SOP Builder</h2>
- <p className="text-sm text-muted-foreground">Define the procedure and steps.</p>
+ <h2 className="text-2xl font-semibold text-foreground tracking-[-0.02em]">SOP Builder</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400">Define the procedure and steps.</p>
  </div>
  <div className="flex items-center gap-3">
- <button onClick={() => setIsEditMode(false)} className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground">Cancel</button>
- <button onClick={handleSave} disabled={saveMutation.isPending} className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 disabled:opacity-50">
+ <button onClick={() => setIsEditMode(false)} className="px-4 py-2 text-sm font-medium text-[#71717a] dark:text-gray-400 hover:text-foreground">Cancel</button>
+ <button onClick={handleSave} disabled={saveMutation.isPending} className="px-6 py-2 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 disabled:opacity-50">
  {saveMutation.isPending ? 'Saving...' : 'Save SOP'}
  </button>
  </div>
  </div>
 
- <div className="bg-card border border-primary/40 rounded-2xl p-6 space-y-4">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="grid grid-cols-2 gap-4">
  <div className="col-span-2">
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Procedure Title</label>
- <input type="text" value={editingSOP.title} onChange={e => setEditingSOP({...editingSOP, title: e.target.value})} className="w-full h-11 px-3 rounded-xl border border-primary/40 bg-background text-sm focus:border-primary outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Procedure Title</label>
+ <input type="text" value={editingSOP.title} onChange={e => setEditingSOP({...editingSOP, title: e.target.value})} className="w-full h-11 px-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary outline-none" />
  </div>
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Department</label>
- <input type="text" value={editingSOP.department} onChange={e => setEditingSOP({...editingSOP, department: e.target.value})} className="w-full h-11 px-3 rounded-xl border border-primary/40 bg-background text-sm focus:border-primary outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Department</label>
+ <input type="text" value={editingSOP.department} onChange={e => setEditingSOP({...editingSOP, department: e.target.value})} className="w-full h-11 px-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary outline-none" />
  </div>
  <div className="col-span-2">
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Description / Goal</label>
- <textarea value={editingSOP.description} onChange={e => setEditingSOP({...editingSOP, description: e.target.value})} className="w-full h-20 p-3 rounded-xl border border-primary/40 bg-background text-sm focus:border-primary outline-none resize-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Description / Goal</label>
+ <textarea value={editingSOP.description} onChange={e => setEditingSOP({...editingSOP, description: e.target.value})} className="w-full h-20 p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary outline-none resize-none" />
  </div>
  </div>
  </div>
 
  <div className="space-y-4">
- <h3 className="text-lg font-bold text-foreground flex items-center justify-between">
+ <h3 className="text-lg font-semibold text-foreground flex items-center justify-between">
  Execution Steps
- <button onClick={() => setEditingSOP({...editingSOP, steps: [...(editingSOP.steps || []), {title: 'New Step', content: ''}]})} className="text-sm font-semibold text-primary flex items-center gap-1 hover:underline">
+ <button onClick={() => setEditingSOP({...editingSOP, steps: [...(editingSOP.steps || []), {title: 'New Step', content: ''}]})} className="text-sm font-semibold text-primary flex items-center gap-2 hover:underline">
  <Plus className="w-4 h-4" /> Add Step
  </button>
  </h3>
  
  {(editingSOP.steps || []).map((step, idx) => (
- <div key={idx} className="bg-card border border-primary/40 rounded-xl p-4 flex gap-4">
- <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center font-bold text-muted-foreground shrink-0">{idx + 1}</div>
+ <div key={idx} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 flex gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-8 h-8 rounded-md-full bg-muted flex items-center justify-center font-semibold text-[#71717a] dark:text-gray-400 shrink-0">{idx + 1}</div>
  <div className="flex-1 space-y-3">
  <input 
  type="text" value={step.title} placeholder="Step Title"
@@ -252,7 +252,7 @@ export default function UnivSOP({
  newSteps[idx].title = e.target.value;
  setEditingSOP({...editingSOP, steps: newSteps});
 }} 
- className="w-full bg-transparent text-foreground font-bold outline-none border-b border-transparent focus:border-primary pb-1" 
+ className="w-full bg-transparent text-foreground font-semibold outline-none border-b border-transparent focus:border-primary pb-1" 
  />
  <textarea 
  value={step.content} placeholder="Step details, commands, or checks..."
@@ -261,7 +261,7 @@ export default function UnivSOP({
  newSteps[idx].content = e.target.value;
  setEditingSOP({...editingSOP, steps: newSteps});
 }} 
- className="w-full h-20 bg-muted/30 border border-primary/40 rounded-lg p-2 text-sm outline-none focus:border-primary resize-y" 
+ className="w-full h-20 bg-muted/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-2 text-sm outline-none focus:border-primary resize-y" 
  />
  </div>
  <button 
@@ -269,7 +269,7 @@ export default function UnivSOP({
  const newSteps = editingSOP.steps.filter((_, i) => i !== idx);
  setEditingSOP({...editingSOP, steps: newSteps});
 }}
- className="text-muted-foreground hover:text-red-500 p-2 self-start"
+ className="text-[#71717a] dark:text-gray-400 hover:text-red-500 p-2 self-start"
  >
  <Trash2 className="w-4 h-4" />
  </button>
@@ -282,17 +282,17 @@ export default function UnivSOP({
  // EXECUTION MODE
  <div className="flex-1 overflow-y-auto flex flex-col">
  {/* Header */}
- <div className="border-b border-primary/40 bg-card px-8 py-6 shrink-0 flex items-start justify-between">
+ <div className="border-b border-primary/40 bg-card px-8 py-6 shrink-0 flex items-start justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <div className="flex items-center gap-2 text-primary font-semibold text-sm mb-2">
  <FileText className="w-4 h-4" /> {activeSOP.department}
  </div>
- <h1 className="text-3xl font-extrabold text-foreground tracking-tight">{activeSOP.title}</h1>
- <p className="text-muted-foreground mt-2 max-w-2xl">{activeSOP.description}</p>
+ <h1 className="text-3xl font-extrabold text-foreground tracking-tight tracking-[-0.02em]">{activeSOP.title}</h1>
+ <p className="text-[#71717a] dark:text-gray-400 mt-2 max-w-2xl">{activeSOP.description}</p>
  </div>
  <div className="flex items-center gap-2">
- <button onClick={handleEdit} className="p-2 border border-primary/40 bg-background rounded-lg hover:bg-muted text-muted-foreground transition-colors"><Edit3 className="w-4 h-4" /></button>
- <button onClick={() => { if(window.confirm('Delete SOP?')) deleteMutation.mutate(activeSOP.id);}} className="p-2 border border-primary/40 bg-background rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 text-muted-foreground transition-colors"><Trash2 className="w-4 h-4" /></button>
+ <button onClick={handleEdit} className="p-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background rounded-xl hover:bg-muted text-[#71717a] dark:text-gray-400 transition-colors"><Edit3 className="w-4 h-4" /></button>
+ <button onClick={() => { if(window.confirm('Delete SOP?')) deleteMutation.mutate(activeSOP.id);}} className="p-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background rounded-xl hover:bg-red-50 hover:text-red-600 hover:border-red-200 text-[#71717a] dark:text-gray-400 transition-colors"><Trash2 className="w-4 h-4" /></button>
  </div>
  </div>
 
@@ -302,25 +302,25 @@ export default function UnivSOP({
  
  {/* Progress Sidebar */}
  <div className="w-64 shrink-0 hidden lg:block">
- <div className="sticky top-0 bg-card border border-primary/40 rounded-2xl p-5 ">
+ <div className="sticky top-0 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between mb-4">
- <h3 className="font-bold text-foreground">Progress</h3>
- <button onClick={resetExecution} className="text-muted-foreground hover:text-foreground"><RefreshCw className="w-4 h-4" /></button>
+ <h3 className="font-semibold text-foreground">Progress</h3>
+ <button onClick={resetExecution} className="text-[#71717a] dark:text-gray-400 hover:text-foreground"><RefreshCw className="w-4 h-4" /></button>
  </div>
- <div className="h-2 bg-muted rounded-full overflow-hidden mb-4">
- <div className="h-full bg-emerald-500 transition-all duration-500" style={{ width: `${(completedSteps.length / (activeSOP.steps?.length || 1)) * 100}%`}}></div>
+ <div className="h-2 bg-muted rounded-md-full overflow-hidden mb-4">
+ <div className="h-full bg-emerald-500/10 transition-all duration-500" style={{ width: `${(completedSteps.length / (activeSOP.steps?.length || 1)) * 100}%`}}></div>
  </div>
- <div className="space-y-3 relative before:absolute before:inset-0 before:ml-2 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-border before:to-transparent">
+ <div className="space-y-3 relative before:absolute before:inset-0 before:ml-2 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-border-[0.5px] border-black/9 dark:border-white/8 before:to-transparent">
  {(activeSOP.steps || []).map((step, idx) => {
  const isDone = completedSteps.includes(idx);
  const isActive = activeStepIndex === idx;
  return (
  <div key={idx} className="relative flex items-center justify-between group">
  <div className="flex items-center gap-3">
- <div className={cn("w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold z-10 transition-colors", isDone ? "bg-emerald-500 text-white" : isActive ? "bg-primary text-white ring-4 ring-primary/20" : "bg-muted text-muted-foreground")}>
+ <div className={cn("w-6 h-6 rounded-md-full flex items-center justify-center text-[10px] font-semibold z-10 transition-colors", isDone ? "bg-emerald-500/10 text-white" : isActive ? "bg-primary text-white ring-4 ring-primary/20" : "bg-muted text-[#71717a] dark:text-gray-400")}>
  {isDone ? <CheckCircle2 className="w-3 h-3" /> : idx + 1}
  </div>
- <span className={cn("text-sm transition-colors line-clamp-1", isDone ? "text-muted-foreground line-through" : isActive ? "font-bold text-foreground" : "text-muted-foreground")}>
+ <span className={cn("text-sm transition-colors line-clamp-1", isDone ? "text-[#71717a] dark:text-gray-400 line-through" : isActive ? "font-semibold text-foreground" : "text-[#71717a] dark:text-gray-400")}>
  {step.title}
  </span>
  </div>
@@ -342,30 +342,30 @@ export default function UnivSOP({
  <div 
  key={idx} 
  className={cn(
- "rounded-2xl border transition-all duration-300",
+ "rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300",
  isActive ? "bg-card border-primary/50 ring-1 ring-primary/20 scale-[1.02]" : "bg-card/50 border-primary/40 opacity-70 hover:opacity-100 cursor-pointer"
  )}
  onClick={() => { if (!isActive) setActiveStepIndex(idx);}}
  >
  <div className="p-6">
  <div className="flex items-start justify-between gap-4">
- <h3 className={cn("text-xl font-bold mb-4", isActive ? "text-foreground" : "text-muted-foreground")}>
+ <h3 className={cn("text-xl font-semibold mb-4", isActive ? "text-foreground" : "text-[#71717a] dark:text-gray-400")}>
  {idx + 1}. {step.title}
  </h3>
  <button 
  onClick={(e) => { e.stopPropagation(); toggleStepComplete(idx);}}
  className={cn(
- "flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all ",
+ "flex items-center gap-2 px-4 py-2 rounded-md-xl font-semibold text-sm transition-all ",
  isDone 
- ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800"
- : "bg-background border border-primary/40 hover:border-primary hover:text-primary"
+ ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 dark:border-emerald-800"
+ : "bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary hover:text-primary"
  )}
  >
  {isDone ? <><CheckCircle2 className="w-4 h-4" /> Completed</> : <><Circle className="w-4 h-4" /> Mark Complete</>}
  </button>
  </div>
  
- <div className={cn("prose dark:prose-invert max-w-none text-muted-foreground", !isActive && !isDone && "line-clamp-2")}>
+ <div className={cn("prose dark:prose-invert max-w-none text-[#71717a] dark:text-gray-400", !isActive && !isDone && "line-clamp-2")}>
  {step.content.split('\n').map((line, i) => (
  <p key={i} className="mb-2">{line}</p>
  ))}
@@ -376,13 +376,13 @@ export default function UnivSOP({
 })}
  
  {completedSteps.length === (activeSOP.steps?.length || 0) && activeSOP.steps?.length > 0 && (
- <motion.div initial={{ opacity: 0, y: 20}} animate={{ opacity: 1, y: 0}} className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-8 text-center">
- <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
+ <motion.div initial={{ opacity: 0, y: 20}} animate={{ opacity: 1, y: 0}} className="bg-emerald-50 dark:bg-emerald-900/20 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 dark:border-emerald-800 rounded-md-2xl p-8 text-center">
+ <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/50 rounded-md-full flex items-center justify-center mx-auto mb-4">
  <CheckCircle2 className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
  </div>
- <h3 className="text-2xl font-bold text-emerald-800 dark:text-emerald-300 mb-2">Procedure Completed!</h3>
+ <h3 className="text-2xl font-semibold text-emerald-800 dark:text-emerald-300 mb-2 tracking-[-0.02em]">Procedure Completed!</h3>
  <p className="text-emerald-600 dark:text-emerald-400 mb-6">All steps have been successfully marked as done.</p>
- <button onClick={resetExecution} className="px-6 py-2 bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-700 transition-colors">
+ <button onClick={resetExecution} className="px-6 py-2 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition-colors">
  Restart SOP
  </button>
  </motion.div>
@@ -393,9 +393,9 @@ export default function UnivSOP({
  </div>
  </div>
  ) : (
- <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground p-8">
+ <div className="flex-1 flex flex-col items-center justify-center text-[#71717a] dark:text-gray-400 p-8">
  <BookOpen className="w-16 h-16 mb-4 opacity-20" />
- <h3 className="text-xl font-bold text-foreground mb-1">Interactive SOPs</h3>
+ <h3 className="text-xl font-semibold text-foreground mb-1">Interactive SOPs</h3>
  <p>Select a procedure from the sidebar to execute or edit.</p>
  </div>
  )}

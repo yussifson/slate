@@ -180,54 +180,54 @@ export default function SignUp() {
 };
 
  return (
- <div className="min-h-screen flex flex-col lg:flex-row bg-white">
+ <div className="min-h-screen flex flex-col lg:flex-row bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Left Side: Form */}
  <div className="flex-1 flex flex-col justify-center px-8 lg:px-16 py-12">
  <div className="max-w-md w-full mx-auto">
  <div className="flex flex-col mb-8">
  <Logo className="w-10 h-10" />
- <span className="text-[10px] text-muted-foreground font-bold tracking-[0.2em] uppercase mt-1">by Optavel</span>
+ <span className="text-[10px] text-[#71717a] dark:text-gray-400 font-semibold tracking-[0.2em] uppercase mt-1 tracking-[0.04em]">by Optavel</span>
  </div>
  
  <div className="mb-8">
- <h1 className="text-2xl font-bold text-slate-900">{t("create_an_account", "Create your account")}</h1>
- <p className="text-xs text-slate-500 font-medium mt-1">{t(
+ <h1 className="text-2xl font-semibold text-slate-900 tracking-[-0.02em]">{t("create_an_account", "Create your account")}</h1>
+ <p className="text-xs text-slate-500 font-medium mt-1 tracking-[0.04em]">{t(
  "create_an_account_to_start_man",
  "Create an account to start managing your business"
  )}</p>
  </div>
  
  <form className="space-y-3" onSubmit={handleSignUp}>
- {error && <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border border-red-100 font-medium">{error}</div>}
- {success && <div className="rounded-xl bg-slate-50 p-3 text-xs text-primary border border-primary/40 font-medium">{success}</div>}
+ {error && <div className="rounded-md-xl bg-red-50 p-3 text-xs text-red-600 border-[0.5px] border-black/9 dark:border-white/8 border-red-100 font-medium tracking-[0.04em]">{error}</div>}
+ {success && <div className="rounded-md-xl bg-slate-50 p-3 text-xs text-primary border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 font-medium tracking-[0.04em]">{success}</div>}
  
  <div className="space-y-4">
  <div>
- <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">{t("username", "Your Name")}</label>
+ <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("username", "Your Name")}</label>
  <Input
  required
  placeholder="John Doe"
  value={username}
  onChange={(e) => setUsername(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
+ className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
 
  <div>
- <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">{t("email", "Email Address")}</label>
+ <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("email", "Email Address")}</label>
  <Input
  type="email"
  required
  placeholder="john@example.com"
  value={email}
  onChange={(e) => setEmail(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
+ className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
 
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">
+ <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">
  {t("organization_name", "Organization")}
  </label>
  <Input
@@ -235,12 +235,12 @@ export default function SignUp() {
  placeholder="Acme Corp"
  value={companyName}
  onChange={(e) => setCompanyName(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
+ className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
 
  <div>
- <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">
+ <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">
  {t("subdomain", "Subdomain")}
  </label>
  <Input
@@ -248,32 +248,32 @@ export default function SignUp() {
  placeholder="acmecorp"
  value={subdomain}
  onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
- className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
+ className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  </div>
 
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">{t("password", "Password")}</label>
+ <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("password", "Password")}</label>
  <Input
  type="password"
  required
  placeholder="••••••••••••"
  value={password}
  onChange={(e) => setPassword(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
+ className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  <div>
- <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">{t("confirm_password", "Confirm Password")}</label>
+ <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("confirm_password", "Confirm Password")}</label>
  <Input
  type="password"
  required
  placeholder="••••••••••••"
  value={confirmPassword}
  onChange={(e) => setConfirmPassword(e.target.value)}
- className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20"
+ className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  </div>
@@ -281,7 +281,7 @@ export default function SignUp() {
 
  <Button 
  type="submit" 
- className="w-full h-10 bg-gradient-to-b from-primary/90 to-primary hover:from-primary hover:to-primary text-white font-bold rounded-lg -primary/20 transition-all hover:-translate-y-0.5 mt-2 text-sm active:scale-[0.98]"
+ className="w-full h-10 bg-gradient-to-b from-primary/90 to-primary hover:from-primary hover:to-primary text-white font-semibold rounded-xl -primary/20 transition-all hover:-translate-y-0.5 mt-2 text-sm active:scale-[0.98]"
  disabled={loading}
  >
  {loading ? 'Creating...' : 'Create workspace'}
@@ -289,8 +289,8 @@ export default function SignUp() {
  </form>
 
  <div className="text-center mt-4 pb-12 lg:pb-0">
- <span className="text-xs text-slate-500 font-medium">{t("already_have_an_account", "Already have an account?")} </span>
- <a href="/login" className="text-xs font-bold text-primary hover:underline">
+ <span className="text-xs text-slate-500 font-medium tracking-[0.04em]">{t("already_have_an_account", "Already have an account?")} </span>
+ <a href="/login" className="text-xs font-semibold text-primary hover:underline tracking-[0.04em]">
  {t("sign_in", "Sign in")}
  </a>
  </div>
@@ -301,14 +301,14 @@ export default function SignUp() {
  {/* Abstract Pattern Background */}
  <div className="absolute inset-0 bg-slate-900/5 mix-blend-overlay"></div>
 
- <div className="relative z-10 w-full max-w-2xl bg-white rounded-[2rem] border border-primary/40 -[0_20px_60px_-15px_rgba(0,0,0,0.05)] p-12 lg:p-16 flex flex-col justify-between">
+ <div className="relative z-10 w-full max-w-2xl bg-white rounded-md-[2rem] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 -[0_20px_60px_-15px_rgba(0,0,0,0.05)] p-12 lg:p-16 flex flex-col justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
- <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-50 border border-primary/40 text-xs font-semibold text-primary/90 mb-8 uppercase tracking-[0.2em]">
- <span className="flex h-1.5 w-1.5 rounded-full bg-primary" />
+ <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-md-full bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-xs font-semibold text-primary/90 mb-8 uppercase tracking-[0.2em] tracking-[0.04em]">
+ <span className="flex h-1.5 w-1.5 rounded-md-full bg-primary" />
  {t("universal_os", "Universal Operating System")}
  </div>
  
- <h3 className="text-4xl 2xl:text-6xl font-black text-slate-900 mb-6 leading-[1.1] tracking-tight" style={{ fontFamily: 'Inter, sans-serif'}}>
+ <h3 className="text-4xl 2xl:text-6xl font-black text-slate-900 mb-6 leading-[1.1] tracking-tight tracking-[-0.02em]" style={{ fontFamily: 'Inter, sans-serif'}}>
  {t(
  "a_workspace_that_grows_with_yo",
  "The foundation for modern institutions."
@@ -324,10 +324,10 @@ export default function SignUp() {
 
  <div className="grid grid-cols-2 gap-8 mt-16 border-t border-primary/40 pt-10">
  <div>
- <div className="w-10 h-10 rounded-xl bg-slate-50 border border-primary/40 flex items-center justify-center text-primary mb-5 ">
+ <div className="w-10 h-10 rounded-md-xl bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center text-primary mb-5 ">
  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
  </div>
- <h4 className="text-lg font-bold text-slate-900 mb-2 tracking-wide">{t("set_up_in_seconds", "Instant Provisioning")}</h4>
+ <h4 className="text-lg font-semibold text-slate-900 mb-2 tracking-wide">{t("set_up_in_seconds", "Instant Provisioning")}</h4>
  <p className="text-sm text-slate-500 font-light leading-relaxed">{t(
  "no_engineering_required_just_i",
  "Subdomain, databases, and core infrastructure deployed seamlessly."
@@ -335,10 +335,10 @@ export default function SignUp() {
  </div>
  
  <div>
- <div className="w-10 h-10 rounded-xl bg-slate-50 border border-primary/40 flex items-center justify-center text-primary mb-5 ">
+ <div className="w-10 h-10 rounded-md-xl bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-center text-primary mb-5 ">
  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
  </div>
- <h4 className="text-lg font-bold text-slate-900 mb-2 tracking-wide">{t("bank_grade_security", "Enterprise Security")}</h4>
+ <h4 className="text-lg font-semibold text-slate-900 mb-2 tracking-wide">{t("bank_grade_security", "Enterprise Security")}</h4>
  <p className="text-sm text-slate-500 font-light leading-relaxed">{t(
  "soc2_compliant_infrastructure_",
  "Isolated sub-tenants with Row-Level Security ensuring absolute data privacy."

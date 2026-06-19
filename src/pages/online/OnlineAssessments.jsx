@@ -26,11 +26,11 @@ export default function OnlineAssessments() {
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-3xl mx-auto py-12 px-4">
  
  {!started && (
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-8 text-center">
- <div className="w-16 h-16 bg-[var(--primary)] text-white rounded-full flex items-center justify-center mx-auto mb-6 ">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-8 text-center">
+ <div className="w-16 h-16 bg-[var(--primary)] text-white rounded-md-full flex items-center justify-center mx-auto mb-6 ">
  <BookOpen className="w-8 h-8" />
  </div>
- <h1 className="text-2xl font-bold font-display text-[var(--color-text-primary)] mb-2">Slate 1 Final Assessment</h1>
+ <h1 className="text-2xl font-semibold font-display text-[var(--color-text-primary)] mb-2 tracking-[-0.02em]">Slate 1 Final Assessment</h1>
  <p className="text-[var(--color-text-secondary)] mb-8">Test your knowledge on the foundational concepts covered in Slate 1. You must score 80% to pass.</p>
  
  <div className="flex justify-center gap-8 mb-8 text-sm text-[var(--color-text-secondary)]">
@@ -39,32 +39,32 @@ export default function OnlineAssessments() {
  <div className="flex items-center gap-2"><AlertCircle className="w-4 h-4 text-[var(--color-text-tertiary)]"/> 1 Attempt Remaining</div>
  </div>
 
- <button onClick={() => setStarted(true)} className="px-8 py-3 bg-[var(--primary)] text-white font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
+ <button onClick={() => setStarted(true)} className="px-8 py-3 bg-[var(--primary)] text-white font-medium rounded-md-[var(--radius-md)] hover:opacity-90 transition-opacity">
  Start Assessment
  </button>
  </div>
  )}
 
  {started === true && (
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden flex flex-col">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden flex flex-col">
  <div className="bg-[var(--color-surface-1)] border-b border-primary/40 p-4 flex justify-between items-center">
  <div className="text-sm font-semibold text-[var(--color-text-secondary)]">
  Question {currentQ + 1} of {questions.length}
  </div>
- <div className="flex items-center gap-2 text-sm font-bold text-[var(--color-error)]">
+ <div className="flex items-center gap-2 text-sm font-semibold text-[var(--color-error)]">
  <Clock className="w-4 h-4" /> 14:59
  </div>
  </div>
  
  <div className="p-8">
- <h2 className="text-xl font-bold text-[var(--color-text-primary)] mb-6">{questions[currentQ].text}</h2>
+ <h2 className="text-xl font-semibold text-[var(--color-text-primary)] mb-6">{questions[currentQ].text}</h2>
  
  <div className="space-y-3">
  {questions[currentQ].options.map((opt, idx) => (
  <button 
  key={idx}
  onClick={() => setSelectedOption(idx)}
- className={`w-full text-left p-4 rounded-[var(--radius-md)] border text-sm font-medium transition-colors ${selectedOption === idx ? 'bg-[var(--primary)] text-white border-[var(--primary)]' : 'bg-[var(--color-surface-0)] text-[var(--color-text-primary)] border-primary/40 hover:border-[var(--primary)]'}`}
+ className={`w-full text-left p-4 rounded-md-[var(--radius-md)] border-[0.5px] border-black/9 dark:border-white/8 text-sm font-medium transition-colors ${selectedOption === idx ? 'bg-[var(--primary)] text-white border-[var(--primary)]' : 'bg-[var(--color-surface-0)] text-[var(--color-text-primary)] border-primary/40 hover:border-[var(--primary)]'}`}
  >
  {opt}
  </button>
@@ -76,7 +76,7 @@ export default function OnlineAssessments() {
  <button 
  disabled={selectedOption === null}
  onClick={handleNext} 
- className="px-6 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity disabled:opacity-50"
+ className="px-6 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-md-[var(--radius-md)] hover:opacity-90 transition-opacity disabled:opacity-50"
  >
  {currentQ === questions.length - 1 ? 'Submit Assessment' : 'Next Question'}
  </button>
@@ -85,18 +85,18 @@ export default function OnlineAssessments() {
  )}
 
  {started === 'finished' && (
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-8 text-center">
- <div className="w-16 h-16 bg-[var(--color-success-subtle)] text-[var(--color-success)] rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-white">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-8 text-center">
+ <div className="w-16 h-16 bg-[var(--color-success-subtle)] text-[var(--color-success)] rounded-md-full flex items-center justify-center mx-auto mb-6 border-4 border-white">
  <CheckCircle2 className="w-8 h-8" />
  </div>
- <h1 className="text-3xl font-bold font-display text-[var(--color-text-primary)] mb-2">Congratulations!</h1>
+ <h1 className="text-3xl font-semibold font-display text-[var(--color-text-primary)] mb-2 tracking-[-0.02em]">Congratulations!</h1>
  <p className="text-[var(--color-text-secondary)] mb-6">You passed the assessment with a score of 100%.</p>
  
  <div className="flex justify-center gap-4">
- <button onClick={() => navigate('/o/student-dashboard')} className="px-6 py-2 bg-[var(--color-surface-1)] border border-primary/40 text-[var(--color-text-primary)] font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
+ <button onClick={() => navigate('/o/student-dashboard')} className="px-6 py-2 bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[var(--color-text-primary)] font-medium rounded-md-[var(--radius-md)] hover:bg-[var(--color-surface-2)] transition-colors">
  Back to Dashboard
  </button>
- <button onClick={() => navigate('/o/certificates')} className="px-6 py-2 bg-[var(--primary)] text-white font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity">
+ <button onClick={() => navigate('/o/certificates')} className="px-6 py-2 bg-[var(--primary)] text-white font-medium rounded-md-[var(--radius-md)] hover:opacity-90 transition-opacity">
  View Certificate
  </button>
  </div>

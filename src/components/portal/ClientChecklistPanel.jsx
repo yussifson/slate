@@ -9,7 +9,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
 const STATUS_CONFIG = {
-  pending: { icon: Square, color: "text-muted-foreground", badge: "bg-muted text-muted-foreground" },
+  pending: { icon: Square, color: "text-[#71717a] dark:text-gray-400", badge: "bg-muted text-[#71717a] dark:text-gray-400" },
   in_progress: { icon: Clock, color: "text-primary", badge: "bg-orange-100 text-orange-700" },
   completed: { icon: CheckCircle2, color: "text-primary", badge: "bg-slate-100 text-primary/90" },
   waived: { icon: AlertCircle, color: "text-amber-500", badge: "bg-amber-100 text-amber-700" },
@@ -36,13 +36,13 @@ export default function ClientChecklistPanel({ clientId }) {
   const pending = items.filter(i => i.status !== "completed" && i.status !== "waived");
   const done = items.filter(i => i.status === "completed" || i.status === "waived");
 
-  if (isLoading) return <div className="p-6 text-center text-sm text-muted-foreground">{t("loading_checklist", "Loading checklist...")}</div>;
+  if (isLoading) return <div className="p-6 text-center text-sm text-[#71717a] dark:text-gray-400">{t("loading_checklist", "Loading checklist...")}</div>;
 
   if (items.length === 0) {
     return (
-      <div className="bg-card border border-primary/40 rounded-xl p-10 text-center">
-        <CheckSquare className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-        <p className="text-sm text-muted-foreground">{t("no_checklist_items_assigned_ye", "No checklist items assigned yet")}</p>
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <CheckSquare className="w-8 h-8 text-[#71717a] dark:text-gray-400 mx-auto mb-2" />
+        <p className="text-sm text-[#71717a] dark:text-gray-400">{t("no_checklist_items_assigned_ye", "No checklist items assigned yet")}</p>
       </div>
     );
   }
@@ -50,21 +50,21 @@ export default function ClientChecklistPanel({ clientId }) {
   return (
     <div className="space-y-4">
       {/* Progress */}
-      <div className="bg-card border border-primary/40 rounded-xl p-4">
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="flex justify-between items-center mb-2">
           <p className="text-sm font-semibold">{t("your_action_items", "Your Action Items")}</p>
-          <span className="text-xs text-muted-foreground">{done.length}/{items.length} {t("completed", "completed")}</span>
+          <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{done.length}/{items.length} {t("completed", "completed")}</span>
         </div>
-        <div className="w-full bg-muted rounded-full h-2">
+        <div className="w-full bg-muted rounded-md-full h-2">
           <div
-            className="bg-primary h-2 rounded-full transition-all"
+            className="bg-primary h-2 rounded-md-full transition-all"
             style={{ width: `${items.length ? (done.length / items.length) * 100 : 0}%` }}
           />
         </div>
       </div>
       {/* Pending items */}
       {pending.length > 0 && (
-        <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="px-4 py-3 border-b border-primary/40">
             <p className="text-sm font-semibold">{t("pending", "Pending (")}{pending.length})</p>
           </div>
@@ -77,11 +77,11 @@ export default function ClientChecklistPanel({ clientId }) {
                   <Icon className={cn("w-4 h-4 mt-0.5 shrink-0", cfg.color)} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium">{item.title}</p>
-                    {item.description && <p className="text-xs text-muted-foreground mt-0.5">{item.description}</p>}
+                    {item.description && <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">{item.description}</p>}
                     <div className="flex flex-wrap items-center gap-2 mt-1.5">
-                      {item.case_title && <span className="text-xs text-muted-foreground">{item.case_title}</span>}
+                      {item.case_title && <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{item.case_title}</span>}
                       {item.due_date && (
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
                           {t("due", "Due")} {format(new Date(item.due_date), "MMM d, yyyy")}
                         </span>
                       )}
@@ -91,7 +91,7 @@ export default function ClientChecklistPanel({ clientId }) {
                   <Button
                     size="sm"
                     variant="outline"
-                    className="h-7 text-xs shrink-0"
+                    className="h-7 text-xs shrink-0 tracking-[0.04em]"
                     onClick={() => updateMutation.mutate({ id: item.id, status: "completed" })}
                     disabled={updateMutation.isPending}
                   >
@@ -105,9 +105,9 @@ export default function ClientChecklistPanel({ clientId }) {
       )}
       {/* Completed items */}
       {done.length > 0 && (
-        <div className="bg-card border border-primary/40 rounded-xl overflow-hidden opacity-70">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden opacity-70 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="px-4 py-3 border-b border-primary/40">
-            <p className="text-sm font-semibold text-muted-foreground">{t("completed", "Completed (")}{done.length})</p>
+            <p className="text-sm font-semibold text-[#71717a] dark:text-gray-400">{t("completed", "Completed (")}{done.length})</p>
           </div>
           <div className="divide-y divide-border">
             {done.map(item => {
@@ -115,9 +115,9 @@ export default function ClientChecklistPanel({ clientId }) {
                 <div key={item.id} className="px-4 py-3 flex items-center gap-3">
                   <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm line-through text-muted-foreground">{item.title}</p>
+                    <p className="text-sm line-through text-[#71717a] dark:text-gray-400">{item.title}</p>
                     {item.completed_at && (
-                      <p className="text-xs text-muted-foreground">{t("completed", "Completed")} {format(new Date(item.completed_at), "MMM d, yyyy")}</p>
+                      <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("completed", "Completed")} {format(new Date(item.completed_at), "MMM d, yyyy")}</p>
                     )}
                   </div>
                 </div>

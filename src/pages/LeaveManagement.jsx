@@ -77,7 +77,7 @@ export default function LeaveManagement() {
       <PageHeader
         title="Leave Management"
         subtitle={isAdmin ? `${pendingLeaves.length} pending request(s)` : `My leave balance: ${myBalance.remaining} days remaining`}
-        actions={<Button size="sm" onClick={() => setShowForm(true)} className="gap-1.5"><Plus className="w-4 h-4" />{t("request_leave", "Request Leave")}</Button>}
+        actions={<Button size="sm" onClick={() => setShowForm(true)} className="gap-2.5"><Plus className="w-4 h-4" />{t("request_leave", "Request Leave")}</Button>}
       />
       {/* My Balance */}
       <div className="grid grid-cols-3 gap-4">
@@ -87,16 +87,16 @@ export default function LeaveManagement() {
           { label: "Days Remaining", value: myBalance.remaining, color: "bg-slate-50 dark:bg-slate-800/50 text-primary" },
         ].map(s => {
           return (
-            <div key={s.label} className="bg-card border border-primary/40 rounded-xl p-4 flex items-center gap-3">
-              <div className={cn("w-9 h-9 rounded-lg flex items-center justify-center", s.color)}><Calendar className="w-4 h-4" /></div>
-              <div><p className="text-xl font-bold">{s.value}</p><p className="text-xs text-muted-foreground">{s.label}</p></div>
+            <div key={s.label} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 flex items-center gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+              <div className={cn("w-9 h-9 rounded-xl flex items-center justify-center", s.color)}><Calendar className="w-4 h-4" /></div>
+              <div><p className="text-xl font-semibold">{s.value}</p><p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{s.label}</p></div>
             </div>
           );
         })}
       </div>
       <Tabs defaultValue={isAdmin ? "all" : "mine"}>
         <TabsList>
-          {isAdmin && <TabsTrigger value="all" className="gap-1.5">{t("all_requests", "All Requests")} {pendingLeaves.length > 0 && <Badge className="bg-amber-100 text-amber-700 text-[9px] h-4 px-1">{pendingLeaves.length}</Badge>}</TabsTrigger>}
+          {isAdmin && <TabsTrigger value="all" className="gap-2.5">{t("all_requests", "All Requests")} {pendingLeaves.length > 0 && <Badge className="bg-amber-100 text-amber-700 text-[9px] h-4 px-1">{pendingLeaves.length}</Badge>}</TabsTrigger>}
           <TabsTrigger value="mine">{t("my_requests", "My Requests")}</TabsTrigger>
           {isAdmin && <TabsTrigger value="balances">{t("staff_balances", "Staff Balances")}</TabsTrigger>}
         </TabsList>
@@ -109,22 +109,22 @@ export default function LeaveManagement() {
         </TabsContent>
         {isAdmin && (
           <TabsContent value="balances" className="mt-4">
-            <div className="bg-card border border-primary/40 rounded-xl divide-y divide-border">
+            <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               {staffRecords.map(s => {
                 const bal = getStaffLeaveBalance(s.user_email);
                 const pct = Math.min((bal.used / bal.total) * 100, 100);
                 return (
                   <div key={s.id} className="px-4 py-3 flex items-center gap-4">
-                    <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
-                      <span className="text-xs font-bold text-primary">{s.full_name?.[0]}</span>
+                    <div className="w-8 h-8 rounded-md-full bg-slate-100 flex items-center justify-center shrink-0">
+                      <span className="text-xs font-semibold text-primary tracking-[0.04em]">{s.full_name?.[0]}</span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium">{s.full_name}</p>
                       <div className="flex items-center gap-2 mt-1">
-                        <div className="flex-1 bg-muted rounded-full h-1.5">
-                          <div className="bg-primary rounded-full h-1.5" style={{ width: `${pct}%` }} />
+                        <div className="flex-1 bg-muted rounded-md-full h-1.5">
+                          <div className="bg-primary rounded-md-full h-1.5" style={{ width: `${pct}%` }} />
                         </div>
-                        <span className="text-xs text-muted-foreground shrink-0">{bal.used}/{bal.total} {t("days_used", "days used")}</span>
+                        <span className="text-xs text-[#71717a] dark:text-gray-400 shrink-0 tracking-[0.04em]">{bal.used}/{bal.total} {t("days_used", "days used")}</span>
                       </div>
                     </div>
                     <Badge className={cn("text-[10px]", bal.remaining < 5 ? "bg-red-100 text-red-700" : "bg-slate-100 text-primary/90")}>
@@ -151,40 +151,40 @@ export default function LeaveManagement() {
 function LeaveList({ leaves, isAdmin, onApprove, onReject }) {
   const { t } = useTranslation();
   if (leaves.length === 0) return (
-    <div className="bg-card border border-primary/40 rounded-xl p-10 text-center">
-      <Calendar className="w-10 h-10 text-muted-foreground mx-auto mb-2" />
-      <p className="text-sm text-muted-foreground">{t("no_leave_requests_found", "No leave requests found")}</p>
+    <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <Calendar className="w-10 h-10 text-[#71717a] dark:text-gray-400 mx-auto mb-2" />
+      <p className="text-sm text-[#71717a] dark:text-gray-400">{t("no_leave_requests_found", "No leave requests found")}</p>
     </div>
   );
   return (
-    <div className="bg-card border border-primary/40 rounded-xl divide-y divide-border">
+    <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       {leaves.map(leave => {
         return (
           <div key={leave.id} className="px-4 py-3 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0"><User className="w-4 h-4 text-muted-foreground" /></div>
+            <div className="w-8 h-8 rounded-xl bg-muted flex items-center justify-center shrink-0"><User className="w-4 h-4 text-[#71717a] dark:text-gray-400" /></div>
             <div className="flex-1 min-w-0">
-              <div className="flex flex-wrap items-center gap-1.5">
+              <div className="flex flex-wrap items-center gap-2.5">
                 <span className="text-sm font-medium">{leave.staff_name}</span>
                 <Badge className={cn("text-[9px] h-4 px-1.5 capitalize", LEAVE_TYPE_COLORS[leave.leave_type])}>{leave.leave_type}</Badge>
                 <Badge className={cn("text-[9px] h-4 px-1.5", STATUS_COLORS[leave.status])}>{leave.status}</Badge>
               </div>
-              <p className="text-xs text-muted-foreground mt-0.5">
+              <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">
                 {leave.start_date && format(parseISO(leave.start_date), "MMM d")}– {leave.end_date && format(parseISO(leave.end_date), "MMM d, yyyy")}· {leave.days_requested} {t("day_s", "day(s)")}
               </p>
-              {leave.reason && <p className="text-xs text-muted-foreground truncate">{leave.reason}</p>}
+              {leave.reason && <p className="text-xs text-[#71717a] dark:text-gray-400 truncate tracking-[0.04em]">{leave.reason}</p>}
             </div>
             {isAdmin && leave.status === "pending" && (
-              <div className="flex items-center gap-1.5 shrink-0">
-                <Button size="sm" className="h-7 text-xs gap-1 bg-primary hover:bg-primary/90" onClick={() => onApprove(leave)}>
+              <div className="flex items-center gap-2.5 shrink-0">
+                <Button size="sm" className="h-7 text-xs gap-2 bg-primary hover:bg-primary/90 tracking-[0.04em]" onClick={() => onApprove(leave)}>
                   <CheckCircle className="w-3 h-3" />{t("approve", "Approve")}
                 </Button>
-                <Button size="sm" variant="outline" className="h-7 text-xs gap-1 text-red-600 border-red-200 hover:bg-red-50" onClick={() => onReject(leave)}>
+                <Button size="sm" variant="outline" className="h-7 text-xs gap-2 text-red-600 border-red-200 hover:bg-red-50 tracking-[0.04em]" onClick={() => onReject(leave)}>
                   <XCircle className="w-3 h-3" />{t("reject", "Reject")}
                 </Button>
               </div>
             )}
             {leave.reviewed_by && leave.status !== "pending" && (
-              <span className="text-[10px] text-muted-foreground shrink-0">{t("by", "by")} {leave.reviewed_by.split("@")[0]}</span>
+              <span className="text-[10px] text-[#71717a] dark:text-gray-400 shrink-0">{t("by", "by")} {leave.reviewed_by.split("@")[0]}</span>
             )}
           </div>
         );
@@ -205,7 +205,7 @@ function LeaveRequestDialog({ open, onClose, onSubmit, isAdmin, staffRecords }) 
         <form onSubmit={handleSubmit} className="space-y-4">
           {isAdmin && (
             <div>
-              <Label>{t("for_team_member", "For Team Member")} <span className="text-muted-foreground text-xs">{t("leave_blank_for_yourself", "(leave blank for yourself)")}</span></Label>
+              <Label>{t("for_team_member", "For Team Member")} <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{t("leave_blank_for_yourself", "(leave blank for yourself)")}</span></Label>
               <Select value={form._for_staff_email} onValueChange={(v) => {
                 const s = staffRecords.find(sr => sr.user_email === v);
                 setForm(p => ({ ...p, _for_staff_email: v, _for_staff_name: s?.full_name || "" }));

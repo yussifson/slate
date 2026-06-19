@@ -109,7 +109,7 @@ export default function CaseForm({ open, onClose, onSubmit, initialData, clients
               </Select>
             </div>
             <div>
-              <Label>{t("client", "Client")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
+              <Label>{t("client", "Client")} <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{t("optional", "(optional)")}</span></Label>
               <Select value={form.client_id || undefined} onValueChange={handleClientChange}>
                 <SelectTrigger><SelectValue placeholder="Select client" /></SelectTrigger>
                 <SelectContent>
@@ -120,7 +120,7 @@ export default function CaseForm({ open, onClose, onSubmit, initialData, clients
               </Select>
             </div>
             <div>
-              <Label>{t("assigned_lawyer", "Assigned Lawyer")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
+              <Label>{t("assigned_lawyer", "Assigned Lawyer")} <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{t("optional", "(optional)")}</span></Label>
               <Select value={form.assigned_lawyer || undefined} onValueChange={handleLawyerChange}>
                 <SelectTrigger><SelectValue placeholder="Select lawyer" /></SelectTrigger>
                 <SelectContent>
@@ -131,19 +131,19 @@ export default function CaseForm({ open, onClose, onSubmit, initialData, clients
               </Select>
             </div>
             <div>
-              <Label>{t("court_name", "Court Name")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
+              <Label>{t("court_name", "Court Name")} <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{t("optional", "(optional)")}</span></Label>
               <Input value={form.court_name} onChange={(e) => handleChange("court_name", e.target.value)} />
             </div>
             <div>
-              <Label>{t("judge_name", "Judge Name")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
+              <Label>{t("judge_name", "Judge Name")} <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{t("optional", "(optional)")}</span></Label>
               <Input value={form.judge_name} onChange={(e) => handleChange("judge_name", e.target.value)} />
             </div>
             <div>
-              <Label>{t("opposing_party", "Opposing Party")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
+              <Label>{t("opposing_party", "Opposing Party")} <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{t("optional", "(optional)")}</span></Label>
               <Input value={form.opposing_party} onChange={(e) => handleChange("opposing_party", e.target.value)} />
             </div>
             <div>
-              <Label>{t("filing_date", "Filing Date")} <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span></Label>
+              <Label>{t("filing_date", "Filing Date")} <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{t("optional", "(optional)")}</span></Label>
               <Input type="date" value={form.filing_date} onChange={(e) => handleChange("filing_date", e.target.value)} />
             </div>
             <div className="md:col-span-2">

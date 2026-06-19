@@ -10,7 +10,7 @@ export default function ExportButton({ data, filename, label = "Export" }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-1.5">
+        <Button variant="outline" size="sm" className="gap-2.5">
           <Download className="w-3.5 h-3.5" />
           {label}
         </Button>

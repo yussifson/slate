@@ -67,7 +67,7 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
   };
 
   return (
-    <div className="bg-card border border-dashed border-primary/40 rounded-xl p-6 text-center transition-all hover:bg-slate-50 group relative overflow-hidden">
+    <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-md-xl p-6 text-center transition-all hover:bg-slate-50 group relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <input
         type="file"
         ref={fileInputRef}
@@ -78,23 +78,23 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
       {isProcessing ? (
         <div className="flex flex-col items-center justify-center space-y-3">
           <div className="relative">
-            <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full"></div>
+            <div className="absolute inset-0 bg-primary/20 blur-xl rounded-md-full"></div>
             <FileScan className="w-10 h-10 text-primary animate-pulse relative z-10" />
             <Sparkles className="w-4 h-4 text-amber-400 absolute -top-1 -right-1 animate-spin" />
           </div>
-          <p className="text-sm font-bold text-primary">{t("ai_is_analyzing_document", "AI is analyzing document...")}</p>
+          <p className="text-sm font-semibold text-primary">{t("ai_is_analyzing_document", "AI is analyzing document...")}</p>
         </div>
       ) : preview ? (
         <div className="flex flex-col items-center space-y-3">
-          <div className="relative w-20 h-20 rounded-lg overflow-hidden border border-primary/40">
+          <div className="relative w-20 h-20 rounded-xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
             <img src={preview} alt="Document Preview" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <Button size="sm" variant="ghost" className="text-white hover:text-white hover:bg-white/20" onClick={(e) => { e.stopPropagation(); setPreview(null); }}>
+              <Button size="sm" variant="ghost" className="text-white hover:text-white hover:bg-white/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={(e) => { e.stopPropagation(); setPreview(null); }}>
                 <X className="w-4 h-4" />
               </Button>
             </div>
           </div>
-          <p className="text-xs text-muted-foreground">{t(
+          <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t(
             "document_scanned_you_can_edit_",
             "Document scanned. You can edit the extracted fields below."
           )}</p>
@@ -106,11 +106,11 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
           className="flex flex-col items-center cursor-pointer"
           onClick={() => fileInputRef.current?.click()}
         >
-          <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center text-primary mb-3 group-hover:scale-110 transition-transform">
+          <div className="w-12 h-12 bg-slate-100 rounded-md-full flex items-center justify-center text-primary mb-3 group-hover:scale-110 transition-transform">
             <Upload className="w-6 h-6" />
           </div>
-          <h4 className="text-sm font-bold text-card-foreground">{t("upload_document_for_ai_auto_fi", "Upload Document for AI Auto-Fill")}</h4>
-          <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
+          <h4 className="text-sm font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("upload_document_for_ai_auto_fi", "Upload Document for AI Auto-Fill")}</h4>
+          <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 max-w-xs mx-auto tracking-[0.04em]">
             {t(
               "drag_drop_an_invoice_receipt_o",
               "Drag & drop an invoice, receipt, or ID card here. Our AI will automatically extract and fill the fields."

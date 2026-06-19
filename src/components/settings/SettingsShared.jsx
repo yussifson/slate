@@ -8,15 +8,15 @@ export function SectionCard({ title, subtitle, onSave, saving, children}) {
  <div className="space-y-8 pb-12 border-b border-primary/40 last:border-0 last:pb-0">
  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
  <div className="space-y-2">
- <h2 className="text-xl font-bold tracking-tight text-foreground">{title}</h2>
- {subtitle && <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">{subtitle}</p>}
+ <h2 className="text-xl font-semibold tracking-tight text-foreground">{title}</h2>
+ {subtitle && <p className="text-sm text-[#71717a] dark:text-gray-400 leading-relaxed max-w-2xl">{subtitle}</p>}
  </div>
  {onSave && (
  <Button 
  onClick={onSave} 
  disabled={saving} 
  size="sm" 
- className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-bold transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 shrink-0 rounded-xl px-5 h-10"
+ className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 shrink-0 rounded-md-xl px-5 h-10"
  >
  {saving ? (
  <Loader2 className="w-4 h-4 animate-spin" />
@@ -39,8 +39,8 @@ export function FormRow({ children}) {
 export function Field({ label, children, full}) {
  return (
  <div className={`space-y-2.5 ${full ? "md:col-span-2" : ""}`}>
- <Label className="text-xs font-bold text-foreground/70 tracking-widest uppercase">{label}</Label>
- <div className="relative rounded-xl ">{children}</div>
+ <Label className="text-xs font-semibold text-foreground/70 tracking-widest uppercase tracking-[0.04em]">{label}</Label>
+ <div className="relative rounded-md-xl ">{children}</div>
  </div>
  );
 }

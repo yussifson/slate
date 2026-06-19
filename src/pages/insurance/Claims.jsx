@@ -23,7 +23,7 @@ const CLAIM_FIELDS = [
 ];
 
 const statusColors = {
- 'Submitted': 'bg-muted text-muted-foreground',
+ 'Submitted': 'bg-muted text-[#71717a] dark:text-gray-400',
  'Under Review': 'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400',
  'Approved': 'bg-slate-100 text-primary dark:bg-primary/30 dark:text-primary/70',
  'Rejected': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400',
@@ -155,8 +155,8 @@ export default function Claims() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("claims_processing", "Claims Processing")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t(
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("claims_processing", "Claims Processing")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
  "manage_and_evaluate_policyhold",
  "Manage and evaluate policyholder claims"
  )}</p>
@@ -172,21 +172,21 @@ export default function Claims() {
  </div>
  {/* Stats */}
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-xl border border-primary/40 p-4 ">
- <div className="flex items-center gap-2 mb-2 text-muted-foreground"><FileWarning className="w-4 h-4"/> {t("total_claims", "Total Claims")}</div>
- <p className="text-2xl font-bold text-card-foreground">{claims.length}</p>
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex items-center gap-2 mb-2 text-[#71717a] dark:text-gray-400"><FileWarning className="w-4 h-4"/> {t("total_claims", "Total Claims")}</div>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{claims.length}</p>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-4 ">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 mb-2 text-amber-600"><Clock className="w-4 h-4"/> {t("under_review", "Under Review")}</div>
- <p className="text-2xl font-bold text-card-foreground">{claims.filter(c => c.status === 'Under Review').length}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{claims.filter(c => c.status === 'Under Review').length}</p>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-4 ">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 mb-2 text-primary"><CheckCircle className="w-4 h-4"/> {t("approved", "Approved")}</div>
- <p className="text-2xl font-bold text-card-foreground">{claims.filter(c => c.status === 'Approved' || c.status === 'Paid').length}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{claims.filter(c => c.status === 'Approved' || c.status === 'Paid').length}</p>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-4 ">
- <div className="flex items-center gap-2 mb-2 text-primary"><span className="font-bold text-sm">$</span> {t("total_claimed", "Total Claimed")}</div>
- <p className="text-2xl font-bold text-card-foreground">${totalAmount.toLocaleString()}</p>
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex items-center gap-2 mb-2 text-primary"><span className="font-semibold text-sm">$</span> {t("total_claimed", "Total Claimed")}</div>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${totalAmount.toLocaleString()}</p>
  </div>
  </div>
  {/* AI Search */}
@@ -195,35 +195,35 @@ export default function Claims() {
  onApplyFilters={(f) => setAiFilters(f)}
  />
  {/* Table */}
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search claim number, policy or claimant..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search claim number, policy or claimant..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  <div className="overflow-x-auto">
  {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_claims", "Loading claims...")}</div>
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_claims", "Loading claims...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
  <FileWarning className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary" />
- <p className="font-semibold text-lg text-card-foreground">{t("no_claims_found", "No claims found")}</p>
- <p className="text-xs mt-1">{t(
+ <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_claims_found", "No claims found")}</p>
+ <p className="text-xs mt-1 tracking-[0.04em]">{t(
  "file_a_new_claim_or_adjust_you",
  "File a new claim or adjust your filters."
  )}</p>
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40">
+ <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("claim_info", "Claim Info")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("claimant", "Claimant")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("description", "Description")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("amount", "Amount")}</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("action", "Action")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("claim_info", "Claim Info")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("claimant", "Claimant")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("description", "Description")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("amount", "Amount")}</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("action", "Action")}</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
@@ -231,24 +231,24 @@ export default function Claims() {
  return (
  <tr key={claim.id} className="hover:bg-muted/50 transition-colors">
  <td className="px-6 py-4">
- <p className="font-mono font-bold text-primary">{claim.claimNumber}</p>
- <Link to="/insurance/policies" className="text-primary hover:underline text-xs mt-0.5 font-medium block">{claim.policyNumber}</Link>
- <p className="text-[10px] text-muted-foreground mt-0.5">{claim.incidentDate}</p>
+ <p className="font-mono font-semibold text-primary">{claim.claimNumber}</p>
+ <Link to="/insurance/policies" className="text-primary hover:underline text-xs mt-0.5 font-medium block tracking-[0.04em]">{claim.policyNumber}</Link>
+ <p className="text-[10px] text-[#71717a] dark:text-gray-400 mt-0.5">{claim.incidentDate}</p>
  </td>
  <td className="px-6 py-4">
- <p className="font-bold text-card-foreground">{claim.claimantName}</p>
- <p className="text-xs text-muted-foreground">{claim.claimType} {t("claim", "Claim")}</p>
+ <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{claim.claimantName}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{claim.claimType} {t("claim", "Claim")}</p>
  </td>
- <td className="px-6 py-4 text-muted-foreground font-medium max-w-xs truncate">{claim.description}</td>
+ <td className="px-6 py-4 text-[#71717a] dark:text-gray-400 font-medium max-w-xs truncate">{claim.description}</td>
  <td className="px-6 py-4 text-right">
- <p className="font-bold text-card-foreground">${Number(claim.claimAmount).toLocaleString()}</p>
+ <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${Number(claim.claimAmount).toLocaleString()}</p>
  </td>
  <td className="px-6 py-4 text-center">
- <div className="flex flex-col items-center gap-1.5">
+ <div className="flex flex-col items-center gap-2.5">
  <select
  value={claim.status}
  onChange={e => handleUpdateStatus(claim, e.target.value)}
- className={`rounded-md border border-input px-2 py-1 text-xs font-bold w-full ${statusColors[claim.status] || 'bg-muted text-muted-foreground'}`}
+ className={`rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input px-2 py-1 text-xs font-semibold w-full ${statusColors[claim.status] || 'bg-muted text-[#71717a] dark:text-gray-400'}`}
  >
  <option value="Submitted">{t("submitted", "Submitted")}</option>
  <option value="Under Review">{t("under_review", "Under Review")}</option>
@@ -257,7 +257,7 @@ export default function Claims() {
  <option value="Paid">{t("paid", "Paid")}</option>
  </select>
  {isStaleClaim(claim) && (
- <span className="text-[10px] font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-full animate-pulse w-full text-center">
+ <span className="text-[10px] font-semibold text-red-600 bg-red-100 px-2 py-0.5 rounded-md-full animate-pulse w-full text-center">
  {t("sla_breach_30d", "SLA Breach (>30d)")}
  </span>
  )}
@@ -299,9 +299,9 @@ export default function Claims() {
  {/* AI Risk Analyzer Modal */}
  {showRiskAnalyzer && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-2xl border border-primary/40 p-6 space-y-4">
+ <div className="bg-card rounded-md-2xl w-full max-w-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
+ <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Sparkles className="w-5 h-5 text-amber-500" /> {t("ai_risk_analyzer_claims", "AI Risk Analyzer — Claims")}
  </h2>
  <Button variant="ghost" size="sm" onClick={() => setShowRiskAnalyzer(false)}>{t("close", "Close")}</Button>
@@ -313,8 +313,8 @@ export default function Claims() {
  {/* Add/Edit Modal */}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-4 border border-primary/40 overflow-y-auto max-h-[90vh]">
- <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Claim' : 'File New Claim'}</h2>
+ <div className="bg-card rounded-md-2xl w-full max-w-lg p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-y-auto max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editTargetId ? 'Edit Claim' : 'File New Claim'}</h2>
 
  {/* AI Document Parser */}
  {!editTargetId && (
@@ -326,17 +326,17 @@ export default function Claims() {
 
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("policy_number", "Policy Number")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("policy_number", "Policy Number")}</label>
  <Input value={formData.policyNumber} onChange={e => setFormData({...formData, policyNumber: e.target.value})} placeholder="POL-12345" className="mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("claimant_name", "Claimant Name")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("claimant_name", "Claimant Name")}</label>
  <Input value={formData.claimantName} onChange={e => setFormData({...formData, claimantName: e.target.value})} placeholder="Jane Doe" className="mt-1" />
  </div>
  <div className="grid grid-cols-2 gap-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("claim_type", "Claim Type")}</label>
- <select value={formData.claimType} onChange={e => setFormData({...formData, claimType: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("claim_type", "Claim Type")}</label>
+ <select value={formData.claimType} onChange={e => setFormData({...formData, claimType: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground">
  <option>{t("auto", "Auto")}</option>
  <option>{t("health", "Health")}</option>
  <option>{t("property", "Property")}</option>
@@ -345,17 +345,17 @@ export default function Claims() {
  </select>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("incident_date", "Incident Date")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("incident_date", "Incident Date")}</label>
  <Input type="date" value={formData.incidentDate} onChange={e => setFormData({...formData, incidentDate: e.target.value})} className="mt-1" />
  </div>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("claim_amount", "Claim Amount ($)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("claim_amount", "Claim Amount ($)")}</label>
  <Input type="number" value={formData.claimAmount} onChange={e => setFormData({...formData, claimAmount: e.target.value})} placeholder="1500" className="mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("description_details", "Description / Details")}</label>
- <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="Describe the incident..." className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm h-20 resize-none text-foreground" />
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("description_details", "Description / Details")}</label>
+ <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="Describe the incident..." className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm h-20 resize-none text-foreground" />
  </div>
  </div>
  <div className="flex gap-3 pt-4">
@@ -367,7 +367,7 @@ export default function Claims() {
  )}
  {/* View Details Sheet */}
  <Sheet open={viewDetailsId !== null} onOpenChange={(open) => !open && setViewDetailsId(null)}>
- <SheetContent className="bg-card text-card-foreground overflow-y-auto">
+ <SheetContent className="bg-card text-card-foreground overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <SheetHeader>
  <SheetTitle>{t("claim_details", "Claim Details")}</SheetTitle>
  <SheetDescription>{t("full_record_for_claim", "Full record for claim")} {viewRecord?.claimNumber}</SheetDescription>
@@ -377,7 +377,7 @@ export default function Claims() {
  if (key === 'id') return null;
  return (
  <div key={key} className="border-b border-primary/40 pb-3">
- <label className="text-xs font-bold text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{key.replace(/([A-Z])/g, ' $1').trim()}</label>
  <p className="font-medium mt-1">
  {key === 'policyNumber' ? (
  <Link to="/insurance/policies" className="text-primary hover:underline">{String(value)}</Link>

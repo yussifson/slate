@@ -77,31 +77,31 @@ export default function SHSBusRoutes() {
  
  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
  <div>
- <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
+ <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent tracking-[-0.02em]">
  Transport Routes
  </h1>
- <p className="text-muted-foreground mt-1 text-sm font-medium">
+ <p className="text-[#71717a] dark:text-gray-400 mt-1 text-sm font-medium">
  Define pickup points, zones, and termly transport fees.
  </p>
  </div>
  
- <Button onClick={() => setIsModalOpen(true)} className="h-9 gap-2 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20">
+ <Button onClick={() => setIsModalOpen(true)} className="h-9 gap-2 rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20">
  <Plus className="w-4 h-4" /> Add Route
  </Button>
  </div>
 
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
- <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Defined Routes</CardTitle>
+ <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100">Defined Routes</CardTitle>
  </div>
  
  <div className="relative w-full sm:w-64">
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search route or zone..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -113,44 +113,44 @@ export default function SHSBusRoutes() {
  <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading routes...</div>
  ) : filteredRoutes.length === 0 ? (
  <div className="p-16 text-center">
- <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
  <Navigation className="w-8 h-8 text-primary dark:text-primary" />
  </div>
- <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No routes defined</h3>
+ <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No routes defined</h3>
  <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Add transport routes to map out the school network.</p>
  </div>
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50">
  {filteredRoutes.map((route) => (
- <Card key={route.id} className="rounded-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:ring-1 hover:ring-primary/30 dark:hover:ring-primary/30 transition-all">
+ <Card key={route.id} className="rounded-md-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900 hover:ring-1 hover:ring-primary/30 dark:hover:ring-primary/30 transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardContent className="p-6">
  <div className="flex justify-between items-start mb-4">
  <div>
- <h4 className="font-bold text-lg text-slate-800 dark:text-slate-100">{route.title}</h4>
+ <h4 className="font-semibold text-lg text-slate-800 dark:text-slate-100">{route.title}</h4>
  <Badge variant="secondary" className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-none mt-1">
  Zone: {route.data?.zone}
  </Badge>
  </div>
  <div className="text-right">
- <span className="font-black text-primary bg-slate-50 dark:bg-slate-800/50 px-2 py-1 rounded text-sm block">
+ <span className="font-black text-primary bg-slate-50 dark:bg-slate-800/50 px-2 py-1 rounded-md text-sm block">
  ${parseFloat(route.data?.feeAmount || 0).toFixed(2)}
  </span>
- <span className="text-[10px] text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase font-bold mt-1 block">Per Term</span>
+ <span className="text-[10px] text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase font-semibold mt-1 block tracking-[0.04em]">Per Term</span>
  </div>
  </div>
  
  <div className="space-y-2">
- <p className="text-xs font-bold text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5 mb-2">
+ <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2.5 mb-2 tracking-[0.04em]">
  <MapPin className="w-3.5 h-3.5" /> Pickup Points
  </p>
  <div className="flex flex-wrap gap-2">
  {(route.data?.pickupPointsList || []).map((point, idx) => (
- <span key={idx} className="text-xs font-medium bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border border-primary/40 dark:border-primary/40 dark:border-primary/40 text-slate-600 dark:text-slate-300 px-2.5 py-1 rounded-md">
+ <span key={idx} className="text-xs font-medium bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 text-slate-600 dark:text-slate-300 px-2.5 py-1 rounded-lg tracking-[0.04em]">
  {point}
  </span>
  ))}
  {(!route.data?.pickupPointsList || route.data?.pickupPointsList.length === 0) && (
- <span className="text-xs text-slate-400 dark:text-slate-500 dark:text-slate-400 italic">No points defined</span>
+ <span className="text-xs text-slate-400 dark:text-slate-500 dark:text-slate-400 italic tracking-[0.04em]">No points defined</span>
  )}
  </div>
  </div>
@@ -163,10 +163,10 @@ export default function SHSBusRoutes() {
  </Card>
 
  <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
- <DialogContent className="sm:max-w-[450px] rounded-3xl p-0 overflow-hidden border-none ">
+ <DialogContent className="sm:max-w-[450px] rounded-md-3xl p-0 overflow-hidden border-none ">
  <div className="p-6 bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 text-white">
  <DialogHeader>
- <DialogTitle className="text-2xl font-black">Define Route</DialogTitle>
+ <DialogTitle className="text-2xl font-black tracking-[-0.02em]">Define Route</DialogTitle>
  <DialogDescription className="text-primary/10 dark:text-primary/70">
  Create a new bus route and set the transport fee.
  </DialogDescription>
@@ -175,10 +175,10 @@ export default function SHSBusRoutes() {
  
  <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 space-y-4">
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Route Name</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Route Name</label>
  <Input 
  placeholder="e.g. Osu / Labadi Axis"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newRoute.routeName}
  onChange={e => setNewRoute({...newRoute, routeName: e.target.value})}
  />
@@ -186,21 +186,21 @@ export default function SHSBusRoutes() {
  
  <div className="grid grid-cols-2 gap-4">
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Zone / Region</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Zone / Region</label>
  <Input 
  placeholder="e.g. Zone A"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newRoute.zone}
  onChange={e => setNewRoute({...newRoute, zone: e.target.value})}
  />
  </div>
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Termly Fee ($)</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Termly Fee ($)</label>
  <Input 
  type="number"
  min="0" step="0.01"
  placeholder="0.00"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl font-bold"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl font-semibold hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newRoute.feeAmount}
  onChange={e => setNewRoute({...newRoute, feeAmount: e.target.value})}
  />
@@ -208,24 +208,24 @@ export default function SHSBusRoutes() {
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Pickup Points (Comma separated)</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Pickup Points (Comma separated)</label>
  <textarea 
  placeholder="e.g. Danquah Circle, Labadi Beach, Trade Fair"
- className="w-full h-24 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm"
+ className="w-full h-24 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary resize-none text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newRoute.pickupPoints}
  onChange={e => setNewRoute({...newRoute, pickupPoints: e.target.value})}
  />
  </div>
  </div>
  
- <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3">
- <Button variant="outline" onClick={() => setIsModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
+ <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Button variant="outline" onClick={() => setIsModalOpen(false)} className="rounded-md-xl font-semibold text-slate-600 dark:text-slate-300">
  Cancel
  </Button>
  <Button 
  onClick={handleSaveRoute} 
  disabled={!newRoute.routeName || !newRoute.feeAmount}
- className="rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-bold"
+ className="rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-semibold"
  >
  Save Route
  </Button>

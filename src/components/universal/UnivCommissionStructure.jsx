@@ -90,35 +90,35 @@ export default function UnivCommissionStructure() {
  <div className="p-6 max-w-5xl mx-auto bg-background min-h-screen ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex justify-between items-center mb-8">
  <div>
- <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
+ <h1 className="text-3xl font-semibold text-foreground flex items-center gap-3 tracking-[-0.02em]">
  <Percent className="text-blue-600 w-8 h-8" />
  Commission Structures
  </h1>
- <p className="text-muted-foreground mt-2">Manage sales roles, base rates, and quota bonuses.</p>
+ <p className="text-[#71717a] dark:text-gray-400 mt-2">Manage sales roles, base rates, and quota bonuses.</p>
  </div>
  {!isEditing && (
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Calendar","Dashboard"].map(v => (
  <button 
  key={v} 
  onClick={() => setView(v)} 
- className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${view === v ? 'bg-background text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+ className={`px-3 py-1 text-xs font-medium rounded-lg transition-all ${view === v ? 'bg-background text-foreground' : 'text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}
  >
  {v}
  </button>
  ))}
  </div>
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
  <button
  onClick={() => setIsEditing(true)}
- className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+ className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors"
  >
  <Plus className="w-5 h-5" />
  Add Structure
@@ -133,19 +133,19 @@ export default function UnivCommissionStructure() {
  initial={{ opacity: 0, y: -20}}
  animate={{ opacity: 1, y: 0}}
  exit={{ opacity: 0, y: -20}}
- className="bg-card p-6 rounded-xl border border-primary/40 mb-8"
+ className="bg-card p-6 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <h2 className="text-xl font-semibold mb-4 text-foreground">
  {editingId ? 'Edit Structure' : 'New Structure'}
  </h2>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Role Name</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Role Name</label>
  <div className="relative">
- <Briefcase className="absolute left-3 top-2.5 w-5 h-5 text-muted-foreground" />
+ <Briefcase className="absolute left-3 top-2.5 w-5 h-5 text-[#71717a] dark:text-gray-400" />
  <input
  type="text"
- className="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+ className="w-full pl-10 pr-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
  value={formData.role_name}
  onChange={(e) => setFormData({ ...formData, role_name: e.target.value})}
  placeholder="e.g. Account Executive"
@@ -153,22 +153,22 @@ export default function UnivCommissionStructure() {
  </div>
  </div>
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Base Rate (%)</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Base Rate (%)</label>
  <input
  type="number"
- className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+ className="w-full px-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
  value={formData.base_rate}
  onChange={(e) => setFormData({ ...formData, base_rate: e.target.value})}
  placeholder="e.g. 5"
  />
  </div>
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Quota Amount ($)</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Quota Amount ($)</label>
  <div className="relative">
- <Target className="absolute left-3 top-2.5 w-5 h-5 text-muted-foreground" />
+ <Target className="absolute left-3 top-2.5 w-5 h-5 text-[#71717a] dark:text-gray-400" />
  <input
  type="number"
- className="w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+ className="w-full pl-10 pr-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
  value={formData.quota_amount}
  onChange={(e) => setFormData({ ...formData, quota_amount: e.target.value})}
  placeholder="e.g. 100000"
@@ -176,10 +176,10 @@ export default function UnivCommissionStructure() {
  </div>
  </div>
  <div>
- <label className="block text-sm font-medium text-muted-foreground mb-1">Bonus Rate (%)</label>
+ <label className="block text-sm font-medium text-[#71717a] dark:text-gray-400 mb-1">Bonus Rate (%)</label>
  <input
  type="number"
- className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+ className="w-full px-3 py-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
  value={formData.bonus_percentage}
  onChange={(e) => setFormData({ ...formData, bonus_percentage: e.target.value})}
  placeholder="e.g. 10"
@@ -193,13 +193,13 @@ export default function UnivCommissionStructure() {
  setEditingId(null);
  setFormData({ role_name: '', base_rate: '', quota_amount: '', bonus_percentage: ''});
 }}
- className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
+ className="flex items-center gap-2 px-4 py-2 text-[#71717a] dark:text-gray-400 hover:bg-muted rounded-xl transition-colors"
  >
  <X className="w-4 h-4" /> Cancel
  </button>
  <button
  onClick={handleSave}
- className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+ className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-xl hover:bg-blue-700 transition-colors"
  >
  <Save className="w-4 h-4" /> Save
  </button>
@@ -210,7 +210,7 @@ export default function UnivCommissionStructure() {
 
  {loading ? (
  <div className="flex justify-center py-12">
- <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+ <div className="animate-spin rounded-md-full h-10 w-10 border-b-2 border-blue-600"></div>
  </div>
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -219,41 +219,41 @@ export default function UnivCommissionStructure() {
  key={item.id}
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
- className="bg-card rounded-xl border border-primary/40 overflow-hidden transition-"
+ className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="p-5">
  <div className="flex justify-between items-start mb-4">
  <h3 className="font-semibold text-lg text-foreground">{item.role_name || 'Unnamed Role'}</h3>
  <div className="flex gap-2">
- <button onClick={() => handleEdit(item)} className="p-1.5 text-muted-foreground hover:text-blue-600 rounded-md hover:bg-blue-50 transition-colors">
+ <button onClick={() => handleEdit(item)} className="p-1.5 text-[#71717a] dark:text-gray-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-colors">
  <Edit2 className="w-4 h-4" />
  </button>
- <button onClick={() => handleDelete(item.id)} className="p-1.5 text-muted-foreground hover:text-red-600 rounded-md hover:bg-red-50 transition-colors">
+ <button onClick={() => handleDelete(item.id)} className="p-1.5 text-[#71717a] dark:text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors">
  <Trash2 className="w-4 h-4" />
  </button>
  </div>
  </div>
  <div className="space-y-3">
  <div className="flex justify-between items-center text-sm">
- <span className="text-muted-foreground">Base Rate:</span>
+ <span className="text-[#71717a] dark:text-gray-400">Base Rate:</span>
  <span className="font-medium text-foreground">{item.base_rate}%</span>
  </div>
  <div className="flex justify-between items-center text-sm">
- <span className="text-muted-foreground">Quota Amount:</span>
+ <span className="text-[#71717a] dark:text-gray-400">Quota Amount:</span>
  <span className="font-medium text-foreground">${Number(item.quota_amount).toLocaleString()}</span>
  </div>
  <div className="flex justify-between items-center text-sm pt-3 border-t border-primary/40">
- <span className="text-muted-foreground">Bonus Rate:</span>
- <span className="font-bold text-green-600">{item.bonus_percentage}%</span>
+ <span className="text-[#71717a] dark:text-gray-400">Bonus Rate:</span>
+ <span className="font-semibold text-green-600">{item.bonus_percentage}%</span>
  </div>
  </div>
  </div>
  </motion.div>
  ))}
  {data.length === 0 && !isEditing && (
- <div className="col-span-full py-12 text-center bg-card rounded-xl border border-dashed border-primary/40">
+ <div className="col-span-full py-12 text-center bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Percent className="w-12 h-12 text-gray-300 mx-auto mb-3" />
- <p className="text-muted-foreground">No commission structures found.</p>
+ <p className="text-[#71717a] dark:text-gray-400">No commission structures found.</p>
  </div>
  )}
  </div>

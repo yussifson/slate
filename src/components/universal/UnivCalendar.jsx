@@ -133,57 +133,57 @@ export default function UnivCalendar({
 });
 
  return (
- <div className="flex flex-col h-full bg-background rounded-2xl overflow-hidden border border-primary/40 ">
+ <div className="flex flex-col h-full bg-background rounded-md-2xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 ">
  {/* Header */}
- <div className="p-5 border-b border-primary/40 bg-card flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 shrink-0">
+ <div className="p-5 border-b border-primary/40 bg-card flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-4">
- <div className="p-2.5 bg-primary/10 text-primary rounded-xl hidden sm:block">
+ <div className="p-2.5 bg-primary/10 text-primary rounded-md-xl hidden sm:block">
  <CalendarIcon className="w-6 h-6" />
  </div>
  <div>
- <h2 className="text-xl font-bold text-foreground tracking-tight">{title}</h2>
- <p className="text-sm text-muted-foreground">{subtitle}</p>
+ <h2 className="text-xl font-semibold text-foreground tracking-tight">{title}</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400">{subtitle}</p>
  </div>
  </div>
  <div className="flex items-center gap-3">
- <div className="flex bg-muted p-1 rounded-lg border border-primary/40">
+ <div className="flex bg-muted p-1 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  {['Month', 'Week', 'Day'].map(v => (
  <button 
  key={v} 
  onClick={() => setView(v)} 
- className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${view === v ? 'bg-background text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+ className={`px-3 py-1 text-xs font-medium rounded-lg transition-all ${view === v ? 'bg-background text-foreground' : 'text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}
  >
  {v}
  </button>
  ))}
  </div>
- <div className="flex items-center bg-muted rounded-lg p-1">
- <button className="p-1.5 hover:bg-background rounded-md text-muted-foreground transition-colors"><ChevronLeft className="w-4 h-4" /></button>
- <span className="text-xs font-semibold px-3">Today</span>
- <button className="p-1.5 hover:bg-background rounded-md text-muted-foreground transition-colors"><ChevronRight className="w-4 h-4" /></button>
+ <div className="flex items-center bg-muted rounded-xl p-1">
+ <button className="p-1.5 hover:bg-background rounded-lg text-[#71717a] dark:text-gray-400 transition-colors"><ChevronLeft className="w-4 h-4" /></button>
+ <span className="text-xs font-semibold px-3 tracking-[0.04em]">Today</span>
+ <button className="p-1.5 hover:bg-background rounded-lg text-[#71717a] dark:text-gray-400 transition-colors"><ChevronRight className="w-4 h-4" /></button>
  </div>
- <button onClick={() => setIsAdding(!isAdding)} className="flex items-center gap-2 px-3 py-1.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors ">
+ <button onClick={() => setIsAdding(!isAdding)} className="flex items-center gap-2 px-3 py-1.5 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors ">
  <Plus className="w-4 h-4" /> New
  </button>
  </div>
  </div>
 
  {isAdding && (
- <div className="p-4 bg-card border-b border-primary/40 shrink-0">
+ <div className="p-4 bg-card border-b border-primary/40 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <form onSubmit={handleAdd} className="flex items-end gap-4 max-w-2xl">
  <div className="flex-1">
- <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Event Title</label>
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1 tracking-[0.04em]">Event Title</label>
  <input 
  autoFocus
  type="text" 
  value={newEventTitle} 
  onChange={e => setNewEventTitle(e.target.value)} 
  placeholder="Enter event title..." 
- className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" 
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" 
  />
  </div>
- <Button type="button" variant="outline" onClick={() => setIsAdding(false)} className="h-10 rounded-xl">Cancel</Button>
- <Button type="submit" disabled={addMutation.isPending} className="h-10 bg-primary text-white rounded-xl">
+ <Button type="button" variant="outline" onClick={() => setIsAdding(false)} className="h-10 rounded-md-xl">Cancel</Button>
+ <Button type="submit" disabled={addMutation.isPending} className="h-10 bg-primary text-white rounded-md-xl">
  {addMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Event'}
  </Button>
  </form>
@@ -192,7 +192,7 @@ export default function UnivCalendar({
 
  <div className="flex-1 flex overflow-hidden">
  {/* Main Calendar Area */}
- <div className="flex-1 flex flex-col bg-card overflow-y-auto">
+ <div className="flex-1 flex flex-col bg-card overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {isLoading ? (
  <div className="flex-1 flex items-center justify-center">
  <Loader2 className="w-8 h-8 animate-spin text-primary/50" />
@@ -202,7 +202,7 @@ export default function UnivCalendar({
  {/* Days of week header */}
  <div className="grid grid-cols-7 border-b border-primary/40 bg-muted/30 shrink-0">
  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
- <div key={day} className="py-2 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider border-r border-primary/40 last:border-r-0">
+ <div key={day} className="py-2 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider border-r border-primary/40 last:border-r-0 tracking-[0.04em]">
  {day}
  </div>
  ))}
@@ -214,7 +214,7 @@ export default function UnivCalendar({
  return (
  <div key={i} className={`border-r border-b border-primary/40 p-2 ${d.inactive ? 'bg-muted/10' : 'bg-card hover:bg-muted/5'} transition-colors relative min-h-[100px]`}>
  {d.day && (
- <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-semibold ${d.isToday ? 'bg-primary text-white ' : 'text-foreground dark:text-slate-300'}`}>
+ <span className={`inline-flex items-center justify-center w-7 h-7 rounded-md-full text-sm font-semibold ${d.isToday ? 'bg-primary text-white ' : 'text-foreground dark:text-slate-300'}`}>
  {d.day}
  </span>
  )}
@@ -225,7 +225,7 @@ export default function UnivCalendar({
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
  key={ev.id} 
- className={`px-2 py-1 flex justify-between items-center text-[10px] font-bold rounded group cursor-pointer ${ev.type === 'internal' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'}`}
+ className={`px-2 py-1 flex justify-between items-center text-[10px] font-semibold rounded-md group cursor-pointer ${ev.type === 'internal' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'}`}
  >
  <span className="truncate">{ev.time} {ev.title}</span>
  <button onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(ev.id);}} className="opacity-0 group-hover:opacity-100 hover:text-red-500 ml-1">
@@ -242,8 +242,8 @@ export default function UnivCalendar({
  </div>
  )}
  {view !== 'Month' && (
- <div className="flex-1 flex items-center justify-center text-muted-foreground p-8 text-center flex-col gap-3">
- <CalendarIcon className="w-12 h-12 text-muted-foreground/30" />
+ <div className="flex-1 flex items-center justify-center text-[#71717a] dark:text-gray-400 p-8 text-center flex-col gap-3">
+ <CalendarIcon className="w-12 h-12 text-[#71717a] dark:text-gray-400/30" />
  <p>{view} view placeholder. Full schedule layout renders here.</p>
  </div>
  )}
@@ -251,27 +251,27 @@ export default function UnivCalendar({
 
  {/* Sidebar Schedule (Upcoming) */}
  <div className="w-72 border-l border-primary/40 bg-muted/20 hidden xl:flex flex-col">
- <div className="p-4 border-b border-primary/40 bg-card/50 backdrop-blur-sm sticky top-0">
- <h3 className="font-bold text-sm text-foreground">Upcoming Today</h3>
+ <div className="p-4 border-b border-primary/40 bg-card/50 backdrop-blur-sm sticky top-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h3 className="font-semibold text-sm text-foreground">Upcoming Today</h3>
  </div>
  <div className="p-4 space-y-4 overflow-y-auto custom-scrollbar">
  {displayEvents.filter(ev => (ev.day || 10) === 10).map((ev, i) => (
- <div key={ev.id} className="bg-card border border-primary/40 p-3 rounded-xl hover:border-primary/30 transition-colors group cursor-pointer relative">
- <button onClick={() => deleteMutation.mutate(ev.id)} className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-red-500">
+ <div key={ev.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-3 rounded-md-xl hover:border-primary/30 transition-colors group cursor-pointer relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <button onClick={() => deleteMutation.mutate(ev.id)} className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-[#71717a] dark:text-gray-400 hover:text-red-500">
  <Trash2 className="w-4 h-4" />
  </button>
  <h4 className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors pr-6">{ev.title}</h4>
- <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
+ <div className="flex items-center gap-2 mt-2 text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  <Clock className="w-3.5 h-3.5" /> {ev.time}
  </div>
  <div className="mt-3 flex gap-2">
- <button className="flex-1 bg-muted hover:bg-primary/10 hover:text-primary text-muted-foreground text-xs py-1.5 rounded-lg transition-colors font-medium">View</button>
- <button className="w-8 h-8 flex items-center justify-center bg-muted hover:bg-emerald-500/10 hover:text-emerald-600 text-muted-foreground rounded-lg transition-colors"><Video className="w-3.5 h-3.5" /></button>
+ <button className="flex-1 bg-muted hover:bg-primary/10 hover:text-primary text-[#71717a] dark:text-gray-400 text-xs py-1.5 rounded-xl transition-colors font-medium tracking-[0.04em]">View</button>
+ <button className="w-8 h-8 flex items-center justify-center bg-muted hover:bg-emerald-500/10/10 hover:text-emerald-600 text-[#71717a] dark:text-gray-400 rounded-xl transition-colors"><Video className="w-3.5 h-3.5" /></button>
  </div>
  </div>
  ))}
  {!isLoading && displayEvents.length === 0 && (
- <div className="text-center text-sm text-muted-foreground py-8">No upcoming events.</div>
+ <div className="text-center text-sm text-[#71717a] dark:text-gray-400 py-8">No upcoming events.</div>
  )}
  </div>
  </div>

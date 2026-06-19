@@ -129,30 +129,30 @@ export default function UnivHousekeeping() {
  <div className="flex flex-col h-full bg-background overflow-hidden ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
  <div>
- <h2 className="text-2xl font-bold text-foreground tracking-tight">Housekeeping</h2>
- <p className="text-sm text-muted-foreground mt-1">Manage cleaning schedules and maintenance requests.</p>
+ <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">Housekeeping</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Manage cleaning schedules and maintenance requests.</p>
  </div>
  <div className="flex gap-3">
  <div className="flex items-center gap-2">
 
  
- <div className="flex bg-muted p-1 rounded-lg border border-primary/40 mr-2 hidden sm:flex">
+ <div className="flex bg-muted p-1 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mr-2 hidden sm:flex">
  {["Default","Grid","Kanban","Dashboard"].map(v => (
  <button 
  key={v} 
  onClick={() => setView(v)} 
- className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${view === v ? 'bg-background text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+ className={`px-3 py-1 text-xs font-medium rounded-lg transition-all ${view === v ? 'bg-background text-foreground' : 'text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}
  >
  {v}
  </button>
  ))}
  </div>
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={() => openModal()} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
+ <button onClick={() => openModal()} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
  <Plus className="w-4 h-4" /> Add Task
  </button>
  </div>
@@ -160,53 +160,53 @@ export default function UnivHousekeeping() {
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6 shrink-0">
- <button className="bg-card border border-primary/40 rounded-2xl p-4 flex items-center gap-3 hover:bg-muted/50 transition-colors text-left">
- <div className="p-3 bg-blue-100 text-blue-600 rounded-xl"><Sparkles className="w-5 h-5" /></div>
+ <button className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 flex items-center gap-3 hover:bg-muted/50 transition-colors text-left hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-3 bg-blue-100 text-blue-600 rounded-md-xl"><Sparkles className="w-5 h-5" /></div>
  <div>
- <h3 className="font-bold text-foreground text-lg">{tasks.length}</h3>
- <p className="text-xs text-muted-foreground">Total Tasks</p>
+ <h3 className="font-semibold text-foreground text-lg">{tasks.length}</h3>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Total Tasks</p>
  </div>
  </button>
- <button className="bg-card border border-emerald-200 -emerald-500/10 rounded-2xl p-4 flex items-center gap-3 hover:bg-emerald-50 transition-colors text-left">
- <div className="p-3 bg-emerald-100 text-emerald-600 rounded-xl"><CheckCircle2 className="w-5 h-5" /></div>
+ <button className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 -emerald-500/10 rounded-md-2xl p-4 flex items-center gap-3 hover:bg-emerald-50 transition-colors text-left hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-3 bg-emerald-100 text-emerald-600 rounded-md-xl"><CheckCircle2 className="w-5 h-5" /></div>
  <div>
- <h3 className="font-bold text-emerald-700 text-lg">{tasks.filter(t => t.status === 'Completed').length}</h3>
- <p className="text-xs text-emerald-600/70">Completed</p>
+ <h3 className="font-semibold text-emerald-700 text-lg">{tasks.filter(t => t.status === 'Completed').length}</h3>
+ <p className="text-xs text-emerald-600/70 tracking-[0.04em]">Completed</p>
  </div>
  </button>
- <button className="bg-card border border-orange-200 -orange-500/10 rounded-2xl p-4 flex items-center gap-3 hover:bg-orange-50 transition-colors text-left">
- <div className="p-3 bg-orange-100 text-orange-600 rounded-xl"><Clock className="w-5 h-5" /></div>
+ <button className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-orange-200 -orange-500/10 rounded-md-2xl p-4 flex items-center gap-3 hover:bg-orange-50 transition-colors text-left hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-3 bg-orange-100 text-orange-600 rounded-md-xl"><Clock className="w-5 h-5" /></div>
  <div>
- <h3 className="font-bold text-orange-700 text-lg">{tasks.filter(t => t.status === 'In Progress').length}</h3>
- <p className="text-xs text-orange-600/70">In Progress</p>
+ <h3 className="font-semibold text-orange-700 text-lg">{tasks.filter(t => t.status === 'In Progress').length}</h3>
+ <p className="text-xs text-orange-600/70 tracking-[0.04em]">In Progress</p>
  </div>
  </button>
- <button className="bg-card border border-red-200 -red-500/10 rounded-2xl p-4 flex items-center gap-3 hover:bg-red-50 transition-colors text-left">
- <div className="p-3 bg-red-100 text-red-600 rounded-xl"><AlertTriangle className="w-5 h-5" /></div>
+ <button className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-red-200 -red-500/10 rounded-md-2xl p-4 flex items-center gap-3 hover:bg-red-50 transition-colors text-left hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="p-3 bg-red-100 text-red-600 rounded-md-xl"><AlertTriangle className="w-5 h-5" /></div>
  <div>
- <h3 className="font-bold text-red-700 text-lg">{tasks.filter(t => t.status === 'Pending').length}</h3>
- <p className="text-xs text-red-600/70">Pending</p>
+ <h3 className="font-semibold text-red-700 text-lg">{tasks.filter(t => t.status === 'Pending').length}</h3>
+ <p className="text-xs text-red-600/70 tracking-[0.04em]">Pending</p>
  </div>
  </button>
  </div>
 
- <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
  <input 
  type="text"
  placeholder="Search tasks..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
 
  <div className="flex-1 overflow-auto custom-scrollbar">
  <table className="w-full text-left text-sm whitespace-nowrap">
- <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground sticky top-0 z-10 backdrop-blur-md">
+ <thead className="bg-muted/50 text-xs uppercase tracking-wider text-[#71717a] dark:text-gray-400 sticky top-0 z-10 backdrop-blur-md tracking-[0.04em]">
  <tr>
  <th className="p-4 font-semibold">Room</th>
  <th className="p-4 font-semibold">Task Type</th>
@@ -225,14 +225,14 @@ export default function UnivHousekeeping() {
  key={t.id} 
  className="hover:bg-muted/30 transition-colors group cursor-pointer" onClick={() => openModal(t)}
  >
- <td className="p-4 font-bold text-foreground">
+ <td className="p-4 font-semibold text-foreground">
  Room {t.notes?.includes('Room: ') ? t.notes.split('Room: ')[1] : (t.room_id?.replace('R-', '') || 'Unknown')}
  </td>
  <td className="p-4 font-semibold text-foreground flex items-center gap-2">
  <Brush className="w-4 h-4 text-primary" /> {t.task_type}
  </td>
  <td className="p-4">
- <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border w-fit ${
+ <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-semibold rounded-lg border-[0.5px] border-black/9 dark:border-white/8 w-fit ${
  t.priority === 'High' ? 'bg-red-50 text-red-700 border-red-200' : 
  t.priority === 'Medium' ? 'bg-orange-50 text-orange-700 border-orange-200' : 
  'bg-background text-foreground border-primary/40'
@@ -241,7 +241,7 @@ export default function UnivHousekeeping() {
  </span>
  </td>
  <td className="p-4">
- <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border flex items-center gap-1 w-fit ${
+ <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-semibold rounded-lg border-[0.5px] border-black/9 dark:border-white/8 flex items-center gap-2 w-fit ${
  t.status === 'Completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
  t.status === 'In Progress' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
  'bg-background text-foreground border-primary/40'
@@ -251,11 +251,11 @@ export default function UnivHousekeeping() {
  {t.status}
  </span>
  </td>
- <td className="p-4 text-muted-foreground text-xs truncate max-w-[200px]">
+ <td className="p-4 text-[#71717a] dark:text-gray-400 text-xs truncate max-w-[200px] tracking-[0.04em]">
  {t.notes || '—'}
  </td>
  <td className="p-4 text-right">
- <button className="text-muted-foreground hover:text-primary transition-colors p-2"><MoreHorizontal className="w-4 h-4" /></button>
+ <button className="text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors p-2"><MoreHorizontal className="w-4 h-4" /></button>
  </td>
  </motion.tr>
  ))}
@@ -266,28 +266,28 @@ export default function UnivHousekeeping() {
 
  {isModalOpen && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <motion.div initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} className="bg-background border border-primary/40 rounded-2xl w-full max-w-md overflow-hidden">
+ <motion.div initial={{ opacity: 0, scale: 0.95}} animate={{ opacity: 1, scale: 1}} className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl w-full max-w-md overflow-hidden">
  <div className="flex justify-between items-center p-4 border-b border-primary/40 bg-muted/30">
- <h3 className="font-bold text-foreground">{editingId ? 'Edit Task' : 'New Task'}</h3>
- <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:text-foreground"><AlertTriangle className="w-5 h-5 hidden"/>Close</button>
+ <h3 className="font-semibold text-foreground">{editingId ? 'Edit Task' : 'New Task'}</h3>
+ <button onClick={() => setIsModalOpen(false)} className="text-[#71717a] dark:text-gray-400 hover:text-foreground"><AlertTriangle className="w-5 h-5 hidden"/>Close</button>
  </div>
  <form onSubmit={handleSave} className="p-4 space-y-4">
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Room ID</label>
- <input required value={form.room_id} onChange={e => setForm({...form, room_id: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Room ID</label>
+ <input required value={form.room_id} onChange={e => setForm({...form, room_id: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm" />
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Task Type</label>
- <select value={form.task_type} onChange={e => setForm({...form, task_type: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm">
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Task Type</label>
+ <select value={form.task_type} onChange={e => setForm({...form, task_type: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm">
  <option>Routine Cleaning</option>
  <option>Deep Cleaning</option>
  <option>Maintenance Request</option>
  </select>
  </div>
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Status</label>
- <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm">
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Status</label>
+ <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm">
  <option>Pending</option>
  <option>In Progress</option>
  <option>Completed</option>
@@ -295,22 +295,22 @@ export default function UnivHousekeeping() {
  </div>
  </div>
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Priority</label>
- <select value={form.priority} onChange={e => setForm({...form, priority: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm">
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Priority</label>
+ <select value={form.priority} onChange={e => setForm({...form, priority: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm">
  <option>Low</option>
  <option>Medium</option>
  <option>High</option>
  </select>
  </div>
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Notes</label>
- <textarea rows="2" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Notes</label>
+ <textarea rows="2" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm" />
  </div>
  <div className="flex justify-between gap-2 pt-4">
- {editingId ? <button type="button" onClick={() => handleDelete(editingId)} className="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-xl">Delete</button> : <div/>}
+ {editingId ? <button type="button" onClick={() => handleDelete(editingId)} className="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-md-xl">Delete</button> : <div/>}
  <div className="flex gap-2">
- <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted rounded-xl">Cancel</button>
- <button type="submit" className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-xl">Save Task</button>
+ <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium text-[#71717a] dark:text-gray-400 hover:bg-muted rounded-md-xl">Cancel</button>
+ <button type="submit" className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md-xl">Save Task</button>
  </div>
  </div>
  </form>

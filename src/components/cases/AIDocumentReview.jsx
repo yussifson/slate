@@ -36,7 +36,7 @@ const DATE_TYPE_COLORS = {
 function SectionCard({ icon: Icon, title, count, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
+    <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-4 py-3 hover:bg-muted/40 transition-colors"
@@ -48,7 +48,7 @@ function SectionCard({ icon: Icon, title, count, children, defaultOpen = true })
             <Badge variant="secondary" className="text-[10px] h-4 px-1.5">{count}</Badge>
           )}
         </div>
-        {open ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+        {open ? <ChevronUp className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> : <ChevronDown className="w-4 h-4 text-[#71717a] dark:text-gray-400" />}
       </button>
       {open && <div className="px-4 pb-4 pt-1 space-y-2">{children}</div>}
     </div>
@@ -65,7 +65,7 @@ function CalendarView({ dates, deadlines }) {
     .filter(e => e.date && isValid(parseISO(e.date)))
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  if (allEvents.length === 0) return <p className="text-sm text-muted-foreground text-center py-4">{t("no_dates_extracted", "No dates extracted")}</p>;
+  if (allEvents.length === 0) return <p className="text-sm text-[#71717a] dark:text-gray-400 text-center py-4">{t("no_dates_extracted", "No dates extracted")}</p>;
 
   return (
     <div className="space-y-2">
@@ -73,10 +73,10 @@ function CalendarView({ dates, deadlines }) {
         const d = parseISO(event.date);
         const isPast = isBefore(d, today);
         return (
-          <div key={i} className={cn("flex items-center gap-3 p-3 rounded-lg border", isPast ? "opacity-60 bg-muted/30 border-primary/40" : "bg-card border-primary/40")}>
-            <div className={cn("w-12 h-12 rounded-xl flex flex-col items-center justify-center shrink-0 text-white", isPast ? "bg-muted-foreground" : "bg-primary")}>
-              <span className="text-[9px] font-bold leading-none">{format(d, "MMM").toUpperCase()}</span>
-              <span className="text-lg font-bold leading-none">{format(d, "d")}</span>
+          <div key={i} className={cn("flex items-center gap-3 p-3 rounded-xl border", isPast ? "opacity-60 bg-muted/30 border-primary/40" : "bg-card border-primary/40")}>
+            <div className={cn("w-12 h-12 rounded-md-xl flex flex-col items-center justify-center shrink-0 text-white", isPast ? "bg-muted-foreground" : "bg-primary")}>
+              <span className="text-[9px] font-semibold leading-none">{format(d, "MMM").toUpperCase()}</span>
+              <span className="text-lg font-semibold leading-none">{format(d, "d")}</span>
               <span className="text-[9px] leading-none">{format(d, "yyyy")}</span>
             </div>
             <div className="flex-1 min-w-0">
@@ -91,9 +91,9 @@ function CalendarView({ dates, deadlines }) {
                     {event.type || "Date"}
                   </Badge>
                 )}
-                {isPast && <span className="text-[10px] text-muted-foreground">{t("past", "Past")}</span>}
+                {isPast && <span className="text-[10px] text-[#71717a] dark:text-gray-400">{t("past", "Past")}</span>}
               </div>
-              {event.party_responsible && <p className="text-xs text-muted-foreground mt-0.5">{t("responsible", "Responsible:")} {event.party_responsible}</p>}
+              {event.party_responsible && <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">{t("responsible", "Responsible:")} {event.party_responsible}</p>}
             </div>
           </div>
         );
@@ -207,7 +207,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
         className={cn(
-          "border-2 border-dashed rounded-xl p-8 text-center transition-colors",
+          "border-2 border-dashed rounded-md-xl p-8 text-center transition-colors",
           file ? "border-primary bg-slate-50" : "border-primary/40 hover:border-primary/40 hover:bg-muted/30"
         )}
       >
@@ -215,14 +215,14 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
           <div className="flex flex-col items-center gap-2">
             <CheckCircle className="w-8 h-8 text-primary" />
             <p className="text-sm font-medium">{file.name}</p>
-            <p className="text-xs text-muted-foreground">{(file.size / 1024).toFixed(1)} {t("kb", "KB")}</p>
-            <Button size="sm" variant="ghost" className="h-7 text-xs gap-1 text-muted-foreground" onClick={() => { setFile(null); setAnalysis(null); }}>
+            <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{(file.size / 1024).toFixed(1)} {t("kb", "KB")}</p>
+            <Button size="sm" variant="ghost" className="h-7 text-xs gap-2 text-[#71717a] dark:text-gray-400 tracking-[0.04em]" onClick={() => { setFile(null); setAnalysis(null); }}>
               <X className="w-3 h-3" /> {t("remove", "Remove")}
             </Button>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-md-full bg-slate-100 flex items-center justify-center">
               <Upload className="w-6 h-6 text-primary" />
             </div>
             <div>
@@ -230,7 +230,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
                 "drop_a_document_here_or_click_",
                 "Drop a document here or click to upload"
               )}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{t("pdf_docx_txt_images_supported", "PDF, DOCX, TXT, images supported")}</p>
+              <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">{t("pdf_docx_txt_images_supported", "PDF, DOCX, TXT, images supported")}</p>
             </div>
             <label className="cursor-pointer">
               <Button size="sm" variant="outline" asChild>
@@ -258,7 +258,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
         </Button>
       )}
       {error && (
-        <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 text-sm text-destructive flex items-center gap-2">
+        <div className="bg-destructive/10 border-[0.5px] border-black/9 dark:border-white/8 border-destructive/20 rounded-xl p-3 text-sm text-destructive flex items-center gap-2">
           <AlertTriangle className="w-4 h-4 shrink-0" />
           {error}
         </div>
@@ -272,14 +272,14 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
               <span className="text-sm font-semibold">{t("ai_analysis_complete", "AI Analysis Complete")}</span>
               <Badge variant="secondary" className="text-[10px]">{docName}</Badge>
             </div>
-            <Button size="sm" variant="outline" className="gap-1.5 h-8 text-xs" onClick={handleSaveDates}>
+            <Button size="sm" variant="outline" className="gap-2.5 h-8 text-xs tracking-[0.04em]" onClick={handleSaveDates}>
               <Calendar className="w-3.5 h-3.5" />
               {t("save_all_dates_to_calendar", "Save All Dates to Calendar")}
             </Button>
           </div>
 
           {/* Summary */}
-          <div className="bg-slate-50 border border-primary/20 rounded-xl p-4">
+          <div className="bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-xl p-4">
             <div className="flex items-center gap-2 mb-2">
               <FileText className="w-4 h-4 text-primary" />
               <span className="text-sm font-semibold">{t("executive_summary", "Executive Summary")}</span>
@@ -292,7 +292,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
             <SectionCard icon={AlertTriangle} title="Risk Flags" count={analysis.risk_flags.length}>
               {analysis.risk_flags.map((r, i) => {
                 return (
-                  <div key={i} className={cn("flex items-start gap-2 p-2.5 rounded-lg border text-sm", URGENCY_COLORS[r.severity] || URGENCY_COLORS.medium)}>
+                  <div key={i} className={cn("flex items-start gap-2 p-2.5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 text-sm", URGENCY_COLORS[r.severity] || URGENCY_COLORS.medium)}>
                     <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
                     <div className="flex-1">
                       <span>{r.flag}</span>
@@ -309,11 +309,11 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
             <SectionCard icon={FileText} title="Key Legal Points" count={analysis.key_legal_points.length}>
               {analysis.key_legal_points.map((p, i) => {
                 return (
-                  <div key={i} className={cn("p-2.5 rounded-lg border text-sm", IMPORTANCE_COLORS[p.importance] || IMPORTANCE_COLORS.low)}>
+                  <div key={i} className={cn("p-2.5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 text-sm", IMPORTANCE_COLORS[p.importance] || IMPORTANCE_COLORS.low)}>
                     <div className="flex items-start gap-2">
                       <span className="flex-1">{p.point}</span>
                     </div>
-                    <div className="flex gap-1.5 mt-1">
+                    <div className="flex gap-2.5 mt-1">
                       {p.category && <Badge variant="outline" className="text-[9px] h-4 px-1.5">{p.category}</Badge>}
                       <Badge className={cn("text-[9px] h-4 px-1.5", IMPORTANCE_COLORS[p.importance])}>{p.importance}</Badge>
                     </div>
@@ -328,9 +328,9 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
             <SectionCard icon={Clock} title="Deadlines" count={analysis.deadlines.length}>
               {analysis.deadlines.map((d, i) => {
                 return (
-                  <div key={i} className={cn("p-2.5 rounded-lg border text-sm", URGENCY_COLORS[d.urgency] || URGENCY_COLORS.medium)}>
+                  <div key={i} className={cn("p-2.5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 text-sm", URGENCY_COLORS[d.urgency] || URGENCY_COLORS.medium)}>
                     <p className="font-medium">{d.description}</p>
-                    <div className="flex flex-wrap gap-2 mt-1 text-xs">
+                    <div className="flex flex-wrap gap-2 mt-1 text-xs tracking-[0.04em]">
                       {d.date && isValid(parseISO(d.date)) && (
                         <span className="font-semibold">{format(parseISO(d.date), "MMMM d, yyyy")}</span>
                       )}
@@ -354,9 +354,9 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
               <div className="grid grid-cols-2 gap-2">
                 {analysis.parties.map((p, i) => {
                   return (
-                    <div key={i} className="bg-muted/40 rounded-lg p-2.5 text-sm">
+                    <div key={i} className="bg-muted/40 rounded-xl p-2.5 text-sm">
                       <p className="font-medium truncate">{p.name}</p>
-                      <p className="text-xs text-muted-foreground">{p.role}</p>
+                      <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{p.role}</p>
                     </div>
                   );
                 })}

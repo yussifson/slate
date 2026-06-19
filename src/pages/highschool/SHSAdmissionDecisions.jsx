@@ -54,50 +54,50 @@ export default function SHSAdmissionDecisions() {
  
  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
  <div>
- <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
+ <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent tracking-[-0.02em]">
  Admission Decisions
  </h1>
- <p className="text-muted-foreground mt-1 text-sm font-medium">
+ <p className="text-[#71717a] dark:text-gray-400 mt-1 text-sm font-medium">
  View finalized applicant decisions and generate admission or rejection letters.
  </p>
  </div>
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
- <Card className="rounded-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 cursor-pointer transition-all hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800" onClick={() => setFilterType('All')}>
+ <Card className="rounded-md-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 cursor-pointer transition-all hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={() => setFilterType('All')}>
  <CardContent className="p-5 flex items-center gap-4">
- <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${filterType === 'All' ? 'bg-primary dark:bg-primary text-white' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'}`}>
+ <div className={`w-12 h-12 rounded-md-xl flex items-center justify-center shrink-0 ${filterType === 'All' ? 'bg-primary dark:bg-primary text-white' : 'bg-slate-100 dark:bg-slate-800 text-primary dark:text-primary/70'}`}>
  <Mail className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-semibold text-muted-foreground">Total Decisions</p>
- <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">{decisions.length}</h3>
+ <p className="text-sm font-semibold text-[#71717a] dark:text-gray-400">Total Decisions</p>
+ <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-[-0.02em]">{decisions.length}</h3>
  </div>
  </CardContent>
  </Card>
  
- <Card className="rounded-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 cursor-pointer transition-all hover:bg-slate-50" onClick={() => setFilterType('Admitted')}>
+ <Card className="rounded-md-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-primary/10 cursor-pointer transition-all hover:bg-slate-50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={() => setFilterType('Admitted')}>
  <CardContent className="p-5 flex items-center gap-4">
- <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${filterType === 'Admitted' ? 'bg-primary text-white' : 'bg-slate-100 text-primary'}`}>
+ <div className={`w-12 h-12 rounded-md-xl flex items-center justify-center shrink-0 ${filterType === 'Admitted' ? 'bg-primary text-white' : 'bg-slate-100 text-primary'}`}>
  <FileCheck className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-semibold text-muted-foreground">Admitted</p>
- <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">
+ <p className="text-sm font-semibold text-[#71717a] dark:text-gray-400">Admitted</p>
+ <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-[-0.02em]">
  {decisions.filter(d => d.status === 'Admitted').length}
  </h3>
  </div>
  </CardContent>
  </Card>
  
- <Card className="rounded-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-rose-100 cursor-pointer transition-all hover:bg-rose-50" onClick={() => setFilterType('Rejected')}>
+ <Card className="rounded-md-2xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/60 dark:bg-slate-900/60 backdrop-blur-xl ring-1 ring-rose-100 cursor-pointer transition-all hover:bg-rose-50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={() => setFilterType('Rejected')}>
  <CardContent className="p-5 flex items-center gap-4">
- <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${filterType === 'Rejected' ? 'bg-rose-500 text-white' : 'bg-rose-100 text-rose-600'}`}>
+ <div className={`w-12 h-12 rounded-md-xl flex items-center justify-center shrink-0 ${filterType === 'Rejected' ? 'bg-rose-500 text-white' : 'bg-rose-100 text-rose-600'}`}>
  <FileX className="w-6 h-6" />
  </div>
  <div>
- <p className="text-sm font-semibold text-muted-foreground">Rejected</p>
- <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">
+ <p className="text-sm font-semibold text-[#71717a] dark:text-gray-400">Rejected</p>
+ <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-[-0.02em]">
  {decisions.filter(d => d.status === 'Rejected').length}
  </h3>
  </div>
@@ -105,11 +105,11 @@ export default function SHSAdmissionDecisions() {
  </Card>
  </div>
 
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
- <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">Decision Results</CardTitle>
+ <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100">Decision Results</CardTitle>
  <CardDescription>Filtering by: {filterType}</CardDescription>
  </div>
  
@@ -118,12 +118,12 @@ export default function SHSAdmissionDecisions() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search applicant name..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
  </div>
- <Button variant="outline" size="sm" className="h-9 rounded-xl border-primary/40 dark:border-primary/40">
+ <Button variant="outline" size="sm" className="h-9 rounded-md-xl border-primary/40 dark:border-primary/40">
  <Download className="w-4 h-4 mr-2" /> Export
  </Button>
  </div>
@@ -134,28 +134,28 @@ export default function SHSAdmissionDecisions() {
  <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading decisions...</div>
  ) : filteredDecisions.length === 0 ? (
  <div className="p-16 text-center">
- <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
  <Mail className="w-8 h-8 text-primary dark:text-primary" />
  </div>
- <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No decisions found</h3>
+ <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No decisions found</h3>
  <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">There are no finalized decisions in this category.</p>
  </div>
  ) : (
  <div className="overflow-x-auto">
  <table className="w-full text-sm text-left">
- <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider">
+ <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider tracking-[0.04em]">
  <tr>
- <th className="px-6 py-4 rounded-tl-xl">Applicant Name</th>
+ <th className="px-6 py-4 rounded-md-tl-xl">Applicant Name</th>
  <th className="px-6 py-4">App ID</th>
  <th className="px-6 py-4">Status</th>
  <th className="px-6 py-4">BECE Agg.</th>
- <th className="px-6 py-4 text-right rounded-tr-xl">Documents</th>
+ <th className="px-6 py-4 text-right rounded-md-tr-xl">Documents</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-slate-100">
  {filteredDecisions.map((decision) => (
  <tr key={decision.id} className="hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
- <td className="px-6 py-4 font-bold text-slate-800 dark:text-slate-100">
+ <td className="px-6 py-4 font-semibold text-slate-800 dark:text-slate-100">
  {decision.title}
  </td>
  <td className="px-6 py-4 text-slate-600 dark:text-slate-300 font-medium">
@@ -163,24 +163,24 @@ export default function SHSAdmissionDecisions() {
  </td>
  <td className="px-6 py-4">
  {decision.status === 'Admitted' ? (
- <Badge className="bg-slate-100 text-primary/90 hover:bg-primary/20 border-none px-3 py-1 gap-1">
+ <Badge className="bg-slate-100 text-primary/90 hover:bg-primary/20 border-none px-3 py-1 gap-2">
  <CheckCircle className="w-3 h-3" /> Admitted
  </Badge>
  ) : (
- <Badge className="bg-rose-100 text-rose-700 hover:bg-rose-200 border-none px-3 py-1 gap-1">
+ <Badge className="bg-rose-100 text-rose-700 hover:bg-rose-200 border-none px-3 py-1 gap-2">
  <XCircle className="w-3 h-3" /> Rejected
  </Badge>
  )}
  </td>
  <td className="px-6 py-4">
- <span className="font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">{decision.data?.beceAggregate}</span>
+ <span className="font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">{decision.data?.beceAggregate}</span>
  </td>
  <td className="px-6 py-4 text-right">
  <Button 
  variant="ghost" 
  size="sm" 
  onClick={() => generateLetter(decision)}
- className="text-primary dark:text-primary/70 hover:text-primary hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 rounded-lg gap-2 font-semibold"
+ className="text-primary dark:text-primary/70 hover:text-primary hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 rounded-xl gap-2 font-semibold"
  >
  <Printer className="w-4 h-4" /> Letter
  </Button>

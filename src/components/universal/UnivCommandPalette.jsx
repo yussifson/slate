@@ -114,22 +114,22 @@ export default function UnivCommandPalette({ companyId, workspaceConfig}) {
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: -20}}
  transition={{ duration: 0.2, ease: "easeOut"}}
- className="relative w-full max-w-2xl bg-card/95 backdrop-blur-xl border border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[70vh]"
+ className="relative w-full max-w-2xl bg-card/95 backdrop-blur-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col max-h-[70vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  {/* Search Input */}
  <div className="relative border-b border-primary/40 shrink-0">
- <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+ <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#71717a] dark:text-gray-400" />
  <input
  ref={inputRef}
  type="text"
  value={query}
  onChange={(e) => setQuery(e.target.value)}
  placeholder="Search apps, commands, or records..."
- className="w-full h-14 pl-12 pr-12 bg-transparent border-none outline-none text-lg text-foreground placeholder:text-muted-foreground focus:ring-0"
+ className="w-full h-14 pl-12 pr-12 bg-transparent border-none outline-none text-lg text-foreground placeholder:text-[#71717a] dark:text-gray-400 focus:ring-0"
  />
  <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
- <kbd className="hidden sm:inline-flex h-6 items-center gap-1 rounded bg-muted px-2 font-mono text-[10px] font-medium text-muted-foreground">
- <span className="text-xs">esc</span>
+ <kbd className="hidden sm:inline-flex h-6 items-center gap-2 rounded-md bg-muted px-2 font-mono text-[10px] font-medium text-[#71717a] dark:text-gray-400">
+ <span className="text-xs tracking-[0.04em]">esc</span>
  </kbd>
  </div>
  </div>
@@ -137,7 +137,7 @@ export default function UnivCommandPalette({ companyId, workspaceConfig}) {
  {/* Results List */}
  <div className="flex-1 overflow-y-auto p-2 custom-scrollbar">
  {filteredItems.length === 0 ? (
- <div className="py-14 text-center text-muted-foreground">
+ <div className="py-14 text-center text-[#71717a] dark:text-gray-400">
  <Command className="w-8 h-8 mx-auto mb-3 opacity-20" />
  <p className="text-sm">No results found for "{query}"</p>
  </div>
@@ -145,7 +145,7 @@ export default function UnivCommandPalette({ companyId, workspaceConfig}) {
  <div className="space-y-4 py-2">
  {Object.entries(groupedItems).map(([category, items]) => (
  <div key={category}>
- <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+ <div className="px-3 py-1.5 text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">
  {category}
  </div>
  <div className="space-y-1">
@@ -160,11 +160,11 @@ export default function UnivCommandPalette({ companyId, workspaceConfig}) {
  onMouseEnter={() => setActiveIndex(globalIndex)}
  onClick={() => { item.action(); setIsOpen(false);}}
  className={cn(
- "flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer transition-colors",
+ "flex items-center gap-3 px-3 py-3 rounded-md-xl cursor-pointer transition-colors",
  isActive ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted/50"
  )}
  >
- <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center bg-background border ", isActive ? "border-primary/30 text-primary" : "border-primary/40 text-muted-foreground")}>
+ <div className={cn("w-8 h-8 rounded-xl flex items-center justify-center bg-background border ", isActive ? "border-primary/30 text-primary" : "border-primary/40 text-[#71717a] dark:text-gray-400")}>
  <Icon className="w-4 h-4" />
  </div>
  <span className="flex-1 font-medium text-sm">{item.label}</span>
@@ -180,13 +180,13 @@ export default function UnivCommandPalette({ companyId, workspaceConfig}) {
  </div>
  
  {/* Footer */}
- <div className="bg-muted/30 border-t border-primary/40 px-4 py-3 text-xs flex items-center justify-between shrink-0">
- <span className="text-muted-foreground flex items-center gap-2">
+ <div className="bg-muted/30 border-t border-primary/40 px-4 py-3 text-xs flex items-center justify-between shrink-0 tracking-[0.04em]">
+ <span className="text-[#71717a] dark:text-gray-400 flex items-center gap-2">
  <span className="font-semibold text-foreground">Slate Command</span> by Airflake
  </span>
- <div className="flex items-center gap-3 text-muted-foreground">
- <span className="flex items-center gap-1"><kbd className="bg-background border rounded px-1.5 py-0.5 font-mono ">↑</kbd> <kbd className="bg-background border rounded px-1.5 py-0.5 font-mono ">↓</kbd> to navigate</span>
- <span className="flex items-center gap-1"><kbd className="bg-background border rounded px-1.5 py-0.5 font-mono ">↵</kbd> to select</span>
+ <div className="flex items-center gap-3 text-[#71717a] dark:text-gray-400">
+ <span className="flex items-center gap-2"><kbd className="bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-md px-1.5 py-0.5 font-mono ">↑</kbd> <kbd className="bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-md px-1.5 py-0.5 font-mono ">↓</kbd> to navigate</span>
+ <span className="flex items-center gap-2"><kbd className="bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-md px-1.5 py-0.5 font-mono ">↵</kbd> to select</span>
  </div>
  </div>
  </motion.div>

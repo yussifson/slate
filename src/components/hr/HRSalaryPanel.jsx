@@ -34,15 +34,15 @@ export default function HRSalaryPanel({ companyId, staff, currency, isAdmin }) {
 
   return (
     <div className="space-y-4">
-      <div className="bg-slate-50 border border-primary/20 rounded-xl px-5 py-4 flex items-center gap-3">
+      <div className="bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-xl px-5 py-4 flex items-center gap-3">
         <DollarSign className="w-5 h-5 text-primary" />
         <div>
-          <p className="text-xs text-muted-foreground">{t("total_monthly_payroll_active_s", "Total Monthly Payroll (Active Staff)")}</p>
-          <p className="text-2xl font-bold text-primary">{formatCurrency(totalPayroll, currency)}</p>
+          <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("total_monthly_payroll_active_s", "Total Monthly Payroll (Active Staff)")}</p>
+          <p className="text-2xl font-semibold text-primary tracking-[-0.02em]">{formatCurrency(totalPayroll, currency)}</p>
         </div>
       </div>
-      <div className="bg-card border border-primary/40 rounded-xl overflow-hidden">
-        <div className="px-4 py-2.5 bg-muted/30 border-b border-primary/40 grid grid-cols-12 gap-2 text-xs font-semibold uppercase text-muted-foreground">
+      <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="px-4 py-2.5 bg-muted/30 border-b border-primary/40 grid grid-cols-12 gap-2 text-xs font-semibold uppercase text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
           <span className="col-span-5">{t("staff_member", "Staff Member")}</span>
           <span className="col-span-3">{t("role", "Role")}</span>
           <span className="col-span-3 text-right">{t("monthly_salary", "Monthly Salary")}</span>
@@ -54,13 +54,13 @@ export default function HRSalaryPanel({ companyId, staff, currency, isAdmin }) {
               <div key={s.id} className="px-4 py-3 grid grid-cols-12 gap-2 items-center">
                 <div className="col-span-5">
                   <p className="text-sm font-medium">{s.full_name}</p>
-                  <p className="text-xs text-muted-foreground">{s.status === "active" ? "" : <span className="text-amber-600 capitalize">{s.status?.replace("_"," ")}</span>}</p>
+                  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{s.status === "active" ? "" : <span className="text-amber-600 capitalize">{s.status?.replace("_"," ")}</span>}</p>
                 </div>
                 <div className="col-span-3">
                   <Badge className={`${roleColors[s.role] || "bg-slate-100 text-slate-600"} text-[10px] capitalize`}>{s.role?.replace(/_/g, " ")}</Badge>
                 </div>
                 <div className="col-span-3 text-right">
-                  <span className="text-sm font-semibold">{s.salary ? formatCurrency(s.salary, currency) : <span className="text-muted-foreground text-xs">{t("not_set", "Not set")}</span>}</span>
+                  <span className="text-sm font-semibold">{s.salary ? formatCurrency(s.salary, currency) : <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{t("not_set", "Not set")}</span>}</span>
                 </div>
                 {isAdmin && (
                   <div className="col-span-1 flex justify-end">

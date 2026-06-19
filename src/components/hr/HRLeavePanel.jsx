@@ -72,22 +72,22 @@ export default function HRLeavePanel({ companyId, leaves, staff, isAdmin, user }
         </TabsContent>
         {isAdmin && (
           <TabsContent value="balances" className="mt-3">
-            <div className="bg-card border border-primary/40 rounded-xl divide-y divide-border">
+            <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               {staff.map(s => {
                 const bal = getBalance(s.user_email);
                 const pct = Math.min((bal.used / bal.total) * 100, 100);
                 return (
                   <div key={s.id} className="px-4 py-3 flex items-center gap-4">
-                    <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
-                      <span className="text-xs font-bold text-primary">{s.full_name?.[0]}</span>
+                    <div className="w-8 h-8 rounded-md-full bg-slate-100 flex items-center justify-center shrink-0">
+                      <span className="text-xs font-semibold text-primary tracking-[0.04em]">{s.full_name?.[0]}</span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium">{s.full_name}</p>
                       <div className="flex items-center gap-2 mt-1">
-                        <div className="flex-1 bg-muted rounded-full h-1.5">
-                          <div className="bg-primary rounded-full h-1.5" style={{ width: `${pct}%` }} />
+                        <div className="flex-1 bg-muted rounded-md-full h-1.5">
+                          <div className="bg-primary rounded-md-full h-1.5" style={{ width: `${pct}%` }} />
                         </div>
-                        <span className="text-xs text-muted-foreground shrink-0">{bal.used}/{bal.total} {t("days_used", "days used")}</span>
+                        <span className="text-xs text-[#71717a] dark:text-gray-400 shrink-0 tracking-[0.04em]">{bal.used}/{bal.total} {t("days_used", "days used")}</span>
                       </div>
                     </div>
                     <Badge className={cn("text-[10px]", bal.remaining < 5 ? "bg-red-100 text-red-700" : "bg-slate-100 text-primary/90")}>
@@ -108,31 +108,31 @@ export default function HRLeavePanel({ companyId, leaves, staff, isAdmin, user }
 function LeaveList({ leaves, isAdmin, onApprove, onReject }) {
   const { t } = useTranslation();
   if (!leaves.length) return (
-    <div className="bg-card border border-primary/40 rounded-xl p-10 text-center">
-      <Calendar className="w-10 h-10 text-muted-foreground mx-auto mb-2" />
-      <p className="text-sm text-muted-foreground">{t("no_leave_requests", "No leave requests")}</p>
+    <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <Calendar className="w-10 h-10 text-[#71717a] dark:text-gray-400 mx-auto mb-2" />
+      <p className="text-sm text-[#71717a] dark:text-gray-400">{t("no_leave_requests", "No leave requests")}</p>
     </div>
   );
   return (
-    <div className="bg-card border border-primary/40 rounded-xl divide-y divide-border">
+    <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       {leaves.map(leave => {
         return (
           <div key={leave.id} className="px-4 py-3 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0"><User className="w-4 h-4 text-muted-foreground" /></div>
+            <div className="w-8 h-8 rounded-xl bg-muted flex items-center justify-center shrink-0"><User className="w-4 h-4 text-[#71717a] dark:text-gray-400" /></div>
             <div className="flex-1 min-w-0">
-              <div className="flex flex-wrap items-center gap-1.5">
+              <div className="flex flex-wrap items-center gap-2.5">
                 <span className="text-sm font-medium">{leave.staff_name}</span>
                 <Badge className={cn("text-[9px] h-4 px-1.5 capitalize", LEAVE_COLORS[leave.leave_type])}>{leave.leave_type}</Badge>
                 <Badge className={cn("text-[9px] h-4 px-1.5", STATUS_COLORS[leave.status])}>{leave.status}</Badge>
               </div>
-              <p className="text-xs text-muted-foreground mt-0.5">
+              <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">
                 {leave.start_date && format(parseISO(leave.start_date), "MMM d")}– {leave.end_date && format(parseISO(leave.end_date), "MMM d, yyyy")}· {leave.days_requested} {t("day_s", "day(s)")}
               </p>
             </div>
             {isAdmin && leave.status === "pending" && (
-              <div className="flex gap-1.5 shrink-0">
-                <Button size="sm" className="h-7 text-xs bg-primary hover:bg-primary/90 gap-1" onClick={() => onApprove(leave)}><CheckCircle className="w-3 h-3" />{t("approve", "Approve")}</Button>
-                <Button size="sm" variant="outline" className="h-7 text-xs gap-1 text-red-600 border-red-200" onClick={() => onReject(leave)}><XCircle className="w-3 h-3" />{t("reject", "Reject")}</Button>
+              <div className="flex gap-2.5 shrink-0">
+                <Button size="sm" className="h-7 text-xs bg-primary hover:bg-primary/90 gap-2 tracking-[0.04em]" onClick={() => onApprove(leave)}><CheckCircle className="w-3 h-3" />{t("approve", "Approve")}</Button>
+                <Button size="sm" variant="outline" className="h-7 text-xs gap-2 text-red-600 border-red-200 tracking-[0.04em]" onClick={() => onReject(leave)}><XCircle className="w-3 h-3" />{t("reject", "Reject")}</Button>
               </div>
             )}
           </div>
@@ -155,7 +155,7 @@ function LeaveRequestDialog({ open, onClose, onSubmit, isAdmin, staffRecords }) 
         <form onSubmit={handleSubmit} className="space-y-4">
           {isAdmin && (
             <div>
-              <Label>{t("for_team_member", "For Team Member")} <span className="text-xs text-muted-foreground">{t("blank_yourself", "(blank = yourself)")}</span></Label>
+              <Label>{t("for_team_member", "For Team Member")} <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("blank_yourself", "(blank = yourself)")}</span></Label>
               <Select value={form._for_staff_email} onValueChange={v => { const s = staffRecords.find(sr => sr.user_email === v); set("_for_staff_email", v); set("_for_staff_name", s?.full_name || ""); }}>
                 <SelectTrigger><SelectValue placeholder="Select staff member" /></SelectTrigger>
                 <SelectContent>{staffRecords.map(s => {

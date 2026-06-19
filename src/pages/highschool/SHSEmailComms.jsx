@@ -93,24 +93,24 @@ export default function SHSEmailComms() {
  
  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
  <div>
- <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent">
+ <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 bg-clip-text text-transparent tracking-[-0.02em]">
  Email Broadcasts
  </h1>
- <p className="text-muted-foreground mt-1 text-sm font-medium">
+ <p className="text-[#71717a] dark:text-gray-400 mt-1 text-sm font-medium">
  Send rich HTML emails, newsletters, and attachments.
  </p>
  </div>
  
- <Button onClick={() => setIsSendModalOpen(true)} className="h-9 gap-2 rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20">
+ <Button onClick={() => setIsSendModalOpen(true)} className="h-9 gap-2 rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white -emerald-500/20">
  <Mail className="w-4 h-4" /> Compose Email
  </Button>
  </div>
 
- <Card className="rounded-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden">
+ <Card className="rounded-md-3xl border-none bg-white dark:bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-xl ring-1 ring-slate-100 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CardHeader className="border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 pb-4">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
- <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+ <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <Mail className="w-5 h-5 text-primary dark:text-primary/70" /> Sent Emails
  </CardTitle>
  </div>
@@ -119,7 +119,7 @@ export default function SHSEmailComms() {
  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 dark:text-slate-400" />
  <Input 
  placeholder="Search subjects..." 
- className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl focus-visible:ring-primary dark:focus-visible:ring-primary"
+ className="pl-9 h-9 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl focus-visible:ring-primary dark:focus-visible:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  />
@@ -131,10 +131,10 @@ export default function SHSEmailComms() {
  <div className="p-12 text-center text-slate-400 dark:text-slate-500 dark:text-slate-400">Loading email logs...</div>
  ) : filteredEmails.length === 0 ? (
  <div className="p-16 text-center">
- <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+ <div className="w-16 h-16 rounded-md-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
  <Mail className="w-8 h-8 text-primary dark:text-primary" />
  </div>
- <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200">No emails sent</h3>
+ <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200">No emails sent</h3>
  <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Your email broadcasts will appear here.</p>
  </div>
  ) : (
@@ -143,18 +143,18 @@ export default function SHSEmailComms() {
  <div key={email.id} className="p-6 hover:bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800/50 dark:bg-slate-800/50 transition-colors">
  <div className="flex justify-between items-start mb-3">
  <div>
- <h4 className="font-bold text-lg text-slate-800 dark:text-slate-100">{email.data?.subject}</h4>
+ <h4 className="font-semibold text-lg text-slate-800 dark:text-slate-100">{email.data?.subject}</h4>
  <div className="flex items-center gap-2 mt-1">
  <Badge variant="secondary" className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-none">
  {email.data?.targetGroup}
  </Badge>
- <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 flex items-center gap-1 border-l pl-2 border-primary/40 dark:border-primary/40">
+ <span className="text-xs font-medium text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 flex items-center gap-2 border-l pl-2 border-primary/40 dark:border-primary/40 tracking-[0.04em]">
  <Users className="w-3 h-3" /> {email.data?.recipientCount} Recipients
  </span>
  </div>
  </div>
  <div className="text-right">
- <span className="text-xs text-slate-400 dark:text-slate-500 dark:text-slate-400 font-medium block mb-1">
+ <span className="text-xs text-slate-400 dark:text-slate-500 dark:text-slate-400 font-medium block mb-1 tracking-[0.04em]">
  {new Date(email.data?.sentDate).toLocaleString()}
  </span>
  <Badge variant="outline" className="bg-orange-50 text-orange-700 border-primary/20">
@@ -163,7 +163,7 @@ export default function SHSEmailComms() {
  </div>
  </div>
  
- <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 p-4 rounded-xl border border-primary/40 dark:border-primary/40 dark:border-primary/40 text-sm text-slate-700 dark:text-slate-300 dark:text-slate-200 mt-3 line-clamp-2 overflow-hidden text-ellipsis whitespace-pre-wrap">
+ <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 p-4 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 dark:border-primary/40 text-sm text-slate-700 dark:text-slate-300 dark:text-slate-200 mt-3 line-clamp-2 overflow-hidden text-ellipsis whitespace-pre-wrap">
  {email.data?.bodyText}
  </div>
  </div>
@@ -174,10 +174,10 @@ export default function SHSEmailComms() {
  </Card>
 
  <Dialog open={isSendModalOpen} onOpenChange={setIsSendModalOpen}>
- <DialogContent className="sm:max-w-[600px] rounded-3xl p-0 overflow-hidden border-none ">
+ <DialogContent className="sm:max-w-[600px] rounded-md-3xl p-0 overflow-hidden border-none ">
  <div className="p-6 bg-gradient-to-br from-primary/90 via-primary/80 to-slate-900 text-white">
  <DialogHeader>
- <DialogTitle className="text-2xl font-black">Compose Broadcast</DialogTitle>
+ <DialogTitle className="text-2xl font-black tracking-[-0.02em]">Compose Broadcast</DialogTitle>
  <DialogDescription className="text-primary/10 dark:text-primary/70">
  Send an email newsletter or alert to a target audience.
  </DialogDescription>
@@ -187,9 +187,9 @@ export default function SHSEmailComms() {
  <div className="p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 space-y-4">
  
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Target Audience</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Target Audience</label>
  <select 
- className="w-full h-11 rounded-xl border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200"
+ className="w-full h-11 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 px-3 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary font-semibold text-slate-700 dark:text-slate-300 dark:text-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newEmail.targetGroup}
  onChange={e => setNewEmail({...newEmail, targetGroup: e.target.value})}
  >
@@ -202,22 +202,22 @@ export default function SHSEmailComms() {
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Subject Line</label>
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Subject Line</label>
  <Input 
  placeholder="e.g. End of Term Newsletter"
- className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-xl font-bold"
+ className="bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-primary/40 dark:border-primary/40 rounded-md-xl font-semibold hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  value={newEmail.subject}
  onChange={e => setNewEmail({...newEmail, subject: e.target.value})}
  />
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Message Body</label>
- <div className="border border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-primary">
+ <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-[0.04em]">Message Body</label>
+ <div className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 bg-white dark:bg-slate-900/40 dark:bg-slate-900 rounded-md-xl overflow-hidden focus-within:ring-2 focus-within:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="bg-slate-100 dark:bg-slate-800 border-b border-primary/40 dark:border-primary/40 p-2 flex gap-2">
- <div className="h-6 w-6 bg-slate-200 dark:bg-slate-700 rounded flex items-center justify-center text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">B</div>
- <div className="h-6 w-6 bg-slate-200 dark:bg-slate-700 rounded flex items-center justify-center text-xs italic text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">I</div>
- <div className="h-6 w-6 bg-slate-200 dark:bg-slate-700 rounded flex items-center justify-center text-xs underline text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">U</div>
+ <div className="h-6 w-6 bg-slate-200 dark:bg-slate-700 rounded-md flex items-center justify-center text-xs font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">B</div>
+ <div className="h-6 w-6 bg-slate-200 dark:bg-slate-700 rounded-md flex items-center justify-center text-xs italic text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">I</div>
+ <div className="h-6 w-6 bg-slate-200 dark:bg-slate-700 rounded-md flex items-center justify-center text-xs underline text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.04em]">U</div>
  </div>
  <textarea 
  placeholder="Dear Parent/Guardian..."
@@ -230,14 +230,14 @@ export default function SHSEmailComms() {
  
  </div>
  
- <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3">
- <Button variant="outline" onClick={() => setIsSendModalOpen(false)} className="rounded-xl font-semibold text-slate-600 dark:text-slate-300">
+ <div className="p-4 bg-white dark:bg-slate-900/40 dark:bg-slate-900 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 flex justify-end gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Button variant="outline" onClick={() => setIsSendModalOpen(false)} className="rounded-md-xl font-semibold text-slate-600 dark:text-slate-300">
  Cancel
  </Button>
  <Button 
  onClick={handleSendEmail} 
  disabled={!newEmail.subject || !newEmail.body || isSending}
- className="rounded-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-bold px-6"
+ className="rounded-md-xl bg-primary dark:bg-primary hover:bg-primary/90 dark:hover:bg-primary text-white font-semibold px-6"
  >
  {isSending ? 'Sending Broadcast...' : 'Send Broadcast'}
  </Button>

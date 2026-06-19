@@ -34,7 +34,7 @@ export default function DynamicWorkflow({ record, moduleDef, onStatusChange}) {
 };
 
  return (
- <div className="bg-muted/50 border border-primary/40 rounded-lg p-4 my-4 flex items-center justify-between ">
+ <div className="bg-muted/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-4 my-4 flex items-center justify-between ">
  <div className="flex items-center space-x-2">
  {workflow.map((step, idx) => {
  const isCompleted = idx < currentIndex;
@@ -43,13 +43,13 @@ export default function DynamicWorkflow({ record, moduleDef, onStatusChange}) {
  return (
  <React.Fragment key={step}>
  <div className="flex flex-col items-center">
- <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors
+ <div className={`w-8 h-8 rounded-md-full flex items-center justify-center text-xs font-semibold transition-colors
  ${isCompleted ? 'bg-muted text-primary' : 
  isCurrent ? 'bg-primary text-white ring-2 ring-primary/20' : 
- 'bg-muted text-muted-foreground'}`}>
+ 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
  {isCompleted ? <CheckCircle2 className="w-5 h-5" /> : (idx + 1)}
  </div>
- <span className={`text-[10px] mt-1 font-medium ${isCurrent ? 'text-primary/90' : 'text-muted-foreground'}`}>
+ <span className={`text-[10px] mt-1 font-medium ${isCurrent ? 'text-primary/90' : 'text-[#71717a] dark:text-gray-400'}`}>
  {step}
  </span>
  </div>

@@ -94,7 +94,7 @@ export default function Documents() {
         return (
           <div>
             <p className="font-medium text-sm">{row.name}</p>
-            <p className="text-xs text-muted-foreground">{row.case_title || "General"}</p>
+            <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{row.case_title || "General"}</p>
           </div>
         );
       }
@@ -106,13 +106,13 @@ export default function Documents() {
       return <span className="text-sm">{row.uploaded_by || "—"}</span>;
     } },
     { header: "Date", render: row => {
-      return <span className="text-xs text-muted-foreground">{format(new Date(row.created_date), "MMM d, yyyy")}</span>;
+      return <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{format(new Date(row.created_date), "MMM d, yyyy")}</span>;
     } },
     {
       header: "Actions",
       render: row => {
         return (
-          <div className="flex gap-1">
+          <div className="flex gap-2">
             {row.file_url && (
               <a href={row.file_url} target="_blank" rel="noopener noreferrer">
                 <Button variant="ghost" size="icon" className="h-7 w-7"><Download className="w-3.5 h-3.5" /></Button>
@@ -136,7 +136,7 @@ export default function Documents() {
       />
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
           <Input placeholder="Search documents..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
@@ -228,8 +228,8 @@ function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, a
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label>{t("file", "File")}</Label>
-            <div className="mt-1 border-2 border-dashed border-primary/40 rounded-lg p-6 text-center">
-              <Upload className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
+            <div className="mt-1 border-2 border-dashed border-primary/40 rounded-xl p-6 text-center">
+              <Upload className="w-8 h-8 mx-auto text-[#71717a] dark:text-gray-400 mb-2" />
               <input type="file" className="hidden" id="doc-upload" onChange={handleFileUpload} />
               <label htmlFor="doc-upload" className="text-sm text-primary cursor-pointer hover:underline">
                 {uploading ? "Uploading..." : fileUrl ? "File uploaded ✓" : "Choose file to upload"}

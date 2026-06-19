@@ -63,13 +63,13 @@ export default function UniLayout({ children}) {
  <div className="h-12 shrink-0 flex items-center justify-between px-4 bg-[#0D0F12]/85 backdrop-blur-[20px] border-b border-primary/40 z-50">
  <div className="flex items-center gap-4">
  <div className="flex items-center gap-2">
- <div className="w-6 h-6 rounded bg-[var(--color-accent-primary)] flex items-center justify-center">
+ <div className="w-6 h-6 rounded-md bg-[var(--color-accent-primary)] flex items-center justify-center">
  <Building className="w-4 h-4 text-white" />
  </div>
  <span className="font-display font-semibold text-sm tracking-tight hidden md:inline">Slate</span>
  </div>
  <div className="h-4 w-px bg-[var(--color-border-strong)] mx-1" />
- <div className="flex items-center text-xs text-[var(--color-text-secondary)]">
+ <div className="flex items-center text-xs text-[var(--color-text-secondary)] tracking-[0.04em]">
  <span>University</span>
  <ChevronRight className="w-3 h-3 mx-1" />
  <span className="text-[var(--color-text-primary)]">{activeSlate.name}</span>
@@ -79,27 +79,27 @@ export default function UniLayout({ children}) {
  <div className="flex-1 max-w-md mx-4">
  <button 
  onClick={() => setCmdPaletteOpen(true)}
- className="w-full flex items-center justify-between px-3 py-1.5 bg-[var(--color-surface-2)] hover:bg-[var(--color-surface-3)] border border-primary/40 rounded-md text-sm text-[var(--color-text-secondary)] transition-colors"
+ className="w-full flex items-center justify-between px-3 py-1.5 bg-[var(--color-surface-2)] hover:bg-[var(--color-surface-3)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg text-sm text-[var(--color-text-secondary)] transition-colors"
  >
  <span className="flex items-center gap-2">
  <Search className="w-4 h-4" />
  <span>Search anything...</span>
  </span>
- <kbd className="hidden sm:inline-flex items-center gap-1 font-mono text-[10px] bg-[var(--color-surface-1)] px-1.5 py-0.5 rounded border border-primary/40">
+ <kbd className="hidden sm:inline-flex items-center gap-2 font-mono text-[10px] bg-[var(--color-surface-1)] px-1.5 py-0.5 rounded-md border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  <span>⌘</span>K
  </kbd>
  </button>
  </div>
 
  <div className="flex items-center gap-3">
- <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[var(--color-surface-3)] transition-colors text-[var(--color-text-secondary)]">
+ <button className="w-8 h-8 flex items-center justify-center rounded-md-full hover:bg-[var(--color-surface-3)] transition-colors text-[var(--color-text-secondary)]">
  <Plus className="w-4 h-4" />
  </button>
- <button className="relative w-8 h-8 flex items-center justify-center rounded-full hover:bg-[var(--color-surface-3)] transition-colors text-[var(--color-text-secondary)]">
+ <button className="relative w-8 h-8 flex items-center justify-center rounded-md-full hover:bg-[var(--color-surface-3)] transition-colors text-[var(--color-text-secondary)]">
  <Bell className="w-4 h-4" />
- <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[var(--color-danger)] rounded-full border border-[var(--color-surface-0)]" />
+ <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[var(--color-danger)] rounded-md-full border-[0.5px] border-black/9 dark:border-white/8 border-[var(--color-surface-0)]" />
  </button>
- <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-[var(--color-accent-primary)] to-[var(--primary)] flex items-center justify-center text-xs font-semibold text-white ml-2">
+ <div className="w-7 h-7 rounded-md-full bg-gradient-to-tr from-[var(--color-accent-primary)] to-[var(--primary)] flex items-center justify-center text-xs font-semibold text-white ml-2 tracking-[0.04em]">
  {user?.email?.substring(0, 2).toUpperCase() || 'AD'}
  </div>
  </div>
@@ -115,7 +115,7 @@ export default function UniLayout({ children}) {
  <div className="p-3 flex justify-end">
  <button 
  onClick={() => setSidebarCollapsed(!isSidebarCollapsed)}
- className="p-1 hover:bg-[var(--color-surface-2)] rounded text-[var(--color-text-secondary)]"
+ className="p-1 hover:bg-[var(--color-surface-2)] rounded-md text-[var(--color-text-secondary)]"
  >
  <Menu className="w-4 h-4" />
  </button>
@@ -132,7 +132,7 @@ export default function UniLayout({ children}) {
  key={module.id}
  to={module.path}
  className={cn(
- "flex items-center gap-3 px-2 py-2 rounded-md transition-all duration-150 group",
+ "flex items-center gap-3 px-2 py-2 rounded-lg transition-all duration-150 group",
  isActive 
  ? "bg-[var(--color-accent-subtle)] text-[var(--color-text-primary)] font-medium" 
  : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-3)] hover:text-[var(--color-text-primary)]"
@@ -154,22 +154,22 @@ export default function UniLayout({ children}) {
 
  {/* Sidebar Footer */}
  <div className="p-3 border-t border-primary/40 space-y-1">
- <button className="flex items-center gap-3 px-2 py-2 w-full rounded-md text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-3)] transition-colors" title="Settings">
+ <button className="flex items-center gap-3 px-2 py-2 w-full rounded-lg text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-3)] transition-colors" title="Settings">
  <Settings className="w-[18px] h-[18px] shrink-0" style={{ strokeWidth: 1.5}} />
  {!isSidebarCollapsed && <span className="text-sm">Settings</span>}
  </button>
- <button className="flex items-center gap-3 px-2 py-2 w-full rounded-md text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-3)] transition-colors" title="Help & Support">
+ <button className="flex items-center gap-3 px-2 py-2 w-full rounded-lg text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-3)] transition-colors" title="Help & Support">
  <HelpCircle className="w-[18px] h-[18px] shrink-0" style={{ strokeWidth: 1.5}} />
  {!isSidebarCollapsed && <span className="text-sm">Help & Support</span>}
  </button>
  <button 
  onClick={() => setOrbitAIOpen(!isOrbitAIOpen)}
- className="flex items-center gap-3 px-2 py-2 mt-2 w-full rounded-md bg-[var(--color-surface-2)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-3)] transition-colors border border-primary/40" 
+ className="flex items-center gap-3 px-2 py-2 mt-2 w-full rounded-lg bg-[var(--color-surface-2)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-3)] transition-colors border-[0.5px] border-black/9 dark:border-white/8 border-primary/40" 
  title="Orbit AI"
  >
  <div className="relative shrink-0">
  <Zap className="w-[18px] h-[18px] text-[var(--color-accent-primary)]" style={{ strokeWidth: 1.5}} />
- <span className="absolute top-0 right-0 w-1.5 h-1.5 rounded-full bg-[var(--color-accent-primary)] animate-pulse" />
+ <span className="absolute top-0 right-0 w-1.5 h-1.5 rounded-md-full bg-[var(--color-accent-primary)] animate-pulse" />
  </div>
  {!isSidebarCollapsed && <span className="text-sm font-medium">Orbit AI</span>}
  </button>
@@ -200,7 +200,7 @@ export default function UniLayout({ children}) {
  )}>
  <div className="h-14 flex items-center justify-between px-4 border-b border-primary/40">
  <h3 className="font-semibold">Context details</h3>
- <button onClick={() => setContextPanelOpen(false)} className="p-1 hover:bg-[var(--color-surface-3)] rounded text-[var(--color-text-secondary)]">
+ <button onClick={() => setContextPanelOpen(false)} className="p-1 hover:bg-[var(--color-surface-3)] rounded-md text-[var(--color-text-secondary)]">
  <X className="w-4 h-4" />
  </button>
  </div>

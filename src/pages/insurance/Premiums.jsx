@@ -164,8 +164,8 @@ export default function Premiums() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("premiums", "Premiums")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t(
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("premiums", "Premiums")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
  "manage_policy_premium_payments",
  "Manage policy premium payments and collections"
  )}</p>
@@ -175,49 +175,49 @@ export default function Premiums() {
  </Button>
  </div>
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-xl border border-primary/40 p-4 ">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 mb-2 text-primary"><CheckCircle className="w-4 h-4"/> {t("collected", "Collected")}</div>
- <p className="text-2xl font-bold text-card-foreground">${totalCollected.toLocaleString()}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${totalCollected.toLocaleString()}</p>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-4 ">
- <div className="flex items-center gap-2 mb-2 text-muted-foreground"><DollarSign className="w-4 h-4"/> {t("total_payments", "Total Payments")}</div>
- <p className="text-2xl font-bold text-card-foreground">{premiums.length}</p>
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex items-center gap-2 mb-2 text-[#71717a] dark:text-gray-400"><DollarSign className="w-4 h-4"/> {t("total_payments", "Total Payments")}</div>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{premiums.length}</p>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-4 ">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 mb-2 text-amber-600"><Clock className="w-4 h-4"/> {t("pending", "Pending")}</div>
- <p className="text-2xl font-bold text-card-foreground">{premiums.filter(p => p.status === 'Pending').length}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{premiums.filter(p => p.status === 'Pending').length}</p>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-4 ">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 mb-2 text-red-600"><AlertCircle className="w-4 h-4"/> {t("overdue", "Overdue")}</div>
- <p className="text-2xl font-bold text-card-foreground">{premiums.filter(p => p.status === 'Overdue').length}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{premiums.filter(p => p.status === 'Overdue').length}</p>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search receipt, policy or holder..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search receipt, policy or holder..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  <div className="overflow-x-auto">
  {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_premium_records", "Loading premium records...")}</div>
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_premium_records", "Loading premium records...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
  <DollarSign className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary" />
- <p className="font-semibold text-lg text-card-foreground">{t("no_premium_records_found", "No premium records found")}</p>
- <p className="text-xs mt-1">{t("record_a_new_payment_to_see_it", "Record a new payment to see it here.")}</p>
+ <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_premium_records_found", "No premium records found")}</p>
+ <p className="text-xs mt-1 tracking-[0.04em]">{t("record_a_new_payment_to_see_it", "Record a new payment to see it here.")}</p>
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40">
+ <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("receipt_info", "Receipt Info")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("policy_info", "Policy Info")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("due_date", "Due Date")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("amount", "Amount")}</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("action", "Action")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("receipt_info", "Receipt Info")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("policy_info", "Policy Info")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("due_date", "Due Date")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("amount", "Amount")}</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("action", "Action")}</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
@@ -225,25 +225,25 @@ export default function Premiums() {
  return (
  <tr key={premium.id} className="hover:bg-muted/50 transition-colors">
  <td className="px-6 py-4">
- <p className="font-mono font-bold text-primary">{premium.receiptNumber}</p>
- <p className="text-xs text-muted-foreground mt-0.5">{premium.paymentMethod}</p>
+ <p className="font-mono font-semibold text-primary">{premium.receiptNumber}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">{premium.paymentMethod}</p>
  </td>
  <td className="px-6 py-4">
- <p className="font-bold text-card-foreground">{premium.policyHolder}</p>
- <Link to="/insurance/policies" className="text-xs text-primary hover:underline font-medium block">{premium.policyNumber}</Link>
+ <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{premium.policyHolder}</p>
+ <Link to="/insurance/policies" className="text-xs text-primary hover:underline font-medium block tracking-[0.04em]">{premium.policyNumber}</Link>
  </td>
- <td className="px-6 py-4 text-muted-foreground font-medium">
+ <td className="px-6 py-4 text-[#71717a] dark:text-gray-400 font-medium">
  {premium.dueDate}
  {premium.paidDate && <p className="text-[10px] text-primary mt-0.5">{t("paid", "Paid:")} {premium.paidDate}</p>}
  </td>
  <td className="px-6 py-4 text-right">
- <p className="font-bold text-card-foreground">${Number(premium.amount).toLocaleString()}</p>
+ <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${Number(premium.amount).toLocaleString()}</p>
  </td>
  <td className="px-6 py-4 text-center">
  <select
  value={premium.status}
  onChange={e => handleUpdateStatus(premium, e.target.value)}
- className={`rounded-md border border-input px-2 py-1 text-xs font-bold ${
+ className={`rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input px-2 py-1 text-xs font-semibold ${
  premium.status === 'Paid' ? 'bg-slate-100 text-primary/90' : 
  premium.status === 'Overdue' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
 }`}
@@ -278,25 +278,25 @@ export default function Premiums() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
- <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Premium Payment' : 'Record Premium Payment'}</h2>
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editTargetId ? 'Edit Premium Payment' : 'Record Premium Payment'}</h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("policy_number", "Policy Number")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("policy_number", "Policy Number")}</label>
  <Input value={formData.policyNumber} onChange={e => setFormData({...formData, policyNumber: e.target.value})} placeholder="POL-12345" className="mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("policy_holder", "Policy Holder")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("policy_holder", "Policy Holder")}</label>
  <Input value={formData.policyHolder} onChange={e => setFormData({...formData, policyHolder: e.target.value})} placeholder="Jane Doe" className="mt-1" />
  </div>
  <div className="grid grid-cols-2 gap-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("amount", "Amount ($)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("amount", "Amount ($)")}</label>
  <Input type="number" value={formData.amount} onChange={e => setFormData({...formData, amount: e.target.value})} placeholder="500" className="mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("payment_method", "Payment Method")}</label>
- <select value={formData.paymentMethod} onChange={e => setFormData({...formData, paymentMethod: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("payment_method", "Payment Method")}</label>
+ <select value={formData.paymentMethod} onChange={e => setFormData({...formData, paymentMethod: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground">
  <option>{t("bank_transfer", "Bank Transfer")}</option>
  <option>{t("credit_card", "Credit Card")}</option>
  <option>{t("mobile_money", "Mobile Money")}</option>
@@ -305,7 +305,7 @@ export default function Premiums() {
  </div>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("due_date", "Due Date")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("due_date", "Due Date")}</label>
  <Input type="date" value={formData.dueDate} onChange={e => setFormData({...formData, dueDate: e.target.value})} className="mt-1" />
  </div>
  </div>
@@ -319,7 +319,7 @@ export default function Premiums() {
  </div>
  )}
  <Sheet open={viewDetailsId !== null} onOpenChange={(open) => !open && setViewDetailsId(null)}>
- <SheetContent className="bg-card text-card-foreground">
+ <SheetContent className="bg-card text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <SheetHeader>
  <SheetTitle>{t("record_details", "Record Details")}</SheetTitle>
  </SheetHeader>
@@ -331,7 +331,7 @@ export default function Premiums() {
  if (key === 'id') return null;
  return (
  <div key={key}>
- <label className="text-xs font-bold text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{key.replace(/([A-Z])/g, ' $1').trim()}</label>
  <p className="font-medium">{String(value)}</p>
  </div>
  );
@@ -359,36 +359,36 @@ export default function Premiums() {
  {viewRecord && (
  <div className="mt-6 space-y-4">
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("receipt_number", "Receipt Number")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("receipt_number", "Receipt Number")}</h4>
  <p className="text-base font-semibold">{viewRecord.receiptNumber}</p>
  </div>
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("policy_number", "Policy Number")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("policy_number", "Policy Number")}</h4>
  <Link to="/insurance/policies" className="text-base text-primary hover:underline font-semibold">{viewRecord.policyNumber}</Link>
  </div>
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("policy_holder", "Policy Holder")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("policy_holder", "Policy Holder")}</h4>
  <p className="text-base">{viewRecord.policyHolder}</p>
  </div>
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("amount", "Amount")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("amount", "Amount")}</h4>
  <p className="text-base">${Number(viewRecord.amount).toLocaleString()}</p>
  </div>
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("status", "Status")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("status", "Status")}</h4>
  <p className="text-base">{viewRecord.status}</p>
  </div>
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("payment_method", "Payment Method")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("payment_method", "Payment Method")}</h4>
  <p className="text-base">{viewRecord.paymentMethod}</p>
  </div>
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("due_date", "Due Date")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("due_date", "Due Date")}</h4>
  <p className="text-base">{viewRecord.dueDate}</p>
  </div>
  {viewRecord.paidDate && (
  <div>
- <h4 className="text-sm font-medium text-muted-foreground">{t("paid_date", "Paid Date")}</h4>
+ <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("paid_date", "Paid Date")}</h4>
  <p className="text-base">{viewRecord.paidDate}</p>
  </div>
  )}

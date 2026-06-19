@@ -122,61 +122,61 @@ export default function Members() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("member_directory", "Member Directory")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t("manage_religion_congregants_and_", "Manage religion congregants and visitors")}</p>
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("member_directory", "Member Directory")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("manage_religion_congregants_and_", "Manage religion congregants and visitors")}</p>
  </div>
  <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
  <UserPlus className="w-4 h-4" /> {t("add_member", "Add Member")}
  </Button>
  </div>
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
- <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
+ <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-md-xl bg-slate-100 dark:bg-slate-500 flex items-center justify-center text-primary dark:text-primary/70">
  <Users className="w-5 h-5" />
  </div>
  <div>
- <p className="text-2xl font-bold text-card-foreground">{members.filter(m => m.status === 'Active').length}</p>
- <p className="text-xs text-muted-foreground">{t("active_members", "Active Members")}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{members.filter(m => m.status === 'Active').length}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("active_members", "Active Members")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
- <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/50 flex items-center justify-center text-amber-600 dark:text-amber-400">
+ <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-md-xl bg-amber-100 dark:bg-amber-950/50 flex items-center justify-center text-amber-600 dark:text-amber-400">
  <Heart className="w-5 h-5" />
  </div>
  <div>
- <p className="text-2xl font-bold text-card-foreground">{members.filter(m => m.type === 'Visitor').length}</p>
- <p className="text-xs text-muted-foreground">{t("first_time_visitors", "First Time Visitors")}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{members.filter(m => m.type === 'Visitor').length}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("first_time_visitors", "First Time Visitors")}</p>
  </div>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search name or cell group..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search name or cell group..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  <div className="overflow-x-auto">
  {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_directory", "Loading directory...")}</div>
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_directory", "Loading directory...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
  <Users className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
- <p className="font-semibold text-lg text-card-foreground">{t("no_member_profiles_found", "No member profiles found")}</p>
- <p className="text-xs mt-1">{t(
+ <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_member_profiles_found", "No member profiles found")}</p>
+ <p className="text-xs mt-1 tracking-[0.04em]">{t(
  "configure_congregants_using_th",
  "Configure congregants using the \"Add Member\" button above."
  )}</p>
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40">
+ <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("member_name", "Member Name")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("membership", "Membership")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("contact", "Contact")}</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("status", "Status")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("action", "Action")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("member_name", "Member Name")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("membership", "Membership")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("contact", "Contact")}</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("action", "Action")}</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
@@ -184,14 +184,14 @@ export default function Members() {
  return (
  <tr key={m.id} className="hover:bg-muted/50 transition-colors">
  <td className="px-6 py-4">
- <p className="font-bold text-card-foreground">{m.name}</p>
- <p className="text-xs text-muted-foreground">{m.memberId}</p>
+ <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{m.name}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{m.memberId}</p>
  </td>
  <td className="px-6 py-4">
- <p className="text-card-foreground font-medium">{m.type}</p>
- <Link to="/religion/small-groups" className="text-xs text-primary hover:underline">{m.group}</Link>
+ <p className="text-card-foreground font-medium hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{m.type}</p>
+ <Link to="/religion/small-groups" className="text-xs text-primary hover:underline tracking-[0.04em]">{m.group}</Link>
  </td>
- <td className="px-6 py-4 text-muted-foreground">
+ <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">
  <div className="flex items-center gap-2">
  <Phone className="w-3.5 h-3.5" /> {m.phone}
  </div>
@@ -200,7 +200,7 @@ export default function Members() {
  <select
  value={m.status}
  onChange={e => handleUpdateStatus(m, e.target.value)}
- className="rounded-md border border-input bg-background px-2.5 py-1 text-xs font-bold"
+ className="rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-2.5 py-1 text-xs font-semibold tracking-[0.04em]"
  >
  <option>{t("active", "Active")}</option>
  <option>{t("inactive", "Inactive")}</option>
@@ -236,11 +236,11 @@ export default function Members() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
- <h2 className="text-lg font-bold text-card-foreground">{t("add_religion_member", "Add Religion Member")}</h2>
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("add_religion_member", "Add Religion Member")}</h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("full_name", "Full Name")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("full_name", "Full Name")}</label>
  <Input
  value={formData.name}
  onChange={e => setFormData({ ...formData, name: e.target.value})}
@@ -249,7 +249,7 @@ export default function Members() {
  />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("phone_number", "Phone Number")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("phone_number", "Phone Number")}</label>
  <Input
  value={formData.phone}
  onChange={e => setFormData({ ...formData, phone: e.target.value})}
@@ -258,11 +258,11 @@ export default function Members() {
  />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("membership_type", "Membership Type")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("membership_type", "Membership Type")}</label>
  <select
  value={formData.type}
  onChange={e => setFormData({ ...formData, type: e.target.value})}
- className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
+ className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground"
  >
  <option>{t("full_member", "Full Member")}</option>
  <option>{t("associate", "Associate")}</option>
@@ -270,7 +270,7 @@ export default function Members() {
  </select>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("cell_group", "Cell Group")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("cell_group", "Cell Group")}</label>
  <Input
  value={formData.group}
  onChange={e => setFormData({ ...formData, group: e.target.value})}
@@ -303,7 +303,7 @@ export default function Members() {
  {viewRecord && Object.entries(viewRecord).filter(([k]) => k !== 'id' && k !== 'status').map(([key, value]) => {
  return (
  <div key={key} className="border-b border-primary/40 pb-2">
- <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
+ <p className="text-sm font-medium text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
  <p className="mt-1 text-base text-foreground font-semibold">
  {key === 'group' ? (
  <Link to="/religion/small-groups" className="text-primary hover:underline">{String(value)}</Link>

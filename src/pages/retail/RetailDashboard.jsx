@@ -48,7 +48,7 @@ export default function RetailDashboard() {
  if (isLoading) {
  return (
  <div className="flex-1 p-6 flex items-center justify-center">
- <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+ <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-md-full animate-spin"></div>
  </div>
  );
 }
@@ -56,13 +56,13 @@ export default function RetailDashboard() {
  return (
  <div className="flex-1 p-6 overflow-y-auto bg-slate-50/50 dark:bg-transparent">
  <div className="max-w-7xl mx-auto space-y-6">
- <div className="relative overflow-hidden bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl p-6 text-white mb-6">
+ <div className="relative overflow-hidden bg-gradient-to-r from-orange-500 to-amber-600 rounded-md-xl p-6 text-white mb-6">
  <div className="flex flex-col md:flex-row items-center justify-between gap-4">
  <div className="text-center md:text-left">
- <h1 className="text-2xl font-bold tracking-tight">Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Manager'}!</h1>
+ <h1 className="text-2xl font-semibold tracking-tight tracking-[-0.02em]">Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Manager'}!</h1>
  <p className="text-white/80 text-sm mt-1">{t("retail_desc", "Live metrics from your retail operations.")}</p>
  </div>
- <div className="flex items-center bg-white dark:bg-slate-900/40/15 px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider">
+ <div className="flex items-center bg-white dark:bg-slate-900/40/15 px-4 py-2 rounded-xl text-xs font-semibold uppercase tracking-wider tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric'})}
  </div>
  </div>
@@ -72,12 +72,12 @@ export default function RetailDashboard() {
  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
  <Card className=" border-primary/40">
  <CardHeader className="flex flex-row items-center justify-between pb-2">
- <CardTitle className="text-sm font-medium text-muted-foreground">{t("today_revenue", "Today's Revenue")}</CardTitle>
+ <CardTitle className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("today_revenue", "Today's Revenue")}</CardTitle>
  <DollarSign className="w-4 h-4 text-primary" />
  </CardHeader>
  <CardContent>
- <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">${todayRevenue.toFixed(2)}</div>
- <p className="text-xs text-primary flex items-center mt-1">
+ <div className="text-2xl font-semibold text-slate-900 dark:text-slate-100 tracking-[-0.02em]">${todayRevenue.toFixed(2)}</div>
+ <p className="text-xs text-primary flex items-center mt-1 tracking-[0.04em]">
  <TrendingUp className="w-3 h-3 mr-1" />
  {todaysOrders.length} transactions
  </p>
@@ -86,12 +86,12 @@ export default function RetailDashboard() {
  
  <Card className=" border-primary/40">
  <CardHeader className="flex flex-row items-center justify-between pb-2">
- <CardTitle className="text-sm font-medium text-muted-foreground">{t("total_products", "Total Products")}</CardTitle>
+ <CardTitle className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("total_products", "Total Products")}</CardTitle>
  <Package className="w-4 h-4 text-orange-500" />
  </CardHeader>
  <CardContent>
- <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">{products.length}</div>
- <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+ <div className="text-2xl font-semibold text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{products.length}</div>
+ <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 tracking-[0.04em]">
  Active in inventory
  </p>
  </CardContent>
@@ -99,12 +99,12 @@ export default function RetailDashboard() {
  
  <Card className=" border-primary/40">
  <CardHeader className="flex flex-row items-center justify-between pb-2">
- <CardTitle className="text-sm font-medium text-muted-foreground">{t("low_stock", "Low Stock Alerts")}</CardTitle>
+ <CardTitle className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("low_stock", "Low Stock Alerts")}</CardTitle>
  <AlertCircle className="w-4 h-4 text-red-500" />
  </CardHeader>
  <CardContent>
- <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">{lowStockProducts.length}</div>
- <p className="text-xs text-red-600 mt-1">
+ <div className="text-2xl font-semibold text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{lowStockProducts.length}</div>
+ <p className="text-xs text-red-600 mt-1 tracking-[0.04em]">
  Needs restocking
  </p>
  </CardContent>
@@ -112,12 +112,12 @@ export default function RetailDashboard() {
 
  <Card className=" border-primary/40">
  <CardHeader className="flex flex-row items-center justify-between pb-2">
- <CardTitle className="text-sm font-medium text-muted-foreground">{t("active_shifts", "Active Shifts")}</CardTitle>
+ <CardTitle className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("active_shifts", "Active Shifts")}</CardTitle>
  <Users className="w-4 h-4 text-orange-500" />
  </CardHeader>
  <CardContent>
- <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">{activeShifts.length}</div>
- <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+ <div className="text-2xl font-semibold text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{activeShifts.length}</div>
+ <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 tracking-[0.04em]">
  Staff on duty
  </p>
  </CardContent>
@@ -160,13 +160,13 @@ export default function RetailDashboard() {
  <CardContent>
  <div className="space-y-3">
  {lowStockProducts.length === 0 ? (
- <p className="text-sm text-muted-foreground text-center py-4">No low stock items</p>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 text-center py-4">No low stock items</p>
  ) : (
  lowStockProducts.slice(0, 5).map(p => (
- <div key={p.id} className="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-primary/40 dark:border-primary/40">
+ <div key={p.id} className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
  <div>
  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{p.data?.name}</p>
- <p className="text-xs text-slate-500 dark:text-slate-400">SKU: {p.data?.sku || 'N/A'}</p>
+ <p className="text-xs text-slate-500 dark:text-slate-400 tracking-[0.04em]">SKU: {p.data?.sku || 'N/A'}</p>
  </div>
  <Badge variant="destructive" className="bg-red-100 text-red-700 hover:bg-red-200">
  {p.data?.quantity || 0} left
@@ -189,17 +189,17 @@ export default function RetailDashboard() {
  <CardContent>
  <div className="space-y-3">
  {orders.length === 0 ? (
- <p className="text-sm text-muted-foreground text-center py-4">No recent orders</p>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 text-center py-4">No recent orders</p>
  ) : (
  orders.slice().sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5).map(o => (
- <div key={o.id} className="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-primary/40 dark:border-primary/40">
+ <div key={o.id} className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
  <div>
  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{o.data?.orderNumber || 'ORD'}</p>
- <p className="text-xs text-slate-500 dark:text-slate-400">
+ <p className="text-xs text-slate-500 dark:text-slate-400 tracking-[0.04em]">
  {new Date(o.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
  </p>
  </div>
- <span className="text-sm font-bold text-slate-900 dark:text-slate-100">
+ <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
  ${Number(o.data?.total || 0).toFixed(2)}
  </span>
  </div>

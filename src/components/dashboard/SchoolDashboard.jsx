@@ -20,11 +20,11 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tool
 
 function MetricCard({ title, value, icon: Icon}) {
  return (
- <div className="bg-white border border-primary/40 rounded-2xl p-4 flex flex-col items-center justify-center text-center relative overflow-hidden group transition-">
- <p className="text-2xl font-black text-slate-900 mb-1 relative z-10">{value}</p>
- <div className="flex items-center gap-1.5 relative z-10">
+ <div className="bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 flex flex-col items-center justify-center text-center relative overflow-hidden group transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <p className="text-2xl font-black text-slate-900 mb-1 relative z-10 tracking-[-0.02em]">{value}</p>
+ <div className="flex items-center gap-2.5 relative z-10">
  <Icon className="w-4 h-4 text-primary" />
- <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">{title}</p>
+ <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider tracking-[0.04em]">{title}</p>
  </div>
  </div>
  );
@@ -37,11 +37,11 @@ function UsageRow({ label, used, max, suffix = ""}) {
  <div className="space-y-1.5">
  <div className="flex items-center justify-between text-sm">
  <span className="text-foreground font-medium">{label}</span>
- <span className="text-muted-foreground text-xs">{used}{suffix} / {max}{suffix}</span>
+ <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{used}{suffix} / {max}{suffix}</span>
  </div>
- <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+ <div className="h-1.5 bg-muted rounded-md-full overflow-hidden">
  <div
- className={`h-full rounded-full transition-all ${isHigh ? "bg-amber-500" : "bg-primary"}`}
+ className={`h-full rounded-md-full transition-all ${isHigh ? "bg-amber-500" : "bg-primary"}`}
  style={{ width: `${pct}%`}}
  />
  </div>
@@ -102,11 +102,11 @@ export default function SchoolDashboard({ companyId, company, isAdmin}) {
  if (!companyId) {
  return (
  <div className="flex flex-col items-center justify-center min-h-[70vh] text-center space-y-6">
- <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center">
+ <div className="w-24 h-24 bg-slate-100 rounded-md-full flex items-center justify-center">
  <Building2 className="w-12 h-12 text-primary" />
  </div>
  <div className="max-w-md space-y-2">
- <h1 className="text-3xl font-bold text-slate-900 tracking-tight">{t("welcome_to_your_workslate", "Welcome to your workslate")}</h1>
+ <h1 className="text-3xl font-semibold text-slate-900 tracking-tight tracking-[-0.02em]">{t("welcome_to_your_workslate", "Welcome to your workslate")}</h1>
  <p className="text-slate-500 text-lg">{t(
  "you_haven_t_set_up_your_firm_y",
  "You haven't set up your firm yet. Configure your details to unlock your dashboard and features."
@@ -127,10 +127,10 @@ export default function SchoolDashboard({ companyId, company, isAdmin}) {
  {/* Header Area */}
  <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-2">
  <div>
- <p className="text-slate-500 text-sm font-bold tracking-widest uppercase mb-1">
+ <p className="text-slate-500 text-sm font-semibold tracking-widest uppercase mb-1 tracking-[0.04em]">
  {format(new Date(), "eeee, d MMMM")}
  </p>
- <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-1 tracking-tight">
+ <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-1 tracking-tight tracking-[-0.02em]">
  Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0]} <span className="inline-block animate-wave">👋</span>
  </h1>
  <p className="text-slate-500 text-base font-medium">
@@ -138,10 +138,10 @@ export default function SchoolDashboard({ companyId, company, isAdmin}) {
  </p>
  </div>
  <div className="flex items-center gap-2 shrink-0">
- <Button variant="outline" size="sm" className="gap-1.5 text-sm font-bold rounded-xl text-slate-700 bg-white hover:bg-slate-50 border-primary/40">
+ <Button variant="outline" size="sm" className="gap-2.5 text-sm font-semibold rounded-md-xl text-slate-700 bg-white hover:bg-slate-50 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <BarChart2 className="w-4 h-4" /> {t("analytics", "Analytics")}
  </Button>
- <Button onClick={handleRefresh} disabled={isRefreshing} size="sm" className="gap-1.5 text-sm font-bold bg-white text-slate-700 hover:bg-slate-50 rounded-xl border border-primary/40 ">
+ <Button onClick={handleRefresh} disabled={isRefreshing} size="sm" className="gap-2.5 text-sm font-semibold bg-white text-slate-700 hover:bg-slate-50 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} /> {t("refresh", "Refresh")}
  </Button>
  </div>
@@ -157,10 +157,10 @@ export default function SchoolDashboard({ companyId, company, isAdmin}) {
  {/* Analytics Charts */}
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
  {/* Revenue Area Chart */}
- <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 p-6 space-y-6">
+ <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-md-[2.5rem] border-[0.5px] border-black/9 dark:border-white/8 border-white/20 p-6 space-y-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-center">
  <h3 className="text-lg font-black text-slate-900 dark:text-white">{t("revenue_growth_curve", "Revenue Growth Curve (")}{currency})</h3>
- <span className="text-[10px] bg-slate-100 text-primary py-1 px-3 rounded-full font-black border border-primary/20 uppercase tracking-wider">{t("paid_invoices", "Paid Invoices")}</span>
+ <span className="text-[10px] bg-slate-100 text-primary py-1 px-3 rounded-md-full font-black border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 uppercase tracking-wider tracking-[0.04em]">{t("paid_invoices", "Paid Invoices")}</span>
  </div>
  <div className="h-64 w-full">
  <ResponsiveContainer width="100%" height="100%">
@@ -182,10 +182,10 @@ export default function SchoolDashboard({ companyId, company, isAdmin}) {
  </div>
 
  {/* Case Distribution Bar Chart */}
- <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-[2.5rem] border border-white/20 p-6 space-y-6">
+ <div className="bg-white/80 dark:bg-card/80 backdrop-blur-xl rounded-md-[2.5rem] border-[0.5px] border-black/9 dark:border-white/8 border-white/20 p-6 space-y-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-center">
  <h3 className="text-lg font-black text-slate-900 dark:text-white">{caseTerm} {t("distribution_by_stage", "Distribution by Stage")}</h3>
- <span className="text-[10px] bg-slate-100 text-primary py-1 px-3 rounded-full font-black border border-primary/20 uppercase tracking-wider">{t("active_pipelines", "Active Pipelines")}</span>
+ <span className="text-[10px] bg-slate-100 text-primary py-1 px-3 rounded-md-full font-black border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 uppercase tracking-wider tracking-[0.04em]">{t("active_pipelines", "Active Pipelines")}</span>
  </div>
  <div className="h-64 w-full">
  <ResponsiveContainer width="100%" height="100%">
@@ -203,34 +203,34 @@ export default function SchoolDashboard({ companyId, company, isAdmin}) {
  {/* Bottom grid */}
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
  {/* Upcoming Hearings */}
- <div className="bg-card rounded-xl border border-primary/40">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex items-center justify-between">
  <div className="flex items-center gap-2">
  <Calendar className="w-4 h-4 text-primary" />
  <h3 className="text-sm font-semibold">{t("upcoming", "Upcoming")} {hearingsTermPlural}</h3>
  </div>
- <span className="text-xs font-semibold text-primary bg-slate-100 rounded-full w-5 h-5 flex items-center justify-center">
+ <span className="text-xs font-semibold text-primary bg-slate-100 rounded-md-full w-5 h-5 flex items-center justify-center tracking-[0.04em]">
  {upcomingHearings.length}
  </span>
  </div>
  <div className="divide-y divide-border">
  {upcomingHearings.length === 0 ? (
  <div className="p-10 flex flex-col items-center text-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center">
- <Calendar className="w-5 h-5 text-muted-foreground" />
+ <div className="w-10 h-10 rounded-md-xl bg-muted flex items-center justify-center">
+ <Calendar className="w-5 h-5 text-[#71717a] dark:text-gray-400" />
  </div>
- <p className="text-sm text-muted-foreground">{t("no_upcoming", "No upcoming")} {hearingsTermPlural.toLowerCase()}</p>
+ <p className="text-sm text-[#71717a] dark:text-gray-400">{t("no_upcoming", "No upcoming")} {hearingsTermPlural.toLowerCase()}</p>
  </div>
  ) : upcomingHearings.map(h => {
  return (
  <div key={h.id} className="px-4 py-3 flex items-center gap-3 hover:bg-muted/40 transition-colors">
- <div className="w-10 h-10 rounded-lg bg-slate-100 flex flex-col items-center justify-center flex-shrink-0">
- <span className="text-[9px] font-bold text-primary leading-none uppercase">{format(new Date(h.date), "MMM")}</span>
- <span className="text-sm font-bold text-primary leading-none">{format(new Date(h.date), "d")}</span>
+ <div className="w-10 h-10 rounded-xl bg-slate-100 flex flex-col items-center justify-center flex-shrink-0">
+ <span className="text-[9px] font-semibold text-primary leading-none uppercase tracking-[0.04em]">{format(new Date(h.date), "MMM")}</span>
+ <span className="text-sm font-semibold text-primary leading-none">{format(new Date(h.date), "d")}</span>
  </div>
  <div className="flex-1 min-w-0">
  <p className="text-sm font-medium truncate">{h.title}</p>
- <p className="text-xs text-muted-foreground truncate">{h.court_name || h.case_title} · {h.time || "TBD"}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 truncate tracking-[0.04em]">{h.court_name || h.case_title} · {h.time || "TBD"}</p>
  </div>
  <Badge variant="outline" className="text-[10px] shrink-0">{h.lawyer_name || "—"}</Badge>
  </div>
@@ -240,10 +240,10 @@ export default function SchoolDashboard({ companyId, company, isAdmin}) {
  </div>
 
  {/* Plan Status */}
- <div className="bg-card rounded-xl border border-primary/40">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex items-center justify-between">
  <h3 className="text-sm font-semibold">{t("plan_status", "Plan Status")}</h3>
- <span className="text-xs font-medium text-muted-foreground capitalize">{plan.name}</span>
+ <span className="text-xs font-medium text-[#71717a] dark:text-gray-400 capitalize tracking-[0.04em]">{plan.name}</span>
  </div>
  <div className="p-4 space-y-4">
  <UsageRow label="Team Members" used={staff.length} max={plan.maxUsers} />
@@ -256,7 +256,7 @@ export default function SchoolDashboard({ companyId, company, isAdmin}) {
  <p className="text-sm font-semibold">{t("plan_details", "Plan Details")}</p>
  <p className="text-sm font-semibold">{formatCurrency(plan.price || 0, currency)}{t("mo", "/mo")}</p>
  </div>
- <div className="text-xs text-muted-foreground space-y-0.5">
+ <div className="text-xs text-[#71717a] dark:text-gray-400 space-y-0.5 tracking-[0.04em]">
  <p>· {plan.maxUsers} {t("team_member", "Team Member")}{plan.maxUsers !== 1 ? "s" : ""}</p>
  <p>· {plan.maxCases} {t("cases", "Cases")}</p>
  <p>· {plan.maxClients} {t("clients", "Clients")}</p>

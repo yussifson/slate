@@ -55,19 +55,19 @@ export default function CompanyFormDialog({ open, onClose, onSubmit, initialData
               <Input value={form.phone} onChange={e => set("phone", e.target.value)} />
             </div>
             <div className="col-span-2 pt-2 border-t border-primary/40">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3 flex items-center gap-1.5"><UserPlus className="w-3.5 h-3.5" />{t("company_admin", "Company Admin")}</p>
+              <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wide mb-3 flex items-center gap-2.5 tracking-[0.04em]"><UserPlus className="w-3.5 h-3.5" />{t("company_admin", "Company Admin")}</p>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <Label>{t("admin_full_name", "Admin Full Name")} {!initialData && <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span>}</Label>
+                  <Label>{t("admin_full_name", "Admin Full Name")} {!initialData && <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{t("optional", "(optional)")}</span>}</Label>
                   <Input value={adminName} onChange={e => setAdminName(e.target.value)} placeholder="Jane Mensah" disabled={!!initialData} />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>{t("admin_email", "Admin Email")} {!initialData && <span className="text-muted-foreground text-xs">{t("optional", "(optional)")}</span>}</Label>
+                  <Label>{t("admin_email", "Admin Email")} {!initialData && <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{t("optional", "(optional)")}</span>}</Label>
                   <Input value={form.admin_email} onChange={e => set("admin_email", e.target.value)} type="email" placeholder="admin@firm.com" />
                 </div>
               </div>
               {!initialData && form.admin_email && (
-                <div className="mt-2 flex items-center gap-2 text-xs text-orange-700 bg-orange-50 border border-primary/20 rounded-lg px-3 py-2">
+                <div className="mt-2 flex items-center gap-2 text-xs text-orange-700 bg-orange-50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-xl px-3 py-2 tracking-[0.04em]">
                   <Mail className="w-3.5 h-3.5 shrink-0" />
                   {t("a_login_invitation_will_be_sen", "A login invitation will be sent to")} <strong className="ml-1">{form.admin_email}</strong> {t("with_company_admin_access", "with Company Admin access.")}
                 </div>
@@ -111,7 +111,7 @@ export default function CompanyFormDialog({ open, onClose, onSubmit, initialData
             </div>
 
             <div className="col-span-2 pt-2 border-t border-primary/40">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">{t("subscription", "Subscription")}</p>
+              <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wide mb-3 tracking-[0.04em]">{t("subscription", "Subscription")}</p>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label>{t("plan", "Plan")}</Label>
@@ -140,7 +140,7 @@ export default function CompanyFormDialog({ open, onClose, onSubmit, initialData
             </div>
 
             <div className="col-span-2 pt-2 border-t border-primary/40">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">{t("usage_limits", "Usage Limits")}</p>
+              <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wide mb-3 tracking-[0.04em]">{t("usage_limits", "Usage Limits")}</p>
               <div className="grid grid-cols-3 gap-3">
                 <div className="space-y-1.5">
                   <Label>{t("max_users", "Max Users")}</Label>

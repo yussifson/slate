@@ -23,13 +23,13 @@ import HRPayrollPanel from "@/components/hr/HRPayrollPanel";
 
 function MetricCard({ icon: Icon, label, value, color }) {
   return (
-    <div className="bg-card border border-primary/40 rounded-xl p-4 flex items-center gap-3">
-      <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center shrink-0", color)}>
+    <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 flex items-center gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", color)}>
         <Icon className="w-5 h-5" />
       </div>
       <div>
-        <p className="text-xl font-bold">{value}</p>
-        <p className="text-xs text-muted-foreground">{label}</p>
+        <p className="text-xl font-semibold">{value}</p>
+        <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{label}</p>
       </div>
     </div>
   );
@@ -89,7 +89,7 @@ export default function HRDashboard() {
         <MetricCard icon={ArrowUpCircle} label="Pending Promotions" value={pendingPromotions} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />
       </div>
       <Tabs defaultValue="team">
-        <TabsList className="flex-wrap h-auto gap-1">
+        <TabsList className="flex-wrap h-auto gap-2">
           <TabsTrigger value="team">{t("team", "Team")}</TabsTrigger>
           <TabsTrigger value="salary">{t("salary", "Salary")}</TabsTrigger>
           <TabsTrigger value="leave">

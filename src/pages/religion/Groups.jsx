@@ -119,8 +119,8 @@ export default function Groups() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("groups", "Groups")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t("manage_religion_departments_and_", "Manage religion departments and groups")}</p>
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("groups", "Groups")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("manage_religion_departments_and_", "Manage religion departments and groups")}</p>
  </div>
  <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
  <Plus className="w-4 h-4" /> {t("add_group", "Add Group")}
@@ -128,16 +128,16 @@ export default function Groups() {
  </div>
  <div className="flex items-center gap-3">
  <div className="relative max-w-md flex-1">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search groups and leaders..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search groups and leaders..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_departments", "Loading departments...")}</div>
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_departments", "Loading departments...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-primary/40">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <HeartHandshake className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
- <p className="font-semibold text-lg text-card-foreground">{t("no_groups_configured", "No groups configured")}</p>
+ <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_groups_configured", "No groups configured")}</p>
  <p className="text-sm mt-1 max-w-md mx-auto">{t(
  "establish_departments_choir_le",
  "Establish departments, choir leaders, youth fellowships, and meeting routines using the top-right button."
@@ -147,9 +147,9 @@ export default function Groups() {
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {filtered.map(min => {
  return (
- <div key={min.id} className="bg-card rounded-xl border border-primary/40 p-6 transition- relative group">
+ <div key={min.id} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 transition- relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-start mb-4">
- <div className={`w-14 h-14 rounded-full border-2 flex items-center justify-center ${min.color || 'border-primary/40 bg-muted'}`}>
+ <div className={`w-14 h-14 rounded-md-full border-2 flex items-center justify-center ${min.color || 'border-primary/40 bg-muted'}`}>
  {getIcon(min.iconType)}
  </div>
  <DropdownMenu>
@@ -171,16 +171,16 @@ export default function Groups() {
  </DropdownMenuContent>
  </DropdownMenu>
  </div>
- <h3 className="text-xl font-bold text-card-foreground mb-1">{min.name}</h3>
- <p className="text-sm text-muted-foreground mb-4">{t("leader", "Leader:")} <Link to="/religion/members" className="font-bold text-primary hover:underline">{min.leader}</Link></p>
- <div className="space-y-2 text-sm text-muted-foreground">
+ <h3 className="text-xl font-semibold text-card-foreground mb-1 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{min.name}</h3>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mb-4">{t("leader", "Leader:")} <Link to="/religion/members" className="font-semibold text-primary hover:underline">{min.leader}</Link></p>
+ <div className="space-y-2 text-sm text-[#71717a] dark:text-gray-400">
  <div className="flex justify-between items-center py-2 border-t border-primary/40">
  <span>{t("members", "Members")}</span>
- <span className="font-bold bg-muted px-2.5 py-0.5 rounded-full text-card-foreground">{min.members}</span>
+ <span className="font-semibold bg-muted px-2.5 py-0.5 rounded-md-full text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{min.members}</span>
  </div>
  <div className="flex justify-between items-center py-2 border-t border-primary/40">
  <span>{t("meetings", "Meetings")}</span>
- <span className="font-medium text-card-foreground text-right">{min.schedule}</span>
+ <span className="font-medium text-card-foreground text-right hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{min.schedule}</span>
  </div>
  </div>
  </div>
@@ -190,13 +190,13 @@ export default function Groups() {
  )}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <HeartHandshake className="w-5 h-5 text-primary" /> {t("create_group_dept", "Create Group")}
  </h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("group_name", "Group Name")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("group_name", "Group Name")}</label>
  <Input
  value={formData.name}
  onChange={e => setFormData({ ...formData, name: e.target.value})}
@@ -205,7 +205,7 @@ export default function Groups() {
  />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("assign_leader", "Assign Leader")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("assign_leader", "Assign Leader")}</label>
  <Input
  value={formData.leader}
  onChange={e => setFormData({ ...formData, leader: e.target.value})}
@@ -215,7 +215,7 @@ export default function Groups() {
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("initial_members", "Initial Members")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("initial_members", "Initial Members")}</label>
  <Input
  type="number"
  value={formData.members}
@@ -225,11 +225,11 @@ export default function Groups() {
  />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("theme_preset", "Theme Preset")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("theme_preset", "Theme Preset")}</label>
  <select
  value={formData.schemeIndex}
  onChange={e => setFormData({ ...formData, schemeIndex: parseInt(e.target.value)})}
- className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
+ className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground"
  >
  {COLOR_SCHEMES.map((scheme, i) => {
  return (<option key={i} value={i}>{scheme.name}</option>);
@@ -238,7 +238,7 @@ export default function Groups() {
  </div>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("meeting_schedule", "Meeting Schedule")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("meeting_schedule", "Meeting Schedule")}</label>
  <Input
  value={formData.schedule}
  onChange={e => setFormData({ ...formData, schedule: e.target.value})}
@@ -271,7 +271,7 @@ export default function Groups() {
  {viewRecord && Object.entries(viewRecord).filter(([k]) => k !== 'id' && k !== 'status').map(([key, value]) => {
  return (
  <div key={key} className="border-b border-primary/40 pb-2">
- <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
+ <p className="text-sm font-medium text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
  <p className="mt-1 text-base text-foreground font-semibold">
  {key === 'leader' ? (
  <Link to="/religion/members" className="text-primary hover:underline">{String(value)}</Link>

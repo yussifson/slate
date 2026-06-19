@@ -215,8 +215,8 @@ export default function UnivKnowledgeBase({
  // Very basic markdown rendering for preview
  if (!content) return null;
  const html = content
- .replace(/^### (.*$)/gim, '<h3 class="text-lg font-bold mt-4 mb-2">$1</h3>')
- .replace(/^## (.*$)/gim, '<h2 class="text-xl font-bold mt-5 mb-3">$1</h2>')
+ .replace(/^### (.*$)/gim, '<h3 class="text-lg font-semibold mt-4 mb-2">$1</h3>')
+ .replace(/^## (.*$)/gim, '<h2 class="text-xl font-semibold mt-5 mb-3">$1</h2>')
  .replace(/^# (.*$)/gim, '<h1 class="text-2xl font-extrabold mt-6 mb-4">$1</h1>')
  .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
  .replace(/\*(.*)\*/gim, '<em>$1</em>')
@@ -231,19 +231,19 @@ export default function UnivKnowledgeBase({
  {/* SIDEBAR */}
  <div className="w-64 flex-shrink-0 border-r border-primary/40 bg-slate-50/50 dark:bg-slate-900/20 flex flex-col">
  <div className="p-4 border-b border-primary/40">
- <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+ <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
  <Folder className="w-5 h-5 text-primary" />
  {title}
  </h2>
- <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">{subtitle}</p>
  </div>
 
  <div className="p-3">
  <button 
  onClick={() => setActiveCategory(null)}
  className={cn(
- "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
- !activeCategory ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted"
+ "w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-colors",
+ !activeCategory ? "bg-primary/10 text-primary" : "text-[#71717a] dark:text-gray-400 hover:bg-muted"
  )}
  >
  <FileText className="w-4 h-4" />
@@ -252,7 +252,7 @@ export default function UnivKnowledgeBase({
  </div>
 
  <div className="flex-1 overflow-y-auto p-3 pt-0 space-y-1 custom-scrollbar">
- <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2 flex justify-between items-center">
+ <div className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-2 px-2 flex justify-between items-center tracking-[0.04em]">
  Categories
  <button onClick={() => setIsAddingCategory(true)} className="hover:text-primary transition-colors">
  <Plus className="w-3.5 h-3.5" />
@@ -270,10 +270,10 @@ export default function UnivKnowledgeBase({
  if (e.key === 'Enter') saveCategoryMutation.mutate(newCategoryName);
  if (e.key === 'Escape') setIsAddingCategory(false);
 }}
- className="w-full h-8 px-2 text-sm bg-background border border-primary/40 rounded-md focus:outline-none focus:border-primary"
+ className="w-full h-8 px-2 text-sm bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg focus:outline-none focus:border-primary"
  placeholder="Category name..."
  />
- <button onClick={() => setIsAddingCategory(false)} className="text-muted-foreground hover:text-foreground">
+ <button onClick={() => setIsAddingCategory(false)} className="text-[#71717a] dark:text-gray-400 hover:text-foreground">
  <X className="w-4 h-4" />
  </button>
  </div>
@@ -291,21 +291,21 @@ export default function UnivKnowledgeBase({
  if (!isExpanded) toggleCategory(cat.name);
 }}
  className={cn(
- "w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-sm transition-colors",
+ "w-full flex items-center justify-between px-2 py-1.5 rounded-xl text-sm transition-colors",
  isActive ? "bg-primary/5 text-primary font-medium" : "text-foreground hover:bg-muted"
  )}
  >
  <div className="flex items-center gap-2 overflow-hidden">
  <button 
  onClick={(e) => { e.stopPropagation(); toggleCategory(cat.name);}}
- className="p-0.5 hover:bg-muted rounded text-muted-foreground"
+ className="p-0.5 hover:bg-muted rounded-md text-[#71717a] dark:text-gray-400"
  >
  {isExpanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
  </button>
- <Folder className={cn("w-4 h-4", isActive ? "fill-primary/20 text-primary" : "text-muted-foreground")} />
+ <Folder className={cn("w-4 h-4", isActive ? "fill-primary/20 text-primary" : "text-[#71717a] dark:text-gray-400")} />
  <span className="truncate">{cat.name}</span>
  </div>
- <span className="text-xs text-muted-foreground bg-muted px-1.5 rounded-full">{catArticles.length}</span>
+ <span className="text-xs text-[#71717a] dark:text-gray-400 bg-muted px-1.5 rounded-md-full tracking-[0.04em]">{catArticles.length}</span>
  </button>
  <AnimatePresence>
  {isExpanded && (
@@ -320,8 +320,8 @@ export default function UnivKnowledgeBase({
  key={art.id}
  onClick={() => { setActiveArticle(art); setIsEditing(false);}}
  className={cn(
- "w-full flex items-center gap-2 px-2 py-1.5 text-xs rounded-md transition-colors truncate",
- activeArticle?.id === art.id ? "text-primary font-medium bg-primary/5" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+ "w-full flex items-center gap-2 px-2 py-1.5 text-xs rounded-lg transition-colors truncate",
+ activeArticle?.id === art.id ? "text-primary font-medium bg-primary/5" : "text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground"
  )}
  >
  <FileText className="w-3 h-3 shrink-0" />
@@ -341,31 +341,31 @@ export default function UnivKnowledgeBase({
  <div className="w-80 flex-shrink-0 border-r border-primary/40 flex flex-col bg-background">
  <div className="p-4 border-b border-primary/40 space-y-3">
  <div className="flex justify-between items-center">
- <h3 className="font-bold text-foreground">
+ <h3 className="font-semibold text-foreground">
  {activeCategory || 'All Articles'}
  </h3>
  <button 
  onClick={handleCreateArticle}
- className="p-1.5 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors "
+ className="p-1.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors "
  >
  <Plus className="w-4 h-4" />
  </button>
  </div>
  <div className="relative">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
  <input 
  type="text"
  placeholder="Search articles..."
  value={searchQuery}
  onChange={e => setSearchQuery(e.target.value)}
- className="w-full h-9 pl-9 pr-3 bg-muted/50 border border-transparent rounded-lg text-sm focus:bg-background focus:border-primary focus:outline-none transition-all"
+ className="w-full h-9 pl-9 pr-3 bg-muted/50 border-[0.5px] border-black/9 dark:border-white/8 border-transparent rounded-xl text-sm focus:bg-background focus:border-primary focus:outline-none transition-all"
  />
  </div>
  </div>
 
  <div className="flex-1 overflow-y-auto p-2 space-y-1 custom-scrollbar">
  {filteredArticles.length === 0 ? (
- <div className="text-center p-6 text-muted-foreground text-sm">
+ <div className="text-center p-6 text-[#71717a] dark:text-gray-400 text-sm">
  No articles found.
  </div>
  ) : (
@@ -374,7 +374,7 @@ export default function UnivKnowledgeBase({
  key={art.id}
  onClick={() => { setActiveArticle(art); setIsEditing(false);}}
  className={cn(
- "w-full text-left p-3 rounded-xl border transition-all duration-200",
+ "w-full text-left p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-200",
  activeArticle?.id === art.id 
  ? "bg-primary/5 border-primary/30 " 
  : "bg-background border-transparent hover:border-primary/40 hover:bg-muted/30"
@@ -386,14 +386,14 @@ export default function UnivKnowledgeBase({
  </h4>
  {art.pinned && <Pin className="w-3 h-3 text-amber-500 fill-amber-500 shrink-0 mt-0.5" />}
  </div>
- <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 line-clamp-2 leading-relaxed tracking-[0.04em]">
  {art.content || 'No content...'}
  </p>
- <div className="flex items-center gap-2 mt-3 text-[10px] font-medium uppercase tracking-wider">
- <span className={cn("px-1.5 py-0.5 rounded border", STATUS_COLORS[art.status || 'Draft'])}>
+ <div className="flex items-center gap-2 mt-3 text-[10px] font-medium uppercase tracking-wider tracking-[0.04em]">
+ <span className={cn("px-1.5 py-0.5 rounded-md border", STATUS_COLORS[art.status || 'Draft'])}>
  {art.status || 'Draft'}
  </span>
- <span className="text-muted-foreground/70">
+ <span className="text-[#71717a] dark:text-gray-400/70">
  {new Date(art.created_at).toLocaleDateString()}
  </span>
  </div>
@@ -406,26 +406,26 @@ export default function UnivKnowledgeBase({
  {/* EDITOR / VIEWER */}
  <div className="flex-1 flex flex-col bg-background relative overflow-hidden">
  {!activeArticle && !isEditing ? (
- <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground p-8 text-center animate-in fade-in duration-500">
- <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-6">
- <FileText className="w-10 h-10 text-muted-foreground/50" />
+ <div className="flex-1 flex flex-col items-center justify-center text-[#71717a] dark:text-gray-400 p-8 text-center animate-in fade-in duration-500">
+ <div className="w-20 h-20 bg-muted rounded-md-full flex items-center justify-center mb-6">
+ <FileText className="w-10 h-10 text-[#71717a] dark:text-gray-400/50" />
  </div>
- <h2 className="text-xl font-bold text-foreground mb-2">Knowledge Base</h2>
+ <h2 className="text-xl font-semibold text-foreground mb-2">Knowledge Base</h2>
  <p className="max-w-md text-sm leading-relaxed">
  Select an article from the list to view its contents, or create a new one to document your team's knowledge.
  </p>
  <button 
  onClick={handleCreateArticle}
- className="mt-6 px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20 flex items-center gap-2"
+ className="mt-6 px-6 py-2.5 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20 flex items-center gap-2"
  >
  <Plus className="w-4 h-4" /> Create First Article
  </button>
  </div>
  ) : isEditing ? (
  <div className="flex-1 flex flex-col h-full animate-in slide-in-from-right-4 duration-300">
- <div className="h-16 px-6 border-b border-primary/40 flex items-center justify-between bg-card/50 shrink-0">
+ <div className="h-16 px-6 border-b border-primary/40 flex items-center justify-between bg-card/50 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-3">
- <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+ <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
  <FileEdit className="w-4 h-4" />
  </div>
  <span className="font-semibold text-foreground text-sm">
@@ -435,14 +435,14 @@ export default function UnivKnowledgeBase({
  <div className="flex items-center gap-2">
  <button 
  onClick={() => setIsEditing(false)}
- className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+ className="px-4 py-2 text-sm font-medium text-[#71717a] dark:text-gray-400 hover:text-foreground transition-colors"
  >
  Cancel
  </button>
  <button 
  onClick={handleSave}
  disabled={saveArticleMutation.isPending}
- className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2"
+ className="px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2"
  >
  <Save className="w-4 h-4" />
  {saveArticleMutation.isPending ? 'Saving...' : 'Save Changes'}
@@ -457,27 +457,27 @@ export default function UnivKnowledgeBase({
  value={editorForm.title}
  onChange={e => setEditorForm({...editorForm, title: e.target.value})}
  placeholder="Article Title..."
- className="w-full text-4xl font-extrabold bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/30 focus:ring-0 px-0"
+ className="w-full text-4xl font-extrabold bg-transparent border-none outline-none text-foreground placeholder:text-[#71717a] dark:text-gray-400/30 focus:ring-0 px-0 tracking-[-0.02em]"
  />
  
- <div className="flex flex-wrap gap-4 p-4 rounded-xl bg-muted/30 border border-primary/40">
+ <div className="flex flex-wrap gap-4 p-4 rounded-md-xl bg-muted/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  <div className="flex-1 min-w-[200px]">
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Category</label>
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Category</label>
  <select 
  value={editorForm.category}
  onChange={e => setEditorForm({...editorForm, category: e.target.value})}
- className="w-full h-9 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:outline-none focus:border-primary"
+ className="w-full h-9 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:outline-none focus:border-primary"
  >
  <option value="">Select Category</option>
  {categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
  </select>
  </div>
  <div className="w-48">
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Status</label>
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Status</label>
  <select 
  value={editorForm.status}
  onChange={e => setEditorForm({...editorForm, status: e.target.value})}
- className="w-full h-9 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:outline-none focus:border-primary"
+ className="w-full h-9 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:outline-none focus:border-primary"
  >
  <option value="Draft">Draft</option>
  <option value="Published">Published</option>
@@ -490,9 +490,9 @@ export default function UnivKnowledgeBase({
  type="checkbox"
  checked={editorForm.pinned}
  onChange={e => setEditorForm({...editorForm, pinned: e.target.checked})}
- className="rounded border-primary/40 text-primary focus:ring-primary"
+ className="rounded-md border-primary/40 text-primary focus:ring-primary"
  />
- <Pin className="w-4 h-4 text-muted-foreground" /> Pin to top
+ <Pin className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> Pin to top
  </label>
  </div>
  </div>
@@ -503,26 +503,26 @@ export default function UnivKnowledgeBase({
  value={editorForm.content}
  onChange={e => setEditorForm({...editorForm, content: e.target.value})}
  placeholder="Write your article content here... (Markdown supported)"
- className="w-full min-h-[400px] text-base leading-relaxed bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/40 resize-y focus:ring-0 px-0 font-mono"
+ className="w-full min-h-[400px] text-base leading-relaxed bg-transparent border-none outline-none text-foreground placeholder:text-[#71717a] dark:text-gray-400/40 resize-y focus:ring-0 px-0 font-mono"
  />
  </div>
  </div>
  </div>
  ) : (
  <div className="flex-1 flex flex-col h-full animate-in fade-in duration-300">
- <div className="h-16 px-6 border-b border-primary/40 flex items-center justify-between bg-card/50 shrink-0">
+ <div className="h-16 px-6 border-b border-primary/40 flex items-center justify-between bg-card/50 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-3">
- <span className={cn("px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded border", STATUS_COLORS[activeArticle.status || 'Draft'])}>
+ <span className={cn("px-2 py-1 text-[10px] font-semibold uppercase tracking-wider rounded-md border", STATUS_COLORS[activeArticle.status || 'Draft'])}>
  {activeArticle.status || 'Draft'}
  </span>
- <span className="text-sm text-muted-foreground flex items-center gap-1">
+ <span className="text-sm text-[#71717a] dark:text-gray-400 flex items-center gap-2">
  <Folder className="w-3.5 h-3.5" /> {activeArticle.category}
  </span>
  </div>
  <div className="flex items-center gap-2">
  <button 
  onClick={() => handleEditArticle(activeArticle)}
- className="px-3 py-1.5 rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors flex items-center gap-2"
+ className="px-3 py-1.5 rounded-xl text-sm font-medium text-foreground hover:bg-muted transition-colors flex items-center gap-2"
  >
  <Edit3 className="w-4 h-4" /> Edit
  </button>
@@ -530,7 +530,7 @@ export default function UnivKnowledgeBase({
  onClick={() => {
  if (window.confirm('Delete this article?')) deleteArticleMutation.mutate(activeArticle.id);
 }}
- className="p-1.5 rounded-lg text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+ className="p-1.5 rounded-xl text-[#71717a] dark:text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
  >
  <Trash2 className="w-4 h-4" />
  </button>
@@ -539,18 +539,18 @@ export default function UnivKnowledgeBase({
 
  <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
  <div className="max-w-3xl mx-auto">
- <h1 className="text-4xl font-extrabold text-foreground mb-4">
+ <h1 className="text-4xl font-extrabold text-foreground mb-4 tracking-[-0.02em]">
  {activeArticle.title}
  </h1>
  
- <div className="flex items-center gap-4 text-sm text-muted-foreground mb-10 pb-6 border-b border-primary/40">
- <div className="flex items-center gap-1.5">
- <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">
+ <div className="flex items-center gap-4 text-sm text-[#71717a] dark:text-gray-400 mb-10 pb-6 border-b border-primary/40">
+ <div className="flex items-center gap-2.5">
+ <div className="w-5 h-5 rounded-md-full bg-primary/20 flex items-center justify-center text-[10px] font-semibold text-primary">
  {activeArticle.author?.charAt(0).toUpperCase() || 'U'}
  </div>
  {activeArticle.author || 'Unknown Author'}
  </div>
- <div className="flex items-center gap-1.5">
+ <div className="flex items-center gap-2.5">
  <Clock className="w-4 h-4" />
  Last updated {new Date(activeArticle.updated_at || activeArticle.created_at).toLocaleDateString()}
  </div>

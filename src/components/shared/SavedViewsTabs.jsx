@@ -25,10 +25,10 @@ export default function SavedViewsTabs({
     <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-2 scrollbar-hide">
       <button
         onClick={() => onSelectView({ id: 'all', name: 'All Records', filters: [] })}
-        className={`px-4 py-2 text-sm font-bold whitespace-nowrap border-b-2 transition-colors ${
+        className={`px-4 py-2 text-sm font-semibold whitespace-nowrap border-b-2 transition-colors ${
           activeViewId === 'all'
             ? 'border-primary text-primary'
-            : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/30'
+            : 'border-transparent text-[#71717a] dark:text-gray-400 hover:text-foreground hover:border-muted-foreground/30'
         }`}
       >
         {t("all_records", "All Records")}
@@ -38,17 +38,17 @@ export default function SavedViewsTabs({
           <div key={view.id} className="relative group flex items-center">
             <button
               onClick={() => onSelectView(view)}
-              className={`px-4 py-2 text-sm font-bold whitespace-nowrap border-b-2 transition-colors pr-8 ${
+              className={`px-4 py-2 text-sm font-semibold whitespace-nowrap border-b-2 transition-colors pr-8 ${
                 activeViewId === view.id
                   ? 'border-primary text-primary'
-                  : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/30'
+                  : 'border-transparent text-[#71717a] dark:text-gray-400 hover:text-foreground hover:border-muted-foreground/30'
               }`}
             >
               {view.name}
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); onDeleteView(view.id); }}
-              className="absolute right-1 w-5 h-5 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:bg-muted hover:text-red-500"
+              className="absolute right-1 w-5 h-5 rounded-md-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-red-500"
               title="Delete saved view"
             >
               <X className="w-3.5 h-3.5" />
@@ -61,11 +61,11 @@ export default function SavedViewsTabs({
         size="sm"
         onClick={onSaveCurrentView}
         disabled={isLoading}
-        className="h-8 px-2 text-muted-foreground hover:text-primary shrink-0 ml-1"
+        className="h-8 px-2 text-[#71717a] dark:text-gray-400 hover:text-primary shrink-0 ml-1"
         title="Save current filters as new view"
       >
         <Save className="w-4 h-4 mr-1.5" />
-        <span className="text-xs">{t("save_view", "Save View")}</span>
+        <span className="text-xs tracking-[0.04em]">{t("save_view", "Save View")}</span>
       </Button>
     </div>
   );

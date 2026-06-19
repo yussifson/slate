@@ -110,18 +110,18 @@ View in App: ${window.location.origin}/leads`,
  if (submitted) {
  return (
  <div className="min-h-screen bg-gradient-to-br from-slate-50 to-primary/5 flex items-center justify-center p-4">
- <div className="bg-white dark:bg-slate-900/40 rounded-2xl p-8 max-w-md w-full text-center">
- <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+ <div className="bg-white dark:bg-slate-900/40 rounded-md-2xl p-8 max-w-md w-full text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-16 h-16 bg-slate-100 rounded-md-full flex items-center justify-center mx-auto mb-4">
  <CheckCircle className="w-8 h-8 text-primary" />
  </div>
- <h2 className="text-xl font-bold text-foreground mb-2">{t("inquiry_received", "Inquiry Received!")}</h2>
- <p className="text-sm text-muted-foreground mb-4">
+ <h2 className="text-xl font-semibold text-foreground mb-2">{t("inquiry_received", "Inquiry Received!")}</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mb-4">
  {t("thank_you", "Thank you,")} <strong>{form.full_name}</strong>{t(
  "we_ve_received_your_inquiry_an",
  ". We've received your inquiry and sent a confirmation to"
  )} <strong>{form.email}</strong>.
  </p>
- <p className="text-sm text-muted-foreground">
+ <p className="text-sm text-[#71717a] dark:text-gray-400">
  {t(
  "a_member_of_our_team_will_cont",
  "A member of our team will contact you shortly via your preferred method."
@@ -143,22 +143,22 @@ View in App: ${window.location.origin}/leads`,
  <div className="text-center mb-8">
  <div className="flex items-center justify-center gap-3 mb-3">
  {company?.logo_url ? (
- <img src={company.logo_url} alt="Logo" className="h-10 max-w-[200px] object-contain rounded" />
+ <img src={company.logo_url} alt="Logo" className="h-10 max-w-[200px] object-contain rounded-md" />
  ) : (
- <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+ <div className="w-10 h-10 bg-primary rounded-md-xl flex items-center justify-center">
  <Scale className="w-5 h-5 text-white" />
  </div>
  )}
- <span className="text-xl font-bold text-foreground">{firmName}</span>
+ <span className="text-xl font-semibold text-foreground">{firmName}</span>
  </div>
- <h1 className="text-2xl font-bold text-foreground">{t("start_your_legal_journey", "Start Your Legal Journey")}</h1>
- <p className="text-sm text-muted-foreground mt-1">{t(
+ <h1 className="text-2xl font-semibold text-foreground tracking-[-0.02em]">{t("start_your_legal_journey", "Start Your Legal Journey")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">{t(
  "fill_out_the_form_below_and_ou",
  "Fill out the form below and our team will be in touch within 24 hours."
  )}</p>
  </div>
 
- <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900/40 rounded-2xl border border-primary/40 p-6 space-y-5">
+ <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900/40 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 space-y-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Personal Info */}
  <div>
  <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
@@ -224,7 +224,7 @@ View in App: ${window.location.origin}/leads`,
  placeholder="Please describe your legal matter in as much detail as possible..."
  required
  rows={4}
- className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
+ className="flex w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-transparent px-3 py-2 text-sm placeholder:text-[#71717a] dark:text-gray-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
  />
  </div>
  </div>
@@ -244,7 +244,7 @@ View in App: ${window.location.origin}/leads`,
  type="button"
  key={val}
  onClick={() => setForm({ ...form, preferred_contact: val})}
- className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${form.preferred_contact === val ? "bg-primary text-white border-primary" : "border-primary/40 text-muted-foreground hover:border-primary/40"}`}
+ className={`flex items-center gap-2 px-4 py-2 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 text-sm font-medium transition-colors ${form.preferred_contact === val ? "bg-primary text-white border-primary" : "border-primary/40 text-[#71717a] dark:text-gray-400 hover:border-primary/40"}`}
  >
  <IconComp className="w-3.5 h-3.5" /> {label}
  </button>
@@ -254,7 +254,7 @@ View in App: ${window.location.origin}/leads`,
  </div>
 
  {error && (
- <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 rounded-lg p-3">
+ <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 rounded-xl p-3">
  <AlertTriangle className="w-4 h-4 shrink-0" /> {error}
  </div>
  )}
@@ -264,7 +264,7 @@ View in App: ${window.location.origin}/leads`,
  {submitting ? "Submitting..." : "Submit Inquiry"}
  </Button>
 
- <p className="text-xs text-center text-muted-foreground">
+ <p className="text-xs text-center text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  {t(
  "by_submitting_this_form_you_ag",
  "By submitting this form you agree to our privacy policy. Your information is confidential and protected."

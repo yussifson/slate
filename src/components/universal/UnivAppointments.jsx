@@ -155,30 +155,30 @@ export default function UnivAppointments({
  <div className="flex flex-col h-full bg-background font-sans">
  
  {/* Header */}
- <div className="border-b border-primary/40 bg-card px-6 sm:px-8 py-5 shrink-0">
+ <div className="border-b border-primary/40 bg-card px-6 sm:px-8 py-5 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
- <h1 className="text-2xl font-extrabold text-foreground tracking-tight">{title}</h1>
- <p className="text-sm text-muted-foreground mt-1">Manage staff schedules and client bookings.</p>
+ <h1 className="text-2xl font-extrabold text-foreground tracking-tight tracking-[-0.02em]">{title}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Manage staff schedules and client bookings.</p>
  </div>
  <div className="flex items-center gap-3">
- <div className="flex bg-muted p-1 rounded-lg">
+ <div className="flex bg-muted p-1 rounded-xl">
  <button 
  onClick={() => setView('list')}
- className={cn("px-4 py-1.5 rounded-md text-sm font-medium transition-all", view === 'list' ? "bg-background text-foreground " : "text-muted-foreground")}
+ className={cn("px-4 py-1.5 rounded-lg text-sm font-medium transition-all", view === 'list' ? "bg-background text-foreground " : "text-[#71717a] dark:text-gray-400")}
  >
  List
  </button>
  <button 
  onClick={() => setView('calendar')}
- className={cn("px-4 py-1.5 rounded-md text-sm font-medium transition-all", view === 'calendar' ? "bg-background text-foreground " : "text-muted-foreground")}
+ className={cn("px-4 py-1.5 rounded-lg text-sm font-medium transition-all", view === 'calendar' ? "bg-background text-foreground " : "text-[#71717a] dark:text-gray-400")}
  >
  Calendar
  </button>
  </div>
  <button 
  onClick={openNewModal}
- className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2"
+ className="px-4 py-2 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2"
  >
  <Plus className="w-4 h-4" /> New Appointment
  </button>
@@ -189,17 +189,17 @@ export default function UnivAppointments({
  {view === 'list' && (
  <div className="mt-6 flex items-center gap-3">
  <div className="relative flex-1 max-w-sm">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <input 
  type="text" 
  placeholder="Search appointments..."
  value={searchQuery}
  onChange={e => setSearchQuery(e.target.value)}
- className="w-full h-10 pl-9 pr-4 bg-background border border-primary/40 rounded-lg text-sm focus:outline-none focus:border-primary "
+ className="w-full h-10 pl-9 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:border-primary "
  />
  </div>
- <button className="h-10 px-4 bg-background border border-primary/40 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-muted transition-colors ">
- <Filter className="w-4 h-4 text-muted-foreground" /> Filter
+ <button className="h-10 px-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl flex items-center gap-2 text-sm font-medium hover:bg-muted transition-colors ">
+ <Filter className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> Filter
  </button>
  </div>
  )}
@@ -211,15 +211,15 @@ export default function UnivAppointments({
  {view === 'list' && (
  <div className="max-w-6xl mx-auto space-y-4">
  {filteredAppointments.length === 0 ? (
- <div className="text-center py-20 text-muted-foreground">
+ <div className="text-center py-20 text-[#71717a] dark:text-gray-400">
  <CalendarIcon className="w-12 h-12 mx-auto mb-4 opacity-20" />
- <h3 className="text-lg font-bold text-foreground">No appointments found</h3>
+ <h3 className="text-lg font-semibold text-foreground">No appointments found</h3>
  <p className="text-sm mt-1">Create a new appointment to get started.</p>
  </div>
  ) : (
- <div className="bg-card border border-primary/40 rounded-2xl overflow-hidden">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm text-left">
- <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-muted-foreground">
+ <thead className="bg-muted/50 border-b border-primary/40 text-xs uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  <tr>
  <th className="px-6 py-4 font-semibold">Client & Service</th>
  <th className="px-6 py-4 font-semibold">Date & Time</th>
@@ -232,37 +232,37 @@ export default function UnivAppointments({
  {filteredAppointments.map(apt => (
  <tr key={apt.id} className="hover:bg-muted/30 transition-colors group">
  <td className="px-6 py-4">
- <div className="font-bold text-foreground">{apt.client_name}</div>
- <div className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
+ <div className="font-semibold text-foreground">{apt.client_name}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 flex items-center gap-2 tracking-[0.04em]">
  {apt.type === 'Virtual' ? <Video className="w-3 h-3" /> : <MapPin className="w-3 h-3" />}
  {apt.title}
  </div>
  </td>
  <td className="px-6 py-4">
  <div className="font-semibold text-foreground">{new Date(apt.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric'})}</div>
- <div className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
+ <div className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 flex items-center gap-2 tracking-[0.04em]">
  <Clock className="w-3 h-3" /> {apt.time} ({apt.duration}m)
  </div>
  </td>
  <td className="px-6 py-4">
  <div className="flex items-center gap-2">
- <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">
+ <div className="w-6 h-6 rounded-md-full bg-primary/20 flex items-center justify-center text-[10px] font-semibold text-primary">
  {apt.staff_name?.charAt(0) || '?'}
  </div>
  <span className="font-medium">{apt.staff_name || 'Unassigned'}</span>
  </div>
  </td>
  <td className="px-6 py-4">
- <span className={cn("px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full border", STATUS_COLORS[apt.status] || STATUS_COLORS['Scheduled'])}>
+ <span className={cn("px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider rounded-md-full border", STATUS_COLORS[apt.status] || STATUS_COLORS['Scheduled'])}>
  {apt.status}
  </span>
  </td>
  <td className="px-6 py-4 text-right">
  <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
- <button onClick={() => openEditModal(apt)} className="p-1.5 text-muted-foreground hover:text-primary rounded-lg hover:bg-primary/10">
+ <button onClick={() => openEditModal(apt)} className="p-1.5 text-[#71717a] dark:text-gray-400 hover:text-primary rounded-xl hover:bg-primary/10">
  <Edit3 className="w-4 h-4" />
  </button>
- <button onClick={() => { if(window.confirm('Delete appointment?')) deleteMutation.mutate(apt.id);}} className="p-1.5 text-muted-foreground hover:text-red-500 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/30">
+ <button onClick={() => { if(window.confirm('Delete appointment?')) deleteMutation.mutate(apt.id);}} className="p-1.5 text-[#71717a] dark:text-gray-400 hover:text-red-500 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/30">
  <Trash2 className="w-4 h-4" />
  </button>
  </div>
@@ -277,9 +277,9 @@ export default function UnivAppointments({
  )}
 
  {view === 'calendar' && (
- <div className="max-w-6xl mx-auto bg-card border border-primary/40 rounded-2xl p-8 text-center text-muted-foreground">
+ <div className="max-w-6xl mx-auto bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-8 text-center text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <CalendarIcon className="w-16 h-16 mx-auto mb-4 opacity-20" />
- <h3 className="text-xl font-bold text-foreground mb-2">Calendar View</h3>
+ <h3 className="text-xl font-semibold text-foreground mb-2">Calendar View</h3>
  <p>Full calendar grid implementation goes here. Switch to List view to manage appointments.</p>
  </div>
  )}
@@ -295,56 +295,56 @@ export default function UnivAppointments({
  initial={{ opacity: 0, scale: 0.95, y: 20}}
  animate={{ opacity: 1, scale: 1, y: 0}}
  exit={{ opacity: 0, scale: 0.95, y: 20}}
- className="relative w-full max-w-lg bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
+ className="relative w-full max-w-lg bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="px-6 py-4 border-b border-primary/40 flex items-center justify-between bg-muted/20">
- <h2 className="text-lg font-bold text-foreground">{editingApt ? 'Edit Appointment' : 'New Appointment'}</h2>
- <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:text-foreground"><MoreHorizontal className="w-5 h-5" /></button>
+ <h2 className="text-lg font-semibold text-foreground">{editingApt ? 'Edit Appointment' : 'New Appointment'}</h2>
+ <button onClick={() => setIsModalOpen(false)} className="text-[#71717a] dark:text-gray-400 hover:text-foreground"><MoreHorizontal className="w-5 h-5" /></button>
  </div>
  
  <div className="flex-1 overflow-y-auto p-6">
  <form id="apt-form" onSubmit={handleSave} className="space-y-5">
  <div className="grid grid-cols-2 gap-4">
  <div className="col-span-2">
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Client Name *</label>
- <input required type="text" value={formState.client_name} onChange={e => setFormState({...formState, client_name: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Client Name *</label>
+ <input required type="text" value={formState.client_name} onChange={e => setFormState({...formState, client_name: e.target.value})} className="w-full h-10 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Service Title</label>
- <input type="text" value={formState.title} onChange={e => setFormState({...formState, title: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Service Title</label>
+ <input type="text" value={formState.title} onChange={e => setFormState({...formState, title: e.target.value})} className="w-full h-10 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Staff Member</label>
- <input type="text" value={formState.staff_name} onChange={e => setFormState({...formState, staff_name: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Staff Member</label>
+ <input type="text" value={formState.staff_name} onChange={e => setFormState({...formState, staff_name: e.target.value})} className="w-full h-10 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Date *</label>
- <input required type="date" value={formState.date} onChange={e => setFormState({...formState, date: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Date *</label>
+ <input required type="date" value={formState.date} onChange={e => setFormState({...formState, date: e.target.value})} className="w-full h-10 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Time *</label>
- <input required type="time" value={formState.time} onChange={e => setFormState({...formState, time: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Time *</label>
+ <input required type="time" value={formState.time} onChange={e => setFormState({...formState, time: e.target.value})} className="w-full h-10 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Duration (mins)</label>
- <input type="number" value={formState.duration} onChange={e => setFormState({...formState, duration: parseInt(e.target.value)})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Duration (mins)</label>
+ <input type="number" value={formState.duration} onChange={e => setFormState({...formState, duration: parseInt(e.target.value)})} className="w-full h-10 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none" />
  </div>
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Type</label>
- <select value={formState.type} onChange={e => setFormState({...formState, type: e.target.value})} className="w-full h-10 px-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none">
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Type</label>
+ <select value={formState.type} onChange={e => setFormState({...formState, type: e.target.value})} className="w-full h-10 px-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none">
  <option>In-Person</option>
  <option>Virtual</option>
  <option>Phone</option>
  </select>
  </div>
  <div className="col-span-2">
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Status</label>
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Status</label>
  <div className="flex gap-2">
  {Object.keys(STATUS_COLORS).map(s => (
  <button 
  key={s} type="button"
  onClick={() => setFormState({...formState, status: s})}
- className={cn("px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors border", formState.status === s ? STATUS_COLORS[s] : "bg-background text-muted-foreground border-primary/40")}
+ className={cn("px-3 py-1.5 rounded-xl text-xs font-semibold uppercase tracking-wider transition-colors border", formState.status === s ? STATUS_COLORS[s] : "bg-background text-[#71717a] dark:text-gray-400 border-primary/40")}
  >
  {s}
  </button>
@@ -352,16 +352,16 @@ export default function UnivAppointments({
  </div>
  </div>
  <div className="col-span-2">
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Notes</label>
- <textarea value={formState.notes} onChange={e => setFormState({...formState, notes: e.target.value})} className="w-full h-24 p-3 rounded-lg border border-primary/40 bg-background text-sm focus:border-primary focus:outline-none resize-none" />
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Notes</label>
+ <textarea value={formState.notes} onChange={e => setFormState({...formState, notes: e.target.value})} className="w-full h-24 p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-background text-sm focus:border-primary focus:outline-none resize-none" />
  </div>
  </div>
  </form>
  </div>
  
  <div className="px-6 py-4 border-t border-primary/40 bg-muted/20 flex justify-end gap-3">
- <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors">Cancel</button>
- <button type="submit" form="apt-form" disabled={saveMutation.isPending} className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors disabled:opacity-50">
+ <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-xl text-sm font-medium text-foreground hover:bg-muted transition-colors">Cancel</button>
+ <button type="submit" form="apt-form" disabled={saveMutation.isPending} className="px-6 py-2 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50">
  {saveMutation.isPending ? 'Saving...' : 'Save Appointment'}
  </button>
  </div>

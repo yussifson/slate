@@ -223,11 +223,11 @@ export default function POS() {
  if (!canAccess) {
  return (
  <div className="flex-1 flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 h-[calc(100vh-100px)]">
- <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
+ <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-md-full flex items-center justify-center mb-6">
  <ShieldAlert className="w-10 h-10 text-red-600 dark:text-red-500" />
  </div>
- <h2 className="text-2xl font-bold text-foreground mb-3">Access Restricted</h2>
- <p className="text-muted-foreground max-w-md mx-auto mb-8">
+ <h2 className="text-2xl font-semibold text-foreground mb-3 tracking-[-0.02em]">Access Restricted</h2>
+ <p className="text-[#71717a] dark:text-gray-400 max-w-md mx-auto mb-8">
  Your current role does not grant you permission to use the Point of Sale system.
  </p>
  <Button asChild variant="outline">
@@ -240,21 +240,21 @@ export default function POS() {
  return (
  <div className="h-[calc(100vh-140px)] flex flex-col md:flex-row gap-6 pb-6">
  {/* Product List */}
- <div className="flex-1 flex flex-col bg-muted/50 rounded-2xl border border-primary/40 overflow-hidden md:h-full min-h-[40vh]">
- <div className="p-4 bg-card border-b border-primary/40 flex gap-4">
+ <div className="flex-1 flex flex-col bg-muted/50 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden md:h-full min-h-[40vh]">
+ <div className="p-4 bg-card border-b border-primary/40 flex gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="relative flex-1">
- <ShoppingCart className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+ <ShoppingCart className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#71717a] dark:text-gray-400" />
  <Input placeholder="Search products by name or SKU..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10 h-12 text-lg bg-muted" />
  </div>
  </div>
  <div className="flex-1 p-4 overflow-y-auto">
  {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_pos_register", "Loading POS register...")}</div>
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_pos_register", "Loading POS register...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-primary/40">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <ScanBarcode className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse" />
  <p className="font-semibold">{t("no_pos_products_found", "No POS products found.")}</p>
- <p className="text-xs mt-1">{t(
+ <p className="text-xs mt-1 tracking-[0.04em]">{t(
  "please_add_active_products_to_",
  "Please add active products to the Inventory page first."
  )}</p>
@@ -263,14 +263,14 @@ export default function POS() {
  <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
  {filtered.map(product => {
  return (
- <div key={product.sku} onClick={() => addToCart(product)} className="bg-card p-4 rounded-xl border border-primary/40 hover:border-orange-300 transition-all cursor-pointer flex flex-col h-32 select-none active:scale-95">
+ <div key={product.sku} onClick={() => addToCart(product)} className="bg-card p-4 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-orange-300 transition-all cursor-pointer flex flex-col h-32 select-none active:scale-95 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex-1">
- <p className="font-bold text-card-foreground leading-tight line-clamp-2">{product.name}</p>
- <p className="text-xs text-muted-foreground font-mono mt-1">{product.sku}</p>
+ <p className="font-semibold text-card-foreground leading-tight line-clamp-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{product.name}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 font-mono mt-1 tracking-[0.04em]">{product.sku}</p>
  </div>
  <div className="flex justify-between items-end mt-2">
  <span className="text-lg font-black text-orange-600">${product.price.toFixed(2)}</span>
- <span className="text-xs font-semibold text-muted-foreground">{product.stock} {t("in_stock", "in stock")}</span>
+ <span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{product.stock} {t("in_stock", "in stock")}</span>
  </div>
  </div>
  );
@@ -281,17 +281,17 @@ export default function POS() {
  </div>
  
  {/* Cart Sidebar */}
- <div className="w-full md:w-[450px] flex flex-col bg-card rounded-2xl border border-primary/40 overflow-hidden shadow-xl md:shadow-none z-10 md:h-full flex-shrink-0 flex-grow-0">
+ <div className="w-full md:w-[450px] flex flex-col bg-card rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-xl md:shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none z-10 md:h-full flex-shrink-0 flex-grow-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-5 border-b border-primary/40 bg-muted/30">
- <h2 className="font-bold flex items-center gap-2 text-lg"><ShoppingCart className="w-5 h-5"/> {t("current_sale", "Current Sale")}</h2>
- <span className="bg-orange-700 px-2 py-1 rounded text-xs font-mono">{cart.length} {t("items", "items")}</span>
+ <h2 className="font-semibold flex items-center gap-2 text-lg"><ShoppingCart className="w-5 h-5"/> {t("current_sale", "Current Sale")}</h2>
+ <span className="bg-orange-700 px-2 py-1 rounded-md text-xs font-mono tracking-[0.04em]">{cart.length} {t("items", "items")}</span>
  </div>
  
  <div className="p-3 bg-muted border-b border-primary/40">
  <select 
  value={selectedCustomerId} 
  onChange={e => setSelectedCustomerId(e.target.value)} 
- className="w-full bg-card border border-primary/40 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-orange-500"
+ className="w-full bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <option value="">Walk-in Customer</option>
  {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -300,7 +300,7 @@ export default function POS() {
 
  <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-muted/30 min-h-0">
  {cart.length === 0 ? (
- <div className="h-full flex flex-col items-center justify-center text-muted-foreground opacity-50">
+ <div className="h-full flex flex-col items-center justify-center text-[#71717a] dark:text-gray-400 opacity-50">
  <ShoppingCart className="w-16 h-16 mb-4 animate-bounce" />
  <p className="font-medium text-lg">{t("cart_is_empty", "Cart is empty")}</p>
  <p className="text-sm">{t(
@@ -311,18 +311,18 @@ export default function POS() {
  ) : (
  cart.map(item => {
  return (
- <div key={item.sku} className="bg-card p-3 rounded-lg border border-primary/40 flex items-center justify-between group">
+ <div key={item.sku} className="bg-card p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex items-center justify-between group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex-1">
- <p className="font-bold text-sm text-card-foreground leading-tight">{item.name}</p>
- <p className="text-xs text-muted-foreground">${item.price.toFixed(2)} {t("each", "each")}</p>
+ <p className="font-semibold text-sm text-card-foreground leading-tight hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{item.name}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">${item.price.toFixed(2)} {t("each", "each")}</p>
  </div>
  <div className="flex items-center gap-3">
- <div className="flex items-center bg-muted rounded-md">
- <button onClick={() => updateQty(item.sku, -1)} className="p-1 hover:bg-slate-200 rounded-l-md text-muted-foreground"><Minus className="w-4 h-4"/></button>
- <span className="w-8 text-center font-bold text-sm">{item.qty}</span>
- <button onClick={() => updateQty(item.sku, 1)} className="p-1 hover:bg-slate-200 rounded-r-md text-muted-foreground"><Plus className="w-4 h-4"/></button>
+ <div className="flex items-center bg-muted rounded-lg">
+ <button onClick={() => updateQty(item.sku, -1)} className="p-1 hover:bg-slate-200 rounded-md-l-md text-[#71717a] dark:text-gray-400"><Minus className="w-4 h-4"/></button>
+ <span className="w-8 text-center font-semibold text-sm">{item.qty}</span>
+ <button onClick={() => updateQty(item.sku, 1)} className="p-1 hover:bg-slate-200 rounded-md-r-md text-[#71717a] dark:text-gray-400"><Plus className="w-4 h-4"/></button>
  </div>
- <span className="font-black text-card-foreground w-16 text-right">${(item.price * item.qty).toFixed(2)}</span>
+ <span className="font-black text-card-foreground w-16 text-right hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${(item.price * item.qty).toFixed(2)}</span>
  <button onClick={() => removeFromCart(item.sku)} className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"><X className="w-4 h-4"/></button>
  </div>
  </div>
@@ -331,20 +331,20 @@ export default function POS() {
  )}
  </div>
  
- <div className="p-5 bg-card border-t border-primary/40 space-y-3">
+ <div className="p-5 bg-card border-t border-primary/40 space-y-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex justify-between items-center text-sm">
- <span className="text-muted-foreground font-medium">{t("subtotal", "Subtotal")}</span>
- <span className="font-bold text-card-foreground">${subtotal.toFixed(2)}</span>
+ <span className="text-[#71717a] dark:text-gray-400 font-medium">{t("subtotal", "Subtotal")}</span>
+ <span className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${subtotal.toFixed(2)}</span>
  </div>
  
  {/* Promo Input / Display */}
  {appliedPromo ? (
- <div className="flex justify-between items-center text-sm bg-slate-50 dark:bg-slate-800/50 p-2 rounded-md border border-primary/40">
+ <div className="flex justify-between items-center text-sm bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  <div className="flex items-center gap-2">
- <span className="text-primary/90 font-bold text-xs uppercase bg-primary/20 px-1.5 py-0.5 rounded">{appliedPromo.code}</span>
+ <span className="text-primary/90 font-semibold text-xs uppercase bg-primary/20 px-1.5 py-0.5 rounded-md tracking-[0.04em]">{appliedPromo.code}</span>
  <button onClick={removePromo} className="text-primary hover:text-primary/80"><X className="w-3 h-3" /></button>
  </div>
- <span className="font-bold text-primary">-${discount.toFixed(2)}</span>
+ <span className="font-semibold text-primary">-${discount.toFixed(2)}</span>
  </div>
  ) : (
  <div className="flex gap-2">
@@ -352,25 +352,25 @@ export default function POS() {
  placeholder={t("promo_code", "Promo code")}
  value={promoCode}
  onChange={e => setPromoCode(e.target.value.toUpperCase())}
- className="h-8 text-xs uppercase"
+ className="h-8 text-xs uppercase tracking-[0.04em]"
  />
- <Button variant="secondary" size="sm" onClick={applyPromoCode} className="h-8 text-xs">{t("apply", "Apply")}</Button>
+ <Button variant="secondary" size="sm" onClick={applyPromoCode} className="h-8 text-xs tracking-[0.04em]">{t("apply", "Apply")}</Button>
  </div>
  )}
 
  <div className="flex justify-between items-center text-sm">
- <span className="text-muted-foreground font-medium">{t("tax_8", "Tax (8%)")}</span>
- <span className="font-bold text-card-foreground">${tax.toFixed(2)}</span>
+ <span className="text-[#71717a] dark:text-gray-400 font-medium">{t("tax_8", "Tax (8%)")}</span>
+ <span className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${tax.toFixed(2)}</span>
  </div>
- <div className="flex justify-between items-center text-2xl pt-3 border-t border-primary/40 mt-2">
- <span className="font-black text-card-foreground">{t("total", "Total")}</span>
+ <div className="flex justify-between items-center text-2xl pt-3 border-t border-primary/40 mt-2 tracking-[-0.02em]">
+ <span className="font-black text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("total", "Total")}</span>
  <span className="font-black text-orange-600">${total.toFixed(2)}</span>
  </div>
  
   <div className="grid grid-cols-2 gap-3 pt-4">
-  <Button onClick={() => handleCheckout('Save')} variant="outline" className="h-14 font-bold text-foreground bg-muted" disabled={cart.length === 0}><Receipt className="w-5 h-5 mr-2 text-muted-foreground"/> {t("save", "Cash/Save")}</Button>
-  <Button onClick={() => handleCheckout('Terminal')} className="h-14 font-bold text-base bg-blue-600 hover:bg-blue-700 text-white" disabled={cart.length === 0}><CreditCard className="w-5 h-5 mr-1"/> {t("terminal", "Terminal")}</Button>
-  <Button onClick={() => handleCheckout('Stripe')} className="h-14 font-bold text-base bg-primary hover:bg-primary/90 text-white col-span-2" disabled={cart.length === 0}><CreditCard className="w-5 h-5 mr-2"/> {t("pay_online", "Pay Online")}</Button>
+  <Button onClick={() => handleCheckout('Save')} variant="outline" className="h-14 font-semibold text-foreground bg-muted" disabled={cart.length === 0}><Receipt className="w-5 h-5 mr-2 text-[#71717a] dark:text-gray-400"/> {t("save", "Cash/Save")}</Button>
+  <Button onClick={() => handleCheckout('Terminal')} className="h-14 font-semibold text-base bg-blue-600 hover:bg-blue-700 text-white" disabled={cart.length === 0}><CreditCard className="w-5 h-5 mr-1"/> {t("terminal", "Terminal")}</Button>
+  <Button onClick={() => handleCheckout('Stripe')} className="h-14 font-semibold text-base bg-primary hover:bg-primary/90 text-white col-span-2" disabled={cart.length === 0}><CreditCard className="w-5 h-5 mr-2"/> {t("pay_online", "Pay Online")}</Button>
   </div>
  </div>
  </div>

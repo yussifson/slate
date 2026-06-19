@@ -11,7 +11,7 @@ const UpgradeModal = ({ isOpen, onClose, reason }) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+          <div className="mx-auto w-12 h-12 bg-primary/10 rounded-md-full flex items-center justify-center mb-4">
             <Sparkles className="w-6 h-6 text-primary" />
           </div>
           <DialogTitle className="text-center text-xl">Upgrade Your Plan</DialogTitle>

@@ -170,12 +170,12 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
 
  if (!data || data.length === 0) {
  return (
- <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border border-primary/40">
- <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 -fuchsia-500/20">
+ <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <div className="w-16 h-16 rounded-md-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 -fuchsia-500/20">
  <Image className="w-8 h-8 text-white" />
  </div>
  <h3 className="text-lg font-semibold text-slate-800 mb-1">No Items Yet</h3>
- <p className="text-sm text-muted-foreground max-w-sm text-center">
+ <p className="text-sm text-[#71717a] dark:text-gray-400 max-w-sm text-center">
  Add records to see them displayed in the gallery.
  </p>
  </div>
@@ -188,19 +188,19 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
  <div className="mb-6 space-y-3">
  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center -fuchsia-500/20">
+ <div className="w-10 h-10 rounded-md-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center -fuchsia-500/20">
  <Sparkles className="w-5 h-5 text-white" />
  </div>
  <div>
- <h2 className="text-lg font-bold text-slate-800">Gallery</h2>
- <p className="text-xs text-muted-foreground">{filteredData.length} item{filteredData.length !== 1 ? 's' : ''}</p>
+ <h2 className="text-lg font-semibold text-slate-800">Gallery</h2>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{filteredData.length} item{filteredData.length !== 1 ? 's' : ''}</p>
  </div>
  </div>
 
  <div className="flex items-center gap-2">
  {/* Search */}
  <div className="relative w-60">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <Input
  placeholder="Search gallery..."
  value={searchQuery}
@@ -210,15 +210,15 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
  </div>
 
  {/* Grid size toggle */}
- <div className="flex items-center bg-muted rounded-lg p-0.5 gap-0.5">
+ <div className="flex items-center bg-muted rounded-xl p-0.5 gap-0.5">
  {[2, 3, 4].map((cols) => (
  <button
  key={cols}
  onClick={() => setGridCols(cols)}
- className={`p-2 rounded-md transition-all ${
+ className={`p-2 rounded-lg transition-all ${
  gridCols === cols
  ? 'bg-card text-slate-800'
- : 'text-muted-foreground hover:text-muted-foreground'
+ : 'text-[#71717a] dark:text-gray-400 hover:text-[#71717a] dark:text-gray-400'
 }`}
  title={`${cols} columns`}
  >
@@ -234,10 +234,10 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
  {/* Filter bar */}
  {selectFields.length > 0 && (
  <div className="flex items-center gap-2 flex-wrap">
- <Filter className="w-4 h-4 text-muted-foreground" />
+ <Filter className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
  {selectFields.map((sf) => (
- <div key={sf.name} className="flex items-center gap-1 flex-wrap">
- <span className="text-xs text-muted-foreground font-medium">{sf.name.replace(/_/g, ' ')}:</span>
+ <div key={sf.name} className="flex items-center gap-2 flex-wrap">
+ <span className="text-xs text-[#71717a] dark:text-gray-400 font-medium tracking-[0.04em]">{sf.name.replace(/_/g, ' ')}:</span>
  {(filterOptions[sf.name] || []).map((val) => (
  <button
  key={val}
@@ -246,10 +246,10 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
  ? setActiveFilter(null)
  : setActiveFilter({ field: sf.name, value: val})
 }
- className={`text-xs px-2.5 py-1 rounded-full transition-all font-medium ${
+ className={`text-xs px-2.5 py-1 rounded-md-full transition-all font-medium ${
  activeFilter?.field === sf.name && activeFilter?.value === val
  ? 'bg-primary text-white -fuchsia-500/20'
- : 'bg-muted text-muted-foreground hover:bg-muted'
+ : 'bg-muted text-[#71717a] dark:text-gray-400 hover:bg-muted'
 }`}
  >
  {val}
@@ -258,7 +258,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
  </div>
  ))}
  {activeFilter && (
- <button onClick={() => setActiveFilter(null)} className="text-xs text-muted-foreground hover:text-muted-foreground flex items-center gap-1 ml-2">
+ <button onClick={() => setActiveFilter(null)} className="text-xs text-[#71717a] dark:text-gray-400 hover:text-[#71717a] dark:text-gray-400 flex items-center gap-2 ml-2 tracking-[0.04em]">
  <X className="w-3 h-3" /> Clear
  </button>
  )}
@@ -268,7 +268,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
 
  {/* Gallery Grid */}
  {filteredData.length === 0 ? (
- <div className="text-center py-12 text-muted-foreground text-sm">
+ <div className="text-center py-12 text-[#71717a] dark:text-gray-400 text-sm">
  No items match your search or filter.
  </div>
  ) : (
@@ -285,37 +285,37 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
  return (
  <div
  key={record.id}
- className="bg-card rounded-xl border border-primary/40 transition-all duration-300 overflow-hidden group cursor-pointer"
+ className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 transition-all duration-300 overflow-hidden group cursor-pointer hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  onClick={() => setViewRecord(record)}
  >
  {/* Gradient Header - varied heights for masonry effect */}
  <div className={`${headerHeight} bg-gradient-to-br ${gradient} relative overflow-hidden`}>
  {/* Decorative shapes */}
  <div className="absolute inset-0">
- <div className="absolute top-3 right-3 w-20 h-20 rounded-full bg-card/10" />
- <div className="absolute -bottom-4 -left-4 w-24 h-24 rounded-full bg-card/5" />
- <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-xl bg-card/10 rotate-12" />
+ <div className="absolute top-3 right-3 w-20 h-20 rounded-md-full bg-card/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+ <div className="absolute -bottom-4 -left-4 w-24 h-24 rounded-md-full bg-card/5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+ <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-md-xl bg-card/10 rotate-12 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
 
  {/* Overlay content - title in the gradient */}
  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/30 to-transparent">
- <h3 className="text-white font-bold text-sm truncate ">{title}</h3>
+ <h3 className="text-white font-semibold text-sm truncate ">{title}</h3>
  {subtitle && (
- <p className="text-white/80 text-xs truncate mt-0.5">{subtitle}</p>
+ <p className="text-white/80 text-xs truncate mt-0.5 tracking-[0.04em]">{subtitle}</p>
  )}
  </div>
 
  {/* Hover actions */}
- <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200">
+ <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
  <button
  onClick={(e) => { e.stopPropagation(); openEdit(record);}}
- className="p-1.5 rounded-lg bg-card/90 backdrop-blur text-muted-foreground hover:text-amber-600 transition-colors "
+ className="p-1.5 rounded-xl bg-card/90 backdrop-blur text-[#71717a] dark:text-gray-400 hover:text-amber-600 transition-colors  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <Pencil className="w-3.5 h-3.5" />
  </button>
  <button
  onClick={(e) => { e.stopPropagation(); setDeleteRecord(record);}}
- className="p-1.5 rounded-lg bg-card/90 backdrop-blur text-muted-foreground hover:text-red-600 transition-colors "
+ className="p-1.5 rounded-xl bg-card/90 backdrop-blur text-[#71717a] dark:text-gray-400 hover:text-red-600 transition-colors  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <Trash2 className="w-3.5 h-3.5" />
  </button>
@@ -337,14 +337,14 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
  const FieldIcon = getIcon();
 
  return (
- <div key={f.name} className="flex items-center justify-between text-xs">
- <span className="text-muted-foreground font-medium flex items-center gap-1 truncate">
+ <div key={f.name} className="flex items-center justify-between text-xs tracking-[0.04em]">
+ <span className="text-[#71717a] dark:text-gray-400 font-medium flex items-center gap-2 truncate">
  {FieldIcon && <FieldIcon className="w-3 h-3" />}
  {f.name.replace(/_/g, ' ')}
  </span>
  <span className="font-medium text-foreground truncate max-w-[50%] text-right">
  {f.field_type === 'boolean' ? (
- <span className={`px-2 py-0.5 rounded-full text-[10px] ${val ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
+ <span className={`px-2 py-0.5 rounded-md-full text-[10px] ${val ? 'bg-primary/10 text-primary' : 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
  {val ? 'Yes' : 'No'}
  </span>
  ) : f.field_type === 'select' ? (
@@ -360,7 +360,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
 })}
  </div>
 
- <div className="mt-3 pt-2 border-t border-primary/40 text-[10px] text-muted-foreground">
+ <div className="mt-3 pt-2 border-t border-primary/40 text-[10px] text-[#71717a] dark:text-gray-400">
  {record.created_at ? format(new Date(record.created_at), 'MMM d, yyyy') : ''}
  </div>
  </div>
@@ -377,9 +377,9 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
  const gradient = getCardGradient(data.indexOf(viewRecord));
  return (
  <>
- <div className={`-mx-6 -mt-6 h-28 bg-gradient-to-br ${gradient} rounded-t-lg relative overflow-hidden`}>
- <div className="absolute top-4 right-4 w-16 h-16 rounded-full bg-card/10" />
- <div className="absolute -bottom-3 -left-3 w-20 h-20 rounded-full bg-card/5" />
+ <div className={`-mx-6 -mt-6 h-28 bg-gradient-to-br ${gradient} rounded-md-t-lg relative overflow-hidden`}>
+ <div className="absolute top-4 right-4 w-16 h-16 rounded-md-full bg-card/10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+ <div className="absolute -bottom-3 -left-3 w-20 h-20 rounded-md-full bg-card/5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  <DialogHeader className="mt-2">
  <DialogTitle>{getRecordTitle(viewRecord, fieldDefinitions)}</DialogTitle>
@@ -388,7 +388,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
  <div className="mt-2 space-y-2">
  {fieldDefinitions.map((f) => (
  <div key={f.name} className="flex justify-between items-center py-2 border-b border-primary/40 last:border-0">
- <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{f.name.replace(/_/g, ' ')}</span>
+ <span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{f.name.replace(/_/g, ' ')}</span>
  <span className="text-sm font-medium text-foreground max-w-[60%] text-right break-words">
  {f.field_type === 'boolean' ? (viewRecord.data[f.name] ? 'Yes' : 'No') :
  f.field_type === 'date' && viewRecord.data[f.name] ? format(new Date(viewRecord.data[f.name]), 'MMM d, yyyy') :
@@ -396,7 +396,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
  </span>
  </div>
  ))}
- <p className="text-[11px] text-muted-foreground pt-2">Created: {new Date(viewRecord.created_at).toLocaleString()}</p>
+ <p className="text-[11px] text-[#71717a] dark:text-gray-400 pt-2">Created: {new Date(viewRecord.created_at).toLocaleString()}</p>
  </div>
  <DialogFooter className="mt-4">
  <Button variant="outline" onClick={() => setViewRecord(null)}>Close</Button>
@@ -425,7 +425,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
  return (
  <div key={f.name} className="flex items-center justify-between py-2 border-b border-primary/40 last:border-0">
  <label className="text-sm font-medium text-foreground">{label}</label>
- <input type="checkbox" checked={!!val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.checked})} className="h-4 w-4 rounded border-primary/40" />
+ <input type="checkbox" checked={!!val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.checked})} className="h-4 w-4 rounded-md border-primary/40" />
  </div>
  );
 }
@@ -434,8 +434,8 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
  try { options = typeof f.options === 'string' ? JSON.parse(f.options) : (f.options || []);} catch { options = [];}
  return (
  <div key={f.name} className="space-y-1">
- <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</label>
- <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value})} className="w-full rounded-lg border border-primary/40 bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{label}</label>
+ <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value})} className="w-full rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <option value="">Select...</option>
  {options.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
  </select>
@@ -444,7 +444,7 @@ export default function DynamicGalleryView({ data = [], fieldDefinitions = [], o
 }
  return (
  <div key={f.name} className="space-y-1">
- <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{label}</label>
  <Input type={f.field_type === 'date' ? 'date' : f.field_type === 'number' ? 'number' : 'text'} value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value})} />
  </div>
  );

@@ -46,19 +46,19 @@ export default function UniCareerAlumni() {
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
  <div className="border-b border-primary/40 pb-4">
- <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Career Services & Alumni Hub</h1>
+ <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">Career Services & Alumni Hub</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage internship pipelines, view corporate job postings, access the alumni database, and track donor contributions.</p>
  </div>
 
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  {stats.map((stat, i) => (
- <div key={i} className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
+ <div key={i} className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6">
  <div className="flex items-center justify-between">
  <div>
- <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">{stat.label}</p>
- <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight">{stat.value}</h3>
+ <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">{stat.label}</p>
+ <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight tracking-[-0.02em]">{stat.value}</h3>
  </div>
- <div className="w-12 h-12 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: `color-mix(in srgb, ${stat.color} 15%, transparent)`}}>
+ <div className="w-12 h-12 rounded-md-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: `color-mix(in srgb, ${stat.color} 15%, transparent)`}}>
  <stat.icon className="w-6 h-6" style={{ color: stat.color}} />
  </div>
  </div>
@@ -67,7 +67,7 @@ export default function UniCareerAlumni() {
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
- <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden ">
+ <div className="lg:col-span-2 bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden ">
  <div className="p-6 border-b border-primary/40">
  <h2 className="font-semibold text-[var(--color-text-primary)]">Active Job Board & Placements</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Browse active listings uploaded by vetted partners.</p>
@@ -82,12 +82,12 @@ export default function UniCareerAlumni() {
  />
  ) : (
  jobs.map((job, idx) => (
- <div key={idx} className="p-4 bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-lg)] flex justify-between items-center text-[var(--text-xs)] hover:border-[var(--primary)] transition-colors">
+ <div key={idx} className="p-4 bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-lg)] flex justify-between items-center text-[var(--text-xs)] hover:border-[var(--primary)] transition-colors tracking-[0.04em]">
  <div>
- <h4 className="font-bold text-[var(--text-sm)] text-[var(--color-text-primary)]">{job.title}</h4>
+ <h4 className="font-semibold text-[var(--text-sm)] text-[var(--color-text-primary)]">{job.title}</h4>
  <p className="text-[var(--color-text-secondary)] mt-1">Employer: {job.employer} · {job.location}</p>
  </div>
- <button className="flex items-center gap-1 px-4 py-2 bg-[var(--primary)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all text-xs">
+ <button className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] hover:opacity-90 text-white font-medium rounded-md-[var(--radius-md)] transition-all text-xs tracking-[0.04em]">
  Apply <ArrowUpRight className="w-3.5 h-3.5" />
  </button>
  </div>
@@ -96,15 +96,15 @@ export default function UniCareerAlumni() {
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 h-fit ">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 h-fit ">
  <h2 className="font-semibold text-[var(--color-text-primary)] mb-1">Alumni Relations & Events</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-4">Keep in touch with graduating classes.</p>
  <div className="space-y-4">
- <div className="p-4 bg-[var(--color-surface-2)] border border-[var(--primary)] text-[var(--primary)] rounded-[var(--radius-md)] text-[var(--text-sm)] space-y-1">
- <p className="font-bold flex items-center gap-1.5"><Trophy className="w-4 h-4" /> Annual Alumni Gala 2026</p>
- <p className="text-[var(--text-xs)] opacity-90 text-[var(--color-text-secondary)]">Scheduled for November 12 inside the Grand Ballroom. Registration open.</p>
+ <div className="p-4 bg-[var(--color-surface-2)] border-[0.5px] border-black/9 dark:border-white/8 border-[var(--primary)] text-[var(--primary)] rounded-md-[var(--radius-md)] text-[var(--text-sm)] space-y-1">
+ <p className="font-semibold flex items-center gap-2.5"><Trophy className="w-4 h-4" /> Annual Alumni Gala 2026</p>
+ <p className="text-[var(--text-xs)] opacity-90 text-[var(--color-text-secondary)] tracking-[0.04em]">Scheduled for November 12 inside the Grand Ballroom. Registration open.</p>
  </div>
- <button className="w-full py-2 bg-[var(--primary)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all text-sm">
+ <button className="w-full py-2 bg-[var(--primary)] hover:opacity-90 text-white font-medium rounded-md-[var(--radius-md)] transition-all text-sm">
  Browse Alumni Database ({alumniRecords.length})
  </button>
  </div>

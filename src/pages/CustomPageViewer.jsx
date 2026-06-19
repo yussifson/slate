@@ -98,15 +98,15 @@ export default function CustomPageViewer() {
  const schema = isEditMode ? localSchema : dbSchema;
 
  if (isLoading) {
- return <div className="p-20 text-center text-muted-foreground">Loading Page...</div>;
+ return <div className="p-20 text-center text-[#71717a] dark:text-gray-400">Loading Page...</div>;
 }
 
  if (!schema) {
  return (
  <div className="flex flex-col items-center justify-center py-20 text-center">
- <Sparkles className="w-16 h-16 text-muted-foreground opacity-30 mb-4" />
- <h2 className="text-xl font-bold text-card-foreground">Page Not Found</h2>
- <p className="text-muted-foreground mt-2 max-w-md">The custom page "{pageId}" does not exist. Use Orbit Build to generate it.</p>
+ <Sparkles className="w-16 h-16 text-[#71717a] dark:text-gray-400 opacity-30 mb-4" />
+ <h2 className="text-xl font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Page Not Found</h2>
+ <p className="text-[#71717a] dark:text-gray-400 mt-2 max-w-md">The custom page "{pageId}" does not exist. Use Orbit Build to generate it.</p>
  <Button onClick={() => setIsOrbitBoltOpen(true)} className="mt-6 gap-2 bg-primary hover:bg-primary/90 text-white">
  <Sparkles className="w-4 h-4" /> Generate with OrbitBuild
  </Button>
@@ -166,7 +166,7 @@ export default function CustomPageViewer() {
  </div>
  </div>
 
- <div className={isEditMode ? "p-4 border-2 border-dashed border-primary/20 rounded-2xl bg-slate-50" : ""}>
+ <div className={isEditMode ? "p-4 border-2 border-dashed border-primary/20 rounded-md-2xl bg-slate-50" : ""}>
  <PageRenderer 
  schema={schema} 
  onBlockClick={isEditMode ? setSelectedBlockId : undefined}
@@ -177,21 +177,21 @@ export default function CustomPageViewer() {
 
  {/* Editing Sidebar */}
  {isEditMode && (
- <div className="w-80 shrink-0 border-l border-primary/40 bg-card p-5 overflow-y-auto h-full ml-4 rounded-l-2xl">
+ <div className="w-80 shrink-0 border-l border-primary/40 bg-card p-5 overflow-y-auto h-full ml-4 rounded-md-l-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2 mb-6">
  <Settings2 className="w-5 h-5 text-primary" />
- <h3 className="font-bold text-lg">Properties</h3>
+ <h3 className="font-semibold text-lg">Properties</h3>
  </div>
 
  {!selectedBlockId ? (
- <div className="text-center py-10 text-muted-foreground text-sm">
+ <div className="text-center py-10 text-[#71717a] dark:text-gray-400 text-sm">
  <p>Select a block on the canvas to edit its properties.</p>
  </div>
  ) : (
  <div className="space-y-6">
  <div>
- <Label className="text-xs font-bold text-muted-foreground uppercase">Component Type</Label>
- <div className="mt-1 font-medium bg-muted p-2 rounded-md">{selectedBlock?.component}</div>
+ <Label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Component Type</Label>
+ <div className="mt-1 font-medium bg-muted p-2 rounded-lg">{selectedBlock?.component}</div>
  </div>
 
  <div className="space-y-4 border-t border-primary/40 pt-4">
@@ -234,10 +234,10 @@ export default function CustomPageViewer() {
 
  <div className="space-y-4 border-t border-primary/40 pt-4">
  <h4 className="font-semibold text-sm">Data Binding (Read Only)</h4>
- <div className="text-xs bg-slate-900 text-primary/70 p-3 rounded-lg font-mono overflow-x-auto whitespace-pre-wrap break-all">
+ <div className="text-xs bg-slate-900 text-primary/70 p-3 rounded-xl font-mono overflow-x-auto whitespace-pre-wrap break-all tracking-[0.04em]">
  {JSON.stringify(selectedBlock?.dataConfig, null, 2)}
  </div>
- <p className="text-[10px] text-muted-foreground">To change data binding, ask Orbit Build AI.</p>
+ <p className="text-[10px] text-[#71717a] dark:text-gray-400">To change data binding, ask Orbit Build AI.</p>
  </div>
 
  </div>

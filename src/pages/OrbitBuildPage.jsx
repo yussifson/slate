@@ -308,40 +308,40 @@ function DynamicGalleryView({ companyId, pageDef, cleanId, tableName}) {
  <div className="flex flex-col gap-4 w-full">
  <div className="flex justify-between items-center gap-4 shrink-0">
  <div className="relative flex-1 max-w-md">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
  <input 
  type="text" 
  placeholder="Search gallery..." 
  value={search}
  onChange={e => setSearch(e.target.value)}
- className="w-full h-10 pl-9 pr-4 bg-card border border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"
+ className="w-full h-10 pl-9 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  </div>
 
  {filtered.length === 0 ? (
- <div className="p-12 text-center text-muted-foreground border border-dashed border-primary/40 rounded-2xl bg-card/50">
- <GalleryIcon className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" />
+ <div className="p-12 text-center text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-md-2xl bg-card/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <GalleryIcon className="w-12 h-12 mx-auto text-[#71717a] dark:text-gray-400/30 mb-3" />
  <p className="font-medium">No items found in visual gallery.</p>
  </div>
  ) : (
  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
  {filtered.map((item) => (
- <div key={item.id} className="bg-card border border-primary/40 rounded-2xl p-5 hover:border-primary/40 transition-all flex flex-col justify-between min-h-[160px]">
+ <div key={item.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-5 hover:border-primary/40 transition-all flex flex-col justify-between min-h-[160px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
  <div className="flex justify-between items-start mb-2">
- <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+ <span className="text-xs font-semibold px-2 py-0.5 rounded-md-full bg-primary/10 text-primary border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 tracking-[0.04em]">
  {item.status || item.type || item.category || 'Record'}
  </span>
  </div>
- <h4 className="font-bold text-foreground text-base line-clamp-1">
+ <h4 className="font-semibold text-foreground text-base line-clamp-1">
  {item.name || item.title || item.employee_name || item.client_name || item.room_number || item.id.slice(0, 8)}
  </h4>
- <p className="text-xs text-muted-foreground mt-1 line-clamp-3">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 line-clamp-3 tracking-[0.04em]">
  {item.description || item.notes || item.reason || item.amenities || item.email || item.job_title || 'No additional details available.'}
  </p>
  </div>
- <div className="border-t border-primary/40 pt-3 mt-3 flex justify-between items-center text-xs text-muted-foreground">
+ <div className="border-t border-primary/40 pt-3 mt-3 flex justify-between items-center text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  <span>{item.date || item.created_at?.split('T')[0] || 'N/A'}</span>
  {item.price_per_night && <span className="font-black text-foreground">${item.price_per_night}/nt</span>}
  {item.net_pay && <span className="font-black text-foreground">${item.net_pay}</span>}
@@ -427,7 +427,7 @@ export default function OrbitBuildPage() {
  if (!pageDef) {
  return (
  <div className="flex flex-col items-center justify-center h-full text-slate-500 space-y-4">
- <h2 className="text-xl font-bold text-slate-900">Page Not Found</h2>
+ <h2 className="text-xl font-semibold text-slate-900">Page Not Found</h2>
  <p>This OrbitBuild page could not be found in your configuration.</p>
  </div>
  );
@@ -949,21 +949,21 @@ export default function OrbitBuildPage() {
  <div className="w-full min-h-[calc(100vh-4rem)] p-6 bg-background flex flex-col gap-4">
  {/* Viewpoint persistence switcher control */}
  {!hideViewpointSwitcher && (
- <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-card/60 border border-primary/40 backdrop-blur-md rounded-2xl gap-3 shrink-0">
+ <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-card/60 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 backdrop-blur-md rounded-md-2xl gap-3 shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="px-2">
- <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider block">Active Viewpoint</span>
- <span className="text-sm font-bold text-foreground capitalize">{currentViewpoint} View</span>
+ <span className="text-xs text-[#71717a] dark:text-gray-400 font-semibold uppercase tracking-wider block tracking-[0.04em]">Active Viewpoint</span>
+ <span className="text-sm font-semibold text-foreground capitalize">{currentViewpoint} View</span>
  </div>
- <div className="flex flex-wrap items-center bg-muted/40 p-1 rounded-xl border border-primary/40">
+ <div className="flex flex-wrap items-center bg-muted/40 p-1 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  {toolbarViews.map((view) => (
  <button
  key={view.id}
  onClick={() => changeViewpoint(view.id)}
  title={view.label}
- className={`p-2 rounded-lg transition-all flex items-center justify-center gap-1.5 text-xs font-semibold ${
+ className={`p-2 rounded-xl transition-all flex items-center justify-center gap-2.5 text-xs font-semibold ${
  currentViewpoint === view.id
  ? 'bg-primary text-white '
- : 'text-muted-foreground hover:text-foreground hover:bg-muted/80'
+ : 'text-[#71717a] dark:text-gray-400 hover:text-foreground hover:bg-muted/80'
 }`}
  >
  {view.icon}

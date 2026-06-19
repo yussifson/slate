@@ -16,14 +16,14 @@ export default function CustomFieldsRenderer({ fields = [], formData = {}, onCha
 
   return (
     <div className="pt-4 mt-4 border-t border-primary/40">
-      <h4 className="text-xs font-bold text-muted-foreground uppercase mb-3">{t("custom_fields", "Custom Fields")}</h4>
+      <h4 className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-3 tracking-[0.04em]">{t("custom_fields", "Custom Fields")}</h4>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {fields.map(field => {
           const value = formData[field.field_name] || '';
 
           return (
             <div key={field.id}>
-              <label className="text-xs font-bold text-card-foreground flex items-center gap-1">
+              <label className="text-xs font-semibold text-card-foreground flex items-center gap-2 tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                 {field.field_label}
                 {field.is_required && <span className="text-red-500">*</span>}
               </label>
@@ -32,7 +32,7 @@ export default function CustomFieldsRenderer({ fields = [], formData = {}, onCha
                   value={value}
                   onChange={(e) => onChange(field.field_name, e.target.value)}
                   required={field.is_required}
-                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
+                  className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground"
                 >
                   <option value="">{t("select_option", "Select option...")}</option>
                   {(field.field_options || []).map(opt => {
@@ -61,7 +61,7 @@ export default function CustomFieldsRenderer({ fields = [], formData = {}, onCha
                     type="checkbox"
                     checked={value === 'true' || value === true}
                     onChange={(e) => onChange(field.field_name, e.target.checked)}
-                    className="rounded border-input text-primary focus:ring-primary"
+                    className="rounded-md border-input text-primary focus:ring-primary"
                   />
                   <span className="text-sm">{t("yes_no", "Yes / No")}</span>
                 </div>

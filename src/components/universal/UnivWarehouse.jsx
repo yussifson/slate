@@ -166,36 +166,36 @@ export default function UnivWarehouse() {
  <div className="flex flex-col h-full bg-background overflow-hidden ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
  <div>
- <h2 className="text-2xl font-bold text-foreground tracking-tight">Warehouse Zones</h2>
- <p className="text-sm text-muted-foreground mt-1">Manage storage capacity, bays, and utilization.</p>
+ <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">Warehouse Zones</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Manage storage capacity, bays, and utilization.</p>
  </div>
  <div className="flex gap-3">
  <div className="flex items-center gap-2">
 
  
  
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={handleOpenAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
+ <button onClick={handleOpenAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
  <Plus className="w-4 h-4" /> Add Zone/Bay
  </button>
  </div>
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
  <input 
  type="text"
  placeholder="Search zones, bays..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -214,18 +214,18 @@ export default function UnivWarehouse() {
  animate={{ opacity: 1, scale: 1}}
  transition={{ delay: idx * 0.02}}
  key={z.id} 
- className="bg-background border border-primary/40 rounded-2xl p-4 hover:border-primary/40 transition-colors group relative"
+ className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 hover:border-primary/40 transition-colors group relative"
  >
  <div className="flex justify-between items-start mb-3">
  <div className="flex flex-col">
- <span className="font-bold text-lg text-foreground">{z.bay_number || 'N/A'}</span>
- <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{z.zone_name}</span>
+ <span className="font-semibold text-lg text-foreground">{z.bay_number || 'N/A'}</span>
+ <span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">{z.zone_name}</span>
  </div>
- <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
- <button onClick={() => handleOpenEdit(z)} className="text-muted-foreground hover:text-primary p-1">
+ <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+ <button onClick={() => handleOpenEdit(z)} className="text-[#71717a] dark:text-gray-400 hover:text-primary p-1">
  <Edit className="w-3.5 h-3.5" />
  </button>
- <button onClick={() => handleDelete(z.id)} className="text-muted-foreground hover:text-red-500 p-1">
+ <button onClick={() => handleDelete(z.id)} className="text-[#71717a] dark:text-gray-400 hover:text-red-500 p-1">
  <Trash2 className="w-3.5 h-3.5" />
  </button>
  </div>
@@ -233,19 +233,19 @@ export default function UnivWarehouse() {
  
  <div className="mt-4">
  <div className="flex justify-between items-end mb-1.5">
- <span className="text-xs font-medium text-muted-foreground">Capacity Used</span>
- <span className={`text-xs font-bold ${isHighUtil ? 'text-red-500' : 'text-emerald-500'}`}>{utilPercent}%</span>
+ <span className="text-xs font-medium text-[#71717a] dark:text-gray-400 tracking-[0.04em]">Capacity Used</span>
+ <span className={`text-xs font-semibold ${isHighUtil ? 'text-red-500' : 'text-emerald-500'}`}>{utilPercent}%</span>
  </div>
- <div className="h-2 w-full bg-muted dark:bg-slate-800 rounded-full overflow-hidden">
- <div className={`h-full rounded-full ${isHighUtil ? 'bg-red-500' : 'bg-emerald-500'}`} style={{ width: `${utilPercent}%`}}></div>
+ <div className="h-2 w-full bg-muted dark:bg-slate-800 rounded-md-full overflow-hidden">
+ <div className={`h-full rounded-md-full ${isHighUtil ? 'bg-red-500/10' : 'bg-emerald-500/10'}`} style={{ width: `${utilPercent}%`}}></div>
  </div>
- <div className="text-[10px] text-muted-foreground mt-1 text-right">
+ <div className="text-[10px] text-[#71717a] dark:text-gray-400 mt-1 text-right">
  {occ} / {cap} units
  </div>
  </div>
  
  <div className="mt-4 pt-3 border-t border-primary/40 flex justify-between items-center">
- <span className={`px-2 py-0.5 text-[10px] uppercase tracking-wider font-bold rounded border ${
+ <span className={`px-2 py-0.5 text-[10px] uppercase tracking-wider font-semibold rounded-md border ${
  z.status === 'Active' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
  'bg-background text-foreground border-primary/40'
 }`}>
@@ -258,7 +258,7 @@ export default function UnivWarehouse() {
  </div>
 
  {filtered.length === 0 && (
- <div className="text-center py-12 text-muted-foreground">
+ <div className="text-center py-12 text-[#71717a] dark:text-gray-400">
  <Warehouse className="w-12 h-12 mx-auto mb-3 opacity-20" />
  <p>No warehouse zones found.</p>
  </div>
@@ -272,73 +272,73 @@ export default function UnivWarehouse() {
  <motion.div 
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
- className="bg-card border border-primary/40 rounded-2xl max-w-md w-full p-6 relative"
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl max-w-md w-full p-6 relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <button 
  onClick={() => setIsModalOpen(false)}
- className="absolute right-4 top-4 text-muted-foreground hover:text-foreground"
+ className="absolute right-4 top-4 text-[#71717a] dark:text-gray-400 hover:text-foreground"
  >
  <X className="w-5 h-5" />
  </button>
  
- <h3 className="text-lg font-bold text-foreground mb-4">
+ <h3 className="text-lg font-semibold text-foreground mb-4">
  {editingZone ? 'Edit Warehouse Zone/Bay' : 'Add Warehouse Zone/Bay'}
  </h3>
  
  <form onSubmit={handleSave} className="space-y-4">
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Zone Name *</label>
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Zone Name *</label>
  <input 
  type="text" 
  value={form.zone_name}
  onChange={(e) => setForm({ ...form, zone_name: e.target.value})}
  placeholder="e.g. North Sector"
  required
- className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Bay Number / Code</label>
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Bay Number / Code</label>
  <input 
  type="text" 
  value={form.bay_number}
  onChange={(e) => setForm({ ...form, bay_number: e.target.value})}
  placeholder="e.g. BAY-12"
- className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
 
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Total Capacity *</label>
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Total Capacity *</label>
  <input 
  type="number" 
  value={form.capacity}
  onChange={(e) => setForm({ ...form, capacity: e.target.value})}
  required
  min="1"
- className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Current Occupancy</label>
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Current Occupancy</label>
  <input 
  type="number" 
  value={form.current_occupancy}
  onChange={(e) => setForm({ ...form, current_occupancy: e.target.value})}
  min="0"
- className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  />
  </div>
  </div>
 
  <div>
- <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">Status</label>
+ <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1 tracking-[0.04em]">Status</label>
  <select 
  value={form.status}
  onChange={(e) => setForm({ ...form, status: e.target.value})}
- className="w-full h-10 px-3 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+ className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
  >
  <option value="Active">Active</option>
  <option value="Inactive">Inactive</option>
@@ -349,13 +349,13 @@ export default function UnivWarehouse() {
  <button 
  type="button" 
  onClick={() => setIsModalOpen(false)}
- className="px-4 py-2 border border-primary/40 text-foreground hover:bg-muted/50 rounded-xl text-sm font-medium transition-colors"
+ className="px-4 py-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-foreground hover:bg-muted/50 rounded-md-xl text-sm font-medium transition-colors"
  >
  Cancel
  </button>
  <button 
  type="submit" 
- className="px-4 py-2 bg-primary text-white hover:bg-primary/90 rounded-xl text-sm font-medium transition-colors "
+ className="px-4 py-2 bg-primary text-white hover:bg-primary/90 rounded-md-xl text-sm font-medium transition-colors "
  >
  Save
  </button>

@@ -60,33 +60,33 @@ export default function Subscriptions() {
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
  {Object.entries(SUBSCRIPTION_PLANS).map(([key, plan]) => {
  return (
- <div key={key} className="bg-card rounded-xl border border-primary/40 p-5 transition-">
+ <div key={key} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 transition- hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between mb-4">
- <h3 className="text-lg font-bold">{plan.name}</h3>
- <Badge variant="secondary" className="text-xs">{planCounts[key] || 0} {t("firms", "firms")}</Badge>
+ <h3 className="text-lg font-semibold">{plan.name}</h3>
+ <Badge variant="secondary" className="text-xs tracking-[0.04em]">{planCounts[key] || 0} {t("firms", "firms")}</Badge>
  </div>
- <p className="text-3xl font-bold text-primary">
- ${plan.price}<span className="text-sm font-normal text-muted-foreground">{t("mo", "/mo")}</span>
+ <p className="text-3xl font-semibold text-primary tracking-[-0.02em]">
+ ${plan.price}<span className="text-sm font-normal text-[#71717a] dark:text-gray-400">{t("mo", "/mo")}</span>
  </p>
  <div className="mt-4 space-y-2 text-sm">
- <div className="flex justify-between text-muted-foreground">
+ <div className="flex justify-between text-[#71717a] dark:text-gray-400">
  <span>{t("max_users", "Max Users")}</span><span className="font-medium text-foreground">{plan.maxUsers}</span>
  </div>
- <div className="flex justify-between text-muted-foreground">
+ <div className="flex justify-between text-[#71717a] dark:text-gray-400">
  <span>{t("max_cases", "Max Cases")}</span><span className="font-medium text-foreground">{plan.maxCases}</span>
  </div>
- <div className="flex justify-between text-muted-foreground">
+ <div className="flex justify-between text-[#71717a] dark:text-gray-400">
  <span>{t("storage", "Storage")}</span><span className="font-medium text-foreground">{plan.maxStorageGB} {t("gb", "GB")}</span>
  </div>
- <div className="flex justify-between text-muted-foreground">
+ <div className="flex justify-between text-[#71717a] dark:text-gray-400">
  <span>{t("max_clients", "Max Clients")}</span><span className="font-medium text-foreground">{plan.maxClients}</span>
  </div>
  </div>
  <div className="mt-4 pt-3 border-t border-primary/40">
- <div className="h-2 bg-muted rounded-full overflow-hidden">
- <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${companies.length > 0 ? ((planCounts[key] || 0) / companies.length * 100) : 0}%`}} />
+ <div className="h-2 bg-muted rounded-md-full overflow-hidden">
+ <div className="h-full bg-primary rounded-md-full transition-all" style={{ width: `${companies.length > 0 ? ((planCounts[key] || 0) / companies.length * 100) : 0}%`}} />
  </div>
- <p className="text-xs text-muted-foreground mt-1">
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">
  {companies.length > 0 ? Math.round((planCounts[key] || 0) / companies.length * 100) : 0}{t("of_firms", "% of firms")}
  </p>
  </div>
@@ -97,33 +97,33 @@ export default function Subscriptions() {
  {/* Company subscription list */}
  <div>
  <h2 className="text-base font-semibold mb-3">{t("all_firm_subscriptions", "All Firm Subscriptions")}</h2>
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm">
  <thead className="bg-muted/50">
  <tr>
  {["Firm", "Plan", "Status", "Max Users", "Max Cases", ""].map(h => {
- return (<th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">{h}</th>);
+ return (<th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{h}</th>);
 })}
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
  {companies.length === 0 ? (
- <tr><td colSpan={6} className="px-4 py-8 text-center text-muted-foreground text-sm">{t("no_companies_found", "No companies found")}</td></tr>
+ <tr><td colSpan={6} className="px-4 py-8 text-center text-[#71717a] dark:text-gray-400 text-sm">{t("no_companies_found", "No companies found")}</td></tr>
  ) : companies.map(company => {
  return (
  <tr key={company.id} className="hover:bg-muted/40 transition-colors">
  <td className="px-4 py-3">
  <p className="font-medium">{company.name}</p>
- <p className="text-xs text-muted-foreground">{company.email}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{company.email}</p>
  </td>
  <td className="px-4 py-3">
- <Badge variant="outline" className="capitalize text-xs">{company.subscription_plan}</Badge>
+ <Badge variant="outline" className="capitalize text-xs tracking-[0.04em]">{company.subscription_plan}</Badge>
  </td>
  <td className="px-4 py-3">
  <Badge className={`text-[10px] capitalize ${STATUS_COLORS[company.subscription_status] || ""}`}>{company.subscription_status}</Badge>
  </td>
- <td className="px-4 py-3 text-muted-foreground">{company.max_users}</td>
- <td className="px-4 py-3 text-muted-foreground">{company.max_cases}</td>
+ <td className="px-4 py-3 text-[#71717a] dark:text-gray-400">{company.max_users}</td>
+ <td className="px-4 py-3 text-[#71717a] dark:text-gray-400">{company.max_cases}</td>
  <td className="px-4 py-3">
  <Button size="sm" variant="ghost" onClick={() => setEditingCompany(company)}>
  <Pencil className="w-3.5 h-3.5 mr-1" /> {t("edit", "Edit")}

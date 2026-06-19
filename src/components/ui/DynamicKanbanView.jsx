@@ -94,10 +94,10 @@ export default function DynamicKanbanView({ data, records, moduleDef, fieldDefin
  <div className="flex gap-6 overflow-x-auto pb-4 h-[650px] items-start pt-2 px-1">
  <DragDropContext onDragEnd={onDragEnd}>
  {Object.entries(columns).map(([colId, colRecords]) => (
- <div key={colId} className="w-[300px] flex-shrink-0 bg-muted/80 rounded-xl flex flex-col max-h-full border border-primary/40">
- <div className="p-3 border-b border-primary/40 flex items-center justify-between bg-muted rounded-t-xl">
+ <div key={colId} className="w-[300px] flex-shrink-0 bg-muted/80 rounded-md-xl flex flex-col max-h-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <div className="p-3 border-b border-primary/40 flex items-center justify-between bg-muted rounded-md-t-xl">
  <h3 className="font-semibold text-foreground text-sm">{colId}</h3>
- <span className="bg-muted text-muted-foreground text-xs font-medium px-2 py-0.5 rounded-full">
+ <span className="bg-muted text-[#71717a] dark:text-gray-400 text-xs font-medium px-2 py-0.5 rounded-md-full tracking-[0.04em]">
  {colRecords.length}
  </span>
  </div>
@@ -117,7 +117,7 @@ export default function DynamicKanbanView({ data, records, moduleDef, fieldDefin
  ref={provided.innerRef}
  {...provided.draggableProps}
  {...provided.dragHandleProps}
- className={`bg-card p-3 rounded-lg border border-primary/40 group transition-all
+ className={`bg-card p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 group transition-all
  ${snapshot.isDragging ? ' ring-2 ring-primary/20 rotate-2' : 'hover:border-primary/30'}
  `}
  >
@@ -125,17 +125,17 @@ export default function DynamicKanbanView({ data, records, moduleDef, fieldDefin
  <h4 className="font-medium text-slate-800 text-sm line-clamp-2">
  {item.data?.name || item.data?.title || Object.values(item.data)[0] || 'Untitled'}
  </h4>
- <button className="text-muted-foreground hover:text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
+ <button className="text-[#71717a] dark:text-gray-400 hover:text-[#71717a] dark:text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
  <MoreHorizontal className="w-4 h-4" />
  </button>
  </div>
  
- <div className="flex flex-wrap gap-1 mt-2">
+ <div className="flex flex-wrap gap-2 mt-2">
  {fieldDefinitions.slice(1, 4).map(f => {
  const val = item.data[f.name];
  if (!val || f.name === 'status' || f.name === 'stage') return null;
  return (
- <span key={f.name} className="text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded truncate max-w-full">
+ <span key={f.name} className="text-[10px] bg-muted text-[#71717a] dark:text-gray-400 px-1.5 py-0.5 rounded-md truncate max-w-full">
  {String(val)}
  </span>
  );
@@ -149,8 +149,8 @@ export default function DynamicKanbanView({ data, records, moduleDef, fieldDefin
  </div>
  )}
  </Droppable>
- <div className="p-2 border-t border-primary/40 bg-muted/50/50 rounded-b-xl">
- <button className="w-full flex items-center justify-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-primary transition-colors py-1.5 rounded-lg hover:bg-muted">
+ <div className="p-2 border-t border-primary/40 bg-muted/50/50 rounded-md-b-xl">
+ <button className="w-full flex items-center justify-center gap-2.5 text-xs font-medium text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors py-1.5 rounded-xl hover:bg-muted tracking-[0.04em]">
  <Plus className="w-3.5 h-3.5" /> Add card
  </button>
  </div>

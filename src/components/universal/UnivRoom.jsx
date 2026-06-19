@@ -151,20 +151,20 @@ export default function UnivRoom() {
  <div className="flex flex-col h-full bg-background overflow-hidden relative ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
  <div>
- <h2 className="text-2xl font-bold text-foreground tracking-tight">Room Inventory</h2>
- <p className="text-sm text-muted-foreground mt-1">Manage rooms, pricing, and current availability status.</p>
+ <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">Room Inventory</h2>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Manage rooms, pricing, and current availability status.</p>
  </div>
  <div className="flex gap-3">
  <div className="flex items-center gap-2">
 
  
  
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-md-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={() => handleOpenModal()} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
+ <button onClick={() => handleOpenModal()} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
  <Plus className="w-4 h-4" /> Add Room
  </button>
  </div>
@@ -172,46 +172,46 @@ export default function UnivRoom() {
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6 shrink-0">
- <div className="bg-card border border-primary/40 rounded-2xl p-4 flex items-center justify-between ">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
- <p className="text-sm text-muted-foreground font-medium">Total Rooms</p>
- <h3 className="text-2xl font-bold text-foreground mt-1">{rooms.length}</h3>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 font-medium">Total Rooms</p>
+ <h3 className="text-2xl font-semibold text-foreground mt-1 tracking-[-0.02em]">{rooms.length}</h3>
  </div>
- <div className="p-3 bg-blue-100 dark:bg-blue-500/10 text-blue-600 rounded-xl"><Home className="w-5 h-5" /></div>
+ <div className="p-3 bg-blue-100 dark:bg-blue-500/10/10 text-blue-600 rounded-md-xl"><Home className="w-5 h-5" /></div>
  </div>
- <div className="bg-card border border-primary/40 rounded-2xl p-4 flex items-center justify-between ">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
- <p className="text-sm text-muted-foreground font-medium">Available</p>
- <h3 className="text-2xl font-bold text-foreground mt-1">{rooms.filter(r => r.status === 'Available').length}</h3>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 font-medium">Available</p>
+ <h3 className="text-2xl font-semibold text-foreground mt-1 tracking-[-0.02em]">{rooms.filter(r => r.status === 'Available').length}</h3>
  </div>
- <div className="p-3 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 rounded-xl"><CheckCircle2 className="w-5 h-5" /></div>
+ <div className="p-3 bg-emerald-100 dark:bg-emerald-500/10/10 text-emerald-600 rounded-md-xl"><CheckCircle2 className="w-5 h-5" /></div>
  </div>
- <div className="bg-card border border-primary/40 rounded-2xl p-4 flex items-center justify-between ">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
- <p className="text-sm text-muted-foreground font-medium">Occupied</p>
- <h3 className="text-2xl font-bold text-foreground mt-1">{rooms.filter(r => r.status === 'Occupied').length}</h3>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 font-medium">Occupied</p>
+ <h3 className="text-2xl font-semibold text-foreground mt-1 tracking-[-0.02em]">{rooms.filter(r => r.status === 'Occupied').length}</h3>
  </div>
- <div className="p-3 bg-orange-100 dark:bg-orange-500/10 text-orange-600 rounded-xl"><Key className="w-5 h-5" /></div>
+ <div className="p-3 bg-orange-100 dark:bg-orange-500/10/10 text-orange-600 rounded-md-xl"><Key className="w-5 h-5" /></div>
  </div>
- <div className="bg-card border border-primary/40 rounded-2xl p-4 flex items-center justify-between ">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div>
- <p className="text-sm text-muted-foreground font-medium">Needs Attention</p>
- <h3 className="text-2xl font-bold text-foreground mt-1">{rooms.filter(r => ['Cleaning', 'Maintenance'].includes(r.status)).length}</h3>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 font-medium">Needs Attention</p>
+ <h3 className="text-2xl font-semibold text-foreground mt-1 tracking-[-0.02em]">{rooms.filter(r => ['Cleaning', 'Maintenance'].includes(r.status)).length}</h3>
  </div>
- <div className="p-3 bg-red-100 dark:bg-red-500/10 text-red-600 rounded-xl"><AlertCircle className="w-5 h-5" /></div>
+ <div className="p-3 bg-red-100 dark:bg-red-500/10/10 text-red-600 rounded-md-xl"><AlertCircle className="w-5 h-5" /></div>
  </div>
  </div>
 
- <div className="flex-1 bg-card border border-primary/40 rounded-2xl overflow-hidden flex flex-col">
+ <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
  <div className="relative w-72">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
  <input 
  type="text"
  placeholder="Search rooms..."
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+ className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
  </div>
@@ -224,26 +224,26 @@ export default function UnivRoom() {
  animate={{ opacity: 1, scale: 1}}
  transition={{ delay: idx * 0.02}}
  key={r.id} 
- className="bg-background border border-primary/40 rounded-2xl p-4 hover:border-primary/40 transition-colors relative group flex flex-col justify-between"
+ className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl p-4 hover:border-primary/40 transition-colors relative group flex flex-col justify-between"
  >
  <div>
  <div className="flex justify-between items-start mb-3">
  <div className="flex items-center gap-2">
- <span className="font-bold text-lg text-foreground">{r.room_number}</span>
+ <span className="font-semibold text-lg text-foreground">{r.room_number}</span>
  </div>
  </div>
  
- <div className="text-sm font-semibold text-muted-foreground mb-1">{r.room_type}</div>
- <div className="text-xs text-muted-foreground mb-2">{r.floor || 'N/A'} • ${Number(r.price_per_night).toFixed(2)}/nt</div>
+ <div className="text-sm font-semibold text-[#71717a] dark:text-gray-400 mb-1">{r.room_type}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 mb-2 tracking-[0.04em]">{r.floor || 'N/A'} • ${Number(r.price_per_night).toFixed(2)}/nt</div>
  {r.amenities && (
- <div className="text-[11px] text-muted-foreground italic mb-4 line-clamp-2">
+ <div className="text-[11px] text-[#71717a] dark:text-gray-400 italic mb-4 line-clamp-2">
  Amenities: {r.amenities}
  </div>
  )}
  </div>
  
  <div className="flex justify-between items-center pt-2 border-t border-primary/40 shrink-0">
- <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-bold rounded-md border flex items-center gap-1 ${
+ <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-semibold rounded-lg border-[0.5px] border-black/9 dark:border-white/8 flex items-center gap-2 ${
  r.status === 'Available' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
  r.status === 'Occupied' ? 'bg-orange-50 text-orange-700 border-orange-200' : 
  r.status === 'Cleaning' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
@@ -252,11 +252,11 @@ export default function UnivRoom() {
  {r.status}
  </span>
  
- <div className="flex items-center gap-1">
- <button onClick={() => handleOpenModal(r)} className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-primary transition-colors">
+ <div className="flex items-center gap-2">
+ <button onClick={() => handleOpenModal(r)} className="p-1 hover:bg-muted rounded-md text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors">
  <Edit2 className="w-3.5 h-3.5" />
  </button>
- <button onClick={() => handleDelete(r.id)} className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-destructive transition-colors">
+ <button onClick={() => handleDelete(r.id)} className="p-1 hover:bg-muted rounded-md text-[#71717a] dark:text-gray-400 hover:text-destructive transition-colors">
  <Trash2 className="w-3.5 h-3.5" />
  </button>
  </div>
@@ -266,7 +266,7 @@ export default function UnivRoom() {
  </div>
 
  {filtered.length === 0 && (
- <div className="text-center py-12 text-muted-foreground">
+ <div className="text-center py-12 text-[#71717a] dark:text-gray-400">
  <Home className="w-12 h-12 mx-auto mb-3 opacity-20" />
  <p>No rooms found.</p>
  </div>
@@ -281,40 +281,40 @@ export default function UnivRoom() {
  initial={{ opacity: 0, scale: 0.95}}
  animate={{ opacity: 1, scale: 1}}
  exit={{ opacity: 0, scale: 0.95}}
- className="bg-card border border-primary/40 rounded-2xl w-full max-w-md overflow-hidden"
+ className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl w-full max-w-md overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <div className="flex items-center justify-between p-4 border-b border-primary/40">
  <h3 className="font-semibold text-foreground">{editingId ? 'Edit Room' : 'Add Room'}</h3>
- <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:text-foreground">
+ <button onClick={() => setIsModalOpen(false)} className="text-[#71717a] dark:text-gray-400 hover:text-foreground">
  <XCircle className="w-5 h-5" />
  </button>
  </div>
  <form onSubmit={handleSave} className="p-4 space-y-4">
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Room Number</label>
- <input required value={form.room_number} onChange={e => setForm({...form, room_number: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Room Number</label>
+ <input required value={form.room_number} onChange={e => setForm({...form, room_number: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm" />
  </div>
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Room Type</label>
- <input required value={form.room_type} onChange={e => setForm({...form, room_type: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" placeholder="e.g. Deluxe Suite" />
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Room Type</label>
+ <input required value={form.room_type} onChange={e => setForm({...form, room_type: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm" placeholder="e.g. Deluxe Suite" />
  </div>
  </div>
 
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Floor</label>
- <input value={form.floor} onChange={e => setForm({...form, floor: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" placeholder="e.g. 2nd Floor" />
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Floor</label>
+ <input value={form.floor} onChange={e => setForm({...form, floor: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm" placeholder="e.g. 2nd Floor" />
  </div>
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Price per Night</label>
- <input type="number" required value={form.price_per_night} onChange={e => setForm({...form, price_per_night: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" />
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Price per Night</label>
+ <input type="number" required value={form.price_per_night} onChange={e => setForm({...form, price_per_night: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm" />
  </div>
  </div>
 
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Status</label>
- <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm">
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Status</label>
+ <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm">
  <option value="Available">Available</option>
  <option value="Occupied">Occupied</option>
  <option value="Cleaning">Cleaning</option>
@@ -323,13 +323,13 @@ export default function UnivRoom() {
  </div>
 
  <div>
- <label className="block text-xs font-medium text-muted-foreground mb-1">Amenities</label>
- <input value={form.amenities} onChange={e => setForm({...form, amenities: e.target.value})} className="w-full p-2 bg-background border border-primary/40 rounded-lg text-sm" placeholder="e.g. Wi-Fi, King Bed, Ocean View" />
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Amenities</label>
+ <input value={form.amenities} onChange={e => setForm({...form, amenities: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm" placeholder="e.g. Wi-Fi, King Bed, Ocean View" />
  </div>
 
  <div className="pt-4 flex justify-end gap-2">
- <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted rounded-lg">Cancel</button>
- <button type="submit" className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90">Save Room</button>
+ <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium text-[#71717a] dark:text-gray-400 hover:bg-muted rounded-xl">Cancel</button>
+ <button type="submit" className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary/90">Save Room</button>
  </div>
  </form>
  </motion.div>

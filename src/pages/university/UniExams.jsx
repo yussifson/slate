@@ -55,17 +55,17 @@ export default function UniExams() {
  updateStudentGpaMutation.mutate({ studentId: activeStudent.id, newGpa});
 };
 
- const selectClass = "w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body";
+ const selectClass = "w-full bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-md)] px-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body";
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
  <div className="border-b border-primary/40 pb-4">
- <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Examinations & Grading</h1>
+ <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">Examinations & Grading</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Schedule examinations, sit online exams, and review grade transcripts.</p>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
- <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">Active Student</label>
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6">
+ <label className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">Active Student</label>
  <select value={selectedStudentId} onChange={e => { setSelectedStudentId(e.target.value); setActiveExam(null); setExamSubmitted(false);}} className={cn(selectClass, "mt-2")}>
  <option value="">-- Choose Undergraduate --</option>
  {parsedStudents.map(s => <option key={s.id} value={s.id}>{s.name} ({s.major}) - GPA: {s.gpa}</option>)}
@@ -76,33 +76,33 @@ export default function UniExams() {
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
  <div className="lg:col-span-2 space-y-6">
  {!activeExam ? (
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden">
  <div className="p-6 border-b border-primary/40">
  <h2 className="font-semibold text-[var(--color-text-primary)]">Available Examinations</h2>
  </div>
  <div className="p-4 space-y-3">
  {exams.map((exam, idx) => (
- <div key={idx} className="p-4 bg-[var(--color-surface-1)] rounded-[var(--radius-lg)] border border-primary/40 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+ <div key={idx} className="p-4 bg-[var(--color-surface-1)] rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
  <div>
  <div className="flex items-center gap-2">
- <span className="text-xs font-mono font-bold text-[var(--color-accent-primary)] bg-[var(--color-accent-subtle)] px-2 py-0.5 rounded-[var(--radius-sm)]">{exam.code}</span>
+ <span className="text-xs font-mono font-semibold text-[var(--color-accent-primary)] bg-[var(--color-accent-subtle)] px-2 py-0.5 rounded-md-[var(--radius-sm)] tracking-[0.04em]">{exam.code}</span>
  <h4 className="font-semibold text-[var(--text-sm)] text-[var(--color-text-primary)]">{exam.subject}</h4>
  </div>
- <div className="flex flex-wrap gap-4 mt-2 text-[var(--text-xs)] text-[var(--color-text-secondary)]">
- <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {exam.date}</span>
- <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {exam.time}</span>
+ <div className="flex flex-wrap gap-4 mt-2 text-[var(--text-xs)] text-[var(--color-text-secondary)] tracking-[0.04em]">
+ <span className="flex items-center gap-2"><Calendar className="w-3.5 h-3.5" /> {exam.date}</span>
+ <span className="flex items-center gap-2"><Clock className="w-3.5 h-3.5" /> {exam.time}</span>
  </div>
  </div>
- <button onClick={() => handleStartExam(exam)} className="px-4 py-2 bg-[var(--color-success)] hover:opacity-90 text-white text-xs font-medium rounded-[var(--radius-md)] transition-all">Launch Exam</button>
+ <button onClick={() => handleStartExam(exam)} className="px-4 py-2 bg-[var(--color-success)] hover:opacity-90 text-white text-xs font-medium rounded-md-[var(--radius-md)] transition-all tracking-[0.04em]">Launch Exam</button>
  </div>
  ))}
  </div>
  </div>
  ) : (
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden ">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden ">
  <div className="p-6 border-b border-primary/40 flex justify-between items-center">
  <h3 className="font-semibold text-[var(--color-text-primary)]">Sitting: {activeExam.subject}</h3>
- <button onClick={() => setActiveExam(null)} className="px-3 py-1.5 border border-primary/40 text-[var(--color-text-primary)] text-xs font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-3)]">Quit</button>
+ <button onClick={() => setActiveExam(null)} className="px-3 py-1.5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[var(--color-text-primary)] text-xs font-medium rounded-md-[var(--radius-md)] hover:bg-[var(--color-surface-3)] tracking-[0.04em]">Quit</button>
  </div>
  <div className="p-6">
  {!examSubmitted ? (
@@ -112,7 +112,7 @@ export default function UniExams() {
  <p className="font-medium text-[var(--color-text-primary)]">{qIdx + 1}. {q.q}</p>
  <div className="grid grid-cols-1 gap-2 pt-2">
  {q.options.map((opt, optIdx) => (
- <label key={optIdx} className={cn("flex items-center gap-2 text-[var(--text-sm)] border rounded-[var(--radius-md)] p-2.5 cursor-pointer transition-colors", answers[qIdx] === optIdx ? "border-[var(--primary)] bg-[var(--color-accent-subtle)]" : "border-primary/40 hover:bg-[var(--color-surface-2)]")}>
+ <label key={optIdx} className={cn("flex items-center gap-2 text-[var(--text-sm)] border-[0.5px] border-black/9 dark:border-white/8 rounded-md-[var(--radius-md)] p-2.5 cursor-pointer transition-colors", answers[qIdx] === optIdx ? "border-[var(--primary)] bg-[var(--color-accent-subtle)]" : "border-primary/40 hover:bg-[var(--color-surface-2)]")}>
  <input type="radio" name={`q-${qIdx}`} checked={answers[qIdx] === optIdx} onChange={() => setAnswers({ ...answers, [qIdx]: optIdx})} className="accent-[var(--primary)]" />
  <span className="font-medium text-[var(--color-text-primary)]">{opt}</span>
  </label>
@@ -120,21 +120,21 @@ export default function UniExams() {
  </div>
  </div>
  ))}
- <button onClick={handleSubmitExam} disabled={Object.keys(answers).length < activeExam.questions.length} className="w-full py-2.5 bg-[var(--color-accent-primary)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all disabled:opacity-50">Submit Paper</button>
+ <button onClick={handleSubmitExam} disabled={Object.keys(answers).length < activeExam.questions.length} className="w-full py-2.5 bg-[var(--color-accent-primary)] hover:opacity-90 text-white font-medium rounded-md-[var(--radius-md)] transition-all disabled:opacity-50">Submit Paper</button>
  </div>
  ) : (
  <div className="text-center py-6 space-y-4">
- <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto" style={{ background: 'var(--color-success-subtle)'}}><ClipboardCheck className="w-8 h-8" style={{ color: 'var(--color-success)'}} /></div>
- <h3 className="text-lg font-bold text-[var(--color-text-primary)]">Exam Graded</h3>
- <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto p-4 bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-lg)]">
- <div><p className="text-[10px] text-[var(--color-text-tertiary)] font-bold uppercase">Score</p><p className="text-xl font-display font-bold text-[var(--color-text-primary)]">{scoreResult.correct}/{scoreResult.total}</p></div>
- <div><p className="text-[10px] text-[var(--color-text-tertiary)] font-bold uppercase">Grade</p><p className="text-xl font-display font-bold text-[var(--color-success)]">{scoreResult.grade}/4.00</p></div>
+ <div className="w-16 h-16 rounded-md-full flex items-center justify-center mx-auto" style={{ background: 'var(--color-success-subtle)'}}><ClipboardCheck className="w-8 h-8" style={{ color: 'var(--color-success)'}} /></div>
+ <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Exam Graded</h3>
+ <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto p-4 bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-lg)]">
+ <div><p className="text-[10px] text-[var(--color-text-tertiary)] font-semibold uppercase tracking-[0.04em]">Score</p><p className="text-xl font-display font-semibold text-[var(--color-text-primary)]">{scoreResult.correct}/{scoreResult.total}</p></div>
+ <div><p className="text-[10px] text-[var(--color-text-tertiary)] font-semibold uppercase tracking-[0.04em]">Grade</p><p className="text-xl font-display font-semibold text-[var(--color-success)]">{scoreResult.grade}/4.00</p></div>
  </div>
- <div className="p-3 bg-[var(--color-info-subtle)] border border-[var(--color-info)] rounded-[var(--radius-lg)] max-w-md mx-auto text-[var(--text-xs)] text-[var(--color-info)] flex gap-2 text-left">
+ <div className="p-3 bg-[var(--color-info-subtle)] border-[0.5px] border-black/9 dark:border-white/8 border-[var(--color-info)] rounded-md-[var(--radius-lg)] max-w-md mx-auto text-[var(--text-xs)] text-[var(--color-info)] flex gap-2 text-left tracking-[0.04em]">
  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
- <div><p className="font-bold">GPA Recalculated</p><p className="mt-0.5">Cumulative GPA adjusted after logging this exam record.</p></div>
+ <div><p className="font-semibold">GPA Recalculated</p><p className="mt-0.5">Cumulative GPA adjusted after logging this exam record.</p></div>
  </div>
- <button onClick={() => setActiveExam(null)} className="w-full py-2 border border-primary/40 text-[var(--color-text-primary)] font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-surface-3)]">Return to Hub</button>
+ <button onClick={() => setActiveExam(null)} className="w-full py-2 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[var(--color-text-primary)] font-medium rounded-md-[var(--radius-md)] hover:bg-[var(--color-surface-3)]">Return to Hub</button>
  </div>
  )}
  </div>
@@ -142,7 +142,7 @@ export default function UniExams() {
  )}
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 h-fit">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 h-fit">
  <h3 className="font-semibold text-[var(--color-text-primary)] mb-4">Grading Status</h3>
  <div className="space-y-3">
  <div className="flex justify-between py-2 border-b border-primary/40 text-[var(--text-sm)]">
@@ -151,13 +151,13 @@ export default function UniExams() {
  </div>
  <div className="flex justify-between py-2 text-[var(--text-sm)]">
  <span className="text-[var(--color-text-secondary)]">GPA</span>
- <span className="font-mono font-bold text-[var(--color-accent-primary)]">{activeStudent.gpa}</span>
+ <span className="font-mono font-semibold text-[var(--color-accent-primary)]">{activeStudent.gpa}</span>
  </div>
  </div>
  </div>
  </div>
  ) : (
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-12 text-center text-[var(--color-text-tertiary)]">Select a student to load exam terminal.</div>
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-12 text-center text-[var(--color-text-tertiary)]">Select a student to load exam terminal.</div>
  )}
  </div>
  );

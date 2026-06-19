@@ -85,8 +85,8 @@ export default function Products() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">Products Catalog</h1>
- <p className="text-sm text-muted-foreground mt-0.5">Manage your retail products, pricing, and stock.</p>
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Products Catalog</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">Manage your retail products, pricing, and stock.</p>
  </div>
  <Button onClick={() => { setEditingId(null); setFormData({ name: '', sku: '', category: '', price: '', stock: ''}); setShowModal(true);}} className="gap-2 bg-orange-600 hover:bg-orange-700 text-white">
  <Plus className="w-4 h-4" /> Add Product
@@ -102,16 +102,16 @@ export default function Products() {
  <RetailStatCard label="Total Items in Stock" value={products.reduce((a, b) => a + b.stock, 0)} icon={Package} />
  </div>
 
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search products by name or SKU..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search products by name or SKU..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  <div className="overflow-x-auto">
  {isLoading ? <div className="py-12 text-center">Loading...</div> : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
  <Tag className="w-12 h-12 mx-auto mb-3 opacity-30" />
  <p className="font-semibold">No products found.</p>
  </div>
@@ -129,37 +129,37 @@ export default function Products() {
  </div>
  ) : (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40">
+ <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Product Name</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Category</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Price</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Stock</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Supplier</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">Status</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Added By</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Actions</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Product Name</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Category</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Price</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Stock</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Supplier</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Status</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Added By</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Actions</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
  {filtered.map(p => (
  <tr key={p.id} className="hover:bg-muted/50 transition-colors">
  <td className="px-6 py-4">
- <p className="font-bold text-card-foreground">{p.name}</p>
- <p className="text-xs text-muted-foreground mt-0.5">{p.sku}</p>
+ <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{p.name}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">{p.sku}</p>
  </td>
- <td className="px-6 py-4 text-muted-foreground">{p.category}</td>
- <td className="px-6 py-4 text-right font-bold text-card-foreground">${p.price.toFixed(2)}</td>
+ <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">{p.category}</td>
+ <td className="px-6 py-4 text-right font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${p.price.toFixed(2)}</td>
  <td className="px-6 py-4 text-center font-medium">
  <Link to="/retail-inventory" className="text-primary hover:underline" title="Manage in Inventory">{p.stock}</Link>
  </td>
- <td className="px-6 py-4 text-muted-foreground text-xs">{suppliers.find(s => s.id === p.supplierId)?.name || 'None'}</td>
+ <td className="px-6 py-4 text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{suppliers.find(s => s.id === p.supplierId)?.name || 'None'}</td>
  <td className="px-6 py-4 text-center">
- <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${p.stock > 0 ? 'bg-slate-100 text-primary/90' : 'bg-red-100 text-red-700'}`}>{p.status}</span>
+ <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-md-full uppercase tracking-wider ${p.stock > 0 ? 'bg-slate-100 text-primary/90' : 'bg-red-100 text-red-700'}`}>{p.status}</span>
  </td>
  <td className="px-6 py-4">
- <p className="text-sm font-medium text-card-foreground">{p.createdBy}</p>
- <p className="text-xs text-muted-foreground">{new Date(p.createdAt).toLocaleDateString()}</p>
+ <p className="text-sm font-medium text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{p.createdBy}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{new Date(p.createdAt).toLocaleDateString()}</p>
  </td>
  <td className="px-6 py-4 text-right">
  <Button variant="ghost" size="icon" onClick={() => openEdit(p)}><Edit className="w-4 h-4" /></Button>
@@ -175,19 +175,19 @@ export default function Products() {
 
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4">
- <h2 className="text-lg font-bold text-card-foreground">{editingId ? 'Edit Product' : 'Add Product'}</h2>
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editingId ? 'Edit Product' : 'Add Product'}</h2>
  <div className="space-y-3">
- <div><label className="text-xs font-bold text-muted-foreground uppercase">Name</label><Input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value})} className="mt-1" /></div>
- <div><label className="text-xs font-bold text-muted-foreground uppercase">SKU</label><Input value={formData.sku} onChange={e => setFormData({ ...formData, sku: e.target.value})} className="mt-1" /></div>
- <div><label className="text-xs font-bold text-muted-foreground uppercase">Category</label><Input value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value})} className="mt-1" /></div>
+ <div><label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Name</label><Input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value})} className="mt-1" /></div>
+ <div><label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">SKU</label><Input value={formData.sku} onChange={e => setFormData({ ...formData, sku: e.target.value})} className="mt-1" /></div>
+ <div><label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Category</label><Input value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value})} className="mt-1" /></div>
  <div className="grid grid-cols-2 gap-4">
- <div><label className="text-xs font-bold text-muted-foreground uppercase">Price</label><Input type="number" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value})} className="mt-1" /></div>
- <div><label className="text-xs font-bold text-muted-foreground uppercase">Stock</label><Input type="number" value={formData.stock} onChange={e => setFormData({ ...formData, stock: e.target.value})} className="mt-1" /></div>
+ <div><label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Price</label><Input type="number" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value})} className="mt-1" /></div>
+ <div><label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Stock</label><Input type="number" value={formData.stock} onChange={e => setFormData({ ...formData, stock: e.target.value})} className="mt-1" /></div>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">Supplier</label>
- <select value={formData.supplierId} onChange={e => setFormData({...formData, supplierId: e.target.value})} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Supplier</label>
+ <select value={formData.supplierId} onChange={e => setFormData({...formData, supplierId: e.target.value})} className="flex h-10 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm mt-1">
  <option value="">No Supplier Selected</option>
  {suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
  </select>

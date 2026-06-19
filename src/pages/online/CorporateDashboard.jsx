@@ -27,52 +27,52 @@ export default function CorporateDashboard() {
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 py-6 max-w-7xl mx-auto">
  <div className="border-b border-primary/40 pb-4 flex justify-between items-end">
  <div>
- <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">Corporate Portal</h1>
+ <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">Corporate Portal</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Manage bulk licenses, track employee training, and view organizational metrics.</p>
  </div>
- <button className="px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-[var(--radius-md)] hover:opacity-90 transition-opacity flex items-center gap-2">
+ <button className="px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-md-[var(--radius-md)] hover:opacity-90 transition-opacity flex items-center gap-2">
  <Users className="w-4 h-4" /> Invite Employees
  </button>
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 ">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 ">
  <div className="flex items-center gap-3 mb-2">
- <div className="w-10 h-10 rounded-full bg-[var(--color-surface-2)] flex items-center justify-center text-[var(--color-text-primary)]">
+ <div className="w-10 h-10 rounded-md-full bg-[var(--color-surface-2)] flex items-center justify-center text-[var(--color-text-primary)]">
  <Briefcase className="w-5 h-5" />
  </div>
- <h3 className="font-semibold text-[var(--color-text-secondary)] text-sm uppercase tracking-wider">Active Licenses</h3>
+ <h3 className="font-semibold text-[var(--color-text-secondary)] text-sm uppercase tracking-wider tracking-[0.04em]">Active Licenses</h3>
  </div>
- <p className="text-4xl font-bold font-display text-[var(--color-text-primary)] mt-2">150</p>
- <p className="text-xs text-[var(--color-text-tertiary)] mt-2">50 unused licenses available</p>
+ <p className="text-4xl font-semibold font-display text-[var(--color-text-primary)] mt-2 tracking-[-0.02em]">150</p>
+ <p className="text-xs text-[var(--color-text-tertiary)] mt-2 tracking-[0.04em]">50 unused licenses available</p>
  </div>
  
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 ">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 ">
  <div className="flex items-center gap-3 mb-2">
- <div className="w-10 h-10 rounded-full bg-[var(--color-info-subtle)] flex items-center justify-center text-[var(--color-info)]">
+ <div className="w-10 h-10 rounded-md-full bg-[var(--color-info-subtle)] flex items-center justify-center text-[var(--color-info)]">
  <Users className="w-5 h-5" />
  </div>
- <h3 className="font-semibold text-[var(--color-text-secondary)] text-sm uppercase tracking-wider">Enrolled Employees</h3>
+ <h3 className="font-semibold text-[var(--color-text-secondary)] text-sm uppercase tracking-wider tracking-[0.04em]">Enrolled Employees</h3>
  </div>
- <p className="text-4xl font-bold font-display text-[var(--color-text-primary)] mt-2">{learners.length || 0}</p>
- <p className="text-xs text-[var(--color-text-tertiary)] mt-2">Across 4 departments</p>
+ <p className="text-4xl font-semibold font-display text-[var(--color-text-primary)] mt-2 tracking-[-0.02em]">{learners.length || 0}</p>
+ <p className="text-xs text-[var(--color-text-tertiary)] mt-2 tracking-[0.04em]">Across 4 departments</p>
  </div>
  
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 ">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 ">
  <div className="flex items-center gap-3 mb-2">
- <div className="w-10 h-10 rounded-full bg-[var(--color-success-subtle)] flex items-center justify-center text-[var(--color-success)]">
+ <div className="w-10 h-10 rounded-md-full bg-[var(--color-success-subtle)] flex items-center justify-center text-[var(--color-success)]">
  <BarChart3 className="w-5 h-5" />
  </div>
- <h3 className="font-semibold text-[var(--color-text-secondary)] text-sm uppercase tracking-wider">Avg Completion</h3>
+ <h3 className="font-semibold text-[var(--color-text-secondary)] text-sm uppercase tracking-wider tracking-[0.04em]">Avg Completion</h3>
  </div>
- <p className="text-4xl font-bold font-display text-[var(--color-text-primary)] mt-2">78%</p>
- <div className="w-full bg-[var(--color-surface-2)] h-1.5 rounded-full mt-3 overflow-hidden">
+ <p className="text-4xl font-semibold font-display text-[var(--color-text-primary)] mt-2 tracking-[-0.02em]">78%</p>
+ <div className="w-full bg-[var(--color-surface-2)] h-1.5 rounded-md-full mt-3 overflow-hidden">
  <div className="bg-[var(--color-success)] h-full w-[78%]"></div>
  </div>
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden">
  <div className="border-b border-primary/40 bg-[var(--color-surface-1)] flex px-4">
  <button onClick={() => setActiveTab('overview')} className={`px-6 py-4 font-medium text-sm transition-colors border-b-2 ${activeTab === 'overview' ? 'border-[var(--primary)] text-[var(--primary)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>Overview</button>
  <button onClick={() => setActiveTab('employees')} className={`px-6 py-4 font-medium text-sm transition-colors border-b-2 ${activeTab === 'employees' ? 'border-[var(--primary)] text-[var(--primary)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>Employee Directory</button>
@@ -82,8 +82,8 @@ export default function CorporateDashboard() {
  {activeTab === 'overview' && (
  <div className="space-y-6">
  <div className="flex justify-between items-center mb-2">
- <h2 className="font-bold text-[var(--color-text-primary)] font-display">Department Training Progress</h2>
- <button className="text-sm font-medium text-[var(--primary)] flex items-center gap-1 hover:underline">
+ <h2 className="font-semibold text-[var(--color-text-primary)] font-display">Department Training Progress</h2>
+ <button className="text-sm font-medium text-[var(--primary)] flex items-center gap-2 hover:underline">
  <Download className="w-4 h-4" /> Export Report
  </button>
  </div>
@@ -131,14 +131,14 @@ export default function CorporateDashboard() {
  <td className="px-6 py-4">2</td>
  <td className="px-6 py-4">
  <div className="flex items-center gap-2">
- <div className="w-full max-w-[100px] bg-[var(--color-surface-2)] h-1.5 rounded-full overflow-hidden">
+ <div className="w-full max-w-[100px] bg-[var(--color-surface-2)] h-1.5 rounded-md-full overflow-hidden">
  <div className="bg-[var(--color-success)] h-full w-[60%]"></div>
  </div>
- <span className="text-xs font-semibold text-[var(--color-success)]">60%</span>
+ <span className="text-xs font-semibold text-[var(--color-success)] tracking-[0.04em]">60%</span>
  </div>
  </td>
  <td className="px-6 py-4 text-right">
- <button className="text-sm font-semibold text-[var(--primary)] flex items-center justify-end gap-1 hover:underline w-full opacity-0 group-hover:opacity-100 transition-opacity">
+ <button className="text-sm font-semibold text-[var(--primary)] flex items-center justify-end gap-2 hover:underline w-full opacity-0 group-hover:opacity-100 transition-opacity">
  View Report <ChevronRight className="w-4 h-4" />
  </button>
  </td>

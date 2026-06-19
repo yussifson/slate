@@ -763,7 +763,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <div 
  className={`flex bg-card z-[70] transition-all duration-300 overflow-hidden ${
  // Mobile: Bottom Sheet
- isOpen ? "max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-t-[32px] max-md: max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] max-md:translate-y-0 max-md:opacity-100" : "max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:h-0 max-md:translate-y-full max-md:opacity-0 max-md:pointer-events-none"
+ isOpen ? "max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-md-t-[32px] max-md: max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] max-md:translate-y-0 max-md:opacity-100" : "max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:h-0 max-md:translate-y-full max-md:opacity-0 max-md:pointer-events-none"
 } ${
  // Desktop: Side Panel
  isOpen ? (isExpanded ? "md:relative md:h-full md:shrink-0 md:border-l-[3px] md:border-l-primary md:w-[680px] md:opacity-100" : "md:relative md:h-full md:shrink-0 md:border-l-[3px] md:border-l-primary md:w-[400px] md:opacity-100") : "md:h-full md:w-0 md:opacity-0 md:border-none md:pointer-events-none"
@@ -771,7 +771,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  >
  {/* Mobile Drag Handle */}
  <div className="md:hidden flex justify-center pt-3 pb-1 shrink-0">
- <div className="w-12 h-1.5 rounded-full bg-slate-200 dark:bg-slate-800" />
+ <div className="w-12 h-1.5 rounded-md-full bg-slate-200 dark:bg-slate-800" />
  </div>
  
  {/* Main Content Wrapper (Needs flex row on desktop, flex col on mobile if history is open) */}
@@ -780,12 +780,12 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  {showHistory && (
  <div className="w-52 shrink-0 border-r border-primary/40 bg-muted/20 flex flex-col">
  <div className="px-3 py-2.5 border-b border-primary/40 flex items-center justify-between">
- <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{t("chat_history", "Chat History")}</span>
- <div className="flex items-center gap-1">
- <button onClick={startNewChat} className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-primary transition-colors" title="New chat">
+ <span className="text-[11px] font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("chat_history", "Chat History")}</span>
+ <div className="flex items-center gap-2">
+ <button onClick={startNewChat} className="p-1 hover:bg-muted rounded-md text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors" title="New chat">
  <Plus className="w-3.5 h-3.5" />
  </button>
- <button onClick={() => setShowHistory(false)} className="p-1 hover:bg-muted rounded text-muted-foreground transition-colors" title="Close history">
+ <button onClick={() => setShowHistory(false)} className="p-1 hover:bg-muted rounded-md text-[#71717a] dark:text-gray-400 transition-colors" title="Close history">
  <X className="w-3.5 h-3.5" />
  </button>
  </div>
@@ -796,22 +796,22 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <div
  key={s.id}
  onClick={() => { setActiveId(s.id); setShowHistory(false);}}
- className={`group relative flex items-start gap-2 p-2 rounded-lg cursor-pointer text-left transition-colors ${
+ className={`group relative flex items-start gap-2 p-2 rounded-xl cursor-pointer text-left transition-colors ${
  s.id === activeId
- ? 'bg-slate-50 dark:bg-primary/30 border border-primary/20 dark:border-primary/40'
+ ? 'bg-slate-50 dark:bg-primary/30 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 dark:border-primary/40'
  : 'hover:bg-muted/70'
 }`}
  >
- <Clock className="w-3 h-3 mt-0.5 text-muted-foreground shrink-0" />
+ <Clock className="w-3 h-3 mt-0.5 text-[#71717a] dark:text-gray-400 shrink-0" />
  <div className="flex-1 min-w-0">
  <p className="text-[11px] font-medium text-foreground truncate leading-tight">{s.title}</p>
- <p className="text-[10px] text-muted-foreground mt-0.5">
+ <p className="text-[10px] text-[#71717a] dark:text-gray-400 mt-0.5">
  {new Date(s.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric'})}
  </p>
  </div>
  <button
  onClick={e => deleteSession(s.id, e)}
- className="opacity-0 group-hover:opacity-100 p-0.5 text-muted-foreground hover:text-red-500 transition-all shrink-0"
+ className="opacity-0 group-hover:opacity-100 p-0.5 text-[#71717a] dark:text-gray-400 hover:text-red-500 transition-all shrink-0"
  >
  <Trash2 className="w-3 h-3" />
  </button>
@@ -828,35 +828,35 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <div className="flex items-center gap-2 px-3 py-2.5 border-b border-primary/40 bg-gradient-to-r from-primary/8 to-primary/5 shrink-0">
  <button
  onClick={() => setShowHistory(prev => !prev)}
- className={`p-1.5 rounded-md transition-colors shrink-0 ${showHistory ? 'bg-slate-100 dark:bg-primary/40 text-primary dark:text-primary/70' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+ className={`p-1.5 rounded-lg transition-colors shrink-0 ${showHistory ? 'bg-slate-100 dark:bg-primary/40 text-primary dark:text-primary/70' : 'text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground'}`}
  title="Chat history"
  >
  <Clock className="w-4 h-4" />
  </button>
  <div className="flex items-center gap-2 mb-2">
- <div className="w-5 h-5 rounded flex items-center justify-center bg-primary/20 text-primary shrink-0">
+ <div className="w-5 h-5 rounded-md flex items-center justify-center bg-primary/20 text-primary shrink-0">
  <OrbitIcon className="w-3.5 h-3.5" />
  </div>
- <div className="flex items-center gap-1.5 flex-1">
- <p className="text-[11px] font-bold text-foreground leading-none">{t("orbit", "OrbitFlow")}</p>
+ <div className="flex items-center gap-2.5 flex-1">
+ <p className="text-[11px] font-semibold text-foreground leading-none">{t("orbit", "OrbitFlow")}</p>
  </div>
  </div>
  <div className="flex items-center gap-0.5 shrink-0">
- <button onClick={startNewChat} className="p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground rounded-md transition-colors" title="New chat">
+ <button onClick={startNewChat} className="p-1.5 text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground rounded-lg transition-colors" title="New chat">
  <Plus className="w-4 h-4" />
  </button>
- <button onClick={() => setIsExpanded(!isExpanded)} className="p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground rounded-md transition-colors">
+ <button onClick={() => setIsExpanded(!isExpanded)} className="p-1.5 text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground rounded-lg transition-colors">
  {isExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
  </button>
- <button onClick={onClose} className="p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground rounded-md transition-colors">
+ <button onClick={onClose} className="p-1.5 text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground rounded-lg transition-colors">
  <X className="w-4 h-4" />
  </button>
  </div>
  </div>
 
  {/* Page Context Bar */}
- <div className="px-3 py-1.5 flex items-center gap-1.5 bg-primary/60 dark:bg-slate-100 border-b border-primary/40 dark:border-primary/20 shrink-0">
- <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></div>
+ <div className="px-3 py-1.5 flex items-center gap-2.5 bg-primary/60 dark:bg-slate-100 border-b border-primary/40 dark:border-primary/20 shrink-0">
+ <div className="w-1.5 h-1.5 rounded-md-full bg-primary shrink-0"></div>
  <span className="text-[10px] text-primary dark:text-primary/70 font-semibold truncate">
  {ctx ? `${ctx.suite} ${ctx.title}` : location.pathname} {t("ai_has_full_context", "AI has full context")}
  </span>
@@ -864,22 +864,22 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
 
  {/* Messages */}
  <div className="flex-1 overflow-y-auto p-4 space-y-4 relative bg-[radial-gradient(circle,#e2e8f0_1px,transparent_1px)] dark:bg-[radial-gradient(circle,#1e293b_1px,transparent_1px)] [background-size:18px_18px]">
- <div className="absolute inset-0 bg-card/65 pointer-events-none z-0"></div>
+ <div className="absolute inset-0 bg-card/65 pointer-events-none z-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>
  <div className="relative z-10 space-y-4">
  {messages.filter(m => m.role !== 'system').map((msg, i) => {
  return (
  <div key={i} className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
- <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
+ <div className={`w-7 h-7 rounded-md-full flex items-center justify-center shrink-0 mt-0.5 ${
  msg.role === 'user'
  ? 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
  : 'bg-gradient-to-br from-primary to-primary text-white'
 }`}>
  {msg.role === 'user' ? <User className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
  </div>
- <div className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed max-w-[88%] ${
+ <div className={`px-3.5 py-2.5 rounded-md-2xl text-sm leading-relaxed max-w-[88%] ${
  msg.role === 'user'
- ? 'bg-primary text-white rounded-tr-sm'
- : 'bg-card border border-primary/40 rounded-tl-sm text-foreground'
+ ? 'bg-primary text-white rounded-md-tr-sm'
+ : 'bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-tl-sm text-foreground'
 }`}>
  <FormatMessage content={msg.content} />
  
@@ -887,13 +887,13 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <div className="mt-3 flex gap-2 pt-3 border-t border-primary/40">
  <button 
  onClick={() => confirmPendingAction(msg.pendingAction, i)}
- className="bg-primary hover:bg-primary/90 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5"
+ className="bg-primary hover:bg-primary/90 text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors flex items-center gap-2.5 tracking-[0.04em]"
  >
  <Sparkles className="w-3 h-3" /> {t("continue_action", "Continue Action")}
  </button>
  <button 
  onClick={() => cancelPendingAction(i)}
- className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border border-primary/40 "
+ className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors border-[0.5px] border-black/9 dark:border-white/8 border-primary/40  tracking-[0.04em]"
  >
  {t("cancel", "Cancel")}
  </button>
@@ -905,16 +905,16 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
 })}
  {isLoading && (
  <div className="flex gap-2.5">
- <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-primary flex items-center justify-center shrink-0 ">
+ <div className="w-7 h-7 rounded-md-full bg-gradient-to-br from-primary to-primary flex items-center justify-center shrink-0 ">
  <Sparkles className="w-3.5 h-3.5 text-white animate-spin" />
  </div>
- <div className="px-4 py-3 bg-card border border-primary/40 rounded-2xl rounded-tl-sm ">
- <div className="flex gap-1.5 items-center">
- <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms'}} />
- <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms'}} />
- <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms'}} />
+ <div className="px-4 py-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-2xl rounded-md-tl-sm  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex gap-2.5 items-center">
+ <span className="w-2 h-2 rounded-md-full bg-primary animate-bounce" style={{ animationDelay: '0ms'}} />
+ <span className="w-2 h-2 rounded-md-full bg-primary animate-bounce" style={{ animationDelay: '150ms'}} />
+ <span className="w-2 h-2 rounded-md-full bg-primary animate-bounce" style={{ animationDelay: '300ms'}} />
  </div>
- <p className="text-[10px] text-muted-foreground mt-1.5 italic">{t("orbit_is_thinking", "OrbitFlow is thinking...")}</p>
+ <p className="text-[10px] text-[#71717a] dark:text-gray-400 mt-1.5 italic">{t("orbit_is_thinking", "OrbitFlow is thinking...")}</p>
  </div>
  </div>
  )}
@@ -924,13 +924,13 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
 
  {/* Contextual Suggestions */}
  {!isLoading && messages.length <= 1 && (
- <div className="px-3 pb-2 flex flex-wrap gap-1.5 shrink-0">
+ <div className="px-3 pb-2 flex flex-wrap gap-2.5 shrink-0">
  {(PAGE_SUGGESTIONS[location.pathname] || PAGE_SUGGESTIONS['/']).map((s, i) => {
  return (
  <button
  key={i}
  onClick={() => handleSend(s)}
- className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-slate-50 dark:bg-primary/30 text-primary/90 dark:text-primary/70 border border-primary/40 dark:border-primary/40 hover:bg-slate-100 dark:hover:bg-primary/40 transition-colors truncate max-w-[180px]"
+ className="text-[10px] font-medium px-2.5 py-1 rounded-md-full bg-slate-50 dark:bg-primary/30 text-primary/90 dark:text-primary/70 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 hover:bg-slate-100 dark:hover:bg-primary/40 transition-colors truncate max-w-[180px]"
  >
  {s}
  </button>
@@ -941,27 +941,27 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
 
  {/* Attached File Preview */}
  {uploadedFile && (
- <div className="mx-3 mb-2 px-3 py-2 rounded-lg bg-slate-50 dark:bg-primary/20 border border-primary/20 dark:border-primary/40 flex items-center gap-2 shrink-0">
+ <div className="mx-3 mb-2 px-3 py-2 rounded-xl bg-slate-50 dark:bg-primary/20 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 dark:border-primary/40 flex items-center gap-2 shrink-0">
  {uploadedFile.type === 'image'
  ? <Image className="w-4 h-4 text-primary shrink-0" />
  : <FileText className="w-4 h-4 text-primary shrink-0" />}
- <span className="text-xs font-medium text-primary/90 dark:text-primary/70 flex-1 truncate">{uploadedFile.name}</span>
- <button onClick={() => setUploadedFile(null)} className="text-muted-foreground hover:text-red-500 transition-colors shrink-0">
+ <span className="text-xs font-medium text-primary/90 dark:text-primary/70 flex-1 truncate tracking-[0.04em]">{uploadedFile.name}</span>
+ <button onClick={() => setUploadedFile(null)} className="text-[#71717a] dark:text-gray-400 hover:text-red-500 transition-colors shrink-0">
  <X className="w-3.5 h-3.5" />
  </button>
  </div>
  )}
 
  {/* Input */}
- <div className="p-3 border-t border-primary/40 bg-card/80 backdrop-blur-sm shrink-0">
- <div className="border border-primary/40 focus-within:border-primary/70 focus-within:ring-2 focus-within:ring-primary/15 rounded-xl bg-background transition-all overflow-hidden ">
+ <div className="p-3 border-t border-primary/40 bg-card/80 backdrop-blur-sm shrink-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 focus-within:border-primary/70 focus-within:ring-2 focus-within:ring-primary/15 rounded-md-xl bg-background transition-all overflow-hidden ">
  <textarea
  value={input}
  onChange={e => setInput(e.target.value)}
  placeholder={isRecording ? ' Listening speak now' : 'Ask anything or give a command'}
  rows={2}
  className={`w-full bg-transparent border-none focus:ring-0 resize-none px-3 pt-3 pb-1 text-sm text-foreground outline-none leading-relaxed ${
- isRecording ? 'placeholder:text-red-400 placeholder:animate-pulse' : 'placeholder:text-muted-foreground/50'
+ isRecording ? 'placeholder:text-red-400 placeholder:animate-pulse' : 'placeholder:text-[#71717a] dark:text-gray-400/50'
 }`}
  disabled={isLoading}
  onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend();}}}
@@ -972,7 +972,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <button
  type="button"
  onClick={() => fileInputRef.current?.click()}
- className="p-1.5 text-muted-foreground hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/30 rounded-md transition-colors"
+ className="p-1.5 text-[#71717a] dark:text-gray-400 hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/30 rounded-lg transition-colors"
  title="Attach file or image"
  >
  <Paperclip className="w-4 h-4" />
@@ -980,10 +980,10 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  <button
  type="button"
  onClick={handleMicToggle}
- className={`p-1.5 rounded-md transition-colors ${
+ className={`p-1.5 rounded-lg transition-colors ${
  isRecording
  ? 'text-red-500 bg-red-50 dark:bg-red-950/30 animate-pulse'
- : 'text-muted-foreground hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/30'
+ : 'text-[#71717a] dark:text-gray-400 hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/30'
 }`}
  title={isRecording ? 'Stop recording' : 'Voice input'}
  >
@@ -991,12 +991,12 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  </button>
  </div>
  <div className="flex items-center gap-2">
- <span className="text-[9px] text-muted-foreground/40 uppercase tracking-wider hidden sm:block"> {t("send_shift_newline", "Send Shift+ Newline")}</span>
+ <span className="text-[9px] text-[#71717a] dark:text-gray-400/40 uppercase tracking-wider hidden sm:block tracking-[0.04em]"> {t("send_shift_newline", "Send Shift+ Newline")}</span>
  <button
  type="button"
  disabled={(!input.trim() && !uploadedFile) || isLoading}
  onClick={() => handleSend()}
- className="h-8 w-8 bg-primary hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg flex items-center justify-center transition-colors "
+ className="h-8 w-8 bg-primary hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl flex items-center justify-center transition-colors "
  >
  <Send className="w-3.5 h-3.5" />
  </button>

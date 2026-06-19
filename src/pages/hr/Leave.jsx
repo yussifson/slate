@@ -170,8 +170,8 @@ export default function Leave() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("leave_management", "Leave Management")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t(
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("leave_management", "Leave Management")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
  "review_and_approve_employee_ti",
  "Review and approve employee time-off requests"
  )}</p>
@@ -181,41 +181,41 @@ export default function Leave() {
  </Button>
  </div>
  <div className="grid grid-cols-3 gap-4">
- <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
- <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
+ <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary">
  <CalendarDays className="w-5 h-5" />
  </div>
  <div>
- <p className="text-2xl font-bold text-card-foreground">{requests.length}</p>
- <p className="text-xs text-muted-foreground">{t("total_requests", "Total Requests")}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{requests.length}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("total_requests", "Total Requests")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
- <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600">
+ <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-md-xl bg-amber-100 flex items-center justify-center text-amber-600">
  <CalendarOff className="w-5 h-5" />
  </div>
  <div>
- <p className="text-2xl font-bold text-card-foreground">{pending}</p>
- <p className="text-xs text-muted-foreground">{t("pending_review", "Pending Review")}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{pending}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("pending_review", "Pending Review")}</p>
  </div>
  </div>
- <div className="stat-card-premium bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-4">
- <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
+ <div className="stat-card-premium bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-10 h-10 rounded-md-xl bg-slate-100 flex items-center justify-center text-primary">
  <Check className="w-5 h-5" />
  </div>
  <div>
- <p className="text-2xl font-bold text-card-foreground">{approved}</p>
- <p className="text-xs text-muted-foreground">{t("approved_leaves", "Approved Leaves")}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{approved}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("approved_leaves", "Approved Leaves")}</p>
  </div>
  </div>
  </div>
  {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_leave_requests", "Loading leave requests...")}</div>
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_leave_requests", "Loading leave requests...")}</div>
  ) : requests.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
  <CalendarOff className="w-12 h-12 mx-auto mb-3 opacity-30 text-amber-600" />
- <p className="font-semibold text-lg text-card-foreground">{t("no_leave_requests_found", "No leave requests found")}</p>
- <p className="text-xs mt-1">{t(
+ <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_leave_requests_found", "No leave requests found")}</p>
+ <p className="text-xs mt-1 tracking-[0.04em]">{t(
  "submit_a_new_request_using_the",
  "Submit a new request using the button above."
  )}</p>
@@ -224,7 +224,7 @@ export default function Leave() {
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  {requests.map(req => {
  return (
- <div key={req.id} className="bg-card rounded-xl border border-primary/40 overflow-hidden flex flex-col relative group">
+ <div key={req.id} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden flex flex-col relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
@@ -251,25 +251,25 @@ export default function Leave() {
  </div>
  <div className="p-5 flex-1 mt-2">
  <div className="flex justify-between items-start mb-4 pr-8">
- <h3 className="text-lg font-bold text-card-foreground">
+ <h3 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Link to="/employees" className="hover:underline text-primary">{req.employeeName}</Link>
  </h3>
- <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-sm ${
+ <span className={`text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-md-sm ${
  req.status === 'Pending' ? 'bg-amber-100 text-amber-700' : 
  req.status === 'Approved' ? 'bg-slate-100 text-primary/90' : 'bg-red-100 text-red-700'
 }`}>{req.status}</span>
  </div>
  
- <div className="bg-muted rounded-lg p-3 border border-primary/40 mb-4">
- <div className="flex items-center gap-2 mb-2 text-foreground font-bold"><CalendarOff className="w-4 h-4"/> {req.leaveType} {t("leave", "Leave")}</div>
- <div className="text-sm text-muted-foreground font-medium">
- {req.startDate} {t("to", "to")} {req.endDate} <span className="text-muted-foreground font-normal">({req.days} {t("days", "days)")}</span>
+ <div className="bg-muted rounded-xl p-3 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-4">
+ <div className="flex items-center gap-2 mb-2 text-foreground font-semibold"><CalendarOff className="w-4 h-4"/> {req.leaveType} {t("leave", "Leave")}</div>
+ <div className="text-sm text-[#71717a] dark:text-gray-400 font-medium">
+ {req.startDate} {t("to", "to")} {req.endDate} <span className="text-[#71717a] dark:text-gray-400 font-normal">({req.days} {t("days", "days)")}</span>
  </div>
  </div>
  
  <div className="text-sm">
- <span className="text-muted-foreground font-medium block mb-1">{t("reason", "Reason:")}</span>
- <p className="text-card-foreground bg-muted p-2 rounded border border-primary/40">"{req.reason}"</p>
+ <span className="text-[#71717a] dark:text-gray-400 font-medium block mb-1">{t("reason", "Reason:")}</span>
+ <p className="text-card-foreground bg-muted p-2 rounded-md border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">"{req.reason}"</p>
  </div>
  </div>
  {req.status === 'Pending' && (
@@ -285,19 +285,19 @@ export default function Leave() {
  )}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
- <h2 className="text-lg font-bold text-card-foreground">{editTargetId ? 'Edit Leave Request' : 'New Leave Request'}</h2>
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editTargetId ? 'Edit Leave Request' : 'New Leave Request'}</h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("employee_name", "Employee")}</label>
- <select value={formData.employeeId} onChange={e => setFormData({...formData, employeeId: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("employee_name", "Employee")}</label>
+ <select value={formData.employeeId} onChange={e => setFormData({...formData, employeeId: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground">
  <option value="">Select Employee...</option>
  {staffList.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
  </select>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("leave_type", "Leave Type")}</label>
- <select value={formData.leaveType} onChange={e => setFormData({...formData, leaveType: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("leave_type", "Leave Type")}</label>
+ <select value={formData.leaveType} onChange={e => setFormData({...formData, leaveType: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground">
  <option>{t("annual", "Annual")}</option>
  <option>{t("sick", "Sick")}</option>
  <option>{t("maternity", "Maternity")}</option>
@@ -306,21 +306,21 @@ export default function Leave() {
  </div>
  <div className="grid grid-cols-2 gap-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("start_date", "Start Date")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("start_date", "Start Date")}</label>
  <Input type="date" value={formData.startDate} onChange={e => setFormData({...formData, startDate: e.target.value})} className="mt-1" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("end_date", "End Date")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("end_date", "End Date")}</label>
  <Input type="date" value={formData.endDate} onChange={e => setFormData({...formData, endDate: e.target.value})} className="mt-1" />
  </div>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("reason", "Reason")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("reason", "Reason")}</label>
  <textarea 
  value={formData.reason} 
  onChange={e => setFormData({...formData, reason: e.target.value})} 
  placeholder="Enter reason..." 
- className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm h-20 resize-none"
+ className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm h-20 resize-none"
  />
  </div>
  </div>
@@ -344,11 +344,11 @@ export default function Leave() {
  if (!req) return null;
  return (
  <div className="space-y-4 text-sm">
- <div><span className="font-semibold text-muted-foreground">{t("employee", "Employee:")}</span> <p className="font-medium"><Link to="/employees" className="hover:underline text-primary">{req.employeeName}</Link></p></div>
- <div><span className="font-semibold text-muted-foreground">{t("type", "Type:")}</span> <p className="font-medium">{req.leaveType}</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("duration", "Duration:")}</span> <p className="font-medium">{req.startDate} {t("to", "to")} {req.endDate}({req.days} {t("days", "days)")}</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("reason", "Reason:")}</span> <p className="font-medium">{req.reason}</p></div>
- <div><span className="font-semibold text-muted-foreground">{t("status", "Status:")}</span> <p className="font-medium">{req.status}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("employee", "Employee:")}</span> <p className="font-medium"><Link to="/employees" className="hover:underline text-primary">{req.employeeName}</Link></p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("type", "Type:")}</span> <p className="font-medium">{req.leaveType}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("duration", "Duration:")}</span> <p className="font-medium">{req.startDate} {t("to", "to")} {req.endDate}({req.days} {t("days", "days)")}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("reason", "Reason:")}</span> <p className="font-medium">{req.reason}</p></div>
+ <div><span className="font-semibold text-[#71717a] dark:text-gray-400">{t("status", "Status:")}</span> <p className="font-medium">{req.status}</p></div>
  </div>
  );
 })()}

@@ -118,8 +118,8 @@ export default function Pharmacy() {
  <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("pharmacy_inventory", "Pharmacy Inventory")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t(
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("pharmacy_inventory", "Pharmacy Inventory")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
  "manage_drug_stock_pricing_and_",
  "Manage drug stock, pricing, and reorder levels"
  )}</p>
@@ -129,24 +129,24 @@ export default function Pharmacy() {
  </Button>
  </div>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- <div className="bg-card rounded-xl border border-primary/40 p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary"><Pill className="w-6 h-6" /></div>
- <div><p className="text-3xl font-bold text-card-foreground">{inventory.length}</p><p className="text-sm font-medium text-muted-foreground">{t("total_unique_drugs", "Total Unique Drugs")}</p></div>
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-12 h-12 rounded-md-full bg-slate-100 flex items-center justify-center text-primary"><Pill className="w-6 h-6" /></div>
+ <div><p className="text-3xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{inventory.length}</p><p className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("total_unique_drugs", "Total Unique Drugs")}</p></div>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-red-600"><AlertTriangle className="w-6 h-6" /></div>
- <div><p className="text-3xl font-bold text-red-600">{lowStockCount}</p><p className="text-sm font-medium text-muted-foreground">{t("low_stock_alerts", "Low Stock Alerts")}</p></div>
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-12 h-12 rounded-md-full bg-red-100 flex items-center justify-center text-red-600"><AlertTriangle className="w-6 h-6" /></div>
+ <div><p className="text-3xl font-semibold text-red-600 tracking-[-0.02em]">{lowStockCount}</p><p className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("low_stock_alerts", "Low Stock Alerts")}</p></div>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-5 flex items-center gap-4">
- <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-primary"><ShoppingBag className="w-6 h-6" /></div>
- <div><p className="text-3xl font-bold text-card-foreground">{inventory.filter(d => d.stock > d.reorder).length}</p><p className="text-sm font-medium text-muted-foreground">{t("well_stocked_drugs", "Well Stocked Drugs")}</p></div>
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="w-12 h-12 rounded-md-full bg-slate-100 flex items-center justify-center text-primary"><ShoppingBag className="w-6 h-6" /></div>
+ <div><p className="text-3xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{inventory.filter(d => d.stock > d.reorder).length}</p><p className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("well_stocked_drugs", "Well Stocked Drugs")}</p></div>
  </div>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div className="relative max-w-md w-full">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search medication or category..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search medication or category..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  <Button onClick={() => setSortByStock(!sortByStock)} variant="outline" className={`gap-2 bg-card text-foreground shrink-0 ${sortByStock ? 'border-primary text-primary' : ''}`}>
  <ArrowDownUp className="w-4 h-4"/> {t("sort_by_stock_level", "Sort by Stock Level")}
@@ -154,14 +154,14 @@ export default function Pharmacy() {
  </div>
  <div className="overflow-x-auto">
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40">
+ <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("drug_code_name", "Drug Code & Name")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("category", "Category")}</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("stock_qty", "Stock Qty")}</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("price", "Price")}</th>
- <th className="px-6 py-4 text-center text-xs font-bold text-muted-foreground uppercase">{t("expiry_date", "Expiry Date")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("action", "Action")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("drug_code_name", "Drug Code & Name")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("category", "Category")}</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("stock_qty", "Stock Qty")}</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("price", "Price")}</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("expiry_date", "Expiry Date")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("action", "Action")}</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
@@ -170,18 +170,18 @@ export default function Pharmacy() {
  return (
  <tr key={drug.id} className="hover:bg-muted/50">
  <td className="px-6 py-4">
- <p className="font-bold text-card-foreground text-base">{drug.name}</p>
- <p className="text-xs text-muted-foreground font-mono">{drug.drugId}</p>
+ <p className="font-semibold text-card-foreground text-base hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{drug.name}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 font-mono tracking-[0.04em]">{drug.drugId}</p>
  </td>
- <td className="px-6 py-4 text-muted-foreground">{drug.category}</td>
+ <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">{drug.category}</td>
  <td className="px-6 py-4 text-center">
- <span className={`font-bold px-3 py-1 rounded-md ${isLow ? 'bg-red-100 text-red-700 border border-red-200' : 'text-foreground bg-muted'}`}>
+ <span className={`font-semibold px-3 py-1 rounded-lg ${isLow ? 'bg-red-100 text-red-700 border-[0.5px] border-black/9 dark:border-white/8 border-red-200' : 'text-foreground bg-muted'}`}>
  {(drug.stock || 0).toLocaleString()} {t("units", "units")}
  </span>
- {isLow && <p className="text-[10px] text-red-500 font-bold uppercase mt-1">{t("reorder", "Reorder:")} {drug.reorder}</p>}
+ {isLow && <p className="text-[10px] text-red-500 font-semibold uppercase mt-1 tracking-[0.04em]">{t("reorder", "Reorder:")} {drug.reorder}</p>}
  </td>
  <td className="px-6 py-4 text-center font-medium text-foreground">${(drug.price || 0).toFixed(2)}</td>
- <td className="px-6 py-4 text-center text-muted-foreground">{drug.expiry}</td>
+ <td className="px-6 py-4 text-center text-[#71717a] dark:text-gray-400">{drug.expiry}</td>
  <td className="px-6 py-4 text-right flex gap-2 justify-end">
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
@@ -208,7 +208,7 @@ export default function Pharmacy() {
  </tbody>
  </table>
  {filtered.length === 0 && (
- <div className="text-center py-12 text-muted-foreground">
+ <div className="text-center py-12 text-[#71717a] dark:text-gray-400">
  <Pill className="w-10 h-10 mx-auto mb-3 opacity-30" />
  <p>{t(
  "no_medications_found_click_add",
@@ -220,16 +220,16 @@ export default function Pharmacy() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2"><Pill className="w-5 h-5 text-primary"/> {t("add_new_medication", "Add New Medication")}</h2>
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><Pill className="w-5 h-5 text-primary"/> {t("add_new_medication", "Add New Medication")}</h2>
  <div className="grid grid-cols-2 gap-3">
  <div className="col-span-2">
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("drug_name_strength", "Drug Name & Strength")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("drug_name_strength", "Drug Name & Strength")}</label>
  <Input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value})} className="mt-1" placeholder="e.g. Paracetamol 500mg" />
  </div>
  <div className="col-span-2">
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("category", "Category")}</label>
- <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value})} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("category", "Category")}</label>
+ <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm">
  <option>{t("antibiotics", "Antibiotics")}</option>
  <option>{t("analgesics", "Analgesics")}</option>
  <option>{t("antihypertensives", "Antihypertensives")}</option>
@@ -238,19 +238,19 @@ export default function Pharmacy() {
  </select>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("initial_stock_qty", "Initial Stock Qty")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("initial_stock_qty", "Initial Stock Qty")}</label>
  <Input value={formData.stock} onChange={e => setFormData({ ...formData, stock: parseInt(e.target.value) || 0})} className="mt-1" type="number" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("reorder_alert_level", "Reorder Alert Level")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("reorder_alert_level", "Reorder Alert Level")}</label>
  <Input value={formData.reorder} onChange={e => setFormData({ ...formData, reorder: parseInt(e.target.value) || 0})} className="mt-1" type="number" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("unit_price", "Unit Price ($)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("unit_price", "Unit Price ($)")}</label>
  <Input value={formData.price} onChange={e => setFormData({ ...formData, price: parseFloat(e.target.value) || 0})} className="mt-1" type="number" step="0.01" />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("expiry_date", "Expiry Date")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("expiry_date", "Expiry Date")}</label>
  <Input value={formData.expiry} onChange={e => setFormData({ ...formData, expiry: e.target.value})} className="mt-1" type="date" />
  </div>
  </div>
@@ -273,31 +273,31 @@ export default function Pharmacy() {
  {viewDrug && (
  <div className="mt-6 space-y-4">
  <div>
- <h3 className="text-sm font-medium text-muted-foreground">{t("drug_code", "Drug Code")}</h3>
+ <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("drug_code", "Drug Code")}</h3>
  <p className="text-base font-semibold">{viewDrug.drugId}</p>
  </div>
  <div>
- <h3 className="text-sm font-medium text-muted-foreground">{t("drug_name", "Drug Name")}</h3>
+ <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("drug_name", "Drug Name")}</h3>
  <p className="text-base font-semibold">{viewDrug.name}</p>
  </div>
  <div>
- <h3 className="text-sm font-medium text-muted-foreground">{t("category", "Category")}</h3>
+ <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("category", "Category")}</h3>
  <p className="text-base">{viewDrug.category}</p>
  </div>
  <div>
- <h3 className="text-sm font-medium text-muted-foreground">{t("current_stock", "Current Stock")}</h3>
+ <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("current_stock", "Current Stock")}</h3>
  <p className="text-base font-semibold">{viewDrug.stock} {t("units", "units")}</p>
  </div>
  <div>
- <h3 className="text-sm font-medium text-muted-foreground">{t("reorder_level", "Reorder Level")}</h3>
+ <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("reorder_level", "Reorder Level")}</h3>
  <p className="text-base text-red-600 font-semibold">{viewDrug.reorder} {t("units", "units")}</p>
  </div>
  <div>
- <h3 className="text-sm font-medium text-muted-foreground">{t("unit_price", "Unit Price")}</h3>
+ <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("unit_price", "Unit Price")}</h3>
  <p className="text-base font-semibold">${(viewDrug.price || 0).toFixed(2)}</p>
  </div>
  <div>
- <h3 className="text-sm font-medium text-muted-foreground">{t("expiry_date", "Expiry Date")}</h3>
+ <h3 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("expiry_date", "Expiry Date")}</h3>
  <p className="text-base">{viewDrug.expiry}</p>
  </div>
  </div>

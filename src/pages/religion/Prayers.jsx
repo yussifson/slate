@@ -132,8 +132,8 @@ export default function Prayers() {
  <div className="space-y-6 max-w-4xl mx-auto">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("prayer_requests", "Prayer Requests")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t(
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("prayer_requests", "Prayer Requests")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
  "submit_and_manage_congregation",
  "Submit and manage congregational prayer needs"
  )}</p>
@@ -142,19 +142,19 @@ export default function Prayers() {
  <HandHeart className="w-4 h-4" /> {t("submit_request", "Submit Request")}
  </Button>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 p-4">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="relative">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <Input placeholder="Search prayer requests..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-muted border-none" />
  </div>
  </div>
  {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_prayer_board", "Loading prayer board...")}</div>
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_prayer_board", "Loading prayer board...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground bg-card rounded-xl border border-primary/40">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <HandHeart className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
- <p className="font-semibold text-lg text-card-foreground">{t("no_prayer_requests_listed", "No prayer requests listed")}</p>
- <p className="text-xs mt-1">{t(
+ <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_prayer_requests_listed", "No prayer requests listed")}</p>
+ <p className="text-xs mt-1 tracking-[0.04em]">{t(
  "be_the_first_to_list_a_family_",
  "Be the first to list a family petition, health intercession, or praise report using the button above."
  )}</p>
@@ -163,21 +163,21 @@ export default function Prayers() {
  <div className="space-y-4">
  {filtered.map(prayer => {
  return (
- <div key={prayer.id} className="bg-card rounded-xl border border-primary/40 p-6 flex flex-col sm:flex-row gap-6 relative overflow-hidden group">
+ <div key={prayer.id} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex flex-col sm:flex-row gap-6 relative overflow-hidden group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {prayer.status === 'Answered' && (
- <div className="absolute top-0 right-0 bg-primary text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-bl-lg">
+ <div className="absolute top-0 right-0 bg-primary text-white text-[10px] font-semibold uppercase tracking-widest px-3 py-1 rounded-md-bl-lg tracking-[0.04em]">
  {t("answered", "Answered")}
  </div>
  )}
  <div className="flex-1">
  <div className="flex items-center gap-2 mb-2">
  {prayer.name === 'Anonymous' ? (
- <span className="font-bold text-card-foreground">{prayer.name}</span>
+ <span className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{prayer.name}</span>
  ) : (
- <Link to="/religion/members" className="font-bold text-primary hover:underline">{prayer.name}</Link>
+ <Link to="/religion/members" className="font-semibold text-primary hover:underline">{prayer.name}</Link>
  )}
- <span className="text-muted-foreground">•</span>
- <span className="text-xs text-muted-foreground">{prayer.date}</span>
+ <span className="text-[#71717a] dark:text-gray-400">•</span>
+ <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{prayer.date}</span>
  </div>
  <p className="text-foreground text-lg leading-relaxed font-medium">"{prayer.request}"</p>
  </div>
@@ -194,7 +194,7 @@ export default function Prayers() {
  <Button
  variant="outline"
  onClick={() => handleMarkAnswered(prayer)}
- className="gap-2 text-muted-foreground hover:text-primary hover:border-primary/20 hover:bg-slate-50"
+ className="gap-2 text-[#71717a] dark:text-gray-400 hover:text-primary hover:border-primary/20 hover:bg-slate-50"
  >
  <CheckCircle className="w-4 h-4" /> {t("mark_answered", "Mark Answered")}
  </Button>
@@ -202,7 +202,7 @@ export default function Prayers() {
  ) : (
  <div className="flex flex-col items-center justify-center text-primary h-full py-2">
  <Heart className="w-8 h-8 mb-1 fill-primary text-primary" />
- <span className="text-xs font-bold uppercase tracking-widest">{t("praise_report", "Praise Report")}</span>
+ <span className="text-xs font-semibold uppercase tracking-widest tracking-[0.04em]">{t("praise_report", "Praise Report")}</span>
  </div>
  )}
  <DropdownMenu>
@@ -231,13 +231,13 @@ export default function Prayers() {
  )}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <HandHeart className="w-5 h-5 text-primary" /> {t("submit_prayer_petition", "Submit Prayer Petition")}
  </h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("your_name_optional", "Your Name (Optional)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("your_name_optional", "Your Name (Optional)")}</label>
  <Input
  value={formData.name}
  onChange={e => setFormData({ ...formData, name: e.target.value})}
@@ -246,12 +246,12 @@ export default function Prayers() {
  />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("petition_request_details", "Petition / Request Details")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("petition_request_details", "Petition / Request Details")}</label>
  <textarea
  value={formData.request}
  onChange={e => setFormData({ ...formData, request: e.target.value})}
  rows={4}
- className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+ className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
  placeholder="e.g. Please pray for fast healing, professional wisdom, family breakthroughs..."
  />
  </div>
@@ -280,7 +280,7 @@ export default function Prayers() {
  {viewRecord && Object.entries(viewRecord).filter(([k]) => k !== 'id' && k !== 'status').map(([key, value]) => {
  return (
  <div key={key} className="border-b border-primary/40 pb-2">
- <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
+ <p className="text-sm font-medium text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
  <p className="mt-1 text-base text-foreground font-semibold">
  {key === 'name' && value !== 'Anonymous' ? (
  <Link to="/religion/members" className="text-primary hover:underline">{String(value)}</Link>

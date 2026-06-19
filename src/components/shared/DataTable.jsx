@@ -7,12 +7,12 @@ import { FileText } from "lucide-react";
 export default function DataTable({ columns, data, isLoading, onRowClick, emptyTitle, emptyDescription, emptyIcon }) {
   if (isLoading) {
     return (
-      <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+      <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
               {columns.map((col, i) => (
-                <TableHead key={i} className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <TableHead key={i} className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
                   {col.header}
                 </TableHead>
               ))}
@@ -34,7 +34,7 @@ export default function DataTable({ columns, data, isLoading, onRowClick, emptyT
 
   if (!data?.length) {
     return (
-      <div className="bg-card rounded-xl border border-primary/40">
+      <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <EmptyState
           icon={emptyIcon || FileText}
           title={emptyTitle || "No data yet"}
@@ -45,13 +45,13 @@ export default function DataTable({ columns, data, isLoading, onRowClick, emptyT
   }
 
   return (
-    <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+    <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
               {columns.map((col, i) => (
-                <TableHead key={i} className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <TableHead key={i} className="text-xs font-semibold uppercase tracking-wider text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
                   {col.header}
                 </TableHead>
               ))}

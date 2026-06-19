@@ -100,8 +100,8 @@ export default function Volunteers() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("volunteer_roster", "Volunteer Roster")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t(
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("volunteer_roster", "Volunteer Roster")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
  "manage_religion_service_voluntee",
  "Manage religion service volunteers and schedules"
  )}</p>
@@ -112,19 +112,19 @@ export default function Volunteers() {
  </div>
  <div className="flex items-center gap-3">
  <div className="relative max-w-md flex-1">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
- <Input placeholder="Search volunteers, groups, or roles..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+ <Input placeholder="Search volunteers, groups, or roles..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="overflow-x-auto">
  {isDbLoading ? (
- <div className="py-12 text-center text-muted-foreground">{t("loading_roster", "Loading roster...")}</div>
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_roster", "Loading roster...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-muted-foreground">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
  <ClipboardCheck className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
- <p className="font-semibold text-lg text-card-foreground">{t("no_volunteers_scheduled", "No volunteers scheduled")}</p>
- <p className="text-xs mt-1">{t(
+ <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_volunteers_scheduled", "No volunteers scheduled")}</p>
+ <p className="text-xs mt-1 tracking-[0.04em]">{t(
  "add_religion_members_to_ushers_t",
  "Add religion members to ushers, tech booths, or teachers using the top right button."
  )}</p>
@@ -133,26 +133,26 @@ export default function Volunteers() {
  <table className="w-full text-sm">
  <thead className="bg-muted border-b border-primary/40">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("volunteer", "Volunteer")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("group_role", "Group / Role")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("availability", "Availability")}</th>
- <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">{t("next_service_date", "Next Service Date")}</th>
- <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">{t("action", "Action")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("volunteer", "Volunteer")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("group_role", "Group / Role")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("availability", "Availability")}</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("next_service_date", "Next Service Date")}</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("action", "Action")}</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
  {filtered.map(v => {
  return (
  <tr key={v.id} className="hover:bg-muted/50 transition-colors">
- <td className="px-6 py-4 font-bold text-card-foreground flex items-center gap-2">
- <Users className="w-4 h-4 text-muted-foreground" /> <Link to="/religion/members" className="text-primary hover:underline">{v.name}</Link>
+ <td className="px-6 py-4 font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Users className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> <Link to="/religion/members" className="text-primary hover:underline">{v.name}</Link>
  </td>
  <td className="px-6 py-4">
  <Link to="/religion/groups" className="font-semibold text-primary/90 dark:text-primary/70 hover:underline block">{v.group}</Link>
- <p className="text-xs text-muted-foreground">{v.role}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{v.role}</p>
  </td>
- <td className="px-6 py-4 text-muted-foreground font-medium">{v.availability}</td>
- <td className="px-6 py-4 text-card-foreground font-bold">
+ <td className="px-6 py-4 text-[#71717a] dark:text-gray-400 font-medium">{v.availability}</td>
+ <td className="px-6 py-4 text-card-foreground font-semibold hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2">
  <Calendar className="w-4 h-4 text-primary" /> {v.nextService}
  </div>
@@ -187,13 +187,13 @@ export default function Volunteers() {
  </div>
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border border-primary/40">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
+ <div className="bg-card rounded-md-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <ClipboardCheck className="w-5 h-5 text-primary" /> {t("schedule_religion_volunteer", "Schedule Religion Volunteer")}
  </h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("volunteer_name", "Volunteer Name")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("volunteer_name", "Volunteer Name")}</label>
  <Input
  value={formData.name}
  onChange={e => setFormData({ ...formData, name: e.target.value})}
@@ -203,11 +203,11 @@ export default function Volunteers() {
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("group", "Group")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("group", "Group")}</label>
  <select
  value={formData.group}
  onChange={e => setFormData({ ...formData, group: e.target.value})}
- className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
+ className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground"
  >
  <option>{t("ushers", "Ushers")}</option>
  <option>{t("childrens_dept", "Childrens Dept")}</option>
@@ -217,7 +217,7 @@ export default function Volunteers() {
  </select>
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("specific_role", "Specific Role")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("specific_role", "Specific Role")}</label>
  <Input
  value={formData.role}
  onChange={e => setFormData({ ...formData, role: e.target.value})}
@@ -228,7 +228,7 @@ export default function Volunteers() {
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("availability", "Availability")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("availability", "Availability")}</label>
  <Input
  value={formData.availability}
  onChange={e => setFormData({ ...formData, availability: e.target.value})}
@@ -237,7 +237,7 @@ export default function Volunteers() {
  />
  </div>
  <div>
- <label className="text-xs font-bold text-muted-foreground uppercase">{t("next_service_date", "Next Service Date")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("next_service_date", "Next Service Date")}</label>
  <Input
  type="date"
  value={formData.nextService}
@@ -271,7 +271,7 @@ export default function Volunteers() {
  {viewRecord && Object.entries(viewRecord).filter(([k]) => k !== 'id' && k !== 'status').map(([key, value]) => {
  return (
  <div key={key} className="border-b border-primary/40 pb-2">
- <p className="text-sm font-medium text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
+ <p className="text-sm font-medium text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
  <p className="mt-1 text-base text-foreground font-semibold">
  {key === 'name' ? (
  <Link to="/religion/members" className="text-primary hover:underline">{String(value)}</Link>

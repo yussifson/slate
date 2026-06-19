@@ -92,13 +92,13 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
 };
 
  return (
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Header */}
  <div className="p-4 border-b border-primary/40 flex items-center justify-between gap-3 flex-wrap">
  <div className="flex items-center gap-2">
  <CheckCircle className="w-4 h-4 text-primary" />
  <span className="text-sm font-semibold">{t("case_board", "Case Board")}</span>
- <span className="text-xs text-muted-foreground">{t("drag_cards_between_stages", "· drag cards between stages")}</span>
+ <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("drag_cards_between_stages", "· drag cards between stages")}</span>
  </div>
  {pipelines.length > 1 && (
  <Select value={selectedPipelineId || pipelines[0]?.id} onValueChange={setSelectedPipelineId}>
@@ -120,9 +120,9 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
  <div key={stage.id} className="w-52 shrink-0 flex flex-col">
  {/* Stage header */}
  <div className="flex items-center gap-2 mb-3 px-1">
- <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: stage.color}} />
- <span className="text-xs font-semibold">{stage.name}</span>
- <span className="ml-auto text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">
+ <div className="w-2.5 h-2.5 rounded-md-full shrink-0" style={{ backgroundColor: stage.color}} />
+ <span className="text-xs font-semibold tracking-[0.04em]">{stage.name}</span>
+ <span className="ml-auto text-[10px] bg-muted text-[#71717a] dark:text-gray-400 px-1.5 py-0.5 rounded-md-full">
  {stageCards[stage.id]?.length || 0}
  </span>
  </div>
@@ -133,8 +133,8 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
  <div
  ref={provided.innerRef}
  {...provided.droppableProps}
- className={`flex-1 space-y-2 min-h-[120px] rounded-lg p-2 transition-colors ${
- snapshot.isDraggingOver ? "bg-slate-50 border border-dashed border-primary/30" : "bg-muted/20"
+ className={`flex-1 space-y-2 min-h-[120px] rounded-xl p-2 transition-colors ${
+ snapshot.isDraggingOver ? "bg-slate-50 border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/30" : "bg-muted/20"
 }`}
  >
  {(stageCards[stage.id] || []).map((c, index) => {
@@ -145,22 +145,22 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
  <div
  ref={provided.innerRef}
  {...provided.draggableProps}
- className={`bg-card border rounded-lg p-2.5 text-xs space-y-1.5 ${
+ className={`bg-card border-[0.5px] border-black/9 dark:border-white/8 rounded-xl p-2.5 text-xs space-y-1.5 ${
  snapshot.isDragging ? " border-primary/40 rotate-1" : "border-primary/40"
 }`}
  >
- <div className="flex items-start gap-1.5">
+ <div className="flex items-start gap-2.5">
  <span {...provided.dragHandleProps} className="mt-0.5 cursor-grab active:cursor-grabbing">
- <GripVertical className="w-3 h-3 text-muted-foreground" />
+ <GripVertical className="w-3 h-3 text-[#71717a] dark:text-gray-400" />
  </span>
  <p className="font-medium leading-tight line-clamp-2 flex-1">{c.title}</p>
  </div>
  {c.client_name && (
- <p className="text-muted-foreground truncate pl-4">{c.client_name}</p>
+ <p className="text-[#71717a] dark:text-gray-400 truncate pl-4">{c.client_name}</p>
  )}
  {c.priority && (
  <div className="pl-4">
- <span className={`inline-block px-1.5 py-0.5 rounded text-[9px] font-semibold ${PRIORITY_COLORS[c.priority] || ""}`}>
+ <span className={`inline-block px-1.5 py-0.5 rounded-md text-[9px] font-semibold ${PRIORITY_COLORS[c.priority] || ""}`}>
  {c.priority}
  </span>
  </div>
@@ -173,8 +173,8 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
 })}
  {provided.placeholder}
  {(stageCards[stage.id]?.length === 0) && !snapshot.isDraggingOver && (
- <div className="h-12 rounded-lg border border-dashed border-primary/40 flex items-center justify-center">
- <span className="text-[10px] text-muted-foreground">{t("drop_here", "Drop here")}</span>
+ <div className="h-12 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 flex items-center justify-center">
+ <span className="text-[10px] text-[#71717a] dark:text-gray-400">{t("drop_here", "Drop here")}</span>
  </div>
  )}
  </div>
@@ -189,19 +189,19 @@ export default function CasePipelineKanban({ pipelines, caseStates, companyId}) 
  {untrackedCases.length > 0 && (
  <div className="w-52 shrink-0 flex flex-col">
  <div className="flex items-center gap-2 mb-3 px-1">
- <div className="w-2.5 h-2.5 rounded-full bg-muted-foreground shrink-0" />
- <span className="text-xs font-semibold text-muted-foreground">{t("not_tracked", "Not Tracked")}</span>
- <span className="ml-auto text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">{untrackedCases.length}</span>
+ <div className="w-2.5 h-2.5 rounded-md-full bg-muted-foreground shrink-0" />
+ <span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("not_tracked", "Not Tracked")}</span>
+ <span className="ml-auto text-[10px] bg-muted text-[#71717a] dark:text-gray-400 px-1.5 py-0.5 rounded-md-full">{untrackedCases.length}</span>
  </div>
- <div className="space-y-2 bg-muted/10 rounded-lg p-2 min-h-[120px]">
+ <div className="space-y-2 bg-muted/10 rounded-xl p-2 min-h-[120px]">
  {untrackedCases.slice(0, 8).map(c => {
  return (
- <div key={c.id} className="bg-card border border-dashed border-primary/40 rounded-lg p-2.5 text-xs">
- <p className="font-medium line-clamp-2 text-muted-foreground mb-1">{c.title}</p>
+ <div key={c.id} className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-dashed border-primary/40 rounded-xl p-2.5 text-xs tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <p className="font-medium line-clamp-2 text-[#71717a] dark:text-gray-400 mb-1">{c.title}</p>
  <Button
  size="sm"
  variant="ghost"
- className="h-6 text-[10px] gap-1 px-1.5 w-full justify-start"
+ className="h-6 text-[10px] gap-2 px-1.5 w-full justify-start"
  onClick={() => {
  const firstStage = stages[0];
  if (firstStage) {

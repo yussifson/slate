@@ -45,13 +45,13 @@ export default function AdvancedAnalytics() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Advanced Analytics</h1>
+          <h1 className="text-3xl font-semibold tracking-[-0.02em]">Advanced Analytics</h1>
           <p className="text-gray-600 mt-1">Comprehensive logistics performance insights</p>
         </div>
         <select
           value={dateRange}
           onChange={(e) => setDateRange(e.target.value)}
-          className="border rounded-lg px-4 py-2 text-sm"
+          className="border-[0.5px] border-black/9 dark:border-white/8 rounded-xl px-4 py-2 text-sm"
         >
           <option value="week">Last 7 Days</option>
           <option value="month">Last 30 Days</option>
@@ -183,7 +183,7 @@ export default function AdvancedAnalytics() {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <div className="text-5xl font-bold text-green-600 mb-2">94%</div>
+                  <div className="text-5xl font-semibold text-green-600 mb-2 tracking-[-0.02em]">94%</div>
                   <p className="text-gray-600">Meeting SLA targets</p>
                   <div className="mt-4 flex justify-center gap-2">
                     <Badge className="bg-green-100 text-green-700">Strong</Badge>
@@ -229,18 +229,18 @@ export default function AdvancedAnalytics() {
               <div className="grid grid-cols-3 gap-4 py-6">
                 <div className="text-center">
                   <p className="text-sm text-gray-600 mb-2">Fuel Costs</p>
-                  <p className="text-2xl font-bold">$2.45</p>
-                  <p className="text-xs text-gray-500 mt-1">per delivery</p>
+                  <p className="text-2xl font-semibold tracking-[-0.02em]">$2.45</p>
+                  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">per delivery</p>
                 </div>
                 <div className="text-center">
                   <p className="text-sm text-gray-600 mb-2">Labor Costs</p>
-                  <p className="text-2xl font-bold">$5.80</p>
-                  <p className="text-xs text-gray-500 mt-1">per delivery</p>
+                  <p className="text-2xl font-semibold tracking-[-0.02em]">$5.80</p>
+                  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">per delivery</p>
                 </div>
                 <div className="text-center">
                   <p className="text-sm text-gray-600 mb-2">Total Costs</p>
-                  <p className="text-2xl font-bold">$8.25</p>
-                  <p className="text-xs text-gray-500 mt-1">per delivery</p>
+                  <p className="text-2xl font-semibold tracking-[-0.02em]">$8.25</p>
+                  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">per delivery</p>
                 </div>
               </div>
             </CardContent>
@@ -262,14 +262,14 @@ export default function AdvancedAnalytics() {
                 { name: 'Maria Garcia', rating: 4.7, deliveries: 452 },
                 { name: 'Ahmed Hassan', rating: 4.6, deliveries: 428 }
               ].map((driver, idx) => (
-                <div key={idx} className="flex justify-between items-center p-2 border rounded">
+                <div key={idx} className="flex justify-between items-center p-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-md">
                   <div>
                     <p className="font-semibold text-sm">{driver.name}</p>
-                    <p className="text-xs text-gray-600">{driver.deliveries} deliveries</p>
+                    <p className="text-xs text-gray-600 tracking-[0.04em]">{driver.deliveries} deliveries</p>
                   </div>
                   <div className="text-right">
-                    <div className="flex items-center gap-1">
-                      <span className="font-bold">{driver.rating}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold">{driver.rating}</span>
                       <span className="text-yellow-500">★</span>
                     </div>
                   </div>
@@ -291,10 +291,10 @@ export default function AdvancedAnalytics() {
                 { plate: 'VH-002', status: 'Available', driver: '-' },
                 { plate: 'VH-003', status: 'Maintenance', driver: '-' }
               ].map((vehicle, idx) => (
-                <div key={idx} className="flex justify-between items-center p-2 border rounded">
+                <div key={idx} className="flex justify-between items-center p-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-md">
                   <div>
                     <p className="font-semibold text-sm">{vehicle.plate}</p>
-                    <p className="text-xs text-gray-600">{vehicle.driver}</p>
+                    <p className="text-xs text-gray-600 tracking-[0.04em]">{vehicle.driver}</p>
                   </div>
                   <Badge className={vehicle.status === 'On Route' ? 'bg-orange-100 text-orange-700' : vehicle.status === 'Available' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}>
                     {vehicle.status}
@@ -317,14 +317,14 @@ function KPICard({ icon: Icon, title, value, subtitle, trend, isPercentage }) {
       <CardContent className="pt-6">
         <div className="flex justify-between items-start mb-3">
           <Icon className="w-8 h-8 text-primary" />
-          <div className={`flex items-center gap-1 text-xs font-semibold ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
+          <div className={`flex items-center gap-2 text-xs font-semibold ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
             {isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
             {Math.abs(trend)}%
           </div>
         </div>
         <p className="text-sm text-gray-600 mb-1">{title}</p>
-        <p className="text-2xl font-bold mb-1">{value}</p>
-        <p className="text-xs text-gray-500">{subtitle}</p>
+        <p className="text-2xl font-semibold mb-1 tracking-[-0.02em]">{value}</p>
+        <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{subtitle}</p>
       </CardContent>
     </Card>
   );

@@ -77,7 +77,7 @@ export default function ReturnsManagement() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Returns Management</h1>
+          <h1 className="text-3xl font-semibold tracking-[-0.02em]">Returns Management</h1>
           <p className="text-gray-600 mt-1">Handle reverse logistics and returns processing</p>
         </div>
         <Button 
@@ -94,7 +94,7 @@ export default function ReturnsManagement() {
         <Card>
           <CardContent className="pt-6">
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600">{metrics?.totalReturns || 0}</div>
+              <div className="text-3xl font-semibold text-blue-600 tracking-[-0.02em]">{metrics?.totalReturns || 0}</div>
               <p className="text-sm text-gray-600 mt-2">Total Returns</p>
             </div>
           </CardContent>
@@ -102,7 +102,7 @@ export default function ReturnsManagement() {
         <Card>
           <CardContent className="pt-6">
             <div className="text-center">
-              <div className="text-3xl font-bold text-green-600">{metrics?.statuses?.approved || 0}</div>
+              <div className="text-3xl font-semibold text-green-600 tracking-[-0.02em]">{metrics?.statuses?.approved || 0}</div>
               <p className="text-sm text-gray-600 mt-2">Approved</p>
             </div>
           </CardContent>
@@ -110,7 +110,7 @@ export default function ReturnsManagement() {
         <Card>
           <CardContent className="pt-6">
             <div className="text-center">
-              <div className="text-3xl font-bold text-orange-600">{metrics?.statuses?.in_transit || 0}</div>
+              <div className="text-3xl font-semibold text-orange-600 tracking-[-0.02em]">{metrics?.statuses?.in_transit || 0}</div>
               <p className="text-sm text-gray-600 mt-2">In Transit</p>
             </div>
           </CardContent>
@@ -118,7 +118,7 @@ export default function ReturnsManagement() {
         <Card>
           <CardContent className="pt-6">
             <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600">{metrics?.statuses?.processed || 0}</div>
+              <div className="text-3xl font-semibold text-purple-600 tracking-[-0.02em]">{metrics?.statuses?.processed || 0}</div>
               <p className="text-sm text-gray-600 mt-2">Processed</p>
             </div>
           </CardContent>
@@ -126,7 +126,7 @@ export default function ReturnsManagement() {
         <Card>
           <CardContent className="pt-6">
             <div className="text-center">
-              <div className="text-3xl font-bold text-amber-600">${(metrics?.totalRefundAmount || 0).toFixed(2)}</div>
+              <div className="text-3xl font-semibold text-amber-600 tracking-[-0.02em]">${(metrics?.totalRefundAmount || 0).toFixed(2)}</div>
               <p className="text-sm text-gray-600 mt-2">Total Refunds</p>
             </div>
           </CardContent>
@@ -167,7 +167,7 @@ export default function ReturnsManagement() {
               ) : (
                 <div className="text-center py-12">
                   <RotateCcw className="w-12 h-12 mx-auto text-gray-300 mb-3" />
-                  <p className="text-gray-500">No returns found</p>
+                  <p className="text-[#71717a] dark:text-gray-400">No returns found</p>
                 </div>
               )}
             </TabsContent>
@@ -181,7 +181,7 @@ export default function ReturnsManagement() {
           <Card className="w-full max-w-md">
             <CardHeader className="flex flex-row justify-between items-center">
               <CardTitle>Request Return</CardTitle>
-              <button onClick={() => setShowRequestModal(false)} className="text-gray-500 hover:text-gray-700">✕</button>
+              <button onClick={() => setShowRequestModal(false)} className="text-[#71717a] dark:text-gray-400 hover:text-gray-700">✕</button>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -199,7 +199,7 @@ export default function ReturnsManagement() {
                 <select
                   value={formData.returnReason}
                   onChange={(e) => setFormData({ ...formData, returnReason: e.target.value })}
-                  className="w-full border rounded-lg p-2 text-sm"
+                  className="w-full border-[0.5px] border-black/9 dark:border-white/8 rounded-xl p-2 text-sm"
                 >
                   <option value="">Select reason...</option>
                   <option value="defective">Defective Product</option>
@@ -275,7 +275,7 @@ function ReturnCard({ returnOrder, onMutate }) {
   };
 
   return (
-    <div className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+    <div className="border-[0.5px] border-black/9 dark:border-white/8 rounded-xl p-4 hover:bg-gray-50 transition-colors">
       <div className="flex justify-between items-start">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
@@ -287,7 +287,7 @@ function ReturnCard({ returnOrder, onMutate }) {
           <p className="text-sm text-gray-600 mb-1">Original Shipment: {returnOrder.original_shipment_id?.slice(0, 8)}</p>
           <p className="text-sm text-gray-700 font-medium">Reason: {returnOrder.return_reason}</p>
           {returnOrder.refund_amount && (
-            <p className="text-sm text-green-600 mt-1 flex items-center gap-1">
+            <p className="text-sm text-green-600 mt-1 flex items-center gap-2">
               <DollarSign className="w-3 h-3" />
               Refund: ${returnOrder.refund_amount.toFixed(2)}
             </p>
@@ -358,7 +358,7 @@ function ReturnCard({ returnOrder, onMutate }) {
             </Button>
             <Button
               size="sm"
-              className={`flex-1 gap-1 ${action === 'approve' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}`}
+              className={`flex-1 gap-2 ${action === 'approve' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}`}
               onClick={handleApproveReject}
             >
               {action === 'approve' ? (

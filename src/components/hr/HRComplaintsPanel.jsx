@@ -42,22 +42,22 @@ export default function HRComplaintsPanel({ companyId, complaints, staff, isAdmi
         <Button size="sm" onClick={() => setShowForm(true)}><Plus className="w-4 h-4 mr-1" /> {t("file_complaint", "File Complaint")}</Button>
       </div>
       {visible.length === 0 ? (
-        <div className="bg-card border border-primary/40 rounded-xl p-10 text-center">
-          <MessageSquareWarning className="w-10 h-10 text-muted-foreground mx-auto mb-2" />
-          <p className="text-sm text-muted-foreground">{t("no_complaints_filed", "No complaints filed")}</p>
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-10 text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <MessageSquareWarning className="w-10 h-10 text-[#71717a] dark:text-gray-400 mx-auto mb-2" />
+          <p className="text-sm text-[#71717a] dark:text-gray-400">{t("no_complaints_filed", "No complaints filed")}</p>
         </div>
       ) : (
-        <div className="bg-card border border-primary/40 rounded-xl divide-y divide-border">
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl divide-y divide-border hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           {visible.map(c => {
             return (
               <div key={c.id} className="px-4 py-3 flex items-center gap-3 hover:bg-muted/20 cursor-pointer" onClick={() => setViewing(c)}>
                 <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-1.5">
+                  <div className="flex flex-wrap items-center gap-2.5">
                     <span className="text-sm font-medium">{c.subject}</span>
                     <Badge className={cn("text-[9px] h-4 px-1.5", STATUS_COLORS[c.status])}>{c.status?.replace("_", " ")}</Badge>
                     <Badge className={cn("text-[9px] h-4 px-1.5", PRIORITY_COLORS[c.priority])}>{c.priority}</Badge>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-0.5">
+                  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">
                     {CATEGORY_LABELS[c.category] || c.category} · {c.is_anonymous ? "Anonymous" : c.staff_name}
                     {c.created_date ? ` · ${format(new Date(c.created_date), "MMM d, yyyy")}` : ""}
                   </p>
@@ -124,7 +124,7 @@ function ComplaintFormDialog({ onClose, onSubmit, staff }) {
             </Select>
           </div>
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="anon" checked={form.is_anonymous} onChange={e => set("is_anonymous", e.target.checked)} className="rounded" />
+            <input type="checkbox" id="anon" checked={form.is_anonymous} onChange={e => set("is_anonymous", e.target.checked)} className="rounded-md" />
             <Label htmlFor="anon" className="font-normal cursor-pointer">{t("submit_anonymously", "Submit anonymously")}</Label>
           </div>
           <div className="flex justify-end gap-2">
@@ -151,8 +151,8 @@ function ComplaintViewDialog({ complaint, onClose, isAdmin, onUpdate, reviewerEm
             <Badge variant="outline" className="text-[10px]">{CATEGORY_LABELS[complaint.category]}</Badge>
           </div>
           <p className="text-sm">{complaint.description}</p>
-          {complaint.against_name && <p className="text-xs text-muted-foreground">{t("filed_against", "Filed against:")} <strong>{complaint.against_name}</strong></p>}
-          {complaint.created_date && <p className="text-xs text-muted-foreground">{t("filed", "Filed:")} {format(new Date(complaint.created_date), "MMM d, yyyy")}</p>}
+          {complaint.against_name && <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("filed_against", "Filed against:")} <strong>{complaint.against_name}</strong></p>}
+          {complaint.created_date && <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("filed", "Filed:")} {format(new Date(complaint.created_date), "MMM d, yyyy")}</p>}
           {isAdmin && (
             <div className="space-y-2 pt-2 border-t border-primary/40">
               <Label>{t("resolution_notes", "Resolution Notes")}</Label>

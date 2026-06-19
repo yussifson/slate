@@ -81,43 +81,43 @@ export default function VSkillBadges() {
     <div className="space-y-6 h-[calc(100vh-100px)] flex flex-col">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white tracking-[-0.02em]">
             {t('skill_badges', 'Skill Badges')}
           </h1>
-          <p className="text-muted-foreground mt-1 text-sm font-medium">
+          <p className="text-[#71717a] dark:text-gray-400 mt-1 text-sm font-medium">
             {t('skill_badges_desc', 'Define, award, and track micro-credentials and specific skill badges.')}
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-primary hover:bg-primary/90 text-white rounded-xl shadow-none">
+            <Button className="bg-primary hover:bg-primary/90 text-white rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">
               <Plus className="w-4 h-4 mr-2" /> {t('create_badge', 'Create Badge')}
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] rounded-2xl border-primary/40 shadow-none bg-card">
+          <DialogContent className="sm:max-w-[425px] rounded-md-2xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <DialogHeader>
               <DialogTitle>{t('add_new_badge', 'Create New Badge')}</DialogTitle>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="space-y-2">
                 <Label htmlFor="title">{t('badge_name', 'Badge Name')}</Label>
-                <Input id="title" placeholder="e.g. Master Welder" value={newBadge.title} onChange={e => setNewBadge({...newBadge, title: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+                <Input id="title" placeholder="e.g. Master Welder" value={newBadge.title} onChange={e => setNewBadge({...newBadge, title: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="category">{t('category', 'Category')}</Label>
-                  <Input id="category" placeholder="e.g. Technical" value={newBadge.category} onChange={e => setNewBadge({...newBadge, category: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+                  <Input id="category" placeholder="e.g. Technical" value={newBadge.category} onChange={e => setNewBadge({...newBadge, category: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="points">{t('points', 'Points Value')}</Label>
-                  <Input id="points" type="number" placeholder="10" value={newBadge.points} onChange={e => setNewBadge({...newBadge, points: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+                  <Input id="points" type="number" placeholder="10" value={newBadge.points} onChange={e => setNewBadge({...newBadge, points: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="desc">{t('description', 'Description')}</Label>
                 <textarea 
                   id="desc" 
-                  className="w-full h-20 p-3 rounded-xl border border-primary/40 shadow-none bg-card resize-none text-sm" 
+                  className="w-full h-20 p-3 rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none bg-card resize-none text-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" 
                   placeholder="Short description..."
                   value={newBadge.description}
                   onChange={e => setNewBadge({...newBadge, description: e.target.value})}
@@ -125,11 +125,11 @@ export default function VSkillBadges() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="criteria">{t('criteria', 'Criteria (comma-separated)')}</Label>
-                <Input id="criteria" placeholder="e.g. Pass exam, 50 hours practice" value={newBadge.criteria} onChange={e => setNewBadge({...newBadge, criteria: e.target.value})} className="rounded-xl border-primary/40 shadow-none" />
+                <Input id="criteria" placeholder="e.g. Pass exam, 50 hours practice" value={newBadge.criteria} onChange={e => setNewBadge({...newBadge, criteria: e.target.value})} className="rounded-md-xl border-primary/40 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none" />
               </div>
             </div>
             <DialogFooter>
-              <Button onClick={handleCreateBadge} className="bg-primary text-white hover:bg-primary/90 rounded-xl shadow-none">{t('save', 'Save Badge')}</Button>
+              <Button onClick={handleCreateBadge} className="bg-primary text-white hover:bg-primary/90 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">{t('save', 'Save Badge')}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -137,13 +137,13 @@ export default function VSkillBadges() {
 
       <div className="flex-1 flex gap-6 overflow-hidden">
         {/* Left Panel */}
-        <Card className="w-[350px] shrink-0 flex flex-col rounded-2xl border border-primary/40 bg-card shadow-none">
+        <Card className="w-[350px] shrink-0 flex flex-col rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="p-4 border-b border-primary/10">
             <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
               <Input 
                 placeholder="Search badges..." 
-                className="pl-9 h-10 border-primary/40 rounded-xl focus-visible:ring-primary shadow-none"
+                className="pl-9 h-10 border-primary/40 rounded-md-xl focus-visible:ring-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -151,23 +151,23 @@ export default function VSkillBadges() {
           </div>
           <ScrollArea className="flex-1">
             {loading ? (
-              <div className="p-8 text-center text-muted-foreground text-sm">Loading badges...</div>
+              <div className="p-8 text-center text-[#71717a] dark:text-gray-400 text-sm">Loading badges...</div>
             ) : filteredBadges.length === 0 ? (
-              <div className="p-8 text-center text-muted-foreground text-sm">No badges found.</div>
+              <div className="p-8 text-center text-[#71717a] dark:text-gray-400 text-sm">No badges found.</div>
             ) : (
               <div className="p-4 grid grid-cols-2 gap-4">
                 {filteredBadges.map(badge => (
                   <button
                     key={badge.id}
                     onClick={() => setSelectedBadge(badge)}
-                    className={`text-center p-4 rounded-xl transition-all duration-200 flex flex-col items-center gap-3 border ${
+                    className={`text-center p-4 rounded-md-xl transition-all duration-200 flex flex-col items-center gap-3 border ${
                       selectedBadge?.id === badge.id 
                         ? 'bg-primary/10 border-primary text-primary' 
                         : 'bg-card border-primary/20 hover:border-primary/40 text-foreground hover:bg-primary/5'
                     }`}
                   >
                     <Hexagon className={`w-10 h-10 ${selectedBadge?.id === badge.id ? 'fill-primary/20' : 'fill-primary/5 text-primary/40'}`} strokeWidth={1.5} />
-                    <p className="font-bold text-xs line-clamp-2">{badge.title}</p>
+                    <p className="font-semibold text-xs line-clamp-2 tracking-[0.04em]">{badge.title}</p>
                   </button>
                 ))}
               </div>
@@ -176,7 +176,7 @@ export default function VSkillBadges() {
         </Card>
 
         {/* Right Panel */}
-        <Card className="flex-1 flex flex-col rounded-2xl border border-primary/40 bg-card shadow-none overflow-hidden relative">
+        <Card className="flex-1 flex flex-col rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none overflow-hidden relative hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           {selectedBadge ? (
             <>
               <div className="h-48 bg-primary/10 relative shrink-0 flex items-center justify-center overflow-hidden border-b border-primary/10">
@@ -191,17 +191,17 @@ export default function VSkillBadges() {
               <ScrollArea className="flex-1">
                 <div className="p-8">
                   <div className="text-center mb-8">
-                    <h2 className="text-3xl font-black text-slate-900 dark:text-white">{selectedBadge.title}</h2>
-                    <p className="text-muted-foreground max-w-lg mx-auto mt-2">{selectedBadge.data?.description || 'A recognized micro-credential validating specific technical or soft skills.'}</p>
+                    <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-[-0.02em]">{selectedBadge.title}</h2>
+                    <p className="text-[#71717a] dark:text-gray-400 max-w-lg mx-auto mt-2">{selectedBadge.data?.description || 'A recognized micro-credential validating specific technical or soft skills.'}</p>
                     <div className="flex justify-center gap-3 mt-4">
-                      <Badge className="bg-primary/10 text-primary hover:bg-primary/20 shadow-none">{selectedBadge.data?.category || 'Technical Skill'}</Badge>
-                      <Badge variant="outline" className="border-primary/40 text-primary shadow-none">{selectedBadge.data?.points || 0} Points</Badge>
+                      <Badge className="bg-primary/10 text-primary hover:bg-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">{selectedBadge.data?.category || 'Technical Skill'}</Badge>
+                      <Badge variant="outline" className="border-primary/40 text-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">{selectedBadge.data?.points || 0} Points</Badge>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="p-6 rounded-2xl bg-primary/5 border border-primary/10">
-                      <h3 className="text-sm font-bold text-primary uppercase tracking-wider mb-4 flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Criteria for Awarding</h3>
+                    <div className="p-6 rounded-md-2xl bg-primary/5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
+                      <h3 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4 flex items-center gap-2 tracking-[0.04em]"><CheckCircle2 className="w-4 h-4" /> Criteria for Awarding</h3>
                       <ul className="space-y-3">
                         {selectedBadge.data?.criteria?.length > 0 ? (
                           selectedBadge.data.criteria.map((criterion, idx) => (
@@ -211,17 +211,17 @@ export default function VSkillBadges() {
                             </li>
                           ))
                         ) : (
-                          <li className="text-sm text-muted-foreground italic">No specific criteria defined.</li>
+                          <li className="text-sm text-[#71717a] dark:text-gray-400 italic">No specific criteria defined.</li>
                         )}
                       </ul>
                     </div>
 
-                    <div className="p-6 rounded-2xl bg-card border border-primary/20 flex flex-col items-center justify-center text-center">
+                    <div className="p-6 rounded-md-2xl bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 flex flex-col items-center justify-center text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                       <Shield className="w-12 h-12 text-primary/40 mb-3" />
-                      <h3 className="font-bold text-slate-900 dark:text-white">Recipients</h3>
-                      <p className="text-4xl font-black text-primary my-2">{selectedBadge.data?.recipient_count || 0}</p>
-                      <p className="text-xs text-muted-foreground mb-4">Students have earned this badge</p>
-                      <Button variant="outline" className="w-full border-primary/40 text-primary hover:bg-primary/5 rounded-xl shadow-none">View Recipients</Button>
+                      <h3 className="font-semibold text-slate-900 dark:text-white">Recipients</h3>
+                      <p className="text-4xl font-black text-primary my-2 tracking-[-0.02em]">{selectedBadge.data?.recipient_count || 0}</p>
+                      <p className="text-xs text-[#71717a] dark:text-gray-400 mb-4 tracking-[0.04em]">Students have earned this badge</p>
+                      <Button variant="outline" className="w-full border-primary/40 text-primary hover:bg-primary/5 rounded-md-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none">View Recipients</Button>
                     </div>
                   </div>
                 </div>
@@ -229,11 +229,11 @@ export default function VSkillBadges() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-md-full bg-primary/10 flex items-center justify-center mb-6">
                 <Medal className="w-10 h-10 text-primary/40" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white">No Badge Selected</h3>
-              <p className="text-muted-foreground max-w-sm mt-2">
+              <h3 className="text-xl font-semibold text-slate-900 dark:text-white">No Badge Selected</h3>
+              <p className="text-[#71717a] dark:text-gray-400 max-w-sm mt-2">
                 Select a skill badge to view its criteria and student recipients.
               </p>
             </div>

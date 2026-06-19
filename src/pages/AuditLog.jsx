@@ -43,7 +43,7 @@ export default function AuditLog() {
  {
  header: "Date/Time",
  render: (row) => (
- <span className="text-xs text-muted-foreground">
+ <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  {format(new Date(row.created_date), "MMM d, yyyy h:mm:ss a")}
  </span>
  ),
@@ -53,7 +53,7 @@ export default function AuditLog() {
  render: (row) => (
  <div>
  <p className="text-sm font-medium">{row.user_name || "System"}</p>
- <p className="text-xs text-muted-foreground">{row.user_email || "N/A"}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{row.user_email || "N/A"}</p>
  </div>
  ),
 },
@@ -63,11 +63,11 @@ export default function AuditLog() {
 },
  {
  header: "Slate",
- render: (row) => <span className="text-xs uppercase bg-muted px-2 py-0.5 rounded-full">{row.slate}</span>,
+ render: (row) => <span className="text-xs uppercase bg-muted px-2 py-0.5 rounded-md-full tracking-[0.04em]">{row.slate}</span>,
 },
  {
  header: "IP Address",
- render: (row) => <span className="text-xs font-mono text-muted-foreground">{row.ip_address || "Unknown"}</span>,
+ render: (row) => <span className="text-xs font-mono text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{row.ip_address || "Unknown"}</span>,
 },
  ];
 
@@ -80,7 +80,7 @@ export default function AuditLog() {
 
  <div className="flex gap-4">
  <div className="relative flex-1 max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <Input
  className="pl-9"
  placeholder="Search by user, action, or slate..."
@@ -90,7 +90,7 @@ export default function AuditLog() {
  </div>
  </div>
 
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <DataTable
  columns={columns}
  data={filteredLogs}

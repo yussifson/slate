@@ -22,13 +22,13 @@ export default function DataTableBlock({ dataConfig, styleConfig}) {
  const padClass = padding || 'p-0';
 
  return (
- <div className={cn("rounded-xl border overflow-hidden", bgClass, padClass)}>
+ <div className={cn("rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 overflow-hidden", bgClass, padClass)}>
  <div className="overflow-x-auto">
  <Table>
  <TableHeader>
  <TableRow className={theme === 'dark' ? 'border-primary/40 hover:bg-slate-800/50' : ''}>
  {columns.map((col, i) => (
- <TableHead key={i} className="font-bold whitespace-nowrap">
+ <TableHead key={i} className="font-semibold whitespace-nowrap">
  {col.label || col.field}
  </TableHead>
  ))}
@@ -37,13 +37,13 @@ export default function DataTableBlock({ dataConfig, styleConfig}) {
  <TableBody>
  {isLoading ? (
  <TableRow>
- <TableCell colSpan={columns.length} className="text-center py-8 text-muted-foreground">
+ <TableCell colSpan={columns.length} className="text-center py-8 text-[#71717a] dark:text-gray-400">
  Loading data...
  </TableCell>
  </TableRow>
  ) : data.length === 0 ? (
  <TableRow>
- <TableCell colSpan={columns.length} className="text-center py-8 text-muted-foreground">
+ <TableCell colSpan={columns.length} className="text-center py-8 text-[#71717a] dark:text-gray-400">
  No records found
  </TableCell>
  </TableRow>

@@ -58,16 +58,16 @@ export default function QueryBuilder({ fields = [], onApply, onClear}) {
  {/* Toggle button */}
  <button
  onClick={() => setIsOpen(v => !v)}
- className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-all duration-200 ${
+ className={`flex items-center gap-2 px-3 py-2 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 text-sm font-medium transition-all duration-200 ${
  activeCount > 0
  ? 'border-primary bg-slate-100 text-primary'
- : 'border-primary/40 bg-card text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+ : 'border-primary/40 bg-card text-[#71717a] dark:text-gray-400 hover:bg-muted/50 hover:text-foreground'
 }`}
  >
  <SlidersHorizontal className="w-4 h-4" />
  {t("filters", "Filters")}
  {activeCount > 0 && (
- <span className="ml-0.5 w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
+ <span className="ml-0.5 w-5 h-5 rounded-md-full bg-primary text-primary-foreground text-[10px] font-semibold flex items-center justify-center">
  {activeCount}
  </span>
  )}
@@ -75,21 +75,21 @@ export default function QueryBuilder({ fields = [], onApply, onClear}) {
  </button>
  {/* Panel */}
  {isOpen && (
- <div className="absolute top-full mt-2 left-0 z-30 w-[480px] max-w-[calc(100vw-2rem)] bg-card border border-primary/40 rounded-xl p-4 animate-in fade-in slide-in-from-top-2 duration-200">
+ <div className="absolute top-full mt-2 left-0 z-30 w-[480px] max-w-[calc(100vw-2rem)] bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-xl p-4 animate-in fade-in slide-in-from-top-2 duration-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Header */}
  <div className="flex items-center justify-between mb-4">
- <h3 className="text-sm font-bold text-card-foreground flex items-center gap-2">
+ <h3 className="text-sm font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Filter className="w-4 h-4 text-primary" /> {t("advanced_filters", "Advanced Filters")}
  </h3>
  {/* AND / OR toggle */}
- <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
+ <div className="flex items-center gap-2 bg-muted rounded-xl p-1">
  {['AND', 'OR'].map(l => {
  return (
  <button
  key={l}
  onClick={() => setLogic(l)}
- className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${
- logic === l ? 'bg-card text-primary' : 'text-muted-foreground hover:text-foreground'
+ className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all ${
+ logic === l ? 'bg-card text-primary' : 'text-[#71717a] dark:text-gray-400 hover:text-foreground'
 }`}
  >
  {l}
@@ -106,40 +106,40 @@ export default function QueryBuilder({ fields = [], onApply, onClear}) {
  return (
  <div key={idx} className="flex items-center gap-2 group">
  {/* Logic label */}
- <span className="text-[10px] font-bold text-muted-foreground w-7 text-right flex-shrink-0">
+ <span className="text-[10px] font-semibold text-[#71717a] dark:text-gray-400 w-7 text-right flex-shrink-0">
  {idx === 0 ? 'WHERE' : logic}
  </span>
  {/* Field selector */}
  <Select value={cond.field} onValueChange={v => updateCondition(idx, { field: v, value: ''})}>
- <SelectTrigger className="h-8 text-xs flex-1 min-w-0 bg-background">
+ <SelectTrigger className="h-8 text-xs flex-1 min-w-0 bg-background tracking-[0.04em]">
  <SelectValue placeholder="Choose field..." />
  </SelectTrigger>
  <SelectContent>
  {fields.map(f => {
- return (<SelectItem key={f.key} value={f.key} className="text-xs">{f.label}</SelectItem>);
+ return (<SelectItem key={f.key} value={f.key} className="text-xs tracking-[0.04em]">{f.label}</SelectItem>);
 })}
  </SelectContent>
  </Select>
  {/* Operator selector */}
  <Select value={cond.operator} onValueChange={v => updateCondition(idx, { operator: v})}>
- <SelectTrigger className="h-8 text-xs w-32 flex-shrink-0 bg-background">
+ <SelectTrigger className="h-8 text-xs w-32 flex-shrink-0 bg-background tracking-[0.04em]">
  <SelectValue />
  </SelectTrigger>
  <SelectContent>
  {OPERATORS.map(op => {
- return (<SelectItem key={op.value} value={op.value} className="text-xs">{op.label}</SelectItem>);
+ return (<SelectItem key={op.value} value={op.value} className="text-xs tracking-[0.04em]">{op.label}</SelectItem>);
 })}
  </SelectContent>
  </Select>
  {/* Value input or select */}
  {fieldDef?.type === 'select' ? (
  <Select value={cond.value} onValueChange={v => updateCondition(idx, { value: v})}>
- <SelectTrigger className="h-8 text-xs flex-1 bg-background">
+ <SelectTrigger className="h-8 text-xs flex-1 bg-background tracking-[0.04em]">
  <SelectValue placeholder="Value..." />
  </SelectTrigger>
  <SelectContent>
  {(fieldDef.options || []).map(opt => {
- return (<SelectItem key={opt} value={opt} className="text-xs">{opt}</SelectItem>);
+ return (<SelectItem key={opt} value={opt} className="text-xs tracking-[0.04em]">{opt}</SelectItem>);
 })}
  </SelectContent>
  </Select>
@@ -148,14 +148,14 @@ export default function QueryBuilder({ fields = [], onApply, onClear}) {
  value={cond.value}
  onChange={e => updateCondition(idx, { value: e.target.value})}
  placeholder="Value..."
- className="h-8 text-xs flex-1 bg-background"
+ className="h-8 text-xs flex-1 bg-background tracking-[0.04em]"
  type={fieldDef?.type === 'number' ? 'number' : 'text'}
  />
  )}
  {/* Remove button */}
  <button
  onClick={() => removeCondition(idx)}
- className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-red-500 p-1"
+ className="opacity-0 group-hover:opacity-100 transition-opacity text-[#71717a] dark:text-gray-400 hover:text-red-500 p-1"
  >
  <X className="w-3.5 h-3.5" />
  </button>
@@ -167,7 +167,7 @@ export default function QueryBuilder({ fields = [], onApply, onClear}) {
  {/* Add condition */}
  <button
  onClick={addCondition}
- className="mt-3 flex items-center gap-1.5 text-xs text-primary hover:underline font-medium"
+ className="mt-3 flex items-center gap-2.5 text-xs text-primary hover:underline font-medium tracking-[0.04em]"
  >
  <Plus className="w-3.5 h-3.5" /> {t("add_condition", "Add Condition")}
  </button>

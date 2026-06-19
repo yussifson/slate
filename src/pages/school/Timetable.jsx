@@ -55,29 +55,29 @@ export default function Timetable() {
     <div className="space-y-6 font-dmsans max-w-7xl mx-auto">
       <div className="bg-green-600 p-6 flex justify-between items-center border-4 border-green-900">
         <div>
-          <h1 className="text-3xl font-black text-white uppercase tracking-widest">Master Timetable</h1>
+          <h1 className="text-3xl font-black text-white uppercase tracking-widest tracking-[-0.02em] tracking-[0.04em]">Master Timetable</h1>
         </div>
         <div className="flex gap-4">
           <select 
             value={selectedClass} 
             onChange={e => setSelectedClass(e.target.value)}
-            className="bg-white border-4 border-green-900 px-4 py-2 font-bold text-green-900 focus:outline-none uppercase"
+            className="bg-white border-4 border-green-900 px-4 py-2 font-semibold text-green-900 focus:outline-none uppercase tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
           >
             {['Grade 7B', 'Grade 8C', 'Grade 9A', 'Grade 9B'].map(c => <option key={c}>{c}</option>)}
           </select>
-          <button onClick={() => setShowModal(true)} className="bg-white text-green-900 border-4 border-green-900 px-4 py-2 font-black uppercase flex items-center gap-2 hover:bg-green-100 transition-colors">
+          <button onClick={() => setShowModal(true)} className="bg-white text-green-900 border-4 border-green-900 px-4 py-2 font-black uppercase flex items-center gap-2 hover:bg-green-100 transition-colors tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <Plus className="w-5 h-5"/> New Slot
           </button>
         </div>
       </div>
 
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="border-4 border-green-900 bg-white overflow-x-auto">
+        <div className="border-4 border-green-900 bg-white overflow-x-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="min-w-[900px]">
             <div className="grid grid-cols-6 border-b-4 border-green-900">
               <div className="bg-green-100 p-4 flex items-center justify-center border-r-4 border-green-900"><Calendar className="w-6 h-6 text-green-800"/></div>
               {DAYS.map(day => (
-                <div key={day} className="bg-green-100 p-4 text-center font-black text-green-900 uppercase tracking-widest border-r-4 border-green-900 last:border-r-0">
+                <div key={day} className="bg-green-100 p-4 text-center font-black text-green-900 uppercase tracking-widest border-r-4 border-green-900 last:border-r-0 tracking-[0.04em]">
                   {day}
                 </div>
               ))}
@@ -86,7 +86,7 @@ export default function Timetable() {
             {PERIODS.map(period => (
               <div key={period} className="grid grid-cols-6 border-b-4 border-green-900 last:border-b-0 min-h-[120px]">
                 <div className="bg-green-50 p-4 flex flex-col items-center justify-center border-r-4 border-green-900">
-                  <span className="font-black text-2xl text-green-800">P{period}</span>
+                  <span className="font-black text-2xl text-green-800 tracking-[-0.02em]">P{period}</span>
                 </div>
                 {DAYS.map(day => {
                   const slotId = `${day}-${period}`;
@@ -109,11 +109,11 @@ export default function Timetable() {
                                   className={`h-full border-4 border-green-800 p-3 flex flex-col justify-between ${snapshot.isDragging ? 'bg-green-300' : 'bg-green-50'}`}
                                 >
                                   <div>
-                                    <p className="font-black text-green-900 uppercase leading-tight">{slot.subject}</p>
-                                    <p className="text-xs font-bold text-green-700 mt-1">{slot.teacher}</p>
+                                    <p className="font-black text-green-900 uppercase leading-tight tracking-[0.04em]">{slot.subject}</p>
+                                    <p className="text-xs font-semibold text-green-700 mt-1 tracking-[0.04em]">{slot.teacher}</p>
                                   </div>
                                   <div className="flex justify-between items-center mt-2">
-                                    <span className="text-[10px] font-black bg-green-800 text-white px-2 py-1 uppercase">{slot.room}</span>
+                                    <span className="text-[10px] font-black bg-green-800 text-white px-2 py-1 uppercase tracking-[0.04em]">{slot.room}</span>
                                     <button onClick={() => deleteRecord.mutate({ id: slot.id, recordType: 'timetable_slot'})} className="text-red-500 hover:text-red-700">
                                       <Plus className="w-4 h-4 rotate-45" />
                                     </button>
@@ -136,41 +136,41 @@ export default function Timetable() {
 
       {showModal && (
         <div className="fixed inset-0 bg-green-900/80 flex items-center justify-center p-4 z-50">
-          <div className="bg-white border-4 border-green-900 p-8 max-w-md w-full">
-            <h2 className="text-2xl font-black text-green-900 uppercase mb-6">Schedule Class</h2>
+          <div className="bg-white border-4 border-green-900 p-8 max-w-md w-full hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <h2 className="text-2xl font-black text-green-900 uppercase mb-6 tracking-[-0.02em] tracking-[0.04em]">Schedule Class</h2>
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-black uppercase text-green-800">Subject</label>
-                <input value={formData.subject} onChange={e=>setFormData({...formData, subject: e.target.value})} className="w-full border-4 border-green-900 p-2 font-bold text-green-900 focus:outline-none bg-green-50" />
+                <label className="text-xs font-black uppercase text-green-800 tracking-[0.04em]">Subject</label>
+                <input value={formData.subject} onChange={e=>setFormData({...formData, subject: e.target.value})} className="w-full border-4 border-green-900 p-2 font-semibold text-green-900 focus:outline-none bg-green-50" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-black uppercase text-green-800">Day</label>
-                  <select value={formData.day} onChange={e=>setFormData({...formData, day: e.target.value})} className="w-full border-4 border-green-900 p-2 font-bold text-green-900 focus:outline-none bg-green-50">
+                  <label className="text-xs font-black uppercase text-green-800 tracking-[0.04em]">Day</label>
+                  <select value={formData.day} onChange={e=>setFormData({...formData, day: e.target.value})} className="w-full border-4 border-green-900 p-2 font-semibold text-green-900 focus:outline-none bg-green-50">
                     {DAYS.map(d=><option key={d}>{d}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-black uppercase text-green-800">Period</label>
-                  <select value={formData.period} onChange={e=>setFormData({...formData, period: e.target.value})} className="w-full border-4 border-green-900 p-2 font-bold text-green-900 focus:outline-none bg-green-50">
+                  <label className="text-xs font-black uppercase text-green-800 tracking-[0.04em]">Period</label>
+                  <select value={formData.period} onChange={e=>setFormData({...formData, period: e.target.value})} className="w-full border-4 border-green-900 p-2 font-semibold text-green-900 focus:outline-none bg-green-50">
                     {PERIODS.map(p=><option key={p} value={p}>P{p}</option>)}
                   </select>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-black uppercase text-green-800">Teacher</label>
-                  <input value={formData.teacher} onChange={e=>setFormData({...formData, teacher: e.target.value})} className="w-full border-4 border-green-900 p-2 font-bold text-green-900 focus:outline-none bg-green-50" />
+                  <label className="text-xs font-black uppercase text-green-800 tracking-[0.04em]">Teacher</label>
+                  <input value={formData.teacher} onChange={e=>setFormData({...formData, teacher: e.target.value})} className="w-full border-4 border-green-900 p-2 font-semibold text-green-900 focus:outline-none bg-green-50" />
                 </div>
                 <div>
-                  <label className="text-xs font-black uppercase text-green-800">Room</label>
-                  <input value={formData.room} onChange={e=>setFormData({...formData, room: e.target.value})} className="w-full border-4 border-green-900 p-2 font-bold text-green-900 focus:outline-none bg-green-50" />
+                  <label className="text-xs font-black uppercase text-green-800 tracking-[0.04em]">Room</label>
+                  <input value={formData.room} onChange={e=>setFormData({...formData, room: e.target.value})} className="w-full border-4 border-green-900 p-2 font-semibold text-green-900 focus:outline-none bg-green-50" />
                 </div>
               </div>
             </div>
             <div className="flex gap-4 mt-8">
-              <button onClick={()=>setShowModal(false)} className="flex-1 border-4 border-green-900 bg-white font-black uppercase py-3 hover:bg-green-50">Cancel</button>
-              <button onClick={handleAddSlot} className="flex-1 border-4 border-green-900 bg-green-500 text-white font-black uppercase py-3 hover:bg-green-600">Save</button>
+              <button onClick={()=>setShowModal(false)} className="flex-1 border-4 border-green-900 bg-white font-black uppercase py-3 hover:bg-green-50 tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Cancel</button>
+              <button onClick={handleAddSlot} className="flex-1 border-4 border-green-900 bg-green-500/10 text-white font-black uppercase py-3 hover:bg-green-600 tracking-[0.04em]">Save</button>
             </div>
           </div>
         </div>

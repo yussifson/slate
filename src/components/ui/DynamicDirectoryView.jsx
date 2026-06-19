@@ -178,12 +178,12 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
 
  if (!data || data.length === 0) {
  return (
- <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-2xl border border-primary/40">
- <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 -emerald-500/20">
+ <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-br from-slate-50 to-primary/30 rounded-md-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
+ <div className="w-16 h-16 rounded-md-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-4 -emerald-500/20">
  <Users className="w-8 h-8 text-white" />
  </div>
  <h3 className="text-lg font-semibold text-slate-800 mb-1">No Contacts Yet</h3>
- <p className="text-sm text-muted-foreground max-w-sm text-center">
+ <p className="text-sm text-[#71717a] dark:text-gray-400 max-w-sm text-center">
  Add records to build your directory.
  </p>
  </div>
@@ -196,16 +196,16 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
  <div className="mb-6">
  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center -emerald-500/20">
+ <div className="w-10 h-10 rounded-md-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center -emerald-500/20">
  <Users className="w-5 h-5 text-white" />
  </div>
  <div>
- <h2 className="text-lg font-bold text-slate-800">Directory</h2>
- <p className="text-xs text-muted-foreground">{filteredData.length} of {data.length} contact{data.length !== 1 ? 's' : ''}</p>
+ <h2 className="text-lg font-semibold text-slate-800">Directory</h2>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{filteredData.length} of {data.length} contact{data.length !== 1 ? 's' : ''}</p>
  </div>
  </div>
  <div className="relative w-full sm:w-72">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <Input
  placeholder="Search contacts..."
  value={searchQuery}
@@ -219,10 +219,10 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
  <div className="flex items-center gap-0.5 flex-wrap">
  <button
  onClick={() => setActiveLetter(null)}
- className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
+ className={`w-8 h-8 rounded-xl text-xs font-semibold transition-all ${
  activeLetter === null
  ? 'bg-slate-800 text-white '
- : 'text-muted-foreground hover:bg-muted'
+ : 'text-[#71717a] dark:text-gray-400 hover:bg-muted'
 }`}
  >
  All
@@ -234,11 +234,11 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
  key={letter}
  onClick={() => hasRecords && setActiveLetter(activeLetter === letter ? null : letter)}
  disabled={!hasRecords}
- className={`w-8 h-8 rounded-lg text-xs font-semibold transition-all ${
+ className={`w-8 h-8 rounded-xl text-xs font-semibold transition-all ${
  activeLetter === letter
  ? 'bg-primary text-white -emerald-500/20'
  : hasRecords
- ? 'text-muted-foreground hover:bg-muted hover:text-foreground'
+ ? 'text-[#71717a] dark:text-gray-400 hover:bg-muted hover:text-foreground'
  : 'text-slate-300 cursor-not-allowed'
 }`}
  >
@@ -251,7 +251,7 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
 
  {/* Contact Cards Grid */}
  {filteredData.length === 0 ? (
- <div className="text-center py-12 text-muted-foreground text-sm">
+ <div className="text-center py-12 text-[#71717a] dark:text-gray-400 text-sm">
  No contacts match your search criteria.
  </div>
  ) : (
@@ -266,22 +266,22 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
  <div
  key={record.id}
  onClick={() => setSelectedRecord(record)}
- className="bg-card rounded-xl border border-primary/40 hover:border-primary/60 transition-all duration-300 cursor-pointer group overflow-hidden"
+ className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:border-primary/60 transition-all duration-300 cursor-pointer group overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  {/* Card top gradient */}
  <div className={`h-16 bg-gradient-to-r ${gradient} relative`}>
  <div className="absolute inset-0 bg-primary/20" />
  {/* Action buttons */}
- <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+ <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
  <button
  onClick={(e) => { e.stopPropagation(); openEdit(record);}}
- className="p-1.5 rounded-lg bg-card/90 backdrop-blur text-muted-foreground hover:text-amber-600 transition-colors "
+ className="p-1.5 rounded-xl bg-card/90 backdrop-blur text-[#71717a] dark:text-gray-400 hover:text-amber-600 transition-colors  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <Pencil className="w-3 h-3" />
  </button>
  <button
  onClick={(e) => { e.stopPropagation(); setDeleteRecord(record);}}
- className="p-1.5 rounded-lg bg-card/90 backdrop-blur text-muted-foreground hover:text-red-600 transition-colors "
+ className="p-1.5 rounded-xl bg-card/90 backdrop-blur text-[#71717a] dark:text-gray-400 hover:text-red-600 transition-colors  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
  <Trash2 className="w-3 h-3" />
  </button>
@@ -290,7 +290,7 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
 
  <div className="px-4 pb-4 -mt-8 relative">
  {/* Avatar */}
- <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-lg font-bold ring-3 ring-white mb-3`}>
+ <div className={`w-14 h-14 rounded-md-xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-lg font-semibold ring-3 ring-white mb-3`}>
  {initials}
  </div>
 
@@ -299,7 +299,7 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
  {name}
  </h3>
  {role && (
- <p className="text-xs text-muted-foreground truncate mt-0.5">{role}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 truncate mt-0.5 tracking-[0.04em]">{role}</p>
  )}
 
  {/* Quick details */}
@@ -309,8 +309,8 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
  if (!val) return null;
  const IconComp = getFieldIcon(f.name);
  return (
- <div key={f.name} className="flex items-center gap-2 text-xs text-muted-foreground">
- {IconComp ? <IconComp className="w-3 h-3 text-muted-foreground flex-shrink-0" /> : <span className="w-3 h-3 flex-shrink-0" />}
+ <div key={f.name} className="flex items-center gap-2 text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
+ {IconComp ? <IconComp className="w-3 h-3 text-[#71717a] dark:text-gray-400 flex-shrink-0" /> : <span className="w-3 h-3 flex-shrink-0" />}
  <span className="truncate">
  {f.field_type === 'boolean' ? (val ? 'Yes' : 'No') :
  f.field_type === 'date' ? (() => { try { return format(new Date(val), 'MMM d, yyyy');} catch { return String(val);}})() :
@@ -337,17 +337,17 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
  const initials = getInitials(name);
  return (
  <>
- <div className={`-mx-6 -mt-6 h-24 bg-gradient-to-r ${gradient} rounded-t-lg relative`}>
- <div className="absolute inset-0 bg-primary/20 rounded-t-lg" />
+ <div className={`-mx-6 -mt-6 h-24 bg-gradient-to-r ${gradient} rounded-md-t-lg relative`}>
+ <div className="absolute inset-0 bg-primary/20 rounded-md-t-lg" />
  </div>
  <div className="-mt-12 relative px-2">
- <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-2xl font-bold ring-4 ring-white`}>
+ <div className={`w-20 h-20 rounded-md-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-2xl font-semibold ring-4 ring-white`}>
  {initials}
  </div>
  </div>
  <div className="mt-3 px-2">
- <h3 className="text-xl font-bold text-slate-800">{name}</h3>
- {role && <p className="text-sm text-muted-foreground mt-0.5">{role}</p>}
+ <h3 className="text-xl font-semibold text-slate-800">{name}</h3>
+ {role && <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{role}</p>}
  </div>
  <div className="mt-4 space-y-2 px-2">
  {fieldDefinitions.map((f) => {
@@ -356,7 +356,7 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
  const IconComp = getFieldIcon(f.name);
  return (
  <div key={f.name} className="flex items-center justify-between py-2.5 border-b border-primary/40 last:border-0">
- <span className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+ <span className="flex items-center gap-2 text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">
  {IconComp && <IconComp className="w-3.5 h-3.5" />}
  {f.name.replace(/_/g, ' ')}
  </span>
@@ -368,7 +368,7 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
  </div>
  );
 })}
- <p className="text-[11px] text-muted-foreground pt-2">
+ <p className="text-[11px] text-[#71717a] dark:text-gray-400 pt-2">
  Added {selectedRecord.created_at ? format(new Date(selectedRecord.created_at), 'MMM d, yyyy') : 'Unknown'}
  </p>
  </div>
@@ -399,7 +399,7 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
  return (
  <div key={f.name} className="flex items-center justify-between py-2 border-b border-primary/40 last:border-0">
  <label className="text-sm font-medium text-foreground">{label}</label>
- <input type="checkbox" checked={!!val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.checked})} className="h-4 w-4 rounded border-primary/40" />
+ <input type="checkbox" checked={!!val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.checked})} className="h-4 w-4 rounded-md border-primary/40" />
  </div>
  );
 }
@@ -408,8 +408,8 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
  try { options = typeof f.options === 'string' ? JSON.parse(f.options) : (f.options || []);} catch { options = [];}
  return (
  <div key={f.name} className="space-y-1">
- <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</label>
- <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value})} className="w-full rounded-lg border border-primary/40 bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{label}</label>
+ <select value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value})} className="w-full rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <option value="">Select...</option>
  {options.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
  </select>
@@ -418,7 +418,7 @@ export default function DynamicDirectoryView({ data = [], fieldDefinitions = [],
 }
  return (
  <div key={f.name} className="space-y-1">
- <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{label}</label>
  <Input type={f.field_type === 'date' ? 'date' : f.field_type === 'number' ? 'number' : 'text'} value={val} onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value})} />
  </div>
  );

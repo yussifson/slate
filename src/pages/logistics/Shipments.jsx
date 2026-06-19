@@ -158,8 +158,8 @@ export default function Shipments() {
  {/* Header */}
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-bold text-card-foreground">{t("shipment_tracking", "Shipment Tracking")}</h1>
- <p className="text-sm text-muted-foreground mt-0.5">{t("manage_and_track_all_cargo_shi", "Manage and track all cargo shipments")}</p>
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("shipment_tracking", "Shipment Tracking")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("manage_and_track_all_cargo_shi", "Manage and track all cargo shipments")}</p>
  </div>
  <Button onClick={openAdd} className="gap-2 bg-orange-600 hover:bg-orange-700 text-white">
  <Plus className="w-4 h-4" /> {t("add_shipment", "Add Shipment")}
@@ -169,40 +169,40 @@ export default function Shipments() {
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  {stats.map(s => {
  return (
- <div key={s.label} className={`stat-card-premium bg-card rounded-xl border ${s.border} p-4 flex items-center gap-3`}>
- <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${s.color}`}>
+ <div key={s.label} className={`stat-card-premium bg-card rounded-md-xl border ${s.border} p-4 flex items-center gap-3`}>
+ <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${s.color}`}>
  <s.icon className="w-5 h-5" />
  </div>
  <div>
- <p className="text-2xl font-bold text-card-foreground">{s.value}</p>
- <p className="text-xs text-muted-foreground">{s.label}</p>
+ <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{s.value}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{s.label}</p>
  </div>
  </div>
  );
 })}
  </div>
  {/* Table */}
- <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+ <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/40 flex items-center justify-between gap-4">
  <div className="relative max-w-sm w-full">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <Input
  placeholder="Search tracking #, destination, customer..."
  value={search}
  onChange={e => setSearch(e.target.value)}
- className="pl-9 bg-card"
+ className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  />
  </div>
  </div>
 
  <div className="overflow-x-auto">
  {isLoading ? (
- <div className="py-16 text-center text-muted-foreground">{t("loading_shipments", "Loading shipments...")}</div>
+ <div className="py-16 text-center text-[#71717a] dark:text-gray-400">{t("loading_shipments", "Loading shipments...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-16 text-center text-muted-foreground">
+ <div className="py-16 text-center text-[#71717a] dark:text-gray-400">
  <PackageOpen className="w-12 h-12 mx-auto mb-3 opacity-30" />
  <p className="font-semibold">{t("no_shipments_found", "No shipments found.")}</p>
- <p className="text-xs mt-1">{t("click_add_shipment_to_get_star", "Click \"Add Shipment\" to get started.")}</p>
+ <p className="text-xs mt-1 tracking-[0.04em]">{t("click_add_shipment_to_get_star", "Click \"Add Shipment\" to get started.")}</p>
  </div>
  ) : (
  <table className="w-full text-sm">
@@ -210,7 +210,7 @@ export default function Shipments() {
  <tr>
  {['Tracking #', 'Route', 'Customer', 'Carrier / Weight', 'Est. Delivery', 'Status', 'Actions'].map(h => {
  return (
- <th key={h} className="px-5 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider first:pl-6 last:text-right last:pr-6">
+ <th key={h} className="px-5 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider first:pl-6 last:text-right last:pr-6 tracking-[0.04em]">
  {h}
  </th>
  );
@@ -222,60 +222,60 @@ export default function Shipments() {
  return (
  <tr key={ship.id} className="hover:bg-muted/30 transition-colors">
  <td className="px-5 py-4 pl-6">
- <span className="font-mono font-bold text-orange-600">{ship.trackingNumber}</span>
+ <span className="font-mono font-semibold text-orange-600">{ship.trackingNumber}</span>
  </td>
  <td className="px-5 py-4">
- <div className="flex items-center gap-1.5 text-card-foreground font-medium">
- <MapPin className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+ <div className="flex items-center gap-2.5 text-card-foreground font-medium hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <MapPin className="w-3.5 h-3.5 text-[#71717a] dark:text-gray-400 shrink-0" />
  <span className="truncate max-w-[80px]">{ship.origin}</span>
- <ArrowRight className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+ <ArrowRight className="w-3.5 h-3.5 text-[#71717a] dark:text-gray-400 shrink-0" />
  <span className="truncate max-w-[80px]">{ship.destination}</span>
  </div>
  </td>
- <td className="px-5 py-4 font-medium text-card-foreground">
+ <td className="px-5 py-4 font-medium text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Link to="/clients" className="text-primary hover:underline">
  {ship.customer}
  </Link>
  </td>
- <td className="px-5 py-4 text-muted-foreground">
- <div className="text-xs">{ship.carrier}</div>
- <div className="text-xs font-medium">{ship.weight ? `${ship.weight} kg` : '—'}</div>
+ <td className="px-5 py-4 text-[#71717a] dark:text-gray-400">
+ <div className="text-xs tracking-[0.04em]">{ship.carrier}</div>
+ <div className="text-xs font-medium tracking-[0.04em]">{ship.weight ? `${ship.weight} kg` : '—'}</div>
  </td>
- <td className="px-5 py-4 text-muted-foreground text-xs">
+ <td className="px-5 py-4 text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">
  {ship.estimatedDelivery || '—'}
  </td>
  <td className="px-5 py-4">
  <div className="flex flex-col gap-2 w-32">
  <div className="flex items-center justify-between relative z-0">
  <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-muted -z-10 translate-y-[-50%]"></div>
- <div className={`absolute top-1/2 left-0 h-0.5 -z-10 translate-y-[-50%] transition-all ${ship.status === 'Pending' ? 'w-0' : ship.status === 'In Transit' ? 'w-1/2 bg-blue-500' : ship.status === 'Delivered' ? 'w-full bg-emerald-500' : 'w-full bg-red-500'}`}></div>
- <div className={`w-3 h-3 rounded-full border-2 ${ship.status === 'Pending' ? 'border-amber-500 bg-amber-500' : ship.status === 'Failed' ? 'border-red-500 bg-red-500' : 'border-primary bg-primary'}`}></div>
- <div className={`w-3 h-3 rounded-full border-2 ${ship.status === 'Pending' ? 'border-muted bg-background' : ship.status === 'In Transit' ? 'border-blue-500 bg-background' : ship.status === 'Delivered' ? 'border-primary bg-primary' : 'border-red-500 bg-red-500'}`}></div>
- <div className={`w-3 h-3 rounded-full border-2 ${ship.status === 'Delivered' ? 'border-emerald-500 bg-emerald-500' : ship.status === 'Failed' ? 'border-red-500 bg-red-500' : 'border-muted bg-background'}`}></div>
+ <div className={`absolute top-1/2 left-0 h-0.5 -z-10 translate-y-[-50%] transition-all ${ship.status === 'Pending' ? 'w-0' : ship.status === 'In Transit' ? 'w-1/2 bg-blue-500/10' : ship.status === 'Delivered' ? 'w-full bg-emerald-500/10' : 'w-full bg-red-500/10'}`}></div>
+ <div className={`w-3 h-3 rounded-md-full border-2 ${ship.status === 'Pending' ? 'border-amber-500 bg-amber-500' : ship.status === 'Failed' ? 'border-red-500 bg-red-500/10' : 'border-primary bg-primary'}`}></div>
+ <div className={`w-3 h-3 rounded-md-full border-2 ${ship.status === 'Pending' ? 'border-muted bg-background' : ship.status === 'In Transit' ? 'border-blue-500 bg-background' : ship.status === 'Delivered' ? 'border-primary bg-primary' : 'border-red-500 bg-red-500/10'}`}></div>
+ <div className={`w-3 h-3 rounded-md-full border-2 ${ship.status === 'Delivered' ? 'border-emerald-500 bg-emerald-500/10' : ship.status === 'Failed' ? 'border-red-500 bg-red-500/10' : 'border-muted bg-background'}`}></div>
  </div>
- <div className="flex justify-between text-[9px] font-bold uppercase text-muted-foreground mt-0.5">
+ <div className="flex justify-between text-[9px] font-semibold uppercase text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">
  <span className={ship.status === 'Pending' ? 'text-amber-600' : ''}>Pend</span>
  <span className={ship.status === 'In Transit' ? 'text-blue-600' : ''}>Transit</span>
  <span className={ship.status === 'Delivered' ? 'text-emerald-600' : ship.status === 'Failed' ? 'text-red-600' : ''}>{ship.status === 'Failed' ? 'Fail' : 'Deliv'}</span>
  </div>
  {ship.status === 'In Transit' && ship.estimatedDelivery && new Date(ship.estimatedDelivery) < new Date(new Date().setHours(0,0,0,0)) && (
- <span className="text-[9px] font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-full animate-pulse flex items-center gap-1 w-fit mt-1">
+ <span className="text-[9px] font-semibold text-red-600 bg-red-100 px-2 py-0.5 rounded-md-full animate-pulse flex items-center gap-2 w-fit mt-1">
  <AlertCircle className="w-3 h-3"/> SLA Delayed
  </span>
  )}
  </div>
  </td>
  <td className="px-5 py-4 pr-6">
- <div className="flex items-center justify-end gap-1.5">
+ <div className="flex items-center justify-end gap-2.5">
  {ship.status === 'Pending' && (
  <Button onClick={() => handleUpdateStatus(ship, 'In Transit')} size="sm"
- className="h-7 text-xs bg-primary hover:bg-primary/90 text-white gap-1">
+ className="h-7 text-xs bg-primary hover:bg-primary/90 text-white gap-2 tracking-[0.04em]">
  <Truck className="w-3 h-3" /> {t("dispatch", "Dispatch")}
  </Button>
  )}
  {ship.status === 'In Transit' && (
  <Button onClick={() => handleUpdateStatus(ship, 'Delivered')} size="sm"
- className="h-7 text-xs bg-primary hover:bg-primary/90 text-white gap-1">
+ className="h-7 text-xs bg-primary hover:bg-primary/90 text-white gap-2 tracking-[0.04em]">
  <CheckCircle2 className="w-3 h-3" /> {t("deliver", "Deliver")}
  </Button>
  )}
@@ -310,71 +310,71 @@ export default function Shipments() {
  {/* Add/Edit Modal */}
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-5 border border-primary/40">
+ <div className="bg-card rounded-md-2xl w-full max-w-lg p-6 space-y-5 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center justify-between">
- <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
+ <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Package className="w-5 h-5 text-orange-600" />
  {editTarget ? 'Edit Shipment' : 'Add Shipment'}
  </h2>
- <button onClick={closeModal} className="text-muted-foreground hover:text-foreground p-1 rounded-full hover:bg-muted">
+ <button onClick={closeModal} className="text-[#71717a] dark:text-gray-400 hover:text-foreground p-1 rounded-md-full hover:bg-muted">
  <X className="w-4 h-4" />
  </button>
  </div>
 
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="text-xs font-semibold text-muted-foreground uppercase">{t("tracking_number", "Tracking Number")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("tracking_number", "Tracking Number")}</label>
  <Input value={formData.trackingNumber} onChange={e => setFormData({ ...formData, trackingNumber: e.target.value})}
  className="mt-1" placeholder="SHIP-XXXX" />
  </div>
  <div>
- <label className="text-xs font-semibold text-muted-foreground uppercase">{t("customer", "Customer")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("customer", "Customer")}</label>
  <Input value={formData.customer} onChange={e => setFormData({ ...formData, customer: e.target.value})}
  className="mt-1" placeholder="Customer name" />
  </div>
  <div>
- <label className="text-xs font-semibold text-muted-foreground uppercase">{t("origin", "Origin")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("origin", "Origin")}</label>
  <Input value={formData.origin} onChange={e => setFormData({ ...formData, origin: e.target.value})}
  className="mt-1" placeholder="e.g. Lagos Port" />
  </div>
  <div>
- <label className="text-xs font-semibold text-muted-foreground uppercase">{t("destination", "Destination")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("destination", "Destination")}</label>
  <Input value={formData.destination} onChange={e => setFormData({ ...formData, destination: e.target.value})}
  className="mt-1" placeholder="e.g. Accra Hub" />
  </div>
  <div>
- <label className="text-xs font-semibold text-muted-foreground uppercase">{t("carrier", "Carrier")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("carrier", "Carrier")}</label>
  <select value={formData.carrier} onChange={e => setFormData({ ...formData, carrier: e.target.value})}
- className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-orange-500">
+ className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-card px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-orange-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {CARRIERS.map(c => {
  return <option key={c}>{c}</option>;
 })}
  </select>
  </div>
  <div>
- <label className="text-xs font-semibold text-muted-foreground uppercase">{t("weight_kg", "Weight (kg)")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("weight_kg", "Weight (kg)")}</label>
  <Input type="number" value={formData.weight} onChange={e => setFormData({ ...formData, weight: e.target.value})}
  className="mt-1" placeholder="e.g. 25.5" />
  </div>
  <div>
- <label className="text-xs font-semibold text-muted-foreground uppercase">{t("est_delivery_date", "Est. Delivery Date")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("est_delivery_date", "Est. Delivery Date")}</label>
  <Input type="date" value={formData.estimatedDelivery} onChange={e => setFormData({ ...formData, estimatedDelivery: e.target.value})}
  className="mt-1" />
  </div>
  <div>
- <label className="text-xs font-semibold text-muted-foreground uppercase">{t("status", "Status")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</label>
  <select value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value})}
- className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-orange-500">
+ className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-card px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-orange-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {STATUSES.map(s => {
  return <option key={s}>{s}</option>;
 })}
  </select>
  </div>
  <div className="col-span-2">
- <label className="text-xs font-semibold text-muted-foreground uppercase">{t("notes", "Notes")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("notes", "Notes")}</label>
  <textarea value={formData.notes} onChange={e => setFormData({ ...formData, notes: e.target.value})}
  rows={2} placeholder="Optional notes..."
- className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none" />
+ className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-card px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
 
@@ -404,11 +404,11 @@ export default function Shipments() {
  <div className="mt-6 space-y-4 text-sm">
  <div className="grid grid-cols-2 gap-4">
  <div>
- <div className="text-xs text-muted-foreground">{t("tracking_number", "Tracking Number")}</div>
- <div className="font-mono text-foreground font-bold text-orange-600">{viewTarget.trackingNumber}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("tracking_number", "Tracking Number")}</div>
+ <div className="font-mono text-foreground font-semibold text-orange-600">{viewTarget.trackingNumber}</div>
  </div>
  <div>
- <div className="text-xs text-muted-foreground">{t("customer", "Customer")}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("customer", "Customer")}</div>
  <div className="font-medium text-foreground">
  <Link to="/clients" className="text-primary hover:underline">
  {viewTarget.customer}
@@ -416,31 +416,31 @@ export default function Shipments() {
  </div>
  </div>
  <div>
- <div className="text-xs text-muted-foreground">{t("origin", "Origin")}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("origin", "Origin")}</div>
  <div className="font-medium text-foreground">{viewTarget.origin}</div>
  </div>
  <div>
- <div className="text-xs text-muted-foreground">{t("destination", "Destination")}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("destination", "Destination")}</div>
  <div className="font-medium text-foreground">{viewTarget.destination}</div>
  </div>
  <div>
- <div className="text-xs text-muted-foreground">{t("carrier", "Carrier")}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("carrier", "Carrier")}</div>
  <div className="font-medium text-foreground">{viewTarget.carrier}</div>
  </div>
  <div>
- <div className="text-xs text-muted-foreground">{t("weight_kg", "Weight (kg)")}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("weight_kg", "Weight (kg)")}</div>
  <div className="font-medium text-foreground">{viewTarget.weight || '—'}</div>
  </div>
  <div>
- <div className="text-xs text-muted-foreground">{t("estimated_delivery", "Estimated Delivery")}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("estimated_delivery", "Estimated Delivery")}</div>
  <div className="font-medium text-foreground">{viewTarget.estimatedDelivery || '—'}</div>
  </div>
  <div>
- <div className="text-xs text-muted-foreground">{t("status", "Status")}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("status", "Status")}</div>
  <div className="font-medium text-foreground">{viewTarget.status}</div>
  </div>
  <div className="col-span-2">
- <div className="text-xs text-muted-foreground">{t("notes", "Notes")}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("notes", "Notes")}</div>
  <div className="font-medium text-foreground whitespace-pre-wrap">{viewTarget.notes || '—'}</div>
  </div>
  </div>

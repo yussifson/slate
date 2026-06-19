@@ -194,16 +194,16 @@ export default function CaseTimeTracker({ caseData, user }) {
   return (
     <div className="space-y-4">
       {/* Timer card */}
-      <div className="bg-card rounded-xl border border-primary/40 p-5">
+      <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="flex flex-col sm:flex-row sm:items-end gap-4">
           <div className="flex-1 space-y-3">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="sm:col-span-2 space-y-1">
-                <Label className="text-xs">{t("description", "Description")}</Label>
+                <Label className="text-xs tracking-[0.04em]">{t("description", "Description")}</Label>
                 <Input placeholder="What are you working on?" value={timerDesc} onChange={e => setTimerDesc(e.target.value)} disabled={running} />
               </div>
               <div className="space-y-1">
-                <Label className="text-xs">{t("category", "Category")}</Label>
+                <Label className="text-xs tracking-[0.04em]">{t("category", "Category")}</Label>
                 <Select value={timerCategory} onValueChange={setTimerCategory} disabled={running}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>{CATEGORIES.map(c => {
@@ -214,13 +214,13 @@ export default function CaseTimeTracker({ caseData, user }) {
             </div>
             <div className="flex items-center gap-3">
               <div className="space-y-1 w-32">
-                <Label className="text-xs">{t("rate_hr", "Rate / hr (")}{currency})</Label>
+                <Label className="text-xs tracking-[0.04em]">{t("rate_hr", "Rate / hr (")}{currency})</Label>
                 <Input type="number" value={timerRate} onChange={e => setTimerRate(Number(e.target.value))} disabled={running} />
               </div>
               {running && (
                 <div className="flex items-center gap-2 mt-5">
-                  <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                  <span className="text-2xl font-mono font-bold text-foreground">{formatElapsed(elapsed)}</span>
+                  <div className="w-2 h-2 rounded-md-full bg-red-500/10 animate-pulse" />
+                  <span className="text-2xl font-mono font-semibold text-foreground tracking-[-0.02em]">{formatElapsed(elapsed)}</span>
                 </div>
               )}
             </div>
@@ -243,10 +243,10 @@ export default function CaseTimeTracker({ caseData, user }) {
       </div>
       {/* Summary + create invoice */}
       {unbilledEntries.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="bg-amber-50 border-[0.5px] border-black/9 dark:border-white/8 border-amber-200 rounded-md-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <p className="text-sm font-medium text-amber-800">{unbilledEntries.length} {t("unbilled_entries", "unbilled entries")}</p>
-            <p className="text-xs text-amber-700">{formatDuration(totalUnbilledMins)} · {formatCurrency(totalUnbilledAmount, currency)}</p>
+            <p className="text-xs text-amber-700 tracking-[0.04em]">{formatDuration(totalUnbilledMins)} · {formatCurrency(totalUnbilledAmount, currency)}</p>
           </div>
           <Button onClick={handleCreateInvoice} disabled={createInvoiceMutation.isPending} className="gap-2 bg-amber-600 hover:bg-amber-700 text-white text-sm">
             <FileText className="w-4 h-4" />
@@ -255,15 +255,15 @@ export default function CaseTimeTracker({ caseData, user }) {
         </div>
       )}
       {/* Entries list */}
-      <div className="bg-card rounded-xl border border-primary/40 overflow-hidden">
+      <div className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="px-5 py-3 border-b border-primary/40 bg-muted/30 flex items-center gap-2">
-          <Clock className="w-4 h-4 text-muted-foreground" />
+          <Clock className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
           <span className="text-sm font-medium">{t("time_entries", "Time Entries (")}{entries.length})</span>
         </div>
         {isLoading ? (
-          <div className="p-8 text-center text-sm text-muted-foreground">{t("loading", "Loading...")}</div>
+          <div className="p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t("loading", "Loading...")}</div>
         ) : entries.length === 0 ? (
-          <div className="p-8 text-center text-sm text-muted-foreground">{t(
+          <div className="p-8 text-center text-sm text-[#71717a] dark:text-gray-400">{t(
             "no_time_entries_yet_start_the_",
             "No time entries yet. Start the timer or add manually."
           )}</div>
@@ -275,7 +275,7 @@ export default function CaseTimeTracker({ caseData, user }) {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{entry.description || "Time entry"}</p>
                     <div className="flex flex-wrap gap-2 mt-0.5">
-                      <span className="text-xs text-muted-foreground">{entry.start_time ? format(new Date(entry.start_time), "MMM d, yyyy") : ""}</span>
+                      <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{entry.start_time ? format(new Date(entry.start_time), "MMM d, yyyy") : ""}</span>
                       <Badge variant="outline" className="text-[10px] capitalize">{entry.category?.replace("_", " ")}</Badge>
                       {entry.billed && <Badge className="text-[10px] bg-slate-100 text-primary/90">{t("billed", "Billed")}</Badge>}
                       {!entry.billed && entry.is_billable && <Badge className="text-[10px] bg-amber-100 text-amber-700">{t("unbilled", "Unbilled")}</Badge>}
@@ -283,7 +283,7 @@ export default function CaseTimeTracker({ caseData, user }) {
                   </div>
                   <div className="text-right shrink-0">
                     <p className="text-sm font-semibold">{formatDuration(entry.duration_minutes || 0)}</p>
-                    {entry.is_billable && <p className="text-xs text-muted-foreground">{formatCurrency(entry.billable_amount || 0, entry.currency)}</p>}
+                    {entry.is_billable && <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{formatCurrency(entry.billable_amount || 0, entry.currency)}</p>}
                   </div>
                   <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={() => deleteMutation.mutate(entry.id)}>
                     <Trash2 className="w-3.5 h-3.5 text-destructive" />
@@ -295,7 +295,7 @@ export default function CaseTimeTracker({ caseData, user }) {
         )}
         {entries.length > 0 && (
           <div className="px-5 py-3 border-t border-primary/40 bg-muted/20 flex justify-between text-sm">
-            <span className="text-muted-foreground">{t("total_logged", "Total logged")}</span>
+            <span className="text-[#71717a] dark:text-gray-400">{t("total_logged", "Total logged")}</span>
             <span className="font-semibold">{formatDuration(entries.reduce((s, e) => s + (e.duration_minutes || 0), 0))} · {formatCurrency(entries.reduce((s, e) => s + (e.billable_amount || 0), 0), currency)}</span>
           </div>
         )}

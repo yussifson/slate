@@ -30,7 +30,7 @@ const STATUS_COLORS = {
   pending: "bg-yellow-100 text-yellow-700",
   in_progress: "bg-orange-100 text-orange-700",
   completed: "bg-slate-100 text-primary/90",
-  cancelled: "bg-gray-100 text-gray-500",
+  cancelled: "bg-gray-100 text-[#71717a] dark:text-gray-400",
 };
 
 function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, caseTerm }) {
@@ -134,7 +134,7 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2">
               <Label className="block mb-1.5">{t("assign_to_multiple_team_member", "Assign To (Multiple Team Members)")}</Label>
-              <div className="border border-primary/40 rounded-lg p-3 max-h-36 overflow-y-auto space-y-2 bg-card">
+              <div className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-3 max-h-36 overflow-y-auto space-y-2 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                 {staff.map(s => {
                   const isChecked = form.assignees?.some(a => a.id === s.id);
                   return (
@@ -143,7 +143,7 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
                         type="checkbox"
                         checked={isChecked}
                         onChange={(e) => handleStaffChange(s, e.target.checked)}
-                        className="rounded text-primary focus:ring-primary border-primary/40"
+                        className="rounded-md text-primary focus:ring-primary border-primary/40"
                       />
                       <span>{s.full_name} ({s.role})</span>
                     </label>
@@ -257,7 +257,7 @@ export default function Tasks() {
         return (
           <div>
             <p className="font-medium text-sm">{row.title}</p>
-            {row.case_title && <p className="text-xs text-muted-foreground">{row.case_title}</p>}
+            {row.case_title && <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{row.case_title}</p>}
           </div>
         );
       },
@@ -289,7 +289,7 @@ export default function Tasks() {
       render: row => {
         return (
           <Select value={row.status} onValueChange={v => updateMutation.mutate({ id: row.id, data: { status: v } })}>
-            <SelectTrigger className="h-7 text-xs w-32">
+            <SelectTrigger className="h-7 text-xs w-32 tracking-[0.04em]">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -306,7 +306,7 @@ export default function Tasks() {
       header: "Due Date",
       render: (row) => row.due_date
         ? <span className="text-sm">{format(new Date(row.due_date), "MMM d, yyyy")}</span>
-        : <span className="text-sm text-muted-foreground">—</span>,
+        : <span className="text-sm text-[#71717a] dark:text-gray-400">—</span>,
     },
     {
       header: "",
@@ -340,13 +340,13 @@ export default function Tasks() {
           { label: "Completed", value: stats.completed, icon: CheckCircle2, color: "text-primary bg-slate-50" },
         ].map(({ label, value, icon: Icon, color }) => {
           return (
-            <div key={label} className="bg-card rounded-xl border border-primary/40 p-4 flex items-center gap-3">
-              <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${color}`}>
+            <div key={label} className="bg-card rounded-md-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+              <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${color}`}>
                 <Icon className="w-4 h-4" />
               </div>
               <div>
-                <p className="text-xl font-bold">{value}</p>
-                <p className="text-xs text-muted-foreground">{label}</p>
+                <p className="text-xl font-semibold">{value}</p>
+                <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{label}</p>
               </div>
             </div>
           );
@@ -355,7 +355,7 @@ export default function Tasks() {
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-48">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
           <Input className="pl-9" placeholder="Search tasks..." value={search} onChange={e => setSearch(e.target.value)} />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>

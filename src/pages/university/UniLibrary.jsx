@@ -37,24 +37,24 @@ export default function UniLibrary() {
  { label: 'Subscribed Journals', value: '24', icon: Shield, color: 'var(--color-success)'}
  ];
 
- const inputClass = "w-full bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body";
+ const inputClass = "w-full bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-md)] pl-9 pr-3 py-2 text-[var(--text-sm)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] font-body";
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
  <div className="border-b border-primary/40 pb-4">
- <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight">University Library System</h1>
+ <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">University Library System</h1>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Search physical catalogs, browse digital repository directories, and review academic journals.</p>
  </div>
 
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  {stats.map((stat, i) => (
- <div key={i} className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6">
+ <div key={i} className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6">
  <div className="flex items-center justify-between">
  <div>
- <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)]">{stat.label}</p>
- <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight">{stat.value}</h3>
+ <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">{stat.label}</p>
+ <h3 className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mt-1 tracking-tight tracking-[-0.02em]">{stat.value}</h3>
  </div>
- <div className="w-12 h-12 rounded-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: `color-mix(in srgb, ${stat.color} 15%, transparent)`}}>
+ <div className="w-12 h-12 rounded-md-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: `color-mix(in srgb, ${stat.color} 15%, transparent)`}}>
  <stat.icon className="w-6 h-6" style={{ color: stat.color}} />
  </div>
  </div>
@@ -63,7 +63,7 @@ export default function UniLibrary() {
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
- <div className="lg:col-span-2 bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] overflow-hidden ">
+ <div className="lg:col-span-2 bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden ">
  <div className="p-6 border-b border-primary/40">
  <h2 className="font-semibold text-[var(--color-text-primary)]">Digital Library & Repository</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mt-1">Browse online publications, lecture notes, and research materials.</p>
@@ -78,14 +78,14 @@ export default function UniLibrary() {
  />
  ) : (
  digitalItems.map((item, idx) => (
- <div key={idx} className="p-4 bg-[var(--color-surface-1)] border border-primary/40 rounded-[var(--radius-lg)] flex justify-between items-center text-[var(--text-xs)] hover:border-[var(--primary)] transition-colors">
+ <div key={idx} className="p-4 bg-[var(--color-surface-1)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-lg)] flex justify-between items-center text-[var(--text-xs)] hover:border-[var(--primary)] transition-colors tracking-[0.04em]">
  <div>
- <h4 className="font-bold text-[var(--text-sm)] text-[var(--color-text-primary)] flex items-center gap-1.5">
+ <h4 className="font-semibold text-[var(--text-sm)] text-[var(--color-text-primary)] flex items-center gap-2.5">
  <FileText className="w-4 h-4" style={{ color: 'var(--primary)'}} /> {item.title}
  </h4>
  <p className="text-[var(--color-text-secondary)] mt-1">Author: {item.author} · Published: {item.date}</p>
  </div>
- <button className="flex items-center gap-1 px-3 py-1.5 bg-[var(--primary)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all text-xs">
+ <button className="flex items-center gap-2 px-3 py-1.5 bg-[var(--primary)] hover:opacity-90 text-white font-medium rounded-md-[var(--radius-md)] transition-all text-xs tracking-[0.04em]">
  <Download className="w-3.5 h-3.5" /> Download PDF
  </button>
  </div>
@@ -94,7 +94,7 @@ export default function UniLibrary() {
  </div>
  </div>
 
- <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-[var(--radius-xl)] p-6 h-fit ">
+ <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 h-fit ">
  <h2 className="font-semibold text-[var(--color-text-primary)] mb-1">Catalog Search</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-4">Search the physical catalog database.</p>
  <div className="space-y-3">
@@ -102,7 +102,7 @@ export default function UniLibrary() {
  <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-tertiary)]" />
  <input type="text" placeholder="Search books, authors..." className={inputClass} />
  </div>
- <button className="w-full py-2 bg-[var(--primary)] hover:opacity-90 text-white font-medium rounded-[var(--radius-md)] transition-all text-sm">
+ <button className="w-full py-2 bg-[var(--primary)] hover:opacity-90 text-white font-medium rounded-md-[var(--radius-md)] transition-all text-sm">
  Query Catalog
  </button>
  </div>

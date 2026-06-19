@@ -25,7 +25,7 @@ export default function PageRenderer({ schema, onBlockClick, selectedBlockId}) {
  const BlockComponent = COMPONENT_MAP[block.component];
  if (!BlockComponent) {
  return (
- <div key={block.id} className="p-4 bg-red-50 text-red-600 rounded-lg border border-red-200 md:col-span-12">
+ <div key={block.id} className="p-4 bg-red-50 text-red-600 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-red-200 md:col-span-12">
  Unknown component: {block.component}
  </div>
  );
@@ -39,14 +39,14 @@ export default function PageRenderer({ schema, onBlockClick, selectedBlockId}) {
  key={block.id} 
  className={cn(
  `md:col-span-${colSpan}`,
- "relative group transition-all rounded-xl",
+ "relative group transition-all rounded-md-xl",
  isSelected ? "ring-2 ring-primary ring-offset-2" : "hover:ring-2 hover:ring-primary/30 hover:ring-offset-1"
  )}
  onClick={() => onBlockClick && onBlockClick(block.id)}
  >
  {/* Editor Overlay handle */}
  {onBlockClick && (
- <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded cursor-pointer z-10 transition-opacity">
+ <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 bg-primary text-white text-[10px] font-semibold px-2 py-1 rounded-md cursor-pointer z-10 transition-opacity">
  Edit Block
  </div>
  )}
