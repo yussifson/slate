@@ -3385,7 +3385,8 @@ export const AppSchema = new Schema({
         soap_objective: column.text,
         soap_assessment: column.text,
         soap_plan: column.text,
-        notes: column.text})    univ_hotel_reservations: new Table({
+        notes: column.text}),
+    univ_hotel_reservations: new Table({
         id: column.text,
         created_at: column.text,
         company_id: column.text,
