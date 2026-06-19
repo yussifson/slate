@@ -601,6 +601,7 @@ export const INDUSTRIES = {
       { label: 'Security & Audit', path: '/admin/security', icon: 'Shield' },
       { label: 'System Broadcasts', path: '/admin/broadcasts', icon: 'BellRing' },
       { label: 'Enterprise Requests', path: '/admin/enterprise-requests', icon: 'Building2' },
+      { label: 'Partner Applications', path: '/admin/partners', icon: 'Handshake' },
 
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
