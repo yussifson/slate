@@ -411,6 +411,16 @@ export const AppSchema = new Schema({
         details: column.text,
         created_at: column.text,
         updated_at: column.text}),
+    partner_applications: new Table({
+        id: column.text,
+        created_at: column.text,
+        updated_at: column.text,
+        name: column.text,
+        email: column.text,
+        company_name: column.text,
+        partner_type: column.text,
+        message: column.text,
+        status: column.text}),
     payroll_slips: new Table({
         id: column.text,
         created_at: column.text,
@@ -2290,7 +2300,9 @@ export const AppSchema = new Schema({
         status: column.text,
         result_value: column.text,
         reference_range: column.text,
-        document_url: column.text}),
+        document_url: column.text,
+        ai_clinical_summary: column.text,
+        ai_patient_summary: column.text}),
     univ_leadmagnets: new Table({
         id: column.text,
         created_at: column.text,
