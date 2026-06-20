@@ -248,12 +248,12 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  </Button>
 
  {/* Video Grid */}
- <div className="flex-1 p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-fr overflow-y-auto bg-muted/30">
+ <div className="flex-1 p-4 flex flex-wrap content-center justify-center gap-4 overflow-y-auto bg-muted/30">
  {screens.map(screen => (
  <ScreenShareTile key={screen.screenId} screen={screen} />
  ))}
  {(() => {
- const allParticipants = localSessionId ? [localSessionId, ...participantIds] : participantIds;
+ const allParticipants = [localSessionId, ...participantIds.filter(id => id !== localSessionId)].filter(Boolean);
  return allParticipants.map(id => (
  <ParticipantTile key={id} id={id} isLocal={id === localSessionId} />
  )).concat(allParticipants.length === 0 ? (
@@ -464,7 +464,7 @@ function ParticipantTile({ id, isLocal}) {
 }, [audioState?.track, isLocal]);
 
  return (
- <div className="relative bg-slate-800 rounded-xl overflow-hidden group flex items-center justify-center">
+ <div className="relative bg-slate-800 rounded-xl overflow-hidden group flex items-center justify-center aspect-video w-full max-w-2xl min-w-[280px] shadow-sm border border-slate-700/50">
  {videoState?.state === 'playable' ? (
  <video 
  ref={videoRef}
