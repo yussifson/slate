@@ -89,9 +89,9 @@ export default function Marketplace() {
  try {
  const _payload = {
  company_id: companyId,
- name: module.name,
- icon: module.icon,
- color: module.color,
+ name: mod.name,
+ icon: mod.icon,
+ color: mod.color,
  is_active: true
 };
  const _keys = Object.keys(_payload);

@@ -128,36 +128,14 @@ export default function UnivRecruitment() {
     const { source, destination, draggableId } = result;
     if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
-    // Optimistic UI update
     const newStatus = destination.droppableId;
     
-    setCandidates(prev => {
-      const newCandidates = [...prev];
-      const draggedIndex = newCandidates.findIndex(c => c.id === draggableId);
-      if (draggedIndex === -1) return prev;
-      
-      const [draggedCandidate] = newCandidates.splice(draggedIndex, 1);
-      draggedCandidate.status = newStatus;
-      
-      // Calculate where to insert to satisfy react-beautiful-dnd's destination.index
-      let insertIndex = newCandidates.length;
-      let currentStageCount = 0;
-      for (let i = 0; i < newCandidates.length; i++) {
-        if (newCandidates[i].status === newStatus) {
-          if (currentStageCount === destination.index) {
-            insertIndex = i;
-            break;
-          }
-          currentStageCount++;
-        }
-      }
-      
-      newCandidates.splice(insertIndex, 0, draggedCandidate);
-      return newCandidates;
-    });
+    // Simple optimistic update
+    setCandidates(prev => prev.map(c => c.id === draggableId ? { ...c, status: newStatus } : c));
     
     // DB update
     await updateStatus(draggableId, newStatus);
+    fetchData();
   };
 
   const openModal = (r = null) => { setForm(r ? { ...r } : EMPTY_FORM); setEditingId(r?.id || null); setIsModalOpen(true); };
