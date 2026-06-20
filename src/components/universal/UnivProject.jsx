@@ -9,9 +9,8 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
-import {Briefcase, Plus, Search, Trash2, Edit2,, XCircle, Calendar, User, CheckCircle2, Clock, AlertCircle} from "lucide-react";
+import { Briefcase, Plus, Search, Trash2, Edit2, Loader2, XCircle, Calendar, User, CheckCircle2, Clock, AlertCircle} from 'lucide-react';
 import { toast} from 'react-hot-toast';
-import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const EMPTY_FORM = { name: '', description: '', client_name: '', status: 'Active', priority: 'Medium', start_date: '', due_date: '', budget: '', assigned_to: '', progress: 0};
 const STATUS_COLORS = { Active: 'bg-blue-50 text-blue-700 border-blue-200', Completed: 'bg-emerald-50 text-emerald-700 border-emerald-200', 'On Hold': 'bg-amber-50 text-amber-700 border-amber-200', Cancelled: 'bg-red-50 text-red-700 border-red-200', Planning: 'bg-violet-50 text-violet-700 border-violet-200'};
@@ -134,7 +133,7 @@ export default function UnivProject() {
  </div>
 
  <div className="flex-1 overflow-auto min-h-0 custom-scrollbar">
- {loading ? <div className="flex h-40 items-center justify-center"><OrbitLoader size="md" /></div>
+ {loading ? <div className="flex h-40 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
  : view === 'Timeline' ? (
  <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-6 overflow-x-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <h3 className="font-semibold text-lg mb-4">Project Gantt Timeline</h3>

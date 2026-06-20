@@ -136,7 +136,7 @@ const UnivAllergyList = () => {
 
  <div className="md:col-span-2 grid grid-cols-1 gap-4 content-start">
  {loading ? (
- <div className="text-center py-10"><OrbitLoader size="md" /></div>
+ <div className="text-center py-10"><AlertCircle className="w-8 h-8 text-red-500 animate-spin mx-auto" /></div>
  ) : allergies.length === 0 ? (
  <div className="text-center py-10 bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">No allergy records found.</div>
  ) : (

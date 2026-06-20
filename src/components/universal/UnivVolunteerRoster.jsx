@@ -97,7 +97,7 @@ export default function UnivVolunteerRoster() {
  </button>
 
  <button onClick={fetchItems} className="p-2 bg-muted hover:bg-muted/60 rounded-full transition-colors">
- { loading ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" /> }
+ <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
  </button>
  <button onClick={() => setShowForm(true)} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-colors ">
  <Plus size={20} /> Add New

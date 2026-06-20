@@ -10,10 +10,9 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
-import {Users, UserPlus, Search, Trash2, Edit2,, XCircle, Mail, Phone, Building2, Briefcase, DollarSign, LayoutGrid, List, Network} from "lucide-react";
+import { Users, UserPlus, Search, Trash2, Edit2, Loader2, XCircle, Mail, Phone, Building2, Briefcase, DollarSign, LayoutGrid, List, Network} from 'lucide-react';
 import { toast} from 'react-hot-toast';
 import { base44 } from "@/api/base44Client";
-import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const EMPTY_FORM = { first_name: '', last_name: '', email: '', phone: '', role_title: '', department: '', status: 'Active', salary: '', employment_type: 'Full-Time', hire_date: ''};
 const DEPARTMENTS = ['General','Engineering','Marketing','Sales','Finance','HR','Operations','Legal','Design','Support'];
@@ -129,7 +128,7 @@ export default function UnivHREmployee() {
  </div>
 
  <div className="flex-1 overflow-auto min-h-0 custom-scrollbar">
- {loading ? <div className="flex h-40 items-center justify-center"><OrbitLoader size="md" /></div>
+ {loading ? <div className="flex h-40 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary"/></div>
  : viewMode==='grid' ? (
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-8">
  {filtered.map(emp=>(

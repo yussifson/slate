@@ -9,9 +9,8 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
-import {DollarSign, Plus, Search, Trash2, Edit2,, XCircle, CreditCard, Building2} from "lucide-react";
+import { DollarSign, Plus, Search, Trash2, Edit2, Loader2, XCircle, CreditCard, Building2} from 'lucide-react';
 import { toast} from 'react-hot-toast';
-import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const STATUS_COLORS = { Completed: 'bg-emerald-50 text-emerald-700 border-emerald-200', Pending: 'bg-amber-50 text-amber-700 border-amber-200', Failed: 'bg-red-50 text-red-700 border-red-200', Refunded: 'bg-blue-50 text-blue-700 border-blue-200'};
 const EMPTY_FORM = { customer_name: '', amount: 0, method: 'Credit Card', status: 'Completed', reference_id: ''};
@@ -168,7 +167,7 @@ export default function UnivPayment() {
  </thead>
  <tbody className="divide-y divide-border">
  {loading ? (
- <tr><td colSpan={7} className="p-8 text-center"><OrbitLoader size="md" /></td></tr>
+ <tr><td colSpan={7} className="p-8 text-center"><Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" /></td></tr>
  ) : filtered.length === 0 ? (
  <tr><td colSpan={7} className="p-12 text-center text-[#71717a] dark:text-gray-400">No payments found.</td></tr>
  ) : (

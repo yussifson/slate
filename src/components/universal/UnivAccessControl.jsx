@@ -3,10 +3,9 @@ import React, { useState, useEffect} from 'react';
 
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
-import {Plus, Trash2, Edit2,, XCircle, Search, Shield, Users, Key, Check} from "lucide-react";
+import { Plus, Trash2, Edit2, Loader2, XCircle, Search, Shield, Users, Key, Check} from 'lucide-react';
 import { toast} from 'react-hot-toast';
 import { motion, AnimatePresence} from 'framer-motion';
-import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 // Master list of available features to govern
 const AVAILABLE_FEATURES = [
@@ -230,7 +229,7 @@ export default function UnivAccessControl() {
  </div>
 
  {loading ? (
- <div className="flex-1 flex items-center justify-center"><OrbitLoader size="md" /></div>
+ <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
  ) : activeTab === 'users' ? (
  <div className="flex-1 overflow-auto custom-scrollbar">
  <table className="w-full text-sm">

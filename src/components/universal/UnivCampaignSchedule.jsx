@@ -11,7 +11,6 @@ import { useCompanyId} from '@/hooks/useCompanyId';
 import { supabase} from "@/api/supabaseClient";
 import { motion, AnimatePresence} from 'framer-motion';
 import { Plus, Trash2, Edit2, Save, X, Calendar, DollarSign, Activity} from 'lucide-react';
-import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function UnivCampaignSchedule() {
  const companyId = useCompanyId();
@@ -218,7 +217,7 @@ export default function UnivCampaignSchedule() {
 
  {loading ? (
  <div className="flex justify-center py-12">
- <OrbitLoader size="md" />
+ <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
  </div>
  ) : (
  <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">

@@ -1,10 +1,12 @@
 import { powerSync} from '@/api/PowerSyncConnector';
 import React, { useState, useMemo, useRef, useCallback, useEffect} from 'react';
 import { motion, AnimatePresence} from 'framer-motion';
-import {Search, Download, Plus,, Trash2,
+import {
+ Search, Download, Plus, Loader2, Trash2,
  ArrowUp, ArrowDown, ArrowUpDown, ChevronDown, ChevronRight,
  Save, Bookmark, X, CheckSquare, SquareMinus, Layers,
- FileDown, AlertCircle} from "lucide-react";
+ FileDown, AlertCircle
+} from 'lucide-react';
 import { useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
 
 import { supabase} from "@/api/supabaseClient";
@@ -14,7 +16,6 @@ import { Badge} from '@/components/ui/badge';
 import { useToast} from '@/components/ui/use-toast';
 import { cn} from '@/lib/utils';
 import { useCompanyId} from '@/hooks/useCompanyId';
-import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 /* ─────────────────────────────────────────────
  Helpers
@@ -616,7 +617,7 @@ export default function UnivDataGrid({
  </div>
  <Button type="button" variant="outline" onClick={() => setIsAdding(false)} className="h-10 rounded-xl">Cancel</Button>
  <Button type="submit" disabled={addMutation.isPending} className="h-10 bg-primary text-white rounded-xl">
- {addMutation.isPending ? <OrbitLoader size="sm" /> : 'Save Record'}
+ {addMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Record'}
  </Button>
  </form>
  </div>
@@ -791,7 +792,7 @@ export default function UnivDataGrid({
  <div className="flex-1 overflow-auto relative min-h-0">
  {isLoading && (
  <div className="absolute inset-0 flex items-center justify-center bg-background/60 z-20 backdrop-blur-sm">
- <OrbitLoader size="md" />
+ <Loader2 className="w-8 h-8 animate-spin text-primary" />
  </div>
  )}
 

@@ -9,10 +9,9 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
-import {Plus, Trash2, Edit2,, XCircle, Search, FileText} from "lucide-react";
+import { Plus, Trash2, Edit2, Loader2, XCircle, Search, FileText} from 'lucide-react';
 import { toast} from 'react-hot-toast';
 import { motion, AnimatePresence} from 'framer-motion';
-import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const TABLE = 'univ_taxfilings';
 const EMPTY = {"filing_name":"","tax_type":"","period":"","due_date":"","filed_date":"","tax_amount":"","notes":"","status":"Pending"};
@@ -112,7 +111,7 @@ export default function UnivTaxFiling() {
  </div>
 
  {loading ? (
- <div className="flex-1 flex items-center justify-center"><OrbitLoader size="md" /></div>
+ <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
  ) : (
  <div className="flex-1 overflow-auto rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm min-w-[600px]">

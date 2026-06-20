@@ -9,9 +9,8 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
-import {Package, Plus, Search, Trash2, Edit2,, XCircle, AlertTriangle, DollarSign, Archive, BarChart2, Filter, QrCode} from "lucide-react";
+import { Package, Plus, Search, Trash2, Edit2, Loader2, XCircle, AlertTriangle, DollarSign, Archive, BarChart2, Filter, QrCode} from 'lucide-react';
 import { toast} from 'react-hot-toast';
-import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const EMPTY_FORM = { item_name: '', sku: '', category: '', quantity: 0, unit_price: 0, reorder_level: 10, supplier: '', location: ''};
 
@@ -170,7 +169,7 @@ export default function UnivInventory() {
  <div className="col-span-4">Item</div><div className="col-span-2">Category</div><div className="col-span-1 text-right">Qty</div><div className="col-span-2 text-right">Unit Price</div><div className="col-span-2">Status</div><div className="col-span-1 text-right">Actions</div>
  </div>
  <div className="flex-1 overflow-y-auto custom-scrollbar">
- {loading ? <div className="flex h-40 items-center justify-center"><OrbitLoader size="md" /></div>
+ {loading ? <div className="flex h-40 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
  : filtered.length === 0 ? <div className="p-12 text-center text-[#71717a] dark:text-gray-400"><Package className="w-12 h-12 mx-auto text-[#71717a] dark:text-gray-400/30 mb-3" /><p className="font-medium">No items found.</p></div>
  : filtered.map(item => (
  <div key={item.id} className="grid grid-cols-12 gap-2 p-4 border-b border-primary/40 hover:bg-muted/30 transition-colors items-center group">

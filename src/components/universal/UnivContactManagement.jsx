@@ -8,9 +8,8 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase} from '@/api/supabaseClient';
 import { useCompanyId} from '@/hooks/useCompanyId';
-import {Users, Plus, Search, Trash2, Edit2,, XCircle, Mail, Phone, Building2, LayoutGrid, List} from "lucide-react";
+import { Users, Plus, Search, Trash2, Edit2, Loader2, XCircle, Mail, Phone, Building2, LayoutGrid, List} from 'lucide-react';
 import { toast} from 'react-hot-toast';
-import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const EMPTY_FORM = { name: '', email: '', phone: '', company: '', type: 'Client', address: '', notes: ''};
 const TYPE_COLORS = { Client: 'bg-blue-50 text-blue-700 border-blue-200', Vendor: 'bg-violet-50 text-violet-700 border-violet-200', Partner: 'bg-emerald-50 text-emerald-700 border-emerald-200', Other: 'bg-muted text-[#71717a] dark:text-gray-400 border-primary/40'};
@@ -159,7 +158,7 @@ export default function UnivContactManagement() {
  </div>
 
  <div className="flex-1 overflow-auto min-h-0 custom-scrollbar">
- {loading ? <div className="flex h-40 items-center justify-center"><OrbitLoader size="md" /></div>
+ {loading ? <div className="flex h-40 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
  : viewMode === 'grid' ? (
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-8">
  {filtered.map(r => (

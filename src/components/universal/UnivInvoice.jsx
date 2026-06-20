@@ -9,10 +9,9 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
-import {FileText, Plus, Search, Trash2, Edit2,, XCircle, Send, Download, Clock, CreditCard, AlertCircle, CheckCircle2, Eye, Link} from "lucide-react";
+import { FileText, Plus, Search, Trash2, Edit2, Loader2, XCircle, Send, Download, Clock, CreditCard, AlertCircle, CheckCircle2, Eye, Link} from 'lucide-react';
 import { toast} from 'react-hot-toast';
 import { jsPDF} from 'jspdf';
-import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const EMPTY_FORM = { client_name: '', client_email: '', invoice_number: '', amount: '', currency: 'USD', status: 'Draft', due_date: '', issue_date: '', notes: ''};
 const STATUS_COLORS = { Draft: 'bg-muted text-foreground border-primary/40', Sent: 'bg-blue-50 text-blue-700 border-blue-200', Paid: 'bg-emerald-50 text-emerald-700 border-emerald-200', Overdue: 'bg-red-50 text-red-700 border-red-200', Cancelled: 'bg-zinc-100 text-zinc-600 border-zinc-200'};
@@ -169,7 +168,7 @@ export default function UnivInvoice() {
  <div className="col-span-3">Client</div><div className="col-span-2">Invoice #</div><div className="col-span-2 text-right">Amount</div><div className="col-span-2">Due Date</div><div className="col-span-2">Status</div><div className="col-span-1 text-right">Actions</div>
  </div>
  <div className="flex-1 overflow-y-auto custom-scrollbar">
- {loading ? <div className="flex h-40 items-center justify-center"><OrbitLoader size="md" /></div>
+ {loading ? <div className="flex h-40 items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary"/></div>
  : filtered.length===0 ? <div className="p-12 text-center text-[#71717a] dark:text-gray-400"><FileText className="w-12 h-12 mx-auto text-[#71717a] dark:text-gray-400/30 mb-3"/><p className="font-medium">No invoices found.</p></div>
  : filtered.map(inv=>(
  <div key={inv.id} className="grid grid-cols-12 gap-2 p-4 border-b border-primary/40 hover:bg-muted/30 transition-colors items-center group">

@@ -2,10 +2,9 @@ import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
-import {Plus, Trash2, Edit2,, XCircle, Search, Truck, AlertTriangle, Settings, Wrench, MoreHorizontal, Download, Calendar, Activity} from "lucide-react";
+import { Plus, Trash2, Edit2, Loader2, XCircle, Search, Truck, AlertTriangle, Settings, Wrench, MoreHorizontal, Download, Calendar, Activity } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
-import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const TABLE = 'univ_fleet';
 const EMPTY = { vehicle_name: "", license_plate: "", vehicle_type: "Van", status: "Active", mileage: "", last_service_date: new Date().toISOString().split('T')[0] };
@@ -169,7 +168,7 @@ export default function UnivFleet() {
 
       {/* Table */}
       {loading ? (
-        <div className="flex-1 flex items-center justify-center"><OrbitLoader size="md" /></div>
+        <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
       ) : (
         <div className="flex-1 overflow-auto rounded-2xl border border-primary/40 bg-card custom-scrollbar">
           <table className="w-full text-sm min-w-[900px]">
@@ -282,7 +281,7 @@ export default function UnivFleet() {
               <div className="flex justify-end gap-3 mt-4 pt-5 border-t shrink-0">
                 <button type="button" onClick={closeModal} className="h-11 px-6 bg-muted rounded-xl text-sm font-bold hover:bg-muted/80 transition-colors">Cancel</button>
                 <button type="submit" disabled={saving} className="h-11 px-6 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 transition-colors flex items-center gap-2">
-                  {saving && <OrbitLoader size="sm" />}
+                  {saving && <Loader2 className="w-4 h-4 animate-spin" />}
                   {editId ? 'Save Changes' : 'Add Vehicle'}
                 </button>
               </div>

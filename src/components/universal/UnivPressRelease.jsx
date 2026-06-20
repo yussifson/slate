@@ -11,7 +11,6 @@ import { useCompanyId} from '@/hooks/useCompanyId';
 import { supabase} from "@/api/supabaseClient";
 import { motion, AnimatePresence} from 'framer-motion';
 import { Plus, Trash2, Edit2, Save, X, Mic, FileText, BarChart2} from 'lucide-react';
-import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function UnivPressRelease() {
  const companyId = useCompanyId();
@@ -214,7 +213,7 @@ export default function UnivPressRelease() {
 
  {loading ? (
  <div className="flex justify-center py-12">
- <OrbitLoader size="md" />
+ <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-rose-600"></div>
  </div>
  ) : (
  <div className="space-y-4">

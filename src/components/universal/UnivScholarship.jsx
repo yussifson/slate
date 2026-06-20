@@ -161,7 +161,7 @@ export default function UnivScholarship() {
  onClick={fetchData}
  className="p-2 bg-card dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 rounded-xl hover:bg-background dark:hover:bg-slate-700 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
  >
- { loading ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" /> }
+ <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
  </button>
  <button 
  onClick={() => {
@@ -198,7 +198,7 @@ export default function UnivScholarship() {
  {loading ? (
  <tr>
  <td colSpan="5" className="p-8 text-center text-[#71717a] dark:text-gray-400">
- <OrbitLoader size="sm" />
+ <RefreshCw className="animate-spin mx-auto mb-2" />
  Loading records...
  </td>
  </tr>

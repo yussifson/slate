@@ -211,13 +211,13 @@ const UnivSnagList = () => {
  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-background/50">
  <h3 className="font-semibold text-foreground">Recent Records</h3>
  <button onClick={fetchData} className="text-[#71717a] dark:text-gray-400 hover:text-blue-600 transition-colors p-2 rounded-xl hover:bg-blue-50">
- { loading ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" /> }
+ <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
  </button>
  </div>
  
  {loading ? (
  <div className="p-8 text-center text-[#71717a] dark:text-gray-400 flex flex-col items-center">
- <OrbitLoader size="md" />
+ <RefreshCw size={32} className="animate-spin mb-3 text-blue-500" />
  <p>Loading data...</p>
  </div>
  ) : data.length === 0 ? (

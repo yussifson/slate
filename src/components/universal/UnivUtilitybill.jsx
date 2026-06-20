@@ -9,10 +9,9 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
-import {Zap, Plus, Trash2, Edit2,, XCircle, Search} from "lucide-react";
+import { Zap, Plus, Trash2, Edit2, Loader2, XCircle, Search} from 'lucide-react';
 import { toast} from 'react-hot-toast';
 import { motion, AnimatePresence} from 'framer-motion';
-import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 const TABLE = 'univ_utilitybills';
 const EMPTY = { unit_address: '', tenant_name: '', utility_type: 'Electricity', amount: '', bill_date: '', due_date: '', status: 'Unpaid', meter_reading: ''};
@@ -89,7 +88,7 @@ export default function UnivUtilitybill() {
  </div>
  </div>
  <div className="relative max-w-sm"><Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" /><input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search bills..." className="w-full h-10 pl-9 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:ring-2 focus:ring-primary/40 focus:outline-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" /></div>
- {loading ? <div className="flex-1 flex items-center justify-center"><OrbitLoader size="md" /></div> : (
+ {loading ? <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div> : (
  <div className="flex-1 overflow-auto rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm"><thead className="border-b border-primary/40 bg-muted/40"><tr>{['Address', 'Tenant', 'Type', 'Amount', 'Due Date', 'Status', ''].map(h => <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{h}</th>)}</tr></thead>
  <tbody>{filtered.map(r => (

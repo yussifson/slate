@@ -9,9 +9,8 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 import { supabase} from '@/api/supabaseClient';
 import { useCompanyId} from '@/hooks/useCompanyId';
 import { motion} from 'framer-motion';
-import {Send, Smile, Paperclip, Search, Phone, Video, Info,} from "lucide-react";
+import { Send, Smile, Paperclip, Search, Phone, Video, Info, Loader2} from 'lucide-react';
 import { toast} from 'react-hot-toast';
-import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function UnivMessaging() {
  const companyId = useCompanyId();
@@ -205,7 +204,7 @@ export default function UnivMessaging() {
  if (loadingContacts) {
  return (
  <div className="flex h-full items-center justify-center bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl ${view !== 'Default' ? 'hide-default' : ''}">
- <OrbitLoader size="md" />
+ <Loader2 className="w-8 h-8 animate-spin text-primary" />
  </div>
  );
 }
@@ -281,7 +280,7 @@ export default function UnivMessaging() {
  <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-background/50 dark:bg-background/50">
  {loadingMessages ? (
  <div className="flex h-full items-center justify-center">
- <OrbitLoader size="md" />
+ <Loader2 className="w-6 h-6 animate-spin text-primary" />
  </div>
  ) : messages.map(msg => {
  const isMe = msg.sender_id === currentUser?.id;

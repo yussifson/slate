@@ -126,7 +126,7 @@ const UnivImmunization = () => {
 
  <div className="md:col-span-2 space-y-4">
  {loading ? (
- <div className="text-center py-10"><OrbitLoader size="md" /></div>
+ <div className="text-center py-10"><Activity className="w-8 h-8 text-blue-500 animate-spin mx-auto" /></div>
  ) : immunizations.length === 0 ? (
  <div className="text-center py-10 bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">No immunization records found.</div>
  ) : (

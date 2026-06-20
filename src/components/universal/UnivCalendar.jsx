@@ -2,13 +2,12 @@ import { powerSync} from '@/api/PowerSyncConnector';
 import React, { useState, useMemo} from 'react';
 import { useCompanyId} from '@/hooks/useCompanyId';
 import { motion, AnimatePresence} from 'framer-motion';
-import {ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon, Clock, Users, Video,, Trash2} from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon, Clock, Users, Video, Loader2, Trash2} from 'lucide-react';
 import { useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
 
 import { supabase} from "@/api/supabaseClient";
 import { Button} from '@/components/ui/button';
 import { useToast} from '@/components/ui/use-toast';
-import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function UnivCalendar({
  title = "Calendar",
@@ -185,7 +184,7 @@ export default function UnivCalendar({
  </div>
  <Button type="button" variant="outline" onClick={() => setIsAdding(false)} className="h-10 rounded-xl">Cancel</Button>
  <Button type="submit" disabled={addMutation.isPending} className="h-10 bg-primary text-white rounded-xl">
- {addMutation.isPending ? <OrbitLoader size="sm" /> : 'Save Event'}
+ {addMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Event'}
  </Button>
  </form>
  </div>
@@ -196,7 +195,7 @@ export default function UnivCalendar({
  <div className="flex-1 flex flex-col bg-card overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {isLoading ? (
  <div className="flex-1 flex items-center justify-center">
- <OrbitLoader size="md" />
+ <Loader2 className="w-8 h-8 animate-spin text-primary/50" />
  </div>
  ) : view === 'Month' && (
  <div className="flex-1 flex flex-col min-w-[600px]">

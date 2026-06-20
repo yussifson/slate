@@ -10,7 +10,7 @@ import {
  useDailyEvent,
  useScreenShare
 } from '@daily-co/daily-react';
-import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkles, LayoutGrid, Maximize2, Minimize2, ExternalLink, MessageSquare, Send, X, UserPlus} from 'lucide-react';
+import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkles, LayoutGrid, Maximize2, Minimize2, ExternalLink, MessageSquare, Send, X, UserPlus, Mail} from 'lucide-react';
 import { Button} from "@/components/ui/button";
 import { generateText} from "@/lib/cloudflareAI";
 import { useToast} from "@/components/ui/use-toast";
@@ -146,30 +146,58 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
 }, [joined, isMuted, daily]);
 
  const handleAiAssist = async () => {
- if (transcriptData.length === 0) {
- setAiResponse("No meaningful conversation detected yet. Please make sure your microphone is unmuted and speak clearly to generate a meeting transcript.");
- return;
-}
+   if (transcriptData.length === 0) {
+     setAiResponse("No meaningful conversation detected yet. Please make sure your microphone is unmuted and speak clearly to generate a meeting transcript.");
+     return;
+   }
 
- setIsAiLoading(true);
- setAiResponse(null);
- toast({ title: "Orbit Meeting AI", description: "Generating meeting summary from live transcription..."});
- try {
- const meetingContext = transcriptData.map(t => `${t.name}: ${t.text}`).join('\n');
+   setIsAiLoading(true);
+   setAiResponse(null);
+   toast({ title: "Orbit Meeting AI", description: "Generating meeting summary and action items..."});
+   try {
+     const meetingContext = transcriptData.map(t => `${t.name}: ${t.text}`).join('\n');
 
- const messages = [
- { role: 'system', content: 'You are an AI meeting assistant. Summarize the following meeting transcript into 3 concise bullet points or action items.'},
- { role: 'user', content: meetingContext}
- ];
- const response = await generateText(messages);
- setAiResponse(response || "Meeting concluded without action items.");
-} catch (err) {
- console.error(err);
- toast({ title: "AI Error", description: "Failed to connect to AI backend.", variant: "destructive"});
-} finally {
- setIsAiLoading(false);
-}
-};
+     const messages = [
+       { role: 'system', content: 'You are an AI meeting assistant. Summarize the following meeting transcript into concise bullet points, specifically extracting any "Action Items" or decisions made. Format elegantly using basic HTML (like <ul>, <li>, <strong>) but do not use markdown blocks.'},
+       { role: 'user', content: meetingContext}
+     ];
+     let response = await generateText(messages);
+     if (typeof response !== 'string') response = response.response || response.text || JSON.stringify(response);
+     setAiResponse(response || "Meeting concluded without action items.");
+   } catch (err) {
+     console.error(err);
+     toast({ title: "AI Error", description: "Failed to connect to AI backend.", variant: "destructive"});
+   } finally {
+     setIsAiLoading(false);
+   }
+ };
+
+ const handleAiFollowUp = async () => {
+   if (transcriptData.length === 0) {
+     setAiResponse("Not enough transcript data to draft a follow-up email.");
+     return;
+   }
+
+   setIsAiLoading(true);
+   setAiResponse(null);
+   toast({ title: "Orbit Meeting AI", description: "Drafting follow-up email..."});
+   try {
+     const meetingContext = transcriptData.map(t => `${t.name}: ${t.text}`).join('\n');
+
+     const messages = [
+       { role: 'system', content: 'You are an AI assistant. Draft a professional follow-up email to the participants based on the transcript. Include a summary and next steps. Use basic HTML formatting (like <p>, <strong>, <br>) without markdown blocks.'},
+       { role: 'user', content: meetingContext}
+     ];
+     let response = await generateText(messages);
+     if (typeof response !== 'string') response = response.response || response.text || JSON.stringify(response);
+     setAiResponse(`<strong>Drafted Follow-Up Email:</strong><br/><br/>${response}`);
+   } catch (err) {
+     console.error(err);
+     toast({ title: "AI Error", description: "Failed to connect to AI backend.", variant: "destructive"});
+   } finally {
+     setIsAiLoading(false);
+   }
+ };
 
  const [chatMessages, setChatMessages] = useState([]);
  const [chatInput, setChatInput] = useState("");
@@ -325,12 +353,20 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  <UserPlus className="w-5 h-5" />
  </Button>
  <Button 
- variant="secondary"
- onClick={handleAiAssist}
- disabled={isAiLoading}
- className="h-12 px-6 rounded-full font-semibold gap-2 hover:bg-primary hover:text-primary-foreground transition-colors"
+  variant="secondary"
+  onClick={handleAiAssist}
+  disabled={isAiLoading}
+  className="h-12 px-5 rounded-full font-semibold gap-2 hover:bg-primary hover:text-primary-foreground transition-colors"
  >
- <Sparkles className="w-4 h-4" /> {isAiLoading ? "Processing..." : "AI Assistant"}
+  <Sparkles className="w-4 h-4" /> {isAiLoading ? "Processing..." : "AI Notes"}
+ </Button>
+ <Button 
+  variant="secondary"
+  onClick={handleAiFollowUp}
+  disabled={isAiLoading}
+  className="h-12 px-5 rounded-full font-semibold gap-2 hover:bg-primary hover:text-primary-foreground transition-colors hidden lg:flex"
+ >
+  <Mail className="w-4 h-4" /> AI Follow-Up
  </Button>
  </>
  )}

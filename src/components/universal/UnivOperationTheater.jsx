@@ -147,7 +147,7 @@ const UnivOperationTheater = () => {
 
         <div className="lg:col-span-2 grid gap-4">
           {loading ? (
-            <div className="text-center py-20"><OrbitLoader size="md" /></div>
+            <div className="text-center py-20"><Activity className="w-10 h-10 text-teal-500 animate-spin mx-auto" /></div>
           ) : operations.length === 0 ? (
             <div className="text-center py-20 bg-slate-800 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-[#71717a] dark:text-gray-400">No operations scheduled.</div>
           ) : (
