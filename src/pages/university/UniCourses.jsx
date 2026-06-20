@@ -1,9 +1,8 @@
 import React, { useState} from 'react';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
-import { base44} from "@/api/base44Client";
 import { useCompanyId} from "@/hooks/useCompanyId";
-import { BookOpen, Search, Plus, Clock, Users, Calendar, Award, User, Landmark} from 'lucide-react';
+import { BookOpen, Plus} from 'lucide-react';
 import OrbitTable from '@/components/university/OrbitTable';
 import OrbitStatusBadge from '@/components/university/OrbitStatusBadge';
 import OrbitEmptyState from '@/components/university/OrbitEmptyState';

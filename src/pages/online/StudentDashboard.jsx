@@ -14,10 +14,10 @@ export default function StudentDashboard() {
  const [aiPath, setAiPath] = useState('');
  const [isGeneratingPath, setIsGeneratingPath] = useState(false);
 
- const { data: courses = []} = useQuery({
- queryKey: ["cases", companyId, "online_course"],
- queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'online_course'}),
- enabled: !!companyId
+ const { data: courses = [], isLoading } = useQuery({
+   queryKey: ["cases", companyId, "online_course"],
+   queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'online_course'}),
+   enabled: !!companyId
 });
 
  const enrolledCourses = courses;
@@ -73,7 +73,18 @@ export default function StudentDashboard() {
  </div>
  
  <div className="space-y-4">
- {enrolledCourses.length === 0 ? (
+ {isLoading ? (
+  Array(2).fill(0).map((_, idx) => (
+    <div key={idx} className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-5 flex flex-col sm:flex-row gap-5 items-start sm:items-center">
+      <div className="w-full sm:w-48 aspect-video bg-muted animate-pulse rounded-md-[var(--radius-lg)]" />
+      <div className="flex-1 space-y-3 w-full">
+        <div className="h-6 bg-muted animate-pulse rounded w-3/4" />
+        <div className="h-4 bg-muted animate-pulse rounded w-full" />
+        <div className="h-4 bg-muted animate-pulse rounded w-2/3" />
+      </div>
+    </div>
+  ))
+ ) : enrolledCourses.length === 0 ? (
  <motion.div 
  initial={{ opacity: 0}}
  animate={{ opacity: 1}}
@@ -87,7 +98,7 @@ export default function StudentDashboard() {
  <p className="text-sm text-[var(--color-text-secondary)] mt-2 mb-6 max-w-md mx-auto leading-relaxed">
    {isGeneratingPath ? (
      <span className="flex items-center justify-center gap-2">
-       <span className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+       <span className="w-4 h-4 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin" />
        Analyzing your profile...
      </span>
    ) : (

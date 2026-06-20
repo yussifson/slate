@@ -22,6 +22,7 @@ import analyzeLogistics from '@/lib/intelligence/engines/logistics';
 import analyzeInsurance from '@/lib/intelligence/engines/insurance';
 import analyzeReligion from '@/lib/intelligence/engines/religion';
 import analyzeMarketing from '@/lib/intelligence/engines/marketing';
+import analyzeUniversity from '@/lib/intelligence/engines/university';
 
 const ENGINE_MAP = {
   universal: { fn: analyzeUniversal, name: 'universal-intelligence' },

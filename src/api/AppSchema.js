@@ -1266,6 +1266,16 @@ export const AppSchema = new Schema({
         questions: column.text,
         passing_score: column.text,
         time_limit_minutes: column.text}),
+    online_assessment_results: new Table({
+        id: column.text,
+        created_at: column.text,
+        updated_at: column.text,
+        company_id: column.text,
+        student_id: column.text,
+        assessment_id: column.text,
+        score: column.integer,
+        total_questions: column.integer,
+        passed: column.integer}),
     online_certificates: new Table({
         id: column.text,
         created_at: column.text,
@@ -1281,6 +1291,16 @@ export const AppSchema = new Schema({
         credential_id: column.text,
         pdf_url: column.text,
         status: column.text}),
+    online_notes: new Table({
+        id: column.text,
+        created_at: column.text,
+        updated_at: column.text,
+        created_by: column.text,
+        company_id: column.text,
+        course_id: column.text,
+        course_title: column.text,
+        title: column.text,
+        content: column.text}),
     connected_apps: new Table({
         id: column.text,
         company_id: column.text,

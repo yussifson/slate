@@ -1,9 +1,8 @@
 import React, { useState} from 'react';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
-import { base44} from "@/api/base44Client";
 import { useCompanyId} from "@/hooks/useCompanyId";
-import { GraduationCap, Search, Filter, CheckCircle, XCircle, Clock, Plus, Eye, Calendar, CalendarCheck} from 'lucide-react';
+import { GraduationCap, Eye, Calendar, CalendarCheck} from 'lucide-react';
 import OrbitTable from '@/components/university/OrbitTable';
 import OrbitStatusBadge from '@/components/university/OrbitStatusBadge';
 import OrbitEmptyState from '@/components/university/OrbitEmptyState';
@@ -24,9 +23,15 @@ export default function UniAdmissions() {
 });
 
  const createApplicantMutation = useMutation({
- mutationFn: (newApplicant) => base44.entities.Client.create(newApplicant),
+ mutationFn: async (newApplicant) => {
+    return powerSync.execute(
+      `INSERT INTO uni_applicants (id, company_id, first_name, last_name, email, applied_program_id, previous_gpa, status, application_date, created_at)
+       VALUES (uuid(), ?, ?, ?, ?, null, ?, 'pending', datetime('now'), datetime('now'))`,
+      [newApplicant.company_id, newApplicant.first_name, newApplicant.last_name, newApplicant.email, newApplicant.gpa]
+    );
+  },
  onSuccess: () => {
- queryClient.invalidateQueries(["clients", companyId, "uni_admission"]);
+ queryClient.invalidateQueries(["uni_applicants", companyId]);
  refetch();
  setActiveTab('directory');
  setFormData({ name: '', email: '', major: 'Computer Science', gpa: '3.90', statement: ''});
@@ -34,64 +39,47 @@ export default function UniAdmissions() {
 });
 
  const updateApplicantStatusMutation = useMutation({
- mutationFn: async ({ id, status}) => {
+ mutationFn: async ({ id, status }) => {
  const app = applicants.find(a => a.id === id);
  if (!app) return;
- let extra = {};
- try { extra = JSON.parse(app.extra_data || '{}');} catch(e) {}
- extra.status = status;
- await base44.entities.Client.update(id, { extra_data: JSON.stringify(extra)});
+ await powerSync.execute('UPDATE uni_applicants SET status = ? WHERE id = ?', [status.toLowerCase(), id]);
  
  if (status === 'Admitted') {
- await base44.entities.Client.create({
- company_id: companyId,
- name: app.name,
- email: app.email,
- type: 'uni_student',
- extra_data: JSON.stringify({
- studentId: `UID${Math.floor(Math.random() * 90000) + 10000}`,
- major: extra.major,
- year: 'Freshman',
- gpa: extra.gpa,
- status: 'Active'
-})
-});
-}
+   await powerSync.execute(
+     `INSERT INTO uni_students (id, company_id, first_name, last_name, email, student_id_number, enrollment_year, current_semester, status, created_at)
+      VALUES (uuid(), ?, ?, ?, ?, ?, ?, 1, 'active', datetime('now'))`,
+     [companyId, app.first_name, app.last_name, app.email, `UID${Math.floor(Math.random() * 90000) + 10000}`, new Date().getFullYear()]
+   );
+ }
 },
  onSuccess: () => {
- queryClient.invalidateQueries(["clients", companyId, "uni_admission"]);
+ queryClient.invalidateQueries(["uni_applicants", companyId]);
  queryClient.invalidateQueries(["clients", companyId, "uni_student"]);
  setSelectedApplicant(null);
 }
 });
 
- const parsedApplicants = applicants.map(a => {
- let extra = {};
- try { extra = JSON.parse(a.extra_data || '{}');} catch(e) {}
- return {
+ const parsedApplicants = applicants.map(a => ({
  id: a.id,
- name: a.name || 'Unnamed Applicant',
- email: a.email || extra.email || 'No email',
- major: extra.major || 'Computer Science',
- date: extra.appliedDate || new Date().toISOString().split('T')[0],
- gpa: extra.gpa || '3.80',
- statement: extra.statement || 'No statement submitted.',
- status: a.status || extra.status || 'Pending'
-};
-});
+ name: `${a.first_name || ''} ${a.last_name || ''}`.trim() || 'Unnamed Applicant',
+ email: a.email || 'No email',
+ major: 'Computer Science', // program_id
+ date: a.application_date || new Date().toISOString().split('T')[0],
+ gpa: a.previous_gpa ? a.previous_gpa.toFixed(2) : '3.80',
+ statement: 'No statement submitted.', // Can add to schema if needed
+ status: a.status || 'pending'
+}));
 
  const handleCreateApplicant = (e) => {
  e.preventDefault();
  if (!formData.name) return;
+ const parts = formData.name.split(' ');
  createApplicantMutation.mutate({
  company_id: companyId,
- name: formData.name,
+ first_name: parts[0] || 'Unknown',
+ last_name: parts.slice(1).join(' ') || 'Unknown',
  email: formData.email,
- type: 'uni_admission',
- extra_data: JSON.stringify({
- major: formData.major, gpa: formData.gpa, statement: formData.statement,
- appliedDate: new Date().toISOString().split('T')[0], status: 'Pending'
-})
+ gpa: parseFloat(formData.gpa) || 0.0
 });
 };
 

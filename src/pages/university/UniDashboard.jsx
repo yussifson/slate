@@ -1,9 +1,8 @@
 import React, { useMemo} from 'react';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery} from "@tanstack/react-query";
-import { base44} from "@/api/base44Client";
 import { useCompanyId} from "@/hooks/useCompanyId";
-import { Users, BookOpen, Building, GraduationCap, DollarSign, TrendingUp, Calendar, ArrowRight, UserSquare2, LineChart, ShieldCheck} from 'lucide-react';
+import { Users, BookOpen, Building, GraduationCap, DollarSign, ArrowRight, UserSquare2, LineChart, ShieldCheck} from 'lucide-react';
 import OrbitEmptyState from '@/components/university/OrbitEmptyState';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid} from 'recharts';
 

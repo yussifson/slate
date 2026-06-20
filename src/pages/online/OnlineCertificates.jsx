@@ -39,14 +39,25 @@ export default function OnlineCertificates() {
    );
  }
 
- const handleDownload = (cert) => {
-   // Simple print invocation for the certificate
-   // In a real app, you might use jspdf or html2canvas here
-   toast({ title: "Downloading Certificate", description: "Preparing PDF for " + cert.course_title });
-   setTimeout(() => {
-     window.print();
-   }, 500);
- };
+  const handleDownload = async (cert) => {
+    toast({ title: "Downloading Certificate", description: "Preparing PDF for " + cert.course_title });
+    try {
+      const html2pdf = (await import('html2pdf.js')).default;
+      const element = document.getElementById(`cert-content-${cert.id}`);
+      const opt = {
+        margin:       0.5,
+        filename:     `${cert.course_title}_Certificate.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'landscape' }
+      };
+      
+      html2pdf().set(opt).from(element).save();
+      toast({ title: "Success", description: "Certificate downloaded successfully" });
+    } catch (err) {
+      toast({ title: "Error", description: "Failed to generate PDF.", variant: "destructive" });
+    }
+  };
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl mx-auto py-6">
@@ -67,6 +78,7 @@ export default function OnlineCertificates() {
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  {certificates.map(cert => (
  <div key={cert.id} className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden flex flex-col group hover:border-[var(--primary)] transition-colors shadow-sm hover:shadow-md">
+ <div id={`cert-content-${cert.id}`} className="bg-[var(--color-surface-0)]">
  <div className="p-8 bg-gradient-to-br from-[var(--color-surface-1)] to-[var(--color-surface-2)] flex flex-col items-center justify-center text-center border-b border-primary/40 relative">
  <div className="absolute top-4 right-4 bg-white dark:bg-slate-900/40/50 backdrop-blur rounded-full p-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <ShieldCheck className="w-5 h-5 text-[var(--color-success)]" />
@@ -85,6 +97,7 @@ export default function OnlineCertificates() {
  <div>
  <p className="text-xs text-[var(--color-text-secondary)] tracking-[0.04em] uppercase font-semibold text-right">Status</p>
  <p className="font-bold text-sm text-[var(--color-success)] text-right mt-0.5 uppercase tracking-wide">{cert.status}</p>
+ </div>
  </div>
  </div>
  <div className="p-4 border-t border-primary/40 bg-[var(--color-surface-1)] flex gap-3">

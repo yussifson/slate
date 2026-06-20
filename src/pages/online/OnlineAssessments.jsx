@@ -27,10 +27,19 @@ export default function OnlineAssessments() {
  const { data: assessments = [], isLoading } = useQuery({
    queryKey: ["online_assessments", companyId],
    queryFn: async () => {
-     const { data } = await powerSync.execute(`SELECT * FROM online_assessments WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
-     return data || [];
+     const { rows } = await powerSync.execute(`SELECT * FROM online_assessments WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
+     return rows || [];
    },
    enabled: !!companyId
+ });
+
+ const { data: results = [] } = useQuery({
+   queryKey: ["online_assessment_results", companyId, user?.id],
+   queryFn: async () => {
+     const { rows } = await powerSync.execute(`SELECT * FROM online_assessment_results WHERE company_id = ? AND student_id = ?`, [companyId, user?.id]);
+     return rows || [];
+   },
+   enabled: !!companyId && !!user?.id
  });
 
  const handleGenerateQuiz = async () => {
@@ -75,21 +84,34 @@ export default function OnlineAssessments() {
    setScore(0);
  };
 
- const handleNext = () => {
-   let questions = [];
-   try { questions = JSON.parse(activeAssessment.questions); } catch(e){}
-   
-   if (selectedOption === questions[currentQ].correctIndex) {
-     setScore(s => s + 1);
-   }
+  const handleNext = async () => {
+    let questions = [];
+    try { questions = JSON.parse(activeAssessment.questions); } catch(e){}
+    
+    let finalScore = score;
+    if (selectedOption === questions[currentQ].correctIndex) {
+      finalScore += 1;
+      setScore(finalScore);
+    }
 
-   setSelectedOption(null);
-   if (currentQ < questions.length - 1) {
-     setCurrentQ(currentQ + 1);
-   } else {
-     setStarted('finished');
-   }
- };
+    setSelectedOption(null);
+    if (currentQ < questions.length - 1) {
+      setCurrentQ(currentQ + 1);
+    } else {
+      setStarted('finished');
+      try {
+        const newId = `res_${Math.random().toString(36).substr(2, 9)}`;
+        const passed = (finalScore / questions.length) >= ((activeAssessment.passing_score || 80) / 100) ? 1 : 0;
+        await powerSync.execute(
+          `INSERT INTO online_assessment_results (id, company_id, student_id, assessment_id, score, total_questions, passed, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+          [newId, companyId, user?.id, activeAssessment.id, finalScore, questions.length, passed, new Date().toISOString()]
+        );
+        queryClient.invalidateQueries(["online_assessment_results", companyId, user?.id]);
+      } catch (e) {
+        console.error("Failed to save result:", e);
+      }
+    }
+  };
 
  if (!activeAssessment && !started) {
    return (
@@ -122,9 +144,21 @@ export default function OnlineAssessments() {
                  <div className="flex items-center gap-2 mb-1"><CheckCircle2 className="w-4 h-4"/> {qs.length} Questions</div>
                  <div className="flex items-center gap-2"><AlertCircle className="w-4 h-4"/> Passing Score: {ass.passing_score || 80}%</div>
                </div>
-               <button onClick={() => startAssessment(ass)} className="w-full py-2 bg-[var(--color-surface-1)] hover:bg-[var(--primary)] hover:text-white transition-colors border border-primary/20 rounded-md text-sm font-medium">
-                 Preview Assessment
-               </button>
+                {(() => {
+                  const result = results.find(r => r.assessment_id === ass.id);
+                  if (result) {
+                    return (
+                      <button disabled className="w-full py-2 bg-green-50 text-green-700 border border-green-200 rounded-md text-sm font-medium opacity-80 cursor-not-allowed">
+                        Completed: {result.score}/{result.total_questions} ({(result.score/result.total_questions*100).toFixed(0)}%)
+                      </button>
+                    );
+                  }
+                  return (
+                    <button onClick={() => startAssessment(ass)} className="w-full py-2 bg-[var(--color-surface-1)] hover:bg-[var(--primary)] hover:text-white transition-colors border border-primary/20 rounded-md text-sm font-medium">
+                      Take Assessment
+                    </button>
+                  );
+                })()}
              </div>
            );
          })}
@@ -156,7 +190,7 @@ export default function OnlineAssessments() {
  }
 
  let questions = [];
- try { questions = JSON.parse(activeAssessment.questions_json); } catch(e){}
+ try { questions = JSON.parse(activeAssessment.questions); } catch(e){}
 
  return (
  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-3xl mx-auto py-12 px-4">
