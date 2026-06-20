@@ -21,15 +21,15 @@ ALTER TABLE public.system_activity_logs ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view their company activity logs"
     ON public.system_activity_logs
     FOR SELECT
-    USING (company_id IN (
-        SELECT company_id FROM public.profiles WHERE id = auth.uid()
+    USING (company_id::text IN (
+        SELECT company_id::text FROM public.profiles WHERE id = auth.uid()
     ));
 
 CREATE POLICY "Users can insert activity logs for their company"
     ON public.system_activity_logs
     FOR INSERT
-    WITH CHECK (company_id IN (
-        SELECT company_id FROM public.profiles WHERE id = auth.uid()
+    WITH CHECK (company_id::text IN (
+        SELECT company_id::text FROM public.profiles WHERE id = auth.uid()
     ));
 
 -- Add realtime replica identity

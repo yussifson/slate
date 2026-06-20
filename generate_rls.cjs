@@ -67,7 +67,7 @@ CREATE OR REPLACE FUNCTION user_company_ids()
 RETURNS SETOF text AS $$
   SELECT company_id FROM staff_records WHERE user_email = auth.jwt() ->> 'email' AND status = 'active'
   UNION
-  SELECT id FROM companies WHERE admin_email = auth.jwt() ->> 'email' OR created_by = auth.uid()::text
+  SELECT id::text FROM companies WHERE admin_email = auth.jwt() ->> 'email' OR created_by = auth.uid()::text
 $$ LANGUAGE sql SECURITY DEFINER STABLE;
 
 -- RLS Helper Function for RBAC checking
@@ -82,7 +82,7 @@ BEGIN
   
   -- Owners/admins (implicit from companies table)
   IF v_role IS NULL THEN
-    IF EXISTS(SELECT 1 FROM companies WHERE id = p_company_id AND (admin_email = auth.jwt() ->> 'email' OR created_by = auth.uid()::text)) THEN
+    IF EXISTS(SELECT 1 FROM companies WHERE id::text = p_company_id AND (admin_email = auth.jwt() ->> 'email' OR created_by = auth.uid()::text)) THEN
       RETURN true;
     END IF;
   END IF;
@@ -114,8 +114,8 @@ BEGIN
       IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = '${table}' AND policyname = 'company_isolation_select') THEN
           CREATE POLICY "company_isolation_select" ON public."${table}"
           FOR SELECT USING (
-            company_id IN (SELECT user_company_ids())
-            AND has_role_permission(company_id, 'read')
+            company_id::text IN (SELECT user_company_ids())
+            AND has_role_permission(company_id::text, 'read')
           );
       END IF;
 
@@ -123,8 +123,8 @@ BEGIN
       IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = '${table}' AND policyname = 'company_isolation_insert') THEN
           CREATE POLICY "company_isolation_insert" ON public."${table}"
           FOR INSERT WITH CHECK (
-            company_id IN (SELECT user_company_ids())
-            AND has_role_permission(company_id, 'create')
+            company_id::text IN (SELECT user_company_ids())
+            AND has_role_permission(company_id::text, 'create')
           );
       END IF;
 
@@ -132,8 +132,8 @@ BEGIN
       IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = '${table}' AND policyname = 'company_isolation_update') THEN
           CREATE POLICY "company_isolation_update" ON public."${table}"
           FOR UPDATE USING (
-            company_id IN (SELECT user_company_ids())
-            AND has_role_permission(company_id, 'update')
+            company_id::text IN (SELECT user_company_ids())
+            AND has_role_permission(company_id::text, 'update')
           );
       END IF;
 
@@ -141,8 +141,8 @@ BEGIN
       IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = '${table}' AND policyname = 'company_isolation_delete') THEN
           CREATE POLICY "company_isolation_delete" ON public."${table}"
           FOR DELETE USING (
-            company_id IN (SELECT user_company_ids())
-            AND has_role_permission(company_id, 'delete')
+            company_id::text IN (SELECT user_company_ids())
+            AND has_role_permission(company_id::text, 'delete')
           );
       END IF;
   END IF;

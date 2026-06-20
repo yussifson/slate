@@ -1,22 +1,23 @@
+import os
 import re
-import sys
 
-def fix_imports(file):
-    with open(file, 'r', encoding='utf-8') as f:
-        text = f.read()
-    
-    orig = text
-    
-    # Remove any supabase import
-    text = re.sub(r"import\s+.*?supabase.*?from\s+['\"].*?['\"];?\n", "", text)
+def fix_imports():
+    for root, dirs, files in os.walk("src"):
+        for file in files:
+            if file.endswith(".jsx"):
+                file_path = os.path.join(root, file)
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                
+                # We look for lines starting with `, { ` and replace `, ` with `import `
+                # Specifically matching after our injected import
+                pattern = r"(import \{ RevenueForecastCard, BehaviourProfilePanel, BenchmarkingPanel \} from '@/components/intelligence/IntelligenceUI';\n), "
+                new_content = re.sub(pattern, r"\1import ", content)
+                
+                if new_content != content:
+                    with open(file_path, 'w', encoding='utf-8') as f:
+                        f.write(new_content)
+                    print(f"Fixed {file_path}")
 
-    # Ensure db import
-    if "import { powerSync as db }" not in text:
-        text = re.sub(r"(import React.*?;\n)", r"\1\nimport { powerSync as db } from '@/api/PowerSyncConnector';\n", text, count=1)
-
-    if text != orig:
-        with open(file, 'w', encoding='utf-8') as f:
-            f.write(text)
-
-for f in sys.argv[1:]:
-    fix_imports(f)
+if __name__ == "__main__":
+    fix_imports()
