@@ -5,10 +5,13 @@ import { INDUSTRIES, getIndustryNav, clientNav } from "@/config/industries";
 
 export function useNavigation(user, impersonatedCompany) {
   const [dynamicModules, setDynamicModules] = useState([]);
+  const [allowedPaths, setAllowedPaths] = useState([]);
+  const [loadingPermissions, setLoadingPermissions] = useState(true);
   
   const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(user?.role);
   const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
 
+  // 1. Fetch Dynamic Modules (App Builder etc.)
   useEffect(() => {
     const fetchDynamicNav = async () => {
       try {
@@ -45,28 +48,59 @@ export function useNavigation(user, impersonatedCompany) {
     }
   }, [user?.company_id, activeIndustry, isAdmin]);
 
+  // 2. Fetch True RBAC Permissions from SQLite based on user role
+  useEffect(() => {
+    if (isAdmin) {
+      setLoadingPermissions(false);
+      return;
+    }
+    
+    if (!user?.role || !user?.company_id) {
+      setLoadingPermissions(false);
+      return;
+    }
+
+    const fetchPermissions = async () => {
+      try {
+        // First find the role ID that matches the user's string role
+        const roleRes = await powerSync.execute('SELECT id FROM platform_roles WHERE company_id = ? AND (name = ? OR name = ?)', [user.company_id, user.role, user.role.toLowerCase()]);
+        
+        if (roleRes.rows?.length > 0) {
+          const roleId = roleRes.rows.item(0).id;
+          const permRes = await powerSync.execute('SELECT feature_path FROM platform_role_permissions WHERE role_id = ?', [roleId]);
+          const paths = [];
+          for(let i=0; i<permRes.rows.length; i++) {
+             paths.push(permRes.rows.item(i).feature_path);
+          }
+          setAllowedPaths(paths);
+        } else {
+          // Fallback if role is not found in database (maybe it's predefined but not seeded yet)
+          // We allow basic access or no access. Let's provide a safe fallback for unseeded roles.
+          setAllowedPaths(['/', '/my-dashboard']);
+        }
+      } catch (e) {
+        console.error("Failed to load RBAC permissions", e);
+      } finally {
+        setLoadingPermissions(false);
+      }
+    };
+    
+    fetchPermissions();
+  }, [user?.company_id, user?.role, isAdmin]);
+
   const industryNav = getIndustryNav(activeIndustry);
   
   const savedModulesStr = localStorage.getItem(`active_modules_${user?.company_id}`);
   const activeModules = savedModulesStr ? JSON.parse(savedModulesStr) : null;
   const isOrbitMode = activeModules?.length === 1 && activeModules[0] === '__orbit__';
   
-  const ROLE_PERMISSIONS = {
-    lawyer: ["/my-dashboard", "/cases", "/leads", "/clients", "/calendar", "/tasks", "/documents", "/conflict-check", "/research", "/email-inbox", "/team"],
-    paralegal: ["/my-dashboard", "/cases", "/clients", "/calendar", "/tasks", "/documents", "/research", "/email-inbox"],
-    hr: ["/my-dashboard", "/hr", "/team", "/performance", "/documents", "/tasks", "/calendar"],
-    finance: ["/my-dashboard", "/invoices", "/billing", "/tasks", "/documents", "/calendar"],
-    support: ["/my-dashboard", "/tasks", "/documents", "/calendar", "/whatsapp", "/email-inbox"]
-  };
-
-  const allowedPaths = isAdmin ? null : (ROLE_PERMISSIONS[user?.role] || ROLE_PERMISSIONS.support);
-
   const filteredCompanyNav = isOrbitMode ? [] : industryNav.filter(item => {
     if (activeModules && !['/', '/settings', '/integrations', '/admin'].includes(item.path)) {
       if (!activeModules.includes(item.path)) return false;
     }
     if (isAdmin) return true;
-    if (activeIndustry !== 'law') return true;
+    
+    // Check dynamic RBAC database permissions
     return allowedPaths.includes(item.path);
   });
 
@@ -91,5 +125,5 @@ export function useNavigation(user, impersonatedCompany) {
     navItems = [...navItems, { label: "Super Admin Portal", icon: "Shield", path: "/system-admin" }];
   }
 
-  return { navItems, isAdmin, activeIndustry };
+  return { navItems, isAdmin, activeIndustry, loadingPermissions };
 }

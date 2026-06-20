@@ -5,20 +5,10 @@ import { powerSync } from '@/api/PowerSyncConnector';
 import { toast } from 'react-hot-toast';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
+import { INDUSTRIES } from '@/config/industries';
 import { generateText } from '@/lib/cloudflareAI';
 
-const AVAILABLE_FEATURES = [
-  { id: '/hr', label: 'HR Dashboard', category: 'HR' },
-  { id: '/employees', label: 'Employee Management', category: 'HR' },
-  { id: '/departments', label: 'Departments', category: 'HR' },
-  { id: '/recruitment', label: 'Recruitment', category: 'HR' },
-  { id: '/payroll', label: 'Payroll', category: 'Finance' },
-  { id: '/leave', label: 'Leave', category: 'HR' },
-  { id: '/settings', label: 'System Settings', category: 'System' },
-  { id: '/documents', label: 'Documents', category: 'General' },
-  { id: '/tasks', label: 'Tasks', category: 'General' },
-  { id: '/', label: 'Main Dashboard', category: 'General' }
-];
+
 
 export default function RoleManagementSettings() {
   const companyId = useCompanyId();
@@ -29,6 +19,14 @@ export default function RoleManagementSettings() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({ id: '', name: '', description: '' });
   const [isGenerating, setIsGenerating] = useState(false);
+
+  const activeIndustry = sessionStorage.getItem('slate_industry_override') || user?.company_industry || 'law';
+  const AVAILABLE_FEATURES = (INDUSTRIES[activeIndustry]?.nav || []).map(n => ({
+    id: n.path,
+    label: n.label,
+    category: 'Industry Feature'
+  }));
+
 
   
   useEffect(() => {
