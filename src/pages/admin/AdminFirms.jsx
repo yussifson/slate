@@ -74,6 +74,7 @@ export default function AdminFirms() {
     return map;
   }, [profiles, activeSessions]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterMode, setFilterMode] = useState(null); // 'dormant' | 'growth' | 'quota' | null
 
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [featuresCompany, setFeaturesCompany] = useState(null);
@@ -171,11 +172,25 @@ export default function AdminFirms() {
     window.location.href = '/';
   };
 
-  const filteredCompanies = companies.filter(c => 
-    c.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    c.subdomain?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    c.email?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredCompanies = companies.filter(c => {
+    // Text search filter
+    const matchesSearch = !searchQuery || 
+      c.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      c.subdomain?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      c.email?.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    // Intelligence filter
+    if (filterMode === 'dormant') {
+      return matchesSearch && (!firmLastActivity[c.id] || new Date(firmLastActivity[c.id]) < new Date(Date.now() - 30*24*60*60*1000));
+    }
+    if (filterMode === 'growth') {
+      return matchesSearch && profiles.filter(p => p.company_id === c.id).length > 20;
+    }
+    if (filterMode === 'quota') {
+      return matchesSearch && c.max_users > 0 && (profiles.filter(p => p.company_id === c.id).length / c.max_users) >= 0.9;
+    }
+    return matchesSearch;
+  });
 
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
@@ -204,7 +219,7 @@ export default function AdminFirms() {
             <span className="text-xs font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">{companies.filter(c => !firmLastActivity[c.id] || new Date(firmLastActivity[c.id]) < new Date(Date.now() - 30*24*60*60*1000)).length} At Risk</span>
           </div>
           <p className="text-xs text-slate-500 mb-2">Firms with absolutely zero active sessions over the past 30 days.</p>
-          <div className="text-[10px] uppercase font-semibold text-amber-600 tracking-wider cursor-pointer hover:underline">Review Churn Risk</div>
+          <div className="text-[10px] uppercase font-semibold text-amber-600 tracking-wider cursor-pointer hover:underline" onClick={() => setFilterMode(filterMode === 'dormant' ? null : 'dormant')}>{filterMode === 'dormant' ? '✕ Clear Filter' : 'Review Churn Risk'}</div>
         </div>
 
         <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 p-5 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200/50 hover:shadow-md transition-all">
@@ -213,7 +228,7 @@ export default function AdminFirms() {
             <span className="text-xs font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">{companies.filter(c => profiles.filter(p => p.company_id === c.id).length > 20).length} Detected</span>
           </div>
           <p className="text-xs text-slate-500 mb-2">Workspaces exhibiting rapid user expansion (&gt; 20 active users).</p>
-          <div className="text-[10px] uppercase font-semibold text-emerald-600 tracking-wider cursor-pointer hover:underline">View Upgrade Targets</div>
+          <div className="text-[10px] uppercase font-semibold text-emerald-600 tracking-wider cursor-pointer hover:underline" onClick={() => setFilterMode(filterMode === 'growth' ? null : 'growth')}>{filterMode === 'growth' ? '✕ Clear Filter' : 'View Upgrade Targets'}</div>
         </div>
 
         <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 p-5 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-red-200/50 hover:shadow-md transition-all">
@@ -224,7 +239,7 @@ export default function AdminFirms() {
             </span>
           </div>
           <p className="text-xs text-slate-500 mb-2">Tenants operating at &gt;90% of their maximum license or record capacity.</p>
-          <div className="text-[10px] uppercase font-semibold text-red-600 tracking-wider cursor-pointer hover:underline">Upsell Opportunities</div>
+          <div className="text-[10px] uppercase font-semibold text-red-600 tracking-wider cursor-pointer hover:underline" onClick={() => setFilterMode(filterMode === 'quota' ? null : 'quota')}>{filterMode === 'quota' ? '✕ Clear Filter' : 'Upsell Opportunities'}</div>
         </div>
       </div>
 
