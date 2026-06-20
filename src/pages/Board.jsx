@@ -99,13 +99,14 @@ export default function Board() {
  // Create new room record
  await (async () => {
  const _payload = {
- company_id: companyId,
- title: `${user?.full_name?.split(' ')[0] || 'User'}'s Instant Meeting`,
- daily_room_url: realUrl,
- daily_room_name: dailyData.name || roomName,
- host_id: user.id,
- status: 'active'
-};
+  id: crypto.randomUUID(),
+  company_id: companyId,
+  title: `${user?.full_name?.split(' ')[0] || 'User'}'s Instant Meeting`,
+  daily_room_url: realUrl,
+  daily_room_name: dailyData.name || roomName,
+  host_id: user.id,
+  status: 'active'
+ };
  const _keys = Object.keys(_payload);
  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
  await powerSync.execute(`INSERT INTO video_rooms (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
@@ -212,11 +213,11 @@ export default function Board() {
  </div>
  <div className="mt-4 sm:mt-0 flex gap-2">
  {room.status === 'active' ? (
- <Button size="sm" onClick={() => joinCall(room.daily_room_url)} className="gap-2">
+ <Button size="sm" onClick={() => joinCall(room.daily_room_url)} className="gap-2 bg-orange-500 hover:bg-orange-600 text-white">
  Join Now
  </Button>
  ) : (
- <Button size="sm" variant="secondary" onClick={() => joinCall(room.daily_room_url)}>Rejoin</Button>
+  <span className="text-xs font-medium px-2.5 py-1.5 rounded-md bg-muted text-muted-foreground flex items-center">Ended</span>
  )}
  <Button size="sm" variant="ghost" onClick={() => copyLink(room.daily_room_url)}><Copy className="w-4 h-4" /></Button>
  </div>

@@ -30,6 +30,27 @@ export default function RoleManagementSettings() {
   const [formData, setFormData] = useState({ id: '', name: '', description: '' });
   const [isGenerating, setIsGenerating] = useState(false);
 
+  
+  useEffect(() => {
+    if (companyId && roles.length === 0) {
+      const activeIndustry = sessionStorage.getItem('slate_industry_override') || user?.company_industry || 'law';
+      import('@/config/industries').then(({ INDUSTRIES }) => {
+        const defaultRoles = INDUSTRIES[activeIndustry]?.roles || [];
+        if (defaultRoles.length > 0) {
+          // Check again just to be safe
+          powerSync.execute('SELECT count(*) as c FROM platform_roles WHERE company_id = ?', [companyId]).then(res => {
+            if (res.rows.item(0).c === 0) {
+              const promises = defaultRoles.map(r => 
+                powerSync.execute('INSERT INTO platform_roles (id, company_id, name, description) VALUES (uuid(), ?, ?, ?)', [companyId, r.label, 'Predefined industry role'])
+              );
+              Promise.all(promises).then(() => fetchRoles());
+            }
+          });
+        }
+      });
+    }
+  }, [companyId, roles.length]);
+
   useEffect(() => {
     if (companyId) {
       fetchRoles();

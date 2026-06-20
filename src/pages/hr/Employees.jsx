@@ -1,4 +1,6 @@
 import { useTranslation} from "react-i18next";
+import { INDUSTRIES } from "@/config/industries";
+import { useCompany } from "@/hooks/useCompanyId";
 import { useState, useEffect } from 'react';
 import { Users, Search, Plus, Mail, Phone, Briefcase, Trash2, MoreVertical, Edit, Eye, Network} from 'lucide-react';
 import { Button} from '@/components/ui/button';
@@ -103,6 +105,12 @@ export default function Employees() {
 
  const [search, setSearch] = useState('');
  const [showModal, setShowModal] = useState(false);
+  const { company } = useCompany();
+  const activeIndustry = company?.industry_type || "law";
+  const predefinedRoles = INDUSTRIES[activeIndustry]?.roles || [];
+  const predefinedDepts = INDUSTRIES[activeIndustry]?.departments || [];
+  const [useCustomRole, setUseCustomRole] = useState(false);
+  const [useCustomDept, setUseCustomDept] = useState(false);
  const [deleteTargetId, setDeleteTargetId] = useState(null);
  const [editTargetId, setEditTargetId] = useState(null);
  const [viewTargetId, setViewTargetId] = useState(null);
@@ -150,9 +158,25 @@ export default function Employees() {
        email: formData.email,
        password: password,
        company_id: user?.company_id,
-       role: formData.role || 'staff'});
+       role: finalRole});
+     
      
      const authUserId = reg?.user?.id;
+     
+     // Auto-save custom role
+     let finalRole = formData.role || 'staff';
+     if (useCustomRole && formData.role && !roleRecords.find(r => r.name === formData.role)) {
+         await powerSync.execute('INSERT INTO platform_roles (id, company_id, name, description) VALUES (uuid(), ?, ?, ?)', [user?.company_id, formData.role, formData.role]);
+     }
+     
+     // Auto-save custom department
+     let finalDeptId = formData.departmentId;
+     if (useCustomDept && formData.departmentId && !departmentRecords.find(d => d.name === formData.departmentId)) {
+         const newDeptId = crypto.randomUUID();
+         await powerSync.execute('INSERT INTO platform_departments (id, company_id, name, description, created_at, updated_at) VALUES (?, ?, ?, ?, datetime("now"), datetime("now"))', [newDeptId, user?.company_id, formData.departmentId, formData.departmentId]);
+         finalDeptId = newDeptId;
+     }
+
      
      const payload = { ...formData, employeeId, user_id: authUserId || null};
     
@@ -427,19 +451,46 @@ export default function Employees() {
  </div>
  <div className="grid grid-cols-2 gap-3">
  <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("department", "Department")}</label>
- <select 
- value={formData.departmentId} 
- onChange={e => setFormData({...formData, departmentId: e.target.value})} 
- className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground"
- >
- <option value="">Select Department...</option>
- {departmentRecords.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
- </select>
+ <div className="flex justify-between items-center">
+    <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("department", "Department")}</label>
+    <button type="button" onClick={() => setUseCustomDept(!useCustomDept)} className="text-[10px] text-primary hover:underline font-semibold">{useCustomDept ? 'Select Predefined' : 'Add Custom'}</button>
+ </div>
+ {useCustomDept ? (
+     <Input value={formData.departmentId} onChange={e => setFormData({...formData, departmentId: e.target.value})} placeholder="Custom Department" className="mt-1" />
+ ) : (
+     <select 
+     value={formData.departmentId} 
+     onChange={e => setFormData({...formData, departmentId: e.target.value})} 
+     className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground"
+     >
+     <option value="">Select Department...</option>
+     {predefinedDepts.map(d => <option key={d.value} value={d.label}>{d.label}</option>)}
+     <optgroup label="Custom Departments">
+        {departmentRecords.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+     </optgroup>
+     </select>
+ )}
  </div>
  <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("role", "Role")}</label>
- <Input value={formData.role} onChange={e => setFormData({...formData, role: e.target.value})} placeholder="Senior Developer" className="mt-1" />
+ <div className="flex justify-between items-center">
+    <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("role", "Role")}</label>
+    <button type="button" onClick={() => setUseCustomRole(!useCustomRole)} className="text-[10px] text-primary hover:underline font-semibold">{useCustomRole ? 'Select Predefined' : 'Add Custom'}</button>
+ </div>
+ {useCustomRole ? (
+     <Input value={formData.role} onChange={e => setFormData({...formData, role: e.target.value})} placeholder="Custom Role" className="mt-1" />
+ ) : (
+     <select 
+     value={formData.role} 
+     onChange={e => setFormData({...formData, role: e.target.value})} 
+     className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground"
+     >
+     <option value="">Select Role...</option>
+     {predefinedRoles.map(r => <option key={r.value} value={r.label}>{r.label}</option>)}
+     <optgroup label="Custom Roles">
+        {roleRecords.map(r => <option key={r.id} value={r.name}>{r.name}</option>)}
+     </optgroup>
+     </select>
+ )}
  </div>
  </div>
  <div>
