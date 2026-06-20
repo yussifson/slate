@@ -1304,6 +1304,26 @@ export const AppSchema = new Schema({
         participants: column.text,
         meeting_link: column.text,
         created_at: column.text}),
+    platform_roles: new Table({
+        id: column.text,
+        company_id: column.text,
+        name: column.text,
+        description: column.text,
+        created_at: column.text}),
+    platform_role_permissions: new Table({
+        id: column.text,
+        company_id: column.text,
+        role_id: column.text,
+        feature_path: column.text,
+        can_view: column.integer,
+        can_edit: column.integer,
+        created_at: column.text}),
+    platform_departments: new Table({
+        id: column.text,
+        company_id: column.text,
+        name: column.text,
+        description: column.text,
+        created_at: column.text}),
     subscription_plans: new Table({
         id: column.text,
         name: column.text,
