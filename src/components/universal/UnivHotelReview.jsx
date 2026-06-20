@@ -1,4 +1,3 @@
-import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { powerSync} from '@/api/PowerSyncConnector';
 import React, { useState, useEffect} from 'react';
 
@@ -192,4 +191,3 @@ const UnivHotelReview = () => {
 };
 
 export default UnivHotelReview;
-

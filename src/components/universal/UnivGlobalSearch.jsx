@@ -6,7 +6,7 @@ import { motion, AnimatePresence} from 'framer-motion';
 import { useQuery} from '@tanstack/react-query';
 import { cn} from '@/lib/utils';
 import {Search, FileText, Calendar, Users, Briefcase, Command,
- LayoutGrid, ArrowRight, Clock, FolderOpen} from "lucide-react";
+ LayoutGrid, ArrowRight, Clock,, FolderOpen} from "lucide-react";
 import { useDebounce} from '@/hooks/useDebounce';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 

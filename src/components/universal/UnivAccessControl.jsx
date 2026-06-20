@@ -3,7 +3,7 @@ import React, { useState, useEffect} from 'react';
 
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
-import {Plus, Trash2, Edit2, XCircle, Search, Shield, Users, Key, Check} from "lucide-react";
+import {Plus, Trash2, Edit2,, XCircle, Search, Shield, Users, Key, Check} from "lucide-react";
 import { toast} from 'react-hot-toast';
 import { motion, AnimatePresence} from 'framer-motion';
 import { OrbitLoader } from "@/components/ui/orbit-loader";

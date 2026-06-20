@@ -2,8 +2,8 @@ import React, { useState} from 'react';
 import { useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
 import { motion, AnimatePresence} from 'framer-motion';
 import {CheckCircle, XCircle, RotateCcw, Clock, ChevronDown, ChevronRight,
- Plus, Trash2, Search, CheckCheck, InboxIcon,
- ListFilter, LayoutTemplate, AlertCircle, User, CalendarDays, ArrowRight} from "lucide-react";
+ Plus, Trash2,, Search, CheckCheck, InboxIcon,
+ ListFilter, LayoutTemplate, AlertCircle, User, CalendarDays, ArrowRight,} from "lucide-react";
 import { formatDistanceToNow, format, parseISO} from 'date-fns';
 import { toast} from 'react-hot-toast';
 
@@ -25,19 +25,22 @@ const STATUS_META = {
  pending: { label: 'Pending', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300', dot: 'bg-amber-400'},
  approved: { label: 'Approved', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300', dot: 'bg-emerald-400'},
  rejected: { label: 'Rejected', color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400', dot: 'bg-red-400'},
- changes_requested: { label: 'Changes Requested', color: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300', dot: 'bg-orange-400'}};
+ changes_requested: { label: 'Changes Requested', color: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300', dot: 'bg-orange-400'},
+};
 
 const PRIORITY_META = {
  High: { color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'},
  Medium: { color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'},
- Low: { color: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}};
+ Low: { color: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'},
+};
 
 const RECORD_TYPE_COLORS = {
  Leave: 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300',
  Procurement: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
  Document: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300',
  Recruitment: 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300',
- Expense: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300'};
+ Expense: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
+};
 
 const RECORD_TYPE_COLOR = (type) =>
  RECORD_TYPE_COLORS[type] || 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400';
@@ -73,7 +76,8 @@ function ConfirmActionDialog({ open, action, item, onClose, onConfirm}) {
  const META = {
  approve: { label: 'Approve', btn: 'bg-emerald-600 hover:bg-emerald-700 text-white', title: 'Approve Request'},
  reject: { label: 'Reject', btn: 'bg-red-600 hover:bg-red-700 text-white', title: 'Reject Request'},
- changes_requested:{ label: 'Request Changes', btn: 'bg-amber-500 hover:bg-amber-600 text-white', title: 'Request Changes'}};
+ changes_requested:{ label: 'Request Changes', btn: 'bg-amber-500 hover:bg-amber-600 text-white', title: 'Request Changes'},
+};
  const m = META[action];
 
  return (
@@ -323,7 +327,8 @@ function TemplatesPanel({ companyId}) {
  if (error) throw error;
  return data || [];
 },
- enabled: !!companyId});
+ enabled: !!companyId,
+});
 
  const addStep = () => setForm(f => ({ ...f, steps: [...f.steps, { stepName: '', role: ''}]}));
  const removeStep = (i) => setForm(f => ({ ...f, steps: f.steps.filter((_, idx) => idx !== i)}));
@@ -488,7 +493,8 @@ export default function UnivApprovalEngine() {
  if (error) throw error;
  return data || [];
 },
- enabled: !!companyId});
+ enabled: !!companyId,
+});
 
  // ── My Inbox: approvals where current step's assignee matches my id/email ──
  const inboxItems = allApprovals.filter(a => {
@@ -520,7 +526,8 @@ export default function UnivApprovalEngine() {
  status,
  comment,
  actioned_by: user?.email,
- actioned_at: new Date().toISOString()};
+ actioned_at: new Date().toISOString(),
+};
 }
 
  // Determine next step or final status
@@ -542,7 +549,8 @@ export default function UnivApprovalEngine() {
  status: finalStatus,
  current_step: nextStep,
  steps,
- updated_at: new Date().toISOString()})
+ updated_at: new Date().toISOString(),
+})
  .eq('id', id);
  if (error) throw error;
 },
@@ -551,7 +559,8 @@ export default function UnivApprovalEngine() {
  toast.success('Action recorded successfully!');
  setConfirmDialog({ open: false, action: null, item: null});
 },
- onError: (err) => toast.error('Failed: ' + err.message)});
+ onError: (err) => toast.error('Failed: ' + err.message),
+});
 
  const handleAction = (action, item) => {
  setConfirmDialog({ open: true, action, item});
@@ -563,7 +572,8 @@ export default function UnivApprovalEngine() {
  id: item.id,
  status: action,
  stepIndex: item.current_step || 0,
- comment});
+ comment,
+});
 };
 
  return (
@@ -739,7 +749,8 @@ export function useApprovalEngine() {
  status: 'pending',
  comment: null,
  actioned_by: null,
- actioned_at: null}));
+ actioned_at: null,
+}));
 
  const payload = {
  company_id: companyId,
@@ -753,7 +764,8 @@ export function useApprovalEngine() {
  status: 'pending',
  priority,
  created_at: new Date().toISOString(),
- updated_at: new Date().toISOString()};
+ updated_at: new Date().toISOString(),
+};
  await (async () => {
  const _payload = payload;
  const _keys = Object.keys(_payload);

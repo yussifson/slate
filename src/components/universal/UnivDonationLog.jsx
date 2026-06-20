@@ -1,16 +1,16 @@
-import { OrbitLoader } from '@/components/ui/orbit-loader';
-import { powerSync } from '@/api/PowerSyncConnector';
-import React, { useState, useEffect } from 'react';
+import { powerSync} from '@/api/PowerSyncConnector';
+import React, { useState, useEffect} from 'react';
+
 import GenericGrid from '@/components/views/GenericGrid';
 import GenericKanban from '@/components/views/GenericKanban';
 import GenericCalendar from '@/components/views/GenericCalendar';
 import GenericDashboard from '@/components/views/GenericDashboard';
-import { useCompanyId } from '@/hooks/useCompanyId';
-import { motion } from 'framer-motion';
-import { Save, RefreshCw, X, Plus, Activity, Sparkles, XCircle, HeartHandshake } from 'lucide-react';
-import { toast } from 'react-hot-toast';
-import { generateText } from '@/lib/cloudflareAI';
-import { supabase } from "@/api/supabaseClient";
+
+import { useCompanyId} from '@/hooks/useCompanyId';
+import { motion} from 'framer-motion';
+import { Save, RefreshCw, X, Plus, Activity} from 'lucide-react';
+
+import { supabase} from "@/api/supabaseClient";
 
 export default function UnivDonationLog() {
  const companyId = useCompanyId();
@@ -18,8 +18,6 @@ export default function UnivDonationLog() {
 
  const [items, setItems] = useState([]);
  const [loading, setLoading] = useState(false);
- const [isAnalyzing, setIsAnalyzing] = useState(false);
- const [insightsModal, setInsightsModal] = useState(null);
  const [showForm, setShowForm] = useState(false);
  const [formData, setFormData] = useState({
  donor_name: '',
@@ -41,31 +39,6 @@ export default function UnivDonationLog() {
  if (!error && data) setItems(data);
  setLoading(false);
 };
-
- const handleAIInsights = async () => {
-   setIsAnalyzing(true);
-   toast.loading("Analyzing donation trends...", { id: "insights" });
-   try {
-     const prompt = [
-       { role: 'system', content: 'You are an AI Philanthropy Advisor. Analyze the list of recent donations. Return a JSON object with keys: "topTrend" (1 sentence summary of giving patterns), "suggestedCampaign" (1 sentence on what to fundraise for next), and "engagementStrategy" (1 sentence on how to thank or engage these donors).' },
-       { role: 'user', content: `Recent Donations:\n${items.map(i => `- ${i.donor_name} gave $${i.amount} for ${i.campaign}`).join('\n')}` }
-     ];
-     let response = await generateText(prompt);
-     if (typeof response !== 'string') response = response.response || response.text || JSON.stringify(response);
-     const jsonMatch = response.match(/\{[\s\S]*\}/);
-     if (jsonMatch) {
-       const parsed = JSON.parse(jsonMatch[0]);
-       setInsightsModal(parsed);
-       toast.success("Insights generated", { id: "insights" });
-     } else {
-       toast.error("Failed to parse insights", { id: "insights" });
-     }
-   } catch (err) {
-     toast.error("Analysis failed", { id: "insights" });
-   } finally {
-     setIsAnalyzing(false);
-   }
- };
 
  const handleSave = async () => {
  setLoading(true);
@@ -123,12 +96,9 @@ export default function UnivDonationLog() {
  Export CSV
  </button>
 
-  <button onClick={handleAIInsights} disabled={isAnalyzing || items.length === 0} className="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 rounded-full text-sm font-semibold hover:bg-rose-100 transition-colors border border-rose-100 disabled:opacity-50">
-  {isAnalyzing ? <Sparkles className="w-4 h-4 animate-pulse" /> : <Sparkles className="w-4 h-4" />} AI Insights
-  </button>
-  <button onClick={fetchItems} className="p-2 bg-muted hover:bg-muted/60 rounded-full transition-colors">
-  { loading ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" /> }
-  </button>
+ <button onClick={fetchItems} className="p-2 bg-muted hover:bg-muted/60 rounded-full transition-colors">
+ { loading ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" /> }
+ </button>
  <button onClick={() => setShowForm(true)} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-colors ">
  <Plus size={20} /> Add New
  </button>
@@ -235,34 +205,6 @@ export default function UnivDonationLog() {
  </div>
  )}
  </div>
-
-  {insightsModal && (
-   <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
-     <div className="bg-card w-full max-w-lg rounded-2xl flex flex-col hover:shadow-xl transition-all">
-       <div className="p-5 border-b border-primary/40 flex justify-between items-center bg-rose-50/50">
-         <h2 className="text-lg font-bold flex items-center gap-2 text-rose-900"><HeartHandshake className="w-5 h-5 text-rose-600" /> AI Donor Insights</h2>
-         <button onClick={() => setInsightsModal(null)} className="p-2 hover:bg-rose-100 rounded-full transition-colors"><XCircle className="w-5 h-5 text-rose-400" /></button>
-       </div>
-       <div className="p-6 space-y-5">
-         <div className="bg-rose-50/50 p-4 rounded-xl border border-rose-100">
-           <div className="text-xs uppercase font-bold tracking-wider text-rose-500 mb-2">Giving Trend</div>
-           <p className="text-sm text-rose-900 leading-relaxed font-medium">{insightsModal.topTrend}</p>
-         </div>
-         <div>
-           <div className="text-xs uppercase font-bold tracking-wider text-blue-500 mb-2 flex items-center gap-2"><Activity className="w-3.5 h-3.5"/> Suggested Campaign Focus</div>
-           <p className="text-sm text-blue-800 leading-relaxed italic bg-blue-50/50 p-3 rounded-lg border border-blue-100">{insightsModal.suggestedCampaign}</p>
-         </div>
-         <div>
-           <div className="text-xs uppercase font-bold tracking-wider text-emerald-600 mb-2 flex items-center gap-2"><Sparkles className="w-3.5 h-3.5"/> Engagement Strategy</div>
-           <p className="text-sm text-emerald-800 leading-relaxed italic bg-emerald-50/50 p-3 rounded-lg border border-emerald-100">{insightsModal.engagementStrategy}</p>
-         </div>
-       </div>
-     </div>
-   </div>
-  )}
-
  </div>
  );
 }
-
-

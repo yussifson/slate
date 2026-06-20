@@ -2,7 +2,7 @@ import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
-import {Plus, Trash2, Edit2, XCircle, Search, Package, MapPin, CheckCircle2, Clock, Truck, User} from "lucide-react";
+import {Plus, Trash2, Edit2,, XCircle, Search, Package, MapPin, CheckCircle2, Clock, Truck, User} from "lucide-react";
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { OrbitLoader } from "@/components/ui/orbit-loader";

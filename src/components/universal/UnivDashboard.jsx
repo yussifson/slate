@@ -6,10 +6,11 @@ import { motion} from 'framer-motion';
 import {
  Plus, Edit3, Check, Trash2, LayoutGrid, XCircle, X,
  Database, TrendingUp, TrendingDown, Users, Activity,
- Clock, Zap, BarChart2, AlertTriangle, RefreshCw} from 'lucide-react';
+ Clock, Zap, BarChart2, AlertTriangle, RefreshCw,
+} from 'lucide-react';
 import {
- AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
-import { PremiumChartTooltip } from '@/components/ui/chart-tooltip';
+ AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer,
+} from 'recharts';
 import { format, subMonths, startOfMonth, endOfMonth} from 'date-fns';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 
@@ -46,10 +47,26 @@ function trendPercent(current, previous) {
  return Math.round(((current - previous) / previous) * 100);
 }
 
+// ─── Custom Tooltip for AreaChart ──────────────────────────────────────────────
+function CustomTooltip({ active, payload, label}) {
+ if (!active || !payload?.length) return null;
+ return (
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl px-3 py-2 text-xs tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <p className="font-semibold text-foreground mb-1">{label}</p>
+ {payload.map((p) => (
+ <p key={p.dataKey} className="text-[#71717a] dark:text-gray-400">
+ <span className="font-semibold text-primary">{p.value}</span> records
+ </p>
+ ))}
+ </div>
+ );
+}
+
 // ─── Main Component ────────────────────────────────────────────────────────────
 export default function UnivDashboard({
  title = 'Dashboard',
- subtitle = 'Dynamic overview of your workspace.'}) {
+ subtitle = 'Dynamic overview of your workspace.',
+}) {
  const companyId = useCompanyId();
 
  const [isEditing, setIsEditing] = useState(false);
@@ -182,11 +199,13 @@ export default function UnivDashboard({
  lastMonth: lastMonth ?? 0,
  trend: trendPercent(thisMonth ?? 0, lastMonth ?? 0),
  recentRecords: recent ?? [],
- monthlyActivity};
+ monthlyActivity,
+};
 } catch {
  newData[w.id] = {
  current: 'N/A', thisMonth: 0, lastMonth: 0, trend: 0,
- recentRecords: [], monthlyActivity: []};
+ recentRecords: [], monthlyActivity: [],
+};
 }
 }
 
@@ -335,7 +354,6 @@ export default function UnivDashboard({
  {loading ? (
  <div className="flex-1 flex items-center justify-center">
  <OrbitLoader size="md" />
- </div>
  ) : (
  <>
  {/* ── AI Insight Banner ─────────────────────────────────────────────── */}
@@ -515,7 +533,7 @@ export default function UnivDashboard({
  tickLine={false}
  allowDecimals={false}
  />
- <Tooltip content={<PremiumChartTooltip />} />
+ <Tooltip content={<CustomTooltip />} />
  <Area
  type="monotone"
  dataKey="records"

@@ -9,7 +9,7 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
-import {Home, Plus, Trash2, Edit2, XCircle, Search} from "lucide-react";
+import {Home, Plus, Trash2, Edit2,, XCircle, Search} from "lucide-react";
 import { toast} from 'react-hot-toast';
 import { motion, AnimatePresence} from 'framer-motion';
 import { OrbitLoader } from "@/components/ui/orbit-loader";

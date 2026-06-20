@@ -2,11 +2,10 @@ import { powerSync } from '@/api/PowerSyncConnector';
 import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
-import {Plus, Trash2, Edit2, XCircle, Search, Award, Star, User, Sparkles} from "lucide-react";
+import {Plus, Trash2, Edit2,, XCircle, Search, Award, Star, User} from "lucide-react";
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
-import { generateText } from '@/lib/cloudflareAI';
 
 const TABLE = 'univ_employeeperformances';
 const STATUS_COLORS = {
@@ -57,7 +56,6 @@ export default function UnivEmployeePerformance() {
   const [editId, setEditId] = useState(null);
   const [form, setForm] = useState({ ...EMPTY });
   const [saving, setSaving] = useState(false);
-  const [isDrafting, setIsDrafting] = useState(false);
 
   const fetchData = useCallback(async () => {
     if (!companyId) return;
@@ -116,41 +114,6 @@ export default function UnivEmployeePerformance() {
       toast.error('Save failed: ' + error.message);
     }
     setSaving(false);
-  };
-
-  const handleAIDraft = async () => {
-    if (!form.goals.trim()) {
-      toast.error("Please enter some Goals/OKRs to base the draft on");
-      return;
-    }
-    const empName = employees.find(e => e.id === form.employee_name)?.first_name || "the employee";
-    setIsDrafting(true);
-    try {
-      const prompt = [
-        { role: 'system', content: 'You are an expert HR AI. Based on the employee\'s goals/OKRs, write a very brief 1-2 sentence draft of their strengths and 1-2 sentences of areas for improvement. Output strictly as JSON: {"strengths": "...", "improvements": "..."}' },
-        { role: 'user', content: `Employee: ${empName}\nGoals: ${form.goals}` }
-      ];
-      let response = await generateText(prompt);
-      if (typeof response !== 'string') {
-          response = response.response || response.text || JSON.stringify(response);
-      }
-      const jsonMatch = response.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        const parsed = JSON.parse(jsonMatch[0]);
-        setForm(f => ({
-          ...f,
-          strengths: parsed.strengths || f.strengths,
-          areas_for_improvement: parsed.improvements || f.areas_for_improvement
-        }));
-        toast.success("AI draft generated!");
-      } else {
-        toast.error("AI returned invalid format");
-      }
-    } catch (err) {
-      toast.error("Failed to generate AI draft");
-    } finally {
-      setIsDrafting(false);
-    }
   };
 
   const handleDelete = async (id) => {
@@ -348,12 +311,7 @@ export default function UnivEmployeePerformance() {
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-xs font-semibold text-primary uppercase tracking-[0.04em]">Goals / OKRs</label>
-                  <button type="button" onClick={handleAIDraft} disabled={isDrafting} className="text-xs flex items-center gap-1 font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-colors px-2 py-1 rounded-md disabled:opacity-50">
-                    {isDrafting ? <Sparkles className="w-3.5 h-3.5 animate-pulse" /> : <Sparkles className="w-3.5 h-3.5" />} Auto-Draft Review
-                  </button>
-                </div>
+                <label className="block text-xs font-semibold text-primary uppercase mb-1.5 tracking-[0.04em]">Goals / OKRs</label>
                 <textarea rows="3" value={form.goals} onChange={e => setForm({...form, goals: e.target.value})} className="w-full p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 text-sm resize-none" placeholder="What are the key objectives for the next period?" />
               </div>
 

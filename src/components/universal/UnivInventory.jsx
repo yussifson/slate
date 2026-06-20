@@ -9,10 +9,9 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
-import {Package, Plus, Search, Trash2, Edit2, XCircle, AlertTriangle, DollarSign, Archive, BarChart2, Filter, QrCode, Sparkles} from "lucide-react";
+import {Package, Plus, Search, Trash2, Edit2,, XCircle, AlertTriangle, DollarSign, Archive, BarChart2, Filter, QrCode} from "lucide-react";
 import { toast} from 'react-hot-toast';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
-import { generateText } from '@/lib/cloudflareAI';
 
 const EMPTY_FORM = { item_name: '', sku: '', category: '', quantity: 0, unit_price: 0, reorder_level: 10, supplier: '', location: ''};
 
@@ -27,9 +26,6 @@ export default function UnivInventory() {
  const [editingId, setEditingId] = useState(null);
  const [qrItem, setQrItem] = useState(null);
  const [form, setForm] = useState(EMPTY_FORM);
- const [isForecasting, setIsForecasting] = useState(false);
- const [forecastModal, setForecastModal] = useState(false);
- const [forecastResult, setForecastResult] = useState('');
 
  useEffect(() => {
  if (companyId) {
@@ -111,30 +107,6 @@ export default function UnivInventory() {
  const openModal = (r = null) => { setForm(r ? { ...r} : EMPTY_FORM); setEditingId(r?.id || null); setIsModalOpen(true);};
  const closeModal = () => { setIsModalOpen(false); setEditingId(null); setForm(EMPTY_FORM);};
 
-  const handleDemandForecast = async () => {
-   if (inventory.length === 0) {
-     toast.error("No inventory to analyze.");
-     return;
-   }
-   setIsForecasting(true);
-   try {
-     const prompt = [
-       { role: 'system', content: 'You are an expert Retail AI Demand Forecaster. Analyze the provided inventory list. Identify low-stock items and suggest reorder quantities. Provide a short, actionable summary (2-3 paragraphs max) formatted nicely.' },
-       { role: 'user', content: `Inventory Data:\n${inventory.map(i => `${i.item_name} (SKU: ${i.sku}): ${i.quantity} in stock, reorder level ${i.reorder_level}`).join('\n')}` }
-     ];
-     let response = await generateText(prompt);
-     if (typeof response !== 'string') {
-         response = response.response || response.text || JSON.stringify(response);
-     }
-     setForecastResult(response);
-     setForecastModal(true);
-   } catch (err) {
-     toast.error("Failed to generate forecast.");
-   } finally {
-     setIsForecasting(false);
-   }
- };
-
  const filtered = inventory.filter(i => {
  const m = `${i.item_name} ${i.sku} ${i.category} ${i.supplier}`.toLowerCase().includes(search.toLowerCase());
  return m && (filterStatus === 'All' || i.status === filterStatus);
@@ -166,10 +138,6 @@ export default function UnivInventory() {
 <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
- </button>
-
- <button onClick={handleDemandForecast} disabled={isForecasting} className="h-10 px-4 bg-indigo-600 text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-indigo-700 transition-all disabled:opacity-50">
-   {isForecasting ? <Sparkles className="w-4 h-4 animate-pulse" /> : <Sparkles className="w-4 h-4" />} AI Forecast
  </button>
 
  <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 "><Plus className="w-4 h-4" />Add Item</button>
@@ -254,23 +222,6 @@ export default function UnivInventory() {
  <button onClick={()=>setQrItem(null)} className="mt-6 w-full h-10 bg-primary text-white rounded-xl font-semibold">Done</button>
  </div>
  </div>
- )}
-
- {forecastModal && (
-   <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
-     <div className="bg-card w-full max-w-2xl rounded-2xl flex flex-col max-h-[90vh]">
-       <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0">
-         <h2 className="text-xl font-black flex items-center gap-2"><Sparkles className="w-5 h-5 text-indigo-500" /> AI Demand Forecast & Reorder Plan</h2>
-         <button onClick={() => setForecastModal(false)} className="p-2 bg-muted rounded-full text-[#71717a] dark:text-gray-400 hover:bg-muted/80"><XCircle className="w-5 h-5"/></button>
-       </div>
-       <div className="p-5 overflow-y-auto flex-1 custom-scrollbar whitespace-pre-wrap text-sm leading-relaxed text-foreground">
-         {forecastResult}
-       </div>
-       <div className="p-5 border-t border-primary/40 flex justify-end">
-         <button onClick={() => setForecastModal(false)} className="h-10 px-6 bg-primary text-white rounded-xl font-semibold">Close</button>
-       </div>
-     </div>
-   </div>
  )}
  </div>
  );

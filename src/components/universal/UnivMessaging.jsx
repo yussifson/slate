@@ -9,7 +9,7 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 import { supabase} from '@/api/supabaseClient';
 import { useCompanyId} from '@/hooks/useCompanyId';
 import { motion} from 'framer-motion';
-import {Send, Smile, Paperclip, Search, Phone, Video, Info} from "lucide-react";
+import {Send, Smile, Paperclip, Search, Phone, Video, Info,} from "lucide-react";
 import { toast} from 'react-hot-toast';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 
@@ -150,8 +150,8 @@ export default function UnivMessaging() {
  
  // Add both participants
  await (async () => {
- const p1 = { id: crypto.randomUUID(), room_id: newRoom.id, user_id: currentUser.id, role: 'member'};
- const p2 = { id: crypto.randomUUID(), room_id: newRoom.id, user_id: contactId, role: 'member'};
+ const p1 = { room_id: newRoom.id, user_id: currentUser.id, role: 'member'};
+ const p2 = { room_id: newRoom.id, user_id: contactId, role: 'member'};
  const _keys = Object.keys(p1);
  const _plhdr = _keys.map(()=>'?').join(', ');
  await powerSync.execute(`INSERT INTO chat_participants (${_keys.join(',')}) VALUES (${_plhdr})`, Object.values(p1));
@@ -182,7 +182,7 @@ export default function UnivMessaging() {
  setMessage('');
  try {
  await (async () => {
- const _payload = { id: crypto.randomUUID(), room_id: activeRoomId, sender_id: currentUser.id, content: textToSend};
+ const _payload = { room_id: activeRoomId, sender_id: currentUser.id, content: textToSend};
  const _keys = Object.keys(_payload);
  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
  await powerSync.execute(`INSERT INTO chat_messages (${_keys.join(',')}) VALUES (${_keys.map(()=>'?').join(',')})`, _vals); return { error: null};})();

@@ -12,10 +12,9 @@ import { useCompanyId} from '@/hooks/useCompanyId';
 import { DragDropContext, Droppable, Draggable} from '@hello-pangea/dnd';
 import { motion, AnimatePresence} from 'framer-motion';
 import {Plus, Search, Filter, MoreHorizontal, User, Mail, Phone, 
- Calendar as CalendarIcon, DollarSign, Trash2, X,
- LayoutList, KanbanSquare, Target, TrendingUp, Building2, Edit2, Eye, Sparkles, Activity} from "lucide-react";
+ Calendar as CalendarIcon,, DollarSign, Trash2, X,
+ LayoutList, KanbanSquare, Target, TrendingUp, Building2, Edit2, Eye} from "lucide-react";
 import { toast} from 'react-hot-toast';
-import { generateText } from '@/lib/cloudflareAI';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from "@/components/ui/sheet";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 
@@ -32,8 +31,6 @@ export default function UnivCRM() {
  const [stages, setStages] = useState(DEFAULT_STAGES);
  const [newStageName, setNewStageName] = useState('');
  const [isAddingStage, setIsAddingStage] = useState(false);
- const [isScoring, setIsScoring] = useState(false);
- const [scorerModal, setScorerModal] = useState(null);
 
  // Modal State
  const [isModalOpen, setIsModalOpen] = useState(false);
@@ -196,32 +193,6 @@ export default function UnivCRM() {
  const wonLeads = leads.filter(l => l.status === 'Won').length;
  const winRate = leads.length > 0 ? Math.round((wonLeads / leads.length) * 100) : 0;
 
- const handleAIScore = async () => {
-   setIsScoring(true);
-   toast.loading("Analyzing pipeline and scoring leads...", { id: "score" });
-   try {
-     const openLeads = leads.filter(l => l.status !== 'Won' && l.status !== 'Lost');
-     const prompt = [
-       { role: 'system', content: 'You are an AI Sales Coach. Analyze the given open leads. Return a JSON object with: "topLead" (name of the best lead to pursue right now), "winProbability" (0-100), and "nextAction" (1 sentence on exactly what to do next to close them).' },
-       { role: 'user', content: `Open Leads:\n${openLeads.map(l => `- ${l.first_name} ${l.last_name} (${l.source}), Value: $${l.value}, Stage: ${l.status}, Notes: ${l.notes}`).join('\n')}` }
-     ];
-     let response = await generateText(prompt);
-     if (typeof response !== 'string') response = response.response || response.text || JSON.stringify(response);
-     const jsonMatch = response.match(/\{[\s\S]*\}/);
-     if (jsonMatch) {
-       const parsed = JSON.parse(jsonMatch[0]);
-       setScorerModal(parsed);
-       toast.success("Analysis complete", { id: "score" });
-     } else {
-       toast.error("Failed to parse analysis", { id: "score" });
-     }
-   } catch (err) {
-     toast.error("Analysis failed", { id: "score" });
-   } finally {
-     setIsScoring(false);
-   }
- };
-
  
  const handleExport = () => {
  const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
@@ -253,9 +224,6 @@ export default function UnivCRM() {
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
- <button onClick={handleAIScore} disabled={isScoring || leads.filter(l => l.status !== 'Won' && l.status !== 'Lost').length === 0} className="h-10 px-4 bg-fuchsia-50 text-fuchsia-600 border border-fuchsia-100 rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-fuchsia-100 disabled:opacity-50 transition-colors">
-  {isScoring ? <Sparkles className="w-4 h-4 animate-pulse" /> : <Target className="w-4 h-4" />} AI Lead Scorer
-  </button>
 
  <button 
  onClick={() => setViewMode('kanban')} 
@@ -640,33 +608,6 @@ export default function UnivCRM() {
  )}
  </SheetContent>
  </Sheet>
-
- {scorerModal && (
-   <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
-     <div className="bg-card w-full max-w-lg rounded-2xl flex flex-col hover:shadow-xl transition-all">
-       <div className="p-5 border-b border-primary/40 flex justify-between items-center bg-fuchsia-50/50">
-         <h2 className="text-lg font-bold flex items-center gap-2 text-fuchsia-900"><Sparkles className="w-5 h-5 text-fuchsia-600" /> AI Sales Coach</h2>
-         <button onClick={() => setScorerModal(null)} className="p-2 hover:bg-fuchsia-100 rounded-full transition-colors"><X className="w-5 h-5 text-fuchsia-400" /></button>
-       </div>
-       <div className="p-6 space-y-5">
-         <div className="grid grid-cols-2 gap-4">
-           <div>
-             <div className="text-xs uppercase font-bold tracking-wider text-rose-500 mb-1">Top Priority Lead</div>
-             <div className="text-xl font-black text-rose-700">{scorerModal.topLead}</div>
-           </div>
-           <div>
-             <div className="text-xs uppercase font-bold tracking-wider text-fuchsia-500 mb-1">Win Probability</div>
-             <div className="text-3xl font-black text-fuchsia-600">{scorerModal.winProbability}%</div>
-           </div>
-         </div>
-         <div>
-           <div className="text-xs uppercase font-bold tracking-wider text-emerald-600 mb-2 flex items-center gap-2"><Target className="w-3.5 h-3.5"/> Suggested Next Action</div>
-           <p className="text-sm text-emerald-800 leading-relaxed italic bg-emerald-50/50 p-3 rounded-lg border border-emerald-100">{scorerModal.nextAction}</p>
-         </div>
-       </div>
-     </div>
-   </div>
-  )}
 
  </div>
  );

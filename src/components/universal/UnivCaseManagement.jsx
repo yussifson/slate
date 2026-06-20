@@ -10,9 +10,8 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
 import { motion} from 'framer-motion';
-import { Search, Briefcase, Plus, Scale, CheckCircle2, AlertCircle, Clock, MoreHorizontal, User, Sparkles, XCircle} from 'lucide-react';
+import { Search, Briefcase, Plus, Scale, CheckCircle2, AlertCircle, Clock, MoreHorizontal, User} from 'lucide-react';
 import { toast} from 'react-hot-toast';
-import { generateText } from '@/lib/cloudflareAI';
 
 export default function UnivCaseManagement() {
  const companyId = useCompanyId();
@@ -20,8 +19,6 @@ export default function UnivCaseManagement() {
  const [cases, setCases] = useState([]);
  const [loading, setLoading] = useState(true);
  const [searchTerm, setSearchTerm] = useState('');
- const [isPredicting, setIsPredicting] = useState(false);
- const [predictionModal, setPredictionModal] = useState(null);
 
  useEffect(() => {
  if (companyId) {
@@ -79,30 +76,6 @@ export default function UnivCaseManagement() {
  `${c.case_number} ${c.client_name} ${c.case_type} ${c.status}`.toLowerCase().includes(searchTerm.toLowerCase())
  );
 
- const handlePredictOutcome = async (c) => {
-   setIsPredicting(true);
-   toast.loading("Analyzing precedents...", { id: "predict" });
-   try {
-     const prompt = [
-       { role: 'system', content: 'You are an expert AI Legal Analyst. Predict the outcome of the given case based on typical precedents. Return a JSON object with keys: "probability" (e.g. "75% Success"), "reasoning" (2-3 sentences), "precedent" (1 sentence of a fictional similar past case).' },
-       { role: 'user', content: `Case Type: ${c.case_type}\nJurisdiction: ${c.court_jurisdiction}\nClient: ${c.client_name}` }
-     ];
-     let response = await generateText(prompt);
-     if (typeof response !== 'string') response = response.response || response.text || JSON.stringify(response);
-     const jsonMatch = response.match(/\{[\s\S]*\}/);
-     if (jsonMatch) {
-       const parsed = JSON.parse(jsonMatch[0]);
-       setPredictionModal({ ...c, prediction: parsed });
-       toast.success("Analysis complete", { id: "predict" });
-     } else {
-       toast.error("Failed to parse prediction", { id: "predict" });
-     }
-   } catch (err) {
-     toast.error("Prediction failed", { id: "predict" });
-   } finally {
-     setIsPredicting(false);
-   }
- };
  
  const handleExport = () => {
  const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
@@ -231,9 +204,6 @@ export default function UnivCaseManagement() {
  </span>
  </td>
  <td className="p-4 text-right">
- <button onClick={(e) => { e.stopPropagation(); handlePredictOutcome(c); }} disabled={isPredicting} className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-xl transition-colors disabled:opacity-50 border border-indigo-100 mr-2">
-   {isPredicting ? <Sparkles className="w-3.5 h-3.5 animate-pulse" /> : <Sparkles className="w-3.5 h-3.5" />} Predict
- </button>
  <button className="text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors p-2"><MoreHorizontal className="w-4 h-4" /></button>
  </td>
  </motion.tr>
@@ -242,31 +212,6 @@ export default function UnivCaseManagement() {
  </table>
  </div>
  </div>
-
- {predictionModal && (
-   <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
-     <div className="bg-card w-full max-w-lg rounded-2xl flex flex-col hover:shadow-xl transition-all">
-       <div className="p-5 border-b border-primary/40 flex justify-between items-center bg-indigo-50/50">
-         <h2 className="text-lg font-bold flex items-center gap-2 text-indigo-900"><Sparkles className="w-5 h-5 text-indigo-600" /> AI Outcome Prediction</h2>
-         <button onClick={() => setPredictionModal(null)} className="p-2 hover:bg-indigo-100 rounded-full transition-colors"><XCircle className="w-5 h-5 text-indigo-400" /></button>
-       </div>
-       <div className="p-6 space-y-5">
-         <div>
-           <div className="text-xs uppercase font-bold tracking-wider text-indigo-400 mb-1">Success Probability</div>
-           <div className="text-3xl font-black text-indigo-600">{predictionModal.prediction.probability}</div>
-         </div>
-         <div className="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100">
-           <div className="text-xs uppercase font-bold tracking-wider text-indigo-400 mb-2">AI Reasoning</div>
-           <p className="text-sm text-indigo-900 leading-relaxed font-medium">{predictionModal.prediction.reasoning}</p>
-         </div>
-         <div>
-           <div className="text-xs uppercase font-bold tracking-wider text-slate-400 mb-2 flex items-center gap-2"><Scale className="w-3.5 h-3.5"/> Relevant Precedent</div>
-           <p className="text-sm text-slate-600 leading-relaxed italic border-l-2 border-slate-200 pl-3">{predictionModal.prediction.precedent}</p>
-         </div>
-       </div>
-     </div>
-   </div>
- )}
  </div>
  );
 }

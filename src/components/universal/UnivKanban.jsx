@@ -10,7 +10,7 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
 import { DragDropContext, Droppable, Draggable} from '@hello-pangea/dnd';
-import {LayoutGrid, Plus, Search, Trash2, Edit2, XCircle, User, Calendar, Tag} from "lucide-react";
+import {LayoutGrid, Plus, Search, Trash2, Edit2,, XCircle, User, Calendar, Tag} from "lucide-react";
 import { toast} from 'react-hot-toast';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 
@@ -19,9 +19,7 @@ const PRIORITY_COLORS = { Low: 'bg-muted text-[#71717a] dark:text-gray-400', Med
 const COL_COLORS = ['border-primary/40', 'border-blue-400', 'border-violet-400', 'border-emerald-400'];
 const EMPTY_FORM = { title: '', description: '', status: 'To Do', priority: 'Medium', assignee: '', due_date: '', labels: ''};
 
-export default function UnivKanban({ title = "Kanban Board", companyId: propCompanyId, pageName, tableName}) {
- const baseCompanyId = useCompanyId();
- const companyId = propCompanyId || baseCompanyId;
+export default function UnivKanban({ title = "Kanban Board", companyId, pageName, tableName}) {
  const [view, setView] = useState('Default');
 
  const [tasks, setTasks] = useState([]);

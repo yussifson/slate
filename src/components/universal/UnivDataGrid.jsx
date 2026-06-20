@@ -1,7 +1,7 @@
 import { powerSync} from '@/api/PowerSyncConnector';
 import React, { useState, useMemo, useRef, useCallback, useEffect} from 'react';
 import { motion, AnimatePresence} from 'framer-motion';
-import {Search, Download, Plus, Trash2,
+import {Search, Download, Plus,, Trash2,
  ArrowUp, ArrowDown, ArrowUpDown, ChevronDown, ChevronRight,
  Save, Bookmark, X, CheckSquare, SquareMinus, Layers,
  FileDown, AlertCircle} from "lucide-react";
@@ -15,7 +15,6 @@ import { useToast} from '@/components/ui/use-toast';
 import { cn} from '@/lib/utils';
 import { useCompanyId} from '@/hooks/useCompanyId';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
-import { PremiumEmptyState } from "@/components/ui/premium-empty-state";
 
 /* ─────────────────────────────────────────────
  Helpers
@@ -30,7 +29,8 @@ const STATUS_CLASSES = {
  review: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800',
  closed: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-400 dark:border-red-800',
  overdue: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-400 dark:border-red-800',
- inactive: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-400 dark:border-red-800'};
+ inactive: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-400 dark:border-red-800',
+};
 
 function getCellFormatClass(value) {
  if (typeof value === 'string') {
@@ -47,13 +47,11 @@ function StatusBadge({ value}) {
  const key = String(value).toLowerCase().trim();
  const cls = STATUS_CLASSES[key];
  if (!cls) return <span className="text-foreground">{value}</span>;
- const isLive = ['active', 'paid', 'live', 'pending'].includes(key);
  return (
  <span className={cn(
- 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg border-[0.5px] border-black/9 dark:border-white/8 text-[11px] uppercase tracking-wider font-semibold',
+ 'inline-flex items-center px-2.5 py-0.5 rounded-lg border-[0.5px] border-black/9 dark:border-white/8 text-[11px] uppercase tracking-wider font-semibold',
  cls
  )}>
- {isLive && <span className="w-1.5 h-1.5 rounded-full bg-current opacity-75 animate-pulse" />}
  {value}
  </span>
  );
@@ -696,14 +694,14 @@ export default function UnivDataGrid({
  {/* Toolbar */}
  <div className="px-4 py-3 flex flex-wrap items-center justify-between gap-3 bg-muted/10 border-b border-primary/40">
  {/* Search */}
- <div className="relative flex items-center bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus-within:ring-2 focus-within:ring-primary/40 transition-shadow transition-colors group">
- <Search className="w-4 h-4 absolute left-3 text-[#71717a] dark:text-gray-400 group-focus-within:text-foreground transition-colors pointer-events-none" />
+ <div className="relative flex items-center">
+ <Search className="w-4 h-4 absolute left-3 text-[#71717a] dark:text-gray-400 pointer-events-none" />
  <input
  type="text"
  placeholder={searchPlaceholder}
  value={searchTerm}
  onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1); setActiveViewIdx(-1);}}
- className="h-9 pl-10 pr-4 w-64 bg-transparent text-sm focus:outline-none"
+ className="h-9 pl-10 pr-4 w-64 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  {searchTerm && (
  <span className="absolute right-3 text-xs text-[#71717a] dark:text-gray-400 font-medium tracking-[0.04em]">
@@ -798,10 +796,10 @@ export default function UnivDataGrid({
  )}
 
  <table className="w-full text-sm text-left whitespace-nowrap min-w-max border-collapse">
- <thead className="sticky top-0 z-20 bg-muted/70 backdrop-blur border-b border-primary/40 text-xs text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">
+ <thead className="sticky top-0 z-10 bg-muted/70 backdrop-blur border-b border-primary/40 text-xs text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">
  <tr>
  {/* Checkbox header */}
- <th className="sticky left-0 z-30 bg-muted/70 w-10 px-3 py-3.5">
+ <th className="sticky left-0 z-20 bg-muted/70 w-10 px-3 py-3.5">
  <Checkbox
  checked={allSelected}
  onCheckedChange={toggleSelectAll}
@@ -818,7 +816,7 @@ export default function UnivDataGrid({
  onClick={() => handleSort(col.key)}
  className={cn(
  'px-4 py-3.5 font-semibold cursor-pointer hover:bg-muted/80 transition-colors select-none',
- ci === 0 && 'sticky left-10 z-30 bg-muted/70'
+ ci === 0 && 'sticky left-10 z-20 bg-muted/70'
  )}
  >
  <div className="flex items-center gap-2">
@@ -867,18 +865,24 @@ export default function UnivDataGrid({
  )}
 
  {/* Empty state */}
-  {filteredData.length === 0 && !isLoading && (
-  <tr>
-  <td colSpan={displayColumns.length + 2} className="py-0">
-  <PremiumEmptyState
-    icon={Search}
-    title="No records found"
-    description={searchTerm ? `No results matching "${searchTerm}"` : "This table is empty. Get started by adding your first record."}
-    action={searchTerm ? { label: "Clear search", onClick: () => setSearchTerm('') } : { label: "Add record", onClick: () => setIsAdding(true) }}
-  />
-  </td>
-  </tr>
-  )}
+ {filteredData.length === 0 && !isLoading && (
+ <tr>
+ <td colSpan={displayColumns.length + 2} className="py-16 text-center">
+ <div className="flex flex-col items-center gap-3 text-[#71717a] dark:text-gray-400">
+ <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+ <Search className="w-5 h-5 opacity-50" />
+ </div>
+ <p className="text-sm">No records found.{' '}
+ {searchTerm ? (
+ <button onClick={() => setSearchTerm('')} className="text-primary underline underline-offset-2">Clear search</button>
+ ) : (
+ <button onClick={() => setIsAdding(true)} className="text-primary underline underline-offset-2">Add one now</button>
+ )}
+ </p>
+ </div>
+ </td>
+ </tr>
+ )}
  </tbody>
  </table>
  </div>

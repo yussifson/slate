@@ -10,9 +10,8 @@ import GenericDashboard from '@/components/views/GenericDashboard';
 import { supabase} from "@/api/supabaseClient";
 import { useCompanyId} from '@/hooks/useCompanyId';
 import { motion, AnimatePresence} from 'framer-motion';
-import { Search, ClipboardList, Plus, CheckCircle2, XCircle, AlertTriangle, Clock, Edit2, Trash2, XCircle as CloseIcon, Sparkles, Activity} from 'lucide-react';
+import { Search, ClipboardList, Plus, CheckCircle2, XCircle, AlertTriangle, Clock, Edit2, Trash2, XCircle as CloseIcon} from 'lucide-react';
 import { toast} from 'react-hot-toast';
-import { generateText } from '@/lib/cloudflareAI';
 
 const EMPTY_FORM = {
  batch_number: '',
@@ -28,8 +27,6 @@ export default function UnivQualityControl() {
  const [inspections, setInspections] = useState([]);
  const [loading, setLoading] = useState(true);
  const [searchTerm, setSearchTerm] = useState('');
- const [isAnalyzing, setIsAnalyzing] = useState(false);
- const [analysisModal, setAnalysisModal] = useState(null);
  const [isModalOpen, setIsModalOpen] = useState(false);
  const [form, setForm] = useState(EMPTY_FORM);
  const [editingId, setEditingId] = useState(null);
@@ -136,32 +133,7 @@ export default function UnivQualityControl() {
  `${i.batch_number} ${i.inspector_name} ${i.result}`.toLowerCase().includes(searchTerm.toLowerCase())
  );
 
- const handleAIAnalyze = async () => {
-   setIsAnalyzing(true);
-   toast.loading("Analyzing QC failure patterns...", { id: "analyze" });
-   try {
-     const issues = inspections.filter(i => i.result === 'Fail' || i.result === 'Rework');
-     const prompt = [
-       { role: 'system', content: 'You are an AI Quality Assurance Engineer. Analyze the given list of failed/reworked manufacturing batches. Return a JSON object with keys: "rootCauseWarning" (1 sentence summary of the likely common root cause), "preventativeAction" (1-2 sentences on how to fix this on the assembly line), and "riskLevel" ("High", "Medium", "Low").' },
-       { role: 'user', content: `Problematic Batches:\n${issues.map(i => `- Batch ${i.batch_number}: ${i.result}. Notes: ${i.notes}`).join('\n')}` }
-     ];
-     let response = await generateText(prompt);
-     if (typeof response !== 'string') response = response.response || response.text || JSON.stringify(response);
-     const jsonMatch = response.match(/\{[\s\S]*\}/);
-     if (jsonMatch) {
-       const parsed = JSON.parse(jsonMatch[0]);
-       setAnalysisModal(parsed);
-       toast.success("Analysis complete", { id: "analyze" });
-     } else {
-       toast.error("Failed to parse analysis", { id: "analyze" });
-     }
-   } catch (err) {
-     toast.error("Analysis failed", { id: "analyze" });
-   } finally {
-     setIsAnalyzing(false);
-   }
- };
-
+ 
  const handleExport = () => {
  const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
  if (!exportData || exportData.length === 0) return alert('No data to export');
@@ -219,9 +191,6 @@ export default function UnivQualityControl() {
  className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
  />
  </div>
- <button onClick={handleAIAnalyze} disabled={isAnalyzing || inspections.filter(i => i.result === 'Fail' || i.result === 'Rework').length === 0} className="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 rounded-xl text-sm font-semibold hover:bg-rose-100 transition-colors border border-rose-100 disabled:opacity-50">
-  {isAnalyzing ? <Sparkles className="w-4 h-4 animate-pulse" /> : <Activity className="w-4 h-4" />} AI Defect Analysis
-  </button>
  </div>
 
  <div className="flex-1 overflow-auto custom-scrollbar p-6">
@@ -353,35 +322,6 @@ export default function UnivQualityControl() {
  </div>
  )}
  </AnimatePresence>
-
- {analysisModal && (
-   <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
-     <div className="bg-card w-full max-w-lg rounded-2xl flex flex-col hover:shadow-xl transition-all">
-       <div className="p-5 border-b border-primary/40 flex justify-between items-center bg-rose-50/50">
-         <h2 className="text-lg font-bold flex items-center gap-2 text-rose-900"><Activity className="w-5 h-5 text-rose-600" /> AI Root Cause Analysis</h2>
-         <button onClick={() => setAnalysisModal(null)} className="p-2 hover:bg-rose-100 rounded-full transition-colors"><XCircle className="w-5 h-5 text-rose-400" /></button>
-       </div>
-       <div className="p-6 space-y-5">
-         <div>
-           <div className="text-xs uppercase font-bold tracking-wider text-rose-400 mb-1">Risk Level</div>
-           <div className="flex items-center gap-2 text-3xl font-black text-rose-600">
-             {analysisModal.riskLevel === 'High' && <AlertTriangle className="w-8 h-8 text-rose-600" />}
-             {analysisModal.riskLevel}
-           </div>
-         </div>
-         <div className="bg-rose-50/50 p-4 rounded-xl border border-rose-100">
-           <div className="text-xs uppercase font-bold tracking-wider text-rose-500 mb-2">Likely Root Cause</div>
-           <p className="text-sm text-rose-900 leading-relaxed font-medium">{analysisModal.rootCauseWarning}</p>
-         </div>
-         <div>
-           <div className="text-xs uppercase font-bold tracking-wider text-emerald-600 mb-2 flex items-center gap-2"><Sparkles className="w-3.5 h-3.5"/> Preventative Action</div>
-           <p className="text-sm text-emerald-800 leading-relaxed italic bg-emerald-50/50 p-3 rounded-lg border border-emerald-100">{analysisModal.preventativeAction}</p>
-         </div>
-       </div>
-     </div>
-   </div>
-  )}
-
-  </div>
-  );
+ </div>
+ );
 }

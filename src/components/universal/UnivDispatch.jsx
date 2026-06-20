@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useIndustryRecords, useMutateIndustryRecord } from '@/hooks/useIndustryData';
-import {Plus, Trash2, Edit2, XCircle, Search, Navigation, User, MapPin, Package, Clock, CheckCircle2, AlertCircle, CheckSquare} from "lucide-react";
+import {Plus, Trash2, Edit2,, XCircle, Search, Navigation, User, MapPin, Package, Clock, CheckCircle2, AlertCircle, CheckSquare} from "lucide-react";
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { OrbitLoader } from "@/components/ui/orbit-loader";

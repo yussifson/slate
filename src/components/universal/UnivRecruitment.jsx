@@ -3,14 +3,14 @@ import React, { useState, useEffect } from 'react';
 
 import { supabase } from "@/api/supabaseClient";
 import { useCompanyId } from '@/hooks/useCompanyId';
-import {UserPlus, Plus, Search, Trash2, Edit2, XCircle, Briefcase, Mail, Phone, Calendar, User, Star, List, LayoutGrid} from "lucide-react";
+import {UserPlus, Plus, Search, Trash2, Edit2,, XCircle, Briefcase, Mail, Phone, Calendar, User, Star, List, LayoutGrid} from "lucide-react";
 import { toast } from 'react-hot-toast';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 
-const EMPTY_FORM = { candidate_name: '', email: '', phone: '', job_title: '', status: 'Applied', source: '', experience_years: 0, rating: 0, notes: '' };
+const EMPTY_FORM = { candidate_name: '', email: '', phone: '', position: '', status: 'Applied', source: '', experience_years: 0, rating: 0, notes: '' };
 const STATUS_COLORS = { Applied: 'bg-blue-50 text-blue-700 border-blue-200', Screening: 'bg-violet-50 text-violet-700 border-violet-200', Interviewing: 'bg-amber-50 text-amber-700 border-amber-200', Offered: 'bg-emerald-50 text-emerald-700 border-emerald-200', Hired: 'bg-emerald-100 text-emerald-800 border-emerald-300', Rejected: 'bg-red-50 text-red-700 border-red-200' };
-
+const STAGES = ['Applied', 'Screening', 'Interviewing', 'Offered', 'Hired', 'Rejected'];
 
 const StarRating = ({ rating, onChange }) => {
   return (
@@ -48,36 +48,16 @@ export default function UnivRecruitment() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isStageModalOpen, setIsStageModalOpen] = useState(false);
-  const [newStageName, setNewStageName] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
 
-  const defaultStages = ['Applied', 'Screening', 'Interviewing', 'Offered', 'Hired', 'Rejected'];
-  const [STAGES, setSTAGES] = useState(() => {
-    try {
-      const saved = localStorage.getItem(`pipelines_${companyId}`);
-      if (saved) return JSON.parse(saved);
-    } catch(e) {}
-    return defaultStages;
-  });
-
-  const openStageModal = () => {
-    setNewStageName('');
-    setIsStageModalOpen(true);
-  };
-
-  const addStage = (e) => {
-    e.preventDefault();
-    const stageName = newStageName.trim();
-    if (stageName && !STAGES.includes(stageName)) {
-      const newStages = [...STAGES, stageName];
-      setSTAGES(newStages);
-      localStorage.setItem(`pipelines_${companyId}`, JSON.stringify(newStages));
+  useEffect(() => {
+    if (companyId) {
+      fetchData();
+      const ch = supabase.channel('recr_ch').on('postgres_changes', { event: '*', schema: 'public', table: 'univ_recruitment', filter: `company_id=eq.${companyId}` }, fetchData).subscribe();
+      return () => supabase.removeChannel(ch);
     }
-    setIsStageModalOpen(false);
-  };
-
+  }, [companyId]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -87,12 +67,6 @@ export default function UnivRecruitment() {
       setCandidates(data || []);
     } catch (e) { console.error(e); } finally { setLoading(false); }
   };
-
-  useEffect(() => {
-    if (companyId) {
-      fetchData();
-    }
-  }, [companyId]);
 
   const save = async (e) => {
     e.preventDefault();
@@ -121,27 +95,26 @@ export default function UnivRecruitment() {
 
   const updateStatus = async (id, status) => {
     await (async () => { const _payload = { status }; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_recruitment SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, id]);})();
+    fetchData();
   };
 
   const onDragEnd = async (result) => {
     if (!result.destination) return;
     const { source, destination, draggableId } = result;
-    if (source.droppableId === destination.droppableId && source.index === destination.index) return;
+    if (source.droppableId === destination.droppableId) return;
 
+    // Optimistic UI update
     const newStatus = destination.droppableId;
-    
-    // Simple optimistic update
     setCandidates(prev => prev.map(c => c.id === draggableId ? { ...c, status: newStatus } : c));
     
     // DB update
     await updateStatus(draggableId, newStatus);
-    fetchData();
   };
 
   const openModal = (r = null) => { setForm(r ? { ...r } : EMPTY_FORM); setEditingId(r?.id || null); setIsModalOpen(true); };
   const closeModal = () => { setIsModalOpen(false); setEditingId(null); setForm(EMPTY_FORM); };
   
-  const filtered = candidates.filter(c => `${c.candidate_name} ${c.job_title} ${c.email}`.toLowerCase().includes(search.toLowerCase()) && (statusFilter === 'All' || c.status === statusFilter));
+  const filtered = candidates.filter(c => `${c.candidate_name} ${c.position} ${c.email}`.toLowerCase().includes(search.toLowerCase()) && (statusFilter === 'All' || c.status === statusFilter));
 
   const handleExport = () => {
     const exportData = filtered;
@@ -169,7 +142,6 @@ export default function UnivRecruitment() {
           <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 transition-all active:scale-95">
             Export CSV
           </button>
-          <button onClick={openStageModal} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 transition-all active:scale-95"><Plus className="w-4 h-4"/>Add Pipeline</button>
           <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors"><Plus className="w-4 h-4"/>Add Candidate</button>
         </div>
       </div>
@@ -200,7 +172,7 @@ export default function UnivRecruitment() {
                   <div className="w-9 h-9 rounded-full bg-primary/10 text-primary font-semibold flex items-center justify-center shrink-0">{(c.candidate_name||'?').charAt(0).toUpperCase()}</div>
                   <div><p className="font-semibold text-sm text-foreground">{c.candidate_name}</p><p className="text-xs text-[#71717a] dark:text-gray-400 flex items-center gap-2 tracking-[0.04em]"><Mail className="w-3 h-3"/> {c.email||'—'}</p></div>
                 </div>
-                <div className="col-span-3 font-medium text-sm text-foreground">{c.job_title} <span className="text-xs font-normal text-[#71717a] dark:text-gray-400 block tracking-[0.04em]">{c.experience_years} yrs exp</span></div>
+                <div className="col-span-3 font-medium text-sm text-foreground">{c.position} <span className="text-xs font-normal text-[#71717a] dark:text-gray-400 block tracking-[0.04em]">{c.experience_years} yrs exp</span></div>
                 <div className="col-span-2 flex items-center">
                   <DisplayStars rating={c.rating} />
                 </div>
@@ -253,7 +225,7 @@ export default function UnivRecruitment() {
                                       <div className="w-8 h-8 rounded-full bg-primary/10 text-primary font-semibold flex items-center justify-center text-xs shrink-0 tracking-[0.04em]">{(c.candidate_name||'?').charAt(0).toUpperCase()}</div>
                                       <div>
                                         <p className="font-semibold text-sm text-foreground line-clamp-1">{c.candidate_name}</p>
-                                        <p className="text-[11px] font-medium text-[#71717a] dark:text-gray-400">{c.job_title}</p>
+                                        <p className="text-[11px] font-medium text-[#71717a] dark:text-gray-400">{c.position}</p>
                                       </div>
                                     </div>
                                     <button onClick={(e) => { e.stopPropagation(); remove(c.id); }} className="p-1 opacity-0 group-hover:opacity-100 text-[#71717a] dark:text-gray-400 hover:bg-red-50 hover:text-red-500 rounded-md transition-all"><Trash2 className="w-3.5 h-3.5" /></button>
@@ -278,29 +250,6 @@ export default function UnivRecruitment() {
         </div>
       )}
 
-      {isStageModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
-          <div className="bg-card w-full max-w-sm rounded-2xl flex flex-col shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-            <div className="p-5 border-b border-primary/40 flex justify-between items-center bg-muted/20 shrink-0">
-              <h2 className="text-xl font-black flex items-center gap-2"><Plus className="w-5 h-5 text-primary" /> Add Pipeline Stage</h2>
-              <button onClick={() => setIsStageModalOpen(false)} className="p-2 bg-background hover:bg-muted rounded-full text-[#71717a] dark:text-gray-400 transition-colors"><XCircle className="w-5 h-5"/></button>
-            </div>
-            <form onSubmit={addStage} className="p-5 overflow-y-auto flex-1 custom-scrollbar">
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Stage Name</label>
-                  <input autoFocus required type="text" value={newStageName} onChange={e=>setNewStageName(e.target.value)} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="e.g. Technical Interview"/>
-                </div>
-              </div>
-              <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-primary/40">
-                <button type="button" onClick={() => setIsStageModalOpen(false)} className="h-11 px-6 bg-muted rounded-xl text-sm font-semibold hover:bg-muted/80 transition-colors">Cancel</button>
-                <button type="submit" className="h-11 px-6 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">Add Stage</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
           <div className="bg-card w-full max-w-2xl rounded-2xl flex flex-col max-h-[90vh] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
@@ -311,7 +260,7 @@ export default function UnivRecruitment() {
             <form onSubmit={save} className="p-5 overflow-y-auto flex-1 custom-scrollbar">
               <div className="grid grid-cols-2 gap-5">
                 <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Candidate Name *</label><input required type="text" value={form.candidate_name} onChange={e=>setForm({...form,candidate_name:e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
-                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Position Applied For *</label><input required type="text" value={form.job_title} onChange={e=>setForm({...form,job_title:e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Position Applied For *</label><input required type="text" value={form.position} onChange={e=>setForm({...form,position:e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
                 <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Email Address</label><div className="relative"><Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400"/><input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} className="w-full h-11 pl-9 pr-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div></div>
                 <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Phone Number</label><div className="relative"><Phone className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400"/><input type="tel" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} className="w-full h-11 pl-9 pr-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div></div>
                 <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Status</label><select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm cursor-pointer">{STAGES.map(s=><option key={s}>{s}</option>)}</select></div>
