@@ -118,6 +118,8 @@ import Team from './pages/Team';
 
 import Settings from './pages/Settings';
 import CustomFieldsSettings from './pages/settings/CustomFields';
+const Roles = React.lazy(() => import('@/pages/Roles'));
+const Departments = React.lazy(() => import('@/pages/Departments'));
 import ClientPortal from './pages/ClientPortal';
 import CaseDetail from './pages/CaseDetail';
 import StaffDashboard from './pages/StaffDashboard';
