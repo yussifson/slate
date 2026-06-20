@@ -2,7 +2,7 @@ import { powerSync} from '@/api/PowerSyncConnector';
 import { useTranslation} from "react-i18next";
 import React from 'react';
 import { RevenueForecastCard, BehaviourProfilePanel, BenchmarkingPanel } from '@/components/intelligence/IntelligenceUI';
-, { useState, useMemo} from "react";
+import { useState, useMemo} from "react";
 import { base44} from "@/api/base44Client";
 import { useQuery} from "@tanstack/react-query";
 import { useAuth} from "@/lib/AuthContext";

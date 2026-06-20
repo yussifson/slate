@@ -2,7 +2,7 @@ import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { useTranslation} from "react-i18next";
 import React from 'react';
 import { RevenueForecastCard, BehaviourProfilePanel, BenchmarkingPanel } from '@/components/intelligence/IntelligenceUI';
-, { useState, useEffect} from "react";
+import { useState, useEffect} from "react";
 import { useNavigate} from "react-router-dom";
 import { base44} from "@/api/base44Client";
 import { useQuery} from "@tanstack/react-query";

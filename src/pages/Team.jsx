@@ -2,7 +2,7 @@ import { supabase } from '@/api/supabaseClient';
 import { useTranslation } from "react-i18next";
 import React from 'react';
 import { RevenueForecastCard, BehaviourProfilePanel, BenchmarkingPanel } from '@/components/intelligence/IntelligenceUI';
-, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { powerSync } from "@/api/PowerSyncConnector";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";

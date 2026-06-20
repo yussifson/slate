@@ -461,6 +461,27 @@ export const AuthProvider = ({ children }) => {
         console.error("Failed to fetch available workspaces:", e);
       }
 
+      // MFA Enforcement Check
+      if (companyData?.id) {
+        setAuthStep("Verifying security requirements...");
+        try {
+          const { data: secSettings } = await supabase.from('company_security_settings').select('require_mfa').eq('company_id', companyData.id).maybeSingle();
+          if (secSettings?.require_mfa) {
+            const { data: mfaData, error: mfaError } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+            if (!mfaError) {
+              if (mfaData.nextLevel === 'aal2' && mfaData.currentLevel !== 'aal2') {
+                throw new Error("MFA is required by your workspace administrator. Please sign in with Two-Factor Authentication.");
+              }
+            }
+          }
+        } catch(e) {
+          if (e.message.includes('MFA is required')) {
+            throw e;
+          }
+          console.error("Security settings check failed:", e);
+        }
+      }
+
       let newUser = { 
         ...sessionUser, 
         ...profile, 
