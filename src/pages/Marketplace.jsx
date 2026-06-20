@@ -124,8 +124,12 @@ export default function Marketplace() {
  order_index: f.order_index,
  created_at: new Date().toISOString()
 }));
- const { error: fieldsError} = await (async () => { let _payload = fieldsToInsert; if (Array.isArray(_payload)) _payload = _payload[0]; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' ? JSON.stringify(v) : v); const _plhdr = _keys.map(()=>'?').join(', '); await powerSync.execute(`INSERT INTO field_definitions (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals);})();
- if (fieldsError) throw fieldsError;
+      for (const fieldPayload of fieldsToInsert) {
+        const _keys = Object.keys(fieldPayload);
+        const _vals = Object.values(fieldPayload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _plhdr = _keys.map(()=>'?').join(', ');
+        await powerSync.execute(`INSERT INTO field_definitions (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals);
+      }
 }
 
  setInstalledMap(prev => ({ ...prev, [mod.id]: newModuleId}));
@@ -211,7 +215,7 @@ export default function Marketplace() {
        <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-2"><TrendingUp className="w-4 h-4 text-indigo-500" /> Ecosystem Growth</h3>
        <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">{modules.length} Available</span>
      </div>
-     <p className="text-xs text-slate-500 mb-2">Total community-verified modules currently ready for one-click installation.</p>
+     <p className="text-xs text-slate-500 mb-2">Total community-verified slates currently ready for one-click installation.</p>
      <div className="text-[10px] uppercase font-semibold text-indigo-600 tracking-wider">Expanding Library</div>
    </div>
 
@@ -273,10 +277,10 @@ export default function Marketplace() {
  <Blocks className="w-8 h-8 text-slate-400" />
  </div>
  <h3 className="text-xl font-extrabold text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-white mb-2">No slates found</h3>
- <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400 max-w-md leading-relaxed">
+ <p className="text-slate-500 dark:text-slate-400 max-w-md leading-relaxed">
  {searchQuery
- ? "No modules match your search. Try a different term."
- : "No public modules available yet. Check back soon or publish your own!"}
+ ? "No slates match your search. Try a different term."
+ : "No public slates available yet. Check back soon or publish your own!"}
  </p>
  </div>
  ) : (
@@ -318,21 +322,19 @@ export default function Marketplace() {
  <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-3.5 tracking-[0.04em]">
  Community Template
  </p>
- <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-3">
- {mod.description || "A powerful community-built module to streamline your workflow and data management."}
+ <p className="text-sm text-slate-500 mb-6 line-clamp-2 min-h-[40px] leading-relaxed">
+ {mod.description || "Custom slate"}
  </p>
  </div>
 
  {/* Card Footer */}
  <div className="px-6 py-5 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50/80 dark:bg-slate-900/50 flex items-center justify-between">
- <span className="text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 dark:text-slate-400">
- {mod.fields_count ? `${mod.fields_count} fields` : 'Custom module'}
+ <span className="text-xs font-semibold tracking-wide text-slate-500">
+ {mod.fields_count ? `${mod.fields_count} fields` : 'Custom slate'}
  </span>
 
  {isOwned ? (
- <Badge variant="outline" className="font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-400 border-primary/40 px-4 py-2 rounded-xl">
- Your Module
- </Badge>
+ <Badge variant="secondary" className="bg-slate-100 text-slate-600 hover:bg-slate-200 border-0 font-medium">Custom Slate</Badge>
  ) : isInstalled ? (
  <Button
  variant="outline"
