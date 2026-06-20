@@ -47,6 +47,8 @@ export const INDUSTRIES = {
       { label: 'Audit Log', path: '/audit', icon: 'Search' },
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
+      { label: 'Roles', path: '/roles', icon: 'ShieldCheck' },
+      { label: 'Departments', path: '/departments', icon: 'Building' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
     ]},
 
@@ -107,6 +109,8 @@ export const INDUSTRIES = {
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
       { label: 'Institution Settings', path: '/institution-settings', icon: 'Building' },
+      { label: 'Roles', path: '/roles', icon: 'ShieldCheck' },
+      { label: 'Departments', path: '/departments', icon: 'Building' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
     ]},
 
@@ -203,6 +207,8 @@ export const INDUSTRIES = {
       { label: 'Attendance', path: '/s/attendance-analytics', icon: 'Activity' },
       { label: 'Financial', path: '/s/financial-analytics', icon: 'TrendingUp' },
       
+      { section: 'System', label: 'Roles', path: '/roles', icon: 'ShieldCheck' },
+      { section: 'System', label: 'Departments', path: '/departments', icon: 'Building' },
       { section: 'System', label: 'Settings', path: '/settings', icon: 'Settings' },
     ]},
 
@@ -252,6 +258,8 @@ export const INDUSTRIES = {
       { label: 'Career & Alumni', path: '/u/career-alumni', icon: 'Briefcase' },
       { label: 'Finance Operations', path: '/u/finance', icon: 'Banknote' },
 
+      { section: 'System', label: 'Roles', path: '/roles', icon: 'ShieldCheck' },
+      { section: 'System', label: 'Departments', path: '/departments', icon: 'Building' },
       { section: 'System', label: 'Settings', path: '/settings', icon: 'Settings' },
     ]},
 
@@ -297,6 +305,8 @@ export const INDUSTRIES = {
       
       { section: 'Community & AI', label: 'Community', path: '/o/community', icon: 'MessageSquare' },
       
+      { section: 'System', label: 'Roles', path: '/roles', icon: 'ShieldCheck' },
+      { section: 'System', label: 'Departments', path: '/departments', icon: 'Building' },
       { section: 'System', label: 'Settings', path: '/settings', icon: 'Settings' },
     ]},
 
@@ -357,6 +367,8 @@ export const INDUSTRIES = {
       { label: 'Employment Rates', path: '/v/employment-rates', icon: 'TrendingUp' },
       { label: 'Course Performance', path: '/v/course-performance', icon: 'BarChart2' },
       
+      { section: 'System', label: 'Roles', path: '/roles', icon: 'ShieldCheck' },
+      { section: 'System', label: 'Departments', path: '/departments', icon: 'Building' },
       { section: 'System', label: 'Settings', path: '/settings', icon: 'Settings' },
     ]},
 
@@ -406,6 +418,8 @@ export const INDUSTRIES = {
       { label: 'Reports', path: '/reports', icon: 'BarChart2' },
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
+      { label: 'Roles', path: '/roles', icon: 'ShieldCheck' },
+      { label: 'Departments', path: '/departments', icon: 'Building' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
     ]},
 
@@ -449,6 +463,8 @@ export const INDUSTRIES = {
       { label: 'Reports', path: '/reports', icon: 'BarChart2' },
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
+      { label: 'Roles', path: '/roles', icon: 'ShieldCheck' },
+      { label: 'Departments', path: '/departments', icon: 'Building' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
     ]},
 
@@ -492,6 +508,8 @@ export const INDUSTRIES = {
       { label: 'Reports', path: '/reports', icon: 'BarChart2' },
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
+      { label: 'Roles', path: '/roles', icon: 'ShieldCheck' },
+      { label: 'Departments', path: '/departments', icon: 'Building' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
     ]},
 
@@ -535,6 +553,8 @@ export const INDUSTRIES = {
       { label: 'Reports', path: '/reports', icon: 'BarChart2' },
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
+      { label: 'Roles', path: '/roles', icon: 'ShieldCheck' },
+      { label: 'Departments', path: '/departments', icon: 'Building' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
     ]},
 
@@ -579,6 +599,8 @@ export const INDUSTRIES = {
       { label: 'Reports', path: '/reports', icon: 'BarChart2' },
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
+      { label: 'Roles', path: '/roles', icon: 'ShieldCheck' },
+      { label: 'Departments', path: '/departments', icon: 'Building' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
     ]},
 
@@ -626,6 +648,8 @@ export const INDUSTRIES = {
       { label: 'HR & Leave', path: '/hr', icon: 'HeartHandshake' },
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
+      { label: 'Roles', path: '/roles', icon: 'ShieldCheck' },
+      { label: 'Departments', path: '/departments', icon: 'Building' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
     ]},
 
@@ -669,6 +693,8 @@ export const INDUSTRIES = {
       { label: 'Reports', path: '/reports', icon: 'BarChart2' },
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
+      { label: 'Roles', path: '/roles', icon: 'ShieldCheck' },
+      { label: 'Departments', path: '/departments', icon: 'Building' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
     ]},
 
@@ -704,6 +730,8 @@ export const INDUSTRIES = {
 
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
+      { label: 'Roles', path: '/roles', icon: 'ShieldCheck' },
+      { label: 'Departments', path: '/departments', icon: 'Building' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
     ]}};
 
