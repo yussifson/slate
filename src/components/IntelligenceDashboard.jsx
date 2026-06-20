@@ -142,7 +142,7 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
         <Button
           onClick={() => runEngine(effectiveVertical)}
           disabled={isRunning}
-          className="gap-2 bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20"
+          className="gap-2 bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-500/20 border-0"
         >
           {isRunning ? (
             <>
@@ -256,7 +256,7 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
             <Button
               onClick={() => runEngine(effectiveVertical)}
               disabled={isRunning}
-              className="mt-4 gap-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white"
+              className="mt-4 gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 shadow-lg shadow-orange-500/20 border-0"
             >
               <Zap className="w-4 h-4" />
               {isRunning ? 'Analyzing...' : 'Generate Insights Now'}

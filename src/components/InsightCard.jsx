@@ -131,14 +131,68 @@ export default function InsightCard({ insight, onDismiss, onFeedback, compact = 
             </p>
 
             {insight.data_snapshot && (
-              <div className="pl-11">
-                <details className="text-xs">
-                  <summary className="text-[#71717a] cursor-pointer hover:text-card-foreground font-medium">
-                    View underlying data
+              <div className="pl-11 pt-2">
+                <details className="text-xs group">
+                  <summary className="text-primary cursor-pointer hover:text-primary/80 font-semibold mb-2 list-none flex items-center gap-1.5 transition-colors">
+                    <ChevronDown className="w-3.5 h-3.5 group-open:-rotate-180 transition-transform duration-200" />
+                    View Analysis Breakdown
                   </summary>
-                  <pre className="mt-1 p-2 bg-black/5 dark:bg-white/5 rounded-lg overflow-x-auto text-[10px] font-mono">
-                    {JSON.stringify(insight.data_snapshot, null, 2)}
-                  </pre>
+                  <div className="mt-2 p-4 bg-muted/30 rounded-xl border border-border/50 space-y-4">
+                    {insight.data_snapshot.grade && (
+                      <div className="flex items-center gap-4 border-b border-border/50 pb-4">
+                        <div className="flex flex-col items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary font-bold text-xl">
+                          {insight.data_snapshot.grade}
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-sm text-foreground">Health Score: {insight.data_snapshot.score}/100</h4>
+                          <p className="text-muted-foreground text-xs mt-0.5">Overall intelligence readiness assessment</p>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {insight.data_snapshot.breakdown && (
+                      <div className="space-y-2">
+                        <h5 className="font-semibold text-xs uppercase tracking-wider text-muted-foreground">Category Breakdown</h5>
+                        <div className="grid grid-cols-2 gap-2">
+                          {Object.entries(insight.data_snapshot.breakdown).map(([key, val]) => (
+                            <div key={key} className="bg-background rounded-lg p-2.5 border border-border/50 flex justify-between items-center shadow-sm">
+                              <span className="text-xs font-medium text-foreground capitalize">{key.replace(/_/g, ' ')}</span>
+                              <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">{val}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {insight.data_snapshot.improvements && Array.isArray(insight.data_snapshot.improvements) && (
+                      <div className="space-y-2 pt-2">
+                        <h5 className="font-semibold text-xs uppercase tracking-wider text-muted-foreground">Recommended Actions</h5>
+                        <ul className="space-y-1.5">
+                          {insight.data_snapshot.improvements.map((imp, idx) => (
+                            <li key={idx} className="flex items-start gap-2 text-xs text-foreground/90">
+                              <div className="mt-0.5 min-w-4 w-4 h-4 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center text-[10px] font-bold">{idx + 1}</div>
+                              {imp}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Fallback for other data formats */}
+                    {!insight.data_snapshot.grade && !insight.data_snapshot.breakdown && !insight.data_snapshot.improvements && (
+                      <div className="space-y-2">
+                        {Object.entries(insight.data_snapshot).map(([key, val]) => {
+                           if (typeof val === 'object') return null; // simplify
+                           return (
+                             <div key={key} className="flex justify-between items-center border-b border-border/40 pb-1.5">
+                               <span className="text-muted-foreground font-medium capitalize">{key.replace(/_/g, ' ')}</span>
+                               <span className="text-foreground font-semibold">{String(val)}</span>
+                             </div>
+                           )
+                        })}
+                      </div>
+                    )}
+                  </div>
                 </details>
               </div>
             )}

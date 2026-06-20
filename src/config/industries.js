@@ -3,6 +3,7 @@
 export const INDUSTRIES = {
   law: {
     name: 'Law Firm',
+    departments: [{value:'litigation', label:'Litigation'}, {value:'corporate', label:'Corporate'}, {value:'admin', label:'Administration'}],
     icon: '⚖️',
     terms: {
       client: 'Client', clients: 'Clients',
@@ -19,7 +20,14 @@ export const INDUSTRIES = {
       { value: 'hr', label: 'HR Manager' },
       { value: 'client', label: 'Client (Portal)' },
     ],
-    nav: [
+
+    departments: [
+      { value: 'admin', label: 'Administration' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'hr', label: 'Human Resources' },
+      { value: 'operations', label: 'Operations' },
+      { value: 'tech', label: 'IT & Support' }
+    ],    nav: [
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       { label: 'Cases', path: '/cases', icon: 'Briefcase' },
       { label: 'Clients', path: '/clients', icon: 'Users' },
@@ -60,7 +68,14 @@ export const INDUSTRIES = {
       { value: 'parent', label: 'Parent / Guardian' },
       { value: 'student', label: 'Student' },
     ],
-    nav: [
+
+    departments: [
+      { value: 'admin', label: 'Administration' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'hr', label: 'Human Resources' },
+      { value: 'operations', label: 'Operations' },
+      { value: 'tech', label: 'IT & Support' }
+    ],    nav: [
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       { label: 'Students', path: '/students', icon: 'Users' },
       { label: 'Parents & Guardians', path: '/parents', icon: 'HeartHandshake' },
@@ -111,7 +126,14 @@ export const INDUSTRIES = {
       { value: 'hr', label: 'HR Officer' },
       { value: 'student', label: 'Student' },
     ],
-                nav: [
+
+    departments: [
+      { value: 'admin', label: 'Administration' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'hr', label: 'Human Resources' },
+      { value: 'operations', label: 'Operations' },
+      { value: 'tech', label: 'IT & Support' }
+    ],                nav: [
       { label: 'Dashboard', path: '/s/', icon: 'LayoutDashboard' },
       
       { section: 'Administration', label: 'Directory', path: '/s/students', icon: 'Users' },
@@ -198,7 +220,14 @@ export const INDUSTRIES = {
       { value: 'lecturer', label: 'Lecturer' },
       { value: 'student', label: 'Student' },
     ],
-    nav: [
+
+    departments: [
+      { value: 'admin', label: 'Administration' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'hr', label: 'Human Resources' },
+      { value: 'operations', label: 'Operations' },
+      { value: 'tech', label: 'IT & Support' }
+    ],    nav: [
       { label: 'Dashboard', path: '/u/', icon: 'LayoutDashboard' },
       
       { section: 'Executive Pages', label: 'Enrollment', path: '/u/enrollment', icon: 'Users' },
@@ -240,7 +269,14 @@ export const INDUSTRIES = {
       { value: 'instructor', label: 'Instructor' },
       { value: 'learner', label: 'Learner' },
     ],
-    nav: [
+
+    departments: [
+      { value: 'admin', label: 'Administration' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'hr', label: 'Human Resources' },
+      { value: 'operations', label: 'Operations' },
+      { value: 'tech', label: 'IT & Support' }
+    ],    nav: [
       { label: 'Dashboard', path: '/o/', icon: 'LayoutDashboard' },
       { label: 'Learners', path: '/o/learners', icon: 'Users' },
       { label: 'Courses', path: '/o/courses', icon: 'BookOpen' },
@@ -278,7 +314,14 @@ export const INDUSTRIES = {
       { value: 'instructor', label: 'Instructor' },
       { value: 'apprentice', label: 'Trainee' },
     ],
-    nav: [
+
+    departments: [
+      { value: 'admin', label: 'Administration' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'hr', label: 'Human Resources' },
+      { value: 'operations', label: 'Operations' },
+      { value: 'tech', label: 'IT & Support' }
+    ],    nav: [
       { label: 'Dashboard', path: '/v/', icon: 'LayoutDashboard' },
       
       { section: 'Programs', label: 'Trades', path: '/v/trades', icon: 'BookOpen' },
@@ -335,7 +378,14 @@ export const INDUSTRIES = {
       { value: 'lab_technician', label: 'Lab Technician' },
       { value: 'finance', label: 'Finance Officer' },
     ],
-    nav: [
+
+    departments: [
+      { value: 'admin', label: 'Administration' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'hr', label: 'Human Resources' },
+      { value: 'operations', label: 'Operations' },
+      { value: 'tech', label: 'IT & Support' }
+    ],    nav: [
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       { label: 'Patients', path: '/patients', icon: 'Users' },
       { label: 'Appointments', path: '/appointments', icon: 'Calendar' },
@@ -377,7 +427,14 @@ export const INDUSTRIES = {
       { value: 'finance', label: 'Finance Officer' },
       { value: 'maintenance', label: 'Maintenance Staff' },
     ],
-    nav: [
+
+    departments: [
+      { value: 'admin', label: 'Administration' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'hr', label: 'Human Resources' },
+      { value: 'operations', label: 'Operations' },
+      { value: 'tech', label: 'IT & Support' }
+    ],    nav: [
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       { label: 'Front Desk', path: '/front-desk', icon: 'Building2' },
       { label: 'Reservations', path: '/reservations', icon: 'Calendar' },
@@ -412,7 +469,14 @@ export const INDUSTRIES = {
       { value: 'volunteer', label: 'Volunteer' },
       { value: 'member', label: 'Member' },
     ],
-    nav: [
+
+    departments: [
+      { value: 'admin', label: 'Administration' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'hr', label: 'Human Resources' },
+      { value: 'operations', label: 'Operations' },
+      { value: 'tech', label: 'IT & Support' }
+    ],    nav: [
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       { label: 'Members', path: '/members', icon: 'Users' },
       { label: 'Groups', path: '/groups', icon: 'Layers' },
@@ -448,7 +512,14 @@ export const INDUSTRIES = {
       { value: 'finance', label: 'Finance Officer' },
       { value: 'client', label: 'Customer (Portal)' },
     ],
-    nav: [
+
+    departments: [
+      { value: 'admin', label: 'Administration' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'hr', label: 'Human Resources' },
+      { value: 'operations', label: 'Operations' },
+      { value: 'tech', label: 'IT & Support' }
+    ],    nav: [
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       { label: 'Policies', path: '/policies', icon: 'Shield' },
       { label: 'Claims', path: '/claims', icon: 'AlertCircle' },
@@ -483,7 +554,14 @@ export const INDUSTRIES = {
       { value: 'inventory_manager', label: 'Inventory Manager' },
       { value: 'finance', label: 'Finance Officer' },
     ],
-    nav: [
+
+    departments: [
+      { value: 'admin', label: 'Administration' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'hr', label: 'Human Resources' },
+      { value: 'operations', label: 'Operations' },
+      { value: 'tech', label: 'IT & Support' }
+    ],    nav: [
       { label: 'Overview', path: '/retail-dashboard', icon: 'LayoutDashboard' },
       { label: 'Point of Sale', path: '/pos', icon: 'ShoppingCart' },
       { label: 'Inventory', path: '/retail-inventory', icon: 'Package' },
@@ -521,7 +599,14 @@ export const INDUSTRIES = {
       { value: 'finance', label: 'Finance Officer' },
       { value: 'client', label: 'Customer (Tracking)' },
     ],
-    nav: [
+
+    departments: [
+      { value: 'admin', label: 'Administration' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'hr', label: 'Human Resources' },
+      { value: 'operations', label: 'Operations' },
+      { value: 'tech', label: 'IT & Support' }
+    ],    nav: [
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       { section: 'Fleet Management', label: 'Vehicle Management', path: '/fleet', icon: 'Car' },
       { section: 'Driver Management', label: 'Driver Profiles', path: '/drivers', icon: 'Truck' },
@@ -561,7 +646,14 @@ export const INDUSTRIES = {
       { value: 'payroll_officer', label: 'Payroll Officer' },
       { value: 'employee', label: 'Employee' },
     ],
-    nav: [
+
+    departments: [
+      { value: 'admin', label: 'Administration' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'hr', label: 'Human Resources' },
+      { value: 'operations', label: 'Operations' },
+      { value: 'tech', label: 'IT & Support' }
+    ],    nav: [
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       { label: 'Employees', path: '/employees', icon: 'Users' },
       { label: 'Recruitment', path: '/recruitment', icon: 'UserPlus' },
@@ -592,7 +684,14 @@ export const INDUSTRIES = {
     roles: [
       { value: 'super_admin', label: 'Platform Administrator' }
     ],
-    nav: [
+
+    departments: [
+      { value: 'admin', label: 'Administration' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'hr', label: 'Human Resources' },
+      { value: 'operations', label: 'Operations' },
+      { value: 'tech', label: 'IT & Support' }
+    ],    nav: [
       { label: 'Platform Overview', path: '/admin', icon: 'LayoutDashboard' },
       { label: 'Firms & Quotas', path: '/admin/firms', icon: 'Building2' },
       { label: 'System Users', path: '/admin/users', icon: 'Users2' },
