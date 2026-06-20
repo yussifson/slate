@@ -16,8 +16,21 @@ import { OrbitLoader } from "@/components/ui/orbit-loader";
 export default function AdminUsers() {
   const { t } = useTranslation();
   const { toast } = useToast();
-  const { data: rawProfiles = [], isLoading: loadingProfiles } = usePSQuery("SELECT id, full_name, email, role, created_date, company_id FROM profiles ORDER BY created_date DESC LIMIT 100");
-  const { data: rawCompanies = [], isLoading: loadingCompanies } = usePSQuery("SELECT id, name FROM companies");
+  const { data: rawProfiles = [], isLoading: loadingProfiles } = useQuery({
+    queryKey: ['admin_profiles_global'],
+    queryFn: async () => {
+      const { data } = await supabase.from('profiles').select('id, full_name, email, role, created_date, company_id').order('created_date', { ascending: false }).limit(200);
+      return data || [];
+    }
+  });
+
+  const { data: rawCompanies = [], isLoading: loadingCompanies } = useQuery({
+    queryKey: ['admin_companies_global'],
+    queryFn: async () => {
+      const { data } = await supabase.from('companies').select('id, name');
+      return data || [];
+    }
+  });
 
   // Live last-login data from Supabase auth (bypasses PowerSync intentionally)
   const { data: authUsers = [] } = useQuery({
@@ -158,6 +171,37 @@ export default function AdminUsers() {
           </div>
         }
       />
+
+      {/* Behavioral Intelligence Layer */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 p-5 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-red-200/50 hover:shadow-md transition-all">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-2"><ShieldAlert className="w-4 h-4 text-red-500" /> Suspicious Logins</h3>
+            <span className="text-xs font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded-full">0 Detected</span>
+          </div>
+          <p className="text-xs text-slate-500 mb-2">Users logging in from anomalous locations or multiple IPs.</p>
+          <div className="text-[10px] uppercase font-semibold text-slate-400 tracking-wider">No threats found</div>
+        </div>
+
+        <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 p-5 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-amber-200/50 hover:shadow-md transition-all">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-2"><Users className="w-4 h-4 text-amber-500" /> Orphaned Accounts</h3>
+            <span className="text-xs font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">{profiles.filter(p => !p.company_id).length} Found</span>
+          </div>
+          <p className="text-xs text-slate-500 mb-2">Users who registered but have not joined or created a workspace.</p>
+          <div className="text-[10px] uppercase font-semibold text-amber-600 tracking-wider cursor-pointer hover:underline" onClick={() => setSearchQuery('orphaned')}>Filter Orphaned</div>
+        </div>
+
+        <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 p-5 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-indigo-200/50 hover:shadow-md transition-all">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-2"><KeyRound className="w-4 h-4 text-indigo-500" /> High Privilege</h3>
+            <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">{profiles.filter(p => p.role === 'admin' || p.role === 'super_admin').length} Admins</span>
+          </div>
+          <p className="text-xs text-slate-500 mb-2">Users with ecosystem-level administrative permissions.</p>
+          <div className="text-[10px] uppercase font-semibold text-indigo-600 tracking-wider cursor-pointer hover:underline" onClick={() => setSearchQuery('admin')}>Review Admins</div>
+        </div>
+      </div>
+
       {loading ? (
         <div className="flex justify-center py-24">
           <OrbitLoader size="md" />

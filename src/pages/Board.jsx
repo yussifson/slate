@@ -111,20 +111,8 @@ export default function Board() {
  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
  await powerSync.execute(`INSERT INTO video_rooms (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
 })();
- const newRoom = null;
- const error = null.select().single();
-
- if (error) {
- if (error.code === 'PGRST205' || error.message?.includes('schema cache')) {
- toast({ 
- title: "Database Schema Outdated", 
- description: "Please run 'NOTIFY pgrst, reload_schema;' in your Supabase SQL editor to enable video rooms.", 
- variant: "destructive" 
-});
- return;
-}
- throw error;
-}
+  // Record creation logic was executed above
+  const error = null;
 
  joinRoom(realUrl);
  return realUrl;
@@ -232,7 +220,7 @@ export default function Board() {
 
  {/* Right Column: AI Insights */}
  <div className="space-y-6">
- <div className="bg-orange-500 rounded-xl p-5 text-white relative overflow-hidden">
+ <div className="bg-gradient-to-r from-orange-500 to-amber-500 rounded-xl p-5 text-white relative overflow-hidden">
  <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
  <Sparkles className="w-5 h-5 text-white/70" /> Orbit Meeting AI
  </h3>

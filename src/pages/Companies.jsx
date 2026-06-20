@@ -29,7 +29,7 @@ export default function Companies() {
 
   const { data: companies = [], isLoading } = useQuery({
     queryKey: ["companies"],
-    queryFn: () => base44.entities.Company.list("-created_date")});
+    queryFn: () => base44.entities.Company.list("-created_at")});
 
   const createMutation = useMutation({
     mutationFn: async ({ form, adminName }) => {
