@@ -70,14 +70,6 @@ export default function UnivRecruitment() {
   };
 
 
-  useEffect(() => {
-    if (companyId) {
-      fetchData();
-      const ch = supabase.channel('recr_ch').on('postgres_changes', { event: '*', schema: 'public', table: 'univ_recruitment', filter: `company_id=eq.${companyId}` }, fetchData).subscribe();
-      return () => supabase.removeChannel(ch);
-    }
-  }, [companyId]);
-
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -86,6 +78,12 @@ export default function UnivRecruitment() {
       setCandidates(data || []);
     } catch (e) { console.error(e); } finally { setLoading(false); }
   };
+
+  useEffect(() => {
+    if (companyId) {
+      fetchData();
+    }
+  }, [companyId]);
 
   const save = async (e) => {
     e.preventDefault();
@@ -119,11 +117,35 @@ export default function UnivRecruitment() {
   const onDragEnd = async (result) => {
     if (!result.destination) return;
     const { source, destination, draggableId } = result;
-    if (source.droppableId === destination.droppableId) return;
+    if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
     // Optimistic UI update
     const newStatus = destination.droppableId;
-    setCandidates(prev => prev.map(c => c.id === draggableId ? { ...c, status: newStatus } : c));
+    
+    setCandidates(prev => {
+      const newCandidates = [...prev];
+      const draggedIndex = newCandidates.findIndex(c => c.id === draggableId);
+      if (draggedIndex === -1) return prev;
+      
+      const [draggedCandidate] = newCandidates.splice(draggedIndex, 1);
+      draggedCandidate.status = newStatus;
+      
+      // Calculate where to insert to satisfy react-beautiful-dnd's destination.index
+      let insertIndex = newCandidates.length;
+      let currentStageCount = 0;
+      for (let i = 0; i < newCandidates.length; i++) {
+        if (newCandidates[i].status === newStatus) {
+          if (currentStageCount === destination.index) {
+            insertIndex = i;
+            break;
+          }
+          currentStageCount++;
+        }
+      }
+      
+      newCandidates.splice(insertIndex, 0, draggedCandidate);
+      return newCandidates;
+    });
     
     // DB update
     await updateStatus(draggableId, newStatus);
