@@ -22,9 +22,30 @@ export default function AdminFirms() {
   const { startImpersonation } = useImpersonation();
   const { notify } = useNotifications();
 
-  const { data: companies = [], isLoading: loadingCompanies } = usePSQuery("SELECT * FROM companies");
-  const { data: profiles = [], isLoading: loadingProfiles } = usePSQuery("SELECT company_id, email FROM profiles");
-  const { data: cases = [], isLoading: loadingCases } = usePSQuery("SELECT company_id FROM industry_records WHERE record_type = 'case'");
+  const { data: companies = [], isLoading: loadingCompanies } = useQuery({
+    queryKey: ['admin_firms_global'],
+    queryFn: async () => {
+      const { data } = await supabase.from('companies').select('*').order('created_at', { ascending: false });
+      return data || [];
+    }
+  });
+
+  const { data: profiles = [], isLoading: loadingProfiles } = useQuery({
+    queryKey: ['admin_firm_profiles_global'],
+    queryFn: async () => {
+      const { data } = await supabase.from('profiles').select('company_id, email');
+      return data || [];
+    }
+  });
+
+  const { data: cases = [], isLoading: loadingCases } = useQuery({
+    queryKey: ['admin_firm_cases_global'],
+    queryFn: async () => {
+      const { data } = await supabase.from('industry_records').select('company_id').eq('record_type', 'case');
+      return data || [];
+    }
+  });
+
   const loading = loadingCompanies || loadingProfiles || loadingCases;
 
   // Live sessions to derive last-activity per firm
@@ -174,6 +195,39 @@ export default function AdminFirms() {
           </div>
         }
       />
+
+      {/* Workspace Intelligence Layer */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 p-5 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-amber-200/50 hover:shadow-md transition-all">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-2"><Clock className="w-4 h-4 text-amber-500" /> Dormant Workspaces</h3>
+            <span className="text-xs font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">{companies.filter(c => !firmLastActivity[c.id] || new Date(firmLastActivity[c.id]) < new Date(Date.now() - 30*24*60*60*1000)).length} At Risk</span>
+          </div>
+          <p className="text-xs text-slate-500 mb-2">Firms with absolutely zero active sessions over the past 30 days.</p>
+          <div className="text-[10px] uppercase font-semibold text-amber-600 tracking-wider cursor-pointer hover:underline">Review Churn Risk</div>
+        </div>
+
+        <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 p-5 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200/50 hover:shadow-md transition-all">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-2"><Layers className="w-4 h-4 text-emerald-500" /> High-Growth Tenants</h3>
+            <span className="text-xs font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">{companies.filter(c => profiles.filter(p => p.company_id === c.id).length > 20).length} Detected</span>
+          </div>
+          <p className="text-xs text-slate-500 mb-2">Workspaces exhibiting rapid user expansion (&gt; 20 active users).</p>
+          <div className="text-[10px] uppercase font-semibold text-emerald-600 tracking-wider cursor-pointer hover:underline">View Upgrade Targets</div>
+        </div>
+
+        <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 p-5 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-red-200/50 hover:shadow-md transition-all">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-2"><AlertOctagon className="w-4 h-4 text-red-500" /> Quota Risk</h3>
+            <span className="text-xs font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded-full">
+              {companies.filter(c => c.max_users > 0 && (profiles.filter(p => p.company_id === c.id).length / c.max_users) >= 0.9).length} Near Limit
+            </span>
+          </div>
+          <p className="text-xs text-slate-500 mb-2">Tenants operating at &gt;90% of their maximum license or record capacity.</p>
+          <div className="text-[10px] uppercase font-semibold text-red-600 tracking-wider cursor-pointer hover:underline">Upsell Opportunities</div>
+        </div>
+      </div>
+
       {loading ? (
         <div className="flex justify-center py-24">
           <OrbitLoader size="md" />

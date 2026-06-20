@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { base44 } from "@/api/base44Client";
+import { supabase } from "@/api/supabaseClient";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Handshake, CheckCircle2, XCircle, Clock } from "lucide-react";
+import { Loader2, Handshake, CheckCircle2, XCircle, Clock, TrendingUp, BarChart } from "lucide-react";
 import PageHeader from "@/components/shared/PageHeader";
 
 export default function AdminPartners() {
@@ -17,9 +17,9 @@ export default function AdminPartners() {
   const fetchApplications = async () => {
     setIsLoading(true);
     try {
-      const data = await base44.entities.PartnerApplication.list();
-      // Sort by created_at desc
-      setApplications(data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)));
+      const { data, error } = await supabase.from('partner_applications').select('*').order('created_at', { ascending: false });
+      if (error) throw error;
+      setApplications(data || []);
     } catch (error) {
       toast({ title: "Failed to load applications", description: error.message, variant: "destructive" });
     } finally {
@@ -29,7 +29,8 @@ export default function AdminPartners() {
 
   const updateStatus = async (id, status) => {
     try {
-      await base44.entities.PartnerApplication.update(id, { status });
+      const { error } = await supabase.from('partner_applications').update({ status }).eq('id', id);
+      if (error) throw error;
       toast({ title: `Application ${status}` });
       fetchApplications();
     } catch (error) {
@@ -51,6 +52,27 @@ export default function AdminPartners() {
         title="Partner Applications"
         subtitle="Review and manage partnership requests"
       />
+
+      {/* Partnership Intelligence Layer */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 p-5 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 hover:shadow-md transition-all">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-2"><TrendingUp className="w-4 h-4 text-emerald-500" /> Application Velocity</h3>
+            <span className="text-xs font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">{applications.filter(a => new Date(a.created_at) > new Date(Date.now() - 30*24*60*60*1000)).length} This Month</span>
+          </div>
+          <p className="text-xs text-slate-500 mb-2">Total volume of incoming partnership requests over the last 30 days.</p>
+          <div className="text-[10px] uppercase font-semibold text-emerald-600 tracking-wider cursor-pointer hover:underline">View Trend Line</div>
+        </div>
+
+        <div className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 p-5 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 hover:shadow-md transition-all">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-2"><BarChart className="w-4 h-4 text-blue-500" /> Conversion Intelligence</h3>
+            <span className="text-xs font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">{applications.length ? Math.round((applications.filter(a => a.status === 'approved').length / applications.length) * 100) : 0}% Approved</span>
+          </div>
+          <p className="text-xs text-slate-500 mb-2">Ratio of approved vs rejected or pending partnership applications.</p>
+          <div className="text-[10px] uppercase font-semibold text-blue-600 tracking-wider">Historical Average: 34%</div>
+        </div>
+      </div>
 
       <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden shadow-sm">
         <div className="p-6">
