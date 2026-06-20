@@ -2,7 +2,7 @@ import { useTranslation} from "react-i18next";
 import { useState, useEffect} from 'react';
 import { powerSync } from "@/api/PowerSyncConnector";
 import { useQuery } from "@tanstack/react-query";
-import {Database, Scale, Users, Building2, DollarSign, Activity, Clock} from "lucide-react";
+import {Database, Scale, Users, Building2, DollarSign, Activity, Clock, Cpu, ToggleRight, Megaphone, Handshake} from "lucide-react";
 import PageHeader from '@/components/shared/PageHeader';
 import Companies from '@/pages/Companies';
 import { supabase } from '@/api/supabaseClient';
@@ -175,6 +175,48 @@ export default function AdminOverview() {
         </div>
       </div>
       
+      <div className="mt-8 mb-4">
+        <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4 tracking-[-0.02em]">Super Admin Quick Actions</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <a href="/admin/intelligence" className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 hover:border-primary/50 hover:shadow-md transition-all flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Cpu className="w-5 h-5" />
+            </div>
+            <div><p className="font-semibold text-sm text-foreground">Intelligence</p><p className="text-[11px] text-muted-foreground">AI Global Engine</p></div>
+          </a>
+          <a href="/admin/rollout" className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 hover:border-primary/50 hover:shadow-md transition-all flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-lg bg-violet-50 text-violet-600 dark:bg-violet-500/10 dark:text-violet-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <ToggleRight className="w-5 h-5" />
+            </div>
+            <div><p className="font-semibold text-sm text-foreground">Feature Rollouts</p><p className="text-[11px] text-muted-foreground">Manage Flags</p></div>
+          </a>
+          <a href="/admin/quotas" className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 hover:border-primary/50 hover:shadow-md transition-all flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-lg bg-cyan-50 text-cyan-600 dark:bg-cyan-500/10 dark:text-cyan-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Database className="w-5 h-5" />
+            </div>
+            <div><p className="font-semibold text-sm text-foreground">Tenant Quotas</p><p className="text-[11px] text-muted-foreground">Limits & Usage</p></div>
+          </a>
+          <a href="/admin/broadcasts" className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 hover:border-primary/50 hover:shadow-md transition-all flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Megaphone className="w-5 h-5" />
+            </div>
+            <div><p className="font-semibold text-sm text-foreground">Broadcasts</p><p className="text-[11px] text-muted-foreground">Global Messaging</p></div>
+          </a>
+          <a href="/admin/enterprise-requests" className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 hover:border-primary/50 hover:shadow-md transition-all flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Building2 className="w-5 h-5" />
+            </div>
+            <div><p className="font-semibold text-sm text-foreground">Enterprise Requests</p><p className="text-[11px] text-muted-foreground">Review Leads</p></div>
+          </a>
+          <a href="/admin/partners" className="bg-gradient-to-br from-card to-slate-50 dark:from-card dark:to-slate-900/50 p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 hover:border-primary/50 hover:shadow-md transition-all flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Handshake className="w-5 h-5" />
+            </div>
+            <div><p className="font-semibold text-sm text-foreground">Partner Apps</p><p className="text-[11px] text-muted-foreground">Reseller Pipeline</p></div>
+          </a>
+        </div>
+      </div>
+
       <div className="mt-8 pt-8 border-t border-primary/40">
         <Companies />
       </div>

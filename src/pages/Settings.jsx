@@ -104,25 +104,12 @@ export default function Settings() {
  case "departments": return <CustomDepartmentsSettings />;
  case "currency": return <CurrencySettings activeIndustry={activeIndustry} company={company} onSave={company ? d => updateCompany({ currency: d.currency}) : fakeSuccess} saving={saving} />;
  case "security": return <SecuritySettings />;
- case "permissions": return (
- <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-8 space-y-6  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div>
- <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">{t("staff_access_controls", "Staff Access Controls")}</h2>
- <p className="text-sm text-[#71717a] dark:text-gray-400 mt-2">{t(
- "maintain_granular_security_per",
- "Maintain granular security permissions across internal groups"
- )}</p>
- </div>
- <div className="pt-6 border-t border-primary/40">
- <StaffPermissionsSettings />
- </div>
- </div>
- );
+ case "permissions": return <RoleManagementSettings />;
  default: return null;
 }
 };
 
- const categories = ["General", "Security & Access", "Billing"];
+ const categories = ["Organization", "General", "Security & Access", "Billing"];
 
  return (
  <div className="flex flex-col h-full bg-background md:flex-row rounded-tl-2xl overflow-hidden border-t border-l border-primary/40">
