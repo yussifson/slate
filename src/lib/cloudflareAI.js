@@ -93,11 +93,17 @@ async function runAI(model, payload, retryCount = 0) {
 }
 
 /**
- * Generate text using LLaMA 3.1
- * @param {Array} messages - Array of {role, content} objects
+ * Generate text using LLaMA 3.3
+ * @param {Array|string} input - Array of {role, content} objects or a prompt string
  */
-export async function generateText(messages) {
-  const result = await runAI(MODELS.text, { messages, max_tokens: 2500 });
+export async function generateText(input) {
+  let promptStr = '';
+  if (Array.isArray(input)) {
+    promptStr = input.map(m => `<|start_header_id|>${m.role}<|end_header_id|>\n\n${m.content}<|eot_id|>`).join("") + "<|start_header_id|>assistant<|end_header_id|>\n\n";
+  } else if (typeof input === 'string') {
+    promptStr = `<|start_header_id|>user<|end_header_id|>\n\n${input}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n`;
+  }
+  const result = await runAI(MODELS.text, { prompt: promptStr, max_tokens: 2500 });
   return result.response;
 }
 

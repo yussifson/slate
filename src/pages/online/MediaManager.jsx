@@ -43,6 +43,13 @@ export default function MediaManager() {
      const fileExt = file.name.split('.').pop();
      const fileName = `${companyId}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
      
+     // Ensure bucket exists
+     try {
+       await supabase.storage.createBucket('assets', { public: true });
+     } catch (e) {
+       // Ignore bucket already exists error
+     }
+     
      // Upload to Supabase Storage
      const { data, error } = await supabase.storage.from('assets').upload(fileName, file);
      

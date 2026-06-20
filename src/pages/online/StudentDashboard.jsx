@@ -47,8 +47,7 @@ export default function StudentDashboard() {
  animate={{ opacity: 1, y: 0}}
  className="flex justify-between items-center bg-gradient-to-r from-[var(--primary)] to-[hsl(213,89%,35%)] rounded-md-[var(--radius-xl)] p-8 text-slate-900 dark:text-white overflow-hidden relative"
  >
- {/* Noise overlay removed to fix 404 */}
- <div className="absolute top-[-50%] right-[-10%] w-[50%] h-[200%] bg-white dark:bg-slate-900/40/10 blur-[80px] rounded-full pointer-events-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+ <div className="absolute top-[-50%] right-[-10%] w-[50%] h-[200%] bg-white/20 dark:bg-white/5 blur-[80px] rounded-full pointer-events-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  <div className="relative z-10">
  <h1 className="text-3xl font-display font-semibold mb-2 tracking-[-0.02em]">Welcome back, Learner!</h1>
  <p className="opacity-90 max-w-lg">Pick up where you left off. You have {enrolledCourses.length} courses in progress.</p>

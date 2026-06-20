@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { useFirmSettings } from "@/hooks/useFirmSettings";
 import { getTerm } from "@/config/industries";
-import { Plus, FolderOpen, Search, Download, Trash2, Upload } from "lucide-react";
+import { Plus, FolderOpen, Search, Download, Trash2, Upload, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +17,7 @@ import PageHeader from "@/components/shared/PageHeader";
 import DataTable from "@/components/shared/DataTable";
 import AddOptionInline from "@/components/shared/AddOptionInline";
 import DocumentPreviewModal from "@/components/shared/DocumentPreviewModal";
+import AIDocumentDrafterModal from "@/components/shared/AIDocumentDrafterModal";
 import { format } from "date-fns";
 
 import { useToast } from "@/components/ui/use-toast";
@@ -35,6 +36,7 @@ export default function Documents() {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [previewDoc, setPreviewDoc] = useState(null);
+  const [showDrafter, setShowDrafter] = useState(false);
 
   const isAdmin = ["super_admin", "company_admin", "managing_partner"].includes(user?.role);
   const industry = sessionStorage.getItem("slate_industry_override") || user?.company_industry || "law";
@@ -129,8 +131,17 @@ export default function Documents() {
     <div className="space-y-4">
       <PageHeader
         title="Documents"
-        subtitle={`${documents.length} documents`}
-        actions={<Button onClick={() => setShowForm(true)} size="sm"><Plus className="w-4 h-4 mr-1" /> {t("upload_document", "Upload Document")}</Button>}
+        subtitle={t("secure_repository_for_files", "Secure repository for files, case documents, and firm policies")}
+        actions={
+          <div className="flex gap-2">
+            <Button onClick={() => setShowDrafter(true)} variant="outline" className="gap-2 border-primary/30 text-primary hover:bg-primary/10">
+              <Sparkles className="w-4 h-4" /> {t("ai_draft", "AI Draft")}
+            </Button>
+            <Button onClick={() => setShowForm(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
+              <Upload className="w-4 h-4" /> {t("upload", "Upload")}
+            </Button>
+          </div>
+        }
       />
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
@@ -176,6 +187,15 @@ export default function Documents() {
           onClose={() => setPreviewDoc(null)}
         />
       )}
+
+      <AIDocumentDrafterModal
+        isOpen={showDrafter}
+        onClose={() => setShowDrafter(false)}
+        companyId={companyId}
+        user={user}
+        cases={cases}
+        onSaved={() => queryClient.invalidateQueries({ queryKey: ["documents"] })}
+      />
     </div>
   );
 }

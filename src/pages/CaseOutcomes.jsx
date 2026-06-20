@@ -11,7 +11,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import PageHeader from "@/components/shared/PageHeader";
-import { Trophy, Plus, TrendingUp, Target } from "lucide-react";
+import { Trophy, Plus, TrendingUp, Target, Sparkles, BrainCircuit } from "lucide-react";
+import { generateText } from "@/lib/cloudflareAI";
+import { toast } from "react-hot-toast";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts";
@@ -25,6 +27,8 @@ export default function CaseOutcomes() {
   const companyId = user?.company_id;
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
+  const [aiForecast, setAiForecast] = useState(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const { data: outcomes = [] } = useQuery({
     queryKey: ["outcomes", companyId],
@@ -42,6 +46,32 @@ export default function CaseOutcomes() {
   const outcomeStats = ["won", "lost", "settled", "dismissed", "withdrawn"].map(o => ({ name: o, value: outcomes.filter(x => x.outcome === o).length })).filter(o => o.value > 0);
   const winRate = outcomes.length > 0 ? Math.round((outcomes.filter(o => o.outcome === "won").length / outcomes.filter(o => o.outcome !== "ongoing").length) * 100) : 0;
   const settleRate = outcomes.length > 0 ? Math.round((outcomes.filter(o => o.outcome === "settled").length / outcomes.filter(o => o.outcome !== "ongoing").length) * 100) : 0;
+
+  const handleGenerateForecast = async () => {
+    setIsGenerating(true);
+    const tId = toast.loading('AI analyzing historical case outcomes...');
+    try {
+      const summaryData = outcomes.map(o => ({ type: o.case_type || 'Unknown', outcome: o.outcome, value: o.settlement_amount || 0 }));
+      const prompt = `You are an AI Legal Outcome Forecaster. Analyze this historical firm data:
+${JSON.stringify(summaryData.slice(0, 50))}
+
+Provide a predictive JSON response (raw JSON only, no markdown):
+{
+  "projectedWinRate": "number with % sign",
+  "settlementTrend": "1-2 sentence trend analysis (e.g. 'You settle 80% of family cases.')",
+  "trialRisk": "1-2 sentence assessment of trial risks based on recent losses or wins.",
+  "strategicAdvice": "1 sentence advice on how to improve settlement amounts."
+}`;
+      const rawResponse = await generateText([{ role: 'user', content: prompt }]);
+      const cleanJsonStr = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim().replace(/[\u0000-\u001F]+/g, "");
+      setAiForecast(JSON.parse(cleanJsonStr));
+      toast.success('Forecast generated!', { id: tId });
+    } catch (err) {
+      toast.error('Failed to generate forecast: ' + err.message, { id: tId });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -65,10 +95,10 @@ export default function CaseOutcomes() {
           );
         })}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Pie chart */}
         {outcomeStats.length > 0 && (
-          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="lg:col-span-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-5 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <h3 className="text-sm font-semibold mb-3">{t("outcome_distribution", "Outcome Distribution")}</h3>
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
@@ -83,8 +113,46 @@ export default function CaseOutcomes() {
           </div>
         )}
 
+        {/* AI Forecaster Widget */}
+        <div className="lg:col-span-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-5 flex flex-col relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none"><BrainCircuit className="w-24 h-24"/></div>
+          <h3 className="text-sm font-semibold mb-2 flex items-center gap-2 text-primary"><Sparkles className="w-4 h-4"/> AI Outcome Forecaster</h3>
+          <p className="text-xs text-[#71717a] dark:text-gray-400 mb-4">Analyze historical outcomes to predict future trial risks and settlement rates.</p>
+          
+          {aiForecast ? (
+            <div className="space-y-4 flex-1 relative z-10">
+              <div>
+                <p className="text-[10px] font-semibold text-[#71717a] uppercase tracking-wider mb-1">Projected Win Rate</p>
+                <p className="text-2xl font-bold text-foreground">{aiForecast.projectedWinRate}</p>
+              </div>
+              <div>
+                <p className="text-[10px] font-semibold text-[#71717a] uppercase tracking-wider mb-1">Settlement Trend</p>
+                <p className="text-sm font-medium text-foreground">{aiForecast.settlementTrend}</p>
+              </div>
+              <div className="bg-red-50 dark:bg-red-900/10 p-2.5 rounded-lg border border-red-200 dark:border-red-900/30">
+                <p className="text-[10px] font-semibold text-red-800 dark:text-red-400 uppercase tracking-wider mb-1 flex items-center gap-1"><Target className="w-3 h-3"/> Trial Risk</p>
+                <p className="text-xs text-red-900 dark:text-red-300">{aiForecast.trialRisk}</p>
+              </div>
+              <div className="bg-primary/5 p-2.5 rounded-lg border border-primary/10">
+                <p className="text-[10px] font-semibold text-primary uppercase tracking-wider mb-1 flex items-center gap-1"><TrendingUp className="w-3 h-3"/> Strategic Advice</p>
+                <p className="text-xs text-foreground">{aiForecast.strategicAdvice}</p>
+              </div>
+              <Button onClick={handleGenerateForecast} disabled={isGenerating} size="sm" variant="outline" className="w-full mt-auto text-primary">
+                {isGenerating ? 'Updating...' : 'Refresh Forecast'}
+              </Button>
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center text-center space-y-3">
+              <BrainCircuit className="w-10 h-10 text-primary/20" />
+              <Button onClick={handleGenerateForecast} disabled={isGenerating || outcomes.length === 0} size="sm" className="gap-2 bg-primary/10 text-primary hover:bg-primary/20 border border-primary/30">
+                <Sparkles className="w-4 h-4"/> {isGenerating ? 'Analyzing...' : 'Generate AI Forecast'}
+              </Button>
+            </div>
+          )}
+        </div>
+
         {/* Recent outcomes */}
-        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="lg:col-span-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
           <div className="p-4 border-b border-primary/40 flex items-center gap-2">
             <Trophy className="w-4 h-4 text-primary" />
             <h3 className="text-sm font-semibold">{t("recent_outcomes", "Recent Outcomes")}</h3>

@@ -18,20 +18,24 @@ export default function OnlineLearners() {
  const { data: learners = []} = useQuery({
  queryKey: ["online_learners", companyId],
  queryFn: async () => {
-   const { data } = await powerSync.execute(`
-     SELECT 
-       student_id, 
-       student_name as title, 
-       student_email as email, 
-       COUNT(course_id) as enrolled_count, 
-       MIN(enrollment_date) as created_at,
-       AVG(CAST(progress_percent as REAL)) as avg_progress,
-       MAX(last_accessed) as last_accessed
-     FROM online_enrollments 
-     WHERE company_id = ? 
-     GROUP BY student_id, student_name, student_email
-   `, [companyId]);
-   return data || [];
+   try {
+     const data = await powerSync.getAll(`
+       SELECT 
+         student_id, 
+         student_name as title, 
+         student_email as email, 
+         COUNT(course_id) as enrolled_count, 
+         MIN(enrollment_date) as created_at,
+         AVG(CAST(progress_percent as REAL)) as avg_progress,
+         MAX(last_accessed) as last_accessed
+       FROM online_enrollments 
+       WHERE company_id = ? 
+       GROUP BY student_id, student_name, student_email
+     `, [companyId]);
+     return data || [];
+   } catch (e) {
+     return [];
+   }
  },
  enabled: !!companyId
  });
@@ -85,7 +89,7 @@ export default function OnlineLearners() {
  <button onClick={() => setIsAiModalOpen(true)} className="px-4 py-2 bg-amber-50 text-amber-600 border border-amber-200 text-sm font-semibold rounded-md-[var(--radius-md)] hover:bg-amber-100 transition-colors flex items-center gap-2">
  <Sparkles className="w-4 h-4" /> AI Risk Predictor
  </button>
- <button className="px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-md-[var(--radius-md)] hover:opacity-90 transition-opacity">
+ <button onClick={() => toast({ title: "Feature Notice", description: "Learners are automatically added when members enroll in a course." })} className="px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-md-[var(--radius-md)] hover:opacity-90 transition-opacity">
  Add Learner
  </button>
  </div>

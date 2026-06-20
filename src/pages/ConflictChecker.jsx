@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import PageHeader from "@/components/shared/PageHeader";
-import { Shield, Search, AlertTriangle, CheckCircle, User, Briefcase, Users } from "lucide-react";
+import { Shield, Search, AlertTriangle, CheckCircle, User, Briefcase, Users, BrainCircuit, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { generateText } from "@/lib/cloudflareAI";
+import { toast } from "react-hot-toast";
 
 export default function ConflictChecker() {
   const { t } = useTranslation();
@@ -23,7 +25,15 @@ export default function ConflictChecker() {
   const normalize = (s) => (s || "").toLowerCase().trim();
   const contains = (text, q) => normalize(text).includes(normalize(q));
 
-  const check = () => { if (query.trim().length >= 2) setChecked(true); };
+  const [aiReport, setAiReport] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const check = async () => { 
+    if (query.trim().length >= 2) {
+      setChecked(true);
+      setAiReport(null);
+    }
+  };
 
   const matchingClients = clients.filter(c => contains(c.name, query) || contains(c.email, query) || contains(c.id_number, query));
   const matchingCases = cases.filter(c =>
@@ -38,6 +48,37 @@ export default function ConflictChecker() {
 
   const hasConflict = checked && (matchingClients.length > 0 || matchingCases.length > 0);
   const isClear = checked && !hasConflict;
+
+  const analyzeConflict = async () => {
+    setIsAnalyzing(true);
+    const tId = toast.loading("AI assessing conflict risk...");
+    try {
+      const matchData = JSON.stringify({
+        query,
+        clientsFound: matchingClients.map(c => ({ name: c.name, type: c.client_type, status: c.status })),
+        casesFound: matchingCases.map(c => ({ title: c.title, opposing: c.opposing_party, status: c.status }))
+      });
+      
+      const prompt = `You are a Legal Ethics & Conflict Resolution AI.
+Analyze these search matches for a potential conflict of interest regarding the search term: "${query}".
+Matches found: ${matchData}
+
+Return ONLY a valid JSON object:
+{
+  "riskLevel": "Low", "Medium", or "High",
+  "explanation": "A 2-3 sentence ethical explanation of why this is or isn't a conflict and what the lawyer should do next."
+}`;
+
+      const rawResponse = await generateText([{ role: 'user', content: prompt }]);
+      const cleanJsonStr = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim().replace(/[\u0000-\u001F]+/g, "");
+      setAiReport(JSON.parse(cleanJsonStr));
+      toast.success("Conflict analysis complete", { id: tId });
+    } catch (e) {
+      toast.error("Failed to analyze conflict: " + e.message, { id: tId });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -83,6 +124,38 @@ export default function ConflictChecker() {
                 ? `Found ${matchingClients.length + matchingCases.length} matching record(s) for "${query}". Review carefully before accepting this matter.`
                 : `No existing clients, cases, or opposing parties match "${query}". You may proceed with this matter.`}
             </p>
+            {hasConflict && !aiReport && (
+              <Button onClick={analyzeConflict} disabled={isAnalyzing} size="sm" className="mt-3 gap-2 bg-red-100 hover:bg-red-200 text-red-800 border border-red-300">
+                <BrainCircuit className="w-4 h-4" /> {isAnalyzing ? "Analyzing Risk..." : "Run AI Deep Conflict Assessment"}
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* AI Report */}
+      {aiReport && (
+        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none"><Sparkles className="w-32 h-32"/></div>
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 text-primary"><BrainCircuit className="w-5 h-5"/> AI Ethical Risk Assessment</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+            <div className="md:col-span-1">
+              <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-2">Risk Level</p>
+              <span className={cn(
+                "inline-block px-4 py-2 rounded-lg text-sm font-bold border",
+                aiReport.riskLevel === "High" ? "bg-red-100 text-red-800 border-red-200" :
+                aiReport.riskLevel === "Medium" ? "bg-orange-100 text-orange-800 border-orange-200" :
+                "bg-green-100 text-green-800 border-green-200"
+              )}>
+                {aiReport.riskLevel} Risk
+              </span>
+            </div>
+            <div className="md:col-span-2">
+              <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-2">Ethical Explanation & Next Steps</p>
+              <div className="text-sm text-foreground bg-slate-50 dark:bg-slate-800/50 p-4 rounded-lg border border-primary/10">
+                {aiReport.explanation}
+              </div>
+            </div>
           </div>
         </div>
       )}

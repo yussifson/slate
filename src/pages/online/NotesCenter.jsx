@@ -19,11 +19,15 @@ export default function NotesCenter() {
   const { data: notes = [], isLoading } = useQuery({
     queryKey: ["online_notes", companyId, user?.id],
     queryFn: async () => {
-      const { rows } = await powerSync.execute(
-        `SELECT * FROM online_notes WHERE company_id = ? AND created_by = ? ORDER BY created_at DESC`,
-        [companyId, user?.id]
-      );
-      return rows || [];
+      try {
+        const data = await powerSync.getAll(
+          `SELECT * FROM online_notes WHERE company_id = ? AND created_by = ? ORDER BY created_at DESC`,
+          [companyId, user?.id]
+        );
+        return data || [];
+      } catch (e) {
+        return [];
+      }
     },
     enabled: !!companyId && !!user?.id
   });

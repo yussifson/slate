@@ -14,6 +14,9 @@ import ReactMarkdown from "react-markdown";
 import { format } from "date-fns";
 import { generateText } from "@/lib/cloudflareAI";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
+import { useQuery } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
+import { Save } from "lucide-react";
 
 const JURISDICTIONS = ["Ghana", "Nigeria", "Sierra Leone", "West Africa (General)", "International"];
 const CASE_TYPES = ["civil", "criminal", "corporate", "family", "property", "labor", "tax", "other"];
@@ -42,6 +45,34 @@ export default function LegalResearch() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [history, setHistory] = useState([]);
+  const [selectedCaseId, setSelectedCaseId] = useState("none");
+  const [isSaving, setIsSaving] = useState(false);
+
+  const { data: cases = [] } = useQuery({
+    queryKey: ["cases", user?.company_id],
+    queryFn: () => base44.entities.LegalCase.filter({ company_id: user?.company_id }),
+    enabled: !!user?.company_id
+  });
+
+  const handleSaveToCase = async () => {
+    if (!result || selectedCaseId === "none") return;
+    setIsSaving(true);
+    const tId = toast.loading('Saving research to case notes...');
+    try {
+      const targetCase = cases.find(c => c.id === selectedCaseId);
+      if (!targetCase) throw new Error("Case not found");
+
+      const researchSummary = `\n\n--- AI Legal Research: ${question} ---\n${result.answer}\n\nPrecedents: ${result.case_law?.map(c => c.case_name).join(", ")}`;
+      const newNotes = (targetCase.notes || "") + researchSummary;
+
+      await base44.entities.LegalCase.update(selectedCaseId, { notes: newNotes });
+      toast.success('Research appended to case notes!', { id: tId });
+    } catch (err) {
+      toast.error('Failed to save research: ' + err.message, { id: tId });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const handleResearch = async () => {
     if (!question.trim()) return;
@@ -187,6 +218,20 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
                   <Badge variant="outline" className="text-[10px]">{jurisdiction}</Badge>
                   {result.confidence && <Badge className={cn("text-[10px]", CONFIDENCE_COLORS[result.confidence])}>{t("confidence", "Confidence:")} {result.confidence}</Badge>}
                 </div>
+              </div>
+
+              {/* Save to Case action bar */}
+              <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/50 p-2 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20">
+                <Select value={selectedCaseId} onValueChange={setSelectedCaseId}>
+                  <SelectTrigger className="h-8 text-xs flex-1 bg-background"><SelectValue placeholder="Select Case to Save..." /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">-- Select Case --</SelectItem>
+                    {cases.map(c => <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+                <Button size="sm" onClick={handleSaveToCase} disabled={isSaving || selectedCaseId === "none"} className="h-8 gap-2 bg-primary hover:bg-primary/90 text-white">
+                  <Save className="w-3.5 h-3.5"/> {isSaving ? "Saving..." : "Save to Case"}
+                </Button>
               </div>
 
               {/* Main Answer */}

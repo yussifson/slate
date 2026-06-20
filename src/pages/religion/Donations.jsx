@@ -1,7 +1,8 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
-import { DollarSign, Search, Plus, Trash2, Download, TrendingUp, AlertTriangle} from 'lucide-react';
+import { DollarSign, Search, Plus, Trash2, Download, TrendingUp, AlertTriangle, Sparkles, Bot} from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
+import { generateText } from '@/lib/cloudflareAI';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
@@ -33,6 +34,34 @@ export default function Donations() {
  const [deleteTargetId, setDeleteTargetId] = useState(null);
  const [viewRecord, setViewRecord] = useState(null);
  const [editRecord, setEditRecord] = useState(null);
+ const [isGenerating, setIsGenerating] = useState(false);
+ const [aiForecast, setAiForecast] = useState(null);
+
+ const handleGenerateForecast = async () => {
+   setIsGenerating(true);
+   const tId = toast.loading('AI analyzing giving trends...');
+   try {
+     const prompt = `You are a Church Financial AI. Analyze this giving data and forecast the next month.
+Total Donations: ${totalDonations}
+Total Offerings: ${totalOfferings}
+Total Lapsed Donors: ${lapsedDonors.length}
+
+Respond ONLY with a raw JSON object containing:
+{
+  "predictedNextMonth": "estimated dollar amount as string (e.g. '$12,500')",
+  "healthStatus": "Growing", "Stagnant", or "Declining",
+  "insights": "2-3 sentences of strategic insights on how to improve giving"
+}`;
+     const rawResponse = await generateText(prompt);
+     const cleanJsonStr = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+     setAiForecast(JSON.parse(cleanJsonStr));
+     toast.success('Forecast generated!', { id: tId });
+   } catch (e) {
+     toast.error('Failed to generate forecast.', { id: tId });
+   } finally {
+     setIsGenerating(false);
+   }
+ };
 
  // Form State
  const [formData, setFormData] = useState({
@@ -179,20 +208,64 @@ export default function Donations() {
   </div>
   </div>
 
-  <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6">
-    <h3 className="text-lg font-semibold mb-6 flex items-center gap-2"><TrendingUp className="w-5 h-5 text-primary"/> Giving Trends (YTD)</h3>
-    <div className="h-[300px]">
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={trendData}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-          <XAxis dataKey="month" stroke="#71717a" fontSize={12} tickLine={false} axisLine={false} />
-          <YAxis stroke="#71717a" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
-          <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} formatter={(value) => `$${value}`} />
-          <Line type="monotone" dataKey="amount" name="Giving Volume" stroke="#0d9488" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
-  </div><div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+     <div className="lg:col-span-2 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6">
+       <h3 className="text-lg font-semibold mb-6 flex items-center gap-2"><TrendingUp className="w-5 h-5 text-primary"/> Giving Trends (YTD)</h3>
+       <div className="h-[300px]">
+         <ResponsiveContainer width="100%" height="100%">
+           <LineChart data={trendData}>
+             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+             <XAxis dataKey="month" stroke="#71717a" fontSize={12} tickLine={false} axisLine={false} />
+             <YAxis stroke="#71717a" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
+             <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} formatter={(value) => `$${value}`} />
+             <Line type="monotone" dataKey="amount" name="Giving Volume" stroke="#0d9488" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+           </LineChart>
+         </ResponsiveContainer>
+       </div>
+     </div>
+     
+     <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex flex-col relative overflow-hidden">
+       <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none"><Bot className="w-32 h-32"/></div>
+       <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-primary"><Sparkles className="w-5 h-5"/> AI Giving Forecaster</h3>
+       <p className="text-sm text-[#71717a] dark:text-gray-400 mb-6">Predict next month's giving volume based on historical trends and donor engagement.</p>
+       
+       {aiForecast ? (
+         <div className="space-y-6 flex-1">
+           <div>
+             <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1">Predicted Next Month</p>
+             <p className="text-3xl font-bold text-foreground">{aiForecast.predictedNextMonth}</p>
+           </div>
+           <div>
+             <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-1">Health Status</p>
+             <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${aiForecast.healthStatus === 'Growing' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : aiForecast.healthStatus === 'Declining' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'}`}>
+               {aiForecast.healthStatus}
+             </span>
+           </div>
+           <div>
+             <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-2">Strategic Insights</p>
+             <div className="bg-primary/5 p-3 rounded-lg border border-primary/10 text-sm text-foreground leading-relaxed">
+               {aiForecast.insights}
+             </div>
+           </div>
+           <Button onClick={handleGenerateForecast} disabled={isGenerating} variant="outline" className="w-full mt-auto gap-2 border-primary/30 text-primary hover:bg-primary/10">
+             {isGenerating ? 'Recalculating...' : 'Refresh Forecast'}
+           </Button>
+         </div>
+       ) : (
+         <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4">
+           <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-2">
+             <Bot className="w-8 h-8"/>
+           </div>
+           <p className="text-sm font-medium">No forecast generated yet.</p>
+           <Button onClick={handleGenerateForecast} disabled={isGenerating} className="w-full gap-2 bg-primary/10 text-primary hover:bg-primary/20 border border-primary/30">
+             <Sparkles className="w-4 h-4"/> {isGenerating ? 'Analyzing Data...' : 'Generate Forecast'}
+           </Button>
+         </div>
+       )}
+     </div>
+   </div>
+
+   <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />

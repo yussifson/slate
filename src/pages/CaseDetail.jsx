@@ -21,6 +21,7 @@ import AIDocumentReview from "@/components/cases/AIDocumentReview";
 import ClientChecklistManager from "@/components/cases/ClientChecklistManager";
 import CaseCommunications from "@/components/cases/CaseCommunications";
 import CaseTimeline from "@/components/cases/CaseTimeline";
+import AILegalStrategy from "@/components/cases/AILegalStrategy";
 
 export default function CaseDetail() {
   const { t } = useTranslation();
@@ -74,6 +75,7 @@ export default function CaseDetail() {
           <TabsTrigger value="esign" className="gap-2.5"><PenTool className="w-3.5 h-3.5" />{t("e_signatures", "E-Signatures")}</TabsTrigger>
           <TabsTrigger value="pdf" className="gap-2.5"><FileText className="w-3.5 h-3.5" />{t("generate_pdf", "Generate PDF")}</TabsTrigger>
           <TabsTrigger value="ai-review" className="gap-2.5"><Sparkles className="w-3.5 h-3.5" />{t("ai_review", "AI Review")}</TabsTrigger>
+          <TabsTrigger value="ai-strategy" className="gap-2.5"><Sparkles className="w-3.5 h-3.5 text-primary" />{t("ai_strategy", "AI Strategy")}</TabsTrigger>
           <TabsTrigger value="checklist" className="gap-2.5"><CheckSquare className="w-3.5 h-3.5" />{t("client_checklist", "Client Checklist")}</TabsTrigger>
           <TabsTrigger value="comms" className="gap-2.5"><Send className="w-3.5 h-3.5" />{t("communications", "Communications")}</TabsTrigger>
           <TabsTrigger value="timeline" className="gap-2.5"><Clock className="w-3.5 h-3.5" />{t("diary_timeline", "Diary / Timeline")}</TabsTrigger>
@@ -105,6 +107,9 @@ export default function CaseDetail() {
         </TabsContent>
         <TabsContent value="ai-review" className="mt-4">
           <AIDocumentReview caseData={caseData} user={user} />
+        </TabsContent>
+        <TabsContent value="ai-strategy" className="mt-4">
+          <AILegalStrategy caseData={caseData} user={user} />
         </TabsContent>
         <TabsContent value="checklist" className="mt-4">
           <ClientChecklistManager caseData={caseData} client={client} user={user} />
