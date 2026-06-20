@@ -27,11 +27,11 @@ export default function CustomDepartmentsSettings() {
     e.preventDefault();
     try {
       if (formData.id) {
-        await powerSync.execute('UPDATE platform_departments SET name = ?, description = ?, updated_at = datetime("now") WHERE id = ?', 
+        await powerSync.execute('UPDATE platform_departments SET name = ?, description = ? WHERE id = ?', 
           [formData.name, formData.description, formData.id]);
         toast.success('Department updated');
       } else {
-        await powerSync.execute('INSERT INTO platform_departments (id, company_id, name, description, created_at, updated_at) VALUES (uuid(), ?, ?, ?, datetime("now"), datetime("now"))', 
+        await powerSync.execute('INSERT INTO platform_departments (id, company_id, name, description, created_at) VALUES (uuid(), ?, ?, ?, datetime("now"))', 
           [companyId, formData.name, formData.description]);
         toast.success('Department created');
       }

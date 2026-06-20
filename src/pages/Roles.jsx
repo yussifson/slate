@@ -181,6 +181,7 @@ export default function RoleManagementSettings() {
                   <p className="text-xs text-muted-foreground line-clamp-1">{r.description}</p>
                 </div>
                 <div className="flex gap-1 opacity-0 group-hover:opacity-100">
+                  <button onClick={(e) => { e.stopPropagation(); setFormData(r); setIsModalOpen(true); }} className="p-1 text-muted-foreground hover:text-primary"><Edit2 className="w-3.5 h-3.5"/></button>
                   <button onClick={(e) => { e.stopPropagation(); deleteRole(r.id); }} className="p-1 text-muted-foreground hover:text-destructive"><Trash2 className="w-3.5 h-3.5"/></button>
                 </div>
               </div>
