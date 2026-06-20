@@ -20,6 +20,8 @@ const segmentColors = {
  New: 'bg-muted text-[#71717a] dark:text-gray-400 border-primary/40'};
 
 export default function Customers() {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [aiInsight, setAiInsight] = useState('');
  const { t} = useTranslation();
  const navigate = useNavigate();
  const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('customer');
@@ -406,3 +408,4 @@ Suggest a targeted email or promotion idea.`;
  </div>
  );
 }
+

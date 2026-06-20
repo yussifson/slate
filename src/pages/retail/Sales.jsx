@@ -15,6 +15,8 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 import { RefreshCcw} from "lucide-react";
 
 export default function Sales() {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [aiInsight, setAiInsight] = useState('');
  const { t} = useTranslation();
  // Supabase Real-time Sync Hooks
  const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('order');
@@ -344,3 +346,4 @@ export default function Sales() {
  </div>
  );
 }
+

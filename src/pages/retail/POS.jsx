@@ -12,6 +12,8 @@ import { usePayment} from "@/hooks/integrations/usePayment";
 import { useCompanyId} from "@/hooks/useCompanyId";
 
 export default function POS() {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [aiInsight, setAiInsight] = useState('');
  const { t} = useTranslation();
  const { user} = useAuth();
  const companyId = useCompanyId();
@@ -407,3 +409,4 @@ Suggest 1 or 2 complementary products they might want to buy right now. Keep it 
  </div>
  );
 }
+

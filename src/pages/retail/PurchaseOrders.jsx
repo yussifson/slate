@@ -18,6 +18,8 @@ import { Link} from 'react-router-dom';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 
 export default function PurchaseOrders() {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [aiInsight, setAiInsight] = useState('');
  const { t} = useTranslation();
  const { user} = useAuth();
  
@@ -558,3 +560,4 @@ export default function PurchaseOrders() {
  </div>
  );
 }
+

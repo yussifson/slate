@@ -11,6 +11,8 @@ import { toast} from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 
 export default function Products() {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [aiInsight, setAiInsight] = useState('');
  const { t} = useTranslation();
  const { data: dbRecords = [], isLoading} = useIndustryRecords('product');
  const { data: supplierRecords = []} = useIndustryRecords('supplier');
@@ -234,3 +236,4 @@ export default function Products() {
  </div>
  );
 }
+

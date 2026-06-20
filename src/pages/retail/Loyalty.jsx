@@ -9,6 +9,8 @@ import { toast} from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 
 export default function Loyalty() {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [aiInsight, setAiInsight] = useState('');
  const { t} = useTranslation();
  const { data: dbRecords = [], isLoading} = useIndustryRecords('loyalty');
  const { data: customerRecords = []} = useIndustryRecords('customer');
@@ -276,3 +278,4 @@ Suggest an exclusive perk or engagement strategy.`;
  </div>
  );
 }
+

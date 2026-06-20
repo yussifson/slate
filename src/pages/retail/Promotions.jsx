@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/
 import { toast} from "sonner";
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 export default function Promotions() {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [aiInsight, setAiInsight] = useState('');
  const { t} = useTranslation();
  const { data: promotions = [], isLoading} = useIndustryRecords('promotion');
  const mutateRecord = useMutateIndustryRecord();
@@ -265,3 +267,4 @@ export default function Promotions() {
  </div>
  );
 }
+
