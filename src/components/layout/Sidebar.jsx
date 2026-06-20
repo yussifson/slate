@@ -386,15 +386,15 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  if (!univAccessData?.permissions) return true;
  
  const normalizedItemName = (item.label || '').toLowerCase().replace(/\s/g, '');
+ let foundInRbac = false;
  for (const [feat, perms] of Object.entries(univAccessData.permissions)) {
- if (perms.read) {
  const normalizedFeat = feat.toLowerCase().replace(/\s/g, '');
  if (normalizedItemName.includes(normalizedFeat) || normalizedFeat.includes(normalizedItemName)) {
- return true;
-}
-}
-}
- return false;
+ foundInRbac = true;
+ if (perms.read) return true;
+ }
+ }
+ return !foundInRbac;
 });
 
  
@@ -439,15 +439,15 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  if (!univAccessData?.permissions) return true; // fallback if no role found
  
  const normalizedItemName = (item.label || '').toLowerCase().replace(/\s/g, '');
+ let foundInRbac = false;
  for (const [feat, perms] of Object.entries(univAccessData.permissions)) {
- if (perms.read) {
  const normalizedFeat = feat.toLowerCase().replace(/\s/g, '');
  if (normalizedItemName.includes(normalizedFeat) || normalizedFeat.includes(normalizedItemName)) {
- return true;
-}
-}
-}
- return false;
+ foundInRbac = true;
+ if (perms.read) return true;
+ }
+ }
+ return !foundInRbac;
 });
  
  const customPageItems = customPages.map(p => ({
