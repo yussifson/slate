@@ -4,8 +4,17 @@ import { useTheme} from "@/lib/ThemeContext";
 import { cn} from "@/lib/utils";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
+const themeOptions = [
+  { value: "light", label: "LIGHT", icon: Sun, color: "text-amber-500" },
+  { value: "dark", label: "DARK", icon: Moon, color: "text-indigo-400" },
+  { value: "system", label: "SYSTEM", icon: Laptop, color: "text-[#71717a] dark:text-gray-400" },
+];
+
 export default function ThemeToggle() {
  const { theme, changeTheme} = useTheme();
+ const activeOption = themeOptions.find(o => o.value === theme) || themeOptions[0];
+ const ActiveIcon = activeOption.icon;
+
  return (
  <DropdownMenu>
  <DropdownMenuTrigger className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card hover:bg-muted/50 transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-primary/40 data-[state=open]:bg-muted data-[state=open]:border-primary/30 data-[state=open]:ring-1 data-[state=open]:ring-primary/40">
