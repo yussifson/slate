@@ -95,7 +95,7 @@ export function useNavigation(user, impersonatedCompany) {
   const isOrbitMode = activeModules?.length === 1 && activeModules[0] === '__orbit__';
   
   const filteredCompanyNav = isOrbitMode ? [] : industryNav.filter(item => {
-    if (activeModules && !['/', '/settings', '/integrations', '/admin'].includes(item.path)) {
+    if (activeModules && !['/', '/settings', '/roles', '/departments', '/integrations', '/admin'].includes(item.path)) {
       if (!activeModules.includes(item.path)) return false;
     }
     if (isAdmin) return true;
