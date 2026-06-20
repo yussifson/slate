@@ -947,6 +947,16 @@ export const AppSchema = new Schema({
         status: column.text,
         notes: column.text,
         outcome: column.text}),
+    retail_cash_drawers: new Table({
+        id: column.text,
+        company_id: column.text,
+        shift_id: column.text,
+        register_name: column.text,
+        action: column.text,
+        amount: column.text,
+        notes: column.text,
+        created_by: column.text,
+        created_at: column.text}),
     logistics_shippers: new Table({
         id: column.text,
         created_at: column.text,
@@ -1600,6 +1610,15 @@ export const AppSchema = new Schema({
         id: column.text,
         created_at: column.text,
         company_id: column.text}),
+    univ_case_deadlines: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        case_id: column.text,
+        title: column.text,
+        deadline_date: column.text,
+        is_critical: column.text,
+        status: column.text}),
     univ_cases: new Table({
         id: column.text,
         created_at: column.text,
@@ -1658,6 +1677,15 @@ export const AppSchema = new Schema({
         course_name: column.text,
         date: column.text,
         status: column.text}),
+    univ_trust_transactions: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        client_id: column.text,
+        transaction_type: column.text,
+        amount: column.real,
+        date: column.text,
+        description: column.text}),
     univ_clientledger: new Table({
         id: column.text,
         created_at: column.text,
@@ -2168,6 +2196,27 @@ export const AppSchema = new Schema({
         location: column.text,
         status: column.text,
         applicants: column.integer
+    }),
+    univ_hr_candidates: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        recruitment_id: column.text,
+        name: column.text,
+        email: column.text,
+        phone: column.text,
+        stage: column.text,
+        notes: column.text
+    }),
+    univ_hr_attendance: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        employee_id: column.text,
+        date: column.text,
+        clock_in: column.text,
+        clock_out: column.text,
+        status: column.text
     }),
     univ_immunization: new Table({
         id: column.text,

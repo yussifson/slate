@@ -42,7 +42,7 @@ export default function UnivPayroll() {
       const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
       setPayrolls(data || []);
 
-      const __empRes = await powerSync.execute(`SELECT * FROM univ_hr_employees WHERE company_id = ? ORDER BY first_name ASC`, [companyId]);
+      const __empRes = await powerSync.execute(`SELECT * FROM univ_hr_employees WHERE company_id = ? ORDER BY name ASC`, [companyId]);
       const empData = __empRes.rows ? (__empRes.rows._array || Array.from(__empRes.rows)) : [];
       setEmployees(empData || []);
     } catch (e) { console.error(e); } finally { setLoading(false); }
@@ -59,7 +59,7 @@ export default function UnivPayroll() {
 
   const getEmployeeName = (empId, fallbackName) => {
     const emp = employees.find(e => e.id === empId);
-    return emp ? `${emp.first_name} ${emp.last_name}` : (fallbackName || 'Unknown');
+    return emp ? emp.name : (fallbackName || 'Unknown');
   };
 
   const save = async (e) => {
@@ -224,7 +224,7 @@ export default function UnivPayroll() {
                     <select required value={form.employee_id} onChange={e => handleEmployeeChange(e.target.value)} className="w-full h-10 pl-9 pr-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm appearance-none cursor-pointer">
                       <option value="">-- Choose Employee --</option>
                       {employees.map(emp => (
-                        <option key={emp.id} value={emp.id}>{emp.first_name} {emp.last_name}</option>
+                        <option key={emp.id} value={emp.id}>{emp.name}</option>
                       ))}
                     </select>
                   </div>

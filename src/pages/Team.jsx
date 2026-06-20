@@ -216,6 +216,19 @@ function StaffDialog({ open, onClose, onSubmit, initialData, isNew, industryRole
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
+  const companyId = useCompanyId();
+
+  const { data: departmentRecords = [] } = useQuery({
+    queryKey: ["departments", companyId],
+    queryFn: () => base44.entities.Department.filter({ company_id: companyId }),
+    enabled: !!companyId
+  });
+
+  const { data: roleRecords = [] } = useQuery({
+    queryKey: ["roles", companyId],
+    queryFn: () => base44.entities.UnivRole.filter({ company_id: companyId }),
+    enabled: !!companyId
+  });
 
   useEffect(() => {
     const defaultRole = industryRoles[0]?.value || "lawyer";
@@ -297,20 +310,28 @@ function StaffDialog({ open, onClose, onSubmit, initialData, isNew, industryRole
               <Input className="mt-1" value={form.phone} onChange={(e) => handleChange("phone", e.target.value)} />
             </div>
             <div>
-              <Label>{t("role", "Role")}</Label>
+              <div className="flex justify-between items-center">
+                 <Label>{t("role", "Role")}</Label>
+                 <span className="text-[10px] text-muted-foreground font-semibold">Manage in Roles page</span>
+              </div>
               <Select value={form.role} onValueChange={(v) => handleChange("role", v)}>
-                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="mt-1"><SelectValue placeholder="Select Role..." /></SelectTrigger>
                 <SelectContent>
-                  {roles.map(r => {
-                    return <SelectItem key={r} value={r} className="capitalize">{r.replace(/_/g, " ")}</SelectItem>;
-                  })}
-                  <AddOptionInline onAdd={(v) => { addRole(v); handleChange("role", v); }} placeholder="New custom role..." />
+                  {roleRecords.map(r => <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label>{t("department", "Department")} <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{t("optional", "(optional)")}</span></Label>
-              <Input className="mt-1" value={form.department} onChange={(e) => handleChange("department", e.target.value)} />
+              <div className="flex justify-between items-center">
+                 <Label>{t("department", "Department")}</Label>
+                 <span className="text-[10px] text-muted-foreground font-semibold">Manage in Departments page</span>
+              </div>
+              <Select value={form.department} onValueChange={(v) => handleChange("department", v)}>
+                <SelectTrigger className="mt-1"><SelectValue placeholder="Select Department..." /></SelectTrigger>
+                <SelectContent>
+                  {departmentRecords.map(d => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <Label>{t("hire_date", "Hire Date")} <span className="text-[#71717a] dark:text-gray-400 text-xs tracking-[0.04em]">{t("optional", "(optional)")}</span></Label>

@@ -21,23 +21,14 @@ export default function AdvancedAnalytics() {
   const { data: drivers } = useIndustryRecords('driver');
   const { data: vehicles } = useIndustryRecords('vehicle');
 
-  // Sample data for charts
-  const deliveryTrendData = [
-    { date: 'Mon', delivered: 24, failed: 4, pending: 8 },
-    { date: 'Tue', delivered: 28, failed: 3, pending: 6 },
-    { date: 'Wed', delivered: 32, failed: 2, pending: 5 },
-    { date: 'Thu', delivered: 26, failed: 5, pending: 7 },
-    { date: 'Fri', delivered: 35, failed: 1, pending: 4 },
-    { date: 'Sat', delivered: 20, failed: 2, pending: 3 },
-    { date: 'Sun', delivered: 15, failed: 1, pending: 2 }
-  ];
-
-  const driverPerformanceData = [
-    { name: 'Driver A', onTime: 95, delayed: 5 },
-    { name: 'Driver B', onTime: 92, delayed: 8 },
-    { name: 'Driver C', onTime: 88, delayed: 12 },
-    { name: 'Driver D', onTime: 96, delayed: 4 },
-    { name: 'Driver E', onTime: 89, delayed: 11 }
+  const deliveryTrendData = analytics?.weeklyTrends || [
+    { date: 'Sun', delivered: 0, failed: 0, pending: 0 },
+    { date: 'Mon', delivered: 0, failed: 0, pending: 0 },
+    { date: 'Tue', delivered: 0, failed: 0, pending: 0 },
+    { date: 'Wed', delivered: 0, failed: 0, pending: 0 },
+    { date: 'Thu', delivered: 0, failed: 0, pending: 0 },
+    { date: 'Fri', delivered: 0, failed: 0, pending: 0 },
+    { date: 'Sat', delivered: 0, failed: 0, pending: 0 }
   ];
 
   return (
@@ -160,7 +151,11 @@ export default function AdvancedAnalytics() {
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={driverPerformanceData}>
+                <BarChart data={drivers?.slice(0, 5).map(d => ({
+                  name: d.first_name ? `${d.first_name} ${d.last_name || ''}` : d.name || 'Unknown',
+                  onTime: (typeof d.notes === 'string' ? JSON.parse(d.notes) : (d.notes || {})).on_time_deliveries || 90,
+                  delayed: (typeof d.notes === 'string' ? JSON.parse(d.notes) : (d.notes || {})).delayed_deliveries || 10
+                })) || []}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
@@ -257,24 +252,28 @@ export default function AdvancedAnalytics() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {[
-                { name: 'John Smith', rating: 4.8, deliveries: 487 },
-                { name: 'Maria Garcia', rating: 4.7, deliveries: 452 },
-                { name: 'Ahmed Hassan', rating: 4.6, deliveries: 428 }
-              ].map((driver, idx) => (
-                <div key={idx} className="flex justify-between items-center p-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-md">
+              {(!drivers || drivers.length === 0) ? (
+                <div className="text-sm text-gray-500 py-4 text-center">No drivers found</div>
+              ) : drivers.slice(0, 5).map((driver, idx) => {
+                const name = driver.first_name ? `${driver.first_name} ${driver.last_name || ''}` : driver.name || 'Unknown Driver';
+                const dData = typeof driver.notes === 'string' ? JSON.parse(driver.notes) : (driver.notes || {});
+                const rating = dData.rating || 5.0;
+                const deliveries = dData.completed_deliveries || dData.deliveries_count || 0;
+                
+                return (
+                <div key={driver.id || idx} className="flex justify-between items-center p-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-md">
                   <div>
-                    <p className="font-semibold text-sm">{driver.name}</p>
-                    <p className="text-xs text-gray-600 tracking-[0.04em]">{driver.deliveries} deliveries</p>
+                    <p className="font-semibold text-sm">{name}</p>
+                    <p className="text-xs text-gray-600 tracking-[0.04em]">{deliveries} deliveries</p>
                   </div>
                   <div className="text-right">
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold">{driver.rating}</span>
+                      <span className="font-semibold">{rating}</span>
                       <span className="text-yellow-500">★</span>
                     </div>
                   </div>
                 </div>
-              ))}
+              )})}
             </div>
           </CardContent>
         </Card>
@@ -286,21 +285,30 @@ export default function AdvancedAnalytics() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {[
-                { plate: 'VH-001', status: 'On Route', driver: 'John Smith' },
-                { plate: 'VH-002', status: 'Available', driver: '-' },
-                { plate: 'VH-003', status: 'Maintenance', driver: '-' }
-              ].map((vehicle, idx) => (
-                <div key={idx} className="flex justify-between items-center p-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-md">
+              {(!vehicles || vehicles.length === 0) ? (
+                <div className="text-sm text-gray-500 py-4 text-center">No vehicles found</div>
+              ) : vehicles.slice(0, 5).map((vehicle, idx) => {
+                const vData = typeof vehicle.notes === 'string' ? JSON.parse(vehicle.notes) : (vehicle.notes || {});
+                const plate = vData.plate || vData.registration_number || vData.license_plate || vehicle.name || `VH-00${idx+1}`;
+                const status = vData.status || 'Available';
+                const assignedDriver = vData.assigned_driver_id && drivers ? 
+                  (drivers.find(d => d.id === vData.assigned_driver_id)?.first_name || 'Assigned') : '-';
+                
+                let badgeClass = 'bg-green-100 text-green-700';
+                if (status.toLowerCase().includes('route') || status.toLowerCase().includes('transit')) badgeClass = 'bg-orange-100 text-orange-700';
+                if (status.toLowerCase().includes('maintenance') || status.toLowerCase().includes('repair')) badgeClass = 'bg-amber-100 text-amber-700';
+
+                return (
+                <div key={vehicle.id || idx} className="flex justify-between items-center p-2 border-[0.5px] border-black/9 dark:border-white/8 rounded-md">
                   <div>
-                    <p className="font-semibold text-sm">{vehicle.plate}</p>
-                    <p className="text-xs text-gray-600 tracking-[0.04em]">{vehicle.driver}</p>
+                    <p className="font-semibold text-sm">{plate}</p>
+                    <p className="text-xs text-gray-600 tracking-[0.04em]">{assignedDriver}</p>
                   </div>
-                  <Badge className={vehicle.status === 'On Route' ? 'bg-orange-100 text-orange-700' : vehicle.status === 'Available' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}>
-                    {vehicle.status}
+                  <Badge className={badgeClass}>
+                    {status}
                   </Badge>
                 </div>
-              ))}
+              )})}
             </div>
           </CardContent>
         </Card>

@@ -129,7 +129,8 @@ Status: ${item.status}
 
 Give a 2-sentence prediction on when this item will stock out and whether the reorder level should be adjusted.`;
       const response = await generateText(prompt);
-      setAiInsight(response);
+      const responseText = typeof response === 'string' ? response : JSON.stringify(response);
+      setAiInsight(responseText);
     } catch (e) {
       toast.error('AI Predictor failed.');
     } finally {

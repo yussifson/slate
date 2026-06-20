@@ -9,33 +9,62 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem} from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
 import { Link} from 'react-router-dom';
+import { usePowerSync } from '@powersync/react';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
 export default function Departments() {
  const { t} = useTranslation();
- const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('department');
- const { data: staffRecords = []} = useIndustryRecords('staff');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+ const powerSync = usePowerSync();
+ const companyId = useCompanyId();
+
+ const [dbRecords, setDbRecords] = useState([]);
+ const [isDbLoading, setIsDbLoading] = useState(true);
+ useEffect(() => {
+   let active = true;
+   const fetchDepts = async () => {
+     setIsDbLoading(true);
+     try {
+       const res = await powerSync.execute('SELECT * FROM univ_hr_departments WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+       if(active) setDbRecords(res.rows._array || Array.from(res.rows));
+     } catch(e){}
+     setIsDbLoading(false);
+   };
+   if (companyId) fetchDepts();
+   return () => { active = false; };
+ }, [companyId]);
+
+ const [staffRecords, setStaffRecords] = useState([]);
+ useEffect(() => {
+   let active = true;
+   const fetchStaff = async () => {
+     try {
+       const res = await powerSync.execute('SELECT * FROM univ_hr_employees WHERE company_id = ?', [companyId]);
+       if(active) setStaffRecords(res.rows._array || Array.from(res.rows));
+     } catch(e){}
+   };
+   if (companyId) fetchStaff();
+   return () => { active = false; };
+ }, [companyId]);
 
  const staffList = staffRecords.map(r => ({
  id: r.id,
- name: r.data?.full_name || r.data?.name || 'Unnamed Staff',
- departmentId: r.data?.departmentId || '',
- salary: parseFloat(r.data?.salary) || 0
+ name: r.first_name ? `${r.first_name} ${r.last_name || ''}`.trim() : r.name || 'Unnamed Staff',
+ departmentId: r.department_id || '',
+ salary: parseFloat(r.salary) || 0
 }));
 
  const departments = dbRecords.map(r => {
  const deptStaff = staffList.filter(s => s.departmentId === r.id);
- const head = staffList.find(s => s.id === r.data?.managerId);
+ const head = staffList.find(s => s.id === r.head_of_department_id || s.id === r.manager_id);
  return {
  id: r.id,
- name: r.data?.name || 'Unnamed Department',
- description: r.data?.description || '',
- managerId: r.data?.managerId || '',
+ name: r.department || r.name || 'Unnamed Department',
+ description: r.description || '',
+ managerId: r.head_of_department_id || r.manager_id || '',
  managerName: head ? head.name : 'Unassigned',
  staffCount: deptStaff.length,
  budget: deptStaff.reduce((sum, s) => sum + s.salary, 0),
- ...r.data
+ status: r.status || 'Active'
 };
 });
 
@@ -51,41 +80,29 @@ export default function Departments() {
  managerId: ''
 });
 
- const handleCreateOrUpdate = () => {
+ const handleCreateOrUpdate = async () => {
  if (!formData.name.trim()) return toast.error("Please enter a department name");
 
- if (editTargetId) {
- const existing = departments.find(d => d.id === editTargetId);
- mutateRecord.mutate({
- id: editTargetId,
- recordType: 'department',
- payload: { ...formData},
- status: existing?.status || 'Active',
- searchText: `${formData.name} ${formData.description}`
-}, {
- onSuccess: () => {
- toast.success('Department updated successfully!');
- setShowModal(false);
- setEditTargetId(null);
- setFormData({ name: '', description: '', managerId: ''});
-},
- onError: (err) => toast.error('Failed to update: ' + err.message)
-});
-} else {
- mutateRecord.mutate({
- recordType: 'department',
- payload: { ...formData},
- status: 'Active',
- searchText: `${formData.name} ${formData.description}`
-}, {
- onSuccess: () => {
- toast.success('Department created successfully!');
- setShowModal(false);
- setFormData({ name: '', description: '', managerId: ''});
-},
- onError: (err) => toast.error('Failed to create: ' + err.message)
-});
-}
+ try {
+  if (editTargetId) {
+   await powerSync.execute(`UPDATE univ_hr_departments SET department=?, description=?, head_of_department_id=? WHERE id=?`, 
+    [formData.name, formData.description, formData.managerId || null, editTargetId]
+   );
+   toast.success('Department updated successfully!');
+  } else {
+   await powerSync.execute(`INSERT INTO univ_hr_departments (id, created_at, company_id, department, description, head_of_department_id) VALUES (gen_random_uuid(), NOW(), ?, ?, ?, ?)`, 
+    [companyId, formData.name, formData.description, formData.managerId || null]
+   );
+   toast.success('Department created successfully!');
+  }
+  setShowModal(false);
+  setEditTargetId(null);
+  setFormData({ name: '', description: '', managerId: ''});
+  // Trigger a re-render or let PowerSync reactivity handle it.
+  setDbRecords([...dbRecords]); // Optimistic update hint
+ } catch (err) {
+  toast.error('Failed: ' + err.message);
+ }
 };
 
  const openEdit = (dept) => {
@@ -104,18 +121,16 @@ export default function Departments() {
  setShowModal(true);
 };
 
- const handleDelete = () => {
+ const handleDelete = async () => {
  if (!deleteTargetId) return;
- deleteRecord.mutate(deleteTargetId, {
- onSuccess: () => {
- toast.success('Department removed successfully!');
- setDeleteTargetId(null);
-},
- onError: (err) => {
- toast.error('Failed to remove: ' + err.message);
- setDeleteTargetId(null);
-}
-});
+ try {
+  await powerSync.execute(`DELETE FROM univ_hr_departments WHERE id = ?`, [deleteTargetId]);
+  toast.success('Department deleted!');
+  setDeleteTargetId(null);
+  setDbRecords(dbRecords.filter(d => d.id !== deleteTargetId));
+ } catch (err) {
+  toast.error('Failed to delete: ' + err.message);
+ }
 };
 
  const filtered = departments.filter(d => 

@@ -1,6 +1,6 @@
 import React, { useState} from 'react';
 import { useTranslation} from "react-i18next";
-import { ClipboardList, Search, Plus, Edit, Trash2, TrendingUp, X} from 'lucide-react';
+import { ClipboardList, Search, Plus, Edit, Trash2, TrendingUp, X, RotateCcw, DollarSign } from 'lucide-react';
 import { ViewModeToggle, RetailStatCard, OrderGridCard} from '@/components/retail/RetailViewKit';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
@@ -65,8 +65,88 @@ export default function Orders() {
  const [isNewCustomer, setIsNewCustomer] = useState(false);
  const [newCustomerData, setNewCustomerData] = useState({ name: '', email: '', phone: ''});
  
- const [selectedProduct, setSelectedProduct] = useState('');
- const [productQty, setProductQty] = useState(1);
+  const [selectedProduct, setSelectedProduct] = useState('');
+  const [productQty, setProductQty] = useState(1);
+
+  // Return / Refund Modal State
+  const [showReturnModal, setShowReturnModal] = useState(false);
+  const [returningOrder, setReturningOrder] = useState(null);
+  const [returnReason, setReturnReason] = useState('');
+  const [returnItems, setReturnItems] = useState([]);
+  const [refundAmount, setRefundAmount] = useState(0);
+
+  const openReturnModal = (order) => {
+    setReturningOrder(order);
+    const items = (order.items || []).map(i => ({ ...i, returnQty: i.qty, selected: true }));
+    setReturnItems(items);
+    setRefundAmount(order.total);
+    setReturnReason('');
+    setShowReturnModal(true);
+  };
+
+  const toggleReturnItem = (idx) => {
+    setReturnItems(prev => {
+      const updated = prev.map((item, i) => i === idx ? { ...item, selected: !item.selected } : item);
+      const newRefund = updated.filter(i => i.selected).reduce((sum, i) => sum + (i.price * i.returnQty), 0);
+      setRefundAmount(parseFloat(newRefund.toFixed(2)));
+      return updated;
+    });
+  };
+
+  const updateReturnQty = (idx, qty) => {
+    setReturnItems(prev => {
+      const updated = prev.map((item, i) => i === idx ? { ...item, returnQty: Math.max(0, Math.min(qty, item.qty)) } : item);
+      const newRefund = updated.filter(i => i.selected).reduce((sum, i) => sum + (i.price * i.returnQty), 0);
+      setRefundAmount(parseFloat(newRefund.toFixed(2)));
+      return updated;
+    });
+  };
+
+  const processReturn = async () => {
+    if (!returningOrder) return;
+    const selectedItems = returnItems.filter(i => i.selected && i.returnQty > 0);
+    if (selectedItems.length === 0) { toast.error('Select at least one item to return.'); return; }
+
+    // Restock inventory for returned items
+    for (const item of selectedItems) {
+      const prod = productRecords.find(p => p.id === item.productId);
+      if (prod) {
+        const currentStock = Number(prod.data?.quantity || prod.data?.stock || 0);
+        await mutateRecord.mutateAsync({
+          id: prod.id, recordType: 'product',
+          payload: { ...prod.data, quantity: currentStock + item.returnQty, stock: currentStock + item.returnQty },
+          status: prod.status, searchText: prod.search_text
+        });
+      }
+    }
+
+    // Update order status to 'Returned'
+    const originalRecord = dbRecords.find(r => r.id === returningOrder.id);
+    mutateRecord.mutate({
+      id: returningOrder.id, recordType: 'order',
+      payload: {
+        ...originalRecord,
+        status: 'Returned',
+        returnReason,
+        returnedItems: selectedItems.map(i => ({ name: i.name, qty: i.returnQty, price: i.price })),
+        refundAmount: refundAmount,
+        returnDate: new Date().toISOString()
+      },
+      status: 'Returned',
+      searchText: `${returningOrder.orderId} Returned ${returningOrder.customerName}`
+    }, {
+      onSuccess: () => {
+        toast.success(`Return processed! Refund: $${refundAmount.toFixed(2)}. Items restocked.`);
+        notifyTeam({
+          companyId: user?.company_id, provider: 'slack',
+          message: `🔄 Order ${returningOrder.orderId} returned. Refund: $${refundAmount.toFixed(2)}. Reason: ${returnReason || 'Not specified'}`,
+          channel: '#sales'
+        }).catch(console.error);
+        setShowReturnModal(false); setReturningOrder(null);
+      },
+      onError: (err) => toast.error('Return failed: ' + err.message)
+    });
+  };
 
  const openEdit = (ord) => {
  setEditingId(ord.id);
@@ -170,27 +250,6 @@ export default function Orders() {
 }
 }
 }
- } else if (formData.status === 'Returned') {
-   const originalOrder = orders.find(o => o.id === editingId);
-   const wasAlreadyReturned = originalOrder && originalOrder.status === 'Returned';
-   
-   if (!wasAlreadyReturned) {
-     // Restock inventory for returned items
-     for (const item of formData.items) {
-       const prod = productRecords.find(p => p.id === item.productId);
-       if (prod) {
-         const currentStock = Number(prod.data?.quantity || prod.data?.stock || 0);
-         await mutateRecord.mutateAsync({
-           id: prod.id,
-           recordType: 'product',
-           payload: { ...prod.data, quantity: currentStock + item.qty, stock: currentStock + item.qty},
-           status: prod.status,
-           searchText: prod.search_text
-         });
-       }
-     }
-     toast.success("Items have been restocked into inventory.");
-   }
  }
 
  mutateRecord.mutate({
@@ -254,10 +313,12 @@ export default function Orders() {
  <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
  </div>
 
- <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
- <RetailStatCard label="Total Orders" value={orders.length} icon={ClipboardList} />
- <RetailStatCard label="Total Revenue" value={`$${orders.reduce((a, b) => a + b.total, 0).toFixed(2)}`} icon={TrendingUp} />
- </div>
+  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+  <RetailStatCard label="Total Orders" value={orders.length} icon={ClipboardList} />
+  <RetailStatCard label="Total Revenue" value={`$${orders.reduce((a, b) => a + b.total, 0).toFixed(2)}`} icon={TrendingUp} />
+  <RetailStatCard label="Returns" value={orders.filter(o => o.status === 'Returned').length} icon={RotateCcw} />
+  <RetailStatCard label="Refunded" value={`$${orders.filter(o => o.status === 'Returned').reduce((a, o) => a + (parseFloat(o.data?.refundAmount) || o.total || 0), 0).toFixed(2)}`} icon={DollarSign} />
+  </div>
 
  <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
@@ -304,7 +365,7 @@ export default function Orders() {
  <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">{o.date}</td>
  <td className="px-6 py-4 text-right font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${o.total.toFixed(2)}</td>
  <td className="px-6 py-4 text-center">
- <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider ${o.status === 'Completed' || o.status === 'Delivered' ? 'bg-slate-100 text-primary/90' : 'bg-amber-100 text-amber-700'}`}>{o.status}</span>
+ <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider ${o.status === 'Completed' || o.status === 'Delivered' ? 'bg-slate-100 text-primary/90' : o.status === 'Returned' ? 'bg-red-100 text-red-700 dark:bg-red-950/20 dark:text-red-400' : 'bg-amber-100 text-amber-700'}`}>{o.status}</span>
  </td>
  <td className="px-6 py-4">
  <p className="text-sm font-medium text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{o.createdBy}</p>
@@ -312,6 +373,7 @@ export default function Orders() {
  </td>
  <td className="px-6 py-4 text-right">
  <Button variant="ghost" size="icon" onClick={() => openEdit(o)}><Edit className="w-4 h-4" /></Button>
+ {(o.status === 'Completed' || o.status === 'Delivered') && <Button variant="ghost" size="icon" className="text-orange-600" onClick={() => openReturnModal(o)} title="Process Return"><RotateCcw className="w-4 h-4" /></Button>}
  <Button variant="ghost" size="icon" className="text-red-600" onClick={() => setDeleteTargetId(o.id)}><Trash2 className="w-4 h-4" /></Button>
  </td>
  </tr>
@@ -430,6 +492,74 @@ export default function Orders() {
  </div>
  )}
  <ConfirmationModal isOpen={deleteTargetId !== null} onClose={() => setDeleteTargetId(null)} onConfirm={() => { deleteRecord.mutate({ id: deleteTargetId, recordType: 'order'}); setDeleteTargetId(null);}} title="Delete Order" message="Are you sure you want to delete this order?" />
+ 
+  {/* Return / Refund Modal */}
+  {showReturnModal && returningOrder && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+      <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto border border-primary/40 animate-in zoom-in-95 duration-200">
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg font-bold flex items-center gap-2"><RotateCcw className="w-5 h-5 text-orange-600"/>Process Return</h2>
+          <button onClick={() => setShowReturnModal(false)} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5"/></button>
+        </div>
+
+        <div className="bg-muted rounded-xl p-4">
+          <div className="flex justify-between text-sm"><span className="text-muted-foreground">Order</span><span className="font-semibold">{returningOrder.orderId}</span></div>
+          <div className="flex justify-between text-sm mt-1"><span className="text-muted-foreground">Customer</span><span className="font-semibold">{returningOrder.customerName}</span></div>
+          <div className="flex justify-between text-sm mt-1"><span className="text-muted-foreground">Original Total</span><span className="font-semibold">${returningOrder.total.toFixed(2)}</span></div>
+        </div>
+
+        <div>
+          <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em] mb-2 block">Select Items to Return</label>
+          <div className="space-y-2">
+            {returnItems.map((item, idx) => (
+              <div key={idx} className={`p-3 rounded-xl border transition-all ${item.selected ? 'border-orange-300 bg-orange-50/50 dark:bg-orange-950/10' : 'border-primary/20 bg-card'}`}>
+                <div className="flex items-center gap-3">
+                  <input type="checkbox" checked={item.selected} onChange={() => toggleReturnItem(idx)} className="rounded" />
+                  <div className="flex-1">
+                    <p className="font-semibold text-sm">{item.name}</p>
+                    <p className="text-xs text-muted-foreground">${item.price?.toFixed(2)} each · Ordered: {item.qty}</p>
+                  </div>
+                  {item.selected && (
+                    <div className="flex items-center gap-2">
+                      <label className="text-xs text-muted-foreground">Return Qty:</label>
+                      <Input type="number" min={1} max={item.qty} value={item.returnQty} onChange={e => updateReturnQty(idx, parseInt(e.target.value) || 0)} className="w-16 h-8 text-center text-sm" />
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em] mb-1 block">Return Reason</label>
+          <select value={returnReason} onChange={e => setReturnReason(e.target.value)}
+            className="w-full rounded-lg border-[0.5px] border-input bg-background px-3 py-2 text-sm">
+            <option value="">Select reason...</option>
+            <option>Defective / Damaged</option>
+            <option>Wrong Item Sent</option>
+            <option>Customer Changed Mind</option>
+            <option>Size / Fit Issue</option>
+            <option>Better Price Found</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div className="bg-red-50 dark:bg-red-950/20 rounded-xl p-4 border border-red-200 dark:border-red-800">
+          <p className="text-sm text-red-700 dark:text-red-400 font-medium">Refund Amount</p>
+          <p className="text-3xl font-black text-red-700 dark:text-red-400 tracking-[-0.02em]">${refundAmount.toFixed(2)}</p>
+          <p className="text-xs text-red-500 mt-1">Items will be automatically restocked into inventory.</p>
+        </div>
+
+        <div className="flex gap-3 pt-2">
+          <Button variant="outline" className="flex-1" onClick={() => setShowReturnModal(false)}>Cancel</Button>
+          <Button className="flex-1 bg-orange-600 hover:bg-orange-700 text-white" onClick={processReturn} disabled={returnItems.filter(i => i.selected && i.returnQty > 0).length === 0}>
+            <RotateCcw className="w-4 h-4 mr-2"/> Process Return & Refund
+          </Button>
+        </div>
+      </div>
+    </div>
+  )}
  </div>
  );
 }

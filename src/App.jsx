@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster"
 import { Toaster as SonnerToaster } from "@/components/ui/sonner"
 import { Toaster as HotToaster } from "react-hot-toast"
@@ -13,7 +14,7 @@ import { ImpersonationProvider } from '@/lib/ImpersonationContext';
 import { VideoProvider } from '@/lib/VideoContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Intelligence from '@/pages/Intelligence';
-import React, { useEffect } from 'react';
+// React imported at the top
 import { PowerSyncContext } from '@powersync/react';
 import { HelmetProvider } from 'react-helmet-async';
 import { powerSync, initPowerSync } from './api/PowerSyncConnector';

@@ -41,7 +41,20 @@ export default function Teachers() {
   });
 
   const [departmentFilter, setDepartmentFilter] = useState('All');
-  const departments = ['All', 'Academics', 'Administration', 'Support', 'Finance'];
+
+  const { data: departmentRecords = [] } = useQuery({
+    queryKey: ["departments", companyId],
+    queryFn: () => base44.entities.Department.filter({ company_id: companyId }),
+    enabled: !!companyId
+  });
+
+  const { data: roleRecords = [] } = useQuery({
+    queryKey: ["roles", companyId],
+    queryFn: () => base44.entities.UnivRole.filter({ company_id: companyId }),
+    enabled: !!companyId
+  });
+
+  const departments = ['All', ...departmentRecords.map(d => d.name)];
 
   const allStaff = records.map(r => {
     let extra = {};
@@ -302,14 +315,22 @@ export default function Teachers() {
               )}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">Department</label>
-                  <select value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} className="w-full flex h-10 w-full rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-[#71717a] dark:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-out hover:border-primary/40 focus:border-primary focus:ring-4 focus:ring-primary/10">
-                    {departments.filter(d => d !== 'All').map(d => <option key={d}>{d}</option>)}
-                  </select>
+                  <Label className="text-xs text-[var(--color-text-secondary)]">Department</Label>
+                  <Select value={formData.department} onValueChange={(v) => setFormData({...formData, department: v})}>
+                    <SelectTrigger className="mt-1.5"><SelectValue placeholder="Select Department" /></SelectTrigger>
+                    <SelectContent>
+                      {departmentRecords.map(d => <SelectItem key={d.id} value={d.name}>{d.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">Role / Title</label>
-                  <Input value={formData.position} onChange={e => setFormData({...formData, position: e.target.value})} className="rounded-md-[var(--radius-lg)]" placeholder="e.g. Math Teacher" />
+                  <Label className="text-xs text-[var(--color-text-secondary)]">Role</Label>
+                  <Select value={formData.position} onValueChange={(v) => setFormData({...formData, position: v})}>
+                    <SelectTrigger className="mt-1.5"><SelectValue placeholder="Select Role" /></SelectTrigger>
+                    <SelectContent>
+                      {roleRecords.map(r => <SelectItem key={r.id} value={r.name}>{r.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
               

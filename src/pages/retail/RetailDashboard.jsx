@@ -34,7 +34,8 @@ export default function RetailDashboard() {
     try {
       const prompt = `You are a Retail Store Manager AI. Today's orders: ${orders.length}, Low stock items: ${lowStockProducts.length}. Write a 2-sentence morning briefing to the store team.`;
       const response = await generateText(prompt);
-      setAiInsight(response);
+      const responseText = typeof response === 'string' ? response : JSON.stringify(response);
+      setAiInsight(responseText);
     } catch (e) {
       console.error('AI Briefing failed.');
     } finally {

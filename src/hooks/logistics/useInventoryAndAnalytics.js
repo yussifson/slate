@@ -241,6 +241,24 @@ export function useLogisticsAnalytics(filters = {}) {
         return vData.status === 'Available';
       }).length;
 
+      // Calculate weekly trends
+      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const weeklyTrends = days.map(day => ({ date: day, delivered: 0, failed: 0, pending: 0 }));
+
+      shipments.forEach(s => {
+        const sData = typeof s.notes === 'string' ? JSON.parse(s.notes) : s.notes;
+        const dateStr = s.date || sData?.date || s.created_at;
+        if (dateStr) {
+          const dateObj = new Date(dateStr);
+          if (!isNaN(dateObj.getTime())) {
+            const dayIdx = dateObj.getDay();
+            if (s.status === 'Delivered') weeklyTrends[dayIdx].delivered++;
+            else if (s.status === 'Failed') weeklyTrends[dayIdx].failed++;
+            else weeklyTrends[dayIdx].pending++;
+          }
+        }
+      });
+
       return {
         totalShipments,
         deliveredShipments: delivered,
@@ -251,7 +269,8 @@ export function useLogisticsAnalytics(filters = {}) {
         totalDrivers: driverCount,
         totalVehicles: vehicleCount,
         availableVehicles,
-        vehicleUtilization: vehicleCount > 0 ? ((vehicleCount - availableVehicles) / vehicleCount) * 100 : 0
+        vehicleUtilization: vehicleCount > 0 ? ((vehicleCount - availableVehicles) / vehicleCount) * 100 : 0,
+        weeklyTrends
       };
     },
     enabled: !!companyId

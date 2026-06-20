@@ -37,11 +37,13 @@ export default function Marketplace() {
  setLoading(true);
  try {
  // 1. Fetch all public marketplace modules
- const { data, error} = await supabase
- .from('module_definitions')
- .select('*')
- .eq('visibility', 'public')
- .eq('is_active', 'true');
+  const response = await supabase
+  .from('module_definitions')
+  .select('*')
+  .eq('visibility', 'public')
+  .eq('is_active', 'true');
+  const data = response?.data || [];
+  const error = response?.error || null;
 
  if (error) throw error;
  const mods = data || [];
@@ -53,11 +55,12 @@ export default function Marketplace() {
 
  // 2. Fetch all modules this company has installed (private clones)
  // We match by name against public modules to find the mapping
- const { data: myModules} = await supabase
- .from('module_definitions')
- .select('id, name, config')
- .eq('company_id', companyId)
- .eq('is_active', 'true');
+  const myModulesResponse = await supabase
+  .from('module_definitions')
+  .select('id, name, config')
+  .eq('company_id', companyId)
+  .eq('is_active', 'true');
+  const myModules = myModulesResponse?.data || [];
 
  const installed = {};
  for (const myMod of (myModules || [])) {
@@ -104,11 +107,15 @@ export default function Marketplace() {
 
  if (moduleError) throw moduleError;
 
- // Clone fields
- const { data: originalFields, error: fetchFieldsError} = await supabase
- .from('field_definitions')
- .select('*')
- .eq('module_id', mod.id);
+  // Clone fields
+  const fetchFieldsResponse = await supabase
+  .from('field_definitions')
+  .select('*')
+  .eq('module_id', mod.id);
+  
+  if (!fetchFieldsResponse) throw new Error("Supabase query returned undefined for field_definitions.");
+  const originalFields = fetchFieldsResponse.data;
+  const fetchFieldsError = fetchFieldsResponse.error;
 
  if (fetchFieldsError) throw fetchFieldsError;
 

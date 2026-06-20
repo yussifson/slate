@@ -60,8 +60,13 @@ export default function RouteOptimization() {
       
       let optimizedArray = [];
       try {
-        const cleaned = response.replace(/```json/g, '').replace(/```/g, '').trim();
-        optimizedArray = JSON.parse(cleaned);
+        const match = response.match(/\[.*\]/s);
+        if (match) {
+          optimizedArray = JSON.parse(match[0]);
+        } else {
+          const cleaned = response.replace(/```json/g, '').replace(/```/g, '').trim();
+          optimizedArray = JSON.parse(cleaned);
+        }
       } catch (e) {
         throw new Error('Failed to parse AI output.');
       }
