@@ -112,7 +112,7 @@ export default function AdminSecurity() {
           </div>
           <div className="mt-4 flex items-center justify-between">
             <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-              {t("0_active_threats_detected", "0 active threats detected")}
+              {realAuditLogs.filter(l => l.action === 'SYSTEM_ALERT' && l.severity === 'high').length} active threats detected
             </span>
             <button 
               onClick={() => toast({ title: 'Maintenance Mode', description: 'Maintenance mode is currently disabled in this environment.' })}
@@ -127,7 +127,7 @@ export default function AdminSecurity() {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 tracking-[0.04em]">{t("failed_auth", "Failed Auth")}</p>
-              <h3 className="text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{t("24", "24")}</h3>
+              <h3 className="text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{realAuditLogs.filter(l => (l.action === 'LOGIN_FAILED' || l.action === 'AUTH_FAILURE') && new Date(l.created_at) > new Date(Date.now() - 24*60*60*1000)).length}</h3>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-amber-100 dark:border-amber-500/20">
               <AlertTriangle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
@@ -142,7 +142,7 @@ export default function AdminSecurity() {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 tracking-[0.04em]">{t("active_impersonations", "Active Impersonations")}</p>
-              <h3 className="text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-[-0.02em]">1</h3>
+              <h3 className="text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-[-0.02em]">{realAuditLogs.filter(l => l.action === 'IMPERSONATION_START' && new Date(l.created_at) > new Date(Date.now() - 24*60*60*1000)).length}</h3>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-500/10/10 flex items-center justify-center border-[0.5px] border-black/9 dark:border-white/8 border-blue-100 dark:border-blue-500/20">
               <Eye className="w-6 h-6 text-blue-600 dark:text-blue-400" />
