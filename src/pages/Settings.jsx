@@ -12,18 +12,12 @@ import {
  Settings2, Palette, DollarSign, ShieldCheck, Lock, CreditCard, Building
 } from "lucide-react";
 
-import RoleManagementSettings from "@/components/settings/RoleManagementSettings";
 import { SystemSettings, BrandSettings} from "@/components/settings/SystemBrandSettings";
 import { CurrencySettings, SecuritySettings, BillingSettings} from "@/components/settings/SecurityBillingSettings";
-import CustomDepartmentsSettings from "@/components/settings/CustomDepartmentsSettings";
-
-
 const SECTIONS = [
- { id: "departments", label: "Custom Departments", icon: Building, cat: "Organization"},
  { id: "system", label: "System Configuration", icon: Settings2, cat: "General"},
  { id: "brand", label: "Brand & Identity", icon: Palette, cat: "General"},
  { id: "security", label: "Security & Encryption", icon: Lock, cat: "Security & Access"},
- { id: "permissions", label: "Role Management", icon: ShieldCheck, cat: "Security & Access"},
  { id: "billing", label: "Billing & Subscriptions",icon: CreditCard, cat: "Billing"},
  { id: "currency", label: "Regional Currency", icon: DollarSign, cat: "Billing"},
 ];
@@ -101,15 +95,13 @@ export default function Settings() {
 }
 } : fakeSuccess} saving={saving} />;
  case "billing": return <BillingSettings activeIndustry={activeIndustry} company={company} />;
- case "departments": return <CustomDepartmentsSettings />;
  case "currency": return <CurrencySettings activeIndustry={activeIndustry} company={company} onSave={company ? d => updateCompany({ currency: d.currency}) : fakeSuccess} saving={saving} />;
  case "security": return <SecuritySettings />;
- case "permissions": return <RoleManagementSettings />;
  default: return null;
 }
 };
 
- const categories = ["Organization", "General", "Security & Access", "Billing"];
+ const categories = ["General", "Security & Access", "Billing"];
 
  return (
  <div className="flex flex-col h-full bg-background md:flex-row rounded-tl-2xl overflow-hidden border-t border-l border-primary/40">

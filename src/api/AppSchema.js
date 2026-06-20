@@ -1277,6 +1277,7 @@ export const AppSchema = new Schema({
         last_read_at: column.text}),
     chat_messages: new Table({
         id: column.text,
+        reactions: column.text,
         room_id: column.text,
         sender_id: column.text,
         reply_to_id: column.text,
