@@ -41,14 +41,17 @@ serve(async (req) => {
       for (const p of participants) {
         if (!p.email) continue;
         
-        // Call our send-email edge function
-        await supabase.functions.invoke('send-email', {
-          body: {
-            to: p.email,
-            subject: `Reminder: Meeting "${meeting.title}" starts in 15 minutes!`,
-            text: `Your meeting starts soon.\n\nLink: ${meeting.meeting_link}`,
-            html: `<h2>Meeting Reminder</h2><p>Your meeting <strong>${meeting.title}</strong> is starting in 15 minutes.</p><a href="${meeting.meeting_link}">Join Meeting</a>`
-          }
+        // Insert into notifications to trigger Novu webhook
+        await supabase.from('notifications').insert({
+          company_id: meeting.company_id,
+          recipient_email: p.email,
+          title: `Meeting Reminder: ${meeting.title}`,
+          message: `Your video meeting starts in 15 minutes. Join here: ${meeting.meeting_link}`,
+          type: 'video_meeting',
+          related_id: meeting.meeting_link,
+          created_by: 'system',
+          is_read: 'false',
+          email_sent: 'false'
         })
         sentCount++;
       }

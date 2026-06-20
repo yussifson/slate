@@ -11,7 +11,7 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 import { Users, Lock, Globe, Clock, CalendarIcon } from 'lucide-react';
 import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { Switch } from '@/components/ui/switch';
-import base44 from '@/api/base44Client';
+import { NotificationService } from '@/services/NotificationService';
 
 export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled }) {
   const { user } = useAuth();
@@ -99,11 +99,13 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
       // 3. Send Email Invites
       if (selectedParticipants.length > 0) {
         for (const participant of selectedParticipants) {
-          await base44.integrations.Core.SendEmail({
-            to: participant.email,
-            subject: `Meeting Invite: ${title}`,
-            text: `You have been invited to a video meeting.\nTitle: ${title}\nWhen: ${scheduledStart.toLocaleString()}\nJoin Link: ${_payload.meeting_link}`,
-            html: `<p>You have been invited to a video meeting.</p><p><strong>Title:</strong> ${title}</p><p><strong>When:</strong> ${scheduledStart.toLocaleString()}</p><p><a href="${_payload.meeting_link}">Click here to join the meeting</a></p>`
+          await NotificationService.emit({
+            companyId: companyId,
+            recipientEmail: participant.email,
+            title: `Meeting Invite: ${title}`,
+            message: `You have been invited to a scheduled video meeting on ${scheduledStart.toLocaleString()}. Join here: ${_payload.meeting_link}`,
+            type: 'video_meeting',
+            relatedId: _payload.meeting_link
           });
         }
         toast({ title: 'Invites Sent', description: `Emailed ${selectedParticipants.length} participants.` });
