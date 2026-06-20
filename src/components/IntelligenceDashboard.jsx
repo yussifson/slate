@@ -60,7 +60,7 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary to-primary/80 border border-primary/20 backdrop-blur-sm flex items-center justify-center">
               <Brain className="w-4 h-4 text-white" />
             </div>
             <h3 className="text-sm font-bold text-card-foreground">Intelligence</h3>
@@ -126,7 +126,7 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-violet-500/20">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 border border-primary/20 backdrop-blur-sm flex items-center justify-center shadow-lg shadow-primary/20">
               <Brain className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -142,7 +142,7 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
         <Button
           onClick={() => runEngine(effectiveVertical)}
           disabled={isRunning}
-          className="gap-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white shadow-lg shadow-violet-500/20"
+          className="gap-2 bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20"
         >
           {isRunning ? (
             <>
@@ -161,7 +161,7 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-100 to-indigo-100 flex items-center justify-center text-violet-600">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
             <Brain className="w-5 h-5" />
           </div>
           <div>
@@ -236,15 +236,15 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
       {/* Insight List */}
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-16">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-100 to-indigo-100 flex items-center justify-center mb-4">
-            <Sparkles className="w-6 h-6 text-violet-600 animate-pulse" />
+          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+            <Sparkles className="w-6 h-6 text-primary animate-pulse" />
           </div>
           <p className="text-sm text-[#71717a]">Loading intelligence data...</p>
         </div>
       ) : displayInsights.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 bg-card rounded-2xl border">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-100 to-indigo-100 flex items-center justify-center mb-4">
-            <Brain className="w-8 h-8 text-violet-600/40" />
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+            <Brain className="w-8 h-8 text-primary/40" />
           </div>
           <h3 className="text-lg font-semibold text-card-foreground mb-1">Building Intelligence</h3>
           <p className="text-sm text-[#71717a] text-center max-w-md">

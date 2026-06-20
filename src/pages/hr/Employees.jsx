@@ -42,7 +42,8 @@ export default function Employees() {
  const { t} = useTranslation();
  const { user} = useAuth();
  const { notifyTeam} = useNotifications();
- const powerSync = usePowerSync();
+  const powerSync = usePowerSync();
+  const companyId = user?.company_id;
  
   const [dbRecords, setDbRecords] = useState([]);
   const [isDbLoading, setIsDbLoading] = useState(true);

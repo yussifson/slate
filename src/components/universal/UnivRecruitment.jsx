@@ -48,6 +48,8 @@ export default function UnivRecruitment() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isStageModalOpen, setIsStageModalOpen] = useState(false);
+  const [newStageName, setNewStageName] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
 
@@ -60,13 +62,20 @@ export default function UnivRecruitment() {
     return defaultStages;
   });
 
-  const addStage = () => {
-    const stageName = prompt("Enter new pipeline stage name:");
+  const openStageModal = () => {
+    setNewStageName('');
+    setIsStageModalOpen(true);
+  };
+
+  const addStage = (e) => {
+    e.preventDefault();
+    const stageName = newStageName.trim();
     if (stageName && !STAGES.includes(stageName)) {
       const newStages = [...STAGES, stageName];
       setSTAGES(newStages);
       localStorage.setItem(`pipelines_${companyId}`, JSON.stringify(newStages));
     }
+    setIsStageModalOpen(false);
   };
 
 
@@ -182,7 +191,7 @@ export default function UnivRecruitment() {
           <button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 transition-all active:scale-95">
             Export CSV
           </button>
-          <button onClick={addStage} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 transition-all active:scale-95"><Plus className="w-4 h-4"/>Add Pipeline</button>
+          <button onClick={openStageModal} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 transition-all active:scale-95"><Plus className="w-4 h-4"/>Add Pipeline</button>
           <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors"><Plus className="w-4 h-4"/>Add Candidate</button>
         </div>
       </div>
@@ -291,6 +300,29 @@ export default function UnivRecruitment() {
         </div>
       )}
 
+      {isStageModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
+          <div className="bg-card w-full max-w-sm rounded-2xl flex flex-col shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <div className="p-5 border-b border-primary/40 flex justify-between items-center bg-muted/20 shrink-0">
+              <h2 className="text-xl font-black flex items-center gap-2"><Plus className="w-5 h-5 text-primary" /> Add Pipeline Stage</h2>
+              <button onClick={() => setIsStageModalOpen(false)} className="p-2 bg-background hover:bg-muted rounded-full text-[#71717a] dark:text-gray-400 transition-colors"><XCircle className="w-5 h-5"/></button>
+            </div>
+            <form onSubmit={addStage} className="p-5 overflow-y-auto flex-1 custom-scrollbar">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Stage Name</label>
+                  <input autoFocus required type="text" value={newStageName} onChange={e=>setNewStageName(e.target.value)} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="e.g. Technical Interview"/>
+                </div>
+              </div>
+              <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-primary/40">
+                <button type="button" onClick={() => setIsStageModalOpen(false)} className="h-11 px-6 bg-muted rounded-xl text-sm font-semibold hover:bg-muted/80 transition-colors">Cancel</button>
+                <button type="submit" className="h-11 px-6 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">Add Stage</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
           <div className="bg-card w-full max-w-2xl rounded-2xl flex flex-col max-h-[90vh] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
@@ -301,7 +333,7 @@ export default function UnivRecruitment() {
             <form onSubmit={save} className="p-5 overflow-y-auto flex-1 custom-scrollbar">
               <div className="grid grid-cols-2 gap-5">
                 <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Candidate Name *</label><input required type="text" value={form.candidate_name} onChange={e=>setForm({...form,candidate_name:e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
-                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Position Applied For *</label><input required type="text" value={form.job_title} onChange={e=>setForm({...form,position:e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+                <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Position Applied For *</label><input required type="text" value={form.job_title} onChange={e=>setForm({...form,job_title:e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
                 <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Email Address</label><div className="relative"><Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400"/><input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} className="w-full h-11 pl-9 pr-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div></div>
                 <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Phone Number</label><div className="relative"><Phone className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400"/><input type="tel" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} className="w-full h-11 pl-9 pr-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div></div>
                 <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Status</label><select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className="w-full h-11 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm cursor-pointer">{STAGES.map(s=><option key={s}>{s}</option>)}</select></div>

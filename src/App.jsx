@@ -456,7 +456,7 @@ function PlatformRoutes() {
       <Route path="/pipeline" element={<CasePipelinePage />} />
       <Route path="/research" element={<LegalResearch />} />
       <Route path="/audit" element={<AuditLog />} />
-      <Route path="/leave" element={<UnivPayroll />} />
+      <Route path="/leave" element={<UnivLeaveManagement />} />
       <Route path="/performance" element={<PerformanceDashboard />} />
       <Route path="/outcomes" element={<CaseOutcomes />} />
       <Route path="/conflict-check" element={<ConflictChecker />} />

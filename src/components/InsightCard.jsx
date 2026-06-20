@@ -174,7 +174,7 @@ export default function InsightCard({ insight, onDismiss, onFeedback, compact = 
                 </button>
                 <button 
                   onClick={() => { onFeedback(insight.id, 'acted_on'); setFeedbackGiven(true); }}
-                  className="text-[10px] px-2 py-0.5 rounded-full bg-violet-100 text-violet-700 hover:bg-violet-200 transition-colors font-semibold"
+                  className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-violet-700 hover:bg-violet-200 transition-colors font-semibold"
                 >
                   Acted On
                 </button>
