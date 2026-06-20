@@ -93,7 +93,8 @@ export default function Employees() {
   employeeId: r.employee_id || r.id.substring(0,6),
   name: r.name,
   departmentId: r.department_id,
-  role: roleRecords.find(ro => ro.id === r.role)?.name || r.role,
+  role: r.role,
+  roleName: roleRecords.find(ro => ro.id === r.role)?.name || r.role,
   email: r.email,
   phone: r.phone,
   salary: r.salary,
@@ -373,7 +374,7 @@ export default function Employees() {
  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">{emp.employeeId}</p>
  </td>
  <td className="px-6 py-4">
- <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{emp.role}</p>
+ <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{emp.roleName}</p>
  <p className="text-xs text-[#71717a] dark:text-gray-400 flex items-center gap-2 mt-0.5 tracking-[0.04em]"><Briefcase className="w-3 h-3"/> {emp.departmentName}</p>
  {emp.reportsToName !== 'None' && (
  <p className="text-[10px] text-[#71717a] dark:text-gray-400/80 mt-1 uppercase tracking-wider font-semibold tracking-[0.04em]">Reports to: {emp.reportsToName}</p>
@@ -474,23 +475,16 @@ export default function Employees() {
  <div>
  <div className="flex justify-between items-center">
     <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("role", "Role")}</label>
-    <button type="button" onClick={() => setUseCustomRole(!useCustomRole)} className="text-[10px] text-primary hover:underline font-semibold">{useCustomRole ? 'Select Predefined' : 'Add Custom'}</button>
+    <span className="text-[10px] text-muted-foreground font-semibold">Manage in Roles page</span>
  </div>
- {useCustomRole ? (
-     <Input value={formData.role} onChange={e => setFormData({...formData, role: e.target.value})} placeholder="Custom Role" className="mt-1" />
- ) : (
      <select 
      value={formData.role} 
      onChange={e => setFormData({...formData, role: e.target.value})} 
      className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground"
      >
      <option value="">Select Role...</option>
-     {predefinedRoles.map(r => <option key={r.value} value={r.label}>{r.label}</option>)}
-     <optgroup label="Custom Roles">
-        {roleRecords.map(r => <option key={r.id} value={r.name}>{r.name}</option>)}
-     </optgroup>
+        {roleRecords.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
      </select>
- )}
  </div>
  </div>
  <div>

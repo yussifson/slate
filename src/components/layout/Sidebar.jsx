@@ -71,7 +71,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  const [showAvatarDialog, setShowAvatarDialog] = useState(false);
 
  const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(user?.role);
-  const [rolePermissions, setRolePermissions] = useState(null);
+  const [rolePermissions, setRolePermissions] = useState(isAdmin ? null : undefined);
 
   useEffect(() => {
     let active = true;
@@ -93,7 +93,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
             if(active) setRolePermissions([]); // No role assigned = no access
           }
         } else {
-          if(active) setRolePermissions(null); // Not an employee record, fallback to default access
+          if(active) setRolePermissions([]); // Not an employee record = no access (strict fallback)
         }
       } catch (e) { console.error(e); }
     };
@@ -103,7 +103,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
   // Filter function
   const filterByRole = (navItems) => {
-    if (!rolePermissions) return navItems; // No filtering needed
+    if (rolePermissions === undefined) return []; // Still loading, show nothing to prevent flashing
+    if (rolePermissions === null) return navItems; // Admin or unfiltered access
+    
     return navItems.filter(item => {
       // Always allow main dashboard
       if (item.path === '/') return true;

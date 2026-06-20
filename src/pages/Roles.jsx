@@ -135,15 +135,19 @@ export default function RoleManagementSettings() {
     if (source.droppableId === destination.droppableId) return;
 
     if (destination.droppableId === 'assigned') {
-      // Add permission
-      await powerSync.execute('INSERT INTO platform_role_permissions (id, company_id, role_id, feature_path, can_view, can_edit) VALUES (uuid(), ?, ?, ?, 1, 1)', 
-        [companyId, activeRole.id, draggableId]);
+      // Optimistic Update
+      const newPerm = { id: crypto.randomUUID(), company_id: companyId, role_id: activeRole.id, feature_path: draggableId, can_view: 1, can_edit: 1 };
+      setPermissions(prev => [...prev, newPerm]);
+      // DB operation
+      await powerSync.execute('INSERT INTO platform_role_permissions (id, company_id, role_id, feature_path, can_view, can_edit) VALUES (?, ?, ?, ?, 1, 1)', 
+        [newPerm.id, companyId, activeRole.id, draggableId]);
     } else {
-      // Remove permission
+      // Optimistic Update
+      setPermissions(prev => prev.filter(p => !(p.role_id === activeRole.id && p.feature_path === draggableId)));
+      // DB operation
       await powerSync.execute('DELETE FROM platform_role_permissions WHERE role_id=? AND feature_path=?', 
         [activeRole.id, draggableId]);
     }
-    fetchPermissions();
   };
 
   return (
