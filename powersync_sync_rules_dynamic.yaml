@@ -9,3 +9,14 @@ bucket_definitions:
       - SELECT * FROM module_definitions WHERE company_id = (SELECT company_id FROM profiles WHERE id = request.user_id())
       - SELECT * FROM field_definitions WHERE company_id = (SELECT company_id FROM profiles WHERE id = request.user_id())
       - SELECT * FROM dynamic_records WHERE company_id = (SELECT company_id FROM profiles WHERE id = request.user_id())
+      
+      # Intelligence & OrbitBuild Registry
+      - SELECT * FROM engine_accuracy WHERE workspace_id = (SELECT company_id FROM profiles WHERE id = request.user_id())
+      - SELECT * FROM intelligence_runs WHERE company_id = (SELECT company_id FROM profiles WHERE id = request.user_id())
+      - SELECT * FROM workspace_insights WHERE company_id = (SELECT company_id FROM profiles WHERE id = request.user_id())
+      - SELECT * FROM insight_feedback WHERE workspace_id = (SELECT company_id FROM profiles WHERE id = request.user_id())
+      - SELECT * FROM component_registry
+      - SELECT * FROM industry_templates
+      - SELECT * FROM workspace_modules WHERE workspace_id = (SELECT company_id FROM profiles WHERE id = request.user_id())
+      - SELECT * FROM marketplace_review_requests WHERE submitted_by = (SELECT company_id FROM profiles WHERE id = request.user_id())
+
