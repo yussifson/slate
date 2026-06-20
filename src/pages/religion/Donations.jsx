@@ -15,19 +15,30 @@ import { Link} from 'react-router-dom';
 import { useCompanyId} from "@/hooks/useCompanyId";
 import { CreditCard} from "lucide-react";
 
+import { usePowerSync } from '@powersync/react';
+
 export default function Donations() {
  const { t} = useTranslation();
  const companyId = useCompanyId();
  const { processPayment, isProcessing} = usePayment();
- const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('donation');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+ const powerSync = usePowerSync();
 
- const donations = dbRecords.map(r => ({
- id: r.id,
- status: r.status || 'Active',
- ...r.data
-}));
+ const [donations, setDonations] = useState([]);
+ const [isDbLoading, setIsDbLoading] = useState(true);
+
+ useEffect(() => {
+   let active = true;
+   const fetchDonations = async () => {
+     setIsDbLoading(true);
+     try {
+       const res = await powerSync.execute('SELECT * FROM univ_religion_donations WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+       if(active) setDonations(res.rows._array || Array.from(res.rows));
+     } catch(e){}
+     setIsDbLoading(false);
+   };
+   if (companyId) fetchDonations();
+   return () => { active = false; };
+ }, [companyId]);
 
  const [search, setSearch] = useState('');
  const [showModal, setShowModal] = useState(false);
@@ -65,7 +76,7 @@ Respond ONLY with a raw JSON object containing:
 
  // Form State
  const [formData, setFormData] = useState({
- member: '',
+ member_name: '',
  type: 'Donation',
  amount: 100,
  method: 'Mobile Money'
@@ -79,7 +90,7 @@ Respond ONLY with a raw JSON object containing:
 };
 
  const handleCreateDonation = async () => {
- if (!formData.member.trim() || formData.amount <= 0) {
+ if (!formData.member_name?.trim() || formData.amount <= 0) {
  return toast.error("Please enter a donor name and positive amount");
 }
 
@@ -87,62 +98,51 @@ Respond ONLY with a raw JSON object containing:
  const paymentResult = await processPayment({
  amount: parseFloat(formData.amount),
  currency: 'USD',
- description: `${formData.type} from ${formData.member}`,
- customerName: formData.member
+ description: `${formData.type} from ${formData.member_name}`,
+ customerName: formData.member_name
 });
 
  if (paymentResult.success) {
- const trxId = `TRX-${Math.floor(1000 + Math.random() * 9000)}`;
- const payload = {
- trxId,
- member: formData.member,
- type: formData.type,
- amount: parseFloat(formData.amount) || 0,
- method: formData.method,
- date: new Date().toISOString().split('T')[0]
+       if (editRecord) {
+         await powerSync.execute(`UPDATE univ_religion_donations SET member_name=?, amount=?, type=? WHERE id=?`, 
+           [formData.member_name, parseFloat(formData.amount) || 0, formData.type, editRecord.id]
+         );
+         toast.success('Donation updated successfully!');
+       } else {
+         await powerSync.execute(`INSERT INTO univ_religion_donations (id, created_at, company_id, member_name, amount, type, status) VALUES (abs(random()), datetime('now'), ?, ?, ?, ?, 'Completed')`, 
+           [companyId, formData.member_name, parseFloat(formData.amount) || 0, formData.type]
+         );
+         toast.success('Donation processed successfully!');
+       }
+       setShowModal(false);
+       setEditRecord(null);
+       setFormData({ member_name: '', type: 'Donation', amount: 100, method: 'Mobile Money'});
+       
+       const res = await powerSync.execute('SELECT * FROM univ_religion_donations WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+       setDonations(res.rows._array || Array.from(res.rows));
+     } else {
+       toast.error(paymentResult.error || 'Payment failed');
+     }
+   } catch (err) {
+     toast.error('Failed to process donation: ' + err.message);
+   }
 };
 
- mutateRecord.mutate({
- ...(editRecord ? { id: editRecord.id} : {}),
- recordType: 'donation',
- payload,
- status: 'active',
- searchText: `${trxId} ${formData.member} ${formData.type}`
-}, {
- onSuccess: () => {
- toast.success('Giving transaction logged successfully!');
- setShowModal(false);
- setEditRecord(null);
- setFormData({ member: '', type: 'Donation', amount: 100, method: 'Mobile Money'});
-},
- onError: (err) => {
- toast.error('Failed to log giving: ' + err.message);
-}
-});
-}
-} catch (err) {
- toast.error('Payment processing failed: ' + err.message);
-}
+ const handleDeleteDonation = async () => {
+   if (!deleteTargetId) return;
+   try {
+     await powerSync.execute(`DELETE FROM univ_religion_donations WHERE id=?`, [deleteTargetId]);
+     toast.success('Record removed successfully!');
+     setDeleteTargetId(null);
+     setDonations(donations.filter(d => d.id !== deleteTargetId));
+   } catch (err) {
+     toast.error('Failed to remove record: ' + err.message);
+   }
 };
 
- const handleDeleteDonation = () => {
- if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'donation'}, {
- onSuccess: () => {
- toast.success('Giving record retracted successfully!');
- setDeleteTargetId(null);
-},
- onError: (err) => {
- toast.error('Failed to retract record: ' + err.message);
- setDeleteTargetId(null);
-}
-});
-};
-
- const filtered = donations.filter(item =>
- item.member?.toLowerCase().includes(search.toLowerCase()) ||
- item.trxId?.toLowerCase().includes(search.toLowerCase()) ||
- item.type?.toLowerCase().includes(search.toLowerCase())
+ const filtered = donations.filter(d =>
+ d.member_name?.toLowerCase().includes(search.toLowerCase()) ||
+ d.type?.toLowerCase().includes(search.toLowerCase())
  );
 
  const totalDonations = donations.filter(item => item.type === 'Donation').reduce((acc, c) => acc + (c.amount || 0), 0);
@@ -151,8 +151,8 @@ Respond ONLY with a raw JSON object containing:
 
  // Lapsed Donor Logic
  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
- const activeDonors = new Set(donations.filter(d => d.date >= thirtyDaysAgo).map(d => d.member));
- const allDonors = new Set(donations.map(d => d.member));
+ const activeDonors = new Set(donations.filter(d => d.created_at >= thirtyDaysAgo).map(d => d.member_name));
+ const allDonors = new Set(donations.map(d => d.member_name));
  const lapsedDonors = Array.from(allDonors).filter(donor => !activeDonors.has(donor));
 
  // Chart Data
@@ -173,7 +173,7 @@ Respond ONLY with a raw JSON object containing:
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("manage_religion_financial_contri", "Manage religion financial contributions")}</p>
  </div>
  <div className="flex gap-3">
- <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
+ <Button onClick={() => { setEditRecord(null); setFormData({ member_name: '', type: 'Donation', amount: 100, method: 'Mobile Money' }); setShowModal(true); }} className="gap-2 bg-primary hover:bg-primary/90 text-white">
  <Plus className="w-4 h-4" /> {t("record_giving", "Record Giving")}
  </Button>
  </div>
@@ -351,12 +351,12 @@ Respond ONLY with a raw JSON object containing:
  </h2>
  <div className="space-y-3">
  <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("donor_member_name", "Donor/Member Name")}</label>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 block mb-1.5 uppercase tracking-[0.04em]">{t("donor_name", "Donor Name")}</label>
  <Input
- value={formData.member}
- onChange={e => setFormData({ ...formData, member: e.target.value})}
+ value={formData.member_name}
+ onChange={e => setFormData({ ...formData, member_name: e.target.value})}
  className="mt-1"
- placeholder="e.g. John Doe or Anonymous"
+ placeholder="e.g. John Doe"
  />
  </div>
  <div className="grid grid-cols-2 gap-4">

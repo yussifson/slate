@@ -11,17 +11,30 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
 import { Link} from 'react-router-dom';
 
+import { usePowerSync } from '@powersync/react';
+import { useCompanyId } from '@/hooks/useCompanyId';
+
 export default function Volunteers() {
  const { t} = useTranslation();
- const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('volunteer');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+ const companyId = useCompanyId();
+ const powerSync = usePowerSync();
 
- const volunteers = dbRecords.map(r => ({
- id: r.id,
- status: r.status || 'Active',
- ...r.data
-}));
+ const [volunteers, setVolunteers] = useState([]);
+ const [isDbLoading, setIsDbLoading] = useState(true);
+
+ useEffect(() => {
+   let active = true;
+   const fetchVolunteers = async () => {
+     setIsDbLoading(true);
+     try {
+       const res = await powerSync.execute('SELECT * FROM univ_religion_volunteers WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+       if(active) setVolunteers(res.rows._array || Array.from(res.rows));
+     } catch(e){}
+     setIsDbLoading(false);
+   };
+   if (companyId) fetchVolunteers();
+   return () => { active = false; };
+ }, [companyId]);
 
  const [search, setSearch] = useState('');
  const [showModal, setShowModal] = useState(false);
@@ -32,7 +45,7 @@ export default function Volunteers() {
  // Form State
  const [formData, setFormData] = useState({
  name: '',
- group: 'Ushers',
+ group_name: 'Ushers',
  role: 'Usher',
  availability: 'Sundays',
  nextService: new Date().toISOString().split('T')[0]
@@ -45,50 +58,44 @@ export default function Volunteers() {
  setShowModal(true);
 };
 
- const handleCreateVolunteer = () => {
+ const handleCreateVolunteer = async () => {
  if (!formData.name.trim() || !formData.role.trim()) {
- return toast.error("Please enter volunteer name and role");
-}
+   return toast.error("Please enter volunteer name and role");
+ }
 
- const payload = {
- name: formData.name,
- group: formData.group,
- role: formData.role,
- availability: formData.availability,
- nextService: formData.nextService
+ try {
+   if (editRecord) {
+     await powerSync.execute(`UPDATE univ_religion_volunteers SET name=?, group_name=?, role=?, availability=?, next_service=? WHERE id=?`, 
+       [formData.name, formData.group_name, formData.role, formData.availability, formData.nextService, editRecord.id]
+     );
+     toast.success('Volunteer updated successfully!');
+   } else {
+     await powerSync.execute(`INSERT INTO univ_religion_volunteers (id, created_at, company_id, name, group_name, role, availability, next_service, status) VALUES (gen_random_uuid(), NOW(), ?, ?, ?, ?, ?, ?, 'Active')`, 
+       [companyId, formData.name, formData.group_name, formData.role, formData.availability, formData.nextService]
+     );
+     toast.success('Volunteer scheduled successfully!');
+   }
+   setShowModal(false);
+   setEditRecord(null);
+   setFormData({ name: '', group_name: 'Ushers', role: 'Usher', availability: 'Sundays', nextService: new Date().toISOString().split('T')[0]});
+   
+   const res = await powerSync.execute('SELECT * FROM univ_religion_volunteers WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+   setVolunteers(res.rows._array || Array.from(res.rows));
+ } catch (err) {
+   toast.error('Failed to schedule volunteer: ' + err.message);
+ }
 };
 
- mutateRecord.mutate({
- ...(editRecord ? { id: editRecord.id} : {}),
- recordType: 'volunteer',
- payload,
- status: 'active',
- searchText: `${formData.name} ${formData.group} ${formData.role}`
-}, {
- onSuccess: () => {
- toast.success('Volunteer scheduled successfully!');
- setShowModal(false);
- setEditRecord(null);
- setFormData({ name: '', group: 'Ushers', role: 'Usher', availability: 'Sundays', nextService: new Date().toISOString().split('T')[0]});
-},
- onError: (err) => {
- toast.error('Failed to schedule volunteer: ' + err.message);
-}
-});
-};
-
- const handleDeleteVolunteer = () => {
+ const handleDeleteVolunteer = async () => {
  if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'volunteer'}, {
- onSuccess: () => {
- toast.success('Volunteer removed from schedule successfully!');
- setDeleteTargetId(null);
-},
- onError: (err) => {
- toast.error('Failed to remove volunteer: ' + err.message);
- setDeleteTargetId(null);
-}
-});
+ try {
+   await powerSync.execute(`DELETE FROM univ_religion_volunteers WHERE id=?`, [deleteTargetId]);
+   toast.success('Volunteer removed from schedule successfully!');
+   setDeleteTargetId(null);
+   setVolunteers(volunteers.filter(v => v.id !== deleteTargetId));
+ } catch (err) {
+   toast.error('Failed to remove volunteer: ' + err.message);
+ }
 };
 
  const handleAutoSchedule = async () => {
@@ -102,29 +109,28 @@ export default function Volunteers() {
        return d.toISOString().split('T')[0];
      });
 
-     const prompt = `You are an AI Volunteer Coordinator for a church. Here is the current roster of volunteers:
-${JSON.stringify(volunteers.map(v => ({name: v.name, group: v.group, role: v.role, availability: v.availability})))}
+     const currentSchedule = `You are an AI Volunteer Coordinator for a church. Here is the current roster of volunteers:
+${JSON.stringify(volunteers.map(v => ({name: v.name, group: v.group_name, role: v.role, availability: v.availability})))}
 
 The upcoming 4 service dates are: ${nextSundays.join(', ')}.
 Create a balanced schedule. Do not double-book a person on the same date. Rotate volunteers fairly to prevent burnout.
-Respond ONLY with a JSON array of objects (no markdown blocks). Each object must have exactly these fields: "name", "group", "role", "availability", "nextService".`;
+Respond ONLY with a JSON object where keys are volunteer names and values are objects containing "nextService" (the date).`;
 
-     const rawResponse = await generateText(prompt);
+     const rawResponse = await generateText(currentSchedule);
      const cleanJsonStr = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
      const assignments = JSON.parse(cleanJsonStr);
 
-     let createdCount = 0;
-     for (const assignment of assignments) {
-       mutateRecord.mutate({
-         recordType: 'volunteer',
-         payload: assignment,
-         status: 'active',
-         searchText: `${assignment.name} ${assignment.group} ${assignment.role}`
-       });
-       createdCount++;
+     for (const assign of Object.entries(assignments)) {
+       const [volName, assignment] = assign;
+       const volunteerToUpdate = volunteers.find(v => v.name === volName);
+       if (volunteerToUpdate) {
+         await powerSync.execute(`UPDATE univ_religion_volunteers SET next_service=? WHERE id=?`, [assignment.nextService, volunteerToUpdate.id]);
+       }
      }
-
-     toast.success(`AI scheduled ${createdCount} shifts optimally!`, { id: tId });
+     
+     const res = await powerSync.execute('SELECT * FROM univ_religion_volunteers WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+     setVolunteers(res.rows._array || Array.from(res.rows));
+     toast.success('Schedule optimized!', { id: tId });
    } catch (e) {
      toast.error('AI Scheduling failed. Please try again.', { id: tId });
    }
@@ -132,16 +138,16 @@ Respond ONLY with a JSON array of objects (no markdown blocks). Each object must
 
  const filtered = volunteers.filter(v =>
   v.name?.toLowerCase().includes(search.toLowerCase()) ||
-  v.group?.toLowerCase().includes(search.toLowerCase()) ||
+  v.group_name?.toLowerCase().includes(search.toLowerCase()) ||
   v.role?.toLowerCase().includes(search.toLowerCase())
  );
 
  // Highlight double bookings
  const bookingsByDate = {};
  filtered.forEach(v => {
-   if (!bookingsByDate[v.nextService]) bookingsByDate[v.nextService] = new Set();
-   if (bookingsByDate[v.nextService].has(v.name)) v.doubleBooked = true;
-   bookingsByDate[v.nextService].add(v.name);
+   if (!bookingsByDate[v.next_service]) bookingsByDate[v.next_service] = new Set();
+   if (bookingsByDate[v.next_service].has(v.name)) v.doubleBooked = true;
+   bookingsByDate[v.next_service].add(v.name);
  });
 
  return (
@@ -201,13 +207,13 @@ Respond ONLY with a JSON array of objects (no markdown blocks). Each object must
  <Users className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> <Link to="/religion/members" className="text-primary hover:underline">{v.name}</Link>
  </td>
  <td className="px-6 py-4">
- <Link to="/religion/groups" className="font-semibold text-primary/90 dark:text-primary/70 hover:underline block">{v.group}</Link>
+ <Link to="/religion/groups" className="font-semibold text-primary/90 dark:text-primary/70 hover:underline block">{v.group_name}</Link>
  <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{v.role}</p>
  </td>
  <td className="px-6 py-4 text-[#71717a] dark:text-gray-400 font-medium">{v.availability}</td>
  <td className="px-6 py-4 text-card-foreground font-semibold hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="flex items-center gap-2">
- <Calendar className="w-4 h-4 text-primary" /> {v.nextService}
+ <Calendar className="w-4 h-4 text-primary" /> {v.next_service}
  {v.doubleBooked && <AlertCircle className="w-4 h-4 text-red-500" title="Double Booked" />}
  </div>
  </td>
@@ -259,8 +265,8 @@ Respond ONLY with a JSON array of objects (no markdown blocks). Each object must
  <div>
  <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("group", "Group")}</label>
  <select
- value={formData.group}
- onChange={e => setFormData({ ...formData, group: e.target.value})}
+ value={formData.group_name}
+ onChange={e => setFormData({ ...formData, group_name: e.target.value})}
  className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground"
  >
  <option>{t("ushers", "Ushers")}</option>
@@ -329,7 +335,7 @@ Respond ONLY with a JSON array of objects (no markdown blocks). Each object must
  <p className="mt-1 text-base text-foreground font-semibold">
  {key === 'name' ? (
  <Link to="/religion/members" className="text-primary hover:underline">{String(value)}</Link>
- ) : key === 'group' ? (
+ ) : key === 'group_name' ? (
  <Link to="/religion/groups" className="text-primary hover:underline">{String(value)}</Link>
  ) : typeof value === 'object' ? JSON.stringify(value) : String(value)}
  </p>

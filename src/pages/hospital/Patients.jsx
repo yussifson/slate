@@ -1,9 +1,10 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, Search, Plus, UserPlus, Phone, Activity, Heart, Stethoscope, Trash2, Pencil, MoreVertical, FileText } from 'lucide-react';
+import { Users, Search, Plus, UserPlus, Phone, Activity, Heart, Stethoscope, Trash2, Pencil, MoreVertical, FileText, Calendar as CalendarIcon, Pill, BedDouble, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { toast } from 'react-hot-toast';
@@ -59,6 +60,36 @@ export default function Patients() {
         'SELECT * FROM univ_medical_history WHERE company_id = ? ORDER BY record_date DESC',
         [companyId]
       );
+      return res.rows._array;
+    },
+    enabled: !!companyId
+  });
+
+  const { data: patientAppointments = [] } = useQuery({
+    queryKey: ['univ_appointments', companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const res = await powerSync.execute('SELECT * FROM univ_appointments WHERE company_id = ?', [companyId]);
+      return res.rows._array;
+    },
+    enabled: !!companyId
+  });
+
+  const { data: patientAdmissions = [] } = useQuery({
+    queryKey: ['univ_admissions', companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const res = await powerSync.execute('SELECT * FROM univ_admissions WHERE company_id = ?', [companyId]);
+      return res.rows._array;
+    },
+    enabled: !!companyId
+  });
+
+  const { data: patientPrescriptions = [] } = useQuery({
+    queryKey: ['univ_prescriptions', companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const res = await powerSync.execute('SELECT * FROM univ_prescriptions WHERE company_id = ?', [companyId]);
       return res.rows._array;
     },
     enabled: !!companyId
@@ -429,7 +460,7 @@ Return ONLY the summary in markdown format.`;
       
       {/* View Modal */}
       <Sheet open={!!viewPatient} onOpenChange={(open) => !open && setViewPatient(null)}>
-        <SheetContent className="overflow-y-auto w-full sm:max-w-xl">
+        <SheetContent className="overflow-y-auto w-full sm:max-w-2xl">
           <SheetHeader>
             <SheetTitle>Patient File: {viewPatient?.first_name} {viewPatient?.last_name}</SheetTitle>
             <div className="flex items-center justify-between">
@@ -450,44 +481,76 @@ Return ONLY the summary in markdown format.`;
                 <div><h3 className="text-sm text-gray-500">Contact</h3><p className="font-medium">{viewPatient.phone}</p><p className="text-sm">{viewPatient.email}</p></div>
                 <div><h3 className="text-sm text-gray-500">Status</h3><span className={`text-xs font-semibold px-2 py-1 rounded-full ${statusColors[viewPatient.status] || 'bg-slate-100'}`}>{viewPatient.status}</span></div>
               </div>
-              <div className="border-t pt-4">
-                <h3 className="text-lg font-semibold mb-4">Medical History (EHR)</h3>
+              
+              <Tabs defaultValue="clinical" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 mb-4">
+                  <TabsTrigger value="clinical">Clinical Notes</TabsTrigger>
+                  <TabsTrigger value="timeline">EHR Timeline</TabsTrigger>
+                </TabsList>
                 
-                {aiSummary && (
-                  <div className="mb-6 p-4 bg-primary/5 border border-primary/20 rounded-xl">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Bot className="w-5 h-5 text-primary" />
-                      <h4 className="font-semibold text-primary">AI Clinical Summary</h4>
+                <TabsContent value="clinical" className="space-y-4">
+                  {aiSummary && (
+                    <div className="mb-6 p-4 bg-primary/5 border border-primary/20 rounded-xl">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Bot className="w-5 h-5 text-primary" />
+                        <h4 className="font-semibold text-primary">AI Clinical Summary</h4>
+                      </div>
+                      <div className="text-sm prose prose-sm dark:prose-invert max-w-none">
+                        {aiSummary}
+                      </div>
                     </div>
-                    <div className="text-sm prose prose-sm dark:prose-invert max-w-none">
-                      {aiSummary}
-                    </div>
+                  )}
+                  <div className="space-y-4">
+                    {medicalHistory.filter(m => m.patient_id === viewPatient.id).length === 0 && <p className="text-sm text-gray-500">No medical history records found.</p>}
+                    {medicalHistory.filter(m => m.patient_id === viewPatient.id).map(m => (
+                      <div key={m.id} className="bg-muted/30 p-4 rounded-xl border border-border">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="font-semibold text-sm">{new Date(m.record_date).toLocaleString()}</span>
+                        </div>
+                        <div className="grid grid-cols-4 gap-2 mb-3 text-xs">
+                          <div className="bg-card p-1.5 rounded border text-center">BP: {m.vitals_bp || '-'}</div>
+                          <div className="bg-card p-1.5 rounded border text-center">HR: {m.vitals_hr || '-'}</div>
+                          <div className="bg-card p-1.5 rounded border text-center">Temp: {m.vitals_temp || '-'}</div>
+                          <div className="bg-card p-1.5 rounded border text-center">Wt: {m.vitals_weight || '-'}</div>
+                        </div>
+                        <div className="space-y-2 text-sm">
+                          <p><strong>S:</strong> {m.soap_subjective || 'None'}</p>
+                          <p><strong>O:</strong> {m.soap_objective || 'None'}</p>
+                          <p><strong>A:</strong> {m.soap_assessment || 'None'}</p>
+                          <p><strong>P:</strong> {m.soap_plan || 'None'}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                )}
-
-                <div className="space-y-4">
-                  {medicalHistory.filter(m => m.patient_id === viewPatient.id).length === 0 && <p className="text-sm text-gray-500">No medical history records found.</p>}
-                  {medicalHistory.filter(m => m.patient_id === viewPatient.id).map(m => (
-                    <div key={m.id} className="bg-muted/30 p-4 rounded-xl border border-border">
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="font-semibold text-sm">{new Date(m.record_date).toLocaleString()}</span>
+                </TabsContent>
+                
+                <TabsContent value="timeline">
+                  <div className="space-y-4 border-l-2 border-primary/20 ml-2 pl-4 py-2 relative">
+                    {/* Combine and sort timeline events */}
+                    {[
+                      ...patientAppointments.filter(a => a.client_name === `${viewPatient.first_name} ${viewPatient.last_name}`).map(a => ({ type: 'Appointment', date: new Date(a.date), icon: <CalendarIcon className="w-4 h-4 text-blue-500"/>, title: `${a.type} Appointment`, desc: `Dr. ${a.doctor_id} at ${a.time} - ${a.status}` })),
+                      ...patientAdmissions.filter(a => a.patient_id === viewPatient.id).map(a => ({ type: 'Admission', date: new Date(a.admission_date), icon: <BedDouble className="w-4 h-4 text-red-500"/>, title: `Admitted to Ward`, desc: `Reason: ${a.reason_for_admission} - Status: ${a.status}` })),
+                      ...patientPrescriptions.filter(p => p.patient_id === viewPatient.id).map(p => ({ type: 'Prescription', date: new Date(p.prescription_date), icon: <Pill className="w-4 h-4 text-green-500"/>, title: `Prescription Issued`, desc: `${p.dosage} ${p.frequency} for ${p.duration}` }))
+                    ].sort((a, b) => b.date - a.date).map((event, i) => (
+                      <div key={i} className="relative">
+                        <div className="absolute -left-[27px] top-1 bg-background p-1 rounded-full border border-primary/20">
+                          {event.icon}
+                        </div>
+                        <div className="bg-card p-3 rounded-xl border border-primary/10 shadow-sm">
+                          <div className="flex justify-between items-start mb-1">
+                            <h4 className="font-semibold text-sm">{event.title}</h4>
+                            <span className="text-xs text-muted-foreground">{event.date.toLocaleDateString()}</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{event.desc}</p>
+                        </div>
                       </div>
-                      <div className="grid grid-cols-4 gap-2 mb-3 text-xs">
-                        <div className="bg-card p-1.5 rounded border text-center">BP: {m.vitals_bp || '-'}</div>
-                        <div className="bg-card p-1.5 rounded border text-center">HR: {m.vitals_hr || '-'}</div>
-                        <div className="bg-card p-1.5 rounded border text-center">Temp: {m.vitals_temp || '-'}</div>
-                        <div className="bg-card p-1.5 rounded border text-center">Wt: {m.vitals_weight || '-'}</div>
-                      </div>
-                      <div className="space-y-2 text-sm">
-                        <p><strong>S:</strong> {m.soap_subjective || 'None'}</p>
-                        <p><strong>O:</strong> {m.soap_objective || 'None'}</p>
-                        <p><strong>A:</strong> {m.soap_assessment || 'None'}</p>
-                        <p><strong>P:</strong> {m.soap_plan || 'None'}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+                    ))}
+                    {[...patientAppointments, ...patientAdmissions, ...patientPrescriptions].length === 0 && (
+                      <p className="text-sm text-muted-foreground ml-2">No timeline events found.</p>
+                    )}
+                  </div>
+                </TabsContent>
+              </Tabs>
             </div>
           )}
         </SheetContent>

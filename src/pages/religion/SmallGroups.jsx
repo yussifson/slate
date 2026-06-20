@@ -11,17 +11,30 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
 import { Link} from 'react-router-dom';
 
+import { usePowerSync } from '@powersync/react';
+import { useCompanyId } from '@/hooks/useCompanyId';
+
 export default function SmallGroups() {
  const { t} = useTranslation();
- const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('group');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+ const companyId = useCompanyId();
+ const powerSync = usePowerSync();
 
- const groups = dbRecords.map(r => ({
- id: r.id,
- status: r.status || 'Active',
- ...r.data
-}));
+ const [groups, setGroups] = useState([]);
+ const [isDbLoading, setIsDbLoading] = useState(true);
+
+ useEffect(() => {
+   let active = true;
+   const fetchGroups = async () => {
+     setIsDbLoading(true);
+     try {
+       const res = await powerSync.execute('SELECT * FROM univ_religion_small_groups WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+       if(active) setGroups(res.rows._array || Array.from(res.rows));
+     } catch(e){}
+     setIsDbLoading(false);
+   };
+   if (companyId) fetchGroups();
+   return () => { active = false; };
+ }, [companyId]);
 
  const [search, setSearch] = useState('');
  const [showModal, setShowModal] = useState(false);
@@ -45,50 +58,44 @@ export default function SmallGroups() {
  setShowModal(true);
 };
 
- const handleCreateGroup = () => {
+ const handleCreateGroup = async () => {
  if (!formData.name.trim() || !formData.leader.trim() || !formData.location.trim()) {
- return toast.error("Please enter a group name, leader, and location address");
-}
+   return toast.error("Please enter a group name, leader, and location address");
+ }
 
- const payload = {
- name: formData.name,
- leader: formData.leader,
- location: formData.location,
- time: formData.time,
- members: parseInt(formData.members) || 0
+ try {
+   if (editRecord) {
+     await powerSync.execute(`UPDATE univ_religion_small_groups SET name=?, leader=?, location=?, time=?, members=? WHERE id=?`, 
+       [formData.name, formData.leader, formData.location, formData.time, parseInt(formData.members) || 0, editRecord.id]
+     );
+     toast.success('Cell group updated successfully!');
+   } else {
+     await powerSync.execute(`INSERT INTO univ_religion_small_groups (id, created_at, company_id, name, leader, location, time, members, status) VALUES (gen_random_uuid(), NOW(), ?, ?, ?, ?, ?, ?, 'Active')`, 
+       [companyId, formData.name, formData.leader, formData.location, formData.time, parseInt(formData.members) || 0]
+     );
+     toast.success('Cell group configured successfully!');
+   }
+   setShowModal(false);
+   setEditRecord(null);
+   setFormData({ name: '', leader: '', location: '', time: 'Wednesdays, 7:00 PM', members: 5});
+   
+   const res = await powerSync.execute('SELECT * FROM univ_religion_small_groups WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+   setGroups(res.rows._array || Array.from(res.rows));
+ } catch (err) {
+   toast.error('Failed to configure small group: ' + err.message);
+ }
 };
 
- mutateRecord.mutate({
- ...(editRecord ? { id: editRecord.id} : {}),
- recordType: 'group',
- payload,
- status: 'active',
- searchText: `${formData.name} ${formData.leader} ${formData.location}`
-}, {
- onSuccess: () => {
- toast.success('Cell group configured successfully!');
- setShowModal(false);
- setEditRecord(null);
- setFormData({ name: '', leader: '', location: '', time: 'Wednesdays, 7:00 PM', members: 5});
-},
- onError: (err) => {
- toast.error('Failed to configure small group: ' + err.message);
-}
-});
-};
-
- const handleDeleteGroup = () => {
+ const handleDeleteGroup = async () => {
  if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'group'}, {
- onSuccess: () => {
- toast.success('Cell group removed successfully!');
- setDeleteTargetId(null);
-},
- onError: (err) => {
- toast.error('Failed to remove cell group: ' + err.message);
- setDeleteTargetId(null);
-}
-});
+ try {
+   await powerSync.execute(`DELETE FROM univ_religion_small_groups WHERE id=?`, [deleteTargetId]);
+   toast.success('Cell group removed successfully!');
+   setDeleteTargetId(null);
+   setGroups(groups.filter(g => g.id !== deleteTargetId));
+ } catch (err) {
+   toast.error('Failed to remove cell group: ' + err.message);
+ }
 };
 
  const filtered = groups.filter(g =>

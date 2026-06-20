@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Receipt, Search, Plus, CheckCircle2, AlertCircle, FileText, Trash2, MoreVertical, Send } from 'lucide-react';
+import { Receipt, Search, Plus, CheckCircle2, AlertCircle, FileText, Trash2, MoreVertical, Send, Wand2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
@@ -48,6 +48,21 @@ export default function HospitalBilling() {
     enabled: !!companyId
   });
 
+  const { data: patientPrescriptions = [] } = useQuery({
+    queryKey: ['univ_prescriptions_unbilled', companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const res = await powerSync.execute(`
+        SELECT p.*, ph.drug_name, ph.unit_price 
+        FROM univ_prescriptions p 
+        LEFT JOIN univ_pharmacy ph ON p.medication = ph.id 
+        WHERE p.company_id = ? AND p.status = 'Completed'
+      `, [companyId]);
+      return res.rows._array;
+    },
+    enabled: !!companyId
+  });
+
   const { user } = useAuth();
   const isProOrAbove = user?.role === 'system_admin' || user?.subscription_plan === 'Pro' || user?.subscription_plan === 'Enterprise';
 
@@ -83,6 +98,29 @@ export default function HospitalBilling() {
     insurance_covered: '',
     due_date: ''
   });
+
+  const handleAutoFill = () => {
+    if (!formData.patient_id) return toast.error("Please select a patient first.");
+    
+    // Find completed prescriptions for this patient
+    const rx = patientPrescriptions.filter(p => p.patient_id === formData.patient_id);
+    
+    if (rx.length === 0) {
+      return toast.error("No unbilled completed prescriptions found for this patient.");
+    }
+    
+    const services = rx.map(p => `Prescription: ${p.drug_name || 'Medication'}`).join(', ');
+    const totalCost = rx.reduce((sum, p) => sum + (p.unit_price || 15), 0); // fallback price
+    
+    setFormData(prev => ({
+      ...prev,
+      service_provided: services,
+      total_cost: totalCost.toString(),
+      insurance_covered: (totalCost * 0.8).toFixed(2), // Simulate 80% coverage
+    }));
+    
+    toast.success("Auto-filled from patient records!");
+  };
 
   const createInvoiceMutation = useMutation({
     mutationFn: async (payload) => {
@@ -266,12 +304,17 @@ export default function HospitalBilling() {
           <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 shadow-xl">
             <h2 className="text-lg font-semibold text-card-foreground">Generate Medical Bill</h2>
             <div className="space-y-4">
-              <div>
-                <label className="text-xs font-semibold text-[#71717a] uppercase">Patient</label>
-                <select value={formData.patient_id} onChange={e => setFormData({ ...formData, patient_id: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-primary/40 bg-background px-3 py-2 text-sm">
-                  <option value="">-- Select Patient --</option>
-                  {patientsList.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                </select>
+              <div className="flex items-end gap-2">
+                <div className="flex-1">
+                  <label className="text-xs font-semibold text-[#71717a] uppercase">Patient</label>
+                  <select value={formData.patient_id} onChange={e => setFormData({ ...formData, patient_id: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-primary/40 bg-background px-3 py-2 text-sm">
+                    <option value="">-- Select Patient --</option>
+                    {patientsList.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                  </select>
+                </div>
+                <Button variant="outline" onClick={handleAutoFill} className="gap-2 text-primary border-primary/30 hover:bg-primary/10">
+                  <Wand2 className="w-4 h-4"/> Auto-Fill
+                </Button>
               </div>
               <div>
                 <label className="text-xs font-semibold text-[#71717a] uppercase">Service Provided</label>

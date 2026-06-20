@@ -14,19 +14,31 @@ import { useCompanyId} from "@/hooks/useCompanyId";
 import { MessageCircle, Bot, Sparkles} from "lucide-react";
 import { generateText } from '@/lib/cloudflareAI';
 
+import { usePowerSync } from '@powersync/react';
+import { useAuth } from '@/lib/AuthContext';
+
 export default function Members() {
  const { t} = useTranslation();
  const companyId = useCompanyId();
  const { notifyTeam} = useNotifications();
- const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('member');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+ const powerSync = usePowerSync();
 
- const members = dbRecords.map(r => ({
- id: r.id,
- status: r.status || 'Active',
- ...r.data
-}));
+ const [members, setMembers] = useState([]);
+ const [isDbLoading, setIsDbLoading] = useState(true);
+
+ useEffect(() => {
+   let active = true;
+   const fetchMembers = async () => {
+     setIsDbLoading(true);
+     try {
+       const res = await powerSync.execute('SELECT * FROM univ_religion_members WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+       if(active) setMembers(res.rows._array || Array.from(res.rows));
+     } catch(e){}
+     setIsDbLoading(false);
+   };
+   if (companyId) fetchMembers();
+   return () => { active = false; };
+ }, [companyId]);
 
  const [search, setSearch] = useState('');
  const [showModal, setShowModal] = useState(false);
@@ -43,7 +55,7 @@ export default function Members() {
      const prompt = `You are an AI Church Engagement assistant. Analyze this member and provide a "Risk of Leaving" score and a short, personalized pastoral action step:
 Name: ${member.name}
 Membership Type: ${member.type}
-Cell Group: ${member.group}
+Cell Group: ${member.group_name}
 Status: ${member.status}
 Keep it under 3 sentences and be encouraging but realistic.`;
      const response = await generateText(prompt);
@@ -60,7 +72,7 @@ Keep it under 3 sentences and be encouraging but realistic.`;
  name: '',
  phone: '',
  type: 'Full Member',
- group: 'None'
+ group_name: 'None'
 });
 
 
@@ -70,74 +82,61 @@ Keep it under 3 sentences and be encouraging but realistic.`;
  setShowModal(true);
 };
 
- const handleCreateMember = () => {
+ const handleCreateMember = async () => {
  if (!formData.name.trim() || !formData.phone.trim()) {
- return toast.error("Please enter a name and phone number");
-}
+  return toast.error("Please enter a name and phone number");
+ }
 
- const memberId = `MB-${Math.floor(1000 + Math.random() * 9000)}`;
-
- const payload = {
- memberId,
- name: formData.name,
- phone: formData.phone,
- type: formData.type,
- group: formData.group
+ try {
+   if (editRecord) {
+     await powerSync.execute(`UPDATE univ_religion_members SET name=?, phone=?, type=?, group_name=? WHERE id=?`, 
+       [formData.name, formData.phone, formData.type, formData.group_name, editRecord.id]
+     );
+     toast.success('Member updated successfully!');
+   } else {
+     const memberId = `MB-${Math.floor(1000 + Math.random() * 9000)}`;
+     await powerSync.execute(`INSERT INTO univ_religion_members (id, created_at, company_id, member_id, name, phone, type, group_name, status) VALUES (gen_random_uuid(), NOW(), ?, ?, ?, ?, ?, ?, 'Active')`, 
+       [companyId, memberId, formData.name, formData.phone, formData.type, formData.group_name]
+     );
+     toast.success('Member enrolled successfully!');
+   }
+   setShowModal(false);
+   setEditRecord(null);
+   setFormData({ name: '', phone: '', type: 'Full Member', group_name: 'None'});
+   
+   const res = await powerSync.execute('SELECT * FROM univ_religion_members WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+   setMembers(res.rows._array || Array.from(res.rows));
+ } catch (err) {
+   toast.error('Failed to save member: ' + err.message);
+ }
 };
 
- mutateRecord.mutate({
- ...(editRecord ? { id: editRecord.id} : {}),
- recordType: 'member',
- payload,
- status: 'active',
- searchText: `${memberId} ${formData.name} ${formData.group}`
-}, {
- onSuccess: () => {
- toast.success('Member enrolled successfully!');
- setShowModal(false);
- setEditRecord(null);
- setFormData({ name: '', phone: '', type: 'Full Member', group: 'None'});
-},
- onError: (err) => {
- toast.error('Failed to save member: ' + err.message);
-}
-});
+ const handleUpdateStatus = async (member, newStatus) => {
+ try {
+   await powerSync.execute(`UPDATE univ_religion_members SET status=? WHERE id=?`, [newStatus, member.id]);
+   toast.success(`Member status updated to ${newStatus}`);
+   const res = await powerSync.execute('SELECT * FROM univ_religion_members WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+   setMembers(res.rows._array || Array.from(res.rows));
+ } catch (err) {
+   toast.error('Failed to update status: ' + err.message);
+ }
 };
 
- const handleUpdateStatus = (member, newStatus) => {
- const updatedPayload = { ...member};
- delete updatedPayload.id;
-
- mutateRecord.mutate({
- id: member.id,
- recordType: 'member',
- payload: updatedPayload,
- status: newStatus,
- searchText: `${member.name} ${member.group}`
-}, {
- onSuccess: () => {
- toast.success(`Member status updated to ${newStatus}`);
-}
-});
-};
-
- const handleDeleteMember = () => {
+ const handleDeleteMember = async () => {
  if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'member'}, {
- onSuccess: () => {
- toast.success('Member removed successfully!');
- setDeleteTargetId(null);
-},
- onError: (err) => {
- toast.error('Failed to remove member: ' + err.message);
- setDeleteTargetId(null);
-}
-});
+ try {
+   await powerSync.execute(`DELETE FROM univ_religion_members WHERE id=?`, [deleteTargetId]);
+   toast.success('Member removed successfully!');
+   setDeleteTargetId(null);
+   setMembers(members.filter(m => m.id !== deleteTargetId));
+ } catch (err) {
+   toast.error('Failed to remove member: ' + err.message);
+ }
 };
 
  const filtered = members.filter(m =>
  m.name?.toLowerCase().includes(search.toLowerCase()) ||
- m.group?.toLowerCase().includes(search.toLowerCase())
+ m.group_name?.toLowerCase().includes(search.toLowerCase())
  );
 
  return (
@@ -207,11 +206,11 @@ Keep it under 3 sentences and be encouraging but realistic.`;
  <tr key={m.id} className="hover:bg-muted/50 transition-colors">
  <td className="px-6 py-4">
  <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{m.name}</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{m.memberId}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{m.member_id}</p>
  </td>
  <td className="px-6 py-4">
  <p className="text-card-foreground font-medium hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{m.type}</p>
- <Link to="/religion/small-groups" className="text-xs text-primary hover:underline tracking-[0.04em]">{m.group}</Link>
+ <p className="text-xs text-primary tracking-[0.04em]">{m.group_name}</p>
  </td>
  <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">
  <div className="flex items-center gap-2">
@@ -292,9 +291,6 @@ Keep it under 3 sentences and be encouraging but realistic.`;
  </select>
  </div>
  <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("cell_group", "Cell Group")}</label>
- <Input
- value={formData.group}
  onChange={e => setFormData({ ...formData, group: e.target.value})}
  className="mt-1"
  placeholder="e.g. Grace Cell"

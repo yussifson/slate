@@ -11,17 +11,30 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
 import { Link} from 'react-router-dom';
 
+import { usePowerSync } from '@powersync/react';
+import { useCompanyId } from '@/hooks/useCompanyId';
+
 export default function Sermons() {
  const { t} = useTranslation();
- const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('sermon');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+ const companyId = useCompanyId();
+ const powerSync = usePowerSync();
 
- const sermons = dbRecords.map(r => ({
- id: r.id,
- status: r.status || 'Active',
- ...r.data
-}));
+ const [sermons, setSermons] = useState([]);
+ const [isDbLoading, setIsDbLoading] = useState(true);
+
+ useEffect(() => {
+   let active = true;
+   const fetchSermons = async () => {
+     setIsDbLoading(true);
+     try {
+       const res = await powerSync.execute('SELECT * FROM univ_religion_sermons WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+       if(active) setSermons(res.rows._array || Array.from(res.rows));
+     } catch(e){}
+     setIsDbLoading(false);
+   };
+   if (companyId) fetchSermons();
+   return () => { active = false; };
+ }, [companyId]);
 
  const [search, setSearch] = useState('');
  const [showModal, setShowModal] = useState(false);
@@ -48,31 +61,19 @@ Respond with a JSON object with exactly these fields (no markdown blocks, just r
 }
 Title: ${viewRecord.title}
 Scripture: ${viewRecord.scripture}
-Preacher: ${viewRecord.preacher}`;
+Preacher: ${viewRecord.speaker}`;
    
    const rawResponse = await generateText(prompt);
    const cleanJsonStr = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
-   const sermonKit = JSON.parse(cleanJsonStr);
-   
-   // Save it back to the record
-   const payload = { ...viewRecord, sermonKit };
-   delete payload.id;
-   delete payload.status;
-   
-   mutateRecord.mutate({
-    id: viewRecord.id,
-    recordType: 'sermon',
-    payload,
-    status: viewRecord.status || 'Active',
-    searchText: `${viewRecord.title} ${viewRecord.preacher} ${viewRecord.series}`
-   }, {
-    onSuccess: () => {
-     toast.success('AI Sermon Kit generated and saved!', { id: tId });
-     setViewRecord({ ...viewRecord, sermonKit });
-    }
-   });
-  } catch (err) {
-   toast.error('Failed to generate sermon kit.', { id: tId });
+    const sermonKit = JSON.stringify(JSON.parse(cleanJsonStr));
+    
+    await powerSync.execute(`UPDATE univ_religion_sermons SET sermon_kit=? WHERE id=?`, [sermonKit, viewRecord.id]);
+    const res = await powerSync.execute('SELECT * FROM univ_religion_sermons WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+    setSermons(res.rows._array || Array.from(res.rows));
+    toast.success('AI Sermon Kit generated and saved!', { id: tId });
+    setViewRecord({ ...viewRecord, sermon_kit: sermonKit });
+   } catch (err) {
+    toast.error('Failed to generate sermon kit.', { id: tId });
   } finally {
    setIsGenerating(false);
   }
@@ -93,56 +94,49 @@ Preacher: ${viewRecord.preacher}`;
  setShowModal(true);
 };
 
- const handleCreateSermon = () => {
+ const handleCreateSermon = async () => {
  if (!formData.title.trim() || !formData.preacher.trim()) {
- return toast.error("Please enter a sermon title and preacher name");
-}
+   return toast.error("Please enter a sermon title and preacher name");
+ }
 
- const payload = {
- title: formData.title,
- preacher: formData.preacher,
- scripture: formData.scripture || 'Various Passages',
- series: formData.series,
- duration: formData.duration,
- date: new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric'})
+ try {
+   if (editRecord) {
+     await powerSync.execute(`UPDATE univ_religion_sermons SET title=?, speaker=?, scripture=?, series=?, duration=? WHERE id=?`, 
+       [formData.title, formData.preacher, formData.scripture || 'Various Passages', formData.series, formData.duration, editRecord.id]
+     );
+     toast.success('Sermon catalog updated successfully!');
+   } else {
+     await powerSync.execute(`INSERT INTO univ_religion_sermons (id, created_at, company_id, title, speaker, scripture, series, duration, status) VALUES (gen_random_uuid(), NOW(), ?, ?, ?, ?, ?, ?, 'Active')`, 
+       [companyId, formData.title, formData.preacher, formData.scripture || 'Various Passages', formData.series, formData.duration]
+     );
+     toast.success('Sermon cataloged successfully!');
+   }
+   setShowModal(false);
+   setEditRecord(null);
+   setFormData({ title: '', preacher: '', scripture: '', series: 'General', duration: '45:00'});
+   
+   const res = await powerSync.execute('SELECT * FROM univ_religion_sermons WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+   setSermons(res.rows._array || Array.from(res.rows));
+ } catch (err) {
+   toast.error('Failed to catalogue sermon: ' + err.message);
+ }
 };
 
- mutateRecord.mutate({
- ...(editRecord ? { id: editRecord.id} : {}),
- recordType: 'sermon',
- payload,
- status: 'active',
- searchText: `${formData.title} ${formData.preacher} ${formData.series}`
-}, {
- onSuccess: () => {
- toast.success('Sermon logged in library successfully!');
- setShowModal(false);
- setEditRecord(null);
- setFormData({ title: '', preacher: '', scripture: '', series: 'General', duration: '45:00'});
-},
- onError: (err) => {
- toast.error('Failed to log sermon: ' + err.message);
-}
-});
-};
-
- const handleDeleteSermon = () => {
+ const handleDeleteSermon = async () => {
  if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'sermon'}, {
- onSuccess: () => {
- toast.success('Sermon removed from library successfully!');
- setDeleteTargetId(null);
-},
- onError: (err) => {
- toast.error('Failed to remove sermon: ' + err.message);
- setDeleteTargetId(null);
-}
-});
+ try {
+   await powerSync.execute(`DELETE FROM univ_religion_sermons WHERE id=?`, [deleteTargetId]);
+   toast.success('Sermon unlisted successfully!');
+   setDeleteTargetId(null);
+   setSermons(sermons.filter(s => s.id !== deleteTargetId));
+ } catch (err) {
+   toast.error('Failed to unlist sermon: ' + err.message);
+ }
 };
 
  const filtered = sermons.filter(s =>
  s.title?.toLowerCase().includes(search.toLowerCase()) ||
- s.preacher?.toLowerCase().includes(search.toLowerCase()) ||
+ s.speaker?.toLowerCase().includes(search.toLowerCase()) ||
  s.series?.toLowerCase().includes(search.toLowerCase())
  );
 
@@ -205,7 +199,7 @@ Preacher: ${viewRecord.preacher}`;
  <div className="p-5">
  <span className="text-xs font-semibold uppercase tracking-wider text-primary dark:text-primary/70 mb-2 inline-block tracking-[0.04em]">{sermon.series}</span>
  <h3 className="text-lg font-semibold text-card-foreground mb-1 leading-tight hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{sermon.title}</h3>
- <p className="text-sm text-[#71717a] dark:text-gray-400 mb-4"><Link to="/religion/members" className="hover:underline text-primary">{sermon.preacher}</Link> • {sermon.date}</p>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mb-4"><Link to="/religion/members" className="hover:underline text-primary">{sermon.speaker}</Link> • {new Date(sermon.created_at).toLocaleDateString()}</p>
 
  <div className="flex items-center gap-2 bg-muted dark:bg-muted/30 p-2.5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 mb-4">
  <BookOpen className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
@@ -303,7 +297,7 @@ Preacher: ${viewRecord.preacher}`;
  <div key={key} className="border-b border-primary/40 pb-2">
  <p className="text-sm font-medium text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
  <p className="mt-1 text-base text-foreground font-semibold">
- {key === 'preacher' ? (
+ {key === 'speaker' ? (
  <Link to="/religion/members" className="text-primary hover:underline">{String(value)}</Link>
  ) : typeof value === 'object' ? JSON.stringify(value) : String(value)}
  </p>

@@ -11,17 +11,30 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
 import { Link} from 'react-router-dom';
 
+import { usePowerSync } from '@powersync/react';
+import { useCompanyId } from '@/hooks/useCompanyId';
+
 export default function Prayers() {
  const { t} = useTranslation();
- const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('prayer');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+ const companyId = useCompanyId();
+ const powerSync = usePowerSync();
 
- const prayers = dbRecords.map(r => ({
- id: r.id,
- status: r.status || 'Active',
- ...r.data
-}));
+ const [prayers, setPrayers] = useState([]);
+ const [isDbLoading, setIsDbLoading] = useState(true);
+
+ useEffect(() => {
+   let active = true;
+   const fetchPrayers = async () => {
+     setIsDbLoading(true);
+     try {
+       const res = await powerSync.execute('SELECT * FROM univ_religion_prayers WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+       if(active) setPrayers(res.rows._array || Array.from(res.rows));
+     } catch(e){}
+     setIsDbLoading(false);
+   };
+   if (companyId) fetchPrayers();
+   return () => { active = false; };
+ }, [companyId]);
 
  const [search, setSearch] = useState('');
  const [showModal, setShowModal] = useState(false);
@@ -42,72 +55,52 @@ export default function Prayers() {
  setShowModal(true);
 };
 
- const handleCreatePrayer = () => {
+ const handleCreatePrayer = async () => {
  if (!formData.request.trim()) {
- return toast.error("Please enter your prayer request details");
-}
+   return toast.error("Please enter your prayer request details");
+ }
 
- const payload = {
- name: formData.name.trim() || 'Anonymous',
- request: formData.request,
- prayersCount: 0,
- date: new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric'})
+ try {
+   if (editRecord) {
+     await powerSync.execute(`UPDATE univ_religion_prayers SET requestor=?, prayer=? WHERE id=?`, 
+       [formData.name.trim() || 'Anonymous', formData.request, editRecord.id]
+     );
+     toast.success('Prayer request updated successfully!');
+   } else {
+     await powerSync.execute(`INSERT INTO univ_religion_prayers (id, created_at, company_id, requestor, prayer, status) VALUES (gen_random_uuid(), NOW(), ?, ?, ?, 'Active')`, 
+       [companyId, formData.name.trim() || 'Anonymous', formData.request]
+     );
+     toast.success('Prayer request submitted successfully!');
+   }
+   setShowModal(false);
+   setEditRecord(null);
+   setFormData({ name: 'Anonymous', request: ''});
+   
+   const res = await powerSync.execute('SELECT * FROM univ_religion_prayers WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+   setPrayers(res.rows._array || Array.from(res.rows));
+ } catch (err) {
+   toast.error('Failed to submit request: ' + err.message);
+ }
 };
 
- mutateRecord.mutate({
- ...(editRecord ? { id: editRecord.id} : {}),
- recordType: 'prayer',
- payload,
- status: 'active',
- searchText: `${payload.name} ${formData.request}`
-}, {
- onSuccess: () => {
- toast.success('Prayer request submitted successfully!');
- setShowModal(false);
- setEditRecord(null);
- setFormData({ name: 'Anonymous', request: ''});
-},
- onError: (err) => {
- toast.error('Failed to submit request: ' + err.message);
-}
-});
+ const handleIncrementPrayers = async (prayer) => {
+   try {
+     await powerSync.execute(`UPDATE univ_religion_prayers SET prayersCount=coalesce(prayersCount, 0)+1 WHERE id=?`, [prayer.id]);
+     const res = await powerSync.execute('SELECT * FROM univ_religion_prayers WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+     setPrayers(res.rows._array || Array.from(res.rows));
+     toast.success('Interceded for this prayer request!');
+   } catch(e) { toast.error('Failed to update count'); }
 };
 
- const handleIncrementPrayers = (prayer) => {
- const updatedPayload = {
- ...prayer,
- prayersCount: (prayer.prayersCount || 0) + 1
-};
- delete updatedPayload.id;
-
- mutateRecord.mutate({
- id: prayer.id,
- recordType: 'prayer',
- payload: updatedPayload,
- status: prayer.status,
- searchText: `${prayer.name} ${prayer.request}`
-}, {
- onSuccess: () => {
- toast.success('Interceded for this prayer request!');
-}
-});
-};
-
- const handleMarkAnswered = (prayer) => {
- const updatedPayload = { ...prayer};
- delete updatedPayload.id;
-
- mutateRecord.mutate({
- id: prayer.id,
- recordType: 'prayer',
- payload: updatedPayload,
- status: 'Answered',
- searchText: `${prayer.name} ${prayer.request}`
-}, {
- onSuccess: () => {
- toast.success('Praise report! Marked as Answered.');
-}
-});
+ const handleMarkAnswered = async (prayer) => {
+ try {
+   await powerSync.execute(`UPDATE univ_religion_prayers SET status='Answered' WHERE id=?`, [prayer.id]);
+   toast.success('Praise God! Marked as answered.');
+   const res = await powerSync.execute('SELECT * FROM univ_religion_prayers WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+   setPrayers(res.rows._array || Array.from(res.rows));
+ } catch (err) {
+   toast.error('Failed to update status');
+ }
 };
 
  const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -128,21 +121,10 @@ Prayer Request: "${prayer.request}"`;
      const cleanJsonStr = rawSentiment.replace(/```json/g, '').replace(/```/g, '').trim();
      const analysis = JSON.parse(cleanJsonStr);
      
-     const updatedPayload = { ...prayer, sentiment: analysis.urgency, aiAnalysis: analysis };
-     delete updatedPayload.id;
-     delete updatedPayload.status;
-
-     mutateRecord.mutate({
-       id: prayer.id,
-       recordType: 'prayer',
-       payload: updatedPayload,
-       status: prayer.status,
-       searchText: `${prayer.name} ${prayer.request}`
-     }, {
-       onSuccess: () => {
-         toast.success(`Analysis complete: ${analysis.category} / ${analysis.urgency}`, { id: tId });
-       }
-     });
+     await powerSync.execute(`UPDATE univ_religion_prayers SET sentiment=?, aiAnalysis=? WHERE id=?`, [analysis.urgency, JSON.stringify(analysis), prayer.id]);
+     const res = await powerSync.execute('SELECT * FROM univ_religion_prayers WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+     setPrayers(res.rows._array || Array.from(res.rows));
+     toast.success(`Analysis complete: ${analysis.category} / ${analysis.urgency}`, { id: tId });
    } catch (err) {
      toast.error('Failed to analyze prayer request', { id: tId });
    } finally {
@@ -150,30 +132,28 @@ Prayer Request: "${prayer.request}"`;
    }
  };
 
- const handleDeletePrayer = () => {
+ const handleDeletePrayer = async () => {
  if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'prayer'}, {
- onSuccess: () => {
- toast.success('Prayer request retracted successfully!');
- setDeleteTargetId(null);
-},
- onError: (err) => {
- toast.error('Failed to retract request: ' + err.message);
- setDeleteTargetId(null);
-}
-});
+ try {
+   await powerSync.execute(`DELETE FROM univ_religion_prayers WHERE id=?`, [deleteTargetId]);
+   toast.success('Prayer request removed');
+   setDeleteTargetId(null);
+   setPrayers(prayers.filter(p => p.id !== deleteTargetId));
+ } catch (err) {
+   toast.error('Failed to remove request: ' + err.message);
+ }
 };
 
  const filtered = prayers.filter(p =>
- p.request?.toLowerCase().includes(search.toLowerCase()) ||
- p.name?.toLowerCase().includes(search.toLowerCase())
+ p.requestor?.toLowerCase().includes(search.toLowerCase()) ||
+ p.prayer?.toLowerCase().includes(search.toLowerCase())
  );
 
  return (
  <div className="space-y-6 max-w-4xl mx-auto">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("prayer_requests", "Prayer Requests")}</h1>
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em]">{t("prayer_requests", "Prayer Requests")}</h1>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
  "submit_and_manage_congregation",
  "Submit and manage congregational prayer needs"
@@ -183,7 +163,7 @@ Prayer Request: "${prayer.request}"`;
  <HandHeart className="w-4 h-4" /> {t("submit_request", "Submit Request")}
  </Button>
  </div>
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4">
  <div className="relative">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
  <Input placeholder="Search prayer requests..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-muted border-none" />
@@ -192,33 +172,26 @@ Prayer Request: "${prayer.request}"`;
  {isDbLoading ? (
  <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_prayer_board", "Loading prayer board...")}</div>
  ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="py-12 text-center text-[#71717a] dark:text-gray-400 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40">
  <HandHeart className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse text-primary" />
- <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_prayer_requests_listed", "No prayer requests listed")}</p>
- <p className="text-xs mt-1 tracking-[0.04em]">{t(
- "be_the_first_to_list_a_family_",
- "Be the first to list a family petition, health intercession, or praise report using the button above."
- )}</p>
+ <p className="font-semibold text-lg text-card-foreground">{t("no_prayer_requests_listed", "No prayer requests listed")}</p>
  </div>
  ) : (
  <div className="space-y-4">
  {filtered.map(prayer => {
+   const aiAnalysis = typeof prayer.aiAnalysis === 'string' ? JSON.parse(prayer.aiAnalysis) : prayer.aiAnalysis;
  return (
- <div key={prayer.id} className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex flex-col sm:flex-row gap-6 relative overflow-hidden group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div key={prayer.id} className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 flex flex-col sm:flex-row gap-6 relative overflow-hidden group">
  {prayer.status === 'Answered' && (
- <div className="absolute top-0 right-0 bg-primary text-white text-[10px] font-semibold uppercase tracking-widest px-3 py-1 rounded-bl-lg tracking-[0.04em]">
+ <div className="absolute top-0 right-0 bg-primary text-white text-[10px] font-semibold uppercase tracking-widest px-3 py-1 rounded-bl-lg">
  {t("answered", "Answered")}
  </div>
  )}
  <div className="flex-1">
  <div className="flex items-center gap-2 mb-2">
- {prayer.name === 'Anonymous' ? (
- <span className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{prayer.name}</span>
- ) : (
- <Link to="/religion/members" className="font-semibold text-primary hover:underline">{prayer.name}</Link>
- )}
+ <span className="font-semibold text-card-foreground">{prayer.requestor}</span>
  <span className="text-[#71717a] dark:text-gray-400">•</span>
- <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{prayer.date}</span>
+ <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{new Date(prayer.created_at).toLocaleDateString()}</span>
  {prayer.sentiment === 'URGENT' && (
     <>
       <span className="text-[#71717a] dark:text-gray-400">•</span>

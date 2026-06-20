@@ -1,6 +1,6 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
-import { Bed, Search, Plus, Trash2} from 'lucide-react';
+import { Bed, Search, Plus, Trash2, CheckSquare } from 'lucide-react';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
@@ -26,6 +26,7 @@ export default function Rooms() {
  const [deleteTargetId, setDeleteTargetId] = useState(null);
  const [editTargetId, setEditTargetId] = useState(null);
  const [viewDetailsId, setViewDetailsId] = useState(null);
+ const [selectedRoomIds, setSelectedRoomIds] = useState([]);
 
  // Form State
  const [formData, setFormData] = useState({
@@ -100,6 +101,31 @@ export default function Rooms() {
 });
 };
 
+  const handleBulkMaintenance = () => {
+    if (selectedRoomIds.length === 0) return toast.error("No rooms selected");
+    
+    selectedRoomIds.forEach(id => {
+      const room = rooms.find(r => r.id === id);
+      if (room) {
+        const newStatus = room.status === 'Maintenance' ? 'Available' : 'Maintenance';
+        mutateRecord.mutate({ 
+          id: room.id, 
+          recordType: 'room', 
+          payload: room, 
+          status: newStatus,
+          searchText: `${room.roomNumber} ${room.type}`
+        });
+      }
+    });
+    
+    toast.success(`Toggled maintenance status for ${selectedRoomIds.length} rooms`);
+    setSelectedRoomIds([]);
+  };
+
+  const toggleSelectRoom = (id) => {
+    setSelectedRoomIds(prev => prev.includes(id) ? prev.filter(r => r !== id) : [...prev, id]);
+  };
+
  const filtered = rooms.filter(room =>
  room.roomNumber?.toLowerCase().includes(search.toLowerCase()) ||
  room.type?.toLowerCase().includes(search.toLowerCase())
@@ -117,9 +143,16 @@ export default function Rooms() {
  "Configure rooms, pricing, and amenities"
  )}</p>
  </div>
+ <div className="flex gap-2">
+ {selectedRoomIds.length > 0 && (
+   <Button onClick={handleBulkMaintenance} variant="outline" className="gap-2 border-primary/30 text-primary hover:bg-primary/10">
+     <CheckSquare className="w-4 h-4" /> Toggle Maintenance ({selectedRoomIds.length})
+   </Button>
+ )}
  <Button onClick={() => { setEditTargetId(null); setShowModal(true); setFormData({ roomNumber: '', type: 'Standard', rate: 150, floor: '1st Floor', amenities: 'Wifi, Tv'});}} className="gap-2 bg-primary hover:bg-primary/90 text-white">
  <Plus className="w-4 h-4" /> {t("add_room", "Add Room")}
  </Button>
+ </div>
  </div>
  <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
@@ -132,6 +165,9 @@ export default function Rooms() {
  <table className="w-full text-sm">
  <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <tr>
+ <th className="px-6 py-4 w-12">
+    <input type="checkbox" checked={selectedRoomIds.length === filtered.length && filtered.length > 0} onChange={() => setSelectedRoomIds(selectedRoomIds.length === filtered.length ? [] : filtered.map(r => r.id))} className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"/>
+  </th>
  <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("room_number", "Room Number")}</th>
  <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("type_floor", "Type & Floor")}</th>
  <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("rate_night", "Rate/Night")}</th>
@@ -144,6 +180,9 @@ export default function Rooms() {
  {filtered.map(room => {
  return (
  <tr key={room.id} className="hover:bg-muted/50 transition-colors">
+ <td className="px-6 py-4">
+    <input type="checkbox" checked={selectedRoomIds.includes(room.id)} onChange={() => toggleSelectRoom(room.id)} className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"/>
+  </td>
  <td className="px-6 py-4 font-semibold text-card-foreground text-lg flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <Bed className={`w-5 h-5 ${room.status === 'Maintenance' ? 'text-red-500' : 'text-primary'}`}/> 
  {room.roomNumber}

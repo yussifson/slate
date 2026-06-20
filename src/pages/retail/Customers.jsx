@@ -8,10 +8,11 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
 
 import { Input} from '@/components/ui/input';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
 import { toast} from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import CSVImportModal from '@/components/shared/CSVImportModal';
+import { usePowerSync } from '@powersync/react';
+import { useCompanyId } from '@/hooks/useCompanyId';
 import { UploadCloud} from 'lucide-react';
 
 const segmentColors = {
@@ -23,11 +24,27 @@ export default function Customers() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiInsight, setAiInsight] = useState('');
   const isProOrAbove = true; // Temporary bypass
- const { t} = useTranslation();
- const navigate = useNavigate();
- const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('customer');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+  const { t} = useTranslation();
+  const navigate = useNavigate();
+  const companyId = useCompanyId();
+  const powerSync = usePowerSync();
+
+  const [dbRecords, setDbRecords] = useState([]);
+  const [isDbLoading, setIsDbLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    const fetchRecords = async () => {
+      setIsDbLoading(true);
+      try {
+        const res = await powerSync.execute('SELECT * FROM univ_retail_customers WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+        if(active) setDbRecords(res.rows._array || Array.from(res.rows));
+      } catch(e){}
+      setIsDbLoading(false);
+    };
+    if (companyId) fetchRecords();
+    return () => { active = false; };
+  }, [companyId]);
 
  const customers = dbRecords.map(r => {
  const data = r;
@@ -38,7 +55,7 @@ export default function Customers() {
 
  return {
  id: r.id,
- custId: data.custId || `CUST-${r.id?.slice(0, 4)}`,
+ custId: data.cust_id || `CUST-${r.id?.slice(0, 4)}`,
  name: data.name || 'Unnamed',
  email: data.email || '',
  phone: data.phone || '',
@@ -108,55 +125,50 @@ Suggest a targeted email or promotion idea.`;
     }
   };
 
-  const handleSaveCustomer = () => {
- if (!formData.name.trim() || !formData.email.trim()) {
- return toast.error("Please enter a name and email");
-}
+  const handleSaveCustomer = async () => {
+  if (!formData.name.trim() || !formData.email.trim()) {
+    return toast.error("Please enter a name and email");
+  }
 
- const custId = editingId ? (customers.find(c => c.id === editingId)?.custId || `CUST-${Math.floor(100 + Math.random() * 900)}`) : `CUST-${Math.floor(100 + Math.random() * 900)}`;
+  const custId = editingId ? (customers.find(c => c.id === editingId)?.custId || `CUST-${Math.floor(100 + Math.random() * 900)}`) : `CUST-${Math.floor(100 + Math.random() * 900)}`;
+  const totalSpent = parseFloat(formData.totalSpent) || 0;
+  let segment = 'New';
+  if (totalSpent > 1000) segment = 'VIP';
+  else if (totalSpent > 200) segment = 'Regular';
 
- const payload = {
- custId,
- name: formData.name,
- email: formData.email,
- phone: formData.phone,
- totalSpent: parseFloat(formData.totalSpent) || 0,
- orders: parseInt(formData.orders) || 0
+  try {
+    if (editingId) {
+      await powerSync.execute(`UPDATE univ_retail_customers SET name=?, email=?, phone=?, total_spent=?, orders=?, segment=?, status=? WHERE id=?`, 
+        [formData.name, formData.email, formData.phone, totalSpent, parseInt(formData.orders) || 0, segment, 'Active', editingId]
+      );
+      toast.success('Customer updated successfully!');
+    } else {
+      await powerSync.execute(`INSERT INTO univ_retail_customers (id, created_at, company_id, cust_id, name, email, phone, total_spent, orders, segment, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, 'Active')`, 
+        [companyId, custId, formData.name, formData.email, formData.phone, totalSpent, parseInt(formData.orders) || 0, segment]
+      );
+      toast.success('Customer registered successfully!');
+    }
+    setShowModal(false);
+    setEditingId(null);
+    setFormData({ name: '', email: '', phone: '', totalSpent: '', orders: '' });
+    
+    const res = await powerSync.execute('SELECT * FROM univ_retail_customers WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+    setDbRecords(res.rows._array || Array.from(res.rows));
+  } catch (err) {
+    toast.error('Failed to save customer: ' + err.message);
+  }
 };
 
- mutateRecord.mutate({
- ...(editingId ? { id: editingId} : {}),
- recordType: 'customer',
- payload,
- status: 'active',
- searchText: `${custId} ${formData.name} ${formData.email}`
-}, {
- onSuccess: () => {
- toast.success(editingId ? 'Customer updated successfully!' : 'Customer registered successfully!');
- setShowModal(false);
- setEditingId(null);
- setFormData({
- name: '', email: '', phone: '', totalSpent: '', orders: ''
-});
-},
- onError: (err) => {
- toast.error('Failed to save customer: ' + err.message);
-}
-});
-};
-
- const handleDeleteCustomer = () => {
- if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'customer'}, {
- onSuccess: () => {
- toast.success('Customer removed successfully!');
- setDeleteTargetId(null);
-},
- onError: (err) => {
- toast.error('Failed to delete customer: ' + err.message);
- setDeleteTargetId(null);
-}
-});
+  const handleDeleteCustomer = async () => {
+  if (!deleteTargetId) return;
+  try {
+    await powerSync.execute(`DELETE FROM univ_retail_customers WHERE id=?`, [deleteTargetId]);
+    toast.success('Customer removed successfully!');
+    setDeleteTargetId(null);
+    setDbRecords(dbRecords.filter(c => c.id !== deleteTargetId));
+  } catch (err) {
+    toast.error('Failed to delete customer: ' + err.message);
+  }
 };
 
  const stats = {

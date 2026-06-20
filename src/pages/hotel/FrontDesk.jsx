@@ -1,6 +1,6 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
-import { BedDouble, Calendar, UserCheck, LogIn, LogOut, CheckCircle2, Settings, Brush, Moon, Clock, Key, Users, TrendingUp, X, Sparkles} from 'lucide-react';
+import { BedDouble, Calendar, UserCheck, LogIn, LogOut, CheckCircle2, Settings, Brush, Moon, Clock, Key, Users, TrendingUp, X, Sparkles, Receipt, CreditCard, ScanLine } from 'lucide-react';
 import { Button} from '@/components/ui/button';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import { Input} from '@/components/ui/input';
@@ -54,6 +54,9 @@ export default function FrontDesk() {
 
  const [selectedRoom, setSelectedRoom] = useState(null);
  const [showCheckInModal, setShowCheckInModal] = useState(false);
+ const [showFolioModal, setShowFolioModal] = useState(false);
+ const [showKeycardModal, setShowKeycardModal] = useState(false);
+ const [isGeneratingKey, setIsGeneratingKey] = useState(false);
  const [checkInForm, setCheckInForm] = useState({ guestName: '', guestPhone: '', roomType: 'Standard', checkOut: ''});
 
  const todayArrivals = reservations.filter(r => r.checkIn === today && r.status === 'Confirmed');
@@ -123,23 +126,60 @@ export default function FrontDesk() {
 });
 };
 
- const handleCheckOut = (reservation) => {
- mutateRecord.mutate({
- id: reservation.id,
- recordType: 'reservation',
- payload: { ...reservation},
- status: 'Checked-out',
- searchText: `${reservation.guestName} ${reservation.reservationId} ${reservation.roomNumber}`
-}, {
- onSuccess: () => {
- toast.success(`Room ${reservation.roomNumber} checked out successfully`);
- setSelectedRoom(null);
-},
- onError: (err) => toast.error('Check-out failed: ' + err.message)
-});
-};
+  const handleCheckOut = (reservation) => {
+    // Check if there are unpaid folio items
+    const folioTotal = (reservation.folioItems || []).reduce((sum, item) => sum + item.amount, 0);
+    const amountDue = (reservation.totalAmount || 0) + folioTotal;
+    
+    if (amountDue > 0 && reservation.paymentStatus !== 'Paid') {
+      toast.error('Please settle the Folio balance before check-out.');
+      setShowFolioModal(true);
+      return;
+    }
 
- const selectedRoomInfo = selectedRoom ? getRoomInfo(selectedRoom) : null;
+    mutateRecord.mutate({
+      id: reservation.id,
+      recordType: 'reservation',
+      payload: { ...reservation, status: 'Checked-out' },
+      status: 'Checked-out',
+      searchText: `${reservation.guestName} ${reservation.reservationId} ${reservation.roomNumber}`
+    }, {
+      onSuccess: () => {
+        toast.success(`Room ${reservation.roomNumber} checked out successfully`);
+        setSelectedRoom(null);
+      },
+      onError: (err) => toast.error('Check-out failed: ' + err.message)
+    });
+  };
+
+  const handlePayFolio = (reservation) => {
+    const folioTotal = (reservation.folioItems || []).reduce((sum, item) => sum + item.amount, 0);
+    const amountDue = (reservation.totalAmount || 0) + folioTotal;
+
+    mutateRecord.mutate({
+      id: reservation.id,
+      recordType: 'reservation',
+      payload: { ...reservation, paymentStatus: 'Paid' },
+      status: reservation.status,
+      searchText: `${reservation.guestName} ${reservation.reservationId}`
+    }, {
+      onSuccess: () => {
+        toast.success(`Payment of $${amountDue.toFixed(2)} received successfully!`);
+        setShowFolioModal(false);
+      }
+    });
+  };
+
+  const generateKeycard = () => {
+    setIsGeneratingKey(true);
+    setTimeout(() => {
+      setIsGeneratingKey(false);
+      toast.success('Keycard encoded successfully!');
+      setShowKeycardModal(false);
+    }, 2000);
+  };
+
+  const selectedRoomInfo = selectedRoom ? getRoomInfo(selectedRoom) : null;
 
  const floors = [1, 2, 3];
 
@@ -389,6 +429,24 @@ export default function FrontDesk() {
  </Button>
  )}
  {selectedRoomInfo.status === 'Occupied' && (
+ <div className="grid grid-cols-2 gap-2">
+ <Button
+ onClick={() => setShowFolioModal(true)}
+ variant="outline"
+ className="w-full border-primary/20 text-primary hover:bg-primary/5 gap-2"
+ >
+ <Receipt className="w-4 h-4" /> {t("folio", "View Folio")}
+ </Button>
+ <Button
+ onClick={() => setShowKeycardModal(true)}
+ variant="outline"
+ className="w-full border-primary/20 text-primary hover:bg-primary/5 gap-2"
+ >
+ <ScanLine className="w-4 h-4" /> {t("keycard", "Keycard")}
+ </Button>
+ </div>
+ )}
+ {selectedRoomInfo.status === 'Occupied' && (
  <Button
  onClick={() => handleCheckOut(selectedRoomInfo.reservation)}
  className="w-full bg-red-600 hover:bg-red-700 text-white gap-2"
@@ -448,6 +506,105 @@ export default function FrontDesk() {
  </div>
  </div>
  )}
+
+ {/* Folio Modal */}
+ {showFolioModal && selectedRoomInfo?.reservation && (
+   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+     <div className="bg-card rounded-2xl w-full max-w-2xl p-6 flex flex-col max-h-[90vh] border border-primary/20">
+       <div className="flex justify-between items-center mb-6">
+         <div>
+           <h2 className="text-xl font-bold flex items-center gap-2"><Receipt className="w-5 h-5 text-primary"/> Guest Folio</h2>
+           <p className="text-sm text-muted-foreground mt-1">{selectedRoomInfo.reservation.guestName} — Room {selectedRoom}</p>
+         </div>
+         <button onClick={() => setShowFolioModal(false)} className="p-2 hover:bg-muted rounded-full"><X className="w-5 h-5"/></button>
+       </div>
+       
+       <div className="flex-1 overflow-y-auto space-y-6 pr-2">
+         {/* Room Charges */}
+         <div>
+           <h3 className="font-semibold mb-3 pb-2 border-b">Room Charges</h3>
+           <div className="flex justify-between items-center py-2 text-sm">
+             <div>
+               <p className="font-medium">{selectedRoomInfo.reservation.roomType} ({selectedRoomInfo.reservation.nights} nights)</p>
+               <p className="text-xs text-muted-foreground">{selectedRoomInfo.reservation.checkIn} to {selectedRoomInfo.reservation.checkOut}</p>
+             </div>
+             <span className="font-semibold">${(selectedRoomInfo.reservation.totalAmount || 0).toFixed(2)}</span>
+           </div>
+         </div>
+
+         {/* Incidental Charges */}
+         <div>
+           <h3 className="font-semibold mb-3 pb-2 border-b">Incidentals & POS</h3>
+           {!selectedRoomInfo.reservation.folioItems?.length ? (
+             <p className="text-sm text-muted-foreground italic">No incidental charges recorded.</p>
+           ) : (
+             <div className="space-y-2">
+               {selectedRoomInfo.reservation.folioItems.map((item, idx) => (
+                 <div key={idx} className="flex justify-between items-center py-2 text-sm border-b border-muted last:border-0">
+                   <div>
+                     <p className="font-medium">{item.description}</p>
+                     <p className="text-xs text-muted-foreground">{new Date(item.date).toLocaleString()}</p>
+                   </div>
+                   <span className="font-semibold">${item.amount.toFixed(2)}</span>
+                 </div>
+               ))}
+             </div>
+           )}
+         </div>
+       </div>
+
+       <div className="mt-6 pt-4 border-t space-y-4">
+         <div className="flex justify-between items-center text-lg font-bold">
+           <span>Total Balance Due</span>
+           <span className="text-primary">
+             ${((selectedRoomInfo.reservation.totalAmount || 0) + (selectedRoomInfo.reservation.folioItems || []).reduce((sum, item) => sum + item.amount, 0)).toFixed(2)}
+           </span>
+         </div>
+         
+         <div className="flex gap-3">
+           <Button variant="outline" className="flex-1" onClick={() => setShowFolioModal(false)}>Close</Button>
+           {selectedRoomInfo.reservation.paymentStatus !== 'Paid' ? (
+             <Button className="flex-1 bg-primary hover:bg-primary/90 text-white gap-2" onClick={() => handlePayFolio(selectedRoomInfo.reservation)}>
+               <CreditCard className="w-4 h-4"/> Process Payment
+             </Button>
+           ) : (
+             <Button disabled className="flex-1 bg-green-100 text-green-700 border-green-200 opacity-100 font-semibold gap-2">
+               <CheckCircle2 className="w-4 h-4"/> Balance Settled
+             </Button>
+           )}
+         </div>
+       </div>
+     </div>
+   </div>
+ )}
+
+ {/* Keycard Stub Modal */}
+ {showKeycardModal && selectedRoomInfo?.reservation && (
+   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+     <div className="bg-card rounded-2xl w-full max-w-md p-6 text-center border border-primary/20 space-y-6">
+       <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto">
+         <ScanLine className={`w-8 h-8 ${isGeneratingKey ? 'animate-pulse' : ''}`}/>
+       </div>
+       <div>
+         <h2 className="text-xl font-bold">Encode Keycard</h2>
+         <p className="text-sm text-muted-foreground mt-2">
+           Place an empty keycard on the encoder for Room {selectedRoom} ({selectedRoomInfo.reservation.guestName}).
+         </p>
+       </div>
+       <div className="bg-muted p-4 rounded-xl text-left text-sm space-y-2">
+         <div className="flex justify-between"><span className="text-muted-foreground">System</span><span className="font-medium">Assa Abloy VingCard (Stub)</span></div>
+         <div className="flex justify-between"><span className="text-muted-foreground">Valid Until</span><span className="font-medium">{selectedRoomInfo.reservation.checkOut} 11:00 AM</span></div>
+       </div>
+       <div className="flex gap-3">
+         <Button variant="outline" className="flex-1" onClick={() => setShowKeycardModal(false)} disabled={isGeneratingKey}>Cancel</Button>
+         <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={generateKeycard} disabled={isGeneratingKey}>
+           {isGeneratingKey ? 'Encoding...' : 'Write to Card'}
+         </Button>
+       </div>
+     </div>
+   </div>
+ )}
+
  </div>
  );
 }

@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar as CalendarIcon, Clock, User, Stethoscope, Plus, Video, Trash2, CheckCircle, Play } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, User, Stethoscope, Plus, Video, Trash2, CheckCircle, Play, LayoutGrid, List } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useMeeting } from "@/hooks/integrations/useMeeting";
@@ -55,6 +55,7 @@ export default function Appointments() {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [showModal, setShowModal] = useState(false);
   const [selectedAppt, setSelectedAppt] = useState(null);
+  const [viewMode, setViewMode] = useState('list'); // 'list' or 'calendar'
 
   const [formData, setFormData] = useState({
     patient: '',
@@ -211,40 +212,71 @@ Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {
           <p className="text-sm text-[#71717a] mt-0.5">{t("manage_doctor_schedules_and_pa", "Manage doctor schedules and patient visits")}</p>
         </div>
         <div className="flex items-center gap-3">
+          <div className="flex bg-card rounded-lg border-[0.5px] border-primary/20 p-1">
+            <Button variant="ghost" size="sm" onClick={() => setViewMode('list')} className={`px-2 py-1 h-8 ${viewMode === 'list' ? 'bg-primary/10 text-primary' : 'text-[#71717a]'}`}>
+              <List className="w-4 h-4" />
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => setViewMode('calendar')} className={`px-2 py-1 h-8 ${viewMode === 'calendar' ? 'bg-primary/10 text-primary' : 'text-[#71717a]'}`}>
+              <LayoutGrid className="w-4 h-4" />
+            </Button>
+          </div>
           <Input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-auto bg-card" />
           <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white"><Plus className="w-4 h-4"/> {t("book_appointment", "Book Appointment")}</Button>
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="col-span-1 bg-card rounded-xl border-[0.5px] border-primary/40 p-4 h-[600px] overflow-y-auto space-y-4">
-          <h3 className="font-semibold text-card-foreground flex items-center gap-2 border-b border-primary/40 pb-3"><CalendarIcon className="w-4 h-4 text-primary"/> {t("scheduled_visits", "Scheduled Visits (")}{filteredAppts.length})</h3>
-          <div className="space-y-3">
-            {filteredAppts.map(appt => {
-              return (
-                <div key={appt.id} onClick={() => setSelectedAppt(appt)} className={`p-3 rounded-xl border-[0.5px] cursor-pointer transition-all flex flex-col gap-2 ${selectedAppt?.id === appt.id ? 'ring-2 ring-primary border-transparent bg-primary/20' : 'border-primary/40'}`}>
-                  <div className="flex justify-between items-start">
-                    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border-[0.5px] uppercase tracking-wider ${typeColors[appt.type]}`}>{appt.type}</span>
-                    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border ${statusColors[appt.status]}`}>{appt.status}</span>
+        {viewMode === 'list' ? (
+          <div className="col-span-1 bg-card rounded-xl border-[0.5px] border-primary/40 p-4 h-[600px] overflow-y-auto space-y-4">
+            <h3 className="font-semibold text-card-foreground flex items-center gap-2 border-b border-primary/40 pb-3"><CalendarIcon className="w-4 h-4 text-primary"/> {t("scheduled_visits", "Scheduled Visits (")}{filteredAppts.length})</h3>
+            <div className="space-y-3">
+              {filteredAppts.map(appt => {
+                return (
+                  <div key={appt.id} onClick={() => setSelectedAppt(appt)} className={`p-3 rounded-xl border-[0.5px] cursor-pointer transition-all flex flex-col gap-2 ${selectedAppt?.id === appt.id ? 'ring-2 ring-primary border-transparent bg-primary/20' : 'border-primary/40'}`}>
+                    <div className="flex justify-between items-start">
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border-[0.5px] uppercase tracking-wider ${typeColors[appt.type]}`}>{appt.type}</span>
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border ${statusColors[appt.status]}`}>{appt.status}</span>
+                    </div>
+                    <div>
+                      <span className="font-semibold text-sm text-primary hover:underline">{appt.client_name}</span>
+                      <p className="text-xs text-[#71717a] font-medium tracking-[0.04em]">{appt.doctor_id}</p>
+                    </div>
+                    <div className="flex items-center justify-between gap-2 text-xs text-[#71717a] mt-1 border-t border-dashed border-primary/40 pt-2">
+                      <div className="flex items-center gap-2"><Clock className="w-3.5 h-3.5" /> <span>{appt.time}</span></div>
+                      <Button size="icon" variant="ghost" onClick={(e) => handleDeleteFromDb(appt.id, e)} className="h-6 w-6 text-red-500 hover:text-red-700 hover:bg-red-50"><Trash2 className="w-3.5 h-3.5" /></Button>
+                    </div>
                   </div>
-                  <div>
-                    <span className="font-semibold text-sm text-primary hover:underline">{appt.client_name}</span>
-                    <p className="text-xs text-[#71717a] font-medium tracking-[0.04em]">{appt.doctor_id}</p>
-                  </div>
-                  <div className="flex items-center justify-between gap-2 text-xs text-[#71717a] mt-1 border-t border-dashed border-primary/40 pt-2">
-                    <div className="flex items-center gap-2"><Clock className="w-3.5 h-3.5" /> <span>{appt.time}</span></div>
-                    <Button size="icon" variant="ghost" onClick={(e) => handleDeleteFromDb(appt.id, e)} className="h-6 w-6 text-red-500 hover:text-red-700 hover:bg-red-50"><Trash2 className="w-3.5 h-3.5" /></Button>
+                );
+              })}
+              {filteredAppts.length === 0 && (
+                <div className="text-center py-10 text-[#71717a]">
+                  <CalendarIcon className="w-10 h-10 mx-auto mb-2 opacity-20" />
+                  <p className="font-medium text-sm">No appointments on this date.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="col-span-1 bg-card rounded-xl border-[0.5px] border-primary/40 p-0 h-[600px] overflow-y-auto">
+            <div className="sticky top-0 bg-muted/90 backdrop-blur border-b border-primary/40 p-3 z-10">
+              <h3 className="font-semibold text-card-foreground flex items-center gap-2"><CalendarIcon className="w-4 h-4 text-primary"/> Daily Timeline</h3>
+            </div>
+            <div className="p-4 space-y-0 relative">
+              {['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'].map(hour => (
+                <div key={hour} className="flex border-b border-primary/10 min-h-[60px]">
+                  <div className="w-16 text-xs text-[#71717a] py-2 pr-2 text-right border-r border-primary/20">{hour}</div>
+                  <div className="flex-1 p-1 flex flex-col gap-1">
+                    {filteredAppts.filter(a => a.time.startsWith(hour.substring(0, 2))).map(appt => (
+                      <div key={appt.id} onClick={() => setSelectedAppt(appt)} className={`text-xs p-1.5 rounded border-[0.5px] cursor-pointer truncate ${selectedAppt?.id === appt.id ? 'ring-1 ring-primary bg-primary/20 border-primary' : 'bg-card border-primary/30 hover:border-primary/60'}`}>
+                        <div className="font-semibold text-primary truncate">{appt.time} - {appt.client_name}</div>
+                        <div className="text-[#71717a] truncate text-[10px]">{appt.doctor_id}</div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              );
-            })}
-            {filteredAppts.length === 0 && (
-              <div className="text-center py-10 text-[#71717a]">
-                <CalendarIcon className="w-10 h-10 mx-auto mb-2 opacity-20" />
-                <p className="font-medium text-sm">No appointments on this date.</p>
-              </div>
-            )}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
         <div className="col-span-2 bg-card rounded-xl border-[0.5px] border-primary/40 p-6 flex flex-col h-[600px]">
           {selectedAppt ? (
             <div className="space-y-6 h-full flex flex-col">

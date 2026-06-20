@@ -1,402 +1,350 @@
-import { useTranslation} from "react-i18next";
-import { useState} from 'react';
-import { Search, Plus, Trash2, FileWarning, CheckCircle, Clock, MoreVertical, Edit, Eye, Sparkles} from 'lucide-react';
-import { Link} from 'react-router-dom';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
-import { Button} from '@/components/ui/button';
-import { Input} from '@/components/ui/input';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
-import { toast} from 'react-hot-toast';
-import ConfirmationModal from '@/components/ConfirmationModal';
-import AIDocumentParser from '@/components/shared/AIDocumentParser';
-import AIRiskAnalyzer from '@/components/shared/AIRiskAnalyzer';
-import AISearchBar from '@/components/shared/AISearchBar';
+import { useTranslation } from "react-i18next";
+import React, { useState, useEffect } from 'react';
+import { Search, Plus, Trash2, FileWarning, CheckCircle, Clock, MoreVertical, Edit, Eye, Sparkles, XCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { toast } from 'react-hot-toast';
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { powerSync } from '@/api/PowerSyncConnector';
+import { supabase } from "@/api/supabaseClient";
 
 const CLAIM_FIELDS = [
- { key: 'claimantName', label: 'Claimant Name', type: 'text'},
- { key: 'policyNumber', label: 'Policy Number', type: 'text'},
- { key: 'claimType', label: 'Claim Type', type: 'text'},
- { key: 'claimAmount', label: 'Claim Amount', type: 'number'},
- { key: 'status', label: 'Status', type: 'text'},
- { key: 'incidentDate', label: 'Incident Date', type: 'date'},
+  { key: 'client_name', label: 'Claimant Name', type: 'text' },
+  { key: 'policy_number', label: 'Policy Number', type: 'text' },
+  { key: 'case_type', label: 'Claim Type', type: 'text' },
+  { key: 'claim_amount', label: 'Claim Amount', type: 'number' },
+  { key: 'status', label: 'Status', type: 'text' },
+  { key: 'incident_date', label: 'Incident Date', type: 'date' },
 ];
 
 const statusColors = {
- 'Submitted': 'bg-muted text-[#71717a] dark:text-gray-400',
- 'Under Review': 'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400',
- 'Approved': 'bg-slate-100 text-primary dark:bg-primary/30 dark:text-primary/70',
- 'Rejected': 'bg-red-100 text-red-700 dark:bg-red-950/30 dark:text-red-400',
- 'Paid': 'bg-slate-100 text-primary/90 dark:bg-primary/30 dark:text-primary/70'};
+  'Submitted': 'bg-muted text-[#71717a] dark:text-gray-400',
+  'Under Review': 'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400',
+  'Approved': 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400',
+  'Rejected': 'bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-400',
+  'Paid': 'bg-slate-100 text-primary/90 dark:bg-primary/30 dark:text-primary/70'
+};
 
 export default function Claims() {
- const { t} = useTranslation();
- const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('claim');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+  const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const [claims, setClaims] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
 
- const claims = dbRecords.map(r => ({
- id: r.id,
- status: r.status || 'Submitted',
- ...r.data
-}));
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
+  const [formData, setFormData] = useState({
+    case_number: '',
+    client_name: '',
+    policy_number: '',
+    case_type: 'Auto',
+    claim_amount: '',
+    incident_date: new Date().toISOString().split('T')[0],
+    description: '',
+    status: 'Submitted'
+  });
 
- const [search, setSearch] = useState('');
- const [aiFilters, setAiFilters] = useState({ logic: 'AND', conditions: []});
- const [showModal, setShowModal] = useState(false);
- const [showRiskAnalyzer, setShowRiskAnalyzer] = useState(false);
- const [deleteTargetId, setDeleteTargetId] = useState(null);
- const [viewDetailsId, setViewDetailsId] = useState(null);
- const [editTargetId, setEditTargetId] = useState(null);
+  useEffect(() => {
+    if (companyId) {
+      fetchData();
+      const channel = supabase.channel('insurance_claims_changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'insurance_claims', filter: `company_id=eq.${companyId}` }, () => fetchData())
+        .subscribe();
+      return () => { supabase.removeChannel(channel); };
+    }
+  }, [companyId]);
 
- const [formData, setFormData] = useState({
- policyNumber: '',
- claimantName: '',
- claimType: 'Auto',
- incidentDate: new Date().toISOString().split('T')[0],
- claimAmount: '',
- description: ''
-});
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const __res = await powerSync.execute(`SELECT * FROM insurance_claims WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
+      setClaims(__res.rows ? (__res.rows._array || Array.from(__res.rows)) : []);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to fetch claims');
+    } finally {
+      setLoading(false);
+    }
+  };
 
- const handleCreateClaim = () => {
- if (!formData.claimantName.trim() || !formData.policyNumber.trim()) {
- return toast.error("Please enter claimant and policy details");
-}
- 
- const isEdit = !!editTargetId;
- const finalClaimNumber = isEdit
- ? claims.find(c => c.id === editTargetId)?.claimNumber
- : `CLM-${Math.floor(1000 + Math.random() * 9000)}`;
- const finalStatus = isEdit
- ? claims.find(c => c.id === editTargetId)?.status
- : 'Submitted';
+  const openModal = (item = null) => {
+    if (item) {
+      setEditingItem(item);
+      setFormData({ ...item });
+    } else {
+      setEditingItem(null);
+      setFormData({
+        case_number: `CLM-${Math.floor(1000 + Math.random() * 9000)}`,
+        client_name: '',
+        policy_number: '',
+        case_type: 'Auto',
+        claim_amount: '',
+        incident_date: new Date().toISOString().split('T')[0],
+        description: '',
+        status: 'Submitted'
+      });
+    }
+    setIsModalOpen(true);
+  };
 
- mutateRecord.mutate({
- ...(editTargetId ? { id: editTargetId} : {}),
- recordType: 'claim',
- payload: { ...formData, claimNumber: finalClaimNumber},
- status: finalStatus,
- searchText: `${formData.claimantName} ${formData.policyNumber} ${finalClaimNumber}`
-}, {
- onSuccess: () => {
- toast.success(isEdit ? 'Claim updated successfully!' : 'Claim submitted successfully!');
- setShowModal(false);
- setEditTargetId(null);
- setFormData({ policyNumber: '', claimantName: '', claimType: 'Auto', incidentDate: new Date().toISOString().split('T')[0], claimAmount: '', description: ''});
-},
- onError: (err) => toast.error(`Failed to ${isEdit ? 'update' : 'submit'} claim: ` + err.message)
-});
-};
+  const saveItem = async (e) => {
+    e.preventDefault();
+    if (!formData.client_name.trim() || !formData.policy_number.trim()) return toast.error("Please enter claimant and policy details");
 
- const openNewModal = () => {
- setEditTargetId(null);
- setFormData({ policyNumber: '', claimantName: '', claimType: 'Auto', incidentDate: new Date().toISOString().split('T')[0], claimAmount: '', description: ''});
- setShowModal(true);
-};
+    try {
+      if (editingItem) {
+        await powerSync.execute(
+          `UPDATE insurance_claims SET client_name = ?, policy_number = ?, case_type = ?, claim_amount = ?, incident_date = ?, description = ?, status = ? WHERE id = ?`, 
+          [formData.client_name, formData.policy_number, formData.case_type, formData.claim_amount, formData.incident_date, formData.description, formData.status, editingItem.id]
+        );
+        toast.success('Claim updated successfully!');
+      } else {
+        const id = crypto.randomUUID();
+        await powerSync.execute(
+          `INSERT INTO insurance_claims (id, company_id, case_number, client_name, policy_number, case_type, claim_amount, incident_date, description, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+          [id, companyId, formData.case_number, formData.client_name, formData.policy_number, formData.case_type, formData.claim_amount, formData.incident_date, formData.description, formData.status]
+        );
+        toast.success('Claim submitted successfully!');
+      }
+      setIsModalOpen(false);
+      fetchData();
+    } catch (err) {
+      toast.error(err.message || 'Failed to save claim');
+    }
+  };
 
- const handleUpdateStatus = (claim, newStatus) => {
- const payload = { ...claim};
- delete payload.id;
- delete payload.status;
- mutateRecord.mutate({
- id: claim.id, recordType: 'claim', payload, status: newStatus,
- searchText: `${claim.claimantName} ${claim.policyNumber} ${claim.claimNumber}`
-}, { onSuccess: () => toast.success(`Status updated to ${newStatus}`)});
-};
+  const deleteItem = async (id, e) => {
+    e.stopPropagation();
+    if (!confirm('Delete this claim?')) return;
+    try {
+      await powerSync.execute(`DELETE FROM insurance_claims WHERE id = ?`, [id]);
+      toast.success('Claim removed!');
+      fetchData();
+    } catch (err) {
+      toast.error('Failed to remove: ' + err.message);
+    }
+  };
 
- const handleDelete = () => {
- if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'claim'}, {
- onSuccess: () => { toast.success('Claim removed!'); setDeleteTargetId(null);},
- onError: (err) => { toast.error('Failed to remove: ' + err.message); setDeleteTargetId(null);}
-});
-};
+  const handleUpdateStatus = async (claim, newStatus) => {
+    try {
+      await powerSync.execute(`UPDATE insurance_claims SET status = ? WHERE id = ?`, [newStatus, claim.id]);
+      toast.success(`Status updated to ${newStatus}`);
+      fetchData();
+    } catch(err) {
+      toast.error('Failed to update status');
+    }
+  };
 
- // Apply AI filters
- const applyAIFilter = (record) => {
- if (!aiFilters.conditions.length) return true;
- const results = aiFilters.conditions.map(({ field, operator, value}) => {
- const fieldVal = String(record[field] || '').toLowerCase();
- const filterVal = String(value).toLowerCase();
- switch (operator) {
- case 'equals': return fieldVal === filterVal;
- case 'not_equals': return fieldVal !== filterVal;
- case 'contains': return fieldVal.includes(filterVal);
- case 'starts_with': return fieldVal.startsWith(filterVal);
- case 'greater_than': return parseFloat(record[field]) > parseFloat(value);
- case 'less_than': return parseFloat(record[field]) < parseFloat(value);
- default: return true;
-}
-});
- return aiFilters.logic === 'OR' ? results.some(Boolean) : results.every(Boolean);
-};
+  const filtered = claims.filter(c => 
+    String(c.client_name || '').toLowerCase().includes(search.toLowerCase()) || 
+    String(c.case_number || '').toLowerCase().includes(search.toLowerCase()) ||
+    String(c.policy_number || '').toLowerCase().includes(search.toLowerCase())
+  );
 
- const filtered = claims
- .filter(c =>
- c.claimantName?.toLowerCase().includes(search.toLowerCase()) ||
- c.claimNumber?.toLowerCase().includes(search.toLowerCase()) ||
- c.policyNumber?.toLowerCase().includes(search.toLowerCase())
- )
- .filter(applyAIFilter);
+  const totalAmount = claims.reduce((sum, c) => sum + (Number(c.claim_amount) || 0), 0);
 
- const totalAmount = claims.reduce((sum, c) => sum + (Number(c.claimAmount) || 0), 0);
- const viewRecord = claims.find(r => r.id === viewDetailsId);
+  const isStaleClaim = (claim) => {
+    if (claim.status !== 'Submitted' && claim.status !== 'Under Review') return false;
+    if (!claim.incident_date) return false;
+    const diffTime = new Date() - new Date(claim.incident_date);
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
+    return diffDays > 30;
+  };
 
- const isStaleClaim = (claim) => {
- if (claim.status !== 'Submitted' && claim.status !== 'Under Review') return false;
- if (!claim.incidentDate) return false;
- const diffTime = new Date() - new Date(claim.incidentDate);
- const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
- return diffDays > 30;
-};
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em]">{t("claims_processing", "Claims Processing")}</h1>
+          <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("manage_and_evaluate_policyhold", "Manage and evaluate policyholder claims")}</p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" className="gap-2 border-amber-300 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/20 rounded-xl">
+            <Sparkles className="w-4 h-4" /> {t("ai_risk_scan", "AI Risk Scan")}
+          </Button>
+          <Button onClick={() => openModal()} className="gap-2 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)]">
+            <Plus className="w-4 h-4" /> {t("file_new_claim", "File New Claim")}
+          </Button>
+        </div>
+      </div>
 
- return (
- <div className="space-y-6">
- <div className="flex items-center justify-between">
- <div>
- <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("claims_processing", "Claims Processing")}</h1>
- <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
- "manage_and_evaluate_policyhold",
- "Manage and evaluate policyholder claims"
- )}</p>
- </div>
- <div className="flex gap-2">
- <Button onClick={() => setShowRiskAnalyzer(true)} variant="outline" className="gap-2 border-amber-300 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/20">
- <Sparkles className="w-4 h-4" /> {t("ai_risk_scan", "AI Risk Scan")}
- </Button>
- <Button onClick={openNewModal} className="gap-2 bg-primary hover:bg-primary text-white">
- <Plus className="w-4 h-4" /> {t("file_new_claim", "File New Claim")}
- </Button>
- </div>
- </div>
- {/* Stats */}
- <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex items-center gap-2 mb-2 text-[#71717a] dark:text-gray-400"><FileWarning className="w-4 h-4"/> {t("total_claims", "Total Claims")}</div>
- <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{claims.length}</p>
- </div>
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex items-center gap-2 mb-2 text-amber-600"><Clock className="w-4 h-4"/> {t("under_review", "Under Review")}</div>
- <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{claims.filter(c => c.status === 'Under Review').length}</p>
- </div>
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex items-center gap-2 mb-2 text-primary"><CheckCircle className="w-4 h-4"/> {t("approved", "Approved")}</div>
- <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{claims.filter(c => c.status === 'Approved' || c.status === 'Paid').length}</p>
- </div>
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex items-center gap-2 mb-2 text-primary"><span className="font-semibold text-sm">$</span> {t("total_claimed", "Total Claimed")}</div>
- <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${totalAmount.toLocaleString()}</p>
- </div>
- </div>
- {/* AI Search */}
- <AISearchBar
- fields={CLAIM_FIELDS}
- onApplyFilters={(f) => setAiFilters(f)}
- />
- {/* Table */}
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-4 border-b border-primary/40 bg-muted/50">
- <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
- <Input placeholder="Search claim number, policy or claimant..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
- </div>
- </div>
- <div className="overflow-x-auto">
- {isDbLoading ? (
- <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_claims", "Loading claims...")}</div>
- ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
- <FileWarning className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary" />
- <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_claims_found", "No claims found")}</p>
- <p className="text-xs mt-1 tracking-[0.04em]">{t(
- "file_a_new_claim_or_adjust_you",
- "File a new claim or adjust your filters."
- )}</p>
- </div>
- ) : (
- <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <tr>
- <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("claim_info", "Claim Info")}</th>
- <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("claimant", "Claimant")}</th>
- <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("description", "Description")}</th>
- <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("amount", "Amount")}</th>
- <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</th>
- <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("action", "Action")}</th>
- </tr>
- </thead>
- <tbody className="divide-y divide-border">
- {filtered.map(claim => {
- return (
- <tr key={claim.id} className="hover:bg-muted/50 transition-colors">
- <td className="px-6 py-4">
- <p className="font-mono font-semibold text-primary">{claim.claimNumber}</p>
- <Link to="/insurance/policies" className="text-primary hover:underline text-xs mt-0.5 font-medium block tracking-[0.04em]">{claim.policyNumber}</Link>
- <p className="text-[10px] text-[#71717a] dark:text-gray-400 mt-0.5">{claim.incidentDate}</p>
- </td>
- <td className="px-6 py-4">
- <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{claim.claimantName}</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{claim.claimType} {t("claim", "Claim")}</p>
- </td>
- <td className="px-6 py-4 text-[#71717a] dark:text-gray-400 font-medium max-w-xs truncate">{claim.description}</td>
- <td className="px-6 py-4 text-right">
- <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${Number(claim.claimAmount).toLocaleString()}</p>
- </td>
- <td className="px-6 py-4 text-center">
- <div className="flex flex-col items-center gap-2.5">
- <select
- value={claim.status}
- onChange={e => handleUpdateStatus(claim, e.target.value)}
- className={`rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input px-2 py-1 text-xs font-semibold w-full ${statusColors[claim.status] || 'bg-muted text-[#71717a] dark:text-gray-400'}`}
- >
- <option value="Submitted">{t("submitted", "Submitted")}</option>
- <option value="Under Review">{t("under_review", "Under Review")}</option>
- <option value="Approved">{t("approved", "Approved")}</option>
- <option value="Rejected">{t("rejected", "Rejected")}</option>
- <option value="Paid">{t("paid", "Paid")}</option>
- </select>
- {isStaleClaim(claim) && (
- <span className="text-[10px] font-semibold text-red-600 bg-red-100 px-2 py-0.5 rounded-full animate-pulse w-full text-center">
- {t("sla_breach_30d", "SLA Breach (>30d)")}
- </span>
- )}
- </div>
- </td>
- <td className="px-6 py-4 text-right">
- <DropdownMenu>
- <DropdownMenuTrigger asChild>
- <Button variant="ghost" className="h-8 w-8 p-0">
- <span className="sr-only">{t("open_menu", "Open menu")}</span>
- <MoreVertical className="h-4 w-4" />
- </Button>
- </DropdownMenuTrigger>
- <DropdownMenuContent align="end">
- <DropdownMenuItem onClick={() => setViewDetailsId(claim.id)}>
- <Eye className="mr-2 h-4 w-4" /> {t("view_details", "View Details")}
- </DropdownMenuItem>
- <DropdownMenuItem onClick={() => {
- setFormData({ policyNumber: claim.policyNumber || '', claimantName: claim.claimantName || '', claimType: claim.claimType || 'Auto', incidentDate: claim.incidentDate || '', claimAmount: claim.claimAmount || '', description: claim.description || ''});
- setEditTargetId(claim.id);
- setShowModal(true);
-}}>
- <Edit className="mr-2 h-4 w-4" /> {t("edit", "Edit")}
- </DropdownMenuItem>
- <DropdownMenuItem onClick={() => setDeleteTargetId(claim.id)} className="text-red-600 focus:text-red-600">
- <Trash2 className="mr-2 h-4 w-4" /> {t("delete", "Delete")}
- </DropdownMenuItem>
- </DropdownMenuContent>
- </DropdownMenu>
- </td>
- </tr>
- );
-})}
- </tbody>
- </table>
- )}
- </div>
- </div>
- {/* AI Risk Analyzer Modal */}
- {showRiskAnalyzer && (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex items-center justify-between">
- <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Sparkles className="w-5 h-5 text-amber-500" /> {t("ai_risk_analyzer_claims", "AI Risk Analyzer — Claims")}
- </h2>
- <Button variant="ghost" size="sm" onClick={() => setShowRiskAnalyzer(false)}>{t("close", "Close")}</Button>
- </div>
- <AIRiskAnalyzer records={claims} recordType="insurance claims" />
- </div>
- </div>
- )}
- {/* Add/Edit Modal */}
- {showModal && (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-y-auto max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editTargetId ? 'Edit Claim' : 'File New Claim'}</h2>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex flex-col justify-center shadow-sm">
+          <div className="flex items-center gap-2 mb-2 text-[#71717a] font-medium tracking-wide text-xs uppercase"><FileWarning className="w-4 h-4 text-primary"/> {t("total_claims", "Total Claims")}</div>
+          <p className="text-2xl font-bold text-card-foreground tracking-[-0.02em]">{claims.length}</p>
+        </div>
+        <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex flex-col justify-center shadow-sm">
+          <div className="flex items-center gap-2 mb-2 text-amber-600 font-medium tracking-wide text-xs uppercase"><Clock className="w-4 h-4"/> {t("under_review", "Under Review")}</div>
+          <p className="text-2xl font-bold text-card-foreground tracking-[-0.02em]">{claims.filter(c => c.status === 'Under Review').length}</p>
+        </div>
+        <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex flex-col justify-center shadow-sm">
+          <div className="flex items-center gap-2 mb-2 text-emerald-600 font-medium tracking-wide text-xs uppercase"><CheckCircle className="w-4 h-4"/> {t("approved", "Approved")}</div>
+          <p className="text-2xl font-bold text-card-foreground tracking-[-0.02em]">{claims.filter(c => c.status === 'Approved' || c.status === 'Paid').length}</p>
+        </div>
+        <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex flex-col justify-center shadow-sm">
+          <div className="flex items-center gap-2 mb-2 text-primary font-medium tracking-wide text-xs uppercase"><span className="font-semibold text-sm">$</span> {t("total_claimed", "Total Claimed")}</div>
+          <p className="text-2xl font-bold text-card-foreground tracking-[-0.02em]">${totalAmount.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
+        </div>
+      </div>
 
- {/* AI Document Parser */}
- {!editTargetId && (
- <AIDocumentParser
- fieldsContext="insurance claim details including policy number, claimant name, claim type, incident date, and claim amount"
- onExtracted={(data) => setFormData(prev => ({ ...prev, ...data}))}
- />
- )}
+      <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
+          <div className="relative w-80">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
+            <Input 
+              placeholder="Search claim number, policy or claimant..." 
+              value={search} 
+              onChange={e => setSearch(e.target.value)} 
+              className="pl-10 h-10 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:ring-2 focus:ring-primary/40" 
+            />
+          </div>
+        </div>
 
- <div className="space-y-3">
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("policy_number", "Policy Number")}</label>
- <Input value={formData.policyNumber} onChange={e => setFormData({...formData, policyNumber: e.target.value})} placeholder="POL-12345" className="mt-1" />
- </div>
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("claimant_name", "Claimant Name")}</label>
- <Input value={formData.claimantName} onChange={e => setFormData({...formData, claimantName: e.target.value})} placeholder="Jane Doe" className="mt-1" />
- </div>
- <div className="grid grid-cols-2 gap-3">
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("claim_type", "Claim Type")}</label>
- <select value={formData.claimType} onChange={e => setFormData({...formData, claimType: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground">
- <option>{t("auto", "Auto")}</option>
- <option>{t("health", "Health")}</option>
- <option>{t("property", "Property")}</option>
- <option>{t("life", "Life")}</option>
- <option>{t("business", "Business")}</option>
- </select>
- </div>
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("incident_date", "Incident Date")}</label>
- <Input type="date" value={formData.incidentDate} onChange={e => setFormData({...formData, incidentDate: e.target.value})} className="mt-1" />
- </div>
- </div>
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("claim_amount", "Claim Amount ($)")}</label>
- <Input type="number" value={formData.claimAmount} onChange={e => setFormData({...formData, claimAmount: e.target.value})} placeholder="1500" className="mt-1" />
- </div>
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("description_details", "Description / Details")}</label>
- <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="Describe the incident..." className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm h-20 resize-none text-foreground" />
- </div>
- </div>
- <div className="flex gap-3 pt-4">
- <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditTargetId(null);}}>{t("cancel", "Cancel")}</Button>
- <Button className="flex-1 bg-primary hover:bg-primary text-white" onClick={handleCreateClaim}>{editTargetId ? 'Save Changes' : 'Submit Claim'}</Button>
- </div>
- </div>
- </div>
- )}
- {/* View Details Sheet */}
- <Sheet open={viewDetailsId !== null} onOpenChange={(open) => !open && setViewDetailsId(null)}>
- <SheetContent className="bg-card text-card-foreground overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <SheetHeader>
- <SheetTitle>{t("claim_details", "Claim Details")}</SheetTitle>
- <SheetDescription>{t("full_record_for_claim", "Full record for claim")} {viewRecord?.claimNumber}</SheetDescription>
- </SheetHeader>
- <div className="mt-6 space-y-4">
- {viewRecord && Object.entries(viewRecord).map(([key, value]) => {
- if (key === 'id') return null;
- return (
- <div key={key} className="border-b border-primary/40 pb-3">
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{key.replace(/([A-Z])/g, ' $1').trim()}</label>
- <p className="font-medium mt-1">
- {key === 'policyNumber' ? (
- <Link to="/insurance/policies" className="text-primary hover:underline">{String(value)}</Link>
- ) : (
- String(value)
- )}
- </p>
- </div>
- );
-})}
- </div>
- </SheetContent>
- </Sheet>
- <ConfirmationModal
- isOpen={deleteTargetId !== null}
- onClose={() => setDeleteTargetId(null)}
- onConfirm={handleDelete}
- title="Delete Claim"
- message="Are you sure you want to completely remove this claim record? This cannot be undone."
- />
- </div>
- );
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm whitespace-nowrap">
+            <thead className="bg-muted/50 text-[11px] font-semibold tracking-[0.06em] uppercase text-[#71717a] dark:text-gray-400">
+              <tr>
+                <th className="p-4">Claim Info</th>
+                <th className="p-4">Claimant</th>
+                <th className="p-4">Description</th>
+                <th className="p-4 text-right">Amount</th>
+                <th className="p-4 text-center">Status</th>
+                <th className="p-4 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {filtered.map((claim, idx) => (
+                <motion.tr 
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.02 }}
+                  key={claim.id} 
+                  className="hover:bg-muted/30 transition-colors group cursor-pointer"
+                  onClick={() => openModal(claim)}
+                >
+                  <td className="p-4">
+                    <p className="font-mono font-semibold text-primary">{claim.case_number}</p>
+                    <p className="text-xs font-medium mt-0.5 tracking-[0.04em]">{claim.policy_number}</p>
+                    <p className="text-[10px] text-[#71717a] mt-0.5">{claim.incident_date}</p>
+                  </td>
+                  <td className="p-4">
+                    <p className="font-semibold text-foreground">{claim.client_name}</p>
+                    <p className="text-[11px] text-[#71717a] font-medium tracking-wide mt-0.5">{claim.case_type} Claim</p>
+                  </td>
+                  <td className="p-4 text-[#71717a] font-medium max-w-xs truncate">{claim.description || '-'}</td>
+                  <td className="p-4 text-right">
+                    <p className="font-bold text-foreground">${Number(claim.claim_amount||0).toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
+                  </td>
+                  <td className="p-4 text-center">
+                    <div className="flex flex-col items-center gap-1.5">
+                      <select
+                        onClick={e=>e.stopPropagation()}
+                        value={claim.status}
+                        onChange={e => handleUpdateStatus(claim, e.target.value)}
+                        className={`rounded-lg border-0 px-2.5 py-1 text-[11px] uppercase tracking-wider font-semibold cursor-pointer outline-none focus:ring-2 focus:ring-primary/40 w-full text-center ${statusColors[claim.status] || 'bg-muted text-[#71717a]'}`}
+                      >
+                        <option value="Submitted">Submitted</option>
+                        <option value="Under Review">Under Review</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Rejected">Rejected</option>
+                        <option value="Paid">Paid</option>
+                      </select>
+                      {isStaleClaim(claim) && (
+                        <span className="text-[10px] font-bold text-red-600 bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded-full w-full">
+                          SLA Breach
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="p-4 text-right">
+                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button onClick={(e) => { e.stopPropagation(); openModal(claim); }} className="p-1.5 text-[#71717a] hover:text-primary"><Edit className="w-4 h-4" /></button>
+                      <button onClick={(e) => deleteItem(claim.id, e)} className="p-1.5 text-[#71717a] hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
+                    </div>
+                  </td>
+                </motion.tr>
+              ))}
+              {filtered.length === 0 && !loading && (
+                <tr>
+                  <td colSpan="6" className="p-12 text-center text-[#71717a]">
+                    <FileWarning className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                    <p className="font-semibold text-lg text-foreground">No claims found</p>
+                    <p className="text-sm mt-1">File a new claim to get started.</p>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+            <motion.div initial={{scale:0.95, opacity:0}} animate={{scale:1, opacity:1}} exit={{scale:0.95, opacity:0}} className="bg-card w-full max-w-lg rounded-2xl flex flex-col shadow-xl border-[0.5px] border-black/9 dark:border-white/8">
+              <div className="p-5 border-b border-border/40 flex justify-between items-center">
+                <h2 className="text-lg font-semibold tracking-[-0.02em]">{editingItem ? 'Edit Claim' : 'New Claim'}</h2>
+                <button onClick={() => setIsModalOpen(false)} className="p-1.5 bg-muted rounded-full text-[#71717a] hover:text-foreground"><XCircle className="w-5 h-5"/></button>
+              </div>
+              <form onSubmit={saveItem} className="p-5 flex flex-col gap-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Claimant Name</label>
+                    <input required value={formData.client_name} onChange={e=>setFormData({...formData, client_name: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Policy Number</label>
+                    <input required value={formData.policy_number} onChange={e=>setFormData({...formData, policy_number: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Claim Type</label>
+                    <select required value={formData.case_type} onChange={e=>setFormData({...formData, case_type: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40">
+                      <option>Auto</option>
+                      <option>Home</option>
+                      <option>Health</option>
+                      <option>Life</option>
+                      <option>Commercial</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Incident Date</label>
+                    <input required type="date" value={formData.incident_date} onChange={e=>setFormData({...formData, incident_date: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Claim Amount ($)</label>
+                    <input required type="number" step="0.01" value={formData.claim_amount} onChange={e=>setFormData({...formData, claim_amount: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Status</label>
+                    <select required value={formData.status} onChange={e=>setFormData({...formData, status: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40">
+                      <option>Submitted</option>
+                      <option>Under Review</option>
+                      <option>Approved</option>
+                      <option>Rejected</option>
+                      <option>Paid</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Description</label>
+                  <textarea value={formData.description} onChange={e=>setFormData({...formData, description: e.target.value})} className="mt-1 w-full h-20 px-3 py-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none" />
+                </div>
+                <div className="mt-4 pt-4 border-t border-border/40 flex justify-end gap-2">
+                  <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium hover:bg-muted rounded-xl">Cancel</button>
+                  <button type="submit" className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary/90">Save Claim</button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }

@@ -1,402 +1,318 @@
-import { useTranslation} from "react-i18next";
-import { useState} from 'react';
-import { Shield, Search, Plus, Trash2, FileText, CheckCircle, MoreVertical, Eye, Edit} from 'lucide-react';
-import { Link} from 'react-router-dom';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
-import { Button} from '@/components/ui/button';
-import { Input} from '@/components/ui/input';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
-import { toast} from 'react-hot-toast';
-import ConfirmationModal from '@/components/ConfirmationModal';
-import { useContracts} from "@/hooks/integrations/useContracts";
-import { useCompanyId} from "@/hooks/useCompanyId";
-import { FileSignature} from "lucide-react";
+import { useTranslation } from "react-i18next";
+import React, { useState, useEffect } from 'react';
+import { Shield, Search, Plus, Trash2, FileText, CheckCircle, MoreVertical, Eye, Edit, XCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { toast } from 'react-hot-toast';
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { powerSync } from '@/api/PowerSyncConnector';
+import { supabase } from "@/api/supabaseClient";
 
 export default function Policies() {
- const { t} = useTranslation();
- const companyId = useCompanyId();
- const { sendContract} = useContracts();
- const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('policy');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+  const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const [policies, setPolicies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
 
- const policies = dbRecords.map(r => ({
- id: r.id,
- status: r.status || 'Active',
- ...r.data
-}));
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
+  const [formData, setFormData] = useState({
+    policy_holder: '',
+    policy_number: '',
+    provider_name: 'Slate Insurance',
+    coverage_type: 'Life',
+    premium_amount: '',
+    start_date: new Date().toISOString().split('T')[0],
+    status: 'Active'
+  });
 
- const [search, setSearch] = useState('');
- const [showModal, setShowModal] = useState(false);
- const [deleteTargetId, setDeleteTargetId] = useState(null);
- const [viewDetailsId, setViewDetailsId] = useState(null);
+  useEffect(() => {
+    if (companyId) {
+      fetchData();
+      const channel = supabase.channel('univ_insurancepolicy_changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'univ_insurancepolicy', filter: `company_id=eq.${companyId}` }, () => fetchData())
+        .subscribe();
+      return () => { supabase.removeChannel(channel); };
+    }
+  }, [companyId]);
 
- const [formData, setFormData] = useState({
- holderName: '',
- policyType: 'Life',
- premium: '',
- sumInsured: '',
- startDate: new Date().toISOString().split('T')[0],
- endDate: new Date(Date.now() + 31536000000).toISOString().split('T')[0] // 1 year
-});
- const [viewRecord, setViewRecord] = useState(null);
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const __res = await powerSync.execute(`SELECT * FROM univ_insurancepolicy WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
+      setPolicies(__res.rows ? (__res.rows._array || Array.from(__res.rows)) : []);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to fetch policies');
+    } finally {
+      setLoading(false);
+    }
+  };
 
- const handleCreatePolicy = () => {
- if (!formData.holderName.trim()) return toast.error("Please enter a policy holder name");
- 
- if (editTargetId) {
- mutateRecord.mutate({
- id: editTargetId,
- recordType: 'policy',
- payload: { ...formData},
- status: formData.status || 'active',
- searchText: `${formData.holderName} ${formData.policyType}`
-}, {
- onSuccess: () => {
- toast.success('Policy updated successfully!');
- setShowModal(false);
- setFormData({
- holderName: '', policyType: 'Life', premium: '', sumInsured: '', 
- startDate: new Date().toISOString().split('T')[0], 
- endDate: new Date(Date.now() + 31536000000).toISOString().split('T')[0]
-});
-},
- onError: (err) => toast.error('Failed to update policy: ' + err.message)
-});
-} else {
- const policyNumber = `POL-${Math.floor(10000 + Math.random() * 90000)}`;
+  const openModal = (item = null) => {
+    if (item) {
+      setEditingItem(item);
+      setFormData({ ...item });
+    } else {
+      setEditingItem(null);
+      setFormData({
+        policy_holder: '',
+        policy_number: `POL-${Math.floor(10000 + Math.random() * 90000)}`,
+        provider_name: 'Slate Insurance',
+        coverage_type: 'Life',
+        premium_amount: '',
+        start_date: new Date().toISOString().split('T')[0],
+        status: 'Active'
+      });
+    }
+    setIsModalOpen(true);
+  };
 
- mutateRecord.mutate({
- recordType: 'policy',
- payload: { ...formData, policyNumber},
- status: 'active',
- searchText: `${formData.holderName} ${formData.policyType} ${policyNumber}`
-}, {
- onSuccess: () => {
- toast.success('Policy created successfully!');
- setShowModal(false);
- setFormData({
- holderName: '', policyType: 'Life', premium: '', sumInsured: '', 
- startDate: new Date().toISOString().split('T')[0], 
- endDate: new Date(Date.now() + 31536000000).toISOString().split('T')[0]
-});
-},
- onError: (err) => toast.error('Failed to create policy: ' + err.message)
-});
-}
-};
+  const saveItem = async (e) => {
+    e.preventDefault();
+    if (!formData.policy_holder.trim()) return toast.error("Please enter a policy holder name");
 
- const handleEdit = (policy) => {
- setFormData({
- holderName: policy.holderName || '',
- policyType: policy.policyType || 'Life',
- premium: policy.premium || '',
- sumInsured: policy.sumInsured || '',
- startDate: policy.startDate || new Date().toISOString().split('T')[0],
- endDate: policy.endDate || new Date(Date.now() + 31536000000).toISOString().split('T')[0],
- status: policy.status
-});
- setShowModal(true);
-};
+    try {
+      if (editingItem) {
+        await powerSync.execute(`UPDATE univ_insurancepolicy SET policy_holder = ?, policy_number = ?, provider_name = ?, coverage_type = ?, start_date = ?, premium_amount = ?, status = ? WHERE id = ?`, 
+          [formData.policy_holder, formData.policy_number, formData.provider_name, formData.coverage_type, formData.start_date, formData.premium_amount, formData.status, editingItem.id]);
+        toast.success('Policy updated successfully!');
+      } else {
+        const id = crypto.randomUUID();
+        await powerSync.execute(`INSERT INTO univ_insurancepolicy (id, company_id, policy_holder, policy_number, provider_name, coverage_type, start_date, premium_amount, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+          [id, companyId, formData.policy_holder, formData.policy_number, formData.provider_name, formData.coverage_type, formData.start_date, formData.premium_amount, formData.status]);
+        toast.success('Policy created successfully!');
+      }
+      setIsModalOpen(false);
+      fetchData();
+    } catch (err) {
+      toast.error(err.message || 'Failed to save policy');
+    }
+  };
 
- const openNewModal = () => {
- setFormData({
- holderName: '', policyType: 'Life', premium: '', sumInsured: '', 
- startDate: new Date().toISOString().split('T')[0], 
- endDate: new Date(Date.now() + 31536000000).toISOString().split('T')[0]
-});
- setShowModal(true);
-};
+  const deleteItem = async (id, e) => {
+    e.stopPropagation();
+    if (!confirm('Delete this policy?')) return;
+    try {
+      await powerSync.execute(`DELETE FROM univ_insurancepolicy WHERE id = ?`, [id]);
+      toast.success('Policy removed!');
+      fetchData();
+    } catch (err) {
+      toast.error('Failed to remove: ' + err.message);
+    }
+  };
 
- const handleUpdateStatus = (policy, newStatus) => {
- const payload = { ...policy};
- delete payload.id;
- delete payload.status;
- 
- mutateRecord.mutate({
- id: policy.id,
- recordType: 'policy',
- payload,
- status: newStatus,
- searchText: `${policy.holderName} ${policy.policyNumber}`
-}, {
- onSuccess: () => toast.success(`Status updated to ${newStatus}`)
-});
-};
+  const handleUpdateStatus = async (policy, newStatus) => {
+    try {
+      await powerSync.execute(`UPDATE univ_insurancepolicy SET status = ? WHERE id = ?`, [newStatus, policy.id]);
+      toast.success(`Status updated to ${newStatus}`);
+      fetchData();
+    } catch(err) {
+      toast.error('Failed to update status');
+    }
+  };
 
- const handleDelete = () => {
- if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'policy'}, {
- onSuccess: () => {
- toast.success('Policy removed!');
- setDeleteTargetId(null);
-},
- onError: (err) => {
- toast.error('Failed to remove: ' + err.message);
- setDeleteTargetId(null);
-}
-});
-};
+  const filtered = policies.filter(p => 
+    String(p.policy_holder || '').toLowerCase().includes(search.toLowerCase()) || 
+    String(p.policy_number || '').toLowerCase().includes(search.toLowerCase())
+  );
 
- const filtered = policies.filter(p => 
- p.holderName?.toLowerCase().includes(search.toLowerCase()) || 
- p.policyNumber?.toLowerCase().includes(search.toLowerCase())
- );
+  const totalPremium = policies.reduce((sum, p) => sum + (Number(p.premium_amount) || 0), 0);
 
- const totalPremium = policies.reduce((sum, p) => sum + (Number(p.premium) || 0), 0);
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em]">{t("policies", "Policies")}</h1>
+          <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("manage_insurance_policies_and_", "Manage insurance policies and coverage")}</p>
+        </div>
+        <Button onClick={() => openModal()} className="gap-2 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)]">
+          <Plus className="w-4 h-4" /> {t("new_policy", "New Policy")}
+        </Button>
+      </div>
 
- return (
- <div className="space-y-6">
- <div className="flex items-center justify-between">
- <div>
- <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("policies", "Policies")}</h1>
- <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("manage_insurance_policies_and_", "Manage insurance policies and coverage")}</p>
- </div>
- <Button onClick={openNewModal} className="gap-2 bg-primary hover:bg-primary text-white">
- <Plus className="w-4 h-4" /> {t("new_policy", "New Policy")}
- </Button>
- </div>
- <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="stat-card-premium bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
- <FileText className="w-5 h-5" />
- </div>
- <div>
- <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{policies.length}</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("total_policies", "Total Policies")}</p>
- </div>
- </div>
- <div className="stat-card-premium bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
- <CheckCircle className="w-5 h-5" />
- </div>
- <div>
- <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{policies.filter(p => p.status === 'Active').length}</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("active", "Active")}</p>
- </div>
- </div>
- <div className="stat-card-premium bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center text-red-600">
- <Shield className="w-5 h-5" />
- </div>
- <div>
- <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{policies.filter(p => p.status === 'Lapsed').length}</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("lapsed", "Lapsed")}</p>
- </div>
- </div>
- <div className="stat-card-premium bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-primary">
- <span className="font-semibold text-lg">$</span>
- </div>
- <div>
- <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${totalPremium.toLocaleString()}</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("total_premium_value", "Total Premium Value")}</p>
- </div>
- </div>
- </div>
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-4 border-b border-primary/40 bg-muted/50">
- <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
- <Input placeholder="Search policy number or holder..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
- </div>
- </div>
- <div className="overflow-x-auto">
- {isDbLoading ? (
- <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_policies", "Loading policies...")}</div>
- ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
- <Shield className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary" />
- <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_policies_found", "No policies found")}</p>
- <p className="text-xs mt-1 tracking-[0.04em]">{t("create_a_new_policy_to_get_sta", "Create a new policy to get started.")}</p>
- </div>
- ) : (
- <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <tr>
- <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("policy_no", "Policy No.")}</th>
- <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("holder_type", "Holder & Type")}</th>
- <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("coverage_dates", "Coverage Dates")}</th>
- <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("premium", "Premium")}</th>
- <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</th>
- <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("action", "Action")}</th>
- </tr>
- </thead>
- <tbody className="divide-y divide-border">
- {filtered.map(policy => {
- return (
- <tr key={policy.id} className="hover:bg-muted/50 transition-colors">
- <td className="px-6 py-4 font-mono font-semibold text-primary">{policy.policyNumber}</td>
- <td className="px-6 py-4">
- <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{policy.holderName}</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{policy.policyType} {t("insurance", "Insurance")}</p>
- </td>
- <td className="px-6 py-4 text-[#71717a] dark:text-gray-400 font-medium">
- {policy.startDate} {t("to", "to")} {policy.endDate}
- </td>
- <td className="px-6 py-4 text-right">
- <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${Number(policy.premium).toLocaleString()}</p>
- <p className="text-[10px] text-[#71717a] dark:text-gray-400 uppercase tracking-wide tracking-[0.04em]">{t("sum", "Sum: $")}{Number(policy.sumInsured).toLocaleString()}</p>
- </td>
- <td className="px-6 py-4 text-center">
- <select
- value={policy.status}
- onChange={e => handleUpdateStatus(policy, e.target.value)}
- className={`rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input px-2 py-1 text-xs font-semibold ${
- policy.status === 'Active' ? 'bg-slate-100 text-primary/90' : 
- policy.status === 'Lapsed' ? 'bg-red-100 text-red-700' : 
- policy.status === 'Cancelled' ? 'bg-muted text-[#71717a] dark:text-gray-400' : 'bg-amber-100 text-amber-700'
-}`}
- >
- <option value="Active">{t("active", "Active")}</option>
- <option value="Pending">{t("pending", "Pending")}</option>
- <option value="Lapsed">{t("lapsed", "Lapsed")}</option>
- <option value="Cancelled">{t("cancelled", "Cancelled")}</option>
- </select>
- </td>
- <td className="px-6 py-4 text-right">
- <DropdownMenu>
- <DropdownMenuTrigger asChild>
- <Button variant="ghost" className="h-8 w-8 p-0">
- <span className="sr-only">{t("open_menu", "Open menu")}</span>
- <MoreVertical className="h-4 w-4" />
- </Button>
- </DropdownMenuTrigger>
- <DropdownMenuContent align="end">
- <DropdownMenuItem onClick={() => setViewRecord(policy)}>{t("view_details", "View Details")}</DropdownMenuItem>
- <DropdownMenuItem onClick={() => handleEdit(policy)}>{t("edit", "Edit")}</DropdownMenuItem>
- <DropdownMenuItem onClick={() => setDeleteTargetId(policy.id)} className="text-red-600">{t("delete", "Delete")}</DropdownMenuItem>
- </DropdownMenuContent>
- </DropdownMenu>
- </td>
- </tr>
- );
-})}
- </tbody>
- </table>
- )}
- </div>
- </div>
- {showModal && (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editTargetId ? 'Edit Policy' : 'New Policy'}</h2>
- <div className="space-y-3">
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("holder_name", "Holder Name")}</label>
- <Input value={formData.holderName} onChange={e => setFormData({...formData, holderName: e.target.value})} placeholder="Jane Doe" className="mt-1" />
- </div>
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("policy_type", "Policy Type")}</label>
- <select value={formData.policyType} onChange={e => setFormData({...formData, policyType: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground">
- <option>{t("life", "Life")}</option>
- <option>{t("health", "Health")}</option>
- <option>{t("auto", "Auto")}</option>
- <option>{t("property", "Property")}</option>
- <option>{t("business", "Business")}</option>
- </select>
- </div>
- <div className="grid grid-cols-2 gap-3">
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("premium", "Premium ($)")}</label>
- <Input type="number" value={formData.premium} onChange={e => setFormData({...formData, premium: e.target.value})} placeholder="500" className="mt-1" />
- </div>
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("sum_insured", "Sum Insured ($)")}</label>
- <Input type="number" value={formData.sumInsured} onChange={e => setFormData({...formData, sumInsured: e.target.value})} placeholder="50000" className="mt-1" />
- </div>
- </div>
- <div className="grid grid-cols-2 gap-3">
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("start_date", "Start Date")}</label>
- <Input type="date" value={formData.startDate} onChange={e => setFormData({...formData, startDate: e.target.value})} className="mt-1" />
- </div>
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("end_date", "End Date")}</label>
- <Input type="date" value={formData.endDate} onChange={e => setFormData({...formData, endDate: e.target.value})} className="mt-1" />
- </div>
- </div>
- </div>
- <div className="flex gap-3 pt-4">
- <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditTargetId(null);}}>{t("cancel", "Cancel")}</Button>
- <Button className="flex-1 bg-primary hover:bg-primary text-white" onClick={handleCreatePolicy}>{editTargetId ? 'Save Changes' : 'Create Policy'}</Button>
- </div>
- </div>
- </div>
- )}
- <Sheet open={viewDetailsId !== null} onOpenChange={(open) => !open && setViewDetailsId(null)}>
- <SheetContent className="bg-card text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <SheetHeader>
- <SheetTitle>{t("record_details", "Record Details")}</SheetTitle>
- </SheetHeader>
- <div className="mt-6 space-y-4">
- {viewDetailsId && (() => {
- const record = policies.find(r => r.id === viewDetailsId);
- if (!record) return null;
- return Object.entries(record).map(([key, value]) => {
- if (key === 'id') return null;
- return (
- <div key={key}>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{key.replace(/([A-Z])/g, ' $1').trim()}</label>
- <p className="font-medium">{String(value)}</p>
- </div>
- );
-});
-})()}
- </div>
- </SheetContent>
- </Sheet>
- <ConfirmationModal
- isOpen={deleteTargetId !== null}
- onClose={() => setDeleteTargetId(null)}
- onConfirm={handleDelete}
- title="Delete Policy"
- message="Are you sure you want to completely remove this policy? This cannot be undone."
- />
- <Sheet open={!!viewRecord} onOpenChange={() => setViewRecord(null)}>
- <SheetContent className="overflow-y-auto">
- <SheetHeader>
- <SheetTitle>{t("policy_details", "Policy Details")}</SheetTitle>
- <SheetDescription>{t(
- "view_complete_information_for_",
- "View complete information for this policy."
- )}</SheetDescription>
- </SheetHeader>
- {viewRecord && (
- <div className="mt-6 space-y-4">
- <div>
- <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("policy_number", "Policy Number")}</h4>
- <p className="text-base font-semibold">{viewRecord.policyNumber}</p>
- </div>
- <div>
- <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("holder_name", "Holder Name")}</h4>
- <p className="text-base font-semibold">{viewRecord.holderName}</p>
- </div>
- <div>
- <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("policy_type", "Policy Type")}</h4>
- <p className="text-base">{viewRecord.policyType}</p>
- </div>
- <div>
- <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("status", "Status")}</h4>
- <p className="text-base">{viewRecord.status}</p>
- </div>
- <div>
- <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("premium", "Premium")}</h4>
- <p className="text-base">${Number(viewRecord.premium).toLocaleString()}</p>
- </div>
- <div>
- <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("sum_insured", "Sum Insured")}</h4>
- <p className="text-base">${Number(viewRecord.sumInsured).toLocaleString()}</p>
- </div>
- <div>
- <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("coverage_period", "Coverage Period")}</h4>
- <p className="text-base">{viewRecord.startDate} {t("to", "to")} {viewRecord.endDate}</p>
- </div>
- </div>
- )}
- </SheetContent>
- </Sheet>
- </div>
- );
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 shadow-sm">
+          <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary">
+            <FileText className="w-6 h-6" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-card-foreground tracking-[-0.02em]">{policies.length}</p>
+            <p className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">{t("total_policies", "Total Policies")}</p>
+          </div>
+        </div>
+        <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 shadow-sm">
+          <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary">
+            <CheckCircle className="w-6 h-6" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-card-foreground tracking-[-0.02em]">{policies.filter(p => p.status === 'Active').length}</p>
+            <p className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">{t("active", "Active")}</p>
+          </div>
+        </div>
+        <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 shadow-sm">
+          <div className="w-12 h-12 rounded-xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600">
+            <Shield className="w-6 h-6" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-card-foreground tracking-[-0.02em]">{policies.filter(p => p.status === 'Lapsed').length}</p>
+            <p className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">{t("lapsed", "Lapsed")}</p>
+          </div>
+        </div>
+        <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center gap-4 shadow-sm">
+          <div className="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600">
+            <span className="font-bold text-xl">$</span>
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-card-foreground tracking-[-0.02em]">${totalPremium.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
+            <p className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">{t("total_premium", "Total Premium")}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
+          <div className="relative w-72">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
+            <Input 
+              placeholder="Search policy number or holder..." 
+              value={search} 
+              onChange={e => setSearch(e.target.value)} 
+              className="pl-10 h-10 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:ring-2 focus:ring-primary/40" 
+            />
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm whitespace-nowrap">
+            <thead className="bg-muted/50 text-[11px] font-semibold tracking-[0.06em] uppercase text-[#71717a] dark:text-gray-400">
+              <tr>
+                <th className="p-4">Policy No.</th>
+                <th className="p-4">Holder & Type</th>
+                <th className="p-4">Start Date</th>
+                <th className="p-4 text-right">Premium</th>
+                <th className="p-4 text-center">Status</th>
+                <th className="p-4 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {filtered.map((policy, idx) => (
+                <motion.tr 
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.02 }}
+                  key={policy.id} 
+                  className="hover:bg-muted/30 transition-colors group cursor-pointer"
+                  onClick={() => openModal(policy)}
+                >
+                  <td className="p-4 font-mono font-semibold text-primary">{policy.policy_number}</td>
+                  <td className="p-4">
+                    <p className="font-semibold text-foreground">{policy.policy_holder}</p>
+                    <p className="text-[11px] text-[#71717a] font-medium tracking-wide mt-0.5">{policy.coverage_type} Insurance</p>
+                  </td>
+                  <td className="p-4 text-[#71717a] font-medium">{policy.start_date}</td>
+                  <td className="p-4 text-right">
+                    <p className="font-bold text-foreground">${Number(policy.premium_amount||0).toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
+                  </td>
+                  <td className="p-4 text-center">
+                    <select
+                      onClick={e=>e.stopPropagation()}
+                      value={policy.status}
+                      onChange={e => handleUpdateStatus(policy, e.target.value)}
+                      className={`rounded-lg border-0 px-2.5 py-1 text-[11px] uppercase tracking-wider font-semibold cursor-pointer outline-none focus:ring-2 focus:ring-primary/40 ${
+                        policy.status === 'Active' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10' : 
+                        policy.status === 'Lapsed' ? 'bg-red-50 text-red-700 dark:bg-red-500/10' : 
+                        policy.status === 'Cancelled' ? 'bg-muted text-[#71717a]' : 'bg-orange-50 text-orange-700 dark:bg-orange-500/10'
+                      }`}
+                    >
+                      <option value="Active">Active</option>
+                      <option value="Lapsed">Lapsed</option>
+                      <option value="Cancelled">Cancelled</option>
+                      <option value="Pending">Pending</option>
+                    </select>
+                  </td>
+                  <td className="p-4 text-right">
+                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button onClick={(e) => { e.stopPropagation(); openModal(policy); }} className="p-1.5 text-[#71717a] hover:text-primary"><Edit className="w-4 h-4" /></button>
+                      <button onClick={(e) => deleteItem(policy.id, e)} className="p-1.5 text-[#71717a] hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
+                    </div>
+                  </td>
+                </motion.tr>
+              ))}
+              {filtered.length === 0 && !loading && (
+                <tr>
+                  <td colSpan="6" className="p-12 text-center text-[#71717a]">
+                    <Shield className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                    <p className="font-semibold text-lg text-foreground">No policies found</p>
+                    <p className="text-sm mt-1">Create a new policy to get started.</p>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+            <motion.div initial={{scale:0.95, opacity:0}} animate={{scale:1, opacity:1}} exit={{scale:0.95, opacity:0}} className="bg-card w-full max-w-md rounded-2xl flex flex-col shadow-xl border-[0.5px] border-black/9 dark:border-white/8">
+              <div className="p-5 border-b border-border/40 flex justify-between items-center">
+                <h2 className="text-lg font-semibold tracking-[-0.02em]">{editingItem ? 'Edit Policy' : 'New Policy'}</h2>
+                <button onClick={() => setIsModalOpen(false)} className="p-1.5 bg-muted rounded-full text-[#71717a] hover:text-foreground"><XCircle className="w-5 h-5"/></button>
+              </div>
+              <form onSubmit={saveItem} className="p-5 flex flex-col gap-4">
+                <div>
+                  <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Policy Holder Name</label>
+                  <input required value={formData.policy_holder} onChange={e=>setFormData({...formData, policy_holder: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Policy Number</label>
+                    <input required value={formData.policy_number} onChange={e=>setFormData({...formData, policy_number: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Coverage Type</label>
+                    <select required value={formData.coverage_type} onChange={e=>setFormData({...formData, coverage_type: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40">
+                      <option>Life</option>
+                      <option>Health</option>
+                      <option>Auto</option>
+                      <option>Home</option>
+                      <option>Commercial</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Start Date</label>
+                    <input required type="date" value={formData.start_date} onChange={e=>setFormData({...formData, start_date: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Premium ($)</label>
+                    <input required type="number" step="0.01" value={formData.premium_amount} onChange={e=>setFormData({...formData, premium_amount: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Status</label>
+                  <select required value={formData.status} onChange={e=>setFormData({...formData, status: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40">
+                    <option>Active</option>
+                    <option>Pending</option>
+                    <option>Lapsed</option>
+                    <option>Cancelled</option>
+                  </select>
+                </div>
+                <div className="mt-4 pt-4 border-t border-border/40 flex justify-end gap-2">
+                  <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium hover:bg-muted rounded-xl">Cancel</button>
+                  <button type="submit" className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary/90">Save Policy</button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }

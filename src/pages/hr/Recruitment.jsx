@@ -15,6 +15,7 @@ import { useAuth} from '@/lib/AuthContext';
 import { useContracts} from "@/hooks/integrations/useContracts";
 import { useCompanyId} from "@/hooks/useCompanyId";
 import { Video, FileSignature} from "lucide-react";
+import { usePowerSync } from '@powersync/react';
 
 export default function Recruitment() {
  const { t} = useTranslation();
@@ -23,15 +24,24 @@ export default function Recruitment() {
  const { user} = useAuth();
  const { generateMeetingLink} = useMeeting();
  const { syncEvent} = useCalendar();
- const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('candidate');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+ const powerSync = usePowerSync();
 
- const candidates = dbRecords.map(r => ({
- id: r.id,
- stage: r.status || 'Applied',
- ...r.data
-}));
+ const [candidates, setCandidates] = useState([]);
+ const [isDbLoading, setIsDbLoading] = useState(true);
+
+ useEffect(() => {
+   let active = true;
+   const fetchCandidates = async () => {
+     setIsDbLoading(true);
+     try {
+       const res = await powerSync.execute('SELECT * FROM univ_hr_candidates WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+       if(active) setCandidates(res.rows._array || Array.from(res.rows));
+     } catch(e){}
+     setIsDbLoading(false);
+   };
+   if (companyId) fetchCandidates();
+   return () => { active = false; };
+ }, [companyId]);
 
  const [search, setSearch] = useState('');
  const [showModal, setShowModal] = useState(false);
@@ -48,41 +58,30 @@ export default function Recruitment() {
  notes: ''
 });
 
- const handleCreateOrUpdateCandidate = () => {
+ const handleCreateOrUpdateCandidate = async () => {
  if (!formData.name.trim()) return toast.error("Please enter a name");
  
- if (editTargetId) {
- const cand = candidates.find(c => c.id === editTargetId);
- mutateRecord.mutate({
- id: editTargetId,
- recordType: 'candidate',
- payload: { ...formData, appliedDate: cand.appliedDate},
- status: cand.stage,
- searchText: `${formData.name} ${formData.position} ${formData.department}`
-}, {
- onSuccess: () => {
- toast.success('Candidate updated successfully!');
- setShowModal(false);
- setEditTargetId(null);
- setFormData({ name: '', position: 'Frontend Engineer', department: 'Engineering', email: '', phone: '', notes: ''});
-},
- onError: (err) => toast.error('Failed: ' + err.message)
-});
-} else {
- mutateRecord.mutate({
- recordType: 'candidate',
- payload: { ...formData, appliedDate: new Date().toISOString().split('T')[0]},
- status: 'Applied',
- searchText: `${formData.name} ${formData.position} ${formData.department}`
-}, {
- onSuccess: () => {
- toast.success('Candidate added successfully!');
- setShowModal(false);
- setFormData({ name: '', position: 'Frontend Engineer', department: 'Engineering', email: '', phone: '', notes: ''});
-},
- onError: (err) => toast.error('Failed: ' + err.message)
-});
-}
+ try {
+   if (editTargetId) {
+     await powerSync.execute(`UPDATE univ_hr_candidates SET name=?, email=?, phone=?, notes=? WHERE id=?`, 
+       [formData.name, formData.email, formData.phone, formData.notes, editTargetId]
+     );
+     toast.success('Candidate updated successfully!');
+   } else {
+     await powerSync.execute(`INSERT INTO univ_hr_candidates (id, created_at, company_id, name, email, phone, stage, notes) VALUES (gen_random_uuid(), NOW(), ?, ?, ?, ?, 'Applied', ?)`, 
+       [companyId, formData.name, formData.email, formData.phone, formData.notes]
+     );
+     toast.success('Candidate added successfully!');
+   }
+   setShowModal(false);
+   setEditTargetId(null);
+   setFormData({ name: '', position: 'Frontend Engineer', department: 'Engineering', email: '', phone: '', notes: ''});
+   
+   // Optimistic update hint
+   setCandidates([...candidates]);
+ } catch (err) {
+   toast.error('Failed: ' + err.message);
+ }
 };
 
  const openEdit = (cand) => {
@@ -104,57 +103,48 @@ export default function Recruitment() {
  setShowModal(true);
 };
 
- const handleUpdateStage = (candidate, newStage) => {
- const payload = { ...candidate};
- delete payload.id;
- delete payload.stage;
- 
- mutateRecord.mutate({
- id: candidate.id,
- recordType: 'candidate',
- payload,
- status: newStage,
- searchText: `${candidate.name} ${candidate.position}`
-}, {
- onSuccess: () => {
- toast.success(`Candidate moved to ${newStage}`);
- if (newStage === 'Interview') {
- generateMeetingLink({
- companyId: user?.company_id,
- provider: 'zoom',
- topic: `Interview with ${candidate.name}`,
- duration: 60,
- startTime: new Date(Date.now() + 86400000).toISOString()
-}).then(meetingData => {
- syncEvent({
- companyId: user?.company_id,
- provider: 'google',
- eventDetails: {
- title: `Interview: ${candidate.name} - ${candidate.position}`,
- startTime: new Date(Date.now() + 86400000).toISOString(),
- endTime: new Date(Date.now() + 86400000 + 3600000).toISOString(),
- description: `Zoom Link: ${meetingData?.join_url}`,
- attendees: [candidate.email]
-}
-}).catch(console.error);
-}).catch(console.error);
-}
-}
-});
+ const handleUpdateStage = async (candidate, newStage) => {
+ try {
+   await powerSync.execute(`UPDATE univ_hr_candidates SET stage=? WHERE id=?`, [newStage, candidate.id]);
+   toast.success(`Candidate moved to ${newStage}`);
+   setCandidates(candidates.map(c => c.id === candidate.id ? { ...c, stage: newStage } : c));
+
+   if (newStage === 'Interview') {
+     generateMeetingLink({
+       companyId: user?.company_id,
+       provider: 'zoom',
+       topic: `Interview with ${candidate.name}`,
+       duration: 60,
+       startTime: new Date(Date.now() + 86400000).toISOString()
+     }).then(meetingData => {
+       syncEvent({
+         companyId: user?.company_id,
+         provider: 'google',
+         eventDetails: {
+           title: `Interview: ${candidate.name}`,
+           startTime: new Date(Date.now() + 86400000).toISOString(),
+           endTime: new Date(Date.now() + 86400000 + 3600000).toISOString(),
+           description: `Zoom Link: ${meetingData?.join_url}`,
+           attendees: [candidate.email]
+         }
+       }).catch(console.error);
+     }).catch(console.error);
+   }
+ } catch (err) {
+   toast.error('Failed to update stage: ' + err.message);
+ }
 };
 
- const handleDelete = () => {
+ const handleDelete = async () => {
  if (!deleteTargetId) return;
- deleteRecord.mutate(deleteTargetId, {
- onSuccess: () => {
- toast.success('Candidate removed!');
- setDeleteTargetId(null);
-},
- onError: (err) => {
- toast.error('Failed to remove: ' + err.message);
- setDeleteTargetId(null);
-}
-});
+ try {
+   await powerSync.execute(`DELETE FROM univ_hr_candidates WHERE id=?`, [deleteTargetId]);
+   toast.success('Candidate removed!');
+   setDeleteTargetId(null);
+   setCandidates(candidates.filter(c => c.id !== deleteTargetId));
+ } catch (err) {
+   toast.error('Failed to remove: ' + err.message);
+ }
 };
 
  const filtered = candidates.filter(c => 

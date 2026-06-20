@@ -210,6 +210,7 @@ import ReligionSermons from './pages/religion/Sermons';
 import ReligionSmallGroups from './pages/religion/SmallGroups';
 import ReligionPrayers from './pages/religion/Prayers';
 import ReligionMemberPortal from './pages/religion/MemberPortal';
+import ReligionMilestones from './pages/religion/Milestones';
 
 // Insurance Pages
 import InsurancePolicies from './pages/insurance/Policies';
@@ -682,6 +683,7 @@ function PlatformRoutes() {
       <Route path="/sermons" element={<ReligionSermons />} />
       <Route path="/small-groups" element={<ReligionSmallGroups />} />
       <Route path="/prayers" element={<ReligionPrayers />} />
+      <Route path="/milestones" element={<ReligionMilestones />} />
       <Route path="/member-portal" element={<ReligionMemberPortal />} />
 
       {/* Insurance Suite */}

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Microscope, Search, Plus, CheckCircle2, FileText, Trash2, MoreVertical, Image as ImageIcon, AlertCircle } from 'lucide-react';
+import { Microscope, Search, Plus, CheckCircle2, FileText, Trash2, MoreVertical, Image as ImageIcon, AlertCircle, Maximize, ZoomIn, Eye, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
@@ -46,6 +46,7 @@ export default function Radiology() {
 
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [dicomScan, setDicomScan] = useState(null);
   const [formData, setFormData] = useState({
     patient_id: '',
     scan_type: 'X-Ray',
@@ -217,6 +218,7 @@ export default function Radiology() {
                         <Button variant="ghost" className="h-8 w-8 p-0"><MoreVertical className="h-4 w-4" /></Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => setDicomScan(s)} className="font-medium"><Eye className="w-4 h-4 mr-2"/> View Scan</DropdownMenuItem>
                         {s.status === 'Pending' && (
                           <>
                             <DropdownMenuItem onClick={() => updateStatus.mutate({ id: s.id, status: 'Completed' })} className="text-emerald-600 font-medium">Mark Normal</DropdownMenuItem>
@@ -287,6 +289,64 @@ export default function Radiology() {
               <Button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white rounded-xl shadow-md" onClick={() => mutateRecord.mutate(formData)} disabled={mutateRecord.isPending}>
                 {mutateRecord.isPending ? 'Saving...' : 'Add Request'}
               </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* DICOM Viewer Stub */}
+      {dicomScan && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 backdrop-blur-md p-4">
+          <div className="w-full max-w-5xl h-[85vh] bg-black border border-white/20 rounded-xl flex flex-col overflow-hidden shadow-2xl">
+            {/* Header */}
+            <div className="flex justify-between items-center p-4 border-b border-white/10 bg-black/50 text-white">
+              <div>
+                <h3 className="font-semibold text-lg flex items-center gap-2"><Activity className="w-5 h-5 text-purple-400"/> DICOM Viewer</h3>
+                <p className="text-sm text-gray-400">{dicomScan.patient_name} - {dicomScan.scan_type} ({dicomScan.body_part})</p>
+              </div>
+              <div className="flex items-center gap-4">
+                <Button variant="ghost" size="icon" className="text-white hover:bg-white/10"><ZoomIn className="w-5 h-5"/></Button>
+                <Button variant="ghost" size="icon" className="text-white hover:bg-white/10"><Maximize className="w-5 h-5"/></Button>
+                <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 ml-4" onClick={() => setDicomScan(null)}>Close</Button>
+              </div>
+            </div>
+            {/* Main Viewer Area */}
+            <div className="flex-1 relative flex items-center justify-center bg-[#0a0a0a] overflow-hidden">
+              <div className="absolute inset-0 opacity-10 flex items-center justify-center pointer-events-none">
+                <ImageIcon className="w-64 h-64 text-white" />
+              </div>
+              <div className="absolute top-4 left-4 text-xs font-mono text-gray-500 space-y-1">
+                <p>PATIENT: {dicomScan.patient_name.toUpperCase()}</p>
+                <p>ID: {dicomScan.patient_id.substring(0, 8)}</p>
+                <p>DATE: {new Date(dicomScan.scan_date).toLocaleDateString()}</p>
+              </div>
+              <div className="absolute top-4 right-4 text-xs font-mono text-gray-500 text-right space-y-1">
+                <p>{dicomScan.scan_type.toUpperCase()}</p>
+                <p>{dicomScan.body_part.toUpperCase()}</p>
+                <p>WL: 40 WW: 400</p>
+              </div>
+              
+              {/* Fake X-Ray/Scan Image */}
+              <div className="w-[400px] h-[500px] bg-gradient-to-tr from-gray-900 to-gray-800 rounded-lg shadow-2xl border border-white/5 flex items-center justify-center relative overflow-hidden group cursor-crosshair">
+                 <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle,rgba(255,255,255,0.8)_0%,rgba(0,0,0,0.8)_100%)] mix-blend-overlay"></div>
+                 <ImageIcon className="w-32 h-32 text-gray-600 opacity-50 group-hover:scale-110 transition-transform duration-500" />
+                 {dicomScan.status === 'Abnormal' && (
+                    <div className="absolute top-1/3 left-1/2 w-16 h-16 border-2 border-red-500/50 rounded-full animate-pulse flex items-center justify-center">
+                       <span className="text-[10px] text-red-500 font-bold bg-black/50 px-1">ANOMALY</span>
+                    </div>
+                 )}
+              </div>
+              
+              <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 pointer-events-none">
+                 <div className="w-8 h-1 bg-white/20 rounded-full"></div>
+                 <div className="w-8 h-1 bg-white/50 rounded-full"></div>
+                 <div className="w-8 h-1 bg-white/20 rounded-full"></div>
+              </div>
+            </div>
+            {/* Footer / Report */}
+            <div className="p-4 border-t border-white/10 bg-black/80 text-white">
+              <h4 className="text-sm font-semibold text-gray-400 uppercase mb-2">Radiologist Report</h4>
+              <p className="text-sm">{dicomScan.report_summary || 'No report generated yet.'}</p>
             </div>
           </div>
         </div>

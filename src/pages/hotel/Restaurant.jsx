@@ -10,6 +10,7 @@ export default function Restaurant() {
  const { t} = useTranslation();
  // Supabase Real-time Sync Hooks
  const { data: dbMenu = [], isLoading: isMenuLoading} = useIndustryRecords('menu');
+ const { data: dbReservations = [] } = useIndustryRecords('reservation');
  const mutateRecord = useMutateIndustryRecord();
  const deleteRecord = useDeleteIndustryRecord();
 
@@ -71,6 +72,35 @@ export default function Restaurant() {
 
  const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
  const orderTotal = total * 1.1;
+
+ // If charged to room, find active reservation and add to folio
+ if (paymentMethod === 'Room') {
+   const activeRes = dbReservations.find(r => 
+     String(r.data?.roomNumber) === String(roomNumber) && 
+     r.status === 'Checked-in'
+   );
+
+   if (activeRes) {
+     const currentFolio = activeRes.data?.folioItems || [];
+     const newFolioItem = {
+       id: orderId,
+       date: new Date().toISOString(),
+       description: `Restaurant Order ${orderId}`,
+       amount: parseFloat(orderTotal.toFixed(2)),
+       type: 'Restaurant'
+     };
+
+     mutateRecord.mutate({
+       id: activeRes.id,
+       recordType: 'reservation',
+       payload: { ...activeRes.data, folioItems: [...currentFolio, newFolioItem] },
+       status: activeRes.status,
+       searchText: activeRes.search_text
+     });
+   } else {
+     toast.error(`No checked-in guest found in ${roomNumber}`);
+   }
+ }
 
  const payload = {
  orderId,

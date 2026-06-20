@@ -502,6 +502,7 @@ export const INDUSTRIES = {
       { label: 'Sermon Library', path: '/sermons', icon: 'BookOpen' },
       { label: 'Small Groups', path: '/small-groups', icon: 'Users2' },
       { label: 'Prayer Requests', path: '/prayers', icon: 'Star' },
+      { label: 'Milestones', path: '/milestones', icon: 'Award' },
       { label: 'Attendance', path: '/attendance', icon: 'CheckSquare' },
       { label: 'Documents', path: '/documents', icon: 'FolderOpen' },
       { label: 'Tasks', path: '/tasks', icon: 'CheckSquare2' },

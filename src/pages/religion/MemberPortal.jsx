@@ -8,47 +8,56 @@ import { toast} from 'react-hot-toast';
 import { useAuth} from '@/lib/AuthContext';
 import { Badge} from "@/components/ui/badge";
 
+import { usePowerSync } from '@powersync/react';
+import { useCompanyId } from '@/hooks/useCompanyId';
+
 export default function MemberPortal() {
  const { t} = useTranslation();
  const { user} = useAuth();
+ const companyId = useCompanyId();
+ const powerSync = usePowerSync();
 
- // Real Database Hooks
- const { data: dbEvents = [], isLoading: isEventsLoading} = useIndustryRecords('event');
- const { data: dbDonations = [], isLoading: isDonationsLoading} = useIndustryRecords('donation');
- const mutateRecord = useMutateIndustryRecord();
+ const [events, setEvents] = useState([]);
+ const [myDonations, setMyDonations] = useState([]);
+ const [isLoading, setIsLoading] = useState(true);
+
+ useEffect(() => {
+   let active = true;
+   const fetchData = async () => {
+     setIsLoading(true);
+     try {
+       const evRes = await powerSync.execute('SELECT * FROM univ_religion_events WHERE company_id = ? ORDER BY date ASC LIMIT 10', [companyId]);
+       if(active) setEvents(evRes.rows._array || Array.from(evRes.rows));
+
+       const donRes = await powerSync.execute('SELECT * FROM univ_religion_donations WHERE company_id = ? AND member_name = ?', [companyId, user?.name || '']);
+       if(active) setMyDonations(donRes.rows._array || Array.from(donRes.rows));
+     } catch(e){}
+     setIsLoading(false);
+   };
+   if (companyId) fetchData();
+   return () => { active = false; };
+ }, [companyId, user?.name]);
 
  const [showPrayerModal, setShowPrayerModal] = useState(false);
  const [prayerData, setPrayerData] = useState({ title: '', detail: ''});
 
- const events = dbEvents.map(r => ({ id: r.id, status: r.status, ...r.data}));
-
- // For demo, we filter donations for a mock user name. In a real app this uses user.email or user.id
- const myDonations = dbDonations.map(r => ({ id: r.id, ...r.data}));
  const totalGiven = myDonations.reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
 
- const handleCreatePrayer = () => {
+ const handleCreatePrayer = async () => {
  if (!prayerData.title.trim()) return toast.error("Please provide a prayer title");
 
- mutateRecord.mutate({
- recordType: 'prayer',
- payload: {
- title: prayerData.title,
- detail: prayerData.detail,
- date: new Date().toISOString().split('T')[0],
- member: user?.name || 'Anonymous'
-},
- status: 'active',
- searchText: `${prayerData.title} ${prayerData.detail}`
-}, {
- onSuccess: () => {
- toast.success(`Prayer request submitted successfully!`);
- setShowPrayerModal(false);
- setPrayerData({ title: '', detail: ''});
-}
-});
+ try {
+   await powerSync.execute(
+     `INSERT INTO univ_religion_prayers (id, created_at, company_id, requestor, prayer, status) VALUES (gen_random_uuid(), NOW(), ?, ?, ?, 'Active')`,
+     [companyId, user?.name || 'Anonymous', prayerData.title + ' - ' + prayerData.detail]
+   );
+   toast.success(`Prayer request submitted successfully!`);
+   setShowPrayerModal(false);
+   setPrayerData({ title: '', detail: ''});
+ } catch (err) {
+   toast.error('Failed to submit prayer: ' + err.message);
+ }
 };
-
- const isLoading = isEventsLoading || isDonationsLoading;
 
  if (isLoading) {
  return <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_your_member_profile", "Loading your member profile...")}</div>;

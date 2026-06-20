@@ -1,188 +1,228 @@
-import { powerSync} from '@/api/PowerSyncConnector';
-import React, { useState, useEffect} from 'react';
-
-import GenericGrid from '@/components/views/GenericGrid';
-import GenericKanban from '@/components/views/GenericKanban';
-import GenericCalendar from '@/components/views/GenericCalendar';
-import GenericDashboard from '@/components/views/GenericDashboard';
-
-
-import { supabase} from "@/api/supabaseClient";
-import { useCompanyId} from '@/hooks/useCompanyId';
-import { motion} from 'framer-motion';
-import { Search, Plus, Download, MoreHorizontal, Gavel, User, Calendar, CheckCircle2} from 'lucide-react';
-import { toast} from 'react-hot-toast';
+import { powerSync } from '@/api/PowerSyncConnector';
+import React, { useState, useEffect } from 'react';
+import { supabase } from "@/api/supabaseClient";
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Search, Plus, Scale, Calendar, User, CheckCircle2, Clock, Edit2, Trash2, XCircle } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 export default function UnivArbitration() {
- const companyId = useCompanyId();
- const [view, setView] = useState('Default');
- const [data, setData] = useState([]);
- const [loading, setLoading] = useState(true);
- const [searchTerm, setSearchTerm] = useState('');
+  const companyId = useCompanyId();
+  const [view, setView] = useState('Default');
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
 
- useEffect(() => {
- if (companyId) {
- fetchData();
- const channel = supabase.channel('univ_arbitration_changes')
- .on('postgres_changes', { event: '*', schema: 'public', table: 'univ_arbitration', filter: `company_id=eq.${companyId}`}, () => {
- fetchData();
-}).subscribe();
- return () => { supabase.removeChannel(channel);};
-}
-}, [companyId]);
+  // Modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
+  const [form, setForm] = useState({
+    case_name: '', arbitrator: '', date: new Date().toISOString().split('T')[0], status: 'Scheduled'
+  });
 
- const fetchData = async () => {
- setLoading(true);
- try {
- const { data: fetchedData, error} = await supabase
- .from('univ_arbitration')
- .select('*').eq('company_id', companyId)
- .eq('company_id', companyId)
- .order('created_at', { ascending: false});
- if (error && error.code !== '42P01') throw error;
- setData(fetchedData || []);
-} catch (err) {
- console.error(err);
- toast.error(err.message || 'Failed to fetch data');
-} finally {
- setLoading(false);
-}
-};
+  useEffect(() => {
+    if (companyId) {
+      fetchData();
+      const channel = supabase.channel('univ_arbitration_changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'univ_arbitration', filter: `company_id=eq.${companyId}` }, () => fetchData())
+        .subscribe();
+      return () => { supabase.removeChannel(channel); };
+    }
+  }, [companyId]);
 
- const handleAdd = async () => {
- const newItem = {
- company_id: companyId,
- case_name: 'New Arbitration',
- arbitrator: 'Sample Data',
- date: 'Sample Data',
- status: 'Active'
-};
- try {
- const { error} = await (async () => {
- const _payload = { ...newItem, id: crypto.randomUUID(), company_id: companyId};
- const _keys = Object.keys(_payload);
- const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- const _plhdr = _keys.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO univ_arbitration (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals); return { error: null};})();
- if (error) throw error;
- toast.success('Arbitration added');
-} catch (err) {
- console.error(err);
- toast.error(err.message || 'Failed to save');
-}
-};
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const __res = await powerSync.execute(`SELECT * FROM univ_arbitration WHERE company_id = ? ORDER BY date ASC`, [companyId]);
+      setData(__res.rows ? (__res.rows._array || Array.from(__res.rows)) : []);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to fetch arbitration data');
+    } finally {
+      setLoading(false);
+    }
+  };
 
- const filtered = data.filter(item => 
- String(item.case_name || '').toLowerCase().includes(searchTerm.toLowerCase())
- );
+  const openModal = (item = null) => {
+    if (item) {
+      setEditingItem(item);
+      setForm({ ...item });
+    } else {
+      setEditingItem(null);
+      setForm({ case_name: '', arbitrator: '', date: new Date().toISOString().split('T')[0], status: 'Scheduled' });
+    }
+    setIsModalOpen(true);
+  };
 
- 
- const handleExport = () => {
- const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
- if (!exportData || exportData.length === 0) return alert('No data to export');
- const keys = Object.keys(exportData[0]).filter(k => k !== 'company_id' && k !== 'id');
- const csv = [keys.join(','), ...exportData.map(r => keys.map(k => '"' + (r[k]||'').toString().replace(/"/g, '""') + '"').join(','))].join('\n');
- const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;'});
- const url = URL.createObjectURL(blob);
- const a = document.createElement('a');
- a.href = url; a.download = 'export.csv'; a.click();
-};
+  const saveItem = async (e) => {
+    e.preventDefault();
+    try {
+      if (editingItem) {
+        await powerSync.execute(`UPDATE univ_arbitration SET case_name = ?, arbitrator = ?, date = ?, status = ? WHERE id = ?`, 
+          [form.case_name, form.arbitrator, form.date, form.status, editingItem.id]);
+        toast.success('Arbitration updated');
+      } else {
+        const id = crypto.randomUUID();
+        await powerSync.execute(`INSERT INTO univ_arbitration (id, company_id, case_name, arbitrator, date, status) VALUES (?, ?, ?, ?, ?, ?)`, 
+          [id, companyId, form.case_name, form.arbitrator, form.date, form.status]);
+        toast.success('Arbitration scheduled');
+      }
+      setIsModalOpen(false);
+      fetchData();
+    } catch (err) {
+      toast.error(err.message || 'Failed to save');
+    }
+  };
 
- return (
- <div className="flex flex-col h-full bg-background overflow-hidden ${view !== 'Default' ? 'hide-default' : ''}">
- <div className="view-header flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
- <div>
- <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">Arbitration</h2>
- <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Manage your arbitration records.</p>
- </div>
- <div className="flex gap-3">
- <button className="flex items-center gap-2 px-4 py-2 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm font-medium hover:bg-muted/50 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Download className="w-4 h-4" /> Export
- </button>
- <div className="flex items-center gap-2">
+  const deleteItem = async (id, e) => {
+    e.stopPropagation();
+    if (!confirm('Delete this arbitration proceeding?')) return;
+    try {
+      await powerSync.execute(`DELETE FROM univ_arbitration WHERE id = ?`, [id]);
+      toast.success('Deleted');
+      fetchData();
+    } catch (err) {
+      toast.error('Failed to delete');
+    }
+  };
 
- 
- 
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
- <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
- Export CSV
- </button>
+  const filtered = data.filter(item => 
+    String(item.case_name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    String(item.arbitrator || '').toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
- <button onClick={handleAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
- <Plus className="w-4 h-4" /> Add Arbitration
- </button>
- </div>
- </div>
- </div>
+  return (
+    <div className={`flex flex-col h-full bg-background overflow-hidden ${view !== 'Default' ? 'hide-default' : ''}`}>
+      <div className="view-header flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
+        <div>
+          <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">Arbitrations</h2>
+          <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Manage ADR, mediation, and arbitration proceedings.</p>
+        </div>
+        <div className="flex gap-3">
+          <button onClick={() => openModal()} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)]">
+            <Plus className="w-4 h-4" /> Schedule Proceeding
+          </button>
+        </div>
+      </div>
 
- <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
- <div className="relative w-72">
- <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
- <input 
- type="text"
- placeholder="Search..."
- value={searchTerm}
- onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
- />
- </div>
- </div>
+      <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
+          <div className="relative w-72">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
+            <input 
+              type="text"
+              placeholder="Search cases or arbitrators..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full h-10 pl-10 pr-4 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+            />
+          </div>
+        </div>
 
- <div className="flex-1 overflow-auto custom-scrollbar">
- <table className="w-full text-left text-sm whitespace-nowrap">
- <thead className="bg-muted/50 text-xs uppercase tracking-wider text-[#71717a] dark:text-gray-400 sticky top-0 z-10 backdrop-blur-md tracking-[0.04em]">
- <tr>
- <th className="p-4 font-semibold capitalize">case name</th>
- <th className="p-4 font-semibold capitalize">arbitrator</th>
- <th className="p-4 font-semibold capitalize">date</th>
- <th className="p-4 font-semibold capitalize">status</th>
- <th className="p-4 font-semibold text-right">Actions</th>
- </tr>
- </thead>
- <tbody className="divide-y divide-border">
- {filtered.map((item, idx) => (
- <motion.tr 
- initial={{ opacity: 0, y: 5}}
- animate={{ opacity: 1, y: 0}}
- transition={{ delay: idx * 0.02}}
- key={item.id || idx} 
- className="hover:bg-muted/30 transition-colors group cursor-pointer"
- >
- <td className="p-4 font-semibold text-foreground">
- <div className="flex items-center gap-2"><Gavel className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> {item.case_name}</div>
- </td>
- <td className="p-4 text-[#71717a] dark:text-gray-400 font-medium">
- <div className="flex items-center gap-2"><User className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> {item.arbitrator}</div>
- </td>
- <td className="p-4 font-medium text-foreground">
- <div className="flex items-center gap-2"><Calendar className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> {item.date}</div>
- </td>
- <td className="p-4">
- <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-semibold rounded-lg border-[0.5px] border-black/9 dark:border-white/8 flex items-center w-fit gap-2 ${
- item.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
- 'bg-background text-foreground border-primary/40'
-}`}>
- <CheckCircle2 className="w-3 h-3" />
- {item.status}
- </span>
- </td>
- <td className="p-4 text-right">
- <button className="text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors p-2"><MoreHorizontal className="w-4 h-4" /></button>
- </td>
- </motion.tr>
- ))}
- {filtered.length === 0 && !loading && (
- <tr>
- <td colSpan="5" className="p-8 text-center text-[#71717a] dark:text-gray-400">
- No records found.
- </td>
- </tr>
- )}
- </tbody>
- </table>
- </div>
- </div>
- </div>
- );
+        <div className="flex-1 overflow-auto custom-scrollbar">
+          <table className="w-full text-left text-sm whitespace-nowrap">
+            <thead className="bg-muted/50 text-[11px] font-semibold tracking-[0.06em] uppercase text-[#71717a] dark:text-gray-400 sticky top-0 z-10 backdrop-blur-md">
+              <tr>
+                <th className="p-4">Case Name</th>
+                <th className="p-4">Arbitrator / Mediator</th>
+                <th className="p-4">Date</th>
+                <th className="p-4">Status</th>
+                <th className="p-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {filtered.map((item, idx) => (
+                <motion.tr 
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.02 }}
+                  key={item.id} 
+                  onClick={() => openModal(item)}
+                  className="hover:bg-muted/30 transition-colors group cursor-pointer"
+                >
+                  <td className="p-4">
+                    <div className="font-semibold text-foreground flex items-center gap-2">
+                      <Scale className="w-4 h-4 text-primary" /> {item.case_name}
+                    </div>
+                  </td>
+                  <td className="p-4">
+                    <div className="font-medium flex items-center gap-2 text-foreground"><User className="w-3.5 h-3.5 text-[#71717a]"/> {item.arbitrator}</div>
+                  </td>
+                  <td className="p-4">
+                    <div className="flex items-center gap-2 text-[#71717a]"><Calendar className="w-3.5 h-3.5"/> {item.date}</div>
+                  </td>
+                  <td className="p-4">
+                    <span className={`px-2.5 py-1 text-[11px] uppercase tracking-wider font-semibold rounded-lg flex items-center gap-2 w-fit ${
+                      item.status === 'Concluded' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10' : 
+                      item.status === 'Pending Award' ? 'bg-orange-50 text-orange-700 dark:bg-orange-500/10' : 
+                      'bg-blue-50 text-blue-700 dark:bg-blue-500/10'
+                    }`}>
+                      {item.status === 'Concluded' && <CheckCircle2 className="w-3 h-3" />}
+                      {item.status === 'Scheduled' && <Clock className="w-3 h-3" />}
+                      {item.status}
+                    </span>
+                  </td>
+                  <td className="p-4 text-right">
+                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button onClick={(e) => { e.stopPropagation(); openModal(item); }} className="p-1.5 text-[#71717a] hover:text-primary"><Edit2 className="w-4 h-4" /></button>
+                      <button onClick={(e) => deleteItem(item.id, e)} className="p-1.5 text-[#71717a] hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
+                    </div>
+                  </td>
+                </motion.tr>
+              ))}
+              {filtered.length === 0 && !loading && (
+                <tr>
+                  <td colSpan="5" className="p-8 text-center text-[#71717a]">
+                    <Scale className="w-8 h-8 mx-auto mb-2 opacity-20" />
+                    No arbitration proceedings found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+            <motion.div initial={{scale:0.95, opacity:0}} animate={{scale:1, opacity:1}} exit={{scale:0.95, opacity:0}} className="bg-card w-full max-w-sm rounded-2xl flex flex-col shadow-xl border-[0.5px] border-black/9 dark:border-white/8">
+              <div className="p-5 border-b border-border/40 flex justify-between items-center">
+                <h2 className="text-lg font-semibold tracking-[-0.02em]">{editingItem ? 'Edit Proceeding' : 'Schedule Proceeding'}</h2>
+                <button onClick={() => setIsModalOpen(false)} className="p-1.5 bg-muted rounded-full text-[#71717a] hover:text-foreground"><XCircle className="w-5 h-5"/></button>
+              </div>
+              <form onSubmit={saveItem} className="p-5 flex flex-col gap-4">
+                <div>
+                  <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Case Name</label>
+                  <input required value={form.case_name} onChange={e=>setForm({...form, case_name: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                </div>
+                <div>
+                  <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Arbitrator / Mediator Name</label>
+                  <input required value={form.arbitrator} onChange={e=>setForm({...form, arbitrator: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Date</label>
+                    <input required type="date" value={form.date} onChange={e=>setForm({...form, date: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Status</label>
+                    <select required value={form.status} onChange={e=>setForm({...form, status: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40">
+                      <option>Scheduled</option>
+                      <option>Pending Award</option>
+                      <option>Concluded</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="mt-4 pt-4 border-t border-border/40 flex justify-end gap-2">
+                  <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium hover:bg-muted rounded-xl">Cancel</button>
+                  <button type="submit" className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary/90">Save Record</button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }

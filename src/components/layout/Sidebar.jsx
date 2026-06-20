@@ -249,11 +249,11 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  maintenance: ["/", "/rooms", "/guest-requests", "/tasks", "/chat"],
 
  // Religion Roles
- elder: ["/", "/members", "/groups", "/events", "/donations", "/volunteers", "/prayers", "/attendance", "/documents", "/chat", "/board"],
+ elder: ["/", "/members", "/groups", "/events", "/donations", "/volunteers", "/prayers", "/attendance", "/documents", "/chat", "/board", "/milestones"],
  group_leader: ["/", "/groups", "/events", "/volunteers", "/small-groups", "/prayers", "/attendance", "/documents", "/chat"],
  treasurer: ["/", "/donations", "/reports", "/documents", "/chat"],
  volunteer: ["/", "/events", "/volunteers", "/tasks", "/chat"],
- member: ["/", "/events", "/small-groups", "/prayers", "/sermons", "/donations"],
+ member: ["/", "/events", "/small-groups", "/prayers", "/sermons", "/donations", "/milestones"],
 
  // Insurance Agency Roles
  underwriter: ["/", "/policies", "/claims", "/underwriting", "/documents", "/chat", "/email-inbox"],

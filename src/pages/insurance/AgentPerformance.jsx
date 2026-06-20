@@ -1,404 +1,323 @@
-import { useTranslation} from "react-i18next";
-import { useState} from 'react';
-import { Users, Search, Plus, Trash2, Award, TrendingUp, DollarSign, MoreVertical, Eye, Edit} from 'lucide-react';
-import { Link} from 'react-router-dom';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
-import { Button} from '@/components/ui/button';
-import { Input} from '@/components/ui/input';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
-import { toast} from 'react-hot-toast';
-import ConfirmationModal from '@/components/ConfirmationModal';
+import { useTranslation } from "react-i18next";
+import React, { useState, useEffect } from 'react';
+import { Users, Search, Plus, Trash2, Award, TrendingUp, DollarSign, MoreVertical, Edit, XCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { toast } from 'react-hot-toast';
+import { useCompanyId } from "@/hooks/useCompanyId";
+import { powerSync } from '@/api/PowerSyncConnector';
+import { supabase } from "@/api/supabaseClient";
 
 export default function AgentPerformance() {
- const { t} = useTranslation();
- const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('agent');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+  const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const [agents, setAgents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
 
- const agents = dbRecords.map(r => ({
- id: r.id,
- status: r.status || 'Active',
- ...r.data
-}));
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
+  const [formData, setFormData] = useState({
+    agent_name: '',
+    region: 'North',
+    policies_sold: 0,
+    premium_collected: 0,
+    claims_handled: 0,
+    commission_earned: 0,
+    rating: 5,
+    status: 'Active'
+  });
 
- const [search, setSearch] = useState('');
- const [showModal, setShowModal] = useState(false);
- const [deleteTargetId, setDeleteTargetId] = useState(null);
- const [viewDetailsId, setViewDetailsId] = useState(null);
+  useEffect(() => {
+    if (companyId) {
+      fetchData();
+      const channel = supabase.channel('insurance_agents_changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'insurance_agents', filter: `company_id=eq.${companyId}` }, () => fetchData())
+        .subscribe();
+      return () => { supabase.removeChannel(channel); };
+    }
+  }, [companyId]);
 
- const [formData, setFormData] = useState({
- agentName: '',
- region: 'North',
- policiesSold: 0,
- premiumCollected: 0,
- claimsHandled: 0,
- commissionEarned: 0,
- rating: 5
-});
- const [viewRecord, setViewRecord] = useState(null);
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const __res = await powerSync.execute(`SELECT * FROM insurance_agents WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
+      setAgents(__res.rows ? (__res.rows._array || Array.from(__res.rows)) : []);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to fetch agents');
+    } finally {
+      setLoading(false);
+    }
+  };
 
- const handleCreateAgent = () => {
- if (!formData.agentName.trim()) {
- return toast.error("Please enter agent name");
-}
- 
- if (editTargetId) {
- mutateRecord.mutate({
- id: editTargetId,
- recordType: 'agent',
- payload: { ...formData},
- status: formData.status || 'active',
- searchText: `${formData.agentName} ${formData.region}`
-}, {
- onSuccess: () => {
- toast.success('Agent updated successfully!');
- setShowModal(false);
- setFormData({
- agentName: '', region: 'North', policiesSold: 0, premiumCollected: 0, claimsHandled: 0, commissionEarned: 0, rating: 5
-});
-},
- onError: (err) => toast.error('Failed to update agent: ' + err.message)
-});
-} else {
- const agentCode = `AGT-${Math.floor(1000 + Math.random() * 9000)}`;
+  const openModal = (item = null) => {
+    if (item) {
+      setEditingItem(item);
+      setFormData({ ...item });
+    } else {
+      setEditingItem(null);
+      setFormData({
+        agent_name: '',
+        region: 'North',
+        policies_sold: 0,
+        premium_collected: 0,
+        claims_handled: 0,
+        commission_earned: 0,
+        rating: 5,
+        status: 'Active'
+      });
+    }
+    setIsModalOpen(true);
+  };
 
- mutateRecord.mutate({
- recordType: 'agent',
- payload: { ...formData, agentCode},
- status: 'active',
- searchText: `${formData.agentName} ${formData.region} ${agentCode}`
-}, {
- onSuccess: () => {
- toast.success('Agent added successfully!');
- setShowModal(false);
- setFormData({
- agentName: '', region: 'North', policiesSold: 0, premiumCollected: 0, claimsHandled: 0, commissionEarned: 0, rating: 5
-});
-},
- onError: (err) => toast.error('Failed to add agent: ' + err.message)
-});
-}
-};
+  const saveItem = async (e) => {
+    e.preventDefault();
+    if (!formData.agent_name.trim()) return toast.error("Please enter agent name");
 
- const handleEdit = (agent) => {
- setFormData({
- agentName: agent.agentName || '',
- region: agent.region || 'North',
- policiesSold: agent.policiesSold || 0,
- premiumCollected: agent.premiumCollected || 0,
- claimsHandled: agent.claimsHandled || 0,
- commissionEarned: agent.commissionEarned || 0,
- rating: agent.rating || 5,
- status: agent.status
-});
- setShowModal(true);
-};
+    try {
+      if (editingItem) {
+        await powerSync.execute(
+          `UPDATE insurance_agents SET agent_name = ?, region = ?, policies_sold = ?, premium_collected = ?, claims_handled = ?, commission_earned = ?, rating = ?, status = ? WHERE id = ?`, 
+          [formData.agent_name, formData.region, formData.policies_sold, formData.premium_collected, formData.claims_handled, formData.commission_earned, formData.rating, formData.status, editingItem.id]
+        );
+        toast.success('Agent updated successfully!');
+      } else {
+        const id = crypto.randomUUID();
+        const agentCode = `AGT-${Math.floor(1000 + Math.random() * 9000)}`;
+        await powerSync.execute(
+          `INSERT INTO insurance_agents (id, company_id, agent_name, region, policies_sold, premium_collected, claims_handled, commission_earned, rating, agent_code, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+          [id, companyId, formData.agent_name, formData.region, formData.policies_sold, formData.premium_collected, formData.claims_handled, formData.commission_earned, formData.rating, agentCode, formData.status]
+        );
+        toast.success('Agent added successfully!');
+      }
+      setIsModalOpen(false);
+      fetchData();
+    } catch (err) {
+      toast.error(err.message || 'Failed to save agent');
+    }
+  };
 
- const openNewModal = () => {
- setFormData({
- agentName: '', region: 'North', policiesSold: 0, premiumCollected: 0, claimsHandled: 0, commissionEarned: 0, rating: 5
-});
- setShowModal(true);
-};
+  const deleteItem = async (id, e) => {
+    e.stopPropagation();
+    if (!confirm('Delete this agent?')) return;
+    try {
+      await powerSync.execute(`DELETE FROM insurance_agents WHERE id = ?`, [id]);
+      toast.success('Agent removed!');
+      fetchData();
+    } catch (err) {
+      toast.error('Failed to remove: ' + err.message);
+    }
+  };
 
- const handleUpdateStatus = (agent, newStatus) => {
- const payload = { ...agent};
- delete payload.id;
- delete payload.status;
- 
- mutateRecord.mutate({
- id: agent.id,
- recordType: 'agent',
- payload,
- status: newStatus,
- searchText: `${agent.agentName} ${agent.agentCode}`
-}, {
- onSuccess: () => toast.success(`Agent status updated to ${newStatus}`)
-});
-};
+  const handleUpdateStatus = async (agent, newStatus) => {
+    try {
+      await powerSync.execute(`UPDATE insurance_agents SET status = ? WHERE id = ?`, [newStatus, agent.id]);
+      toast.success(`Agent status updated to ${newStatus}`);
+      fetchData();
+    } catch(err) {
+      toast.error('Failed to update status');
+    }
+  };
 
- const handleDelete = () => {
- if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'agent'}, {
- onSuccess: () => {
- toast.success('Agent removed!');
- setDeleteTargetId(null);
-},
- onError: (err) => {
- toast.error('Failed to remove: ' + err.message);
- setDeleteTargetId(null);
-}
-});
-};
+  const filtered = agents.filter(a => 
+    String(a.agent_name || '').toLowerCase().includes(search.toLowerCase()) || 
+    String(a.agent_code || '').toLowerCase().includes(search.toLowerCase())
+  );
 
- const filtered = agents.filter(a => 
- a.agentName?.toLowerCase().includes(search.toLowerCase()) || 
- a.agentCode?.toLowerCase().includes(search.toLowerCase())
- );
+  const totalCommission = agents.reduce((sum, a) => sum + (Number(a.commission_earned) || 0), 0);
+  const avgPolicies = agents.length > 0 ? (agents.reduce((sum, a) => sum + (Number(a.policies_sold) || 0), 0) / agents.length).toFixed(1) : 0;
+  const topPerformer = [...agents].sort((a, b) => (Number(b.policies_sold) || 0) - (Number(a.policies_sold) || 0))[0];
 
- const totalCommission = agents.reduce((sum, a) => sum + (Number(a.commissionEarned) || 0), 0);
- const avgPolicies = agents.length > 0 ? (agents.reduce((sum, a) => sum + (Number(a.policiesSold) || 0), 0) / agents.length).toFixed(1) : 0;
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em]">{t("agent_performance", "Agent Performance")}</h1>
+          <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("track_agent_sales_commissions_", "Track agent sales, commissions, and ratings")}</p>
+        </div>
+        <Button onClick={() => openModal()} className="gap-2 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)]">
+          <Plus className="w-4 h-4" /> {t("add_agent", "Add Agent")}
+        </Button>
+      </div>
 
- // Find top performer
- const topPerformer = [...agents].sort((a, b) => (Number(b.policiesSold) || 0) - (Number(a.policiesSold) || 0))[0];
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex flex-col justify-center shadow-sm">
+          <div className="flex items-center gap-2 mb-2 text-[#71717a] dark:text-gray-400 font-medium tracking-wide text-xs uppercase"><Users className="w-4 h-4"/> {t("total_agents", "Total Agents")}</div>
+          <p className="text-2xl font-bold text-card-foreground tracking-[-0.02em]">{agents.length}</p>
+        </div>
+        <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex flex-col justify-center shadow-sm">
+          <div className="flex items-center gap-2 mb-2 text-primary font-medium tracking-wide text-xs uppercase"><TrendingUp className="w-4 h-4"/> {t("avg_policies_sold", "Avg Policies Sold")}</div>
+          <p className="text-2xl font-bold text-card-foreground tracking-[-0.02em]">{avgPolicies}</p>
+        </div>
+        <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex flex-col justify-center shadow-sm">
+          <div className="flex items-center gap-2 mb-2 text-emerald-600 font-medium tracking-wide text-xs uppercase"><DollarSign className="w-4 h-4"/> {t("total_commission", "Total Commission")}</div>
+          <p className="text-2xl font-bold text-card-foreground tracking-[-0.02em]">${totalCommission.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
+        </div>
+        <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex flex-col justify-center shadow-sm">
+          <div className="flex items-center gap-2 mb-2 text-amber-600 font-medium tracking-wide text-xs uppercase"><Award className="w-4 h-4"/> {t("top_performer", "Top Performer")}</div>
+          <p className="text-lg font-bold text-card-foreground truncate tracking-[-0.01em]">{topPerformer ? topPerformer.agent_name : 'N/A'}</p>
+          <p className="text-[11px] text-[#71717a] dark:text-gray-400 font-medium tracking-wide uppercase mt-0.5">{topPerformer ? `${topPerformer.policies_sold} policies` : ''}</p>
+        </div>
+      </div>
 
- return (
- <div className="space-y-6">
- <div className="flex items-center justify-between">
- <div>
- <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("agent_performance", "Agent Performance")}</h1>
- <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
- "track_agent_sales_commissions_",
- "Track agent sales, commissions, and ratings"
- )}</p>
- </div>
- <Button onClick={openNewModal} className="gap-2 bg-primary hover:bg-primary text-white">
- <Plus className="w-4 h-4" /> {t("add_agent", "Add Agent")}
- </Button>
- </div>
- <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex items-center gap-2 mb-2 text-[#71717a] dark:text-gray-400"><Users className="w-4 h-4"/> {t("total_agents", "Total Agents")}</div>
- <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{agents.length}</p>
- </div>
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex items-center gap-2 mb-2 text-primary"><TrendingUp className="w-4 h-4"/> {t("avg_policies_sold", "Avg Policies Sold")}</div>
- <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{avgPolicies}</p>
- </div>
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex items-center gap-2 mb-2 text-primary"><DollarSign className="w-4 h-4"/> {t("total_commission", "Total Commission")}</div>
- <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${totalCommission.toLocaleString()}</p>
- </div>
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex items-center gap-2 mb-2 text-amber-600"><Award className="w-4 h-4"/> {t("top_performer", "Top Performer")}</div>
- <p className="text-lg font-semibold text-card-foreground truncate hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{topPerformer ? topPerformer.agentName : 'N/A'}</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{topPerformer ? `${topPerformer.policiesSold} policies` : ''}</p>
- </div>
- </div>
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-4 border-b border-primary/40 bg-muted/50">
- <div className="relative max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
- <Input placeholder="Search agent name or code..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
- </div>
- </div>
- <div className="overflow-x-auto">
- {isDbLoading ? (
- <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_agents", "Loading agents...")}</div>
- ) : filtered.length === 0 ? (
- <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
- <Users className="w-12 h-12 mx-auto mb-3 opacity-30 text-primary" />
- <p className="font-semibold text-lg text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("no_agents_found", "No agents found")}</p>
- <p className="text-xs mt-1 tracking-[0.04em]">{t(
- "add_an_agent_to_start_tracking",
- "Add an agent to start tracking performance."
- )}</p>
- </div>
- ) : (
- <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <tr>
- <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("agent_info", "Agent Info")}</th>
- <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("policies_sold", "Policies Sold")}</th>
- <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("premium_collected", "Premium Collected")}</th>
- <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("commission", "Commission")}</th>
- <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</th>
- <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("action", "Action")}</th>
- </tr>
- </thead>
- <tbody className="divide-y divide-border">
- {filtered.map(agent => {
- return (
- <tr key={agent.id} className="hover:bg-muted/50 transition-colors">
- <td className="px-6 py-4">
- <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{agent.agentName}</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">{agent.agentCode} • {agent.region}</p>
- <div className="flex gap-0.5 mt-1">
- {[...Array(5)].map((_, i) => {
- return (<Award key={i} className={`w-3 h-3 ${i < Number(agent.rating) ? 'text-amber-500 fill-amber-500' : 'text-[#71717a] dark:text-gray-400/30'}`} />);
-})}
- </div>
- </td>
- <td className="px-6 py-4 text-center">
- <span className="font-semibold text-card-foreground text-lg hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{agent.policiesSold}</span>
- </td>
- <td className="px-6 py-4 text-right text-[#71717a] dark:text-gray-400 font-medium">
- ${Number(agent.premiumCollected).toLocaleString()}
- </td>
- <td className="px-6 py-4 text-right">
- <p className="font-semibold text-primary">${Number(agent.commissionEarned).toLocaleString()}</p>
- </td>
- <td className="px-6 py-4 text-center">
- <select
- value={agent.status}
- onChange={e => handleUpdateStatus(agent, e.target.value)}
- className={`rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input px-2 py-1 text-xs font-semibold ${
- agent.status === 'Active' ? 'bg-slate-100 text-primary/90' : 'bg-muted text-[#71717a] dark:text-gray-400'
-}`}
- >
- <option value="Active">{t("active", "Active")}</option>
- <option value="Inactive">{t("inactive", "Inactive")}</option>
- </select>
- </td>
- <td className="px-6 py-4 text-right">
- <DropdownMenu>
- <DropdownMenuTrigger asChild>
- <Button variant="ghost" className="h-8 w-8 p-0">
- <span className="sr-only">{t("open_menu", "Open menu")}</span>
- <MoreVertical className="h-4 w-4" />
- </Button>
- </DropdownMenuTrigger>
- <DropdownMenuContent align="end">
- <DropdownMenuItem onClick={() => setViewRecord(agent)}>{t("view_details", "View Details")}</DropdownMenuItem>
- <DropdownMenuItem onClick={() => handleEdit(agent)}>{t("edit", "Edit")}</DropdownMenuItem>
- <DropdownMenuItem onClick={() => setDeleteTargetId(agent.id)} className="text-red-600">{t("delete", "Delete")}</DropdownMenuItem>
- </DropdownMenuContent>
- </DropdownMenu>
- </td>
- </tr>
- );
-})}
- </tbody>
- </table>
- )}
- </div>
- </div>
- {showModal && (
- <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
- <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <h2 className="text-lg font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{editTargetId ? 'Edit Agent' : 'Add New Agent'}</h2>
- <div className="space-y-3">
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("agent_name", "Agent Name")}</label>
- <Input value={formData.agentName} onChange={e => setFormData({...formData, agentName: e.target.value})} placeholder="John Doe" className="mt-1" />
- </div>
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("region", "Region")}</label>
- <select value={formData.region} onChange={e => setFormData({...formData, region: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground">
- <option>{t("north", "North")}</option>
- <option>{t("south", "South")}</option>
- <option>{t("east", "East")}</option>
- <option>{t("west", "West")}</option>
- <option>{t("central", "Central")}</option>
- </select>
- </div>
- <div className="grid grid-cols-2 gap-3">
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("policies_sold", "Policies Sold")}</label>
- <Input type="number" value={formData.policiesSold} onChange={e => setFormData({...formData, policiesSold: e.target.value})} className="mt-1" />
- </div>
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("claims_handled", "Claims Handled")}</label>
- <Input type="number" value={formData.claimsHandled} onChange={e => setFormData({...formData, claimsHandled: e.target.value})} className="mt-1" />
- </div>
- </div>
- <div className="grid grid-cols-2 gap-3">
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("premium_collected", "Premium Collected ($)")}</label>
- <Input type="number" value={formData.premiumCollected} onChange={e => setFormData({...formData, premiumCollected: e.target.value})} className="mt-1" />
- </div>
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("commission", "Commission ($)")}</label>
- <Input type="number" value={formData.commissionEarned} onChange={e => setFormData({...formData, commissionEarned: e.target.value})} className="mt-1" />
- </div>
- </div>
- <div>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("rating_1_5", "Rating (1-5)")}</label>
- <Input type="number" min="1" max="5" value={formData.rating} onChange={e => setFormData({...formData, rating: e.target.value})} className="mt-1" />
- </div>
- </div>
- <div className="flex gap-3 pt-4">
- <Button variant="outline" className="flex-1" onClick={() => { setShowModal(false); setEditTargetId(null);}}>{t("cancel", "Cancel")}</Button>
- <Button className="flex-1 bg-primary hover:bg-primary text-white" onClick={handleCreateAgent}>{editTargetId ? 'Save Changes' : 'Save Agent'}</Button>
- </div>
- </div>
- </div>
- )}
- <Sheet open={viewDetailsId !== null} onOpenChange={(open) => !open && setViewDetailsId(null)}>
- <SheetContent className="bg-card text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <SheetHeader>
- <SheetTitle>{t("record_details", "Record Details")}</SheetTitle>
- </SheetHeader>
- <div className="mt-6 space-y-4">
- {viewDetailsId && (() => {
- const record = agents.find(r => r.id === viewDetailsId);
- if (!record) return null;
- return Object.entries(record).map(([key, value]) => {
- if (key === 'id') return null;
- return (
- <div key={key}>
- <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{key.replace(/([A-Z])/g, ' $1').trim()}</label>
- <p className="font-medium">{String(value)}</p>
- </div>
- );
-});
-})()}
- </div>
- </SheetContent>
- </Sheet>
- <ConfirmationModal
- isOpen={deleteTargetId !== null}
- onClose={() => setDeleteTargetId(null)}
- onConfirm={handleDelete}
- title="Delete Agent"
- message="Are you sure you want to completely remove this agent? This cannot be undone."
- />
- <Sheet open={!!viewRecord} onOpenChange={() => setViewRecord(null)}>
- <SheetContent className="overflow-y-auto">
- <SheetHeader>
- <SheetTitle>{t("agent_details", "Agent Details")}</SheetTitle>
- <SheetDescription>{t(
- "view_complete_information_for_",
- "View complete information for this agent."
- )}</SheetDescription>
- </SheetHeader>
- {viewRecord && (
- <div className="mt-6 space-y-4">
- <div>
- <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("agent_name", "Agent Name")}</h4>
- <p className="text-base font-semibold">{viewRecord.agentName}</p>
- </div>
- <div>
- <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("agent_code", "Agent Code")}</h4>
- <p className="text-base">{viewRecord.agentCode}</p>
- </div>
- <div>
- <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("region", "Region")}</h4>
- <p className="text-base">{viewRecord.region}</p>
- </div>
- <div>
- <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("status", "Status")}</h4>
- <p className="text-base">{viewRecord.status}</p>
- </div>
- <div>
- <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("rating", "Rating")}</h4>
- <div className="flex gap-0.5 mt-1">
- {[...Array(5)].map((_, i) => {
- return (<Award key={i} className={`w-4 h-4 ${i < Number(viewRecord.rating) ? 'text-amber-500 fill-amber-500' : 'text-[#71717a] dark:text-gray-400/30'}`} />);
-})}
- </div>
- </div>
- <div>
- <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("policies_sold", "Policies Sold")}</h4>
- <p className="text-base">{viewRecord.policiesSold}</p>
- </div>
- <div>
- <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("claims_handled", "Claims Handled")}</h4>
- <p className="text-base">{viewRecord.claimsHandled}</p>
- </div>
- <div>
- <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("premium_collected", "Premium Collected")}</h4>
- <p className="text-base">${Number(viewRecord.premiumCollected).toLocaleString()}</p>
- </div>
- <div>
- <h4 className="text-sm font-medium text-[#71717a] dark:text-gray-400">{t("commission_earned", "Commission Earned")}</h4>
- <p className="text-base">${Number(viewRecord.commissionEarned).toLocaleString()}</p>
- </div>
- </div>
- )}
- </SheetContent>
- </Sheet>
- </div>
- );
+      <div className="bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
+          <div className="relative w-80">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
+            <Input 
+              placeholder="Search agent name or code..." 
+              value={search} 
+              onChange={e => setSearch(e.target.value)} 
+              className="pl-10 h-10 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:ring-2 focus:ring-primary/40" 
+            />
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm whitespace-nowrap">
+            <thead className="bg-muted/50 text-[11px] font-semibold tracking-[0.06em] uppercase text-[#71717a] dark:text-gray-400">
+              <tr>
+                <th className="p-4">Agent Info</th>
+                <th className="p-4 text-center">Policies Sold</th>
+                <th className="p-4 text-right">Premium Collected</th>
+                <th className="p-4 text-right">Commission</th>
+                <th className="p-4 text-center">Status</th>
+                <th className="p-4 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {filtered.map((agent, idx) => (
+                <motion.tr 
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.02 }}
+                  key={agent.id} 
+                  className="hover:bg-muted/30 transition-colors group cursor-pointer"
+                  onClick={() => openModal(agent)}
+                >
+                  <td className="p-4">
+                    <p className="font-semibold text-foreground">{agent.agent_name}</p>
+                    <p className="text-[11px] text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em] uppercase">{agent.agent_code} • {agent.region}</p>
+                    <div className="flex gap-0.5 mt-1.5">
+                      {[...Array(5)].map((_, i) => (
+                        <Award key={i} className={`w-3.5 h-3.5 ${i < Number(agent.rating) ? 'text-amber-500 fill-amber-500' : 'text-[#71717a]/30 dark:text-gray-400/30'}`} />
+                      ))}
+                    </div>
+                  </td>
+                  <td className="p-4 text-center">
+                    <span className="font-bold text-foreground text-lg">{agent.policies_sold}</span>
+                  </td>
+                  <td className="p-4 text-right text-[#71717a] font-medium">
+                    ${Number(agent.premium_collected).toLocaleString(undefined, {minimumFractionDigits: 2})}
+                  </td>
+                  <td className="p-4 text-right">
+                    <p className="font-bold text-emerald-600">${Number(agent.commission_earned).toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
+                  </td>
+                  <td className="p-4 text-center">
+                    <select
+                      onClick={e=>e.stopPropagation()}
+                      value={agent.status}
+                      onChange={e => handleUpdateStatus(agent, e.target.value)}
+                      className={`rounded-lg border-0 px-2.5 py-1 text-[11px] uppercase tracking-wider font-semibold cursor-pointer outline-none focus:ring-2 focus:ring-primary/40 text-center ${
+                        agent.status === 'Active' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10' : 'bg-muted text-[#71717a]'
+                      }`}
+                    >
+                      <option value="Active">Active</option>
+                      <option value="Inactive">Inactive</option>
+                    </select>
+                  </td>
+                  <td className="p-4 text-right">
+                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button onClick={(e) => { e.stopPropagation(); openModal(agent); }} className="p-1.5 text-[#71717a] hover:text-primary"><Edit className="w-4 h-4" /></button>
+                      <button onClick={(e) => deleteItem(agent.id, e)} className="p-1.5 text-[#71717a] hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
+                    </div>
+                  </td>
+                </motion.tr>
+              ))}
+              {filtered.length === 0 && !loading && (
+                <tr>
+                  <td colSpan="6" className="p-12 text-center text-[#71717a]">
+                    <Users className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                    <p className="font-semibold text-lg text-foreground">No agents found</p>
+                    <p className="text-sm mt-1">Add an agent to start tracking performance.</p>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+            <motion.div initial={{scale:0.95, opacity:0}} animate={{scale:1, opacity:1}} exit={{scale:0.95, opacity:0}} className="bg-card w-full max-w-md rounded-2xl flex flex-col shadow-xl border-[0.5px] border-black/9 dark:border-white/8">
+              <div className="p-5 border-b border-border/40 flex justify-between items-center">
+                <h2 className="text-lg font-semibold tracking-[-0.02em]">{editingItem ? 'Edit Agent' : 'Add Agent'}</h2>
+                <button onClick={() => setIsModalOpen(false)} className="p-1.5 bg-muted rounded-full text-[#71717a] hover:text-foreground"><XCircle className="w-5 h-5"/></button>
+              </div>
+              <form onSubmit={saveItem} className="p-5 flex flex-col gap-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Agent Name</label>
+                    <input required value={formData.agent_name} onChange={e=>setFormData({...formData, agent_name: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Region</label>
+                    <select required value={formData.region} onChange={e=>setFormData({...formData, region: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40">
+                      <option>North</option>
+                      <option>South</option>
+                      <option>East</option>
+                      <option>West</option>
+                      <option>Central</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Policies Sold</label>
+                    <input required type="number" value={formData.policies_sold} onChange={e=>setFormData({...formData, policies_sold: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Premium Collected ($)</label>
+                    <input required type="number" step="0.01" value={formData.premium_collected} onChange={e=>setFormData({...formData, premium_collected: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Commission Earned ($)</label>
+                    <input required type="number" step="0.01" value={formData.commission_earned} onChange={e=>setFormData({...formData, commission_earned: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Claims Handled</label>
+                    <input required type="number" value={formData.claims_handled} onChange={e=>setFormData({...formData, claims_handled: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Rating (1-5)</label>
+                    <input required type="number" min="1" max="5" value={formData.rating} onChange={e=>setFormData({...formData, rating: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-semibold text-[#71717a] uppercase tracking-wider">Status</label>
+                    <select required value={formData.status} onChange={e=>setFormData({...formData, status: e.target.value})} className="mt-1 w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/40">
+                      <option>Active</option>
+                      <option>Inactive</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="mt-4 pt-4 border-t border-border/40 flex justify-end gap-2">
+                  <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium hover:bg-muted rounded-xl">Cancel</button>
+                  <button type="submit" className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary/90">Save Agent</button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }

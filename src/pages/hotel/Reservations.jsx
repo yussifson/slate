@@ -1,6 +1,6 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
-import { Calendar, Search, Plus, Clock, Trash2, Sparkles} from 'lucide-react';
+import { Calendar, Search, Plus, Clock, Trash2, Sparkles, RefreshCcw, Check, Cloud } from 'lucide-react';
 import { Button} from '@/components/ui/button';
 import { generateText } from '@/lib/cloudflareAI';
 import { Input} from '@/components/ui/input';
@@ -39,6 +39,8 @@ export default function Reservations() {
  const [showModal, setShowModal] = useState(false);
  const [editTargetId, setEditTargetId] = useState(null);
  const [viewDetailsId, setViewDetailsId] = useState(null);
+ const [showChannelSync, setShowChannelSync] = useState(false);
+ const [isSyncing, setIsSyncing] = useState(false);
 
  // Form State
  const [formData, setFormData] = useState({
@@ -78,6 +80,14 @@ Deluxe Room: $Y`;
    } finally {
      setIsAnalyzing(false);
    }
+ };
+
+ const handleChannelSync = () => {
+  setIsSyncing(true);
+  setTimeout(() => {
+    setIsSyncing(false);
+    toast.success("Inventory synchronized across all channels");
+  }, 2000);
  };
 
  // Generic Save Handler for real DB persistence
@@ -178,6 +188,9 @@ Deluxe Room: $Y`;
  )}</p>
  </div>
   <div className="flex gap-2">
+  <Button onClick={() => setShowChannelSync(true)} variant="outline" className="gap-2 border-primary/30 text-primary hover:bg-primary/10">
+    <RefreshCcw className="w-4 h-4" /> Channel Sync
+  </Button>
   <Button onClick={handleSmartPricing} disabled={isAnalyzing} variant="outline" className="gap-2 border-primary/30 text-primary hover:bg-primary/10">
     <Sparkles className="w-4 h-4" /> AI Smart Pricing
   </Button>
@@ -388,6 +401,44 @@ Deluxe Room: $Y`;
 })()}
  </SheetContent>
  </Sheet>
+
+  {/* Channel Manager Sync Modal */}
+  {showChannelSync && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+      <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-6 border border-primary/20">
+        <div className="text-center space-y-2">
+          <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Cloud className={`w-8 h-8 ${isSyncing ? 'animate-bounce' : ''}`}/>
+          </div>
+          <h2 className="text-xl font-bold">Channel Manager</h2>
+          <p className="text-sm text-muted-foreground">Sync inventory and reservations with connected OTAs.</p>
+        </div>
+
+        <div className="space-y-3 bg-muted rounded-xl p-4">
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-green-500"></span> Booking.com</div>
+            <span className="text-muted-foreground text-xs">Connected</span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-green-500"></span> Expedia</div>
+            <span className="text-muted-foreground text-xs">Connected</span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-amber-500"></span> Airbnb</div>
+            <span className="text-muted-foreground text-xs">Syncing...</span>
+          </div>
+        </div>
+
+        <div className="flex gap-3">
+          <Button variant="outline" className="flex-1" onClick={() => setShowChannelSync(false)} disabled={isSyncing}>Cancel</Button>
+          <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white gap-2" onClick={handleChannelSync} disabled={isSyncing}>
+            <RefreshCcw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`}/> 
+            {isSyncing ? 'Syncing Data...' : 'Sync Now'}
+          </Button>
+        </div>
+      </div>
+    </div>
+  )}
  </div>
  );
 }

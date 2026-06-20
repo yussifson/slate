@@ -10,6 +10,9 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
 import { Link} from 'react-router-dom';
 
+import { usePowerSync } from '@powersync/react';
+import { useCompanyId } from '@/hooks/useCompanyId';
+
 const COLOR_SCHEMES = [
  { border: 'border-primary/20 dark:border-primary/70', bg: 'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20', text: 'text-primary', name: 'Blue'},
  { border: 'border-primary/20 dark:border-primary/70', bg: 'bg-slate-50 dark:bg-slate-800/50 dark:bg-primary/20', text: 'text-primary', name: 'Pink'},
@@ -20,15 +23,25 @@ const COLOR_SCHEMES = [
 
 export default function Groups() {
  const { t} = useTranslation();
- const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('group');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+ const companyId = useCompanyId();
+ const powerSync = usePowerSync();
 
- const groups = dbRecords.map(r => ({
- id: r.id,
- status: r.status || 'Active',
- ...r.data
-}));
+ const [groups, setGroups] = useState([]);
+ const [isDbLoading, setIsDbLoading] = useState(true);
+
+ useEffect(() => {
+   let active = true;
+   const fetchGroups = async () => {
+     setIsDbLoading(true);
+     try {
+       const res = await powerSync.execute('SELECT * FROM univ_religion_groups WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+       if(active) setGroups(res.rows._array || Array.from(res.rows));
+     } catch(e){}
+     setIsDbLoading(false);
+   };
+   if (companyId) fetchGroups();
+   return () => { active = false; };
+ }, [companyId]);
 
  const [search, setSearch] = useState('');
  const [showModal, setShowModal] = useState(false);
@@ -52,52 +65,47 @@ export default function Groups() {
  setShowModal(true);
 };
 
- const handleCreateGroup = () => {
+ const handleCreateGroup = async () => {
  if (!formData.name.trim() || !formData.leader.trim()) {
- return toast.error("Please enter a group name and leader");
-}
+   return toast.error("Please enter a group name and leader");
+ }
 
  const scheme = COLOR_SCHEMES[formData.schemeIndex];
- const payload = {
- name: formData.name,
- leader: formData.leader,
- members: parseInt(formData.members) || 0,
- schedule: formData.schedule,
- color: `${scheme.border} ${scheme.bg}`,
- iconType: formData.schemeIndex // mapped to icon index
+ const colorStr = `${scheme.border} ${scheme.bg}`;
+
+ try {
+   if (editRecord) {
+     await powerSync.execute(`UPDATE univ_religion_groups SET name=?, leader=?, members=?, schedule=?, color=?, icon_type=? WHERE id=?`, 
+       [formData.name, formData.leader, parseInt(formData.members) || 0, formData.schedule, colorStr, formData.schemeIndex, editRecord.id]
+     );
+     toast.success('Group department configured successfully!');
+   } else {
+     await powerSync.execute(`INSERT INTO univ_religion_groups (id, created_at, company_id, name, leader, members, schedule, color, icon_type, status) VALUES (gen_random_uuid(), NOW(), ?, ?, ?, ?, ?, ?, ?, 'Active')`, 
+       [companyId, formData.name, formData.leader, parseInt(formData.members) || 0, formData.schedule, colorStr, formData.schemeIndex]
+     );
+     toast.success('Group department configured successfully!');
+   }
+   setShowModal(false);
+   setEditRecord(null);
+   setFormData({ name: '', leader: '', members: 10, schedule: 'Sundays, 9:00 AM', schemeIndex: 0});
+   
+   const res = await powerSync.execute('SELECT * FROM univ_religion_groups WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+   setGroups(res.rows._array || Array.from(res.rows));
+ } catch (err) {
+   toast.error('Failed to configure group: ' + err.message);
+ }
 };
 
- mutateRecord.mutate({
- ...(editRecord ? { id: editRecord.id} : {}),
- recordType: 'group',
- payload,
- status: 'active',
- searchText: `${formData.name} ${formData.leader}`
-}, {
- onSuccess: () => {
- toast.success('Group department configured successfully!');
- setShowModal(false);
- setEditRecord(null);
- setFormData({ name: '', leader: '', members: 10, schedule: 'Sundays, 9:00 AM', schemeIndex: 0});
-},
- onError: (err) => {
- toast.error('Failed to configure group: ' + err.message);
-}
-});
-};
-
- const handleDeleteGroup = () => {
+ const handleDeleteGroup = async () => {
  if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'group'}, {
- onSuccess: () => {
- toast.success('Group department deleted successfully!');
- setDeleteTargetId(null);
-},
- onError: (err) => {
- toast.error('Failed to delete group: ' + err.message);
- setDeleteTargetId(null);
-}
-});
+ try {
+   await powerSync.execute(`DELETE FROM univ_religion_groups WHERE id=?`, [deleteTargetId]);
+   toast.success('Group department deleted successfully!');
+   setDeleteTargetId(null);
+   setGroups(groups.filter(g => g.id !== deleteTargetId));
+ } catch (err) {
+   toast.error('Failed to delete group: ' + err.message);
+ }
 };
 
  const getIcon = (type) => {
