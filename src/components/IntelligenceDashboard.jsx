@@ -227,7 +227,7 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
         {lastRun && (
           <span className="text-[10px] text-[#71717a] flex items-center gap-1">
             <Sparkles className="w-3 h-3" />
-            Last run: {new Date(lastRun.completed_at || lastRun.started_at).toLocaleString()}
+            Last run: {(lastRun.completed_at || lastRun.started_at) ? new Date(lastRun.completed_at || lastRun.started_at).toLocaleString() : "Unknown"}
             {lastRun.status === 'completed' && ` — ${lastRun.insights_created} insights`}
           </span>
         )}

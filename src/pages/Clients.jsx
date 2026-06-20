@@ -282,7 +282,7 @@ const handleInviteClient = async (client) => {
  {row.status}
  </Badge>
  </TableCell>
- <TableCell><span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{format(new Date(row.created_date), "MMM d, yyyy")}</span></TableCell>
+ <TableCell><span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{row.created_date ? format(new Date(row.created_date), "MMM d, yyyy") : ""}</span></TableCell>
  <TableCell>
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
