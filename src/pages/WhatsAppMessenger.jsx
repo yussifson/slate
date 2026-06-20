@@ -3,8 +3,11 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
-import { MessageCircle, Send, User, Briefcase, ExternalLink, Phone } from "lucide-react";
+import { MessageCircle, Send, User, Briefcase, ExternalLink, Phone, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { generateText } from "@/lib/cloudflareAI";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +29,9 @@ export default function WhatsAppMessenger() {
   const [selectedCase, setSelectedCase] = useState(null);
   const [message, setMessage] = useState("");
   const [phone, setPhone] = useState("");
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [isComposing, setIsComposing] = useState(false);
+  const { toast } = useToast();
 
   const { data: clients = [] } = useQuery({
     queryKey: ["clients", companyId],
@@ -56,6 +62,23 @@ export default function WhatsAppMessenger() {
   const formatPhone = (raw) => {
     // Strip everything except digits and leading +
     return raw.replace(/[^\d+]/g, "");
+  };
+
+  const handleAiCompose = async () => {
+    if (!aiPrompt.trim()) return;
+    setIsComposing(true);
+    const tId = toast.loading("AI is composing message...");
+    try {
+      const prompt = `Write a short, professional WhatsApp message to a client named ${selectedClient?.name || "Client"}. Context: ${aiPrompt}. Do not include subject lines or formal email sign-offs, just a natural WhatsApp message text.`;
+      const response = await generateText([{ role: 'user', content: prompt }]);
+      setMessage(response);
+      setAiPrompt("");
+      toast.success("Draft generated", { id: tId });
+    } catch (err) {
+      toast.error("Failed to generate draft", { id: tId });
+    } finally {
+      setIsComposing(false);
+    }
   };
 
   const handleSend = () => {
@@ -173,6 +196,22 @@ export default function WhatsAppMessenger() {
                   </button>
                 );
               })}
+            </div>
+          </div>
+
+          <div className="space-y-1.5 p-3 rounded-xl bg-indigo-50/50 dark:bg-indigo-500/5 border border-indigo-100 dark:border-indigo-500/20">
+            <label className="text-xs font-semibold text-indigo-900 dark:text-indigo-200 flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5" /> AI Composer</label>
+            <div className="flex gap-2">
+              <Input 
+                value={aiPrompt}
+                onChange={e => setAiPrompt(e.target.value)}
+                placeholder="E.g. ask for passport copy..."
+                className="h-8 text-sm bg-white dark:bg-black/20"
+                onKeyDown={e => e.key === 'Enter' && handleAiCompose()}
+              />
+              <Button onClick={handleAiCompose} disabled={isComposing || !aiPrompt.trim()} size="sm" className="h-8 gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white">
+                {isComposing ? <Sparkles className="w-3.5 h-3.5 animate-pulse" /> : "Compose"}
+              </Button>
             </div>
           </div>
 
