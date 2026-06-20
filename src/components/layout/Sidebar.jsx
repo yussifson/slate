@@ -69,6 +69,50 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  const [renameData, setRenameData] = useState(null);
  const [deleteData, setDeleteData] = useState(null);
  const [showAvatarDialog, setShowAvatarDialog] = useState(false);
+
+  const [rolePermissions, setRolePermissions] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+    const fetchPermissions = async () => {
+      if (!user?.id || !companyId || isAdmin) {
+        if(active) setRolePermissions(null); // Admins see everything
+        return;
+      }
+      try {
+        // 1. Get employee record for current user
+        const empRes = await powerSync.execute('SELECT role FROM univ_hr_employees WHERE user_id = ? AND company_id = ? LIMIT 1', [user.id, companyId]);
+        if (empRes.rows?.length > 0) {
+          const roleId = empRes.rows._array[0].role;
+          if (roleId) {
+            // 2. Get permissions for role
+            const permRes = await powerSync.execute('SELECT feature_path FROM platform_role_permissions WHERE role_id = ?', [roleId]);
+            if(active) setRolePermissions(permRes.rows._array.map(p => p.feature_path));
+          } else {
+            if(active) setRolePermissions([]); // No role assigned = no access
+          }
+        } else {
+          if(active) setRolePermissions(null); // Not an employee record, fallback to default access
+        }
+      } catch (e) { console.error(e); }
+    };
+    fetchPermissions();
+    return () => { active = false; };
+  }, [user?.id, companyId, isAdmin]);
+
+  // Filter function
+  const filterByRole = (navItems) => {
+    if (!rolePermissions) return navItems; // No filtering needed
+    return navItems.filter(item => {
+      // Always allow main dashboard
+      if (item.path === '/') return true;
+      // Allow settings if they explicitly have settings permission
+      if (item.path === '/settings' && !rolePermissions.includes('/settings')) return false;
+      // Check if path is in permissions
+      return rolePermissions.includes(item.path);
+    });
+  };
+
  const { activeRoomUrl} = useVideo();
  const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(user?.role);
  const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
@@ -123,7 +167,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  const activeEducationLevel = impersonatedCompany?.industry_type || companyData?.industry_type || 'primary';
 
  const industryData = INDUSTRIES[activeIndustry] || INDUSTRIES.law;
- const industryNav = getIndustryNav(activeIndustry, activeEducationLevel);
+ const industryNavRaw = getIndustryNav(activeIndustry, activeEducationLevel);
+  const industryNav = filterByRole(industryNavRaw);
  
  const savedModulesStr = localStorage.getItem(`active_modules_${companyId}`);
  const localModules = savedModulesStr ? JSON.parse(savedModulesStr) : null;

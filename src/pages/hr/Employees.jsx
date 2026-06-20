@@ -61,13 +61,36 @@ export default function Employees() {
   }, [companyId]);
         
  const [departmentRecords, setDepartmentRecords] = useState([]);
+  const [roleRecords, setRoleRecords] = useState([]);
+  useEffect(() => {
+    let active = true;
+    const fetchRoles = async () => {
+      try {
+        const res = await powerSync.execute('SELECT * FROM platform_roles WHERE company_id = ?', [companyId]);
+        if(active) setRoleRecords(res.rows._array || Array.from(res.rows));
+      } catch(e){}
+    };
+    if (companyId) fetchRoles();
+    return () => { active = false; };
+  }, [companyId]);
+  useEffect(() => {
+    let active = true;
+    const fetchDepts = async () => {
+      try {
+        const res = await powerSync.execute('SELECT * FROM platform_departments WHERE company_id = ?', [companyId]);
+        if(active) setDepartmentRecords(res.rows._array || Array.from(res.rows));
+      } catch(e){}
+    };
+    if (companyId) fetchDepts();
+    return () => { active = false; };
+  }, [companyId]);
  const employees = dbRecords.map(r => ({
   id: r.id,
   status: r.status || 'Active',
   employeeId: r.employee_id || r.id.substring(0,6),
   name: r.name,
   departmentId: r.department_id,
-  role: r.role,
+  role: roleRecords.find(ro => ro.id === r.role)?.name || r.role,
   email: r.email,
   phone: r.phone,
   salary: r.salary,

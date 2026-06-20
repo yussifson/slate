@@ -1279,6 +1279,7 @@ export const AppSchema = new Schema({
         id: column.text,
         room_id: column.text,
         sender_id: column.text,
+        reply_to_id: column.text,
         content: column.text,
         is_edited: column.text,
         is_deleted: column.text,

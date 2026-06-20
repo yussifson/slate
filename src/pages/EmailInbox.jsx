@@ -17,6 +17,7 @@ import { Input} from "@/components/ui/input";
 import { formatDistanceToNow, format} from "date-fns";
 import { cn} from "@/lib/utils";
 import { generateText} from "@/lib/cloudflareAI";
+import { toast } from "react-hot-toast";
 
 export default function EmailInbox() {
  const { t} = useTranslation();
@@ -25,6 +26,7 @@ export default function EmailInbox() {
  const queryClient = useQueryClient();
 
  const [activeTab, setActiveTab] = useState("inbox");
+ const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
  const [selectedEmail, setSelectedEmail] = useState(null);
  const [showCompose, setShowCompose] = useState(false);
  const [isComposeMinimized, setIsComposeMinimized] = useState(false);
@@ -143,36 +145,44 @@ export default function EmailInbox() {
  <div className="flex h-[calc(100vh-100px)] overflow-hidden rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
 
  {/* ── Left Sidebar ── */}
- <aside className="w-56 shrink-0 flex flex-col border-r border-primary/40 bg-muted/30 dark:bg-slate-900/60">
+ <aside className={cn("shrink-0 flex flex-col border-r border-primary/40 bg-muted/30 dark:bg-slate-900/60 transition-all duration-300 relative", isSidebarCollapsed ? "w-16" : "w-56")}>
+ {/* Collapse Toggle */}
+ <button onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} className="absolute -right-3 top-4 w-6 h-6 rounded-full bg-card border border-primary/40 flex items-center justify-center text-primary hover:bg-primary/10 z-10 shadow-sm transition-transform hover:scale-105">
+   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={cn("transition-transform duration-300", isSidebarCollapsed ? "rotate-180" : "")}><path d="m15 18-6-6 6-6"/></svg>
+ </button>
+
  {/* Compose Button */}
- <div className="p-4">
+ <div className="p-4 flex justify-center">
  <Button
- className="w-full h-10 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold gap-2 text-sm"
+ className={cn("rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold transition-all duration-300", isSidebarCollapsed ? "w-10 h-10 p-0 rounded-full shadow-md" : "w-full h-10 gap-2 text-sm")}
  onClick={() => { setComposeInitialData(null); setShowCompose(true); setIsComposeMinimized(false);}}
+ title={t("compose", "Compose")}
  >
- <Plus className="w-4 h-4" />
- {t("compose", "Compose")}
+ <Plus className={cn("w-4 h-4", isSidebarCollapsed ? "w-5 h-5" : "")} />
+ {!isSidebarCollapsed && t("compose", "Compose")}
  </Button>
  </div>
 
  {/* Nav Items */}
- <nav className="px-3 space-y-0.5 flex-1">
+ <nav className="px-2 space-y-1 flex-1 overflow-hidden">
  {NAV_ITEMS.map(({ id, label, icon: Icon, count}) => (
  <button
  key={id}
  onClick={() => setActiveTab(id)}
+ title={isSidebarCollapsed ? label : undefined}
  className={cn(
- "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all group",
+ "w-full flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition-all group",
  activeTab === id
  ? "bg-primary/10 text-primary"
- : "text-[#71717a] dark:text-gray-400 hover:bg-accent hover:text-foreground"
+ : "text-[#71717a] dark:text-gray-400 hover:bg-accent hover:text-foreground",
+ isSidebarCollapsed ? "justify-center" : "justify-between"
  )}
  >
- <div className="flex items-center gap-2.5">
+ <div className="flex items-center gap-3">
  <Icon className={cn("w-4 h-4", activeTab === id ? "text-primary" : "text-[#71717a] dark:text-gray-400 group-hover:text-foreground")} />
- {label}
+ {!isSidebarCollapsed && label}
  </div>
- {count > 0 && (
+ {!isSidebarCollapsed && count > 0 && (
  <span className={cn(
  "text-[10px] font-semibold px-1.5 py-0.5 rounded-full min-w-[20px] text-center",
  activeTab === id ? "bg-primary/20 text-primary" : "bg-muted text-[#71717a] dark:text-gray-400"
@@ -185,6 +195,7 @@ export default function EmailInbox() {
  </nav>
 
  {/* Storage indicator */}
+ {!isSidebarCollapsed && (
  <div className="p-4 border-t border-primary/40">
  <p className="text-[11px] text-[#71717a] dark:text-gray-400 font-medium mb-1.5">Storage</p>
  <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
@@ -192,12 +203,13 @@ export default function EmailInbox() {
  </div>
  <p className="text-[11px] text-[#71717a] dark:text-gray-400 mt-1">1.2 GB of 15 GB used</p>
  </div>
+ )}
  </aside>
 
  {/* ── Middle Pane: Email List ── */}
  <div className={cn(
- "flex flex-col border-r border-primary/40 bg-background transition-all",
- selectedEmail ? "hidden lg:flex w-[340px] shrink-0" : "flex-1"
+ "flex flex-col border-r border-primary/40 bg-background transition-all duration-300",
+ selectedEmail ? "hidden md:flex w-[280px] shrink-0" : "flex-1"
  )}>
  {/* Search Header */}
  <div className="h-[57px] border-b border-primary/40 flex items-center px-4 gap-3 shrink-0 bg-background">
@@ -245,7 +257,7 @@ export default function EmailInbox() {
  {/* ── Right Pane: Email Reader ── */}
  <div className={cn(
  "flex-1 flex-col min-w-0 bg-background",
- selectedEmail ? "flex" : "hidden lg:flex"
+ selectedEmail ? "flex" : "hidden md:flex"
  )}>
  {selectedEmail ? (
  <EmailDetail
@@ -377,11 +389,25 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
     }
     setIsSmartReplying(true);
     try {
-      const prompt = `Draft 3 quick, professional, 1-sentence reply options to this email. Format as a valid JSON array of strings.\nSubject: ${email.subject}\nBody: ${email.body_preview}`;
+      const prompt = `Draft 3 quick, professional, 1-sentence reply options to this email. Format strictly as a JSON array of strings, e.g. ["Option 1", "Option 2"].\nSubject: ${email.subject}\nBody: ${email.body_preview}`;
       const response = await generateText([{ role: 'user', content: prompt }]);
-      const cleaned = response.replace(/```json|```/g, '').trim();
-      setSmartReplies(JSON.parse(cleaned));
+      
+      let cleaned = response.replace(/```json/g, '').replace(/```/g, '').trim();
+      const match = cleaned.match(/\[.*\]/s);
+      if (match) {
+        cleaned = match[0];
+      }
+      
+      try {
+        setSmartReplies(JSON.parse(cleaned));
+      } catch (parseErr) {
+        // Fallback if not valid JSON
+        const fallback = cleaned.split('\n').filter(l => l.trim().length > 5).map(l => l.replace(/^[-\d.*]+ /, '').replace(/^"|",?$/g, ''));
+        if (fallback.length > 0) setSmartReplies(fallback);
+        else throw parseErr;
+      }
     } catch (err) {
+      console.error(err);
       toast.error("Failed to generate smart replies");
     } finally {
       setIsSmartReplying(false);
@@ -526,8 +552,8 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
   )}
 
  {/* Quick reply strip */}
- <div className="flex gap-2 border-t border-primary/40 pt-6">
- <Button onClick={handleSmartReply} disabled={isSmartReplying} className="gap-2 text-sm bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90 text-white border-none shadow-md">
+ <div className="flex flex-wrap gap-2 border-t border-primary/40 pt-6">
+ <Button onClick={handleSmartReply} disabled={isSmartReplying} className="gap-2 text-sm bg-primary hover:bg-primary/90 text-primary-foreground border-none shadow-md">
  {isSmartReplying ? <Sparkles className="w-4 h-4 animate-pulse" /> : <Sparkles className="w-4 h-4" />} Smart Reply
  </Button>
  <Button onClick={handleSummarize} disabled={isSummarizing} variant="outline" className="gap-2 text-sm bg-card hover:bg-muted/50 border-primary/40 text-foreground">

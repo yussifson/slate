@@ -70,15 +70,15 @@ export default function NotificationsInbox() {
       return;
     }
     setIsGeneratingBriefing(true);
-    const tId = toast.loading("AI is generating your morning briefing...");
+    toast({ title: "AI is generating your morning briefing..." });
     try {
       const summaryData = unread.slice(0, 50).map(n => `[${n.type}] ${n.title}: ${n.message}`);
       const prompt = `You are an AI assistant. Triage these unread notifications for the user. Group them logically and provide a short, natural language summary of what needs attention. Output a clean text summary.\n\nNotifications:\n${summaryData.join('\n')}`;
       const response = await generateText([{ role: 'user', content: prompt }]);
       setAiBriefing(response);
-      toast.success("Briefing ready", { id: tId });
+      toast({ title: "Briefing ready" });
     } catch (e) {
-      toast.error("Failed to generate briefing", { id: tId });
+      toast({ title: "Failed to generate briefing", variant: "destructive" });
     } finally {
       setIsGeneratingBriefing(false);
     }

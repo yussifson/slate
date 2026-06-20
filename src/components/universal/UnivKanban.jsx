@@ -19,7 +19,9 @@ const PRIORITY_COLORS = { Low: 'bg-muted text-[#71717a] dark:text-gray-400', Med
 const COL_COLORS = ['border-primary/40', 'border-blue-400', 'border-violet-400', 'border-emerald-400'];
 const EMPTY_FORM = { title: '', description: '', status: 'To Do', priority: 'Medium', assignee: '', due_date: '', labels: ''};
 
-export default function UnivKanban({ title = "Kanban Board", companyId, pageName, tableName}) {
+export default function UnivKanban({ title = "Kanban Board", companyId: propCompanyId, pageName, tableName}) {
+ const baseCompanyId = useCompanyId();
+ const companyId = propCompanyId || baseCompanyId;
  const [view, setView] = useState('Default');
 
  const [tasks, setTasks] = useState([]);

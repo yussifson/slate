@@ -95,7 +95,7 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
       return;
     }
     setIsGenerating(true);
-    const tId = toast.loading("AI is generating task checklist...");
+    toast({ title: "AI is generating task checklist..." });
     try {
       const prompt = `Break down this task into a 3-5 step actionable checklist formatted nicely in markdown: "${form.title}"\nReturn ONLY the markdown checklist.`;
       const response = await generateText([{ role: 'user', content: prompt }]);
@@ -105,9 +105,9 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
         : `### AI Task Breakdown:\n${response}`;
       
       set("description", newDesc);
-      toast.success("Checklist generated!", { id: tId });
+      toast({ title: "Checklist generated!" });
     } catch (e) {
-      toast.error("Failed to generate breakdown", { id: tId });
+      toast({ title: "Failed to generate breakdown", variant: "destructive" });
     } finally {
       setIsGenerating(false);
     }

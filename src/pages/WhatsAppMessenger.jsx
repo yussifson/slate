@@ -67,15 +67,15 @@ export default function WhatsAppMessenger() {
   const handleAiCompose = async () => {
     if (!aiPrompt.trim()) return;
     setIsComposing(true);
-    const tId = toast.loading("AI is composing message...");
+    toast({ title: "AI is composing message..." });
     try {
       const prompt = `Write a short, professional WhatsApp message to a client named ${selectedClient?.name || "Client"}. Context: ${aiPrompt}. Do not include subject lines or formal email sign-offs, just a natural WhatsApp message text.`;
       const response = await generateText([{ role: 'user', content: prompt }]);
       setMessage(response);
       setAiPrompt("");
-      toast.success("Draft generated", { id: tId });
+      toast({ title: "Draft generated" });
     } catch (err) {
-      toast.error("Failed to generate draft", { id: tId });
+      toast({ title: "Failed to generate draft", variant: "destructive" });
     } finally {
       setIsComposing(false);
     }
