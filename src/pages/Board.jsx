@@ -232,16 +232,15 @@ export default function Board() {
 
  {/* Right Column: AI Insights */}
  <div className="space-y-6">
- <div className="bg-primary rounded-xl p-5 text-primary-foreground relative overflow-hidden">
- <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-900/40/10 rounded-full blur-2xl -mr-10 -mt-10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"></div>
+ <div className="bg-orange-500 rounded-xl p-5 text-white relative overflow-hidden">
  <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
- <Sparkles className="w-5 h-5 text-primary/20" /> Orbit Meeting AI
+ <Sparkles className="w-5 h-5 text-white/70" /> Orbit Meeting AI
  </h3>
- <p className="text-sm text-primary/10 mb-4">Your AI assistant is ready to join your calls to transcribe, summarize, and extract action items.</p>
- <ul className="space-y-2 text-sm text-primary/5">
- <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary/30"></div> Real-time transcription</li>
- <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary/30"></div> Post-meeting summaries</li>
- <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary/30"></div> Action item detection</li>
+ <p className="text-sm text-white/80 mb-4">Your AI assistant is ready to join your calls to transcribe, summarize, and extract action items.</p>
+ <ul className="space-y-2 text-sm text-white/90">
+ <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60"></div> Real-time transcription</li>
+ <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60"></div> Post-meeting summaries</li>
+ <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-white/60"></div> Action item detection</li>
  </ul>
  </div>
  
