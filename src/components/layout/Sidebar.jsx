@@ -288,15 +288,18 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  ];
 
  const adminNav = [
- { label: "Overview", path: "/admin", icon: "LayoutDashboard"},
- { label: "Workspaces", path: "/admin/firms", icon: "Building2"},
- { label: "Users", path: "/admin/users", icon: "Users"},
- { label: "Pricing", path: "/admin/pricing", icon: "Crown"},
- { label: "Global Invoices", path: "/admin/billing", icon: "DollarSign"},
- { label: "Security", path: "/admin/security", icon: "ShieldCheck"},
- { label: "Broadcasts", path: "/admin/broadcasts", icon: "Megaphone"},
- { label: "Enterprise Requests", path: "/admin/enterprise-requests", icon: "Building2"},
- { label: "Partner Applications", path: "/admin/partners", icon: "Handshake"}
+    { label: "Overview", path: "/admin", icon: "LayoutDashboard"},
+    { label: "Intelligence", path: "/admin/intelligence", icon: "Cpu"},
+    { label: "Rollouts", path: "/admin/rollout", icon: "ToggleRight"},
+    { label: "Quotas", path: "/admin/quotas", icon: "Database"},
+    { label: "Workspaces", path: "/admin/firms", icon: "Building2"},
+    { label: "Users", path: "/admin/users", icon: "Users"},
+    { label: "Pricing", path: "/admin/pricing", icon: "Crown"},
+    { label: "Global Invoices", path: "/admin/billing", icon: "DollarSign"},
+    { label: "Security", path: "/admin/security", icon: "ShieldCheck"},
+    { label: "Broadcasts", path: "/admin/broadcasts", icon: "Megaphone"},
+    { label: "Enterprise Requests", path: "/admin/enterprise-requests", icon: "Building2"},
+    { label: "Partner Applications", path: "/admin/partners", icon: "Handshake"}
  ];
 
  const isSuiteAdmin = ["super_admin", "admin"].includes(user?.role);

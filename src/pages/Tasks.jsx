@@ -14,7 +14,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Search, CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import { Plus, Search, CheckCircle2, Clock, AlertCircle, Sparkles, ListChecks } from "lucide-react";
+import { generateText } from "@/lib/cloudflareAI";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
@@ -48,6 +49,7 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
     category: "legal"};
 
   const [form, setForm] = useState(initialData || defaultForm);
+  const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -87,6 +89,30 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
     });
   };
 
+  const handleAIBreakdown = async () => {
+    if (!form.title) {
+      toast({ title: "Title Required", description: "Please enter a task title first." });
+      return;
+    }
+    setIsGenerating(true);
+    const tId = toast.loading("AI is generating task checklist...");
+    try {
+      const prompt = `Break down this task into a 3-5 step actionable checklist formatted nicely in markdown: "${form.title}"\nReturn ONLY the markdown checklist.`;
+      const response = await generateText([{ role: 'user', content: prompt }]);
+      
+      const newDesc = form.description 
+        ? `${form.description}\n\n### AI Task Breakdown:\n${response}` 
+        : `### AI Task Breakdown:\n${response}`;
+      
+      set("description", newDesc);
+      toast.success("Checklist generated!", { id: tId });
+    } catch (e) {
+      toast.error("Failed to generate breakdown", { id: tId });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
@@ -99,8 +125,14 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
             <Input value={form.title} onChange={e => set("title", e.target.value)} placeholder="Task title" />
           </div>
           <div>
-            <Label>{t("description", "Description")}</Label>
-            <Textarea value={form.description} onChange={e => set("description", e.target.value)} rows={2} />
+            <div className="flex items-center justify-between mb-1">
+              <Label>{t("description", "Description")}</Label>
+              <Button type="button" onClick={handleAIBreakdown} disabled={isGenerating || !form.title} variant="ghost" size="sm" className="h-6 text-xs text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 px-2 gap-1.5 rounded">
+                {isGenerating ? <Sparkles className="w-3 h-3 animate-pulse"/> : <ListChecks className="w-3 h-3"/>}
+                AI Breakdown
+              </Button>
+            </div>
+            <Textarea value={form.description} onChange={e => set("description", e.target.value)} rows={4} placeholder="Add details or generate an AI breakdown..." />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>

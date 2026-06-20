@@ -7,12 +7,14 @@ import { useCompanyId } from "@/hooks/useCompanyId";
 import { generateText } from '@/lib/cloudflareAI';
 import { useToast } from "@/components/ui/use-toast";
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from "@/lib/AuthContext";
 
 export default function OnlineAssessments() {
  const navigate = useNavigate();
  const companyId = useCompanyId();
  const queryClient = useQueryClient();
  const { toast } = useToast();
+ const { user } = useAuth();
 
  const [activeAssessment, setActiveAssessment] = useState(null);
  const [started, setStarted] = useState(false);

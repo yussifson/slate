@@ -8,9 +8,10 @@ import { cn } from '@/lib/utils';
 import { 
   Bell, CheckCircle2, MessageSquare, AlertTriangle, 
   Trash2, ExternalLink, Clock, AlertCircle, Mail, CreditCard,
-  Search, CheckSquare, Filter, ArrowRight
+  Search, CheckSquare, Filter, ArrowRight, Sparkles, BrainCircuit
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { generateText } from "@/lib/cloudflareAI";
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { formatDistanceToNow, format } from "date-fns";
@@ -23,6 +24,8 @@ export default function NotificationsInbox() {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('all'); // all, unread, archived
+  const [aiBriefing, setAiBriefing] = useState(null);
+  const [isGeneratingBriefing, setIsGeneratingBriefing] = useState(false);
 
   const { data: rawNotifications = [], isLoading } = useQuery(
     user?.email ? `SELECT * FROM notifications WHERE recipient_email = ?` : `SELECT * FROM notifications WHERE 1=0`,
@@ -55,6 +58,31 @@ export default function NotificationsInbox() {
   });
 
   const unreadCount = notifications.filter(n => n.is_read !== 'true').length;
+
+  const handleAiTriage = async () => {
+    if (aiBriefing) {
+      setAiBriefing(null);
+      return;
+    }
+    const unread = notifications.filter(n => n.is_read !== 'true');
+    if (unread.length === 0) {
+      toast({ title: 'Inbox Zero', description: 'You have no unread notifications to triage.' });
+      return;
+    }
+    setIsGeneratingBriefing(true);
+    const tId = toast.loading("AI is generating your morning briefing...");
+    try {
+      const summaryData = unread.slice(0, 50).map(n => `[${n.type}] ${n.title}: ${n.message}`);
+      const prompt = `You are an AI assistant. Triage these unread notifications for the user. Group them logically and provide a short, natural language summary of what needs attention. Output a clean text summary.\n\nNotifications:\n${summaryData.join('\n')}`;
+      const response = await generateText([{ role: 'user', content: prompt }]);
+      setAiBriefing(response);
+      toast.success("Briefing ready", { id: tId });
+    } catch (e) {
+      toast.error("Failed to generate briefing", { id: tId });
+    } finally {
+      setIsGeneratingBriefing(false);
+    }
+  };
 
   const markAllAsRead = async () => {
     const unread = notifications.filter(n => n.is_read !== 'true');
@@ -123,6 +151,12 @@ export default function NotificationsInbox() {
           </div>
           <div className="flex items-center gap-3">
             {unreadCount > 0 && (
+              <Button onClick={handleAiTriage} disabled={isGeneratingBriefing} variant="outline" className="gap-2 border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300 dark:border-indigo-500/30">
+                {isGeneratingBriefing ? <Sparkles className="w-4 h-4 animate-pulse" /> : <BrainCircuit className="w-4 h-4" />}
+                {isGeneratingBriefing ? "Triaging..." : "AI Triage"}
+              </Button>
+            )}
+            {unreadCount > 0 && (
               <Button variant="outline" onClick={markAllAsRead} className="gap-2 text-primary border-primary/20 bg-primary/5 hover:bg-primary/10">
                 <CheckSquare className="w-4 h-4" /> Mark All Read
               </Button>
@@ -149,6 +183,19 @@ export default function NotificationsInbox() {
             </Button>
           </div>
         </div>
+
+        {/* AI Briefing Banner */}
+        <AnimatePresence>
+          {aiBriefing && (
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="mb-6 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-200 dark:border-indigo-500/30 rounded-xl p-5 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none"><BrainCircuit className="w-24 h-24 text-indigo-500"/></div>
+              <h3 className="text-sm font-semibold mb-2 flex items-center gap-2 text-indigo-900 dark:text-indigo-200"><Sparkles className="w-4 h-4"/> AI Morning Briefing</h3>
+              <div className="text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap max-w-4xl relative z-10">
+                {aiBriefing}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Toolbar */}
         <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm mb-6 flex flex-col sm:flex-row items-center justify-between p-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">

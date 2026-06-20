@@ -32,6 +32,8 @@ export default function Chat() {
  const [isUploading, setIsUploading] = useState(false);
  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
  const [showAttachMenu, setShowAttachMenu] = useState(false);
+ const [isSummarizing, setIsSummarizing] = useState(false);
+ const [chatSummary, setChatSummary] = useState(null);
 
  const messagesEndRef = useRef(null);
  const fileInputRef = useRef(null);
@@ -231,6 +233,34 @@ export default function Chat() {
 }
 };
 
+ const handleSummarizeChat = async () => {
+    if (chatSummary) {
+      setChatSummary(null);
+      return;
+    }
+    if (messages.length === 0) {
+      toast({ title: "No messages to summarize" });
+      return;
+    }
+    setIsSummarizing(true);
+    const tId = toast({ title: "AI is summarizing this chat..." });
+    try {
+      const recentMsgs = messages.slice(-50).map(m => {
+        const sender = participantProfiles[m.sender_id]?.full_name || 'User';
+        return `${sender}: ${m.content}`;
+      });
+      const prompt = `Summarize the following chat conversation into a brief, easy-to-read recap (3-4 bullet points max) of decisions made and outstanding items:\n\n${recentMsgs.join('\n')}`;
+      
+      const response = await generateText([{ role: 'user', content: prompt }]);
+      setChatSummary(response);
+      toast({ title: "Summary generated!" });
+    } catch (err) {
+      toast({ title: "Failed to summarize chat", variant: "destructive" });
+    } finally {
+      setIsSummarizing(false);
+    }
+  };
+
  const activeRoom = rooms.find(r => r.id === activeRoomId);
 
  return (
@@ -336,10 +366,28 @@ export default function Chat() {
  </div>
  </div>
  <div className="flex items-center gap-4 text-[#54656f] dark:text-[#aebac1]">
+    {messages.length > 0 && (
+      <Button onClick={handleSummarizeChat} disabled={isSummarizing} variant="ghost" size="sm" className="h-8 gap-2 hover:bg-primary/10 hover:text-primary">
+        <Sparkles className={cn("w-4 h-4", isSummarizing && "animate-pulse")} />
+        <span className="hidden sm:inline">{isSummarizing ? "Summarizing..." : "Summarize"}</span>
+      </Button>
+    )}
  <button className="hover:text-foreground transition-colors"><Search className="w-5 h-5" /></button>
  <button className="hover:text-foreground transition-colors"><MoreVertical className="w-5 h-5" /></button>
  </div>
  </div>
+
+ {/* AI Summary Banner */}
+ {chatSummary && (
+   <div className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border-b border-indigo-200 dark:border-indigo-500/30 p-4 relative z-10 flex gap-3 items-start">
+     <Sparkles className="w-5 h-5 text-indigo-500 mt-0.5 shrink-0" />
+     <div className="flex-1 min-w-0">
+       <h4 className="text-sm font-semibold text-indigo-900 dark:text-indigo-200 mb-1">Chat Summary</h4>
+       <div className="text-sm text-foreground/90 whitespace-pre-wrap">{chatSummary}</div>
+     </div>
+     <Button variant="ghost" size="icon" onClick={() => setChatSummary(null)} className="shrink-0 h-6 w-6"><X className="w-4 h-4"/></Button>
+   </div>
+ )}
 
  {/* Chat Messages */}
  <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-2 z-10">

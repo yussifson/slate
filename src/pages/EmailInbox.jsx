@@ -258,11 +258,11 @@ export default function EmailInbox() {
  queryClient.invalidateQueries({ queryKey: ["case-emails"]});
  setSelectedEmail(null);
 }}
- onReply={() => {
+ onReply={(prefilledText) => {
  setComposeInitialData({
  recipient_email: selectedEmail.sender_email,
  subject: selectedEmail.subject?.startsWith("Re:") ? selectedEmail.subject : `Re: ${selectedEmail.subject}`,
- message: `\n\n\n--- On ${format(new Date(selectedEmail.created_date || new Date()), "MMM d, yyyy")} ${selectedEmail.sender_email} wrote:\n> ${selectedEmail.body_preview?.replace(/\n/g, "\n> ")}`
+ message: prefilledText && typeof prefilledText === 'string' ? prefilledText : `\n\n\n--- On ${format(new Date(selectedEmail.created_date || new Date()), "MMM d, yyyy")} ${selectedEmail.sender_email} wrote:\n> ${selectedEmail.body_preview?.replace(/\n/g, "\n> ")}`
 });
  setShowCompose(true);
  setIsComposeMinimized(false);
@@ -348,6 +348,45 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
  const avatarUrl = `https://api.dicebear.com/7.x/initials/svg?seed=${senderName}&backgroundColor=e2e8f0`;
  const [isExtracting, setIsExtracting] = useState(false);
  const [extractedIntent, setExtractedIntent] = useState(null);
+  const [isSummarizing, setIsSummarizing] = useState(false);
+  const [summary, setSummary] = useState(null);
+  const [isSmartReplying, setIsSmartReplying] = useState(false);
+  const [smartReplies, setSmartReplies] = useState([]);
+
+  const handleSummarize = async () => {
+    if (summary) {
+      setSummary(null);
+      return;
+    }
+    setIsSummarizing(true);
+    try {
+      const prompt = `Summarize this email in 3 brief bullet points:\nSubject: ${email.subject}\nBody: ${email.body_preview}`;
+      const response = await generateText([{ role: 'user', content: prompt }]);
+      setSummary(response);
+    } catch (err) {
+      toast.error("Failed to summarize email");
+    } finally {
+      setIsSummarizing(false);
+    }
+  };
+
+  const handleSmartReply = async () => {
+    if (smartReplies.length > 0) {
+      setSmartReplies([]);
+      return;
+    }
+    setIsSmartReplying(true);
+    try {
+      const prompt = `Draft 3 quick, professional, 1-sentence reply options to this email. Format as a valid JSON array of strings.\nSubject: ${email.subject}\nBody: ${email.body_preview}`;
+      const response = await generateText([{ role: 'user', content: prompt }]);
+      const cleaned = response.replace(/```json|```/g, '').trim();
+      setSmartReplies(JSON.parse(cleaned));
+    } catch (err) {
+      toast.error("Failed to generate smart replies");
+    } finally {
+      setIsSmartReplying(false);
+    }
+  };
 
  const handleExtractIntent = async () => {
    if (extractedIntent) {
@@ -463,9 +502,38 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
    </div>
  )}
 
+ {summary && (
+    <div className="mb-8 p-4 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/30 rounded-xl flex gap-3 items-start w-fit">
+      <Sparkles className="w-5 h-5 text-indigo-500 mt-0.5 shrink-0" />
+      <div className="text-sm text-indigo-900 dark:text-indigo-200 leading-relaxed whitespace-pre-wrap">
+        <span className="font-semibold block mb-1">AI Summary</span>
+        {summary}
+      </div>
+    </div>
+  )}
+
+  {smartReplies.length > 0 && (
+    <div className="mb-8 space-y-2">
+      <p className="text-xs font-semibold text-[#71717a] flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5"/> Smart Replies</p>
+      <div className="flex flex-col gap-2 items-start">
+        {smartReplies.map((reply, idx) => (
+          <button key={idx} onClick={() => onReply(reply)} className="text-left px-4 py-2 bg-muted/40 hover:bg-muted border border-border rounded-xl text-sm transition-colors text-foreground">
+            {reply}
+          </button>
+        ))}
+      </div>
+    </div>
+  )}
+
  {/* Quick reply strip */}
  <div className="flex gap-2 border-t border-primary/40 pt-6">
- <Button onClick={handleExtractIntent} disabled={isExtracting} className="gap-2 text-sm bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90 text-white border-none shadow-md">
+ <Button onClick={handleSmartReply} disabled={isSmartReplying} className="gap-2 text-sm bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90 text-white border-none shadow-md">
+ {isSmartReplying ? <Sparkles className="w-4 h-4 animate-pulse" /> : <Sparkles className="w-4 h-4" />} Smart Reply
+ </Button>
+ <Button onClick={handleSummarize} disabled={isSummarizing} variant="outline" className="gap-2 text-sm bg-card hover:bg-muted/50 border-primary/40 text-foreground">
+ <Sparkles className="w-4 h-4" /> Summarize
+ </Button>
+ <Button onClick={handleExtractIntent} disabled={isExtracting} variant="outline" className="gap-2 text-sm bg-card hover:bg-muted/50 border-primary/40 text-foreground">
  {isExtracting ? <Sparkles className="w-4 h-4 animate-pulse" /> : <Sparkles className="w-4 h-4" />} AI Actions
  </Button>
  <Button onClick={onReply} variant="outline" className="gap-2 text-sm bg-card hover:bg-muted/50 border-primary/40 text-foreground">

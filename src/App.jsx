@@ -422,6 +422,9 @@ import AdminBilling from './pages/admin/AdminBilling';
 import SuperAdminBilling from './components/orbitbolt/SuperAdminBilling';
 import AdminSecurity from './pages/admin/AdminSecurity';
 import AdminBroadcasts from './pages/admin/AdminBroadcasts';
+import AdminIntelligence from './pages/admin/AdminIntelligence';
+import AdminRollout from './pages/admin/AdminRollout';
+import AdminQuotas from './pages/admin/AdminQuotas';
 import AdminEnterpriseRequests from './pages/admin/AdminEnterpriseRequests';
 import AdminPartners from './pages/admin/AdminPartners';
 import NotificationsInbox from './pages/NotificationsInbox';
@@ -919,6 +922,9 @@ function App() {
                         {/* Super Admin Base Domain Dashboard */}
                         <Route element={<AppLayout />}>
                           <Route path="/admin" element={<AdminOverview />} />
+                          <Route path="/admin/intelligence" element={<AdminIntelligence />} />
+                          <Route path="/admin/rollout" element={<AdminRollout />} />
+                          <Route path="/admin/quotas" element={<AdminQuotas />} />
                           <Route path="/admin/firms" element={<AdminFirms />} />
                           <Route path="/admin/users" element={<AdminUsers />} />
                           <Route path="/admin/billing" element={<AdminBilling />} />
