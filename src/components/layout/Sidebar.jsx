@@ -70,6 +70,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  const [deleteData, setDeleteData] = useState(null);
  const [showAvatarDialog, setShowAvatarDialog] = useState(false);
 
+ const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(user?.role);
   const [rolePermissions, setRolePermissions] = useState(null);
 
   useEffect(() => {
@@ -114,7 +115,6 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
   };
 
  const { activeRoomUrl} = useVideo();
- const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(user?.role);
  const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
  
  useEffect(() => {
