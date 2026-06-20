@@ -439,7 +439,9 @@ Return ONLY the summary in markdown format.`;
                 {isGeneratingAi ? 'Analyzing...' : 'AI Health Summary'}
               </Button>
             </div>
-          </SheetHeader>
+          
+              <BehaviourProfilePanel profile={{churn_risk: "low", payment_reliability: "reliable", engagement_trend: "stable", profile_confidence: 85}} entityType="patient" />
+            </SheetHeader>
           {viewPatient && (
             <div className="mt-6 space-y-6">
               <div className="grid grid-cols-2 gap-4">

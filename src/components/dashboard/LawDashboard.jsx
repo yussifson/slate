@@ -1,6 +1,8 @@
 import { OrbitLoader } from '@/components/ui/orbit-loader';
 import IntelligenceDashboard from '@/components/IntelligenceDashboard';
-import React, { useState, useEffect} from "react";
+import React from 'react';
+import { RevenueForecastCard, BehaviourProfilePanel, BenchmarkingPanel } from '@/components/intelligence/IntelligenceUI';
+, { useState, useEffect} from "react";
 import { useNavigate} from "react-router-dom";
 import { useTranslation} from "react-i18next";
 import { base44} from "@/api/base44Client";

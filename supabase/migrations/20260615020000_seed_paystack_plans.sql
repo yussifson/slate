@@ -15,4 +15,5 @@ VALUES
 ('Enterprise', 'global', '3740', 'PLN_zfz4irbtredtcys', true, '{"users": 999999, "ai_credits_monthly": 999999}'::jsonb),
 ('Enterprise', 'emerging', '1490', 'PLN_j97lm3tkjiemubt', true, '{"users": 999999, "ai_credits_monthly": 999999}'::jsonb),
 ('Enterprise', 'community', '740', 'PLN_w2tmztv899gel6t', true, '{"users": 999999, "ai_credits_monthly": 999999}'::jsonb),
-('Enterprise', 'education', '1040', 'PLN_w4gcdkifrxmpyhn', true, '{"users": 999999, "ai_credits_monthly": 999999}'::jsonb);
+('Enterprise', 'education', '1040', 'PLN_w4gcdkifrxmpyhn', true, '{"users": 999999, "ai_credits_monthly": 999999}'::jsonb)
+ON CONFLICT (paystack_plan_code) DO NOTHING;

@@ -1,4 +1,4 @@
-﻿-- ============================================================
+-- ============================================================
 -- Migration: Sync all missing columns from AppSchema to Supabase
 -- Generated: 2026-06-15
 -- Safe: All statements use IF NOT EXISTS guards — zero data loss

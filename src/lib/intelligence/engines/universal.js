@@ -278,10 +278,21 @@ async function predictCashFlow(companyId) {
   }];
 }
 
+import { runRevenueForecastEngine } from './revenue-forecast';
+import { runBehaviourProfileEngine } from './behaviour-profile';
+import { runCausalChainEngine } from './causal-chain';
+
 // ────────────────────────────────────────────────────────
 // Main Export — runs all universal checks
 // ────────────────────────────────────────────────────────
 export default async function universalEngine(companyId) {
+  // Try to get vertical
+  let vertical = 'legal';
+  try {
+    const res = await powerSync.execute(`SELECT industry_type FROM companies WHERE id = ?`, [companyId]);
+    if (res.rows.length > 0) vertical = res.rows.item(0).industry_type;
+  } catch(e) {}
+
   const results = await Promise.allSettled([
     detectRevenueAnomalies(companyId),
     detectActivityAnomaly(companyId),
@@ -289,7 +300,10 @@ export default async function universalEngine(companyId) {
     predictCashFlow(companyId),
     detectClientSourcePattern(companyId),
     detectRepeatEngagement(companyId),
-    detectDayOfWeekPerformance(companyId)
+    detectDayOfWeekPerformance(companyId),
+    runRevenueForecastEngine(companyId, vertical),
+    runBehaviourProfileEngine(companyId, vertical),
+    runCausalChainEngine(companyId, vertical)
   ]);
 
   return results.flatMap(r => (r.status === 'fulfilled' ? r.value : []));

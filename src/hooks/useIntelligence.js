@@ -75,11 +75,53 @@ export function useIntelligence(vertical, options = {}) {
       query += ` ORDER BY CASE severity WHEN 'critical' THEN 0 WHEN 'warning' THEN 1 WHEN 'positive' THEN 2 ELSE 3 END, computed_at DESC`;
 
       const res = await powerSync.execute(query, params);
-      return res.rows._array.map(row => ({
-        ...row,
-        data_snapshot: row.data_snapshot ? JSON.parse(row.data_snapshot) : null,
-        is_dismissed: !!row.is_dismissed,
-      }));
+      const rawInsights = res.rows._array;
+
+      // Fetch accuracy/engagement history for this workspace
+      const accRes = await powerSync.execute(
+        `SELECT insight_key, accuracy_score, dismissed, total_produced FROM engine_accuracy WHERE company_id = ?`,
+        [companyId]
+      );
+      const accuracyMap = new Map(accRes.rows._array.map(a => [a.insight_key, a]));
+
+      const scored = rawInsights.map(insight => {
+        let score = 0;
+        
+        // Severity weight
+        const severityScore = { critical: 40, warning: 25, info: 10, positive: 15 };
+        score += severityScore[insight.severity] || 10;
+
+        // Freshness (newer is more relevant)
+        const hoursOld = (Date.now() - new Date(insight.computed_at).getTime()) / (60 * 60 * 1000);
+        score += Math.max(0, 20 - hoursOld * 0.5);
+
+        // Confidence
+        score += ((insight.confidence || 50) / 100) * 15;
+
+        // Historical accuracy
+        const acc = accuracyMap.get(insight.insight_key);
+        if (acc && acc.total_produced >= 5) {
+          const accuracyBoost = ((acc.accuracy_score || 50) - 50) / 10;
+          score += accuracyBoost;
+          const dismissRate = acc.dismissed / acc.total_produced;
+          if (dismissRate > 0.6) score -= 20;
+        }
+
+        // Vertical match
+        if (insight.vertical === vertical) score += 10;
+
+        // Actionable
+        if (insight.action_label && insight.action_url) score += 5;
+
+        return {
+          ...insight,
+          relevance_score: Math.max(0, score),
+          data_snapshot: insight.data_snapshot ? JSON.parse(insight.data_snapshot) : null,
+          is_dismissed: !!insight.is_dismissed,
+        };
+      });
+
+      return scored.sort((a, b) => b.relevance_score - a.relevance_score).slice(0, 50);
     },
     enabled: !!companyId,
     staleTime: 30000, // 30 seconds
