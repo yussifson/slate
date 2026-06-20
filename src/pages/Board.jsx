@@ -4,6 +4,7 @@ import { useTranslation} from "react-i18next";
 import {Video, Plus, Calendar, Clock, Users, Copy, Sparkles, LayoutGrid} from "lucide-react";
 import { Button} from "@/components/ui/button";
 import VideoRoom from "@/components/video/VideoRoom";
+import ScheduleMeetingDialog from "@/components/video/ScheduleMeetingDialog";
 import { useToast} from "@/components/ui/use-toast";
 import { powerSync} from "@/api/PowerSyncConnector";
 import { useAuth} from "@/lib/AuthContext";
@@ -23,6 +24,7 @@ export default function Board() {
  const [isLoading, setIsLoading] = useState(true);
  const [isCreating, setIsCreating] = useState(false);
  const [quickConnectEmail, setQuickConnectEmail] = useState("");
+  const [isScheduleOpen, setIsScheduleOpen] = useState(false);
 
  const handleQuickConnect = async () => {
  if (!quickConnectEmail.trim()) {
@@ -156,7 +158,7 @@ export default function Board() {
  <p className="text-[#71717a] dark:text-gray-400 mt-1">Start or schedule enterprise-grade video calls instantly.</p>
  </div>
  <div className="flex items-center gap-3">
- <Button variant="outline" className="gap-2">
+ <Button variant="outline" className="gap-2" onClick={() => setIsScheduleOpen(true)}>
  <Calendar className="w-4 h-4" /> Schedule Call
  </Button>
  <Button onClick={handleStartCall} disabled={isCreating} className="gap-2 ">
@@ -201,7 +203,7 @@ export default function Board() {
  </div>
  <div className="mt-4 sm:mt-0 flex gap-2">
  {room.status === 'active' ? (
- <Button size="sm" onClick={() => joinCall(room.daily_room_url)} className="gap-2 bg-orange-500 hover:bg-orange-600 text-white">
+ <Button size="sm" onClick={() => joinCall(room)} className="gap-2 bg-orange-500 hover:bg-orange-600 text-white">
  Join Now
  </Button>
  ) : (
@@ -250,6 +252,7 @@ export default function Board() {
  </div>
 
  </div>
- </div>
- );
+   <ScheduleMeetingDialog open={isScheduleOpen} onOpenChange={setIsScheduleOpen} onScheduled={loadRooms} />
+  </div>
+  );
 }

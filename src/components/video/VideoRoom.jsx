@@ -8,7 +8,8 @@ import {
  useAudioTrack,
  useDaily,
  useDailyEvent,
- useScreenShare
+ useScreenShare,
+ useParticipant
 } from '@daily-co/daily-react';
 import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, MonitorUp, Sparkles, LayoutGrid, Maximize2, Minimize2, ExternalLink, MessageSquare, Send, X, UserPlus, Mail} from 'lucide-react';
 import { Button} from "@/components/ui/button";
@@ -448,8 +449,12 @@ function ScreenShareTile({ screen}) {
 function ParticipantTile({ id, isLocal}) {
  const videoState = useVideoTrack(id);
  const audioState = useAudioTrack(id);
+ const participant = useParticipant(id);
  const videoRef = useRef(null);
  const audioRef = useRef(null);
+ 
+ const displayName = participant?.user_name || (isLocal ? "You" : "Participant");
+ const initials = displayName.substring(0, 2).toUpperCase();
 
  useEffect(() => {
  if (videoState?.track && videoRef.current) {
@@ -475,14 +480,14 @@ function ParticipantTile({ id, isLocal}) {
  />
  ) : (
  <div className="w-20 h-20 bg-slate-700 rounded-full flex items-center justify-center">
- <span className="text-2xl text-slate-400 font-semibold tracking-[-0.02em]">U</span>
+ <span className="text-2xl text-slate-300 font-bold tracking-[-0.02em]">{initials}</span>
  </div>
  )}
  
  {!isLocal && <audio ref={audioRef} autoPlay playsInline />}
  
  <div className="absolute bottom-3 left-3 bg-primary/20 backdrop-blur-sm px-3 py-1 rounded-lg flex items-center gap-2">
- <span className="text-white text-xs font-medium tracking-[0.04em]">{isLocal ? "You" : "Participant"}</span>
+ <span className="text-white text-xs font-medium tracking-[0.04em]">{displayName}</span>
  {audioState?.state !== 'playable' && <MicOff className="w-3 h-3 text-red-500" />}
  </div>
  </div>

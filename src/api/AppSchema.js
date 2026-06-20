@@ -1297,6 +1297,12 @@ export const AppSchema = new Schema({
         status: column.text,
         started_at: column.text,
         ended_at: column.text,
+        meeting_type: column.text,
+        privacy_type: column.text,
+        scheduled_start_time: column.text,
+        scheduled_end_time: column.text,
+        participants: column.text,
+        meeting_link: column.text,
         created_at: column.text}),
     subscription_plans: new Table({
         id: column.text,

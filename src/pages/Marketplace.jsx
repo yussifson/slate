@@ -88,9 +88,11 @@ export default function Marketplace() {
  const moduleError = await (async () => {
  try {
  const _payload = {
+ id: newModuleId,
  company_id: companyId,
  name: mod.name,
  icon: mod.icon,
+ config: { source_module_id: mod.id },
  is_active: true
 };
  const _keys = Object.keys(_payload);

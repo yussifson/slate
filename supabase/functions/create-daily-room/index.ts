@@ -14,7 +14,7 @@ serve(async (req) => {
   }
 
   try {
-    const { roomName } = await req.json()
+    const { roomName, privacy } = await req.json()
 
     if (!DAILY_API_KEY) {
       throw new Error('DAILY_API_KEY is missing')
@@ -28,7 +28,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         name: roomName,
-        privacy: 'public',
+        privacy: privacy || 'public',
         properties: {
           exp: Math.round(Date.now() / 1000) + 86400, // Expires in 24 hours
           enable_chat: true,
