@@ -13,6 +13,7 @@ import { OrbitLoader } from "@/components/ui/orbit-loader";
 export default function Promotions() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiInsight, setAiInsight] = useState('');
+  const isProOrAbove = true; // Temporary bypass
  const { t} = useTranslation();
  const { data: promotions = [], isLoading} = useIndustryRecords('promotion');
  const mutateRecord = useMutateIndustryRecord();
@@ -267,4 +268,5 @@ export default function Promotions() {
  </div>
  );
 }
+
 

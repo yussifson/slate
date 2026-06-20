@@ -20,6 +20,7 @@ import { OrbitLoader } from "@/components/ui/orbit-loader";
 export default function PurchaseOrders() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiInsight, setAiInsight] = useState('');
+  const isProOrAbove = true; // Temporary bypass
  const { t} = useTranslation();
  const { user} = useAuth();
  
@@ -560,4 +561,5 @@ export default function PurchaseOrders() {
  </div>
  );
 }
+
 

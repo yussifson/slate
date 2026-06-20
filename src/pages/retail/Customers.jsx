@@ -22,6 +22,7 @@ const segmentColors = {
 export default function Customers() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiInsight, setAiInsight] = useState('');
+  const isProOrAbove = true; // Temporary bypass
  const { t} = useTranslation();
  const navigate = useNavigate();
  const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('customer');
@@ -408,4 +409,5 @@ Suggest a targeted email or promotion idea.`;
  </div>
  );
 }
+
 

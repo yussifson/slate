@@ -16,6 +16,7 @@ import { useCompanyId} from '@/hooks/useCompanyId';
 export default function Suppliers() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiInsight, setAiInsight] = useState('');
+  const isProOrAbove = true; // Temporary bypass
  const { t} = useTranslation();
  // Supabase Real-time Sync Hooks
  const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('supplier');
@@ -390,4 +391,5 @@ Suggest any potential risks and mitigation strategies.`;
  </div>
  );
 }
+
 

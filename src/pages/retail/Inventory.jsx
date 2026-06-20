@@ -44,6 +44,7 @@ const emptyForm = {
 export default function Inventory() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiInsight, setAiInsight] = useState('');
+  const isProOrAbove = true; // Temporary bypass
  const { t} = useTranslation();
  const { user} = useAuth();
  
@@ -601,4 +602,5 @@ Give a 2-sentence prediction on when this item will stock out and whether the re
  </div>
  );
 }
+
 

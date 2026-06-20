@@ -13,6 +13,7 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 export default function Products() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiInsight, setAiInsight] = useState('');
+  const isProOrAbove = true; // Temporary bypass
  const { t} = useTranslation();
  const { data: dbRecords = [], isLoading} = useIndustryRecords('product');
  const { data: supplierRecords = []} = useIndustryRecords('supplier');
@@ -236,4 +237,5 @@ export default function Products() {
  </div>
  );
 }
+
 
