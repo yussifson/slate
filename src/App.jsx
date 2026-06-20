@@ -957,6 +957,9 @@ function App() {
                       <Route element={<ProtectedRoute />}>
                         <Route element={<AppLayout />}>
                           <Route path="/admin" element={<AdminOverview />} />
+                          <Route path="/admin/intelligence" element={<AdminIntelligence />} />
+                          <Route path="/admin/rollout" element={<AdminRollout />} />
+                          <Route path="/admin/quotas" element={<AdminQuotas />} />
                           <Route path="/admin/firms" element={<AdminFirms />} />
                           <Route path="/admin/users" element={<AdminUsers />} />
                           <Route path="/admin/billing" element={<AdminBilling />} />

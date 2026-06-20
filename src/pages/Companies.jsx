@@ -112,7 +112,8 @@ export default function Companies() {
     {
       header: "Created",
       render: row => {
-        return <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{format(new Date(row.created_date), "MMM d, yyyy")}</span>;
+        const d = row.created_date ? new Date(row.created_date) : null;
+        return <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{d && !isNaN(d.getTime()) ? format(d, "MMM d, yyyy") : '—'}</span>;
       }
     },
     {
