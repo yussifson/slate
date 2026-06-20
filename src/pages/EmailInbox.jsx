@@ -26,7 +26,7 @@ export default function EmailInbox() {
  const queryClient = useQueryClient();
 
  const [activeTab, setActiveTab] = useState("inbox");
- const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+ const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
  const [selectedEmail, setSelectedEmail] = useState(null);
  const [showCompose, setShowCompose] = useState(false);
  const [isComposeMinimized, setIsComposeMinimized] = useState(false);
@@ -114,7 +114,7 @@ export default function EmailInbox() {
     e.subject?.toLowerCase().includes(search.toLowerCase()) ||
     e.sender_email?.toLowerCase().includes(search.toLowerCase()) ||
     e.recipient_email?.toLowerCase().includes(search.toLowerCase())
-  ).sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+  ).sort((a, b) => new Date(b.created_at || b.received_date || b.created_date || 0) - new Date(a.created_at || a.received_date || a.created_date || 0));
 
   // Determine lists independent of active tab for counts
   const inboxEmails = filteredEmails.filter(e => {
@@ -373,7 +373,8 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
     setIsSummarizing(true);
     try {
       const prompt = `Summarize this email in 3 brief bullet points:\nSubject: ${email.subject}\nBody: ${email.body_preview}`;
-      const response = await generateText([{ role: 'user', content: prompt }]);
+      let response = await generateText([{ role: 'user', content: prompt }]);
+      if (typeof response !== 'string') response = response.response || response.text || JSON.stringify(response);
       setSummary(response);
     } catch (err) {
       toast.error("Failed to summarize email");
@@ -390,7 +391,8 @@ export function EmailDetail({ email, onBack, isStarred, onToggleStar, onDelete, 
     setIsSmartReplying(true);
     try {
       const prompt = `Draft 3 quick, professional, 1-sentence reply options to this email. Format strictly as a JSON array of strings, e.g. ["Option 1", "Option 2"].\nSubject: ${email.subject}\nBody: ${email.body_preview}`;
-      const response = await generateText([{ role: 'user', content: prompt }]);
+      let response = await generateText([{ role: 'user', content: prompt }]);
+      if (typeof response !== 'string') response = response.response || response.text || JSON.stringify(response);
       
       let cleaned = response.replace(/```json/g, '').replace(/```/g, '').trim();
       const match = cleaned.match(/\[.*\]/s);
