@@ -15,7 +15,7 @@ export default function SuperAdminBilling({ title = 'Super Admin Billing Center'
  const { toast} = useToast();
  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [overrideCompanyId, setOverrideCompanyId] = useState('');
   
   return (
