@@ -1,4 +1,5 @@
 import React, { useState} from 'react';
+import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
 import { base44} from "@/api/base44Client";
 import { useCompanyId} from "@/hooks/useCompanyId";
@@ -21,50 +22,49 @@ export default function UniStudents() {
 
  const { data: records = [], refetch} = useQuery({ 
  queryKey: ["clients", companyId, "uni_student"], 
- queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'uni_student'}), 
+ queryFn: () => powerSync.execute('SELECT * FROM uni_students WHERE company_id = ?', [companyId]).then(r => r.rows._array), 
  enabled: !!companyId 
 });
 
  const createStudentMutation = useMutation({
- mutationFn: (newStudent) => base44.entities.Client.create(newStudent),
+ mutationFn: async (newStudent) => {
+    return powerSync.execute(
+      `INSERT INTO uni_students (id, company_id, first_name, last_name, email, student_id_number, program_id, enrollment_year, current_semester, gpa, status, created_at)
+       VALUES (uuid(), ?, ?, ?, ?, ?, null, ?, 1, ?, 'active', datetime('now'))`,
+      [newStudent.company_id, newStudent.first_name, newStudent.last_name, newStudent.email, newStudent.student_id_number, newStudent.enrollment_year, newStudent.gpa]
+    );
+  },
  onSuccess: () => {
- queryClient.invalidateQueries(["clients", companyId, "uni_student"]);
+ queryClient.invalidateQueries(["uni_students", companyId]);
  refetch();
  setActiveTab('directory');
  setFormData({ name: '', email: '', major: 'Computer Science', year: 'Freshman', gpa: '3.80'});
 }
 });
 
- const students = records.map(r => {
- let extra = {};
- try { extra = JSON.parse(r.extra_data || '{}');} catch(e) {}
- return {
+ const students = records.map(r => ({
  id: r.id,
- name: r.name || 'Unnamed Student',
- email: r.email || extra.email || 'No email',
- studentId: extra.studentId || `UID${r.id.substring(0, 5).toUpperCase()}`,
- major: extra.major || 'Computer Science',
- year: extra.year || 'Senior',
- gpa: extra.gpa || '3.50',
- status: extra.status || 'Active'
-};
-});
+ name: `${r.first_name || ''} ${r.last_name || ''}`.trim() || 'Unnamed Student',
+ email: r.email || 'No email',
+ studentId: r.student_id_number || `UID${r.id.substring(0, 5).toUpperCase()}`,
+ major: 'Computer Science', // Can map to program_id later
+ year: r.enrollment_year ? `${new Date().getFullYear() - r.enrollment_year + 1} Year` : '1st Year',
+ gpa: r.gpa ? r.gpa.toFixed(2) : '0.00',
+ status: r.status || 'active'
+}));
 
  const handleCreateStudent = (e) => {
  e.preventDefault();
  if (!formData.name) return;
+ const parts = formData.name.split(' ');
  createStudentMutation.mutate({
  company_id: companyId,
- name: formData.name,
+ first_name: parts[0] || 'Unknown',
+ last_name: parts.slice(1).join(' ') || 'Unknown',
  email: formData.email,
- type: 'uni_student',
- extra_data: JSON.stringify({
- studentId: `UID${Math.floor(Math.random() * 90000) + 10000}`,
- major: formData.major,
- year: formData.year,
- gpa: formData.gpa,
- status: 'Active'
-})
+ student_id_number: `UID${Math.floor(Math.random() * 90000) + 10000}`,
+ enrollment_year: new Date().getFullYear(),
+ gpa: parseFloat(formData.gpa) || 0.0
 });
 };
 

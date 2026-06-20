@@ -1,4 +1,5 @@
 import React, { useMemo} from 'react';
+import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery} from "@tanstack/react-query";
 import { base44} from "@/api/base44Client";
 import { useCompanyId} from "@/hooks/useCompanyId";
@@ -10,48 +11,49 @@ export default function UniDashboard() {
  const companyId = useCompanyId();
 
  const { data: students = []} = useQuery({
- queryKey: ["clients", companyId, "uni_student"],
- queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'uni_student'}),
+ queryKey: ["uni_students", companyId],
+ queryFn: () => powerSync.execute('SELECT * FROM uni_students WHERE company_id = ?', [companyId]).then(r => r.rows._array),
  enabled: !!companyId
 });
 
  const { data: admissions = []} = useQuery({
- queryKey: ["clients", companyId, "uni_admission"],
- queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'uni_admission'}),
+ queryKey: ["uni_applicants", companyId],
+ queryFn: () => powerSync.execute('SELECT * FROM uni_applicants WHERE company_id = ? AND status = \'pending\'', [companyId]).then(r => r.rows._array),
  enabled: !!companyId
 });
 
  const { data: courses = []} = useQuery({
- queryKey: ["cases", companyId, "uni_course"],
- queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'uni_course'}),
+ queryKey: ["uni_courses", companyId],
+ queryFn: () => powerSync.execute('SELECT * FROM uni_courses WHERE company_id = ?', [companyId]).then(r => r.rows._array),
  enabled: !!companyId
 });
 
  const { data: faculties = []} = useQuery({
- queryKey: ["cases", companyId, "uni_faculty"],
- queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'uni_faculty'}),
+ queryKey: ["uni_staff", companyId],
+ queryFn: () => powerSync.execute('SELECT * FROM uni_staff WHERE company_id = ?', [companyId]).then(r => r.rows._array),
  enabled: !!companyId
 });
 
  const { data: finances = []} = useQuery({
- queryKey: ["cases", companyId, "uni_finance"],
- queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'uni_finance'}),
+ queryKey: ["uni_fees", companyId],
+ queryFn: () => powerSync.execute('SELECT * FROM uni_fees WHERE company_id = ?', [companyId]).then(r => r.rows._array),
  enabled: !!companyId
 });
 
  // Calculate actual revenue metrics based on the database rather than mock math
  const totalRevenue = useMemo(() => {
  return finances.reduce((sum, f) => {
- let amount = 0;
- try {
- const extra = JSON.parse(f.notes || '{}');
- amount = parseFloat(extra.amount) || 0;
-} catch (e) {}
- return sum + amount;
+ return sum + (parseFloat(f.amount_paid) || 0);
 }, 0);
 }, [finances]);
 
- const recentStudents = students.slice(0, 5);
+ const recentStudents = students.map(s => ({
+   id: s.id, 
+   name: `${s.first_name || ''} ${s.last_name || ''}`.trim() || 'Unknown', 
+   major: 'Computer Science', 
+   year: '1st Year', 
+   status: s.status || 'active'
+ })).slice(0, 5);
 
  const admissionTrends = [
  { name: 'Jan', value: 120}, { name: 'Feb', value: 140}, { name: 'Mar', value: 200},

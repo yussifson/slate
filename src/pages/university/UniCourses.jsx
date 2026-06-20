@@ -1,4 +1,5 @@
 import React, { useState} from 'react';
+import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
 import { base44} from "@/api/base44Client";
 import { useCompanyId} from "@/hooks/useCompanyId";
@@ -26,32 +27,34 @@ export default function UniCourses() {
 
  const { data: records = [], refetch} = useQuery({ 
  queryKey: ["cases", companyId, "uni_course"], 
- queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'uni_course'}), 
+ queryFn: () => powerSync.execute('SELECT * FROM uni_courses WHERE company_id = ?', [companyId]).then(r => r.rows._array), 
  enabled: !!companyId 
 });
  
- const courses = records.map(r => {
- let extra = {};
- try { extra = JSON.parse(r.notes || '{}');} catch(e) {}
- return {
+ const courses = records.map(r => ({
  id: r.id,
- name: r.case_name || r.name || 'Untitled Course',
- code: extra.code || `CS-${Math.floor(Math.random() * 800) + 101}`,
- teacher: extra.lecturer || 'Prof. Unassigned',
- students: extra.enrolled || 0,
- credits: parseInt(extra.credits || '4'),
- schedule: extra.schedule || 'MWF 10:00 AM',
- term: extra.term || 'Fall 2026',
- status: extra.status || 'Active',
- department: extra.department || 'General',
- prerequisite: extra.prerequisite || ''
-};
-});
+ name: r.name || 'Untitled Course',
+ code: r.code || `CS-${Math.floor(Math.random() * 800) + 101}`,
+ teacher: 'Unassigned', // instructor_id maps to staff
+ students: r.enrolled_count || 0,
+ credits: parseInt(r.credits || '4'),
+ schedule: 'MWF 10:00 AM', // can add to schema later
+ term: r.semester || 'Fall 2026',
+ status: 'active',
+ department: 'General',
+ prerequisite: ''
+}));
 
  const createCourseMutation = useMutation({
- mutationFn: (newCourse) => base44.entities.LegalCase.create(newCourse),
+ mutationFn: async (newCourse) => {
+    return powerSync.execute(
+      `INSERT INTO uni_courses (id, company_id, name, code, credits, semester, capacity, enrolled_count, created_at)
+       VALUES (uuid(), ?, ?, ?, ?, ?, 50, 0, datetime('now'))`,
+      [newCourse.company_id, newCourse.name, newCourse.code, newCourse.credits, newCourse.term]
+    );
+  },
  onSuccess: () => {
- queryClient.invalidateQueries(["cases", companyId, "uni_course"]);
+ queryClient.invalidateQueries(["uni_courses", companyId]);
  refetch();
  setActiveTab('directory');
  toast({ title: "Course Created", description: "Academic course logged in the system."});
@@ -67,13 +70,10 @@ export default function UniCourses() {
 }
  createCourseMutation.mutate({
  company_id: companyId,
- case_name: formData.name,
- case_type: 'uni_course',
- notes: JSON.stringify({
- code: formData.code, lecturer: formData.lecturer, credits: formData.credits,
- schedule: formData.schedule, term: formData.term, department: formData.department,
- prerequisite: formData.prerequisite, enrolled: 0, status: 'Active'
-})
+ name: formData.name,
+ code: formData.code,
+ credits: parseInt(formData.credits),
+ term: formData.term
 });
 };
 

@@ -39,7 +39,7 @@ export default function OnlineAssessments() {
    toast({ title: "Generating Quiz...", description: "AI is creating assessment questions." });
    try {
      const prompt = [
-       { role: 'system', content: 'You are an expert educator. Generate a 3-question multiple choice quiz about the provided topic. Return a JSON object with: "title", "passing_score" (number out of 100), and "questions" (array of objects, each with "text", "options" (array of 4 strings), and "correctAnswerIndex" (0-3)).' },
+       { role: 'system', content: 'You are an expert educator. Generate a 3-question multiple choice quiz about the provided topic. Return a JSON object with: "title", "passing_score" (number out of 100), and "questions" (array of objects, each with "text", "options" (array of 4 strings), and "correctIndex" (0-3)).' },
        { role: 'user', content: `Topic: ${aiTopic}` }
      ];
      let response = await generateText(prompt);
@@ -49,7 +49,7 @@ export default function OnlineAssessments() {
        const parsed = JSON.parse(jsonMatch[0]);
        const newId = `ass_${Math.random().toString(36).substr(2, 9)}`;
        await powerSync.execute(
-         `INSERT INTO online_assessments (id, company_id, title, questions_json, passing_score, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
+         `INSERT INTO online_assessments (id, company_id, title, questions, passing_score, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
          [newId, companyId, parsed.title, JSON.stringify(parsed.questions), parsed.passing_score || 80, new Date().toISOString()]
        );
        toast({ title: "Success", description: "Quiz generated!" });
@@ -77,9 +77,9 @@ export default function OnlineAssessments() {
 
  const handleNext = () => {
    let questions = [];
-   try { questions = JSON.parse(activeAssessment.questions_json); } catch(e){}
+   try { questions = JSON.parse(activeAssessment.questions); } catch(e){}
    
-   if (selectedOption === questions[currentQ].correctAnswerIndex) {
+   if (selectedOption === questions[currentQ].correctIndex) {
      setScore(s => s + 1);
    }
 
@@ -109,7 +109,7 @@ export default function OnlineAssessments() {
        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
          {assessments.map(ass => {
            let qs = [];
-           try { qs = JSON.parse(ass.questions_json || '[]'); } catch(e){}
+           try { qs = JSON.parse(ass.questions || '[]'); } catch(e){}
            return (
              <div key={ass.id} className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-5 flex flex-col glass-card hover:shadow-md transition-shadow">
                <div className="flex items-center gap-3 mb-4">

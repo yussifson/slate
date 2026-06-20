@@ -1,4 +1,5 @@
 import React from 'react';
+import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery} from "@tanstack/react-query";
 import { base44} from "@/api/base44Client";
 import { useCompanyId} from "@/hooks/useCompanyId";
@@ -18,7 +19,7 @@ export default function UniEnrollment() {
 
  const { data: students = []} = useQuery({
  queryKey: ["clients", companyId, "uni_student"],
- queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'uni_student'}),
+ queryFn: () => powerSync.execute('SELECT * FROM uni_students WHERE company_id = ?', [companyId]).then(r => r.rows._array),
  enabled: !!companyId
 });
 

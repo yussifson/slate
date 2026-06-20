@@ -195,12 +195,21 @@ export default function LearningPlayer() {
    }}
  />
  <button 
-   onClick={() => {
-     const input = document.getElementById('ai-tutor-input');
-     if (input) {
-       input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
-     }
-   }}
+    onClick={async () => {
+      const input = document.getElementById('ai-tutor-input');
+      const val = input?.value;
+      if (!val) return;
+      input.value = '';
+      toast({ title: "Asking AI Tutor...", description: val });
+      try {
+        const { generateText } = await import('@/lib/cloudflareAI');
+        const prompt = `You are a helpful AI tutor for an online course. The current lesson is "${activeLesson?.title || courseTitle}". The student asks: "${val}". Provide a clear, concise, and helpful answer.`;
+        const res = await generateText(prompt);
+        toast({ title: "AI Tutor Response", description: res, duration: 15000 });
+      } catch (err) {
+        toast({ title: "AI Tutor Error", description: "Could not get an answer right now.", variant: "destructive" });
+      }
+    }}
    className="bg-[var(--primary)] text-white rounded-full p-2.5 hover:opacity-90 transition-opacity"
  >
  <BrainCircuit className="w-4 h-4" />

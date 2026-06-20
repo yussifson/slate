@@ -1,4 +1,5 @@
 import React, { useState} from 'react';
+import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
 import { base44} from "@/api/base44Client";
 import { useCompanyId} from "@/hooks/useCompanyId";
@@ -18,7 +19,7 @@ export default function UniExams() {
  const [examSubmitted, setExamSubmitted] = useState(false);
  const [scoreResult, setScoreResult] = useState(null);
 
- const { data: students = []} = useQuery({ queryKey: ["clients", companyId, "uni_student"], queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'uni_student'}), enabled: !!companyId});
+ const { data: students = []} = useQuery({ queryKey: ["clients", companyId, "uni_student"], queryFn: () => powerSync.execute('SELECT * FROM uni_students WHERE company_id = ?', [companyId]).then(r => r.rows._array), enabled: !!companyId});
  const parsedStudents = students.map(s => { let extra = {}; try { extra = JSON.parse(s.extra_data || '{}');} catch(e) {} return { id: s.id, name: s.name, gpa: parseFloat(extra.gpa || '3.50'), status: extra.status || 'Active', major: extra.major || 'CS', courses: extra.courses || []};});
  const activeStudent = parsedStudents.find(s => s.id === selectedStudentId);
 

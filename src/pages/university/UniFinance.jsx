@@ -1,4 +1,5 @@
 import React, { useState} from 'react';
+import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery} from "@tanstack/react-query";
 import { base44} from "@/api/base44Client";
 import { useCompanyId} from "@/hooks/useCompanyId";
@@ -15,7 +16,7 @@ export default function UniFinance() {
 
  const { data: records = []} = useQuery({ 
  queryKey: ["cases", companyId, "uni_finance"], 
- queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'uni_finance'}), 
+ queryFn: () => powerSync.execute('SELECT * FROM uni_fees WHERE company_id = ?', [companyId]).then(r => r.rows._array), 
  enabled: !!companyId 
 });
  

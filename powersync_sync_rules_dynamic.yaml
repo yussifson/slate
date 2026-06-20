@@ -20,3 +20,24 @@ bucket_definitions:
       - SELECT * FROM workspace_modules WHERE workspace_id = (SELECT company_id FROM profiles WHERE id = request.user_id())
       - SELECT * FROM marketplace_review_requests WHERE submitted_by = (SELECT company_id FROM profiles WHERE id = request.user_id())
 
+
+  # -------------------------------------------------------------
+  # UNIVERSITY MODULE
+  # -------------------------------------------------------------
+  - SELECT * FROM uni_departments WHERE company_id = bucket.company_id
+  - SELECT * FROM uni_programs WHERE company_id = bucket.company_id
+  - SELECT * FROM uni_staff WHERE company_id = bucket.company_id
+  - SELECT * FROM uni_students WHERE company_id = bucket.company_id
+  - SELECT * FROM uni_courses WHERE company_id = bucket.company_id
+  - SELECT * FROM uni_enrollments WHERE company_id = bucket.company_id
+  - SELECT * FROM uni_lms_materials WHERE company_id = bucket.company_id
+  - SELECT * FROM uni_lms_assignments WHERE company_id = bucket.company_id
+  - SELECT * FROM uni_lms_submissions WHERE company_id = bucket.company_id
+  - SELECT * FROM uni_exams WHERE company_id = bucket.company_id
+  - SELECT * FROM uni_grades WHERE company_id = bucket.company_id
+  - SELECT * FROM uni_applicants WHERE company_id = bucket.company_id
+  - SELECT * FROM uni_fees WHERE company_id = bucket.company_id
+  - SELECT * FROM uni_hostel_rooms WHERE company_id = bucket.company_id
+  - SELECT * FROM uni_library_books WHERE company_id = bucket.company_id
+  - SELECT * FROM uni_research_grants WHERE company_id = bucket.company_id
+  - SELECT * FROM uni_alumni WHERE company_id = bucket.company_id
