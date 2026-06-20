@@ -110,10 +110,6 @@ export default function Leave() {
       setFormData({ employeeId: '', leaveType: 'Annual', startDate: new Date().toISOString().split('T')[0], endDate: new Date(Date.now() + 86400000).toISOString().split('T')[0], reason: '' });
     }).catch(err => toast.error('Failed: ' + err.message));
   }
-    ,
- onError: (err) => toast.error('Failed: ' + err.message)
-});
-}
 };
 
  const openEdit = (req) => {

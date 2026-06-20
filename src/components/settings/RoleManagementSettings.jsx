@@ -5,7 +5,7 @@ import { powerSync } from '@/api/PowerSyncConnector';
 import { toast } from 'react-hot-toast';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
-import { generateText } from '@/api/cloudflareAI';
+import { generateText } from '@/lib/cloudflareAI';
 
 const AVAILABLE_FEATURES = [
   { id: '/hr', label: 'HR Dashboard', category: 'HR' },

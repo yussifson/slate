@@ -108,10 +108,6 @@ export default function Payroll() {
       setFormData({ staffRecordId: '', period: 'May 2026', grossPay: 0, deductions: 0});
     }).catch(err => toast.error('Failed: ' + err.message));
   }
-    ,
- onError: (err) => toast.error('Failed: ' + err.message)
-});
-}
 };
 
  const openEdit = (pay) => {
