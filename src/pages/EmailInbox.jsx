@@ -114,7 +114,11 @@ export default function EmailInbox() {
     e.subject?.toLowerCase().includes(search.toLowerCase()) ||
     e.sender_email?.toLowerCase().includes(search.toLowerCase()) ||
     e.recipient_email?.toLowerCase().includes(search.toLowerCase())
-  ).sort((a, b) => new Date(b.created_at || b.received_date || b.created_date || 0) - new Date(a.created_at || a.received_date || a.created_date || 0));
+  ).sort((a, b) => {
+    const timeA = new Date(a.created_at || a.received_date || a.created_date || 0).getTime();
+    const timeB = new Date(b.created_at || b.received_date || b.created_date || 0).getTime();
+    return (isNaN(timeB) ? 0 : timeB) - (isNaN(timeA) ? 0 : timeA);
+  });
 
   // Determine lists independent of active tab for counts
   const inboxEmails = filteredEmails.filter(e => {

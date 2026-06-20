@@ -83,25 +83,21 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
       // This logic will map them properly assuming staff/clients have a user_id or email we can find.
       // For now, let's just create the room.
 
+      const newRoomId = crypto.randomUUID();
+      const room = { id: newRoomId, room_type: isGroup ? 'group' : 'direct', name: isGroup ? groupName : null, created_by: user.id, company_id: companyId, created_at: new Date().toISOString(), updated_at: new Date().toISOString() };
       await (async () => {
-        const _payload = {
-        room_type: isGroup ? 'group' : 'direct',
-        name: isGroup ? groupName : null,
-        created_by: user.id,
-        company_id: companyId
-      };
-        const _keys = Object.keys(_payload);
-        const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+        const _keys = Object.keys(room);
+        const _vals = Object.values(room).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
         await powerSync.execute(`INSERT INTO chat_rooms (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
       })();
-      const room = null;
-      const roomErr = null.select().single();
+      const roomErr = null;
 
       if (roomErr) throw roomErr;
 
       // Add self
       await (async () => {
         const _payload = {
+        id: crypto.randomUUID(),
         room_id: room.id,
         user_id: user.id,
         role: 'admin'
@@ -165,6 +161,7 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
         ...new Set([...directUserIds, ...profileList.map((p) => p.id)]),
       ];
       const participantInserts = participantUserIds.map((userId) => ({
+        id: crypto.randomUUID(),
         room_id: room.id,
         user_id: userId,
         role: "member"}));
@@ -175,13 +172,17 @@ export default function AddChatDialog({ open, onOpenChange, onChatCreated }) {
         );
       }
 
-      const { error: participantsError } = await (async () => {
-        const _payload = participantInserts;
-        const _keys = Object.keys(_payload);
-        const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-        const _plhdr = _keys.map(()=>'?').join(', ');
-        await powerSync.execute(`INSERT INTO chat_participants (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals);
-      })();
+      let participantsError = null;
+      try {
+        for (const p of participantInserts) {
+          const _keys = Object.keys(p);
+          const _vals = Object.values(p).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          const _plhdr = _keys.map(()=>'?').join(', ');
+          await powerSync.execute(`INSERT INTO chat_participants (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals);
+        }
+      } catch(err) {
+        participantsError = err;
+      }
       if (participantsError) throw participantsError;
 
       const expectedCount = selectedRecords.length;
