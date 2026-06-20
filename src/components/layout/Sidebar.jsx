@@ -349,7 +349,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
  const isSuiteAdmin = ["super_admin", "admin"].includes(user?.role);
 
- const filteredCompanyNav = (isSuiteAdmin && !companyId) ? adminNav : (isOrbitMode ? coreOrbitNav : industryNav.filter(item => {
+ const filteredCompanyNav = (isSuiteAdmin && location.pathname.startsWith('/admin')) ? adminNav : (isOrbitMode ? coreOrbitNav : industryNav.filter(item => {
  // If activeModules is explicitly set (Custom Selection mode)
  if (activeModules && !['/', '/settings', '/integrations', '/admin', '/email-inbox', '/chat', '/board'].includes(item.path)) {
  // If it's not in the active modules, completely hide it

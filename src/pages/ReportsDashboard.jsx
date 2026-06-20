@@ -30,8 +30,15 @@ import {
  FileText,
  BarChart2,
  Percent,
- Clock} from "lucide-react";
+ Clock,
+ Sparkles,
+ X,
+ BrainCircuit
+} from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { generateText } from "@/lib/cloudflareAI";
+import { toast } from "react-hot-toast";
 import { formatCurrency} from "@/lib/constants";
 import { startOfMonth, subMonths, format, isWithinInterval, endOfMonth} from "date-fns";
 import { RETAIL_BRAND} from "@/components/retail/RetailViewKit";
@@ -120,6 +127,8 @@ export default function ReportsDashboard() {
  const isRetail = user?.company_industry === "retail" || user?.company_industry === "retail_sale";
  const isSchool = user?.company_industry === "school";
  const [period, setPeriod] = useState("12");
+ const [isGeneratingInsights, setIsGeneratingInsights] = useState(false);
+ const [aiInsights, setAiInsights] = useState(null);
  const currency = user?.company_currency || "USD";
  const months = parseInt(period, 10);
 
@@ -302,6 +311,23 @@ export default function ReportsDashboard() {
  const paidCount = invoices.filter((i) => i.status === "paid").length;
  const collectionRate = invoices.length ? Math.round((paidCount / invoices.length) * 100) : 0;
 
+ const handleGenerateInsights = async () => {
+   setIsGeneratingInsights(true);
+   toast("Orbit AI is analyzing your data...", { icon: "🧠" });
+   try {
+     const dataStr = `Total Revenue (period): ${totalRevenue}\nCurrent Month Revenue: ${currentMonthRevenue}\nRevenue Trend vs Prior Month: ${revenueTrend}%\nActive Clients/Customers: ${metrics.totalClients}\nTotal Deals/Orders: ${metrics.totalStaff}\nAverage Deal Size: ${metrics.avgDealSize.toFixed(2)}\nCollection Rate: ${collectionRate}%\nOverdue Invoices: ${overdueCount}`;
+     const prompt = `You are an expert AI Business Analyst. Based on the following real business metrics, provide a professional, concise executive summary. Extract 3 key bullet points highlighting trends, potential issues, and one recommended action. Format as a clean list without markdown blocks.\n\nMetrics:\n${dataStr}`;
+     let response = await generateText([{ role: 'user', content: prompt }]);
+     if (typeof response !== 'string') response = response.response || response.text || JSON.stringify(response);
+     setAiInsights(response);
+   } catch (e) {
+     console.error(e);
+     toast.error('Failed to generate AI insights. Please try again.');
+   } finally {
+     setIsGeneratingInsights(false);
+   }
+ };
+
  return (
  <div className="space-y-8 pb-12 max-w-[1600px]">
  <header className="border-b border-primary/40 pb-6">
@@ -320,21 +346,51 @@ export default function ReportsDashboard() {
  )}
  </p>
  </div>
- <div className="flex items-center gap-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl px-3 py-2  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Clock className="w-4 h-4 text-primary shrink-0" />
- <Select value={period} onValueChange={setPeriod}>
- <SelectTrigger className="w-40 border-0 focus:ring-0 font-medium text-foreground">
- <SelectValue />
- </SelectTrigger>
- <SelectContent>
- <SelectItem value="3">{t("last_3_months", "Last 3 months")}</SelectItem>
- <SelectItem value="6">{t("last_6_months", "Last 6 months")}</SelectItem>
- <SelectItem value="12">{t("last_12_months", "Last 12 months")}</SelectItem>
- </SelectContent>
- </Select>
- </div>
- </div>
- </header>
+  <div className="flex flex-wrap items-center gap-3">
+    <button
+      onClick={handleGenerateInsights}
+      disabled={isGeneratingInsights}
+      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-md transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+    >
+      <Sparkles className={`w-4 h-4 ${isGeneratingInsights ? 'animate-spin' : ''}`} />
+      {isGeneratingInsights ? 'Analyzing...' : 'AI Insights'}
+    </button>
+    <div className="flex items-center gap-3 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl px-3 py-2  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <Clock className="w-4 h-4 text-primary shrink-0" />
+    <Select value={period} onValueChange={setPeriod}>
+    <SelectTrigger className="w-40 border-0 focus:ring-0 font-medium text-foreground">
+    <SelectValue />
+    </SelectTrigger>
+    <SelectContent>
+    <SelectItem value="3">{t("last_3_months", "Last 3 months")}</SelectItem>
+    <SelectItem value="6">{t("last_6_months", "Last 6 months")}</SelectItem>
+    <SelectItem value="12">{t("last_12_months", "Last 12 months")}</SelectItem>
+    </SelectContent>
+    </Select>
+    </div>
+  </div>
+  </div>
+  </header>
+
+  {aiInsights && (
+    <div className="rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 bg-card p-6 animate-in fade-in slide-in-from-top-2 shadow-[0_2px_12px_rgba(99,102,241,0.12)]">
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center shadow-md">
+            <BrainCircuit className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h3 className="font-bold text-foreground tracking-tight">AI Executive Summary</h3>
+            <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5">Generated from your live business metrics</p>
+          </div>
+        </div>
+        <button onClick={() => setAiInsights(null)} className="w-8 h-8 rounded-lg flex items-center justify-center text-[#71717a] dark:text-gray-400 hover:text-foreground hover:bg-muted/60 transition-colors">
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+      <div className="text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">{aiInsights}</div>
+    </div>
+  )}
 
  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
  <ReportMetricCard
