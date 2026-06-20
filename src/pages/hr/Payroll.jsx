@@ -4,6 +4,8 @@ import { DollarSign, Search, Plus, Download, Trash2, FileText, MoreVertical, Edi
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
+import { usePowerSync } from '@powersync/react';
+import { useCompanyId } from '@/hooks/useCompanyId';
 import { toast} from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem} from '@/components/ui/dropdown-menu';
@@ -12,24 +14,55 @@ import { Link} from 'react-router-dom';
 
 export default function Payroll() {
  const { t} = useTranslation();
- const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('payroll_run');
- const { data: staffRecords = []} = useIndustryRecords('staff');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
-
+ 
+  const powerSync = usePowerSync();
+  const companyId = useCompanyId();
+  const [dbRecords, setDbRecords] = useState([]);
+  const [isDbLoading, setIsDbLoading] = useState(true);
+  useEffect(() => {
+    let active = true;
+    const fetchPr = async () => {
+      setIsDbLoading(true);
+      try {
+        const res = await powerSync.execute('SELECT * FROM univ_hr_payroll WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+        if(active) setDbRecords(res.rows._array || Array.from(res.rows));
+      } catch(e){}
+      setIsDbLoading(false);
+    };
+    if (companyId) fetchPr();
+    return () => { active = false; };
+  }, [companyId]);
+        
+ 
+  const [staffRecords, setStaffRecords] = useState([]);
+  useEffect(() => {
+    let active = true;
+    const fetchStaff = async () => {
+      try {
+        const res = await powerSync.execute('SELECT * FROM univ_hr_employees WHERE company_id = ?', [companyId]);
+        if(active) setStaffRecords(res.rows._array || Array.from(res.rows));
+      } catch(e){}
+    };
+    if (companyId) fetchStaff();
+    return () => { active = false; };
+  }, [companyId]);
+        
  const staffList = staffRecords.map(r => ({
- id: r.id,
- name: r.data?.full_name || r.data?.name || 'Unnamed Staff',
- employeeId: r.data?.employeeId || `EMP-${r.id.slice(0,4)}`
+  id: r.id,
+  name: r.name || 'Unnamed Staff',
+  employeeId: r.employee_id || r.id.substring(0,6)
 }));
 
  const payrolls = dbRecords.map(r => ({
- id: r.id,
- status: r.status || 'Pending',
- staffRecordId: r.data?.staffRecordId || '',
- employeeName: r.data?.staffRecordId ? (staffList.find(s => s.id === r.data.staffRecordId)?.name || 'Unknown') : (r.data?.employeeName || 'Unnamed'),
- employeeId: r.data?.staffRecordId ? (staffList.find(s => s.id === r.data.staffRecordId)?.employeeId || 'Unknown') : (r.data?.employeeId || ''),
- ...r.data
+  id: r.id,
+  status: r.status || 'Pending',
+  staffRecordId: r.employee_id || '',
+  employeeName: r.employee_id ? (staffList.find(s => s.id === r.employee_id)?.name || 'Unknown') : 'Unnamed',
+  employeeId: r.employee_id ? (staffList.find(s => s.id === r.employee_id)?.employeeId || 'Unknown') : '',
+  period: r.period,
+  grossPay: r.basic_salary,
+  deductions: r.deductions,
+  netPay: r.net_salary
 }));
 
  const [search, setSearch] = useState('');
@@ -56,35 +89,26 @@ export default function Payroll() {
 
  const selectedStaff = staffList.find(s => s.id === formData.staffRecordId);
 
- if (editTargetId) {
- const pay = payrolls.find(p => p.id === editTargetId);
- mutateRecord.mutate({
- id: editTargetId,
- recordType: 'payroll_run',
- payload: { ...formData, employeeName: selectedStaff?.name, employeeId: selectedStaff?.employeeId, grossPay: gross, deductions: ded, netPay},
- status: pay.status,
- searchText: `${selectedStaff?.name} ${selectedStaff?.employeeId} ${formData.period}`
-}, {
- onSuccess: () => {
- toast.success('Payroll record updated!');
- setShowModal(false);
- setEditTargetId(null);
- setFormData({ staffRecordId: '', period: 'May 2026', grossPay: 0, deductions: 0});
-},
- onError: (err) => toast.error('Failed: ' + err.message)
-});
-} else {
- mutateRecord.mutate({
- recordType: 'payroll_run',
- payload: { ...formData, employeeName: selectedStaff?.name, employeeId: selectedStaff?.employeeId, grossPay: gross, deductions: ded, netPay},
- status: 'Pending',
- searchText: `${selectedStaff?.name} ${selectedStaff?.employeeId} ${formData.period}`
-}, {
- onSuccess: () => {
- toast.success('Payroll record added!');
- setShowModal(false);
- setFormData({ staffRecordId: '', period: 'May 2026', grossPay: 0, deductions: 0});
-},
+ 
+  if (editTargetId) {
+    powerSync.execute(`UPDATE univ_hr_payroll SET employee_id=?, period=?, basic_salary=?, deductions=?, net_salary=? WHERE id=?`, 
+      [formData.staffRecordId, formData.period, gross, ded, netPay, editTargetId]
+    ).then(() => {
+      toast.success('Payroll record updated!');
+      setShowModal(false);
+      setEditTargetId(null);
+      setFormData({ staffRecordId: '', period: 'May 2026', grossPay: 0, deductions: 0});
+    }).catch(err => toast.error('Failed: ' + err.message));
+  } else {
+    powerSync.execute(`INSERT INTO univ_hr_payroll (id, company_id, created_at, employee_id, period, basic_salary, deductions, net_salary, status) VALUES (uuid(), ?, datetime('now'), ?, ?, ?, ?, ?, ?)`, 
+      [companyId, formData.staffRecordId, formData.period, gross, ded, netPay, 'Pending']
+    ).then(() => {
+      toast.success('Payroll record added!');
+      setShowModal(false);
+      setFormData({ staffRecordId: '', period: 'May 2026', grossPay: 0, deductions: 0});
+    }).catch(err => toast.error('Failed: ' + err.message));
+  }
+    ,
  onError: (err) => toast.error('Failed: ' + err.message)
 });
 }
@@ -125,16 +149,9 @@ export default function Payroll() {
 
  const handleDelete = () => {
  if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'payroll_run'}, {
- onSuccess: () => {
- toast.success('Record deleted!');
- setDeleteTargetId(null);
-},
- onError: (err) => {
- toast.error('Failed to delete: ' + err.message);
- setDeleteTargetId(null);
-}
-});
+ powerSync.execute(`DELETE FROM univ_hr_payroll WHERE id = ?`, [deleteTargetId])
+      .then(() => { toast.success('Payroll record deleted'); setDeleteTargetId(null); })
+      .catch(err => toast.error('Failed: ' + err.message));
 };
 
  const filtered = payrolls.filter(p => 

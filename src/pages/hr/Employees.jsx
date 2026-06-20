@@ -43,17 +43,38 @@ export default function Employees() {
  const { user} = useAuth();
  const { notifyTeam} = useNotifications();
  const powerSync = usePowerSync();
- const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('staff');
- const { data: departmentRecords = []} = useIndustryRecords('department');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
-
+ 
+  const [dbRecords, setDbRecords] = useState([]);
+  const [isDbLoading, setIsDbLoading] = useState(true);
+  useEffect(() => {
+    let active = true;
+    const fetchEmps = async () => {
+      setIsDbLoading(true);
+      try {
+        const res = await powerSync.execute('SELECT * FROM univ_hr_employees WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+        if(active) setDbRecords(res.rows._array || Array.from(res.rows));
+      } catch(e){}
+      setIsDbLoading(false);
+    };
+    if (companyId) fetchEmps();
+    return () => { active = false; };
+  }, [companyId]);
+        
+ const [departmentRecords, setDepartmentRecords] = useState([]);
  const employees = dbRecords.map(r => ({
- id: r.id,
- status: r.status || 'Active',
- ...r.data,
- departmentName: departmentRecords.find(d => d.id === r.data?.departmentId)?.data?.name || r.data?.department || 'Unassigned',
- reportsToName: dbRecords.find(s => s.id === r.data?.reportsTo)?.data?.name || 'None'
+  id: r.id,
+  status: r.status || 'Active',
+  employeeId: r.employee_id || r.id.substring(0,6),
+  name: r.name,
+  departmentId: r.department_id,
+  role: r.role,
+  email: r.email,
+  phone: r.phone,
+  salary: r.salary,
+  reportsTo: r.reports_to,
+  startDate: r.start_date,
+  departmentName: departmentRecords.find(d => d.id === r.department_id)?.name || 'Unassigned',
+  reportsToName: dbRecords.find(s => s.id === r.reports_to)?.name || 'None'
 }));
 
  const [search, setSearch] = useState('');
@@ -86,13 +107,11 @@ export default function Employees() {
      const emp = employees.find(e => e.id === editTargetId);
      const payload = { ...formData, employeeId: emp.employeeId};
      
-     await mutateRecord.mutateAsync({
-       id: editTargetId,
-       recordType: 'staff',
-       payload,
-       status: emp.status,
-       searchText: `${formData.name} ${formData.role} ${emp.employeeId}`
-     });
+     
+        const _k = Object.keys(payload);
+        const _v = Object.values(payload);
+        await powerSync.execute(`UPDATE univ_hr_employees SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editTargetId]);
+        
      
      toast.success('Employee updated successfully!');
      setShowModal(false);
@@ -113,12 +132,11 @@ export default function Employees() {
      
      const payload = { ...formData, employeeId, user_id: authUserId || null};
     
-     await mutateRecord.mutateAsync({
-       recordType: 'staff',
-       payload,
-       status: 'active',
-       searchText: `${formData.name} ${formData.role} ${employeeId}`
-     });
+     
+        const _k = Object.keys(payload);
+        const _v = Object.values(payload);
+        await powerSync.execute(`UPDATE univ_hr_employees SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editTargetId]);
+        
      
      if (authUserId) {
        await supabase.from("staff_records").update({ user_id: authUserId }).eq("company_id", user?.company_id).ilike("user_email", formData.email);

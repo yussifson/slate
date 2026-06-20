@@ -566,7 +566,7 @@ export const INDUSTRIES = {
       { label: 'Employees', path: '/employees', icon: 'Users' },
       { label: 'Recruitment', path: '/recruitment', icon: 'UserPlus' },
       { label: 'Payroll', path: '/payroll', icon: 'Banknote' },
-      { label: 'Leave Management', path: '/leave', icon: 'CalendarOff' },
+      { label: 'Leave', path: '/leave', icon: 'CalendarOff' },
       { label: 'Performance', path: '/performance', icon: 'TrendingUp' },
       { label: 'Training', path: '/training', icon: 'GraduationCap' },
       { label: 'Org Chart', path: '/org-chart', icon: 'Network' },

@@ -21,21 +21,51 @@ export default function Leave() {
  const { user} = useAuth();
  const { notifyTeam} = useNotifications();
  const powerSync = usePowerSync();
- const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('leave_request');
- const { data: staffRecords = []} = useIndustryRecords('staff');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
-
+ 
+  const [dbRecords, setDbRecords] = useState([]);
+  const [isDbLoading, setIsDbLoading] = useState(true);
+  useEffect(() => {
+    let active = true;
+    const fetchL = async () => {
+      setIsDbLoading(true);
+      try {
+        const res = await powerSync.execute('SELECT * FROM univ_hr_leave WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+        if(active) setDbRecords(res.rows._array || Array.from(res.rows));
+      } catch(e){}
+      setIsDbLoading(false);
+    };
+    if (companyId) fetchL();
+    return () => { active = false; };
+  }, [companyId]);
+    
+ 
+  const [staffRecords, setStaffRecords] = useState([]);
+  useEffect(() => {
+    let active = true;
+    const fetchStaff = async () => {
+      try {
+        const res = await powerSync.execute('SELECT * FROM univ_hr_employees WHERE company_id = ?', [companyId]);
+        if(active) setStaffRecords(res.rows._array || Array.from(res.rows));
+      } catch(e){}
+    };
+    if (companyId) fetchStaff();
+    return () => { active = false; };
+  }, [companyId]);
+    
  const staffList = staffRecords.map(r => ({
- id: r.id,
- name: r.data?.full_name || r.data?.name || 'Unnamed Staff'}));
+  id: r.id,
+  name: r.name || 'Unnamed Staff'
+}));
 
  const requests = dbRecords.map(r => ({
- id: r.id,
- status: r.status || 'Pending',
- employeeId: r.data?.employeeId || '',
- employeeName: r.data?.employeeId ? (staffList.find(s => s.id === r.data.employeeId)?.name || 'Unknown') : (r.data?.employeeName || 'Unnamed Employee'),
- ...r.data
+  id: r.id,
+  status: r.status || 'Pending',
+  employeeId: r.employee_id || '',
+  employeeName: r.employee_id ? (staffList.find(s => s.id === r.employee_id)?.name || 'Unknown') : 'Unnamed',
+  leaveType: r.leave_type,
+  startDate: r.start_date,
+  endDate: r.end_date,
+  reason: r.reason
 }));
 
  const [showModal, setShowModal] = useState(false);
@@ -61,47 +91,26 @@ export default function Leave() {
  const selectedStaff = staffList.find(s => s.id === formData.employeeId);
  const employeeName = selectedStaff?.name || '';
 
- if (editTargetId) {
- const req = requests.find(r => r.id === editTargetId);
- mutateRecord.mutate({
- id: editTargetId,
- recordType: 'leave_request',
- payload: { ...formData, employeeName, days},
- status: req.status,
- searchText: `${employeeName} ${formData.leaveType}`
-}, {
- onSuccess: () => {
- toast.success('Leave request updated!');
- setShowModal(false);
- setEditTargetId(null);
- setFormData({
- employeeId: '', leaveType: 'Annual', 
- startDate: new Date().toISOString().split('T')[0], 
- endDate: new Date(Date.now() + 86400000).toISOString().split('T')[0], 
- reason: ''
-});
-},
- onError: (err) => toast.error('Failed to update: ' + err.message)
-});
-} else {
- mutateRecord.mutate({
- recordType: 'leave_request',
- payload: { ...formData, employeeName, days},
- status: 'Pending',
- searchText: `${employeeName} ${formData.leaveType}`
-}, {
- onSuccess: () => {
- toast.success('Leave request submitted!');
- notifyTeam({ companyId: user?.company_id, provider: 'slack', message: `Leave request submitted by ${employeeName} for ${formData.leaveType}`, channel: '#hr'}).catch(console.error);
- powerSync.execute(`INSERT INTO univ_notifications (id, company_id, created_at, title, message, type, read) VALUES (?, ?, ?, ?, ?, ?, ?)`, [crypto.randomUUID(), user?.company_id, new Date().toISOString(), "Leave Request", `${employeeName} requested ${formData.leaveType}`, "warning", 0]).catch(console.error);
- setShowModal(false);
- setFormData({
- employeeId: '', leaveType: 'Annual', 
- startDate: new Date().toISOString().split('T')[0], 
- endDate: new Date(Date.now() + 86400000).toISOString().split('T')[0], 
- reason: ''
-});
-},
+ 
+  if (editTargetId) {
+    powerSync.execute(`UPDATE univ_hr_leave SET employee_id=?, leave_type=?, start_date=?, end_date=?, reason=? WHERE id=?`, 
+      [formData.employeeId, formData.leaveType, formData.startDate, formData.endDate, formData.reason, editTargetId]
+    ).then(() => {
+      toast.success('Leave updated!');
+      setShowModal(false);
+      setEditTargetId(null);
+      setFormData({ employeeId: '', leaveType: 'Annual', startDate: new Date().toISOString().split('T')[0], endDate: new Date(Date.now() + 86400000).toISOString().split('T')[0], reason: '' });
+    }).catch(err => toast.error('Failed: ' + err.message));
+  } else {
+    powerSync.execute(`INSERT INTO univ_hr_leave (id, company_id, created_at, employee_id, leave_type, start_date, end_date, reason, status) VALUES (uuid(), ?, datetime('now'), ?, ?, ?, ?, ?, ?)`, 
+      [companyId, formData.employeeId, formData.leaveType, formData.startDate, formData.endDate, formData.reason, 'Pending']
+    ).then(() => {
+      toast.success('Leave added!');
+      setShowModal(false);
+      setFormData({ employeeId: '', leaveType: 'Annual', startDate: new Date().toISOString().split('T')[0], endDate: new Date(Date.now() + 86400000).toISOString().split('T')[0], reason: '' });
+    }).catch(err => toast.error('Failed: ' + err.message));
+  }
+    ,
  onError: (err) => toast.error('Failed: ' + err.message)
 });
 }
@@ -154,16 +163,9 @@ export default function Leave() {
 
  const handleDelete = () => {
  if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'leave_request'}, {
- onSuccess: () => {
- toast.success('Request removed successfully!');
- setDeleteTargetId(null);
-},
- onError: (err) => {
- toast.error('Failed to remove: ' + err.message);
- setDeleteTargetId(null);
-}
-});
+ powerSync.execute(`DELETE FROM univ_hr_leave WHERE id = ?`, [deleteTargetId])
+      .then(() => { toast.success('Leave deleted'); setDeleteTargetId(null); })
+      .catch(err => toast.error('Failed: ' + err.message));
 };
 
  const pending = requests.filter(r => r.status === 'Pending').length;
@@ -173,7 +175,7 @@ export default function Leave() {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("leave_management", "Leave Management")}</h1>
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("leave", "Leave")}</h1>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
  "review_and_approve_employee_ti",
  "Review and approve employee time-off requests"

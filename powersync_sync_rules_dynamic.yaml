@@ -58,3 +58,7 @@ bucket_definitions:
   - SELECT * FROM school_complaints WHERE company_id = bucket.company_id
   - SELECT * FROM school_gamification WHERE company_id = bucket.company_id
   - SELECT * FROM school_canteen WHERE company_id = bucket.company_id
+
+  - SELECT * FROM platform_departments WHERE company_id = request.jwt.claims ->> 'company_id'
+  - SELECT * FROM platform_roles WHERE company_id = request.jwt.claims ->> 'company_id'
+  - SELECT * FROM platform_role_permissions WHERE company_id = request.jwt.claims ->> 'company_id'

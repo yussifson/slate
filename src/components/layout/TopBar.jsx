@@ -178,7 +178,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  </button>
  </div>
  {/* Right */}
- <div className="flex items-center justify-end gap-2 sm:gap-2 ml-auto overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+ <div className="flex items-center justify-end gap-2 sm:gap-2 ml-auto">
  {/* Super Admin Industry Switcher */}
  {user?.role === 'super_admin' && (
  <DropdownMenu>
