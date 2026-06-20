@@ -1,7 +1,6 @@
 import React, { useState} from 'react';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery} from "@tanstack/react-query";
-import { base44} from "@/api/base44Client";
 import { useCompanyId} from "@/hooks/useCompanyId";
 import { Building, Search, Plus, MapPin, Users, BookOpen, MoreVertical} from 'lucide-react';
 import OrbitEmptyState from '@/components/university/OrbitEmptyState';

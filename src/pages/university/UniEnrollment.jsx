@@ -1,7 +1,6 @@
 import React from 'react';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery} from "@tanstack/react-query";
-import { base44} from "@/api/base44Client";
 import { useCompanyId} from "@/hooks/useCompanyId";
 import { Users, UserPlus, CheckCircle2, XCircle, TrendingUp, BarChart4} from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip} from 'recharts';
@@ -25,7 +24,7 @@ export default function UniEnrollment() {
 
  const { data: applicants = []} = useQuery({
  queryKey: ["clients", companyId, "uni_applicant"],
- queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'uni_applicant'}),
+ queryFn: () => powerSync.execute('SELECT * FROM uni_enrollments WHERE company_id = ?', [companyId]).then(r => r.rows._array),
  enabled: !!companyId
 });
 

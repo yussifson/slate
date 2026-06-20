@@ -1,12 +1,10 @@
 import React, { useState} from 'react';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
-import { base44} from "@/api/base44Client";
 import { useCompanyId} from "@/hooks/useCompanyId";
-import { Home, Bed, Wrench, Users, AlertTriangle, Plus, CheckCircle2} from 'lucide-react';
+import { Home, Bed, Wrench, Users, AlertTriangle} from 'lucide-react';
 import OrbitTable from '@/components/university/OrbitTable';
 import OrbitStatusBadge from '@/components/university/OrbitStatusBadge';
-import OrbitEmptyState from '@/components/university/OrbitEmptyState';
 import { useToast} from "@/components/ui/use-toast";
 
 function cn(...classes) { return classes.filter(Boolean).join(' ');}
@@ -20,7 +18,7 @@ export default function UniHostel() {
  const [ticketForm, setTicketForm] = useState({ room: '', issue: '', priority: 'Medium'});
 
  const { data: students = []} = useQuery({ queryKey: ["clients", companyId, "uni_student"], queryFn: () => powerSync.execute('SELECT * FROM uni_students WHERE company_id = ?', [companyId]).then(r => r.rows._array), enabled: !!companyId});
- const { data: ticketRecords = []} = useQuery({ queryKey: ["cases", companyId, "uni_hostel_ticket"], queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'uni_hostel_ticket'}), enabled: !!companyId});
+ const { data: ticketRecords = []} = useQuery({ queryKey: ["cases", companyId, "uni_hostel_ticket"], queryFn: () => powerSync.execute('SELECT * FROM uni_hostel_rooms WHERE company_id = ?', [companyId]).then(r => r.rows._array), enabled: !!companyId});
 
  const parsedStudents = students.map(s => { let extra = {}; try { extra = JSON.parse(s.extra_data || '{}');} catch(e) {} return { id: s.id, name: s.name, hostel: extra.hostel || null, room: extra.room || null};});
  const allocatedStudents = parsedStudents.filter(s => s.hostel);
@@ -31,13 +29,13 @@ export default function UniHostel() {
  const student = students.find(s => s.id === studentId); if (!student) return;
  let extra = {}; try { extra = JSON.parse(student.extra_data || '{}');} catch(e) {}
  extra.hostel = `Block ${block}`; extra.room = roomNumber;
- await base44.entities.Client.update(studentId, { extra_data: JSON.stringify(extra)});
+ await powerSync.execute('UPDATE uni_hostel_rooms SET updated_at = datetime(\'now\') WHERE id = ?', [studentId]);
 },
  onSuccess: () => { queryClient.invalidateQueries(["clients", companyId, "uni_student"]); toast({ title: "Room Allocated"}); setAllocForm({ studentId: '', block: 'A', roomNumber: ''}); setActiveTab('overview');}
 });
 
  const ticketMutation = useMutation({
- mutationFn: (ticket) => base44.entities.LegalCase.create(ticket),
+ mutationFn: async (ticket) => powerSync.execute('INSERT INTO uni_hostel_rooms (id, company_id, created_at) VALUES (uuid(), ?, datetime(\'now\'))', [companyId]),
  onSuccess: () => { queryClient.invalidateQueries(["cases", companyId, "uni_hostel_ticket"]); toast({ title: "Ticket Created"}); setTicketForm({ room: '', issue: '', priority: 'Medium'}); setActiveTab('overview');}
 });
 

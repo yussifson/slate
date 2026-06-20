@@ -1,6 +1,5 @@
 import React from 'react';
 import { useQuery} from "@tanstack/react-query";
-import { base44} from "@/api/base44Client";
 import { useCompanyId} from "@/hooks/useCompanyId";
 import { Award, BookOpen, Layers, CheckCircle2, ShieldCheck, Plus, Sparkles} from 'lucide-react';
 import OrbitStatusBadge from '@/components/university/OrbitStatusBadge';
@@ -10,7 +9,7 @@ export default function UniResearchActivity() {
 
  const { data: research = []} = useQuery({
  queryKey: ["cases", companyId, "uni_research"],
- queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'uni_research'}),
+ queryFn: () => powerSync.execute('SELECT * FROM uni_research_grants WHERE company_id = ?', [companyId]).then(r => r.rows._array),
  enabled: !!companyId
 });
 

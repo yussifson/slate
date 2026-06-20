@@ -1,7 +1,6 @@
 import React, { useMemo} from 'react';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery} from "@tanstack/react-query";
-import { base44} from "@/api/base44Client";
 import { useCompanyId} from "@/hooks/useCompanyId";
 import { GraduationCap, Trophy, Globe2, Briefcase, ShieldCheck} from 'lucide-react';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip} from 'recharts';

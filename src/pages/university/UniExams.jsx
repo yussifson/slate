@@ -1,10 +1,8 @@
 import React, { useState} from 'react';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
-import { base44} from "@/api/base44Client";
 import { useCompanyId} from "@/hooks/useCompanyId";
-import { Calendar, ClipboardCheck, BookOpen, Clock, AlertCircle} from 'lucide-react';
-import OrbitStatusBadge from '@/components/university/OrbitStatusBadge';
+import { Calendar, ClipboardCheck, Clock, AlertCircle} from 'lucide-react';
 import { useToast} from "@/components/ui/use-toast";
 
 function cn(...classes) { return classes.filter(Boolean).join(' ');}
@@ -40,7 +38,7 @@ export default function UniExams() {
  const student = students.find(s => s.id === studentId); if (!student) return;
  let extra = {}; try { extra = JSON.parse(student.extra_data || '{}');} catch(e) {}
  extra.gpa = newGpa.toFixed(2);
- await base44.entities.Client.update(studentId, { extra_data: JSON.stringify(extra)});
+ await powerSync.execute('UPDATE uni_exams SET updated_at = datetime(\'now\') WHERE id = ?', [studentId]);
 },
  onSuccess: () => { queryClient.invalidateQueries(["clients", companyId, "uni_student"]); toast({ title: "GPA Updated"});}
 });

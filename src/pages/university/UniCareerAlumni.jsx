@@ -1,6 +1,5 @@
 import React, { useMemo} from 'react';
 import { useQuery} from "@tanstack/react-query";
-import { base44} from "@/api/base44Client";
 import { useCompanyId} from "@/hooks/useCompanyId";
 import { Briefcase, Landmark, Trophy, Users, HeartHandshake, ArrowUpRight} from 'lucide-react';
 import OrbitEmptyState from '@/components/university/OrbitEmptyState';
@@ -12,13 +11,13 @@ export default function UniCareerAlumni() {
 
  const { data: jobRecords = []} = useQuery({
  queryKey: ["cases", companyId, "uni_job"],
- queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'uni_job'}),
+ queryFn: () => powerSync.execute('SELECT * FROM uni_alumni WHERE company_id = ?', [companyId]).then(r => r.rows._array),
  enabled: !!companyId
 });
 
  const { data: alumniRecords = []} = useQuery({
  queryKey: ["cases", companyId, "uni_alumni"],
- queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'uni_alumni'}),
+ queryFn: () => powerSync.execute('SELECT * FROM uni_alumni WHERE company_id = ?', [companyId]).then(r => r.rows._array),
  enabled: !!companyId
 });
 

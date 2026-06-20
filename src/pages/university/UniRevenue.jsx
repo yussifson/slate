@@ -1,7 +1,6 @@
 import React from 'react';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery} from "@tanstack/react-query";
-import { base44} from "@/api/base44Client";
 import { useCompanyId} from "@/hooks/useCompanyId";
 import { DollarSign, Percent, Gift, FileText, CheckCircle2, TrendingUp} from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip} from 'recharts';

@@ -1,6 +1,5 @@
 import React, { useMemo} from 'react';
 import { useQuery} from "@tanstack/react-query";
-import { base44} from "@/api/base44Client";
 import { useCompanyId} from "@/hooks/useCompanyId";
 import { Book, Globe, Shield, RefreshCw, FileText, Search, Download} from 'lucide-react';
 import OrbitEmptyState from '@/components/university/OrbitEmptyState';
@@ -12,7 +11,7 @@ export default function UniLibrary() {
 
  const { data: bookRecords = []} = useQuery({
  queryKey: ["cases", companyId, "uni_book"],
- queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'uni_book'}),
+ queryFn: () => powerSync.execute('SELECT * FROM uni_library_books WHERE company_id = ?', [companyId]).then(r => r.rows._array),
  enabled: !!companyId
 });
 

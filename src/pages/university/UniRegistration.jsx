@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
 import { useCompanyId } from "@/hooks/useCompanyId";
-import { Calendar, Plus, CheckCircle, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Plus, CheckCircle2 } from 'lucide-react';
 import OrbitStatusBadge from '@/components/university/OrbitStatusBadge';
 import { useToast } from "@/components/ui/use-toast";
 
@@ -16,13 +15,13 @@ export default function UniRegistration() {
 
   const { data: students = [] } = useQuery({
     queryKey: ["clients", companyId, "uni_student"],
-    queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'uni_student' }),
+    queryFn: () => powerSync.execute('SELECT * FROM uni_enrollments WHERE company_id = ?', [companyId]).then(r => r.rows._array),
     enabled: !!companyId
   });
 
   const { data: records = [] } = useQuery({ 
     queryKey: ["cases", companyId, "uni_course"], 
-    queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId, case_type: 'uni_course' }), 
+    queryFn: () => powerSync.execute('SELECT * FROM uni_enrollments WHERE company_id = ?', [companyId]).then(r => r.rows._array), 
     enabled: !!companyId 
   });
 
@@ -54,7 +53,7 @@ export default function UniRegistration() {
       let extra = {};
       try { extra = JSON.parse(student.extra_data || '{}'); } catch(e) {}
       extra.courses = updatedCourses;
-      await base44.entities.Client.update(studentId, { extra_data: JSON.stringify(extra) });
+      await powerSync.execute('UPDATE uni_enrollments SET updated_at = datetime(\'now\') WHERE id = ?', [studentId]);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["clients", companyId, "uni_student"]);
