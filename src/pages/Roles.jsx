@@ -102,7 +102,11 @@ export default function RoleManagementSettings() {
       const industry = sessionStorage.getItem('slate_industry_override') || user?.company_industry || 'hr';
       const prompt = `Based on the industry "${industry}", generate 3 common role names and their descriptions. Return ONLY a valid JSON array of objects with keys "name" and "description". Do not use markdown blocks.`;
       
-      const aiResponse = await generateText(prompt, 'llama-3');
+      let aiResponse = await generateText(prompt, 'llama-3');
+      if (typeof aiResponse !== 'string') {
+        aiResponse = aiResponse.response || aiResponse.result?.response || aiResponse.text || JSON.stringify(aiResponse);
+      }
+      
       const jsonStr = aiResponse.replace(/```json/g, '').replace(/```/g, '').trim();
       const generatedRoles = JSON.parse(jsonStr);
 

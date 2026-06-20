@@ -234,8 +234,19 @@ export const base44 = {
     integrations: {
         Core: {
             SendEmail: async (payload) => {
-                console.log("Mock sending email:", payload);
-                return { success: true };
+                try {
+                    const { data, error } = await supabase.functions.invoke('send-email', {
+                        body: payload
+                    });
+                    if (error) {
+                        console.error('Email send failed:', error);
+                        return { success: false, error };
+                    }
+                    return data;
+                } catch (e) {
+                    console.error('Email send exception:', e);
+                    return { success: false, error: e };
+                }
             }
         }
     },
