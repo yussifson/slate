@@ -34,9 +34,9 @@ export default function OnlineCourses() {
  const { data: courses = [], isLoading} = useQuery({
  queryKey: ["online_courses", companyId],
  queryFn: async () => {
-   const { data, error } = await powerSync.execute(`SELECT * FROM online_courses WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
+   const { rows, error } = await powerSync.execute(`SELECT * FROM online_courses WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
    if (error && error.code !== '42P01') throw error;
-   return data || [];
+   return rows || [];
  },
  enabled: !!companyId
  });

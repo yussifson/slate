@@ -30,26 +30,32 @@ export default function Sermons() {
  const [editRecord, setEditRecord] = useState(null);
  const [isGenerating, setIsGenerating] = useState(false);
 
- const generateOutline = async () => {
+ const generateSermonKit = async () => {
   if (!viewRecord || !viewRecord.title || !viewRecord.scripture) {
-   toast.error('Sermon title and scripture reference required to generate outline.');
+   toast.error('Sermon title and scripture reference required to generate a kit.');
    return;
   }
   
   setIsGenerating(true);
-  const tId = toast.loading('Generating AI Outline...');
+  const tId = toast.loading('Generating AI Sermon Kit...');
   try {
-   const prompt = `You are a pastor preparing a sermon outline. 
+   const prompt = `You are a pastor preparing a sermon kit. 
+Respond with a JSON object with exactly these fields (no markdown blocks, just raw JSON):
+{
+  "outline": "A structured 3-point sermon outline with an intro and conclusion.",
+  "smallGroupGuide": "3 discussion questions based on the sermon for small groups.",
+  "socialMedia": "3 short, engaging quotes or tweets based on the sermon."
+}
 Title: ${viewRecord.title}
 Scripture: ${viewRecord.scripture}
-Preacher: ${viewRecord.preacher}
-
-Provide a structured 3-point sermon outline with an introduction, 3 main points with brief explanations, and a conclusion. Keep it concise.`;
+Preacher: ${viewRecord.preacher}`;
    
-   const outline = await generateText(prompt);
+   const rawResponse = await generateText(prompt);
+   const cleanJsonStr = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+   const sermonKit = JSON.parse(cleanJsonStr);
    
    // Save it back to the record
-   const payload = { ...viewRecord, outline };
+   const payload = { ...viewRecord, sermonKit };
    delete payload.id;
    delete payload.status;
    
@@ -61,12 +67,12 @@ Provide a structured 3-point sermon outline with an introduction, 3 main points 
     searchText: `${viewRecord.title} ${viewRecord.preacher} ${viewRecord.series}`
    }, {
     onSuccess: () => {
-     toast.success('AI Outline generated and saved!', { id: tId });
-     setViewRecord({ ...viewRecord, outline });
+     toast.success('AI Sermon Kit generated and saved!', { id: tId });
+     setViewRecord({ ...viewRecord, sermonKit });
     }
    });
   } catch (err) {
-   toast.error('Failed to generate outline.', { id: tId });
+   toast.error('Failed to generate sermon kit.', { id: tId });
   } finally {
    setIsGenerating(false);
   }
@@ -305,24 +311,34 @@ Provide a structured 3-point sermon outline with an introduction, 3 main points 
  );
 })}
 
-{viewRecord && viewRecord.outline && (
-  <div className="border-b border-primary/40 pb-2 mt-4">
-     <p className="text-sm font-medium text-primary uppercase tracking-[0.04em] mb-2 flex items-center gap-2"><Sparkles className="w-4 h-4"/> AI Outline</p>
-     <div className="text-sm whitespace-pre-wrap bg-muted/30 p-3 rounded-lg border-[0.5px] border-primary/20">{viewRecord.outline}</div>
-  </div>
-)}
+ {viewRecord && viewRecord.sermonKit && (
+   <div className="border-b border-primary/40 pb-2 mt-4 space-y-4">
+      <div>
+        <p className="text-sm font-medium text-primary uppercase tracking-[0.04em] mb-2 flex items-center gap-2"><Sparkles className="w-4 h-4"/> AI Outline</p>
+        <div className="text-sm whitespace-pre-wrap bg-muted/30 p-3 rounded-lg border-[0.5px] border-primary/20">{viewRecord.sermonKit.outline}</div>
+      </div>
+      <div>
+        <p className="text-sm font-medium text-primary uppercase tracking-[0.04em] mb-2 flex items-center gap-2"><BookOpen className="w-4 h-4"/> Small Group Guide</p>
+        <div className="text-sm whitespace-pre-wrap bg-muted/30 p-3 rounded-lg border-[0.5px] border-primary/20">{viewRecord.sermonKit.smallGroupGuide}</div>
+      </div>
+      <div>
+        <p className="text-sm font-medium text-primary uppercase tracking-[0.04em] mb-2 flex items-center gap-2"><Headphones className="w-4 h-4"/> Social Media Drafts</p>
+        <div className="text-sm whitespace-pre-wrap bg-muted/30 p-3 rounded-lg border-[0.5px] border-primary/20">{viewRecord.sermonKit.socialMedia}</div>
+      </div>
+   </div>
+ )}
 
-{viewRecord && !viewRecord.outline && (
-  <Button 
-    onClick={generateOutline} 
-    disabled={isGenerating}
-    className="w-full mt-4 gap-2 bg-primary/10 text-primary hover:bg-primary/20 border border-primary/30"
-    variant="outline"
-  >
-     <Sparkles className="w-4 h-4" /> 
-     {isGenerating ? 'Generating...' : 'Generate AI Outline'}
-  </Button>
-)}
+ {viewRecord && !viewRecord.sermonKit && (
+   <Button 
+     onClick={generateSermonKit} 
+     disabled={isGenerating}
+     className="w-full mt-4 gap-2 bg-primary/10 text-primary hover:bg-primary/20 border border-primary/30"
+     variant="outline"
+   >
+      <Sparkles className="w-4 h-4" /> 
+      {isGenerating ? 'Generating Kit...' : 'Generate AI Sermon Kit'}
+   </Button>
+ )}
  </div>
  </SheetContent>
  </Sheet>

@@ -113,15 +113,22 @@ export default function Prayers() {
  const [isAnalyzing, setIsAnalyzing] = useState(false);
  const handleAnalyzeSentiment = async (prayer) => {
    setIsAnalyzing(true);
-   const tId = toast.loading('AI analyzing prayer sentiment...');
+   const tId = toast.loading('AI analyzing prayer request...');
    try {
-     const prompt = `Analyze this prayer request and categorize its urgency level for pastoral care. 
-Respond with exactly one word: URGENT (if it involves death, severe sickness, hospital, crisis), NORMAL (if it's a general prayer), or PRAISE (if it's thanksgiving).
+     const prompt = `Analyze this prayer request for a church pastoral care team.
+Respond with a JSON object with exactly these fields (no markdown blocks, just raw JSON):
+{
+  "urgency": "URGENT" (death, severe sickness, hospital, crisis), "NORMAL" (general prayer), or "PRAISE" (thanksgiving),
+  "category": "Health", "Family", "Financial", "Guidance", "Spiritual", or "Other",
+  "suggestedResponse": "A 1-2 sentence comforting pastoral response or prayer to share with the person",
+  "followUp": "Suggested pastoral follow-up action (e.g., 'Call within 24 hours', 'Send a card', 'Follow up next week')"
+}
 Prayer Request: "${prayer.request}"`;
-     const sentiment = await generateText(prompt);
-     const cleanSentiment = sentiment.trim().toUpperCase();
+     const rawSentiment = await generateText(prompt);
+     const cleanJsonStr = rawSentiment.replace(/```json/g, '').replace(/```/g, '').trim();
+     const analysis = JSON.parse(cleanJsonStr);
      
-     const updatedPayload = { ...prayer, sentiment: cleanSentiment };
+     const updatedPayload = { ...prayer, sentiment: analysis.urgency, aiAnalysis: analysis };
      delete updatedPayload.id;
      delete updatedPayload.status;
 
@@ -133,11 +140,11 @@ Prayer Request: "${prayer.request}"`;
        searchText: `${prayer.name} ${prayer.request}`
      }, {
        onSuccess: () => {
-         toast.success(`Sentiment analyzed: ${cleanSentiment}`, { id: tId });
+         toast.success(`Analysis complete: ${analysis.category} / ${analysis.urgency}`, { id: tId });
        }
      });
    } catch (err) {
-     toast.error('Failed to analyze sentiment', { id: tId });
+     toast.error('Failed to analyze prayer request', { id: tId });
    } finally {
      setIsAnalyzing(false);
    }
@@ -224,8 +231,25 @@ Prayer Request: "${prayer.request}"`;
       <span className="text-xs text-green-500 font-bold tracking-[0.04em] flex items-center gap-1"><CheckCircle className="w-3 h-3"/> PRAISE REPORT</span>
     </>
   )}
+  {prayer.aiAnalysis && prayer.aiAnalysis.category && (
+    <>
+      <span className="text-[#71717a] dark:text-gray-400">•</span>
+      <span className="text-xs text-primary font-bold tracking-[0.04em]">{prayer.aiAnalysis.category.toUpperCase()}</span>
+    </>
+  )}
  </div>
  <p className="text-foreground text-lg leading-relaxed font-medium">"{prayer.request}"</p>
+ {prayer.aiAnalysis && (
+   <div className="mt-4 p-3 bg-primary/5 rounded-xl border border-primary/20 space-y-2">
+     <p className="text-xs font-semibold text-primary flex items-center gap-1"><Sparkles className="w-3 h-3"/> AI Pastoral Suggestions</p>
+     <div className="text-sm text-foreground">
+       <span className="font-semibold">Suggested Response:</span> {prayer.aiAnalysis.suggestedResponse}
+     </div>
+     <div className="text-sm text-foreground">
+       <span className="font-semibold">Action Item:</span> {prayer.aiAnalysis.followUp}
+     </div>
+   </div>
+ )}
  </div>
  <div className="flex sm:flex-col gap-2 justify-end sm:justify-start shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 sm:border-l border-primary/40 sm:pl-6 min-w-[150px]">
  {prayer.status === 'Active' ? (

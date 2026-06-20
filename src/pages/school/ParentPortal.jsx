@@ -21,7 +21,7 @@ export default function ParentPortal() {
   // Real Database Hooks
   const { data: studentRecords = [], isLoading: isStudentsLoading } = useQuery({
     queryKey: ['clients', companyId],
-    queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'student' }),
+    queryFn: () => powerSync.execute('SELECT * FROM school_students WHERE company_id = ?', [companyId]).then(r => r.rows._array),
     enabled: !!companyId
   });
   const { data: exams = [] } = useIndustryRecords('exam');
@@ -56,11 +56,11 @@ export default function ParentPortal() {
 
   const { data: documents = [] } = useQuery({
     queryKey: ["student-docs", activeStudent?.id],
-    queryFn: () => base44.entities.Document.filter({ client_id: activeStudent?.id }),
+    queryFn: () => powerSync.execute('SELECT * FROM school_notices WHERE company_id = ?', [companyId]).then(r => r.rows._array),
     enabled: !!activeStudent?.id});
 
   const createDocMutation = useMutation({
-    mutationFn: (data) => base44.entities.Document.create(data),
+    mutationFn: async (data) => powerSync.execute('INSERT INTO school_notices (id, company_id, created_at) VALUES (uuid(), ?, datetime(\'now\'))', [companyId]),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["student-docs", activeStudent?.id] });
       toast.success("Document uploaded successfully");

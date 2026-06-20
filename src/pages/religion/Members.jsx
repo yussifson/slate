@@ -11,7 +11,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@
 import { Link} from 'react-router-dom';
 import { useNotifications} from "@/hooks/integrations/useNotifications";
 import { useCompanyId} from "@/hooks/useCompanyId";
-import { MessageCircle} from "lucide-react";
+import { MessageCircle, Bot, Sparkles} from "lucide-react";
+import { generateText } from '@/lib/cloudflareAI';
 
 export default function Members() {
  const { t} = useTranslation();
@@ -32,6 +33,27 @@ export default function Members() {
  const [deleteTargetId, setDeleteTargetId] = useState(null);
  const [viewRecord, setViewRecord] = useState(null);
  const [editRecord, setEditRecord] = useState(null);
+ const [isGenerating, setIsGenerating] = useState(false);
+ const [aiInsight, setAiInsight] = useState('');
+
+ const handleAIInsight = async (member) => {
+   setIsGenerating(true);
+   setAiInsight('');
+   try {
+     const prompt = `You are an AI Church Engagement assistant. Analyze this member and provide a "Risk of Leaving" score and a short, personalized pastoral action step:
+Name: ${member.name}
+Membership Type: ${member.type}
+Cell Group: ${member.group}
+Status: ${member.status}
+Keep it under 3 sentences and be encouraging but realistic.`;
+     const response = await generateText(prompt);
+     setAiInsight(response);
+   } catch (e) {
+     toast.error('AI Insight failed.');
+   } finally {
+     setIsGenerating(false);
+   }
+ };
 
  // Form State
  const [formData, setFormData] = useState({
@@ -300,6 +322,18 @@ export default function Members() {
  <SheetDescription>{t("read_only_view_of_the_selected", "Read-only view of the selected record.")}</SheetDescription>
  </SheetHeader>
  <div className="mt-6 space-y-4">
+ <div className="flex justify-end">
+   <Button onClick={() => handleAIInsight(viewRecord)} variant="outline" className="gap-2 border-primary text-primary" disabled={isGenerating}>
+     {isGenerating ? <Sparkles className="w-4 h-4 animate-spin" /> : <Bot className="w-4 h-4" />}
+     {isGenerating ? 'Analyzing...' : 'Generate AI Engagement Insight'}
+   </Button>
+ </div>
+ {aiInsight && (
+   <div className="bg-primary/5 p-4 rounded-xl border border-primary/20">
+     <h3 className="text-sm font-semibold text-primary mb-2 flex items-center gap-2"><Bot className="w-4 h-4"/> AI Engagement Analysis</h3>
+     <p className="text-sm text-foreground font-medium whitespace-pre-wrap">{aiInsight}</p>
+   </div>
+ )}
  {viewRecord && Object.entries(viewRecord).filter(([k]) => k !== 'id' && k !== 'status').map(([key, value]) => {
  return (
  <div key={key} className="border-b border-primary/40 pb-2">

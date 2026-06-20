@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
 import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import ConfirmationModal from '@/components/ConfirmationModal';
@@ -26,17 +25,17 @@ export default function Classes() {
   const queryClient = useQueryClient();
   const { data: records = [], isLoading: isDbLoading } = useQuery({ 
     queryKey: ["cases", companyId], 
-    queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }), 
+    queryFn: () => powerSync.execute('SELECT * FROM school_classes WHERE company_id = ?', [companyId]).then(r => r.rows._array), 
     enabled: !!companyId 
   });
   
   const mutateClass = useMutation({
-    mutationFn: (data) => data.id ? base44.entities.LegalCase.update(data.id, data) : base44.entities.LegalCase.create(data),
+    mutationFn: async (data) => powerSync.execute('INSERT INTO school_classes (id, company_id, name, subject, room_number, schedule, created_at) VALUES (uuid(), ?, ?, ?, ?, ?, datetime(\'now\'))', [companyId, data.name, data.subject, data.room, data.schedule]),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["cases", companyId] })
   });
 
   const deleteClass = useMutation({
-    mutationFn: (id) => base44.entities.LegalCase.delete(id),
+    mutationFn: async (id) => powerSync.execute('DELETE FROM school_classes WHERE id = ?', [id]),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["cases", companyId] })
   });
 
@@ -45,8 +44,18 @@ export default function Classes() {
   });
 
   const classesData = records.map(r => {
-    let extra = {}; try { extra = JSON.parse(r.description || '{}'); } catch(e) {}
-    return { id: r.id, name: r.title || 'Untitled Class', subject: r.case_type || 'General', teacher: r.assigned_staff_name || 'Unassigned', room: extra.room || 'TBD', schedule: extra.schedule || 'TBD', students: extra.students || 0, courses: extra.courses || '', allowSelfRegistration: !!extra.allowSelfRegistration, stage: r.stage || 'active' };
+    return { 
+      id: r.id, 
+      name: r.name || 'Untitled Class', 
+      subject: r.subject || 'General', 
+      teacher: r.teacher_id || 'Unassigned', 
+      room: r.room_number || 'TBD', 
+      schedule: r.schedule || 'TBD', 
+      students: 0, 
+      courses: '', 
+      allowSelfRegistration: !!r.allow_self_registration, 
+      stage: r.status || 'active' 
+    };
   });
 
   const handleCreateClass = () => {

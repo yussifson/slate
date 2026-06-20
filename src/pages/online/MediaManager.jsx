@@ -134,14 +134,14 @@ export default function MediaManager() {
  </div>
  </div>
 
- <div onClick={() => fileInputRef.current?.click()} className="cursor-pointer hover:border-[var(--primary)] transition-colors bg-[var(--color-surface-0)] border-[0.5px] border-dashed border-primary/40 rounded-md-[var(--radius-xl)] p-6 text-center">
- <div className="w-16 h-16 bg-[var(--color-surface-1)] rounded-full flex items-center justify-center mx-auto mb-4">
- <UploadCloud className="w-8 h-8 text-[var(--primary)]" />
- </div>
- <h4 className="font-semibold text-[var(--color-text-primary)]">Quick Upload</h4>
- <p className="text-xs text-[var(--color-text-secondary)] mt-1 mb-4 tracking-[0.04em]">Drag & drop files here</p>
- <button className="text-sm text-[var(--primary)] font-medium hover:underline">Browse Files</button>
- </div>
+  <div onClick={() => !isUploading && fileInputRef.current?.click()} className={`cursor-pointer hover:border-[var(--primary)] transition-colors bg-[var(--color-surface-0)] border-[0.5px] border-dashed border-primary/40 rounded-md-[var(--radius-xl)] p-6 text-center ${isUploading ? 'opacity-70 cursor-not-allowed' : ''}`}>
+  <div className="w-16 h-16 bg-[var(--color-surface-1)] rounded-full flex items-center justify-center mx-auto mb-4">
+  {isUploading ? <Loader2 className="w-8 h-8 text-[var(--primary)] animate-spin" /> : <UploadCloud className="w-8 h-8 text-[var(--primary)]" />}
+  </div>
+  <h4 className="font-semibold text-[var(--color-text-primary)]">{isUploading ? 'Uploading...' : 'Quick Upload'}</h4>
+  <p className="text-xs text-[var(--color-text-secondary)] mt-1 mb-4 tracking-[0.04em]">{isUploading ? 'Please wait' : 'Drag & drop files here'}</p>
+  {!isUploading && <button className="text-sm text-[var(--primary)] font-medium hover:underline">Browse Files</button>}
+  </div>
  </div>
 
  <div className="lg:col-span-3">

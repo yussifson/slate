@@ -4,7 +4,6 @@ import { Users, Search, Plus, Phone, Mail, MoreVertical, Settings, MapPin, Edit2
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
 import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { motion, AnimatePresence } from 'framer-motion';
@@ -29,7 +28,7 @@ export default function Parents() {
 
   const { data: records = [], isLoading } = useQuery({ 
     queryKey: ["clients", companyId, "parent"], 
-    queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'parent' }), 
+    queryFn: () => powerSync.execute('SELECT * FROM school_parents WHERE company_id = ?', [companyId]).then(r => r.rows._array), 
     enabled: !!companyId 
   });
 
@@ -59,13 +58,17 @@ export default function Parents() {
   const [formData, setFormData] = useState({ name: '', phone: '', email: '', address: '', parentId: '', linkedStudentId: '' });
 
   const parents = records.map(r => {
-    let extra = {};
-    try { extra = JSON.parse(r.notes || '{}'); } catch(e) {}
     return {
-      id: r.id, name: r.name, parentId: r.id_number, phone: r.phone,
-      email: extra.email || '', address: extra.address || '',
-      linkedStudentId: extra.linkedStudentId || '',
-      avatar: r.name?.substring(0,2).toUpperCase()
+      id: r.id,
+      name: `${r.first_name || ''} ${r.last_name || ''}`.trim() || 'Unknown',
+      phone: r.phone || '',
+      email: r.email || '',
+      status: r.status || 'Active',
+      children: [],
+      address: '',
+      occupation: '',
+      emergencyContact: r.phone || '',
+      avatar: (r.first_name || 'U').substring(0, 2).toUpperCase()
     };
   });
 

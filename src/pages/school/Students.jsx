@@ -5,7 +5,6 @@ import { generateText } from '@/lib/cloudflareAI';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useAuth } from '@/lib/AuthContext';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
 import { registerSchoolUser } from "@/api/authUtils";
 import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
@@ -71,33 +70,32 @@ export default function Students() {
   const queryClient = useQueryClient();
   const { data: records = [], isLoading } = useQuery({ 
     queryKey: ["clients", companyId, "student"], 
-    queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'student' }), 
+    queryFn: () => powerSync.execute('SELECT * FROM school_students WHERE company_id = ?', [companyId]).then(r => r.rows._array), 
     enabled: !!companyId 
   });
 
   const students = records.map(r => {
-    let extra = {};
-    try { extra = JSON.parse(r.notes || '{}'); } catch(e) {}
     return {
       id: r.id,
-      name: r.name,
-      studentId: r.id_number,
-      phone: r.phone || extra.phone || '',
-      email: extra.email || '',
+      name: `${r.first_name || ''} ${r.last_name || ''}`.trim() || 'Unknown',
+      studentId: r.student_id_number,
+      phone: '',
+      email: '',
       status: r.status || 'Active',
-      class: extra.class || 'Unknown',
-      age: extra.age || 0,
-      gender: extra.gender || 'Unknown',
-      parent: extra.parent || '',
-      parentPhone: extra.parentPhone || r.phone || '',
-      parentEmail: extra.parentEmail || '',
-      address: extra.address || '',
-      medicalNotes: extra.medicalNotes || 'No known allergies or medical conditions.',
-      previousSchool: extra.previousSchool || '',
-      emergencyContactName: extra.emergencyContactName || '',
-      emergencyContactPhone: extra.emergencyContactPhone || '',
-      feeStatus: extra.feeStatus || 'Owing',
-      avatar: extra.avatar || r.name?.substring(0,2).toUpperCase()
+      class: r.grade_level || 'Unknown',
+      age: 0,
+      gender: 'Unknown',
+      parent: '',
+      parentPhone: '',
+      parentEmail: '',
+      address: '',
+      medicalNotes: 'No known allergies or medical conditions.',
+      previousSchool: '',
+      emergencyContactName: '',
+      emergencyContactPhone: '',
+      feeStatus: 'Paid',
+      avatar: (r.first_name || 'U').substring(0, 2).toUpperCase(),
+      gpa: r.gpa || 0.0
     };
   });
 

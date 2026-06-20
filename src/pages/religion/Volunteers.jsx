@@ -1,6 +1,7 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
-import { Calendar, Users, ClipboardCheck, Plus, Trash2, Search, Wand2, AlertCircle} from 'lucide-react';
+import { Calendar, Users, ClipboardCheck, Plus, Trash2, Search, Wand2, AlertCircle, Sparkles} from 'lucide-react';
+import { generateText } from '@/lib/cloudflareAI';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
@@ -90,52 +91,43 @@ export default function Volunteers() {
 });
 };
 
- const handleAutoSchedule = () => {
+ const handleAutoSchedule = async () => {
    if (volunteers.length === 0) return toast.error("No volunteers to schedule!");
-   const tId = toast.loading('Running scheduling algorithm...');
+   const tId = toast.loading('AI is optimizing the schedule...');
    
-   // Simple Algorithm: Find next 4 Sundays and assign eligible volunteers without double-booking a single date
-   const nextSundays = Array.from({length: 4}).map((_, i) => {
-     const d = new Date();
-     d.setDate(d.getDate() + ((7 - d.getDay()) % 7 || 7) + (i * 7));
-     return d.toISOString().split('T')[0];
-   });
-
-   let createdCount = 0;
-   const booked = new Set(); // tracks "date-volunteerName"
-
-   nextSundays.forEach(date => {
-     // For each group, pick one volunteer
-     const groups = [...new Set(volunteers.map(v => v.group))];
-     groups.forEach(g => {
-       const available = volunteers.filter(v => v.group === g && v.availability.toLowerCase().includes('sunday') && !booked.has(`${date}-${v.name}`));
-       if (available.length > 0) {
-         // pick random
-         const chosen = available[Math.floor(Math.random() * available.length)];
-         booked.add(`${date}-${chosen.name}`);
-         
-         const payload = {
-           name: chosen.name,
-           group: chosen.group,
-           role: chosen.role,
-           availability: chosen.availability,
-           nextService: date
-         };
-         
-         mutateRecord.mutate({
-           recordType: 'volunteer',
-           payload,
-           status: 'active',
-           searchText: `${chosen.name} ${chosen.group} ${chosen.role}`
-         });
-         createdCount++;
-       }
+   try {
+     const nextSundays = Array.from({length: 4}).map((_, i) => {
+       const d = new Date();
+       d.setDate(d.getDate() + ((7 - d.getDay()) % 7 || 7) + (i * 7));
+       return d.toISOString().split('T')[0];
      });
-   });
 
-   setTimeout(() => {
-     toast.success(`Algorithm generated ${createdCount} new schedule assignments!`, { id: tId });
-   }, 1500);
+     const prompt = `You are an AI Volunteer Coordinator for a church. Here is the current roster of volunteers:
+${JSON.stringify(volunteers.map(v => ({name: v.name, group: v.group, role: v.role, availability: v.availability})))}
+
+The upcoming 4 service dates are: ${nextSundays.join(', ')}.
+Create a balanced schedule. Do not double-book a person on the same date. Rotate volunteers fairly to prevent burnout.
+Respond ONLY with a JSON array of objects (no markdown blocks). Each object must have exactly these fields: "name", "group", "role", "availability", "nextService".`;
+
+     const rawResponse = await generateText(prompt);
+     const cleanJsonStr = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+     const assignments = JSON.parse(cleanJsonStr);
+
+     let createdCount = 0;
+     for (const assignment of assignments) {
+       mutateRecord.mutate({
+         recordType: 'volunteer',
+         payload: assignment,
+         status: 'active',
+         searchText: `${assignment.name} ${assignment.group} ${assignment.role}`
+       });
+       createdCount++;
+     }
+
+     toast.success(`AI scheduled ${createdCount} shifts optimally!`, { id: tId });
+   } catch (e) {
+     toast.error('AI Scheduling failed. Please try again.', { id: tId });
+   }
  };
 
  const filtered = volunteers.filter(v =>
@@ -162,10 +154,10 @@ export default function Volunteers() {
  "Manage religion service volunteers and schedules"
  )}</p>
  </div>
-  <div className="flex gap-2">
-    <Button onClick={handleAutoSchedule} variant="outline" className="gap-2 border-primary/30 text-primary hover:bg-primary/10">
-      <Wand2 className="w-4 h-4" /> AI Auto-Schedule
-    </Button>
+   <div className="flex gap-2">
+     <Button onClick={handleAutoSchedule} className="gap-2 bg-primary/10 text-primary hover:bg-primary/20 border border-primary/30">
+       <Sparkles className="w-4 h-4" /> AI Auto-Schedule
+     </Button>
     <Button onClick={() => setShowModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
       <Plus className="w-4 h-4" /> {t("schedule_volunteer", "Schedule Volunteer")}
     </Button>

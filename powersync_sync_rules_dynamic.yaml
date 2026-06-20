@@ -41,3 +41,20 @@ bucket_definitions:
   - SELECT * FROM uni_library_books WHERE company_id = bucket.company_id
   - SELECT * FROM uni_research_grants WHERE company_id = bucket.company_id
   - SELECT * FROM uni_alumni WHERE company_id = bucket.company_id
+
+  - SELECT * FROM school_students WHERE company_id = bucket.company_id
+  - SELECT * FROM school_teachers WHERE company_id = bucket.company_id
+  - SELECT * FROM school_classes WHERE company_id = bucket.company_id
+  - SELECT * FROM school_parents WHERE company_id = bucket.company_id
+  - SELECT * FROM school_attendance WHERE company_id = bucket.company_id
+  - SELECT * FROM school_grades WHERE company_id = bucket.company_id
+  - SELECT * FROM school_exams WHERE company_id = bucket.company_id
+  - SELECT * FROM school_assignments WHERE company_id = bucket.company_id
+  - SELECT * FROM school_fees WHERE company_id = bucket.company_id
+  - SELECT * FROM school_library WHERE company_id = bucket.company_id
+  - SELECT * FROM school_hostel WHERE company_id = bucket.company_id
+  - SELECT * FROM school_transport WHERE company_id = bucket.company_id
+  - SELECT * FROM school_notices WHERE company_id = bucket.company_id
+  - SELECT * FROM school_complaints WHERE company_id = bucket.company_id
+  - SELECT * FROM school_gamification WHERE company_id = bucket.company_id
+  - SELECT * FROM school_canteen WHERE company_id = bucket.company_id
