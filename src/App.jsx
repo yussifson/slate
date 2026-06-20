@@ -6,6 +6,7 @@ import { QueryClientProvider, useQueryClient } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Route, Routes, Outlet, Navigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
+const JoinMeeting = React.lazy(() => import('@/pages/JoinMeeting'));
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
 import { ImpersonationProvider } from '@/lib/ImpersonationContext';
@@ -528,6 +529,7 @@ function PlatformRoutes() {
       <Route path="/firm-setup" element={<OnboardingWizard />} />
       <Route path="/chat" element={<Chat />} />
       <Route path="/board" element={<Board />} />
+                          <Route path="/join/:roomId" element={<JoinMeeting />} />
       <Route path="/pages/:pageId" element={<CustomPageViewer />} />
 
       {/* Orbit Component Tester (Super Admin Only) */}
