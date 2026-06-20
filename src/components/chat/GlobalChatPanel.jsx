@@ -173,6 +173,7 @@ export default function GlobalChatPanel({ isOpen, onClose}) {
 } else {
  (async () => {
  const _payload = {
+ id: crypto.randomUUID(),
  room_id: activeRoomId,
  sender_id: user.id,
  content: text,
@@ -245,6 +246,7 @@ export default function GlobalChatPanel({ isOpen, onClose}) {
  
  (async () => {
  const _payload = {
+ id: crypto.randomUUID(),
  room_id: activeRoomId,
  sender_id: user.id,
  content: content

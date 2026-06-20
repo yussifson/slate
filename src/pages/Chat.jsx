@@ -155,6 +155,7 @@ export default function Chat() {
 } else {
  (async () => {
  const _payload = {
+ id: crypto.randomUUID(),
  room_id: activeRoomId,
  sender_id: user.id,
  content: text,
@@ -196,7 +197,7 @@ export default function Chat() {
 }
  
  (async () => {
- const _payload = { room_id: activeRoomId, sender_id: user.id, content: mockUrl};
+ const _payload = { id: crypto.randomUUID(), room_id: activeRoomId, sender_id: user.id, content: mockUrl};
  const _keys = Object.keys(_payload);
  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
  const _plhdr = _keys.map(()=>'?').join(', ');
