@@ -6,12 +6,12 @@ import { useAuth } from '@/lib/AuthContext';
 import { isRetailAdmin, isRetailCashier } from '@/lib/constants';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useIndustryRecords, useMutateIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
 import { usePayment } from "@/hooks/integrations/usePayment";
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { generateText } from '@/lib/cloudflareAI';
 import { usePaywall } from '@/hooks/usePaywall';
+import { usePowerSync } from '@powersync/react';
 
 export default function POS() {
   const { isProOrAbove } = usePaywall();
@@ -25,23 +25,45 @@ export default function POS() {
   const canAccess = isRetailAdmin(user) || isRetailCashier(user);
 
   // Supabase Real-time Sync Hooks
-  const { data: dbRecords = [], isLoading: isDbLoading } = useIndustryRecords('product');
-  const { data: customerRecords = [] } = useIndustryRecords('customer');
-  const { data: promotions = [] } = useIndustryRecords('promotion');
-  const mutateRecord = useMutateIndustryRecord();
+  const powerSync = usePowerSync();
+  const [dbRecords, setDbRecords] = useState([]);
+  const [customerRecords, setCustomerRecords] = useState([]);
+  const [promotions, setPromotions] = useState([]);
+  const [isDbLoading, setIsDbLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    const fetchRecords = async () => {
+      setIsDbLoading(true);
+      try {
+        const prodRes = await powerSync.execute('SELECT * FROM univ_retail_products WHERE company_id = ? AND status = ?', [companyId, 'Active']);
+        if(active) setDbRecords(prodRes.rows._array || Array.from(prodRes.rows));
+
+        const custRes = await powerSync.execute('SELECT * FROM univ_retail_customers WHERE company_id = ?', [companyId]);
+        if(active) setCustomerRecords(custRes.rows._array || Array.from(custRes.rows));
+
+        const promoRes = await powerSync.execute('SELECT * FROM univ_retail_promotions WHERE company_id = ? AND status = ?', [companyId, 'Active']);
+        if(active) setPromotions(promoRes.rows._array || Array.from(promoRes.rows));
+      } catch(e){}
+      setIsDbLoading(false);
+    };
+    if (companyId) fetchRecords();
+    return () => { active = false; };
+  }, [companyId]);
 
   // Map database records
   const products = dbRecords.map(r => ({
     id: r.id,
-    sku: r.data?.sku || '',
-    name: r.data?.name || '',
-    price: parseFloat(r.data?.price) || 0,
-    stock: parseInt(r.data?.stock) || 0
+    sku: r.sku || '',
+    name: r.name || '',
+    price: parseFloat(r.price) || 0,
+    stock: parseInt(r.stock) || 0
   }));
 
   const customers = customerRecords.map(r => ({
     id: r.id,
-    name: r.data?.name || 'Unnamed Customer'
+    name: r.name || 'Unnamed Customer',
+    email: r.email || ''
   }));
 
   const location = useLocation();
@@ -202,17 +224,18 @@ ${receipt.amountTendered ? `<div class="row"><span>Tendered</span><span>$${recei
     setCart([]); setSelectedCustomerId(''); setAppliedPromo(null); setPromoCode('');
   };
 
-  const decrementStock = () => {
-    cart.forEach(item => {
+  const decrementStock = async () => {
+    for (const item of cart) {
       const original = dbRecords.find(r => r.id === item.id);
       if (original) {
-        mutateRecord.mutate({
-          id: original.id, recordType: 'product',
-          payload: { ...original.data, stock: Math.max(0, parseInt(original.data?.stock || original.quantity) - item.qty) },
-          status: original.status, searchText: original.search_text
-        });
+        const newStock = Math.max(0, parseInt(original.stock) - item.qty);
+        await powerSync.execute(`UPDATE univ_retail_products SET stock=?, status=? WHERE id=?`, 
+          [newStock, newStock > 0 ? 'Active' : 'Out of Stock', original.id]
+        );
       }
-    });
+    }
+    const res = await powerSync.execute('SELECT * FROM univ_retail_products WHERE company_id = ? AND status = ?', [companyId, 'Active']);
+    setDbRecords(res.rows._array || Array.from(res.rows));
   };
 
   // ─── Checkout Handler ───────────────────────────────
@@ -231,18 +254,16 @@ ${receipt.amountTendered ? `<div class="row"><span>Tendered</span><span>$${recei
     // Card Terminal
     if (paymentMethod === 'Terminal') {
       toast.success("Connecting to Card Terminal...");
-      setTimeout(() => {
+      setTimeout(async () => {
         toast.success("Payment successful via Terminal!");
         const receipt = generateReceiptData(saleId, 'Card Terminal');
-        const payload = {
-          orderId: saleId, customerId: selectedCustomerId, date: new Date().toISOString().split('T')[0],
-          items: cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price })),
-          subtotal, discount, promoCode: appliedPromo?.promo_code, tax,
-          total: parseFloat(saleTotal.toFixed(2)), paymentMethod: 'Card Terminal',
-          receiptNumber: receipt.receiptNumber, timestamp: new Date().toISOString()
-        };
-        mutateRecord.mutate({ recordType: 'order', payload, status: 'Completed', searchText: `${saleId} Terminal ${selectedCustomerId}` });
-        decrementStock();
+        await powerSync.execute(`INSERT INTO univ_retail_orders (id, created_at, company_id, order_id, customer, date, total, status, items) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`, 
+          [companyId, saleId, selectedCustomerId || null, new Date().toISOString().split('T')[0], parseFloat(saleTotal.toFixed(2)), 'Completed', JSON.stringify(cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price })))]
+        );
+        await powerSync.execute(`INSERT INTO univ_retail_sales (id, created_at, company_id, sale_id, date, cashier, method, items, total, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, 'Completed')`, 
+          [companyId, saleId, user?.user_metadata?.full_name || user?.email || 'Cashier', 'Terminal', cart.reduce((acc, i) => acc + i.qty, 0), parseFloat(saleTotal.toFixed(2))]
+        );
+        await decrementStock();
         setLastReceipt(receipt); setShowReceipt(true);
         resetAfterSale();
       }, 2000);
@@ -252,46 +273,40 @@ ${receipt.amountTendered ? `<div class="row"><span>Tendered</span><span>$${recei
     // Stripe / Paystack (online)
     if (paymentMethod === 'Stripe' || paymentMethod === 'Paystack') {
       try {
-        const customerEmail = customers.find(c => c.id === selectedCustomerId)?.data?.email || 'customer@example.com';
+        const customerEmail = customers.find(c => c.id === selectedCustomerId)?.email || 'customer@example.com';
         await processPayment({
           companyId, provider: paymentMethod.toLowerCase(),
           amount: parseFloat(saleTotal.toFixed(2)),
           currency: paymentMethod === 'Paystack' ? 'NGN' : 'USD',
           customerEmail, invoiceId: saleId
         });
-        const payload = {
-          orderId: saleId, customerId: selectedCustomerId, date: new Date().toISOString().split('T')[0],
-          items: cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price })),
-          subtotal, discount, promoCode: appliedPromo?.promo_code, tax,
-          total: parseFloat(saleTotal.toFixed(2)), paymentMethod, timestamp: new Date().toISOString()
-        };
-        mutateRecord.mutate({ recordType: 'order', payload, status: 'Pending', searchText: `${saleId} ${paymentMethod} ${selectedCustomerId}` });
+        await powerSync.execute(`INSERT INTO univ_retail_orders (id, created_at, company_id, order_id, customer, date, total, status, items) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`, 
+          [companyId, saleId, selectedCustomerId || null, new Date().toISOString().split('T')[0], parseFloat(saleTotal.toFixed(2)), 'Pending', JSON.stringify(cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price })))]
+        );
+        await powerSync.execute(`INSERT INTO univ_retail_sales (id, created_at, company_id, sale_id, date, cashier, method, items, total, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, 'Pending')`, 
+          [companyId, saleId, user?.user_metadata?.full_name || user?.email || 'Cashier', paymentMethod, cart.reduce((acc, i) => acc + i.qty, 0), parseFloat(saleTotal.toFixed(2))]
+        );
         return;
       } catch (err) { return; }
     }
 
     // Default / Save
-    const payload = {
-      orderId: saleId, customerId: selectedCustomerId, date: new Date().toISOString().split('T')[0],
-      items: cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price })),
-      subtotal, discount, promoCode: appliedPromo?.promo_code, tax,
-      total: parseFloat(saleTotal.toFixed(2)), paymentMethod, timestamp: new Date().toISOString()
-    };
-
-    mutateRecord.mutate({
-      recordType: 'order', payload, status: 'Completed',
-      searchText: `${saleId} ${paymentMethod} ${selectedCustomerId}`
-    }, {
-      onSuccess: () => {
-        toast.success(`Sale ${saleId} completed successfully!`);
-        decrementStock(); resetAfterSale();
-      },
-      onError: (err) => toast.error('Failed to complete checkout: ' + err.message)
-    });
+    try {
+      await powerSync.execute(`INSERT INTO univ_retail_orders (id, created_at, company_id, order_id, customer, date, total, status, items) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`, 
+        [companyId, saleId, selectedCustomerId || null, new Date().toISOString().split('T')[0], parseFloat(saleTotal.toFixed(2)), 'Completed', JSON.stringify(cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price })))]
+      );
+      await powerSync.execute(`INSERT INTO univ_retail_sales (id, created_at, company_id, sale_id, date, cashier, method, items, total, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, 'Completed')`, 
+        [companyId, saleId, user?.user_metadata?.full_name || user?.email || 'Cashier', paymentMethod, cart.reduce((acc, i) => acc + i.qty, 0), parseFloat(saleTotal.toFixed(2))]
+      );
+      toast.success(`Sale ${saleId} completed successfully!`);
+      await decrementStock(); resetAfterSale();
+    } catch (err) {
+      toast.error('Failed to complete checkout: ' + err.message);
+    }
   };
 
   // ─── Cash Checkout Confirmation ─────────────────────
-  const confirmCashCheckout = () => {
+  const confirmCashCheckout = async () => {
     const tendered = parseFloat(amountTendered);
     if (isNaN(tendered) || tendered < total) {
       toast.error(`Amount tendered must be at least $${total.toFixed(2)}`);
@@ -301,28 +316,21 @@ ${receipt.amountTendered ? `<div class="row"><span>Tendered</span><span>$${recei
     const changeDue = tendered - total;
     const receipt = generateReceiptData(saleId, 'Cash', tendered);
 
-    const payload = {
-      orderId: saleId, customerId: selectedCustomerId, date: new Date().toISOString().split('T')[0],
-      items: cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price })),
-      subtotal, discount, promoCode: appliedPromo?.promo_code, tax,
-      total: parseFloat(total.toFixed(2)), paymentMethod: 'Cash',
-      amountTendered: tendered, changeDue: parseFloat(changeDue.toFixed(2)),
-      receiptNumber: receipt.receiptNumber, timestamp: new Date().toISOString()
-    };
-
-    mutateRecord.mutate({
-      recordType: 'order', payload, status: 'Completed',
-      searchText: `${saleId} Cash ${selectedCustomerId}`
-    }, {
-      onSuccess: () => {
-        toast.success(`Cash Sale complete! Change due: $${changeDue.toFixed(2)}`);
-        decrementStock();
-        setShowCashModal(false); setAmountTendered('');
-        setLastReceipt(receipt); setShowReceipt(true);
-        resetAfterSale();
-      },
-      onError: (err) => toast.error('Failed: ' + err.message)
-    });
+    try {
+      await powerSync.execute(`INSERT INTO univ_retail_orders (id, created_at, company_id, order_id, customer, date, total, status, items) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`, 
+        [companyId, saleId, selectedCustomerId || null, new Date().toISOString().split('T')[0], parseFloat(total.toFixed(2)), 'Completed', JSON.stringify(cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price })))]
+      );
+      await powerSync.execute(`INSERT INTO univ_retail_sales (id, created_at, company_id, sale_id, date, cashier, method, items, total, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, 'Completed')`, 
+        [companyId, saleId, user?.user_metadata?.full_name || user?.email || 'Cashier', 'Cash', cart.reduce((acc, i) => acc + i.qty, 0), parseFloat(total.toFixed(2))]
+      );
+      toast.success(`Cash Sale complete! Change due: $${changeDue.toFixed(2)}`);
+      await decrementStock();
+      setShowCashModal(false); setAmountTendered('');
+      setLastReceipt(receipt); setShowReceipt(true);
+      resetAfterSale();
+    } catch (err) {
+      toast.error('Failed: ' + err.message);
+    }
   };
 
   // ─── Calculations ───────────────────────────────────

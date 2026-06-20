@@ -9,18 +9,43 @@ import { usePaywall } from '@/hooks/usePaywall';
 import { generateText } from '@/lib/cloudflareAI';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from 'recharts';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
+import { usePowerSync } from '@powersync/react';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
 export default function RetailDashboard() {
- const { t} = useTranslation();
- const { user} = useAuth();
- const { data: orders = [], isLoading: isOrdersLoading} = useIndustryRecords('order');
- const { data: products = [], isLoading: isProductsLoading} = useIndustryRecords('product');
- const { data: shifts = [], isLoading: isShiftsLoading} = useIndustryRecords('shift');
+  const { t} = useTranslation();
+  const { user} = useAuth();
+  const companyId = useCompanyId();
+  const powerSync = usePowerSync();
 
- const isLoading = isOrdersLoading || isProductsLoading || isShiftsLoading;
+  const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [shifts, setShifts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const { isProOrAbove } = usePaywall();
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiInsight, setAiInsight] = useState('');
+
+  useEffect(() => {
+    let active = true;
+    const fetchRecords = async () => {
+      setIsLoading(true);
+      try {
+        const orderRes = await powerSync.execute('SELECT * FROM univ_retail_orders WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+        if(active) setOrders(orderRes.rows._array || Array.from(orderRes.rows));
+
+        const prodRes = await powerSync.execute('SELECT * FROM univ_retail_products WHERE company_id = ?', [companyId]);
+        if(active) setProducts(prodRes.rows._array || Array.from(prodRes.rows));
+
+        const shiftRes = await powerSync.execute('SELECT * FROM univ_retail_shifts WHERE company_id = ?', [companyId]);
+        if(active) setShifts(shiftRes.rows._array || Array.from(shiftRes.rows));
+      } catch(e){}
+      setIsLoading(false);
+    };
+    if (companyId) fetchRecords();
+    return () => { active = false; };
+  }, [companyId]);
 
  // Calculate Metrics
  
@@ -50,16 +75,16 @@ export default function RetailDashboard() {
   }, [isLoading]);
 
   const today = new Date().toISOString().split('T')[0];
- const todaysOrders = orders.filter(o => o.createdAt && o.createdAt.startsWith(today));
- const todayRevenue = todaysOrders.reduce((sum, o) => sum + (Number(o.data?.total) || 0), 0);
- 
- const lowStockProducts = products.filter(p => {
- const stock = Number(p.data?.quantity) || 0;
- const reorderLevel = Number(p.data?.reorderLevel) || 10;
- return stock <= reorderLevel;
-});
+  const todaysOrders = orders.filter(o => o.created_at && o.created_at.startsWith(today));
+  const todayRevenue = todaysOrders.reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+  
+  const lowStockProducts = products.filter(p => {
+    const stock = Number(p.stock) || 0;
+    const reorderLevel = 10;
+    return stock <= reorderLevel;
+  });
 
- const activeShifts = shifts.filter(s => s.status === 'active' || s.data?.status === 'active');
+  const activeShifts = shifts.filter(s => s.status === 'Active' || s.status === 'active');
 
  // Chart data (last 7 days revenue)
  const last7Days = Array.from({length: 7}, (_, i) => {
@@ -69,8 +94,8 @@ export default function RetailDashboard() {
 });
 
  const chartData = last7Days.map(date => {
- const dayOrders = orders.filter(o => o.createdAt && o.createdAt.startsWith(date));
- const revenue = dayOrders.reduce((sum, o) => sum + (Number(o.data?.total) || 0), 0);
+ const dayOrders = orders.filter(o => o.created_at && o.created_at.startsWith(date));
+ const revenue = dayOrders.reduce((sum, o) => sum + (Number(o.total) || 0), 0);
  return {
  date: new Date(date).toLocaleDateString(undefined, { weekday: 'short'}),
  revenue
@@ -197,11 +222,11 @@ export default function RetailDashboard() {
  lowStockProducts.slice(0, 5).map(p => (
  <div key={p.id} className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
  <div>
- <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{p.data?.name}</p>
- <p className="text-xs text-slate-500 dark:text-slate-400 tracking-[0.04em]">SKU: {p.data?.sku || 'N/A'}</p>
+ <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{p.name}</p>
+ <p className="text-xs text-slate-500 dark:text-slate-400 tracking-[0.04em]">SKU: {p.sku || 'N/A'}</p>
  </div>
  <Badge variant="destructive" className="bg-red-100 text-red-700 hover:bg-red-200">
- {p.data?.quantity || 0} left
+ {p.stock || 0} left
  </Badge>
  </div>
  ))
@@ -223,16 +248,16 @@ export default function RetailDashboard() {
  {orders.length === 0 ? (
  <p className="text-sm text-[#71717a] dark:text-gray-400 text-center py-4">No recent orders</p>
  ) : (
- orders.slice().sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5).map(o => (
+ orders.slice().sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 5).map(o => (
  <div key={o.id} className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40">
  <div>
- <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{o.data?.orderNumber || 'ORD'}</p>
+ <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{o.order_id || 'ORD'}</p>
  <p className="text-xs text-slate-500 dark:text-slate-400 tracking-[0.04em]">
- {new Date(o.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+ {new Date(o.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
  </p>
  </div>
  <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
- ${Number(o.data?.total || 0).toFixed(2)}
+ ${Number(o.total || 0).toFixed(2)}
  </span>
  </div>
  ))

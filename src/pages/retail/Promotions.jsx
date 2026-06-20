@@ -2,7 +2,8 @@ import React, { useState} from 'react';
 import { useTranslation} from "react-i18next";
 import { Plus, Search, Trash2, Tag, Percent} from 'lucide-react';
 import { ViewModeToggle, RetailStatCard, PromotionGridCard} from '@/components/retail/RetailViewKit';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
+import { usePowerSync } from '@powersync/react';
+import { useCompanyId } from '@/hooks/useCompanyId';
 import { Button} from "@/components/ui/button";
 import { Input} from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription} from "@/components/ui/dialog";
@@ -14,10 +15,26 @@ export default function Promotions() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiInsight, setAiInsight] = useState('');
   const isProOrAbove = true; // Temporary bypass
- const { t} = useTranslation();
- const { data: promotions = [], isLoading} = useIndustryRecords('promotion');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+  const { t} = useTranslation();
+  const companyId = useCompanyId();
+  const powerSync = usePowerSync();
+
+  const [promotions, setPromotions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  React.useEffect(() => {
+    let active = true;
+    const fetchRecords = async () => {
+      setIsLoading(true);
+      try {
+        const res = await powerSync.execute('SELECT * FROM univ_retail_promotions WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+        if(active) setPromotions(res.rows._array || Array.from(res.rows));
+      } catch(e){}
+      setIsLoading(false);
+    };
+    if (companyId) fetchRecords();
+    return () => { active = false; };
+  }, [companyId]);
 
  const [searchTerm, setSearchTerm] = useState("");
  const [viewMode, setViewMode] = useState("grid");
@@ -29,9 +46,9 @@ export default function Promotions() {
  const [discountValue, setDiscountValue] = useState("");
  const [isActive, setIsActive] = useState(true);
 
- const filteredPromos = promotions.filter(p => 
- (p.data?.code || '').toLowerCase().includes(searchTerm.toLowerCase())
- );
+  const filteredPromos = promotions.filter(p => 
+    (p.promo_code || '').toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
  const openNewDialog = () => {
  setEditId(null);
@@ -42,14 +59,14 @@ export default function Promotions() {
  setIsDialogOpen(true);
 };
 
- const openEditDialog = (p) => {
- setEditId(p.id);
- setPromoCode(p.data?.code || "");
- setDiscountType(p.data?.discountType || "percentage");
- setDiscountValue(p.data?.discountValue || "");
- setIsActive(p.data?.isActive ?? true);
- setIsDialogOpen(true);
-};
+  const openEditDialog = (p) => {
+    setEditId(p.id);
+    setPromoCode(p.promo_code || "");
+    setDiscountType(p.discount_type || "percentage");
+    setDiscountValue(p.discount_value || "");
+    setIsActive(p.status === 'Active');
+    setIsDialogOpen(true);
+  };
 
  
   const handleAIGenerator = async () => {
@@ -60,7 +77,7 @@ export default function Promotions() {
     setIsGenerating(true);
     setAiInsight('');
     try {
-      const activePromos = promotions.filter(p => p.data.isActive).map(p => p.data.code).join(', ');
+      const activePromos = promotions.filter(p => p.status === 'Active').map(p => p.promo_code).join(', ');
       const prompt = `You are a Retail Marketing AI. Current active promos: ${activePromos || 'None'}. Provide a 2-sentence creative promotion campaign idea to boost sales this weekend. Give it a catchy code.`;
       const response = await generateText(prompt);
       setAiInsight(response);
@@ -72,43 +89,44 @@ export default function Promotions() {
   };
 
   const handleSave = async () => {
- if (!promoCode || !discountValue) {
- toast.error(t("fill_required_fields", "Please fill out the code and discount value."));
- return;
-}
+    if (!promoCode || !discountValue) {
+      toast.error(t("fill_required_fields", "Please fill out the code and discount value."));
+      return;
+    }
 
- const payload = {
- code: promoCode.toUpperCase(),
- discountType,
- discountValue: Number(discountValue),
- isActive
-};
+    try {
+      const codeUpper = promoCode.toUpperCase();
+      if (editId) {
+        await powerSync.execute(`UPDATE univ_retail_promotions SET promo_code=?, discount_type=?, discount_value=?, status=? WHERE id=?`, 
+          [codeUpper, discountType, Number(discountValue), isActive ? 'Active' : 'Inactive', editId]
+        );
+      } else {
+        await powerSync.execute(`INSERT INTO univ_retail_promotions (id, created_at, company_id, promo_code, discount_type, discount_value, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)`, 
+          [companyId, codeUpper, discountType, Number(discountValue), isActive ? 'Active' : 'Inactive']
+        );
+      }
+      
+      const res = await powerSync.execute('SELECT * FROM univ_retail_promotions WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+      setPromotions(res.rows._array || Array.from(res.rows));
 
- try {
- await mutateRecord.mutateAsync({
- id: editId,
- recordType: 'promotion',
- payload,
- status: isActive ? 'active' : 'inactive',
- searchText: `${payload.code} ${payload.discountType}`.toLowerCase()
-});
- toast.success(t("promo_saved", "Promotion saved successfully"));
- setIsDialogOpen(false);
-} catch (error) {
- toast.error(t("promo_error", "Error saving promotion"));
-}
-};
+      toast.success(t("promo_saved", "Promotion saved successfully"));
+      setIsDialogOpen(false);
+    } catch (error) {
+      toast.error(t("promo_error", "Error saving promotion"));
+    }
+  };
 
- const handleDelete = async (id) => {
- if(confirm(t("confirm_delete", "Are you sure you want to delete this promotion?"))) {
- try {
- await deleteRecord.mutateAsync(id);
- toast.success(t("deleted", "Deleted successfully"));
-} catch (err) {
- toast.error("Error deleting promotion");
-}
-}
-};
+  const handleDelete = async (id) => {
+    if(confirm(t("confirm_delete", "Are you sure you want to delete this promotion?"))) {
+      try {
+        await powerSync.execute(`DELETE FROM univ_retail_promotions WHERE id=?`, [id]);
+        setPromotions(promotions.filter(p => p.id !== id));
+        toast.success(t("deleted", "Deleted successfully"));
+      } catch (err) {
+        toast.error("Error deleting promotion");
+      }
+    }
+  };
 
  if (isLoading) {
  return (
@@ -118,7 +136,7 @@ export default function Promotions() {
  );
 }
 
- const activeCount = filteredPromos.filter((p) => p.data?.isActive).length;
+ const activeCount = filteredPromos.filter((p) => p.status === 'Active').length;
 
  return (
  <div className="space-y-6">
@@ -171,7 +189,13 @@ export default function Promotions() {
  {filteredPromos.map((promo) => (
  <PromotionGridCard
  key={promo.id}
- promo={{ ...promo.data, id: promo.id}}
+ promo={{
+   code: promo.promo_code,
+   discountType: promo.discount_type,
+   discountValue: promo.discount_value,
+   isActive: promo.status === 'Active',
+   id: promo.id
+ }}
  onEdit={() => openEditDialog(promo)}
  onDelete={() => handleDelete(promo.id)}
  />
@@ -192,14 +216,14 @@ export default function Promotions() {
  <tbody className="divide-y divide-border">
  {filteredPromos.map((promo) => (
  <tr key={promo.id} className="hover:bg-muted/40">
- <td className="px-6 py-4 font-semibold text-foreground">{promo.data?.code}</td>
- <td className="px-6 py-4 capitalize text-[#71717a] dark:text-gray-400">{promo.data?.discountType}</td>
+ <td className="px-6 py-4 font-semibold text-foreground">{promo.promo_code}</td>
+ <td className="px-6 py-4 capitalize text-[#71717a] dark:text-gray-400">{promo.discount_type}</td>
  <td className="px-6 py-4 text-right font-semibold text-primary">
- {promo.data?.discountType === "percentage" ? `${promo.data?.discountValue}%` : `$${promo.data?.discountValue}`}
+ {promo.discount_type === "percentage" ? `${promo.discount_value}%` : `$${promo.discount_value}`}
  </td>
  <td className="px-6 py-4 text-center">
- <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${promo.data?.isActive ? "bg-slate-100 text-primary" : "bg-muted text-[#71717a] dark:text-gray-400"}`}>
- {promo.data?.isActive ? t("active", "Active") : t("inactive", "Inactive")}
+ <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${promo.status === 'Active' ? "bg-slate-100 text-primary" : "bg-muted text-[#71717a] dark:text-gray-400"}`}>
+ {promo.status === 'Active' ? t("active", "Active") : t("inactive", "Inactive")}
  </span>
  </td>
  <td className="px-6 py-4 text-right space-x-1">

@@ -9,9 +9,9 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@
 import { Input} from '@/components/ui/input';
 import { usePayment} from '@/hooks/integrations/usePayment';
 import { useCompanyId} from '@/hooks/useCompanyId';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
 import { toast} from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { usePowerSync } from '@powersync/react';
 import { RefreshCcw} from "lucide-react";
 
 export default function Sales() {
@@ -19,29 +19,42 @@ export default function Sales() {
   const [aiInsight, setAiInsight] = useState('');
   const isProOrAbove = true; // Temporary bypass
  const { t} = useTranslation();
- // Supabase Real-time Sync Hooks
- const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('order');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
- const companyId = useCompanyId();
- const { processPayment} = usePayment();
+  const companyId = useCompanyId();
+  const powerSync = usePowerSync();
+  const { processPayment} = usePayment();
 
- // Map database records
- const sales = dbRecords.map(r => {
- const data = r;
- return {
- id: r.id,
- saleId: data.sale_id || `SAL-${r.id?.slice(0, 4)}`,
- date: data.created_at ? new Date(data.created_at).toLocaleString() : (data.date || 'Just now'),
- items: data.items || 0,
- total: parseFloat(data.total) || 0,
- subtotal: parseFloat(data.subtotal) || 0,
- tax: parseFloat(data.tax) || 0,
- method: data.method || 'Cash',
- cashier: 'POS Cashier',
- status: r.status || 'Completed'
-};
-});
+  const [dbRecords, setDbRecords] = useState([]);
+  const [isDbLoading, setIsDbLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    const fetchRecords = async () => {
+      setIsDbLoading(true);
+      try {
+        const res = await powerSync.execute('SELECT * FROM univ_retail_sales WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+        if(active) setDbRecords(res.rows._array || Array.from(res.rows));
+      } catch(e){}
+      setIsDbLoading(false);
+    };
+    if (companyId) fetchRecords();
+    return () => { active = false; };
+  }, [companyId]);
+
+  // Map database records
+  const sales = dbRecords.map(r => {
+  return {
+  id: r.id,
+  saleId: r.sale_id || `SAL-${r.id?.slice(0, 4)}`,
+  date: r.created_at ? new Date(r.created_at).toLocaleString() : (r.date || 'Just now'),
+  items: (typeof r.items === 'string' ? JSON.parse(r.items) : r.items) || [],
+  total: parseFloat(r.total) || 0,
+  subtotal: parseFloat(r.total) || 0, // Fallback since we might not have subtotal
+  tax: 0,
+  method: r.method || 'Cash',
+  cashier: r.cashier || 'POS Cashier',
+  status: r.status || 'Completed'
+ };
+ });
 
  const [search, setSearch] = useState('');
  const [deleteTargetId, setDeleteTargetId] = useState(null);
@@ -97,42 +110,32 @@ export default function Sales() {
     }
   };
 
-  const handleUpdateStatus = () => {
- if (!editingId) return;
- const sale = dbRecords.find(r => r.id === editingId);
- if (!sale) return;
+  const handleUpdateStatus = async () => {
+    if (!editingId) return;
+    try {
+      await powerSync.execute(`UPDATE univ_retail_sales SET status=? WHERE id=?`, [formData.status, editingId]);
+      const res = await powerSync.execute('SELECT * FROM univ_retail_sales WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+      setDbRecords(res.rows._array || Array.from(res.rows));
+      toast.success('Sale status updated successfully!');
+      setShowModal(false);
+      setEditingId(null);
+    } catch (err) {
+      toast.error('Failed to update sale: ' + err.message);
+    }
+  };
 
- mutateRecord.mutate({
- id: editingId,
- recordType: 'order',
- payload: sale.data,
- status: formData.status,
- searchText: sale.search_text
-}, {
- onSuccess: () => {
- toast.success('Sale status updated successfully!');
- setShowModal(false);
- setEditingId(null);
-},
- onError: (err) => {
- toast.error('Failed to update sale: ' + err.message);
-}
-});
-};
-
- const handleDelete = () => {
- if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'order'}, {
- onSuccess: () => {
- toast.success('Sale record deleted.');
- setDeleteTargetId(null);
-},
- onError: (err) => {
- toast.error('Failed to delete sale: ' + err.message);
- setDeleteTargetId(null);
-}
-});
-};
+  const handleDelete = async () => {
+    if (!deleteTargetId) return;
+    try {
+      await powerSync.execute(`DELETE FROM univ_retail_sales WHERE id=?`, [deleteTargetId]);
+      setDbRecords(dbRecords.filter(r => r.id !== deleteTargetId));
+      toast.success('Sale record deleted.');
+      setDeleteTargetId(null);
+    } catch (err) {
+      toast.error('Failed to delete sale: ' + err.message);
+      setDeleteTargetId(null);
+    }
+  };
 
  return (
  <div className="space-y-6">
@@ -282,7 +285,7 @@ export default function Sales() {
  <div>
  <div className="font-semibold mb-3 uppercase text-xs text-[#71717a] dark:text-gray-400 tracking-wider tracking-[0.04em]">{t("items_purchased", "Items Purchased")}</div>
  <div className="space-y-3">
- {selectedRecord.items.map((item, idx) => {
+ {Array.isArray(selectedRecord.items) ? selectedRecord.items.map((item, idx) => {
  return (
  <div key={idx} className="flex justify-between items-center bg-muted/30 p-2 rounded-md">
  <div>
@@ -290,12 +293,16 @@ export default function Sales() {
  <div className="text-xs text-[#71717a] dark:text-gray-400 font-mono tracking-[0.04em]"><Link to="/retail-inventory" className="text-primary hover:underline">{item.sku}</Link></div>
  </div>
  <div className="text-right">
- <div className="font-semibold">${item.price.toFixed(2)}</div>
+ <div className="font-semibold">${(item.price || 0).toFixed(2)}</div>
  <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{t("qty", "Qty:")} {item.qty}</div>
  </div>
  </div>
  );
-})}
+}) : (
+  <div className="flex justify-between items-center bg-muted/30 p-2 rounded-md">
+    <div className="font-semibold">{selectedRecord.items} items</div>
+  </div>
+)}
  </div>
  </div>
 

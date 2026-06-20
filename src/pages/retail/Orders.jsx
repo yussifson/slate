@@ -4,53 +4,73 @@ import { ClipboardList, Search, Plus, Edit, Trash2, TrendingUp, X, RotateCcw, Do
 import { ViewModeToggle, RetailStatCard, OrderGridCard} from '@/components/retail/RetailViewKit';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
-import { toast} from 'react-hot-toast';
-import ConfirmationModal from '@/components/ConfirmationModal';
 import { useNotifications} from '@/hooks/integrations/useNotifications';
 import { useAuth} from '@/lib/AuthContext';
+import { usePowerSync } from '@powersync/react';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { toast} from 'react-hot-toast';
+import ConfirmationModal from '@/components/ConfirmationModal';
 
 export default function Orders() {
- const { t} = useTranslation();
- const { user} = useAuth();
- const { notifyTeam} = useNotifications();
- const { data: dbRecords = [], isLoading} = useIndustryRecords('order');
- const { data: customerRecords = []} = useIndustryRecords('customer');
- const { data: productRecords = []} = useIndustryRecords('product');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+  const { t} = useTranslation();
+  const { user} = useAuth();
+  const { notifyTeam} = useNotifications();
+  const companyId = useCompanyId();
+  const powerSync = usePowerSync();
 
- const customers = customerRecords.map(r => {
- const data = r;
- return {
- id: r.id,
- custId: data.custId || `CUST-${r.id?.slice(0, 4)}`,
- name: data.name ||  'Unnamed Customer',
- email: data.email || '',
- phone: data.phone || ''
-};
-});
+  const [dbRecords, setDbRecords] = useState([]);
+  const [customerRecords, setCustomerRecords] = useState([]);
+  const [productRecords, setProductRecords] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
- const products = productRecords.map(r => ({
- id: r.id,
- sku: r.sku || '',
- name: r.name || '',
- price: parseFloat(r.price) || 0,
- stock: parseInt(r.quantity) || 0
-}));
+  React.useEffect(() => {
+    let active = true;
+    const fetchRecords = async () => {
+      setIsLoading(true);
+      try {
+        const res = await powerSync.execute('SELECT * FROM univ_retail_orders WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+        if(active) setDbRecords(res.rows._array || Array.from(res.rows));
 
- const orders = dbRecords.map(r => ({
- id: r.id,
- orderId: r.order_id || `ORD-${r.id?.slice(0, 5).toUpperCase()}`,
- customerId: r.customer_id || '',
- customerName: r.customer_id ? (customers.find(c => c.id === r.customer_id)?.name || 'Unknown') : ( 'Walk-in Customer'),
- date: r.date || new Date().toISOString().split('T')[0],
- total: parseFloat(r.total) || 0,
- status: r.status || 'Pending',
- items: (typeof r.items === 'string' ? JSON.parse(r.items) : r.items) || [],
- createdBy: r.created_by || 'System',
- createdAt: r.created_at || new Date().toISOString()
-}));
+        const custRes = await powerSync.execute('SELECT * FROM univ_retail_customers WHERE company_id = ?', [companyId]);
+        if(active) setCustomerRecords(custRes.rows._array || Array.from(custRes.rows));
+
+        const prodRes = await powerSync.execute('SELECT * FROM univ_retail_products WHERE company_id = ?', [companyId]);
+        if(active) setProductRecords(prodRes.rows._array || Array.from(prodRes.rows));
+      } catch(e){}
+      setIsLoading(false);
+    };
+    if (companyId) fetchRecords();
+    return () => { active = false; };
+  }, [companyId]);
+
+  const customers = customerRecords.map(r => ({
+  id: r.id,
+  custId: r.cust_id || `CUST-${r.id?.slice(0, 4)}`,
+  name: r.name ||  'Unnamed Customer',
+  email: r.email || '',
+  phone: r.phone || ''
+ }));
+
+  const products = productRecords.map(r => ({
+  id: r.id,
+  sku: r.sku || '',
+  name: r.name || '',
+  price: parseFloat(r.price) || 0,
+  stock: parseInt(r.stock) || 0
+ }));
+
+  const orders = dbRecords.map(r => ({
+  id: r.id,
+  orderId: r.order_id || `ORD-${r.id?.slice(0, 5).toUpperCase()}`,
+  customerId: r.customer || '',
+  customerName: r.customer ? (customers.find(c => c.id === r.customer)?.name || 'Unknown') : 'Walk-in Customer',
+  date: r.date || new Date().toISOString().split('T')[0],
+  total: parseFloat(r.total) || 0,
+  status: r.status || 'Pending',
+  items: (typeof r.items === 'string' ? JSON.parse(r.items) : r.items) || [],
+  createdBy: 'System',
+  createdAt: r.created_at || new Date().toISOString()
+ }));
 
  const [search, setSearch] = useState('');
  const [viewMode, setViewMode] = useState('list');
@@ -102,50 +122,43 @@ export default function Orders() {
     });
   };
 
-  const processReturn = async () => {
+   const processReturn = async () => {
     if (!returningOrder) return;
     const selectedItems = returnItems.filter(i => i.selected && i.returnQty > 0);
     if (selectedItems.length === 0) { toast.error('Select at least one item to return.'); return; }
 
-    // Restock inventory for returned items
-    for (const item of selectedItems) {
-      const prod = productRecords.find(p => p.id === item.productId);
-      if (prod) {
-        const currentStock = Number(prod.data?.quantity || prod.data?.stock || 0);
-        await mutateRecord.mutateAsync({
-          id: prod.id, recordType: 'product',
-          payload: { ...prod.data, quantity: currentStock + item.returnQty, stock: currentStock + item.returnQty },
-          status: prod.status, searchText: prod.search_text
-        });
+    try {
+      // Restock inventory for returned items
+      for (const item of selectedItems) {
+        const prod = productRecords.find(p => p.id === item.productId);
+        if (prod) {
+          const currentStock = Number(prod.stock || 0);
+          await powerSync.execute(`UPDATE univ_retail_products SET stock=? WHERE id=?`, [currentStock + item.returnQty, prod.id]);
+        }
       }
-    }
 
-    // Update order status to 'Returned'
-    const originalRecord = dbRecords.find(r => r.id === returningOrder.id);
-    mutateRecord.mutate({
-      id: returningOrder.id, recordType: 'order',
-      payload: {
-        ...originalRecord,
-        status: 'Returned',
-        returnReason,
-        returnedItems: selectedItems.map(i => ({ name: i.name, qty: i.returnQty, price: i.price })),
-        refundAmount: refundAmount,
-        returnDate: new Date().toISOString()
-      },
-      status: 'Returned',
-      searchText: `${returningOrder.orderId} Returned ${returningOrder.customerName}`
-    }, {
-      onSuccess: () => {
-        toast.success(`Return processed! Refund: $${refundAmount.toFixed(2)}. Items restocked.`);
-        notifyTeam({
-          companyId: user?.company_id, provider: 'slack',
-          message: `🔄 Order ${returningOrder.orderId} returned. Refund: $${refundAmount.toFixed(2)}. Reason: ${returnReason || 'Not specified'}`,
-          channel: '#sales'
-        }).catch(console.error);
-        setShowReturnModal(false); setReturningOrder(null);
-      },
-      onError: (err) => toast.error('Return failed: ' + err.message)
-    });
+      // Update order status to 'Returned'
+      await powerSync.execute(`UPDATE univ_retail_orders SET status=? WHERE id=?`, ['Returned', returningOrder.id]);
+
+      // Record in new Returns table (assume it will be created)
+      const returnId = `RET-${Date.now().toString().slice(-4)}`;
+      await powerSync.execute(`INSERT INTO univ_retail_returns (id, created_at, company_id, return_id, customer, date, amount, reason, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, 'Processed')`, 
+        [companyId, returnId, returningOrder.customerId, refundAmount, returnReason || 'Not specified']
+      );
+
+      const res = await powerSync.execute('SELECT * FROM univ_retail_orders WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+      setDbRecords(res.rows._array || Array.from(res.rows));
+
+      toast.success(`Return processed! Refund: $${refundAmount.toFixed(2)}. Items restocked.`);
+      notifyTeam({
+        companyId: user?.company_id, provider: 'slack',
+        message: `🔄 Order ${returningOrder.orderId} returned. Refund: $${refundAmount.toFixed(2)}. Reason: ${returnReason || 'Not specified'}`,
+        channel: '#sales'
+      }).catch(console.error);
+      setShowReturnModal(false); setReturningOrder(null);
+    } catch (err) {
+      toast.error('Return failed: ' + err.message);
+    }
   };
 
  const openEdit = (ord) => {
@@ -184,113 +197,98 @@ export default function Orders() {
 });
 };
 
- const handleSave = async () => {
- let finalCustomerId = formData.customerId;
- const orderTotal = parseFloat(formData.total) || 0;
- 
- // Auto-create new customer if needed
- if (isNewCustomer && newCustomerData.name) {
- try {
- const newCustId = `CUST-${Date.now().toString().slice(-4)}`;
- const newCustRecord = await mutateRecord.mutateAsync({
- recordType: 'customer',
- payload: { 
- ...newCustomerData, 
- custId: newCustId,
- email: newCustomerData.email || '',
- totalSpent: orderTotal,
- orders: 1
-},
- status: 'active',
- searchText: newCustomerData.name.toLowerCase()
-});
- finalCustomerId = newCustRecord.id;
-} catch(err) {
- toast.error("Failed to create new customer");
- return;
-}
-} else if (finalCustomerId) {
- // Update existing customer's metrics
- const existingCust = customerRecords.find(c => c.id === finalCustomerId);
- if (existingCust && !editingId) {
- // Only increment if this is a brand new order, not just editing an order
- const currentData = existingCust.data || {};
- await mutateRecord.mutateAsync({
- id: existingCust.id,
- recordType: 'customer',
- payload: {
- ...currentData,
- totalSpent: (parseFloat(currentData.totalSpent) || 0) + orderTotal,
- orders: (parseInt(currentData.orders) || 0) + 1
-},
- status: existingCust.status,
- searchText: existingCust.search_text
-});
-}
-}
+  const handleSave = async () => {
+  let finalCustomerId = formData.customerId;
+  const orderTotal = parseFloat(formData.total) || 0;
+  
+  try {
+    // Auto-create new customer if needed
+    if (isNewCustomer && newCustomerData.name) {
+      const newCustId = `CUST-${Date.now().toString().slice(-4)}`;
+      const newUuid = crypto.randomUUID ? crypto.randomUUID() : 'c-' + Date.now();
+      await powerSync.execute(`INSERT INTO univ_retail_customers (id, created_at, company_id, cust_id, name, email, phone, total_spent, orders, segment, status) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, 1, 'New', 'Active')`, 
+        [newUuid, companyId, newCustId, newCustomerData.name, newCustomerData.email, newCustomerData.phone, orderTotal]
+      );
+      finalCustomerId = newUuid;
+    } else if (finalCustomerId) {
+      // Update existing customer's metrics
+      const existingCust = customerRecords.find(c => c.id === finalCustomerId);
+      if (existingCust && !editingId) {
+        await powerSync.execute(`UPDATE univ_retail_customers SET total_spent = total_spent + ?, orders = orders + 1 WHERE id = ?`, 
+          [orderTotal, finalCustomerId]
+        );
+      }
+    }
 
- // Check inventory deduction for 'Delivered' or 'Completed'
- if (formData.status === 'Completed' || formData.status === 'Delivered') {
- const originalOrder = orders.find(o => o.id === editingId);
- const wasAlreadyDeducted = originalOrder && (originalOrder.status === 'Completed' || originalOrder.status === 'Delivered');
- 
- if (!wasAlreadyDeducted) {
- // Deduct inventory
- for (const item of formData.items) {
- const prod = productRecords.find(p => p.id === item.productId);
- if (prod) {
- const currentStock = Number(prod.data?.quantity || prod.data?.stock || 0);
- await mutateRecord.mutateAsync({
- id: prod.id,
- recordType: 'product',
- payload: { ...prod.data, quantity: Math.max(0, currentStock - item.qty), stock: Math.max(0, currentStock - item.qty)},
- status: prod.status,
- searchText: prod.search_text
-});
-}
-}
-}
- }
+    // Check inventory deduction for 'Delivered' or 'Completed'
+    if (formData.status === 'Completed' || formData.status === 'Delivered') {
+      const originalOrder = orders.find(o => o.id === editingId);
+      const wasAlreadyDeducted = originalOrder && (originalOrder.status === 'Completed' || originalOrder.status === 'Delivered');
+      
+      if (!wasAlreadyDeducted) {
+        // Deduct inventory
+        for (const item of formData.items) {
+          const prod = productRecords.find(p => p.id === item.productId);
+          if (prod) {
+            const currentStock = Number(prod.stock || 0);
+            await powerSync.execute(`UPDATE univ_retail_products SET stock=? WHERE id=?`, 
+              [Math.max(0, currentStock - item.qty), prod.id]
+            );
+          }
+        }
+      }
+    }
 
- mutateRecord.mutate({
- ...(editingId ? { id: editingId} : {}),
- recordType: 'order',
- payload: {
- customerId: finalCustomerId,
- customerName: isNewCustomer ? newCustomerData.name : undefined,
- date: formData.date,
- total: orderTotal,
- status: formData.status,
- items: formData.items
-},
- status: 'active',
- searchText: `${finalCustomerId} ${formData.status}`
-}, {
- onSuccess: () => {
- toast.success(editingId ? 'Order updated!' : 'Order added!');
- 
- // Notify team via Slack if order is high value or completed/delivered
- if (formData.status === 'Completed' || formData.status === 'Delivered') {
- notifyTeam({
- companyId: user?.company_id,
- provider: 'slack',
- message: `📦 Retail Order ${editingId ? 'updated' : 'placed'} and marked as ${formData.status}. Total: $${parseFloat(formData.total).toFixed(2)}`,
- channel: '#sales'
-}).catch(console.error);
-} else if (!editingId && parseFloat(formData.total) > 100) {
- notifyTeam({
- companyId: user?.company_id,
- provider: 'slack',
- message: `🎉 New high-value retail order placed! Total: $${parseFloat(formData.total).toFixed(2)}`,
- channel: '#sales'
-}).catch(console.error);
-}
+    if (editingId) {
+      await powerSync.execute(`UPDATE univ_retail_orders SET customer=?, date=?, total=?, status=?, items=? WHERE id=?`, 
+        [finalCustomerId, formData.date, orderTotal, formData.status, JSON.stringify(formData.items), editingId]
+      );
+      toast.success('Order updated!');
+    } else {
+      const orderId = `ORD-${Date.now().toString().slice(-5).toUpperCase()}`;
+      await powerSync.execute(`INSERT INTO univ_retail_orders (id, created_at, company_id, order_id, customer, date, total, status, items) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`, 
+        [companyId, orderId, finalCustomerId, formData.date, orderTotal, formData.status, JSON.stringify(formData.items)]
+      );
+      toast.success('Order added!');
+    }
 
- setShowModal(false);
- setEditingId(null);
-}
-});
+    if (formData.status === 'Completed' || formData.status === 'Delivered') {
+      notifyTeam({
+        companyId: user?.company_id,
+        provider: 'slack',
+        message: `📦 Retail Order ${editingId ? 'updated' : 'placed'} and marked as ${formData.status}. Total: $${parseFloat(formData.total).toFixed(2)}`,
+        channel: '#sales'
+      }).catch(console.error);
+    } else if (!editingId && parseFloat(formData.total) > 100) {
+      notifyTeam({
+        companyId: user?.company_id,
+        provider: 'slack',
+        message: `🎉 New high-value retail order placed! Total: $${parseFloat(formData.total).toFixed(2)}`,
+        channel: '#sales'
+      }).catch(console.error);
+    }
+
+    setShowModal(false);
+    setEditingId(null);
+
+    const res = await powerSync.execute('SELECT * FROM univ_retail_orders WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+    setDbRecords(res.rows._array || Array.from(res.rows));
+  } catch(err) {
+    toast.error("Failed to save order: " + err.message);
+  }
 };
+
+  const handleDelete = async () => {
+    if (!deleteTargetId) return;
+    try {
+      await powerSync.execute(`DELETE FROM univ_retail_orders WHERE id=?`, [deleteTargetId]);
+      toast.success('Order deleted.');
+      setDeleteTargetId(null);
+      setDbRecords(dbRecords.filter(o => o.id !== deleteTargetId));
+    } catch (err) {
+      toast.error('Failed to delete: ' + err.message);
+    }
+  };
 
  const filtered = orders.filter(o => 
  o.orderId.toLowerCase().includes(search.toLowerCase()) || 
@@ -491,7 +489,7 @@ export default function Orders() {
  </div>
  </div>
  )}
- <ConfirmationModal isOpen={deleteTargetId !== null} onClose={() => setDeleteTargetId(null)} onConfirm={() => { deleteRecord.mutate({ id: deleteTargetId, recordType: 'order'}); setDeleteTargetId(null);}} title="Delete Order" message="Are you sure you want to delete this order?" />
+ <ConfirmationModal isOpen={deleteTargetId !== null} onClose={() => setDeleteTargetId(null)} onConfirm={handleDelete} title="Delete Order" message="Are you sure you want to delete this order?" />
  
   {/* Return / Refund Modal */}
   {showReturnModal && returningOrder && (

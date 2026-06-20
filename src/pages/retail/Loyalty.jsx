@@ -4,32 +4,52 @@ import { Star, Search, Plus, Edit, Trash2, Award, Check} from 'lucide-react';
 import { ViewModeToggle, RetailStatCard, LoyaltyGridCard} from '@/components/retail/RetailViewKit';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
 import { toast} from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { usePowerSync } from '@powersync/react';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
 export default function Loyalty() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiInsight, setAiInsight] = useState('');
   const isProOrAbove = true; // Temporary bypass
- const { t} = useTranslation();
- const { data: dbRecords = [], isLoading} = useIndustryRecords('loyalty');
- const { data: customerRecords = []} = useIndustryRecords('customer');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+  const { t} = useTranslation();
+  const companyId = useCompanyId();
+  const powerSync = usePowerSync();
 
- const customers = customerRecords.map(r => ({
- id: r.id,
- name: r.name || 'Unnamed Customer'
-}));
+  const [dbRecords, setDbRecords] = useState([]);
+  const [customerRecords, setCustomerRecords] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
- const members = dbRecords.map(r => ({
- id: r.id,
- memberId: r.member_id || `MBR-${r.id?.slice(0, 5).toUpperCase()}`,
- customerId: r.customer_id || '',
- customerName: r.data?.customerId ? (customers.find(c => c.id === r.customer_id)?.name || 'Unknown') : ( 'Unnamed Member'),
- points: parseInt(r.points) || 0,
- tier: r.tier || 'Bronze'}));
+  useEffect(() => {
+    let active = true;
+    const fetchRecords = async () => {
+      setIsLoading(true);
+      try {
+        const res = await powerSync.execute('SELECT l.*, c.name as customer_name FROM univ_retail_loyalty l LEFT JOIN univ_retail_customers c ON l.customer_name = c.cust_id WHERE l.company_id = ? ORDER BY l.created_at DESC', [companyId]);
+        if(active) setDbRecords(res.rows._array || Array.from(res.rows));
+
+        const custRes = await powerSync.execute('SELECT * FROM univ_retail_customers WHERE company_id = ?', [companyId]);
+        if(active) setCustomerRecords(custRes.rows._array || Array.from(custRes.rows));
+      } catch(e){}
+      setIsLoading(false);
+    };
+    if (companyId) fetchRecords();
+    return () => { active = false; };
+  }, [companyId]);
+
+  const customers = customerRecords.map(r => ({
+  id: r.cust_id,
+  name: r.name || 'Unnamed Customer'
+ }));
+
+  const members = dbRecords.map(r => ({
+  id: r.id,
+  memberId: `MBR-${r.id?.slice(0, 5).toUpperCase()}`,
+  customerId: r.customer_name || '',
+  customerName: r.customer_name ? (customers.find(c => c.id === r.customer_name)?.name || 'Unknown') : 'Unnamed Member',
+  points: parseInt(r.points) || 0,
+  tier: r.tier || 'Bronze'}));
 
  const [search, setSearch] = useState('');
  const [viewMode, setViewMode] = useState('list');
@@ -83,49 +103,48 @@ Suggest an exclusive perk or engagement strategy.`;
   };
 
   const handleSave = async () => {
- if (formData.customerIds.length === 0) {
- toast.error("Please select at least one customer.");
- return;
-}
+  if (formData.customerIds.length === 0) {
+  toast.error("Please select at least one customer.");
+  return;
+ }
 
- try {
- if (editingId) {
- // Edit mode (single update, usually 1 customer anyway)
- const cId = formData.customerIds[0];
- await mutateRecord.mutateAsync({
- id: editingId,
- recordType: 'loyalty',
- payload: {
- customerId: cId,
- points: parseInt(formData.points) || 0,
- tier: formData.tier
-},
- status: 'active',
- searchText: `${cId} ${formData.tier}`
-});
- toast.success('Member updated!');
-} else {
- // Create mode (multi-select assignment)
- for (const cId of formData.customerIds) {
- await mutateRecord.mutateAsync({
- recordType: 'loyalty',
- payload: {
- customerId: cId,
- points: parseInt(formData.points) || 0,
- tier: formData.tier
-},
- status: 'active',
- searchText: `${cId} ${formData.tier}`
-});
-}
- toast.success(`Successfully assigned to ${formData.customerIds.length} customer(s)!`);
-}
- setShowModal(false);
- setEditingId(null);
-} catch (err) {
- toast.error("Failed to save loyalty data");
-}
-};
+  try {
+  if (editingId) {
+  // Edit mode (single update, usually 1 customer anyway)
+  const cId = formData.customerIds[0];
+  await powerSync.execute(`UPDATE univ_retail_loyalty SET customer_name=?, points=?, tier=?, status=? WHERE id=?`, 
+    [cId, parseInt(formData.points) || 0, formData.tier, 'Active', editingId]
+  );
+  toast.success('Member updated!');
+ } else {
+  // Create mode (multi-select assignment)
+  for (const cId of formData.customerIds) {
+    await powerSync.execute(`INSERT INTO univ_retail_loyalty (id, created_at, company_id, customer_name, points, tier, joined, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, CURRENT_TIMESTAMP, 'Active')`, 
+      [companyId, cId, parseInt(formData.points) || 0, formData.tier]
+    );
+ }
+  toast.success(`Successfully assigned to ${formData.customerIds.length} customer(s)!`);
+ }
+  setShowModal(false);
+  setEditingId(null);
+  const res = await powerSync.execute('SELECT l.*, c.name as customer_name FROM univ_retail_loyalty l LEFT JOIN univ_retail_customers c ON l.customer_name = c.cust_id WHERE l.company_id = ? ORDER BY l.created_at DESC', [companyId]);
+  setDbRecords(res.rows._array || Array.from(res.rows));
+ } catch (err) {
+  toast.error("Failed to save loyalty data: " + err.message);
+ }
+ };
+
+  const handleDelete = async () => {
+    if (!deleteTargetId) return;
+    try {
+      await powerSync.execute(`DELETE FROM univ_retail_loyalty WHERE id=?`, [deleteTargetId]);
+      toast.success('Member removed successfully!');
+      setDeleteTargetId(null);
+      setDbRecords(dbRecords.filter(m => m.id !== deleteTargetId));
+    } catch (err) {
+      toast.error('Failed to delete member: ' + err.message);
+    }
+  };
 
  const filtered = members.filter(m => 
  m.memberId.toLowerCase().includes(search.toLowerCase()) || 
@@ -275,7 +294,7 @@ Suggest an exclusive perk or engagement strategy.`;
  </div>
  </div>
  )}
- <ConfirmationModal isOpen={deleteTargetId !== null} onClose={() => setDeleteTargetId(null)} onConfirm={() => { deleteRecord.mutate({ id: deleteTargetId, recordType: 'loyalty'}); setDeleteTargetId(null);}} title="Delete Member" message="Are you sure you want to remove this member from the program?" />
+ <ConfirmationModal isOpen={deleteTargetId !== null} onClose={() => setDeleteTargetId(null)} onConfirm={handleDelete} title="Delete Member" message="Are you sure you want to remove this member from the program?" />
  </div>
  );
 }

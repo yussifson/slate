@@ -8,11 +8,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
 
 import { Input} from '@/components/ui/input';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
 import { toast} from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { useAuth} from '@/lib/AuthContext';
 import { isRetailAdmin, isRetailInventoryManager} from '@/lib/constants';
+import { usePowerSync } from '@powersync/react';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
 const CATEGORIES = ['Electronics', 'Apparel', 'Footwear', 'Groceries', 'Fitness', 'Home & Living', 'Beauty', 'Other'];
 const LOCATIONS = ['Main Store', 'Downtown Branch', 'Warehouse A', 'Online Fulfillment'];
@@ -45,20 +46,38 @@ export default function Inventory() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiInsight, setAiInsight] = useState('');
   const isProOrAbove = true; // Temporary bypass
- const { t} = useTranslation();
- const { user} = useAuth();
+  const { t} = useTranslation();
+  const { user} = useAuth();
+  const companyId = useCompanyId();
+  const powerSync = usePowerSync();
  
- const canAccess = isRetailAdmin(user) || isRetailInventoryManager(user);
+  const canAccess = isRetailAdmin(user) || isRetailInventoryManager(user);
  
- const { data: dbRecords = [], isLoading} = useIndustryRecords('product');
- const { data: supplierRecords = []} = useIndustryRecords('supplier');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+  const [dbRecords, setDbRecords] = useState([]);
+  const [supplierRecords, setSupplierRecords] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
- const suppliers = supplierRecords.map(r => ({
- id: r.id,
- name: r.data?.name || 'Unnamed Supplier'
-}));
+  useEffect(() => {
+    let active = true;
+    const fetchRecords = async () => {
+      setIsLoading(true);
+      try {
+        const res = await powerSync.execute('SELECT * FROM univ_retail_inventory WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+        if(active) setDbRecords(res.rows._array || Array.from(res.rows));
+        
+        const suppRes = await powerSync.execute('SELECT * FROM univ_retail_suppliers WHERE company_id = ?', [companyId]);
+        if(active) setSupplierRecords(suppRes.rows._array || Array.from(suppRes.rows));
+      } catch(e){}
+      setIsLoading(false);
+    };
+    if (companyId) fetchRecords();
+    return () => { active = false; };
+  }, [companyId]);
+
+  const suppliers = supplierRecords.map(r => ({
+  id: r.id,
+  name: r.name || 'Unnamed Supplier'
+ }));
 
  const items = dbRecords.map(r => {
  const d = r;
@@ -138,79 +157,90 @@ Give a 2-sentence prediction on when this item will stock out and whether the re
     }
   };
 
-  const handleTransfer = () => {
-   const qty = parseInt(transferData.qty) || 0;
-   if (qty <= 0) return toast.error('Transfer quantity must be greater than 0');
-   if (qty > selectedItem.quantity) return toast.error('Insufficient stock for transfer');
-   if (!transferData.targetLocation || transferData.targetLocation === selectedItem.storeLocation) {
-     return toast.error('Please select a different target location');
-   }
+   const handleTransfer = async () => {
+    const qty = parseInt(transferData.qty) || 0;
+    if (qty <= 0) return toast.error('Transfer quantity must be greater than 0');
+    if (qty > selectedItem.quantity) return toast.error('Insufficient stock for transfer');
+    if (!transferData.targetLocation || transferData.targetLocation === selectedItem.storeLocation) {
+      return toast.error('Please select a different target location');
+    }
 
-   // 1. Decrement current item
-   const currentPayload = { ...selectedItem, quantity: selectedItem.quantity - qty, stock: selectedItem.quantity - qty };
-   mutateRecord.mutate({ ...currentPayload, status: getStatus(currentPayload.quantity, currentPayload.reorderLevel) });
+    try {
+      // 1. Decrement current item
+      const currentQty = selectedItem.quantity - qty;
+      const currentStatus = getStatus(currentQty, selectedItem.reorderLevel);
+      await powerSync.execute(`UPDATE univ_retail_inventory SET quantity=?, status=? WHERE id=?`, 
+        [currentQty, currentStatus, selectedItem.id]
+      );
 
-   // 2. See if item exists in target location
-   const targetItem = items.find(i => i.sku === selectedItem.sku && i.storeLocation === transferData.targetLocation);
-   if (targetItem) {
-     const targetPayload = { ...targetItem, quantity: targetItem.quantity + qty, stock: targetItem.quantity + qty };
-     mutateRecord.mutate({ ...targetPayload, status: getStatus(targetPayload.quantity, targetPayload.reorderLevel) });
-   } else {
-     // Create new item in target location
-     const newPayload = { ...selectedItem, quantity: qty, stock: qty, storeLocation: transferData.targetLocation };
-     delete newPayload.id; delete newPayload.createdAt; delete newPayload.createdBy;
-     mutateRecord.mutate({ ...newPayload, status: getStatus(qty, selectedItem.reorderLevel) });
-   }
+      // 2. See if item exists in target location
+      const targetItem = items.find(i => i.sku === selectedItem.sku && i.storeLocation === transferData.targetLocation);
+      if (targetItem) {
+        const targetQty = targetItem.quantity + qty;
+        const targetStatus = getStatus(targetQty, targetItem.reorderLevel);
+        await powerSync.execute(`UPDATE univ_retail_inventory SET quantity=?, status=? WHERE id=?`, 
+          [targetQty, targetStatus, targetItem.id]
+        );
+      } else {
+        // Create new item in target location
+        await powerSync.execute(`INSERT INTO univ_retail_inventory (id, created_at, company_id, sku, name, category, supplier, price, cost_price, quantity, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+          [companyId, selectedItem.sku, selectedItem.name, selectedItem.category, selectedItem.supplierId, selectedItem.price, selectedItem.costPrice, qty, getStatus(qty, selectedItem.reorderLevel)]
+        );
+      }
 
-   toast.success(`Successfully transferred ${qty} items to ${transferData.targetLocation}`);
-   setShowTransferModal(false);
-   setIsSheetOpen(false);
+      const res = await powerSync.execute('SELECT * FROM univ_retail_inventory WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+      setDbRecords(res.rows._array || Array.from(res.rows));
+
+      toast.success(`Successfully transferred ${qty} items to ${transferData.targetLocation}`);
+      setShowTransferModal(false);
+      setIsSheetOpen(false);
+    } catch (err) {
+      toast.error('Failed to transfer stock: ' + err.message);
+    }
+  };
+
+  const handleSave = async () => {
+  if (!formData.sku.trim() || !formData.name.trim() || !formData.price) {
+  return toast.error('SKU, Name, and Price are required.');
+ }
+  const qty = parseInt(formData.quantity) || 0;
+  const reorder = parseInt(formData.reorderLevel) || 10;
+  const computedStatus = getStatus(qty, reorder);
+
+  try {
+    if (editingItem) {
+      await powerSync.execute(`UPDATE univ_retail_inventory SET sku=?, name=?, category=?, supplier=?, price=?, cost_price=?, quantity=?, status=? WHERE id=?`, 
+        [formData.sku.trim(), formData.name.trim(), formData.category, formData.supplier, parseFloat(formData.price) || 0, parseFloat(formData.costPrice) || 0, qty, computedStatus, editingItem.id]
+      );
+      toast.success('Item updated!');
+    } else {
+      await powerSync.execute(`INSERT INTO univ_retail_inventory (id, created_at, company_id, sku, name, category, supplier, price, cost_price, quantity, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+        [companyId, formData.sku.trim(), formData.name.trim(), formData.category, formData.supplier, parseFloat(formData.price) || 0, parseFloat(formData.costPrice) || 0, qty, computedStatus]
+      );
+      toast.success('Item added to inventory!');
+    }
+    setShowModal(false);
+    setFormData(emptyForm);
+    setEditingItem(null);
+    
+    const res = await powerSync.execute('SELECT * FROM univ_retail_inventory WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+    setDbRecords(res.rows._array || Array.from(res.rows));
+  } catch (err) {
+    toast.error('Failed: ' + err.message);
+  }
  };
 
- const handleSave = () => {
- if (!formData.sku.trim() || !formData.name.trim() || !formData.price) {
- return toast.error('SKU, Name, and Price are required.');
-}
- const qty = parseInt(formData.quantity) || 0;
- const reorder = parseInt(formData.reorderLevel) || 10;
- const computedStatus = getStatus(qty, reorder);
-
- const existingData = editingItem ? dbRecords.find(r => r.id === editingItem.id)?.data || {} : {};
-
- const payload = {
- ...existingData,
- sku: formData.sku.trim(),
- name: formData.name.trim(),
- category: formData.category,
- stock: qty,
- reorderLevel: reorder,
- price: parseFloat(formData.price) || 0,
- costPrice: parseFloat(formData.costPrice) || 0,
- supplierId: formData.supplier,
- expiryDate: formData.expiryDate,
- storeLocation: formData.storeLocation};
-
- mutateRecord.mutate({
- ...(editingItem ? { id: editingItem.id} : {}),
- recordType: 'product',
- payload,
- status: computedStatus,
- searchText: `${payload.sku} ${payload.name} ${payload.category} ${payload.supplierId}`}, {
- onSuccess: () => {
- toast.success(editingItem ? 'Item updated!' : 'Item added to inventory!');
- setShowModal(false);
- setFormData(emptyForm);
- setEditingItem(null);
-},
- onError: (err) => toast.error('Failed: ' + err.message)});
-};
-
- const handleDelete = () => {
- if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'product'}, {
- onSuccess: () => { toast.success('Item deleted.'); setDeleteTargetId(null);},
- onError: (err) => { toast.error('Failed: ' + err.message); setDeleteTargetId(null);}});
-};
+  const handleDelete = async () => {
+  if (!deleteTargetId) return;
+  try {
+    await powerSync.execute(`DELETE FROM univ_retail_inventory WHERE id=?`, [deleteTargetId]);
+    toast.success('Item deleted.');
+    setDeleteTargetId(null);
+    setDbRecords(dbRecords.filter(i => i.id !== deleteTargetId));
+  } catch (err) {
+    toast.error('Failed: ' + err.message);
+  }
+ };
 
  const stats = {
  total: items.length,
@@ -582,13 +612,12 @@ Give a 2-sentence prediction on when this item will stock out and whether the re
  </div>
  <div className="flex gap-3 pt-2">
  <Button variant="outline" className="flex-1" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
- <Button
- className="flex-1"
- onClick={handleSave}
- disabled={mutateRecord.isPending}
- >
- {mutateRecord.isPending ? 'Saving...' : (editingItem ? 'Update Item' : 'Add Item')}
- </Button>
+  <Button
+  className="flex-1"
+  onClick={handleSave}
+  >
+  {editingItem ? 'Update Item' : 'Add Item'}
+  </Button>
  </div>
  </div>
  </div>

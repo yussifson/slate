@@ -590,6 +590,7 @@ export const INDUSTRIES = {
       { label: 'Products', path: '/products', icon: 'Tag' },
       { label: 'Promotions', path: '/promotions', icon: 'Percent' },
       { label: 'Orders', path: '/orders', icon: 'ClipboardList' },
+      { label: 'Sales', path: '/sales', icon: 'Banknote' },
       { label: 'Customers', path: '/retail-customers', icon: 'Users' },
       { label: 'Suppliers', path: '/suppliers', icon: 'Truck' },
       { label: 'Loyalty Program', path: '/loyalty', icon: 'Star' },

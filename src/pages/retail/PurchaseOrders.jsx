@@ -3,7 +3,8 @@ import { useTranslation} from "react-i18next";
 import { Search, Plus, FileText, CheckCircle2, Clock, Ban, Eye, FileDown, Trash2, Mail, Edit, ShieldAlert, ShoppingCart, Check, X, MoreVertical, Edit2} from 'lucide-react';
 import { useAuth} from '@/lib/AuthContext';
 import { isRetailAdmin, isRetailInventoryManager} from '@/lib/constants';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
+import { usePowerSync } from '@powersync/react';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
 import { Button} from "@/components/ui/button";
 import { Input} from "@/components/ui/input";
@@ -26,12 +27,33 @@ export default function PurchaseOrders() {
  
  const canAccess = isRetailAdmin(user) || isRetailInventoryManager(user);
  
- const { data: purchaseOrders = [], isLoading: isPOLoading} = useIndustryRecords('purchase_order');
- const { data: suppliers = [], isLoading: isSuppliersLoading} = useIndustryRecords('supplier');
- const { data: products = [], isLoading: isProductsLoading} = useIndustryRecords('product');
- 
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
+  const companyId = useCompanyId();
+  const powerSync = usePowerSync();
+
+  const [purchaseOrders, setPurchaseOrders] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [isPOLoading, setIsPOLoading] = useState(true);
+
+  React.useEffect(() => {
+    let active = true;
+    const fetchRecords = async () => {
+      setIsPOLoading(true);
+      try {
+        const poRes = await powerSync.execute('SELECT * FROM univ_retail_purchase_orders WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+        if(active) setPurchaseOrders(poRes.rows._array || Array.from(poRes.rows));
+
+        const suppRes = await powerSync.execute('SELECT * FROM univ_retail_suppliers WHERE company_id = ?', [companyId]);
+        if(active) setSuppliers(suppRes.rows._array || Array.from(suppRes.rows));
+
+        const prodRes = await powerSync.execute('SELECT * FROM univ_retail_products WHERE company_id = ? AND status = ?', [companyId, 'Active']);
+        if(active) setProducts(prodRes.rows._array || Array.from(prodRes.rows));
+      } catch(e){}
+      setIsPOLoading(false);
+    };
+    if (companyId) fetchRecords();
+    return () => { active = false; };
+  }, [companyId]);
 
  const [searchTerm, setSearchTerm] = useState("");
  const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -90,24 +112,25 @@ export default function PurchaseOrders() {
  const handleEdit = (po) => {
  setEditingPOId(po.id);
  setNewPO({
- supplierId: po.data?.supplierId || '',
- items: po.data?.items || [],
- status: po.data?.status || 'draft',
- notes: po.data?.notes || ''
+ supplierId: po.supplier || '',
+ items: (typeof po.items === 'string' ? JSON.parse(po.items) : po.items) || [],
+ status: po.status || 'draft',
+ notes: po.notes || ''
 });
  setIsNewDialogOpen(true);
 };
 
- const handleDelete = async () => {
- if (!deleteTargetId) return;
- try {
- await deleteRecord.mutateAsync(deleteTargetId);
- toast.success(t("po_deleted", "Purchase Order deleted"));
- setDeleteTargetId(null);
-} catch (error) {
- toast.error("Failed to delete purchase order");
-}
-};
+  const handleDelete = async () => {
+    if (!deleteTargetId) return;
+    try {
+      await powerSync.execute(`DELETE FROM univ_retail_purchase_orders WHERE id=?`, [deleteTargetId]);
+      setPurchaseOrders(purchaseOrders.filter(po => po.id !== deleteTargetId));
+      toast.success(t("po_deleted", "Purchase Order deleted"));
+      setDeleteTargetId(null);
+    } catch (error) {
+      toast.error("Failed to delete purchase order");
+    }
+  };
 
  
   const handleAIPODrafter = async () => {
@@ -130,83 +153,69 @@ export default function PurchaseOrders() {
   };
 
   const handleCreatePO = async () => {
- if (!newPO.supplierId || newPO.items.length === 0) {
- toast.error(t("fill_required_fields", "Please select a supplier and add at least one item."));
- return;
-}
+    if (!newPO.supplierId || newPO.items.length === 0) {
+      toast.error(t("fill_required_fields", "Please select a supplier and add at least one item."));
+      return;
+    }
 
- const supplier = suppliers.find(s => s.id === newPO.supplierId);
- const total = newPO.items.reduce((sum, item) => sum + (item.quantity * item.unitCost), 0);
- const poNumber = editingPOId ? purchaseOrders.find(po => po.id === editingPOId)?.data?.poNumber : "PO-" + Math.floor(Math.random() * 1000000);
+    const supplier = suppliers.find(s => s.id === newPO.supplierId);
+    const total = newPO.items.reduce((sum, item) => sum + (item.quantity * item.unitCost), 0);
+    const poNumber = editingPOId ? purchaseOrders.find(po => po.id === editingPOId)?.po_number : "PO-" + Math.floor(Math.random() * 1000000);
 
- const payload = {
- ...newPO,
- supplierName: supplier?.name,
- total,
- poNumber,
- orderDate: editingPOId ? purchaseOrders.find(po => po.id === editingPOId)?.data?.orderDate : new Date().toISOString()
-};
+    try {
+      if (editingPOId) {
+        await powerSync.execute(`UPDATE univ_retail_purchase_orders SET supplier=?, total=?, status=?, notes=?, items=? WHERE id=?`, 
+          [newPO.supplierId, total, newPO.status, newPO.notes, JSON.stringify(newPO.items), editingPOId]
+        );
+      } else {
+        await powerSync.execute(`INSERT INTO univ_retail_purchase_orders (id, created_at, company_id, po_number, supplier, date, total, status, items, notes) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?)`, 
+          [companyId, poNumber, newPO.supplierId, total, newPO.status, JSON.stringify(newPO.items), newPO.notes]
+        );
+      }
+      
+      const res = await powerSync.execute('SELECT * FROM univ_retail_purchase_orders WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+      setPurchaseOrders(res.rows._array || Array.from(res.rows));
 
- try {
- await mutateRecord.mutateAsync({
- ...(editingPOId ? { id: editingPOId} : {}),
- recordType: 'purchase_order',
- payload,
- status: newPO.status,
- searchText: `${poNumber} ${supplier?.name} ${newPO.status}`.toLowerCase()
-});
- toast.success(editingPOId ? t("po_updated", "Purchase Order updated") : t("po_created", "Purchase Order created successfully"));
- setIsNewDialogOpen(false);
- setNewPO({ supplierId: '', items: [], status: 'draft', notes: ''});
- setEditingPOId(null);
-} catch (error) {
- toast.error(t("po_create_error", "Error creating PO"));
-}
-};
+      toast.success(editingPOId ? t("po_updated", "Purchase Order updated") : t("po_created", "Purchase Order created successfully"));
+      setIsNewDialogOpen(false);
+      setNewPO({ supplierId: '', items: [], status: 'draft', notes: ''});
+      setEditingPOId(null);
+    } catch (error) {
+      toast.error(t("po_create_error", "Error creating PO: " + error.message));
+    }
+  };
 
- const handleReceiveOrder = async (po) => {
- if (po.data?.status === 'received') return;
+  const handleReceiveOrder = async (po) => {
+    if (po.status === 'received') return;
 
- try {
- // 1. Update PO status
- const updatedPO = { ...po.data, status: 'received', receivedDate: new Date().toISOString()};
- await mutateRecord.mutateAsync({
- id: po.id,
- recordType: 'purchase_order',
- payload: updatedPO,
- status: 'received',
- searchText: `${updatedPO.poNumber} ${updatedPO.supplierName} received`.toLowerCase()
-});
+    try {
+      // 1. Update PO status
+      await powerSync.execute(`UPDATE univ_retail_purchase_orders SET status='received' WHERE id=?`, [po.id]);
 
- // 2. Increment Product Stock
- for (const item of updatedPO.items) {
- const productData = products.find(p => p.id === item.productId);
- if (productData) {
- const currentStock = Number(productData.data?.stock || 0);
- const newStock = currentStock + Number(item.quantity);
- 
- const reorderLevel = Number(productData.data?.reorderLevel || 10);
- let newStatus = 'In Stock';
- if (newStock === 0) newStatus = 'Out of Stock';
- else if (newStock <= reorderLevel) newStatus = 'Low Stock';
+      // 2. Increment Product Stock
+      const items = (typeof po.items === 'string' ? JSON.parse(po.items) : po.items) || [];
+      for (const item of items) {
+        const productData = products.find(p => p.id === item.productId);
+        if (productData) {
+          const currentStock = Number(productData.stock || 0);
+          const newStock = currentStock + Number(item.quantity);
+          await powerSync.execute(`UPDATE univ_retail_products SET stock=? WHERE id=?`, [newStock, productData.id]);
+        }
+      }
 
- await mutateRecord.mutateAsync({
- id: productData.id,
- recordType: 'product',
- payload: { ...productData.data, stock: newStock},
- status: newStatus,
- searchText: productData.searchText || `${productData.data?.sku} ${productData.data?.name}`
-});
-}
-}
+      const resPO = await powerSync.execute('SELECT * FROM univ_retail_purchase_orders WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+      setPurchaseOrders(resPO.rows._array || Array.from(resPO.rows));
+      
+      const resProd = await powerSync.execute('SELECT * FROM univ_retail_products WHERE company_id = ? AND status = ?', [companyId, 'Active']);
+      setProducts(resProd.rows._array || Array.from(resProd.rows));
 
- toast.success(t("po_received", "PO marked as received and inventory updated!"));
- setSelectedPO(null);
- setIsSheetOpen(false);
-} catch (error) {
- toast.error("Failed to receive order");
-}
-};
+      toast.success(t("po_received", "PO marked as received and inventory updated!"));
+      setSelectedPO(null);
+      setIsSheetOpen(false);
+    } catch (error) {
+      toast.error("Failed to receive order");
+    }
+  };
 
  const openSheet = (po) => {
  setSelectedPO(po);
@@ -221,13 +230,13 @@ export default function PurchaseOrders() {
 }
 };
 
- if (isPOLoading || isSuppliersLoading || isProductsLoading) {
- return (
- <div className="flex-1 p-6 flex items-center justify-center">
- <OrbitLoader size="md" />
- </div>
- );
-}
+  if (isPOLoading) {
+  return (
+  <div className="flex-1 p-6 flex items-center justify-center">
+  <OrbitLoader size="md" />
+  </div>
+  );
+ }
 
  if (!canAccess) {
  return (
@@ -291,13 +300,13 @@ export default function PurchaseOrders() {
  <tbody className="divide-y divide-border">
  {filteredOrders.map((po) => (
  <tr key={po.id} className="hover:bg-muted/30 transition-colors dark:hover:bg-muted/10">
- <td className="px-6 py-4 font-medium text-slate-900 dark:text-slate-100 dark:text-slate-100">{po.data?.poNumber}</td>
- <td className="px-6 py-4 text-slate-700 dark:text-slate-300 dark:text-slate-300">{po.data?.supplierName || 'Unknown'}</td>
+ <td className="px-6 py-4 font-medium text-slate-900 dark:text-slate-100 dark:text-slate-100">{po.po_number}</td>
+ <td className="px-6 py-4 text-slate-700 dark:text-slate-300 dark:text-slate-300">{suppliers.find(s => s.id === po.supplier)?.name || 'Unknown'}</td>
  <td className="px-6 py-4 text-slate-500 dark:text-slate-400 dark:text-[#71717a] dark:text-gray-400">
- {po.data?.orderDate ? format(new Date(po.data.orderDate), 'MMM d, yyyy') : '-'}
+ {po.date ? format(new Date(po.date), 'MMM d, yyyy') : '-'}
  </td>
- <td className="px-6 py-4 font-medium">${Number(po.data?.total || 0).toFixed(2)}</td>
- <td className="px-6 py-4">{getStatusBadge(po.data?.status)}</td>
+ <td className="px-6 py-4 font-medium">${Number(po.total || 0).toFixed(2)}</td>
+ <td className="px-6 py-4">{getStatusBadge(po.status)}</td>
  <td className="px-6 py-4 text-right">
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
@@ -342,11 +351,11 @@ export default function PurchaseOrders() {
  <SheetHeader className="pb-6 border-b">
  <div className="flex items-center justify-between">
  <div>
- <SheetTitle className="text-2xl font-semibold tracking-[-0.02em]">{selectedPO?.data?.poNumber}</SheetTitle>
- <SheetDescription>{t("supplier", "Supplier")}: {selectedPO?.data?.supplierName}</SheetDescription>
+ <SheetTitle className="text-2xl font-semibold tracking-[-0.02em]">{selectedPO?.po_number}</SheetTitle>
+ <SheetDescription>{t("supplier", "Supplier")}: {suppliers.find(s => s.id === selectedPO?.supplier)?.name}</SheetDescription>
  </div>
  <div className="flex items-center gap-2">
- {getStatusBadge(selectedPO?.data?.status)}
+ {getStatusBadge(selectedPO?.status)}
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
  <Button variant="ghost" size="icon" className="h-8 w-8 ml-2">
@@ -386,7 +395,7 @@ export default function PurchaseOrders() {
  </tr>
  </thead>
  <tbody className="divide-y">
- {(selectedPO?.data?.items || []).map((item, i) => (
+ {((typeof selectedPO?.items === 'string' ? JSON.parse(selectedPO.items) : selectedPO?.items) || []).map((item, i) => (
  <tr key={i}>
  <td className="px-4 py-3">
  <div className="font-medium">{item.name}</div>
@@ -401,21 +410,21 @@ export default function PurchaseOrders() {
  <tfoot className="bg-slate-50 dark:bg-slate-800/50 border-t font-semibold">
  <tr>
  <td colSpan="3" className="px-4 py-3 text-right">Total</td>
- <td className="px-4 py-3 text-right">${Number(selectedPO?.data?.total || 0).toFixed(2)}</td>
+ <td className="px-4 py-3 text-right">${Number(selectedPO?.total || 0).toFixed(2)}</td>
  </tr>
  </tfoot>
  </table>
  </div>
  </div>
 
- {selectedPO?.data?.notes && (
+ {selectedPO?.notes && (
  <div>
  <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 dark:text-slate-100 mb-2 uppercase tracking-wider tracking-[0.04em]">{t("notes", "Notes")}</h3>
- <p className="text-sm text-slate-600 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border">{selectedPO.data.notes}</p>
+ <p className="text-sm text-slate-600 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border">{selectedPO.notes}</p>
  </div>
  )}
  
- {selectedPO?.data?.status !== 'received' && (
+ {selectedPO?.status !== 'received' && (
  <div className="pt-6 border-t flex justify-end">
  <Button 
  onClick={() => handleReceiveOrder(selectedPO)}

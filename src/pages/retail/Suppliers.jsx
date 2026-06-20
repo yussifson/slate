@@ -4,33 +4,36 @@ import { Truck, Search, Plus, Phone, Mail, Star, Trash2, MoreVertical, Eye, Edit
 import { ViewModeToggle, RetailStatCard, SupplierGridCard} from '@/components/retail/RetailViewKit';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
-import { toast} from 'react-hot-toast';
-import ConfirmationModal from '@/components/ConfirmationModal';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
-import { Link} from 'react-router-dom';
 import { useContracts} from '@/hooks/integrations/useContracts';
 import { useCompanyId} from '@/hooks/useCompanyId';
+import { usePowerSync } from '@powersync/react';
+import React, { useEffect } from 'react';
 
 export default function Suppliers() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiInsight, setAiInsight] = useState('');
   const isProOrAbove = true; // Temporary bypass
  const { t} = useTranslation();
- // Supabase Real-time Sync Hooks
- const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('supplier');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
- const companyId = useCompanyId();
- const { sendForSignature, isSending} = useContracts();
+  const companyId = useCompanyId();
+  const powerSync = usePowerSync();
+  const { sendForSignature, isSending} = useContracts();
 
- // Map database records
- const suppliers = dbRecords.map(r => ({
- id: r.id,
- status: r.status || 'Active',
- ...r.data
-}));
+  const [suppliers, setSuppliers] = useState([]);
+  const [isDbLoading, setIsDbLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    const fetchRecords = async () => {
+      setIsDbLoading(true);
+      try {
+        const res = await powerSync.execute('SELECT * FROM univ_retail_suppliers WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+        if(active) setSuppliers(res.rows._array || Array.from(res.rows));
+      } catch(e){}
+      setIsDbLoading(false);
+    };
+    if (companyId) fetchRecords();
+    return () => { active = false; };
+  }, [companyId]);
 
  const [search, setSearch] = useState('');
  const [viewMode, setViewMode] = useState('list');
@@ -92,59 +95,48 @@ Suggest any potential risks and mitigation strategies.`;
     }
   };
 
-  const handleCreateSupplier = () => {
- if (!formData.name.trim() || !formData.contact.trim() || !formData.email.trim()) {
- return toast.error("Please fill in all required fields");
-}
+  const handleCreateSupplier = async () => {
+    if (!formData.name.trim() || !formData.contact.trim() || !formData.email.trim()) {
+      return toast.error("Please fill in all required fields");
+    }
 
- const payload = {
- name: formData.name,
- category: formData.category,
- contact: formData.contact,
- phone: formData.phone,
- email: formData.email,
- rating: parseInt(formData.rating) || 5
-};
+    try {
+      if (editingId) {
+        await powerSync.execute(`UPDATE univ_retail_suppliers SET name=?, category=?, contact=?, phone=?, email=?, rating=? WHERE id=?`, 
+          [formData.name, formData.category, formData.contact, formData.phone, formData.email, parseInt(formData.rating) || 5, editingId]
+        );
+      } else {
+        await powerSync.execute(`INSERT INTO univ_retail_suppliers (id, created_at, company_id, name, category, contact, phone, email, rating, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, 'Active')`, 
+          [companyId, formData.name, formData.category, formData.contact, formData.phone, formData.email, parseInt(formData.rating) || 5]
+        );
+      }
+      
+      const res = await powerSync.execute('SELECT * FROM univ_retail_suppliers WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+      setSuppliers(res.rows._array || Array.from(res.rows));
 
- mutateRecord.mutate({
- ...(editingId ? { id: editingId} : {}),
- recordType: 'supplier',
- payload,
- status: 'active',
- searchText: `${formData.name} ${formData.category} ${formData.contact}`
-}, {
- onSuccess: () => {
- toast.success(editingId ? 'Supplier updated successfully!' : 'Supplier configured successfully!');
- setShowModal(false);
- setEditingId(null);
- setFormData({
- name: '',
- category: 'Electronics',
- contact: '',
- phone: '',
- email: '',
- rating: 5
-});
-},
- onError: (err) => {
- toast.error('Failed to save supplier: ' + err.message);
-}
-});
-};
+      toast.success(editingId ? 'Supplier updated successfully!' : 'Supplier configured successfully!');
+      setShowModal(false);
+      setEditingId(null);
+      setFormData({
+        name: '', category: 'Electronics', contact: '', phone: '', email: '', rating: 5
+      });
+    } catch (err) {
+      toast.error('Failed to save supplier: ' + err.message);
+    }
+  };
 
- const handleDeleteSupplier = () => {
- if (!deleteTargetId) return;
- deleteRecord.mutate({ id: deleteTargetId, recordType: 'supplier'}, {
- onSuccess: () => {
- toast.success('Supplier removed successfully!');
- setDeleteTargetId(null);
-},
- onError: (err) => {
- toast.error('Failed to remove supplier: ' + err.message);
- setDeleteTargetId(null);
-}
-});
-};
+  const handleDeleteSupplier = async () => {
+    if (!deleteTargetId) return;
+    try {
+      await powerSync.execute(`DELETE FROM univ_retail_suppliers WHERE id=?`, [deleteTargetId]);
+      setSuppliers(suppliers.filter(s => s.id !== deleteTargetId));
+      toast.success('Supplier removed successfully!');
+      setDeleteTargetId(null);
+    } catch (err) {
+      toast.error('Failed to remove supplier: ' + err.message);
+      setDeleteTargetId(null);
+    }
+  };
 
  const filtered = suppliers.filter(s => 
  s.name?.toLowerCase().includes(search.toLowerCase()) || 

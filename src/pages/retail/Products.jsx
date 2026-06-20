@@ -6,37 +6,57 @@ import { Button} from '@/components/ui/button';
 import { Link} from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
 import { Input} from '@/components/ui/input';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
 import { toast} from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { usePowerSync } from '@powersync/react';
+import { useCompanyId } from '@/hooks/useCompanyId';
 
 export default function Products() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiInsight, setAiInsight] = useState('');
   const isProOrAbove = true; // Temporary bypass
- const { t} = useTranslation();
- const { data: dbRecords = [], isLoading} = useIndustryRecords('product');
- const { data: supplierRecords = []} = useIndustryRecords('supplier');
- const mutateRecord = useMutateIndustryRecord();
- const deleteRecord = useDeleteIndustryRecord();
- 
- const suppliers = supplierRecords.map(r => ({
- id: r.id,
- name: r.name || 'Unnamed Supplier'
-}));
+  const { t} = useTranslation();
+  const companyId = useCompanyId();
+  const powerSync = usePowerSync();
 
- const products = dbRecords.map(r => ({
- id: r.id,
- sku: r.sku || `SKU-${r.id?.slice(0, 5).toUpperCase()}`,
- name: r.name || 'Unnamed Product',
- category: r.category || 'General',
- price: parseFloat(r.price) || 0,
- stock: parseInt(r.quantity) || 0,
- status: r.quantity > 0 ? 'In Stock' : 'Out of Stock',
- supplierId: r.supplier_id || '',
- createdBy: r.created_by || 'System',
- createdAt: r.created_at || new Date().toISOString()
-}));
+  const [dbRecords, setDbRecords] = useState([]);
+  const [supplierRecords, setSupplierRecords] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    const fetchRecords = async () => {
+      setIsLoading(true);
+      try {
+        const res = await powerSync.execute('SELECT * FROM univ_retail_products WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+        if(active) setDbRecords(res.rows._array || Array.from(res.rows));
+
+        const suppRes = await powerSync.execute('SELECT * FROM univ_retail_suppliers WHERE company_id = ?', [companyId]);
+        if(active) setSupplierRecords(suppRes.rows._array || Array.from(suppRes.rows));
+      } catch(e){}
+      setIsLoading(false);
+    };
+    if (companyId) fetchRecords();
+    return () => { active = false; };
+  }, [companyId]);
+  
+  const suppliers = supplierRecords.map(r => ({
+  id: r.id,
+  name: r.name || 'Unnamed Supplier'
+ }));
+
+  const products = dbRecords.map(r => ({
+  id: r.id,
+  sku: r.sku || `SKU-${r.id?.slice(0, 5).toUpperCase()}`,
+  name: r.name || 'Unnamed Product',
+  category: r.category || 'General',
+  price: parseFloat(r.price) || 0,
+  stock: parseInt(r.stock) || 0,
+  status: parseInt(r.stock) > 0 ? 'In Stock' : 'Out of Stock',
+  supplierId: r.supplier || '',
+  createdBy: 'System',
+  createdAt: r.created_at || new Date().toISOString()
+ }));
 
  const [search, setSearch] = useState('');
  const [showModal, setShowModal] = useState(false);
@@ -78,30 +98,41 @@ export default function Products() {
     }
   };
 
-  const handleSave = () => {
- if (!formData.name.trim()) return toast.error("Name is required");
+  const handleSave = async () => {
+  if (!formData.name.trim()) return toast.error("Name is required");
 
- const existingData = editingId ? dbRecords.find(r => r.id === editingId)?.data || {} : {};
+  try {
+    if (editingId) {
+      await powerSync.execute(`UPDATE univ_retail_products SET name=?, sku=?, category=?, price=?, stock=?, supplier=? WHERE id=?`, 
+        [formData.name, formData.sku, formData.category, parseFloat(formData.price) || 0, parseInt(formData.stock) || 0, formData.supplierId, editingId]
+      );
+      toast.success('Product updated!');
+    } else {
+      await powerSync.execute(`INSERT INTO univ_retail_products (id, created_at, company_id, name, sku, category, price, stock, supplier, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, 'Active')`, 
+        [companyId, formData.name, formData.sku, formData.category, parseFloat(formData.price) || 0, parseInt(formData.stock) || 0, formData.supplierId]
+      );
+      toast.success('Product added!');
+    }
+    setShowModal(false);
+    setEditingId(null);
+    const res = await powerSync.execute('SELECT * FROM univ_retail_products WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+    setDbRecords(res.rows._array || Array.from(res.rows));
+  } catch (err) {
+    toast.error('Failed to save product: ' + err.message);
+  }
+ };
 
- mutateRecord.mutate({
- ...(editingId ? { id: editingId} : {}),
- recordType: 'product',
- payload: {
- ...existingData,
- name: formData.name, sku: formData.sku, category: formData.category,
- price: parseFloat(formData.price) || 0, stock: parseInt(formData.stock) || 0,
- supplierId: formData.supplierId
-},
- status: 'active',
- searchText: `${formData.name} ${formData.sku} ${formData.category}`
-}, {
- onSuccess: () => {
- toast.success(editingId ? 'Product updated!' : 'Product added!');
- setShowModal(false);
- setEditingId(null);
-}
-});
-};
+  const handleDelete = async () => {
+    if (!deleteTargetId) return;
+    try {
+      await powerSync.execute(`DELETE FROM univ_retail_products WHERE id=?`, [deleteTargetId]);
+      toast.success('Product deleted.');
+      setDeleteTargetId(null);
+      setDbRecords(dbRecords.filter(p => p.id !== deleteTargetId));
+    } catch (err) {
+      toast.error('Failed to delete product: ' + err.message);
+    }
+  };
 
  const filtered = products.filter(p => 
  p.name.toLowerCase().includes(search.toLowerCase()) || 
@@ -233,7 +264,7 @@ export default function Products() {
  </div>
  </div>
  )}
- <ConfirmationModal isOpen={deleteTargetId !== null} onClose={() => setDeleteTargetId(null)} onConfirm={() => { deleteRecord.mutate({ id: deleteTargetId, recordType: 'product'}); setDeleteTargetId(null);}} title="Delete Product" message="Are you sure you want to delete this product?" />
+ <ConfirmationModal isOpen={deleteTargetId !== null} onClose={() => setDeleteTargetId(null)} onConfirm={handleDelete} title="Delete Product" message="Are you sure you want to delete this product?" />
  </div>
  );
 }

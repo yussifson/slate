@@ -3,12 +3,10 @@ import { useState } from 'react';
 import { Clock, Search, Plus, Edit, Trash2, CalendarCheck, Banknote, TrendingDown, TrendingUp, Vault, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
-import { toast } from 'react-hot-toast';
-import ConfirmationModal from '@/components/ConfirmationModal';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { usePowerSync } from '@powersync/react';
+import React, { useEffect } from 'react';
 
 const DRAWER_ACTIONS = [
   { value: 'open', label: 'Open Register', color: 'text-emerald-600', bg: 'bg-emerald-100 dark:bg-emerald-950/20' },
@@ -23,10 +21,26 @@ export default function Shifts() {
   const companyId = useCompanyId();
   const powerSync = usePowerSync();
 
-  const { data: dbRecords = [], isLoading } = useIndustryRecords('shift');
-  const { data: staffRecords = [] } = useIndustryRecords('staff');
-  const mutateRecord = useMutateIndustryRecord();
-  const deleteRecord = useDeleteIndustryRecord();
+  const [dbRecords, setDbRecords] = useState([]);
+  const [staffRecords, setStaffRecords] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    const fetchRecords = async () => {
+      setIsLoading(true);
+      try {
+        const shiftsRes = await powerSync.execute('SELECT * FROM univ_retail_shifts WHERE company_id = ? ORDER BY date DESC, start_time DESC', [companyId]);
+        if(active) setDbRecords(shiftsRes.rows._array || Array.from(shiftsRes.rows));
+
+        const staffRes = await powerSync.execute('SELECT * FROM univ_retail_staff WHERE company_id = ?', [companyId]);
+        if(active) setStaffRecords(staffRes.rows._array || Array.from(staffRes.rows));
+      } catch(e){}
+      setIsLoading(false);
+    };
+    if (companyId) fetchRecords();
+    return () => { active = false; };
+  }, [companyId]);
 
   const staffList = staffRecords.map(r => ({
     id: r.id,
@@ -120,29 +134,28 @@ export default function Shifts() {
     setShowModal(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const selectedStaff = staffList.find(s => s.id === formData.staffId);
-    mutateRecord.mutate({
-      ...(editingId ? { id: editingId } : {}),
-      recordType: 'shift',
-      payload: {
-        staffId: formData.staffId,
-        staffName: selectedStaff?.name || '',
-        role: formData.role,
-        date: formData.date,
-        startTime: formData.startTime,
-        endTime: formData.endTime,
-        status: formData.status
-      },
-      status: 'active',
-      searchText: `${selectedStaff?.name || ''} ${formData.role} ${formData.date}`
-    }, {
-      onSuccess: () => {
-        toast.success(editingId ? 'Shift updated!' : 'Shift scheduled!');
-        setShowModal(false);
-        setEditingId(null);
+    try {
+      if (editingId) {
+        await powerSync.execute(`UPDATE univ_retail_shifts SET staff_id=?, role=?, date=?, start_time=?, end_time=?, status=? WHERE id=?`, 
+          [formData.staffId, formData.role, formData.date, formData.startTime, formData.endTime, formData.status, editingId]
+        );
+      } else {
+        await powerSync.execute(`INSERT INTO univ_retail_shifts (id, created_at, company_id, staff_id, role, date, start_time, end_time, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`, 
+          [companyId, formData.staffId, formData.role, formData.date, formData.startTime, formData.endTime, formData.status]
+        );
       }
-    });
+      
+      const res = await powerSync.execute('SELECT * FROM univ_retail_shifts WHERE company_id = ? ORDER BY date DESC, start_time DESC', [companyId]);
+      setDbRecords(res.rows._array || Array.from(res.rows));
+
+      toast.success(editingId ? 'Shift updated!' : 'Shift scheduled!');
+      setShowModal(false);
+      setEditingId(null);
+    } catch (err) {
+      toast.error('Failed to save shift: ' + err.message);
+    }
   };
 
   const filtered = shifts.filter(s =>
@@ -374,7 +387,16 @@ export default function Shifts() {
       )}
 
       <ConfirmationModal isOpen={deleteTargetId !== null} onClose={() => setDeleteTargetId(null)}
-        onConfirm={() => { deleteRecord.mutate({ id: deleteTargetId, recordType: 'shift' }); setDeleteTargetId(null); }}
+        onConfirm={async () => { 
+          try {
+            await powerSync.execute(`DELETE FROM univ_retail_shifts WHERE id=?`, [deleteTargetId]);
+            setDbRecords(dbRecords.filter(r => r.id !== deleteTargetId));
+            toast.success("Shift deleted.");
+          } catch(err) {
+            toast.error("Failed to delete shift: " + err.message);
+          }
+          setDeleteTargetId(null); 
+        }}
         title="Delete Shift" message="Are you sure you want to delete this shift?" />
     </div>
   );
