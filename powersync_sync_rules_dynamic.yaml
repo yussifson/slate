@@ -139,3 +139,17 @@ bucket_definitions:
   - SELECT * FROM insurance_agents WHERE company_id = bucket.company_id
   - SELECT * FROM insurance_premiums WHERE company_id = bucket.company_id
   - SELECT * FROM insurance_reinsurance WHERE company_id = bucket.company_id
+
+  # -------------------------------------------------------------
+  # HOSPITAL COMPREHENSIVE MODULE
+  # -------------------------------------------------------------
+  - SELECT * FROM univ_patient_allergies WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_patient_problems WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_patient_immunizations WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_hospital_referrals WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_hospital_consents WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_hospital_queues WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_blood_bank WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_blood_crossmatch WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_duty_rosters WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_infection_logs WHERE company_id = bucket.company_id
