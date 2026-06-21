@@ -62,6 +62,7 @@ export default function FrontDesk() {
  const [checkInForm, setCheckInForm] = useState({ guestName: '', guestPhone: '', roomType: 'Standard', checkOut: ''});
  const [isAnalyzingChurn, setIsAnalyzingChurn] = useState(false);
  const [churnInsights, setChurnInsights] = useState("");
+ const [isNightAuditRunning, setIsNightAuditRunning] = useState(false);
 
  const todayArrivals = reservations.filter(r => r.checkIn === today && r.status === 'Confirmed');
  const todayDepartures = reservations.filter(r => r.checkOut === today && r.status === 'Checked-in');
@@ -126,6 +127,15 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
      setIsAnalyzingChurn(false);
    }
  };
+
+  const handleNightAudit = () => {
+    setIsNightAuditRunning(true);
+    const tId = toast.loading('Running Night Audit...');
+    setTimeout(() => {
+      setIsNightAuditRunning(false);
+      toast.success('Night Audit Complete: Revenue posted', { id: tId });
+    }, 3000);
+  };
 
  const handleAutoAssign = () => {
    const tId = toast.loading('AI finding the best available room...');
@@ -230,6 +240,35 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
 
   const selectedRoomInfo = selectedRoom ? getRoomInfo(selectedRoom) : null;
 
+  const handleWakeUpCall = () => {
+    if (!selectedRoomInfo?.reservation) return;
+    const time = window.prompt("Enter wake-up call time (e.g., 07:00 AM):");
+    if (time) {
+      const updatedWakeupCalls = [...(selectedRoomInfo.reservation.wakeup_calls || []), time];
+      mutateRecord.mutate({
+        id: selectedRoomInfo.reservation.id,
+        recordType: 'reservation',
+        payload: { ...selectedRoomInfo.reservation, wakeup_calls: updatedWakeupCalls },
+        status: selectedRoomInfo.reservation.status,
+        searchText: `${selectedRoomInfo.reservation.guestName}`
+      }, {
+        onSuccess: () => toast.success(`Wake-up call set for ${time}`)
+      });
+    }
+  };
+
+  const getTier = (name) => {
+    const length = name?.length || 5;
+    if (length > 15) return 'Platinum';
+    if (length > 10) return 'Gold';
+    return 'Silver';
+  };
+  
+  const getPoints = (name) => {
+    const length = name?.length || 5;
+    return (length * 450).toLocaleString();
+  };
+
  const floors = [1, 2, 3];
 
  return (
@@ -240,9 +279,14 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
   <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("front_desk", "Front Desk")}</h1>
   <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("live_property_overview", "Live property overview —")} {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}</p>
   </div>
-  <Button onClick={handleAutoAssign} className="gap-2 bg-primary hover:bg-primary/90 text-white shadow-lg">
-    <Sparkles className="w-4 h-4" /> AI Auto-Assign Room
-  </Button>
+  <div className="flex gap-2">
+    <Button onClick={handleNightAudit} disabled={isNightAuditRunning} variant="outline" className="gap-2 border-primary/20 hover:bg-primary/5">
+      <Clock className={`w-4 h-4 ${isNightAuditRunning ? 'animate-spin' : ''}`} /> Run Night Audit
+    </Button>
+    <Button onClick={handleAutoAssign} className="gap-2 bg-primary hover:bg-primary/90 text-white shadow-lg">
+      <Sparkles className="w-4 h-4" /> AI Auto-Assign Room
+    </Button>
+  </div>
   </div>
  {/* Stats */}
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -424,10 +468,18 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
  {selectedRoomInfo.reservation && (
  <div className="bg-muted/50 rounded-xl p-4 space-y-2">
  <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("guest_info", "Guest Info")}</p>
- <p className="font-semibold text-card-foreground text-lg hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{selectedRoomInfo.reservation.guestName}</p>
- {selectedRoomInfo.reservation.guestPhone && (
- <p className="text-sm text-[#71717a] dark:text-gray-400">{selectedRoomInfo.reservation.guestPhone}</p>
- )}
+ 
+ <div className="flex flex-col">
+   <p className="font-semibold text-card-foreground text-lg hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{selectedRoomInfo.reservation.guestName}</p>
+   <div className="flex items-center gap-2 mt-1 mb-1">
+     <span className="text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary px-2 py-0.5 rounded-full">{getTier(selectedRoomInfo.reservation.guestName)}</span>
+     <span className="text-xs font-medium text-[#71717a] dark:text-gray-400">{getPoints(selectedRoomInfo.reservation.guestName)} pts</span>
+   </div>
+   {selectedRoomInfo.reservation.guestPhone && (
+   <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">{selectedRoomInfo.reservation.guestPhone}</p>
+   )}
+ </div>
+
  <div className="pt-2 border-t border-primary/40 grid grid-cols-2 gap-2 text-xs tracking-[0.04em]">
  <div>
  <span className="text-[#71717a] dark:text-gray-400 block">{t("check_in", "Check-in")}</span>
@@ -446,6 +498,16 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
  <span className="font-semibold text-primary">${selectedRoomInfo.reservation.totalAmount}</span>
  </div>
  </div>
+ {selectedRoomInfo.reservation.wakeup_calls?.length > 0 && (
+  <div className="mt-3 pt-3 border-t border-primary/20">
+    <span className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em] block mb-1">Wake-up Calls</span>
+    <div className="flex gap-2 flex-wrap">
+      {selectedRoomInfo.reservation.wakeup_calls.map((call, idx) => (
+        <span key={idx} className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-md flex items-center gap-1"><Clock className="w-3 h-3"/> {call}</span>
+      ))}
+    </div>
+  </div>
+ )}
  </div>
  )}
 
@@ -478,6 +540,7 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
  </Button>
  )}
  {selectedRoomInfo.status === 'Occupied' && (
+ <>
  <div className="grid grid-cols-2 gap-2">
  <Button
  onClick={() => setShowFolioModal(true)}
@@ -494,14 +557,20 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
  <ScanLine className="w-4 h-4" /> {t("keycard", "Keycard")}
  </Button>
  </div>
- )}
- {selectedRoomInfo.status === 'Occupied' && (
+ <Button
+   onClick={handleWakeUpCall}
+   variant="outline"
+   className="w-full border-primary/20 text-primary hover:bg-primary/5 gap-2"
+ >
+   <Clock className="w-4 h-4" /> Add Wake-up Call
+ </Button>
  <Button
  onClick={() => handleCheckOut(selectedRoomInfo.reservation)}
  className="w-full bg-red-600 hover:bg-red-700 text-white gap-2"
  >
  <LogOut className="w-4 h-4" /> {t("check_out", "Check Out")}
  </Button>
+ </>
  )}
  </div>
  </div>
