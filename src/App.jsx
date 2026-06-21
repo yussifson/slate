@@ -28,6 +28,7 @@ const UnivContactManagement = React.lazy(() => import('@/components/universal/Un
 const UnivKanban = React.lazy(() => import('@/components/universal/UnivKanban'));
 const UnivDocument = React.lazy(() => import('@/components/universal/UnivDocument'));
 const UnivInventory = React.lazy(() => import('@/components/universal/UnivInventory'));
+const UnivHREmployee = React.lazy(() => import('@/components/universal/UnivHREmployee'));
 const UnivHRSystem = React.lazy(() => import('@/components/universal/UnivHRSystem'));
 const UnivInvoice = React.lazy(() => import('@/components/universal/UnivInvoice'));
 const UnivPayroll = React.lazy(() => import('@/components/universal/UnivPayroll'));
