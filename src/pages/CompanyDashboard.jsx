@@ -20,8 +20,9 @@ export default function CompanyDashboard() {
   const company = companies.length > 0 ? companies[0] : null;
 
   const isAdmin = ["company_admin", "super_admin", "admin"].includes(user?.role);
-  // Priority: sessionStorage override > localStorage (set by onboarding redirect) > DB > user object > fallback
+  // Priority: sessionStorage override > impersonated user > localStorage > DB > user object > fallback
   const industry = sessionStorage.getItem('slate_industry_override') 
+    || impersonatedCompany?.industry
     || localStorage.getItem('slate_onboarding_industry')
     || company?.industry_type 
     || user?.company_industry 

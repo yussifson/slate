@@ -66,7 +66,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
 
  const [isBoltOpen, setIsBoltOpen] = useState(initialBoltOpen || location.pathname === '/slate/BOLT');
  const { impersonatedCompany} = useImpersonation();
- const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
+ const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry || impersonatedCompany?.industry_type || user?.company_industry || 'law';
 
   const getInitialState = () => {
     if (!isEditing) {

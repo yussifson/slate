@@ -117,7 +117,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
   };
 
  const { activeRoomUrl} = useVideo();
- const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
+ const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry || impersonatedCompany?.industry_type || user?.company_industry || 'law';
  
  useEffect(() => {
  const fetchDynamicNav = async () => {
@@ -166,7 +166,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
  const activeCompanyLogo = impersonatedCompany?.logo_url || impersonatedCompany?.logo_light_url || user?.company_logo_url;
  const activeCompanyName = impersonatedCompany?.name || user?.company_name || "Slate";
- const activeEducationLevel = impersonatedCompany?.industry_type || companyData?.industry_type || 'primary';
+ const activeEducationLevel = impersonatedCompany?.industry || impersonatedCompany?.industry_type || companyData?.industry_type || 'primary';
 
  const industryData = INDUSTRIES[activeIndustry] || INDUSTRIES.law;
  const industryNavRaw = getIndustryNav(activeIndustry, activeEducationLevel);

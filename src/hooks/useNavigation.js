@@ -9,7 +9,7 @@ export function useNavigation(user, impersonatedCompany) {
   const [loadingPermissions, setLoadingPermissions] = useState(true);
   
   const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(user?.role);
-  const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry_type || user?.company_industry || 'law';
+  const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry || impersonatedCompany?.industry_type || user?.company_industry || 'law';
 
   // 1. Fetch Dynamic Modules (App Builder etc.)
   useEffect(() => {

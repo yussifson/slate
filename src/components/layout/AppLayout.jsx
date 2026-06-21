@@ -71,7 +71,7 @@ export default function AppLayout() {
  // Clean up any legacy classes just in case
  document.body.classList.remove('theme-school', 'theme-university', 'theme-online');
  // We let index.css :root handle the unified primary colors
-}, [user?.company_industry, impersonatedCompany?.industry_type]);
+}, [user?.company_industry, impersonatedCompany?.industry || impersonatedCompany?.industry_type]);
 
  const toggleChat = () => {
  const newState = !isChatOpen;
