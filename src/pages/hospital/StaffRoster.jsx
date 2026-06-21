@@ -18,9 +18,9 @@ export default function StaffRoster() {
       if (!companyId) return [];
       const res = await powerSync.execute(
         `SELECT r.*, s.first_name, s.last_name, s.role 
-         FROM univ_duty_rosters r
+         FROM univ_staff_shifts r
          LEFT JOIN profiles s ON s.id = r.staff_id AND s.company_id = r.company_id
-         WHERE r.company_id = ? ORDER BY r.shift_date ASC, r.start_time ASC`,
+         WHERE r.company_id = ? ORDER BY r.shift_date ASC`,
         [companyId]
       );
       return res.rows._array;
@@ -31,7 +31,7 @@ export default function StaffRoster() {
   const filteredRoster = roster.filter(r => 
     (r.first_name || '').toLowerCase().includes(search.toLowerCase()) || 
     (r.last_name || '').toLowerCase().includes(search.toLowerCase()) ||
-    (r.department || '').toLowerCase().includes(search.toLowerCase())
+    (r.ward_or_department || '').toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -67,8 +67,7 @@ export default function StaffRoster() {
                 <th className="px-4 py-3">Department</th>
                 <th className="px-4 py-3">Date</th>
                 <th className="px-4 py-3">Shift Type</th>
-                <th className="px-4 py-3">Time</th>
-                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">On Call</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -83,15 +82,14 @@ export default function StaffRoster() {
                       <Users className="w-4 h-4 text-slate-400"/> {r.first_name} {r.last_name}
                     </td>
                     <td className="px-4 py-3 capitalize">{r.role || 'Staff'}</td>
-                    <td className="px-4 py-3">{r.department}</td>
+                    <td className="px-4 py-3">{r.ward_or_department}</td>
                     <td className="px-4 py-3 flex items-center gap-2 text-slate-600">
                       <CalendarIcon className="w-4 h-4"/> {r.shift_date}
                     </td>
                     <td className="px-4 py-3 capitalize">{r.shift_type?.replace('_', ' ')}</td>
-                    <td className="px-4 py-3 text-slate-500">{r.start_time} - {r.end_time}</td>
                     <td className="px-4 py-3">
-                      <span className={`px-2 py-1 text-xs rounded-full \${r.status === 'scheduled' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
-                        {r.status}
+                      <span className={`px-2 py-1 text-xs rounded-full ${r.is_on_call === 'true' ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-700'}`}>
+                        {r.is_on_call === 'true' ? 'Yes' : 'No'}
                       </span>
                     </td>
                   </tr>

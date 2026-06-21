@@ -662,7 +662,7 @@ function PlatformRoutes() {
       <Route path="/institution-settings" element={<SchoolInstitutionSettings />} />
 
       {/* Hospital Suite */}
-      <Route path="/patients" element={<Clients />} />
+      <Route path="/patients" element={<HospitalPatients />} />
       <Route path="/appointments" element={<HospitalAppointments />} />
       <Route path="/wards" element={<HospitalWards />} />
       <Route path="/prescriptions" element={<HospitalPrescriptions />} />

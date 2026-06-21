@@ -13,15 +13,15 @@ export default function Queue() {
   const [search, setSearch] = useState('');
 
   const { data: queue = [], isLoading } = useQuery({
-    queryKey: ['univ_hospital_queues', companyId],
+    queryKey: ['univ_opd_queues', companyId],
     queryFn: async () => {
       if (!companyId) return [];
       const res = await powerSync.execute(
         `SELECT q.*, p.first_name, p.last_name 
-         FROM univ_hospital_queues q
+         FROM univ_opd_queues q
          LEFT JOIN univ_patients p ON p.id = q.patient_id AND p.company_id = q.company_id
          WHERE q.company_id = ? AND q.status != 'completed' AND q.status != 'no_show'
-         ORDER BY q.priority_score DESC, q.created_at ASC`,
+         ORDER BY q.created_at ASC`,
         [companyId]
       );
       return res.rows._array;
@@ -66,7 +66,7 @@ export default function Queue() {
                 <th className="px-4 py-3">#</th>
                 <th className="px-4 py-3">Patient Name</th>
                 <th className="px-4 py-3">Department</th>
-                <th className="px-4 py-3">Priority Score</th>
+                <th className="px-4 py-3">Token Number</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Wait Time</th>
                 <th className="px-4 py-3 text-right">Actions</th>
@@ -88,8 +88,8 @@ export default function Queue() {
                       </td>
                       <td className="px-4 py-3">{q.department}</td>
                       <td className="px-4 py-3">
-                        <span className={`px-2 py-1 text-xs rounded-full \${q.priority_score > 50 ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'}`}>
-                          {q.priority_score}
+                        <span className={`px-2 py-1 text-xs rounded-full ${q.token_number ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-700'}`}>
+                          {q.token_number || 'N/A'}
                         </span>
                       </td>
                       <td className="px-4 py-3">

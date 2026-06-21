@@ -19,7 +19,7 @@ export default function Referrals() {
       if (!companyId) return [];
       const res = await powerSync.execute(
         `SELECT r.*, p.first_name, p.last_name 
-         FROM univ_hospital_referrals r
+         FROM univ_referrals r
          LEFT JOIN univ_patients p ON p.id = r.patient_id AND p.company_id = r.company_id
          WHERE r.company_id = ? ORDER BY r.created_at DESC`,
         [companyId]
@@ -64,7 +64,7 @@ export default function Referrals() {
             <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-medium">
               <tr>
                 <th className="px-4 py-3">Patient</th>
-                <th className="px-4 py-3">Type</th>
+                <th className="px-4 py-3">Urgency</th>
                 <th className="px-4 py-3">Department/Facility</th>
                 <th className="px-4 py-3">Reason</th>
                 <th className="px-4 py-3">Status</th>
@@ -81,8 +81,8 @@ export default function Referrals() {
                 filteredReferrals.map(ref => (
                   <tr key={ref.id} className="hover:bg-slate-50">
                     <td className="px-4 py-3 font-medium">{ref.first_name} {ref.last_name}</td>
-                    <td className="px-4 py-3 capitalize">{ref.referral_type}</td>
-                    <td className="px-4 py-3">{ref.referral_type === 'internal' ? ref.receiving_department : ref.external_facility_name}</td>
+                    <td className="px-4 py-3 capitalize">{ref.urgency || 'Normal'}</td>
+                    <td className="px-4 py-3">{ref.receiving_facility || ref.receiving_department}</td>
                     <td className="px-4 py-3 max-w-xs truncate">{ref.reason}</td>
                     <td className="px-4 py-3">
                       <span className={`px-2 py-1 text-xs rounded-full \${ref.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}`}>
