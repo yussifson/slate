@@ -762,6 +762,9 @@ export const getIndustryNav = (industryKey, educationLevel) => {
   const ind = INDUSTRIES[industryKey] || INDUSTRIES.law;
   let nav = [...ind.nav];
   
+  // Remove roles and staff
+  nav = nav.filter(n => !['/roles', '/team'].includes(n.path));
+
   if (industryKey === 'school' && educationLevel && EDUCATION_LEVELS[educationLevel]) {
      const allowedModules = EDUCATION_LEVELS[educationLevel].modules;
      nav = nav.filter(n => allowedModules.includes(n.path) || n.path === '/' || n.path === '/settings' || n.path === '/integrations' || n.path === '/hr' || n.path === '/documents' || n.path === '/tasks');

@@ -480,6 +480,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
 if (user?.role === "super_admin") {
     rawNavItems.push({ label: "Global Admin", icon: "Globe", path: "/super-admin" });
+    rawNavItems.push({ label: "Enterprise Admin", icon: "Building2", path: "/enterprise-admin" });
+} else if (user?.role === "enterprise_admin" || isAdmin) {
+    rawNavItems.push({ label: "Enterprise Admin", icon: "Building2", path: "/enterprise-admin" });
 }
 
  // Deduplicate by label to prevent double Dashboards

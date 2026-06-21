@@ -7,6 +7,11 @@ import { base44 } from "@/api/base44Client"; // Keep for other possible uses, or
 import LawDashboard from "@/components/dashboard/LawDashboard";
 import SchoolDashboard from "@/components/dashboard/SchoolDashboard";
 import HospitalDashboard from "@/components/dashboard/HospitalDashboard";
+import HotelDashboard from "@/components/dashboard/HotelDashboard";
+import InsuranceDashboard from "@/components/dashboard/InsuranceDashboard";
+import ReligionDashboard from "@/components/dashboard/ReligionDashboard";
+import RetailDashboard from "@/components/dashboard/RetailDashboard";
+import LogisticsDashboard from "@/components/dashboard/LogisticsDashboard";
 import GenericDashboard from "@/components/dashboard/GenericDashboard";
 
 export default function CompanyDashboard() {
@@ -37,10 +42,20 @@ export default function CompanyDashboard() {
 
   if (industry === 'law') {
     return <LawDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
-  } else if (industry === 'school') {
+  } else if (industry === 'school' || industry === 'highschool' || industry === 'university' || industry === 'online' || industry === 'vocational') {
     return <SchoolDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
   } else if (industry === 'hospital') {
     return <HospitalDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
+  } else if (industry === 'hotel') {
+    return <HotelDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
+  } else if (industry === 'insurance') {
+    return <InsuranceDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
+  } else if (industry === 'religion') {
+    return <ReligionDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
+  } else if (industry === 'retail') {
+    return <RetailDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
+  } else if (industry === 'logistics') {
+    return <LogisticsDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
   } else {
     return <GenericDashboard companyId={companyId} company={company} isAdmin={isAdmin} industry={industry} />;
   }
