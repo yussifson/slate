@@ -239,7 +239,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
       return;
     }
     if (state.moduleType === 'data_module' && fields.length === 0) {
-      toast({ title: "Validation Error", description: "At least 1 field is required for a data module.", variant: "destructive"});
+      toast({ title: "Validation Error", description: "At least 1 field is required for a data slate.", variant: "destructive"});
       return;
     }
 
@@ -343,7 +343,7 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  {/* Top bar */}
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <PageHeader
- title={isEditing ? "Edit Slate" : "Module Builder"}
+ title={isEditing ? "Edit Slate" : "Slate Builder"}
  subtitle="Design custom records and workflows."
  />
  <div className="flex gap-2 items-center">

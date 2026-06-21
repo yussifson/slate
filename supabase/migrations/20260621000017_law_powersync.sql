@@ -1,5 +1,6 @@
 -- Powersync definitions for law firm tables
-CREATE OR REPLACE PUBLICATION powersync_law_data FOR TABLE
+DROP PUBLICATION IF EXISTS powersync_law_data;
+CREATE PUBLICATION powersync_law_data FOR TABLE
     time_entries,
     trust_accounts,
     trust_transactions,

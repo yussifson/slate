@@ -1,5 +1,5 @@
 import { generateInsight } from '../engine';
-import { powerSync } from '../../services/syncQueue';
+import { powerSync } from '../../../api/PowerSyncConnector';
 
 export async function detectCaseDeadlineRisk(companyId) {
   const res = await powerSync.execute(

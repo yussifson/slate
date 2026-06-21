@@ -175,7 +175,7 @@ export default function Marketplace() {
 });
 
  toast({
- title: "Module Uninstalled",
+ title: "Slate Uninstalled",
  description: `${mod.name} has been removed from your workslate.`});
 } catch (err) {
  console.error(err);
@@ -380,14 +380,14 @@ export default function Marketplace() {
  <DialogContent className="sm:max-w-[425px]">
  <DialogHeader>
  <DialogTitle>Uninstall Slate</DialogTitle>
- <DialogDescription>
- Are you sure you want to uninstall <strong>{confirmUninstall?.name}</strong>? This will remove the module, all its fields, and all records from your workslate. This action cannot be undone.
+ <DialogDescription className="pt-3">
+ Are you sure you want to uninstall <strong>{confirmUninstall?.name}</strong>? This will remove the slate, all its fields, and all records from your workslate. This action cannot be undone.
  </DialogDescription>
  </DialogHeader>
  <DialogFooter className="mt-4">
  <Button variant="outline" onClick={() => setConfirmUninstall(null)}>Cancel</Button>
  <Button variant="destructive" onClick={() => handleUninstall(confirmUninstall)} disabled={!!uninstallingId}>
- {uninstallingId ? 'Uninstalling...' : 'Uninstall Module'}
+ {uninstallingId ? 'Uninstalling...' : 'Uninstall Slate'}
  </Button>
  </DialogFooter>
  </DialogContent>

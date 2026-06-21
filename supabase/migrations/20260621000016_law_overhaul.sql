@@ -1,37 +1,26 @@
 -- ── TIME TRACKING ─────────────────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS time_entries (
-  id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  company_id    uuid NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
-  case_id         uuid REFERENCES cases(id) ON DELETE SET NULL,
-  user_id         uuid NOT NULL REFERENCES auth.users(id),
-  user_name       text NOT NULL,
-  description     text NOT NULL,
-  hours           numeric(8,2) NOT NULL CHECK (hours > 0),
-  rate_per_hour   numeric(10,2) NOT NULL DEFAULT 0,
-  is_billable     boolean NOT NULL DEFAULT true,
-  is_billed       boolean NOT NULL DEFAULT false,
-  invoice_id      uuid REFERENCES invoices(id) ON DELETE SET NULL,
-  entry_date      date NOT NULL DEFAULT CURRENT_DATE,
-  timer_started_at timestamptz,
-  created_at      timestamptz NOT NULL DEFAULT now(),
-  updated_at      timestamptz NOT NULL DEFAULT now()
-);
+-- time_entries already exists, so we alter it
+ALTER TABLE time_entries ADD COLUMN IF NOT EXISTS user_name text;
+ALTER TABLE time_entries ADD COLUMN IF NOT EXISTS hours numeric(8,2) DEFAULT 0;
+ALTER TABLE time_entries ADD COLUMN IF NOT EXISTS rate_per_hour numeric(10,2) DEFAULT 0;
+ALTER TABLE time_entries ADD COLUMN IF NOT EXISTS is_billable boolean DEFAULT true;
+ALTER TABLE time_entries ADD COLUMN IF NOT EXISTS is_billed boolean DEFAULT false;
+ALTER TABLE time_entries ADD COLUMN IF NOT EXISTS invoice_id uuid REFERENCES invoices(id) ON DELETE SET NULL;
+ALTER TABLE time_entries ADD COLUMN IF NOT EXISTS entry_date date DEFAULT CURRENT_DATE;
+ALTER TABLE time_entries ADD COLUMN IF NOT EXISTS timer_started_at timestamptz;
 
 CREATE INDEX IF NOT EXISTS idx_time_entries_company ON time_entries(company_id, entry_date DESC);
 CREATE INDEX IF NOT EXISTS idx_time_entries_case      ON time_entries(case_id) WHERE case_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_time_entries_unbilled  ON time_entries(company_id, is_billed) WHERE is_billed = false;
 
 ALTER TABLE time_entries ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "time_entries_company" ON time_entries FOR ALL USING (
-  company_id IN (SELECT company_id FROM users WHERE id = auth.uid())
-);
 
 -- ── TRUST ACCOUNTING / CLIENT LEDGER ─────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS trust_accounts (
   id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   company_id    uuid NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
   client_id       uuid NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
-  case_id         uuid REFERENCES cases(id) ON DELETE SET NULL,
+  case_id         uuid REFERENCES univ_cases(id) ON DELETE SET NULL,
   account_name    text NOT NULL,
   balance         numeric(15,2) NOT NULL DEFAULT 0,
   currency        text NOT NULL DEFAULT 'USD',
@@ -59,10 +48,10 @@ CREATE INDEX IF NOT EXISTS idx_trust_transactions_account ON trust_transactions(
 ALTER TABLE trust_accounts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE trust_transactions ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "trust_accounts_company" ON trust_accounts FOR ALL USING (
-  company_id IN (SELECT company_id FROM users WHERE id = auth.uid())
+  company_id IN (SELECT company_id::uuid FROM profiles WHERE id::uuid = auth.uid())
 );
 CREATE POLICY "trust_transactions_company" ON trust_transactions FOR ALL USING (
-  company_id IN (SELECT company_id FROM users WHERE id = auth.uid())
+  company_id IN (SELECT company_id::uuid FROM profiles WHERE id::uuid = auth.uid())
 );
 
 -- ── CLIENT PORTAL ─────────────────────────────────────────────────────────────
@@ -71,7 +60,7 @@ CREATE TABLE IF NOT EXISTS client_portal_access (
   company_id    uuid NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
   client_id       uuid NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
   email           text NOT NULL,
-  access_token    text NOT NULL UNIQUE DEFAULT encode(gen_random_bytes(32), 'hex'),
+  access_token    text NOT NULL UNIQUE DEFAULT gen_random_uuid()::text,
   is_active       boolean NOT NULL DEFAULT true,
   last_accessed_at timestamptz,
   expires_at      timestamptz,
@@ -82,7 +71,7 @@ CREATE TABLE IF NOT EXISTS client_portal_access (
 CREATE TABLE IF NOT EXISTS client_portal_uploads (
   id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   company_id    uuid NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
-  case_id         uuid REFERENCES cases(id),
+  case_id         uuid REFERENCES univ_cases(id),
   client_id       uuid NOT NULL REFERENCES clients(id),
   file_name       text NOT NULL,
   file_path       text NOT NULL,
@@ -97,10 +86,10 @@ CREATE TABLE IF NOT EXISTS client_portal_uploads (
 ALTER TABLE client_portal_access ENABLE ROW LEVEL SECURITY;
 ALTER TABLE client_portal_uploads ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "portal_access_company" ON client_portal_access FOR ALL USING (
-  company_id IN (SELECT company_id FROM users WHERE id = auth.uid())
+  company_id IN (SELECT company_id::uuid FROM profiles WHERE id::uuid = auth.uid())
 );
 CREATE POLICY "portal_uploads_company" ON client_portal_uploads FOR ALL USING (
-  company_id IN (SELECT company_id FROM users WHERE id = auth.uid())
+  company_id IN (SELECT company_id::uuid FROM profiles WHERE id::uuid = auth.uid())
 );
 
 -- ── DOCUMENT TEMPLATES ────────────────────────────────────────────────────────
@@ -121,7 +110,7 @@ CREATE TABLE IF NOT EXISTS generated_documents (
   id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   company_id    uuid NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
   template_id     uuid REFERENCES document_templates(id),
-  case_id         uuid REFERENCES cases(id),
+  case_id         uuid REFERENCES univ_cases(id),
   client_id       uuid REFERENCES clients(id),
   name            text NOT NULL,
   content         text NOT NULL,
@@ -133,10 +122,10 @@ CREATE TABLE IF NOT EXISTS generated_documents (
 ALTER TABLE document_templates ENABLE ROW LEVEL SECURITY;
 ALTER TABLE generated_documents ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "doc_templates_company" ON document_templates FOR ALL USING (
-  company_id IN (SELECT company_id FROM users WHERE id = auth.uid())
+  company_id IN (SELECT company_id::uuid FROM profiles WHERE id::uuid = auth.uid())
 );
 CREATE POLICY "generated_docs_company" ON generated_documents FOR ALL USING (
-  company_id IN (SELECT company_id FROM users WHERE id = auth.uid())
+  company_id IN (SELECT company_id::uuid FROM profiles WHERE id::uuid = auth.uid())
 );
 
 -- ── INTAKE FORMS ─────────────────────────────────────────────────────────────
@@ -158,7 +147,7 @@ CREATE TABLE IF NOT EXISTS intake_submissions (
   submitted_by_email text NOT NULL,
   responses       jsonb NOT NULL DEFAULT '{}',
   status          text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','reviewed','converted','rejected')),
-  converted_to_case_id uuid REFERENCES cases(id),
+  converted_to_case_id uuid REFERENCES univ_cases(id),
   converted_to_client_id uuid REFERENCES clients(id),
   reviewed_by     uuid REFERENCES auth.users(id),
   reviewed_at     timestamptz,
@@ -168,25 +157,25 @@ CREATE TABLE IF NOT EXISTS intake_submissions (
 ALTER TABLE intake_forms ENABLE ROW LEVEL SECURITY;
 ALTER TABLE intake_submissions ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "intake_forms_company" ON intake_forms FOR ALL USING (
-  company_id IN (SELECT company_id FROM users WHERE id = auth.uid())
+  company_id IN (SELECT company_id::uuid FROM profiles WHERE id::uuid = auth.uid())
 );
 CREATE POLICY "intake_submissions_company" ON intake_submissions FOR ALL USING (
-  company_id IN (SELECT company_id FROM users WHERE id = auth.uid())
+  company_id IN (SELECT company_id::uuid FROM profiles WHERE id::uuid = auth.uid())
 );
 
 -- ── CASE BUDGET ───────────────────────────────────────────────────────────────
-ALTER TABLE cases ADD COLUMN IF NOT EXISTS budget_amount numeric(15,2);
-ALTER TABLE cases ADD COLUMN IF NOT EXISTS budget_notes text;
-ALTER TABLE cases ADD COLUMN IF NOT EXISTS matter_number text;
-ALTER TABLE cases ADD COLUMN IF NOT EXISTS court_name text;
-ALTER TABLE cases ADD COLUMN IF NOT EXISTS judge_name text;
-ALTER TABLE cases ADD COLUMN IF NOT EXISTS jurisdiction text;
-ALTER TABLE cases ADD COLUMN IF NOT EXISTS opposing_counsel text;
-ALTER TABLE cases ADD COLUMN IF NOT EXISTS statute_of_limitations date;
-ALTER TABLE cases ADD COLUMN IF NOT EXISTS risk_score numeric(5,2);
-ALTER TABLE cases ADD COLUMN IF NOT EXISTS risk_factors text[];
-ALTER TABLE cases ADD COLUMN IF NOT EXISTS predicted_outcome text;
-ALTER TABLE cases ADD COLUMN IF NOT EXISTS outcome_confidence numeric(5,2);
+ALTER TABLE univ_cases ADD COLUMN IF NOT EXISTS budget_amount numeric(15,2);
+ALTER TABLE univ_cases ADD COLUMN IF NOT EXISTS budget_notes text;
+ALTER TABLE univ_cases ADD COLUMN IF NOT EXISTS matter_number text;
+ALTER TABLE univ_cases ADD COLUMN IF NOT EXISTS court_name text;
+ALTER TABLE univ_cases ADD COLUMN IF NOT EXISTS judge_name text;
+ALTER TABLE univ_cases ADD COLUMN IF NOT EXISTS jurisdiction text;
+ALTER TABLE univ_cases ADD COLUMN IF NOT EXISTS opposing_counsel text;
+ALTER TABLE univ_cases ADD COLUMN IF NOT EXISTS statute_of_limitations date;
+ALTER TABLE univ_cases ADD COLUMN IF NOT EXISTS risk_score numeric(5,2);
+ALTER TABLE univ_cases ADD COLUMN IF NOT EXISTS risk_factors text[];
+ALTER TABLE univ_cases ADD COLUMN IF NOT EXISTS predicted_outcome text;
+ALTER TABLE univ_cases ADD COLUMN IF NOT EXISTS outcome_confidence numeric(5,2);
 
 -- ── ENHANCED CONFLICT CHECK ───────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS conflict_check_results (
@@ -202,14 +191,14 @@ CREATE TABLE IF NOT EXISTS conflict_check_results (
 
 ALTER TABLE conflict_check_results ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "conflict_check_company" ON conflict_check_results FOR ALL USING (
-  company_id IN (SELECT company_id FROM users WHERE id = auth.uid())
+  company_id IN (SELECT company_id::uuid FROM profiles WHERE id::uuid = auth.uid())
 );
 
 -- ── COURT HEARINGS ────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS court_hearings (
   id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   company_id    uuid NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
-  case_id         uuid NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
+  case_id         uuid NOT NULL REFERENCES univ_cases(id) ON DELETE CASCADE,
   hearing_type    text NOT NULL,
   hearing_date    timestamptz NOT NULL,
   court_name      text,
@@ -227,7 +216,7 @@ CREATE INDEX IF NOT EXISTS idx_court_hearings_company ON court_hearings(company_
 
 ALTER TABLE court_hearings ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "court_hearings_company" ON court_hearings FOR ALL USING (
-  company_id IN (SELECT company_id FROM users WHERE id = auth.uid())
+  company_id IN (SELECT company_id::uuid FROM profiles WHERE id::uuid = auth.uid())
 );
 
 -- ── INTELLIGENCE FIELDS ON CLIENTS ───────────────────────────────────────────

@@ -761,7 +761,7 @@ if (user?.role === "super_admin") {
  <DialogHeader>
  <DialogTitle>Rename Slate</DialogTitle>
  <DialogDescription>
- Enter a new name for this module.
+ Enter a new name for this slate.
  </DialogDescription>
  </DialogHeader>
  <div className="py-4">
