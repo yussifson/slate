@@ -410,9 +410,10 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
 })}
  </div>
 
- {isLoading ? (
- <div className="py-20 text-center text-[#71717a] dark:text-gray-400">{t("loading_room_status", "Loading room status...")}</div>
- <div className="space-y-6 school-page-enter font-dmsans">
+  {isLoading ? (
+  <div className="py-20 text-center text-[#71717a] dark:text-gray-400">{t("loading_room_status", "Loading room status...")}</div>
+  ) : (
+  <div className="space-y-6 school-page-enter font-dmsans">
  {isLoadingRooms ? (
  <div className="py-12 flex items-center justify-center text-primary"><Sparkles className="w-6 h-6 animate-spin"/></div>
  ) : dynamicRooms.length === 0 ? (
@@ -442,8 +443,7 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
 })}
  </div>
  </div>
- );
-})}
+ ))}
  </div>
  )}
  </div>
