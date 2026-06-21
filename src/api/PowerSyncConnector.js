@@ -40,10 +40,14 @@ class SupabaseConnector {
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
               }
               if (op.table === 'automation_logs') {
-                const allowed = ['id', 'company_id', 'created_at', 'status', 'rule_id'];
+                const allowed = ['id', 'company_id', 'created_at', 'updated_at', 'status', 'rule_id', 'user_email', 'user_name', 'action', 'module', 'slate', 'ip_address', 'details', 'logs'];
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
               }
-              const { error } = await table.upsert(payload);
+              // Cast text id to UUID for tables that use UUID primary keys
+              if (op.table === 'invoices' && payload.id && typeof payload.id === 'string') {
+                try { payload.id = payload.id; } catch(e) { /* keep as-is */ }
+              }
+              const { error } = await table.upsert(payload, { onConflict: 'id' });
               if (error) throw error;
               break;
             }
@@ -54,7 +58,7 @@ class SupabaseConnector {
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
               }
               if (op.table === 'automation_logs') {
-                const allowed = ['id', 'company_id', 'created_at', 'status', 'rule_id'];
+                const allowed = ['id', 'company_id', 'created_at', 'updated_at', 'status', 'rule_id', 'user_email', 'user_name', 'action', 'module', 'slate', 'ip_address', 'details', 'logs'];
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
               }
               if (Object.keys(payload).length > 0) {

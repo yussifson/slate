@@ -185,7 +185,15 @@ export const AppSchema = new Schema({
       rule_id: column.text,
       status: column.text,
       logs: column.text,
-      created_at: column.text
+      user_email: column.text,
+      user_name: column.text,
+      action: column.text,
+      module: column.text,
+      slate: column.text,
+      ip_address: column.text,
+      details: column.text,
+      created_at: column.text,
+      updated_at: column.text
     }),
     automation_rule_versions: new Table({
       id: column.text,
@@ -576,6 +584,9 @@ export const AppSchema = new Schema({
     automation_logs: new Table({
         id: column.text,
         company_id: column.text,
+        rule_id: column.text,
+        status: column.text,
+        logs: column.text,
         user_email: column.text,
         user_name: column.text,
         action: column.text,
