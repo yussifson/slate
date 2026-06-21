@@ -19,6 +19,21 @@ import remarkGfm from 'remark-gfm';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { useAuth} from '@/lib/AuthContext';
 
+
+const PAGE_SUGGESTIONS = {
+   '/patients': ['List all patients admitted today', 'Create a new patient record', 'Show patients with pending lab results'],
+   '/appointments':['Schedule an appointment for tomorrow', 'List today\'s appointments', 'Find upcoming appointments this week'],
+   '/wards': ['Show all occupied beds', 'Assign patient to a bed in Ward A', 'List available beds'],
+   '/cases': ['Show all open cases', 'Create a new case', 'Find cases assigned to me'],
+   '/tasks': ['Show my pending tasks', 'Create an urgent task', 'Mark overdue tasks'],
+   '/employees': ['List all active employees', 'Add a new employee', 'Show employees on leave'],
+   '/payroll': ['Generate payroll for this month', 'Show pending payslips', 'Calculate overtime'],
+   '/students': ['Show students with missing fees', 'Add a new student', 'Find students by class'],
+   '/inventory': ['Show low stock items', 'Add a new product', 'Find products below reorder level'],
+   '/claims': ['List pending claims', 'Create a new claim', 'Show high-value claims this month'],
+   '/': ['Give me a summary of today\'s activity', 'Show key metrics', 'What needs my attention today?']
+};
+
 // Page Context Map 
 const PAGE_CONTEXT = {
   '/': { title: 'Dashboard', suite: 'Core', desc: 'main dashboard with KPIs and quick actions'},
