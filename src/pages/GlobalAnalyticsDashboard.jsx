@@ -18,6 +18,13 @@ export default function GlobalAnalyticsDashboard() {
   });
 
   const [growthData, setGrowthData] = useState([]);
+  const [workspaces, setWorkspaces] = useState([]);
+
+  const INDUSTRIES = [
+    'firm', 'school', 'hospital', 'retail', 'logistics', 'restaurant', 'legal', 
+    'insurance', 'vocational', 'cleaning', 'freelancer', 'construction', 'salon', 
+    'fitness', 'realestate', 'church'
+  ];
 
   useEffect(() => {
     let active = true;
@@ -49,13 +56,37 @@ export default function GlobalAnalyticsDashboard() {
             retailInventory: 15400,
             legalCases: 340
           });
+          
+          // Fetch real workspaces
+          try {
+            const allCompanies = await powerSync.getAll('SELECT * FROM companies ORDER BY created_at DESC');
+            setWorkspaces(allCompanies || []);
+          } catch (e) {
+            console.error("Error fetching workspaces:", e);
+          }
         }
       } catch (err) {
         console.error(err);
       }
     };
     fetchStats();
-    return () => { active = false; };
+
+    // Subscribe to company changes
+    const abortController = new AbortController();
+    (async () => {
+      try {
+        for await (const result of powerSync.watch('SELECT * FROM companies ORDER BY created_at DESC', [], { signal: abortController.signal })) {
+          if (active) {
+             setWorkspaces(result.rows?._array || result.rows || result);
+          }
+        }
+      } catch(e) {}
+    })();
+
+    return () => { 
+      active = false; 
+      abortController.abort();
+    };
   }, [powerSync]);
 
   return (
@@ -134,6 +165,60 @@ export default function GlobalAnalyticsDashboard() {
           </div>
         </div>
 
+      </div>
+
+      {/* Workspace Industry Manager */}
+      <div className="school-card p-6 mt-8">
+        <h2 className="text-lg font-bold mb-4 text-slate-800 dark:text-slate-100 flex items-center gap-2">
+          <Briefcase className="w-5 h-5 text-indigo-500" /> Workspace Industry Management
+        </h2>
+        <p className="text-sm text-slate-500 mb-6">Change the active industry for any workspace. The workspace owner will see the new UI configuration upon their next refresh.</p>
+        
+        <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+          <table className="w-full text-left text-sm whitespace-nowrap">
+            <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400">
+              <tr>
+                <th className="px-4 py-3 font-medium">Workspace Name</th>
+                <th className="px-4 py-3 font-medium">Subdomain</th>
+                <th className="px-4 py-3 font-medium">Admin Email</th>
+                <th className="px-4 py-3 font-medium">Industry Type</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              {workspaces.map(ws => (
+                <tr key={ws.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                  <td className="px-4 py-3 font-semibold text-slate-900 dark:text-slate-100">{ws.name}</td>
+                  <td className="px-4 py-3 text-slate-500">{ws.subdomain}</td>
+                  <td className="px-4 py-3 text-slate-500">{ws.admin_email}</td>
+                  <td className="px-4 py-3">
+                    <select
+                      value={ws.industry_type || 'firm'}
+                      onChange={async (e) => {
+                        const newIndustry = e.target.value;
+                        try {
+                          await powerSync.execute('UPDATE companies SET industry_type = ? WHERE id = ?', [newIndustry, ws.id]);
+                        } catch (err) {
+                          console.error("Failed to update industry:", err);
+                          alert("Failed to update industry: " + err.message);
+                        }
+                      }}
+                      className="w-full max-w-[180px] bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-shadow"
+                    >
+                      {INDUSTRIES.map(ind => (
+                        <option key={ind} value={ind}>{ind.charAt(0).toUpperCase() + ind.slice(1)}</option>
+                      ))}
+                    </select>
+                  </td>
+                </tr>
+              ))}
+              {workspaces.length === 0 && (
+                <tr>
+                  <td colSpan="4" className="px-4 py-8 text-center text-slate-500">No workspaces found.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
     </div>
