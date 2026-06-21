@@ -28,8 +28,8 @@
   ],
   "rewrites": [
     {
-      "source": "/api/ai/:path*",
-      "destination": "https://api.cloudflare.com/client/v4/accounts/:path*"
+      "source": "/api/ai/:accountId/:model*",
+      "destination": "https://api.cloudflare.com/client/v4/accounts/:accountId/ai/run/:model*"
     },
     {
       "source": "/((?!api/.*).*)",
