@@ -15,7 +15,6 @@ export default function EnterpriseDashboard() {
   const [portfolio, setPortfolio] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
   const fetchPortfolio = async () => {
     try {
       if (!user?.id) return;
