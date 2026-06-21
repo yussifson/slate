@@ -40,7 +40,7 @@ class SupabaseConnector {
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
               }
               if (op.table === 'automation_logs') {
-                const allowed = ['id', 'company_id', 'created_at', 'updated_at', 'status', 'rule_id', 'user_email', 'user_name', 'ip_address', 'details', 'logs'];
+                const allowed = ['id', 'company_id', 'created_at', 'updated_at', 'status', 'rule_id', 'user_email', 'user_name'];
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
               }
               // Cast text id to UUID for tables that use UUID primary keys
@@ -58,7 +58,7 @@ class SupabaseConnector {
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
               }
               if (op.table === 'automation_logs') {
-                const allowed = ['id', 'company_id', 'created_at', 'updated_at', 'status', 'rule_id', 'user_email', 'user_name', 'ip_address', 'details', 'logs'];
+                const allowed = ['id', 'company_id', 'created_at', 'updated_at', 'status', 'rule_id', 'user_email', 'user_name'];
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
               }
               if (Object.keys(payload).length > 0) {
