@@ -1,6 +1,6 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
-import { Bell, Search, CheckCircle, Clock, AlertTriangle, Coffee, Wrench, Plus, Trash2, Sparkles, MessageSquare, BarChart } from 'lucide-react';
+import { Bell, Search, CheckCircle, Clock, AlertTriangle, Coffee, Wrench, Plus, Trash2, Sparkles, MessageSquare, BarChart, Car, Utensils } from 'lucide-react';
 import { Button} from '@/components/ui/button';
 import { generateText } from '@/lib/cloudflareAI';
 import { Input} from '@/components/ui/input';
@@ -14,10 +14,10 @@ const statusColors = {
 };
 
 const requestIcons = {
- 'Housekeeping': <Coffee className="w-5 h-5" />,
  'Room Service': <Coffee className="w-5 h-5" />,
- 'Maintenance': <Wrench className="w-5 h-5" />,
- 'Concierge': <Bell className="w-5 h-5" />
+ 'Taxi Booking': <Car className="w-5 h-5" />,
+ 'Restaurant Reservation': <Utensils className="w-5 h-5" />,
+ 'Other': <Bell className="w-5 h-5" />
 };
 
 export default function GuestRequests() {
@@ -65,7 +65,7 @@ export default function GuestRequests() {
  // Form State
  const [formData, setFormData] = useState({
  room: '',
- type: 'Housekeeping',
+ type: 'Room Service',
  detail: ''
 });
 
@@ -90,7 +90,7 @@ export default function GuestRequests() {
  onSuccess: () => {
  toast.success('Guest request logged successfully!');
  setShowModal(false);
- setFormData({ room: '', type: 'Housekeeping', detail: ''});
+ setFormData({ room: '', type: 'Room Service', detail: ''});
 },
  onError: (err) => {
  toast.error('Failed to log request: ' + err.message);
@@ -167,7 +167,7 @@ Reply with EXACTLY ONE of these tags: URGENT (if safety, severe complaint, VIP, 
  <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("guest_services", "Guest Services")}</h1>
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("concierge_requests", "Concierge & Requests")}</h1>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
  "manage_requests_and_feedback",
  "Manage guest requests and analyze feedback"
@@ -304,10 +304,10 @@ Reply with EXACTLY ONE of these tags: URGENT (if safety, severe complaint, VIP, 
  <div>
  <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("request_type", "Request Type")}</label>
  <select value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm">
- <option>{t("housekeeping", "Housekeeping")}</option>
  <option>{t("room_service", "Room Service")}</option>
- <option>{t("maintenance", "Maintenance")}</option>
- <option>{t("concierge", "Concierge")}</option>
+ <option>{t("taxi_booking", "Taxi Booking")}</option>
+ <option>{t("restaurant_reservation", "Restaurant Reservation")}</option>
+ <option>{t("other", "Other")}</option>
  </select>
  </div>
  <div>
