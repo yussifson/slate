@@ -65,7 +65,7 @@ export default function Rooms() {
  id: editTargetId || undefined,
  recordType: 'room',
  payload,
- status: 'Available',
+ status: editTargetId ? rooms.find(r => r.id === editTargetId)?.status || 'Available' : 'Available',
  searchText: `${formData.roomNumber} ${formData.type}`
 }, {
  onSuccess: () => {

@@ -152,7 +152,8 @@ Format your response exactly as valid JSON ONLY:
 [{"room_code": "STD", "rate": 180}, {"room_code": "DLX", "rate": 280}]`;
      const result = await generateText(prompt);
      // Clean JSON if needed
-     const cleanJson = result.replace(/```json/g, '').replace(/```/g, '').trim();
+     const resultStr = typeof result === 'string' ? result : JSON.stringify(result || "");
+     const cleanJson = resultStr.replace(/```json/g, '').replace(/```/g, '').trim();
      const aiRates = JSON.parse(cleanJson);
      
      // 1. Update local database
