@@ -22,7 +22,11 @@ import { getIndustryRoles } from '@/config/industries';
 const EMPTY_FORM = { first_name: '', last_name: '', email: '', phone: '', role_title: '', department: '', status: 'Active', salary: '', employment_type: 'Full-Time', hire_date: ''};
 const gradients = ['from-violet-500 to-purple-600','from-cyan-500 to-blue-600','from-emerald-500 to-teal-600','from-orange-500 to-amber-600','from-pink-500 to-rose-600','from-indigo-500 to-blue-700'];
 const grad = (n) => gradients[(n||'A').charCodeAt(0) % gradients.length];
-const initials = (e) => `${(e.first_name||'?').charAt(0)}${(e.last_name||'?').charAt(0)}`.toUpperCase();
+const initials = (e) => {
+  const parts = (e.name || '?').split(' ');
+  if (parts.length > 1) return `${parts[0].charAt(0)}${parts[1].charAt(0)}`.toUpperCase();
+  return (e.name || '?').charAt(0).toUpperCase();
+};
 const statusColor = (s) => s==='Active'?'bg-emerald-50 text-emerald-700 border-emerald-200':s==='Onboarding'?'bg-blue-50 text-blue-700 border-blue-200':'bg-muted text-[#71717a] dark:text-gray-400 border-primary/40';
 
 export default function UnivHREmployee() {
@@ -54,7 +58,7 @@ export default function UnivHREmployee() {
  const fetchEmps = async () => {
  setLoading(true);
  try {
- const __res = await powerSync.execute(`SELECT * FROM univ_hr_employees WHERE company_id = ? ORDER BY first_name ASC`, [companyId]);
+ const __res = await powerSync.execute(`SELECT * FROM univ_hr_employees WHERE company_id = ? ORDER BY name ASC`, [companyId]);
  const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
  setEmployees(data || []);
  
@@ -74,11 +78,18 @@ export default function UnivHREmployee() {
  const save = async (e) => {
  e.preventDefault();
  try {
- const payload = { ...form, company_id: companyId};
- delete payload.employment_type; // Not in phase 1 schema
- if (!payload.hire_date) delete payload.hire_date;
- if (!payload.salary) delete payload.salary;
- else payload.salary = Number(payload.salary);
+ const payload = {
+   name: `${form.first_name} ${form.last_name}`.trim(),
+   email: form.email,
+   phone: form.phone,
+   role: form.role_title,
+   department_id: form.department,
+   status: form.status,
+   salary: form.salary ? Number(form.salary) : null,
+   start_date: form.hire_date || null,
+   company_id: companyId
+ };
+ Object.keys(payload).forEach(k => payload[k] == null && delete payload[k]);
  
  if (editingId) {
   await (async () => { const _payload = payload; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_hr_employees SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editingId]);})();
@@ -126,9 +137,26 @@ export default function UnivHREmployee() {
  if (error) toast.error('Failed to delete'); else { toast.success('Deleted'); fetchEmps(); setSelected(null);}
 };
 
- const openModal = (emp = null) => { setForm(emp ? { ...emp} : EMPTY_FORM); setEditingId(emp?.id || null); setPassword(''); setIsModalOpen(true);};
+ const openModal = (emp = null) => { 
+   let formEmp = { ...EMPTY_FORM };
+   if (emp) {
+     const parts = (emp.name || '').split(' ');
+     formEmp = {
+       ...emp,
+       first_name: parts[0] || '',
+       last_name: parts.slice(1).join(' '),
+       role_title: emp.role || '',
+       department: emp.department_id || '',
+       hire_date: emp.start_date || ''
+     };
+   }
+   setForm(formEmp); 
+   setEditingId(emp?.id || null); 
+   setPassword(''); 
+   setIsModalOpen(true);
+ };
  const closeModal = () => { setIsModalOpen(false); setEditingId(null); setForm(EMPTY_FORM); setPassword('');};
- const filtered = employees.filter(e => `${e.first_name} ${e.last_name} ${e.email} ${e.department} ${e.role_title}`.toLowerCase().includes(search.toLowerCase()));
+ const filtered = employees.filter(e => `${e.name} ${e.email} ${e.department_id} ${e.role}`.toLowerCase().includes(search.toLowerCase()));
 
  return (
  <div className="h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}">
@@ -174,18 +202,18 @@ export default function UnivHREmployee() {
  {filtered.length===0&&<div className="col-span-full py-20 text-center text-[#71717a] dark:text-gray-400 border-2 border-dashed border-primary/40 rounded-2xl"><Users className="w-12 h-12 mx-auto text-[#71717a] dark:text-gray-400/30 mb-3"/><p className="font-medium">No employees found.</p></div>}
  </div>
  ) : viewMode === 'list' ? (
- <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <table className="w-full text-sm">
  <thead className="bg-muted/50 border-b border-primary/40"><tr>{['Employee','Role/Dept','Contact','Type','Status','Actions'].map(h=><th key={h} className="p-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">{h}</th>)}</tr></thead>
  <tbody className="divide-y divide-border">
- {filtered.map(emp=>(
- <tr key={emp.id} className="hover:bg-muted/30 transition-colors group cursor-pointer" onClick={()=>setSelected(emp)}>
- <td className="p-4"><div className="flex items-center gap-3"><div className={`w-9 h-9 rounded-full bg-gradient-to-br ${grad(emp.first_name)} flex items-center justify-center text-white text-xs font-black shrink-0`}>{initials(emp)}</div><div><p className="font-semibold text-foreground">{emp.first_name} {emp.last_name}</p><p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{emp.hire_date?`Hired ${emp.hire_date}`:''}</p></div></div></td>
- <td className="p-4"><p className="font-medium">{emp.role_title||'—'}</p><p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{emp.department||'—'}</p></td>
- <td className="p-4 text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]"><div className="flex flex-col gap-2">{emp.email&&<span className="flex items-center gap-2"><Mail className="w-3 h-3"/>{emp.email}</span>}{emp.phone&&<span className="flex items-center gap-2"><Phone className="w-3 h-3"/>{emp.phone}</span>}</div></td>
- <td className="p-4 text-sm text-[#71717a] dark:text-gray-400">{emp.employment_type||'Full-Time'}</td>
- <td className="p-4"><span className={`px-2 py-0.5 text-[10px] font-semibold uppercase border-[0.5px] border-black/9 dark:border-white/8 rounded-lg ${statusColor(emp.status)}`}>{emp.status}</span></td>
- <td className="p-4"><div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity"><button onClick={e=>{e.stopPropagation();openModal(emp);}} className="p-1.5 bg-muted rounded-lg text-[#71717a] dark:text-gray-400 hover:text-primary"><Edit2 className="w-3.5 h-3.5"/></button><button onClick={e=>{e.stopPropagation();remove(emp.id);}} className="p-1.5 bg-red-50 rounded-lg text-red-400 hover:text-red-600"><Trash2 className="w-3.5 h-3.5"/></button></div></td>
+ {filtered.map(e=>(
+ <tr key={e.id} className="hover:bg-muted/30 transition-colors group cursor-pointer" onClick={()=>setSelected(e)}>
+ <td className="p-4 align-middle"><div className="flex items-center gap-3"><div className={`w-8 h-8 shrink-0 rounded-full bg-gradient-to-br ${grad(e.name)} flex items-center justify-center text-white font-semibold text-xs`}>{initials(e)}</div><div className="flex flex-col"><span className="font-semibold text-sm text-foreground">{e.name}</span><span className="text-xs text-[#71717a] dark:text-gray-400">{e.email}</span></div></div></td>
+ <td className="p-4 align-middle"><div className="flex flex-col"><span className="text-sm font-medium text-foreground">{e.role}</span><span className="text-xs text-[#71717a] dark:text-gray-400">{e.department}</span></div></td>
+ <td className="p-4 text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]"><div className="flex flex-col gap-2">{e.email&&<span className="flex items-center gap-2"><Mail className="w-3 h-3"/>{e.email}</span>}{e.phone&&<span className="flex items-center gap-2"><Phone className="w-3 h-3"/>{e.phone}</span>}</div></td>
+ <td className="p-4 text-sm text-[#71717a] dark:text-gray-400">{e.employment_type||'Full-Time'}</td>
+ <td className="p-4"><span className={`px-2 py-0.5 text-[10px] font-semibold uppercase border-[0.5px] border-black/9 dark:border-white/8 rounded-lg ${statusColor(e.status)}`}>{e.status}</span></td>
+ <td className="p-4"><div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity"><button onClick={ev=>{ev.stopPropagation();openModal(e);}} className="p-1.5 bg-muted rounded-lg text-[#71717a] dark:text-gray-400 hover:text-primary"><Edit2 className="w-3.5 h-3.5"/></button><button onClick={ev=>{ev.stopPropagation();remove(e.id);}} className="p-1.5 bg-red-50 rounded-lg text-red-400 hover:text-red-600"><Trash2 className="w-3.5 h-3.5"/></button></div></td>
  </tr>
  ))}
  {filtered.length===0&&<tr><td colSpan={6} className="p-12 text-center text-[#71717a] dark:text-gray-400">No employees found.</td></tr>}
@@ -212,11 +240,11 @@ export default function UnivHREmployee() {
  <div className="w-px h-6 bg-primary/40 absolute left-1/2 -translate-x-1/2 top-full"></div>
  </div>
  <div className="flex flex-col gap-3">
- {deptEmps.map(emp => (
- <div key={emp.id} onClick={()=>setSelected(emp)} className="w-48 p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-center cursor-pointer hover:border-primary transition-colors relative z-10">
- <div className={`w-10 h-10 mx-auto rounded-full bg-gradient-to-br ${grad(emp.first_name)} flex items-center justify-center text-white text-xs font-black mb-2 `}>{initials(emp)}</div>
- <h4 className="font-semibold text-xs truncate tracking-[0.04em]">{emp.first_name} {emp.last_name}</h4>
- <p className="text-[10px] text-[#71717a] dark:text-gray-400 truncate">{emp.role_title}</p>
+ {deptEmps.map(e => (
+ <div key={e.id} onClick={()=>setSelected(e)} className="w-48 p-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-center cursor-pointer hover:border-primary transition-colors relative z-10">
+ <div className={`w-10 h-10 mx-auto rounded-full bg-gradient-to-br ${grad(e.name)} flex items-center justify-center text-white text-xs font-black mb-2 `}>{initials(e)}</div>
+ <div className="font-semibold text-foreground truncate">{e.name}</div>
+ <div className="text-xs text-[#71717a] dark:text-gray-400 truncate">{e.role}</div>
  </div>
  ))}
  </div>
