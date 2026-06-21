@@ -13,9 +13,9 @@ export async function runRevenueForecastEngine(companyId, vertical) {
     let history = res.rows._array || Array.from(res.rows);
 
     if (history.length < 14) {
-      // fallback to transactions
+      // fallback to payments
       const txRes = await powerSync.execute(
-        `SELECT amount, created_at, type FROM univ_transactions WHERE company_id = ? AND type = 'income' AND created_at >= date('now', '-90 days') ORDER BY created_at ASC`,
+        `SELECT amount, created_at FROM univ_payments WHERE company_id = ? AND status = 'completed' AND created_at >= date('now', '-90 days') ORDER BY created_at ASC`,
         [companyId]
       );
       const txHistory = txRes.rows._array || Array.from(txRes.rows);
@@ -38,11 +38,12 @@ export async function runRevenueForecastEngine(companyId, vertical) {
 
     // Store forecast
     await powerSync.execute(
+      `DELETE FROM revenue_forecasts WHERE company_id = ? AND forecast_period = ?`,
+      [companyId, 'next_30_days']
+    );
+    await powerSync.execute(
       `INSERT INTO revenue_forecasts (id, company_id, forecast_period, forecast_amount, lower_bound, upper_bound, confidence, basis, methodology, computed_at)
-       VALUES (uuid(), ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
-       ON CONFLICT(company_id, forecast_period) DO UPDATE SET
-         forecast_amount=excluded.forecast_amount, lower_bound=excluded.lower_bound, upper_bound=excluded.upper_bound,
-         confidence=excluded.confidence, basis=excluded.basis, methodology=excluded.methodology, computed_at=datetime('now')`,
+       VALUES (uuid(), ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
       [companyId, 'next_30_days', next30DaysForecast, lowerBound, upperBound, confidence, `Based on ${weekly.length} weeks of history`, trend > 0 ? 'linear_trend_positive' : trend < 0 ? 'linear_trend_negative' : 'linear_trend_flat']
     );
 

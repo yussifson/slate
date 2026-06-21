@@ -21,12 +21,12 @@ export async function runBehaviourProfileEngine(companyId, vertical) {
       if (!profile) continue;
 
       await powerSync.execute(
+        `DELETE FROM entity_behaviour_profiles WHERE company_id = ? AND entity_type = ? AND entity_id = ?`,
+        [companyId, entityType, entity.id]
+      );
+      await powerSync.execute(
         `INSERT INTO entity_behaviour_profiles (id, company_id, entity_type, entity_id, avg_payment_days, payment_reliability, attendance_rate, engagement_trend, churn_risk, churn_risk_score, data_points_count, profile_confidence, computed_at)
-         VALUES (uuid(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
-         ON CONFLICT(company_id, entity_type, entity_id) DO UPDATE SET
-           avg_payment_days=excluded.avg_payment_days, payment_reliability=excluded.payment_reliability, attendance_rate=excluded.attendance_rate,
-           engagement_trend=excluded.engagement_trend, churn_risk=excluded.churn_risk, churn_risk_score=excluded.churn_risk_score,
-           data_points_count=excluded.data_points_count, profile_confidence=excluded.profile_confidence, computed_at=datetime('now')`,
+         VALUES (uuid(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
         [companyId, entityType, entity.id, profile.avg_payment_days, profile.payment_reliability, profile.attendance_rate, profile.engagement_trend, profile.churn_risk, profile.churn_risk_score, profile.data_points_count, profile.profile_confidence]
       );
 
