@@ -787,18 +787,10 @@ export const getIndustryNav = (industryKey, educationLevel) => {
     nav.splice(insertIndex, 0, { label: 'Video Calls', path: '/board', icon: 'Video' });
   }
 
-  // Core Engine: HR, Departments, Roles must exist globally
+  // Core Engine: HR must exist globally
   if (!nav.find(n => n.path === '/hr')) {
     const insertIndex = Math.max(0, nav.length - 4);
     nav.splice(insertIndex, 0, { label: 'HR & Leave', path: '/hr', icon: 'HeartHandshake' });
-  }
-  if (!nav.find(n => n.path === '/departments')) {
-    const insertIndex = Math.max(0, nav.length - 4);
-    nav.splice(insertIndex, 0, { label: 'Departments', path: '/departments', icon: 'Building2' });
-  }
-  if (!nav.find(n => n.path === '/roles')) {
-    const insertIndex = Math.max(0, nav.length - 4);
-    nav.splice(insertIndex, 0, { label: 'Roles', path: '/roles', icon: 'Shield' });
   }
 
   return nav;

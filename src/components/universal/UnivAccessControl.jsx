@@ -81,10 +81,25 @@ export default function UnivAccessControl() {
  const uData = __resU.rows ? (__resU.rows._array || Array.from(__resU.rows)) : [];
  if (uData) setUsers(uData);
 
- // Fetch roles
- const __resR = await powerSync.execute(`SELECT * FROM univ_roles WHERE company_id = ?`, [companyId]); 
- const rData = __resR.rows ? (__resR.rows._array || Array.from(__resR.rows)) : [];
- if (rData) setRoles(rData);
+  // Fetch roles
+  const __resR = await powerSync.execute(`SELECT * FROM univ_roles WHERE company_id = ?`, [companyId]); 
+  const rData = __resR.rows ? (__resR.rows._array || Array.from(__resR.rows)) : [];
+  
+  // Get predefined roles for active industry
+  let predefinedRoles = [];
+  try {
+    const ind = await import('@/config/industries');
+    const defaultRoles = ind.INDUSTRIES[industry]?.roles || ind.INDUSTRIES.law.roles || [];
+    predefinedRoles = defaultRoles.map(r => ({
+      id: r.id || r.label,
+      role_name: r.label,
+      description: 'Predefined industry role',
+      permissions: JSON.stringify(ind.getIndustryNav(industry).map(n => n.path)),
+      is_predefined: true
+    }));
+  } catch(e) {}
+
+  setRoles([...predefinedRoles, ...rData]);
 } catch (e) {
  console.error(e);
 } finally {
@@ -309,12 +324,17 @@ export default function UnivAccessControl() {
  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white ">
  <Shield className="w-5 h-5" />
  </div>
- <h3 className="font-black text-lg text-foreground">{r.role_name}</h3>
+ <div className="flex items-center gap-2">
+   <h3 className="font-black text-lg text-foreground">{r.role_name}</h3>
+   {r.is_predefined && <span className="px-2 py-0.5 text-[10px] font-semibold bg-primary/10 text-primary rounded-full uppercase tracking-wider">Default</span>}
  </div>
+ </div>
+ {!r.is_predefined && (
  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
  <button onClick={() => openRoleModal(r)} className="p-1.5 bg-muted rounded-xl text-[#71717a] dark:text-gray-400 hover:text-primary"><Edit2 className="w-4 h-4" /></button>
  <button onClick={() => deleteRole(r.id)} className="p-1.5 bg-red-50 rounded-xl text-red-400 hover:text-red-600"><Trash2 className="w-4 h-4" /></button>
  </div>
+ )}
  </div>
  <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
  <p className="font-semibold uppercase tracking-wider mb-2 tracking-[0.04em]">Enabled Access:</p>
