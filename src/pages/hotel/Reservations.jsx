@@ -100,6 +100,33 @@ export default function Reservations() {
 };
 
  const [isAnalyzing, setIsAnalyzing] = useState(false);
+ const [isForecasting, setIsForecasting] = useState(false);
+ const [forecastResult, setForecastResult] = useState('');
+ const [showForecastModal, setShowForecastModal] = useState(false);
+
+ const handleDemandForecast = async () => {
+   setIsForecasting(true);
+   const tId = toast.loading('AI analyzing historical booking patterns...');
+   try {
+     const res = await powerSync.execute('SELECT check_in, check_out, room_type, status FROM univ_hotel_reservations WHERE company_id = ?', [companyId]);
+     const historicalData = res.rows._array ? res.rows._array : Array.from(res.rows);
+     
+     const prompt = `You are an AI Hotel Yield Manager. Current date is ${new Date().toISOString().split('T')[0]}.
+Here is some historical reservation data for the property:
+${JSON.stringify(historicalData.slice(0, 100))}
+Based on this data, predict the occupancy demand for the next 30 days. Provide a concise, easy-to-read summary of the expected demand, including which room types might be most popular and any pricing suggestions. Keep it under 150 words. Format nicely.`;
+
+     const result = await generateText(prompt);
+     setForecastResult(result);
+     setShowForecastModal(true);
+     toast.success('Forecast generated successfully', { id: tId });
+   } catch (err) {
+     console.error(err);
+     toast.error('Failed to generate demand forecast', { id: tId });
+   } finally {
+     setIsForecasting(false);
+   }
+ };
  const handleSmartPricing = async () => {
    setIsAnalyzing(true);
    const tId = toast.loading('AI analyzing market demand and occupancy...');
@@ -263,6 +290,9 @@ Format your response exactly as valid JSON ONLY:
   <div className="flex gap-2">
   <Button onClick={() => setShowChannelSync(true)} variant="outline" className="gap-2 border-primary/30 text-primary hover:bg-primary/10">
     <RefreshCcw className="w-4 h-4" /> Channel Sync
+  </Button>
+  <Button onClick={handleDemandForecast} disabled={isForecasting} variant="outline" className="gap-2 border-primary/30 text-primary hover:bg-primary/10">
+    <Activity className="w-4 h-4" /> Demand Forecast
   </Button>
   <Button onClick={handleSmartPricing} disabled={isAnalyzing} variant="outline" className="gap-2 border-primary/30 text-primary hover:bg-primary/10">
     <Sparkles className="w-4 h-4" /> AI Smart Pricing
@@ -474,6 +504,26 @@ Format your response exactly as valid JSON ONLY:
 })()}
  </SheetContent>
  </Sheet>
+
+  {/* Demand Forecast Modal */}
+  {showForecastModal && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+      <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-6 border border-primary/20">
+        <div className="flex justify-between items-center text-center space-y-2">
+          <div className="flex-1 text-center">
+            <div className="w-16 h-16 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Activity className="w-8 h-8"/>
+            </div>
+            <h2 className="text-xl font-bold">Demand Forecast (30 Days)</h2>
+          </div>
+        </div>
+        <div className="bg-muted/30 p-4 rounded-xl text-sm whitespace-pre-wrap text-card-foreground">
+          {forecastResult}
+        </div>
+        <Button className="w-full" onClick={() => setShowForecastModal(false)}>Close</Button>
+      </div>
+    </div>
+  )}
 
   {/* Channel Manager Sync Modal */}
   {showChannelSync && (
