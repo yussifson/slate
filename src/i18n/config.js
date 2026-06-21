@@ -29,22 +29,31 @@ i18n.on('languageChanged', (lng) => {
   document.documentElement.lang = lng;
 
   // Trigger Google Translate Widget
-  const selectElement = document.querySelector('.goog-te-combo');
-  if (selectElement) {
-    let googleCode = lng.split('-')[0];
-    if (googleCode === 'zh') googleCode = 'zh-CN';
-    selectElement.value = googleCode;
-    selectElement.dispatchEvent(new Event('change'));
-  } else {
+  const triggerGoogleTranslate = (langCode) => {
+    const select = document.querySelector('.goog-te-combo');
+    if (!select) return false;
+    
+    select.value = langCode;
+    
+    // Force the event with proper bubbling
+    const event = document.createEvent('HTMLEvents');
+    event.initEvent('change', true, true);
+    select.dispatchEvent(event);
+    
+    // Explicitly set cookie so Google picks it up reliably without double-click
+    document.cookie = `googtrans=/en/${langCode}; path=/; domain=${window.location.hostname}`;
+    document.cookie = `googtrans=/en/${langCode}; path=/`;
+    
+    return true;
+  };
+
+  let googleCode = lng.split('-')[0];
+  if (googleCode === 'zh') googleCode = 'zh-CN';
+  
+  if (!triggerGoogleTranslate(googleCode)) {
     // Retry in case widget hasn't fully loaded yet
     setTimeout(() => {
-      const retrySelect = document.querySelector('.goog-te-combo');
-      if (retrySelect) {
-        let googleCode = lng.split('-')[0];
-        if (googleCode === 'zh') googleCode = 'zh-CN';
-        retrySelect.value = googleCode;
-        retrySelect.dispatchEvent(new Event('change'));
-      }
+      triggerGoogleTranslate(googleCode);
     }, 500);
   }
 });
