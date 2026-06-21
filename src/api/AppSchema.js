@@ -1620,6 +1620,14 @@ export const AppSchema = new Schema({
         description: column.text,
         paid_at: column.text,
         created_at: column.text}),
+    univ_roles: new Table({
+        id: column.text,
+        company_id: column.text,
+        role_name: column.text,
+        description: column.text,
+        permissions: column.text,
+        created_at: column.text
+    }),
     univ_accesscontrols: new Table({
         id: column.text,
         created_at: column.text,
@@ -2402,6 +2410,7 @@ export const AppSchema = new Schema({
         created_at: column.text,
         company_id: column.text,
         name: column.text,
+        description: column.text,
         manager_id: column.text,
         budget: column.real,
         status: column.text

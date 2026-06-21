@@ -315,14 +315,17 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
  const univAllowedPaths = React.useMemo(() => {
  if (!univAccessData?.permissions) return null;
- const paths = ['/chat', '/board', '/email-inbox'];
- Object.entries(univAccessData.permissions).forEach(([feat, perms]) => {
- if (perms.read) {
- if (FEATURE_PATHS[feat]) paths.push(...FEATURE_PATHS[feat]);
-}
-});
+ const paths = ['/', '/settings', '/chat', '/board', '/email-inbox'];
+ 
+ // Map the permission keys back to actual paths from the industry nav
+ industryNavRaw.forEach(navItem => {
+   const label = navItem.label || navItem.section;
+   if (label && univAccessData.permissions[label]?.read) {
+     if (navItem.path) paths.push(navItem.path);
+   }
+ });
  return paths;
-}, [univAccessData]);
+}, [univAccessData, industryNavRaw]);
 
  const allowedPaths = isAdmin ? null : (univAllowedPaths || ROLE_PERMISSIONS[user?.role] || ROLE_PERMISSIONS.support);
 
@@ -353,7 +356,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
  const filteredCompanyNav = (isSuiteAdmin && location.pathname.startsWith('/admin')) ? adminNav : (isOrbitMode ? coreOrbitNav : industryNav.filter(item => {
  // If activeModules is explicitly set (Custom Selection mode)
- if (activeModules && !['/', '/settings', '/integrations', '/admin', '/email-inbox', '/chat', '/board'].includes(item.path)) {
+ if (activeModules && !['/', '/settings', '/integrations', '/admin', '/email-inbox', '/chat', '/board', '/hr', '/roles', '/departments'].includes(item.path)) {
  // If it's not in the active modules, completely hide it
  if (!activeModules.includes(item.path)) return false;
  // If it IS in the active modules, bypass role restrictions so the user can actually see what they selected!

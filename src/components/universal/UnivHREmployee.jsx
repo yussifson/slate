@@ -14,8 +14,9 @@ import { Users, UserPlus, Search, Trash2, Edit2, Loader2, XCircle, Mail, Phone, 
 import { toast} from 'react-hot-toast';
 import { base44 } from "@/api/base44Client";
 
+import { registerSchoolUser } from '@/api/authUtils';
+
 const EMPTY_FORM = { first_name: '', last_name: '', email: '', phone: '', role_title: '', department: '', status: 'Active', salary: '', employment_type: 'Full-Time', hire_date: ''};
-const DEPARTMENTS = ['General','Engineering','Marketing','Sales','Finance','HR','Operations','Legal','Design','Support'];
 const gradients = ['from-violet-500 to-purple-600','from-cyan-500 to-blue-600','from-emerald-500 to-teal-600','from-orange-500 to-amber-600','from-pink-500 to-rose-600','from-indigo-500 to-blue-700'];
 const grad = (n) => gradients[(n||'A').charCodeAt(0) % gradients.length];
 const initials = (e) => `${(e.first_name||'?').charAt(0)}${(e.last_name||'?').charAt(0)}`.toUpperCase();
@@ -25,6 +26,8 @@ export default function UnivHREmployee() {
  const companyId = useCompanyId();
  const [view, setView] = useState('Default');
  const [employees, setEmployees] = useState([]);
+ const [departments, setDepartments] = useState([]);
+ const [roles, setRoles] = useState([]);
  const [loading, setLoading] = useState(true);
  const [search, setSearch] = useState('');
  const [viewMode, setViewMode] = useState('grid');
@@ -47,9 +50,13 @@ export default function UnivHREmployee() {
  try {
  const __res = await powerSync.execute(`SELECT * FROM univ_hr_employees WHERE company_id = ? ORDER BY first_name ASC`, [companyId]);
  const data = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
- const error = null;
- if (error && error.code !== '42P01') throw error;
  setEmployees(data || []);
+ 
+ const depRes = await powerSync.execute(`SELECT name FROM univ_hr_departments WHERE company_id = ? ORDER BY name ASC`, [companyId]);
+ setDepartments(depRes.rows ? (depRes.rows._array || Array.from(depRes.rows)).map(d => d.name) : []);
+
+ const roleRes = await powerSync.execute(`SELECT role_name FROM univ_roles WHERE company_id = ? ORDER BY role_name ASC`, [companyId]);
+ setRoles(roleRes.rows ? (roleRes.rows._array || Array.from(roleRes.rows)).map(r => r.role_name) : []);
 } catch (e) { console.error(e);} finally { setLoading(false);}
 };
 
@@ -67,32 +74,37 @@ export default function UnivHREmployee() {
   const error = null; const data = [];
   if (error) throw error;
   toast.success('Employee updated!');
- } else {
-  if (!password) {
-    toast.error('Temporary password is required');
-    return;
+  } else {
+   if (!password) {
+     toast.error('Temporary password is required');
+     return;
+   }
+   
+   const { user, error: regError } = await registerSchoolUser(
+     form.email,
+     password,
+     form.role_title || 'staff',
+     companyId,
+     `${form.first_name} ${form.last_name}`
+   );
+   
+   if (regError && regError.message !== 'already registered in this firm' && regError.message !== 'User already exists globally') {
+     throw new Error(regError.message);
+   }
+   
+   if (user?.id) {
+     payload.user_id = user.id;
+   }
+   
+   const { error} = await (async () => {
+   const _payload = payload;
+   const _keys = Object.keys(_payload);
+   const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+   const _plhdr = _keys.map(()=>'?').join(', ');
+   await powerSync.execute(`INSERT INTO univ_hr_employees (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals); return { error: null};})();
+   if (error) throw error;
+   toast.success('Employee added and account created!');
   }
-  
-  const reg = await base44.auth.register({
-    email: form.email,
-    password: password,
-    company_id: companyId,
-    role: form.role_title || 'staff',
-  });
-  
-  if (reg?.user?.id) {
-    payload.user_id = reg.user.id;
-  }
-  
-  const { error} = await (async () => {
-  const _payload = payload;
-  const _keys = Object.keys(_payload);
-  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-  const _plhdr = _keys.map(()=>'?').join(', ');
-  await powerSync.execute(`INSERT INTO univ_hr_employees (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals); return { error: null};})();
-  if (error) throw error;
-  toast.success('Employee added and account created!');
- }
   closeModal(); fetchEmps();
  } catch (err) { console.error(err); toast.error(err.message || 'Failed to save');}
 };
@@ -178,7 +190,7 @@ export default function UnivHREmployee() {
  </div>
  <div className="flex gap-8 justify-center border-t-2 border-primary/40 pt-8 relative">
  <div className="w-[calc(100%-2rem)] h-0.5 bg-primary/40 absolute top-0 left-4"></div>
- {DEPARTMENTS.slice(0, 4).map(dept => {
+ {departments.slice(0, 4).map(dept => {
  const deptEmps = filtered.filter(e => e.department === dept);
  if (deptEmps.length === 0) return null;
  return (
@@ -235,8 +247,20 @@ export default function UnivHREmployee() {
    <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Temp Password *</label><input required type="text" value={password} onChange={e=>setPassword(e.target.value)} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="Min 6 characters"/></div>
  )}
  <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Phone</label><input type="tel" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Role / Title</label><input type="text" value={form.role_title} onChange={e=>setForm({...form,role_title:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Department</label><select value={form.department} onChange={e=>setForm({...form,department:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"><option value="">Select...</option>{DEPARTMENTS.map(d=><option key={d}>{d}</option>)}</select></div>
+ <div>
+ <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Role / Title</label>
+ <select value={form.role_title} onChange={e=>setForm({...form, role_title: e.target.value})} className="w-full h-10 px-3 border border-border rounded-lg bg-background text-sm">
+ <option value="">Select Role</option>
+ {roles.map(r=><option key={r} value={r}>{r}</option>)}
+ </select>
+ </div>
+ <div>
+ <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Department</label>
+ <select value={form.department} onChange={e=>setForm({...form, department: e.target.value})} className="w-full h-10 px-3 border border-border rounded-lg bg-background text-sm">
+ <option value="">Select Department</option>
+ {departments.map(d=><option key={d} value={d}>{d}</option>)}
+ </select>
+ </div>
  <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Employment Type</label><select value={form.employment_type} onChange={e=>setForm({...form,employment_type:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"><option>Full-Time</option><option>Part-Time</option><option>Contract</option><option>Intern</option></select></div>
  <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Status</label><select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"><option>Active</option><option>Onboarding</option><option>On Leave</option><option>Terminated</option></select></div>
  <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Salary ($)</label><input type="number" min="0" value={form.salary} onChange={e=>setForm({...form,salary:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>

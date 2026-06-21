@@ -16,7 +16,7 @@ export default function CustomDepartmentsSettings() {
 
   const fetchDepartments = async () => {
     try {
-      const res = await powerSync.execute('SELECT * FROM platform_departments WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+      const res = await powerSync.execute('SELECT * FROM univ_hr_departments WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
       setDepartments(res.rows._array || Array.from(res.rows));
     } catch (err) {
       console.error(err);
@@ -27,11 +27,11 @@ export default function CustomDepartmentsSettings() {
     e.preventDefault();
     try {
       if (formData.id) {
-        await powerSync.execute('UPDATE platform_departments SET name = ?, description = ? WHERE id = ?', 
+        await powerSync.execute('UPDATE univ_hr_departments SET name = ?, description = ? WHERE id = ?', 
           [formData.name, formData.description, formData.id]);
         toast.success('Department updated');
       } else {
-        await powerSync.execute('INSERT INTO platform_departments (id, company_id, name, description, created_at) VALUES (uuid(), ?, ?, ?, datetime("now"))', 
+        await powerSync.execute('INSERT INTO univ_hr_departments (id, company_id, name, description, created_at) VALUES (uuid(), ?, ?, ?, datetime("now"))', 
           [companyId, formData.name, formData.description]);
         toast.success('Department created');
       }
@@ -46,7 +46,7 @@ export default function CustomDepartmentsSettings() {
   const handleDelete = async (id) => {
     if(!confirm("Are you sure?")) return;
     try {
-      await powerSync.execute('DELETE FROM platform_departments WHERE id = ?', [id]);
+      await powerSync.execute('DELETE FROM univ_hr_departments WHERE id = ?', [id]);
       toast.success('Department deleted');
       fetchDepartments();
     } catch (err) {

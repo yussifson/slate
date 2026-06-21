@@ -7,17 +7,14 @@ import { Plus, Trash2, Edit2, Loader2, XCircle, Search, Shield, Users, Key, Chec
 import { toast} from 'react-hot-toast';
 import { motion, AnimatePresence} from 'framer-motion';
 
-// Master list of available features to govern
-const AVAILABLE_FEATURES = [
- 'Dashboard', 'Access Control', 'Documents', 'Projects', 'CRM Leads',
- 'Invoices', 'HR Employees', 'Inventory', 'Messaging', 'Support Tickets',
- 'Appointments', 'Payroll', 'Asset Management', 'Procurement', 'Analytics'
-];
+import { getIndustryNav } from '@/config/industries';
 
-const DEFAULT_PERMS = AVAILABLE_FEATURES.reduce((acc, feat) => {
- acc[feat] = { read: false, write: false, delete: false};
- return acc;
-}, {});
+// We will build features dynamically based on the industry
+const DEFAULT_GLOBAL_FEATURES = [
+  'Dashboard', 'Access Control', 'Documents', 'Projects', 'CRM Leads',
+  'Invoices', 'HR Employees', 'Inventory', 'Messaging', 'Support Tickets',
+  'Appointments', 'Payroll', 'Asset Management', 'Procurement', 'Analytics'
+];
 
 export default function UnivAccessControl() {
  const companyId = useCompanyId();
@@ -34,13 +31,47 @@ export default function UnivAccessControl() {
  const [roles, setRoles] = useState([]);
  const [roleModal, setRoleModal] = useState(false);
  const [editingRoleId, setEditingRoleId] = useState(null);
- const [roleForm, setRoleForm] = useState({ role_name: '', permissions: DEFAULT_PERMS});
+ const [availableFeatures, setAvailableFeatures] = useState(DEFAULT_GLOBAL_FEATURES);
+ const [roleForm, setRoleForm] = useState({ role_name: '', permissions: {} });
 
  useEffect(() => { 
- if (companyId) {
- fetchData();
-}
-}, [companyId]);
+  if (companyId) {
+    fetchIndustryNav();
+    fetchData();
+  }
+ }, [companyId]);
+
+ const fetchIndustryNav = async () => {
+   try {
+     const __res = await powerSync.execute('SELECT industry_type FROM companies WHERE id = ? LIMIT 1', [companyId]);
+     const industry_type = __res.rows._array[0]?.industry_type || 'law';
+     const navItems = getIndustryNav(industry_type);
+     
+     // Build feature list from nav items and sections
+     const features = new Set();
+     navItems.forEach(n => {
+       if (n.label) features.add(n.label);
+       if (n.section) features.add(n.section);
+     });
+     
+     const featureList = Array.from(features);
+     setAvailableFeatures(featureList);
+     
+     // Initialize default perms
+     const defaultPerms = featureList.reduce((acc, feat) => {
+       acc[feat] = { read: false, write: false, delete: false};
+       return acc;
+     }, {});
+     
+     // Update role form if it's empty
+     setRoleForm(prev => ({
+       ...prev,
+       permissions: Object.keys(prev.permissions).length > 0 ? prev.permissions : defaultPerms
+     }));
+   } catch(e) {
+     console.error("Failed to fetch industry nav", e);
+   }
+ };
 
  const fetchData = async () => {
  setLoading(true);
@@ -357,7 +388,7 @@ export default function UnivAccessControl() {
  </tr>
  </thead>
  <tbody className="divide-y divide-border-[0.5px] border-black/9 dark:border-white/8 bg-background">
- {AVAILABLE_FEATURES.map(feat => (
+ {availableFeatures.map(feat => (
  <tr key={feat} className="hover:bg-muted/20 transition-colors">
  <td className="px-4 py-3 font-semibold text-foreground">{feat}</td>
  {['read', 'write', 'delete'].map(level => {

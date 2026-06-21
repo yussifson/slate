@@ -45,32 +45,32 @@ export const registerSchoolUser = async (realEmail, password, role, companyId, f
       return { error: { message: 'already registered in this firm' } };
     }
 
-    // 2. Create the user in Supabase Auth using their RAW email
-    const { data, error } = await supabaseAdmin.auth.signUp({
-      email: cleanEmail,
-      password: password,
-      options: {
-        data: {
-          role: role,
-          company_id: companyId
-        }
-      }
+    // 2. Create the user directly via secure RPC to bypass email rate limits
+    const { data: newUserId, error } = await supabaseAdmin.rpc('admin_create_user', {
+      user_email: cleanEmail,
+      user_password: password,
+      user_role: role,
+      user_company_id: companyId,
+      user_full_name: fullName
     });
     
     if (error) {
-      // If the user already exists globally, that's fine! 
-      // We don't want to throw an error, we just want to link them.
-      if (error.message.includes('User already registered') || error.message.includes('already exists')) {
-         console.log(`User ${cleanEmail} already exists globally. They can use their existing account.`);
-         return { user: null, error: { message: 'User already exists globally' } };
+      // Fallback if RPC doesn't exist (e.g. before migration runs)
+      if (error.message && error.message.includes('function admin_create_user does not exist')) {
+         const { data: fallbackData, error: fallbackError } = await supabaseAdmin.auth.signUp({
+           email: cleanEmail,
+           password: password,
+           options: { data: { role: role, company_id: companyId, full_name: fullName } }
+         });
+         if (fallbackError) return { error: fallbackError };
+         return { user: fallbackData.user };
       }
-      console.error(`Error creating ${role} auth user:`, error);
       return { error };
     }
     
     // If email confirmations are disabled, signUp returns a valid session.
     // We use this newly created session to bypass RLS and insert their profile.
-    if (data?.session) {
+    if (data && data.session && data.user) {
       const tempClient = createClient(supabaseUrl, supabaseAnonKey, {
         global: { headers: { Authorization: `Bearer ${data.session.access_token}` } }
       });
@@ -80,15 +80,18 @@ export const registerSchoolUser = async (realEmail, password, role, companyId, f
           id: data.user.id,
           company_id: companyId,
           role: role,
-          email: cleanEmail}
+          email: cleanEmail
+        }
       ]);
       
       if (profileError) {
         console.error(`Error creating ${role} profile:`, profileError);
       }
+      return { user: data.user, error: null };
     }
     
-    return { user: data.user, error: null };
+    // For RPC success, the profile is created within the RPC
+    return { user: { id: newUserId }, error: null };
   } catch (err) {
     console.error(`Exception during ${role} registration:`, err);
     return { error: err };
