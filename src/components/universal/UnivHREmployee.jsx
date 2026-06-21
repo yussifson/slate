@@ -159,7 +159,7 @@ export default function UnivHREmployee() {
  const filtered = employees.filter(e => `${e.name} ${e.email} ${e.department_id} ${e.role}`.toLowerCase().includes(search.toLowerCase()));
 
  return (
- <div className="h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}">
+ <div className={`h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}`}>
  <div className="view-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
  <div><h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2 tracking-[-0.02em]"><Users className="w-7 h-7 text-primary"/>Employees</h1><p className="text-[#71717a] dark:text-gray-400 text-sm font-medium mt-1">{employees.length} total • {employees.filter(e=>e.status==='Active').length} active</p></div>
  <FeatureGate limitName="users" fallbackType="disable"><button onClick={()=>openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 "><UserPlus className="w-4 h-4"/>Add Employee</button></FeatureGate>

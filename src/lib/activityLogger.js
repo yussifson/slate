@@ -20,7 +20,7 @@ export const ActivityLogger = {
       const payload = {
         id: crypto.randomUUID(),
         company_id: companyId,
-        rule_id: 'activity_log',
+        rule_id: null,
         status: 'logged',
         user_email: userEmail || 'System',
         user_name: userName || 'System',

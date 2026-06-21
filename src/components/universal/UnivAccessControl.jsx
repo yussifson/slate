@@ -211,7 +211,7 @@ export default function UnivAccessControl() {
 };
 
  const openRoleModal = (r = null) => {
- setRoleForm(r ? { role_name: r.role_name, permissions: { ...DEFAULT_PERMS, ...(r.permissions || {})}} : { role_name: '', permissions: DEFAULT_PERMS});
+ setRoleForm(r ? { role_name: r.role_name, permissions: r.permissions || {} } : { role_name: '', permissions: {} });
  setEditingRoleId(r?.id || null);
  setRoleModal(true);
 };

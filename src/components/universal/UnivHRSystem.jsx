@@ -24,7 +24,7 @@ export default function UnivHRSystem() {
         </Tabs>
       </div>
 
-      <div className="flex-1 overflow-auto custom-scrollbar relative">
+      <div className="flex-1 overflow-hidden relative min-h-0">
         <div className={`absolute inset-0 transition-opacity duration-300 ${activeTab === 'employees' ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none -z-10'}`}>
           <Suspense fallback={<div className="flex items-center justify-center h-full text-[#71717a] dark:text-gray-400">Loading Employees...</div>}>
             <UnivHREmployee />
