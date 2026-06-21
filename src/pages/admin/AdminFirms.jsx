@@ -92,6 +92,12 @@ export default function AdminFirms() {
   const [messageContent, setMessageContent] = useState('');
   const [sendingMessage, setSendingMessage] = useState(false);
 
+  const INDUSTRIES = [
+    'firm', 'school', 'hospital', 'retail', 'logistics', 'restaurant', 'legal', 
+    'insurance', 'vocational', 'cleaning', 'freelancer', 'construction', 'salon', 
+    'fitness', 'realestate', 'church'
+  ];
+
   const handleToggleStatus = async (company) => {
     const nextStatus = company.status === 'active' ? 'suspended' : 'active';
     try {
@@ -287,6 +293,26 @@ export default function AdminFirms() {
                       <div className="mt-3 flex gap-2 items-center">
                         <Badge className="text-[10px] font-semibold uppercase py-0.5 px-2 bg-slate-100 text-slate-700 dark:text-slate-300 border-none tracking-[0.04em]">{c.subscription_plan}</Badge>
                         <span className="text-[10px] font-semibold text-slate-400 capitalize">({c.subscription_status})</span>
+                        
+                        {/* Industry Switcher */}
+                        <select
+                          value={c.industry_type || 'firm'}
+                          onChange={async (e) => {
+                            const newIndustry = e.target.value;
+                            try {
+                              await powerSync.execute('UPDATE companies SET industry_type = ? WHERE id = ?', [newIndustry, c.id]);
+                              toast({ title: "Industry updated", description: `${c.name} is now a ${newIndustry} workspace.` });
+                            } catch (err) {
+                              console.error("Failed to update industry:", err);
+                              toast({ title: "Failed to update industry", description: err.message, variant: "destructive" });
+                            }
+                          }}
+                          className="ml-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md px-2 py-0.5 text-[10px] focus:ring-1 focus:ring-primary outline-none"
+                        >
+                          {INDUSTRIES.map(ind => (
+                            <option key={ind} value={ind}>{ind.charAt(0).toUpperCase() + ind.slice(1)}</option>
+                          ))}
+                        </select>
                       </div>
                     </div>
                     
