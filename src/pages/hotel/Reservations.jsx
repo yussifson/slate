@@ -44,17 +44,18 @@ export default function Reservations() {
  const [showChannelSync, setShowChannelSync] = useState(false);
  const [isSyncing, setIsSyncing] = useState(false);
  const [showChannelSettings, setShowChannelSettings] = useState(false);
- const [channelSettings, setChannelSettings] = useState({ apiKey: '', propertyId: '', mockMode: true });
+ const [channelSettings, setChannelSettings] = useState({ bookingHotelId: '', expediaHotelId: '', airbnbHostId: '', mockMode: true });
 
  useEffect(() => {
    if (companyId) {
-     powerSync.execute('SELECT channex_api_key, channex_property_id, mock_mode FROM univ_hotel_settings WHERE company_id = ? LIMIT 1', [companyId])
+     powerSync.execute('SELECT booking_hotel_id, expedia_hotel_id, airbnb_host_id, mock_mode FROM univ_hotel_settings WHERE company_id = ? LIMIT 1', [companyId])
       .then(res => {
         if (res.rows.length > 0) {
           const row = res.rows._array ? res.rows._array[0] : Array.from(res.rows)[0];
           setChannelSettings({
-            apiKey: row.channex_api_key || '',
-            propertyId: row.channex_property_id || '',
+            bookingHotelId: row.booking_hotel_id || '',
+            expediaHotelId: row.expedia_hotel_id || '',
+            airbnbHostId: row.airbnb_host_id || '',
             mockMode: row.mock_mode === 1
           });
         }
@@ -66,14 +67,14 @@ export default function Reservations() {
    try {
      const res = await powerSync.execute('SELECT id FROM univ_hotel_settings WHERE company_id = ?', [companyId]);
      if (res.rows.length > 0) {
-       await powerSync.execute('UPDATE univ_hotel_settings SET channex_api_key = ?, channex_property_id = ?, mock_mode = ? WHERE company_id = ?', [channelSettings.apiKey, channelSettings.propertyId, channelSettings.mockMode ? 1 : 0, companyId]);
+       await powerSync.execute('UPDATE univ_hotel_settings SET booking_hotel_id = ?, expedia_hotel_id = ?, airbnb_host_id = ?, mock_mode = ? WHERE company_id = ?', [channelSettings.bookingHotelId, channelSettings.expediaHotelId, channelSettings.airbnbHostId, channelSettings.mockMode ? 1 : 0, companyId]);
      } else {
-       await powerSync.execute('INSERT INTO univ_hotel_settings (id, company_id, channex_api_key, channex_property_id, mock_mode) VALUES (uuid(), ?, ?, ?, ?)', [companyId, channelSettings.apiKey, channelSettings.propertyId, channelSettings.mockMode ? 1 : 0]);
+       await powerSync.execute('INSERT INTO univ_hotel_settings (id, company_id, booking_hotel_id, expedia_hotel_id, airbnb_host_id, mock_mode) VALUES (uuid(), ?, ?, ?, ?, ?)', [companyId, channelSettings.bookingHotelId, channelSettings.expediaHotelId, channelSettings.airbnbHostId, channelSettings.mockMode ? 1 : 0]);
      }
-     toast.success('Channel Manager settings saved!');
+     toast.success('Channel connections saved!');
      setShowChannelSettings(false);
    } catch(e) {
-     toast.error('Failed to save settings');
+     toast.error('Failed to save connections');
    }
  };
 
@@ -121,7 +122,8 @@ Format your response exactly as valid JSON ONLY:
      }
 
      // 2. Push to OTA Channels
-     const channelApi = new ChannelManagerAPI(channelSettings.apiKey || 'mock_key', channelSettings.propertyId || 'mock_prop_id', channelSettings.mockMode);
+     // Use server's Master API Key
+     const channelApi = new ChannelManagerAPI('master_key_from_env', channelSettings.bookingHotelId || 'mock_prop', channelSettings.mockMode);
      const mappedRates = aiRates.map(r => ({
        room_code: r.room_code,
        date: new Date().toISOString().split('T')[0],
@@ -491,32 +493,40 @@ Format your response exactly as valid JSON ONLY:
         {showChannelSettings ? (
           <div className="space-y-4 bg-muted/30 p-4 rounded-xl text-left border border-border/50">
             <div>
-              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Channex API Key</label>
-              <Input className="mt-1" type="password" value={channelSettings.apiKey} onChange={(e) => setChannelSettings({...channelSettings, apiKey: e.target.value})} placeholder="sk_test_..." />
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Booking.com Hotel ID</label>
+              <Input className="mt-1" value={channelSettings.bookingHotelId} onChange={(e) => setChannelSettings({...channelSettings, bookingHotelId: e.target.value})} placeholder="e.g. 123456" />
             </div>
             <div>
-              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Property ID</label>
-              <Input className="mt-1" value={channelSettings.propertyId} onChange={(e) => setChannelSettings({...channelSettings, propertyId: e.target.value})} placeholder="e.g. 1a2b3c" />
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Expedia Hotel ID</label>
+              <Input className="mt-1" value={channelSettings.expediaHotelId} onChange={(e) => setChannelSettings({...channelSettings, expediaHotelId: e.target.value})} placeholder="e.g. 987654" />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Airbnb Host ID</label>
+              <Input className="mt-1" value={channelSettings.airbnbHostId} onChange={(e) => setChannelSettings({...channelSettings, airbnbHostId: e.target.value})} placeholder="e.g. 445566" />
             </div>
             <div className="flex items-center gap-2 pt-2">
               <input type="checkbox" id="mockMode" checked={channelSettings.mockMode} onChange={(e) => setChannelSettings({...channelSettings, mockMode: e.target.checked})} className="rounded border-gray-300" />
               <label htmlFor="mockMode" className="text-sm font-medium">Enable Mock Mode (Simulate API)</label>
             </div>
-            <Button className="w-full mt-2" onClick={saveChannelSettings}>Save Settings</Button>
+            <Button className="w-full mt-2" onClick={saveChannelSettings}>Connect Channels</Button>
           </div>
         ) : (
           <div className="space-y-3 bg-muted rounded-xl p-4">
             <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-green-500"></span> Booking.com</div>
-              <span className="text-muted-foreground text-xs">Connected</span>
+              <div className="flex items-center gap-2"><span className={`w-2 h-2 rounded-full ${channelSettings.bookingHotelId ? 'bg-green-500' : 'bg-gray-300'}`}></span> Booking.com</div>
+              <span className="text-muted-foreground text-xs">{channelSettings.bookingHotelId ? 'Connected' : 'Not Configured'}</span>
             </div>
             <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-green-500"></span> Expedia</div>
-              <span className="text-muted-foreground text-xs">Connected</span>
+              <div className="flex items-center gap-2"><span className={`w-2 h-2 rounded-full ${channelSettings.expediaHotelId ? 'bg-green-500' : 'bg-gray-300'}`}></span> Expedia</div>
+              <span className="text-muted-foreground text-xs">{channelSettings.expediaHotelId ? 'Connected' : 'Not Configured'}</span>
             </div>
             <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center gap-2"><span className={`w-2 h-2 rounded-full ${channelSettings.mockMode ? 'bg-amber-500' : 'bg-green-500'}`}></span> Channex API</div>
-              <span className="text-muted-foreground text-xs">{channelSettings.mockMode ? 'Mock Mode' : 'Live'}</span>
+              <div className="flex items-center gap-2"><span className={`w-2 h-2 rounded-full ${channelSettings.airbnbHostId ? 'bg-green-500' : 'bg-gray-300'}`}></span> Airbnb</div>
+              <span className="text-muted-foreground text-xs">{channelSettings.airbnbHostId ? 'Connected' : 'Not Configured'}</span>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center gap-2"><span className={`w-2 h-2 rounded-full ${channelSettings.mockMode ? 'bg-amber-500' : 'bg-green-500'}`}></span> Live Sync API</div>
+              <span className="text-muted-foreground text-xs">{channelSettings.mockMode ? 'Mock Mode' : 'Active'}</span>
             </div>
           </div>
         )}

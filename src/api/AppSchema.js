@@ -3970,7 +3970,9 @@ export const AppSchema = new Schema({
     univ_hotel_settings: new Table({
         id: column.text,
         company_id: column.text,
-        channex_api_key: column.text,
+        booking_hotel_id: column.text,
+        expedia_hotel_id: column.text,
+        airbnb_host_id: column.text,
         channex_property_id: column.text,
         mock_mode: column.integer,
         updated_at: column.text
