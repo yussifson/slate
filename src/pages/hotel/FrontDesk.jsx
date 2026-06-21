@@ -410,7 +410,7 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
 })}
  </div>
 
-  {isLoading ? (
+  { (isLoadingRes || isLoadingRooms) ? (
   <div className="py-20 text-center text-[#71717a] dark:text-gray-400">{t("loading_room_status", "Loading room status...")}</div>
   ) : (
   <div className="space-y-6 school-page-enter font-dmsans">

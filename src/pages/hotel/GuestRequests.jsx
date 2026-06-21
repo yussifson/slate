@@ -99,7 +99,7 @@ export default function GuestRequests() {
 };
 
  const handleUpdateStatus = (req, newStatus) => {
- const updatedPayload = { ...req};
+ const updatedPayload = { ...req, status: newStatus };
  delete updatedPayload.id;
 
  mutateRecord.mutate({

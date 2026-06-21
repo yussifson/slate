@@ -3,6 +3,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 const UnivHREmployee = React.lazy(() => import('./UnivHREmployee'));
 import UnivDepartments from './UnivDepartments';
 import UnivAccessControl from './UnivAccessControl';
+import UnivLeaveManagement from './UnivLeaveManagement';
 import { Users, Building2, Shield, CalendarHeart } from 'lucide-react';
 import PageHeader from '../shared/PageHeader';
 
@@ -36,7 +37,7 @@ export default function UnivHRSystem() {
           <UnivAccessControl />
         </div>
         <div className={`absolute inset-0 transition-opacity duration-300 ${activeTab === 'leave' ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none -z-10'}`}>
-          <div className="p-8 flex items-center justify-center h-full text-[#71717a] dark:text-gray-400 font-medium">Leave Management (Coming Soon)</div>
+          <UnivLeaveManagement />
         </div>
       </div>
     </div>

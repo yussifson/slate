@@ -142,7 +142,7 @@ export default function UnivAccessControl() {
 }
 
  await (async () => {
- const _payload = payload;
+ const _payload = editingUserId ? payload : { id: crypto.randomUUID(), ...payload };
  const _keys = Object.keys(_payload);
  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
  if (editingUserId) {
@@ -187,7 +187,7 @@ export default function UnivAccessControl() {
  const payload = { ...roleForm, company_id: companyId};
  
  await (async () => {
- const _payload = payload;
+ const _payload = editingRoleId ? payload : { id: crypto.randomUUID(), ...payload };
  const _keys = Object.keys(_payload);
  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
  if (editingRoleId) {
