@@ -19,7 +19,7 @@ export default function Rooms() {
  const deleteRecord = useDeleteIndustryRecord();
 
  // Map database records
- const rooms = dbRecords.map(r => ({ id: r.id, status: r.status || 'Active', ...r.data}));
+ const rooms = dbRecords.map(r => ({ ...r.data, id: r.id, status: r.status || 'Active' }));
 
  const [search, setSearch] = useState('');
  const [showModal, setShowModal] = useState(false);
@@ -108,10 +108,12 @@ export default function Rooms() {
       const room = rooms.find(r => r.id === id);
       if (room) {
         const newStatus = room.status === 'Maintenance' ? 'Available' : 'Maintenance';
+        // Strip id and status from payload to avoid storing them in JSON
+        const { id: _id, status: _status, ...cleanPayload } = room;
         mutateRecord.mutate({ 
           id: room.id, 
           recordType: 'room', 
-          payload: room, 
+          payload: cleanPayload, 
           status: newStatus,
           searchText: `${room.roomNumber} ${room.type}`
         });
@@ -225,8 +227,15 @@ export default function Rooms() {
  <Edit className="w-4 h-4 mr-2" /> {t("edit", "Edit")}
  </DropdownMenuItem>
  <DropdownMenuItem onClick={() => {
- mutateRecord.mutate({ id: room.id, recordType: 'room', payload: room, status: room.status === 'Maintenance' ? 'Available' : 'Maintenance'})
-}}>
+   const { id: _id, status: _status, ...cleanPayload } = room;
+   mutateRecord.mutate({ 
+     id: room.id, 
+     recordType: 'room', 
+     payload: cleanPayload, 
+     status: room.status === 'Maintenance' ? 'Available' : 'Maintenance',
+     searchText: `${room.roomNumber} ${room.type}`
+   });
+ }}>
  <Activity className="w-4 h-4 mr-2" /> {t("toggle_maintenance", "Toggle Maintenance")}
  </DropdownMenuItem>
  <DropdownMenuItem onClick={() => setDeleteTargetId(room.id)} className="text-red-600">
