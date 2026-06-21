@@ -11,7 +11,7 @@ import { toast} from 'react-hot-toast';
 import { Link} from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
-import { MoreVertical, FileText, Edit, Activity, User, CreditCard} from 'lucide-react';
+import { MoreVertical, FileText, Edit, Activity, User, CreditCard, X} from 'lucide-react';
 import { usePayment} from '@/hooks/integrations/usePayment';
 import { useCompanyId} from '@/hooks/useCompanyId';
 import { useNotifications} from "@/hooks/integrations/useNotifications";

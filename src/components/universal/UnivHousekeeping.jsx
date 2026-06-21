@@ -12,6 +12,7 @@ import { useCompanyId} from '@/hooks/useCompanyId';
 import { motion} from 'framer-motion';
 import { Search, Sparkles, CheckCircle2, Clock, AlertTriangle, Plus, Brush, MoreHorizontal} from 'lucide-react';
 import { toast} from 'react-hot-toast';
+import { useIndustryRecords } from '@/hooks/useIndustryData';
 
 export default function UnivHousekeeping() {
  const companyId = useCompanyId();
@@ -21,6 +22,8 @@ export default function UnivHousekeeping() {
  const [searchTerm, setSearchTerm] = useState('');
  const [isModalOpen, setIsModalOpen] = useState(false);
  const [editingId, setEditingId] = useState(null);
+ const { data: dbRooms = [] } = useIndustryRecords('room');
+ const availableRooms = dbRooms.map(r => ({ id: r.id, ...r.data }));
  const [form, setForm] = useState({
  room_id: '',
  task_type: 'Routine Cleaning',
@@ -226,7 +229,11 @@ export default function UnivHousekeeping() {
  className="hover:bg-muted/30 transition-colors group cursor-pointer" onClick={() => openModal(t)}
  >
  <td className="p-4 font-semibold text-foreground">
- Room {t.notes?.includes('Room: ') ? t.notes.split('Room: ')[1] : (t.room_id?.replace('R-', '') || 'Unknown')}
+ Room {(() => {
+   if (t.notes?.includes('Room: ')) return t.notes.split('Room: ')[1];
+   const r = availableRooms.find(r => r.id === t.room_id);
+   return r ? r.roomNumber : (t.room_id?.replace('R-', '') || 'Unknown');
+ })()}
  </td>
  <td className="p-4 font-semibold text-foreground flex items-center gap-2">
  <Brush className="w-4 h-4 text-primary" /> {t.task_type}
@@ -273,8 +280,13 @@ export default function UnivHousekeeping() {
  </div>
  <form onSubmit={handleSave} className="p-4 space-y-4">
  <div>
- <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Room ID</label>
- <input required value={form.room_id} onChange={e => setForm({...form, room_id: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm" />
+ <label className="block text-xs font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.04em]">Room</label>
+ <select required value={form.room_id} onChange={e => setForm({...form, room_id: e.target.value})} className="w-full p-2 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm">
+   <option value="" disabled>Select Room</option>
+   {availableRooms.map(r => (
+     <option key={r.id} value={r.id}>{r.roomNumber || r.id}</option>
+   ))}
+ </select>
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div>
