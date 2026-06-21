@@ -1,6 +1,8 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
-import { BedDouble, Calendar, UserCheck, LogIn, LogOut, CheckCircle2, Settings, Brush, Moon, Clock, Key, Users, TrendingUp, X, Sparkles, Receipt, CreditCard, ScanLine } from 'lucide-react';
+import { BedDouble, Calendar, UserCheck, LogIn, LogOut, CheckCircle2, Settings, Brush, Moon, Clock, Key, Users, TrendingUp, X, Sparkles, Receipt, CreditCard, ScanLine, AlertTriangle, Activity } from 'lucide-react';
+import { generateText } from '@/lib/cloudflareAI';
+import ReactMarkdown from 'react-markdown';
 import { Button} from '@/components/ui/button';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import { Input} from '@/components/ui/input';
@@ -58,6 +60,8 @@ export default function FrontDesk() {
  const [showKeycardModal, setShowKeycardModal] = useState(false);
  const [isGeneratingKey, setIsGeneratingKey] = useState(false);
  const [checkInForm, setCheckInForm] = useState({ guestName: '', guestPhone: '', roomType: 'Standard', checkOut: ''});
+ const [isAnalyzingChurn, setIsAnalyzingChurn] = useState(false);
+ const [churnInsights, setChurnInsights] = useState("");
 
  const todayArrivals = reservations.filter(r => r.checkIn === today && r.status === 'Confirmed');
  const todayDepartures = reservations.filter(r => r.checkOut === today && r.status === 'Checked-in');
@@ -77,6 +81,51 @@ export default function FrontDesk() {
      occupancy: Math.min(100, Math.max(10, baseOcc + (Math.random() * 20 - 10).toFixed(0)))
    };
  });
+
+ const handleAnalyzeChurn = async () => {
+   setIsAnalyzingChurn(true);
+   try {
+     const guestMap = {};
+     reservations.forEach(r => {
+       const name = r.guestName;
+       if (!name) return;
+       if (!guestMap[name]) guestMap[name] = { bookings: 0, lastStay: new Date(0), totalSpent: 0 };
+       guestMap[name].bookings++;
+       const checkInDate = new Date(r.checkIn || r.createdAt || today);
+       if (checkInDate > guestMap[name].lastStay) {
+         guestMap[name].lastStay = checkInDate;
+       }
+       guestMap[name].totalSpent += (r.totalAmount || 0);
+     });
+     
+     const sixMonthsAgo = new Date();
+     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+     
+     const atRiskGuests = Object.entries(guestMap)
+       .filter(([name, data]) => data.bookings > 1 && data.lastStay < sixMonthsAgo)
+       .map(([name, data]) => ({ name, bookings: data.bookings, totalSpent: data.totalSpent, lastStay: data.lastStay.toISOString().split('T')[0] }));
+       
+     if (atRiskGuests.length === 0) {
+       setChurnInsights("No high-risk lapsed guests found (repeat guests with last stay > 6 months ago).");
+       setIsAnalyzingChurn(false);
+       return;
+     }
+     
+     const prompt = `You are a hotel management AI. We have identified some high-risk lapsed guests (repeat guests who haven't booked in over 6 months). 
+Here is the data:
+${JSON.stringify(atRiskGuests, null, 2)}
+
+Please briefly identify the highest risk/highest value guests and suggest 2-3 specific, actionable retention strategies to win them back. Format your response beautifully using Markdown.`;
+
+     const responseText = await generateText([{ role: 'user', content: prompt }]);
+     setChurnInsights(responseText);
+     toast.success("Churn analysis complete");
+   } catch (err) {
+     toast.error('Failed to analyze churn risk: ' + err.message);
+   } finally {
+     setIsAnalyzingChurn(false);
+   }
+ };
 
  const handleAutoAssign = () => {
    const tId = toast.loading('AI finding the best available room...');
@@ -468,6 +517,37 @@ export default function FrontDesk() {
  )}
  </div>
  </div>
+
+ {/* AI Guest Churn Risk Panel */}
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+    <div className="flex items-center justify-between mb-4">
+      <h3 className="font-semibold text-primary/80 flex items-center gap-2">
+        <Activity className="w-5 h-5 text-red-500" />
+        Guest Churn Risk & VIP Insights
+      </h3>
+      <Button 
+        onClick={handleAnalyzeChurn} 
+        disabled={isAnalyzingChurn}
+        className="gap-2 bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900"
+      >
+        <Sparkles className={`w-4 h-4 ${isAnalyzingChurn ? 'animate-pulse' : ''}`} /> 
+        {isAnalyzingChurn ? 'Analyzing...' : 'Analyze Churn Risk'}
+      </Button>
+    </div>
+    
+    {churnInsights ? (
+      <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-6 border border-primary/20 prose prose-sm dark:prose-invert max-w-none">
+        <ReactMarkdown>{churnInsights}</ReactMarkdown>
+      </div>
+    ) : (
+      <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-8 border border-primary/20 flex flex-col items-center justify-center text-center">
+        <AlertTriangle className="w-10 h-10 text-slate-400 mb-3" />
+        <p className="text-sm font-medium text-slate-600 dark:text-slate-300">No churn analysis generated yet.</p>
+        <p className="text-xs text-slate-500 mt-1 max-w-md">Run the AI analysis to identify repeat guests who haven't booked in over 6 months and generate tailored retention strategies.</p>
+      </div>
+    )}
+  </div>
+
  {/* Check-In Modal */}
  {showCheckInModal && selectedRoom && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
