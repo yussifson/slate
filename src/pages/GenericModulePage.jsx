@@ -192,7 +192,7 @@ export default function GenericModulePage({ title: propTitle, description: propD
 }
 }
  
- toast({ title: "Settings Saved", description: "Module sharing and visibility updated."});
+ toast({ title: "Settings Saved", description: "Slate sharing and visibility updated."});
  setIsSettingsOpen(false);
  fetchDynamicData();
 } catch (err) {
@@ -470,9 +470,9 @@ export default function GenericModulePage({ title: propTitle, description: propD
  <option value="public">Public (Marketplace Template)</option>
  </select>
  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-1 tracking-[0.04em]">
- {visibility === 'public' && "This module's configuration will be available in the public Marketplace for anyone to install."}
- {visibility === 'private' && "Only users in your firm can access this module."}
- {visibility === 'shared' && "Users from the specified workspaces can access this module."}
+ {visibility === 'public' && "This slate's configuration will be available in the public Marketplace for anyone to install."}
+ {visibility === 'private' && "Only users in your firm can access this slate."}
+ {visibility === 'shared' && "Users from the specified workspaces can access this slate."}
  </p>
  </div>
 

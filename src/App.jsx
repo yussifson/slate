@@ -13,6 +13,7 @@ import { ThemeProvider } from '@/lib/ThemeContext';
 import { ImpersonationProvider } from '@/lib/ImpersonationContext';
 import { VideoProvider } from '@/lib/VideoContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import EnterpriseDashboard from './pages/EnterpriseDashboard';
 import Intelligence from '@/pages/Intelligence';
 import GlobalAnalyticsDashboard from '@/pages/GlobalAnalyticsDashboard';
 // React imported at the top
