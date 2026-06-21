@@ -3,9 +3,11 @@ import { useAuth } from "@/lib/AuthContext";
 import { useImpersonation } from "@/lib/ImpersonationContext";
 import { supabase } from "@/api/supabaseClient";
 import IntelligenceUI from "@/components/intelligence/IntelligenceUI";
-import { Building2, Plus, ArrowRight, Activity, TrendingUp, Sparkles, Globe } from "lucide-react";
+import { Building2, Plus, ArrowRight, Activity, TrendingUp, Sparkles, Globe, ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { toast } from "react-hot-toast";
 
 export default function EnterpriseDashboard() {
   const { user } = useAuth();
@@ -14,24 +16,35 @@ export default function EnterpriseDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let active = true;
-    const fetchPortfolio = async () => {
-      try {
-        if (!user?.id) return;
-        const { data, error } = await supabase.rpc('get_enterprise_portfolio', { admin_uid: user.id });
-        if (error) throw error;
-        if (active) {
-          setPortfolio(data || []);
-          setLoading(false);
-        }
-      } catch (err) {
-        console.error("Failed to fetch enterprise portfolio:", err);
-        if (active) setLoading(false);
-      }
-    };
+  const fetchPortfolio = async () => {
+    try {
+      if (!user?.id) return;
+      const { data, error } = await supabase.rpc('get_enterprise_portfolio', { admin_uid: user.id });
+      if (error) throw error;
+      setPortfolio(data || []);
+      setLoading(false);
+    } catch (err) {
+      console.error("Failed to fetch enterprise portfolio:", err);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchPortfolio();
-    return () => { active = false; };
   }, [user?.id]);
+
+  const changeWorkspace = async (e, companyId, newIndustry) => {
+    e.stopPropagation();
+    try {
+      const { error } = await supabase.from('companies').update({ industry_type: newIndustry }).eq('id', companyId);
+      if (error) throw error;
+      toast.success(`Workspace updated to ${newIndustry}!`);
+      fetchPortfolio();
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update workspace.");
+    }
+  };
 
   const totalModulesActive = portfolio.reduce((acc, curr) => acc + (curr.active_modules ? curr.active_modules.length : 0), 0);
 
@@ -112,12 +125,35 @@ export default function EnterpriseDashboard() {
                 className="school-card p-6 cursor-pointer hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 transition-all group"
               >
                 <div className="flex justify-between items-start mb-4">
-                  <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-2xl group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 transition-colors">
-                    <Building2 className="text-slate-600 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400" />
+                  <div className="flex gap-2">
+                    <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-2xl group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 transition-colors">
+                      <Building2 className="text-slate-600 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400" />
+                    </div>
                   </div>
-                  <span className="text-xs font-semibold bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full uppercase tracking-widest text-slate-500">
-                    {company.industry}
-                  </span>
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" className="h-7 text-xs rounded-full bg-slate-100 dark:bg-slate-800 border-0 hover:bg-slate-200 dark:hover:bg-slate-700 uppercase tracking-widest text-slate-500 font-semibold px-3">
+                          Workspace: {company.industry || 'core'} <ChevronDown className="ml-1 w-3 h-3" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={(e) => changeWorkspace(e, company.id, 'law_firm')}>Law Firm</DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => changeWorkspace(e, company.id, 'hospital')}>Hospital</DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => changeWorkspace(e, company.id, 'school')}>School</DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => changeWorkspace(e, company.id, 'university')}>University</DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => changeWorkspace(e, company.id, 'vocational')}>Vocational</DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => changeWorkspace(e, company.id, 'hotel')}>Hotel</DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => changeWorkspace(e, company.id, 'hr')}>Human Resources</DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => changeWorkspace(e, company.id, 'retail')}>Retail</DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => changeWorkspace(e, company.id, 'logistics')}>Logistics</DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => changeWorkspace(e, company.id, 'insurance')}>Insurance</DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => changeWorkspace(e, company.id, 'religion')}>Religion / Church</DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => changeWorkspace(e, company.id, 'marketing_agency')}>Marketing Agency</DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => changeWorkspace(e, company.id, 'core')}>Core System</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-blue-600 transition-colors">
                   {company.name}
