@@ -350,6 +350,5 @@ export default function HospitalDashboard({ companyId, company, isAdmin}) {
    </div>
  </div>
  </div>
- </div>
  );
 }
