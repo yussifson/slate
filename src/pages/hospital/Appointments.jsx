@@ -233,7 +233,12 @@ Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {
                 return (
                   <div key={appt.id} onClick={() => setSelectedAppt(appt)} className={`p-3 rounded-xl border-[0.5px] cursor-pointer transition-all flex flex-col gap-2 ${selectedAppt?.id === appt.id ? 'ring-2 ring-primary border-transparent bg-primary/20' : 'border-primary/40'}`}>
                     <div className="flex justify-between items-start">
-                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border-[0.5px] uppercase tracking-wider ${typeColors[appt.type]}`}>{appt.type}</span>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border-[0.5px] uppercase tracking-wider ${typeColors[appt.type]}`}>{appt.type}</span>
+                        {appt.no_show_risk_score > 0.7 && (
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md border-[0.5px] bg-red-50 text-red-700 border-red-200">High No-Show Risk</span>
+                        )}
+                      </div>
                       <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border ${statusColors[appt.status]}`}>{appt.status}</span>
                     </div>
                     <div>
@@ -267,7 +272,10 @@ Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {
                   <div className="flex-1 p-1 flex flex-col gap-1">
                     {filteredAppts.filter(a => a.time.startsWith(hour.substring(0, 2))).map(appt => (
                       <div key={appt.id} onClick={() => setSelectedAppt(appt)} className={`text-xs p-1.5 rounded border-[0.5px] cursor-pointer truncate ${selectedAppt?.id === appt.id ? 'ring-1 ring-primary bg-primary/20 border-primary' : 'bg-card border-primary/30 hover:border-primary/60'}`}>
-                        <div className="font-semibold text-primary truncate">{appt.time} - {appt.client_name}</div>
+                        <div className="font-semibold text-primary truncate flex items-center gap-1">
+                          {appt.time} - {appt.client_name}
+                          {appt.no_show_risk_score > 0.7 && <span className="w-2 h-2 rounded-full bg-red-500" title="High No-Show Risk"></span>}
+                        </div>
                         <div className="text-[#71717a] truncate text-[10px]">{appt.doctor_id}</div>
                       </div>
                     ))}
@@ -282,7 +290,13 @@ Return ONLY a valid JSON object in this exact format: {"type": "Emergency"} or {
             <div className="space-y-6 h-full flex flex-col">
               <div className="flex justify-between items-start border-b border-primary/40 pb-4">
                 <div>
-                  <h2 className="text-2xl font-semibold text-card-foreground flex items-center gap-2">{selectedAppt.client_name} <span className={`text-xs px-2 py-1 rounded-full ${statusColors[selectedAppt.status]} font-medium uppercase tracking-wider`}>{selectedAppt.status}</span></h2>
+                  <h2 className="text-2xl font-semibold text-card-foreground flex items-center gap-2">
+                    {selectedAppt.client_name}
+                    <span className={`text-xs px-2 py-1 rounded-full ${statusColors[selectedAppt.status]} font-medium uppercase tracking-wider`}>{selectedAppt.status}</span>
+                    {selectedAppt.no_show_risk_score > 0.7 && (
+                      <span className="text-xs font-semibold px-2 py-1 rounded-full bg-red-50 text-red-700 border border-red-200">High No-Show Risk</span>
+                    )}
+                  </h2>
                   <div className="flex items-center gap-4 mt-2 text-sm text-[#71717a]">
                     <span className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-md border-[0.5px]"><Stethoscope className="w-4 h-4" /> {selectedAppt.doctor_id}</span>
                     <span className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-md border-[0.5px]"><Clock className="w-4 h-4" /> {selectedAppt.time}</span>

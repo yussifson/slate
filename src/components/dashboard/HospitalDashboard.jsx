@@ -10,7 +10,7 @@ import { useAuth} from "@/lib/AuthContext";
 import { useImpersonation} from "@/lib/ImpersonationContext";
 import { useCompanyId} from "@/hooks/useCompanyId";
 import { getTerm} from "@/config/industries";
-import { Briefcase, Users, DollarSign, Clock, Calendar, BarChart2, RefreshCw, Building2, Settings2} from "lucide-react";
+import { Briefcase, Users, DollarSign, Clock, Calendar, BarChart2, RefreshCw, Building2, Settings2, Activity, Beaker, Bed } from "lucide-react";
 import HearingReminders from "@/components/dashboard/HearingReminders";
 import { Badge} from "@/components/ui/badge";
 import { Button} from "@/components/ui/button";
@@ -262,6 +262,92 @@ export default function HospitalDashboard({ companyId, company, isAdmin}) {
  <p>· {plan.maxStorageGB} {t("gb_storage", "GB Storage")}</p>
  </div>
  </div>
+ </div>
+ </div>
+
+ {/* New Metric/Alert Sections */}
+ <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+   {/* Pharmacy Stockout */}
+   <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 shadow-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+     <div className="flex items-center gap-2 mb-3">
+       <Beaker className="w-5 h-5 text-red-500" />
+       <h3 className="text-sm font-semibold">Pharmacy Stockout Prediction</h3>
+     </div>
+     <div className="space-y-3">
+       <div className="p-3 bg-red-50 rounded-lg border border-red-100">
+         <div className="flex justify-between items-center mb-1">
+           <span className="text-sm font-medium text-red-800">Amoxicillin 500mg</span>
+           <span className="text-xs font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded">95% Risk</span>
+         </div>
+         <p className="text-xs text-red-700">Estimated stockout in &lt; 24h. Order 500 units to maintain par level.</p>
+       </div>
+       <div className="p-3 bg-amber-50 rounded-lg border border-amber-100">
+         <div className="flex justify-between items-center mb-1">
+           <span className="text-sm font-medium text-amber-800">Ibuprofen 400mg</span>
+           <span className="text-xs font-bold text-amber-600 bg-amber-100 px-2 py-0.5 rounded">70% Risk</span>
+         </div>
+         <p className="text-xs text-amber-700">Estimated stockout in 3 days. Elevated consumption rate detected.</p>
+       </div>
+     </div>
+   </div>
+
+   {/* Ward Capacity */}
+   <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 shadow-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+     <div className="flex items-center gap-2 mb-3">
+       <Bed className="w-5 h-5 text-primary" />
+       <h3 className="text-sm font-semibold">Ward Capacity (48h Forecast)</h3>
+     </div>
+     <div className="space-y-4 mt-2">
+       <div>
+         <div className="flex justify-between text-sm mb-1">
+           <span className="font-medium">ICU</span>
+           <span className="text-red-500 font-bold">92%</span>
+         </div>
+         <div className="h-2 bg-muted rounded-full overflow-hidden">
+           <div className="h-full bg-red-500 rounded-full" style={{ width: '92%' }} />
+         </div>
+         <p className="text-xs text-[#71717a] mt-1">Predicted to exceed capacity by tomorrow evening.</p>
+       </div>
+       <div>
+         <div className="flex justify-between text-sm mb-1">
+           <span className="font-medium">Maternity</span>
+           <span className="text-amber-500 font-bold">78%</span>
+         </div>
+         <div className="h-2 bg-muted rounded-full overflow-hidden">
+           <div className="h-full bg-amber-500 rounded-full" style={{ width: '78%' }} />
+         </div>
+         <p className="text-xs text-[#71717a] mt-1">Stable. 5 discharges scheduled.</p>
+       </div>
+     </div>
+   </div>
+
+   {/* Staff Demand */}
+   <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 shadow-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+     <div className="flex items-center gap-2 mb-3">
+       <Activity className="w-5 h-5 text-indigo-500" />
+       <h3 className="text-sm font-semibold">Staff Demand Optimization</h3>
+     </div>
+     <div className="space-y-3">
+       <div className="p-3 bg-indigo-50 rounded-lg border border-indigo-100 flex items-start gap-3">
+         <div className="p-2 bg-indigo-100 rounded-lg">
+           <Users className="w-4 h-4 text-indigo-600" />
+         </div>
+         <div>
+           <p className="text-sm font-medium text-indigo-900">Emergency Dept Shortage</p>
+           <p className="text-xs text-indigo-700 mt-0.5">High trauma influx expected this weekend. Recommend +2 triage nurses.</p>
+         </div>
+       </div>
+       <div className="p-3 bg-green-50 rounded-lg border border-green-100 flex items-start gap-3">
+         <div className="p-2 bg-green-100 rounded-lg">
+           <Clock className="w-4 h-4 text-green-600" />
+         </div>
+         <div>
+           <p className="text-sm font-medium text-green-900">Surgery Optimal</p>
+           <p className="text-xs text-green-700 mt-0.5">Anesthesiologists scheduling perfectly matches elective operations.</p>
+         </div>
+       </div>
+     </div>
+   </div>
  </div>
  </div>
  </div>

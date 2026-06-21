@@ -210,6 +210,13 @@ export default function HospitalClaims() {
                         c.status === 'Rejected' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
                       {c.status}
                     </span>
+                    {c.denial_risk_score > 0.6 && (
+                      <div className="mt-2" title={c.denial_warnings}>
+                         <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-red-100 text-red-700 border border-red-200">
+                           High Denial Risk
+                         </span>
+                      </div>
+                    )}
                   </td>
                   <td className="px-6 py-4 text-right flex gap-2 justify-end">
                     <DropdownMenu>
@@ -307,6 +314,12 @@ export default function HospitalClaims() {
               <div><h3 className="text-sm font-medium text-[#71717a]">Notes</h3><p className="text-base">{viewClaim.notes}</p></div>
               <div className="pt-2 border-t"><h3 className="text-sm font-medium text-[#71717a]">Claim Amount</h3><p className="text-xl font-bold text-card-foreground">${viewClaim.claim_amount}</p></div>
               <div><h3 className="text-sm font-medium text-[#71717a]">Status</h3><span className={`text-xs font-semibold px-2 py-1 rounded-md border ${viewClaim.status === 'Approved' ? 'bg-primary/10 text-primary border-primary/20' : viewClaim.status === 'Rejected' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>{viewClaim.status}</span></div>
+              {viewClaim.denial_risk_score > 0.6 && (
+                <div className="pt-2 border-t">
+                  <h3 className="text-sm font-medium text-red-700 flex items-center gap-1"><AlertCircle className="w-4 h-4" /> High Denial Risk (Score: {viewClaim.denial_risk_score})</h3>
+                  <p className="text-sm text-red-600 bg-red-50 p-2 rounded mt-2 border border-red-100">{viewClaim.denial_warnings}</p>
+                </div>
+              )}
             </div>
           )}
           

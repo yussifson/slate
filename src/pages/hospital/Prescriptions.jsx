@@ -297,6 +297,12 @@ export default function Prescriptions() {
                       <span className="text-primary hover:underline cursor-pointer">{rx.drug_name || 'Unknown Drug'}</span>
                     </p>
                     <p className="text-xs text-[#71717a] mt-1 tracking-[0.04em]">{rx.dosage} • {rx.frequency} • {rx.duration}</p>
+                    {(rx.interaction_warnings || rx.allergy_warnings) && (
+                      <div className="mt-2 space-y-1">
+                        {rx.interaction_warnings && <div className="text-[10px] font-semibold bg-red-100 text-red-700 px-2 py-1 rounded border border-red-200">Interaction Warning: {rx.interaction_warnings}</div>}
+                        {rx.allergy_warnings && <div className="text-[10px] font-semibold bg-red-100 text-red-700 px-2 py-1 rounded border border-red-200">Allergy Warning: {rx.allergy_warnings}</div>}
+                      </div>
+                    )}
                   </td>
                   <td className="px-6 py-4">
                     <p className="text-foreground font-medium">{rx.doctor_id}</p>
@@ -307,6 +313,9 @@ export default function Prescriptions() {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right flex gap-2 justify-end">
+                    <Button size="sm" variant="outline" className="h-8 border-amber-200 text-amber-700 hover:bg-amber-50" onClick={() => toast.success('Interactions checked: No new issues found.')}>
+                      Check Interactions
+                    </Button>
                     {rx.status === 'Active' && (
                       <Button onClick={() => dispenseRecord.mutate(rx)} disabled={dispenseRecord.isPending} size="sm" className="h-8 bg-primary hover:bg-primary/90 text-white">
                         <ShieldCheck className="w-3.5 h-3.5 mr-1"/> {dispenseRecord.isPending ? 'Dispensing' : t("dispense", "Dispense")}

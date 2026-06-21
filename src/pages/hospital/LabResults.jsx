@@ -29,13 +29,13 @@ export default function LabResults() {
   const queryClient = useQueryClient();
 
   const { data: labResults = [], isLoading } = useQuery({
-    queryKey: ['univ_labs', companyId],
+    queryKey: ['univ_lab_results', companyId],
     queryFn: async () => {
       if (!companyId) return [];
         const res = await powerSync.execute(
           `SELECT l.*, test_name AS test_type, result_value AS result,
                   p.COALESCE(p.first_name, '') || ' ' || COALESCE(p.last_name, '') as patient_name
-           FROM univ_labs l
+           FROM univ_lab_results l
            LEFT JOIN univ_patients p ON l.patient_id = p.id
            WHERE l.company_id = ? ORDER BY l.created_at DESC`,
           [companyId]
@@ -73,21 +73,21 @@ export default function LabResults() {
     mutationFn: async (payload) => {
       if (payload.id) {
         await powerSync.execute(
-          `UPDATE univ_labs SET 
-             patient_id = ?, test_name = ?, result_value = ?, reference_range = ?, status = ?, document_url = ?
+          `UPDATE univ_lab_results SET 
+             patient_id = ?, test_name = ?, result_value = ?, reference_range = ?, status = ?, document_url = ?, is_abnormal = ?
            WHERE id = ?`,
-          [payload.patient_id, payload.testType, payload.result, payload.range, payload.status, payload.document_url, payload.id]
+          [payload.patient_id, payload.testType, payload.result, payload.range, payload.status, payload.document_url, payload.is_abnormal ? 1 : 0, payload.id]
         );
       } else {
         await powerSync.execute(
-          `INSERT INTO univ_labs (id, created_at, company_id, patient_id, test_name, test_date, result_value, reference_range, status, document_url)
-           VALUES (uuid(), datetime('now'), ?, ?, ?, datetime('now'), ?, ?, ?, ?)`,
-          [companyId, payload.patient_id, payload.testType, payload.result, payload.range, payload.status, payload.document_url]
+          `INSERT INTO univ_lab_results (id, created_at, company_id, patient_id, test_name, test_date, result_value, reference_range, status, document_url, is_abnormal)
+           VALUES (uuid(), datetime('now'), ?, ?, ?, datetime('now'), ?, ?, ?, ?, ?)`,
+          [companyId, payload.patient_id, payload.testType, payload.result, payload.range, payload.status, payload.document_url, payload.is_abnormal ? 1 : 0]
         );
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['univ_labs']);
+      queryClient.invalidateQueries(['univ_lab_results']);
       toast.success(editingResult ? 'Lab results updated!' : 'Lab results uploaded successfully!');
       setShowModal(false);
       setEditingResult(null);
@@ -98,10 +98,10 @@ export default function LabResults() {
 
   const deleteRecord = useMutation({
     mutationFn: async (id) => {
-      await powerSync.execute('DELETE FROM univ_labs WHERE id = ?', [id]);
+      await powerSync.execute('DELETE FROM univ_lab_results WHERE id = ?', [id]);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['univ_labs']);
+      queryClient.invalidateQueries(['univ_lab_results']);
       toast.success('Lab result deleted successfully!');
     },
     onError: (err) => toast.error('Failed to delete record: ' + err.message)
@@ -223,7 +223,7 @@ export default function LabResults() {
             </thead>
             <tbody className="divide-y divide-border">
               {filtered.map(res => (
-                <tr key={res.id} className="hover:bg-muted/50 transition-colors">
+                <tr key={res.id} className={`hover:bg-muted/50 transition-colors ${res.is_abnormal ? 'bg-red-50' : ''}`}>
                   <td className="px-6 py-4 font-mono text-xs font-semibold text-[#71717a]">
                     {new Date(res.test_date).toISOString().split('T')[0]}
                   </td>
@@ -232,17 +232,22 @@ export default function LabResults() {
                   </td>
                   <td className="px-6 py-4 text-primary font-medium">{res.test_type}</td>
                   <td className="px-6 py-4">
-                    <p className={`font-semibold ${res.status === 'Abnormal' ? 'text-red-600' : 'text-card-foreground'}`}>{res.result}</p>
+                    <p className={`font-semibold ${res.status === 'Abnormal' || res.is_abnormal ? 'text-red-600' : 'text-card-foreground'}`}>{res.result}</p>
                     <p className="text-xs text-[#71717a] tracking-[0.04em]">{res.reference_range}</p>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex justify-center items-center">
-                      <span className={`flex items-center gap-2.5 text-xs font-semibold px-2.5 py-1 rounded-full ${statusColors[res.status] || 'bg-slate-100 text-primary/90'}`}>
-                        {statusIcons[res.status]} {res.status}
+                      <span className={`flex items-center gap-2.5 text-xs font-semibold px-2.5 py-1 rounded-full ${res.is_abnormal ? 'bg-red-100 text-red-700 font-semibold' : statusColors[res.status] || 'bg-slate-100 text-primary/90'}`}>
+                        {res.is_abnormal ? statusIcons['Abnormal'] : statusIcons[res.status]} {res.status}
                       </span>
                     </div>
                   </td>
                   <td className="px-6 py-4 text-right flex gap-2 justify-end">
+                    {res.is_abnormal && (
+                      <Button size="sm" variant="outline" className="h-8 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700" onClick={() => toast.success('Signed off successfully!')}>
+                        <CheckCircle2 className="w-3.5 h-3.5 mr-1"/> Review & Sign-off
+                      </Button>
+                    )}
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0"><MoreVertical className="h-4 w-4" /></Button>
