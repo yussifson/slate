@@ -14,6 +14,7 @@ import { ImpersonationProvider } from '@/lib/ImpersonationContext';
 import { VideoProvider } from '@/lib/VideoContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Intelligence from '@/pages/Intelligence';
+import GlobalAnalyticsDashboard from '@/pages/GlobalAnalyticsDashboard';
 // React imported at the top
 import { PowerSyncContext } from '@powersync/react';
 import { HelmetProvider } from 'react-helmet-async';

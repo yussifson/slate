@@ -34,37 +34,69 @@ serve(async (req) => {
     // 2. Handle Events
     if (event.event === "charge.success") {
       const data = event.data;
-      const metadata = data.metadata?.custom_fields;
+      const metadata = data.metadata?.custom_fields || data.metadata;
       
-      const companyIdField = metadata?.find((f: any) => f.variable_name === "company_id");
-      const planIdField = metadata?.find((f: any) => f.variable_name === "plan_id");
+      const companyIdField = Array.isArray(metadata) ? metadata.find((f: any) => f.variable_name === "company_id") : { value: metadata?.company_id };
+      const planIdField = Array.isArray(metadata) ? metadata.find((f: any) => f.variable_name === "plan_id") : { value: metadata?.plan_id };
+      const paymentTypeField = Array.isArray(metadata) ? metadata.find((f: any) => f.variable_name === "payment_type") : { value: metadata?.payment_type };
+      const invoiceIdField = Array.isArray(metadata) ? metadata.find((f: any) => f.variable_name === "invoice_id") : { value: metadata?.invoice_id };
       
       const companyId = companyIdField?.value;
       const planId = planIdField?.value;
+      const paymentType = paymentTypeField?.value;
+      const invoiceId = invoiceIdField?.value;
       const customerCode = data.customer.customer_code;
 
-      // Log Transaction
-      await supabase.from('billing_transactions').insert([{
-        company_id: companyId,
-        paystack_reference: data.reference,
-        amount: data.amount / 100, // Convert from kobo to standard currency
-        status: 'success',
-        description: `Payment for plan ${planId}`
-      }]);
-
-      // Update Subscription
-      if (companyId && planId) {
-        // Calculate next period end (e.g., +1 month)
-        const nextMonth = new Date();
-        nextMonth.setMonth(nextMonth.getMonth() + 1);
-
-        await supabase.from('company_subscriptions').upsert([{
+      if (paymentType === 'invoice' && invoiceId) {
+        // Law Firm / General Invoice Payment
+        await supabase.from('billing_transactions').insert([{
           company_id: companyId,
-          plan_id: planId,
-          paystack_customer_code: customerCode,
-          status: 'active',
-          current_period_end: nextMonth.toISOString()
-        }], { onConflict: 'company_id' });
+          paystack_reference: data.reference,
+          amount: data.amount / 100,
+          status: 'success',
+          description: `Payment for invoice ${invoiceId}`
+        }]);
+
+        // Update the invoice status
+        await supabase
+          .from('invoices')
+          .update({ status: 'paid', paid_at: new Date().toISOString() })
+          .eq('id', invoiceId)
+          .eq('company_id', companyId);
+
+        // Also update time entries to billed if needed, though they might already be billed upon invoice generation
+      } else {
+        // Standard Subscription Payment
+        // Log Transaction
+        await supabase.from('billing_transactions').insert([{
+          company_id: companyId,
+          paystack_reference: data.reference,
+          amount: data.amount / 100, // Convert from kobo to standard currency
+          status: 'success',
+          description: `Payment for plan ${planId}`
+        }]);
+
+        // Update Subscription
+        if (companyId && planId) {
+          // Calculate next period end (e.g., +1 month)
+          const nextMonth = new Date();
+          nextMonth.setMonth(nextMonth.getMonth() + 1);
+
+          await supabase.from('company_subscriptions').upsert([{
+            company_id: companyId,
+            plan_id: planId,
+            paystack_customer_code: customerCode,
+            status: 'active',
+            current_period_end: nextMonth.toISOString()
+          }], { onConflict: 'company_id' });
+
+          // Upgrade the company_admin to enterprise_admin upon successful payment
+          await supabase
+            .from('profiles')
+            .update({ role: 'enterprise_admin' })
+            .eq('company_id', companyId)
+            .eq('role', 'company_admin');
+        }
       }
     }
 

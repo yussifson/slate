@@ -1,7 +1,7 @@
 import { inngest } from "../client.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-import { checkOverdueInvoices, processIncomingEmail } from "./core.ts";
+import { checkOverdueInvoices, processIncomingEmail, sendWelcomeNotification } from "./core.ts";
 import { shiftReminderCron } from "./hospital.ts";
 import { attendanceReportCron } from "./school.ts";
 
@@ -117,6 +117,7 @@ export const processAutomationStep = inngest.createFunction(
 );
 
 export const functions = [
+  sendWelcomeNotification,
   masterAutomationTrigger, 
   processAutomationStep,
   checkOverdueInvoices,
@@ -124,3 +125,4 @@ export const functions = [
   shiftReminderCron,
   attendanceReportCron
 ];
+

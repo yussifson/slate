@@ -44,3 +44,40 @@ export const processIncomingEmail = inngest.createFunction(
     });
   }
 );
+
+// 3. Automation Engine: Welcome Omnichannel Notification
+export const sendWelcomeNotification = inngest.createFunction(
+  { id: "core-welcome-notification" },
+  { event: "core/user.signup" },
+  async ({ event, step }) => {
+    await step.run("trigger-novu-welcome", async () => {
+      const payload = {
+        companyId: event.data.company_id,
+        recipientId: event.data.user_id,
+        recipientEmail: event.data.email,
+        recipientPhone: event.data.phone || "",
+        recipientName: event.data.name || "New User",
+        title: "Welcome to Optalflow!",
+        message: "We are thrilled to have you onboard. Let's get started building your digital ecosystem.",
+        type: "success",
+        channels: ["in-app", "email", "sms"], // Orchestrated via Novu
+        workflowId: "onboarding-welcome-flow"
+      };
+
+      // Call the internal notify-omnichannel edge function
+      const res = await fetch("https://$("SUPABASE_URL".replace('https://', '')).supabase.co/functions/v1/notify-omnichannel", {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer $Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+      
+      const result = await res.json();
+      return result;
+    });
+  }
+);
+
+

@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { Novu } from "https://esm.sh/@novu/node";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -13,7 +14,26 @@ serve(async (req) => {
   }
 
   try {
-    const body = await req.json()
+    const body = await req.json();
+
+    // Fetch the user's phone number from profiles to support Twilio SMS routing in Novu
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    let phone = null;
+    let firstName = null;
+    if (body.record && body.record.recipient_email) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("phone, name")
+        .eq("email", body.record.recipient_email)
+        .single();
+      if (profile) {
+        phone = profile.phone;
+        firstName = profile.name;
+      }
+    }
     const { type, table, record } = body
 
     if (table !== 'notifications' || type !== 'INSERT') {
@@ -55,7 +75,9 @@ serve(async (req) => {
         novuResponse = await novu.trigger('in-app-notification', {
           to: { 
             subscriberId: record.recipient_email,
-            email: record.recipient_email 
+            email: record.recipient_email,
+            phone: phone || undefined,
+            firstName: firstName || undefined 
           },
           payload: {
             title: record.title,
@@ -91,3 +113,4 @@ serve(async (req) => {
     })
   }
 })
+
