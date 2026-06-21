@@ -3920,7 +3920,10 @@ export const AppSchema = new Schema({
         check_out: column.text,
         nights: column.integer,
         total_amount: column.real,
-        status: column.text
+        status: column.text,
+        channel_source: column.text,
+        ota_reservation_id: column.text,
+        channel_commission: column.real
     }),
     univ_hotel_rooms: new Table({
         id: column.text,
@@ -3931,7 +3934,8 @@ export const AppSchema = new Schema({
         rate: column.real,
         floor: column.text,
         status: column.text,
-        amenities: column.text
+        amenities: column.text,
+        ota_room_code: column.text
     }),
     univ_hotel_requests: new Table({
         id: column.text,
@@ -3962,6 +3966,14 @@ export const AppSchema = new Schema({
         room_number: column.text,
         payment_method: column.text,
         status: column.text
+    }),
+    univ_hotel_settings: new Table({
+        id: column.text,
+        company_id: column.text,
+        channex_api_key: column.text,
+        channex_property_id: column.text,
+        mock_mode: column.integer,
+        updated_at: column.text
     }),
     workspace_insights: new Table({
         id: column.text,

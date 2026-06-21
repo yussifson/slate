@@ -4,6 +4,8 @@ import { Calendar, Search, Plus, Clock, Trash2, Sparkles, RefreshCcw, Check, Clo
 import { Button} from '@/components/ui/button';
 import { generateText } from '@/lib/cloudflareAI';
 import { Input} from '@/components/ui/input';
+import { powerSync } from '@/api/PowerSyncConnector';
+import ChannelManagerAPI from '@/api/ChannelManagerAPI';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
 import { toast} from 'react-hot-toast';
 import { Link} from 'react-router-dom';
@@ -70,24 +72,60 @@ export default function Reservations() {
    try {
      const prompt = `You are an AI Hotel Yield Manager. Current reservations: ${reservations.length}.
 Suggest an optimized rate for 'Standard Room' and 'Deluxe Room' for today based on high occupancy.
-Format your response exactly as:
-Standard Room: $X
-Deluxe Room: $Y`;
+Format your response exactly as valid JSON ONLY:
+[{"room_code": "STD", "rate": 180}, {"room_code": "DLX", "rate": 280}]`;
      const result = await generateText(prompt);
-     toast.success(`AI Pricing Suggestions:\n${result.trim()}`, { id: tId, duration: 6000 });
+     // Clean JSON if needed
+     const cleanJson = result.replace(/```json/g, '').replace(/```/g, '').trim();
+     const aiRates = JSON.parse(cleanJson);
+     
+     // 1. Update local database
+     for (const r of aiRates) {
+       await powerSync.execute(
+         `UPDATE univ_hotel_rooms SET rate = ? WHERE company_id = ? AND ota_room_code = ?`,
+         [r.rate, companyId, r.room_code]
+       );
+     }
+
+     // 2. Push to OTA Channels
+     const channelApi = new ChannelManagerAPI('mock_key', 'mock_prop_id', true);
+     const mappedRates = aiRates.map(r => ({
+       room_code: r.room_code,
+       date: new Date().toISOString().split('T')[0],
+       rate: r.rate
+     }));
+     await channelApi.pushRates(mappedRates);
+
+     toast.success(`AI Prices pushed to all channels successfully!`, { id: tId, duration: 6000 });
    } catch (err) {
-     toast.error('Failed to get pricing from AI', { id: tId });
+     console.error(err);
+     toast.error('Failed to update pricing from AI', { id: tId });
    } finally {
      setIsAnalyzing(false);
    }
  };
 
- const handleChannelSync = () => {
+ const handleChannelSync = async () => {
   setIsSyncing(true);
-  setTimeout(() => {
+  try {
+    const channelApi = new ChannelManagerAPI('mock_key', 'mock_prop_id', true);
+    const { data: newReservations } = await channelApi.pullReservations();
+    
+    for (const res of newReservations) {
+      await powerSync.execute(
+        `INSERT INTO univ_hotel_reservations (id, company_id, ota_reservation_id, channel_source, guest_name, guest_email, guest_phone, room_type, check_in, check_out, nights, total_amount, channel_commission, status)
+         VALUES (uuid(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [companyId, res.ota_reservation_id, res.channel_source, res.guest_name, res.guest_email, res.guest_phone, res.room_type, res.check_in, res.check_out, res.nights, res.total_amount, res.channel_commission, res.status]
+      );
+    }
+    toast.success(`${newReservations.length} reservations synchronized from OTA channels`);
+  } catch(err) {
+    console.error(err);
+    toast.error("Failed to sync channels");
+  } finally {
     setIsSyncing(false);
-    toast.success("Inventory synchronized across all channels");
-  }, 2000);
+    setShowChannelSync(false);
+  }
  };
 
  // Generic Save Handler for real DB persistence
