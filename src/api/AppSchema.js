@@ -4001,6 +4001,41 @@ export const AppSchema = new Schema({
           status: column.text,
           supplier: column.text
       }),
+      univ_hotel_maintenance: new Table({
+          id: column.text,
+          created_at: column.text,
+          company_id: column.text,
+          room_number: column.text,
+          issue_type: column.text,
+          description: column.text,
+          status: column.text,
+          priority: column.text,
+          reported_by: column.text,
+          assigned_to: column.text
+      }),
+      univ_hotel_events: new Table({
+          id: column.text,
+          created_at: column.text,
+          company_id: column.text,
+          event_name: column.text,
+          hall_name: column.text,
+          event_date: column.text,
+          attendees: column.integer,
+          total_price: column.real,
+          status: column.text,
+          client_name: column.text
+      }),
+      univ_hotel_lost_found: new Table({
+          id: column.text,
+          created_at: column.text,
+          company_id: column.text,
+          item_name: column.text,
+          description: column.text,
+          location_found: column.text,
+          date_found: column.text,
+          status: column.text,
+          claimant_name: column.text
+      }),
     workspace_insights: new Table({
         id: column.text,
         company_id: column.text,
