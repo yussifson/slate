@@ -132,7 +132,7 @@ export default function AgentPerformance() {
   const topPerformer = [...agents].sort((a, b) => (Number(b.policies_sold) || 0) - (Number(a.policies_sold) || 0))[0];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em]">{t("agent_performance", "Agent Performance")}</h1>

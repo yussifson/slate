@@ -108,6 +108,7 @@ export default function Inventory() {
  const [showTransferModal, setShowTransferModal] = useState(false);
  const [transferData, setTransferData] = useState({ qty: '', targetLocation: '' });
  const [deleteTargetId, setDeleteTargetId] = useState(null);
+  const [viewingItem, setViewingItem] = useState(null);
  const [formData, setFormData] = useState(emptyForm);
  const [selectedItem, setSelectedItem] = useState(null);
  const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -286,7 +287,7 @@ Give a 2-sentence prediction on when this item will stock out and whether the re
 }
 
  return (
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  {/* Header */}
  <div className="flex items-center justify-between">
  <div>

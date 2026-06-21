@@ -234,7 +234,7 @@ export default function VQualificationTracking() {
                       </Card>
                     </div>
                     
-                    <div className="space-y-6">
+                    <div className="space-y-6 school-page-enter font-dmsans">
                       <Card className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 bg-primary/5 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none rounded-2xl text-center">
                         <CardContent className="pt-6">
                           <LineChart className="w-8 h-8 text-primary mx-auto mb-2" />

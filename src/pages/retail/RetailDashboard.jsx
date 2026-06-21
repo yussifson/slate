@@ -205,7 +205,7 @@ export default function RetailDashboard() {
  </CardContent>
  </Card>
 
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  {/* Low Stock Widget */}
  <Card className=" border-primary/40">
  <CardHeader>

@@ -78,7 +78,7 @@ export default function OnlineInstructor() {
  <Button variant="outline" size="sm"><Download className="h-4 w-4 mr-2" /> Export</Button>
  </CardHeader>
  <CardContent>
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  {[
  { title: "React Native Mastery", students: 1200, rev: "$24k", rating: 4.9, status: "Active"},
  { title: "Advanced Node.js", students: 850, rev: "$17k", rating: 4.7, status: "Active"},

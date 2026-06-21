@@ -299,7 +299,7 @@ export default function OnlineBuilder() {
            
            <div className="p-6">
              {activeTab === 'curriculum' && (
-               <div className="space-y-6">
+               <div className="space-y-6 school-page-enter font-dmsans">
                  {courseId ? (
                    lessons.length === 0 ? (
                      <div className="text-center py-12 border-2 border-dashed border-primary/40 rounded-md-[var(--radius-lg)] text-[var(--color-text-secondary)] text-sm">

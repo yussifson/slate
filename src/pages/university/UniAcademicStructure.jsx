@@ -49,7 +49,7 @@ export default function UniAcademicStructure() {
  <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">Total Faculties: {structure.length}</p>
  </div>
 
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  {structure.length === 0 ? (
  <OrbitEmptyState 
  icon={Building2} 

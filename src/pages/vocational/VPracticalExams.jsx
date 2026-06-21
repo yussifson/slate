@@ -133,7 +133,7 @@ export default function VPracticalExams() {
     : trainees.slice(0, 5);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       {/* ── DASHBOARD VIEW ── */}
       {view === 'dashboard' && (
         <div className="space-y-6">

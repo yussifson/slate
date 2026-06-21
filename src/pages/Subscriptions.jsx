@@ -46,7 +46,7 @@ export default function Subscriptions() {
  const trialCount = companies.filter(c => c.subscription_status === "trial").length;
 
  return (
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  <PageHeader title="Subscriptions" subtitle="Manage subscription plans and revenue" />
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
  <StatCard title="Monthly Revenue" value={formatCurrency(monthlyRevenue, "USD")} icon={TrendingUp} />

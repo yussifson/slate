@@ -185,7 +185,7 @@ export default function SHSEnrollment() {
  <ScrollArea className="flex-1 p-8">
  <div className="max-w-xl mx-auto space-y-8">
  
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  <h3 className="font-semibold text-slate-800 dark:text-slate-100 border-b border-primary/40 dark:border-primary/40 dark:border-primary/40 pb-2">Assign Student Details</h3>
  
  <div className="space-y-2">

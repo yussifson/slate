@@ -80,7 +80,7 @@ export default function CorporateDashboard() {
 
  <div className="p-6">
  {activeTab === 'overview' && (
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  <div className="flex justify-between items-center mb-2">
  <h2 className="font-semibold text-[var(--color-text-primary)] font-display">Department Training Progress</h2>
  <button className="text-sm font-medium text-[var(--primary)] flex items-center gap-2 hover:underline">

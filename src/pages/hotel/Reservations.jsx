@@ -345,7 +345,7 @@ Deluxe Room: $Y`;
  {t("complete_information_for_booki", "Complete information for booking")} {res.resId}
  </SheetDescription>
  </SheetHeader>
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  <div>
  <h3 className="text-sm font-semibold text-[#71717a] dark:text-gray-400 mb-2">{t("guest_info", "Guest Info")}</h3>
  <div className="bg-muted/50 p-4 rounded-xl flex items-center gap-4">

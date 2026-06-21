@@ -199,7 +199,7 @@ Recent Labs: ${labResults.map(l => l.test_name + '('+l.result_value+')').join(',
         </div>
 
         {/* Right Column (Lab Results) */}
-        <div className="space-y-6">
+        <div className="space-y-6 school-page-enter font-dmsans">
           <div className="bg-card rounded-xl border border-primary/20 overflow-hidden shadow-sm">
             <div className="p-4 border-b border-primary/20 bg-muted/50">
               <h3 className="font-semibold text-card-foreground flex items-center gap-2"><FileText className="w-5 h-5 text-[#71717a]" /> Recent Lab Tests</h3>

@@ -127,7 +127,7 @@ export default function FeeManagement() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-4xl font-black text-emerald-900 tracking-tight uppercase tracking-[-0.02em] tracking-[0.04em]">{t("fee_management", "Financial Ledger")}</h1>
-          <p className="text-emerald-700 font-medium text-lg mt-1">{t("track_student_tuition_and_paym", "Track student tuition, arrears, and payments")}</p>
+          <p className="text-[#1E3A8A] dark:text-blue-400 font-medium text-lg mt-1">{t("track_student_tuition_and_paym", "Track student tuition, arrears, and payments")}</p>
         </div>
         <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
           <Button onClick={() => setShowEnrollModal(true)} className="gap-2 bg-emerald-500/10 hover:bg-emerald-600 text-white rounded-none border-2 border-emerald-900 font-semibold px-6 py-6 text-lg transition-colors">
@@ -178,16 +178,16 @@ export default function FeeManagement() {
       </div>
 
       <div className="border-2 border-emerald-900 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-        <div className="p-4 border-b-2 border-emerald-900 bg-emerald-50">
+        <div className="p-4 border-b-2 border-emerald-900 bg-[#F0F4FF] dark:bg-blue-900/20">
           <div className="relative max-w-xl">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-700" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#1E3A8A] dark:text-blue-400" />
             <Input placeholder="Search student tuition listings..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 bg-white border-2 border-emerald-900 rounded-none h-14 text-lg font-medium focus-visible:ring-0 focus-visible:border-emerald-600 placeholder:text-emerald-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
           </div>
         </div>
         
         <div className="overflow-x-auto">
           {isDbLoading ? (
-            <div className="py-20 text-center text-emerald-600 font-semibold text-xl uppercase animate-pulse tracking-[0.04em]">{t("loading_fee_ledger", "Loading ledger...")}</div>
+            <div className="py-20 text-center text-[#1E3A8A] dark:text-blue-400 font-semibold text-xl uppercase animate-pulse tracking-[0.04em]">{t("loading_fee_ledger", "Loading ledger...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-20 text-center text-emerald-800">
               <FileText className="w-16 h-16 mx-auto mb-4 opacity-50" />
@@ -209,14 +209,14 @@ export default function FeeManagement() {
               <tbody className="divide-y-2 divide-emerald-100">
                 <AnimatePresence>
                   {filtered.map(f => (
-                    <motion.tr initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} key={f.id} className="hover:bg-emerald-50 transition-colors group">
+                    <motion.tr initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} key={f.id} className="hover:bg-[#F0F4FF] dark:bg-blue-900/20 transition-colors group">
                       <td className="px-6 py-5">
-                        <Link to={`/students`} className="font-black text-emerald-900 text-lg hover:text-emerald-600 transition-colors">{f.student}</Link>
-                        <p className="text-sm text-emerald-600 font-semibold uppercase tracking-wider tracking-[0.04em]">{f.studentId}</p>
+                        <Link to={`/students`} className="font-black text-emerald-900 text-lg hover:text-[#1E3A8A] dark:text-blue-400 transition-colors">{f.student}</Link>
+                        <p className="text-sm text-[#1E3A8A] dark:text-blue-400 font-semibold uppercase tracking-wider tracking-[0.04em]">{f.studentId}</p>
                       </td>
                       <td className="px-6 py-5 text-emerald-800 font-semibold">{f.class}</td>
                       <td className="px-6 py-5 text-right font-black text-emerald-900 text-lg">${f.totalDue}</td>
-                      <td className="px-6 py-5 text-right font-black text-emerald-600 text-lg">${f.paid}</td>
+                      <td className="px-6 py-5 text-right font-black text-[#1E3A8A] dark:text-blue-400 text-lg">${f.paid}</td>
                       <td className="px-6 py-5 text-right font-black text-red-600 text-lg">${f.balance}</td>
                       <td className="px-6 py-5 text-center">
                         <span className={`inline-block px-4 py-1.5 text-xs font-black uppercase tracking-widest border-2 ${
@@ -255,24 +255,24 @@ export default function FeeManagement() {
       {showPaymentModal && selectedStudent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-emerald-900/60 backdrop-blur-sm p-4">
           <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white border-4 border-emerald-900 w-full max-w-lg p-8 max-h-[90vh] overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-            <h2 className="text-2xl font-black text-emerald-900 flex items-center gap-3 mb-6 uppercase tracking-[-0.02em] tracking-[0.04em]"><CreditCard className="w-8 h-8 text-emerald-600" /> {t("record_payment", "Record Payment")}</h2>
+            <h2 className="text-2xl font-black text-emerald-900 flex items-center gap-3 mb-6 uppercase tracking-[-0.02em] tracking-[0.04em]"><CreditCard className="w-8 h-8 text-[#1E3A8A] dark:text-blue-400" /> {t("record_payment", "Record Payment")}</h2>
             
-            <div className="bg-emerald-50 p-4 border-2 border-emerald-900 mb-6">
+            <div className="bg-[#F0F4FF] dark:bg-blue-900/20 p-4 border-2 border-emerald-900 mb-6">
               <div className="flex justify-between items-center mb-2">
-                <span className="font-semibold text-emerald-700 uppercase text-xs tracking-widest tracking-[0.04em]">{t("student", "Student")}</span>
+                <span className="font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase text-xs tracking-widest tracking-[0.04em]">{t("student", "Student")}</span>
                 <span className="font-black text-emerald-900 text-lg">{selectedStudent.student}</span>
               </div>
               <div className="flex justify-between items-center border-t-2 border-emerald-900/20 pt-2 mt-2">
-                <span className="font-semibold text-emerald-700 uppercase text-xs tracking-widest tracking-[0.04em]">{t("current_balance", "Balance")}</span>
+                <span className="font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase text-xs tracking-widest tracking-[0.04em]">{t("current_balance", "Balance")}</span>
                 <span className="font-black text-red-600 text-2xl tracking-[-0.02em]">${selectedStudent.balance}</span>
               </div>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-6 school-page-enter font-dmsans">
               <div>
                 <label className="text-sm font-black text-emerald-900 uppercase tracking-widest block mb-2 tracking-[0.04em]">{t("amount_paying", "Amount Paying ($)")}</label>
                 <Input
-                  className="h-14 text-2xl font-black border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-emerald-50 tracking-[-0.02em]"
+                  className="h-14 text-2xl font-black border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-[#F0F4FF] dark:bg-blue-900/20 tracking-[-0.02em]"
                   type="number"
                   value={paymentAmount}
                   onChange={e => setPaymentAmount(parseFloat(e.target.value) || 0)}
@@ -280,7 +280,7 @@ export default function FeeManagement() {
               </div>
               <div>
                 <label className="text-sm font-black text-emerald-900 uppercase tracking-widest block mb-2 tracking-[0.04em]">{t("payment_method", "Payment Method")}</label>
-                <select className="w-full h-14 border-2 border-emerald-900 bg-emerald-50 px-4 font-semibold text-emerald-900 focus:outline-none focus:border-emerald-500 rounded-none appearance-none">
+                <select className="w-full h-14 border-2 border-emerald-900 bg-[#F0F4FF] dark:bg-blue-900/20 px-4 font-semibold text-emerald-900 focus:outline-none focus:border-emerald-500 rounded-none appearance-none">
                   <option>{t("cash", "Cash")}</option>
                   <option>{t("bank_transfer", "Bank Transfer")}</option>
                   <option>{t("mobile_money", "Mobile Money")}</option>
@@ -291,7 +291,7 @@ export default function FeeManagement() {
             
             <div className="flex gap-4 pt-8">
               <Button variant="outline" className="flex-1 h-14 border-2 border-emerald-900 text-emerald-900 font-black uppercase tracking-widest rounded-none hover:bg-emerald-100 tracking-[0.04em]" onClick={() => setShowPaymentModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 h-14 bg-emerald-600 hover:bg-emerald-700 text-white border-2 border-emerald-900 font-black uppercase tracking-widest rounded-none transition-colors tracking-[0.04em]" onClick={handleConfirmPayment}>
+              <Button className="flex-1 h-14 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold border-2 border-emerald-900 font-black uppercase tracking-widest rounded-none transition-colors tracking-[0.04em]" onClick={handleConfirmPayment}>
                 {isProcessing ? 'Processing...' : t("confirm_payment", "Confirm")}
               </Button>
             </div>
@@ -302,14 +302,14 @@ export default function FeeManagement() {
       {showEnrollModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-emerald-900/60 backdrop-blur-sm p-4">
           <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white border-4 border-emerald-900 w-full max-w-lg p-8 max-h-[90vh] overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-            <h2 className="text-2xl font-black text-emerald-900 flex items-center gap-3 mb-2 uppercase tracking-[-0.02em] tracking-[0.04em]"><Plus className="w-8 h-8 text-emerald-600" /> {t("quick_enroll", "Quick Enroll")}</h2>
-            <p className="text-emerald-700 font-medium mb-6">{t("quickly_register_a_student_to_", "Register a student to generate their billing profile.")}</p>
+            <h2 className="text-2xl font-black text-emerald-900 flex items-center gap-3 mb-2 uppercase tracking-[-0.02em] tracking-[0.04em]"><Plus className="w-8 h-8 text-[#1E3A8A] dark:text-blue-400" /> {t("quick_enroll", "Quick Enroll")}</h2>
+            <p className="text-[#1E3A8A] dark:text-blue-400 font-medium mb-6">{t("quickly_register_a_student_to_", "Register a student to generate their billing profile.")}</p>
             
-            <div className="space-y-6">
+            <div className="space-y-6 school-page-enter font-dmsans">
               <div>
                 <label className="text-sm font-black text-emerald-900 uppercase tracking-widest block mb-2 tracking-[0.04em]">{t("student_full_name", "Student Full Name")}</label>
                 <Input
-                  className="h-14 text-lg font-semibold border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-emerald-50"
+                  className="h-14 text-lg font-semibold border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-[#F0F4FF] dark:bg-blue-900/20"
                   value={enrollName}
                   onChange={e => setEnrollName(e.target.value)}
                   placeholder="e.g. Kwame Mensah"
@@ -320,7 +320,7 @@ export default function FeeManagement() {
             
             <div className="flex gap-4 pt-8">
               <Button variant="outline" className="flex-1 h-14 border-2 border-emerald-900 text-emerald-900 font-black uppercase tracking-widest rounded-none hover:bg-emerald-100 tracking-[0.04em]" onClick={() => setShowEnrollModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 h-14 bg-emerald-600 hover:bg-emerald-700 text-white border-2 border-emerald-900 font-black uppercase tracking-widest rounded-none transition-colors tracking-[0.04em]" onClick={() => {
+              <Button className="flex-1 h-14 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold border-2 border-emerald-900 font-black uppercase tracking-widest rounded-none transition-colors tracking-[0.04em]" onClick={() => {
                 if (!enrollName.trim()) return toast.error("Enter student name");
                 const studentId = `STU-${Math.floor(1000 + Math.random() * 9000)}`;
                 mutateRecord.mutate({
@@ -360,19 +360,19 @@ export default function FeeManagement() {
                 </div>
                 <div>
                   <h3 className="text-2xl font-black text-emerald-900 uppercase tracking-tight tracking-[-0.02em] tracking-[0.04em]">
-                    <Link to="/students" className="hover:text-emerald-600 transition-colors">{viewDetails.student}</Link>
+                    <Link to="/students" className="hover:text-[#1E3A8A] dark:text-blue-400 transition-colors">{viewDetails.student}</Link>
                   </h3>
-                  <p className="text-lg text-emerald-600 font-semibold">{viewDetails.studentId}</p>
+                  <p className="text-lg text-[#1E3A8A] dark:text-blue-400 font-semibold">{viewDetails.studentId}</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-emerald-50 border-2 border-emerald-900 p-4">
-                  <p className="text-xs text-emerald-700 uppercase font-black tracking-widest mb-1 tracking-[0.04em]">{t("class", "Class")}</p>
-                  <Link to="/classes" className="text-emerald-900 hover:text-emerald-600 font-black text-lg transition-colors">{viewDetails.class}</Link>
+                <div className="bg-[#F0F4FF] dark:bg-blue-900/20 border-2 border-emerald-900 p-4">
+                  <p className="text-xs text-[#1E3A8A] dark:text-blue-400 uppercase font-black tracking-widest mb-1 tracking-[0.04em]">{t("class", "Class")}</p>
+                  <Link to="/classes" className="text-emerald-900 hover:text-[#1E3A8A] dark:text-blue-400 font-black text-lg transition-colors">{viewDetails.class}</Link>
                 </div>
-                <div className="bg-emerald-50 border-2 border-emerald-900 p-4">
-                  <p className="text-xs text-emerald-700 uppercase font-black tracking-widest mb-2 tracking-[0.04em]">{t("status", "Status")}</p>
+                <div className="bg-[#F0F4FF] dark:bg-blue-900/20 border-2 border-emerald-900 p-4">
+                  <p className="text-xs text-[#1E3A8A] dark:text-blue-400 uppercase font-black tracking-widest mb-2 tracking-[0.04em]">{t("status", "Status")}</p>
                   <span className={`inline-block px-3 py-1 text-xs font-black uppercase tracking-widest border-2 ${
                     viewDetails.status === 'Paid' ? 'bg-lime-200 border-lime-900 text-lime-900' :
                     viewDetails.status === 'Owing' ? 'bg-red-200 border-red-900 text-red-900' : 'bg-amber-200 border-amber-900 text-amber-900'
@@ -380,13 +380,13 @@ export default function FeeManagement() {
                     {viewDetails.status}
                   </span>
                 </div>
-                <div className="bg-emerald-50 border-2 border-emerald-900 p-4">
-                  <p className="text-xs text-emerald-700 uppercase font-black tracking-widest mb-1 tracking-[0.04em]">{t("total_due", "Total Due")}</p>
+                <div className="bg-[#F0F4FF] dark:bg-blue-900/20 border-2 border-emerald-900 p-4">
+                  <p className="text-xs text-[#1E3A8A] dark:text-blue-400 uppercase font-black tracking-widest mb-1 tracking-[0.04em]">{t("total_due", "Total Due")}</p>
                   <p className="font-black text-emerald-900 text-2xl tracking-[-0.02em]">${viewDetails.totalDue}</p>
                 </div>
-                <div className="bg-emerald-50 border-2 border-emerald-900 p-4">
-                  <p className="text-xs text-emerald-700 uppercase font-black tracking-widest mb-1 tracking-[0.04em]">{t("paid", "Paid")}</p>
-                  <p className="font-black text-emerald-600 text-2xl tracking-[-0.02em]">${viewDetails.paid}</p>
+                <div className="bg-[#F0F4FF] dark:bg-blue-900/20 border-2 border-emerald-900 p-4">
+                  <p className="text-xs text-[#1E3A8A] dark:text-blue-400 uppercase font-black tracking-widest mb-1 tracking-[0.04em]">{t("paid", "Paid")}</p>
+                  <p className="font-black text-[#1E3A8A] dark:text-blue-400 text-2xl tracking-[-0.02em]">${viewDetails.paid}</p>
                 </div>
                 <div className="bg-red-50 border-2 border-red-900 p-6 col-span-2">
                   <p className="text-sm text-red-800 uppercase font-black tracking-widest mb-2 tracking-[0.04em]">{t("outstanding_balance", "Outstanding Balance")}</p>

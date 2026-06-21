@@ -251,7 +251,7 @@ export default function CasePipelinePage() {
 };
 
  return (
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  <PageHeader
  title="Case Pipelines"
  subtitle="Define custom stages for each case type and track progress"

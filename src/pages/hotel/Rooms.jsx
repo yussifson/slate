@@ -319,7 +319,7 @@ export default function Rooms() {
  {t("complete_information_for_room", "Complete information for room")} {room.roomNumber}
  </SheetDescription>
  </SheetHeader>
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  <div>
  <h3 className="text-sm font-semibold text-[#71717a] dark:text-gray-400 mb-2">{t("basic_info", "Basic Info")}</h3>
  <div className="grid grid-cols-2 gap-4">

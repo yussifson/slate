@@ -74,7 +74,7 @@ export default function Classes() {
   const filtered = classesData.filter(c => c.name?.toLowerCase().includes(search.toLowerCase()) || c.teacher?.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="space-y-6 font-dmsans p-4 bg-emerald-50 min-h-screen">
+    <div className="space-y-6 font-dmsans p-4 bg-[#F0F4FF] dark:bg-blue-900/20 min-h-screen">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 bg-emerald-600 p-8 border-4 border-emerald-900 text-white">
         <div>
           <h1 className="text-4xl font-black uppercase tracking-widest border-b-4 border-emerald-400 inline-block pb-2 mb-4 tracking-[-0.02em] tracking-[0.04em]">{t("classes_subjects", "Class Roster")}</h1>
@@ -95,17 +95,17 @@ export default function Classes() {
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white border-2 border-emerald-200 p-4 flex flex-col md:flex-row items-center justify-between gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="relative flex-1 w-full max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-500" />
-          <Input placeholder="Search classes..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-emerald-50 border-emerald-200 rounded-none shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none font-semibold focus-visible:ring-emerald-500" />
+          <Input placeholder="Search classes..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-[#F0F4FF] dark:bg-blue-900/20 border-emerald-200 rounded-none shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none font-semibold focus-visible:ring-emerald-500" />
         </div>
         <div className="flex items-center gap-3 w-full md:w-auto">
-          <Button onClick={() => setShowModal(true)} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none border-2 border-emerald-800 rounded-none font-semibold uppercase tracking-[0.04em]">
+          <Button onClick={() => setShowModal(true)} className="gap-2 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none border-2 border-emerald-800 rounded-none font-semibold uppercase tracking-[0.04em]">
             <Plus className="w-4 h-4" /> {t("add_class", "New Class")}
           </Button>
         </div>
       </motion.div>
 
       {isDbLoading ? (
-        <div className="py-12 text-center text-emerald-600 font-semibold uppercase tracking-[0.04em]">Loading classes...</div>
+        <div className="py-12 text-center text-[#1E3A8A] dark:text-blue-400 font-semibold uppercase tracking-[0.04em]">Loading classes...</div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filtered.map(c => (
@@ -121,26 +121,26 @@ export default function Classes() {
                 </DropdownMenu>
               </div>
               <div className="w-12 h-12 bg-emerald-100 border-2 border-emerald-300 flex items-center justify-center mb-4">
-                <Users className="w-6 h-6 text-emerald-700" />
+                <Users className="w-6 h-6 text-[#1E3A8A] dark:text-blue-400" />
               </div>
               <h3 className="font-black text-2xl text-emerald-900 leading-none mb-1 tracking-[-0.02em]">{c.name}</h3>
-              <p className="text-xs font-semibold text-emerald-600 uppercase tracking-widest mb-4 tracking-[0.04em]">{c.subject}</p>
+              <p className="text-xs font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest mb-4 tracking-[0.04em]">{c.subject}</p>
               
               <div className="space-y-2 mb-6 flex-1">
                 <div className="flex items-center justify-between text-sm">
                   <span className="font-semibold text-emerald-800">Teacher:</span>
-                  <span className="font-medium text-emerald-700">{c.teacher}</span>
+                  <span className="font-medium text-[#1E3A8A] dark:text-blue-400">{c.teacher}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="font-semibold text-emerald-800">Room:</span>
-                  <span className="font-medium text-emerald-700">{c.room}</span>
+                  <span className="font-medium text-[#1E3A8A] dark:text-blue-400">{c.room}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="font-semibold text-emerald-800">Capacity:</span>
                   <span className="font-black text-emerald-900 bg-emerald-100 px-2 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-300">{c.students}</span>
                 </div>
               </div>
-              <Button onClick={() => setViewDetails(c)} variant="outline" className="w-full bg-emerald-50 border-2 border-emerald-300 font-black text-emerald-800 uppercase rounded-none hover:bg-emerald-600 hover:text-white transition-colors tracking-[0.04em]">
+              <Button onClick={() => setViewDetails(c)} variant="outline" className="w-full bg-[#F0F4FF] dark:bg-blue-900/20 border-2 border-emerald-300 font-black text-emerald-800 uppercase rounded-none hover:bg-emerald-600 hover:text-white transition-colors tracking-[0.04em]">
                 Open Roster
               </Button>
             </motion.div>
@@ -153,22 +153,22 @@ export default function Classes() {
           <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="bg-white border-4 border-emerald-500 w-full max-w-md p-6 space-y-4 rounded-none max-h-[90vh] overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <h2 className="text-xl font-black text-emerald-900 uppercase tracking-wider border-b-2 border-emerald-200 pb-2 tracking-[0.04em]">{editingId ? 'Edit Class' : 'Add Class'}</h2>
             <div className="space-y-4">
-              <div><label className="text-xs font-black text-emerald-700 uppercase tracking-widest tracking-[0.04em]">Class Name</label><Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="mt-1 border-2 border-emerald-200 bg-emerald-50 rounded-none font-semibold" /></div>
-              <div><label className="text-xs font-black text-emerald-700 uppercase tracking-widest tracking-[0.04em]">Subject</label><Input value={formData.subject} onChange={e => setFormData({...formData, subject: e.target.value})} className="mt-1 border-2 border-emerald-200 bg-emerald-50 rounded-none font-semibold" /></div>
+              <div><label className="text-xs font-black text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest tracking-[0.04em]">Class Name</label><Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="mt-1 border-2 border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20 rounded-none font-semibold" /></div>
+              <div><label className="text-xs font-black text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest tracking-[0.04em]">Subject</label><Input value={formData.subject} onChange={e => setFormData({...formData, subject: e.target.value})} className="mt-1 border-2 border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20 rounded-none font-semibold" /></div>
               <div>
-                <label className="text-xs font-black text-emerald-700 uppercase tracking-widest tracking-[0.04em]">Teacher</label>
-                <select value={formData.teacher} onChange={e => setFormData({...formData, teacher: e.target.value})} className="mt-1 w-full border-2 border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-900 rounded-none focus:outline-none">
+                <label className="text-xs font-black text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest tracking-[0.04em]">Teacher</label>
+                <select value={formData.teacher} onChange={e => setFormData({...formData, teacher: e.target.value})} className="mt-1 w-full border-2 border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20 px-3 py-2 text-sm font-semibold text-emerald-900 rounded-none focus:outline-none">
                   {['Mr. John Doe','Mrs. Jane Smith','Mr. Kwesi Asante'].map(t=><option key={t}>{t}</option>)}
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-xs font-black text-emerald-700 uppercase tracking-widest tracking-[0.04em]">Room</label><Input value={formData.room} onChange={e => setFormData({...formData, room: e.target.value})} className="mt-1 border-2 border-emerald-200 bg-emerald-50 rounded-none font-semibold" /></div>
-                <div><label className="text-xs font-black text-emerald-700 uppercase tracking-widest tracking-[0.04em]">Schedule</label><Input value={formData.schedule} onChange={e => setFormData({...formData, schedule: e.target.value})} className="mt-1 border-2 border-emerald-200 bg-emerald-50 rounded-none font-semibold" /></div>
+                <div><label className="text-xs font-black text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest tracking-[0.04em]">Room</label><Input value={formData.room} onChange={e => setFormData({...formData, room: e.target.value})} className="mt-1 border-2 border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20 rounded-none font-semibold" /></div>
+                <div><label className="text-xs font-black text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest tracking-[0.04em]">Schedule</label><Input value={formData.schedule} onChange={e => setFormData({...formData, schedule: e.target.value})} className="mt-1 border-2 border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20 rounded-none font-semibold" /></div>
               </div>
             </div>
             <div className="flex gap-4 pt-4 border-t-2 border-emerald-200">
-              <Button variant="outline" className="flex-1 rounded-none border-2 border-emerald-300 font-semibold text-emerald-800 hover:bg-emerald-50 uppercase tracking-[0.04em]" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 rounded-none bg-emerald-600 hover:bg-emerald-700 text-white font-black uppercase border-2 border-emerald-800 tracking-[0.04em]" onClick={handleCreateClass}>Save</Button>
+              <Button variant="outline" className="flex-1 rounded-none border-2 border-emerald-300 font-semibold text-emerald-800 hover:bg-[#F0F4FF] dark:bg-blue-900/20 uppercase tracking-[0.04em]" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button className="flex-1 rounded-none bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold font-black uppercase border-2 border-emerald-800 tracking-[0.04em]" onClick={handleCreateClass}>Save</Button>
             </div>
           </motion.div>
         </div>

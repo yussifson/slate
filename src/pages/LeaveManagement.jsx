@@ -69,7 +69,7 @@ export default function LeaveManagement() {
   const myBalance = getStaffLeaveBalance(user?.email);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       <PageHeader
         title="Leave Management"
         subtitle={isAdmin ? `${pendingLeaves.length} pending request(s)` : `My leave balance: ${myBalance.remaining} days remaining`}

@@ -147,7 +147,7 @@ export default function Drivers() {
  'Suspended': <ShieldOff className="w-3 h-3" />};
 
  return (
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  {/* Header */}
  <div className="flex items-center justify-between">
  <div>

@@ -76,7 +76,7 @@ export default function OnlineAffiliates() {
  </div>
  </div>
 
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6">
  <h2 className="font-semibold text-[var(--color-text-primary)] mb-4 font-display flex items-center gap-2">
  <LinkIcon className="w-5 h-5 text-[var(--primary)]" /> Your Affiliate Link

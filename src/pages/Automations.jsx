@@ -57,6 +57,8 @@ const ActionNode = ({ data }) => {
       case 'send_notification': return <Mail className="w-4 h-4 text-emerald-500" />;
       case 'create_task': return <CheckSquare className="w-4 h-4 text-emerald-500" />;
       case 'webhook': return <Webhook className="w-4 h-4 text-emerald-500" />;
+      case 'sendgrid': return <Mail className="w-4 h-4 text-emerald-500" />;
+      case 'twilio': return <Zap className="w-4 h-4 text-emerald-500" />;
       default: return <Zap className="w-4 h-4 text-emerald-500" />;
     }
   };
@@ -197,6 +199,22 @@ const Sidebar = () => {
             <Webhook className="w-5 h-5 text-emerald-500" />
             <span className="text-sm font-medium">HTTP Webhook</span>
           </div>
+          <div 
+            className="bg-white dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 dark:border-emerald-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-emerald-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-all duration-200"
+            onDragStart={(event) => onDragStart(event, 'actionNode', 'sendgrid')}
+            draggable
+          >
+            <Mail className="w-5 h-5 text-emerald-500" />
+            <span className="text-sm font-medium">SendGrid Email</span>
+          </div>
+          <div 
+            className="bg-white dark:bg-slate-800 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 dark:border-emerald-900/50 p-3 rounded-xl flex items-center gap-3 cursor-grab hover:border-emerald-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-all duration-200"
+            onDragStart={(event) => onDragStart(event, 'actionNode', 'twilio')}
+            draggable
+          >
+            <Zap className="w-5 h-5 text-emerald-500" />
+            <span className="text-sm font-medium">Twilio SMS</span>
+          </div>
         </div>
       </div>
     </div>
@@ -208,9 +226,9 @@ const ExecutionLogs = ({ companyId }) => {
   const { data: logs = [], isLoading } = useQuery({
     queryKey: ['automation_logs', companyId],
     queryFn: async () => {
-      const { data, error } = await base44.supabase.from('automation_logs').select(`
+      const { data, error } = await base44.supabase.from('automation_runs').select(`
         *,
-        automation_rules (table_name, action_type)
+        automations (name, trigger_key)
       `).order('created_at', { ascending: false }).limit(50);
       if (error) throw error;
       return data;
@@ -239,7 +257,7 @@ const ExecutionLogs = ({ companyId }) => {
                 <Badge variant={log.status === 'success' ? 'default' : log.status === 'delayed' ? 'secondary' : 'destructive'}>
                   {log.status.toUpperCase()}
                 </Badge>
-                <span className="text-sm font-semibold">{log.automation_rules?.table_name}</span>
+                <span className="text-sm font-semibold">{log.automations?.name}</span>
                 <span className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{new Date(log.created_at).toLocaleString()}</span>
               </div>
               <div className="text-xs font-mono bg-slate-100 dark:bg-slate-800 p-2 rounded-md mt-2 tracking-[0.04em]">
@@ -291,7 +309,9 @@ export default function Automations() {
   const companyId = user?.company_id;
   const [automations, setAutomations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [mode, setMode] = useState('list'); // 'list', 'builder'
+  const [mode, setMode] = useState('list'); // 'list', 'builder', 'logs'
+  const [testRunLogs, setTestRunLogs] = useState(null);
+  const [editingRuleId, setEditingRuleId] = useState(null);
 
   const reactFlowWrapper = useRef(null);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -312,14 +332,21 @@ export default function Automations() {
 
   const industry = user?.company_industry || "law";
 
-  const CORE_TRIGGERS = [
-    { label: "New Lead Created", value: "leads" },
-    { label: "New Task Assigned", value: "tasks" },
-    { label: "Invoice Generated", value: "invoices" },
-    { label: `New ${getTerm(industry, "client")} Registered`, value: "clients" },
-    { label: `New ${getTerm(industry, "case")} Created`, value: "legal_cases" },
-    { label: "Inbound Webhook", value: "webhook_inbound" }
-  ];
+  const [triggerRegistry, setTriggerRegistry] = useState([]);
+  const [actionRegistry, setActionRegistry] = useState([]);
+
+  useEffect(() => {
+    async function fetchRegistries() {
+      const { data: triggers } = await base44.supabase.from('automation_triggers').select('*').eq('is_active', true);
+      const { data: actions } = await base44.supabase.from('automation_actions').select('*').eq('is_active', true);
+      if (triggers) setTriggerRegistry(triggers);
+      if (actions) setActionRegistry(actions);
+    }
+    fetchRegistries();
+  }, []);
+
+  const CORE_TRIGGERS = triggerRegistry.map(t => ({ label: t.display_name, value: t.trigger_key, schema: t.data_schema }));
+
 
   useEffect(() => {
     if (companyId) loadAutomations();
@@ -441,8 +468,9 @@ export default function Automations() {
   const loadAutomations = async () => {
     try {
       setIsLoading(true);
-      const data = await base44.entities.AutomationRule.list();
-      setAutomations(data.filter(r => r.company_id === companyId));
+      const { data, error } = await base44.supabase.from('automations').select('*').eq('company_id', companyId);
+      if (error) throw error;
+      setAutomations(data || []);
     } catch (e) {
       console.error(e);
       toast.error("Failed to load automations");
@@ -534,15 +562,25 @@ export default function Automations() {
     try {
       const payload = {
         company_id: companyId,
-        table_name: trigger.data.config.tableName,
-        action_type: 'flow',
-        action_payload: { nodes, edges },
-        is_active: true,
-        conditions: { flowData: { nodes, edges } } 
+        name: trigger.data.config.tableName + " Flow",
+        description: "Visual builder flow",
+        trigger_key: trigger.data.config.tableName,
+        steps: nodes.filter(n => n.type === 'actionNode').map(n => ({ action_key: n.data.actionType, config: n.data.config })),
+        is_active: true
       };
 
-      await base44.entities.AutomationRule.create(payload);
-      toast.success("Automation Deployed!");
+      let ruleRes;
+      if (editingRuleId) {
+        const { data, error } = await base44.supabase.from('automations').update(payload).eq('id', editingRuleId).select().single();
+        if (error) throw error;
+        ruleRes = data;
+      } else {
+        const { data, error } = await base44.supabase.from('automations').insert(payload).select().single();
+        if (error) throw error;
+        ruleRes = data;
+      }
+
+      toast.success(editingRuleId ? "Automation Updated!" : "Automation Deployed!");
       setMode('list');
       loadAutomations();
     } catch(e) {
@@ -553,7 +591,7 @@ export default function Automations() {
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this automation?")) return;
     try {
-      await base44.entities.AutomationRule.delete(id);
+      await base44.supabase.from('automations').delete().eq('id', id);
       toast.success("Automation Deleted");
       loadAutomations();
     } catch(e) {
@@ -565,6 +603,15 @@ export default function Automations() {
     setNodes([]);
     setEdges([]);
     setSelectedNode(null);
+    setEditingRuleId(null);
+    setMode('builder');
+  };
+
+  const editFlow = (rule) => {
+    setNodes((rule.steps ? [] : []) || []);
+    setEdges((rule.steps ? [] : []) || []);
+    setSelectedNode(null);
+    setEditingRuleId(rule.id);
     setMode('builder');
   };
 
@@ -572,12 +619,36 @@ export default function Automations() {
   const triggerTableForVars = triggerNodeForVars?.data?.config?.tableName;
 
   const handleTestRun = () => {
-    toast.success("Test run executed! (Sandbox mode simulated)");
-    // Highlight nodes temporarily
-    setNodes(nds => nds.map(n => ({ ...n, style: { ...n.style, border: '2px solid #10b981', boxShadow: '0 0 10px #10b981' } })));
-    setTimeout(() => {
-      setNodes(nds => nds.map(n => ({ ...n, style: { ...n.style, border: 'none', boxShadow: 'none' } })));
-    }, 2000);
+    if (nodes.length === 0) {
+      toast.error("No nodes to test.");
+      return;
+    }
+    const tLogs = [];
+    tLogs.push({ time: new Date().toISOString(), msg: "Starting Sandbox Simulation..." });
+    let currentNode = nodes.find(n => n.type === 'triggerNode');
+    if (!currentNode) {
+      tLogs.push({ time: new Date().toISOString(), msg: "ERROR: No Trigger Node found." });
+      setTestRunLogs(tLogs);
+      return;
+    }
+    tLogs.push({ time: new Date().toISOString(), msg: `Trigger: ${currentNode.data.label}` });
+    
+    let currentEdge = edges.find(e => e.source === currentNode.id);
+    let stepCount = 0;
+    while(currentEdge && stepCount < 20) {
+      stepCount++;
+      currentNode = nodes.find(n => n.id === currentEdge.target);
+      if (!currentNode) break;
+      tLogs.push({ time: new Date().toISOString(), msg: `Executing Node: ${currentNode.data.label}` });
+      if (currentNode.type === 'conditionNode') {
+        tLogs.push({ time: new Date().toISOString(), msg: `Condition Evaluated to TRUE (Simulated)` });
+        currentEdge = edges.find(e => e.source === currentNode.id && e.sourceHandle === 'true') || edges.find(e => e.source === currentNode.id);
+      } else {
+        currentEdge = edges.find(e => e.source === currentNode.id);
+      }
+    }
+    tLogs.push({ time: new Date().toISOString(), msg: "Simulation Completed." });
+    setTestRunLogs(tLogs);
   };
 
   return (
@@ -670,24 +741,34 @@ export default function Automations() {
                               <Zap className="w-5 h-5 text-primary" />
                             </div>
                             <div>
-                              <CardTitle className="text-base line-clamp-1">{rule.table_name} Flow</CardTitle>
+                              <CardTitle className="text-base line-clamp-1">{rule.trigger_key} Flow</CardTitle>
                               <CardDescription className="uppercase tracking-wider text-[10px] font-semibold text-primary mt-1 tracking-[0.04em]">
-                                {rule.action_type.replace('_', ' ')}
+                                {rule.trigger_key.replace('_', ' ')}
                               </CardDescription>
                             </div>
                           </div>
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-8 w-8 text-[#71717a] dark:text-gray-400 opacity-0 group-hover:opacity-100 hover:text-destructive hover:bg-destructive/10 transition-all -mt-1 -mr-1"
-                            onClick={() => handleDelete(rule.id)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
+                          <div className="flex items-center">
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-8 w-8 text-[#71717a] dark:text-gray-400 opacity-0 group-hover:opacity-100 hover:text-indigo-500 hover:bg-indigo-500/10 transition-all -mt-1"
+                              onClick={() => editFlow(rule)}
+                            >
+                              <Play className="w-4 h-4 fill-current rotate-90" />
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-8 w-8 text-[#71717a] dark:text-gray-400 opacity-0 group-hover:opacity-100 hover:text-destructive hover:bg-destructive/10 transition-all -mt-1 -mr-1"
+                              onClick={() => handleDelete(rule.id)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
                         </div>
                       </CardHeader>
                       <CardContent className="flex-1 flex flex-col justify-center gap-3">
-                        {rule.table_name === 'webhook_inbound' ? (
+                        {rule.trigger_key === 'webhook_inbound' ? (
                           <div className="flex flex-col gap-2 w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg border-[0.5px] border-black/9 dark:border-white/8 text-[10px]">
                             <span className="font-semibold text-[#71717a] dark:text-gray-400">Webhook URL:</span>
                             <div className="flex items-center gap-2 w-full">
@@ -701,7 +782,7 @@ export default function Automations() {
                         ) : (
                           <div className="flex items-center gap-3">
                             <div className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded-lg text-xs font-semibold tracking-[0.04em]">
-                              {rule.table_name}
+                              {rule.trigger_key}
                             </div>
                             <ArrowRight className="w-4 h-4 text-[#71717a] dark:text-gray-400" />
                             <div className="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-lg text-xs font-semibold tracking-[0.04em]">
@@ -934,6 +1015,33 @@ export default function Automations() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Sandbox Test Run Modal */}
+      {testRunLogs && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8">
+            <div className="p-4 border-b bg-slate-50 dark:bg-slate-800 flex justify-between items-center">
+              <h3 className="font-semibold text-lg flex items-center gap-2">
+                <Play className="w-5 h-5 text-emerald-500 fill-emerald-500" /> Test Run Sandbox
+              </h3>
+              <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setTestRunLogs(null)}>
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+            <div className="p-6 max-h-[60vh] overflow-y-auto space-y-4 font-mono text-sm">
+              {testRunLogs.map((log, idx) => (
+                <div key={idx} className="flex gap-4 border-b border-slate-100 dark:border-slate-800 pb-2">
+                  <span className="text-slate-400 shrink-0">{new Date(log.time).toLocaleTimeString()}</span>
+                  <span className={log.msg.includes('ERROR') ? 'text-rose-500 font-semibold' : 'text-slate-700 dark:text-slate-300'}>{log.msg}</span>
+                </div>
+              ))}
+            </div>
+            <div className="p-4 border-t bg-slate-50 dark:bg-slate-800 flex justify-end">
+              <Button onClick={() => setTestRunLogs(null)}>Close</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

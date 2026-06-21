@@ -602,8 +602,15 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  4. If asked to create an ENTIRE NEW MODULE, custom feature, or a page that does NOT exist in the ROUTE MAP, you MUST use navigate_to to route the user to "/slate/BOLT" AND use show_toast to tell them: "I can help you build this! Just click 'Generate with AI' on this page."
  5. ONLY use navigate_to for routes that EXACTLY appear in the ROUTE MAP above, plus "/slate/BOLT".
  6. To BUILD a VISUAL AUTOMATION FLOW, you MUST use the generate_visual_automation tool. DO NOT use create_record.
-    Format: <AGENT_ACTION>{"tool":"generate_visual_automation","trigger":{"table":"custom_leads"},"steps":[{"type":"delay","config":{"amount":2,"unit":"days"}},{"type":"condition","config":{"variable":"status","operator":"==","value":"hot"},"true_steps":[{"type":"send_notification","config":{"recipient":"{{email}}","message":"Hot!"}}],"false_steps":[]}]}</AGENT_ACTION>
-    The steps array strictly supports types: "delay" (config: amount, unit), "condition" (config: variable, operator, value), "send_notification", "create_task", "webhook". You must deduce payload variables like {{email}} from the context.
+    Format: <AGENT_ACTION>{"tool":"generate_visual_automation","trigger":{"table":"[VALID_TABLE_NAME]"},"steps":[{"type":"delay","config":{"amount":2,"unit":"days"}},{"type":"condition","config":{"variable":"status","operator":"==","value":"hot"},"true_steps":[{"type":"send_notification","config":{"recipient":"{{email}}","message":"Hot!"}}],"false_steps":[]}]}</AGENT_ACTION>
+    CRITICAL SCHEMA CONSTRAINTS for steps:
+    - Allowed step 'type' values: "delay", "condition", "send_notification", "create_task", "webhook".
+    - "delay" requires 'amount' (number) and 'unit' (string: "minutes", "hours", "days").
+    - "condition" requires 'variable' (field name), 'operator' ("==", "!=", ">", "<", "contains"), and 'value' (string/number).
+    - "send_notification" requires 'recipient' (email address or variable like {{email}}) and 'message' (string).
+    - "create_task" requires 'title' (string) and 'description' (string).
+    - "webhook" requires 'url' (string), 'method' ("POST", "GET", "PUT"), and 'body' (object).
+    - Do NOT hallucinate other types or fields. Variables must use {{variable_name}} syntax.
  7. For 'case' records, use 'title' instead of 'name'.
  8. If the user's input has a typo, is ambiguous, or if you are unsure which page they mean, ALWAYS use the 'ask_confirmation' tool first.
  10. If the user asks for multiple distinct actions (e.g. "create a task and a lead"), ensure you output an <AGENT_ACTION> block for EACH request before summarizing.

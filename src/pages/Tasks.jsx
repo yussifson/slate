@@ -339,7 +339,7 @@ export default function Tasks() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       <PageHeader
         title="Tasks"
         subtitle="Manage and track team tasks"

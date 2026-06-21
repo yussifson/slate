@@ -242,8 +242,8 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  <ChevronDown className="w-3 h-3 opacity-50 shrink-0" />
  </DropdownMenuTrigger>
  <DropdownMenuContent align="end" className="w-[150px]">
- {Object.entries(LANGUAGES).map(([key, lang]) => (
- <DropdownMenuItem key={key} onClick={() => i18n.changeLanguage(key)}>
+            {Object.entries(LANGUAGES).map(([key, lang]) => (
+              <DropdownMenuItem key={key} onClick={() => i18n.changeLanguage(key)}>
  <span className="mr-2">{lang.flag}</span>
  {lang.name}
  </DropdownMenuItem>

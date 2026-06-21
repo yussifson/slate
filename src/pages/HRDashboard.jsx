@@ -74,7 +74,7 @@ export default function HRDashboard() {
   const totalSalary = staff.reduce((s, m) => s + (m.salary || 0), 0);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       <PageHeader title="HR Management" subtitle="Team, payroll, leave, complaints and promotions" />
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <MetricCard icon={Users} label="Active Staff" value={activeStaff} color="bg-slate-50 dark:bg-slate-800/50 text-primary" />

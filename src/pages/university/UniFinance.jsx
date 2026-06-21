@@ -100,7 +100,7 @@ export default function UniFinance() {
 
  <div className="min-h-[400px]">
  {activeTab === 'ledger' && (
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  {transactions.length > 0 ? (
  <OrbitTable columns={columns} data={transactions} title="General Ledger" showToolbar={true} />
  ) : (

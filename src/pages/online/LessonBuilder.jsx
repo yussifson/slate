@@ -142,7 +142,7 @@ export default function LessonBuilder() {
  </div>
  </div>
 
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-5">
  <h3 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2 mb-4">
  <Settings className="w-4 h-4 text-[var(--color-text-tertiary)]" /> Lesson Settings

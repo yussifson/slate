@@ -124,7 +124,7 @@ export default function AmbulanceDispatch() {
       case 'Returned': return 'bg-slate-100 text-slate-700 border-slate-200';
       case 'On Scene': return 'bg-amber-100 text-amber-700 border-amber-200 animate-pulse';
       case 'Dispatched': return 'bg-red-100 text-red-700 border-red-200 animate-pulse';
-      case 'Transporting': return 'bg-blue-100 text-blue-700 border-blue-200 animate-pulse';
+      case 'Transporting': return 'bg-teal-100 text-teal-700 border-teal-200 animate-pulse';
       default: return 'bg-slate-100 text-slate-700 border-slate-200';
     }
   };
@@ -162,12 +162,12 @@ export default function AmbulanceDispatch() {
             {dispatches.filter(d => d.status === 'On Scene').length}
           </p>
         </div>
-        <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 p-5 shadow-sm border-l-4 border-l-blue-500">
+        <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 p-5 shadow-sm border-l-4 border-l-teal-500">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-[#71717a] text-sm uppercase">Transporting</h3>
-            <Truck className="w-5 h-5 text-blue-500 opacity-80" />
+            <Truck className="w-5 h-5 text-teal-500 opacity-80" />
           </div>
-          <p className="text-3xl font-bold text-blue-600 mt-2">
+          <p className="text-3xl font-bold text-teal-600 mt-2">
             {dispatches.filter(d => d.status === 'Transporting').length}
           </p>
         </div>
@@ -230,7 +230,7 @@ export default function AmbulanceDispatch() {
                           <DropdownMenuItem onClick={() => updateStatus.mutate({ id: d.id, status: 'On Scene' })} className="text-amber-600 font-medium">Mark On Scene</DropdownMenuItem>
                         )}
                         {d.status === 'On Scene' && (
-                          <DropdownMenuItem onClick={() => updateStatus.mutate({ id: d.id, status: 'Transporting' })} className="text-blue-600 font-medium">Mark Transporting</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => updateStatus.mutate({ id: d.id, status: 'Transporting' })} className="text-teal-600 font-medium">Mark Transporting</DropdownMenuItem>
                         )}
                         {d.status === 'Transporting' && (
                           <DropdownMenuItem onClick={() => updateStatus.mutate({ id: d.id, status: 'Returned' })} className="text-emerald-600 font-medium">Mark Returned</DropdownMenuItem>

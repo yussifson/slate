@@ -52,7 +52,7 @@ export default function SHSDashboard() {
  ) : defaultChartData;
 
  return (
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  <ModuleBanner 
  title={t("shs_dashboard", "High School Dashboard")} 
  subtitle="Overview of academic performance, admissions, and financial health." 

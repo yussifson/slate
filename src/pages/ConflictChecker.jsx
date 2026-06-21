@@ -81,7 +81,7 @@ Return ONLY a valid JSON object:
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       <PageHeader title="Conflict of Interest Checker" subtitle="Search clients, parties, and cases before accepting new matters" />
       {/* Search */}
       <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">

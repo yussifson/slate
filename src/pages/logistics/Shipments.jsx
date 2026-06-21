@@ -145,7 +145,7 @@ export default function Shipments() {
  ];
 
  return (
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  {/* Header */}
  <div className="flex items-center justify-between">
  <div>

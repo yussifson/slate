@@ -257,7 +257,7 @@ export default function Students() {
 
                     {aiAnalysis && (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                        <div className="space-y-6">
+                        <div className="space-y-6 school-page-enter font-dmsans">
                           <div className={`p-6 border-2 flex items-center justify-between ${
                             aiAnalysis.riskLevel === 'High' ? 'bg-red-50 border-red-200' : 
                             aiAnalysis.riskLevel === 'Medium' ? 'bg-amber-50 border-amber-200' : 
@@ -303,7 +303,7 @@ export default function Students() {
                           </div>
                         </div>
 
-                        <div className="space-y-6">
+                        <div className="space-y-6 school-page-enter font-dmsans">
                            <div className="p-5 border-2 border-slate-200 bg-slate-50">
                              <h4 className="font-black text-slate-900 uppercase tracking-wider text-sm mb-2 border-b-2 border-slate-200 pb-2">AI Summary</h4>
                              <p className="text-sm text-slate-700 font-medium leading-relaxed">{aiAnalysis.summary}</p>
@@ -320,7 +320,7 @@ export default function Students() {
                              </ul>
                            </div>
                            
-                           <div className="p-5 border-2 border-emerald-200 bg-emerald-50">
+                           <div className="p-5 border-2 border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20">
                              <h4 className="font-black text-emerald-900 uppercase tracking-wider text-sm mb-3 border-b-2 border-emerald-200 pb-2">Recommended Interventions</h4>
                              <ul className="space-y-2">
                                {aiAnalysis.recommendedInterventions.map((f, i) => (

@@ -121,7 +121,7 @@ export default function OperationTheater() {
       case 'Completed': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
       case 'In Progress': return 'bg-amber-100 text-amber-700 border-amber-200 animate-pulse';
       case 'Cancelled': return 'bg-red-100 text-red-700 border-red-200';
-      default: return 'bg-blue-100 text-blue-700 border-blue-200';
+      default: return 'bg-teal-100 text-teal-700 border-teal-200';
     }
   };
 
@@ -143,7 +143,7 @@ export default function OperationTheater() {
         <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-[#71717a] text-sm uppercase">Scheduled</h3>
-            <CalendarIcon className="w-5 h-5 text-blue-500 opacity-80" />
+            <CalendarIcon className="w-5 h-5 text-teal-500 opacity-80" />
           </div>
           <p className="text-3xl font-bold text-card-foreground mt-2">
             {surgeries.filter(s => s.status === 'Scheduled').length}

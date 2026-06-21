@@ -192,7 +192,7 @@ export default function GeofenceAlerts() {
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6 school-page-enter font-dmsans">
           <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm h-[600px] flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <h2 className="text-lg font-semibold text-card-foreground mb-4 flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <Activity className="w-5 h-5 text-primary" />

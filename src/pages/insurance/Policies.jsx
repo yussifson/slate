@@ -123,7 +123,7 @@ export default function Policies() {
   const totalPremium = policies.reduce((sum, p) => sum + (Number(p.premium_amount) || 0), 0);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em]">{t("policies", "Policies")}</h1>

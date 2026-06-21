@@ -268,7 +268,7 @@ export default function VSkillDemonstrations() {
                       </div>
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="space-y-6 school-page-enter font-dmsans">
                       <Card className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 bg-card shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none rounded-2xl hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                         <CardHeader className="pb-3 border-b border-primary/10">
                           <CardTitle className="text-lg flex items-center gap-2 text-slate-900 dark:text-white"><CheckSquare className="w-5 h-5 text-primary" /> Assessment Checklist</CardTitle>

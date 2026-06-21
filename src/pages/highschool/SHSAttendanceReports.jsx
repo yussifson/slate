@@ -133,7 +133,7 @@ export default function SHSAttendanceReports() {
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
  
  {/* Student Stats */}
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  <div className="flex items-center gap-3">
  <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-primary/70">
  <Users className="w-6 h-6" />

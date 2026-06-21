@@ -124,7 +124,7 @@ export default function Groups() {
  );
 
  return (
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  <div className="flex items-center justify-between">
  <div>
  <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("groups", "Groups")}</h1>

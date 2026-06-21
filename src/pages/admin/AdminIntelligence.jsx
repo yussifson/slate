@@ -134,7 +134,7 @@ Respond professionally with clear metrics, bullet points, and strategic advice. 
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6 school-page-enter font-dmsans">
           <div className="bg-[var(--color-surface-0)] rounded-3xl border border-[var(--primary)]/20 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             <h3 className="text-xl font-semibold mb-6 flex items-center gap-3 text-slate-800 dark:text-slate-100">
               <div className="p-2 bg-[var(--primary)]/10 rounded-lg text-[var(--primary)]">

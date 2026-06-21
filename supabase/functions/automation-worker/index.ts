@@ -59,11 +59,43 @@ serve(async (req) => {
            results.push({ id: item.id, status: 'completed' });
         } else {
            const errText = await res.text();
-           await supabaseClient.from('automation_queue').update({ status: 'failed_retry', logs: errText }).eq('id', item.id);
+           const nextRetry = (item.retry_count || 0) + 1;
+           const maxRetries = item.max_retries || 3;
+           if (nextRetry > maxRetries) {
+             // Send to DLQ
+             await supabaseClient.from('automation_dlq').insert({
+               company_id: item.company_id,
+               rule_id: item.rule_id,
+               payload: item.payload,
+               error_message: errText,
+               original_queue_id: item.id
+             });
+             await supabaseClient.from('automation_queue').update({ status: 'failed_dlq', last_error: errText }).eq('id', item.id);
+           } else {
+             // Exponential backoff
+             const backoffMs = Math.pow(2, nextRetry) * 60000; // 2m, 4m, 8m
+             const executeAt = new Date(Date.now() + backoffMs).toISOString();
+             await supabaseClient.from('automation_queue').update({ status: 'pending', retry_count: nextRetry, last_error: errText, execute_at: executeAt }).eq('id', item.id);
+           }
            results.push({ id: item.id, status: 'failed', error: errText });
         }
       } catch (err) {
-         await supabaseClient.from('automation_queue').update({ status: 'failed_retry', logs: err.message }).eq('id', item.id);
+         const nextRetry = (item.retry_count || 0) + 1;
+         const maxRetries = item.max_retries || 3;
+         if (nextRetry > maxRetries) {
+           await supabaseClient.from('automation_dlq').insert({
+             company_id: item.company_id,
+             rule_id: item.rule_id,
+             payload: item.payload,
+             error_message: err.message,
+             original_queue_id: item.id
+           });
+           await supabaseClient.from('automation_queue').update({ status: 'failed_dlq', last_error: err.message }).eq('id', item.id);
+         } else {
+           const backoffMs = Math.pow(2, nextRetry) * 60000;
+           const executeAt = new Date(Date.now() + backoffMs).toISOString();
+           await supabaseClient.from('automation_queue').update({ status: 'pending', retry_count: nextRetry, last_error: err.message, execute_at: executeAt }).eq('id', item.id);
+         }
          results.push({ id: item.id, status: 'failed', error: err.message });
       }
     }

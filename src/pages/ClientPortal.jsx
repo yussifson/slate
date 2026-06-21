@@ -141,7 +141,7 @@ export default function ClientPortal() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       {/* Welcome banner */}
       <div className="bg-gradient-to-r from-primary to-primary/80 rounded-xl p-5 text-white">
         <div className="flex items-center gap-3">

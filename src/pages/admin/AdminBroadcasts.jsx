@@ -195,7 +195,7 @@ export default function AdminBroadcasts() {
         </div>
 
         {/* Targeting & Channels Panel */}
-        <div className="space-y-6">
+        <div className="space-y-6 school-page-enter font-dmsans">
           
           <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm rounded-2xl p-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <h4 className="font-semibold text-sm uppercase tracking-wider text-[#71717a] dark:text-gray-400 mb-4 flex items-center gap-2 tracking-[0.04em]">

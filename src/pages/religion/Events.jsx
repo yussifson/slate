@@ -115,7 +115,7 @@ export default function Events() {
   const filtered = events.filter(e => e.title?.toLowerCase().includes(search.toLowerCase()) || e.location?.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em]">{t("events_services", "Events & Services")}</h1>

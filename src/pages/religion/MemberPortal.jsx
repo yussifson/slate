@@ -127,7 +127,7 @@ export default function MemberPortal() {
  </div>
 
  {/* Right Column (Giving Info) */}
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <h3 className="font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"><DollarSign className="w-5 h-5 text-primary" /> {t("my_giving", "My Giving")}</h3>

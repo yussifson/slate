@@ -142,7 +142,7 @@ export default function Teachers() {
       </div>
 
       {activeTab === 'command_center' && (
-        <div className="space-y-6">
+        <div className="space-y-6 school-page-enter font-dmsans">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 flex flex-col justify-center relative overflow-hidden stat-card-premium hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
               <div className="flex items-center gap-3 mb-4 relative z-10">
@@ -209,7 +209,7 @@ export default function Teachers() {
       )}
 
       {activeTab === 'directory' && (
-        <div className="space-y-6">
+        <div className="space-y-6 school-page-enter font-dmsans">
           {/* Search & Filter */}
           <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="relative flex-1 w-full max-w-md">

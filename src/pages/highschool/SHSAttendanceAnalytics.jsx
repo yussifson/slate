@@ -193,7 +193,7 @@ export default function SHSAttendanceAnalytics() {
  </CardTitle>
  </CardHeader>
  <CardContent className="p-6">
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  {defaultTruancy.map((f, idx) => (
  <div key={idx}>
  <div className="flex justify-between items-center mb-2">

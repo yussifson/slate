@@ -126,7 +126,7 @@ export default function Parents() {
         </div>
       </div>
       
-      {showSettings && <div className="bg-emerald-50 p-6 rounded-3xl border-[0.5px] border-black/9 dark:border-white/8 border-emerald-100"><IDFormatSettings /></div>}
+      {showSettings && <div className="bg-[#F0F4FF] dark:bg-blue-900/20 p-6 rounded-3xl border-[0.5px] border-black/9 dark:border-white/8 border-emerald-100"><IDFormatSettings /></div>}
 
       <div className="flex flex-col md:flex-row items-center gap-6">
         <div className="relative flex-1 w-full">
@@ -155,7 +155,7 @@ export default function Parents() {
               className="bg-white border-2 border-emerald-100 rounded-3xl p-8 hover:border-emerald-300 transition-colors shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
             >
               <div className="flex items-center gap-5 mb-6">
-                <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-700 font-extrabold text-2xl tracking-[-0.02em]">
+                <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center text-[#1E3A8A] dark:text-blue-400 font-extrabold text-2xl tracking-[-0.02em]">
                   {p.avatar}
                 </div>
                 <div className="flex-1">
@@ -165,7 +165,7 @@ export default function Parents() {
               </div>
               
               <div className="space-y-4 flex-1">
-                <div className="flex items-center gap-3 text-emerald-800 bg-emerald-50 p-3 rounded-xl">
+                <div className="flex items-center gap-3 text-emerald-800 bg-[#F0F4FF] dark:bg-blue-900/20 p-3 rounded-xl">
                   <Users className="w-5 h-5 text-emerald-500 shrink-0" />
                   <span className="font-semibold text-sm truncate">Student: {students.find(s => s.id_number === p.linkedStudentId)?.name || 'Unlinked'}</span>
                 </div>
@@ -182,7 +182,7 @@ export default function Parents() {
               <div className="flex gap-3 pt-6 mt-6 border-t border-emerald-100">
                 <Button 
                   variant="outline" 
-                  className="flex-1 h-12 rounded-xl border-emerald-200 text-emerald-700 hover:bg-emerald-50 font-semibold"
+                  className="flex-1 h-12 rounded-xl border-emerald-200 text-[#1E3A8A] dark:text-blue-400 hover:bg-[#F0F4FF] dark:bg-blue-900/20 font-semibold"
                   onClick={() => {
                     setEditingId(p.id);
                     setFormData({ name: p.name || '', phone: p.phone || '', email: p.email || '', address: p.address || '', parentId: p.parentId || '', linkedStudentId: p.linkedStudentId || '' });
@@ -214,7 +214,7 @@ export default function Parents() {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`text-lg font-semibold capitalize transition-colors ${activeTab === tab ? 'text-emerald-600' : 'text-emerald-400 hover:text-emerald-600'}`}
+                  className={`text-lg font-semibold capitalize transition-colors ${activeTab === tab ? 'text-[#1E3A8A] dark:text-blue-400' : 'text-emerald-400 hover:text-[#1E3A8A] dark:text-blue-400'}`}
                 >
                   {tab}
                 </button>
@@ -224,39 +224,39 @@ export default function Parents() {
             {activeTab === 'personal' && (
               <div className="space-y-5">
                 <div>
-                  <label className="text-sm font-semibold text-emerald-700 uppercase tracking-wide tracking-[0.04em]">Full Name</label>
-                  <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="mt-2 h-14 text-lg border-emerald-200 bg-emerald-50/50 rounded-xl focus-visible:ring-emerald-500" />
+                  <label className="text-sm font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-wide tracking-[0.04em]">Full Name</label>
+                  <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="mt-2 h-14 text-lg border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20/50 rounded-xl focus-visible:ring-emerald-500" />
                 </div>
                 <div className="grid grid-cols-2 gap-5">
-                  <div><label className="text-sm font-semibold text-emerald-700 uppercase tracking-wide tracking-[0.04em]">Phone</label><Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="mt-2 h-14 text-lg border-emerald-200 bg-emerald-50/50 rounded-xl focus-visible:ring-emerald-500" /></div>
-                  <div><label className="text-sm font-semibold text-emerald-700 uppercase tracking-wide tracking-[0.04em]">Email</label><Input value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="mt-2 h-14 text-lg border-emerald-200 bg-emerald-50/50 rounded-xl focus-visible:ring-emerald-500" type="email" /></div>
+                  <div><label className="text-sm font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-wide tracking-[0.04em]">Phone</label><Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="mt-2 h-14 text-lg border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20/50 rounded-xl focus-visible:ring-emerald-500" /></div>
+                  <div><label className="text-sm font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-wide tracking-[0.04em]">Email</label><Input value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="mt-2 h-14 text-lg border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20/50 rounded-xl focus-visible:ring-emerald-500" type="email" /></div>
                 </div>
-                <div><label className="text-sm font-semibold text-emerald-700 uppercase tracking-wide tracking-[0.04em]">Address</label><Input value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="mt-2 h-14 text-lg border-emerald-200 bg-emerald-50/50 rounded-xl focus-visible:ring-emerald-500" /></div>
+                <div><label className="text-sm font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-wide tracking-[0.04em]">Address</label><Input value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="mt-2 h-14 text-lg border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20/50 rounded-xl focus-visible:ring-emerald-500" /></div>
               </div>
             )}
 
             {activeTab === 'linking' && (
               <div className="space-y-5">
                 <div>
-                  <label className="text-sm font-semibold text-emerald-700 uppercase tracking-wide tracking-[0.04em]">Linked Student</label>
-                  <select value={formData.linkedStudentId} onChange={e => setFormData({...formData, linkedStudentId: e.target.value})} className="mt-2 w-full rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 bg-emerald-50/50 px-4 py-3 h-14 text-lg text-emerald-900 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                  <label className="text-sm font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-wide tracking-[0.04em]">Linked Student</label>
+                  <select value={formData.linkedStudentId} onChange={e => setFormData({...formData, linkedStudentId: e.target.value})} className="mt-2 w-full rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20/50 px-4 py-3 h-14 text-lg text-emerald-900 focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     <option value="">-- No Student Selected --</option>
                     {students.map(s => <option key={s.id} value={s.id_number}>{s.name} ({s.id_number})</option>)}
                   </select>
                 </div>
                 <div className="pt-4 border-t border-emerald-100">
-                  <label className="text-sm font-semibold text-emerald-700 uppercase tracking-wide tracking-[0.04em]">Parent ID</label>
+                  <label className="text-sm font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-wide tracking-[0.04em]">Parent ID</label>
                   <Input value={formData.parentId} onChange={e => setFormData({...formData, parentId: e.target.value})} className="mt-2 h-14 text-lg border-emerald-200 bg-emerald-100 rounded-xl text-emerald-900" disabled />
                 </div>
               </div>
             )}
 
             <div className="flex gap-4 pt-6 mt-6 border-t border-emerald-100">
-              <Button variant="outline" className="flex-1 h-14 text-lg font-semibold border-emerald-200 text-emerald-700 hover:bg-emerald-50 rounded-xl" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button variant="outline" className="flex-1 h-14 text-lg font-semibold border-emerald-200 text-[#1E3A8A] dark:text-blue-400 hover:bg-[#F0F4FF] dark:bg-blue-900/20 rounded-xl" onClick={() => setShowModal(false)}>Cancel</Button>
               {activeTab !== 'linking' ? (
-                <Button className="flex-1 h-14 text-lg font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl" onClick={() => setActiveTab('linking')}>Next Step &rarr;</Button>
+                <Button className="flex-1 h-14 text-lg font-semibold bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold rounded-xl" onClick={() => setActiveTab('linking')}>Next Step &rarr;</Button>
               ) : (
-                <Button className="flex-1 h-14 text-lg font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl" onClick={handleEnroll} disabled={mutateParent.isPending}>{mutateParent.isPending ? 'Saving...' : 'Save Changes'}</Button>
+                <Button className="flex-1 h-14 text-lg font-semibold bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold rounded-xl" onClick={handleEnroll} disabled={mutateParent.isPending}>{mutateParent.isPending ? 'Saving...' : 'Save Changes'}</Button>
               )}
             </div>
           </motion.div>

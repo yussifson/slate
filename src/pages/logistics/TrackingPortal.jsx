@@ -98,7 +98,7 @@ export default function TrackingPortal() {
  </div>
  
  <div className="p-6 md:p-8 bg-card grid grid-cols-1 md:grid-cols-2 gap-8 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  <h3 className="font-semibold text-card-foreground border-b pb-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("shipment_details", "Shipment Details")}</h3>
  <div className="grid grid-cols-2 gap-4 text-sm">
  <div>

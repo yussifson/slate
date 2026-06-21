@@ -80,10 +80,10 @@ export default function Transport() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
         <div>
           <h1 className="text-4xl font-black text-emerald-900 tracking-tight uppercase flex items-center gap-3 tracking-[-0.02em] tracking-[0.04em]">
-            <Navigation className="w-10 h-10 text-emerald-600" />
+            <Navigation className="w-10 h-10 text-[#1E3A8A] dark:text-blue-400" />
             {t("transport_fleet", "Fleet Control")}
           </h1>
-          <p className="text-emerald-700 font-medium text-lg mt-1">{t("manage_school_buses", "Map-inspired route & driver assignments")}</p>
+          <p className="text-[#1E3A8A] dark:text-blue-400 font-medium text-lg mt-1">{t("manage_school_buses", "Map-inspired route & driver assignments")}</p>
         </div>
         <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
           <Button onClick={() => { setFormData({route: '', vehicle: '', driver: '', capacity: '', schedule: ''}); setShowModal(true); }} className="gap-2 bg-emerald-500/10 hover:bg-emerald-600 text-white rounded-none border-2 border-emerald-900 font-semibold px-6 py-6 text-lg transition-all hover:translate-y-[2px] hover:translate-x-[2px]">
@@ -97,13 +97,13 @@ export default function Transport() {
           <Bus className="w-8 h-8" />
         </div>
         <div className="relative flex-1 w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-700" />
-          <Input placeholder="Search routes or drivers..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 bg-emerald-50 border-2 border-emerald-900 rounded-none h-16 text-xl font-medium focus-visible:ring-0 focus-visible:border-emerald-600 placeholder:text-emerald-400 w-full" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#1E3A8A] dark:text-blue-400" />
+          <Input placeholder="Search routes or drivers..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 bg-[#F0F4FF] dark:bg-blue-900/20 border-2 border-emerald-900 rounded-none h-16 text-xl font-medium focus-visible:ring-0 focus-visible:border-emerald-600 placeholder:text-emerald-400 w-full" />
         </div>
       </div>
 
       {isLoading ? (
-        <div className="py-20 text-center text-emerald-600 font-semibold text-xl uppercase animate-pulse relative z-10 tracking-[0.04em]">{t("loading", "Locating Fleet...")}</div>
+        <div className="py-20 text-center text-[#1E3A8A] dark:text-blue-400 font-semibold text-xl uppercase animate-pulse relative z-10 tracking-[0.04em]">{t("loading", "Locating Fleet...")}</div>
       ) : filtered.length === 0 ? (
         <div className="py-20 text-center border-2 border-dashed border-emerald-900 bg-emerald-100 relative z-10">
           <Map className="w-16 h-16 mx-auto mb-4 text-emerald-300" />
@@ -148,14 +148,14 @@ export default function Transport() {
                   <div className="flex items-center gap-3 bg-white border-2 border-emerald-900 p-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                     <div className="bg-emerald-100 p-1 border-2 border-emerald-900"><Users className="w-4 h-4 text-emerald-900" /></div>
                     <div className="truncate flex-1">
-                      <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest leading-none tracking-[0.04em]">Driver</p>
+                      <p className="text-[10px] font-black text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest leading-none tracking-[0.04em]">Driver</p>
                       <p className="font-semibold text-emerald-900 truncate">{r.driver || 'Unassigned'}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 bg-white border-2 border-emerald-900 p-3 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                     <div className="bg-amber-200 p-1 border-2 border-emerald-900"><Bus className="w-4 h-4 text-emerald-900" /></div>
                     <div className="truncate flex-1">
-                      <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest leading-none tracking-[0.04em]">Capacity</p>
+                      <p className="text-[10px] font-black text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest leading-none tracking-[0.04em]">Capacity</p>
                       <p className="font-semibold text-emerald-900">{r.capacity || '0'} <span className="text-xs tracking-[0.04em]">PAX</span></p>
                     </div>
                   </div>
@@ -174,7 +174,7 @@ export default function Transport() {
               {editingId ? 'Edit Route' : 'Dispatch Route'}
             </h2>
             
-            <div className="space-y-6">
+            <div className="space-y-6 school-page-enter font-dmsans">
               <div>
                 <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">{t("route_name", "Path / Waypoints")}</label>
                 <Input value={formData.route} onChange={e => setFormData({...formData, route: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" placeholder="Downtown - North Campus" />
@@ -201,7 +201,7 @@ export default function Transport() {
             
             <div className="flex gap-4 pt-8">
               <Button variant="outline" className="flex-1 h-14 border-2 border-emerald-900 bg-white text-emerald-900 font-black uppercase tracking-widest rounded-none hover:bg-emerald-100 tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={() => setShowModal(false)}>{t("cancel", "Abort")}</Button>
-              <Button className="flex-1 h-14 bg-emerald-600 hover:bg-emerald-700 text-white border-2 border-emerald-900 font-black uppercase tracking-widest rounded-none transition-colors tracking-[0.04em]" onClick={handleSave}>
+              <Button className="flex-1 h-14 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold border-2 border-emerald-900 font-black uppercase tracking-widest rounded-none transition-colors tracking-[0.04em]" onClick={handleSave}>
                 {mutateRecord.isPending ? 'Syncing...' : 'Deploy'}
               </Button>
             </div>

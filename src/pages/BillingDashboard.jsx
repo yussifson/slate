@@ -225,7 +225,7 @@ function CompanyBilling({ companyId }) {
   const unbilledExpenses = expenses.filter(e => e.billable && !e.billed);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       <PageHeader
         title="Billing"
         subtitle="Invoices and expenses"

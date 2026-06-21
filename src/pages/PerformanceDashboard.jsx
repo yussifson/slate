@@ -79,7 +79,7 @@ export default function PerformanceDashboard() {
   const currency = user?.company_currency || "GHS";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       <PageHeader
         title="Performance Dashboard"
         subtitle="Firm-wide lawyer performance metrics"

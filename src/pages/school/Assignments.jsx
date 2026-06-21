@@ -132,13 +132,13 @@ export default function Assignments() {
   };
 
   return (
-    <div className="space-y-6 font-dmsans p-4 bg-emerald-50 min-h-screen">
+    <div className="space-y-6 font-dmsans p-4 bg-[#F0F4FF] dark:bg-blue-900/20 min-h-screen">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-black text-emerald-900 tracking-tight uppercase tracking-[-0.02em] tracking-[0.04em]">{t("assignments", "Assignments")}</h1>
-          <p className="text-sm text-emerald-700 font-medium mt-1">{t("manage_class_assignments", "Kanban Board for Homework & Grading")}</p>
+          <p className="text-sm text-[#1E3A8A] dark:text-blue-400 font-medium mt-1">{t("manage_class_assignments", "Kanban Board for Homework & Grading")}</p>
         </div>
-        <Button onClick={() => { setFormData({title: '', class: 'Grade 10', subject: '', dueDate: '', description: '', status: 'todo'}); setShowModal(true);}} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none border-2 border-emerald-800 rounded-none font-semibold uppercase tracking-[0.04em]">
+        <Button onClick={() => { setFormData({title: '', class: 'Grade 10', subject: '', dueDate: '', description: '', status: 'todo'}); setShowModal(true);}} className="gap-2 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none border-2 border-emerald-800 rounded-none font-semibold uppercase tracking-[0.04em]">
           <Plus className="w-4 h-4" /> {t("create_assignment", "New")}
         </Button>
       </motion.div>
@@ -146,12 +146,12 @@ export default function Assignments() {
       <div className="bg-white border-2 border-emerald-200 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none rounded-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
         <div className="relative w-full max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-500" />
-          <Input placeholder="Search assignments..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-emerald-50 border-emerald-200 rounded-none focus-visible:ring-emerald-500 font-semibold" />
+          <Input placeholder="Search assignments..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-[#F0F4FF] dark:bg-blue-900/20 border-emerald-200 rounded-none focus-visible:ring-emerald-500 font-semibold" />
         </div>
       </div>
 
       {isLoading ? (
-        <div className="py-12 text-center text-emerald-600 font-semibold uppercase tracking-[0.04em]">Loading...</div>
+        <div className="py-12 text-center text-[#1E3A8A] dark:text-blue-400 font-semibold uppercase tracking-[0.04em]">Loading...</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {columns.map(col => (
@@ -162,14 +162,14 @@ export default function Assignments() {
               </h2>
               <div className="flex-1 space-y-4">
                 {filtered.filter(a => a.column === col.id).map(a => (
-                  <motion.div layoutId={a.id} key={a.id} className="bg-white border-2 border-current p-4 hover:bg-emerald-50 transition-colors relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                  <motion.div layoutId={a.id} key={a.id} className="bg-white border-2 border-current p-4 hover:bg-[#F0F4FF] dark:bg-blue-900/20 transition-colors relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                     <div className="flex justify-between items-start mb-2">
                       <span className="text-[10px] font-black uppercase tracking-widest bg-current text-white px-2 py-0.5 tracking-[0.04em]">{a.class}</span>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild><Button variant="ghost" className="h-6 w-6 p-0 hover:bg-emerald-200 rounded-none"><MoreVertical className="h-4 w-4" /></Button></DropdownMenuTrigger>
                         <DropdownMenuContent className="bg-white border-2 border-emerald-300 rounded-none shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
                           <DropdownMenuItem className="font-semibold text-emerald-800 rounded-none" onClick={() => { setEditingId(a.id); setFormData(a); setShowModal(true); }}>Edit</DropdownMenuItem>
-                          <DropdownMenuItem className="font-semibold text-emerald-800 rounded-none bg-emerald-50" onClick={() => setViewingSubmissions(a)}>View Submissions & AI Grade</DropdownMenuItem>
+                          <DropdownMenuItem className="font-semibold text-emerald-800 rounded-none bg-[#F0F4FF] dark:bg-blue-900/20" onClick={() => setViewingSubmissions(a)}>View Submissions & AI Grade</DropdownMenuItem>
                           <DropdownMenuItem className="font-semibold text-emerald-800 rounded-none" onClick={() => moveCard(a, 'todo')}>Move to To Do</DropdownMenuItem>
                           <DropdownMenuItem className="font-semibold text-emerald-800 rounded-none" onClick={() => moveCard(a, 'grading')}>Move to Grading</DropdownMenuItem>
                           <DropdownMenuItem className="font-semibold text-emerald-800 rounded-none" onClick={() => moveCard(a, 'returned')}>Move to Returned</DropdownMenuItem>
@@ -197,14 +197,14 @@ export default function Assignments() {
             <div className="flex justify-between items-center border-b-2 border-emerald-200 pb-4 mb-4">
               <div>
                 <h2 className="text-xl font-black text-emerald-900 uppercase tracking-wider">{viewingSubmissions.title} - Submissions</h2>
-                <p className="text-sm text-emerald-600 font-medium">Auto-grade all pending submissions using AI.</p>
+                <p className="text-sm text-[#1E3A8A] dark:text-blue-400 font-medium">Auto-grade all pending submissions using AI.</p>
               </div>
               <div className="flex gap-2">
                 <Button variant="outline" className="rounded-none font-semibold uppercase" onClick={() => setViewingSubmissions(null)}>Close</Button>
                 <Button 
                   onClick={() => handleAIGrade(viewingSubmissions.id, viewingSubmissions.description)}
                   disabled={aiGrading}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-none font-black uppercase flex items-center gap-2"
+                  className="bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold rounded-none font-black uppercase flex items-center gap-2"
                 >
                   {aiGrading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <BrainCircuit className="w-4 h-4" />}
                   {aiGrading ? 'Grading...' : 'AI Auto-Grade All'}
@@ -214,10 +214,10 @@ export default function Assignments() {
             
             <div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
               {submissionsData.filter(s => s.assignment_id === viewingSubmissions.id).length === 0 ? (
-                <div className="text-center py-12 text-emerald-600/50 font-medium">No submissions yet.</div>
+                <div className="text-center py-12 text-[#1E3A8A] dark:text-blue-400/50 font-medium">No submissions yet.</div>
               ) : (
                 submissionsData.filter(s => s.assignment_id === viewingSubmissions.id).map(sub => (
-                  <div key={sub.id} className="border-2 border-emerald-200 p-4 bg-emerald-50">
+                  <div key={sub.id} className="border-2 border-emerald-200 p-4 bg-[#F0F4FF] dark:bg-blue-900/20">
                     <div className="flex justify-between items-start mb-2">
                       <h4 className="font-bold text-emerald-900">{sub.student}</h4>
                       <span className={`text-xs font-bold uppercase px-2 py-1 ${sub.status === 'Graded' ? 'bg-green-200 text-green-800' : 'bg-amber-200 text-amber-800'}`}>
@@ -246,20 +246,20 @@ export default function Assignments() {
           <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="bg-white border-4 border-emerald-500 w-full max-w-md p-6 space-y-4 rounded-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
             <h2 className="text-xl font-black text-emerald-900 uppercase tracking-wider border-b-2 border-emerald-200 pb-2 tracking-[0.04em]">{editingId ? 'Edit Assignment' : 'Create Assignment'}</h2>
             <div className="space-y-4">
-              <div><label className="text-xs font-black text-emerald-700 uppercase tracking-widest tracking-[0.04em]">Title</label><Input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="mt-1 border-2 border-emerald-200 bg-emerald-50 rounded-none font-semibold" /></div>
+              <div><label className="text-xs font-black text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest tracking-[0.04em]">Title</label><Input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="mt-1 border-2 border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20 rounded-none font-semibold" /></div>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-xs font-black text-emerald-700 uppercase tracking-widest tracking-[0.04em]">Class</label><Input value={formData.class} onChange={e => setFormData({...formData, class: e.target.value})} className="mt-1 border-2 border-emerald-200 bg-emerald-50 rounded-none font-semibold" /></div>
-                <div><label className="text-xs font-black text-emerald-700 uppercase tracking-widest tracking-[0.04em]">Subject</label><Input value={formData.subject} onChange={e => setFormData({...formData, subject: e.target.value})} className="mt-1 border-2 border-emerald-200 bg-emerald-50 rounded-none font-semibold" /></div>
+                <div><label className="text-xs font-black text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest tracking-[0.04em]">Class</label><Input value={formData.class} onChange={e => setFormData({...formData, class: e.target.value})} className="mt-1 border-2 border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20 rounded-none font-semibold" /></div>
+                <div><label className="text-xs font-black text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest tracking-[0.04em]">Subject</label><Input value={formData.subject} onChange={e => setFormData({...formData, subject: e.target.value})} className="mt-1 border-2 border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20 rounded-none font-semibold" /></div>
               </div>
-              <div><label className="text-xs font-black text-emerald-700 uppercase tracking-widest tracking-[0.04em]">Due Date</label><Input type="date" value={formData.dueDate} onChange={e => setFormData({...formData, dueDate: e.target.value})} className="mt-1 border-2 border-emerald-200 bg-emerald-50 rounded-none font-semibold" /></div>
+              <div><label className="text-xs font-black text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest tracking-[0.04em]">Due Date</label><Input type="date" value={formData.dueDate} onChange={e => setFormData({...formData, dueDate: e.target.value})} className="mt-1 border-2 border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20 rounded-none font-semibold" /></div>
               <div>
-                <label className="text-xs font-black text-emerald-700 uppercase tracking-widest tracking-[0.04em]">Description</label>
-                <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="mt-1 w-full border-2 border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-900 rounded-none focus:outline-none resize-none h-24" />
+                <label className="text-xs font-black text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest tracking-[0.04em]">Description</label>
+                <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="mt-1 w-full border-2 border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20 px-3 py-2 text-sm font-semibold text-emerald-900 rounded-none focus:outline-none resize-none h-24" />
               </div>
             </div>
             <div className="flex gap-4 pt-4 border-t-2 border-emerald-200">
-              <Button variant="outline" className="flex-1 rounded-none border-2 border-emerald-300 font-semibold text-emerald-800 hover:bg-emerald-50 uppercase tracking-[0.04em]" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 rounded-none bg-emerald-600 hover:bg-emerald-700 text-white font-black uppercase border-2 border-emerald-800 tracking-[0.04em]" onClick={handleSave}>Save</Button>
+              <Button variant="outline" className="flex-1 rounded-none border-2 border-emerald-300 font-semibold text-emerald-800 hover:bg-[#F0F4FF] dark:bg-blue-900/20 uppercase tracking-[0.04em]" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button className="flex-1 rounded-none bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold font-black uppercase border-2 border-emerald-800 tracking-[0.04em]" onClick={handleSave}>Save</Button>
             </div>
           </motion.div>
         </div>

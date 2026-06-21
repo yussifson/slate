@@ -115,7 +115,7 @@ export default function Telemedicine() {
     switch(status) {
       case 'Completed': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
       case 'Cancelled': return 'bg-red-100 text-red-700 border-red-200';
-      default: return 'bg-blue-100 text-blue-700 border-blue-200';
+      default: return 'bg-teal-100 text-teal-700 border-teal-200';
     }
   };
 
@@ -128,7 +128,7 @@ export default function Telemedicine() {
           <h1 className="text-2xl font-bold text-card-foreground tracking-[-0.02em]">{t("telemedicine", "Telemedicine")}</h1>
           <p className="text-sm text-[#71717a] mt-0.5">{t("manage_virtual_consultations", "Schedule and conduct virtual patient consultations")}</p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow-md">
+        <Button onClick={() => setShowModal(true)} className="gap-2 bg-teal-600 hover:bg-teal-700 text-white shadow-md">
           <Video className="w-4 h-4" /> {t("schedule_session", "Schedule Session")}
         </Button>
       </div>
@@ -137,7 +137,7 @@ export default function Telemedicine() {
         <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-[#71717a] text-sm uppercase">Scheduled Today</h3>
-            <Calendar className="w-5 h-5 text-blue-500 opacity-80" />
+            <Calendar className="w-5 h-5 text-teal-500 opacity-80" />
           </div>
           <p className="text-3xl font-bold text-card-foreground mt-2">
             {sessions.filter(s => s.status === 'Scheduled' && s.scheduled_time.startsWith(new Date().toISOString().split('T')[0])).length}
@@ -190,7 +190,7 @@ export default function Telemedicine() {
                   <td className="px-6 py-4 font-semibold text-card-foreground">{s.patient_name}</td>
                   <td className="px-6 py-4">
                     {s.meeting_link ? (
-                      <a href={s.meeting_link} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline flex items-center gap-1.5">
+                      <a href={s.meeting_link} target="_blank" rel="noreferrer" className="text-teal-600 hover:underline flex items-center gap-1.5">
                         <Video className="w-3.5 h-3.5" /> Join Session
                       </a>
                     ) : (
@@ -251,7 +251,7 @@ export default function Telemedicine() {
               <div>
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-semibold text-[#71717a] uppercase">Clinical Notes</label>
-                  <Button type="button" variant="outline" size="sm" onClick={handleAISummarize} disabled={isSummarizing} className="h-6 text-xs text-blue-600 border-blue-200 bg-blue-50 hover:bg-blue-100">
+                  <Button type="button" variant="outline" size="sm" onClick={handleAISummarize} disabled={isSummarizing} className="h-6 text-xs text-teal-600 border-teal-200 bg-teal-50 hover:bg-teal-100">
                     {isSummarizing ? <Sparkles className="w-3 h-3 mr-1 animate-spin" /> : <Bot className="w-3 h-3 mr-1" />}
                     {isSummarizing ? 'Summarizing...' : 'AI Enhance Notes'}
                   </Button>
@@ -261,7 +261,7 @@ export default function Telemedicine() {
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md" onClick={() => mutateRecord.mutate(formData)} disabled={mutateRecord.isPending}>
+              <Button className="flex-1 bg-teal-600 hover:bg-teal-700 text-white rounded-xl shadow-md" onClick={() => mutateRecord.mutate(formData)} disabled={mutateRecord.isPending}>
                 {mutateRecord.isPending ? 'Saving...' : 'Schedule'}
               </Button>
             </div>

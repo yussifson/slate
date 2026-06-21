@@ -149,15 +149,52 @@ export const AppSchema = new Schema({
         title: column.text,
         search_text: column.text}),
     automation_rules: new Table({
-        id: column.text,
-        created_at: column.text,
-        company_id: column.text,
-        created_by: column.text,
-        table_name: column.text,
-        is_active: column.integer,
-        conditions: column.text,
-        action_type: column.text,
-        action_payload: column.text}),
+      id: column.string,
+      company_id: column.string,
+      table_name: column.string,
+      action_type: column.string,
+      action_payload: column.string,
+      is_active: column.integer,
+      conditions: column.string,
+      created_at: column.string
+    }),
+    automation_queue: new Table({
+      id: column.string,
+      company_id: column.string,
+      rule_id: column.string,
+      payload: column.string,
+      execute_at: column.string,
+      status: column.string,
+      retry_count: column.integer,
+      max_retries: column.integer,
+      last_error: column.string,
+      created_at: column.string
+    }),
+    automation_dlq: new Table({
+      id: column.string,
+      company_id: column.string,
+      rule_id: column.string,
+      payload: column.string,
+      failed_at: column.string,
+      error_message: column.string,
+      original_queue_id: column.string
+    }),
+    automation_logs: new Table({
+      id: column.string,
+      company_id: column.string,
+      rule_id: column.string,
+      status: column.string,
+      logs: column.string,
+      created_at: column.string
+    }),
+    automation_rule_versions: new Table({
+      id: column.string,
+      company_id: column.string,
+      rule_id: column.string,
+      action_payload: column.string,
+      conditions: column.string,
+      created_at: column.string
+    }),
     audit_logs: new Table({
         id: column.text,
         created_at: column.text,

@@ -128,7 +128,7 @@ export default function Reinsurance() {
   const totalCoverage = contracts.reduce((sum, c) => sum + (Number(c.coverage_limit) || 0), 0);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em]">{t("reinsurance", "Reinsurance Management")}</h1>

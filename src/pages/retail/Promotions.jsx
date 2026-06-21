@@ -139,7 +139,7 @@ export default function Promotions() {
  const activeCount = filteredPromos.filter((p) => p.status === 'Active').length;
 
  return (
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
  <h1 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">{t("promotions", "Promotions & Discounts")}</h1>

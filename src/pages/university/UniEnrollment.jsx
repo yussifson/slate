@@ -95,7 +95,7 @@ export default function UniEnrollment() {
  <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 ">
  <h2 className="font-semibold text-[var(--color-text-primary)] mb-1">Conversion Overview</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-6">Funnel metrics from initial review to registration.</p>
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  <div>
  <div className="flex justify-between text-[var(--text-sm)] font-semibold mb-1 text-[var(--color-text-primary)]">
  <span>Application to Interview Rate</span>

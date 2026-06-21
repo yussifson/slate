@@ -105,7 +105,7 @@ export default function UniExams() {
  </div>
  <div className="p-6">
  {!examSubmitted ? (
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  {activeExam.questions.map((q, qIdx) => (
  <div key={qIdx} className="space-y-2 border-b border-primary/40 pb-4 last:border-0">
  <p className="font-medium text-[var(--color-text-primary)]">{qIdx + 1}. {q.q}</p>

@@ -324,7 +324,7 @@ export default function FrontDesk() {
  {isLoading ? (
  <div className="py-20 text-center text-[#71717a] dark:text-gray-400">{t("loading_room_status", "Loading room status...")}</div>
  ) : (
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  {floors.map(floor => {
  return (
  <div key={floor}>

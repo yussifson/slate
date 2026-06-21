@@ -21,66 +21,83 @@ import { useAuth} from '@/lib/AuthContext';
 
 // Page Context Map 
 const PAGE_CONTEXT = {
- '/': { title: 'Dashboard', suite: 'Core', desc: 'main dashboard with KPIs and quick actions'},
- '/cases': { title: 'Cases', suite: 'Legal', desc: 'legal case management list'},
- '/clients': { title: 'Clients', suite: 'Core', desc: 'client management'},
- '/calendar': { title: 'Calendar', suite: 'Core', desc: 'appointments and events calendar'},
- '/invoices': { title: 'Invoices', suite: 'Billing', desc: 'invoice management'},
- '/tasks': { title: 'Tasks', suite: 'Core', desc: 'task management'},
- '/documents': { title: 'Documents', suite: 'Core', desc: 'document library'},
- '/leads': { title: 'Leads', suite: 'CRM', desc: 'sales lead pipeline'},
- '/billing': { title: 'Billing', suite: 'Billing', desc: 'billing dashboard'},
- '/claims': { title: 'Claims Processing', suite: 'Insurance', desc: 'insurance claims list'},
- '/policies': { title: 'Policies', suite: 'Insurance', desc: 'insurance policy management'},
- '/premiums': { title: 'Premiums', suite: 'Insurance', desc: 'premium payment tracking'},
- '/underwriting': { title: 'Underwriting', suite: 'Insurance', desc: 'underwriting applications'},
- '/agent-performance': { title: 'Agent Performance', suite: 'Insurance', desc: 'insurance agent metrics'},
- '/patients': { title: 'Patients', suite: 'Hospital', desc: 'patient records'},
- '/appointments': { title: 'Appointments', suite: 'Hospital', desc: 'appointment scheduling'},
- '/wards': { title: 'Wards', suite: 'Hospital', desc: 'hospital ward management'},
- '/prescriptions': { title: 'Prescriptions', suite: 'Hospital', desc: 'prescription management'},
- '/lab-results': { title: 'Lab Results', suite: 'Hospital', desc: 'lab results and diagnostics'},
- '/students': { title: 'Students', suite: 'School', desc: 'student management'},
- '/classes': { title: 'Classes', suite: 'School', desc: 'class management'},
- '/grades': { title: 'Grades', suite: 'School', desc: 'student grades'},
- '/attendance': { title: 'Attendance', suite: 'School', desc: 'attendance tracking'},
- '/members': { title: 'Members', suite: 'Religion', desc: 'religion member directory'},
- '/donations': { title: 'Donations', suite: 'Religion', desc: 'donation and offering records'},
- '/employees': { title: 'Employees', suite: 'HR', desc: 'HR employee management'},
- '/payroll': { title: 'Payroll', suite: 'HR', desc: 'payroll processing'},
- '/recruitment': { title: 'Recruitment', suite: 'HR', desc: 'job applications and hiring'},
- '/shipments': { title: 'Shipments', suite: 'Logistics', desc: 'shipment tracking'},
- '/fleet': { title: 'Fleet', suite: 'Logistics', desc: 'vehicle fleet management'},
- '/inventory': { title: 'Inventory', suite: 'Retail', desc: 'product inventory'},
- '/orders': { title: 'Sales Orders', suite: 'Retail', desc: 'sales orders'},
- '/pos': { title: 'Point of Sale', suite: 'Retail', desc: 'retail POS system'}};
-
-// Contextual smart suggestions per page/suite
-const PAGE_SUGGESTIONS = {
- '/patients': ['List all patients admitted today', 'Create a new patient record', 'Show patients with pending lab results'],
- '/appointments':['Schedule an appointment for tomorrow', 'List today\'s appointments', 'Find upcoming appointments this week'],
- '/wards': ['Show all occupied beds', 'Assign patient to a bed in Ward A', 'List available beds'],
- '/cases': ['Show all open cases', 'Create a new case', 'Find cases assigned to me'],
- '/tasks': ['Show my pending tasks', 'Create an urgent task', 'Mark overdue tasks'],
- '/employees': ['List all active employees', 'Add a new employee', 'Show employees on leave'],
- '/payroll': ['Generate payroll for this month', 'Show pending payslips', 'Calculate overtime'],
- '/students': ['Show students with missing fees', 'Add a new student', 'Find students by class'],
- '/inventory': ['Show low stock items', 'Add a new product', 'Find products below reorder level'],
- '/claims': ['List pending claims', 'Create a new claim', 'Show high-value claims this month'],
- '/': ['Give me a summary of today\'s activity', 'Show key metrics', 'What needs my attention today?']};
-
-// Session Storage (Fallback/Types)
-function newSession() {
- return {
- id: crypto.randomUUID(),
- title: 'New Chat',
- createdAt: new Date().toISOString(),
- messages: [{
- role: 'assistant',
- content: "Hello! I'm **Orbit** ≡ƒæï\n\nI can help you:\n Navigate the app\n Create, edit & manage records\n Analyze data on any page\n Answer any question\n\nYou can also use your **≡ƒÄÖ∩╕Å voice** or **≡ƒôÄ upload files** (images, PDFs, CSV, etc.)\n\nWhat would you like to do?"
-}]
+  '/': { title: 'Dashboard', suite: 'Core', desc: 'main dashboard with KPIs and quick actions'},
+  '/cases': { title: 'Cases', suite: 'Legal', desc: 'legal case management list'},
+  '/clients': { title: 'Clients', suite: 'Core', desc: 'client management'},
+  '/calendar': { title: 'Calendar', suite: 'Core', desc: 'appointments and events calendar'},
+  '/invoices': { title: 'Invoices', suite: 'Billing', desc: 'invoice management'},
+  '/tasks': { title: 'Tasks', suite: 'Core', desc: 'task management'},
+  '/documents': { title: 'Documents', suite: 'Core', desc: 'document library'},
+  '/leads': { title: 'Leads', suite: 'CRM', desc: 'sales lead pipeline'},
+  '/billing': { title: 'Billing', suite: 'Billing', desc: 'billing dashboard'},
+  
+  // Hospital
+  '/patients': { title: 'Patients', suite: 'Hospital', desc: 'patient records'},
+  '/appointments': { title: 'Appointments', suite: 'Hospital', desc: 'appointment scheduling'},
+  '/wards': { title: 'Wards', suite: 'Hospital', desc: 'hospital ward management'},
+  '/prescriptions': { title: 'Prescriptions', suite: 'Hospital', desc: 'prescription management'},
+  '/lab-results': { title: 'Lab Results', suite: 'Hospital', desc: 'lab results and diagnostics'},
+  '/pharmacy': { title: 'Pharmacy', suite: 'Hospital', desc: 'pharmacy inventory and dispensing'},
+  '/telemedicine': { title: 'Telemedicine', suite: 'Hospital', desc: 'virtual consultations'},
+  '/operation-theater': { title: 'Operation Theater', suite: 'Hospital', desc: 'surgery scheduling'},
+  '/radiology': { title: 'Radiology', suite: 'Hospital', desc: 'imaging and scans'},
+  '/ambulance-dispatch': { title: 'Ambulance Dispatch', suite: 'Hospital', desc: 'emergency fleet'},
+  
+  // School
+  '/students': { title: 'Students', suite: 'School', desc: 'student management'},
+  '/classes': { title: 'Classes', suite: 'School', desc: 'class management'},
+  '/timetable': { title: 'Timetable', suite: 'School', desc: 'academic scheduling'},
+  '/grades': { title: 'Grades', suite: 'School', desc: 'student grades'},
+  '/attendance': { title: 'Attendance', suite: 'School', desc: 'attendance tracking'},
+  '/exams': { title: 'Exams', suite: 'School', desc: 'examination management'},
+  '/fees': { title: 'Fees', suite: 'School', desc: 'student fee collection'},
+  '/library': { title: 'Library', suite: 'School', desc: 'book inventory and loans'},
+  '/gamification': { title: 'Gamification', suite: 'School', desc: 'student rewards'},
+  
+  // Religion
+  '/members': { title: 'Members', suite: 'Religion', desc: 'religion member directory'},
+  '/donations': { title: 'Donations', suite: 'Religion', desc: 'donation and offering records'},
+  '/groups': { title: 'Groups', suite: 'Religion', desc: 'ministry groups'},
+  '/events': { title: 'Events', suite: 'Religion', desc: 'church events'},
+  '/volunteers': { title: 'Volunteers', suite: 'Religion', desc: 'volunteer scheduling'},
+  '/sermons': { title: 'Sermons', suite: 'Religion', desc: 'sermon audio/video library'},
+  '/prayers': { title: 'Prayers', suite: 'Religion', desc: 'prayer requests'},
+  '/milestones': { title: 'Milestones', suite: 'Religion', desc: 'baptisms, weddings, etc'},
+  
+  // HR
+  '/employees': { title: 'Employees', suite: 'HR', desc: 'HR employee management'},
+  '/payroll': { title: 'Payroll', suite: 'HR', desc: 'payroll processing'},
+  '/recruitment': { title: 'Recruitment', suite: 'HR', desc: 'job applications and hiring'},
+  '/hr-leave': { title: 'Leave', suite: 'HR', desc: 'leave requests'},
+  
+  // Logistics
+  '/shipments': { title: 'Shipments', suite: 'Logistics', desc: 'shipment tracking'},
+  '/fleet': { title: 'Fleet', suite: 'Logistics', desc: 'vehicle fleet management'},
+  '/drivers': { title: 'Drivers', suite: 'Logistics', desc: 'driver management'},
+  '/warehouse': { title: 'Warehouse', suite: 'Logistics', desc: 'inventory storage'},
+  '/route-optimization': { title: 'Route Optimization', suite: 'Logistics', desc: 'AI route planning'},
+  
+  // Retail
+  '/inventory': { title: 'Inventory', suite: 'Retail', desc: 'product inventory'},
+  '/orders': { title: 'Sales Orders', suite: 'Retail', desc: 'sales orders'},
+  '/pos': { title: 'Point of Sale', suite: 'Retail', desc: 'retail POS system'},
+  '/purchase-orders': { title: 'Purchase Orders', suite: 'Retail', desc: 'supplier orders'},
+  '/promotions': { title: 'Promotions', suite: 'Retail', desc: 'discounts and campaigns'},
+  
+  // Hotel
+  '/front-desk': { title: 'Front Desk', suite: 'Hotel', desc: 'guest check-in/out'},
+  '/reservations': { title: 'Reservations', suite: 'Hotel', desc: 'booking management'},
+  '/rooms': { title: 'Rooms', suite: 'Hotel', desc: 'room status and inventory'},
+  '/housekeeping': { title: 'Housekeeping', suite: 'Hotel', desc: 'cleaning schedules'},
+  '/restaurant': { title: 'Restaurant', suite: 'Hotel', desc: 'dining POS'},
+  
+  // Insurance
+  '/policies': { title: 'Policies', suite: 'Insurance', desc: 'insurance policies'},
+  '/claims': { title: 'Claims Processing', suite: 'Insurance', desc: 'insurance claims list'},
+  '/premiums': { title: 'Premiums', suite: 'Insurance', desc: 'premium payment tracking'},
+  '/underwriting': { title: 'Underwriting', suite: 'Insurance', desc: 'underwriting applications'},
+  '/agent-performance': { title: 'Agent Performance', suite: 'Insurance', desc: 'insurance agent metrics'}
 };
-}
 
 // Parse Agent Actions 
 function parseAgentActions(text) {
@@ -167,6 +184,7 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
  const [uploadedFile, setUploadedFile] = useState(null);
  const [pendingHiddenContext, setPendingHiddenContext] = useState(null);
  const [chatMode, setChatMode] = useState('chat');
+ const [automationRegistries, setAutomationRegistries] = useState({ triggers: [], actions: [] });
 
  const [originalInputBeforeVoice, setOriginalInputBeforeVoice] = useState('');
  const messagesEndRef = useRef(null);
@@ -215,6 +233,12 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
         }
 })();
 }
+
+ // Pre-load automation registries
+ const { data: triggers } = await supabase.from('automation_triggers').select('trigger_key, display_name, data_schema').eq('is_active', true);
+ const { data: actions } = await supabase.from('automation_actions').select('action_key, display_name, input_schema').eq('is_active', true);
+ if (triggers && actions) setAutomationRegistries({ triggers, actions });
+
  setIsInitialized(true);
 };
  loadSessions();
@@ -442,11 +466,44 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
   if (chatMode === 'flow') {
     modeContext = '\nCRITICAL MODE ACTIVE: You are in FLOW BUILDER mode. Focus strictly on designing workflows, suggesting step-by-step logic, and helping the user orchestrate system architectures. Ignore casual chat unless it pertains to flow building.';
   } else if (chatMode === 'automation') {
-    modeContext = '\nCRITICAL MODE ACTIVE: You are in AUTOMATION mode. Focus strictly on generating automation rules, triggers, and condition chains using the `generate_visual_automation` tool. Do not generate unrelated records.';
+    modeContext = `\nCRITICAL MODE ACTIVE: You are in AUTOMATION mode. You MUST use ONLY the verified triggers and actions from the registry below. Do NOT hallucinate triggers or actions!
+    
+VERIFIED TRIGGERS:
+${JSON.stringify(automationRegistries.triggers)}
+
+VERIFIED ACTIONS:
+${JSON.stringify(automationRegistries.actions)}
+
+To create an automation, use the \`create_record\` tool with recordType "automation". The payload MUST match the new registry:
+- name: String
+- description: String
+- trigger_key: MUST be exactly one of the verified trigger_keys
+- steps: Array of objects [{ "action_key": "VERIFIED_ACTION_KEY", "config": { ...inputs matching input_schema... } }]
+- trigger_filters: Array of objects [{ "field": "...", "operator": "equals", "value": "..." }]
+- is_active: true
+`;
   }
- const systemPrompt = `You are OrbitFlow — a highly enthusiastic, intelligent, and entertaining AI workflow engineer embedded in Slate SaaS.
+
+  let verticalPersona = "";
+  switch(ctx.suite) {
+    case 'Hospital': verticalPersona = "You are assisting in a Healthcare environment. Be highly precise, prioritize patient safety, use professional medical terminology, and strictly adhere to HIPAA privacy standards."; break;
+    case 'School': verticalPersona = "You are assisting in an Educational environment. Be encouraging, focus on student success, understand academic calendars, and be helpful to teachers and administrators."; break;
+    case 'Legal': verticalPersona = "You are assisting in a Legal environment. Be highly formal, prioritize strict confidentiality, use precise legal terminology, and track deadlines relentlessly."; break;
+    case 'Logistics': verticalPersona = "You are assisting in a Logistics environment. Focus on efficiency, track timelines, manage supply chain terminology, and prioritize delivery success."; break;
+    case 'Retail': verticalPersona = "You are assisting in a Retail environment. Focus on sales metrics, customer satisfaction, inventory turnover, and point-of-sale efficiency."; break;
+    case 'Hotel': verticalPersona = "You are assisting in a Hospitality environment. Be extremely polite, focus on guest satisfaction, manage bookings efficiently, and prioritize service quality."; break;
+    case 'Religion': verticalPersona = "You are assisting in a Religious/Community environment. Be deeply empathetic, respectful, focus on community engagement, and manage pastoral care delicately."; break;
+    case 'HR': verticalPersona = "You are assisting in a Human Resources environment. Maintain strict confidentiality regarding employee data, be highly professional, and focus on compliance and employee well-being."; break;
+    case 'Insurance': verticalPersona = "You are assisting in an Insurance environment. Be analytical, focus on risk assessment, use precise actuarial terminology, and handle claims with accuracy."; break;
+    default: verticalPersona = "You are assisting in a professional business environment. Be efficient, analytical, and highly capable.";
+  }
+
+  const systemPrompt = `You are OrbitFlow — a highly enthusiastic, intelligent, and entertaining AI workflow engineer embedded in Slate SaaS.
 Your personality is that of a powerful but friendly AI companion—think of a hyper-intelligent digital lion/owl hybrid! Be cheerful, slightly playful, use emojis naturally, but remain highly capable and laser-focused on orchestrating the user's workflows flawlessly.
-Your current context is the ${ctx.suite} suite, specifically the '${ctx.title}' page.${modeContext}
+Your current context is the ${ctx.suite} suite, specifically the '${ctx.title}' page.
+
+${verticalPersona}
+${modeContext}
 
 CRITICAL INSTRUCTIONS:
 - You are a Workflow Engineer. You can orchestrate complex chains of tasks and build powerful AUTOMATIONS across the system.
@@ -454,7 +511,7 @@ CRITICAL INSTRUCTIONS:
 - The user is currently on page: ${location.pathname}
 
 EXACT VERIFIED ROUTE MAP — ALWAYS USE THESE EXACT PATHS FOR navigate_to. NEVER GUESS OR INVENT PATHS:
-# Core / Legal Suite
+# Core / Legal
 / → Dashboard
 /cases → Cases
 /clients → Clients
@@ -467,21 +524,8 @@ EXACT VERIFIED ROUTE MAP — ALWAYS USE THESE EXACT PATHS FOR navigate_to. NEVER
 /client-portal → Client Portal
 /leads → Leads
 /billing → Billing
-/pipeline → Case Pipeline
-/research → Legal Research
-/audit → Audit Log
-/leave → Leave Management
-/performance → Performance Dashboard
-/outcomes → Case Outcomes
-/conflict-check → Conflict Checker
-/email-inbox → Email Inbox
-/reports → Reports
-/export → Data Export
-/whatsapp → WhatsApp Messenger
-/hr → HR Dashboard
-/my-dashboard → My Dashboard
 
-# School Suite
+# School
 /students → Students
 /classes → Classes
 /timetable → Timetable
@@ -490,17 +534,22 @@ EXACT VERIFIED ROUTE MAP — ALWAYS USE THESE EXACT PATHS FOR navigate_to. NEVER
 /exams → Exams
 /fees → Fee Management
 /library → Library
+/gamification → Gamification
 /parent-portal → Parent Portal
 
-# Hospital Suite
+# Hospital
 /patients → Patients
 /appointments → Appointments
 /wards → Wards
 /prescriptions → Prescriptions
 /lab-results → Lab Results
 /pharmacy → Pharmacy
+/telemedicine → Telemedicine
+/operation-theater → Operation Theater
+/radiology → Radiology
+/ambulance-dispatch → Ambulance Dispatch
 
-# Hotel Suite
+# Hotel
 /front-desk → Front Desk
 /reservations → Reservations
 /rooms → Rooms
@@ -508,7 +557,7 @@ EXACT VERIFIED ROUTE MAP — ALWAYS USE THESE EXACT PATHS FOR navigate_to. NEVER
 /restaurant → Restaurant
 /guest-requests → Guest Requests
 
-# Religion Suite
+# Religion
 /members → Members
 /groups → Groups
 /events → Events
@@ -517,31 +566,36 @@ EXACT VERIFIED ROUTE MAP — ALWAYS USE THESE EXACT PATHS FOR navigate_to. NEVER
 /sermons → Sermons
 /small-groups → Small Groups
 /prayers → Prayers
+/milestones → Milestones
 
-# Insurance Suite
+# Insurance
 /policies → Policies
 /claims → Claims
 /premiums → Premiums
 /underwriting → Underwriting
 /agent-performance → Agent Performance
+/reinsurance → Reinsurance
 
-# Retail Suite
-/retail-dashboard → Retail Overview
-/pos → Point of Sale
+# Retail
 /inventory → Inventory
 /purchase-orders → Purchase Orders
 /promotions → Promotions
-/orders → Orders/Sales
+/orders → Orders
 /suppliers → Suppliers
+/pos → Point of Sale
 /retail-customers → Customers
 
-# Logistics Suite
+# Logistics
 /shipments → Shipments
 /fleet → Fleet
 /drivers → Drivers
-/warehouse → Warehouses
+/warehouse → Warehouse
+/route-optimization → Route Optimization
+/load-board → Load Board
+/geofence-alerts → Geofence Alerts
+/smart-docs → Smart Docs
 
-# HR Suite
+# HR
 /employees → Employees
 /recruitment → Recruitment
 /payroll → Payroll
@@ -564,19 +618,12 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
 3. When asked to CREATE a record, create the record and STOP. DO NOT use navigate_to to show the record.
 4. If asked to create an ENTIRE NEW MODULE, custom feature, or a page that does NOT exist in the ROUTE MAP, you MUST use navigate_to to route the user to "/slate/BOLT" AND use show_toast to tell them: "I can help you build this! Just click 'Generate with AI' on this page."
 5. ONLY use navigate_to for routes that EXACTLY appear in the ROUTE MAP above, plus "/slate/BOLT".
-6. To create an AUTOMATION, use the create_record tool with recordType "automation_rule". The payload must include:
-    - table_name: the table that triggers it (e.g., "clients", "leads", "tasks", "industry_records")
-    - action_type: "create_task", "create_record", "update_record", "delete_record", or "http_request"
-    - action_payload: This depends on the action_type:
-      - For create_task/create_record: Provide the payload to insert (e.g., {"title": "Welcome {{name}}!"})
-      - For update_record: Provide {"table_name": "...", "id": "...", "payload": {"status": "paid", "price": 0}}. You MUST provide the id (often "{{id}}").
-      - For delete_record: Provide {"table_name": "...", "id": "..."}.
-      - For http_request: Provide {"url": "https://api.stripe.com/v1/...", "method": "POST", "headers": {"Authorization": "Bearer ..."}, "body": {"amount": "{{price}}"}}.
-    - Example: <AGENT_ACTION>{"tool":"create_record","recordType":"automation_rule","payload":{"table_name":"industry_records","action_type":"http_request","action_payload":{"url":"https://api.example.com/pay","method":"POST","body":{"customer":"{{name}}"}}}}</AGENT_ACTION>
+6. To create an AUTOMATION, use the \`create_record\` tool with recordType "automation". (See AUTOMATION mode context if active). If creating legacy automations, adapt to the new "automation" table schema instead of "automation_rule".
 7. For 'case' records, use 'title' instead of 'name'.
 8. If the user's input has a typo, is ambiguous, or if you are unsure which page they mean, ALWAYS use the 'ask_confirmation' tool first.
 9. If the user asks for multiple distinct actions (e.g. "create a task and a lead"), ensure you output an <AGENT_ACTION> block for EACH request before summarizing.
 10. Sound friendly and entertaining in your text response!`;
+
 
  const sessionMessages = currentSessions.find(s => s.id === sid)?.messages || [];
  const allMessages = [...sessionMessages, { role: 'user', content: userContent}];

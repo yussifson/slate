@@ -89,7 +89,7 @@ export default function UniHostel() {
 
  <div className="min-h-[400px]">
  {activeTab === 'overview' && (
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden">
  <div className="p-4 border-b border-primary/40"><h3 className="font-semibold text-[var(--color-text-primary)]">Housing Directory</h3></div>
  <div className="p-4 space-y-2">

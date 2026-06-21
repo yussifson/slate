@@ -528,7 +528,7 @@ Return ONLY the summary in markdown format.`;
                   <div className="space-y-4 border-l-2 border-primary/20 ml-2 pl-4 py-2 relative">
                     {/* Combine and sort timeline events */}
                     {[
-                      ...patientAppointments.filter(a => a.client_name === `${viewPatient.first_name} ${viewPatient.last_name}`).map(a => ({ type: 'Appointment', date: new Date(a.date), icon: <CalendarIcon className="w-4 h-4 text-blue-500"/>, title: `${a.type} Appointment`, desc: `Dr. ${a.doctor_id} at ${a.time} - ${a.status}` })),
+                      ...patientAppointments.filter(a => a.client_name === `${viewPatient.first_name} ${viewPatient.last_name}`).map(a => ({ type: 'Appointment', date: new Date(a.date), icon: <CalendarIcon className="w-4 h-4 text-teal-500"/>, title: `${a.type} Appointment`, desc: `Dr. ${a.doctor_id} at ${a.time} - ${a.status}` })),
                       ...patientAdmissions.filter(a => a.patient_id === viewPatient.id).map(a => ({ type: 'Admission', date: new Date(a.admission_date), icon: <BedDouble className="w-4 h-4 text-red-500"/>, title: `Admitted to Ward`, desc: `Reason: ${a.reason_for_admission} - Status: ${a.status}` })),
                       ...patientPrescriptions.filter(p => p.patient_id === viewPatient.id).map(p => ({ type: 'Prescription', date: new Date(p.prescription_date), icon: <Pill className="w-4 h-4 text-green-500"/>, title: `Prescription Issued`, desc: `${p.dosage} ${p.frequency} for ${p.duration}` }))
                     ].sort((a, b) => b.date - a.date).map((event, i) => (

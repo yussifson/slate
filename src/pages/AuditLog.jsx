@@ -66,7 +66,7 @@ export default function AuditLog() {
  ];
 
  return (
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  <PageHeader
  title="System Activity & Audit Log"
  subtitle="Monitor system actions, logins, and IP addresses."

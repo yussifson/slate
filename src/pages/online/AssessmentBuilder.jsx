@@ -128,7 +128,7 @@ export default function AssessmentBuilder() {
  />
  </div>
 
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  {questions.map((q, qIndex) => (
  <div key={q.id} className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden">
  <div className="bg-[var(--color-surface-1)] px-6 py-4 border-b border-primary/40 flex justify-between items-center">

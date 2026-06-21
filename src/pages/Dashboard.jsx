@@ -14,6 +14,10 @@ export default function Dashboard() {
   const isOrbitMode = user?.company_industry === 'orbit_build' || (activeModules?.length === 1 && activeModules[0] === '__orbit__');
 
   useEffect(() => {
+    if (user?.role === "enterprise_admin") {
+      navigate("/enterprise-admin", { replace: true });
+      return;
+    }
     if (!isAdmin) {
       navigate("/my-dashboard", { replace: true });
     }

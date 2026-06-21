@@ -87,7 +87,7 @@ export default function StaffDashboard() {
   const activeCases = cases.filter(c => ["open", "in_progress", "pending_hearing"].includes(c.status));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       <PageHeader
         title={`Welcome back, ${user?.full_name?.split(" ")[0] || "Counselor"}`}
         subtitle={`${format(today, "EEEE, MMMM d, yyyy")} · Your personal workspace`}

@@ -74,7 +74,7 @@ Provide a predictive JSON response (raw JSON only, no markdown):
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       <PageHeader
         title="Case Outcomes"
         subtitle="Track win/loss rates and case results"

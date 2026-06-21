@@ -55,7 +55,7 @@ export default function CustomDepartmentsSettings() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-xl font-semibold text-foreground">Custom Departments</h2>

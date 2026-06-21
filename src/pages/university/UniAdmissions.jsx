@@ -110,7 +110,7 @@ export default function UniAdmissions() {
 
  <div className="min-h-[400px]">
  {activeTab === 'directory' && !selectedApplicant && (
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  {parsedApplicants.length > 0 ? (
  <OrbitTable columns={columns} data={parsedApplicants} title="All Applicants" showToolbar={true} onRowClick={(r) => setSelectedApplicant(r)} />
  ) : (

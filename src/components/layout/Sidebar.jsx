@@ -475,6 +475,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  ? [...dashboardNav, ...intelligenceNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...remainingBaseNav, notificationsItem, createSlateItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup"}]
  : [...dashboardNav, ...intelligenceNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...remainingBaseNav, notificationsItem, marketplaceItem];
 
+if (user?.role === "super_admin") {
+    rawNavItems.push({ label: "Global Admin", icon: "Globe", path: "/super-admin" });
+}
+
  // Deduplicate by label to prevent double Dashboards
  const seenLabels = new Set();
  let navItems = [];
@@ -796,3 +800,4 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  </>
  );
 }
+

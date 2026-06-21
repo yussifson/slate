@@ -190,7 +190,7 @@ export default function VCourses() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       {view === 'catalog' && (
         <>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">

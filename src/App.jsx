@@ -440,6 +440,8 @@ function PlatformRoutes() {
       {/* Core / Shared Pages */}
       <Route path="/ob/:pageName" element={<OrbitBuildPage />} />
       <Route path="/" element={<Dashboard />} />
+      <Route path="/super-admin" element={<GlobalAnalyticsDashboard />} />
+      <Route path="/enterprise-admin" element={<EnterpriseDashboard />} />
       <Route path="/intelligence" element={<Intelligence />} />
       <Route path="/cases" element={<UnivProject />} />
       <Route path="/clients" element={<Clients />} />

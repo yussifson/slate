@@ -188,7 +188,7 @@ export default function CustomPageViewer() {
  <p>Select a block on the canvas to edit its properties.</p>
  </div>
  ) : (
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  <div>
  <Label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Component Type</Label>
  <div className="mt-1 font-medium bg-muted p-2 rounded-lg">{selectedBlock?.component}</div>

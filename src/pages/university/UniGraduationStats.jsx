@@ -110,7 +110,7 @@ export default function UniGraduationStats() {
  <Trophy className="w-5 h-5 text-[var(--color-warning)]" /> Post-Graduation Employment Sectors
  </h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-6">Top destination domains for university alumni.</p>
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  {employmentSectors.map((sector, i) => (
  <div key={i}>
  <div className="flex justify-between text-[var(--text-sm)] font-semibold mb-1 text-[var(--color-text-primary)]">

@@ -117,7 +117,7 @@ CRITICAL: You MUST escape all newlines in string values as \\n. Do not use raw n
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       <PageHeader
         title="Legal Research Assistant"
         subtitle="AI-powered research on West African law — case law, statutes, and practical guidance"

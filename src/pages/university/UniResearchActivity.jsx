@@ -106,7 +106,7 @@ export default function UniResearchActivity() {
  <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 h-fit ">
  <h2 className="font-semibold text-[var(--color-text-primary)] mb-1">Ethics Approval Pipeline</h2>
  <p className="text-[var(--text-sm)] text-[var(--color-text-secondary)] mb-6">Ethics clearances from Institutional Review Board (IRB).</p>
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  <div className="p-4 bg-[var(--color-info-subtle)] border-[0.5px] border-black/9 dark:border-white/8 border-[var(--color-info)] rounded-md-[var(--radius-xl)] flex gap-3 items-start">
  <CheckCircle2 className="w-5 h-5 text-[var(--color-info)] mt-0.5 shrink-0" />
  <div>

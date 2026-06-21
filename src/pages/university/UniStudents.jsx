@@ -214,7 +214,7 @@ export default function UniStudents() {
  </div>
  </div>
  
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-lg)] p-6">
  <h3 className="font-semibold text-[var(--color-text-primary)] mb-4">Current Standing</h3>
  <div className="space-y-4">

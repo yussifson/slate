@@ -15,7 +15,7 @@ export default function SHSStudentAssignments() {
  ];
 
  return (
- <div className="p-6 max-w-7xl mx-auto space-y-6">
+ <div className="p-6 max-w-7xl mx-auto space-y-6 school-page-enter font-dmsans">
  <ModuleBanner 
  title="Student Assignments"
  subtitle="Assign students to specific bus routes."

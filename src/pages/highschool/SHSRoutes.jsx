@@ -15,7 +15,7 @@ export default function SHSRoutes() {
  ];
 
  return (
- <div className="p-6 max-w-7xl mx-auto space-y-6">
+ <div className="p-6 max-w-7xl mx-auto space-y-6 school-page-enter font-dmsans">
  <ModuleBanner 
  title="Bus Routes"
  subtitle="Define pickup/drop-off points and timing."

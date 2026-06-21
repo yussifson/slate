@@ -247,7 +247,7 @@ export default function SHSAdmissions() {
  </div>
  
  <ScrollArea className="max-h-[65vh] p-6 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-800">
- <div className="space-y-6">
+ <div className="space-y-6 school-page-enter font-dmsans">
  
  <div className="space-y-4">
  <h4 className="font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2 border-b border-primary/40 dark:border-primary/40 pb-2">

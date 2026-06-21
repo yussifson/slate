@@ -77,7 +77,7 @@ export default function IncidentManagement() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 school-page-enter font-dmsans">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
