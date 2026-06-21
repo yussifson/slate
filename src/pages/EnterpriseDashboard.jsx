@@ -35,7 +35,7 @@ export default function EnterpriseDashboard() {
   const changeWorkspace = async (e, companyId, newIndustry) => {
     e.stopPropagation();
     try {
-      const { error } = await supabase.from('companies').update({ industry_type: newIndustry }).eq('id', companyId);
+      const { error } = await supabase.from('companies').update({ industry_type: newIndustry, industry: newIndustry }).eq('id', companyId);
       if (error) throw error;
       toast.success(`Workspace updated to ${newIndustry}!`);
       fetchPortfolio();
