@@ -1,5 +1,5 @@
 import { useTranslation} from "react-i18next";
-import { useState} from 'react';
+import { useState, useEffect } from 'react';
 import { Calendar, Search, Plus, Clock, Trash2, Sparkles, RefreshCcw, Check, Cloud } from 'lucide-react';
 import { Button} from '@/components/ui/button';
 import { generateText } from '@/lib/cloudflareAI';
@@ -43,6 +43,39 @@ export default function Reservations() {
  const [viewDetailsId, setViewDetailsId] = useState(null);
  const [showChannelSync, setShowChannelSync] = useState(false);
  const [isSyncing, setIsSyncing] = useState(false);
+ const [showChannelSettings, setShowChannelSettings] = useState(false);
+ const [channelSettings, setChannelSettings] = useState({ apiKey: '', propertyId: '', mockMode: true });
+
+ useEffect(() => {
+   if (companyId) {
+     powerSync.execute('SELECT channex_api_key, channex_property_id, mock_mode FROM univ_hotel_settings WHERE company_id = ? LIMIT 1', [companyId])
+      .then(res => {
+        if (res.rows.length > 0) {
+          const row = res.rows._array ? res.rows._array[0] : Array.from(res.rows)[0];
+          setChannelSettings({
+            apiKey: row.channex_api_key || '',
+            propertyId: row.channex_property_id || '',
+            mockMode: row.mock_mode === 1
+          });
+        }
+      });
+   }
+ }, [companyId]);
+
+ const saveChannelSettings = async () => {
+   try {
+     const res = await powerSync.execute('SELECT id FROM univ_hotel_settings WHERE company_id = ?', [companyId]);
+     if (res.rows.length > 0) {
+       await powerSync.execute('UPDATE univ_hotel_settings SET channex_api_key = ?, channex_property_id = ?, mock_mode = ? WHERE company_id = ?', [channelSettings.apiKey, channelSettings.propertyId, channelSettings.mockMode ? 1 : 0, companyId]);
+     } else {
+       await powerSync.execute('INSERT INTO univ_hotel_settings (id, company_id, channex_api_key, channex_property_id, mock_mode) VALUES (uuid(), ?, ?, ?, ?)', [companyId, channelSettings.apiKey, channelSettings.propertyId, channelSettings.mockMode ? 1 : 0]);
+     }
+     toast.success('Channel Manager settings saved!');
+     setShowChannelSettings(false);
+   } catch(e) {
+     toast.error('Failed to save settings');
+   }
+ };
 
  // Form State
  const [formData, setFormData] = useState({
@@ -88,7 +121,7 @@ Format your response exactly as valid JSON ONLY:
      }
 
      // 2. Push to OTA Channels
-     const channelApi = new ChannelManagerAPI('mock_key', 'mock_prop_id', true);
+     const channelApi = new ChannelManagerAPI(channelSettings.apiKey || 'mock_key', channelSettings.propertyId || 'mock_prop_id', channelSettings.mockMode);
      const mappedRates = aiRates.map(r => ({
        room_code: r.room_code,
        date: new Date().toISOString().split('T')[0],
@@ -108,7 +141,7 @@ Format your response exactly as valid JSON ONLY:
  const handleChannelSync = async () => {
   setIsSyncing(true);
   try {
-    const channelApi = new ChannelManagerAPI('mock_key', 'mock_prop_id', true);
+    const channelApi = new ChannelManagerAPI(channelSettings.apiKey || 'mock_key', channelSettings.propertyId || 'mock_prop_id', channelSettings.mockMode);
     const { data: newReservations } = await channelApi.pullReservations();
     
     for (const res of newReservations) {
@@ -444,28 +477,49 @@ Format your response exactly as valid JSON ONLY:
   {showChannelSync && (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
       <div className="bg-card rounded-2xl w-full max-w-md p-6 space-y-6 border border-primary/20">
-        <div className="text-center space-y-2">
-          <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Cloud className={`w-8 h-8 ${isSyncing ? 'animate-bounce' : ''}`}/>
+        <div className="flex justify-between items-center text-center space-y-2">
+          <div className="flex-1 text-center">
+            <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Cloud className={`w-8 h-8 ${isSyncing ? 'animate-bounce' : ''}`}/>
+            </div>
+            <h2 className="text-xl font-bold">Channel Manager</h2>
+            <p className="text-sm text-muted-foreground">Sync inventory and reservations with connected OTAs.</p>
           </div>
-          <h2 className="text-xl font-bold">Channel Manager</h2>
-          <p className="text-sm text-muted-foreground">Sync inventory and reservations with connected OTAs.</p>
+          <Button variant="ghost" size="sm" onClick={() => setShowChannelSettings(!showChannelSettings)}><Edit className="w-4 h-4 text-muted-foreground"/></Button>
         </div>
 
-        <div className="space-y-3 bg-muted rounded-xl p-4">
-          <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-green-500"></span> Booking.com</div>
-            <span className="text-muted-foreground text-xs">Connected</span>
+        {showChannelSettings ? (
+          <div className="space-y-4 bg-muted/30 p-4 rounded-xl text-left border border-border/50">
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Channex API Key</label>
+              <Input className="mt-1" type="password" value={channelSettings.apiKey} onChange={(e) => setChannelSettings({...channelSettings, apiKey: e.target.value})} placeholder="sk_test_..." />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Property ID</label>
+              <Input className="mt-1" value={channelSettings.propertyId} onChange={(e) => setChannelSettings({...channelSettings, propertyId: e.target.value})} placeholder="e.g. 1a2b3c" />
+            </div>
+            <div className="flex items-center gap-2 pt-2">
+              <input type="checkbox" id="mockMode" checked={channelSettings.mockMode} onChange={(e) => setChannelSettings({...channelSettings, mockMode: e.target.checked})} className="rounded border-gray-300" />
+              <label htmlFor="mockMode" className="text-sm font-medium">Enable Mock Mode (Simulate API)</label>
+            </div>
+            <Button className="w-full mt-2" onClick={saveChannelSettings}>Save Settings</Button>
           </div>
-          <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-green-500"></span> Expedia</div>
-            <span className="text-muted-foreground text-xs">Connected</span>
+        ) : (
+          <div className="space-y-3 bg-muted rounded-xl p-4">
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-green-500"></span> Booking.com</div>
+              <span className="text-muted-foreground text-xs">Connected</span>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-green-500"></span> Expedia</div>
+              <span className="text-muted-foreground text-xs">Connected</span>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center gap-2"><span className={`w-2 h-2 rounded-full ${channelSettings.mockMode ? 'bg-amber-500' : 'bg-green-500'}`}></span> Channex API</div>
+              <span className="text-muted-foreground text-xs">{channelSettings.mockMode ? 'Mock Mode' : 'Live'}</span>
+            </div>
           </div>
-          <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-amber-500"></span> Airbnb</div>
-            <span className="text-muted-foreground text-xs">Syncing...</span>
-          </div>
-        </div>
+        )}
 
         <div className="flex gap-3">
           <Button variant="outline" className="flex-1" onClick={() => setShowChannelSync(false)} disabled={isSyncing}>Cancel</Button>
