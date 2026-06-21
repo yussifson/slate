@@ -15,6 +15,9 @@ import { toast} from 'react-hot-toast';
 import { base44 } from "@/api/base44Client";
 
 import { registerSchoolUser } from '@/api/authUtils';
+import { useAuth } from '@/lib/AuthContext';
+import { useImpersonation } from '@/lib/ImpersonationContext';
+import { getIndustryRoles } from '@/config/industries';
 
 const EMPTY_FORM = { first_name: '', last_name: '', email: '', phone: '', role_title: '', department: '', status: 'Active', salary: '', employment_type: 'Full-Time', hire_date: ''};
 const gradients = ['from-violet-500 to-purple-600','from-cyan-500 to-blue-600','from-emerald-500 to-teal-600','from-orange-500 to-amber-600','from-pink-500 to-rose-600','from-indigo-500 to-blue-700'];
@@ -24,6 +27,9 @@ const statusColor = (s) => s==='Active'?'bg-emerald-50 text-emerald-700 border-e
 
 export default function UnivHREmployee() {
  const companyId = useCompanyId();
+ const { user } = useAuth();
+ const { impersonatedCompany } = useImpersonation();
+ const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry || impersonatedCompany?.industry_type || user?.company_industry || 'law';
  const [view, setView] = useState('Default');
  const [employees, setEmployees] = useState([]);
  const [departments, setDepartments] = useState([]);
@@ -56,7 +62,12 @@ export default function UnivHREmployee() {
  setDepartments(depRes.rows ? (depRes.rows._array || Array.from(depRes.rows)).map(d => d.name) : []);
 
  const roleRes = await powerSync.execute(`SELECT role_name FROM univ_roles WHERE company_id = ? ORDER BY role_name ASC`, [companyId]);
- setRoles(roleRes.rows ? (roleRes.rows._array || Array.from(roleRes.rows)).map(r => r.role_name) : []);
+ const customRoles = roleRes.rows ? (roleRes.rows._array || Array.from(roleRes.rows)).map(r => r.role_name) : [];
+ 
+ // Combine predefined industry roles with custom roles
+ const predefinedRoles = getIndustryRoles(activeIndustry).map(r => r.label);
+ const combinedRoles = Array.from(new Set([...predefinedRoles, ...customRoles]));
+ setRoles(combinedRoles);
 } catch (e) { console.error(e);} finally { setLoading(false);}
 };
 

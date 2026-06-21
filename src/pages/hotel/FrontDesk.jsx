@@ -9,13 +9,7 @@ import { Input} from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord} from '@/hooks/useIndustryData';
 import { toast} from 'react-hot-toast';
 
-// Generate room numbers 101-320
-const ALL_ROOMS = [];
-for (let floor = 1; floor <= 3; floor++) {
- for (let room = 1; room <= 20; room++) {
- ALL_ROOMS.push(`${floor}${String(room).padStart(2, '0')}`);
-}
-}
+// Rooms will be dynamically fetched from the database
 
 const getRoomStatus = (roomNumber, reservations, today) => {
  const active = reservations.find(r => {
@@ -49,11 +43,13 @@ export default function FrontDesk() {
  const { t} = useTranslation();
  const today = new Date().toISOString().split('T')[0];
 
- const { data: dbRecords = [], isLoading} = useIndustryRecords('reservation');
+ const { data: dbResRecords = [], isLoading: isLoadingRes} = useIndustryRecords('reservation');
+ const { data: dbRoomRecords = [], isLoading: isLoadingRooms} = useIndustryRecords('room');
  const mutateRecord = useMutateIndustryRecord();
 
- const reservations = dbRecords.map(r => ({ id: r.id, status: r.status || 'Confirmed', ...r.data}));
-
+ const reservations = dbResRecords.map(r => ({ id: r.id, status: r.status || 'Confirmed', ...r.data}));
+ const dynamicRooms = dbRoomRecords.map(r => r.data?.roomNumber).filter(Boolean).sort();
+ 
  const [selectedRoom, setSelectedRoom] = useState(null);
  const [showCheckInModal, setShowCheckInModal] = useState(false);
  const [showFolioModal, setShowFolioModal] = useState(false);
@@ -67,7 +63,7 @@ export default function FrontDesk() {
  const todayArrivals = reservations.filter(r => r.checkIn === today && r.status === 'Confirmed');
  const todayDepartures = reservations.filter(r => r.checkOut === today && r.status === 'Checked-in');
  const checkedIn = reservations.filter(r => r.status === 'Checked-in');
- const occupancyRate = ALL_ROOMS.length > 0 ? Math.round((checkedIn.length / ALL_ROOMS.length) * 100) : 0;
+ const occupancyRate = dynamicRooms.length > 0 ? Math.round((checkedIn.length / dynamicRooms.length) * 100) : 0;
 
  const getRoomInfo = (roomNumber) => getRoomStatus(roomNumber, reservations, today);
 
@@ -416,17 +412,21 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
 
  {isLoading ? (
  <div className="py-20 text-center text-[#71717a] dark:text-gray-400">{t("loading_room_status", "Loading room status...")}</div>
- ) : (
  <div className="space-y-6 school-page-enter font-dmsans">
- {floors.map(floor => {
- return (
- <div key={floor}>
- <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-3 flex items-center gap-2 tracking-[0.04em]">
- <span className="w-6 h-6 rounded-md bg-slate-100 text-primary/90 flex items-center justify-center font-semibold text-[10px]">{floor}</span>
- {t("floor", "Floor")} {floor}
- </p>
- <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2">
- {ALL_ROOMS.filter(rn => rn.startsWith(String(floor))).map(roomNum => {
+ {isLoadingRooms ? (
+ <div className="py-12 flex items-center justify-center text-primary"><Sparkles className="w-6 h-6 animate-spin"/></div>
+ ) : dynamicRooms.length === 0 ? (
+ <div className="py-12 text-center text-muted-foreground border-2 border-dashed border-primary/20 rounded-2xl">
+ No rooms configured. Please add rooms in Room Management.
+ </div>
+ ) : Array.from(new Set(dynamicRooms.map(r => r.charAt(0)))).sort().map(floor => (
+ <div key={floor} className="space-y-4">
+ <div className="flex items-center gap-3">
+ <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">{floor}</div>
+ <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Floor {floor}</h3>
+ </div>
+ <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-3">
+ {dynamicRooms.filter(r => r.charAt(0) === floor).map(roomNum => {
  const info = getRoomInfo(roomNum);
  const isSelected = selectedRoom === roomNum;
  return (

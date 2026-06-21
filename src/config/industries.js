@@ -794,11 +794,11 @@ export const getIndustryNav = (industryKey, educationLevel) => {
   }
   if (!nav.find(n => n.path === '/departments')) {
     const insertIndex = Math.max(0, nav.length - 4);
-    nav.splice(insertIndex, 0, { label: 'Departments', path: '/departments', icon: 'Building' });
+    nav.splice(insertIndex, 0, { label: 'Departments', path: '/departments', icon: 'Building2' });
   }
   if (!nav.find(n => n.path === '/roles')) {
     const insertIndex = Math.max(0, nav.length - 4);
-    nav.splice(insertIndex, 0, { label: 'Roles', path: '/roles', icon: 'ShieldCheck' });
+    nav.splice(insertIndex, 0, { label: 'Roles', path: '/roles', icon: 'Shield' });
   }
 
   return nav;
