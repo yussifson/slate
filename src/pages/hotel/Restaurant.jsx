@@ -1,17 +1,22 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
-import { Utensils, Plus, Receipt, Search, ShoppingCart, Check, Trash2} from 'lucide-react';
+import { Utensils, Plus, Receipt, Search, ShoppingCart, Check, Trash2, Sparkles} from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
 import { toast} from 'react-hot-toast';
+import { generateText } from '@/lib/cloudflareAI';
 
 export default function Restaurant() {
  const { t} = useTranslation();
  // Supabase Real-time Sync Hooks
- const { data: dbMenu = [], isLoading: isMenuLoading} = useIndustryRecords('menu');
- const { data: dbReservations = [] } = useIndustryRecords('reservation');
- const mutateRecord = useMutateIndustryRecord();
+  const { data: dbMenu = [], isLoading: isMenuLoading} = useIndustryRecords('menu');
+  const { data: dbReservations = [] } = useIndustryRecords('reservation');
+  const { data: dbOrders = [] } = useIndustryRecords('restaurant_order');
+  const { data: dbInventory = [] } = useIndustryRecords('inventory');
+  const mutateRecord = useMutateIndustryRecord();
  const deleteRecord = useDeleteIndustryRecord();
 
  const menuItems = dbMenu.map(r => ({ id: r.id, ...r.data}));
@@ -20,7 +25,32 @@ export default function Restaurant() {
  const [selectedCategory, setSelectedCategory] = useState('All');
  const [order, setOrder] = useState([]);
  const [roomNumber, setRoomNumber] = useState('Room 101');
- const [showAddMenuModal, setShowAddMenuModal] = useState(false);
+  const [showAddMenuModal, setShowAddMenuModal] = useState(false);
+  const [showInsightsModal, setShowInsightsModal] = useState(false);
+  const [insightsResult, setInsightsResult] = useState('');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const handleAIInsights = async () => {
+    setIsAnalyzing(true);
+    setShowInsightsModal(true);
+    try {
+      const prompt = `You are an AI Restaurant Manager. 
+Analyze the recent POS orders to predict demand for covers and menu items. Also, analyze the inventory for any items nearing expiration and suggest promotional items to clear wastage.
+Recent Orders Data: ${JSON.stringify(dbOrders.map(o => ({ items: o.data.items, total: o.data.total })).slice(0, 50))}
+Current Inventory Data: ${JSON.stringify(dbInventory.map(i => ({ name: i.data.item_name, qty: i.data.quantity, expiry: i.data.expiry_date })))}
+
+Provide your response in a short, easy to read Markdown format with two sections:
+### 📈 Demand Forecast
+### ⚠️ Wastage & Inventory Alerts`;
+      
+      const res = await generateText(prompt);
+      setInsightsResult(res);
+    } catch (err) {
+      setInsightsResult('Failed to load AI insights. Please try again.');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
 
  // Add Menu Form State
  const [newMenu, setNewMenu] = useState({
@@ -156,10 +186,15 @@ export default function Restaurant() {
  <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("restaurant_room_service", "Restaurant & Room Service")}</h1>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("manage_food_orders_and_pos", "Manage food orders and POS")}</p>
  </div>
- <Button onClick={() => setShowAddMenuModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
- <Plus className="w-4 h-4" /> {t("add_menu_item", "Add Menu Item")}
- </Button>
- </div>
+  <div className="flex gap-2">
+    <Button onClick={handleAIInsights} disabled={isAnalyzing} className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white">
+      <Sparkles className="w-4 h-4" /> AI POS Insights
+    </Button>
+    <Button onClick={() => setShowAddMenuModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
+      <Plus className="w-4 h-4" /> {t("add_menu_item", "Add Menu Item")}
+    </Button>
+  </div>
+  </div>
  <div className="flex flex-col lg:flex-row gap-6">
  {/* Left: Menu & POS */}
  <div className="flex-1 space-y-4">

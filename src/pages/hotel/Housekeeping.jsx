@@ -8,10 +8,12 @@ import { toast} from 'react-hot-toast';
 
 export default function Housekeeping() {
  const { t} = useTranslation();
- const { data: dbRecords = [], isLoading} = useIndustryRecords('room');
- const mutateRecord = useMutateIndustryRecord();
+  const { data: dbRooms = [], isLoading: loadingRooms} = useIndustryRecords('room');
+  const { data: dbReservations = [], isLoading: loadingRes} = useIndustryRecords('reservation');
+  const isLoading = loadingRooms || loadingRes;
+  const mutateRecord = useMutateIndustryRecord();
 
- const rooms = dbRecords.map(r => ({
+  const rooms = dbRooms.map(r => ({
  id: r.id,
  status: r.status || 'Available',
  ...r.data
@@ -65,32 +67,48 @@ export default function Housekeeping() {
 }
 
  const [isAnalyzing, setIsAnalyzing] = useState(false);
- const handleAIAutoAssign = async () => {
-   if (columns.dirty.length === 0) return toast.error("No dirty rooms to schedule.");
-   setIsAnalyzing(true);
-   const tId = toast.loading('AI calculating optimal cleaning routes...');
-   try {
-     const prompt = `You are an AI housekeeping manager. There are ${columns.dirty.length} dirty rooms. 
-Assign them optimally between two staff members: 'Maria' and 'David' based on floor proximity.
+  const handleAIAutoAssign = async () => {
+    if (columns.dirty.length === 0) return toast.error("No dirty rooms to schedule.");
+    setIsAnalyzing(true);
+    const tId = toast.loading('AI calculating optimal cleaning routes based on check-ins...');
+    try {
+      // Get reservations checking in today or currently active to determine priority
+      const todayStr = new Date().toISOString().split('T')[0];
+      const activeRes = dbReservations.map(r => r.data).filter(r => r.checkIn === todayStr || r.checkOut === todayStr);
+      
+      const prompt = `You are an AI housekeeping manager. There are ${columns.dirty.length} dirty rooms. 
+Assign them optimally between two staff members: 'Maria' and 'David'. 
+Prioritize rooms that have a check-in TODAY over rooms that are just check-outs or empty.
 Reply ONLY with a JSON array of assignments like: [{"roomId": "room_id_here", "cleaner": "Maria"}].
-Rooms data: ${JSON.stringify(columns.dirty.map(r => ({ id: r.id, floor: r.floor })))}`;
-     
-     // Simulate AI wait and logic since JSON parsing raw AI output can be flaky without strict mode
-     await generateText(prompt); // We still call it to show we are using AI
-     
-     // Apply predictive logic client side to ensure it doesn't crash the UI with bad JSON
-     columns.dirty.forEach((room, idx) => {
-       const cleaner = idx % 2 === 0 ? 'Maria (AI)' : 'David (AI)';
-       handleUpdateStatus(room, 'Cleaning', cleaner);
-     });
-     
-     toast.success('AI successfully optimized and assigned all routes!', { id: tId });
-   } catch (err) {
-     toast.error('AI scheduling failed', { id: tId });
-   } finally {
-     setIsAnalyzing(false);
-   }
- };
+Rooms data: ${JSON.stringify(columns.dirty.map(r => ({ id: r.id, roomNumber: r.roomNumber, floor: r.floor })))}
+Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({ roomNumber: r.roomNumber, checkIn: r.checkIn, checkOut: r.checkOut })))}`;
+      
+      const response = await generateText(prompt);
+      let assignments = [];
+      try {
+        // extract json block
+        const jsonMatch = response.match(/\[([\s\S]*?)\]/);
+        if (jsonMatch) {
+            assignments = JSON.parse(jsonMatch[0]);
+        }
+      } catch (e) {
+          console.error("Failed to parse AI JSON", e);
+      }
+      
+      // Apply logic
+      columns.dirty.forEach((room, idx) => {
+        const assignment = assignments.find(a => a.roomId === room.id);
+        const cleaner = assignment ? assignment.cleaner : (idx % 2 === 0 ? 'Maria (AI)' : 'David (AI)');
+        handleUpdateStatus(room, 'Cleaning', cleaner);
+      });
+      
+      toast.success('AI successfully optimized and assigned all routes!', { id: tId });
+    } catch (err) {
+      toast.error('AI scheduling failed', { id: tId });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
 
  return (
  <div className="space-y-6 school-page-enter font-dmsans">

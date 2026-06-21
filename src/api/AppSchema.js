@@ -3967,16 +3967,40 @@ export const AppSchema = new Schema({
         payment_method: column.text,
         status: column.text
     }),
-    univ_hotel_settings: new Table({
-        id: column.text,
-        company_id: column.text,
-        booking_hotel_id: column.text,
-        expedia_hotel_id: column.text,
-        airbnb_host_id: column.text,
-        channex_property_id: column.text,
-        mock_mode: column.integer,
-        updated_at: column.text
-    }),
+      univ_hotel_settings: new Table({
+          id: column.text,
+          company_id: column.text,
+          booking_hotel_id: column.text,
+          expedia_hotel_id: column.text,
+          airbnb_host_id: column.text,
+          channex_property_id: column.text,
+          mock_mode: column.integer,
+          updated_at: column.text
+      }),
+      univ_hotel_feedback: new Table({
+          id: column.text,
+          created_at: column.text,
+          company_id: column.text,
+          reservation_id: column.text,
+          guest_name: column.text,
+          rating: column.integer,
+          comment: column.text,
+          sentiment: column.text,
+          themes: column.text,
+          status: column.text
+      }),
+      univ_hotel_inventory: new Table({
+          id: column.text,
+          created_at: column.text,
+          company_id: column.text,
+          item_name: column.text,
+          category: column.text,
+          quantity: column.integer,
+          unit: column.text,
+          expiry_date: column.text,
+          status: column.text,
+          supplier: column.text
+      }),
     workspace_insights: new Table({
         id: column.text,
         company_id: column.text,
