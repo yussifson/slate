@@ -76,8 +76,10 @@ export async function runBehaviourProfileEngine(companyId, vertical) {
 
 function getEntityConfig(vertical) {
   const map = {
-    legal: { table: 'clients', entityType: 'client', paymentTable: 'univ_invoices', attendanceTable: 'tasks' },
-    hospital: { table: 'patients', entityType: 'patient', paymentTable: 'univ_invoices', attendanceTable: 'appointments' },
+    law: { table: 'clients', entityType: 'client', paymentTable: 'univ_invoices', attendanceTable: 'time_entries' },
+    law_firm: { table: 'clients', entityType: 'client', paymentTable: 'univ_invoices', attendanceTable: 'time_entries' },
+    legal: { table: 'clients', entityType: 'client', paymentTable: 'univ_invoices', attendanceTable: 'time_entries' },
+    hospital: { table: 'univ_patients', entityType: 'patient', paymentTable: 'univ_invoices', attendanceTable: 'appointments' },
     school: { table: 'students', entityType: 'student', paymentTable: 'univ_invoices', attendanceTable: 'attendance_records' },
     university: { table: 'uni_students', entityType: 'student', paymentTable: 'univ_invoices', attendanceTable: 'tasks' },
     vocational: { table: 'students', entityType: 'student', paymentTable: 'univ_invoices', attendanceTable: 'attendance_records' },
@@ -103,18 +105,20 @@ async function buildProfile(companyId, entityId, config) {
   let data_points = 0;
 
   try {
-    const payRes = await powerSync.execute(`SELECT amount, due_date, paid_at, status FROM ${config.paymentTable} WHERE company_id = ? AND entity_id = ? ORDER BY created_at DESC LIMIT 20`, [companyId, entityId]);
-    const payments = payRes.rows._array;
-    if (payments.length >= 3) {
-      data_points += payments.length;
-      const paidLate = payments.filter(p => p.paid_at && p.due_date && new Date(p.paid_at) > new Date(p.due_date));
-      if (paidLate.length / payments.length > 0.5) {
-        payment_reliability = 'slow';
-        churn_risk_score += 15;
-      } else {
-        payment_reliability = 'reliable';
+    try {
+      const payRes = await powerSync.execute(`SELECT amount, due_date, status FROM ${config.paymentTable} WHERE company_id = ? AND entity_id = ? ORDER BY created_at DESC LIMIT 20`, [companyId, entityId]);
+      const payments = payRes.rows._array;
+      if (payments.length >= 3) {
+        data_points += payments.length;
+        const paidLate = payments.filter(p => p.status === 'paid' && p.due_date && new Date(p.created_at) > new Date(p.due_date));
+        if (paidLate.length / payments.length > 0.5) {
+          payment_reliability = 'slow';
+          churn_risk_score += 15;
+        } else {
+          payment_reliability = 'reliable';
+        }
       }
-    }
+    } catch(e) {}
   } catch(e) {}
 
   const churn_risk = churn_risk_score >= 60 ? 'high' : churn_risk_score >= 35 ? 'medium' : 'low';

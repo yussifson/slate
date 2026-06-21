@@ -6,7 +6,7 @@ export async function runRevenueForecastEngine(companyId, vertical) {
 
   try {
     const res = await powerSync.execute(
-      `SELECT amount, paid_at, status, created_at FROM univ_invoices WHERE company_id = ? AND status = 'paid' AND paid_at >= date('now', '-90 days') ORDER BY paid_at ASC`,
+      `SELECT amount, status, created_at FROM univ_invoices WHERE company_id = ? AND status = 'paid' AND created_at >= date('now', '-90 days') ORDER BY created_at ASC`,
       [companyId]
     );
     
@@ -74,7 +74,7 @@ export async function runRevenueForecastEngine(companyId, vertical) {
 function groupByWeek(data) {
   const weeks = {};
   data.forEach(d => {
-    const date = new Date(d.paid_at || d.created_at);
+    const date = new Date(d.created_at);
     const weekStart = new Date(date);
     weekStart.setDate(date.getDate() - date.getDay());
     const key = weekStart.toISOString().split('T')[0];
