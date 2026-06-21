@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import UnivHREmployee from './UnivHREmployee';
+const UnivHREmployee = React.lazy(() => import('./UnivHREmployee'));
 import UnivDepartments from './UnivDepartments';
 import UnivAccessControl from './UnivAccessControl';
 import { Users, Building2, Shield, CalendarHeart } from 'lucide-react';
@@ -25,7 +25,9 @@ export default function UnivHRSystem() {
 
       <div className="flex-1 overflow-auto custom-scrollbar relative">
         <div className={`absolute inset-0 transition-opacity duration-300 ${activeTab === 'employees' ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none -z-10'}`}>
-          <UnivHREmployee />
+          <Suspense fallback={<div className="flex items-center justify-center h-full text-[#71717a] dark:text-gray-400">Loading Employees...</div>}>
+            <UnivHREmployee />
+          </Suspense>
         </div>
         <div className={`absolute inset-0 transition-opacity duration-300 ${activeTab === 'departments' ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none -z-10'}`}>
           <UnivDepartments />
