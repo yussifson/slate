@@ -29,6 +29,7 @@ export default function Reservations() {
  const { notifyTeam} = useNotifications();
  // Supabase Real-time Sync Hooks
  const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('reservation');
+ const { data: eventRecords = [], isLoading: isEventsLoading } = useIndustryRecords('events');
  const mutateRecord = useMutateIndustryRecord();
  const deleteRecord = useDeleteIndustryRecord();
  const companyId = useCompanyId();
@@ -36,8 +37,18 @@ export default function Reservations() {
 
  // Map database records
  const reservations = dbRecords.map(r => ({ id: r.id, status: r.status || 'Active', ...r.data}));
+ const events = eventRecords.map(e => ({ id: e.id, status: e.status || 'Scheduled', ...e.data }));
 
+ const [activeTab, setActiveTab] = useState('reservations');
  const [search, setSearch] = useState('');
+ const [showEventModal, setShowEventModal] = useState(false);
+ const [eventFormData, setEventFormData] = useState({
+   name: '',
+   hall: 'Grand Ballroom',
+   date: new Date().toISOString().split('T')[0],
+   attendees: 50,
+   price: 1000
+ });
  const [showModal, setShowModal] = useState(false);
  const [editTargetId, setEditTargetId] = useState(null);
  const [viewDetailsId, setViewDetailsId] = useState(null);
@@ -238,7 +249,33 @@ Format your response exactly as valid JSON ONLY:
 });
 };
 
- // Change Status
+ const handleSaveEvent = () => {
+   if (!eventFormData.name.trim()) return toast.error("Please enter event name");
+
+   mutateRecord.mutate({
+     recordType: 'events',
+     payload: eventFormData,
+     status: 'Scheduled',
+     searchText: `${eventFormData.name} ${eventFormData.hall}`
+   }, {
+     onSuccess: () => {
+       toast.success('Event booked successfully!');
+       setShowEventModal(false);
+       setEventFormData({
+         name: '',
+         hall: 'Grand Ballroom',
+         date: new Date().toISOString().split('T')[0],
+         attendees: 50,
+         price: 1000
+       });
+     },
+     onError: (err) => {
+       toast.error('Failed to book event: ' + err.message);
+     }
+   });
+ };
+
+  // Change Status
  const handleStatusChange = (res, newStatus) => {
  const updatedPayload = { ...res, status: newStatus};
  delete updatedPayload.id;
@@ -281,11 +318,8 @@ Format your response exactly as valid JSON ONLY:
  <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("reservations", "Reservations")}</h1>
- <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
- "manage_room_bookings_and_guest",
- "Manage room bookings and guest arrivals"
- )}</p>
+ <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("reservations", "Reservations & Events")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">Manage room bookings and events</p>
  </div>
   <div className="flex gap-2">
   <Button onClick={() => setShowChannelSync(true)} variant="outline" className="gap-2 border-primary/30 text-primary hover:bg-primary/10">
@@ -297,19 +331,30 @@ Format your response exactly as valid JSON ONLY:
   <Button onClick={handleSmartPricing} disabled={isAnalyzing} variant="outline" className="gap-2 border-primary/30 text-primary hover:bg-primary/10">
     <Sparkles className="w-4 h-4" /> AI Smart Pricing
   </Button>
-  <Button onClick={() => { setEditTargetId(null); setShowModal(true); setFormData({ guest: '', checkIn: new Date().toISOString().split('T')[0], checkOut: new Date(Date.now() + 86400000).toISOString().split('T')[0], roomType: 'Standard Room', guestsCount: 1});}} className="gap-2 bg-primary hover:bg-primary/90 text-white">
-  <Plus className="w-4 h-4" /> {t("new_booking", "New Booking")}
-  </Button>
+  {activeTab === 'reservations' ? (
+    <Button onClick={() => { setEditTargetId(null); setShowModal(true); setFormData({ guest: '', checkIn: new Date().toISOString().split('T')[0], checkOut: new Date(Date.now() + 86400000).toISOString().split('T')[0], roomType: 'Standard Room', guestsCount: 1});}} className="gap-2 bg-primary hover:bg-primary/90 text-white">
+      <Plus className="w-4 h-4" /> {t("new_booking", "New Booking")}
+    </Button>
+  ) : (
+    <Button onClick={() => setShowEventModal(true)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
+      <Plus className="w-4 h-4" /> Book Event
+    </Button>
+  )}
   </div>
+ </div>
+ <div className="flex gap-4 border-b border-border mt-4 mb-4">
+   <button onClick={() => setActiveTab('reservations')} className={`pb-2 px-1 text-sm font-medium border-b-2 transition-colors ${activeTab === 'reservations' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>Reservations</button>
+   <button onClick={() => setActiveTab('events')} className={`pb-2 px-1 text-sm font-medium border-b-2 transition-colors ${activeTab === 'events' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>Events & Banquets</button>
  </div>
  <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
  <div className="relative max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
- <Input placeholder="Search guest or RES ID..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+ <Input placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-card hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
  </div>
  </div>
  <div className="overflow-x-auto">
+ {activeTab === 'reservations' ? (
  <table className="w-full text-sm">
  <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <tr>
@@ -378,17 +423,78 @@ Format your response exactly as valid JSON ONLY:
 })}
  </tbody>
  </table>
- {filtered.length === 0 && (
+ ) : (
+ <table className="w-full text-sm">
+ <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <tr>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Event Name</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Hall</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Date</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Attendees</th>
+ <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Price</th>
+ </tr>
+ </thead>
+ <tbody className="divide-y divide-border">
+ {events.filter(e => e.name?.toLowerCase().includes(search.toLowerCase())).map(ev => (
+ <tr key={ev.id} className="hover:bg-muted/50 transition-colors">
+ <td className="px-6 py-4 font-semibold text-card-foreground">{ev.name}</td>
+ <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">{ev.hall}</td>
+ <td className="px-6 py-4 text-foreground font-medium">{ev.date}</td>
+ <td className="px-6 py-4 text-center text-[#71717a] dark:text-gray-400">{ev.attendees}</td>
+ <td className="px-6 py-4 text-center font-semibold text-card-foreground">${ev.price}</td>
+ </tr>
+ ))}
+ </tbody>
+ </table>
+ )}
+ {(activeTab === 'reservations' ? filtered.length === 0 : events.length === 0) && (
  <div className="text-center py-12 text-[#71717a] dark:text-gray-400">
  <Calendar className="w-10 h-10 mx-auto mb-3 opacity-30" />
- <p>{t(
- "no_reservations_found_click_ne",
- "No reservations found. Click \"New Booking\" to add one."
- )}</p>
+ <p>No records found. Click new to add one.</p>
  </div>
  )}
  </div>
  </div>
+ {showEventModal && (
+ <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
+ <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <Calendar className="w-5 h-5 text-primary"/> Book Event
+ </h2>
+ <div className="grid grid-cols-2 gap-4">
+ <div className="col-span-2">
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Event Name</label>
+ <Input value={eventFormData.name} onChange={e => setEventFormData({ ...eventFormData, name: e.target.value})} className="mt-1" placeholder="e.g. Annual Conference" />
+ </div>
+ <div>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Hall</label>
+ <select value={eventFormData.hall} onChange={e => setEventFormData({ ...eventFormData, hall: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm">
+ <option>Grand Ballroom</option>
+ <option>Conference Room A</option>
+ <option>Banquet Hall</option>
+ </select>
+ </div>
+ <div>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Date</label>
+ <Input type="date" value={eventFormData.date} onChange={e => setEventFormData({ ...eventFormData, date: e.target.value})} className="mt-1" />
+ </div>
+ <div>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Attendees</label>
+ <Input type="number" value={eventFormData.attendees} onChange={e => setEventFormData({ ...eventFormData, attendees: parseInt(e.target.value) || 0})} className="mt-1" />
+ </div>
+ <div>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Price ($)</label>
+ <Input type="number" value={eventFormData.price} onChange={e => setEventFormData({ ...eventFormData, price: parseFloat(e.target.value) || 0})} className="mt-1" />
+ </div>
+ </div>
+ <div className="flex gap-3 pt-4">
+ <Button variant="outline" className="flex-1" onClick={() => setShowEventModal(false)}>Cancel</Button>
+ <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={handleSaveEvent}>Book Event</Button>
+ </div>
+ </div>
+ </div>
+ )}
+
  {showModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
  <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
