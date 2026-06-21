@@ -176,6 +176,18 @@ function FormatMessage({ content}) {
  </div>
  );
 }
+// Session Storage (Fallback/Types)
+function newSession() {
+ return {
+ id: crypto.randomUUID(),
+ title: 'New Chat',
+ createdAt: new Date().toISOString(),
+ messages: [{
+ role: 'assistant',
+ content: "Hello! I'm **Orbit** 👋\n\nI can help you:\n Navigate the app\n Create, edit & manage records\n Analyze data on any page\n Answer any question\n\nYou can also use your **🎙️ voice** or **📎 upload files** (images, PDFs, CSV, etc.)\n\nWhat would you like to do?"
+ }]
+ };
+}
 
 // Main Component 
 export default function GlobalAIAssistant({ isOpen = false, onClose, injectedContext = null, onContextConsumed}) {
