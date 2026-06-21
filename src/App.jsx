@@ -193,6 +193,12 @@ import HospitalTelemedicine from './pages/hospital/Telemedicine';
 import HospitalOperationTheater from './pages/hospital/OperationTheater';
 import HospitalRadiology from './pages/hospital/Radiology';
 import HospitalAmbulanceDispatch from './pages/hospital/AmbulanceDispatch';
+import HospitalReferrals from './pages/hospital/Referrals';
+import HospitalBloodBank from './pages/hospital/BloodBank';
+import HospitalQueue from './pages/hospital/Queue';
+import HospitalStaffRoster from './pages/hospital/StaffRoster';
+import HospitalInfectionControl from './pages/hospital/InfectionControl';
+
 
 // Hotel Pages
 import HotelFrontDesk from './pages/hotel/FrontDesk';
@@ -669,6 +675,12 @@ function PlatformRoutes() {
       <Route path="/operation-theater" element={<HospitalOperationTheater />} />
       <Route path="/radiology" element={<HospitalRadiology />} />
       <Route path="/ambulance-dispatch" element={<HospitalAmbulanceDispatch />} />
+      <Route path="/referrals" element={<HospitalReferrals />} />
+      <Route path="/blood-bank" element={<HospitalBloodBank />} />
+      <Route path="/queue" element={<HospitalQueue />} />
+      <Route path="/staff-roster" element={<HospitalStaffRoster />} />
+      <Route path="/infection-control" element={<HospitalInfectionControl />} />
+
 
       {/* Hotel Suite */}
       <Route path="/front-desk" element={<HotelFrontDesk />} />
