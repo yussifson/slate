@@ -57,6 +57,10 @@ export default function Reservations() {
  const [showChannelSettings, setShowChannelSettings] = useState(false);
  const [channelSettings, setChannelSettings] = useState({ bookingHotelId: '', expediaHotelId: '', airbnbHostId: '', mockMode: true });
 
+ const [paymentTarget, setPaymentTarget] = useState(null);
+ const [paymentEmail, setPaymentEmail] = useState('');
+ const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+
  useEffect(() => {
    if (companyId) {
      powerSync.execute('SELECT booking_hotel_id, expedia_hotel_id, airbnb_host_id, mock_mode FROM univ_hotel_settings WHERE company_id = ? LIMIT 1', [companyId])
@@ -249,6 +253,31 @@ Format your response exactly as valid JSON ONLY:
 });
 };
 
+ const handleProcessPaymentSubmit = async () => {
+   if (!paymentEmail.trim()) {
+     return toast.error("Please enter a valid email for the receipt.");
+   }
+   setIsProcessingPayment(true);
+   try {
+     await processPayment({
+       companyId,
+       provider: 'paystack',
+       amount: paymentTarget.total,
+       currency: 'NGN',
+       customerEmail: paymentEmail,
+       invoiceId: paymentTarget.resId
+     });
+     toast.success("Payment initialized via Paystack successfully!");
+     setPaymentTarget(null);
+     setPaymentEmail('');
+   } catch (error) {
+     console.error(error);
+     toast.error(error.message || "Payment processing failed");
+   } finally {
+     setIsProcessingPayment(false);
+   }
+ };
+
  const handleSaveEvent = () => {
    if (!eventFormData.name.trim()) return toast.error("Please enter event name");
 
@@ -402,11 +431,9 @@ Format your response exactly as valid JSON ONLY:
  <FileText className="w-4 h-4 mr-2" /> {t("view_details", "View Details")}
  </DropdownMenuItem>
  <DropdownMenuItem onClick={() => {
- const customerEmail = prompt("Enter customer email for payment receipt:");
- if (customerEmail) {
- processPayment({ companyId, provider: 'stripe', amount: res.total, currency: 'USD', customerEmail, invoiceId: res.resId});
-}
-}}>
+    setPaymentTarget(res);
+    setPaymentEmail(res.guestEmail || '');
+  }}>
  <CreditCard className="w-4 h-4 mr-2" /> {t("process_payment", "Process Payment")}
  </DropdownMenuItem>
  <DropdownMenuItem onClick={() => handleEdit(res)}>
@@ -625,8 +652,56 @@ Format your response exactly as valid JSON ONLY:
         </div>
         <div className="bg-muted/30 p-4 rounded-xl text-sm whitespace-pre-wrap text-card-foreground">
           {forecastResult}
+          <div className="flex justify-end gap-2 mt-6">
+            <Button variant="outline" onClick={() => setShowForecastModal(false)}>Close</Button>
+          </div>
         </div>
-        <Button className="w-full" onClick={() => setShowForecastModal(false)}>Close</Button>
+      </div>
+    </div>
+  )}
+
+  {/* Payment Modal */}
+  {paymentTarget && (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-in fade-in duration-200">
+      <div className="bg-card w-full max-w-md rounded-xl shadow-2xl p-6 relative animate-in zoom-in-95 duration-200">
+        <button onClick={() => setPaymentTarget(null)} className="absolute right-4 top-4 text-muted-foreground hover:text-foreground">
+          <X className="w-5 h-5" />
+        </button>
+        <div className="flex items-center gap-3 mb-6 text-primary">
+          <CreditCard className="w-6 h-6" />
+          <h2 className="text-xl font-bold">Process Payment</h2>
+        </div>
+        
+        <div className="space-y-4">
+          <div>
+            <p className="text-sm font-medium text-muted-foreground mb-1">Reservation ID</p>
+            <p className="font-semibold text-foreground">{paymentTarget.resId}</p>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-muted-foreground mb-1">Total Amount</p>
+            <p className="font-semibold text-foreground text-xl tracking-tight">
+              {new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(paymentTarget.total)}
+            </p>
+          </div>
+          <div>
+            <label className="text-sm font-medium text-muted-foreground mb-1 block">Customer Email for Receipt</label>
+            <Input 
+              value={paymentEmail} 
+              onChange={e => setPaymentEmail(e.target.value)} 
+              type="email" 
+              placeholder="guest@example.com"
+              className="mt-1"
+              autoFocus
+            />
+          </div>
+        </div>
+        
+        <div className="flex justify-end gap-2 mt-8">
+          <Button variant="outline" onClick={() => setPaymentTarget(null)} disabled={isProcessingPayment}>Cancel</Button>
+          <Button onClick={handleProcessPaymentSubmit} disabled={isProcessingPayment} className="bg-primary hover:bg-primary/90 text-primary-foreground min-w-[140px]">
+            {isProcessingPayment ? "Processing..." : "Pay with Paystack"}
+          </Button>
+        </div>
       </div>
     </div>
   )}
