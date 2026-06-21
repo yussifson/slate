@@ -91,3 +91,28 @@ export function BenchmarkingPanel({ vertical }) {
     </div>
   );
 }
+
+
+export default function IntelligenceUI({ embedded, customPrompt }) {
+  return (
+    <div className="w-full h-full flex flex-col p-6 items-center justify-center text-center">
+      <div className="w-16 h-16 rounded-full bg-indigo-500/10 flex items-center justify-center mb-4 relative">
+        <Activity className="text-indigo-500 w-8 h-8 animate-pulse" />
+        <div className="absolute inset-0 rounded-full border-2 border-indigo-500/20 border-t-indigo-500 animate-spin"></div>
+      </div>
+      <h3 className="text-lg font-bold text-slate-900 dark:text-white">Enterprise AI Engine Active</h3>
+      <p className="text-sm text-slate-500 max-w-md mt-2">
+        Connected to Portfolio Data. {customPrompt && 'Executing specialized role instructions...'}
+      </p>
+      <div className="mt-6 flex flex-col gap-2 w-full max-w-sm">
+        <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+          <div className="h-full bg-indigo-500 w-2/3 animate-pulse"></div>
+        </div>
+        <div className="flex justify-between text-xs text-slate-400 font-mono">
+          <span>Aggregating verticals...</span>
+          <span>67%</span>
+        </div>
+      </div>
+    </div>
+  );
+}
