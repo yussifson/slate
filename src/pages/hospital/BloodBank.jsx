@@ -17,7 +17,7 @@ export default function BloodBank() {
     queryFn: async () => {
       if (!companyId) return [];
       const res = await powerSync.execute(
-        \`SELECT * FROM univ_blood_bank WHERE company_id = ? ORDER BY expiry_date ASC\`,
+        `SELECT * FROM univ_blood_bank WHERE company_id = ? ORDER BY expiry_date ASC`,
         [companyId]
       );
       return res.rows._array;
@@ -86,7 +86,7 @@ export default function BloodBank() {
                     <td className="px-4 py-3 text-slate-500">{unit.collection_date}</td>
                     <td className="px-4 py-3 text-slate-500">{unit.expiry_date}</td>
                     <td className="px-4 py-3">
-                      <span className={\`px-2 py-1 text-xs rounded-full \${unit.status === 'available' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}\`}>
+                      <span className={`px-2 py-1 text-xs rounded-full \${unit.status === 'available' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
                         {unit.status}
                       </span>
                     </td>

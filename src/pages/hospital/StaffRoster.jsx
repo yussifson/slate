@@ -17,10 +17,10 @@ export default function StaffRoster() {
     queryFn: async () => {
       if (!companyId) return [];
       const res = await powerSync.execute(
-        \`SELECT r.*, s.first_name, s.last_name, s.role 
+        `SELECT r.*, s.first_name, s.last_name, s.role 
          FROM univ_duty_rosters r
          LEFT JOIN profiles s ON s.id = r.staff_id AND s.company_id = r.company_id
-         WHERE r.company_id = ? ORDER BY r.shift_date ASC, r.start_time ASC\`,
+         WHERE r.company_id = ? ORDER BY r.shift_date ASC, r.start_time ASC`,
         [companyId]
       );
       return res.rows._array;
@@ -90,7 +90,7 @@ export default function StaffRoster() {
                     <td className="px-4 py-3 capitalize">{r.shift_type?.replace('_', ' ')}</td>
                     <td className="px-4 py-3 text-slate-500">{r.start_time} - {r.end_time}</td>
                     <td className="px-4 py-3">
-                      <span className={\`px-2 py-1 text-xs rounded-full \${r.status === 'scheduled' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}\`}>
+                      <span className={`px-2 py-1 text-xs rounded-full \${r.status === 'scheduled' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
                         {r.status}
                       </span>
                     </td>

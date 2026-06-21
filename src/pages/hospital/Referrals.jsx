@@ -85,7 +85,7 @@ export default function Referrals() {
                     <td className="px-4 py-3">{ref.referral_type === 'internal' ? ref.receiving_department : ref.external_facility_name}</td>
                     <td className="px-4 py-3 max-w-xs truncate">{ref.reason}</td>
                     <td className="px-4 py-3">
-                      <span className={\`px-2 py-1 text-xs rounded-full \${ref.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}\`}>
+                      <span className={`px-2 py-1 text-xs rounded-full \${ref.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}`}>
                         {ref.status}
                       </span>
                     </td>

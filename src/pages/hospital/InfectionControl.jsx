@@ -17,10 +17,10 @@ export default function InfectionControl() {
     queryFn: async () => {
       if (!companyId) return [];
       const res = await powerSync.execute(
-        \`SELECT l.*, p.first_name, p.last_name 
+        `SELECT l.*, p.first_name, p.last_name 
          FROM univ_infection_logs l
          LEFT JOIN univ_patients p ON p.id = l.patient_id AND p.company_id = l.company_id
-         WHERE l.company_id = ? ORDER BY l.detection_date DESC\`,
+         WHERE l.company_id = ? ORDER BY l.detection_date DESC`,
         [companyId]
       );
       return res.rows._array;
@@ -84,10 +84,10 @@ export default function InfectionControl() {
                       <ShieldAlert className="w-4 h-4" /> {l.infection_type}
                     </td>
                     <td className="px-4 py-3 font-mono text-slate-600">{l.organism}</td>
-                    <td className="px-4 py-3">{l.first_name ? \`\${l.first_name} \${l.last_name}\` : 'Unknown'}</td>
+                    <td className="px-4 py-3">{l.first_name ? `\${l.first_name} \${l.last_name}` : 'Unknown'}</td>
                     <td className="px-4 py-3">{l.source || l.ward_id || 'N/A'}</td>
                     <td className="px-4 py-3">
-                      <span className={\`px-2 py-1 text-xs rounded-full \${l.status === 'active' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}\`}>
+                      <span className={`px-2 py-1 text-xs rounded-full \${l.status === 'active' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
                         {l.status}
                       </span>
                     </td>

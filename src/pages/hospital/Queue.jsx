@@ -17,11 +17,11 @@ export default function Queue() {
     queryFn: async () => {
       if (!companyId) return [];
       const res = await powerSync.execute(
-        \`SELECT q.*, p.first_name, p.last_name 
+        `SELECT q.*, p.first_name, p.last_name 
          FROM univ_hospital_queues q
          LEFT JOIN univ_patients p ON p.id = q.patient_id AND p.company_id = q.company_id
          WHERE q.company_id = ? AND q.status != 'completed' AND q.status != 'no_show'
-         ORDER BY q.priority_score DESC, q.created_at ASC\`,
+         ORDER BY q.priority_score DESC, q.created_at ASC`,
         [companyId]
       );
       return res.rows._array;
@@ -88,12 +88,12 @@ export default function Queue() {
                       </td>
                       <td className="px-4 py-3">{q.department}</td>
                       <td className="px-4 py-3">
-                        <span className={\`px-2 py-1 text-xs rounded-full \${q.priority_score > 50 ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'}\`}>
+                        <span className={`px-2 py-1 text-xs rounded-full \${q.priority_score > 50 ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'}`}>
                           {q.priority_score}
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className={\`px-2 py-1 text-xs rounded-full \${q.status === 'waiting' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}\`}>
+                        <span className={`px-2 py-1 text-xs rounded-full \${q.status === 'waiting' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}`}>
                           {q.status}
                         </span>
                       </td>
