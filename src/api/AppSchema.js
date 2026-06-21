@@ -149,51 +149,51 @@ export const AppSchema = new Schema({
         title: column.text,
         search_text: column.text}),
     automation_rules: new Table({
-      id: column.string,
-      company_id: column.string,
-      table_name: column.string,
-      action_type: column.string,
-      action_payload: column.string,
+      id: column.text,
+      company_id: column.text,
+      table_name: column.text,
+      action_type: column.text,
+      action_payload: column.text,
       is_active: column.integer,
-      conditions: column.string,
-      created_at: column.string
+      conditions: column.text,
+      created_at: column.text
     }),
     automation_queue: new Table({
-      id: column.string,
-      company_id: column.string,
-      rule_id: column.string,
-      payload: column.string,
-      execute_at: column.string,
-      status: column.string,
+      id: column.text,
+      company_id: column.text,
+      rule_id: column.text,
+      payload: column.text,
+      execute_at: column.text,
+      status: column.text,
       retry_count: column.integer,
       max_retries: column.integer,
-      last_error: column.string,
-      created_at: column.string
+      last_error: column.text,
+      created_at: column.text
     }),
     automation_dlq: new Table({
-      id: column.string,
-      company_id: column.string,
-      rule_id: column.string,
-      payload: column.string,
-      failed_at: column.string,
-      error_message: column.string,
-      original_queue_id: column.string
+      id: column.text,
+      company_id: column.text,
+      rule_id: column.text,
+      payload: column.text,
+      failed_at: column.text,
+      error_message: column.text,
+      original_queue_id: column.text
     }),
     automation_logs: new Table({
-      id: column.string,
-      company_id: column.string,
-      rule_id: column.string,
-      status: column.string,
-      logs: column.string,
-      created_at: column.string
+      id: column.text,
+      company_id: column.text,
+      rule_id: column.text,
+      status: column.text,
+      logs: column.text,
+      created_at: column.text
     }),
     automation_rule_versions: new Table({
-      id: column.string,
-      company_id: column.string,
-      rule_id: column.string,
-      action_payload: column.string,
-      conditions: column.string,
-      created_at: column.string
+      id: column.text,
+      company_id: column.text,
+      rule_id: column.text,
+      action_payload: column.text,
+      conditions: column.text,
+      created_at: column.text
     }),
     audit_logs: new Table({
         id: column.text,
@@ -4167,4 +4167,6 @@ export const AppSchema = new Schema({
         profile_confidence: column.real,
         computed_at: column.text})
 });
+
+
 
