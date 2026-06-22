@@ -595,13 +595,13 @@ if (user?.role === "super_admin") {
  <div key={item.path}>
  {showSection && (
  <div className="pt-4 pb-1.5 px-1 first:pt-0">
- <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-sidebar-foreground/40">{t(item.section.toLowerCase().replace(/\s+/g, '_'), item.section)}</p>
+ <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-sidebar-foreground/40">{t((item.section || '').toLowerCase().replace(/\s+/g, '_'), item.section)}</p>
  </div>
  )}
  <div className="relative group">
  <Link
  to={item.path}
- title={collapsed ? t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label) : undefined}
+ title={collapsed ? t((item.label || '').toLowerCase().replace(/\s+/g, '_'), item.label) : undefined}
  className={cn(
  "flex items-center rounded-xl text-sm transition-all duration-150 relative",
  collapsed ? "justify-center p-2" : "gap-3 px-3 py-2 pr-8",
@@ -622,7 +622,7 @@ if (user?.role === "super_admin") {
  </span>
  {!collapsed && (
  <div className="flex items-center gap-2 overflow-hidden flex-1 animate-in fade-in duration-200">
- <span className="whitespace-nowrap truncate">{t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label)}</span>
+ <span className="whitespace-nowrap truncate">{t((item.label || '').toLowerCase().replace(/\s+/g, '_'), item.label)}</span>
  {item.status === 'draft' && (
  <span className="text-[9px] font-semibold uppercase tracking-wider bg-amber-500/20 text-amber-500 px-1.5 py-0.5 rounded-sm tracking-[0.04em]">Draft</span>
  )}

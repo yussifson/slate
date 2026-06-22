@@ -48,7 +48,7 @@ export default function MobileBottomNav() {
  <IconComp className={cn("w-5 h-5 transition-transform", isActive ? "scale-110" : "")} />
  </div>
  <span className={cn("text-[10px] font-semibold leading-none", isActive ? "text-primary" : "")}>
- {t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label)}
+ {t((item.label || '').toLowerCase().replace(/\s+/g, '_'), item.label)}
  </span>
  </Link>
  );
@@ -122,7 +122,7 @@ export default function MobileBottomNav() {
  "text-[16px] font-semibold tracking-tight flex-1",
  isActive ? "text-primary" : "text-slate-700 dark:text-slate-300"
  )}>
- {t(item.label.toLowerCase().replace(/\s+/g, '_'), item.label)}
+ {t((item.label || '').toLowerCase().replace(/\s+/g, '_'), item.label)}
  </span>
  {/* Chevron for native feel */}
  <ChevronRight className="w-5 h-5 text-slate-300 dark:text-slate-600" />
