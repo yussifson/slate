@@ -59,10 +59,12 @@ export default function LoadBoard() {
     setIsPosting(true);
     try {
       const loadId = crypto.randomUUID();
+      const weightVal = parseFloat(newLoad.weight) || 0;
+      const priceVal = parseFloat(newLoad.price) || 0;
       await powerSync.execute(
         `INSERT INTO logistics_loads (id, company_id, origin, destination, weight_lbs, equipment_required, price, status) 
          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [loadId, companyId, newLoad.origin, newLoad.destination, parseFloat(newLoad.weight), newLoad.equipment, parseFloat(newLoad.price || 0), 'open']
+        [loadId, companyId, newLoad.origin, newLoad.destination, weightVal, newLoad.equipment, priceVal, 'open']
       );
       
       setNewLoad({ origin: '', destination: '', weight: '', equipment: '', price: '' });
@@ -103,9 +105,16 @@ export default function LoadBoard() {
       
       let parsed = [];
       try {
-        parsed = JSON.parse(response.replace(/```json/g, '').replace(/```/g, '').trim());
+        const cleaned = response.replace(/```json/g, '').replace(/```/g, '').trim();
+        const startIdx = cleaned.indexOf('[');
+        const endIdx = cleaned.lastIndexOf(']');
+        if (startIdx >= 0 && endIdx >= startIdx) {
+          parsed = JSON.parse(cleaned.substring(startIdx, endIdx + 1));
+        } else {
+          parsed = JSON.parse(cleaned);
+        }
       } catch (e) {
-        // Fallback or handle parse error
+        console.error("AI Parse Error:", e, "Response:", response);
         throw new Error("Failed to parse AI matching results.");
       }
 
