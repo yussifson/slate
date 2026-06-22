@@ -9,7 +9,13 @@ import { toast } from 'react-hot-toast';
 export default function Loyalty() {
   const { t } = useTranslation();
   const { data: dbRes = [] } = useIndustryRecords('reservation');
+  const { data: dbAdj = [] } = useIndustryRecords('hotel_loyalty_adjustment');
+  const mutateRecord = useMutateIndustryRecord();
   const [search, setSearch] = useState('');
+
+  const [showAdjustModal, setShowAdjustModal] = useState(false);
+  const [adjustTarget, setAdjustTarget] = useState(null);
+  const [adjustAmount, setAdjustAmount] = useState(0);
 
   // Calculate points based on historical reservations (1 point per $10 spent)
   const loyaltyMembers = useMemo(() => {
@@ -18,7 +24,7 @@ export default function Loyalty() {
     dbRes.forEach(r => {
       if (r.status === 'Cancelled' || !r.data.guest) return;
       const guestName = r.data.guest.trim();
-      const spent = r.data.total || 0;
+      const spent = Number(r.data.total) || 0;
       const pointsEarned = Math.floor(spent / 10);
       
       if (!membersMap[guestName]) {
@@ -30,20 +36,31 @@ export default function Loyalty() {
       membersMap[guestName].stays += 1;
     });
 
+    dbAdj.forEach(adj => {
+      const guestName = adj.data.guestName?.trim();
+      const points = Number(adj.data.points) || 0;
+      if (!guestName) return;
+      
+      if (!membersMap[guestName]) {
+        membersMap[guestName] = { name: guestName, totalSpent: 0, points: 0, stays: 0 };
+      }
+      membersMap[guestName].points += points;
+    });
+
     return Object.values(membersMap).map(m => {
       let tier = 'Silver';
       if (m.points > 500) tier = 'Gold';
       if (m.points > 2000) tier = 'Platinum';
       return { ...m, tier };
     }).sort((a, b) => b.points - a.points);
-  }, [dbRes]);
+  }, [dbRes, dbAdj]);
 
   const filtered = loyaltyMembers.filter(m => m.name.toLowerCase().includes(search.toLowerCase()));
 
   const handleManualPoints = (member) => {
-    // In a real app, we would write a "loyalty_adjustment" record. 
-    // Since we compute from reservations, we could just alert for demo purposes.
-    toast.success(`Bonus points engine is active! UI will be wired to a loyalty ledger in production.`, { icon: '🎁' });
+    setAdjustTarget(member);
+    setAdjustAmount(0);
+    setShowAdjustModal(true);
   };
 
   return (
@@ -53,7 +70,7 @@ export default function Loyalty() {
           <h1 className="text-2xl font-semibold tracking-[-0.02em]">Guest Loyalty Engine</h1>
           <p className="text-sm text-muted-foreground">Automated points calculation and tier progression.</p>
         </div>
-        <Button className="gap-2 bg-primary text-white">
+        <Button onClick={() => handleManualPoints({ name: 'Walk-in Guest' })} className="gap-2 bg-primary text-white">
           <Plus className="w-4 h-4" /> Manual Adjustment
         </Button>
       </div>
@@ -144,6 +161,53 @@ export default function Loyalty() {
           </tbody>
         </table>
       </div>
+      </div>
+
+      {/* Manual Adjustment Modal */}
+      {showAdjustModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-card rounded-2xl w-full max-w-sm p-6">
+            <h2 className="text-lg font-bold mb-4">Adjust Loyalty Points</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-semibold">Guest Name</label>
+                <Input 
+                  value={adjustTarget?.name || ''} 
+                  onChange={e => setAdjustTarget({ ...adjustTarget, name: e.target.value })} 
+                  className="mt-1" 
+                />
+              </div>
+              <div>
+                <label className="text-sm font-semibold">Points to Add/Subtract</label>
+                <Input 
+                  type="number" 
+                  value={adjustAmount} 
+                  onChange={e => setAdjustAmount(e.target.value)} 
+                  className="mt-1" 
+                />
+              </div>
+            </div>
+            <div className="flex gap-3 mt-6">
+              <Button variant="outline" className="flex-1" onClick={() => setShowAdjustModal(false)}>Cancel</Button>
+              <Button className="flex-1 bg-primary text-white" onClick={() => {
+                if(!adjustTarget?.name || !adjustAmount) return toast.error("Fill required fields");
+                mutateRecord.mutate({
+                  id: crypto.randomUUID(),
+                  recordType: 'hotel_loyalty_adjustment',
+                  payload: { guestName: adjustTarget.name, points: adjustAmount },
+                  status: 'Active',
+                  searchText: `${adjustTarget.name} ${adjustAmount}`
+                }, { 
+                  onSuccess: () => { 
+                    toast.success("Points adjusted!"); 
+                    setShowAdjustModal(false); 
+                  } 
+                });
+              }}>Save Adjustment</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

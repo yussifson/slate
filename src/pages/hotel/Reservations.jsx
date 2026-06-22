@@ -30,6 +30,7 @@ export default function Reservations() {
  // Supabase Real-time Sync Hooks
  const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('reservation');
  const { data: eventRecords = [], isLoading: isEventsLoading } = useIndustryRecords('events');
+ const { data: groupBlocks = [] } = useIndustryRecords('hotel_group_block');
  const mutateRecord = useMutateIndustryRecord();
  const deleteRecord = useDeleteIndustryRecord();
  const companyId = useCompanyId();
@@ -52,6 +53,14 @@ export default function Reservations() {
  const [showModal, setShowModal] = useState(false);
  const [editTargetId, setEditTargetId] = useState(null);
  const [viewDetailsId, setViewDetailsId] = useState(null);
+ const [showGroupModal, setShowGroupModal] = useState(false);
+ const [groupFormData, setGroupFormData] = useState({
+   name: '',
+   contact: '',
+   checkIn: new Date().toISOString().split('T')[0],
+   checkOut: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+   rooms: 10
+ });
  const [showChannelSync, setShowChannelSync] = useState(false);
  const [isSyncing, setIsSyncing] = useState(false);
  const [showChannelSettings, setShowChannelSettings] = useState(false);
@@ -476,14 +485,49 @@ Format your response exactly as valid JSON ONLY:
  </tbody>
  </table>
  ) : (
- <div className="text-center py-12 text-[#71717a] dark:text-gray-400">
-   <User className="w-10 h-10 mx-auto mb-3 opacity-30 text-primary" />
-   <p className="font-semibold text-lg text-foreground">Master Folios & Group Blocks</p>
-   <p className="mb-4">Link multiple rooms and reservations to a single Master Folio for consolidated corporate or group billing.</p>
-   <Button onClick={() => toast.success("Master Folio created! (UI attached to real backend ledgers)")} className="bg-primary text-white">Create Group Block</Button>
- </div>
+  <div>
+    <div className="flex justify-between items-center mb-4 px-6 pt-4">
+      <h3 className="text-lg font-semibold text-foreground">Master Folios & Group Blocks</h3>
+      <Button onClick={() => setShowGroupModal(true)} className="bg-primary text-white gap-2">
+        <Plus className="w-4 h-4" /> Create Group Block
+      </Button>
+    </div>
+    {groupBlocks.length > 0 ? (
+      <table className="w-full text-sm">
+        <thead className="bg-card border-y border-primary/40">
+          <tr>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase">Group Name</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase">Contact</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase">Dates</th>
+            <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase">Rooms Blocked</th>
+            <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase">Status</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          {groupBlocks.map(block => (
+            <tr key={block.id} className="hover:bg-muted/50 transition-colors">
+              <td className="px-6 py-4 font-semibold text-card-foreground">{block.data.name}</td>
+              <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">{block.data.contact}</td>
+              <td className="px-6 py-4 text-foreground font-medium">{block.data.checkIn} → {block.data.checkOut}</td>
+              <td className="px-6 py-4 text-center text-[#71717a] dark:text-gray-400">{block.data.rooms}</td>
+              <td className="px-6 py-4 text-center">
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-700">Active</span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    ) : (
+      <div className="text-center py-12 text-[#71717a] dark:text-gray-400">
+        <User className="w-10 h-10 mx-auto mb-3 opacity-30 text-primary" />
+        <p className="font-semibold text-lg text-foreground">No Group Blocks Yet</p>
+        <p className="mb-4">Link multiple rooms and reservations to a single Master Folio for consolidated billing.</p>
+        <Button onClick={() => setShowGroupModal(true)} className="bg-primary text-white">Create Group Block</Button>
+      </div>
+    )}
+  </div>
  )}
- {(activeTab === 'reservations' ? filtered.length === 0 : activeTab === 'events' ? events.length === 0 : false) && (
+ {(activeTab === 'reservations' ? filtered.length === 0 : activeTab === 'events' ? events.length === 0 : groupBlocks.length === 0) && activeTab !== 'groups' && (
  <div className="text-center py-12 text-[#71717a] dark:text-gray-400">
  <Calendar className="w-10 h-10 mx-auto mb-3 opacity-30" />
  <p>No records found. Click new to add one.</p>
@@ -529,6 +573,59 @@ Format your response exactly as valid JSON ONLY:
  </div>
  </div>
  </div>
+ )}
+
+ {showGroupModal && (
+   <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/20 backdrop-blur-sm p-4">
+     <div className="bg-card rounded-2xl w-full max-w-lg p-6 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+       <h2 className="text-lg font-semibold text-card-foreground flex items-center gap-2">
+         <User className="w-5 h-5 text-primary"/> Create Master Folio / Group Block
+       </h2>
+       <div className="grid grid-cols-2 gap-4">
+         <div className="col-span-2">
+           <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase">Group / Corporate Name</label>
+           <Input value={groupFormData.name} onChange={e => setGroupFormData({ ...groupFormData, name: e.target.value})} className="mt-1" placeholder="e.g. Acme Corp Retreat" />
+         </div>
+         <div className="col-span-2">
+           <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase">Contact Person</label>
+           <Input value={groupFormData.contact} onChange={e => setGroupFormData({ ...groupFormData, contact: e.target.value})} className="mt-1" placeholder="e.g. Jane Smith" />
+         </div>
+         <div>
+           <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase">Check-in</label>
+           <Input type="date" value={groupFormData.checkIn} onChange={e => setGroupFormData({ ...groupFormData, checkIn: e.target.value})} className="mt-1" />
+         </div>
+         <div>
+           <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase">Check-out</label>
+           <Input type="date" value={groupFormData.checkOut} onChange={e => setGroupFormData({ ...groupFormData, checkOut: e.target.value})} className="mt-1" />
+         </div>
+         <div className="col-span-2">
+           <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase">Rooms to Block</label>
+           <Input type="number" value={groupFormData.rooms} onChange={e => setGroupFormData({ ...groupFormData, rooms: parseInt(e.target.value) || 1})} className="mt-1" />
+         </div>
+       </div>
+       <div className="flex gap-3 pt-4">
+         <Button variant="outline" className="flex-1" onClick={() => setShowGroupModal(false)}>Cancel</Button>
+         <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={() => {
+           if (!groupFormData.name.trim()) return toast.error("Please enter a group name");
+           mutateRecord.mutate({
+             id: crypto.randomUUID(),
+             recordType: 'hotel_group_block',
+             payload: groupFormData,
+             status: 'Active',
+             searchText: `${groupFormData.name} ${groupFormData.contact}`
+           }, {
+             onSuccess: () => {
+               toast.success("Group Block created successfully!");
+               setShowGroupModal(false);
+               setGroupFormData({
+                 name: '', contact: '', checkIn: new Date().toISOString().split('T')[0], checkOut: new Date(Date.now() + 86400000).toISOString().split('T')[0], rooms: 10
+               });
+             }
+           });
+         }}>Create Block</Button>
+       </div>
+     </div>
+   </div>
  )}
 
  {showModal && (

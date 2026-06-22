@@ -13,12 +13,9 @@ export default function RevenueManagement() {
 
   const [activeTab, setActiveTab] = useState('kpi');
 
-  // Hardcoded for UI demo if no rules are stored yet
-  const [rules, setRules] = useState([
-    { id: 1, condition: 'Occupancy > 80%', action: 'Increase Base Rates by 15%', active: true },
-    { id: 2, condition: 'Occupancy < 40%', action: 'Decrease Base Rates by 10%', active: false },
-    { id: 3, condition: 'Local Event Active', action: 'Increase Base Rates by 25%', active: true }
-  ]);
+  const { data: yieldRules = [] } = useIndustryRecords('hotel_yield_rule');
+  const [showRuleModal, setShowRuleModal] = useState(false);
+  const [newRule, setNewRule] = useState({ condition: '', action: '', active: true });
 
   // Compute KPIs
   const totalRooms = dbRooms.length || 1; // prevent div by zero
@@ -35,15 +32,26 @@ export default function RevenueManagement() {
   const adr = occupiedRooms > 0 ? currentRevenue / occupiedRooms : 0;
   const revPar = adr * (occupancyRate / 100);
 
-  // Forecast data (Mocked based on current trends)
-  const forecastData = [
-    { day: 'Today', occ: occupancyRate, rev: currentRevenue },
-    { day: 'Tomorrow', occ: occupancyRate * 1.1, rev: currentRevenue * 1.15 },
-    { day: 'Day 3', occ: occupancyRate * 0.9, rev: currentRevenue * 0.95 },
-    { day: 'Day 4', occ: occupancyRate * 1.2, rev: currentRevenue * 1.3 },
-    { day: 'Day 5', occ: Math.min(100, occupancyRate * 1.5), rev: currentRevenue * 1.6 }
-  ];
-
+  // Forecast data (Real data derived from reservations)
+  const forecastData = Array.from({ length: 5 }).map((_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() + i);
+    const dayStr = d.toISOString().split('T')[0];
+    
+    const activeResForDay = dbRes.map(r => r.data).filter(r => 
+      r.status !== 'Cancelled' && r.checkIn <= dayStr && r.checkOut > dayStr
+    );
+    
+    const occRoomsForDay = activeResForDay.length;
+    const occRateForDay = (occRoomsForDay / totalRooms) * 100;
+    const revForDay = activeResForDay.reduce((sum, r) => sum + (Number(r.total) / (Number(r.nights) || 1)), 0);
+    
+    return {
+      day: i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : `Day ${i+1}`,
+      occ: occRateForDay,
+      rev: revForDay
+    };
+  });
   return (
     <div className="space-y-6 school-page-enter font-dmsans">
       <div className="flex gap-4 border-b border-primary/20 pb-4 mb-6">
@@ -138,7 +146,7 @@ export default function RevenueManagement() {
               <h2 className="text-xl font-semibold tracking-[-0.02em]">Automated Yield Rules</h2>
               <p className="text-sm text-muted-foreground">Dynamically adjust rates across channels without manual intervention.</p>
             </div>
-            <Button className="gap-2 bg-primary text-white">
+            <Button onClick={() => setShowRuleModal(true)} className="gap-2 bg-primary text-white">
               <Plus className="w-4 h-4" /> Add Rule
             </Button>
           </div>
@@ -153,24 +161,97 @@ export default function RevenueManagement() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-primary/10">
-                {rules.map(rule => (
+                {yieldRules.length === 0 && (
+                  <tr>
+                    <td colSpan="4" className="px-6 py-8 text-center text-muted-foreground">No yield rules configured.</td>
+                  </tr>
+                )}
+                {yieldRules.map(rule => (
                   <tr key={rule.id} className="hover:bg-muted/30 transition-colors">
-                    <td className="px-6 py-4 font-medium">{rule.condition}</td>
-                    <td className="px-6 py-4 text-primary font-medium">{rule.action}</td>
+                    <td className="px-6 py-4 font-medium">{rule.data.condition}</td>
+                    <td className="px-6 py-4 text-primary font-medium">{rule.data.action}</td>
                     <td className="px-6 py-4">
-                      <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${rule.active ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
-                        {rule.active ? 'Active' : 'Inactive'}
-                      </span>
+                      <button 
+                        onClick={() => {
+                          mutateRecord.mutate({
+                            id: rule.id,
+                            recordType: 'hotel_yield_rule',
+                            payload: { ...rule.data, active: !rule.data.active },
+                            status: 'Active',
+                            searchText: rule.search_text
+                          });
+                        }}
+                        className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${rule.data.active ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}`}
+                      >
+                        {rule.data.active ? 'Active' : 'Inactive'}
+                      </button>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-primary">
-                        <Settings className="w-4 h-4" />
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-red-500 hover:text-red-700" onClick={() => {
+                        // Deleting by setting status to Cancelled
+                        mutateRecord.mutate({
+                          id: rule.id,
+                          recordType: 'hotel_yield_rule',
+                          payload: rule.data,
+                          status: 'Cancelled',
+                          searchText: rule.search_text
+                        }, { onSuccess: () => toast.success("Rule deleted") });
+                      }}>
+                        Delete
                       </Button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* Add Rule Modal */}
+      {showRuleModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-card rounded-2xl w-full max-w-sm p-6">
+            <h2 className="text-lg font-bold mb-4">Add Yield Rule</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-semibold">Condition Trigger</label>
+                <input 
+                  value={newRule.condition} 
+                  onChange={e => setNewRule({...newRule, condition: e.target.value})} 
+                  placeholder="e.g. Occupancy > 80%"
+                  className="w-full mt-1 rounded-lg border border-input bg-background px-3 py-2 text-sm focus:ring-primary focus:border-primary" 
+                />
+              </div>
+              <div>
+                <label className="text-sm font-semibold">Automated Action</label>
+                <input 
+                  value={newRule.action} 
+                  onChange={e => setNewRule({...newRule, action: e.target.value})} 
+                  placeholder="e.g. Increase rates by 10%"
+                  className="w-full mt-1 rounded-lg border border-input bg-background px-3 py-2 text-sm focus:ring-primary focus:border-primary" 
+                />
+              </div>
+            </div>
+            <div className="flex gap-3 mt-6">
+              <Button variant="outline" className="flex-1" onClick={() => setShowRuleModal(false)}>Cancel</Button>
+              <Button className="flex-1 bg-primary text-white" onClick={() => {
+                if(!newRule.condition || !newRule.action) return toast.error("Fill required fields");
+                mutateRecord.mutate({
+                  id: crypto.randomUUID(),
+                  recordType: 'hotel_yield_rule',
+                  payload: newRule,
+                  status: 'Active',
+                  searchText: `${newRule.condition} ${newRule.action}`
+                }, { 
+                  onSuccess: () => { 
+                    toast.success("Rule added!"); 
+                    setShowRuleModal(false); 
+                    setNewRule({ condition: '', action: '', active: true }); 
+                  } 
+                });
+              }}>Save Rule</Button>
+            </div>
           </div>
         </div>
       )}
