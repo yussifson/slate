@@ -739,6 +739,7 @@ function PlatformRoutes() {
 
       {/* Retail Suite */}
       <Route path="/retail" element={<RetailDashboard />} />
+      <Route path="/retail-dashboard" element={<RetailDashboard />} />
       <Route path="/products" element={<Products />} />
       <Route path="/pos" element={<RetailPOS />} />
       <Route path="/shifts" element={<Shifts />} />
