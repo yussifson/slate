@@ -257,11 +257,11 @@ ${receipt.amountTendered ? `<div class="row"><span>Tendered</span><span>$${recei
       setTimeout(async () => {
         toast.success("Payment successful via Terminal!");
         const receipt = generateReceiptData(saleId, 'Card Terminal');
-        await powerSync.execute(`INSERT INTO univ_retail_orders (id, created_at, company_id, order_id, customer, date, total, status, items) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`, 
-          [companyId, saleId, selectedCustomerId || null, new Date().toISOString().split('T')[0], parseFloat(saleTotal.toFixed(2)), 'Completed', JSON.stringify(cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price })))]
+        await powerSync.execute(`INSERT INTO univ_retail_orders (id, created_at, company_id, order_id, customer, date, total, status, items) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`, 
+          [crypto.randomUUID(), companyId, saleId, selectedCustomerId || null, new Date().toISOString().split('T')[0], parseFloat(saleTotal.toFixed(2)), 'Completed', JSON.stringify(cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price })))]
         );
-        await powerSync.execute(`INSERT INTO univ_retail_sales (id, created_at, company_id, sale_id, date, cashier, method, items, total, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, 'Completed')`, 
-          [companyId, saleId, user?.user_metadata?.full_name || user?.email || 'Cashier', 'Terminal', cart.reduce((acc, i) => acc + i.qty, 0), parseFloat(saleTotal.toFixed(2))]
+        await powerSync.execute(`INSERT INTO univ_retail_sales (id, created_at, company_id, sale_id, date, cashier, method, items, total, status) VALUES (?, CURRENT_TIMESTAMP, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, 'Completed')`, 
+          [crypto.randomUUID(), companyId, saleId, user?.user_metadata?.full_name || user?.email || 'Cashier', 'Terminal', cart.reduce((acc, i) => acc + i.qty, 0), parseFloat(saleTotal.toFixed(2))]
         );
         await decrementStock();
         setLastReceipt(receipt); setShowReceipt(true);
@@ -280,11 +280,11 @@ ${receipt.amountTendered ? `<div class="row"><span>Tendered</span><span>$${recei
           currency: paymentMethod === 'Paystack' ? 'NGN' : 'USD',
           customerEmail, invoiceId: saleId
         });
-        await powerSync.execute(`INSERT INTO univ_retail_orders (id, created_at, company_id, order_id, customer, date, total, status, items) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`, 
-          [companyId, saleId, selectedCustomerId || null, new Date().toISOString().split('T')[0], parseFloat(saleTotal.toFixed(2)), 'Pending', JSON.stringify(cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price })))]
+        await powerSync.execute(`INSERT INTO univ_retail_orders (id, created_at, company_id, order_id, customer, date, total, status, items) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`, 
+          [crypto.randomUUID(), companyId, saleId, selectedCustomerId || null, new Date().toISOString().split('T')[0], parseFloat(saleTotal.toFixed(2)), 'Pending', JSON.stringify(cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price })))]
         );
-        await powerSync.execute(`INSERT INTO univ_retail_sales (id, created_at, company_id, sale_id, date, cashier, method, items, total, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, 'Pending')`, 
-          [companyId, saleId, user?.user_metadata?.full_name || user?.email || 'Cashier', paymentMethod, cart.reduce((acc, i) => acc + i.qty, 0), parseFloat(saleTotal.toFixed(2))]
+        await powerSync.execute(`INSERT INTO univ_retail_sales (id, created_at, company_id, sale_id, date, cashier, method, items, total, status) VALUES (?, CURRENT_TIMESTAMP, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, 'Pending')`, 
+          [crypto.randomUUID(), companyId, saleId, user?.user_metadata?.full_name || user?.email || 'Cashier', paymentMethod, cart.reduce((acc, i) => acc + i.qty, 0), parseFloat(saleTotal.toFixed(2))]
         );
         return;
       } catch (err) { return; }
@@ -292,11 +292,11 @@ ${receipt.amountTendered ? `<div class="row"><span>Tendered</span><span>$${recei
 
     // Default / Save
     try {
-      await powerSync.execute(`INSERT INTO univ_retail_orders (id, created_at, company_id, order_id, customer, date, total, status, items) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`, 
-        [companyId, saleId, selectedCustomerId || null, new Date().toISOString().split('T')[0], parseFloat(saleTotal.toFixed(2)), 'Completed', JSON.stringify(cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price })))]
+      await powerSync.execute(`INSERT INTO univ_retail_orders (id, created_at, company_id, order_id, customer, date, total, status, items) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`, 
+        [crypto.randomUUID(), companyId, saleId, selectedCustomerId || null, new Date().toISOString().split('T')[0], parseFloat(saleTotal.toFixed(2)), 'Completed', JSON.stringify(cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price })))]
       );
-      await powerSync.execute(`INSERT INTO univ_retail_sales (id, created_at, company_id, sale_id, date, cashier, method, items, total, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, 'Completed')`, 
-        [companyId, saleId, user?.user_metadata?.full_name || user?.email || 'Cashier', paymentMethod, cart.reduce((acc, i) => acc + i.qty, 0), parseFloat(saleTotal.toFixed(2))]
+      await powerSync.execute(`INSERT INTO univ_retail_sales (id, created_at, company_id, sale_id, date, cashier, method, items, total, status) VALUES (?, CURRENT_TIMESTAMP, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, 'Completed')`, 
+        [crypto.randomUUID(), companyId, saleId, user?.user_metadata?.full_name || user?.email || 'Cashier', paymentMethod, cart.reduce((acc, i) => acc + i.qty, 0), parseFloat(saleTotal.toFixed(2))]
       );
       toast.success(`Sale ${saleId} completed successfully!`);
       await decrementStock(); resetAfterSale();
@@ -317,11 +317,11 @@ ${receipt.amountTendered ? `<div class="row"><span>Tendered</span><span>$${recei
     const receipt = generateReceiptData(saleId, 'Cash', tendered);
 
     try {
-      await powerSync.execute(`INSERT INTO univ_retail_orders (id, created_at, company_id, order_id, customer, date, total, status, items) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`, 
-        [companyId, saleId, selectedCustomerId || null, new Date().toISOString().split('T')[0], parseFloat(total.toFixed(2)), 'Completed', JSON.stringify(cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price })))]
+      await powerSync.execute(`INSERT INTO univ_retail_orders (id, created_at, company_id, order_id, customer, date, total, status, items) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`, 
+        [crypto.randomUUID(), companyId, saleId, selectedCustomerId || null, new Date().toISOString().split('T')[0], parseFloat(total.toFixed(2)), 'Completed', JSON.stringify(cart.map(i => ({ sku: i.sku, name: i.name, qty: i.qty, price: i.price })))]
       );
-      await powerSync.execute(`INSERT INTO univ_retail_sales (id, created_at, company_id, sale_id, date, cashier, method, items, total, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, 'Completed')`, 
-        [companyId, saleId, user?.user_metadata?.full_name || user?.email || 'Cashier', 'Cash', cart.reduce((acc, i) => acc + i.qty, 0), parseFloat(total.toFixed(2))]
+      await powerSync.execute(`INSERT INTO univ_retail_sales (id, created_at, company_id, sale_id, date, cashier, method, items, total, status) VALUES (?, CURRENT_TIMESTAMP, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, 'Completed')`, 
+        [crypto.randomUUID(), companyId, saleId, user?.user_metadata?.full_name || user?.email || 'Cashier', 'Cash', cart.reduce((acc, i) => acc + i.qty, 0), parseFloat(total.toFixed(2))]
       );
       toast.success(`Cash Sale complete! Change due: $${changeDue.toFixed(2)}`);
       await decrementStock();

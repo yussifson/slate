@@ -119,11 +119,11 @@ Suggest an exclusive perk or engagement strategy.`;
   toast.success('Member updated!');
  } else {
   // Create mode (multi-select assignment)
-  for (const cId of formData.customerIds) {
-    await powerSync.execute(`INSERT INTO univ_retail_loyalty (id, created_at, company_id, customer_name, points, tier, joined, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, CURRENT_TIMESTAMP, 'Active')`, 
-      [companyId, cId, parseInt(formData.points) || 0, formData.tier]
-    );
- }
+   for (const cId of formData.customerIds) {
+     await powerSync.execute(`INSERT INTO univ_retail_loyalty (id, created_at, company_id, customer_name, points, tier, joined, status) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, CURRENT_TIMESTAMP, 'Active')`, 
+       [crypto.randomUUID(), companyId, cId, parseInt(formData.points) || 0, formData.tier]
+     );
+  }
   toast.success(`Successfully assigned to ${formData.customerIds.length} customer(s)!`);
  }
   setShowModal(false);

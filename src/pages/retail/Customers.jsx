@@ -144,8 +144,8 @@ Suggest a targeted email or promotion idea.`;
       );
       toast.success('Customer updated successfully!');
     } else {
-      await powerSync.execute(`INSERT INTO univ_retail_customers (id, created_at, company_id, cust_id, name, email, phone, total_spent, orders, segment, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, 'Active')`, 
-        [companyId, custId, formData.name, formData.email, formData.phone, totalSpent, parseInt(formData.orders) || 0, segment]
+      await powerSync.execute(`INSERT INTO univ_retail_customers (id, created_at, company_id, cust_id, name, email, phone, total_spent, orders, segment, status) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, 'Active')`, 
+        [crypto.randomUUID(), companyId, custId, formData.name, formData.email, formData.phone, totalSpent, parseInt(formData.orders) || 0, segment]
       );
       toast.success('Customer registered successfully!');
     }

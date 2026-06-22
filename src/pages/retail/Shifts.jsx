@@ -144,8 +144,8 @@ export default function Shifts() {
           [formData.staffId, formData.role, formData.date, formData.startTime, formData.endTime, formData.status, editingId]
         );
       } else {
-        await powerSync.execute(`INSERT INTO univ_retail_shifts (id, created_at, company_id, staff_id, role, date, start_time, end_time, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`, 
-          [companyId, formData.staffId, formData.role, formData.date, formData.startTime, formData.endTime, formData.status]
+        await powerSync.execute(`INSERT INTO univ_retail_shifts (id, created_at, company_id, staff_id, role, date, start_time, end_time, status) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`, 
+          [crypto.randomUUID(), companyId, formData.staffId, formData.role, formData.date, formData.startTime, formData.endTime, formData.status]
         );
       }
       

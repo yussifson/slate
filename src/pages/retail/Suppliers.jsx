@@ -10,6 +10,7 @@ import { useCompanyId} from '@/hooks/useCompanyId';
 import { usePowerSync } from '@powersync/react';
 import React, { useEffect } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { toast } from 'react-hot-toast';
 import { generateText } from '@/lib/cloudflareAI';
@@ -111,8 +112,8 @@ Suggest any potential risks and mitigation strategies.`;
           [formData.name, formData.category, formData.contact, formData.phone, formData.email, parseInt(formData.rating) || 5, editingId]
         );
       } else {
-        await powerSync.execute(`INSERT INTO univ_retail_suppliers (id, created_at, company_id, name, category, contact, phone, email, rating, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, 'Active')`, 
-          [companyId, formData.name, formData.category, formData.contact, formData.phone, formData.email, parseInt(formData.rating) || 5]
+        await powerSync.execute(`INSERT INTO univ_retail_suppliers (id, created_at, company_id, name, category, contact, phone, email, rating, status) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, 'Active')`, 
+          [crypto.randomUUID(), companyId, formData.name, formData.category, formData.contact, formData.phone, formData.email, parseInt(formData.rating) || 5]
         );
       }
       

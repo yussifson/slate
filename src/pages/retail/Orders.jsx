@@ -143,8 +143,8 @@ export default function Orders() {
 
       // Record in new Returns table (assume it will be created)
       const returnId = `RET-${Date.now().toString().slice(-4)}`;
-      await powerSync.execute(`INSERT INTO univ_retail_returns (id, created_at, company_id, return_id, customer, date, amount, reason, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, 'Processed')`, 
-        [companyId, returnId, returningOrder.customerId, refundAmount, returnReason || 'Not specified']
+      await powerSync.execute(`INSERT INTO univ_retail_returns (id, created_at, company_id, return_id, customer, date, amount, reason, status) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, 'Processed')`, 
+        [crypto.randomUUID(), companyId, returnId, returningOrder.customerId, refundAmount, returnReason || 'Not specified']
       );
 
       const res = await powerSync.execute('SELECT * FROM univ_retail_orders WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
@@ -247,8 +247,8 @@ export default function Orders() {
       toast.success('Order updated!');
     } else {
       const orderId = `ORD-${Date.now().toString().slice(-5).toUpperCase()}`;
-      await powerSync.execute(`INSERT INTO univ_retail_orders (id, created_at, company_id, order_id, customer, date, total, status, items) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`, 
-        [companyId, orderId, finalCustomerId, formData.date, orderTotal, formData.status, JSON.stringify(formData.items)]
+      await powerSync.execute(`INSERT INTO univ_retail_orders (id, created_at, company_id, order_id, customer, date, total, status, items) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`, 
+        [crypto.randomUUID(), companyId, orderId, finalCustomerId, formData.date, orderTotal, formData.status, JSON.stringify(formData.items)]
       );
       toast.success('Order added!');
     }

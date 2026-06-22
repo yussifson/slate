@@ -169,8 +169,8 @@ export default function PurchaseOrders() {
           [newPO.supplierId, total, newPO.status, newPO.notes, JSON.stringify(newPO.items), editingPOId]
         );
       } else {
-        await powerSync.execute(`INSERT INTO univ_retail_purchase_orders (id, created_at, company_id, po_number, supplier, date, total, status, items, notes) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?)`, 
-          [companyId, poNumber, newPO.supplierId, total, newPO.status, JSON.stringify(newPO.items), newPO.notes]
+        await powerSync.execute(`INSERT INTO univ_retail_purchase_orders (id, created_at, company_id, po_number, supplier, date, total, status, items, notes) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?)`, 
+          [crypto.randomUUID(), companyId, poNumber, newPO.supplierId, total, newPO.status, JSON.stringify(newPO.items), newPO.notes]
         );
       }
       

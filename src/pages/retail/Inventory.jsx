@@ -185,8 +185,8 @@ Give a 2-sentence prediction on when this item will stock out and whether the re
         );
       } else {
         // Create new item in target location
-        await powerSync.execute(`INSERT INTO univ_retail_inventory (id, created_at, company_id, sku, name, category, supplier, price, cost_price, quantity, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
-          [companyId, selectedItem.sku, selectedItem.name, selectedItem.category, selectedItem.supplierId, selectedItem.price, selectedItem.costPrice, qty, getStatus(qty, selectedItem.reorderLevel)]
+        await powerSync.execute(`INSERT INTO univ_retail_inventory (id, created_at, company_id, sku, name, category, supplier, price, cost_price, quantity, status) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+          [crypto.randomUUID(), companyId, selectedItem.sku, selectedItem.name, selectedItem.category, selectedItem.supplierId, selectedItem.price, selectedItem.costPrice, qty, getStatus(qty, selectedItem.reorderLevel)]
         );
       }
 
@@ -216,8 +216,8 @@ Give a 2-sentence prediction on when this item will stock out and whether the re
       );
       toast.success('Item updated!');
     } else {
-      await powerSync.execute(`INSERT INTO univ_retail_inventory (id, created_at, company_id, sku, name, category, supplier, price, cost_price, quantity, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
-        [companyId, formData.sku.trim(), formData.name.trim(), formData.category, formData.supplier, parseFloat(formData.price) || 0, parseFloat(formData.costPrice) || 0, qty, computedStatus]
+      await powerSync.execute(`INSERT INTO univ_retail_inventory (id, created_at, company_id, sku, name, category, supplier, price, cost_price, quantity, status) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+        [crypto.randomUUID(), companyId, formData.sku.trim(), formData.name.trim(), formData.category, formData.supplier, parseFloat(formData.price) || 0, parseFloat(formData.costPrice) || 0, qty, computedStatus]
       );
       toast.success('Item added to inventory!');
     }

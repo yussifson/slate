@@ -102,8 +102,8 @@ export default function Promotions() {
           [codeUpper, discountType, Number(discountValue), isActive ? 'Active' : 'Inactive', editId]
         );
       } else {
-        await powerSync.execute(`INSERT INTO univ_retail_promotions (id, created_at, company_id, promo_code, discount_type, discount_value, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)`, 
-          [companyId, codeUpper, discountType, Number(discountValue), isActive ? 'Active' : 'Inactive']
+        await powerSync.execute(`INSERT INTO univ_retail_promotions (id, created_at, company_id, promo_code, discount_type, discount_value, status) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)`, 
+          [crypto.randomUUID(), companyId, codeUpper, discountType, Number(discountValue), isActive ? 'Active' : 'Inactive']
         );
       }
       

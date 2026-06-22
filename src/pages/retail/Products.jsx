@@ -109,8 +109,8 @@ export default function Products() {
       );
       toast.success('Product updated!');
     } else {
-      await powerSync.execute(`INSERT INTO univ_retail_products (id, created_at, company_id, name, sku, category, price, stock, supplier, status) VALUES (gen_random_uuid(), CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, 'Active')`, 
-        [companyId, formData.name, formData.sku, formData.category, parseFloat(formData.price) || 0, parseInt(formData.stock) || 0, formData.supplierId]
+      await powerSync.execute(`INSERT INTO univ_retail_products (id, created_at, company_id, name, sku, category, price, stock, supplier, status) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, 'Active')`, 
+        [crypto.randomUUID(), companyId, formData.name, formData.sku, formData.category, parseFloat(formData.price) || 0, parseInt(formData.stock) || 0, formData.supplierId]
       );
       toast.success('Product added!');
     }
