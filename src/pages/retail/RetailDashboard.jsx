@@ -182,6 +182,53 @@ export default function RetailDashboard() {
  </Card>
  </div>
 
+ {/* Enterprise Retail Modules Navigation Grid */}
+ <div className="space-y-4">
+   <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Enterprise Modules</h2>
+   <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+     <Link to="/retail-hq" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
+       <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform"><Briefcase className="w-5 h-5"/></div>
+       <span className="text-sm font-semibold">Retail HQ</span>
+     </Link>
+     <Link to="/barcodes" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
+       <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 flex items-center justify-center group-hover:scale-110 transition-transform"><Barcode className="w-5 h-5"/></div>
+       <span className="text-sm font-semibold">Barcodes</span>
+     </Link>
+     <Link to="/wms-dashboard" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
+       <div className="w-10 h-10 rounded-lg bg-orange-50 dark:bg-orange-900/20 text-orange-600 flex items-center justify-center group-hover:scale-110 transition-transform"><Truck className="w-5 h-5"/></div>
+       <span className="text-sm font-semibold">WMS</span>
+     </Link>
+     <Link to="/store-builder" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
+       <div className="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform"><Globe className="w-5 h-5"/></div>
+       <span className="text-sm font-semibold">Store Builder</span>
+     </Link>
+     <Link to="/b2b-portal" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
+       <div className="w-10 h-10 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-600 flex items-center justify-center group-hover:scale-110 transition-transform"><Store className="w-5 h-5"/></div>
+       <span className="text-sm font-semibold">B2B Portal</span>
+     </Link>
+     <Link to="/marketplaces" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
+       <div className="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 flex items-center justify-center group-hover:scale-110 transition-transform"><ShoppingCart className="w-5 h-5"/></div>
+       <span className="text-sm font-semibold">Marketplaces</span>
+     </Link>
+     <Link to="/checkout" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
+       <div className="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform"><DollarSign className="w-5 h-5"/></div>
+       <span className="text-sm font-semibold">Unified Checkout</span>
+     </Link>
+     <Link to="/wms-picking" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
+       <div className="w-10 h-10 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-600 flex items-center justify-center group-hover:scale-110 transition-transform"><Package className="w-5 h-5"/></div>
+       <span className="text-sm font-semibold">WMS Picking</span>
+     </Link>
+     <Link to="/demand-forecast" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
+       <div className="w-10 h-10 rounded-lg bg-rose-50 dark:bg-rose-900/20 text-rose-600 flex items-center justify-center group-hover:scale-110 transition-transform"><BarChart2 className="w-5 h-5"/></div>
+       <span className="text-sm font-semibold">AI Forecasting</span>
+     </Link>
+     <Link to="/rmas" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-primary/50 hover:shadow-sm transition-all flex flex-col items-center justify-center gap-3 text-center group">
+       <div className="w-10 h-10 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 flex items-center justify-center group-hover:scale-110 transition-transform"><AlertCircle className="w-5 h-5"/></div>
+       <span className="text-sm font-semibold">Returns (RMA)</span>
+     </Link>
+   </div>
+ </div>
+
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
  {/* Revenue Chart */}
  <Card className="col-span-2 border-primary/40">
