@@ -65,9 +65,11 @@ export const AppSchema = new Schema({
         created_at: column.text,
         company_id: column.text,
         name: column.text,
+        sku: column.text,
         category: column.text,
         price: column.real,
         stock: column.integer,
+        supplier: column.text,
         status: column.text
     }),
     univ_retail_promotions: new Table({

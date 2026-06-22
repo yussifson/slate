@@ -1,6 +1,6 @@
 import { useTranslation} from "react-i18next";
 import { useState, useEffect} from 'react';
-import { Package, Search, Plus, AlertTriangle, Trash2, Edit2, X, DollarSign, ShoppingBag, TrendingDown, MoreVertical, Eye, Edit, ShieldAlert, Printer, MapPin, ArrowRightLeft, Barcode} from 'lucide-react';
+import { Package, Search, Plus, AlertTriangle, Trash2, Edit2, X, DollarSign, ShoppingBag, TrendingDown, MoreVertical, Eye, Edit, ShieldAlert, Printer, MapPin, ArrowRightLeft, Barcode, Bot } from 'lucide-react';
 import { ViewModeToggle, RetailStatCard, InventoryGridCard} from '@/components/retail/RetailViewKit';
 import { Button} from '@/components/ui/button';
 import { Link} from 'react-router-dom';

@@ -1,6 +1,6 @@
 import React, { useState, useEffect} from 'react';
 import { useTranslation} from "react-i18next";
-import { Plus, Search, Trash2, Tag, Percent} from 'lucide-react';
+import { Plus, Search, Trash2, Tag, Percent, Bot } from 'lucide-react';
 import { ViewModeToggle, RetailStatCard, PromotionGridCard} from '@/components/retail/RetailViewKit';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
