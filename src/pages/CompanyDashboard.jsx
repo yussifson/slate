@@ -29,13 +29,13 @@ export default function CompanyDashboard() {
   const userIndustry = user?.company_industry;
   const resolvedDbIndustry = (dbIndustry === 'law' && userIndustry && userIndustry !== 'law') ? userIndustry : dbIndustry;
 
-  // Priority: sessionStorage override > impersonated user > localStorage > DB > user object > fallback
+  // Priority: sessionStorage override > impersonated user > DB > user object > localStorage > fallback
   const industry = sessionStorage.getItem('slate_industry_override') 
     || impersonatedCompany?.industry
     || impersonatedCompany?.industry_type
-    || localStorage.getItem('slate_onboarding_industry')
     || resolvedDbIndustry 
     || userIndustry 
+    || localStorage.getItem('slate_onboarding_industry')
     || "law";
 
   // Once the company has fully synced its industry_type from the DB, clear the temporary localStorage key
