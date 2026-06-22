@@ -8,6 +8,7 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 import { usePowerSync } from '@powersync/react';
 import React, { useEffect } from 'react';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { toast } from 'react-hot-toast';
 
 const DRAWER_ACTIONS = [
   { value: 'open', label: 'Open Register', color: 'text-emerald-600', bg: 'bg-emerald-100 dark:bg-emerald-950/20' },

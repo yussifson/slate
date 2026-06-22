@@ -10,6 +10,7 @@ import { Input} from '@/components/ui/input';
 import { usePayment} from '@/hooks/integrations/usePayment';
 import { useCompanyId} from '@/hooks/useCompanyId';
 import { toast} from 'react-hot-toast';
+import { generateText } from '@/lib/cloudflareAI';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { usePowerSync } from '@powersync/react';
 import { RefreshCcw} from "lucide-react";

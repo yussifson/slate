@@ -7,6 +7,7 @@ import { Link} from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
 import { Input} from '@/components/ui/input';
 import { toast} from 'react-hot-toast';
+import { generateText } from '@/lib/cloudflareAI';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';

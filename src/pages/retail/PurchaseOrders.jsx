@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import { toast} from "sonner";
+import { generateText } from '@/lib/cloudflareAI';
 import { format} from "date-fns";
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { Link} from 'react-router-dom';

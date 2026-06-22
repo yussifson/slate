@@ -1,5 +1,6 @@
 import { useTranslation} from "react-i18next";
 import { useState} from 'react';
+import { Link } from 'react-router-dom';
 import { Truck, Search, Plus, Phone, Mail, Star, Trash2, MoreVertical, Eye, Edit, FileSignature} from 'lucide-react';
 import { ViewModeToggle, RetailStatCard, SupplierGridCard} from '@/components/retail/RetailViewKit';
 import { Button} from '@/components/ui/button';
@@ -10,6 +11,8 @@ import { usePowerSync } from '@powersync/react';
 import React, { useEffect } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { toast } from 'react-hot-toast';
+import { generateText } from '@/lib/cloudflareAI';
 
 export default function Suppliers() {
   const [isGenerating, setIsGenerating] = useState(false);

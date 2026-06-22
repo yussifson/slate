@@ -9,6 +9,7 @@ import { useAuth} from '@/lib/AuthContext';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { toast} from 'react-hot-toast';
+import { generateText } from '@/lib/cloudflareAI';
 import ConfirmationModal from '@/components/ConfirmationModal';
 
 export default function Orders() {

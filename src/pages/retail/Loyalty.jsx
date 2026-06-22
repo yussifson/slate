@@ -5,6 +5,7 @@ import { ViewModeToggle, RetailStatCard, LoyaltyGridCard} from '@/components/ret
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { toast} from 'react-hot-toast';
+import { generateText } from '@/lib/cloudflareAI';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';

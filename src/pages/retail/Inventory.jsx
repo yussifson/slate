@@ -9,6 +9,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@
 
 import { Input} from '@/components/ui/input';
 import { toast} from 'react-hot-toast';
+import { generateText } from '@/lib/cloudflareAI';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { useAuth} from '@/lib/AuthContext';
 import { isRetailAdmin, isRetailInventoryManager} from '@/lib/constants';

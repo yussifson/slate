@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Switch} from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import { toast} from "sonner";
+import { generateText } from '@/lib/cloudflareAI';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 export default function Promotions() {
   const [isGenerating, setIsGenerating] = useState(false);
