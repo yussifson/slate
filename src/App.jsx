@@ -313,7 +313,6 @@ import UniExams from './pages/university/UniExams';
 import UniHostel from './pages/university/UniHostel';
 import UniLibrary from './pages/university/UniLibrary';
 import UniCareerAlumni from './pages/university/UniCareerAlumni';
-import ReturnsPortal from './pages/retail/ReturnsPortal';
 
 // ----- Logistics Features -----
 import DispatchBoard from './pages/logistics/DispatchBoard';
@@ -761,7 +760,6 @@ function PlatformRoutes() {
       <Route path="/suppliers" element={<RetailSuppliers />} />
       <Route path="/retail-customers" element={<Clients />} />
       <Route path="/customer-portal" element={<RetailCustomerPortal />} />
-      <Route path="/returns-portal" element={<ReturnsPortal />} />
 
       {/* Logistics & Supply Chain */}
       <Route path="/smart-docs" element={<SmartDocs />} />
