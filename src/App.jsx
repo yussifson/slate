@@ -249,6 +249,20 @@ import Loyalty from './pages/retail/Loyalty';
 import Shifts from './pages/retail/Shifts';
 import RetailCustomers from './pages/retail/Customers';
 import RetailCustomerPortal from './pages/retail/CustomerPortal';
+import ProductManagement from './pages/retail/ProductManagement';
+import ShiftManagement from './pages/retail/ShiftManagement';
+import BarcodeManagement from './pages/retail/BarcodeManagement';
+import RMAManagement from './pages/retail/RMAManagement';
+import RetailHQDashboard from './pages/retail/RetailHQDashboard';
+import OnlineStoreBuilder from './pages/retail/OnlineStoreBuilder';
+import OmnichannelMarketplaces from './pages/retail/OmnichannelMarketplaces';
+import UnifiedCheckout from './pages/retail/UnifiedCheckout';
+import WMSDashboard from './pages/retail/WMSDashboard';
+import WMSPickingOperations from './pages/retail/WMSPickingOperations';
+import B2BWholesalePortal from './pages/retail/B2BWholesalePortal';
+import DemandForecasting from './pages/retail/DemandForecasting';
+import FranchiseManager from './pages/retail/FranchiseManager';
+
 
 // Logistics Pages
 const SmartDocs = React.lazy(() => import('./pages/logistics/SmartDocs'));
@@ -263,7 +277,7 @@ const LogisticsWarehouse = React.lazy(() => import('./pages/logistics/Warehouse'
 import LogisticsRouteOptimization from './pages/logistics/RouteOptimization';
 import LogisticsProofOfDelivery from './pages/logistics/ProofOfDelivery';
 import LogisticsIncidentManagement from './pages/logistics/IncidentManagement';
-import LogisticsReturnsManagement from './pages/logistics/ReturnsManagement';
+import LogisticsReturnsManagement from './pages/retail/RMAManagement';
 import LogisticsAdvancedAnalytics from './pages/logistics/AdvancedAnalytics';
 import LogisticsDriverMobileApp from './pages/logistics/DriverMobileApp';
 
@@ -721,10 +735,23 @@ function PlatformRoutes() {
       <Route path="/premiums" element={<InsurancePremiums />} />
 
       {/* Retail Suite */}
-      <Route path="/retail-dashboard" element={<RetailDashboard />} />
+      <Route path="/retail" element={<RetailDashboard />} />
+      <Route path="/products" element={<ProductManagement />} />
+      <Route path="/pos" element={<RetailPOS />} />
+      <Route path="/shifts" element={<ShiftManagement />} />
+      <Route path="/retail-hq" element={<RetailHQDashboard />} />
+      <Route path="/barcodes" element={<BarcodeManagement />} />
+      <Route path="/rmas" element={<RMAManagement />} />
+      <Route path="/store-builder" element={<OnlineStoreBuilder />} />
+      <Route path="/marketplaces" element={<OmnichannelMarketplaces />} />
+      <Route path="/checkout" element={<UnifiedCheckout />} />
+      <Route path="/wms-dashboard" element={<WMSDashboard />} />
+      <Route path="/wms-picking" element={<WMSPickingOperations />} />
+      <Route path="/b2b-portal" element={<B2BWholesalePortal />} />
+      <Route path="/demand-forecast" element={<DemandForecasting />} />
+      <Route path="/franchise-manager" element={<FranchiseManager />} />
       <Route path="/purchase-orders" element={<RetailPurchaseOrders />} />
       <Route path="/promotions" element={<RetailPromotions />} />
-      <Route path="/pos" element={<RetailPOS />} />
       <Route path="/retail-inventory" element={<RetailInventory />} />
       <Route path="/sales" element={<RetailSales />} />
       <Route path="/suppliers" element={<RetailSuppliers />} />

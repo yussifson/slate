@@ -593,6 +593,22 @@ export const INDUSTRIES = {
     ],    nav: [
       { label: 'Overview', path: '/retail-dashboard', icon: 'LayoutDashboard' },
       { label: 'Enterprise HQ', path: '/retail-hq', icon: 'Building2' },
+      
+      { section: 'E-Commerce' },
+      { label: 'Store Builder', path: '/store-builder', icon: 'Store' },
+      { label: 'Marketplaces', path: '/marketplaces', icon: 'Globe' },
+      { label: 'Unified Checkout', path: '/checkout', icon: 'CreditCard' },
+
+      { section: 'Advanced WMS' },
+      { label: 'Warehouse Map', path: '/wms-dashboard', icon: 'MapPin' },
+      { label: 'Picking & Wave', path: '/wms-picking', icon: 'PackageSearch' },
+
+      { section: 'Enterprise Operations' },
+      { label: 'B2B Wholesale', path: '/b2b-portal', icon: 'Network' },
+      { label: 'Demand Forecast', path: '/demand-forecast', icon: 'LineChart' },
+      { label: 'Franchise Network', path: '/franchise-manager', icon: 'Layers' },
+
+      { section: 'Store Operations' },
       { label: 'Point of Sale', path: '/pos', icon: 'ShoppingCart' },
       { label: 'Inventory', path: '/retail-inventory', icon: 'Package' },
       { label: 'Purchase Orders', path: '/purchase-orders', icon: 'FileText' },

@@ -25,8 +25,7 @@ import {
  Network, AlertTriangle, Gift, Banknote, CalendarOff,
  HandCoins, Users2, Blocks, Map, Warehouse, Car, MapPin,
  FileSearch, LayoutGrid, BedDouble, BellRing, MoreHorizontal, Pencil, Trash2, Eye, Zap, Store
-, ShieldAlert, HeartPulse, FilePlus, FileCheck, Gavel, CalendarDays, CalendarCheck, UserCheck, PenTool, Target, Calculator, Home, Moon, CalendarSearch, Wallet, PieChart, ArrowUpRight, ArrowDownLeft, Laptop, Smartphone, MessageSquare, LineChart, Brain
-
+, ShieldAlert, HeartPulse, FilePlus, FileCheck, Gavel, CalendarDays, CalendarCheck, UserCheck, PenTool, Target, Calculator, Home, Moon, CalendarSearch, Wallet, PieChart, ArrowUpRight, ArrowDownLeft, Laptop, Smartphone, MessageSquare, LineChart, Brain, PackageSearch, Globe, Store, CreditCard, MapPin, Network, Layers
 } from "lucide-react";
 import { base44} from "@/api/base44Client";
 import { useImpersonation} from "@/lib/ImpersonationContext";
@@ -45,7 +44,7 @@ const ICON_MAP = {
  Tag, Layers, Bell, Award, Library, Building2, AlertCircle, Clock, Network, AlertTriangle,
  Gift, Banknote, CalendarOff, HandCoins, Users2, Blocks, Map, Warehouse, Car, MapPin,
  FileSearch, LayoutGrid, BedDouble, BellRing, CheckSquare2: CheckSquare, Zap, Store
-, ShieldAlert, HeartPulse, FilePlus, FileCheck, Gavel, CalendarDays, CalendarCheck, UserCheck, PenTool, Target, Calculator, Home, Moon, CalendarSearch, Wallet, PieChart, ArrowUpRight, ArrowDownLeft, Laptop, Smartphone, MessageSquare, LineChart, Brain};
+, ShieldAlert, HeartPulse, FilePlus, FileCheck, Gavel, CalendarDays, CalendarCheck, UserCheck, PenTool, Target, Calculator, Home, Moon, CalendarSearch, Wallet, PieChart, ArrowUpRight, ArrowDownLeft, Laptop, Smartphone, MessageSquare, LineChart, Brain, PackageSearch, Globe};
 
 import { powerSync} from "@/api/PowerSyncConnector";
 import { useAuth} from "@/lib/AuthContext";
@@ -261,9 +260,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  claims_adjuster: ["/", "/policies", "/claims", "/documents", "/tasks", "/chat", "/email-inbox"],
 
  // Retail / POS Roles
- supervisor: ["/retail-dashboard", "/pos", "/orders", "/retail-inventory", "/products", "/promotions", "/retail-customers", "/shifts", "/reports", "/tasks", "/chat", "/email-inbox"],
+ supervisor: ["/retail-dashboard", "/retail-hq", "/pos", "/orders", "/retail-inventory", "/products", "/barcodes", "/rmas", "/promotions", "/retail-customers", "/shifts", "/reports", "/tasks", "/chat", "/email-inbox"],
  cashier: ["/retail-dashboard", "/pos", "/orders", "/retail-customers", "/loyalty", "/shifts", "/tasks"],
- inventory_manager: ["/retail-dashboard", "/retail-inventory", "/purchase-orders", "/products", "/suppliers", "/shifts", "/tasks"],
+ inventory_manager: ["/retail-dashboard", "/retail-inventory", "/purchase-orders", "/products", "/barcodes", "/rmas", "/suppliers", "/shifts", "/tasks"],
  
  // Logistics Roles
  dispatcher: ["/", "/shipments", "/dispatch", "/drivers", "/routes", "/fleet", "/pickups", "/chat", "/email-inbox"],

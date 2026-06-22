@@ -137,6 +137,98 @@ export const AppSchema = new Schema({
         reason: column.text,
         status: column.text
     }),
+    univ_retail_inventory_transfers: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        from_store_id: column.text,
+        to_store_id: column.text,
+        product_id: column.text,
+        quantity: column.integer,
+        status: column.text,
+        tracking_number: column.text
+    }),
+    univ_retail_rmas: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        rma_number: column.text,
+        product_id: column.text,
+        supplier_id: column.text,
+        quantity: column.integer,
+        reason: column.text,
+        status: column.text,
+        tracking_number: column.text
+    }),
+    univ_retail_branches: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        name: column.text,
+        location: column.text,
+        manager_id: column.text,
+        status: column.text,
+        contact_phone: column.text,
+        contact_email: column.text
+    }),
+    univ_retail_storefronts: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        theme_config: column.text,
+        domain_name: column.text,
+        is_active: column.integer
+    }),
+    univ_retail_web_orders: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        customer_id: column.text,
+        total_amount: column.real,
+        status: column.text,
+        payment_status: column.text,
+        shipping_address: column.text
+    }),
+    univ_retail_warehouse_locations: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        name: column.text,
+        address: column.text
+    }),
+    univ_retail_warehouse_bins: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        warehouse_id: column.text,
+        bin_label: column.text,
+        zone: column.text
+    }),
+    univ_retail_picking_waves: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        warehouse_id: column.text,
+        status: column.text,
+        assigned_to: column.text
+    }),
+    univ_retail_b2b_accounts: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        client_name: column.text,
+        tier: column.text,
+        credit_limit: column.real,
+        outstanding_balance: column.real
+    }),
+    univ_retail_franchises: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        franchisee_name: column.text,
+        royalty_percentage: column.real,
+        status: column.text
+    }),
 
     industry_records: new Table({
         id: column.text,
