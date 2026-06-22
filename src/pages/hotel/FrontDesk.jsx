@@ -137,7 +137,7 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
    const tId = toast.loading('AI finding the best available room...');
    setTimeout(() => {
      // Find first available room
-     const availableRoom = ALL_ROOMS.find(r => getRoomInfo(r).status === 'Available');
+     const availableRoom = dynamicRooms.find(r => getRoomInfo(r).status === 'Available');
      if (availableRoom) {
        setSelectedRoom(availableRoom);
        setShowCheckInModal(true);

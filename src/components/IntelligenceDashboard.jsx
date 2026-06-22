@@ -1,13 +1,14 @@
-// src/components/IntelligenceDashboard.jsx
-// The main Intelligence Dashboard panel — displays all computed insights
-// Can be embedded in any page or used standalone
-
-import { useState } from 'react';
-import { Brain, Sparkles, RefreshCw, Shield, AlertTriangle, TrendingUp, Info, Filter, Zap } from 'lucide-react';
+import React, { useState } from 'react';
+import { Brain, Sparkles, RefreshCw, Shield, AlertTriangle, TrendingUp, Info, Filter, Zap, FileText, Activity, Database, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import InsightCard from '@/components/InsightCard';
 import { useIntelligence } from '@/hooks/useIntelligence';
 import { useCompany } from '@/hooks/useCompanyId';
+
+import DataOracle from '@/components/intelligence/DataOracle';
+import ReportGenerator from '@/components/intelligence/ReportGenerator';
+import AnomalyScanner from '@/components/intelligence/AnomalyScanner';
 
 const SEVERITY_FILTERS = [
   { key: 'all', label: 'All', icon: null },
@@ -119,162 +120,180 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
     );
   }
 
-  // Full dashboard mode
+  // Full dashboard mode with Tabs for powerful tools
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="space-y-6 pb-20">
       <div className="flex items-center justify-between">
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 border border-primary/20 backdrop-blur-sm flex items-center justify-center shadow-lg shadow-primary/20">
-              <Brain className="w-5 h-5 text-white" />
-            </div>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 border border-primary/20 backdrop-blur-sm flex items-center justify-center shadow-lg shadow-primary/20">
+            <Brain className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em]">
+              AI Intelligence Hub
+            </h1>
+            <p className="text-sm text-[#71717a] mt-0.5">
+              Powerful active AI tools and passive data insights
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <Tabs defaultValue="insights" className="w-full">
+        <TabsList className="mb-6 grid w-full grid-cols-4 max-w-[800px] bg-slate-100 dark:bg-slate-800 p-1">
+          <TabsTrigger value="insights" className="gap-2"><Sparkles className="w-4 h-4"/> Insights Engine</TabsTrigger>
+          <TabsTrigger value="oracle" className="gap-2"><Bot className="w-4 h-4"/> Data Oracle</TabsTrigger>
+          <TabsTrigger value="report" className="gap-2"><FileText className="w-4 h-4"/> Report Generator</TabsTrigger>
+          <TabsTrigger value="anomaly" className="gap-2"><Activity className="w-4 h-4"/> Anomaly Scanner</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="insights" className="space-y-6">
+          <div className="flex justify-between items-center bg-card p-4 rounded-xl border">
             <div>
-              <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em]">
-                Intelligence Center
-              </h1>
-              <p className="text-sm text-[#71717a] mt-0.5">
-                AI-powered insights from your real data
-              </p>
+              <h3 className="font-semibold text-lg">Passive Insights Engine</h3>
+              <p className="text-sm text-slate-500">Continuous AI scanning of your data</p>
             </div>
-          </div>
-        </div>
-        <Button
-          onClick={() => runEngine(effectiveVertical)}
-          disabled={isRunning}
-          className="gap-2 bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-500/20 border-0"
-        >
-          {isRunning ? (
-            <>
-              <RefreshCw className="w-4 h-4 animate-spin" />
-              Analyzing Data...
-            </>
-          ) : (
-            <>
-              <Zap className="w-4 h-4" />
-              Run Full Analysis
-            </>
-          )}
-        </Button>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-            <Brain className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-2xl font-semibold text-card-foreground">{insights.length}</p>
-            <p className="text-xs text-[#71717a]">Total Insights</p>
-          </div>
-        </div>
-        <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow">
-          <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center text-red-600">
-            <Shield className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-2xl font-semibold text-card-foreground">{criticalCount}</p>
-            <p className="text-xs text-[#71717a]">Critical</p>
-          </div>
-        </div>
-        <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow">
-          <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600">
-            <AlertTriangle className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-2xl font-semibold text-card-foreground">{warningCount}</p>
-            <p className="text-xs text-[#71717a]">Warnings</p>
-          </div>
-        </div>
-        <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow">
-          <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600">
-            <TrendingUp className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-2xl font-semibold text-card-foreground">{positiveCount}</p>
-            <p className="text-xs text-[#71717a]">Positive</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-4">
-        <div className="flex items-center gap-1 bg-card rounded-lg border p-1">
-          {SEVERITY_FILTERS.map(f => (
-            <button
-              key={f.key}
-              onClick={() => setSeverityFilter(f.key)}
-              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                severityFilter === f.key
-                  ? 'bg-primary text-white shadow-sm'
-                  : 'text-[#71717a] hover:text-card-foreground hover:bg-muted'
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
-        <select
-          value={typeFilter}
-          onChange={e => setTypeFilter(e.target.value)}
-          className="text-xs border rounded-lg px-3 py-2 bg-card text-card-foreground"
-        >
-          {TYPE_FILTERS.map(f => (
-            <option key={f.key} value={f.key}>{f.label}</option>
-          ))}
-        </select>
-        {lastRun && (
-          <span className="text-[10px] text-[#71717a] flex items-center gap-1">
-            <Sparkles className="w-3 h-3" />
-            Last run: {(lastRun.completed_at || lastRun.started_at) ? new Date(lastRun.completed_at || lastRun.started_at).toLocaleString() : "Unknown"}
-            {lastRun.status === 'completed' && ` — ${lastRun.insights_created} insights`}
-          </span>
-        )}
-      </div>
-
-      {/* Insight List */}
-      {isLoading ? (
-        <div className="flex flex-col items-center justify-center py-16">
-          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-            <Sparkles className="w-6 h-6 text-primary animate-pulse" />
-          </div>
-          <p className="text-sm text-[#71717a]">Loading intelligence data...</p>
-        </div>
-      ) : displayInsights.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 bg-card rounded-2xl border">
-          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-            <Brain className="w-8 h-8 text-primary/40" />
-          </div>
-          <h3 className="text-lg font-semibold text-card-foreground mb-1">Building Intelligence</h3>
-          <p className="text-sm text-[#71717a] text-center max-w-md">
-            {insights.length === 0
-              ? "Click 'Run Full Analysis' to scan your data and generate AI-powered insights."
-              : 'No insights match your current filters. Try adjusting the filters above.'}
-          </p>
-          {insights.length === 0 && (
             <Button
               onClick={() => runEngine(effectiveVertical)}
               disabled={isRunning}
-              className="mt-4 gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 shadow-lg shadow-orange-500/20 border-0"
+              className="gap-2 bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-500/20 border-0"
             >
-              <Zap className="w-4 h-4" />
-              {isRunning ? 'Analyzing...' : 'Generate Insights Now'}
+              {isRunning ? (
+                <><RefreshCw className="w-4 h-4 animate-spin" /> Analyzing Data...</>
+              ) : (
+                <><Zap className="w-4 h-4" /> Run Full Analysis</>
+              )}
             </Button>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                <Brain className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-2xl font-semibold text-card-foreground">{insights.length}</p>
+                <p className="text-xs text-[#71717a]">Total Insights</p>
+              </div>
+            </div>
+            <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow">
+              <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center text-red-600">
+                <Shield className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-2xl font-semibold text-card-foreground">{criticalCount}</p>
+                <p className="text-xs text-[#71717a]">Critical</p>
+              </div>
+            </div>
+            <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow">
+              <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600">
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-2xl font-semibold text-card-foreground">{warningCount}</p>
+                <p className="text-xs text-[#71717a]">Warnings</p>
+              </div>
+            </div>
+            <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 p-4 flex items-center gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow">
+              <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600">
+                <TrendingUp className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-2xl font-semibold text-card-foreground">{positiveCount}</p>
+                <p className="text-xs text-[#71717a]">Positive</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-1 bg-card rounded-lg border p-1">
+              {SEVERITY_FILTERS.map(f => (
+                <button
+                  key={f.key}
+                  onClick={() => setSeverityFilter(f.key)}
+                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                    severityFilter === f.key
+                      ? 'bg-primary text-white shadow-sm'
+                      : 'text-[#71717a] hover:text-card-foreground hover:bg-muted'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+            <select
+              value={typeFilter}
+              onChange={e => setTypeFilter(e.target.value)}
+              className="text-xs border rounded-lg px-3 py-2 bg-card text-card-foreground"
+            >
+              {TYPE_FILTERS.map(f => (
+                <option key={f.key} value={f.key}>{f.label}</option>
+              ))}
+            </select>
+            {lastRun && (
+              <span className="text-[10px] text-[#71717a] flex items-center gap-1">
+                <Sparkles className="w-3 h-3" />
+                Last run: {(lastRun.completed_at || lastRun.started_at) ? new Date(lastRun.completed_at || lastRun.started_at).toLocaleString() : "Unknown"}
+              </span>
+            )}
+          </div>
+
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center py-16">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+                <Sparkles className="w-6 h-6 text-primary animate-pulse" />
+              </div>
+              <p className="text-sm text-[#71717a]">Loading intelligence data...</p>
+            </div>
+          ) : displayInsights.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 bg-card rounded-2xl border">
+              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+                <Brain className="w-8 h-8 text-primary/40" />
+              </div>
+              <h3 className="text-lg font-semibold text-card-foreground mb-1">Building Intelligence</h3>
+              <p className="text-sm text-[#71717a] text-center max-w-md mb-4">
+                {insights.length === 0
+                  ? "Click 'Run Full Analysis' to scan your data and generate AI-powered insights."
+                  : 'No insights match your current filters. Try adjusting the filters above.'}
+              </p>
+              {insights.length === 0 && (
+                <Button
+                  onClick={() => runEngine(effectiveVertical)}
+                  disabled={isRunning}
+                  className="gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg border-0"
+                >
+                  <Zap className="w-4 h-4" />
+                  {isRunning ? 'Analyzing...' : 'Generate Insights Now'}
+                </Button>
+              )}
+            </div>
+          ) : (
+            <div className="grid gap-4">
+              {displayInsights.map(insight => (
+                <InsightCard
+                  key={insight.id}
+                  insight={insight}
+                  onDismiss={dismissInsight}
+                  onFeedback={(id, type) => submitFeedback({ insightId: id, feedbackType: type })}
+                />
+              ))}
+            </div>
           )}
-        </div>
-      ) : (
-        <div className="grid gap-4">
-          {displayInsights.map(insight => (
-            <InsightCard
-              key={insight.id}
-              insight={insight}
-              onDismiss={dismissInsight}
-              onFeedback={(id, type) => submitFeedback({ insightId: id, feedbackType: type })}
-            />
-          ))}
-        </div>
-      )}
+        </TabsContent>
+
+        <TabsContent value="oracle">
+          <DataOracle />
+        </TabsContent>
+
+        <TabsContent value="report">
+          <ReportGenerator />
+        </TabsContent>
+
+        <TabsContent value="anomaly">
+          <AnomalyScanner />
+        </TabsContent>
+
+      </Tabs>
     </div>
   );
 }

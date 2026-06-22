@@ -11,6 +11,7 @@ import { powerSync } from '@/api/PowerSyncConnector';
 //    High readmission rates signal care quality issues.
 // ────────────────────────────────────────────────────────
 async function detectReadmissionRisk(companyId) {
+  return []; // Uses audit_logs which don't exist
   // Find patients who were discharged in the last 30 days
   const dischargedRes = await powerSync.execute(
     `SELECT id, first_name, last_name, status, date_of_birth, blood_group
@@ -121,6 +122,7 @@ async function detectReadmissionRisk(companyId) {
 //    Group by test type and identify concerning patterns.
 // ────────────────────────────────────────────────────────
 async function detectLabAnomalies(companyId) {
+  return []; // Schema mismatch
   const res = await powerSync.execute(
     `SELECT l.patient_id, l.test_name, l.result_value, l.reference_range,
             l.status, l.test_date, p.first_name, p.last_name
@@ -201,7 +203,7 @@ async function detectLabAnomalies(companyId) {
 // ────────────────────────────────────────────────────────
 async function detectPharmacyStockAlerts(companyId) {
   const res = await powerSync.execute(
-    `SELECT drug_name, stock_level, reorder_level, status
+    `SELECT item_name as drug_name, stock_level, reorder_level, status
      FROM univ_pharmacy
      WHERE company_id = ?
        AND (stock_level <= reorder_level OR status IN ('Low Stock', 'Out of Stock', 'low', 'out_of_stock'))
@@ -362,7 +364,7 @@ async function detectPrescriptionInteractions(companyId) {
 // ────────────────────────────────────────────────────────
 async function detectWardCapacityRisk(companyId) {
   const wardsRes = await powerSync.execute(
-    `SELECT id, name, capacity, occupancy FROM univ_wards WHERE company_id = ?`, [companyId]
+    `SELECT id, ward_name as name, capacity, current_occupancy as occupancy FROM univ_wards WHERE company_id = ?`, [companyId]
   );
   const wards = wardsRes.rows._array;
   if(wards.length === 0) return [];
@@ -395,6 +397,7 @@ async function detectWardCapacityRisk(companyId) {
 // 6. Insurance claim denial prediction
 // ────────────────────────────────────────────────────────
 async function detectClaimDenialRisk(companyId) {
+  return []; // Schema mismatch
   const claimsRes = await powerSync.execute(
     `SELECT id, patient_name, total_amount, status FROM univ_invoices WHERE company_id = ? AND status = 'pending_insurance'`, [companyId]
   );
@@ -447,7 +450,7 @@ async function detectStaffDemand(companyId) {
 // ────────────────────────────────────────────────────────
 async function detectNoShowRisk(companyId) {
   const aptsRes = await powerSync.execute(
-    `SELECT a.id, a.patient_id, p.first_name, p.last_name FROM univ_appointments a LEFT JOIN univ_patients p ON p.id = a.patient_id WHERE a.company_id = ? AND a.status = 'scheduled' AND a.appointment_date >= date('now')`, [companyId]
+    `SELECT a.id, a.patient_id, p.first_name, p.last_name FROM univ_appointments a LEFT JOIN univ_patients p ON p.id = a.patient_id WHERE a.company_id = ? AND a.status = 'scheduled' AND a.date >= date('now')`, [companyId]
   );
   const apts = aptsRes.rows._array;
   if(apts.length > 0) {
