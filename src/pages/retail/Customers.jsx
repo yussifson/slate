@@ -1,5 +1,5 @@
 import { useTranslation} from "react-i18next";
-import { useState} from 'react';
+import { useState, useEffect} from 'react';
 import { Users, Search, Plus, Star, Trash2, MoreVertical, Eye, Edit, ShoppingCart} from 'lucide-react';
 import { ViewModeToggle, RetailStatCard, CustomerGridCard} from '@/components/retail/RetailViewKit';
 import { Button} from '@/components/ui/button';

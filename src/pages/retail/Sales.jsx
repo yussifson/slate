@@ -1,5 +1,5 @@
 import { useTranslation} from "react-i18next";
-import { useState} from 'react';
+import { useState, useEffect} from 'react';
 import { DollarSign, Search, TrendingUp, Calendar, ArrowUpRight, Download, MoreVertical, Eye, Edit2, Trash2, Edit, FileText, CreditCard} from 'lucide-react';
 import { Button} from '@/components/ui/button';
 import { Link} from 'react-router-dom';

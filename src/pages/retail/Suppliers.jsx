@@ -8,6 +8,7 @@ import { useContracts} from '@/hooks/integrations/useContracts';
 import { useCompanyId} from '@/hooks/useCompanyId';
 import { usePowerSync } from '@powersync/react';
 import React, { useEffect } from 'react';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 
 export default function Suppliers() {
   const [isGenerating, setIsGenerating] = useState(false);

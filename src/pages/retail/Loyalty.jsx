@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState, useEffect} from 'react';
 import { useTranslation} from "react-i18next";
 import { Star, Search, Plus, Edit, Trash2, Award, Check} from 'lucide-react';
 import { ViewModeToggle, RetailStatCard, LoyaltyGridCard} from '@/components/retail/RetailViewKit';
