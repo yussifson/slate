@@ -308,12 +308,22 @@ export default function Rooms() {
               </div>
               <div>
                 <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("room_type", "Room Type")}</label>
-                <select value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm">
-                  <option>Standard</option>
-                  <option>Deluxe</option>
-                  <option>Suite</option>
-                  <option>Penthouse</option>
-                </select>
+                <Input 
+                  list="room-types"
+                  value={formData.type} 
+                  onChange={e => setFormData({ ...formData, type: e.target.value})} 
+                  className="mt-1" 
+                  placeholder="e.g. Ocean View Suite" 
+                />
+                <datalist id="room-types">
+                  {Array.from(new Set(rooms.map(r => r.type).filter(Boolean))).map(t => (
+                    <option key={t} value={t} />
+                  ))}
+                  <option value="Standard" />
+                  <option value="Deluxe" />
+                  <option value="Suite" />
+                  <option value="Penthouse" />
+                </datalist>
               </div>
               <div>
                 <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("rate_per_night", "Rate per Night ($)")}</label>

@@ -104,13 +104,14 @@ export default function Reservations() {
  };
 
  // Form State
- const [formData, setFormData] = useState({
- guest: '',
- checkIn: new Date().toISOString().split('T')[0],
- checkOut: new Date(Date.now() + 86400000).toISOString().split('T')[0],
- roomType: 'Standard Room',
- guestsCount: 1
-});
+  const [formData, setFormData] = useState({
+  guest: '',
+  checkIn: new Date().toISOString().split('T')[0],
+  checkOut: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+  roomType: 'Standard Room',
+  manualRate: '',
+  guestsCount: 1
+ });
 
  const handleEdit = (res) => {
  setEditTargetId(res.id);
@@ -119,6 +120,7 @@ export default function Reservations() {
  checkIn: res.checkIn,
  checkOut: res.checkOut,
  roomType: res.roomType,
+ manualRate: '', // Reset on edit, or you could derive it
  guestsCount: res.guestsCount || 1
 });
  setShowModal(true);
@@ -235,7 +237,9 @@ Format your response exactly as valid JSON ONLY:
  const nights = Math.max(1, Math.ceil((new Date(formData.checkOut) - new Date(formData.checkIn)) / 86400000));
  
  // Rates calculation
- const total = nights * (dynamicRates[formData.roomType] || dynamicRates[Object.keys(dynamicRates)[0]] || 150);
+ const defaultRate = dynamicRates[formData.roomType] || dynamicRates[Object.keys(dynamicRates)[0]] || 150;
+ const appliedRate = formData.manualRate ? parseFloat(formData.manualRate) : defaultRate;
+ const total = nights * appliedRate;
 
  const payload = {
  resId: editTargetId ? dbRecords.find(r => r.id === editTargetId)?.data?.resId : resId,
@@ -660,11 +664,27 @@ Format your response exactly as valid JSON ONLY:
  </div>
  <div>
  <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("room_type", "Room Type")}</label>
- <select value={formData.roomType} onChange={e => setFormData({ ...formData, roomType: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm">
+ <Input 
+   list="res-room-types"
+   value={formData.roomType} 
+   onChange={e => setFormData({ ...formData, roomType: e.target.value})} 
+   className="mt-1" 
+ />
+ <datalist id="res-room-types">
    {dynamicTypes.map(type => (
-     <option key={type} value={type}>{type}</option>
+     <option key={type} value={type} />
    ))}
- </select>
+ </datalist>
+ </div>
+ <div>
+ <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Rate per Night (Optional)</label>
+ <Input 
+   type="number" 
+   value={formData.manualRate} 
+   onChange={e => setFormData({ ...formData, manualRate: e.target.value})} 
+   placeholder={`Default: $${dynamicRates[formData.roomType] || 150}`} 
+   className="mt-1" 
+ />
  </div>
  <div>
  <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("guests_count", "Guests Count")}</label>
