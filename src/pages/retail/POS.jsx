@@ -374,9 +374,9 @@ ${receipt.amountTendered ? `<div class="row"><span>Tendered</span><span>$${recei
 
   // ─── Main Render ────────────────────────────────────
   return (
-    <div className="h-[calc(100vh-200px)] flex flex-col md:flex-row gap-6 pb-6">
+    <div className="flex flex-col md:flex-row gap-6 items-start pb-24 min-h-[calc(100vh-100px)]">
       {/* Product Grid */}
-      <div className="flex-1 flex flex-col bg-muted/50 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden md:h-full min-h-[40vh]">
+      <div className="flex-1 w-full flex flex-col bg-muted/50 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden sticky top-4 h-[calc(100vh-140px)]">
         <div className="p-4 bg-card border-b border-primary/40 flex gap-4">
           <div className="relative flex-1">
             <ShoppingCart className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#71717a] dark:text-gray-400" />
@@ -416,7 +416,7 @@ ${receipt.amountTendered ? `<div class="row"><span>Tendered</span><span>$${recei
       </div>
 
       {/* ─── Cart Sidebar ──────────────────────────────── */}
-      <div className="w-full md:w-[450px] flex flex-col bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden shadow-xl md:shadow-none z-10 md:h-full flex-shrink-0 flex-grow-0">
+      <div className="w-full md:w-[450px] flex flex-col bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden shadow-xl md:shadow-none z-10 sticky top-4 h-[calc(100vh-140px)] flex-shrink-0">
         <div className="p-5 border-b border-primary/40 bg-muted/30">
           <div className="flex justify-between items-center w-full">
             <h2 className="font-semibold flex items-center gap-2 text-lg"><ShoppingCart className="w-5 h-5"/> {t("current_sale", "Current Sale")}</h2>
