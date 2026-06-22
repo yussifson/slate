@@ -55,6 +55,10 @@ export default function LoadBoard() {
       toast({ title: "Validation", description: "Origin, destination, and weight are required.", variant: "destructive" });
       return;
     }
+    if (!companyId) {
+      toast({ title: "Error", description: "Company ID is missing. Please refresh or check your auth status.", variant: "destructive" });
+      return;
+    }
     
     setIsPosting(true);
     try {
