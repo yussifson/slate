@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 import { usePowerSync } from '@powersync/react';
 import { useAuth } from '@/lib/AuthContext';
+import { useCompanyId } from '@/hooks/useCompanyId';
 import { useSubscription } from '@/hooks/useSubscription';
 import { generateText } from '@/lib/cloudflareAI';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
@@ -14,7 +15,7 @@ export default function RouteOptimization() {
   const { t } = useTranslation();
   const powerSync = usePowerSync();
   const { user } = useAuth();
-  const companyId = user?.app_metadata?.company_id || '00000000-0000-0000-0000-000000000000';
+  const companyId = useCompanyId();
   
   // Custom hook that checks subscription.
   const { data: subData } = useSubscription();

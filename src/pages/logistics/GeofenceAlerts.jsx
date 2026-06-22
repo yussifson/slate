@@ -7,6 +7,7 @@ import { toast } from '@/components/ui/use-toast';
 import { usePowerSync } from '@powersync/react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/lib/AuthContext';
+import { useCompanyId } from '@/hooks/useCompanyId';
 import { useSubscription } from '@/hooks/useSubscription';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 
@@ -14,8 +15,9 @@ export default function GeofenceAlerts() {
   const { t } = useTranslation();
   const powerSync = usePowerSync();
   const { user } = useAuth();
-  const companyId = user?.app_metadata?.company_id || '00000000-0000-0000-0000-000000000000';
+  const companyId = useCompanyId();
   
+
   const { data: subData } = useSubscription();
   const plan = subData?.subscription_plan || 'starter';
   const isProOrAbove = ['super_admin', 'admin'].includes(user?.role) || plan === 'pro' || plan === 'enterprise';

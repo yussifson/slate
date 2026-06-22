@@ -8,6 +8,7 @@ import { usePowerSync } from '@powersync/react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/lib/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useCompanyId } from '@/hooks/useCompanyId';
 import { generateText } from '@/lib/cloudflareAI';
 import { OrbitLoader } from "@/components/ui/orbit-loader";
 
@@ -15,7 +16,7 @@ export default function LoadBoard() {
   const { t } = useTranslation();
   const powerSync = usePowerSync();
   const { user } = useAuth();
-  const companyId = user?.app_metadata?.company_id || '00000000-0000-0000-0000-000000000000';
+  const companyId = useCompanyId();
   
   const { data: subData } = useSubscription();
   const plan = subData?.subscription_plan || 'starter';
