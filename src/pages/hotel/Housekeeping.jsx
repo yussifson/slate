@@ -264,6 +264,7 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
                 <Button className="w-full mt-6" variant="outline" onClick={() => setShowStagesModal(false)}>Close</Button>
               </div>
             </div>
+          )}
         </>
       )}
 
