@@ -592,12 +592,15 @@ export const INDUSTRIES = {
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
       { label: 'Overview', path: '/retail-dashboard', icon: 'LayoutDashboard' },
+      { label: 'Enterprise HQ', path: '/retail-hq', icon: 'Building2' },
       { label: 'Point of Sale', path: '/pos', icon: 'ShoppingCart' },
       { label: 'Inventory', path: '/retail-inventory', icon: 'Package' },
       { label: 'Purchase Orders', path: '/purchase-orders', icon: 'FileText' },
       { label: 'Products', path: '/products', icon: 'Tag' },
+      { label: 'Barcodes', path: '/barcodes', icon: 'Barcode' },
       { label: 'Promotions', path: '/promotions', icon: 'Percent' },
       { label: 'Orders', path: '/orders', icon: 'ClipboardList' },
+      { label: 'Returns & RMAs', path: '/rmas', icon: 'RotateCcw' },
       { label: 'Sales', path: '/sales', icon: 'Banknote' },
       { label: 'Customers', path: '/retail-customers', icon: 'Users' },
       { label: 'Suppliers', path: '/suppliers', icon: 'Truck' },
@@ -640,22 +643,29 @@ export const INDUSTRIES = {
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
-      { section: 'Fleet Management', label: 'Vehicle Management', path: '/fleet', icon: 'Car' },
-      { section: 'Driver Management', label: 'Driver Profiles', path: '/drivers', icon: 'Truck' },
-      { section: 'Dispatch & Operations', label: 'Dispatch Board', path: '/dispatch', icon: 'LayoutGrid' },
-      { label: 'AI Route Optimization', path: '/ai-routes', icon: 'Zap' },
+      
+      { section: 'Shipments', label: 'Shipments', path: '/shipments', icon: 'Package' },
+      { label: 'Pickups', path: '/pickups', icon: 'MapPin' },
       { label: 'Load Board', path: '/load-board', icon: 'PackageSearch' },
-      { label: 'Geofence Alerts', path: '/geofences', icon: 'BellRing' },
-      { section: 'Core Operations', label: 'Smart Docs (OCR)', path: '/smart-docs', icon: 'Scan' },
-      { label: 'Shipments', path: '/shipments', icon: 'Package' },
-      { label: 'Warehouse', path: '/warehouse', icon: 'Warehouse' },
-      { label: 'Pickup Requests', path: '/pickups', icon: 'MapPin' },
+      { label: 'Smart Docs', path: '/smart-docs', icon: 'Scan' },
+
+      { section: 'Fleet', label: 'Vehicles', path: '/fleet', icon: 'Car' },
+      { label: 'Drivers', path: '/drivers', icon: 'Truck' },
+
+      { section: 'Routing', label: 'Dispatch', path: '/dispatch', icon: 'LayoutGrid' },
+      { label: 'Routes', path: '/ai-routes', icon: 'Zap' },
+      { label: 'Geofences', path: '/geofences', icon: 'BellRing' },
+
+      { section: 'Warehouse', label: 'Inventory', path: '/warehouse', icon: 'Warehouse' },
+
       { section: 'Business', label: 'Customers', path: '/clients', icon: 'Users' },
       { label: 'Billing', path: '/billing', icon: 'Receipt' },
-      { section: 'Analytics & Reporting', label: 'Advanced Analytics', path: '/logistics-analytics', icon: 'BarChart2' },
+      
+      { section: 'Analytics', label: 'Analytics', path: '/logistics-analytics', icon: 'BarChart2' },
       { label: 'Reports', path: '/reports', icon: 'FileText' },
-      { section: 'Administration', label: 'Staff', path: '/team', icon: 'UserCog' },
-      { label: 'HR & Leave', path: '/hr', icon: 'HeartHandshake' },
+      
+      { section: 'System', label: 'Team', path: '/team', icon: 'UserCog' },
+      { label: 'HR', path: '/hr', icon: 'HeartHandshake' },
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Automations', path: '/automations', icon: 'Zap' },
       { label: 'Roles', path: '/roles', icon: 'ShieldCheck' },
