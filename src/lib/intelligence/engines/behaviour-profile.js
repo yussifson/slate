@@ -84,7 +84,7 @@ function getEntityConfig(vertical) {
     university: { table: 'uni_students', entityType: 'student', paymentTable: 'univ_invoices', attendanceTable: 'tasks' },
     vocational: { table: 'students', entityType: 'student', paymentTable: 'univ_invoices', attendanceTable: 'attendance_records' },
     standard_school: { table: 'students', entityType: 'student', paymentTable: 'univ_invoices', attendanceTable: 'attendance_records' },
-    hotel: { table: 'guests', entityType: 'guest', paymentTable: 'univ_invoices', attendanceTable: 'bookings' },
+    hotel: { table: 'hotel_guests', entityType: 'guest', paymentTable: 'univ_invoices', attendanceTable: 'hotel_reservations' },
     hr: { table: 'univ_hr_employees', entityType: 'employee', paymentTable: 'univ_invoices', attendanceTable: 'tasks' },
     retail: { table: 'pos_customers', entityType: 'customer', paymentTable: 'pos_orders', attendanceTable: 'pos_orders' },
     ecommerce: { table: 'customers', entityType: 'customer', paymentTable: 'orders', attendanceTable: 'orders' },
