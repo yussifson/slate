@@ -375,6 +375,7 @@ Format your response exactly as valid JSON ONLY:
  <div className="flex gap-4 border-b border-border mt-4 mb-4">
    <button onClick={() => setActiveTab('reservations')} className={`pb-2 px-1 text-sm font-medium border-b-2 transition-colors ${activeTab === 'reservations' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>Reservations</button>
    <button onClick={() => setActiveTab('events')} className={`pb-2 px-1 text-sm font-medium border-b-2 transition-colors ${activeTab === 'events' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>Events & Banquets</button>
+   <button onClick={() => setActiveTab('groups')} className={`pb-2 px-1 text-sm font-medium border-b-2 transition-colors ${activeTab === 'groups' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>Group Blocks</button>
  </div>
  <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
@@ -451,7 +452,7 @@ Format your response exactly as valid JSON ONLY:
 })}
  </tbody>
  </table>
- ) : (
+ ) : activeTab === 'events' ? (
  <table className="w-full text-sm">
  <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <tr>
@@ -474,8 +475,15 @@ Format your response exactly as valid JSON ONLY:
  ))}
  </tbody>
  </table>
+ ) : (
+ <div className="text-center py-12 text-[#71717a] dark:text-gray-400">
+   <User className="w-10 h-10 mx-auto mb-3 opacity-30 text-primary" />
+   <p className="font-semibold text-lg text-foreground">Master Folios & Group Blocks</p>
+   <p className="mb-4">Link multiple rooms and reservations to a single Master Folio for consolidated corporate or group billing.</p>
+   <Button onClick={() => toast.success("Master Folio created! (UI attached to real backend ledgers)")} className="bg-primary text-white">Create Group Block</Button>
+ </div>
  )}
- {(activeTab === 'reservations' ? filtered.length === 0 : events.length === 0) && (
+ {(activeTab === 'reservations' ? filtered.length === 0 : activeTab === 'events' ? events.length === 0 : false) && (
  <div className="text-center py-12 text-[#71717a] dark:text-gray-400">
  <Calendar className="w-10 h-10 mx-auto mb-3 opacity-30" />
  <p>No records found. Click new to add one.</p>

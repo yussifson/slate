@@ -459,6 +459,8 @@ export const INDUSTRIES = {
       { label: 'Reservations', path: '/reservations', icon: 'Calendar' },
       { label: 'Room Management', path: '/rooms', icon: 'BedDouble' },
       { label: 'Housekeeping', path: '/housekeeping', icon: 'Sparkles' },
+      { label: 'Revenue Management', path: '/revenue', icon: 'TrendingUp' },
+      { label: 'Guest Loyalty', path: '/loyalty', icon: 'Award' },
       { label: 'Restaurant / POS', path: '/restaurant', icon: 'UtensilsCrossed' },
       { label: 'Guest Requests', path: '/guest-requests', icon: 'BellRing' },
       { label: 'Billing', path: '/billing', icon: 'Receipt' },

@@ -205,6 +205,8 @@ import HotelFrontDesk from './pages/hotel/FrontDesk';
 import HotelReservations from './pages/hotel/Reservations';
 import HotelRooms from './pages/hotel/Rooms';
 import HotelHousekeeping from './pages/hotel/Housekeeping';
+import HotelRevenueManagement from './pages/hotel/RevenueManagement';
+import HotelLoyalty from './pages/hotel/Loyalty';
 import HotelRestaurant from './pages/hotel/Restaurant';
 import HotelGuestRequests from './pages/hotel/GuestRequests';
 import HotelGuestPortal from './pages/hotel/GuestPortal';
@@ -690,6 +692,8 @@ function PlatformRoutes() {
       <Route path="/restaurant" element={<HotelRestaurant />} />
       <Route path="/guest-requests" element={<HotelGuestRequests />} />
       <Route path="/guest-portal" element={<HotelGuestPortal />} />
+      <Route path="/revenue" element={<HotelRevenueManagement />} />
+      <Route path="/loyalty" element={<HotelLoyalty />} />
 
       {/* Religion Suite */}
       <Route path="/members" element={<Clients />} />

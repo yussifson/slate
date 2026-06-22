@@ -7,12 +7,18 @@ import { useIndustryRecords, useMutateIndustryRecord } from '@/hooks/useIndustry
 import { toast } from 'react-hot-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const HOUSEKEEPERS = ['Maria', 'David', 'Elena', 'Carlos'];
-
 export default function Housekeeping() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('housekeeping');
   
+  const [activeStaff, setActiveStaff] = useState([
+    { name: 'Maria', shift: 'Morning', active: true },
+    { name: 'David', shift: 'Morning', active: true },
+    { name: 'Elena', shift: 'Afternoon', active: true },
+    { name: 'Carlos', shift: 'Night', active: false }
+  ]);
+  const HOUSEKEEPERS = activeStaff.filter(s => s.active).map(s => s.name);
+
   const { data: dbRooms = [], isLoading: loadingRooms } = useIndustryRecords('room');
   const { data: dbReservations = [], isLoading: loadingRes } = useIndustryRecords('reservation');
   const { data: dbMaintenance = [], isLoading: loadingMaintenance } = useIndustryRecords('maintenance');
@@ -127,7 +133,7 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
     <div className="space-y-6 school-page-enter font-dmsans">
       <div className="flex gap-4 border-b border-primary/20 pb-4 mb-6">
         <Button variant={activeTab === 'housekeeping' ? 'default' : 'outline'} onClick={() => setActiveTab('housekeeping')}>Housekeeping</Button>
-        <Button variant={activeTab === 'schedules' ? 'default' : 'outline'} onClick={() => setActiveTab('schedules')}>Staff Schedules</Button>
+        <Button variant={activeTab === 'schedules' ? 'default' : 'outline'} onClick={() => setActiveTab('schedules')}>Shift Schedules</Button>
         <Button variant={activeTab === 'maintenance' ? 'default' : 'outline'} onClick={() => setActiveTab('maintenance')}>Maintenance</Button>
         <Button variant={activeTab === 'lost_found' ? 'default' : 'outline'} onClick={() => setActiveTab('lost_found')}>Lost & Found</Button>
       </div>
@@ -238,10 +244,36 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
           <div className="flex justify-between items-center mb-6">
             <div>
-              <h2 className="text-xl font-semibold">Staff Cleaning Schedules</h2>
-              <p className="text-sm text-gray-500">Track active assignments per housekeeper</p>
+              <h2 className="text-xl font-semibold">Shift Schedules & Task Assignment</h2>
+              <p className="text-sm text-gray-500">Toggle staff shifts to make them available for AI auto-routing.</p>
             </div>
           </div>
+          
+          <div className="bg-card border border-primary/20 rounded-xl p-6 mb-8 overflow-x-auto">
+            <h3 className="font-semibold mb-4 text-sm uppercase text-muted-foreground tracking-wider">Active Shift Roster</h3>
+            <div className="flex gap-4">
+              {activeStaff.map((staff, idx) => (
+                <div key={idx} className="flex-shrink-0 w-48 border border-border rounded-lg p-3 flex flex-col gap-2">
+                  <div className="flex justify-between items-start">
+                    <span className="font-bold">{staff.name}</span>
+                    <button 
+                      onClick={() => {
+                        const newStaff = [...activeStaff];
+                        newStaff[idx].active = !newStaff[idx].active;
+                        setActiveStaff(newStaff);
+                      }}
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${staff.active ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}`}
+                    >
+                      {staff.active ? 'On Shift' : 'Off Shift'}
+                    </button>
+                  </div>
+                  <span className="text-xs text-muted-foreground flex items-center gap-1"><CalendarClock className="w-3 h-3"/> {staff.shift}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <h3 className="font-semibold mb-4 text-sm uppercase text-muted-foreground tracking-wider mt-8">Current Task Load</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {assignmentsByCleaner.map(cleaner => (
               <div key={cleaner.name} className="bg-card rounded-xl border border-primary/20 p-5 shadow-sm">
