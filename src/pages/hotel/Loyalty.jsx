@@ -191,7 +191,6 @@ export default function Loyalty() {
               <Button className="flex-1 bg-primary text-white" onClick={() => {
                 if(!adjustTarget?.name || !adjustAmount) return toast.error("Fill required fields");
                 mutateRecord.mutate({
-                  id: crypto.randomUUID(),
                   recordType: 'hotel_loyalty_adjustment',
                   payload: { guestName: adjustTarget.name, points: adjustAmount },
                   status: 'Active',

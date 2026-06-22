@@ -120,9 +120,12 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
       const response = await generateText(prompt);
       let assignments = [];
       try {
-        const jsonMatch = response.match(/\[([\s\S]*?)\]/);
+        const responseStr = typeof response === 'string' ? response : JSON.stringify(response);
+        const jsonMatch = responseStr.match(/\[([\s\S]*?)\]/);
         if (jsonMatch) {
             assignments = JSON.parse(jsonMatch[0]);
+        } else if (Array.isArray(response)) {
+            assignments = response;
         }
       } catch (e) {
           console.error("Failed to parse AI JSON", e);
@@ -248,7 +251,6 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
                   <Button onClick={() => {
                     if(!newStageName.trim()) return toast.error("Enter a stage name");
                     mutateRecord.mutate({
-                      id: crypto.randomUUID(),
                       recordType: 'hotel_housekeeping_stage',
                       payload: { name: newStageName },
                       status: 'Active',
