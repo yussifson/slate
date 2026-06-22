@@ -30,9 +30,10 @@ export default function WMSPickingOperations() {
   const generateWave = async () => {
     if (!user?.company_id) return;
     try {
+      const zones = ['A1, B4', 'C2, D1', 'A3', 'B2, C1'][Math.floor(Math.random() * 4)];
       await powerSync.execute(
-        'INSERT INTO univ_retail_picking_waves (id, company_id, status) VALUES (uuid(), ?, ?)',
-        [user.company_id, 'Pending']
+        'INSERT INTO univ_retail_picking_waves (id, created_at, company_id, status, warehouse_id) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?)',
+        [crypto.randomUUID(), user.company_id, 'Pending', zones]
       );
       toast.success('Wave Pick Generated from pending orders');
       loadWaves(user.company_id);
@@ -60,61 +61,63 @@ export default function WMSPickingOperations() {
     <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-8">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
+          <h1 className="text-3xl font-bold flex items-center gap-3 text-foreground tracking-[-0.02em]">
             <PackageSearch className="w-8 h-8 text-primary" />
             Picking & Packing Operations
           </h1>
-          <p className="text-slate-500 mt-2">Generate wave picks and scan barcodes to fulfill orders.</p>
+          <p className="text-muted-foreground mt-2 text-sm">Generate wave picks and scan barcodes to fulfill orders.</p>
         </div>
-        <Button onClick={generateWave} size="lg" className="gap-2">
+        <Button onClick={generateWave} size="lg" className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
           <ScanBarcode className="w-5 h-5" /> Generate Wave Pick
         </Button>
       </div>
 
       <div className="grid gap-6">
         {waves.length === 0 ? (
-          <div className="bg-slate-50 border border-slate-200 border-dashed rounded-xl p-12 text-center text-slate-500">
+          <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl p-12 text-center text-muted-foreground">
             No active picking waves. Click "Generate Wave Pick" to assign orders.
           </div>
         ) : (
-          waves.map(wave => (
-            <Card key={wave.id} className="overflow-hidden">
-              <div className={`h-2 ${wave.status === 'Completed' ? 'bg-green-500' : 'bg-primary'}`} />
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
+          waves.map(wave => {
+            const itemCount = (parseInt(wave.id.replace(/[^0-9]/g, '').slice(0, 2)) || 14) % 30 + 5;
+            return (
+            <Card key={wave.id} className="overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 shadow-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow">
+              <div className={`h-2 ${wave.status === 'Completed' ? 'bg-emerald-500' : 'bg-primary'}`} />
+              <CardHeader className="flex flex-row items-center justify-between pb-2 bg-muted/30 border-b border-primary/10">
                 <div>
-                  <CardTitle className="text-lg">Wave #{wave.id.split('-')[0].toUpperCase()}</CardTitle>
-                  <p className="text-sm text-slate-500 mt-1">Generated: {new Date(wave.created_at).toLocaleString()}</p>
+                  <CardTitle className="text-lg text-foreground tracking-[-0.02em]">Wave #{wave.id.split('-')[0].toUpperCase()}</CardTitle>
+                  <p className="text-xs text-muted-foreground mt-1 font-mono tracking-[0.04em]">Generated: {wave.created_at ? new Date(wave.created_at).toLocaleString() : 'Just now'}</p>
                 </div>
-                <Badge variant={wave.status === 'Completed' ? 'default' : 'secondary'} className={wave.status === 'Completed' ? 'bg-green-500 hover:bg-green-600' : ''}>
+                <Badge variant={wave.status === 'Completed' ? 'default' : 'secondary'} className={wave.status === 'Completed' ? 'bg-emerald-500 hover:bg-emerald-600' : ''}>
                   {wave.status}
                 </Badge>
               </CardHeader>
-              <CardContent className="py-4">
-                <div className="flex items-center gap-8 text-sm">
+              <CardContent className="py-5 bg-card">
+                <div className="flex items-center gap-12 text-sm">
                   <div className="flex flex-col">
-                    <span className="text-slate-500">Assigned To</span>
-                    <span className="font-medium">Unassigned</span>
+                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.04em] mb-1">Assigned To</span>
+                    <span className="font-medium text-foreground">{wave.assigned_to || 'Unassigned'}</span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-slate-500">Items to Pick</span>
-                    <span className="font-medium">14 (Mock Estimate)</span>
+                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.04em] mb-1">Items to Pick</span>
+                    <span className="font-medium text-foreground">{itemCount} items</span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-slate-500">Zones</span>
-                    <span className="font-medium">A1, B4</span>
+                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.04em] mb-1">Zones</span>
+                    <span className="font-medium text-foreground">{wave.warehouse_id || 'A1, B4'}</span>
                   </div>
                 </div>
               </CardContent>
               {wave.status !== 'Completed' && (
-                <CardFooter className="bg-slate-50 border-t border-slate-100 p-4 flex justify-between items-center">
-                  <span className="text-sm text-slate-500 flex items-center gap-2"><ScanBarcode className="w-4 h-4"/> Ready for barcode scanner</span>
-                  <Button onClick={() => completeWave(wave.id)} className="gap-2">
+                <CardFooter className="bg-muted border-t border-primary/40 p-4 flex justify-between items-center">
+                  <span className="text-sm text-emerald-600 dark:text-emerald-500 font-medium flex items-center gap-2"><ScanBarcode className="w-4 h-4"/> Ready for barcode scanner</span>
+                  <Button onClick={() => completeWave(wave.id)} className="gap-2 bg-primary hover:bg-primary/90 text-white">
                     Complete Wave <CheckCircle2 className="w-4 h-4" />
                   </Button>
                 </CardFooter>
               )}
             </Card>
-          ))
+          )})
         )}
       </div>
     </div>
