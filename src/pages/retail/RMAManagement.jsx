@@ -56,7 +56,7 @@ export default function RMAManagement() {
         const [rmaRes, productRes, supplierRes] = await Promise.all([
           powerSync.execute('SELECT r.*, p.name as product_name, p.sku FROM univ_retail_rmas r LEFT JOIN univ_retail_products p ON r.product_id = p.id WHERE r.company_id = ? ORDER BY r.created_at DESC', [companyId]),
           powerSync.execute('SELECT * FROM univ_retail_products WHERE company_id = ? ORDER BY name ASC', [companyId]),
-          powerSync.execute('SELECT * FROM suppliers WHERE company_id = ? ORDER BY name ASC', [companyId]) // Assuming a generic suppliers table, adjust if needed
+          powerSync.execute('SELECT * FROM univ_retail_suppliers WHERE company_id = ? ORDER BY name ASC', [companyId]) 
         ]);
         
         if (active) {

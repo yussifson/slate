@@ -374,7 +374,7 @@ ${receipt.amountTendered ? `<div class="row"><span>Tendered</span><span>$${recei
 
   // ─── Main Render ────────────────────────────────────
   return (
-    <div className="h-[calc(100vh-140px)] flex flex-col md:flex-row gap-6 pb-6">
+    <div className="h-[calc(100vh-200px)] flex flex-col md:flex-row gap-6 pb-6">
       {/* Product Grid */}
       <div className="flex-1 flex flex-col bg-muted/50 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden md:h-full min-h-[40vh]">
         <div className="p-4 bg-card border-b border-primary/40 flex gap-4">
