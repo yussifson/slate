@@ -587,7 +587,7 @@ if (user?.role === "super_admin") {
  {navItems.map((item, idx) => {
  const isRootPath = ["/", "/s/", "/u/", "/v/", "/o/", "/admin"].includes(item.path);
  const isActive = location.pathname === item.path || (!isRootPath && location.pathname.startsWith(item.path));
- const IconComp = typeof item.icon === 'string' ? ICON_MAP[item.icon] || LayoutDashboard : item.icon;
+ const IconComp = typeof item.icon === 'string' ? (ICON_MAP[item.icon] || LayoutDashboard) : (item.icon || LayoutDashboard);
  const showSection = item.section && !collapsed;
  const isVideoCallItem = item.path === '/board' || item.label?.toLowerCase().includes('video');
  const showLiveDot = isVideoCallItem && !!activeRoomUrl;

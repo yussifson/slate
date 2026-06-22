@@ -313,6 +313,11 @@ import UniExams from './pages/university/UniExams';
 import UniHostel from './pages/university/UniHostel';
 import UniLibrary from './pages/university/UniLibrary';
 import UniCareerAlumni from './pages/university/UniCareerAlumni';
+import ReturnsPortal from './pages/retail/ReturnsPortal';
+
+// ----- Logistics Features -----
+import DispatchBoard from './pages/logistics/DispatchBoard';
+import Warehouse from './pages/logistics/Warehouse';
 
 // Vocational Pages
 import VDashboard from './pages/vocational/VDashboard';
@@ -756,11 +761,14 @@ function PlatformRoutes() {
       <Route path="/suppliers" element={<RetailSuppliers />} />
       <Route path="/retail-customers" element={<Clients />} />
       <Route path="/customer-portal" element={<RetailCustomerPortal />} />
+      <Route path="/returns-portal" element={<ReturnsPortal />} />
 
-      {/* Logistics Suite */}
+      {/* Logistics & Supply Chain */}
       <Route path="/smart-docs" element={<SmartDocs />} />
-      <Route path="/ai-routes" element={<RouteOptimization />} />
       <Route path="/load-board" element={<LoadBoard />} />
+      <Route path="/dispatch-board" element={<DispatchBoard />} />
+      <Route path="/warehouse" element={<Warehouse />} />
+      <Route path="/ai-routes" element={<RouteOptimization />} />
       <Route path="/geofences" element={<GeofenceAlerts />} />
       <Route path="/shipments" element={<LogisticsShipments />} />
       <Route path="/fleet" element={<LogisticsFleet />} />

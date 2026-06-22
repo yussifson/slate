@@ -5,6 +5,10 @@ import { Upload, FileScan, CheckCircle2, X, Loader2, Sparkles } from 'lucide-rea
 import { analyzeImage } from '@/lib/cloudflareAI';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-hot-toast';
+import * as pdfjsLib from 'pdfjs-dist';
+
+// Set the worker source for pdfjs
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
 
 /**
  * AIDocumentParser
@@ -21,8 +25,10 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
   const fileInputRef = useRef(null);
 
   const processFile = async (file) => {
-    if (!file || !file.type.startsWith('image/')) {
-      toast.error('Please upload an image file (JPG/PNG).');
+    if (!file) return;
+
+    if (!file.type.startsWith('image/') && file.type !== 'application/pdf') {
+      toast.error('Please upload an image (JPG/PNG) or a PDF.');
       return;
     }
 
@@ -30,12 +36,33 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
     setIsProcessing(true);
 
     try {
-      const arrayBuffer = await file.arrayBuffer();
-      const bytes = new Uint8Array(arrayBuffer);
+      let finalBytes;
+
+      if (file.type === 'application/pdf') {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        const page = await pdf.getPage(1);
+        const viewport = page.getViewport({ scale: 2.0 }); // High res
+
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        await page.render({ canvasContext: context, viewport: viewport }).promise;
+        
+        // Convert canvas to JPEG blob
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
+        const blobBuffer = await blob.arrayBuffer();
+        finalBytes = new Uint8Array(blobBuffer);
+      } else {
+        const arrayBuffer = await file.arrayBuffer();
+        finalBytes = new Uint8Array(arrayBuffer);
+      }
 
       const prompt = `Extract ${fieldsContext} from this image. Return ONLY a valid JSON object with the extracted keys and values. Do not include markdown formatting or extra text. Example: {"amount": "150.00", "date": "2023-10-01"}`;
       
-      const responseText = await analyzeImage(bytes, prompt);
+      const responseText = await analyzeImage(finalBytes, prompt);
       
       let extractedData = {};
       try {
@@ -80,7 +107,7 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
         type="file"
         ref={fileInputRef}
         onChange={(e) => processFile(e.target.files[0])}
-        accept="image/*"
+        accept="image/*,application/pdf"
         className="hidden"
       />
       {isProcessing ? (

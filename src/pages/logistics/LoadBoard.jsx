@@ -157,6 +157,36 @@ export default function LoadBoard() {
     }
   };
 
+  const handleAssignMatch = async (matchId, loadId) => {
+    try {
+      await powerSync.execute('BEGIN TRANSACTION');
+      
+      // Mark all matches for this load as rejected first
+      await powerSync.execute(
+        `UPDATE logistics_load_matches SET status = 'rejected' WHERE load_id = ?`,
+        [loadId]
+      );
+      
+      // Mark the selected match as assigned
+      await powerSync.execute(
+        `UPDATE logistics_load_matches SET status = 'assigned' WHERE id = ?`,
+        [matchId]
+      );
+      
+      // Update load status to assigned
+      await powerSync.execute(
+        `UPDATE logistics_loads SET status = 'assigned' WHERE id = ?`,
+        [loadId]
+      );
+      
+      await powerSync.execute('COMMIT');
+      toast.success("Driver assigned successfully! Check the Dispatch Board.");
+    } catch (e) {
+      await powerSync.execute('ROLLBACK');
+      toast.error("Failed to assign driver: " + e.message);
+    }
+  };
+
   return (
     <div className="p-4 sm:p-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -258,11 +288,16 @@ export default function LoadBoard() {
                                  </p>
                                  <p className="text-xs text-[#71717a] dark:text-gray-400 mt-0.5 tracking-[0.04em]">{match.reasoning}</p>
                               </div>
-                              <div className="text-right shrink-0 ml-4">
-                                 <div className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 tracking-[0.04em]">
-                                    {match.match_score}% Match
-                                 </div>
-                              </div>
+                               <div className="text-right shrink-0 ml-4 flex flex-col items-end gap-2">
+                                  <div className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 tracking-[0.04em]">
+                                     {match.match_score}% Match
+                                  </div>
+                                  {match.status !== 'assigned' && (
+                                     <Button size="sm" onClick={() => handleAssignMatch(match.id, load.id)}>
+                                        Assign
+                                     </Button>
+                                  )}
+                               </div>
                            </div>
                         ))}
                       </div>

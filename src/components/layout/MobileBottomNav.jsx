@@ -32,7 +32,7 @@ export default function MobileBottomNav() {
  <div className="flex items-center justify-around h-16 px-1">
  {bottomNavItems.map((item) => {
  const isActive = location.pathname === item.path || (item.path !== "/" && location.pathname.startsWith(item.path));
- const IconComp = typeof item.icon === 'string' ? ICON_MAP[item.icon] || LayoutDashboard : item.icon;
+ const IconComp = typeof item.icon === 'string' ? (ICON_MAP[item.icon] || LayoutDashboard) : (item.icon || LayoutDashboard);
  
  return (
  <Link
@@ -100,7 +100,7 @@ export default function MobileBottomNav() {
  <div className="bg-slate-50 dark:bg-slate-900/50 rounded-2xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/40 divide-y divide-slate-100 dark:divide-slate-800/50 ">
  {overflowItems.map((item, index) => {
  const isActive = location.pathname === item.path || (item.path !== "/" && location.pathname.startsWith(item.path));
- const IconComp = typeof item.icon === 'string' ? ICON_MAP[item.icon] || LayoutDashboard : item.icon;
+ const IconComp = typeof item.icon === 'string' ? (ICON_MAP[item.icon] || LayoutDashboard) : (item.icon || LayoutDashboard);
  
  return (
  <Link
