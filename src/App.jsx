@@ -513,7 +513,7 @@ function PlatformRoutes() {
       <Route path="/fleet" element={<UnivFleet />} />
       <Route path="/form" element={<UnivForm />} />
       <Route path="/gradebook" element={<UnivGradebook />} />
-      <Route path="/housekeeping" element={<UnivHousekeeping />} />
+      <Route path="/univ-housekeeping" element={<UnivHousekeeping />} />
       <Route path="/lms" element={<UnivLMS />} />
       <Route path="/lab" element={<UnivLab />} />
       <Route path="/legal-docs" element={<UnivLegalDocument />} />
