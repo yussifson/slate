@@ -174,7 +174,7 @@ export default function Employees() {
      let finalDeptId = formData.departmentId;
      if (useCustomDept && formData.departmentId && !departmentRecords.find(d => d.name === formData.departmentId)) {
          const newDeptId = crypto.randomUUID();
-         await powerSync.execute('INSERT INTO platform_departments (id, company_id, name, description, created_at, updated_at) VALUES (?, ?, ?, ?, datetime("now"), datetime("now"))', [newDeptId, user?.company_id, formData.departmentId, formData.departmentId]);
+         await powerSync.execute("INSERT INTO platform_departments (id, company_id, name, description, created_at, updated_at) VALUES (?, ?, ?, ?, datetime('now'), datetime('now'))", [newDeptId, user?.company_id, formData.departmentId, formData.departmentId]);
          finalDeptId = newDeptId;
      }
 

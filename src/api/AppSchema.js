@@ -838,6 +838,15 @@ export const AppSchema = new Schema({
         failed_at: column.text,
         raw_payload: column.text,
         acknowledged: column.text}),
+    univ_opd_queues: new Table({
+        id: column.text,
+        created_at: column.text,
+        company_id: column.text,
+        status: column.text,
+        token_number: column.text,
+        doctor_id: column.text,
+        room_number: column.text,
+        patient_id: column.text}),
     profiles: new Table({
         id: column.text,
         created_at: column.text,
