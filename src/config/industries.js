@@ -668,7 +668,7 @@ export const INDUSTRIES = {
       { section: 'Fleet', label: 'Vehicles', path: '/fleet', icon: 'Car' },
       { label: 'Drivers', path: '/drivers', icon: 'Truck' },
 
-      { section: 'Routing', label: 'Dispatch', path: '/dispatch', icon: 'LayoutGrid' },
+      { section: 'Routing', label: 'Dispatch', path: '/dispatch-board', icon: 'LayoutGrid' },
       { label: 'Routes', path: '/ai-routes', icon: 'Zap' },
       { label: 'Geofences', path: '/geofences', icon: 'BellRing' },
 
