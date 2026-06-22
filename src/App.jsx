@@ -249,8 +249,7 @@ import Loyalty from './pages/retail/Loyalty';
 import Shifts from './pages/retail/Shifts';
 import RetailCustomers from './pages/retail/Customers';
 import RetailCustomerPortal from './pages/retail/CustomerPortal';
-import ProductManagement from './pages/retail/ProductManagement';
-import ShiftManagement from './pages/retail/ShiftManagement';
+
 import BarcodeManagement from './pages/retail/BarcodeManagement';
 import RMAManagement from './pages/retail/RMAManagement';
 import RetailHQDashboard from './pages/retail/RetailHQDashboard';
@@ -736,9 +735,9 @@ function PlatformRoutes() {
 
       {/* Retail Suite */}
       <Route path="/retail" element={<RetailDashboard />} />
-      <Route path="/products" element={<ProductManagement />} />
+      <Route path="/products" element={<Products />} />
       <Route path="/pos" element={<RetailPOS />} />
-      <Route path="/shifts" element={<ShiftManagement />} />
+      <Route path="/shifts" element={<Shifts />} />
       <Route path="/retail-hq" element={<RetailHQDashboard />} />
       <Route path="/barcodes" element={<BarcodeManagement />} />
       <Route path="/rmas" element={<RMAManagement />} />
