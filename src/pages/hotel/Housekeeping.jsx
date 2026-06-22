@@ -74,6 +74,8 @@ export default function Housekeeping() {
     tasks: rooms.filter(r => r.cleaner === hk && (r.status === 'Cleaning' || r.status === 'Inspecting'))
   }));
 
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
   if (isLoading) {
     return (
       <div className="py-12 text-center text-[#71717a] dark:text-gray-400" style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
@@ -81,8 +83,6 @@ export default function Housekeeping() {
       </div>
     );
   }
-
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const handleAIAutoAssign = async () => {
     if (columns.dirty.length === 0) return toast.error("No dirty rooms to schedule.");
     setIsAnalyzing(true);
