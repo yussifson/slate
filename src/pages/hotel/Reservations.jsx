@@ -31,6 +31,7 @@ export default function Reservations() {
  const { data: dbRecords = [], isLoading: isDbLoading} = useIndustryRecords('reservation');
  const { data: eventRecords = [], isLoading: isEventsLoading } = useIndustryRecords('events');
  const { data: groupBlocks = [] } = useIndustryRecords('hotel_group_block');
+ const { data: dbRoomRecords = [] } = useIndustryRecords('room');
  const mutateRecord = useMutateIndustryRecord();
  const deleteRecord = useDeleteIndustryRecord();
  const companyId = useCompanyId();
@@ -128,6 +129,17 @@ export default function Reservations() {
  const [forecastResult, setForecastResult] = useState('');
  const [showForecastModal, setShowForecastModal] = useState(false);
 
+ const dynamicRates = {};
+ dbRoomRecords.forEach(r => {
+   if (r.data?.type && r.data?.rate) {
+     dynamicRates[r.data.type] = Number(r.data.rate);
+   }
+ });
+ if (Object.keys(dynamicRates).length === 0) {
+   dynamicRates['Standard Room'] = 150;
+ }
+ const dynamicTypes = Object.keys(dynamicRates);
+
  const handleDemandForecast = async () => {
    setIsForecasting(true);
    const tId = toast.loading('AI analyzing historical booking patterns...');
@@ -223,8 +235,7 @@ Format your response exactly as valid JSON ONLY:
  const nights = Math.max(1, Math.ceil((new Date(formData.checkOut) - new Date(formData.checkIn)) / 86400000));
  
  // Rates calculation
- const rates = { 'Standard Room': 150, 'Deluxe Room': 250, 'Suite': 500};
- const total = nights * (rates[formData.roomType] || 150);
+ const total = nights * (dynamicRates[formData.roomType] || dynamicRates[Object.keys(dynamicRates)[0]] || 150);
 
  const payload = {
  resId: editTargetId ? dbRecords.find(r => r.id === editTargetId)?.data?.resId : resId,
@@ -650,9 +661,9 @@ Format your response exactly as valid JSON ONLY:
  <div>
  <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("room_type", "Room Type")}</label>
  <select value={formData.roomType} onChange={e => setFormData({ ...formData, roomType: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm">
- <option>{t("standard_room", "Standard Room")}</option>
- <option>{t("deluxe_room", "Deluxe Room")}</option>
- <option>{t("suite", "Suite")}</option>
+   {dynamicTypes.map(type => (
+     <option key={type} value={type}>{type}</option>
+   ))}
  </select>
  </div>
  <div>

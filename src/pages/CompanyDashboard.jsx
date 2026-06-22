@@ -32,6 +32,7 @@ export default function CompanyDashboard() {
   // Priority: sessionStorage override > impersonated user > localStorage > DB > user object > fallback
   const industry = sessionStorage.getItem('slate_industry_override') 
     || impersonatedCompany?.industry
+    || impersonatedCompany?.industry_type
     || localStorage.getItem('slate_onboarding_industry')
     || resolvedDbIndustry 
     || userIndustry 

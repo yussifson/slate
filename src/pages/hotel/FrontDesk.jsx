@@ -51,13 +51,26 @@ export default function FrontDesk() {
  const dynamicRooms = dbRoomRecords.map(r => r.data?.roomNumber).filter(Boolean).sort();
  
  const [selectedRoom, setSelectedRoom] = useState(null);
- const [showCheckInModal, setShowCheckInModal] = useState(false);
- const [showFolioModal, setShowFolioModal] = useState(false);
- const [showKeycardModal, setShowKeycardModal] = useState(false);
- const [isGeneratingKey, setIsGeneratingKey] = useState(false);
- const [checkInForm, setCheckInForm] = useState({ guestName: '', guestPhone: '', roomType: 'Standard', checkOut: ''});
- const [isAnalyzingChurn, setIsAnalyzingChurn] = useState(false);
- const [churnInsights, setChurnInsights] = useState("");
+  const [showCheckInModal, setShowCheckInModal] = useState(false);
+  const [showFolioModal, setShowFolioModal] = useState(false);
+  const [showKeycardModal, setShowKeycardModal] = useState(false);
+  const [showWakeUpModal, setShowWakeUpModal] = useState(false);
+  const [wakeUpTime, setWakeUpTime] = useState("");
+  const [isGeneratingKey, setIsGeneratingKey] = useState(false);
+  const [checkInForm, setCheckInForm] = useState({ guestName: '', guestPhone: '', roomType: 'Standard', checkOut: ''});
+  const [isAnalyzingChurn, setIsAnalyzingChurn] = useState(false);
+  const [churnInsights, setChurnInsights] = useState("");
+
+  const dynamicRates = {};
+  dbRoomRecords.forEach(r => {
+    if (r.data?.type && r.data?.rate) {
+      dynamicRates[r.data.type] = Number(r.data.rate);
+    }
+  });
+  if (Object.keys(dynamicRates).length === 0) {
+    dynamicRates['Standard'] = 150;
+  }
+  const dynamicTypes = Object.keys(dynamicRates);
  const [isNightAuditRunning, setIsNightAuditRunning] = useState(false);
 
  const todayArrivals = reservations.filter(r => r.checkIn === today && r.status === 'Confirmed');
@@ -151,10 +164,9 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
  const handleCheckIn = () => {
  if (!checkInForm.guestName.trim()) return toast.error('Please enter guest name');
  if (!checkInForm.checkOut) return toast.error('Please enter check-out date');
- const nights = Math.max(1, Math.ceil((new Date(checkInForm.checkOut) - new Date(today)) / 86400000));
- const rates = { Standard: 150, Single: 120, Double: 180, Suite: 400, Deluxe: 280};
- const total = nights * (rates[checkInForm.roomType] || 150);
- const reservationId = `RES-${Math.floor(1000 + Math.random() * 9000)}`;
+  const nights = Math.max(1, Math.ceil((new Date(checkInForm.checkOut) - new Date(today)) / 86400000));
+  const total = nights * (dynamicRates[checkInForm.roomType] || dynamicRates[Object.keys(dynamicRates)[0]] || 150);
+  const reservationId = `RES-${Math.floor(1000 + Math.random() * 9000)}`;
 
  mutateRecord.mutate({
  recordType: 'reservation',
@@ -238,20 +250,26 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
 
   const handleWakeUpCall = () => {
     if (!selectedRoomInfo?.reservation) return;
-    const time = window.prompt("Enter wake-up call time (e.g., 07:00 AM):");
-    if (time) {
-      const updatedWakeupCalls = [...(selectedRoomInfo.reservation.wakeup_calls || []), time];
-      mutateRecord.mutate({
-        id: selectedRoomInfo.reservation.id,
-        recordType: 'reservation',
-        payload: { ...selectedRoomInfo.reservation, wakeup_calls: updatedWakeupCalls },
-        status: selectedRoomInfo.reservation.status,
-        searchText: `${selectedRoomInfo.reservation.guestName}`
-      }, {
-        onSuccess: () => toast.success(`Wake-up call set for ${time}`)
-      });
+    if (!wakeUpTime) {
+      toast.error("Please enter a time");
+      return;
     }
+    const updatedWakeupCalls = [...(selectedRoomInfo.reservation.wakeup_calls || []), wakeUpTime];
+    mutateRecord.mutate({
+      id: selectedRoomInfo.reservation.id,
+      recordType: 'reservation',
+      payload: { ...selectedRoomInfo.reservation, wakeup_calls: updatedWakeupCalls },
+      status: selectedRoomInfo.reservation.status,
+      searchText: `${selectedRoomInfo.reservation.guestName}`
+    }, {
+      onSuccess: () => {
+        toast.success(`Wake-up call set for ${wakeUpTime}`);
+        setShowWakeUpModal(false);
+        setWakeUpTime("");
+      }
+    });
   };
+
 
   const getTier = (name) => {
     const length = name?.length || 5;
@@ -557,13 +575,13 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
  <ScanLine className="w-4 h-4" /> {t("keycard", "Keycard")}
  </Button>
  </div>
- <Button
-   onClick={handleWakeUpCall}
-   variant="outline"
-   className="w-full border-primary/20 text-primary hover:bg-primary/5 gap-2"
- >
-   <Clock className="w-4 h-4" /> Add Wake-up Call
- </Button>
+  <Button
+    onClick={() => setShowWakeUpModal(true)}
+    variant="outline"
+    className="w-full border-primary/20 text-primary hover:bg-primary/5 gap-2"
+  >
+    <Clock className="w-4 h-4" /> Add Wake-up Call
+  </Button>
  <Button
  onClick={() => handleCheckOut(selectedRoomInfo.reservation)}
  className="w-full bg-red-600 hover:bg-red-700 text-white gap-2"
@@ -636,11 +654,9 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
  <div>
  <label className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("room_type", "Room Type")}</label>
  <select value={checkInForm.roomType} onChange={e => setCheckInForm({ ...checkInForm, roomType: e.target.value})} className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm">
- <option>{t("single", "Single")}</option>
- <option>{t("double", "Double")}</option>
- <option>{t("standard", "Standard")}</option>
- <option>{t("deluxe", "Deluxe")}</option>
- <option>{t("suite", "Suite")}</option>
+ {dynamicTypes.map(type => (
+   <option key={type} value={type}>{type}</option>
+ ))}
  </select>
  </div>
  <div>

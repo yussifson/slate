@@ -41,7 +41,7 @@ export default function Guests() {
     const profile = guestMap.get(key);
     profile.reservations.push({ id: r.id, status: r.status, ...r.data });
     
-    const resTotal = Number(r.data?.total) || 0;
+    const resTotal = Number(r.data?.totalAmount) || Number(r.data?.total) || 0;
     const resNights = Number(r.data?.nights) || 1;
     
     profile.totalSpent += resTotal;
@@ -200,7 +200,7 @@ export default function Guests() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-semibold text-sm">${(Number(res.total) || 0).toFixed(2)}</p>
+                          <p className="font-semibold text-sm">${(Number(res.totalAmount) || Number(res.total) || 0).toFixed(2)}</p>
                           <Badge className={`mt-1 text-[10px] px-1.5 py-0 ${res.status === 'Checked-in' ? 'bg-green-100 text-green-700 hover:bg-green-100' : 'bg-slate-200 text-slate-700 hover:bg-slate-200'}`} variant="secondary">
                             {res.status}
                           </Badge>
