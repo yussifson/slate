@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/AuthContext';
-import { powerSync } from '@/lib/powersync';
+import { powerSync } from '@/api/PowerSyncConnector';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { LineChart, Sparkles, TrendingUp, AlertTriangle } from 'lucide-react';

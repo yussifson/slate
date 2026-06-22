@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/AuthContext';
-import { powerSync } from '@/lib/powersync';
+import { usePowerSync } from '@powersync/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 
 export default function OnlineStoreBuilder() {
   const { user } = useAuth();
+  const powerSync = usePowerSync();
   const [storefront, setStorefront] = useState(null);
   const [theme, setTheme] = useState({
     primaryColor: '#000000',
