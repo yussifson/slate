@@ -12,20 +12,21 @@ export default function Housekeeping() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('housekeeping');
   
-  const [activeStaff, setActiveStaff] = useState([
-    { name: 'Maria', shift: 'Morning', active: true },
-    { name: 'David', shift: 'Morning', active: true },
-    { name: 'Elena', shift: 'Afternoon', active: true },
-    { name: 'Carlos', shift: 'Night', active: false }
-  ]);
-  const HOUSEKEEPERS = activeStaff.filter(s => s.active).map(s => s.name);
-
   const { data: dbRooms = [], isLoading: loadingRooms } = useIndustryRecords('room');
   const { data: dbReservations = [], isLoading: loadingRes } = useIndustryRecords('reservation');
   const { data: dbMaintenance = [], isLoading: loadingMaintenance } = useIndustryRecords('maintenance');
   const { data: dbLostFound = [], isLoading: loadingLostFound } = useIndustryRecords('lost_found');
   const { data: dbStages = [], isLoading: loadingStages } = useIndustryRecords('hotel_housekeeping_stage');
-  const isLoading = loadingRooms || loadingRes || loadingMaintenance || loadingLostFound || loadingStages;
+  const { data: dbStaff = [], isLoading: loadingStaff } = useIndustryRecords('hotel_staff');
+  const isLoading = loadingRooms || loadingRes || loadingMaintenance || loadingLostFound || loadingStages || loadingStaff;
+
+  const activeStaff = dbStaff.map(s => ({
+    id: s.id,
+    name: s.data.name,
+    shift: s.data.shift,
+    active: s.data.active !== false
+  }));
+  const HOUSEKEEPERS = activeStaff.filter(s => s.active).map(s => s.name);
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
 
@@ -294,21 +295,38 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
                 </Select>
                 <Button size="sm" className="h-8" onClick={() => {
                   if(!newStaffName) return;
-                  setActiveStaff([...activeStaff, { name: newStaffName, shift: newStaffShift, active: true }]);
-                  setNewStaffName('');
+                  mutateRecord.mutate({
+                    recordType: 'hotel_staff',
+                    payload: { name: newStaffName, shift: newStaffShift, active: true },
+                    status: 'Active',
+                    searchText: newStaffName
+                  }, { onSuccess: () => { toast.success("Staff added!"); setNewStaffName(''); }});
                 }}>Add</Button>
               </div>
             </div>
             <div className="flex gap-4">
+              {activeStaff.length === 0 && (
+                <div className="text-sm text-gray-500 italic py-2">No staff members added yet. Use the fields above to add staff.</div>
+              )}
               {activeStaff.map((staff, idx) => (
-                <div key={idx} className="flex-shrink-0 w-48 border border-border rounded-lg p-3 flex flex-col gap-2">
-                  <div className="flex justify-between items-start">
+                <div key={idx} className="flex-shrink-0 w-48 border border-border rounded-lg p-3 flex flex-col gap-2 relative group">
+                  <button onClick={() => deleteRecord.mutate({ id: staff.id, recordType: 'hotel_staff' })} className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-red-500 hover:text-red-700">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                  <div className="flex justify-between items-start pr-6">
                     <span className="font-bold">{staff.name}</span>
                     <button 
                       onClick={() => {
-                        const newStaff = [...activeStaff];
-                        newStaff[idx].active = !newStaff[idx].active;
-                        setActiveStaff(newStaff);
+                        const dbRecord = dbStaff.find(s => s.id === staff.id);
+                        if (dbRecord) {
+                          mutateRecord.mutate({
+                            id: staff.id,
+                            recordType: 'hotel_staff',
+                            payload: { ...dbRecord.data, active: !staff.active },
+                            status: staff.active ? 'Inactive' : 'Active',
+                            searchText: staff.name
+                          });
+                        }
                       }}
                       className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${staff.active ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}`}
                     >
