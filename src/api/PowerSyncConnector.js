@@ -104,21 +104,23 @@ class SupabaseConnector {
             console.error(`[PowerSync] Hard error uploading operation ${op.op} on ${op.table}:`, opEx);
             
             // Write to sync_errors table
-            try {
-              await database.execute(
-                `INSERT INTO sync_errors (id, table_name, operation, record_id, error_code, error_message, failed_at, raw_payload) 
-                 VALUES (uuid(), ?, ?, ?, ?, ?, datetime('now'), ?)`,
-                [
-                  op.table, 
-                  op.op, 
-                  op.id, 
-                  opEx.code || opEx.status?.toString() || 'UNKNOWN', 
-                  opEx.message || 'Unknown error',
-                  JSON.stringify(op.opData || {})
-                ]
-              );
-            } catch (errWrite) {
-              console.error("[PowerSync] Failed to write to sync_errors:", errWrite);
+            if (op.table !== 'sync_errors') {
+              try {
+                await database.execute(
+                  `INSERT INTO sync_errors (id, table_name, operation, record_id, error_code, error_message, failed_at, raw_payload) 
+                   VALUES (uuid(), ?, ?, ?, ?, ?, datetime('now'), ?)`,
+                  [
+                    op.table, 
+                    op.op, 
+                    op.id, 
+                    opEx.code || opEx.status?.toString() || 'UNKNOWN', 
+                    opEx.message || 'Unknown error',
+                    JSON.stringify(op.opData || {})
+                  ]
+                );
+              } catch (errWrite) {
+                console.error('[PowerSync] Failed to log sync error locally:', errWrite);
+              }
             }
 
             // Emit custom DOM event
