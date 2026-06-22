@@ -238,7 +238,6 @@ export default function RevenueManagement() {
               <Button className="flex-1 bg-primary text-white" onClick={() => {
                 if(!newRule.condition || !newRule.action) return toast.error("Fill required fields");
                 mutateRecord.mutate({
-                  id: crypto.randomUUID(),
                   recordType: 'hotel_yield_rule',
                   payload: newRule,
                   status: 'Active',

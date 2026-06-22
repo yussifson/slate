@@ -518,7 +518,6 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
               <Button className="flex-1 bg-primary text-white" onClick={() => {
                 if(!maintenanceForm.roomNumber || !maintenanceForm.issue) return toast.error("Fill required fields");
                 mutateRecord.mutate({
-                  id: crypto.randomUUID(),
                   recordType: 'maintenance',
                   payload: { ...maintenanceForm, status: 'Open' },
                   status: 'Open',
@@ -554,7 +553,6 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
               <Button className="flex-1 bg-primary text-white" onClick={() => {
                 if(!lostFoundForm.item || !lostFoundForm.location) return toast.error("Fill required fields");
                 mutateRecord.mutate({
-                  id: crypto.randomUUID(),
                   recordType: 'lost_found',
                   payload: { ...lostFoundForm, status: 'Stored' },
                   status: 'Stored',

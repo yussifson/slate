@@ -608,7 +608,6 @@ Format your response exactly as valid JSON ONLY:
          <Button className="flex-1 bg-primary hover:bg-primary/90 text-white" onClick={() => {
            if (!groupFormData.name.trim()) return toast.error("Please enter a group name");
            mutateRecord.mutate({
-             id: crypto.randomUUID(),
              recordType: 'hotel_group_block',
              payload: groupFormData,
              status: 'Active',
