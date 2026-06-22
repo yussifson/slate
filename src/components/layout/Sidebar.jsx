@@ -238,7 +238,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  // Hospital Roles
  doctor: ["/", "/patients", "/appointments", "/wards", "/prescriptions", "/lab-results", "/documents", "/tasks", "/chat", "/board", "/email-inbox"],
  nurse: ["/", "/patients", "/wards", "/prescriptions", "/lab-results", "/tasks", "/chat", "/email-inbox"],
- receptionist: ["/", "/patients", "/appointments", "/claims", "/chat", "/email-inbox", "/front-desk", "/reservations", "/room-management", "/guest-requests", "/billing"],
+ receptionist: ["/", "/patients", "/appointments", "/claims", "/chat", "/email-inbox", "/front-desk", "/reservations", "/guests", "/room-management", "/guest-requests", "/billing"],
  pharmacist: ["/", "/prescriptions", "/pharmacy", "/chat", "/email-inbox"],
  lab_technician: ["/", "/lab-results", "/tasks", "/chat"],
 

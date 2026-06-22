@@ -457,6 +457,7 @@ export const INDUSTRIES = {
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       { label: 'Front Desk', path: '/front-desk', icon: 'Building2' },
       { label: 'Reservations', path: '/reservations', icon: 'Calendar' },
+      { label: 'Guests & History', path: '/guests', icon: 'Users' },
       { label: 'Room Management', path: '/rooms', icon: 'BedDouble' },
       { label: 'Housekeeping', path: '/housekeeping', icon: 'Sparkles' },
       { label: 'Revenue Management', path: '/revenue', icon: 'TrendingUp' },
