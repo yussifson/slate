@@ -24,7 +24,7 @@ export default function Restaurant() {
  const [search, setSearch] = useState('');
  const [selectedCategory, setSelectedCategory] = useState('All');
  const [order, setOrder] = useState([]);
- const [roomNumber, setRoomNumber] = useState('Room 101');
+  const [roomNumber, setRoomNumber] = useState('');
   const [showAddMenuModal, setShowAddMenuModal] = useState(false);
   const [showInsightsModal, setShowInsightsModal] = useState(false);
   const [insightsResult, setInsightsResult] = useState('');
@@ -103,12 +103,13 @@ Provide your response in a short, easy to read Markdown format with two sections
  const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
  const orderTotal = total * 1.1;
 
- // If charged to room, find active reservation and add to folio
- if (paymentMethod === 'Room') {
-   const activeRes = dbReservations.find(r => 
-     String(r.data?.roomNumber) === String(roomNumber) && 
-     r.status === 'Checked-in'
-   );
+  // If charged to room, find active reservation and add to folio
+  if (paymentMethod === 'Room') {
+    if (!roomNumber) return toast.error("Please select a room to charge.");
+    const activeRes = dbReservations.find(r => 
+      String(r.data?.roomNumber) === String(roomNumber) && 
+      r.status === 'Checked-in'
+    );
 
    if (activeRes) {
      const currentFolio = activeRes.data?.folioItems || [];
@@ -257,7 +258,12 @@ Provide your response in a short, easy to read Markdown format with two sections
  <div className="w-full lg:w-96 bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 flex flex-col h-[600px] overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 bg-primary text-white flex items-center justify-between">
  <h3 className="font-semibold flex items-center gap-2"><ShoppingCart className="w-5 h-5"/> {t("current_order", "Current Order")}</h3>
- <Input value={roomNumber} onChange={e => setRoomNumber(e.target.value)} className="w-24 h-8 bg-primary/90 border-none text-white text-xs font-semibold text-center tracking-[0.04em]" />
+ <select value={roomNumber} onChange={e => setRoomNumber(e.target.value)} className="w-32 h-8 bg-primary/90 border-none text-white text-xs font-semibold text-center tracking-[0.04em] outline-none rounded-md">
+    <option value="" disabled>Select Room</option>
+    {dbReservations.filter(r => r.status === 'Checked-in').map(res => (
+      <option key={res.id} value={res.data.roomNumber}>Room {res.data.roomNumber} ({res.data.guestName})</option>
+    ))}
+ </select>
  </div>
  <div className="flex-1 overflow-y-auto p-4 space-y-4">
  {order.length === 0 ? (
