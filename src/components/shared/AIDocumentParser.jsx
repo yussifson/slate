@@ -65,23 +65,61 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
       const responseText = await analyzeImage(finalBytes, prompt);
       
       let extractedData = {};
+      const cleanAndParseJSON = (str) => {
+        if (!str || typeof str !== 'string') return {};
+        
+        // Remove markdown wrappers like ```json and ```
+        let cleaned = str.replace(/```(?:json)?\s*([\s\S]*?)\s*```/gi, '$1').trim();
+        
+        try {
+          return JSON.parse(cleaned);
+        } catch (e) {
+          // Try to locate the outermost { and }
+          const firstBrace = cleaned.indexOf('{');
+          const lastBrace = cleaned.lastIndexOf('}');
+          if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+            const candidate = cleaned.slice(firstBrace, lastBrace + 1);
+            try {
+              return JSON.parse(candidate);
+            } catch (innerError) {
+              try {
+                // Remove trailing commas before closing braces/brackets
+                const superCleaned = candidate.replace(/,\s*([}\]])/g, '$1');
+                return JSON.parse(superCleaned);
+              } catch (superError) {
+                // Regex fallback to parse key-value pairs
+                const fallback = {};
+                const matches = candidate.matchAll(/"([^"]+)"\s*:\s*(?:"([^"]*)"|(\d+(?:\.\d+)?)|(true|false|null))/g);
+                for (const m of matches) {
+                  const key = m[1];
+                  const valStr = m[2];
+                  const numStr = m[3];
+                  const boolStr = m[4];
+                  if (valStr !== undefined) fallback[key] = valStr;
+                  else if (numStr !== undefined) fallback[key] = Number(numStr);
+                  else if (boolStr !== undefined) {
+                    if (boolStr === 'true') fallback[key] = true;
+                    else if (boolStr === 'false') fallback[key] = false;
+                    else fallback[key] = null;
+                  }
+                }
+                if (Object.keys(fallback).length > 0) return fallback;
+                throw new Error("Unable to parse JSON from AI response.");
+              }
+            }
+          }
+          throw new Error("Could not parse JSON from AI response.");
+        }
+      };
+
       try {
         if (typeof responseText === 'string') {
-          extractedData = JSON.parse(responseText);
+          extractedData = cleanAndParseJSON(responseText);
         } else if (responseText && typeof responseText === 'object') {
           extractedData = responseText;
         }
       } catch (e) {
-        if (typeof responseText === 'string') {
-          const match = responseText.match(/\{[\s\S]*\}/);
-          if (match) {
-            extractedData = JSON.parse(match[0]);
-          } else {
-            throw new Error('Could not parse JSON from AI response.');
-          }
-        } else {
-          throw new Error('AI returned an unexpected object format.');
-        }
+        throw new Error('Could not parse JSON from AI response: ' + e.message);
       }
 
       toast.success('Document successfully parsed!');
