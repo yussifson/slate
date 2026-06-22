@@ -161,7 +161,6 @@ export default function Loyalty() {
           </tbody>
         </table>
       </div>
-      </div>
 
       {/* Manual Adjustment Modal */}
       {showAdjustModal && (

@@ -1,9 +1,10 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Brush, Sparkles, AlertCircle, CheckCircle, BedDouble, User, Plus, Search, CalendarClock } from 'lucide-react';
+import { Brush, Sparkles, AlertCircle, CheckCircle, BedDouble, User, Plus, Search, CalendarClock, Settings, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { generateText } from '@/lib/cloudflareAI';
-import { useIndustryRecords, useMutateIndustryRecord } from '@/hooks/useIndustryData';
+import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -23,8 +24,17 @@ export default function Housekeeping() {
   const { data: dbReservations = [], isLoading: loadingRes } = useIndustryRecords('reservation');
   const { data: dbMaintenance = [], isLoading: loadingMaintenance } = useIndustryRecords('maintenance');
   const { data: dbLostFound = [], isLoading: loadingLostFound } = useIndustryRecords('lost_found');
-  const isLoading = loadingRooms || loadingRes || loadingMaintenance || loadingLostFound;
+  const { data: dbStages = [], isLoading: loadingStages } = useIndustryRecords('hotel_housekeeping_stage');
+  const isLoading = loadingRooms || loadingRes || loadingMaintenance || loadingLostFound || loadingStages;
   const mutateRecord = useMutateIndustryRecord();
+  const deleteRecord = useDeleteIndustryRecord();
+
+  const predefinedStages = ['Dirty', 'Cleaning', 'Inspecting', 'Available'];
+  const customStages = dbStages.map(s => s.data.name);
+  const allStages = [...new Set([...predefinedStages, ...customStages])];
+
+  const [showStagesModal, setShowStagesModal] = useState(false);
+  const [newStageName, setNewStageName] = useState('');
 
   const [assigningRoom, setAssigningRoom] = useState(null);
   const [selectedCleaner, setSelectedCleaner] = useState('');
@@ -77,13 +87,6 @@ export default function Housekeeping() {
     setSelectedCleaner('');
   };
 
-  const columns = {
-    dirty: rooms.filter(r => r.status === 'Dirty' || (r.status === 'Cleaning' && !r.cleaner)),
-    inProgress: rooms.filter(r => r.status === 'Cleaning' && r.cleaner),
-    inspecting: rooms.filter(r => r.status === 'Inspecting'),
-    clean: rooms.filter(r => r.status === 'Available')
-  };
-
   const assignmentsByCleaner = HOUSEKEEPERS.map(hk => ({
     name: hk,
     tasks: rooms.filter(r => r.cleaner === hk && (r.status === 'Cleaning' || r.status === 'Inspecting'))
@@ -99,18 +102,19 @@ export default function Housekeeping() {
     );
   }
   const handleAIAutoAssign = async () => {
-    if (columns.dirty.length === 0) return toast.error("No dirty rooms to schedule.");
+    const dirtyRooms = rooms.filter(r => r.status === 'Dirty');
+    if (dirtyRooms.length === 0) return toast.error("No dirty rooms to schedule.");
     setIsAnalyzing(true);
     const tId = toast.loading('AI calculating optimal cleaning routes based on check-ins...');
     try {
       const todayStr = new Date().toISOString().split('T')[0];
       const activeRes = dbReservations.map(r => r.data).filter(r => r.checkIn === todayStr || r.checkOut === todayStr);
       
-      const prompt = `You are an AI housekeeping manager. There are ${columns.dirty.length} dirty rooms. 
+      const prompt = `You are an AI housekeeping manager. There are ${dirtyRooms.length} dirty rooms. 
 Assign them optimally between the housekeepers: ${HOUSEKEEPERS.join(', ')}. 
 Prioritize rooms that have a check-in TODAY over rooms that are just check-outs or empty.
 Reply ONLY with a JSON array of assignments like: [{"roomId": "room_id_here", "cleaner": "Maria"}].
-Rooms data: ${JSON.stringify(columns.dirty.map(r => ({ id: r.id, roomNumber: r.roomNumber, floor: r.floor })))}
+Rooms data: ${JSON.stringify(dirtyRooms.map(r => ({ id: r.id, roomNumber: r.roomNumber, floor: r.floor })))}
 Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({ roomNumber: r.roomNumber, checkIn: r.checkIn, checkOut: r.checkOut })))}`;
       
       const response = await generateText(prompt);
@@ -124,7 +128,7 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
           console.error("Failed to parse AI JSON", e);
       }
       
-      columns.dirty.forEach((room, idx) => {
+      dirtyRooms.forEach((room, idx) => {
         const assignment = assignments.find(a => a.roomId === room.id);
         const cleaner = assignment ? assignment.cleaner : HOUSEKEEPERS[idx % HOUSEKEEPERS.length];
         handleUpdateStatus(room, 'Cleaning', cleaner);
@@ -157,9 +161,14 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
                 "Manage daily cleaning schedules and room inspections"
               )}</p>
             </div>
-            <Button onClick={handleAIAutoAssign} disabled={isAnalyzing} className="gap-2 bg-primary hover:bg-primary/90 text-white shadow-lg">
-              <Sparkles className="w-4 h-4" /> AI Auto-Schedule Routes
-            </Button>
+            <div className="flex gap-3">
+              <Button onClick={() => setShowStagesModal(true)} variant="outline" className="gap-2 shadow-sm">
+                <Settings className="w-4 h-4" /> Manage Stages
+              </Button>
+              <Button onClick={handleAIAutoAssign} disabled={isAnalyzing} className="gap-2 bg-primary hover:bg-primary/90 text-white shadow-lg">
+                <Sparkles className="w-4 h-4" /> AI Auto-Schedule Routes
+              </Button>
+            </div>
           </div>
           {rooms.length === 0 ? (
             <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-12 text-center text-[#71717a] dark:text-gray-400 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
@@ -171,81 +180,90 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
               )}</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {/* Column 1: Dirty */}
-              <div className="bg-card rounded-xl p-4 border border-border min-h-[500px]">
-                <h3 className="font-semibold text-foreground flex items-center justify-between mb-4">
-                  <span className="flex items-center gap-2"><AlertCircle className="w-4 h-4 text-red-500"/> {t("dirty", "Dirty")}</span>
-                  <span className="bg-slate-200 dark:bg-slate-800 text-[#71717a] dark:text-gray-400 px-2 py-0.5 rounded-full text-xs tracking-[0.04em]">{columns.dirty.length}</span>
-                </h3>
-                <div className="space-y-3">
-                  {columns.dirty.map(room => (
-                    <div key={room.id} className="bg-card p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-l-4 border-l-red-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                      <p className="font-semibold text-lg mb-1">{t("room", "Room")} {room.roomNumber}</p>
-                      <p className="text-xs text-[#71717a] dark:text-gray-400 mb-3 tracking-[0.04em]">{room.type} {t("needs_clean", "• Needs Clean")}</p>
-                      <Button onClick={() => setAssigningRoom(room)} size="sm" className="w-full text-xs bg-primary hover:bg-primary/90 text-white tracking-[0.04em]">{t("assign_cleaning", "Assign Cleaner")}</Button>
+            <div className={`grid gap-6 overflow-x-auto pb-4`} style={{ gridTemplateColumns: `repeat(${allStages.length}, minmax(300px, 1fr))` }}>
+              {allStages.map(stage => {
+                const stageRooms = rooms.filter(r => r.status === stage);
+                return (
+                  <div key={stage} className="bg-card rounded-xl p-4 border border-border min-h-[500px]">
+                    <h3 className="font-semibold text-foreground flex items-center justify-between mb-4">
+                      <span className="flex items-center gap-2">{stage}</span>
+                      <span className="bg-slate-200 dark:bg-slate-800 text-[#71717a] dark:text-gray-400 px-2 py-0.5 rounded-full text-xs tracking-[0.04em]">{stageRooms.length}</span>
+                    </h3>
+                    <div className="space-y-3">
+                      {stageRooms.map(room => (
+                        <div key={room.id} className="bg-card p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-l-4 border-l-primary hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                          <p className="font-semibold text-lg mb-1">{t("room", "Room")} {room.roomNumber}</p>
+                          <p className="text-xs text-[#71717a] dark:text-gray-400 mb-3 tracking-[0.04em] flex justify-between items-center">
+                            <span>{room.type}</span>
+                            {room.cleaner && <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full">{room.cleaner}</span>}
+                          </p>
+                          <Select value={room.status} onValueChange={(val) => handleUpdateStatus(room, val)}>
+                            <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              {allStages.map(s => (
+                                <SelectItem key={s} value={s}>{s}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {!room.cleaner && stage === 'Dirty' && (
+                            <Button onClick={() => setAssigningRoom(room)} size="sm" className="w-full mt-2 text-xs bg-primary hover:bg-primary/90 text-white tracking-[0.04em]">{t("assign_cleaning", "Assign Cleaner")}</Button>
+                          )}
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Column 2: In Progress */}
-              <div className="bg-card rounded-xl p-4 border border-border min-h-[500px]">
-                <h3 className="font-semibold text-primary/70 dark:text-primary/70 flex items-center justify-between mb-4">
-                  <span className="flex items-center gap-2"><Brush className="w-4 h-4 text-primary dark:text-primary"/> {t("in_progress", "In Progress")}</span>
-                  <span className="bg-slate-100 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs tracking-[0.04em]">{columns.inProgress.length}</span>
-                </h3>
-                <div className="space-y-3">
-                  {columns.inProgress.map(room => (
-                    <div key={room.id} className="bg-card p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-l-4 border-l-violet-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                      <p className="font-semibold text-lg mb-1">{t("room", "Room")} {room.roomNumber}</p>
-                      <p className="text-xs text-[#71717a] dark:text-gray-400 mb-3 flex items-center gap-2 tracking-[0.04em]"><User className="w-3.5 h-3.5" /> {t("assigned", "Assigned:")} {room.cleaner}</p>
-                      <Button onClick={() => handleUpdateStatus(room, 'Inspecting')} size="sm" variant="outline" className="w-full text-xs border-primary/20 dark:border-primary/70 text-primary/90 dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:hover:bg-primary/35 tracking-[0.04em]">{t("mark_ready_for_inspection", "Mark Ready for Inspection")}</Button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Column 3: Inspecting */}
-              <div className="bg-card rounded-xl p-4 border border-border min-h-[500px]">
-                <h3 className="font-semibold text-primary/70 dark:text-primary/70 flex items-center justify-between mb-4">
-                  <span className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-primary dark:text-primary"/> {t("inspecting", "Inspecting")}</span>
-                  <span className="bg-slate-100 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs tracking-[0.04em]">{columns.inspecting.length}</span>
-                </h3>
-                <div className="space-y-3">
-                  {columns.inspecting.map(room => (
-                    <div key={room.id} className="bg-card p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-l-4 border-l-violet-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                      <div className="flex justify-between items-start mb-1">
-                        <p className="font-semibold text-lg">{t("room", "Room")} {room.roomNumber}</p>
-                        <Button variant="ghost" size="sm" onClick={() => handleUpdateStatus(room, 'Dirty')} className="text-xs h-6 px-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/30">Reject</Button>
-                      </div>
-                      <p className="text-xs text-[#71717a] dark:text-gray-400 mb-3 tracking-[0.04em]">{t("waiting_approval", "Waiting Approval")} ({room.cleaner})</p>
-                      <Button onClick={() => handleUpdateStatus(room, 'Available')} size="sm" className="w-full text-xs bg-primary hover:bg-primary/90 text-white tracking-[0.04em]">{t("approve_as_clean", "Approve as Clean")}</Button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Column 4: Clean */}
-              <div className="bg-card rounded-xl p-4 border border-border min-h-[500px]">
-                <h3 className="font-semibold text-primary/70 dark:text-primary/70 flex items-center justify-between mb-4">
-                  <span className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary dark:text-primary"/> {t("clean_ready", "Clean & Ready")}</span>
-                  <span className="bg-slate-100 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs tracking-[0.04em]">{columns.clean.length}</span>
-                </h3>
-                <div className="space-y-3 opacity-90">
-                  {columns.clean.map(room => (
-                    <div key={room.id} className="bg-card p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 dark:border-primary/70 flex justify-between items-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                      <div>
-                        <span className="font-semibold text-primary/80 dark:text-primary/70 block">{t("room", "Room")} {room.roomNumber}</span>
-                        <Button variant="link" size="sm" onClick={() => handleUpdateStatus(room, 'Dirty')} className="h-4 p-0 text-[10px] text-red-500/70 hover:text-red-500">Mark Dirty</Button>
-                      </div>
-                      <CheckCircle className="w-4 h-4 text-primary"/>
-                    </div>
-                  ))}
-                </div>
-              </div>
+                  </div>
+                )
+              })}
             </div>
           )}
+          
+          {/* Manage Stages Modal */}
+          {showStagesModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+              <div className="bg-card rounded-2xl w-full max-w-md p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-lg font-bold">Manage Kanban Stages</h2>
+                  <Button variant="ghost" size="sm" onClick={() => setShowStagesModal(false)}><Trash2 className="w-4 h-4 opacity-0"/></Button>
+                </div>
+                
+                <div className="space-y-2 max-h-[300px] overflow-y-auto mb-6 pr-2">
+                  {predefinedStages.map(s => (
+                    <div key={s} className="flex justify-between items-center p-3 bg-muted rounded-lg border border-border">
+                      <span className="font-medium text-sm">{s}</span>
+                      <span className="text-xs text-muted-foreground bg-slate-200 px-2 py-1 rounded">Default (Locked)</span>
+                    </div>
+                  ))}
+                  {dbStages.map(s => (
+                    <div key={s.id} className="flex justify-between items-center p-3 bg-card rounded-lg border border-border shadow-sm">
+                      <span className="font-medium text-sm">{s.data.name}</span>
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => deleteRecord.mutate({ id: s.id, recordType: 'hotel_housekeeping_stage' })}>
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex gap-2">
+                  <Input value={newStageName} onChange={e => setNewStageName(e.target.value)} placeholder="New Stage Name (e.g. Deep Clean)" className="flex-1" />
+                  <Button onClick={() => {
+                    if(!newStageName.trim()) return toast.error("Enter a stage name");
+                    mutateRecord.mutate({
+                      id: crypto.randomUUID(),
+                      recordType: 'hotel_housekeeping_stage',
+                      payload: { name: newStageName },
+                      status: 'Active',
+                      searchText: newStageName
+                    }, {
+                      onSuccess: () => {
+                        setNewStageName('');
+                        toast.success("Stage added!");
+                      }
+                    });
+                  }} className="bg-primary text-white">Add</Button>
+                </div>
+                <Button className="w-full mt-6" variant="outline" onClick={() => setShowStagesModal(false)}>Close</Button>
+              </div>
+            </div>
         </>
       )}
 
