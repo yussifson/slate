@@ -7,6 +7,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { usePowerSync } from '@powersync/react';
 import React, { useEffect } from 'react';
+import ConfirmationModal from '@/components/ConfirmationModal';
 
 const DRAWER_ACTIONS = [
   { value: 'open', label: 'Open Register', color: 'text-emerald-600', bg: 'bg-emerald-100 dark:bg-emerald-950/20' },
