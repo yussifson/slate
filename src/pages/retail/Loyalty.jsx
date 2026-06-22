@@ -146,9 +146,9 @@ Suggest an exclusive perk or engagement strategy.`;
     }
   };
 
- const filtered = members.filter(m => 
- m.memberId.toLowerCase().includes(search.toLowerCase()) || 
- m.customerName.toLowerCase().includes(search.toLowerCase())
+ const filteredMembers = members.filter(m =>
+ (m.memberId || '').toLowerCase().includes((search || '').toLowerCase()) || 
+ (m.customerName || '').toLowerCase().includes((search || '').toLowerCase())
  );
 
  return (

@@ -38,8 +38,8 @@ export default function BarcodeManagement() {
   }, [companyId, powerSync]);
 
   const filteredProducts = products.filter(p => 
-    p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    (p.sku && p.sku.toLowerCase().includes(searchQuery.toLowerCase()))
+    (p.name || '').toLowerCase().includes((searchQuery || '').toLowerCase()) || 
+    (p.sku && (p.sku || '').toLowerCase().includes((searchQuery || '').toLowerCase()))
   );
 
   const addToQueue = (product) => {

@@ -177,8 +177,8 @@ Suggest a targeted email or promotion idea.`;
 };
 
  const filtered = customers.filter(c => 
- c.name?.toLowerCase().includes(search.toLowerCase()) || 
- c.email?.toLowerCase().includes(search.toLowerCase())
+ c.name?.toLowerCase().includes((search || '').toLowerCase()) || 
+ c.email?.toLowerCase().includes((search || '').toLowerCase())
  );
 
  return (

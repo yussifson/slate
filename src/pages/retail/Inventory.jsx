@@ -250,9 +250,9 @@ Give a 2-sentence prediction on when this item will stock out and whether the re
  totalValue: items.reduce((s, i) => s + i.price * i.quantity, 0)};
 
  const filtered = items.filter(i =>
- i.name.toLowerCase().includes(search.toLowerCase()) ||
- i.sku.toLowerCase().includes(search.toLowerCase()) ||
- i.supplierName.toLowerCase().includes(search.toLowerCase())
+ (i.name || '').toLowerCase().includes((search || '').toLowerCase()) ||
+ (i.sku || '').toLowerCase().includes((search || '').toLowerCase()) ||
+ (i.supplierName || '').toLowerCase().includes((search || '').toLowerCase())
  );
 
  const field = (label, key, props = {}) => {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation} from "react-i18next";
-import { DollarSign, Package, Users, TrendingUp, AlertCircle, Clock, ShoppingCart} from 'lucide-react';
+import { DollarSign, Package, Users, TrendingUp, AlertCircle, Clock, ShoppingCart, Globe, Store, Barcode, Truck, BarChart2, Briefcase } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useIndustryRecords} from '@/hooks/useIndustryData';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription} from "@/components/ui/card";
 import { Badge} from "@/components/ui/badge";

@@ -74,9 +74,9 @@ export default function PurchaseOrders() {
  const [orderQuantity, setOrderQuantity] = useState(1);
  const [orderCost, setOrderCost] = useState(0);
 
- const filteredOrders = purchaseOrders.filter(po => 
- JSON.stringify(po).toLowerCase().includes(searchTerm.toLowerCase())
- );
+  const filteredPOs = purchaseOrders.filter(po => 
+    JSON.stringify(po).toLowerCase().includes((searchTerm || '').toLowerCase())
+  );
 
  const handleAddItem = () => {
  if (!selectedProduct || orderQuantity <= 0) return;

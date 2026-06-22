@@ -290,9 +290,9 @@ export default function Orders() {
     }
   };
 
- const filtered = orders.filter(o => 
- o.orderId.toLowerCase().includes(search.toLowerCase()) || 
- o.customerName.toLowerCase().includes(search.toLowerCase())
+ const filteredOrders = orders.filter(o =>
+ (o.orderId || '').toLowerCase().includes((search || '').toLowerCase()) || 
+ (o.customerName || '').toLowerCase().includes((search || '').toLowerCase())
  );
 
  return (

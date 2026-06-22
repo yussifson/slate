@@ -81,9 +81,9 @@ export default function RMAManagement() {
   }, [companyId, powerSync]);
 
   const filteredRmas = rmas.filter(rma => 
-    rma.rma_number?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    rma.product_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    rma.reason?.toLowerCase().includes(searchQuery.toLowerCase())
+    (rma.rma_number || '').toLowerCase().includes((searchQuery || '').toLowerCase()) || 
+    (rma.product_name || '').toLowerCase().includes((searchQuery || '').toLowerCase()) ||
+    (rma.reason || '').toLowerCase().includes((searchQuery || '').toLowerCase())
   );
 
   const handleCreateRMA = async () => {

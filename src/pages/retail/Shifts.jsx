@@ -158,9 +158,9 @@ export default function Shifts() {
     }
   };
 
-  const filtered = shifts.filter(s =>
-    s.staffName.toLowerCase().includes(search.toLowerCase()) ||
-    s.date.includes(search)
+  const filtered = shifts.filter(s => 
+    (s.staffName || '').toLowerCase().includes((search || '').toLowerCase()) ||
+    (s.role || '').toLowerCase().includes((search || '').toLowerCase())
   );
 
   return (

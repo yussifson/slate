@@ -139,9 +139,9 @@ Suggest any potential risks and mitigation strategies.`;
     }
   };
 
- const filtered = suppliers.filter(s => 
- s.name?.toLowerCase().includes(search.toLowerCase()) || 
- s.category?.toLowerCase().includes(search.toLowerCase())
+ const filteredSuppliers = suppliers.filter(s =>
+ (s.name || '').toLowerCase().includes((search || '').toLowerCase()) || 
+ (s.category || '').toLowerCase().includes((search || '').toLowerCase())
  );
 
  return (

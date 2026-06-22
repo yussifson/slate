@@ -47,7 +47,7 @@ export default function Promotions() {
  const [isActive, setIsActive] = useState(true);
 
   const filteredPromos = promotions.filter(p => 
-    (p.promo_code || '').toLowerCase().includes(searchTerm.toLowerCase())
+    (p.promo_code || '').toLowerCase().includes((searchTerm || '').toLowerCase())
   );
 
  const openNewDialog = () => {

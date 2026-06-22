@@ -105,13 +105,19 @@ export default function LoadBoard() {
       
       let parsed = [];
       try {
-        const cleaned = response.replace(/```json/g, '').replace(/```/g, '').trim();
-        const startIdx = cleaned.indexOf('[');
-        const endIdx = cleaned.lastIndexOf(']');
-        if (startIdx >= 0 && endIdx >= startIdx) {
-          parsed = JSON.parse(cleaned.substring(startIdx, endIdx + 1));
-        } else {
-          parsed = JSON.parse(cleaned);
+        if (typeof response === 'string') {
+          const cleaned = response.replace(/```json/g, '').replace(/```/g, '').trim();
+          const startIdx = cleaned.indexOf('[');
+          const endIdx = cleaned.lastIndexOf(']');
+          if (startIdx >= 0 && endIdx >= startIdx) {
+            parsed = JSON.parse(cleaned.substring(startIdx, endIdx + 1));
+          } else {
+            parsed = JSON.parse(cleaned);
+          }
+        } else if (Array.isArray(response)) {
+          parsed = response;
+        } else if (response && typeof response === 'object') {
+          parsed = response.matches || response.data || [];
         }
       } catch (e) {
         console.error("AI Parse Error:", e, "Response:", response);

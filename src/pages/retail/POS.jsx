@@ -91,7 +91,7 @@ export default function POS() {
 
       if (e.key === 'Enter' && barcodeBufferRef.current.length >= 3) {
         const scannedSku = barcodeBufferRef.current.trim();
-        const product = products.find(p => p.sku === scannedSku || p.sku.toLowerCase() === scannedSku.toLowerCase());
+        const product = products.find(p => p.sku === scannedSku || (p.sku || '').toLowerCase() === (scannedSku || '').toLowerCase());
         if (product) {
           addToCart(product);
           toast.success(`Scanned: ${product.name}`);
@@ -275,7 +275,7 @@ ${receipt.amountTendered ? `<div class="row"><span>Tendered</span><span>$${recei
       try {
         const customerEmail = customers.find(c => c.id === selectedCustomerId)?.email || 'customer@example.com';
         await processPayment({
-          companyId, provider: paymentMethod.toLowerCase(),
+          companyId, provider: (paymentMethod || '').toLowerCase(),
           amount: parseFloat(saleTotal.toFixed(2)),
           currency: paymentMethod === 'Paystack' ? 'NGN' : 'USD',
           customerEmail, invoiceId: saleId
@@ -350,7 +350,7 @@ ${receipt.amountTendered ? `<div class="row"><span>Tendered</span><span>$${recei
   const total = afterDiscount + tax;
 
   const filtered = products.filter(p =>
-    p.name?.toLowerCase().includes(search.toLowerCase()) ||
+    (p.name || '').toLowerCase().includes((search || '').toLowerCase()) ||
     p.sku?.includes(search)
   );
 

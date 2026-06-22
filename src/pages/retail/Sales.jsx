@@ -72,8 +72,8 @@ export default function Sales() {
 };
 
  const filtered = sales.filter(s => 
- s.saleId?.toLowerCase().includes(search.toLowerCase()) || 
- s.method?.toLowerCase().includes(search.toLowerCase())
+ (s.saleId || '').toLowerCase().includes((search || '').toLowerCase()) || 
+ (s.method || '').toLowerCase().includes((search || '').toLowerCase())
  );
 
  const openDetails = (sale) => {
