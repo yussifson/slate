@@ -326,14 +326,14 @@ export default function Orders() {
  </div>
  </div>
  <div className="overflow-x-auto">
- {isLoading ? <div className="py-12 text-center">Loading...</div> : filtered.length === 0 ? (
+ {isLoading ? <div className="py-12 text-center">Loading...</div> : filteredOrders.length === 0 ? (
  <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
  <ClipboardList className="w-12 h-12 mx-auto mb-3 opacity-30" />
  <p className="font-semibold">No orders found.</p>
  </div>
  ) : viewMode === 'grid' ? (
  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 p-6">
- {filtered.map(o => (
+ {filteredOrders.map(o => (
  <OrderGridCard
  key={o.id}
  order={o}
@@ -356,7 +356,7 @@ export default function Orders() {
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
- {filtered.map(o => (
+ {filteredOrders.map(o => (
  <tr key={o.id} className="hover:bg-muted/50 transition-colors">
  <td className="px-6 py-4 font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{o.orderId}</td>
  <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">{o.customerName}</td>

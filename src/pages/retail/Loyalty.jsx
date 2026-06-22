@@ -180,14 +180,14 @@ Suggest an exclusive perk or engagement strategy.`;
  </div>
  </div>
  <div className="overflow-x-auto">
- {isLoading ? <div className="py-12 text-center">Loading...</div> : filtered.length === 0 ? (
+ {isLoading ? <div className="py-12 text-center">Loading...</div> : filteredMembers.length === 0 ? (
  <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
  <Star className="w-12 h-12 mx-auto mb-3 opacity-30" />
  <p className="font-semibold">No loyalty members yet.</p>
  </div>
  ) : viewMode === 'grid' ? (
  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 p-6">
- {filtered.map(m => (
+ {filteredMembers.map(m => (
  <LoyaltyGridCard
  key={m.id}
  member={m}
@@ -208,7 +208,7 @@ Suggest an exclusive perk or engagement strategy.`;
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
- {filtered.map(m => (
+ {filteredMembers.map(m => (
  <tr key={m.id} className="hover:bg-muted/50 transition-colors">
  <td className="px-6 py-4 font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{m.memberId}</td>
  <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">{m.customerName}</td>

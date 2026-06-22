@@ -179,7 +179,7 @@ Suggest any potential risks and mitigation strategies.`;
  <div className="overflow-x-auto">
  {isDbLoading ? (
  <div className="py-12 text-center text-[#71717a] dark:text-gray-400">{t("loading_suppliers", "Loading suppliers...")}</div>
- ) : filtered.length === 0 ? (
+ ) : filteredSuppliers.length === 0 ? (
  <div className="py-12 text-center text-[#71717a] dark:text-gray-400">
  <Truck className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse" />
  <p className="font-semibold">{t("no_suppliers_configured", "No suppliers configured.")}</p>
@@ -190,7 +190,7 @@ Suggest any potential risks and mitigation strategies.`;
  </div>
  ) : viewMode === 'grid' ? (
  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 p-6">
- {filtered.map(sup => (
+ {filteredSuppliers.map(sup => (
  <SupplierGridCard
  key={sup.id}
  supplier={sup}
@@ -213,7 +213,7 @@ Suggest any potential risks and mitigation strategies.`;
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
- {filtered.map(sup => {
+ {filteredSuppliers.map(sup => {
  return (
  <tr key={sup.id} className="hover:bg-muted/50 transition-colors">
  <td className="px-6 py-4">

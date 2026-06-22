@@ -298,7 +298,7 @@ export default function PurchaseOrders() {
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
- {filteredOrders.map((po) => (
+ {filteredPOs.map((po) => (
  <tr key={po.id} className="hover:bg-muted/30 transition-colors dark:hover:bg-muted/10">
  <td className="px-6 py-4 font-medium text-slate-900 dark:text-slate-100 dark:text-slate-100">{po.po_number}</td>
  <td className="px-6 py-4 text-slate-700 dark:text-slate-300 dark:text-slate-300">{suppliers.find(s => s.id === po.supplier)?.name || 'Unknown'}</td>
@@ -330,7 +330,7 @@ export default function PurchaseOrders() {
  </td>
  </tr>
  ))}
- {filteredOrders.length === 0 && (
+ {filteredPOs.length === 0 && (
  <tr>
  <td colSpan="6" className="px-6 py-12 text-center text-slate-500 dark:text-slate-400 dark:text-[#71717a] dark:text-gray-400 bg-slate-50/30">
  <ShoppingCart className="w-10 h-10 mx-auto mb-3 text-slate-300" />
