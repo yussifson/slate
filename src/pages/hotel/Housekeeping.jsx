@@ -29,6 +29,15 @@ export default function Housekeeping() {
   const [assigningRoom, setAssigningRoom] = useState(null);
   const [selectedCleaner, setSelectedCleaner] = useState('');
 
+  const [newStaffName, setNewStaffName] = useState('');
+  const [newStaffShift, setNewStaffShift] = useState('Morning');
+
+  const [showMaintenanceModal, setShowMaintenanceModal] = useState(false);
+  const [maintenanceForm, setMaintenanceForm] = useState({ roomNumber: '', issue: '', priority: 'Medium' });
+
+  const [showLostFoundModal, setShowLostFoundModal] = useState(false);
+  const [lostFoundForm, setLostFoundForm] = useState({ item: '', location: '', date: new Date().toISOString().split('T')[0] });
+
   const rooms = dbRooms.map(r => ({
     id: r.id,
     status: r.status || 'Available',
@@ -164,7 +173,7 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {/* Column 1: Dirty */}
-              <div className="bg-slate-100 dark:bg-slate-900/50 rounded-xl p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 min-h-[500px]">
+              <div className="bg-card rounded-xl p-4 border border-border min-h-[500px]">
                 <h3 className="font-semibold text-foreground flex items-center justify-between mb-4">
                   <span className="flex items-center gap-2"><AlertCircle className="w-4 h-4 text-red-500"/> {t("dirty", "Dirty")}</span>
                   <span className="bg-slate-200 dark:bg-slate-800 text-[#71717a] dark:text-gray-400 px-2 py-0.5 rounded-full text-xs tracking-[0.04em]">{columns.dirty.length}</span>
@@ -181,7 +190,7 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
               </div>
 
               {/* Column 2: In Progress */}
-              <div className="bg-slate-500 dark:bg-slate-100 rounded-xl p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/30 min-h-[500px]">
+              <div className="bg-card rounded-xl p-4 border border-border min-h-[500px]">
                 <h3 className="font-semibold text-primary/70 dark:text-primary/70 flex items-center justify-between mb-4">
                   <span className="flex items-center gap-2"><Brush className="w-4 h-4 text-primary dark:text-primary"/> {t("in_progress", "In Progress")}</span>
                   <span className="bg-slate-100 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs tracking-[0.04em]">{columns.inProgress.length}</span>
@@ -198,7 +207,7 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
               </div>
 
               {/* Column 3: Inspecting */}
-              <div className="bg-slate-500 dark:bg-slate-100 rounded-xl p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/30 min-h-[500px]">
+              <div className="bg-card rounded-xl p-4 border border-border min-h-[500px]">
                 <h3 className="font-semibold text-primary/70 dark:text-primary/70 flex items-center justify-between mb-4">
                   <span className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-primary dark:text-primary"/> {t("inspecting", "Inspecting")}</span>
                   <span className="bg-slate-100 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs tracking-[0.04em]">{columns.inspecting.length}</span>
@@ -218,7 +227,7 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
               </div>
 
               {/* Column 4: Clean */}
-              <div className="bg-slate-500 dark:bg-slate-100 rounded-xl p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 dark:border-primary/30 min-h-[500px]">
+              <div className="bg-card rounded-xl p-4 border border-border min-h-[500px]">
                 <h3 className="font-semibold text-primary/70 dark:text-primary/70 flex items-center justify-between mb-4">
                   <span className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary dark:text-primary"/> {t("clean_ready", "Clean & Ready")}</span>
                   <span className="bg-slate-100 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs tracking-[0.04em]">{columns.clean.length}</span>
@@ -250,7 +259,25 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
           </div>
           
           <div className="bg-card border border-primary/20 rounded-xl p-6 mb-8 overflow-x-auto">
-            <h3 className="font-semibold mb-4 text-sm uppercase text-muted-foreground tracking-wider">Active Shift Roster</h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-semibold text-sm uppercase text-muted-foreground tracking-wider">Active Shift Roster</h3>
+              <div className="flex gap-2">
+                <Input value={newStaffName} onChange={e => setNewStaffName(e.target.value)} placeholder="New Staff Name" className="h-8 text-sm w-32" />
+                <Select value={newStaffShift} onValueChange={setNewStaffShift}>
+                  <SelectTrigger className="h-8 w-28 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Morning">Morning</SelectItem>
+                    <SelectItem value="Afternoon">Afternoon</SelectItem>
+                    <SelectItem value="Night">Night</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button size="sm" className="h-8" onClick={() => {
+                  if(!newStaffName) return;
+                  setActiveStaff([...activeStaff, { name: newStaffName, shift: newStaffShift, active: true }]);
+                  setNewStaffName('');
+                }}>Add</Button>
+              </div>
+            </div>
             <div className="flex gap-4">
               {activeStaff.map((staff, idx) => (
                 <div key={idx} className="flex-shrink-0 w-48 border border-border rounded-lg p-3 flex flex-col gap-2">
@@ -316,20 +343,7 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
               <h2 className="text-xl font-semibold">Maintenance Issues</h2>
               <p className="text-sm text-gray-500">Track and manage facility repairs</p>
             </div>
-            <Button onClick={() => {
-              const roomNumber = prompt("Room Number/Location:");
-              if(!roomNumber) return;
-              const issue = prompt("Issue Description:");
-              if(!issue) return;
-              const priority = prompt("Priority (Low/Medium/High):", "Medium");
-              mutateRecord.mutate({
-                id: crypto.randomUUID(),
-                recordType: 'maintenance',
-                payload: { roomNumber, issue, priority, status: 'Open' },
-                status: 'Open',
-                searchText: `${roomNumber} ${issue} ${priority}`
-              }, { onSuccess: () => toast.success("Issue logged!") });
-            }} className="gap-2">
+            <Button onClick={() => setShowMaintenanceModal(true)} className="gap-2">
               <Plus className="w-4 h-4"/> Log Issue
             </Button>
           </div>
@@ -382,20 +396,7 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
               <h2 className="text-xl font-semibold">Lost & Found</h2>
               <p className="text-sm text-gray-500">Log and track items left behind by guests</p>
             </div>
-            <Button onClick={() => {
-              const item = prompt("Item Description:");
-              if(!item) return;
-              const location = prompt("Found Location (e.g., Room 101 or Pool):");
-              if(!location) return;
-              const date = new Date().toISOString().split('T')[0];
-              mutateRecord.mutate({
-                id: crypto.randomUUID(),
-                recordType: 'lost_found',
-                payload: { item, location, date, status: 'Stored' },
-                status: 'Stored',
-                searchText: `${item} ${location}`
-              }, { onSuccess: () => toast.success("Item logged!") });
-            }} className="gap-2">
+            <Button onClick={() => setShowLostFoundModal(true)} className="gap-2">
               <Plus className="w-4 h-4"/> Log Item
             </Button>
           </div>
@@ -460,6 +461,85 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
             <div className="flex gap-3 mt-6">
               <Button variant="outline" className="flex-1" onClick={() => setAssigningRoom(null)}>Cancel</Button>
               <Button className="flex-1 bg-primary text-white" onClick={confirmAssignment}>Assign</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Maintenance Modal */}
+      {showMaintenanceModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-card rounded-2xl w-full max-w-sm p-6">
+            <h2 className="text-lg font-bold mb-4">Log Maintenance Issue</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-semibold">Room Number / Location</label>
+                <Input value={maintenanceForm.roomNumber} onChange={e => setMaintenanceForm({...maintenanceForm, roomNumber: e.target.value})} className="mt-1" />
+              </div>
+              <div>
+                <label className="text-sm font-semibold">Issue Description</label>
+                <Input value={maintenanceForm.issue} onChange={e => setMaintenanceForm({...maintenanceForm, issue: e.target.value})} className="mt-1" />
+              </div>
+              <div>
+                <label className="text-sm font-semibold">Priority</label>
+                <Select value={maintenanceForm.priority} onValueChange={val => setMaintenanceForm({...maintenanceForm, priority: val})}>
+                  <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Low">Low</SelectItem>
+                    <SelectItem value="Medium">Medium</SelectItem>
+                    <SelectItem value="High">High</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="flex gap-3 mt-6">
+              <Button variant="outline" className="flex-1" onClick={() => setShowMaintenanceModal(false)}>Cancel</Button>
+              <Button className="flex-1 bg-primary text-white" onClick={() => {
+                if(!maintenanceForm.roomNumber || !maintenanceForm.issue) return toast.error("Fill required fields");
+                mutateRecord.mutate({
+                  id: crypto.randomUUID(),
+                  recordType: 'maintenance',
+                  payload: { ...maintenanceForm, status: 'Open' },
+                  status: 'Open',
+                  searchText: `${maintenanceForm.roomNumber} ${maintenanceForm.issue} ${maintenanceForm.priority}`
+                }, { onSuccess: () => { toast.success("Issue logged!"); setShowMaintenanceModal(false); setMaintenanceForm({ roomNumber: '', issue: '', priority: 'Medium' }); } });
+              }}>Log Issue</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Lost & Found Modal */}
+      {showLostFoundModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-card rounded-2xl w-full max-w-sm p-6">
+            <h2 className="text-lg font-bold mb-4">Log Lost & Found Item</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-semibold">Item Description</label>
+                <Input value={lostFoundForm.item} onChange={e => setLostFoundForm({...lostFoundForm, item: e.target.value})} className="mt-1" />
+              </div>
+              <div>
+                <label className="text-sm font-semibold">Found Location</label>
+                <Input value={lostFoundForm.location} onChange={e => setLostFoundForm({...lostFoundForm, location: e.target.value})} className="mt-1" />
+              </div>
+              <div>
+                <label className="text-sm font-semibold">Date Found</label>
+                <Input type="date" value={lostFoundForm.date} onChange={e => setLostFoundForm({...lostFoundForm, date: e.target.value})} className="mt-1" />
+              </div>
+            </div>
+            <div className="flex gap-3 mt-6">
+              <Button variant="outline" className="flex-1" onClick={() => setShowLostFoundModal(false)}>Cancel</Button>
+              <Button className="flex-1 bg-primary text-white" onClick={() => {
+                if(!lostFoundForm.item || !lostFoundForm.location) return toast.error("Fill required fields");
+                mutateRecord.mutate({
+                  id: crypto.randomUUID(),
+                  recordType: 'lost_found',
+                  payload: { ...lostFoundForm, status: 'Stored' },
+                  status: 'Stored',
+                  searchText: `${lostFoundForm.item} ${lostFoundForm.location}`
+                }, { onSuccess: () => { toast.success("Item logged!"); setShowLostFoundModal(false); setLostFoundForm({ item: '', location: '', date: new Date().toISOString().split('T')[0] }); } });
+              }}>Log Item</Button>
             </div>
           </div>
         </div>
