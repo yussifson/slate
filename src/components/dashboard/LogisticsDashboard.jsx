@@ -7,6 +7,8 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
 import IntelligenceDashboard from '@/components/IntelligenceDashboard';
+import RunIntelligenceButton from '@/components/RunIntelligenceButton';
+
 import { getTerm } from "@/config/industries";
 import { Truck, Users, DollarSign, Map, Calendar, BarChart2, RefreshCw, Building2, Settings2 } from "lucide-react";
 import HearingReminders from "@/components/dashboard/HearingReminders";
@@ -135,6 +137,7 @@ export default function LogisticsDashboard({ companyId, company, isAdmin }) {
           <Button variant="outline" size="sm" className="gap-2.5 text-xs tracking-[0.04em]">
             <BarChart2 className="w-3.5 h-3.5" /> {t("analytics", "Analytics")}
           </Button>
+          <RunIntelligenceButton vertical={industry} />
           <Button variant="outline" size="sm" className="gap-2.5 text-xs tracking-[0.04em]" onClick={handleRefresh} disabled={isRefreshing}>
             { isRefreshing ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" /> } 
             {isRefreshing ? "Refreshing..." : "Refresh"}

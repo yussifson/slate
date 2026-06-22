@@ -57,6 +57,10 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
 
   // Compact mode for embedding in other dashboards
   if (compact) {
+    if (!isRunning && displayInsights.length === 0) {
+      return null;
+    }
+    
     return (
       <div className="space-y-3">
         <div className="flex items-center justify-between">
@@ -83,25 +87,18 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
           </Button>
         </div>
 
-        {isLoading ? (
-          <div className="flex items-center gap-2 text-[#71717a] text-sm py-4 justify-center">
-            <Sparkles className="w-4 h-4 animate-pulse" />
-            Loading intelligence...
+        {isLoading || isRunning ? (
+          <div className="flex flex-col items-center gap-3 text-[#71717a] text-sm py-8 justify-center animate-in fade-in zoom-in duration-300">
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center relative">
+              <div className="absolute inset-0 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
+              <Sparkles className="w-4 h-4 text-primary animate-pulse" />
+            </div>
+            <p className="font-medium bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">Analyzing your workspace...</p>
           </div>
         ) : displayInsights.length === 0 ? (
           <div className="text-center py-6">
             <Brain className="w-8 h-8 mx-auto text-[#71717a]/30 mb-2" />
-            <p className="text-sm text-[#71717a]">No insights yet</p>
-            <Button
-              size="sm"
-              variant="outline"
-              className="mt-2 gap-1.5 text-xs"
-              onClick={() => runEngine(effectiveVertical)}
-              disabled={isRunning}
-            >
-              <Zap className="w-3 h-3" />
-              Run Analysis
-            </Button>
+            <p className="text-sm text-[#71717a]">No insights found for this period.</p>
           </div>
         ) : (
           <div className="space-y-2">

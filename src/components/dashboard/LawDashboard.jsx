@@ -1,5 +1,7 @@
 import { OrbitLoader } from '@/components/ui/orbit-loader';
 import IntelligenceDashboard from '@/components/IntelligenceDashboard';
+import RunIntelligenceButton from '@/components/RunIntelligenceButton';
+
 import React from 'react';
 import { RevenueForecastCard, BehaviourProfilePanel, BenchmarkingPanel } from '@/components/intelligence/IntelligenceUI';
 import { useState, useEffect} from "react";
@@ -136,6 +138,7 @@ export default function LawDashboard({ companyId, company, isAdmin}) {
  <Button variant="outline" size="sm" className="gap-2.5 text-xs  tracking-[0.04em]">
  <BarChart2 className="w-3.5 h-3.5" /> {t('analytics', "Analytics")}
  </Button>
+          <RunIntelligenceButton vertical={"law"} />
  <Button variant="outline" size="sm" className="gap-2.5 text-xs  tracking-[0.04em]" onClick={handleRefresh} disabled={isRefreshing}>
  { isRefreshing ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" /> } 
  {isRefreshing ? t('refreshing', "Refreshing...") : t('refresh', "Refresh")}

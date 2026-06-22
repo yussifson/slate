@@ -17,6 +17,8 @@ import { buildMonthlyRevenueChart, buildDistributionChart } from "@/lib/dashboar
 import { useToast } from "@/components/ui/use-toast";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar } from "recharts";
 import IntelligenceDashboard from '@/components/IntelligenceDashboard';
+import RunIntelligenceButton from '@/components/RunIntelligenceButton';
+
 
 function MetricCard({ title, value, icon: Icon, iconBg, iconColor, subtitle, subtitleColor }) {
   return (
@@ -127,6 +129,7 @@ export default function RetailDashboard({ companyId, company, isAdmin }) {
           <Button variant="outline" size="sm" className="gap-2.5 text-xs tracking-[0.04em]">
             <BarChart2 className="w-3.5 h-3.5" /> {t("analytics", "Analytics")}
           </Button>
+          <RunIntelligenceButton vertical={industry} />
           <Button variant="outline" size="sm" className="gap-2.5 text-xs tracking-[0.04em]" onClick={handleRefresh} disabled={isRefreshing}>
             { isRefreshing ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" /> } 
             {isRefreshing ? "Refreshing..." : "Refresh"}

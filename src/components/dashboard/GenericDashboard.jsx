@@ -9,6 +9,8 @@ import { useQuery} from "@tanstack/react-query";
 import { useAuth} from "@/lib/AuthContext";
 import { useImpersonation} from "@/lib/ImpersonationContext";
 import IntelligenceDashboard from '@/components/IntelligenceDashboard';
+import RunIntelligenceButton from '@/components/RunIntelligenceButton';
+
 import { useCompanyId} from "@/hooks/useCompanyId";
 import { getTerm} from "@/config/industries";
 import { Briefcase, Users, DollarSign, Clock, Calendar, BarChart2, RefreshCw, Building2, Settings2} from "lucide-react";
@@ -136,6 +138,7 @@ export default function GenericDashboard({ companyId, company, isAdmin, industry
  <Button variant="outline" size="sm" className="gap-2.5 text-xs  tracking-[0.04em]">
  <BarChart2 className="w-3.5 h-3.5" /> {t("analytics", "Analytics")}
  </Button>
+          <RunIntelligenceButton vertical={industry} />
  <Button variant="outline" size="sm" className="gap-2.5 text-xs  tracking-[0.04em]" onClick={handleRefresh} disabled={isRefreshing}>
  { isRefreshing ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" /> } 
  {isRefreshing ? "Refreshing..." : "Refresh"}
