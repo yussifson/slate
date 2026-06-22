@@ -37,16 +37,23 @@ export default function AIDocumentParser({ onExtracted, fieldsContext = 'invoice
       
       const responseText = await analyzeImage(bytes, prompt);
       
-      // Attempt to parse JSON from the response
       let extractedData = {};
       try {
-        extractedData = JSON.parse(responseText);
+        if (typeof responseText === 'string') {
+          extractedData = JSON.parse(responseText);
+        } else if (responseText && typeof responseText === 'object') {
+          extractedData = responseText;
+        }
       } catch (e) {
-        const match = responseText.match(/\{[\s\S]*\}/);
-        if (match) {
-          extractedData = JSON.parse(match[0]);
+        if (typeof responseText === 'string') {
+          const match = responseText.match(/\{[\s\S]*\}/);
+          if (match) {
+            extractedData = JSON.parse(match[0]);
+          } else {
+            throw new Error('Could not parse JSON from AI response.');
+          }
         } else {
-          throw new Error('Could not parse JSON from AI response.');
+          throw new Error('AI returned an unexpected object format.');
         }
       }
 
