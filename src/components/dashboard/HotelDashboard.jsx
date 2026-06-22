@@ -9,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
 import { useImpersonation } from "@/lib/ImpersonationContext";
 import IntelligenceDashboard from '@/components/IntelligenceDashboard';
-import { useCompanyId } from "@/hooks/useCompanyId";
+import { useIndustryRecords } from '@/hooks/useIndustryData';
 import { getTerm } from "@/config/industries";
 import { Bed, Users, DollarSign, Calendar, BarChart2, RefreshCw, Building2, Settings2 } from "lucide-react";
 import HearingReminders from "@/components/dashboard/HearingReminders";
@@ -62,30 +62,41 @@ export default function HotelDashboard({ companyId, company, isAdmin }) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const { data: bookings = [] } = useQuery({ queryKey: ["cases", companyId], queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: guests = [] } = useQuery({ queryKey: ["clients", companyId], queryFn: () => base44.entities.Client.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: reservations = [] } = useQuery({ queryKey: ["hearings", companyId], queryFn: () => base44.entities.Hearing.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: tasks = [] } = useQuery({ queryKey: ["tasks", companyId], queryFn: () => base44.entities.Task.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: invoices = [] } = useQuery({ queryKey: ["invoices", companyId], queryFn: () => base44.entities.Invoice.filter({ company_id: companyId }), enabled: !!companyId });
+  const { data: dbReservations = [] } = useIndustryRecords('reservation');
+  const { data: dbRooms = [] } = useIndustryRecords('room');
+  const { data: dbHousekeeping = [] } = useIndustryRecords('housekeeping_task');
   const { data: staff = [] } = useQuery({ queryKey: ["staff", companyId], queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }), enabled: !!companyId });
 
-  const activeBookings = bookings.filter(c => ["open", "in_progress", "pending_hearing"].includes(c.status));
-  const activeGuests = guests.filter(c => c.status === "active");
-  const pendingTasks = tasks.filter(item => ["pending", "in_progress"].includes(item.status));
-  const totalRevenue = invoices.filter(i => i.status === "paid").reduce((s, i) => s + (i.total_amount || 0), 0);
+  const activeBookings = dbReservations.filter(r => ["Confirmed", "Checked-in"].includes(r.status));
+  const activeGuests = dbReservations.filter(r => r.status === "Checked-in");
+  const pendingTasks = dbHousekeeping.filter(t => t.status !== "Clean" && t.status !== "Completed");
+  const totalRevenue = dbReservations.reduce((sum, r) => sum + (Number(r.data?.total) || 0), 0);
+  
   const currency = company?.currency || "GHS";
   const planKey = company?.subscription_plan === 'free' ? 'free_trial' : company?.subscription_plan;
   const plan = SUBSCRIPTION_PLANS[planKey] || SUBSCRIPTION_PLANS.free_trial;
 
-  const chartData = buildMonthlyRevenueChart(invoices);
-  const bookingDistribution = buildDistributionChart(bookings, "stage");
+  // Mock charts since we don't have invoices for hotel in this demo usually
+  const chartData = [
+    { name: 'Jan', Revenue: 12000 },
+    { name: 'Feb', Revenue: 15000 },
+    { name: 'Mar', Revenue: 18000 },
+    { name: 'Apr', Revenue: 22000 },
+    { name: 'May', Revenue: 24000 },
+  ];
+  
+  const bookingDistribution = [
+    { name: 'Confirmed', count: dbReservations.filter(r => r.status === 'Confirmed').length },
+    { name: 'Checked-in', count: dbReservations.filter(r => r.status === 'Checked-in').length },
+    { name: 'Checked-out', count: dbReservations.filter(r => r.status === 'Checked-out').length },
+  ];
 
-  const upcomingReservations = reservations
-    .filter(h => h.status === "scheduled" && h.date && isAfter(new Date(h.date), new Date()))
-    .sort((a, b) => new Date(a.date) - new Date(b.date))
+  const upcomingReservations = dbReservations
+    .filter(r => r.status === "Confirmed" && r.data?.checkIn && isAfter(new Date(r.data.checkIn), new Date()))
+    .sort((a, b) => new Date(a.data.checkIn) - new Date(b.data.checkIn))
     .slice(0, 5);
 
-  const overdueInvoices = invoices.filter(i => i.status === "overdue").length;
+  const overdueInvoices = 0;
 
   const { toast } = useToast();
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -122,8 +133,7 @@ export default function HotelDashboard({ companyId, company, isAdmin }) {
 
   return (
     <div className="space-y-5">
-      {/* 24h Hearing Reminders - reused for reservations */}
-      <HearingReminders hearings={reservations} userEmail={user?.email} isAdmin={isAdmin} />
+      {/* Removed HearingReminders entirely */}
       
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -146,9 +156,8 @@ export default function HotelDashboard({ companyId, company, isAdmin }) {
 
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title="Active Bookings" value={activeBookings.length} icon={Bed} iconBg="bg-slate-100" iconColor="text-primary" subtitle={`${bookings.length} total`} />
+        <MetricCard title="Active Bookings" value={activeBookings.length} icon={Bed} iconBg="bg-slate-100" iconColor="text-primary" subtitle={`${dbReservations.length} total`} />
         <MetricCard title="Active Guests" value={activeGuests.length} icon={Users} iconBg="bg-slate-100" iconColor="text-primary"
-          subtitle={guests.length > 0 ? `+${Math.round((activeGuests.length / Math.max(guests.length, 1)) * 100)}% this month` : undefined}
           subtitleColor="text-primary" />
         <MetricCard title="Total Revenue" value={formatCurrency(totalRevenue, currency)} icon={DollarSign} iconBg="bg-slate-100" iconColor="text-primary" subtitle="This year" />
         <MetricCard title="Pending Tasks" value={pendingTasks.length} icon={Calendar} iconBg="bg-orange-100" iconColor="text-orange-500"
@@ -224,21 +233,21 @@ export default function HotelDashboard({ companyId, company, isAdmin }) {
                 </div>
                 <p className="text-sm text-[#71717a] dark:text-gray-400">No upcoming reservations</p>
               </div>
-            ) : upcomingReservations.map(h => {
-              return (
-                <div key={h.id} className="px-4 py-3 flex items-center gap-3 hover:bg-muted/40 transition-colors">
-                  <div className="w-10 h-10 rounded-xl bg-slate-100 flex flex-col items-center justify-center flex-shrink-0">
-                    <span className="text-[9px] font-semibold text-primary leading-none uppercase tracking-[0.04em]">{format(new Date(h.date), "MMM")}</span>
-                    <span className="text-sm font-semibold text-primary leading-none">{format(new Date(h.date), "d")}</span>
+              ) : upcomingReservations.map(r => {
+                return (
+                  <div key={r.id} className="px-4 py-3 flex items-center gap-3 hover:bg-muted/40 transition-colors">
+                    <div className="w-10 h-10 rounded-xl bg-slate-100 flex flex-col items-center justify-center flex-shrink-0">
+                      <span className="text-[9px] font-semibold text-primary leading-none uppercase tracking-[0.04em]">{format(new Date(r.data.checkIn), "MMM")}</span>
+                      <span className="text-sm font-semibold text-primary leading-none">{format(new Date(r.data.checkIn), "d")}</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{r.data.guestName || "Unknown Guest"}</p>
+                      <p className="text-xs text-[#71717a] dark:text-gray-400 truncate tracking-[0.04em]">Room {r.data.roomNumber || "TBD"} · {r.data.checkIn}</p>
+                    </div>
+                    <Badge variant="outline" className="text-[10px] shrink-0">{r.status}</Badge>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{h.title}</p>
-                    <p className="text-xs text-[#71717a] dark:text-gray-400 truncate tracking-[0.04em]">{h.court_name || h.case_title} · {h.time || "TBD"}</p>
-                  </div>
-                  <Badge variant="outline" className="text-[10px] shrink-0">{h.lawyer_name || "—"}</Badge>
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
         </div>
 
@@ -252,7 +261,7 @@ export default function HotelDashboard({ companyId, company, isAdmin }) {
             <UsageRow label="Team Members" used={staff.length} max={plan.maxUsers} />
             <UsageRow label="Storage" used={0} max={plan.maxStorageGB} suffix=" GB" />
             <UsageRow label="Bookings" used={activeBookings.length} max={plan.maxCases} />
-            <UsageRow label="Guests" used={guests.length} max={plan.maxClients} />
+            <UsageRow label="Guests" used={activeGuests.length} max={plan.maxClients} />
           </div>
           <div className="px-4 pb-4 border-t border-primary/40 pt-3">
             <div className="flex items-center justify-between mb-2">
