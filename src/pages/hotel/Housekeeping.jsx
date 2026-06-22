@@ -1,21 +1,27 @@
-import { useTranslation} from "react-i18next";
-import { useState} from 'react';
-import { Brush, Sparkles, AlertCircle, CheckCircle, BedDouble, User, Plus, Search} from 'lucide-react';
-import { Button} from '@/components/ui/button';
+import { useTranslation } from "react-i18next";
+import { useState } from 'react';
+import { Brush, Sparkles, AlertCircle, CheckCircle, BedDouble, User, Plus, Search, CalendarClock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { generateText } from '@/lib/cloudflareAI';
-import { useIndustryRecords, useMutateIndustryRecord} from '@/hooks/useIndustryData';
-import { toast} from 'react-hot-toast';
+import { useIndustryRecords, useMutateIndustryRecord } from '@/hooks/useIndustryData';
+import { toast } from 'react-hot-toast';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const HOUSEKEEPERS = ['Maria', 'David', 'Elena', 'Carlos'];
 
 export default function Housekeeping() {
-  const { t} = useTranslation();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('housekeeping');
   
-  const { data: dbRooms = [], isLoading: loadingRooms} = useIndustryRecords('room');
-  const { data: dbReservations = [], isLoading: loadingRes} = useIndustryRecords('reservation');
-  const { data: dbMaintenance = [], isLoading: loadingMaintenance} = useIndustryRecords('maintenance');
-  const { data: dbLostFound = [], isLoading: loadingLostFound} = useIndustryRecords('lost_found');
+  const { data: dbRooms = [], isLoading: loadingRooms } = useIndustryRecords('room');
+  const { data: dbReservations = [], isLoading: loadingRes } = useIndustryRecords('reservation');
+  const { data: dbMaintenance = [], isLoading: loadingMaintenance } = useIndustryRecords('maintenance');
+  const { data: dbLostFound = [], isLoading: loadingLostFound } = useIndustryRecords('lost_found');
   const isLoading = loadingRooms || loadingRes || loadingMaintenance || loadingLostFound;
   const mutateRecord = useMutateIndustryRecord();
+
+  const [assigningRoom, setAssigningRoom] = useState(null);
+  const [selectedCleaner, setSelectedCleaner] = useState('');
 
   const rooms = dbRooms.map(r => ({
     id: r.id,
@@ -25,14 +31,13 @@ export default function Housekeeping() {
 
   const handleUpdateStatus = (room, newStatus, assignedStaff = room.cleaner) => {
     const updatedPayload = {
-      roomNumber: room.roomNumber,
-      type: room.type,
-      rate: room.rate,
-      floor: room.floor,
-      amenities: room.amenities,
-      guest: room.guest || null,
-      cleaner: assignedStaff || null
+      ...room,
+      cleaner: newStatus === 'Available' ? null : assignedStaff
     };
+    
+    // Clean up to avoid nested data inside payload
+    delete updatedPayload.id;
+    delete updatedPayload.status;
 
     mutateRecord.mutate({
       id: room.id,
@@ -42,12 +47,19 @@ export default function Housekeeping() {
       searchText: `${room.roomNumber} ${room.type}`
     }, {
       onSuccess: () => {
-        toast.success(`Room ${room.roomNumber} updated successfully!`);
+        toast.success(`Room ${room.roomNumber} marked as ${newStatus}`);
       },
       onError: (err) => {
         toast.error('Failed to update room: ' + err.message);
       }
     });
+  };
+
+  const confirmAssignment = () => {
+    if (!selectedCleaner) return toast.error("Please select a housekeeper");
+    handleUpdateStatus(assigningRoom, 'Cleaning', selectedCleaner);
+    setAssigningRoom(null);
+    setSelectedCleaner('');
   };
 
   const columns = {
@@ -56,6 +68,11 @@ export default function Housekeeping() {
     inspecting: rooms.filter(r => r.status === 'Inspecting'),
     clean: rooms.filter(r => r.status === 'Available')
   };
+
+  const assignmentsByCleaner = HOUSEKEEPERS.map(hk => ({
+    name: hk,
+    tasks: rooms.filter(r => r.cleaner === hk && (r.status === 'Cleaning' || r.status === 'Inspecting'))
+  }));
 
   if (isLoading) {
     return (
@@ -75,7 +92,7 @@ export default function Housekeeping() {
       const activeRes = dbReservations.map(r => r.data).filter(r => r.checkIn === todayStr || r.checkOut === todayStr);
       
       const prompt = `You are an AI housekeeping manager. There are ${columns.dirty.length} dirty rooms. 
-Assign them optimally between two staff members: 'Maria' and 'David'. 
+Assign them optimally between the housekeepers: ${HOUSEKEEPERS.join(', ')}. 
 Prioritize rooms that have a check-in TODAY over rooms that are just check-outs or empty.
 Reply ONLY with a JSON array of assignments like: [{"roomId": "room_id_here", "cleaner": "Maria"}].
 Rooms data: ${JSON.stringify(columns.dirty.map(r => ({ id: r.id, roomNumber: r.roomNumber, floor: r.floor })))}
@@ -94,7 +111,7 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
       
       columns.dirty.forEach((room, idx) => {
         const assignment = assignments.find(a => a.roomId === room.id);
-        const cleaner = assignment ? assignment.cleaner : (idx % 2 === 0 ? 'Maria (AI)' : 'David (AI)');
+        const cleaner = assignment ? assignment.cleaner : HOUSEKEEPERS[idx % HOUSEKEEPERS.length];
         handleUpdateStatus(room, 'Cleaning', cleaner);
       });
       
@@ -110,6 +127,7 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
     <div className="space-y-6 school-page-enter font-dmsans">
       <div className="flex gap-4 border-b border-primary/20 pb-4 mb-6">
         <Button variant={activeTab === 'housekeeping' ? 'default' : 'outline'} onClick={() => setActiveTab('housekeeping')}>Housekeeping</Button>
+        <Button variant={activeTab === 'schedules' ? 'default' : 'outline'} onClick={() => setActiveTab('schedules')}>Staff Schedules</Button>
         <Button variant={activeTab === 'maintenance' ? 'default' : 'outline'} onClick={() => setActiveTab('maintenance')}>Maintenance</Button>
         <Button variant={activeTab === 'lost_found' ? 'default' : 'outline'} onClick={() => setActiveTab('lost_found')}>Lost & Found</Button>
       </div>
@@ -146,15 +164,13 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
                   <span className="bg-slate-200 dark:bg-slate-800 text-[#71717a] dark:text-gray-400 px-2 py-0.5 rounded-full text-xs tracking-[0.04em]">{columns.dirty.length}</span>
                 </h3>
                 <div className="space-y-3">
-                  {columns.dirty.map(room => {
-                    return (
-                      <div key={room.id} className="bg-card p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-l-4 border-l-red-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                        <p className="font-semibold text-lg mb-1">{t("room", "Room")} {room.roomNumber}</p>
-                        <p className="text-xs text-[#71717a] dark:text-gray-400 mb-3 tracking-[0.04em]">{room.type} {t("needs_clean", "• Needs Clean")}</p>
-                        <Button onClick={() => handleUpdateStatus(room, 'Cleaning', 'Housekeeper A')} size="sm" className="w-full text-xs bg-primary hover:bg-primary/90 text-white tracking-[0.04em]">{t("start_cleaning", "Start Cleaning")}</Button>
-                      </div>
-                    );
-                  })}
+                  {columns.dirty.map(room => (
+                    <div key={room.id} className="bg-card p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-l-4 border-l-red-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                      <p className="font-semibold text-lg mb-1">{t("room", "Room")} {room.roomNumber}</p>
+                      <p className="text-xs text-[#71717a] dark:text-gray-400 mb-3 tracking-[0.04em]">{room.type} {t("needs_clean", "• Needs Clean")}</p>
+                      <Button onClick={() => setAssigningRoom(room)} size="sm" className="w-full text-xs bg-primary hover:bg-primary/90 text-white tracking-[0.04em]">{t("assign_cleaning", "Assign Cleaner")}</Button>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -165,15 +181,13 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
                   <span className="bg-slate-100 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs tracking-[0.04em]">{columns.inProgress.length}</span>
                 </h3>
                 <div className="space-y-3">
-                  {columns.inProgress.map(room => {
-                    return (
-                      <div key={room.id} className="bg-card p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-l-4 border-l-violet-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                        <p className="font-semibold text-lg mb-1">{t("room", "Room")} {room.roomNumber}</p>
-                        <p className="text-xs text-[#71717a] dark:text-gray-400 mb-3 flex items-center gap-2 tracking-[0.04em]"><User className="w-3.5 h-3.5" /> {t("assigned", "Assigned:")} {room.cleaner}</p>
-                        <Button onClick={() => handleUpdateStatus(room, 'Inspecting')} size="sm" variant="outline" className="w-full text-xs border-primary/20 dark:border-primary/70 text-primary/90 dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:hover:bg-primary/35 tracking-[0.04em]">{t("mark_ready_for_inspection", "Mark Ready for Inspection")}</Button>
-                      </div>
-                    );
-                  })}
+                  {columns.inProgress.map(room => (
+                    <div key={room.id} className="bg-card p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-l-4 border-l-violet-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                      <p className="font-semibold text-lg mb-1">{t("room", "Room")} {room.roomNumber}</p>
+                      <p className="text-xs text-[#71717a] dark:text-gray-400 mb-3 flex items-center gap-2 tracking-[0.04em]"><User className="w-3.5 h-3.5" /> {t("assigned", "Assigned:")} {room.cleaner}</p>
+                      <Button onClick={() => handleUpdateStatus(room, 'Inspecting')} size="sm" variant="outline" className="w-full text-xs border-primary/20 dark:border-primary/70 text-primary/90 dark:text-primary/70 hover:bg-slate-50 dark:bg-slate-800/50 dark:hover:bg-primary/35 tracking-[0.04em]">{t("mark_ready_for_inspection", "Mark Ready for Inspection")}</Button>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -184,15 +198,16 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
                   <span className="bg-slate-100 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs tracking-[0.04em]">{columns.inspecting.length}</span>
                 </h3>
                 <div className="space-y-3">
-                  {columns.inspecting.map(room => {
-                    return (
-                      <div key={room.id} className="bg-card p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-l-4 border-l-violet-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                        <p className="font-semibold text-lg mb-1">{t("room", "Room")} {room.roomNumber}</p>
-                        <p className="text-xs text-[#71717a] dark:text-gray-400 mb-3 tracking-[0.04em]">{t("waiting_approval", "Waiting Approval")}</p>
-                        <Button onClick={() => handleUpdateStatus(room, 'Available', null)} size="sm" className="w-full text-xs bg-primary hover:bg-primary/90 text-white tracking-[0.04em]">{t("approve_as_clean", "Approve as Clean")}</Button>
+                  {columns.inspecting.map(room => (
+                    <div key={room.id} className="bg-card p-4 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 border-l-4 border-l-violet-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                      <div className="flex justify-between items-start mb-1">
+                        <p className="font-semibold text-lg">{t("room", "Room")} {room.roomNumber}</p>
+                        <Button variant="ghost" size="sm" onClick={() => handleUpdateStatus(room, 'Dirty')} className="text-xs h-6 px-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/30">Reject</Button>
                       </div>
-                    );
-                  })}
+                      <p className="text-xs text-[#71717a] dark:text-gray-400 mb-3 tracking-[0.04em]">{t("waiting_approval", "Waiting Approval")} ({room.cleaner})</p>
+                      <Button onClick={() => handleUpdateStatus(room, 'Available')} size="sm" className="w-full text-xs bg-primary hover:bg-primary/90 text-white tracking-[0.04em]">{t("approve_as_clean", "Approve as Clean")}</Button>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -202,20 +217,64 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
                   <span className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary dark:text-primary"/> {t("clean_ready", "Clean & Ready")}</span>
                   <span className="bg-slate-100 dark:bg-primary/60 text-primary/80 dark:text-primary/30 px-2 py-0.5 rounded-full text-xs tracking-[0.04em]">{columns.clean.length}</span>
                 </h3>
-                <div className="space-y-3 opacity-80">
-                  {columns.clean.map(room => {
-                    return (
-                      <div key={room.id} className="bg-card p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 dark:border-primary/70 flex justify-between items-center  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                        <span className="font-semibold text-primary/80 dark:text-primary/70">{t("room", "Room")} {room.roomNumber}</span>
-                        <CheckCircle className="w-4 h-4 text-primary"/>
+                <div className="space-y-3 opacity-90">
+                  {columns.clean.map(room => (
+                    <div key={room.id} className="bg-card p-3 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 dark:border-primary/70 flex justify-between items-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+                      <div>
+                        <span className="font-semibold text-primary/80 dark:text-primary/70 block">{t("room", "Room")} {room.roomNumber}</span>
+                        <Button variant="link" size="sm" onClick={() => handleUpdateStatus(room, 'Dirty')} className="h-4 p-0 text-[10px] text-red-500/70 hover:text-red-500">Mark Dirty</Button>
                       </div>
-                    );
-                  })}
+                      <CheckCircle className="w-4 h-4 text-primary"/>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
           )}
         </>
+      )}
+
+      {activeTab === 'schedules' && (
+        <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h2 className="text-xl font-semibold">Staff Cleaning Schedules</h2>
+              <p className="text-sm text-gray-500">Track active assignments per housekeeper</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {assignmentsByCleaner.map(cleaner => (
+              <div key={cleaner.name} className="bg-card rounded-xl border border-primary/20 p-5 shadow-sm">
+                <div className="flex items-center gap-3 mb-4 pb-3 border-b border-primary/10">
+                  <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                    <User className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg leading-tight">{cleaner.name}</h3>
+                    <p className="text-xs text-muted-foreground">{cleaner.tasks.length} active tasks</p>
+                  </div>
+                </div>
+                {cleaner.tasks.length === 0 ? (
+                  <div className="py-6 flex flex-col items-center justify-center text-muted-foreground opacity-50">
+                    <CalendarClock className="w-8 h-8 mb-2" />
+                    <p className="text-xs">No active assignments</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {cleaner.tasks.map(task => (
+                      <div key={task.id} className="flex justify-between items-center bg-muted/50 p-2 rounded-lg text-sm">
+                        <span className="font-medium">Room {task.roomNumber}</span>
+                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${task.status === 'Inspecting' ? 'bg-violet-100 text-violet-700' : 'bg-blue-100 text-blue-700'}`}>
+                          {task.status}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       )}
 
       {activeTab === 'maintenance' && (
@@ -344,6 +403,32 @@ Reservations data (for priority context): ${JSON.stringify(activeRes.map(r => ({
                 <p>No lost and found items recorded.</p>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Housekeeper Assignment Modal */}
+      {assigningRoom && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-card rounded-2xl w-full max-w-sm p-6">
+            <h2 className="text-lg font-bold mb-4">Assign Cleaner to Room {assigningRoom.roomNumber}</h2>
+            <div className="space-y-4">
+              <label className="text-sm font-semibold">Select Housekeeper</label>
+              <select 
+                value={selectedCleaner} 
+                onChange={e => setSelectedCleaner(e.target.value)}
+                className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:ring-primary focus:border-primary"
+              >
+                <option value="">-- Choose a staff member --</option>
+                {HOUSEKEEPERS.map(hk => (
+                  <option key={hk} value={hk}>{hk}</option>
+                ))}
+              </select>
+            </div>
+            <div className="flex gap-3 mt-6">
+              <Button variant="outline" className="flex-1" onClick={() => setAssigningRoom(null)}>Cancel</Button>
+              <Button className="flex-1 bg-primary text-white" onClick={confirmAssignment}>Assign</Button>
+            </div>
           </div>
         </div>
       )}
