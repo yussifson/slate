@@ -264,6 +264,65 @@ export default function Maintenance() {
           </div>
         </div>
 
+        {/* Form Sheet */}
+        <Sheet open={showForm} onOpenChange={setShowForm}>
+          <SheetContent side="right" className="w-full sm:w-[500px] overflow-y-auto">
+            <SheetHeader>
+              <SheetTitle>New Maintenance Request</SheetTitle>
+            </SheetHeader>
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              try {
+                const formPayload = {
+                  propertyId: document.getElementById('maint-property').value || '',
+                  propertyAddress: document.getElementById('maint-property-addr').value || '',
+                  reportedBy: user?.id,
+                  reportedByName: user?.email,
+                  issueDescription: document.getElementById('maint-issue').value,
+                  priority: document.getElementById('maint-priority').value,
+                  assignedTo: document.getElementById('maint-assigned').value || '',
+                  cost: parseFloat(document.getElementById('maint-cost').value) || 0,
+                  notes: document.getElementById('maint-notes').value
+                };
+                await RealEstateAPI.createMaintenanceRequest(companyId, formPayload, user?.id);
+                const res = await powerSync.execute(
+                  'SELECT * FROM univ_re_maintenance_requests WHERE company_id = ? ORDER BY created_at DESC',
+                  [companyId]
+                );
+                const data = res.rows._array || Array.from(res.rows);
+                setRequests(data);
+                toast.success('Maintenance request created');
+                setShowForm(false);
+                document.querySelectorAll('input, textarea, select').forEach(el => el.value = '');
+              } catch (error) {
+                console.error('Error creating maintenance:', error);
+                toast.error('Failed to create maintenance request');
+              }
+            }} className="space-y-4 mt-6">
+              <div><label className="text-xs font-semibold text-gray-600 mb-1 block">Property *</label>
+                <input id="maint-property" type="text" placeholder="Property ID" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required /></div>
+              <div><label className="text-xs font-semibold text-gray-600 mb-1 block">Property Address *</label>
+                <input id="maint-property-addr" type="text" placeholder="Property Address" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required /></div>
+              <div><label className="text-xs font-semibold text-gray-600 mb-1 block">Issue Description *</label>
+                <textarea id="maint-issue" placeholder="Describe the maintenance issue" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" rows="4" required></textarea></div>
+              <div><label className="text-xs font-semibold text-gray-600 mb-1 block">Priority</label>
+                <select id="maint-priority" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                  <option value="low">Low</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="high">High</option>
+                  <option value="critical">Critical</option>
+                </select></div>
+              <div><label className="text-xs font-semibold text-gray-600 mb-1 block">Assigned To</label>
+                <input id="maint-assigned" type="text" placeholder="Staff member" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" /></div>
+              <div><label className="text-xs font-semibold text-gray-600 mb-1 block">Estimated Cost</label>
+                <input id="maint-cost" type="number" step="0.01" placeholder="0.00" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" /></div>
+              <div><label className="text-xs font-semibold text-gray-600 mb-1 block">Notes</label>
+                <textarea id="maint-notes" placeholder="Additional notes" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" rows="3"></textarea></div>
+              <Button type="submit" className="w-full bg-orange-600 hover:bg-orange-700">Create Request</Button>
+            </form>
+          </SheetContent>
+        </Sheet>
+
         {/* Details Sheet */}
         <Sheet open={!!selectedRequest} onOpenChange={(open) => !open && setSelectedRequest(null)}>
           <SheetContent side="right" className="w-full sm:w-96">

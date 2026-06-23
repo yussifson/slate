@@ -75,7 +75,38 @@ export default function RentPayments() {
             </h1>
             <p className="text-gray-600 mt-1">Track and manage tenant rent payments</p>
           </div>
-          <Button className="bg-indigo-600 hover:bg-indigo-700 gap-2">
+          <Button onClick={() => {
+            const leaseId = prompt('Enter Lease ID:');
+            if (!leaseId) return;
+            const propertyId = prompt('Enter Property ID:');
+            if (!propertyId) return;
+            const tenantId = prompt('Enter Tenant ID:');
+            if (!tenantId) return;
+            const tenantName = prompt('Enter Tenant Name:');
+            if (!tenantName) return;
+            const amount = prompt('Enter Payment Amount:');
+            if (!amount) return;
+            const dueDate = prompt('Enter Due Date (YYYY-MM-DD):');
+            if (!dueDate) return;
+            const paymentMethod = prompt('Enter Payment Method (e.g., Bank Transfer, Check):');
+            
+            RealEstateAPI.recordRentPayment(companyId, {
+              leaseId, propertyId, tenantId, tenantName,
+              amount: parseFloat(amount), dueDate,
+              paymentMethod: paymentMethod || 'Bank Transfer', notes: ''
+            }, user?.id).then(async () => {
+              const res = await powerSync.execute(
+                'SELECT * FROM univ_re_rent_payments WHERE company_id = ? ORDER BY due_date DESC',
+                [companyId]
+              );
+              const data = res.rows._array || Array.from(res.rows);
+              setPayments(data);
+              toast.success('Rent payment recorded');
+            }).catch(e => {
+              console.error('Error recording payment:', e);
+              toast.error('Failed to record payment');
+            });
+          }} className="bg-indigo-600 hover:bg-indigo-700 gap-2">
             <Plus className="w-4 h-4" /> Record Payment
           </Button>
         </div>

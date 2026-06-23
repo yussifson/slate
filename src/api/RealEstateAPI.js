@@ -7,6 +7,15 @@
 
 import { powerSync } from '@/api/PowerSyncConnector';
 
+// Generate UUIDs for Supabase compatibility
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
 export const RealEstateAPI = {
   // ────────────────────────────────────────────────────────
   // PROPERTIES
@@ -41,7 +50,7 @@ export const RealEstateAPI = {
 
   async createProperty(companyId, data, userId) {
     try {
-      const id = `prop_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const id = generateUUID();
       const now = new Date().toISOString();
 
       await powerSync.execute(
@@ -126,7 +135,7 @@ export const RealEstateAPI = {
 
   async createClient(companyId, data, userId) {
     try {
-      const id = `client_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const id = generateUUID();
       const now = new Date().toISOString();
 
       await powerSync.execute(
@@ -178,7 +187,7 @@ export const RealEstateAPI = {
 
   async createViewing(companyId, data, userId) {
     try {
-      const id = `viewing_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const id = generateUUID();
       const now = new Date().toISOString();
 
       await powerSync.execute(
@@ -226,7 +235,7 @@ export const RealEstateAPI = {
 
   async createOffer(companyId, data, userId) {
     try {
-      const id = `offer_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const id = generateUUID();
       const now = new Date().toISOString();
 
       await powerSync.execute(
@@ -270,7 +279,7 @@ export const RealEstateAPI = {
 
   async createTransaction(companyId, data, userId) {
     try {
-      const id = `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const id = generateUUID();
       const now = new Date().toISOString();
 
       await powerSync.execute(
@@ -314,7 +323,7 @@ export const RealEstateAPI = {
 
   async createLease(companyId, data, userId) {
     try {
-      const id = `lease_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const id = generateUUID();
       const now = new Date().toISOString();
 
       await powerSync.execute(
@@ -362,7 +371,7 @@ export const RealEstateAPI = {
 
   async recordRentPayment(companyId, data, userId) {
     try {
-      const id = `payment_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const id = generateUUID();
       const now = new Date().toISOString();
 
       await powerSync.execute(
@@ -409,7 +418,7 @@ export const RealEstateAPI = {
 
   async createMaintenanceRequest(companyId, data, userId) {
     try {
-      const id = `maint_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const id = generateUUID();
       const now = new Date().toISOString();
 
       await powerSync.execute(

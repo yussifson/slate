@@ -197,18 +197,66 @@ export default function Viewings() {
               <SheetTitle>Schedule Property Viewing</SheetTitle>
               <SheetDescription>Enter viewing details below</SheetDescription>
             </SheetHeader>
-            <form onSubmit={(e) => { e.preventDefault(); setShowForm(false); }} className="space-y-4 mt-6">
-              <input type="text" placeholder="Property Address" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-              <input type="text" placeholder="Client Name" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-              <input type="text" placeholder="Agent Name" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-              <input type="date" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-              <input type="time" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
-                <option>scheduled</option>
-                <option>completed</option>
-                <option>cancelled</option>
-              </select>
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">Schedule</Button>
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              try {
+                if (!formData.propertyAddress || !formData.clientName || !formData.viewingDate) {
+                  toast.error('Please fill in all required fields');
+                  return;
+                }
+                await RealEstateAPI.createViewing(companyId, formData, user?.id);
+                const res = await powerSync.execute(
+                  'SELECT * FROM univ_re_viewings WHERE company_id = ? ORDER BY viewing_date DESC',
+                  [companyId]
+                );
+                const data = res.rows._array || Array.from(res.rows);
+                setViewings(data);
+                toast.success('Viewing scheduled successfully');
+                setShowForm(false);
+                setFormData({
+                  propertyId: '', propertyAddress: '', clientId: '', clientName: '',
+                  agentId: '', agentName: '', viewingDate: '', viewingTime: '', status: 'scheduled', notes: ''
+                });
+              } catch (error) {
+                console.error('Error creating viewing:', error);
+                toast.error('Failed to schedule viewing');
+              }
+            }} className="space-y-4 mt-6">
+              <div>
+                <label className="text-xs font-semibold text-gray-600 mb-1 block">Property Address *</label>
+                <input type="text" placeholder="Property Address" value={formData.propertyAddress} onChange={(e) => setFormData({...formData, propertyAddress: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-gray-600 mb-1 block">Client Name *</label>
+                <input type="text" placeholder="Client Name" value={formData.clientName} onChange={(e) => setFormData({...formData, clientName: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-gray-600 mb-1 block">Agent Name</label>
+                <input type="text" placeholder="Agent Name" value={formData.agentName} onChange={(e) => setFormData({...formData, agentName: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-gray-600 mb-1 block">Viewing Date *</label>
+                  <input type="date" value={formData.viewingDate} onChange={(e) => setFormData({...formData, viewingDate: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-gray-600 mb-1 block">Time</label>
+                  <input type="time" value={formData.viewingTime} onChange={(e) => setFormData({...formData, viewingTime: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-gray-600 mb-1 block">Status</label>
+                <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                  <option value="scheduled">Scheduled</option>
+                  <option value="completed">Completed</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-gray-600 mb-1 block">Notes</label>
+                <textarea placeholder="Additional notes" value={formData.notes} onChange={(e) => setFormData({...formData, notes: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" rows="3"></textarea>
+              </div>
+              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">Schedule Viewing</Button>
             </form>
           </SheetContent>
         </Sheet>

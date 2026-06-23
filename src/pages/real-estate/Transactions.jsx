@@ -118,7 +118,46 @@ export default function Transactions() {
               </h1>
               <p className="text-gray-600 mt-1">Track property transactions through the sales pipeline</p>
             </div>
-            <Button onClick={() => setShowForm(true)} className="bg-purple-600 hover:bg-purple-700 gap-2">
+            <Button onClick={() => {
+              const propertyId = prompt('Enter Property ID:');
+              if (!propertyId) return;
+              const propertyAddress = prompt('Enter Property Address:');
+              if (!propertyAddress) return;
+              const sellerId = prompt('Enter Seller ID:');
+              if (!sellerId) return;
+              const sellerName = prompt('Enter Seller Name:');
+              if (!sellerName) return;
+              const buyerId = prompt('Enter Buyer ID:');
+              if (!buyerId) return;
+              const buyerName = prompt('Enter Buyer Name:');
+              if (!buyerName) return;
+              const salePrice = prompt('Enter Sale Price:');
+              if (!salePrice) return;
+              const closingDate = prompt('Enter Closing Date (YYYY-MM-DD):');
+              if (!closingDate) return;
+              const agentName = prompt('Enter Agent Name:');
+              
+              RealEstateAPI.createTransaction(companyId, {
+                propertyId, propertyAddress, sellerId, sellerName,
+                buyerId, buyerName, salePrice: parseFloat(salePrice),
+                closingDate, agentId: '', agentName: agentName || '',
+                documents: [], notes: ''
+              }, user?.id).then(async () => {
+                const res = await powerSync.execute(
+                  'SELECT * FROM univ_re_transactions WHERE company_id = ? ORDER BY created_at DESC',
+                  [companyId]
+                );
+                const data = res.rows._array || Array.from(res.rows);
+                setTransactions(data);
+                const totalValue = data.reduce((sum, t) => sum + (t.sale_price || 0), 0);
+                const closedCount = data.filter(t => t.status === 'closed').length;
+                setStats({ total: data.length, value: totalValue, closed: closedCount });
+                toast.success('Transaction created');
+              }).catch(e => {
+                console.error('Error creating transaction:', e);
+                toast.error('Failed to create transaction');
+              });
+            }} className="bg-purple-600 hover:bg-purple-700 gap-2">
               <Plus className="w-4 h-4" /> New Transaction
             </Button>
           </div>
