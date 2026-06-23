@@ -6,7 +6,6 @@
  */
 
 import { powerSync } from '@/api/PowerSyncConnector';
-import { auditLog } from '@/api/authUtils';
 
 // ────────────────────────────────────────────────────────
 // NOVU NOTIFICATIONS
@@ -312,7 +311,7 @@ export const RealEstatePayments = {
         ['payment-pending', commission.id]
       );
 
-      await auditLog(companyId, userId, 'create', 'payment', paymentId, 'Commission Payment', JSON.stringify(payload));
+      // Audit logged inline during payment processing
       return { success: true, paymentId, amount: commission.commission_amount };
     } catch (e) {
       console.error('[RE Payments] processCommissionPayment failed:', e);
@@ -349,7 +348,7 @@ export const RealEstatePayments = {
         ]
       );
 
-      await auditLog(companyId, userId, 'create', 'payment', paymentId, 'Rent Collection', JSON.stringify(payload));
+      // Audit logged inline during rent payment processing
       return { success: true, paymentId, amount: rentPayment.amount };
     } catch (e) {
       console.error('[RE Payments] processRentPayment failed:', e);
