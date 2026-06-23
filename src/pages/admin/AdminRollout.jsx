@@ -7,7 +7,8 @@ export default function AdminRollout() {
     { id: 'f_orbit', name: 'OrbitBuild Studio', description: 'Enable the visual workflow builder', status: 'global_on', scope: 'All Tenants' },
     { id: 'f_ai', name: 'AI Legal Strategy', description: 'Enable LLaMa-3 case prediction', status: 'cohort', scope: 'Law Firms Only' },
     { id: 'f_learn', name: 'Online Learning', description: 'Enable LMS features', status: 'global_off', scope: 'None' },
-    { id: 'f_hr', name: 'HR Dashboard', description: 'Enable employee management', status: 'global_on', scope: 'All Tenants' }
+    { id: 'f_hr', name: 'HR Dashboard', description: 'Enable employee management', status: 'global_on', scope: 'All Tenants' },
+    { id: 'f_real_estate', name: 'Real Estate Vertical', description: 'Enable complete real estate management suite with properties, clients, viewings, transactions & leases', status: 'global_on', scope: 'All Tenants' }
   ]);
 
   const toggleStatus = (id) => {
