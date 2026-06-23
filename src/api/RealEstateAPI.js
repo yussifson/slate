@@ -1,0 +1,463 @@
+/**
+ * RealEstateAPI.js
+ * 
+ * Client-side API handlers for Real Estate vertical operations.
+ * Handles CRUD operations for properties, clients, viewings, offers, transactions, leases, etc.
+ */
+
+import { powerSync } from '@/api/PowerSyncConnector';
+import { auditLog } from '@/api/authUtils';
+
+export const RealEstateAPI = {
+  // ────────────────────────────────────────────────────────
+  // PROPERTIES
+  // ────────────────────────────────────────────────────────
+
+  async getProperties(companyId, filters = {}) {
+    try {
+      let query = 'SELECT * FROM univ_re_properties WHERE company_id = ?';
+      const params = [companyId];
+
+      if (filters.status) {
+        query += ' AND status = ?';
+        params.push(filters.status);
+      }
+      if (filters.agentId) {
+        query += ' AND agent_id = ?';
+        params.push(filters.agentId);
+      }
+      if (filters.propertyType) {
+        query += ' AND property_type = ?';
+        params.push(filters.propertyType);
+      }
+
+      query += ' ORDER BY created_at DESC';
+      const res = await powerSync.execute(query, params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getProperties failed:', e);
+      throw e;
+    }
+  },
+
+  async createProperty(companyId, data, userId) {
+    try {
+      const id = `prop_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_properties (id, company_id, address, city, state, country, zip_code, property_type, 
+         bedrooms, bathrooms, square_feet, lot_size, price, status, agent_id, agent_name, description, 
+         features, year_built, listing_date, last_updated, created_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.address, data.city, data.state, data.country, data.zipCode, data.propertyType,
+         data.bedrooms, data.bathrooms, data.squareFeet, data.lotSize, data.price, 'active', 
+         data.agentId, data.agentName, data.description, JSON.stringify(data.features || []), 
+         data.yearBuilt, data.listingDate || now, now, now]
+      );
+
+      await auditLog(companyId, userId, 'create', 'property', id, data.address, JSON.stringify(data));
+      return id;
+    } catch (e) {
+      console.error('[RE API] createProperty failed:', e);
+      throw e;
+    }
+  },
+
+  async updateProperty(companyId, propertyId, data, userId) {
+    try {
+      const updates = [];
+      const params = [];
+
+      Object.keys(data).forEach(key => {
+        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
+          updates.push(`${key} = ?`);
+          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        }
+      });
+
+      updates.push('last_updated = ?');
+      params.push(new Date().toISOString());
+      params.push(companyId);
+      params.push(propertyId);
+
+      const query = `UPDATE univ_re_properties SET ${updates.join(', ')} 
+                     WHERE company_id = ? AND id = ?`;
+      
+      await powerSync.execute(query, params);
+      await auditLog(companyId, userId, 'update', 'property', propertyId, data.address || '', JSON.stringify(data));
+    } catch (e) {
+      console.error('[RE API] updateProperty failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // CLIENTS (Buyers/Sellers/Tenants)
+  // ────────────────────────────────────────────────────────
+
+  async getClients(companyId, filters = {}) {
+    try {
+      let query = 'SELECT * FROM univ_re_clients WHERE company_id = ?';
+      const params = [companyId];
+
+      if (filters.type) {
+        query += ' AND type = ?';
+        params.push(filters.type);
+      }
+      if (filters.agentId) {
+        query += ' AND assigned_agent = ?';
+        params.push(filters.agentId);
+      }
+      if (filters.status) {
+        query += ' AND status = ?';
+        params.push(filters.status);
+      }
+
+      query += ' ORDER BY created_at DESC';
+      const res = await powerSync.execute(query, params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getClients failed:', e);
+      throw e;
+    }
+  },
+
+  async createClient(companyId, data, userId) {
+    try {
+      const id = `client_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_clients (id, company_id, name, email, phone, type, address, city, state, 
+         country, budget, preferences, status, assigned_agent, notes, created_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.name, data.email, data.phone, data.type, data.address, data.city, 
+         data.state, data.country, data.budget, JSON.stringify(data.preferences || []), 
+         'active', data.assignedAgent, data.notes, now]
+      );
+
+      await auditLog(companyId, userId, 'create', 'client', id, data.name, JSON.stringify(data));
+      return id;
+    } catch (e) {
+      console.error('[RE API] createClient failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // VIEWINGS
+  // ────────────────────────────────────────────────────────
+
+  async getViewings(companyId, filters = {}) {
+    try {
+      let query = 'SELECT * FROM univ_re_viewings WHERE company_id = ?';
+      const params = [companyId];
+
+      if (filters.propertyId) {
+        query += ' AND property_id = ?';
+        params.push(filters.propertyId);
+      }
+      if (filters.clientId) {
+        query += ' AND client_id = ?';
+        params.push(filters.clientId);
+      }
+      if (filters.status) {
+        query += ' AND status = ?';
+        params.push(filters.status);
+      }
+
+      query += ' ORDER BY viewing_date ASC';
+      const res = await powerSync.execute(query, params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getViewings failed:', e);
+      throw e;
+    }
+  },
+
+  async createViewing(companyId, data, userId) {
+    try {
+      const id = `viewing_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_viewings (id, company_id, property_id, property_address, client_id, client_name, 
+         agent_id, agent_name, viewing_date, viewing_time, status, duration_minutes, feedback, notes, created_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.propertyId, data.propertyAddress, data.clientId, data.clientName, 
+         data.agentId, data.agentName, data.viewingDate, data.viewingTime, 'scheduled', 
+         data.durationMinutes || 30, data.feedback, data.notes, now]
+      );
+
+      await auditLog(companyId, userId, 'create', 'viewing', id, `${data.clientName} - ${data.propertyAddress}`, JSON.stringify(data));
+      return id;
+    } catch (e) {
+      console.error('[RE API] createViewing failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // OFFERS
+  // ────────────────────────────────────────────────────────
+
+  async getOffers(companyId, filters = {}) {
+    try {
+      let query = 'SELECT * FROM univ_re_offers WHERE company_id = ?';
+      const params = [companyId];
+
+      if (filters.propertyId) {
+        query += ' AND property_id = ?';
+        params.push(filters.propertyId);
+      }
+      if (filters.status) {
+        query += ' AND status = ?';
+        params.push(filters.status);
+      }
+
+      query += ' ORDER BY offer_date DESC';
+      const res = await powerSync.execute(query, params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getOffers failed:', e);
+      throw e;
+    }
+  },
+
+  async createOffer(companyId, data, userId) {
+    try {
+      const id = `offer_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_offers (id, company_id, property_id, property_address, buyer_id, buyer_name, 
+         offer_amount, earnest_money, contingencies, offer_date, expiration_date, status, agent_id, agent_name, notes, created_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.propertyId, data.propertyAddress, data.buyerId, data.buyerName, 
+         data.offerAmount, data.earnestMoney, JSON.stringify(data.contingencies || []), 
+         now, data.expirationDate, 'pending', data.agentId, data.agentName, data.notes, now]
+      );
+
+      await auditLog(companyId, userId, 'create', 'offer', id, `Offer on ${data.propertyAddress}`, JSON.stringify(data));
+      return id;
+    } catch (e) {
+      console.error('[RE API] createOffer failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // TRANSACTIONS
+  // ────────────────────────────────────────────────────────
+
+  async getTransactions(companyId, filters = {}) {
+    try {
+      let query = 'SELECT * FROM univ_re_transactions WHERE company_id = ?';
+      const params = [companyId];
+
+      if (filters.status) {
+        query += ' AND status = ?';
+        params.push(filters.status);
+      }
+
+      query += ' ORDER BY closing_date DESC';
+      const res = await powerSync.execute(query, params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getTransactions failed:', e);
+      throw e;
+    }
+  },
+
+  async createTransaction(companyId, data, userId) {
+    try {
+      const id = `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_transactions (id, company_id, property_id, property_address, seller_id, seller_name, 
+         buyer_id, buyer_name, sale_price, closing_date, status, agent_id, agent_name, documents, notes, created_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.propertyId, data.propertyAddress, data.sellerId, data.sellerName, 
+         data.buyerId, data.buyerName, data.salePrice, data.closingDate, 'pending', 
+         data.agentId, data.agentName, JSON.stringify(data.documents || []), data.notes, now]
+      );
+
+      await auditLog(companyId, userId, 'create', 'transaction', id, `Sale: ${data.propertyAddress}`, JSON.stringify(data));
+      return id;
+    } catch (e) {
+      console.error('[RE API] createTransaction failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // LEASES
+  // ────────────────────────────────────────────────────────
+
+  async getLeases(companyId, filters = {}) {
+    try {
+      let query = 'SELECT * FROM univ_re_leases WHERE company_id = ?';
+      const params = [companyId];
+
+      if (filters.status) {
+        query += ' AND status = ?';
+        params.push(filters.status);
+      }
+
+      query += ' ORDER BY start_date DESC';
+      const res = await powerSync.execute(query, params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getLeases failed:', e);
+      throw e;
+    }
+  },
+
+  async createLease(companyId, data, userId) {
+    try {
+      const id = `lease_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_leases (id, company_id, property_id, property_address, tenant_id, tenant_name, 
+         landlord_id, landlord_name, start_date, end_date, monthly_rent, security_deposit, status, terms, agent_id, agent_name, created_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.propertyId, data.propertyAddress, data.tenantId, data.tenantName, 
+         data.landlordId, data.landlordName, data.startDate, data.endDate, data.monthlyRent, 
+         data.securityDeposit, 'active', JSON.stringify(data.terms || []), data.agentId, data.agentName, now]
+      );
+
+      await auditLog(companyId, userId, 'create', 'lease', id, `Lease: ${data.propertyAddress}`, JSON.stringify(data));
+      return id;
+    } catch (e) {
+      console.error('[RE API] createLease failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // RENT PAYMENTS
+  // ────────────────────────────────────────────────────────
+
+  async getRentPayments(companyId, filters = {}) {
+    try {
+      let query = 'SELECT * FROM univ_re_rent_payments WHERE company_id = ?';
+      const params = [companyId];
+
+      if (filters.leaseId) {
+        query += ' AND lease_id = ?';
+        params.push(filters.leaseId);
+      }
+      if (filters.status) {
+        query += ' AND status = ?';
+        params.push(filters.status);
+      }
+
+      query += ' ORDER BY due_date ASC';
+      const res = await powerSync.execute(query, params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getRentPayments failed:', e);
+      throw e;
+    }
+  },
+
+  async recordRentPayment(companyId, data, userId) {
+    try {
+      const id = `payment_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_rent_payments (id, company_id, lease_id, property_id, tenant_id, tenant_name, 
+         amount, due_date, payment_date, payment_method, status, notes, created_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.leaseId, data.propertyId, data.tenantId, data.tenantName, 
+         data.amount, data.dueDate, now, data.paymentMethod, 'paid', data.notes, now]
+      );
+
+      await auditLog(companyId, userId, 'create', 'rent_payment', id, `Payment from ${data.tenantName}`, JSON.stringify(data));
+      return id;
+    } catch (e) {
+      console.error('[RE API] recordRentPayment failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // MAINTENANCE REQUESTS
+  // ────────────────────────────────────────────────────────
+
+  async getMaintenanceRequests(companyId, filters = {}) {
+    try {
+      let query = 'SELECT * FROM univ_re_maintenance_requests WHERE company_id = ?';
+      const params = [companyId];
+
+      if (filters.propertyId) {
+        query += ' AND property_id = ?';
+        params.push(filters.propertyId);
+      }
+      if (filters.status) {
+        query += ' AND status = ?';
+        params.push(filters.status);
+      }
+
+      query += ' ORDER BY created_at DESC';
+      const res = await powerSync.execute(query, params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getMaintenanceRequests failed:', e);
+      throw e;
+    }
+  },
+
+  async createMaintenanceRequest(companyId, data, userId) {
+    try {
+      const id = `maint_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_maintenance_requests (id, company_id, property_id, property_address, reported_by, 
+         reported_by_name, issue_description, priority, status, assigned_to, completion_date, cost, notes, created_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.propertyId, data.propertyAddress, data.reportedBy, data.reportedByName, 
+         data.issueDescription, data.priority || 'normal', 'open', data.assignedTo, null, data.cost || 0, data.notes, now]
+      );
+
+      await auditLog(companyId, userId, 'create', 'maintenance', id, `Maintenance: ${data.propertyAddress}`, JSON.stringify(data));
+      return id;
+    } catch (e) {
+      console.error('[RE API] createMaintenanceRequest failed:', e);
+      throw e;
+    }
+  },
+
+  async updateMaintenanceRequest(companyId, requestId, data, userId) {
+    try {
+      const updates = [];
+      const params = [];
+
+      Object.keys(data).forEach(key => {
+        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
+          updates.push(`${key} = ?`);
+          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        }
+      });
+
+      params.push(companyId);
+      params.push(requestId);
+
+      const query = `UPDATE univ_re_maintenance_requests SET ${updates.join(', ')} 
+                     WHERE company_id = ? AND id = ?`;
+      
+      await powerSync.execute(query, params);
+      await auditLog(companyId, userId, 'update', 'maintenance', requestId, '', JSON.stringify(data));
+    } catch (e) {
+      console.error('[RE API] updateMaintenanceRequest failed:', e);
+      throw e;
+    }
+  },
+};
+
+export default RealEstateAPI;
