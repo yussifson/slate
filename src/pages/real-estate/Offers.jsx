@@ -87,7 +87,46 @@ export default function Offers() {
             </h1>
             <p className="text-gray-600 mt-1">Track and negotiate property offers</p>
           </div>
-          <Button onClick={() => setShowForm(true)} className="bg-amber-600 hover:bg-amber-700 gap-2">
+          <Button onClick={() => {
+            const propertyId = prompt('Enter Property ID:');
+            if (!propertyId) return;
+            const propertyAddress = prompt('Enter Property Address:');
+            if (!propertyAddress) return;
+            const buyerId = prompt('Enter Buyer ID:');
+            if (!buyerId) return;
+            const buyerName = prompt('Enter Buyer Name:');
+            if (!buyerName) return;
+            const offerAmount = prompt('Enter Offer Amount:');
+            if (!offerAmount) return;
+            const earnestMoney = prompt('Enter Earnest Money:');
+            if (!earnestMoney) return;
+            const expirationDate = prompt('Enter Expiration Date (YYYY-MM-DD):');
+            if (!expirationDate) return;
+            const agentName = prompt('Enter Agent Name:');
+            
+            RealEstateAPI.createOffer(companyId, {
+              propertyId, propertyAddress, buyerId, buyerName,
+              offerAmount: parseFloat(offerAmount),
+              earnestMoney: parseFloat(earnestMoney),
+              contingencies: [], expirationDate,
+              agentId: '', agentName: agentName || '', notes: ''
+            }, user?.id).then(async () => {
+              const res = await powerSync.execute(
+                'SELECT * FROM univ_re_offers WHERE company_id = ? ORDER BY offer_date DESC',
+                [companyId]
+              );
+              const data = res.rows._array || Array.from(res.rows);
+              setOffers(data);
+              const pending = data.filter(o => o.status === 'pending').length;
+              const accepted = data.filter(o => o.status === 'accepted').length;
+              const avgOffer = data.length > 0 ? data.reduce((sum, o) => sum + (o.offer_amount || 0), 0) / data.length : 0;
+              setStats({ total: data.length, pending, accepted, avgOffer });
+              toast.success('Offer created');
+            }).catch(e => {
+              console.error('Error creating offer:', e);
+              toast.error('Failed to create offer');
+            });
+          }} className="bg-amber-600 hover:bg-amber-700 gap-2">
             <Plus className="w-4 h-4" /> New Offer
           </Button>
         </div>
