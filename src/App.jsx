@@ -217,6 +217,12 @@ import RealEstateDashboard from './pages/real-estate/RealEstateDashboard';
 import RealEstateProperties from './pages/real-estate/Properties';
 import RealEstateClients from './pages/real-estate/Clients';
 import RealEstateLeases from './pages/real-estate/Leases';
+import RealEstateViewings from './pages/real-estate/Viewings';
+import RealEstateTransactions from './pages/real-estate/Transactions';
+import RealEstateOffers from './pages/real-estate/Offers';
+import RealEstateCommissions from './pages/real-estate/Commissions';
+import RealEstateRentPayments from './pages/real-estate/RentPayments';
+import RealEstateMaintenance from './pages/real-estate/Maintenance';
 
 // Religion Pages
 import ReligionMembers from './pages/religion/Members';
@@ -726,6 +732,12 @@ function PlatformRoutes() {
       <Route path="/real-estate/properties" element={<RealEstateProperties />} />
       <Route path="/real-estate/clients" element={<RealEstateClients />} />
       <Route path="/real-estate/leases" element={<RealEstateLeases />} />
+      <Route path="/real-estate/viewings" element={<RealEstateViewings />} />
+      <Route path="/real-estate/transactions" element={<RealEstateTransactions />} />
+      <Route path="/real-estate/offers" element={<RealEstateOffers />} />
+      <Route path="/real-estate/commissions" element={<RealEstateCommissions />} />
+      <Route path="/real-estate/rent-payments" element={<RealEstateRentPayments />} />
+      <Route path="/real-estate/maintenance" element={<RealEstateMaintenance />} />
 
       {/* Religion Suite */}
       <Route path="/members" element={<Clients />} />
