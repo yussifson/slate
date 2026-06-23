@@ -198,6 +198,7 @@ export const RealEstateAPI = {
          data.agentId, data.agentName, data.viewingDate, data.viewingTime, 'scheduled', 
          data.durationMinutes || 30, data.feedback, data.notes, now]
       );
+      
       // Audit logged inline during viewing creation
       return id;
     } catch (e) {

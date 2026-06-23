@@ -35,6 +35,31 @@ class SupabaseConnector {
           switch (op.op) {
             case 'PUT': {
               let payload = { ...op.opData, id: op.id };
+              
+              // Validate that ID is not empty for UUID-based tables
+              const realEstatateTables = ['univ_re_properties', 'univ_re_clients', 'univ_re_viewings', 
+                'univ_re_offers', 'univ_re_transactions', 'univ_re_commissions', 'univ_re_documents', 
+                'univ_re_leases', 'univ_re_rent_payments', 'univ_re_maintenance_requests'];
+              
+              if (realEstatateTables.includes(op.table)) {
+                // For Real Estate tables, ensure ID exists and is valid
+                if (!op.id || op.id === '' || op.id === null || op.id === undefined) {
+                  console.error('[PowerSync] CRITICAL: Skipping PUT with empty ID for RE table:', op.table, 'op.id:', op.id);
+                  continue; // Skip this operation to prevent UUID errors
+                }
+                // For RE tables, build payload without the potentially-empty id from opData
+                payload = {};
+                if (op.opData) {
+                  for (const [k, v] of Object.entries(op.opData)) {
+                    // Skip empty id fields from opData, we'll use op.id instead
+                    if (k === 'id' && (!v || v === '')) continue;
+                    payload[k] = v;
+                  }
+                }
+                // Ensure the correct op.id is used
+                payload.id = op.id;
+              }
+              
               if (op.table === 'profiles') {
                 const allowed = ['id', 'created_at', 'updated_at', 'created_by', 'role', 'company_id', 'company_name', 'phone', 'avatar_url', 'department', 'bar_number'];
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
@@ -43,10 +68,6 @@ class SupabaseConnector {
                 const allowed = ['id', 'company_id', 'created_at', 'status', 'rule_id'];
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
               }
-              // Real Estate tables - allow all fields
-              const realEstatateTables = ['univ_re_properties', 'univ_re_clients', 'univ_re_viewings', 
-                'univ_re_offers', 'univ_re_transactions', 'univ_re_commissions', 'univ_re_documents', 
-                'univ_re_leases', 'univ_re_rent_payments', 'univ_re_maintenance_requests'];
               
               // Cast text id to UUID for tables that use UUID primary keys
               if (op.table === 'invoices' && payload.id && typeof payload.id === 'string') {
