@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Banknote, Home, User, DollarSign, CheckCircle, AlertCircle, Plus, MoreVertical } from 'lucide-react';
+import { Banknote, Home, User, DollarSign, CheckCircle, AlertCircle, Plus, MoreVertical, Search, Edit, Trash2 } from 'lucide-react';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Input } from '@/components/ui/input';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import RealEstateAPI from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
 
@@ -27,10 +29,24 @@ export default function Transactions() {
   const powerSync = usePowerSync();
 
   const [transactions, setTransactions] = useState([]);
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [editingId, setEditingId] = useState(null);
   const [stats, setStats] = useState({ total: 0, value: 0, closed: 0 });
+  const [formData, setFormData] = useState({
+    propertyAddress: '',
+    buyerName: '',
+    sellerName: '',
+    salePrice: 0,
+    closingDate: '',
+    agentName: '',
+    status: 'offer_accepted',
+    notes: '',
+  });
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -54,8 +70,69 @@ export default function Transactions() {
     if (companyId) fetchTransactions();
   }, [companyId]);
 
+  useEffect(() => {
+    let filtered = transactions;
+    if (search) {
+      filtered = filtered.filter(t =>
+        t.property_address?.toLowerCase().includes(search.toLowerCase()) ||
+        t.buyer_name?.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(t => t.status === statusFilter);
+    }
+    setFilteredTransactions(filtered);
+  }, [transactions, search, statusFilter]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (!formData.propertyAddress || !formData.buyerName || !formData.salePrice || !formData.closingDate) {
+        toast.error('Please fill in all required fields');
+        return;
+      }
+
+      if (editingId) {
+        await RealEstateAPI.updateTransaction(companyId, editingId, formData, user.id);
+        toast.success('Transaction updated');
+      } else {
+        await RealEstateAPI.createTransaction(companyId, formData, user.id);
+        toast.success('Transaction created');
+      }
+
+      setShowForm(false);
+      setEditingId(null);
+      setFormData({ propertyAddress: '', buyerName: '', sellerName: '', salePrice: 0, closingDate: '', agentName: '', status: 'offer_accepted', notes: '' });
+
+      const res = await powerSync.execute('SELECT * FROM univ_re_transactions WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+      const data = res.rows._array || Array.from(res.rows);
+      setTransactions(data);
+      const totalValue = data.reduce((sum, t) => sum + (t.sale_price || 0), 0);
+      const closedCount = data.filter(t => t.status === 'closed').length;
+      setStats({ total: data.length, value: totalValue, closed: closedCount });
+    } catch (e) {
+      console.error('[Transactions] Submit failed:', e);
+      toast.error('Failed to save transaction');
+    }
+  };
+
+  const handleEdit = (transaction) => {
+    setFormData({
+      propertyAddress: transaction.property_address || '',
+      buyerName: transaction.buyer_name || '',
+      sellerName: transaction.seller_name || '',
+      salePrice: transaction.sale_price || 0,
+      closingDate: transaction.closing_date || '',
+      agentName: transaction.agent_name || '',
+      status: transaction.status || 'offer_accepted',
+      notes: transaction.notes || '',
+    });
+    setEditingId(transaction.id);
+    setShowForm(true);
+  };
+
   const getTransactionsByStage = (stage) => {
-    return transactions.filter(t => t.status === stage);
+    return filteredTransactions.filter(t => t.status === stage);
   };
 
   const KanbanColumn = ({ stage, transactions }) => (
@@ -118,46 +195,7 @@ export default function Transactions() {
               </h1>
               <p className="text-gray-600 mt-1">Track property transactions through the sales pipeline</p>
             </div>
-            <Button onClick={() => {
-              const propertyId = prompt('Enter Property ID:');
-              if (!propertyId) return;
-              const propertyAddress = prompt('Enter Property Address:');
-              if (!propertyAddress) return;
-              const sellerId = prompt('Enter Seller ID:');
-              if (!sellerId) return;
-              const sellerName = prompt('Enter Seller Name:');
-              if (!sellerName) return;
-              const buyerId = prompt('Enter Buyer ID:');
-              if (!buyerId) return;
-              const buyerName = prompt('Enter Buyer Name:');
-              if (!buyerName) return;
-              const salePrice = prompt('Enter Sale Price:');
-              if (!salePrice) return;
-              const closingDate = prompt('Enter Closing Date (YYYY-MM-DD):');
-              if (!closingDate) return;
-              const agentName = prompt('Enter Agent Name:');
-              
-              RealEstateAPI.createTransaction(companyId, {
-                propertyId, propertyAddress, sellerId, sellerName,
-                buyerId, buyerName, salePrice: parseFloat(salePrice),
-                closingDate, agentId: '', agentName: agentName || '',
-                documents: [], notes: ''
-              }, user?.id).then(async () => {
-                const res = await powerSync.execute(
-                  'SELECT * FROM univ_re_transactions WHERE company_id = ? ORDER BY created_at DESC',
-                  [companyId]
-                );
-                const data = res.rows._array || Array.from(res.rows);
-                setTransactions(data);
-                const totalValue = data.reduce((sum, t) => sum + (t.sale_price || 0), 0);
-                const closedCount = data.filter(t => t.status === 'closed').length;
-                setStats({ total: data.length, value: totalValue, closed: closedCount });
-                toast.success('Transaction created');
-              }).catch(e => {
-                console.error('Error creating transaction:', e);
-                toast.error('Failed to create transaction');
-              });
-            }} className="bg-purple-600 hover:bg-purple-700 gap-2">
+            <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({ propertyAddress: '', buyerName: '', sellerName: '', salePrice: 0, closingDate: '', agentName: '', status: 'offer_accepted', notes: '' }); }} className="bg-purple-600 hover:bg-purple-700 gap-2">
               <Plus className="w-4 h-4" /> New Transaction
             </Button>
           </div>
@@ -251,6 +289,74 @@ export default function Transactions() {
                 </div>
               </div>
             )}
+          </SheetContent>
+        </Sheet>
+
+        {/* Form Modal */}
+        <Sheet open={showForm} onOpenChange={setShowForm}>
+          <SheetContent className="w-full max-w-md overflow-y-auto">
+            <SheetHeader>
+              <SheetTitle>{editingId ? 'Edit Transaction' : 'New Transaction'}</SheetTitle>
+              <SheetDescription>Fill in the transaction details</SheetDescription>
+            </SheetHeader>
+            <form onSubmit={handleSubmit} className="space-y-4 mt-6">
+              <div>
+                <label className="text-sm font-medium">Property Address *</label>
+                <Input value={formData.propertyAddress} onChange={(e) => setFormData({ ...formData, propertyAddress: e.target.value })} required />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-sm font-medium">Buyer *</label>
+                  <Input value={formData.buyerName} onChange={(e) => setFormData({ ...formData, buyerName: e.target.value })} required />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Seller</label>
+                  <Input value={formData.sellerName} onChange={(e) => setFormData({ ...formData, sellerName: e.target.value })} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-sm font-medium">Sale Price *</label>
+                  <Input type="number" value={formData.salePrice} onChange={(e) => setFormData({ ...formData, salePrice: parseFloat(e.target.value) })} required />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Closing Date *</label>
+                  <Input type="date" value={formData.closingDate} onChange={(e) => setFormData({ ...formData, closingDate: e.target.value })} required />
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Agent</label>
+                <Input value={formData.agentName} onChange={(e) => setFormData({ ...formData, agentName: e.target.value })} />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Status</label>
+                <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="offer_accepted">Offer Accepted</SelectItem>
+                    <SelectItem value="inspection">Under Inspection</SelectItem>
+                    <SelectItem value="appraisal">Appraisal</SelectItem>
+                    <SelectItem value="financing">Financing</SelectItem>
+                    <SelectItem value="ready_close">Ready to Close</SelectItem>
+                    <SelectItem value="closed">Closed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Notes</label>
+                <textarea value={formData.notes} onChange={(e) => setFormData({ ...formData, notes: e.target.value })} className="w-full p-2 border rounded text-sm" rows="2" />
+              </div>
+              <div className="flex gap-2 pt-4">
+                <Button type="submit" className="flex-1">
+                  {editingId ? 'Update' : 'Create'} Transaction
+                </Button>
+                <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
+                  Cancel
+                </Button>
+              </div>
+            </form>
           </SheetContent>
         </Sheet>
       </div>

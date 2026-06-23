@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FileText, TrendingUp, Home, User, Calendar, DollarSign, Percent, Plus, Search, Filter } from 'lucide-react';
+import { TrendingUp, Search, Plus, Edit, Trash2, DollarSign, Calendar } from 'lucide-react';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
@@ -8,15 +8,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import RealEstateAPI from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
 
-const statusConfig = {
-  pending: { color: 'text-amber-600', bg: 'bg-amber-50', badge: 'bg-amber-100 text-amber-800' },
-  accepted: { color: 'text-green-600', bg: 'bg-green-50', badge: 'bg-green-100 text-green-800' },
-  rejected: { color: 'text-red-600', bg: 'bg-red-50', badge: 'bg-red-100 text-red-800' },
-  expired: { color: 'text-gray-600', bg: 'bg-gray-50', badge: 'bg-gray-100 text-gray-800' }
+const statusColors = {
+  'pending': 'bg-yellow-100 text-yellow-800',
+  'accepted': 'bg-green-100 text-green-800',
+  'rejected': 'bg-red-100 text-red-800',
+  'expired': 'bg-gray-100 text-gray-800',
 };
 
 export default function Offers() {
@@ -30,31 +31,36 @@ export default function Offers() {
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('date');
   const [showForm, setShowForm] = useState(false);
-  const [selectedOffer, setSelectedOffer] = useState(null);
-  const [stats, setStats] = useState({ total: 0, pending: 0, accepted: 0, avgOffer: 0 });
+  const [editingId, setEditingId] = useState(null);
+  const [formData, setFormData] = useState({
+    propertyAddress: '',
+    buyerName: '',
+    offerAmount: 0,
+    earnestMoney: 0,
+    contingencies: '',
+    expirationDate: '',
+    agentName: '',
+    notes: '',
+    status: 'pending',
+  });
 
   useEffect(() => {
     const fetchOffers = async () => {
       try {
         const res = await powerSync.execute(
-          'SELECT * FROM univ_re_offers WHERE company_id = ? ORDER BY offer_date DESC',
+          'SELECT * FROM univ_re_offers WHERE company_id = ? ORDER BY created_at DESC',
           [companyId]
         );
         const data = res.rows._array || Array.from(res.rows);
         setOffers(data);
-
-        const pending = data.filter(o => o.status === 'pending').length;
-        const accepted = data.filter(o => o.status === 'accepted').length;
-        const avgOffer = data.length > 0 ? data.reduce((sum, o) => sum + (o.offer_amount || 0), 0) / data.length : 0;
-        setStats({ total: data.length, pending, accepted, avgOffer });
       } catch (e) {
-        console.error('[Offers]:', e);
+        console.error('[Offers] Fetch failed:', e);
         toast.error('Failed to load offers');
       }
       setIsLoading(false);
     };
+
     if (companyId) fetchOffers();
   }, [companyId]);
 
@@ -69,243 +75,218 @@ export default function Offers() {
     if (statusFilter !== 'all') {
       filtered = filtered.filter(o => o.status === statusFilter);
     }
-    if (sortBy === 'amount') {
-      filtered.sort((a, b) => b.offer_amount - a.offer_amount);
-    }
     setFilteredOffers(filtered);
-  }, [offers, search, statusFilter, sortBy]);
+  }, [offers, search, statusFilter]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (!formData.propertyAddress || !formData.buyerName || !formData.offerAmount || !formData.expirationDate) {
+        toast.error('Please fill in all required fields');
+        return;
+      }
+
+      if (editingId) {
+        await RealEstateAPI.updateOffer(companyId, editingId, formData, user.id);
+        toast.success('Offer updated successfully');
+      } else {
+        await RealEstateAPI.createOffer(companyId, formData, user.id);
+        toast.success('Offer created successfully');
+      }
+
+      setShowForm(false);
+      setEditingId(null);
+      setFormData({
+        propertyAddress: '', buyerName: '', offerAmount: 0, earnestMoney: 0,
+        contingencies: '', expirationDate: '', agentName: '', notes: '', status: 'pending',
+      });
+
+      const res = await powerSync.execute(
+        'SELECT * FROM univ_re_offers WHERE company_id = ? ORDER BY created_at DESC',
+        [companyId]
+      );
+      setOffers(res.rows._array || Array.from(res.rows));
+    } catch (e) {
+      console.error('[Offers] Submit failed:', e);
+      toast.error('Failed to save offer');
+    }
+  };
+
+  const handleEdit = (offer) => {
+    setFormData({
+      propertyAddress: offer.property_address || '',
+      buyerName: offer.buyer_name || '',
+      offerAmount: offer.offer_amount || 0,
+      earnestMoney: offer.earnest_money || 0,
+      contingencies: offer.contingencies || '',
+      expirationDate: offer.expiration_date || '',
+      agentName: offer.agent_name || '',
+      notes: offer.notes || '',
+      status: offer.status || 'pending',
+    });
+    setEditingId(offer.id);
+    setShowForm(true);
+  };
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-              <div className="p-2 bg-amber-100 rounded-lg"><FileText className="w-7 h-7 text-amber-600" /></div>
-              Offer Management
-            </h1>
-            <p className="text-gray-600 mt-1">Track and negotiate property offers</p>
+    <div className="space-y-6 p-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Offers</h1>
+          <p className="text-sm text-muted-foreground mt-1">Track and manage property offers</p>
+        </div>
+        <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({ propertyAddress: '', buyerName: '', offerAmount: 0, earnestMoney: 0, contingencies: '', expirationDate: '', agentName: '', notes: '', status: 'pending' }); }} className="gap-2">
+          <Plus className="w-4 h-4" /> New Offer
+        </Button>
+      </div>
+
+      <div className="flex gap-4 flex-wrap">
+        <div className="flex-1 min-w-64">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input placeholder="Search by property, buyer..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
           </div>
-          <Button onClick={() => {
-            const propertyId = prompt('Enter Property ID:');
-            if (!propertyId) return;
-            const propertyAddress = prompt('Enter Property Address:');
-            if (!propertyAddress) return;
-            const buyerId = prompt('Enter Buyer ID:');
-            if (!buyerId) return;
-            const buyerName = prompt('Enter Buyer Name:');
-            if (!buyerName) return;
-            const offerAmount = prompt('Enter Offer Amount:');
-            if (!offerAmount) return;
-            const earnestMoney = prompt('Enter Earnest Money:');
-            if (!earnestMoney) return;
-            const expirationDate = prompt('Enter Expiration Date (YYYY-MM-DD):');
-            if (!expirationDate) return;
-            const agentName = prompt('Enter Agent Name:');
-            
-            RealEstateAPI.createOffer(companyId, {
-              propertyId, propertyAddress, buyerId, buyerName,
-              offerAmount: parseFloat(offerAmount),
-              earnestMoney: parseFloat(earnestMoney),
-              contingencies: [], expirationDate,
-              agentId: '', agentName: agentName || '', notes: ''
-            }, user?.id).then(async () => {
-              const res = await powerSync.execute(
-                'SELECT * FROM univ_re_offers WHERE company_id = ? ORDER BY offer_date DESC',
-                [companyId]
-              );
-              const data = res.rows._array || Array.from(res.rows);
-              setOffers(data);
-              const pending = data.filter(o => o.status === 'pending').length;
-              const accepted = data.filter(o => o.status === 'accepted').length;
-              const avgOffer = data.length > 0 ? data.reduce((sum, o) => sum + (o.offer_amount || 0), 0) / data.length : 0;
-              setStats({ total: data.length, pending, accepted, avgOffer });
-              toast.success('Offer created');
-            }).catch(e => {
-              console.error('Error creating offer:', e);
-              toast.error('Failed to create offer');
-            });
-          }} className="bg-amber-600 hover:bg-amber-700 gap-2">
-            <Plus className="w-4 h-4" /> New Offer
-          </Button>
         </div>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-40">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="pending">Pending</SelectItem>
+            <SelectItem value="accepted">Accepted</SelectItem>
+            <SelectItem value="rejected">Rejected</SelectItem>
+            <SelectItem value="expired">Expired</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-4 gap-4 mb-8">
-          <Card className="border-0 shadow-md bg-gradient-to-br from-white to-amber-50">
-            <CardContent className="p-5">
-              <p className="text-gray-600 text-xs uppercase font-semibold mb-2">Total Offers</p>
-              <p className="text-3xl font-bold text-amber-600">{stats.total}</p>
-              <p className="text-xs text-gray-500 mt-2">All time</p>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-md bg-gradient-to-br from-white to-orange-50">
-            <CardContent className="p-5">
-              <p className="text-gray-600 text-xs uppercase font-semibold mb-2">Pending</p>
-              <p className="text-3xl font-bold text-orange-600">{stats.pending}</p>
-              <p className="text-xs text-gray-500 mt-2">Awaiting response</p>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-md bg-gradient-to-br from-white to-green-50">
-            <CardContent className="p-5">
-              <p className="text-gray-600 text-xs uppercase font-semibold mb-2">Accepted</p>
-              <p className="text-3xl font-bold text-green-600">{stats.accepted}</p>
-              <p className="text-xs text-gray-500 mt-2">Converted</p>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-md bg-gradient-to-br from-white to-blue-50">
-            <CardContent className="p-5">
-              <p className="text-gray-600 text-xs uppercase font-semibold mb-2">Avg Offer</p>
-              <p className="text-3xl font-bold text-blue-600">${(stats.avgOffer / 1000).toFixed(0)}K</p>
-              <p className="text-xs text-gray-500 mt-2">Mean value</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Filters */}
-        <div className="flex gap-4 mb-6">
-          <Input
-            placeholder="Search property or buyer..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 border-gray-200"
-            icon={<Search className="w-4 h-4" />}
-          />
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-200 rounded-lg bg-white text-sm"
-          >
-            <option value="all">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="accepted">Accepted</option>
-            <option value="rejected">Rejected</option>
-            <option value="expired">Expired</option>
-          </select>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="px-4 py-2 border border-gray-200 rounded-lg bg-white text-sm"
-          >
-            <option value="date">Newest First</option>
-            <option value="amount">Highest Amount</option>
-          </select>
-        </div>
-
-        {/* Offers Table */}
-        <Card className="border-0 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-amber-600 to-orange-600 text-white">
-            <CardTitle>Active Offers</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Property</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Buyer</th>
-                    <th className="px-6 py-3 text-right text-xs font-semibold text-gray-700">Offer Amount</th>
-                    <th className="px-6 py-3 text-right text-xs font-semibold text-gray-700">Earnest Money</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Expires</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredOffers.map((offer, idx) => (
-                    <tr
-                      key={offer.id}
-                      onClick={() => setSelectedOffer(offer)}
-                      className={`border-b border-gray-100 hover:bg-amber-50 cursor-pointer transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
-                    >
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="p-2 bg-amber-100 rounded"><Home className="w-4 h-4 text-amber-600" /></div>
-                          <div>
-                            <p className="font-semibold text-gray-900 text-sm">{offer.property_address}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <div className="p-2 bg-blue-100 rounded-full"><User className="w-3 h-3 text-blue-600" /></div>
-                          <p className="font-medium text-gray-900 text-sm">{offer.buyer_name}</p>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <p className="text-lg font-bold text-amber-600">${offer.offer_amount?.toLocaleString()}</p>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <p className="text-sm text-gray-700">${offer.earnest_money?.toLocaleString()}</p>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2 text-gray-700 text-sm">
-                          <Calendar className="w-4 h-4" /> {offer.expiration_date}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <Badge className={statusConfig[offer.status]?.badge}>{offer.status}</Badge>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Offer Details Sheet */}
-        <Sheet open={!!selectedOffer} onOpenChange={(open) => !open && setSelectedOffer(null)}>
-          <SheetContent side="right" className="w-full sm:w-96">
-            <SheetHeader>
-              <SheetTitle>Offer Details</SheetTitle>
-            </SheetHeader>
-            {selectedOffer && (
-              <div className="space-y-6 mt-6">
-                <div className={`p-4 rounded-lg ${statusConfig[selectedOffer.status]?.bg} border-l-4`}>
-                  <p className={`text-sm font-semibold ${statusConfig[selectedOffer.status]?.color}`}>
-                    {selectedOffer.status.toUpperCase()}
-                  </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredOffers.map(offer => (
+          <Card key={offer.id} className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <CardTitle className="text-base">{offer.property_address || 'No address'}</CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1">{offer.buyer_name || 'No buyer'}</p>
                 </div>
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Property</p>
-                    <p className="text-lg font-bold text-gray-900">{selectedOffer.property_address}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Buyer</p>
-                    <p className="font-medium text-gray-900">{selectedOffer.buyer_name}</p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Offer Amount</p>
-                      <p className="text-2xl font-bold text-amber-600">${selectedOffer.offer_amount?.toLocaleString()}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Earnest Money</p>
-                      <p className="text-2xl font-bold text-orange-600">${selectedOffer.earnest_money?.toLocaleString()}</p>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Contingencies</p>
-                    <p className="text-sm text-gray-700">{selectedOffer.contingencies || 'None specified'}</p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Offer Date</p>
-                      <p className="text-sm text-gray-900">{selectedOffer.offer_date}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Expires</p>
-                      <p className="text-sm text-gray-900">{selectedOffer.expiration_date}</p>
-                    </div>
-                  </div>
+                <Badge className={statusColors[offer.status] || 'bg-gray-100 text-gray-800'}>{offer.status}</Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm">
+                  <DollarSign className="w-4 h-4 text-green-600" />
+                  <span className="font-bold">${Number(offer.offer_amount || 0).toLocaleString()}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <DollarSign className="w-4 h-4 text-blue-600" />
+                  <span>Earnest: ${Number(offer.earnest_money || 0).toLocaleString()}</span>
                 </div>
               </div>
-            )}
-          </SheetContent>
-        </Sheet>
+              <div className="flex items-center gap-2 text-sm pt-2 border-t">
+                <Calendar className="w-4 h-4 text-muted-foreground" />
+                <span>Expires: {offer.expiration_date ? new Date(offer.expiration_date).toLocaleDateString() : 'N/A'}</span>
+              </div>
+              <div className="flex gap-2 pt-2">
+                <Button size="sm" variant="outline" onClick={() => handleEdit(offer)} className="flex-1">
+                  <Edit className="w-4 h-4 mr-1" /> Edit
+                </Button>
+                <Button size="sm" variant="ghost" className="text-destructive">
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
+
+      {filteredOffers.length === 0 && (
+        <Card className="text-center py-12">
+          <TrendingUp className="w-12 h-12 mx-auto text-muted-foreground mb-4 opacity-50" />
+          <p className="text-muted-foreground">No offers found. Create your first offer!</p>
+        </Card>
+      )}
+
+      <Sheet open={showForm} onOpenChange={setShowForm}>
+        <SheetContent className="w-full max-w-md overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>{editingId ? 'Edit Offer' : 'Create New Offer'}</SheetTitle>
+            <SheetDescription>Fill in the offer details below</SheetDescription>
+          </SheetHeader>
+
+          <form onSubmit={handleSubmit} className="space-y-4 mt-6">
+            <div>
+              <label className="text-sm font-medium">Property Address *</label>
+              <Input value={formData.propertyAddress} onChange={(e) => setFormData({ ...formData, propertyAddress: e.target.value })} required />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Buyer Name *</label>
+              <Input value={formData.buyerName} onChange={(e) => setFormData({ ...formData, buyerName: e.target.value })} required />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-sm font-medium">Offer Amount *</label>
+                <Input type="number" step="0.01" value={formData.offerAmount} onChange={(e) => setFormData({ ...formData, offerAmount: parseFloat(e.target.value) })} required />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Earnest Money</label>
+                <Input type="number" step="0.01" value={formData.earnestMoney} onChange={(e) => setFormData({ ...formData, earnestMoney: parseFloat(e.target.value) })} />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Expiration Date *</label>
+              <Input type="date" value={formData.expirationDate} onChange={(e) => setFormData({ ...formData, expirationDate: e.target.value })} required />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Agent Name</label>
+              <Input value={formData.agentName} onChange={(e) => setFormData({ ...formData, agentName: e.target.value })} />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Status</label>
+              <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="accepted">Accepted</SelectItem>
+                  <SelectItem value="rejected">Rejected</SelectItem>
+                  <SelectItem value="expired">Expired</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Contingencies</label>
+              <textarea value={formData.contingencies} onChange={(e) => setFormData({ ...formData, contingencies: e.target.value })} className="w-full p-2 border rounded text-sm" rows="2" placeholder="e.g., Home inspection, financing, appraisal" />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Notes</label>
+              <textarea value={formData.notes} onChange={(e) => setFormData({ ...formData, notes: e.target.value })} className="w-full p-2 border rounded text-sm" rows="2" />
+            </div>
+
+            <div className="flex gap-2 pt-4">
+              <Button type="submit" className="flex-1">
+                {editingId ? 'Update' : 'Create'} Offer
+              </Button>
+              <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
