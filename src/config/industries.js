@@ -137,7 +137,8 @@ export const INDUSTRIES = {
       { value: 'hr', label: 'Human Resources' },
       { value: 'operations', label: 'Operations' },
       { value: 'tech', label: 'IT & Support' }
-    ],                nav: [
+    ],
+    nav: [
       { label: 'Dashboard', path: '/s/', icon: 'LayoutDashboard' },
       
       { section: 'Administration', label: 'Directory', path: '/s/students', icon: 'Users' },

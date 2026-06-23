@@ -212,6 +212,12 @@ import HotelGuestRequests from './pages/hotel/GuestRequests';
 import HotelGuestPortal from './pages/hotel/GuestPortal';
 import HotelGuests from './pages/hotel/Guests';
 
+// Real Estate Pages
+import RealEstateDashboard from './pages/real-estate/RealEstateDashboard';
+import RealEstateProperties from './pages/real-estate/Properties';
+import RealEstateClients from './pages/real-estate/Clients';
+import RealEstateLeases from './pages/real-estate/Leases';
+
 // Religion Pages
 import ReligionMembers from './pages/religion/Members';
 import ReligionGroups from './pages/religion/Groups';
@@ -713,6 +719,13 @@ function PlatformRoutes() {
       <Route path="/revenue" element={<HotelRevenueManagement />} />
       <Route path="/loyalty" element={<HotelLoyalty />} />
       <Route path="/guests" element={<HotelGuests />} />
+
+      {/* Real Estate Suite */}
+      <Route path="/real-estate" element={<RealEstateDashboard />} />
+      <Route path="/real-estate/dashboard" element={<RealEstateDashboard />} />
+      <Route path="/real-estate/properties" element={<RealEstateProperties />} />
+      <Route path="/real-estate/clients" element={<RealEstateClients />} />
+      <Route path="/real-estate/leases" element={<RealEstateLeases />} />
 
       {/* Religion Suite */}
       <Route path="/members" element={<Clients />} />
