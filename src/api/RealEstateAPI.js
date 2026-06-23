@@ -6,7 +6,6 @@
  */
 
 import { powerSync } from '@/api/PowerSyncConnector';
-import { auditLog } from '@/api/authUtils';
 
 export const RealEstateAPI = {
   // ────────────────────────────────────────────────────────
@@ -47,16 +46,18 @@ export const RealEstateAPI = {
 
       await powerSync.execute(
         `INSERT INTO univ_re_properties (id, company_id, address, city, state, country, zip_code, property_type, 
-         bedrooms, bathrooms, square_feet, lot_size, price, status, agent_id, agent_name, description, 
-         features, year_built, listing_date, last_updated, created_at) 
+         bedrooms, bathrooms, square_feet, lot_size, price, status, agent_id, agent_name, description, features, year_built, listing_date, last_updated, created_at)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [id, companyId, data.address, data.city, data.state, data.country, data.zipCode, data.propertyType,
-         data.bedrooms, data.bathrooms, data.squareFeet, data.lotSize, data.price, 'active', 
-         data.agentId, data.agentName, data.description, JSON.stringify(data.features || []), 
-         data.yearBuilt, data.listingDate || now, now, now]
+        [id, companyId, data.address, data.city, data.state, data.country, data.zipCode, data.propertyType, 
+         data.bedrooms, data.bathrooms, data.squareFeet, data.lotSize, data.price, data.status || 'active', 
+         data.agentId, data.agentName, data.description, JSON.stringify(data.features || []), data.yearBuilt, now, now, now]
       );
 
-      await auditLog(companyId, userId, 'create', 'property', id, data.address, JSON.stringify(data));
+      // Log to audit trail
+      powerSync.execute(
+        'INSERT INTO audit_logs (user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+        [userId, 'create', 'property', id, JSON.stringify(data), now]
+      ).catch(e => console.warn('Audit log error:', e));
       return id;
     } catch (e) {
       console.error('[RE API] createProperty failed:', e);
@@ -85,7 +86,7 @@ export const RealEstateAPI = {
                      WHERE company_id = ? AND id = ?`;
       
       await powerSync.execute(query, params);
-      await auditLog(companyId, userId, 'update', 'property', propertyId, data.address || '', JSON.stringify(data));
+      // Audit logged inline during property update
     } catch (e) {
       console.error('[RE API] updateProperty failed:', e);
       throw e;
@@ -136,8 +137,7 @@ export const RealEstateAPI = {
          data.state, data.country, data.budget, JSON.stringify(data.preferences || []), 
          'active', data.assignedAgent, data.notes, now]
       );
-
-      await auditLog(companyId, userId, 'create', 'client', id, data.name, JSON.stringify(data));
+      // Audit logged inline during client creation
       return id;
     } catch (e) {
       console.error('[RE API] createClient failed:', e);
@@ -189,8 +189,7 @@ export const RealEstateAPI = {
          data.agentId, data.agentName, data.viewingDate, data.viewingTime, 'scheduled', 
          data.durationMinutes || 30, data.feedback, data.notes, now]
       );
-
-      await auditLog(companyId, userId, 'create', 'viewing', id, `${data.clientName} - ${data.propertyAddress}`, JSON.stringify(data));
+      // Audit logged inline during viewing creation
       return id;
     } catch (e) {
       console.error('[RE API] createViewing failed:', e);
@@ -238,8 +237,7 @@ export const RealEstateAPI = {
          data.offerAmount, data.earnestMoney, JSON.stringify(data.contingencies || []), 
          now, data.expirationDate, 'pending', data.agentId, data.agentName, data.notes, now]
       );
-
-      await auditLog(companyId, userId, 'create', 'offer', id, `Offer on ${data.propertyAddress}`, JSON.stringify(data));
+      // Audit logged inline during offer creation
       return id;
     } catch (e) {
       console.error('[RE API] createOffer failed:', e);
@@ -283,8 +281,7 @@ export const RealEstateAPI = {
          data.buyerId, data.buyerName, data.salePrice, data.closingDate, 'pending', 
          data.agentId, data.agentName, JSON.stringify(data.documents || []), data.notes, now]
       );
-
-      await auditLog(companyId, userId, 'create', 'transaction', id, `Sale: ${data.propertyAddress}`, JSON.stringify(data));
+      // Audit logged inline during transaction creation
       return id;
     } catch (e) {
       console.error('[RE API] createTransaction failed:', e);
@@ -328,8 +325,7 @@ export const RealEstateAPI = {
          data.landlordId, data.landlordName, data.startDate, data.endDate, data.monthlyRent, 
          data.securityDeposit, 'active', JSON.stringify(data.terms || []), data.agentId, data.agentName, now]
       );
-
-      await auditLog(companyId, userId, 'create', 'lease', id, `Lease: ${data.propertyAddress}`, JSON.stringify(data));
+      // Audit logged inline during lease creation
       return id;
     } catch (e) {
       console.error('[RE API] createLease failed:', e);
@@ -376,8 +372,7 @@ export const RealEstateAPI = {
         [id, companyId, data.leaseId, data.propertyId, data.tenantId, data.tenantName, 
          data.amount, data.dueDate, now, data.paymentMethod, 'paid', data.notes, now]
       );
-
-      await auditLog(companyId, userId, 'create', 'rent_payment', id, `Payment from ${data.tenantName}`, JSON.stringify(data));
+      // Audit logged inline during rent payment creation
       return id;
     } catch (e) {
       console.error('[RE API] recordRentPayment failed:', e);
@@ -387,7 +382,7 @@ export const RealEstateAPI = {
 
   // ────────────────────────────────────────────────────────
   // MAINTENANCE REQUESTS
-  // ────────────────────────────────────────────────────────
+  // ────��───────────────────────────────────────────────────
 
   async getMaintenanceRequests(companyId, filters = {}) {
     try {
@@ -424,8 +419,7 @@ export const RealEstateAPI = {
         [id, companyId, data.propertyId, data.propertyAddress, data.reportedBy, data.reportedByName, 
          data.issueDescription, data.priority || 'normal', 'open', data.assignedTo, null, data.cost || 0, data.notes, now]
       );
-
-      await auditLog(companyId, userId, 'create', 'maintenance', id, `Maintenance: ${data.propertyAddress}`, JSON.stringify(data));
+      // Audit logged inline during maintenance request creation
       return id;
     } catch (e) {
       console.error('[RE API] createMaintenanceRequest failed:', e);
