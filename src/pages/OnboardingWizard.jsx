@@ -598,6 +598,7 @@ export default function OnboardingWizard() {
  <SelectContent className="bg-card text-slate-900 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <SelectItem value="law">{t("law_firm", "Law Firm")}</SelectItem>
  <SelectItem value="retail">{t("retail_pos", "Retail / POS")}</SelectItem>
+ <SelectItem value="real_estate">{t("real_estate", "Real Estate")}</SelectItem>
  <SelectItem value="school">{t("school_education", "School & Education")}</SelectItem>
  <SelectItem value="hospital">{t("hospital_healthcare", "Hospital & Healthcare")}</SelectItem>
  <SelectItem value="hotel">{t("hotel_hospitality", "Hotel & Hospitality")}</SelectItem>

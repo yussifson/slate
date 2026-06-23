@@ -734,6 +734,53 @@ export const INDUSTRIES = {
       { label: 'Settings', path: '/settings', icon: 'Settings' },
     ]},
 
+  real_estate: {
+    name: 'Real Estate',
+    icon: '🏠',
+    terms: {
+      client: 'Client', clients: 'Clients',
+      case: 'Property', cases: 'Properties',
+      staff: 'Agent', staffPlural: 'Agents',
+      venue: 'Office', intake: 'Client Registration',
+      hearing: 'Viewing', hearings: 'Viewings'},
+    roles: [
+      { value: 'company_admin', label: 'Broker / Owner' },
+      { value: 'agent', label: 'Real Estate Agent' },
+      { value: 'property_manager', label: 'Property Manager' },
+      { value: 'accountant', label: 'Accountant' },
+      { value: 'finance', label: 'Finance Officer' },
+      { value: 'admin', label: 'Office Administrator' },
+    ],
+
+    departments: [
+      { value: 'admin', label: 'Administration' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'hr', label: 'Human Resources' },
+      { value: 'operations', label: 'Operations' },
+      { value: 'tech', label: 'IT & Support' }
+    ],    nav: [
+      { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+      { label: 'Properties', path: '/real-estate/properties', icon: 'Home' },
+      { label: 'Clients', path: '/real-estate/clients', icon: 'Users' },
+      { label: 'Viewings', path: '/real-estate/viewings', icon: 'Eye' },
+      { label: 'Offers', path: '/real-estate/offers', icon: 'FileText' },
+      { label: 'Transactions', path: '/real-estate/transactions', icon: 'Banknote' },
+      { label: 'Commissions', path: '/real-estate/commissions', icon: 'TrendingUp' },
+      { label: 'Leases', path: '/real-estate/leases', icon: 'FileCheck' },
+      { label: 'Rent Payments', path: '/real-estate/rent-payments', icon: 'CreditCard' },
+      { label: 'Maintenance', path: '/real-estate/maintenance', icon: 'Wrench' },
+      { label: 'Documents', path: '/documents', icon: 'FolderOpen' },
+      { label: 'Analytics', path: '/real-estate/analytics', icon: 'BarChart2' },
+      { label: 'Reports', path: '/reports', icon: 'FileText' },
+      { label: 'Tasks', path: '/tasks', icon: 'CheckSquare' },
+      { label: 'HR & Leave', path: '/hr', icon: 'HeartHandshake' },
+      { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
+      { label: 'Automations', path: '/automations', icon: 'Zap' },
+      { label: 'Roles', path: '/roles', icon: 'ShieldCheck' },
+      { label: 'Departments', path: '/departments', icon: 'Building' },
+      { label: 'Settings', path: '/settings', icon: 'Settings' },
+    ]},
+
   slate: {
     name: 'Slate Admin',
     icon: '⚙️',
