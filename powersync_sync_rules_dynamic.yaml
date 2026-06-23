@@ -155,6 +155,20 @@ bucket_definitions:
   - SELECT * FROM univ_infection_logs WHERE company_id = bucket.company_id
 
   # -------------------------------------------------------------
+  # REAL ESTATE MODULE
+  # -------------------------------------------------------------
+  - SELECT * FROM univ_re_properties WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_clients WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_viewings WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_offers WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_transactions WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_commissions WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_documents WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_leases WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_rent_payments WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_maintenance_requests WHERE company_id = bucket.company_id
+
+  # -------------------------------------------------------------
   # RETAIL MODULE
   # -------------------------------------------------------------
   - SELECT * FROM univ_retail_customers WHERE company_id = bucket.company_id

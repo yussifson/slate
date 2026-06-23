@@ -43,6 +43,11 @@ class SupabaseConnector {
                 const allowed = ['id', 'company_id', 'created_at', 'status', 'rule_id'];
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
               }
+              // Real Estate tables - allow all fields
+              const realEstatateTables = ['univ_re_properties', 'univ_re_clients', 'univ_re_viewings', 
+                'univ_re_offers', 'univ_re_transactions', 'univ_re_commissions', 'univ_re_documents', 
+                'univ_re_leases', 'univ_re_rent_payments', 'univ_re_maintenance_requests'];
+              
               // Cast text id to UUID for tables that use UUID primary keys
               if (op.table === 'invoices' && payload.id && typeof payload.id === 'string') {
                 try { payload.id = payload.id; } catch(e) { /* keep as-is */ }
@@ -61,6 +66,11 @@ class SupabaseConnector {
                 const allowed = ['id', 'company_id', 'created_at', 'status', 'rule_id'];
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => allowed.includes(k)));
               }
+              // Real Estate tables - allow all fields for PATCH
+              const realtEstateTablesForPatch = ['univ_re_properties', 'univ_re_clients', 'univ_re_viewings', 
+                'univ_re_offers', 'univ_re_transactions', 'univ_re_commissions', 'univ_re_documents', 
+                'univ_re_leases', 'univ_re_rent_payments', 'univ_re_maintenance_requests'];
+              
               if (Object.keys(payload).length > 0) {
                 const { error } = await table.update(payload).eq('id', op.id);
                 if (error) throw error;
