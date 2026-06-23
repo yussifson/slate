@@ -187,13 +187,15 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  <span className="max-w-[80px] truncate tracking-[0.02em]">{INDUSTRIES[currentIndustry]?.name || currentIndustry}</span>
  <ChevronDown className="w-3 h-3 opacity-50 shrink-0" />
  </DropdownMenuTrigger>
- <DropdownMenuContent align="end" className="w-[180px]">
+ <DropdownMenuContent align="end" className="w-72 max-h-[60vh] overflow-y-auto">
+ <div className="p-2 space-y-1">
  {Object.entries(INDUSTRIES).map(([key, ind]) => (
- <DropdownMenuItem key={key} onClick={() => handleIndustryChange(key)}>
- <span className="mr-2 text-base">{ind.icon}</span>
- {ind.name}
+ <DropdownMenuItem key={key} onClick={() => handleIndustryChange(key)} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
+ <span className="text-lg shrink-0">{ind.icon}</span>
+ <span className="text-sm font-medium">{ind.name}</span>
  </DropdownMenuItem>
  ))}
+ </div>
  </DropdownMenuContent>
  </DropdownMenu>
  )}
@@ -206,12 +208,14 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  <span className="max-w-[80px] truncate tracking-[0.02em]">Orbit Build</span>
  <ChevronDown className="w-3 h-3 opacity-50 shrink-0" />
  </DropdownMenuTrigger>
- <DropdownMenuContent align="end" className="w-[180px]">
+ <DropdownMenuContent align="end" className="w-96 max-h-[70vh] overflow-y-auto">
+ <div className="grid grid-cols-2 gap-1 p-2">
  {ORBIT_COMPONENTS_LIST.map(compName => (
- <DropdownMenuItem key={compName} onClick={() => navigate(`/orbit-test/${compName}`)}>
+ <DropdownMenuItem key={compName} onClick={() => navigate(`/orbit-test/${compName}`)} className="col-span-1 px-3 py-2 rounded-lg hover:bg-indigo-500/10 cursor-pointer transition-colors text-sm font-medium text-foreground">
  {compName}
  </DropdownMenuItem>
  ))}
+ </div>
  </DropdownMenuContent>
  </DropdownMenu>
  )}
