@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useCompanyId } from '../../hooks/useCompanyId';
-import { formatCurrency } from '../../utils/formatters';
-import AnalyticsAPI from '../../api/RealEstateAnalytics';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { formatCurrency } from '@/lib/constants';
+import AnalyticsAPI from '@/api/RealEstateAnalytics';
 
 export default function AgentMetrics() {
   const [metrics, setMetrics] = useState([]);

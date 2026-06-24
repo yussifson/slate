@@ -1,5 +1,7 @@
 
- bucket_definitions:
+ 
+  
+   bucket_definitions:
   user_tenant_bucket:
     parameters:
       - SELECT auth.uid() AS user_id

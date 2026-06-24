@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useCompanyId } from '../../hooks/useCompanyId';
-import { formatCurrency } from '../../utils/formatters';
-import OffersAPI from '../../api/RealEstateOffers';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { formatCurrency } from '@/lib/constants';
+import OffersAPI from '@/api/RealEstateOffers';
 
 export default function CounterOffers() {
   const [offers, setOffers] = useState([]);
