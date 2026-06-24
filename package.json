@@ -17,6 +17,7 @@
     "@hello-pangea/dnd": "^17.0.0",
     "@hookform/resolvers": "^4.1.2",
     "@journeyapps/wa-sqlite": "^1.7.0",
+    "@novu/node": "^2.6.6",
     "@powersync/react": "^1.10.0",
     "@powersync/web": "^1.38.2",
     "@radix-ui/react-accordion": "^1.2.3",
