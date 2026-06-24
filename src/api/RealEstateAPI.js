@@ -447,7 +447,7 @@ export const RealEstateAPI = {
     }
   },
 
-  // ──────────────���─────────────────────────────────────────
+  // ──────────────���───────���─────────────────────────────────
   // LEASES
   // ────────────────────────────────────────────────────────
 
@@ -692,6 +692,287 @@ export const RealEstateAPI = {
       );
     } catch (e) {
       console.error('[RE API] deleteMaintenanceRequest failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // TEAM MANAGEMENT
+  // ────────────────────────────────────────────────────────
+
+  async createTeamMember(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = new Date().toISOString();
+      
+      await powerSync.execute(
+        `INSERT INTO univ_re_team_members (id, company_id, user_id, name, email, phone, role, status, 
+         avatar_url, bio, license_number, license_expiry, commission_rate, join_date, created_at, updated_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.userId || null, data.name, data.email, data.phone || null, 
+         data.role || 'agent', 'active', data.avatarUrl || null, data.bio || null, 
+         data.licenseNumber || null, data.licenseExpiry || null, data.commissionRate || 0, 
+         data.joinDate || new Date().toISOString().split('T')[0], now, now]
+      );
+      return id;
+    } catch (e) {
+      console.error('[RE API] createTeamMember failed:', e);
+      throw e;
+    }
+  },
+
+  async getTeamMembers(companyId) {
+    try {
+      const res = await powerSync.execute(
+        'SELECT * FROM univ_re_team_members WHERE company_id = ? AND status != ? ORDER BY join_date DESC',
+        [companyId, 'deleted']
+      );
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getTeamMembers failed:', e);
+      throw e;
+    }
+  },
+
+  async updateTeamMember(companyId, memberId, data, userId) {
+    try {
+      const updates = [];
+      const params = [];
+      
+      Object.keys(data).forEach(key => {
+        if (!['id', 'company_id', 'created_at'].includes(key)) {
+          updates.push(`${key} = ?`);
+          params.push(data[key]);
+        }
+      });
+      
+      params.push(new Date().toISOString());
+      params.push(companyId);
+      params.push(memberId);
+      
+      const query = `UPDATE univ_re_team_members SET ${updates.join(', ')}, updated_at = ? 
+                     WHERE company_id = ? AND id = ?`;
+      await powerSync.execute(query, params);
+    } catch (e) {
+      console.error('[RE API] updateTeamMember failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // MARKET INTELLIGENCE
+  // ────────────────────────────────────────────────────────
+
+  async createMLSListing(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = new Date().toISOString();
+      
+      await powerSync.execute(
+        `INSERT INTO univ_re_mls_listings (id, company_id, mls_id, property_address, city, state, zip_code,
+         price, list_date, sold_date, days_on_market, bedrooms, bathrooms, square_feet, lot_size,
+         property_type, status, agent_name, brokerage, description, source, last_updated, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.mlsId, data.address, data.city, data.state, data.zipCode,
+         data.price, data.listDate, data.soldDate || null, data.daysOnMarket || 0,
+         data.bedrooms, data.bathrooms, data.squareFeet, data.lotSize,
+         data.propertyType, data.status || 'active', data.agentName, data.brokerage,
+         data.description, 'mls', now, now]
+      );
+      return id;
+    } catch (e) {
+      console.error('[RE API] createMLSListing failed:', e);
+      throw e;
+    }
+  },
+
+  async getComparableAnalysis(companyId, filters = {}) {
+    try {
+      let query = `SELECT * FROM univ_re_comparable_analysis WHERE company_id = ?`;
+      const params = [companyId];
+      
+      if (filters.propertyId) {
+        query += ' AND property_id = ?';
+        params.push(filters.propertyId);
+      }
+      
+      const res = await powerSync.execute(query + ' ORDER BY analysis_date DESC', params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getComparableAnalysis failed:', e);
+      throw e;
+    }
+  },
+
+  async createComparableAnalysis(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      
+      await powerSync.execute(
+        `INSERT INTO univ_re_comparable_analysis (id, company_id, property_id, analysis_date, subject_address,
+         subject_price, comparable_1_address, comparable_1_price, comparable_1_adjustment,
+         comparable_2_address, comparable_2_price, comparable_2_adjustment,
+         comparable_3_address, comparable_3_price, comparable_3_adjustment,
+         estimated_value, confidence_level, notes, created_by, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.propertyId || null, data.analysisDate || new Date().toISOString().split('T')[0],
+         data.subjectAddress, data.subjectPrice, data.comp1Address, data.comp1Price, data.comp1Adjustment,
+         data.comp2Address, data.comp2Price, data.comp2Adjustment,
+         data.comp3Address, data.comp3Price, data.comp3Adjustment,
+         data.estimatedValue, data.confidenceLevel || 80, data.notes, userId, new Date().toISOString()]
+      );
+      return id;
+    } catch (e) {
+      console.error('[RE API] createComparableAnalysis failed:', e);
+      throw e;
+    }
+  },
+
+  async getMarketTrends(companyId, filters = {}) {
+    try {
+      let query = `SELECT * FROM univ_re_market_trends WHERE company_id = ?`;
+      const params = [companyId];
+      
+      if (filters.city) {
+        query += ' AND city = ?';
+        params.push(filters.city);
+      }
+      if (filters.state) {
+        query += ' AND state = ?';
+        params.push(filters.state);
+      }
+      
+      const res = await powerSync.execute(query + ' ORDER BY metric_date DESC', params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getMarketTrends failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // CRM LEAD MANAGEMENT
+  // ────────────────────────────────────────────────────────
+
+  async createLead(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = new Date().toISOString();
+      
+      await powerSync.execute(
+        `INSERT INTO univ_re_leads (id, company_id, first_name, last_name, email, phone, source,
+         property_interest, budget_min, budget_max, lead_type, status, stage, assigned_agent_id,
+         lead_score, notes, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.firstName, data.lastName, data.email || null, data.phone || null,
+         data.source || 'website', data.propertyInterest || null, data.budgetMin || null,
+         data.budgetMax || null, data.leadType || 'buyer', 'new', 'awareness',
+         data.assignedAgentId || null, 0, data.notes || null, now, now]
+      );
+      return id;
+    } catch (e) {
+      console.error('[RE API] createLead failed:', e);
+      throw e;
+    }
+  },
+
+  async getLeads(companyId, filters = {}) {
+    try {
+      let query = `SELECT * FROM univ_re_leads WHERE company_id = ? AND status != ?`;
+      const params = [companyId, 'deleted'];
+      
+      if (filters.status) {
+        query += ' AND status = ?';
+        params.push(filters.status);
+      }
+      if (filters.leadType) {
+        query += ' AND lead_type = ?';
+        params.push(filters.leadType);
+      }
+      if (filters.assignedAgentId) {
+        query += ' AND assigned_agent_id = ?';
+        params.push(filters.assignedAgentId);
+      }
+      
+      const res = await powerSync.execute(query + ' ORDER BY lead_score DESC, next_followup ASC', params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getLeads failed:', e);
+      throw e;
+    }
+  },
+
+  async updateLead(companyId, leadId, data, userId) {
+    try {
+      const updates = [];
+      const params = [];
+      
+      Object.keys(data).forEach(key => {
+        if (!['id', 'company_id', 'created_at'].includes(key)) {
+          updates.push(`${key} = ?`);
+          params.push(data[key]);
+        }
+      });
+      
+      params.push(new Date().toISOString());
+      params.push(companyId);
+      params.push(leadId);
+      
+      const query = `UPDATE univ_re_leads SET ${updates.join(', ')}, updated_at = ? 
+                     WHERE company_id = ? AND id = ?`;
+      await powerSync.execute(query, params);
+    } catch (e) {
+      console.error('[RE API] updateLead failed:', e);
+      throw e;
+    }
+  },
+
+  async createLeadActivity(companyId, leadId, data, userId) {
+    try {
+      const id = generateUUID();
+      
+      await powerSync.execute(
+        `INSERT INTO univ_re_lead_activities (id, company_id, lead_id, activity_type, subject,
+         description, duration_minutes, outcome, next_action, agent_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, leadId, data.activityType, data.subject || null,
+         data.description || null, data.durationMinutes || null, data.outcome || null,
+         data.nextAction || null, userId, new Date().toISOString()]
+      );
+      return id;
+    } catch (e) {
+      console.error('[RE API] createLeadActivity failed:', e);
+      throw e;
+    }
+  },
+
+  async getLeadActivities(companyId, leadId) {
+    try {
+      const res = await powerSync.execute(
+        `SELECT * FROM univ_re_lead_activities WHERE company_id = ? AND lead_id = ? ORDER BY created_at DESC`,
+        [companyId, leadId]
+      );
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getLeadActivities failed:', e);
+      throw e;
+    }
+  },
+
+  async getLeadCampaigns(companyId, filters = {}) {
+    try {
+      let query = `SELECT * FROM univ_re_lead_campaigns WHERE company_id = ?`;
+      const params = [companyId];
+      
+      if (filters.status) {
+        query += ' AND status = ?';
+        params.push(filters.status);
+      }
+      
+      const res = await powerSync.execute(query + ' ORDER BY created_at DESC', params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getLeadCampaigns failed:', e);
       throw e;
     }
   },
