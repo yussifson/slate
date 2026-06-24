@@ -1,61 +1,521 @@
 import React, { useState, useEffect } from 'react';
-import { useCompanyId } from '../../hooks/useCompanyId';
-import { RealEstateDocuments } from '../../api/RealEstateDocuments';
+import { useTranslation } from 'react-i18next';
+import { FileText, Plus, Edit, Trash2, Search, Download, Copy, Eye, CheckCircle2, AlertCircle } from 'lucide-react';
+import { usePowerSync } from '@powersync/react';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { useAuth } from '@/lib/AuthContext';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RealEstateAPI } from '@/api/RealEstateAPI';
+import { toast } from 'react-hot-toast';
 
 export default function DocumentTemplates() {
-  const [templates, setTemplates] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
   const companyId = useCompanyId();
+  const { user } = useAuth();
+  const powerSync = usePowerSync();
 
+  const [templates, setTemplates] = useState([]);
+  const [filteredTemplates, setFilteredTemplates] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [showPreview, setShowPreview] = useState(null);
+  const [formData, setFormData] = useState({
+    templateName: '',
+    documentType: 'contract',
+    documentCategory: 'sales',
+    requiredSignatures: 2,
+    version: '1.0',
+    content: '',
+    description: '',
+    isActive: true,
+  });
+
+  // Fetch templates
   useEffect(() => {
-    const loadData = async () => {
+    const fetchTemplates = async () => {
       try {
-        setLoading(true);
-        const data = await RealEstateDocuments.getDocumentTemplates(companyId);
+        const res = await powerSync.execute(
+          'SELECT * FROM univ_re_document_templates WHERE company_id = ? ORDER BY created_at DESC',
+          [companyId]
+        );
+        const data = res.rows._array || Array.from(res.rows);
         setTemplates(data);
-      } catch (error) {
-        console.error('Error loading document templates:', error);
-      } finally {
-        setLoading(false);
+      } catch (e) {
+        console.error('[DocumentTemplates] Fetch failed:', e);
+        toast.error('Failed to load document templates');
       }
+      setIsLoading(false);
     };
-    loadData();
+
+    if (companyId) fetchTemplates();
   }, [companyId]);
 
-  if (loading) return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  // Filter templates
+  useEffect(() => {
+    let filtered = templates;
+    if (search) {
+      filtered = filtered.filter(t =>
+        t.template_name?.toLowerCase().includes(search.toLowerCase()) ||
+        t.document_type?.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    if (categoryFilter !== 'all') {
+      filtered = filtered.filter(t => t.document_category === categoryFilter);
+    }
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(t => (statusFilter === 'active' ? t.is_active : !t.is_active));
+    }
+    setFilteredTemplates(filtered);
+  }, [templates, search, categoryFilter, statusFilter]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (editingId) {
+        await RealEstateAPI.updateDocumentTemplate(companyId, editingId, formData, user.id);
+        toast.success('Document template updated successfully');
+      } else {
+        await RealEstateAPI.createDocumentTemplate(companyId, formData, user.id);
+        toast.success('Document template created successfully');
+      }
+      setShowForm(false);
+      setEditingId(null);
+      setFormData({
+        templateName: '',
+        documentType: 'contract',
+        documentCategory: 'sales',
+        requiredSignatures: 2,
+        version: '1.0',
+        content: '',
+        description: '',
+        isActive: true,
+      });
+
+      const res = await powerSync.execute(
+        'SELECT * FROM univ_re_document_templates WHERE company_id = ? ORDER BY created_at DESC',
+        [companyId]
+      );
+      setTemplates(res.rows._array || Array.from(res.rows));
+    } catch (e) {
+      console.error('[DocumentTemplates] Submit failed:', e);
+      toast.error('Failed to save document template');
+    }
+  };
+
+  const handleEdit = (template) => {
+    setFormData({
+      templateName: template.template_name || '',
+      documentType: template.document_type || 'contract',
+      documentCategory: template.document_category || 'sales',
+      requiredSignatures: template.required_signatures || 2,
+      version: template.version || '1.0',
+      content: template.content || '',
+      description: template.description || '',
+      isActive: template.is_active !== false,
+    });
+    setEditingId(template.id);
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this document template?')) return;
+    try {
+      await RealEstateAPI.deleteDocumentTemplate(companyId, id, user.id);
+      toast.success('Document template deleted successfully');
+      const res = await powerSync.execute(
+        'SELECT * FROM univ_re_document_templates WHERE company_id = ? ORDER BY created_at DESC',
+        [companyId]
+      );
+      setTemplates(res.rows._array || Array.from(res.rows));
+    } catch (e) {
+      console.error('[DocumentTemplates] Delete failed:', e);
+      toast.error('Failed to delete document template');
+    }
+  };
+
+  const handleDuplicate = async (template) => {
+    try {
+      const newTemplate = {
+        ...formData,
+        templateName: `${template.template_name} (Copy)`,
+        version: `${template.version}-copy`,
+        content: template.content,
+        documentType: template.document_type,
+        documentCategory: template.document_category,
+        requiredSignatures: template.required_signatures,
+        description: template.description,
+      };
+      await RealEstateAPI.createDocumentTemplate(companyId, newTemplate, user.id);
+      toast.success('Document template duplicated successfully');
+      const res = await powerSync.execute(
+        'SELECT * FROM univ_re_document_templates WHERE company_id = ? ORDER BY created_at DESC',
+        [companyId]
+      );
+      setTemplates(res.rows._array || Array.from(res.rows));
+    } catch (e) {
+      console.error('[DocumentTemplates] Duplicate failed:', e);
+      toast.error('Failed to duplicate document template');
+    }
+  };
+
+  // KPI calculations
+  const totalTemplates = templates.length;
+  const activeTemplates = templates.filter(t => t.is_active).length;
+  const categories = [...new Set(templates.map(t => t.document_category))].length;
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+  }
 
   return (
-    <div className="p-6 bg-background min-h-screen">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-foreground mb-2">Document Templates</h1>
-        <p className="text-muted-foreground">Manage reusable document templates for your transactions</p>
+    <div className="space-y-6 p-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Document Templates</h1>
+          <p className="text-sm text-muted-foreground mt-1">Manage reusable document templates for transactions</p>
+        </div>
+        <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
+          templateName: '',
+          documentType: 'contract',
+          documentCategory: 'sales',
+          requiredSignatures: 2,
+          version: '1.0',
+          content: '',
+          description: '',
+          isActive: true,
+        }); }} className="gap-2">
+          <Plus className="w-4 h-4" /> Add Template
+        </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {templates.length === 0 ? (
-          <div className="col-span-full text-center py-12 text-muted-foreground bg-card rounded-lg border border-border">
-            No document templates found
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              Total Templates
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalTemplates}</div>
+            <p className="text-xs text-muted-foreground mt-1">Available templates</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4" />
+              Active Templates
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">{activeTemplates}</div>
+            <p className="text-xs text-muted-foreground mt-1">Ready to use</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <AlertCircle className="w-4 h-4" />
+              Categories
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{categories}</div>
+            <p className="text-xs text-muted-foreground mt-1">Document types</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Filters */}
+      <div className="flex gap-4 flex-wrap">
+        <div className="flex-1 min-w-64">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by template name..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10"
+            />
           </div>
-        ) : (
-          templates.map(template => (
-            <div key={template.id} className="border border-border rounded-lg p-6 bg-card hover:shadow-lg transition-shadow">
-              <div className="mb-4">
-                <h3 className="text-lg font-semibold text-foreground">{template.template_name}</h3>
-                <p className="text-sm text-muted-foreground">{template.document_type}</p>
+        </div>
+        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+          <SelectTrigger className="w-40">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Categories</SelectItem>
+            <SelectItem value="sales">Sales</SelectItem>
+            <SelectItem value="lease">Lease</SelectItem>
+            <SelectItem value="legal">Legal</SelectItem>
+            <SelectItem value="financing">Financing</SelectItem>
+            <SelectItem value="other">Other</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-40">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="active">Active</SelectItem>
+            <SelectItem value="inactive">Inactive</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Templates Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {filteredTemplates.map(template => (
+          <Card key={template.id} className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    {template.template_name}
+                  </CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1 capitalize">{template.document_type}</p>
+                </div>
+                <Badge variant={template.is_active ? 'default' : 'secondary'}>
+                  {template.is_active ? 'Active' : 'Inactive'}
+                </Badge>
               </div>
-              <div className="space-y-2 text-sm">
-                <div><span className="text-muted-foreground">Category:</span> {template.document_category}</div>
-                <div><span className="text-muted-foreground">Version:</span> {template.version}</div>
-                <div><span className="text-muted-foreground">Signatures Required:</span> {template.required_signatures}</div>
-                <div><span className="text-muted-foreground">Status:</span> {template.is_active ? 'Active' : 'Inactive'}</div>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {template.description && (
+                <p className="text-sm text-muted-foreground">{template.description}</p>
+              )}
+
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div>
+                  <p className="text-muted-foreground">Category</p>
+                  <p className="font-medium capitalize">{template.document_category}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Version</p>
+                  <p className="font-medium">{template.version}</p>
+                </div>
               </div>
-              <div className="mt-4 pt-4 border-t border-border">
-                <p className="text-xs text-muted-foreground">Created: {new Date(template.created_at).toLocaleDateString()}</p>
+
+              <div className="p-2 bg-blue-50 rounded">
+                <p className="text-xs text-muted-foreground mb-1">Signatures Required</p>
+                <p className="font-bold text-blue-600">{template.required_signatures}</p>
+              </div>
+
+              <div className="flex gap-2 pt-2 border-t">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setShowPreview(template)}
+                  className="flex-1"
+                >
+                  <Eye className="w-4 h-4 mr-1" /> Preview
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleEdit(template)}
+                >
+                  <Edit className="w-4 h-4" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleDuplicate(template)}
+                >
+                  <Copy className="w-4 h-4" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => handleDelete(template.id)}
+                  className="text-destructive"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {filteredTemplates.length === 0 && (
+        <Card className="text-center py-12">
+          <FileText className="w-12 h-12 mx-auto text-muted-foreground mb-4 opacity-50" />
+          <p className="text-muted-foreground">No document templates found. Create your first template!</p>
+        </Card>
+      )}
+
+      {/* Preview Modal */}
+      {showPreview && (
+        <Sheet open={!!showPreview} onOpenChange={() => setShowPreview(null)}>
+          <SheetContent className="w-full max-w-2xl overflow-y-auto">
+            <SheetHeader>
+              <SheetTitle>{showPreview.template_name}</SheetTitle>
+              <SheetDescription>{showPreview.document_type}</SheetDescription>
+            </SheetHeader>
+            <div className="mt-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="text-muted-foreground">Category</p>
+                  <p className="font-medium capitalize">{showPreview.document_category}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Version</p>
+                  <p className="font-medium">{showPreview.version}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Signatures</p>
+                  <p className="font-medium">{showPreview.required_signatures}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Status</p>
+                  <p className="font-medium">{showPreview.is_active ? 'Active' : 'Inactive'}</p>
+                </div>
+              </div>
+              <div className="border rounded p-4 bg-white min-h-96">
+                <div className="whitespace-pre-wrap text-sm">{showPreview.content}</div>
               </div>
             </div>
-          ))
-        )}
-      </div>
+          </SheetContent>
+        </Sheet>
+      )}
+
+      {/* Template Form Modal */}
+      <Sheet open={showForm} onOpenChange={setShowForm}>
+        <SheetContent className="w-full max-w-md overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>{editingId ? 'Edit Document Template' : 'Add New Document Template'}</SheetTitle>
+            <SheetDescription>Create a reusable template for your transactions</SheetDescription>
+          </SheetHeader>
+
+          <form onSubmit={handleSubmit} className="space-y-4 mt-6">
+            <div>
+              <label className="text-sm font-medium">Template Name</label>
+              <Input
+                value={formData.templateName}
+                onChange={(e) => setFormData({ ...formData, templateName: e.target.value })}
+                placeholder="e.g., Standard Purchase Agreement"
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-sm font-medium">Document Type</label>
+                <Select value={formData.documentType} onValueChange={(value) => setFormData({ ...formData, documentType: value })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="contract">Contract</SelectItem>
+                    <SelectItem value="agreement">Agreement</SelectItem>
+                    <SelectItem value="disclosure">Disclosure</SelectItem>
+                    <SelectItem value="addendum">Addendum</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Category</label>
+                <Select value={formData.documentCategory} onValueChange={(value) => setFormData({ ...formData, documentCategory: value })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="sales">Sales</SelectItem>
+                    <SelectItem value="lease">Lease</SelectItem>
+                    <SelectItem value="legal">Legal</SelectItem>
+                    <SelectItem value="financing">Financing</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-sm font-medium">Version</label>
+                <Input
+                  value={formData.version}
+                  onChange={(e) => setFormData({ ...formData, version: e.target.value })}
+                  placeholder="e.g., 1.0"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Signatures Required</label>
+                <Input
+                  type="number"
+                  min="0"
+                  max="10"
+                  value={formData.requiredSignatures}
+                  onChange={(e) => setFormData({ ...formData, requiredSignatures: parseInt(e.target.value) })}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Description</label>
+              <textarea
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Brief description of this template..."
+                className="w-full p-2 border rounded text-sm"
+                rows="2"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Template Content</label>
+              <textarea
+                value={formData.content}
+                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                placeholder="Enter the template content here..."
+                className="w-full p-2 border rounded text-sm font-mono"
+                rows="8"
+                required
+              />
+            </div>
+
+            <div className="flex items-center gap-2 p-3 bg-slate-50 rounded">
+              <input
+                type="checkbox"
+                id="isActive"
+                checked={formData.isActive}
+                onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                className="w-4 h-4"
+              />
+              <label htmlFor="isActive" className="text-sm font-medium cursor-pointer">
+                Template is active
+              </label>
+            </div>
+
+            <div className="flex gap-2 pt-4">
+              <Button type="submit" className="flex-1">
+                {editingId ? 'Update' : 'Create'} Template
+              </Button>
+              <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
