@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useCompanyId } from '../../hooks/useCompanyId';
-import DocumentsAPI from '../../api/RealEstateDocuments';
+import { RealEstateDocuments } from '../../api/RealEstateDocuments';
 
 export default function DocumentTemplates() {
   const [templates, setTemplates] = useState([]);

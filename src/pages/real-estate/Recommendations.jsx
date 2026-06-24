@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useCompanyId } from '../../hooks/useCompanyId';
-import AnalyticsAPI from '../../api/RealEstateAnalytics';
+import { RealEstateAnalytics } from '../../api/RealEstateAnalytics';
 
 export default function Recommendations() {
   const [recommendations, setRecommendations] = useState([]);

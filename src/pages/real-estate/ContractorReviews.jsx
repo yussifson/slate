@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useCompanyId } from '../../hooks/useCompanyId';
-import ContractorsAPI from '../../api/RealEstateContractors';
+import { RealEstateContractors } from '../../api/RealEstateContractors';
 
 export default function ContractorReviews() {
   const [reviews, setReviews] = useState([]);

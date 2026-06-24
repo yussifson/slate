@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useCompanyId } from '../../hooks/useCompanyId';
-import OffersAPI from '../../api/RealEstateOffers';
+import { RealEstateOffers } from '../../api/RealEstateOffers';
 
 export default function CommissionRules() {
   const [rules, setRules] = useState([]);
