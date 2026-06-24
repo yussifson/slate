@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useRealEstateAPI } from '../../hooks/useRealEstateAPI';
+import { useCompanyId } from '../../hooks/useCompanyId';
 import AnalyticsAPI from '../../api/RealEstateAnalytics';
 
 export default function AuditLog() {
@@ -9,7 +9,7 @@ export default function AuditLog() {
     resourceType: '',
     action: ''
   });
-  const { companyId } = useRealEstateAPI();
+  const companyId = useCompanyId();
 
   useEffect(() => {
     const loadData = async () => {

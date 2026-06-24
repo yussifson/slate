@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useRealEstateAPI } from '../../hooks/useRealEstateAPI';
+import { useCompanyId } from '../../hooks/useCompanyId';
 import OffersAPI from '../../api/RealEstateOffers';
 
 export default function CommissionRules() {
   const [rules, setRules] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { companyId } = useRealEstateAPI();
+  const companyId = useCompanyId();
 
   useEffect(() => {
     const loadData = async () => {
