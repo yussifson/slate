@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useCompanyId } from '../../hooks/useCompanyId';
-import DocumentsAPI from '../../api/RealEstateDocuments';
+import { RealEstateDocuments } from '../../api/RealEstateDocuments';
 
 export default function DocumentTemplates() {
   const [templates, setTemplates] = useState([]);
@@ -11,7 +11,7 @@ export default function DocumentTemplates() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await DocumentsAPI.getDocumentTemplates(companyId);
+        const data = await RealEstateDocuments.getDocumentTemplates(companyId);
         setTemplates(data);
       } catch (error) {
         console.error('Error loading document templates:', error);

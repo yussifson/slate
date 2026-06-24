@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { formatCurrency } from '@/lib/constants';
-import LeaseAPI from '@/api/RealEstateLeaseAutomation';
+import { RealEstateLeaseAutomation } from '@/api/RealEstateLeaseAutomation';
 
 export default function PaymentSchedules() {
   const [schedules, setSchedules] = useState([]);
@@ -12,7 +12,7 @@ export default function PaymentSchedules() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await LeaseAPI.getRentPaymentSchedules(companyId);
+        const data = await RealEstateLeaseAutomation.getRentPaymentSchedules(companyId);
         setSchedules(data);
       } catch (error) {
         console.error('Error loading payment schedules:', error);

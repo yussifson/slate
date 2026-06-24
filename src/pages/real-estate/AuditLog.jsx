@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useCompanyId } from '../../hooks/useCompanyId';
-import AnalyticsAPI from '../../api/RealEstateAnalytics';
+import { RealEstateAnalytics } from '../../api/RealEstateAnalytics';
 
 export default function AuditLog() {
   const [logs, setLogs] = useState([]);
@@ -15,7 +15,7 @@ export default function AuditLog() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await AnalyticsAPI.getAuditLog(companyId, filters);
+        const data = await RealEstateAnalytics.getAuditLog(companyId, filters);
         setLogs(data);
       } catch (error) {
         console.error('Error loading audit log:', error);

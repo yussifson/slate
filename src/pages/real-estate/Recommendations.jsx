@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useCompanyId } from '../../hooks/useCompanyId';
-import AnalyticsAPI from '../../api/RealEstateAnalytics';
+import { RealEstateAnalytics } from '../../api/RealEstateAnalytics';
 
 export default function Recommendations() {
   const [recommendations, setRecommendations] = useState([]);
@@ -11,7 +11,7 @@ export default function Recommendations() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await AnalyticsAPI.getAgentRecommendations(companyId);
+        const data = await RealEstateAnalytics.getAgentRecommendations(companyId);
         setRecommendations(data);
       } catch (error) {
         console.error('Error loading recommendations:', error);

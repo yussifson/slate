@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useCompanyId } from '../../hooks/useCompanyId';
-import ContractorsAPI from '../../api/RealEstateContractors';
+import { RealEstateContractors } from '../../api/RealEstateContractors';
 
 export default function ContractorReviews() {
   const [reviews, setReviews] = useState([]);
@@ -11,7 +11,7 @@ export default function ContractorReviews() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await ContractorsAPI.getContractorReviews(companyId);
+        const data = await RealEstateContractors.getContractorReviews(companyId);
         setReviews(data);
       } catch (error) {
         console.error('Error loading contractor reviews:', error);

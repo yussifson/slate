@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { formatCurrency } from '@/lib/constants';
-import TrustAccountingAPI from '@/api/RealEstateTrustAccounting';
+import { RealEstateTrustAccounting } from '@/api/RealEstateTrustAccounting';
 
 export default function EscrowAccounts() {
   const [escrows, setEscrows] = useState([]);
@@ -12,7 +12,7 @@ export default function EscrowAccounts() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await TrustAccountingAPI.getEscrowAccounts(companyId);
+        const data = await RealEstateTrustAccounting.getEscrowAccounts(companyId);
         setEscrows(data);
       } catch (error) {
         console.error('Error loading escrow accounts:', error);

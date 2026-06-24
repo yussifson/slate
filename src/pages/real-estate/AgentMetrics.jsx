@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { formatCurrency } from '@/lib/constants';
-import AnalyticsAPI from '@/api/RealEstateAnalytics';
+import { RealEstateAnalytics } from '@/api/RealEstateAnalytics';
 
 export default function AgentMetrics() {
   const [metrics, setMetrics] = useState([]);
@@ -12,7 +12,7 @@ export default function AgentMetrics() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await AnalyticsAPI.getAgentMetrics(companyId);
+        const data = await RealEstateAnalytics.getAgentMetrics(companyId);
         setMetrics(data);
       } catch (error) {
         console.error('Error loading agent metrics:', error);

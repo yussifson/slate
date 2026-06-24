@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { formatCurrency } from '@/lib/constants';
-import IntelligenceAPI from '@/api/RealEstateIntelligence';
+import { RealEstateIntelligence } from '@/api/RealEstateIntelligence';
 
 export default function MarketData() {
   const [marketData, setMarketData] = useState([]);
@@ -12,7 +12,7 @@ export default function MarketData() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await IntelligenceAPI.getMarketData(companyId);
+        const data = await RealEstateIntelligence.getMarketData(companyId);
         setMarketData(data);
       } catch (error) {
         console.error('Error loading market data:', error);
