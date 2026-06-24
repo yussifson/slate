@@ -21,9 +21,8 @@ ALTER TABLE public.univ_re_transactions
   ALTER COLUMN buyer_id SET DATA TYPE TEXT,
   ALTER COLUMN agent_id SET DATA TYPE TEXT;
 
--- Commissions table
+-- Commissions table (transaction_id, no property_id)
 ALTER TABLE public.univ_re_commissions
-  ALTER COLUMN property_id SET DATA TYPE TEXT,
   ALTER COLUMN transaction_id SET DATA TYPE TEXT,
   ALTER COLUMN agent_id SET DATA TYPE TEXT;
 
