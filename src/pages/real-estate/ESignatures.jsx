@@ -1,76 +1,435 @@
 import React, { useState, useEffect } from 'react';
-import { useCompanyId } from '../../hooks/useCompanyId';
-import { RealEstateDocuments } from '../../api/RealEstateDocuments';
+import { useTranslation } from 'react-i18next';
+import { FileSignature, Plus, Send, CheckCircle2, Clock, AlertCircle, Search, Download, Eye, Trash2 } from 'lucide-react';
+import { usePowerSync } from '@powersync/react';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { useAuth } from '@/lib/AuthContext';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RealEstateAPI } from '@/api/RealEstateAPI';
+import { toast } from 'react-hot-toast';
 
 export default function ESignatures() {
-  const [signatures, setSignatures] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
   const companyId = useCompanyId();
+  const { user } = useAuth();
+  const powerSync = usePowerSync();
 
+  const [signatures, setSignatures] = useState([]);
+  const [filteredSignatures, setFilteredSignatures] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [formData, setFormData] = useState({
+    documentId: '',
+    signerName: '',
+    signerEmail: '',
+    documentName: '',
+    signingOrder: 1,
+    expirationDate: new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0],
+    requireInitials: false,
+    requireTimestamp: true,
+  });
+
+  // Fetch signatures
   useEffect(() => {
-    const loadData = async () => {
+    const fetchSignatures = async () => {
       try {
-        setLoading(true);
-        const data = await RealEstateDocuments.getESignatures(companyId);
+        const res = await powerSync.execute(
+          'SELECT * FROM univ_re_esignatures WHERE company_id = ? ORDER BY created_at DESC',
+          [companyId]
+        );
+        const data = res.rows._array || Array.from(res.rows);
         setSignatures(data);
-      } catch (error) {
-        console.error('Error loading e-signatures:', error);
-      } finally {
-        setLoading(false);
+      } catch (e) {
+        console.error('[ESignatures] Fetch failed:', e);
+        toast.error('Failed to load e-signatures');
       }
+      setIsLoading(false);
     };
-    loadData();
+
+    if (companyId) fetchSignatures();
   }, [companyId]);
 
-  if (loading) return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  // Filter signatures
+  useEffect(() => {
+    let filtered = signatures;
+    if (search) {
+      filtered = filtered.filter(s =>
+        s.signer_name?.toLowerCase().includes(search.toLowerCase()) ||
+        s.document_id?.toLowerCase().includes(search.toLowerCase()) ||
+        s.document_name?.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(s => s.signature_status === statusFilter);
+    }
+    setFilteredSignatures(filtered);
+  }, [signatures, search, statusFilter]);
 
-  const statusColors = {
-    pending: 'bg-yellow-100 text-yellow-800',
-    completed: 'bg-green-100 text-green-800',
-    expired: 'bg-red-100 text-red-800'
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (editingId) {
+        await RealEstateAPI.updateESignature(companyId, editingId, formData, user.id);
+        toast.success('E-signature updated successfully');
+      } else {
+        await RealEstateAPI.createESignature(companyId, formData, user.id);
+        toast.success('Signature request sent successfully');
+      }
+      setShowForm(false);
+      setEditingId(null);
+      setFormData({
+        documentId: '',
+        signerName: '',
+        signerEmail: '',
+        documentName: '',
+        signingOrder: 1,
+        expirationDate: new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0],
+        requireInitials: false,
+        requireTimestamp: true,
+      });
+
+      const res = await powerSync.execute(
+        'SELECT * FROM univ_re_esignatures WHERE company_id = ? ORDER BY created_at DESC',
+        [companyId]
+      );
+      setSignatures(res.rows._array || Array.from(res.rows));
+    } catch (e) {
+      console.error('[ESignatures] Submit failed:', e);
+      toast.error('Failed to save e-signature');
+    }
   };
 
+  const handleEdit = (sig) => {
+    setFormData({
+      documentId: sig.document_id || '',
+      signerName: sig.signer_name || '',
+      signerEmail: sig.signer_email || '',
+      documentName: sig.document_name || '',
+      signingOrder: sig.signing_order || 1,
+      expirationDate: new Date(sig.expiration_date).toISOString().split('T')[0],
+      requireInitials: sig.require_initials !== false,
+      requireTimestamp: sig.require_timestamp !== false,
+    });
+    setEditingId(sig.id);
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this signature request?')) return;
+    try {
+      await RealEstateAPI.deleteESignature(companyId, id, user.id);
+      toast.success('Signature request deleted successfully');
+      const res = await powerSync.execute(
+        'SELECT * FROM univ_re_esignatures WHERE company_id = ? ORDER BY created_at DESC',
+        [companyId]
+      );
+      setSignatures(res.rows._array || Array.from(res.rows));
+    } catch (e) {
+      console.error('[ESignatures] Delete failed:', e);
+      toast.error('Failed to delete signature request');
+    }
+  };
+
+  // KPI calculations
+  const totalSignatures = signatures.length;
+  const completedSignatures = signatures.filter(s => s.signature_status === 'completed').length;
+  const pendingSignatures = signatures.filter(s => s.signature_status === 'pending').length;
+  const expiredSignatures = signatures.filter(s => s.signature_status === 'expired').length;
+
+  const getStatusIcon = (status) => {
+    switch(status) {
+      case 'completed': return <CheckCircle2 className="w-4 h-4 text-green-600" />;
+      case 'pending': return <Clock className="w-4 h-4 text-yellow-600" />;
+      case 'expired': return <AlertCircle className="w-4 h-4 text-red-600" />;
+      default: return <FileSignature className="w-4 h-4" />;
+    }
+  };
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+  }
+
   return (
-    <div className="p-6 bg-background min-h-screen">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-foreground mb-2">E-Signatures</h1>
-        <p className="text-muted-foreground">Manage digital signatures on documents</p>
+    <div className="space-y-6 p-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">E-Signatures</h1>
+          <p className="text-sm text-muted-foreground mt-1">Manage digital signatures on documents</p>
+        </div>
+        <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
+          documentId: '',
+          signerName: '',
+          signerEmail: '',
+          documentName: '',
+          signingOrder: 1,
+          expirationDate: new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0],
+          requireInitials: false,
+          requireTimestamp: true,
+        }); }} className="gap-2">
+          <Plus className="w-4 h-4" /> Request Signature
+        </Button>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="border-b border-border">
-            <tr className="bg-accent">
-              <th className="text-left py-3 px-4">Document ID</th>
-              <th className="text-left py-3 px-4">Signer Name</th>
-              <th className="text-left py-3 px-4">Status</th>
-              <th className="text-left py-3 px-4">Signature Date</th>
-              <th className="text-left py-3 px-4">Expiration</th>
-            </tr>
-          </thead>
-          <tbody>
-            {signatures.length === 0 ? (
-              <tr>
-                <td colSpan="5" className="text-center py-8 text-muted-foreground">No e-signatures found</td>
-              </tr>
-            ) : (
-              signatures.map(sig => (
-                <tr key={sig.id} className="border-b border-border hover:bg-accent">
-                  <td className="py-3 px-4 font-mono text-xs">{sig.document_id.substring(0, 8)}...</td>
-                  <td className="py-3 px-4">{sig.signer_name}</td>
-                  <td className="py-3 px-4">
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${statusColors[sig.signature_status] || 'bg-gray-100'}`}>
-                      {sig.signature_status}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4">{sig.signature_date ? new Date(sig.signature_date).toLocaleDateString() : '-'}</td>
-                  <td className="py-3 px-4 text-muted-foreground">{sig.expiration_date ? new Date(sig.expiration_date).toLocaleDateString() : '-'}</td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <FileSignature className="w-4 h-4" />
+              Total Requests
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalSignatures}</div>
+            <p className="text-xs text-muted-foreground mt-1">All signatures</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4" />
+              Completed
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">{completedSignatures}</div>
+            <p className="text-xs text-muted-foreground mt-1">Signed documents</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              Pending
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-yellow-600">{pendingSignatures}</div>
+            <p className="text-xs text-muted-foreground mt-1">Awaiting signature</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <AlertCircle className="w-4 h-4" />
+              Expired
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-red-600">{expiredSignatures}</div>
+            <p className="text-xs text-muted-foreground mt-1">Signature requests</p>
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Filters */}
+      <div className="flex gap-4 flex-wrap">
+        <div className="flex-1 min-w-64">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by signer name, document..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </div>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-40">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="pending">Pending</SelectItem>
+            <SelectItem value="completed">Completed</SelectItem>
+            <SelectItem value="expired">Expired</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Signatures Table */}
+      <Card className="overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="border-b border-border bg-muted/50">
+              <tr>
+                <th className="text-left py-3 px-4 font-medium">Document</th>
+                <th className="text-left py-3 px-4 font-medium">Signer</th>
+                <th className="text-left py-3 px-4 font-medium">Status</th>
+                <th className="text-left py-3 px-4 font-medium">Expires</th>
+                <th className="text-left py-3 px-4 font-medium">Signed On</th>
+                <th className="text-center py-3 px-4 font-medium">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredSignatures.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="text-center py-8 text-muted-foreground">
+                    No e-signatures found. Create your first signature request!
+                  </td>
+                </tr>
+              ) : (
+                filteredSignatures.map(sig => {
+                  const isExpired = new Date(sig.expiration_date) < new Date();
+                  const statusDisplay = isExpired ? 'expired' : sig.signature_status;
+                  return (
+                    <tr key={sig.id} className="border-b border-border hover:bg-muted/50 transition-colors">
+                      <td className="py-3 px-4">
+                        <div>
+                          <p className="font-medium">{sig.document_name}</p>
+                          <p className="text-xs text-muted-foreground">{sig.document_id?.substring(0, 12)}...</p>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div>
+                          <p className="font-medium">{sig.signer_name}</p>
+                          <p className="text-xs text-muted-foreground">{sig.signer_email}</p>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <Badge className={
+                          statusDisplay === 'completed' ? 'bg-green-100 text-green-800' :
+                          statusDisplay === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-red-100 text-red-800'
+                        }>
+                          {statusDisplay}
+                        </Badge>
+                      </td>
+                      <td className="py-3 px-4 text-sm">{new Date(sig.expiration_date).toLocaleDateString()}</td>
+                      <td className="py-3 px-4 text-sm text-muted-foreground">
+                        {sig.signature_date ? new Date(sig.signature_date).toLocaleDateString() : '-'}
+                      </td>
+                      <td className="py-3 px-4 text-center">
+                        <div className="flex justify-center gap-2">
+                          <Button size="sm" variant="ghost" onClick={() => handleEdit(sig)}>
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          <Button size="sm" variant="ghost" onClick={() => handleDelete(sig.id)} className="text-destructive">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      {/* Signature Request Form Modal */}
+      <Sheet open={showForm} onOpenChange={setShowForm}>
+        <SheetContent className="w-full max-w-md overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>{editingId ? 'Edit Signature Request' : 'Request E-Signature'}</SheetTitle>
+            <SheetDescription>Send a digital signature request to a signer</SheetDescription>
+          </SheetHeader>
+
+          <form onSubmit={handleSubmit} className="space-y-4 mt-6">
+            <div>
+              <label className="text-sm font-medium">Document Name</label>
+              <Input
+                value={formData.documentName}
+                onChange={(e) => setFormData({ ...formData, documentName: e.target.value })}
+                placeholder="e.g., Purchase Agreement"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Signer Name</label>
+              <Input
+                value={formData.signerName}
+                onChange={(e) => setFormData({ ...formData, signerName: e.target.value })}
+                placeholder="Full name"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Signer Email</label>
+              <Input
+                type="email"
+                value={formData.signerEmail}
+                onChange={(e) => setFormData({ ...formData, signerEmail: e.target.value })}
+                placeholder="email@example.com"
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-sm font-medium">Signing Order</label>
+                <Input
+                  type="number"
+                  min="1"
+                  value={formData.signingOrder}
+                  onChange={(e) => setFormData({ ...formData, signingOrder: parseInt(e.target.value) })}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Expires</label>
+                <Input
+                  type="date"
+                  value={formData.expirationDate}
+                  onChange={(e) => setFormData({ ...formData, expirationDate: e.target.value })}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2 p-3 bg-blue-50 rounded">
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="requireInitials"
+                  checked={formData.requireInitials}
+                  onChange={(e) => setFormData({ ...formData, requireInitials: e.target.checked })}
+                  className="w-4 h-4"
+                />
+                <label htmlFor="requireInitials" className="text-sm font-medium cursor-pointer">
+                  Require initials
+                </label>
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="requireTimestamp"
+                  checked={formData.requireTimestamp}
+                  onChange={(e) => setFormData({ ...formData, requireTimestamp: e.target.checked })}
+                  className="w-4 h-4"
+                />
+                <label htmlFor="requireTimestamp" className="text-sm font-medium cursor-pointer">
+                  Require timestamp
+                </label>
+              </div>
+            </div>
+
+            <div className="flex gap-2 pt-4">
+              <Button type="submit" className="flex-1">
+                {editingId ? 'Update' : 'Send'} Request
+              </Button>
+              <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

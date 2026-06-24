@@ -447,7 +447,7 @@ export const RealEstateAPI = {
     }
   },
 
-  // ──────────────���───────���─────────────────────────────────
+  // ──────────────���───────�����─────────────────────────────────
   // LEASES
   // ────────────────────────────────────────────────────────
 
@@ -973,6 +973,707 @@ export const RealEstateAPI = {
       return res.rows._array || Array.from(res.rows);
     } catch (e) {
       console.error('[RE API] getLeadCampaigns failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // COMMISSION RULES
+  // ────────────────────────────────────────────────────────
+
+  async getCommissionRules(companyId, filters = {}) {
+    try {
+      let query = 'SELECT * FROM univ_re_commission_rules WHERE company_id = ?';
+      const params = [companyId];
+
+      if (filters.ruleType) {
+        query += ' AND rule_type = ?';
+        params.push(filters.ruleType);
+      }
+      if (filters.isActive !== undefined) {
+        query += ' AND is_active = ?';
+        params.push(filters.isActive);
+      }
+
+      query += ' ORDER BY created_at DESC';
+      const res = await powerSync.execute(query, params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getCommissionRules failed:', e);
+      throw e;
+    }
+  },
+
+  async createCommissionRule(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_commission_rules (id, company_id, rule_name, rule_type, commission_percentage, 
+         flat_fee, property_types, price_range_min, price_range_max, description, is_active, created_at, updated_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.ruleName, data.ruleType, data.commissionPercentage || 0, 
+         data.flatFee || 0, data.propertyTypes, data.priceRangeMin || 0, data.priceRangeMax || 0, 
+         data.description || '', data.isActive !== false, now, now]
+      );
+
+      // Audit logged inline during commission rule creation
+      powerSync.execute(
+        'INSERT INTO audit_logs (user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+        [userId, 'create', 'commission_rule', id, JSON.stringify(data), now]
+      ).catch(e => console.warn('Audit log error:', e));
+
+      return id;
+    } catch (e) {
+      console.error('[RE API] createCommissionRule failed:', e);
+      throw e;
+    }
+  },
+
+  async updateCommissionRule(companyId, ruleId, data, userId) {
+    try {
+      const updates = [];
+      const params = [];
+
+      Object.keys(data).forEach(key => {
+        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
+          updates.push(`${key} = ?`);
+          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        }
+      });
+
+      updates.push('updated_at = ?');
+      params.push(new Date().toISOString());
+      params.push(companyId);
+      params.push(ruleId);
+
+      const query = `UPDATE univ_re_commission_rules SET ${updates.join(', ')} 
+                     WHERE company_id = ? AND id = ?`;
+      
+      await powerSync.execute(query, params);
+    } catch (e) {
+      console.error('[RE API] updateCommissionRule failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteCommissionRule(companyId, ruleId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_commission_rules WHERE company_id = ? AND id = ?',
+        [companyId, ruleId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteCommissionRule failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // TRUST ACCOUNTING
+  // ────────────────────────────────────────────────────────
+
+  async getTrustAccounts(companyId, filters = {}) {
+    try {
+      let query = 'SELECT * FROM univ_re_trust_accounts WHERE company_id = ?';
+      const params = [companyId];
+
+      if (filters.accountType) {
+        query += ' AND account_type = ?';
+        params.push(filters.accountType);
+      }
+
+      query += ' ORDER BY created_at DESC';
+      const res = await powerSync.execute(query, params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getTrustAccounts failed:', e);
+      throw e;
+    }
+  },
+
+  async createTrustAccount(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_trust_accounts (id, company_id, account_name, account_type, bank_name, 
+         account_number, balance, reconciliation_status, created_at, updated_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.accountName, data.accountType, data.bankName, data.accountNumber, 
+         0, 'unreconciled', now, now]
+      );
+      return id;
+    } catch (e) {
+      console.error('[RE API] createTrustAccount failed:', e);
+      throw e;
+    }
+  },
+
+  async getTrustLedger(companyId, filters = {}) {
+    try {
+      let query = 'SELECT * FROM univ_re_trust_ledger WHERE company_id = ?';
+      const params = [companyId];
+
+      if (filters.accountId) {
+        query += ' AND account_id = ?';
+        params.push(filters.accountId);
+      }
+      if (filters.transactionType) {
+        query += ' AND transaction_type = ?';
+        params.push(filters.transactionType);
+      }
+
+      query += ' ORDER BY transaction_date DESC';
+      const res = await powerSync.execute(query, params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getTrustLedger failed:', e);
+      throw e;
+    }
+  },
+
+  async createTrustLedgerEntry(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_trust_ledger (id, company_id, account_id, transaction_type, amount, 
+         description, reference_number, transaction_date, created_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.accountId, data.transactionType, data.amount, data.description, 
+         data.referenceNumber, data.transactionDate, now]
+      );
+
+      // Update account balance
+      const balanceAdjustment = data.transactionType === 'deposit' || data.transactionType === 'transfer' 
+        ? data.amount 
+        : -data.amount;
+      
+      await powerSync.execute(
+        'UPDATE univ_re_trust_accounts SET balance = balance + ? WHERE id = ?',
+        [balanceAdjustment, data.accountId]
+      );
+
+      powerSync.execute(
+        'INSERT INTO audit_logs (user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+        [userId, 'create', 'trust_ledger', id, JSON.stringify(data), now]
+      ).catch(e => console.warn('Audit log error:', e));
+
+      return id;
+    } catch (e) {
+      console.error('[RE API] createTrustLedgerEntry failed:', e);
+      throw e;
+    }
+  },
+
+  async updateTrustLedgerEntry(companyId, entryId, data, userId) {
+    try {
+      const updates = [];
+      const params = [];
+
+      Object.keys(data).forEach(key => {
+        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
+          updates.push(`${key} = ?`);
+          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        }
+      });
+
+      params.push(companyId);
+      params.push(entryId);
+
+      const query = `UPDATE univ_re_trust_ledger SET ${updates.join(', ')} 
+                     WHERE company_id = ? AND id = ?`;
+      
+      await powerSync.execute(query, params);
+    } catch (e) {
+      console.error('[RE API] updateTrustLedgerEntry failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteTrustLedgerEntry(companyId, entryId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_trust_ledger WHERE company_id = ? AND id = ?',
+        [companyId, entryId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteTrustLedgerEntry failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // DOCUMENT TEMPLATES
+  // ────────────────────────────────────────────────────────
+
+  async getDocumentTemplates(companyId, filters = {}) {
+    try {
+      let query = 'SELECT * FROM univ_re_document_templates WHERE company_id = ?';
+      const params = [companyId];
+
+      if (filters.documentType) {
+        query += ' AND document_type = ?';
+        params.push(filters.documentType);
+      }
+      if (filters.category) {
+        query += ' AND document_category = ?';
+        params.push(filters.category);
+      }
+      if (filters.isActive !== undefined) {
+        query += ' AND is_active = ?';
+        params.push(filters.isActive);
+      }
+
+      query += ' ORDER BY created_at DESC';
+      const res = await powerSync.execute(query, params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getDocumentTemplates failed:', e);
+      throw e;
+    }
+  },
+
+  async createDocumentTemplate(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_document_templates (id, company_id, template_name, document_type, document_category, 
+         required_signatures, version, content, description, is_active, created_at, updated_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.templateName, data.documentType, data.documentCategory, data.requiredSignatures, 
+         data.version, data.content, data.description || '', data.isActive !== false, now, now]
+      );
+
+      powerSync.execute(
+        'INSERT INTO audit_logs (user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+        [userId, 'create', 'document_template', id, JSON.stringify(data), now]
+      ).catch(e => console.warn('Audit log error:', e));
+
+      return id;
+    } catch (e) {
+      console.error('[RE API] createDocumentTemplate failed:', e);
+      throw e;
+    }
+  },
+
+  async updateDocumentTemplate(companyId, templateId, data, userId) {
+    try {
+      const updates = [];
+      const params = [];
+
+      Object.keys(data).forEach(key => {
+        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
+          updates.push(`${key} = ?`);
+          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        }
+      });
+
+      updates.push('updated_at = ?');
+      params.push(new Date().toISOString());
+      params.push(companyId);
+      params.push(templateId);
+
+      const query = `UPDATE univ_re_document_templates SET ${updates.join(', ')} 
+                     WHERE company_id = ? AND id = ?`;
+      
+      await powerSync.execute(query, params);
+    } catch (e) {
+      console.error('[RE API] updateDocumentTemplate failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteDocumentTemplate(companyId, templateId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_document_templates WHERE company_id = ? AND id = ?',
+        [companyId, templateId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteDocumentTemplate failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // COUNTER OFFERS
+  // ────────────────────────────────────────────────────────
+
+  async getCounterOffers(companyId, filters = {}) {
+    try {
+      let query = 'SELECT * FROM univ_re_counter_offers WHERE company_id = ?';
+      const params = [companyId];
+
+      if (filters.status) {
+        query += ' AND status = ?';
+        params.push(filters.status);
+      }
+      if (filters.originalOfferId) {
+        query += ' AND original_offer_id = ?';
+        params.push(filters.originalOfferId);
+      }
+
+      query += ' ORDER BY created_at DESC';
+      const res = await powerSync.execute(query, params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getCounterOffers failed:', e);
+      throw e;
+    }
+  },
+
+  async createCounterOffer(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_counter_offers (id, company_id, original_offer_id, counter_price, counter_amount, 
+         earnest_money, contingencies, expiration_date, notes, status, property_address, created_at, updated_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.originalOfferId, data.counterPrice, data.counterAmount || 0, 
+         data.earnestMoney || 0, data.contingencies || '', data.expirationDate, data.notes || '', 
+         data.status || 'pending', data.propertyAddress || '', now, now]
+      );
+
+      powerSync.execute(
+        'INSERT INTO audit_logs (user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+        [userId, 'create', 'counter_offer', id, JSON.stringify(data), now]
+      ).catch(e => console.warn('Audit log error:', e));
+
+      return id;
+    } catch (e) {
+      console.error('[RE API] createCounterOffer failed:', e);
+      throw e;
+    }
+  },
+
+  async updateCounterOffer(companyId, offerId, data, userId) {
+    try {
+      const updates = [];
+      const params = [];
+
+      Object.keys(data).forEach(key => {
+        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
+          updates.push(`${key} = ?`);
+          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        }
+      });
+
+      updates.push('updated_at = ?');
+      params.push(new Date().toISOString());
+      params.push(companyId);
+      params.push(offerId);
+
+      const query = `UPDATE univ_re_counter_offers SET ${updates.join(', ')} 
+                     WHERE company_id = ? AND id = ?`;
+      
+      await powerSync.execute(query, params);
+    } catch (e) {
+      console.error('[RE API] updateCounterOffer failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteCounterOffer(companyId, offerId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_counter_offers WHERE company_id = ? AND id = ?',
+        [companyId, offerId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteCounterOffer failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // PAYMENT SCHEDULES
+  // ────────────────────────────────────────────────────────
+
+  async getPaymentSchedules(companyId, filters = {}) {
+    try {
+      let query = 'SELECT * FROM univ_re_payment_schedules WHERE company_id = ?';
+      const params = [companyId];
+
+      if (filters.leaseId) {
+        query += ' AND lease_id = ?';
+        params.push(filters.leaseId);
+      }
+      if (filters.autoDebitEnabled !== undefined) {
+        query += ' AND auto_debit_enabled = ?';
+        params.push(filters.autoDebitEnabled);
+      }
+
+      query += ' ORDER BY created_at DESC';
+      const res = await powerSync.execute(query, params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getPaymentSchedules failed:', e);
+      throw e;
+    }
+  },
+
+  async createPaymentSchedule(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_payment_schedules (id, company_id, lease_id, payment_amount, payment_due_date, 
+         grace_period_days, late_fee_type, late_fee_amount, late_fee_percentage, payment_method, auto_debit_enabled, 
+         auto_debit_day, reminder_days_before, is_active, created_at, updated_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.leaseId, data.paymentAmount, data.paymentDueDate, data.gracePeriodDays, 
+         data.lateFeesType, data.lateFeeAmount || 0, data.lateFeePercentage || 0, data.paymentMethod, 
+         data.autoDebitEnabled !== false, data.autoDebitDay || 1, data.reminderDaysBefore || 5, 
+         data.isActive !== false, now, now]
+      );
+
+      powerSync.execute(
+        'INSERT INTO audit_logs (user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+        [userId, 'create', 'payment_schedule', id, JSON.stringify(data), now]
+      ).catch(e => console.warn('Audit log error:', e));
+
+      return id;
+    } catch (e) {
+      console.error('[RE API] createPaymentSchedule failed:', e);
+      throw e;
+    }
+  },
+
+  async updatePaymentSchedule(companyId, scheduleId, data, userId) {
+    try {
+      const updates = [];
+      const params = [];
+
+      Object.keys(data).forEach(key => {
+        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
+          updates.push(`${key} = ?`);
+          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        }
+      });
+
+      updates.push('updated_at = ?');
+      params.push(new Date().toISOString());
+      params.push(companyId);
+      params.push(scheduleId);
+
+      const query = `UPDATE univ_re_payment_schedules SET ${updates.join(', ')} 
+                     WHERE company_id = ? AND id = ?`;
+      
+      await powerSync.execute(query, params);
+    } catch (e) {
+      console.error('[RE API] updatePaymentSchedule failed:', e);
+      throw e;
+    }
+  },
+
+  async deletePaymentSchedule(companyId, scheduleId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_payment_schedules WHERE company_id = ? AND id = ?',
+        [companyId, scheduleId]
+      );
+    } catch (e) {
+      console.error('[RE API] deletePaymentSchedule failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // E-SIGNATURES
+  // ────────────────────────────────────────────────────────
+
+  async getESignatures(companyId, filters = {}) {
+    try {
+      let query = 'SELECT * FROM univ_re_esignatures WHERE company_id = ?';
+      const params = [companyId];
+
+      if (filters.status) {
+        query += ' AND signature_status = ?';
+        params.push(filters.status);
+      }
+      if (filters.documentId) {
+        query += ' AND document_id = ?';
+        params.push(filters.documentId);
+      }
+
+      query += ' ORDER BY created_at DESC';
+      const res = await powerSync.execute(query, params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getESignatures failed:', e);
+      throw e;
+    }
+  },
+
+  async createESignature(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_esignatures (id, company_id, document_id, document_name, signer_name, signer_email, 
+         signing_order, expiration_date, require_initials, require_timestamp, signature_status, created_at, updated_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.documentId, data.documentName, data.signerName, data.signerEmail, 
+         data.signingOrder || 1, data.expirationDate, data.requireInitials !== false, 
+         data.requireTimestamp !== false, 'pending', now, now]
+      );
+
+      powerSync.execute(
+        'INSERT INTO audit_logs (user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+        [userId, 'create', 'esignature', id, JSON.stringify(data), now]
+      ).catch(e => console.warn('Audit log error:', e));
+
+      return id;
+    } catch (e) {
+      console.error('[RE API] createESignature failed:', e);
+      throw e;
+    }
+  },
+
+  async updateESignature(companyId, signatureId, data, userId) {
+    try {
+      const updates = [];
+      const params = [];
+
+      Object.keys(data).forEach(key => {
+        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
+          updates.push(`${key} = ?`);
+          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        }
+      });
+
+      updates.push('updated_at = ?');
+      params.push(new Date().toISOString());
+      params.push(companyId);
+      params.push(signatureId);
+
+      const query = `UPDATE univ_re_esignatures SET ${updates.join(', ')} 
+                     WHERE company_id = ? AND id = ?`;
+      
+      await powerSync.execute(query, params);
+    } catch (e) {
+      console.error('[RE API] updateESignature failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteESignature(companyId, signatureId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_esignatures WHERE company_id = ? AND id = ?',
+        [companyId, signatureId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteESignature failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // MARKET DATA
+  // ────────────────────────────────────────────────────────
+
+  async getMarketData(companyId, filters = {}) {
+    try {
+      let query = 'SELECT * FROM univ_re_market_data WHERE company_id = ?';
+      const params = [companyId];
+
+      if (filters.region) {
+        query += ' AND market_region = ?';
+        params.push(filters.region);
+      }
+      if (filters.trend) {
+        query += ' AND market_trend = ?';
+        params.push(filters.trend);
+      }
+      if (filters.level) {
+        query += ' AND market_level = ?';
+        params.push(filters.level);
+      }
+
+      query += ' ORDER BY data_date DESC';
+      const res = await powerSync.execute(query, params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getMarketData failed:', e);
+      throw e;
+    }
+  },
+
+  async createMarketData(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_market_data (id, company_id, market_region, market_city, market_level, 
+         average_price, median_price, price_per_sqft, days_on_market_average, active_listings_count, 
+         sold_listings_count, pending_listings_count, market_trend, data_date, data_source, created_at, updated_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.marketRegion, data.marketCity, data.marketLevel, data.averagePrice, 
+         data.medianPrice, data.pricePerSqft, data.daysOnMarketAverage, data.activeListingsCount, 
+         data.soldListingsCount, data.pendingListingsCount || 0, data.marketTrend, data.dataDate, 
+         data.dataSource || 'Internal', now, now]
+      );
+
+      powerSync.execute(
+        'INSERT INTO audit_logs (user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+        [userId, 'create', 'market_data', id, JSON.stringify(data), now]
+      ).catch(e => console.warn('Audit log error:', e));
+
+      return id;
+    } catch (e) {
+      console.error('[RE API] createMarketData failed:', e);
+      throw e;
+    }
+  },
+
+  async updateMarketData(companyId, dataId, data, userId) {
+    try {
+      const updates = [];
+      const params = [];
+
+      Object.keys(data).forEach(key => {
+        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
+          updates.push(`${key} = ?`);
+          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        }
+      });
+
+      updates.push('updated_at = ?');
+      params.push(new Date().toISOString());
+      params.push(companyId);
+      params.push(dataId);
+
+      const query = `UPDATE univ_re_market_data SET ${updates.join(', ')} 
+                     WHERE company_id = ? AND id = ?`;
+      
+      await powerSync.execute(query, params);
+    } catch (e) {
+      console.error('[RE API] updateMarketData failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteMarketData(companyId, dataId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_market_data WHERE company_id = ? AND id = ?',
+        [companyId, dataId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteMarketData failed:', e);
       throw e;
     }
   },
