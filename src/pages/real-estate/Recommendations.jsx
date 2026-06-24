@@ -41,7 +41,7 @@ export default function Recommendations() {
     const fetchRecs = async () => {
       try {
         const res = await powerSync.execute(
-          'SELECT * FROM univ_re_recommendations WHERE company_id = ? ORDER BY created_at DESC',
+          'SELECT * FROM univ_re_agent_recommendations WHERE company_id = ? ORDER BY created_at DESC',
           [companyId]
         );
         const data = res.rows._array || Array.from(res.rows);
@@ -94,7 +94,7 @@ export default function Recommendations() {
       });
 
       const res = await powerSync.execute(
-        'SELECT * FROM univ_re_recommendations WHERE company_id = ? ORDER BY created_at DESC',
+        'SELECT * FROM univ_re_agent_recommendations WHERE company_id = ? ORDER BY created_at DESC',
         [companyId]
       );
       setRecommendations(res.rows._array || Array.from(res.rows));
@@ -124,7 +124,7 @@ export default function Recommendations() {
       await RealEstateAPI.deleteRecommendation(companyId, id, user.id);
       toast.success('Recommendation deleted successfully');
       const res = await powerSync.execute(
-        'SELECT * FROM univ_re_recommendations WHERE company_id = ? ORDER BY created_at DESC',
+        'SELECT * FROM univ_re_agent_recommendations WHERE company_id = ? ORDER BY created_at DESC',
         [companyId]
       );
       setRecommendations(res.rows._array || Array.from(res.rows));

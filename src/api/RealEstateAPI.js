@@ -447,7 +447,7 @@ export const RealEstateAPI = {
     }
   },
 
-  // ──────────────���───────���������─────────────────────────────────
+  // ──────────────���───────�����������─────────────────────────────────
   // LEASES
   // ────────────────────────────────────────────────────────
 
@@ -1400,7 +1400,7 @@ export const RealEstateAPI = {
 
   async getPaymentSchedules(companyId, filters = {}) {
     try {
-      let query = 'SELECT * FROM univ_re_payment_schedules WHERE company_id = ?';
+      let query = 'SELECT * FROM univ_re_rent_payment_schedules WHERE company_id = ?';
       const params = [companyId];
 
       if (filters.leaseId) {
@@ -1427,7 +1427,7 @@ export const RealEstateAPI = {
       const now = new Date().toISOString();
 
       await powerSync.execute(
-        `INSERT INTO univ_re_payment_schedules (id, company_id, lease_id, payment_amount, payment_due_date, 
+        `INSERT INTO univ_re_rent_payment_schedules (id, company_id, lease_id, payment_amount, payment_due_date, 
          grace_period_days, late_fee_type, late_fee_amount, late_fee_percentage, payment_method, auto_debit_enabled, 
          auto_debit_day, reminder_days_before, is_active, created_at, updated_at) 
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -1466,7 +1466,7 @@ export const RealEstateAPI = {
       params.push(companyId);
       params.push(scheduleId);
 
-      const query = `UPDATE univ_re_payment_schedules SET ${updates.join(', ')} 
+      const query = `UPDATE univ_re_rent_payment_schedules SET ${updates.join(', ')} 
                      WHERE company_id = ? AND id = ?`;
       
       await powerSync.execute(query, params);
@@ -1479,7 +1479,7 @@ export const RealEstateAPI = {
   async deletePaymentSchedule(companyId, scheduleId, userId) {
     try {
       await powerSync.execute(
-        'DELETE FROM univ_re_payment_schedules WHERE company_id = ? AND id = ?',
+        'DELETE FROM univ_re_rent_payment_schedules WHERE company_id = ? AND id = ?',
         [companyId, scheduleId]
       );
     } catch (e) {
@@ -1494,7 +1494,7 @@ export const RealEstateAPI = {
 
   async getESignatures(companyId, filters = {}) {
     try {
-      let query = 'SELECT * FROM univ_re_esignatures WHERE company_id = ?';
+      let query = 'SELECT * FROM univ_re_e_signatures WHERE company_id = ?';
       const params = [companyId];
 
       if (filters.status) {
@@ -1521,7 +1521,7 @@ export const RealEstateAPI = {
       const now = new Date().toISOString();
 
       await powerSync.execute(
-        `INSERT INTO univ_re_esignatures (id, company_id, document_id, document_name, signer_name, signer_email, 
+        `INSERT INTO univ_re_e_signatures (id, company_id, document_id, document_name, signer_name, signer_email, 
          signing_order, expiration_date, require_initials, require_timestamp, signature_status, created_at, updated_at) 
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [id, companyId, data.documentId, data.documentName, data.signerName, data.signerEmail, 
@@ -1558,7 +1558,7 @@ export const RealEstateAPI = {
       params.push(companyId);
       params.push(signatureId);
 
-      const query = `UPDATE univ_re_esignatures SET ${updates.join(', ')} 
+      const query = `UPDATE univ_re_e_signatures SET ${updates.join(', ')} 
                      WHERE company_id = ? AND id = ?`;
       
       await powerSync.execute(query, params);
@@ -1571,7 +1571,7 @@ export const RealEstateAPI = {
   async deleteESignature(companyId, signatureId, userId) {
     try {
       await powerSync.execute(
-        'DELETE FROM univ_re_esignatures WHERE company_id = ? AND id = ?',
+        'DELETE FROM univ_re_e_signatures WHERE company_id = ? AND id = ?',
         [companyId, signatureId]
       );
     } catch (e) {
@@ -1781,7 +1781,7 @@ export const RealEstateAPI = {
       const now = new Date().toISOString();
 
       await powerSync.execute(
-        `INSERT INTO univ_re_recommendations (id, company_id, client_id, recommended_agent_id, property_id,
+        `INSERT INTO univ_re_agent_recommendations (id, company_id, client_id, recommended_agent_id, property_id,
          recommendation_type, recommendation_score, recommendation_reason, client_action, created_at, updated_at)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [id, companyId, data.clientId, data.recommendedAgentId, data.propertyId,
@@ -1797,7 +1797,7 @@ export const RealEstateAPI = {
   async updateRecommendation(companyId, recId, data, userId) {
     try {
       await powerSync.execute(
-        `UPDATE univ_re_recommendations SET recommendation_reason = ?, recommendation_score = ?, 
+        `UPDATE univ_re_agent_recommendations SET recommendation_reason = ?, recommendation_score = ?, 
          client_action = ?, updated_at = ? WHERE company_id = ? AND id = ?`,
         [data.recommendationReason, data.recommendationScore, data.clientAction, new Date().toISOString(), companyId, recId]
       );
@@ -1810,7 +1810,7 @@ export const RealEstateAPI = {
   async deleteRecommendation(companyId, recId, userId) {
     try {
       await powerSync.execute(
-        'DELETE FROM univ_re_recommendations WHERE company_id = ? AND id = ?',
+        'DELETE FROM univ_re_agent_recommendations WHERE company_id = ? AND id = ?',
         [companyId, recId]
       );
     } catch (e) {
