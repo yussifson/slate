@@ -447,7 +447,7 @@ export const RealEstateAPI = {
     }
   },
 
-  // ──────────────���───────�����─────────────────────────────────
+  // ──────────────���───────�������─────────────────────────────────
   // LEASES
   // ────────────────────────────────────────────────────────
 
@@ -1674,6 +1674,99 @@ export const RealEstateAPI = {
       );
     } catch (e) {
       console.error('[RE API] deleteMarketData failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // ESCROW ACCOUNTS
+  // ────────────────────────────────────────────────────────
+
+  async getEscrowAccounts(companyId, filters = {}) {
+    try {
+      let query = 'SELECT * FROM univ_re_escrow_accounts WHERE company_id = ?';
+      const params = [companyId];
+
+      if (filters.releaseStatus) {
+        query += ' AND release_status = ?';
+        params.push(filters.releaseStatus);
+      }
+      if (filters.escrowType) {
+        query += ' AND escrow_type = ?';
+        params.push(filters.escrowType);
+      }
+
+      query += ' ORDER BY created_at DESC';
+      const res = await powerSync.execute(query, params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getEscrowAccounts failed:', e);
+      throw e;
+    }
+  },
+
+  async createEscrowAccount(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_escrow_accounts (id, company_id, escrow_type, escrow_amount, buyer_id, 
+         seller_id, property_id, escrow_agent_name, escrow_agent_company, escrow_agent_email, 
+         escrow_agent_phone, release_date, release_conditions, release_status, created_at, updated_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.escrowType, data.escrowAmount, data.buyerId, data.sellerId, data.propertyId, 
+         data.escrowAgentName, data.escrowAgentCompany, data.escrowAgentEmail, data.escrowAgentPhone, 
+         data.releaseDate, data.releaseConditions, data.releaseStatus || 'held', now, now]
+      );
+
+      powerSync.execute(
+        'INSERT INTO audit_logs (user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+        [userId, 'create', 'escrow_account', id, JSON.stringify(data), now]
+      ).catch(e => console.warn('Audit log error:', e));
+
+      return id;
+    } catch (e) {
+      console.error('[RE API] createEscrowAccount failed:', e);
+      throw e;
+    }
+  },
+
+  async updateEscrowAccount(companyId, accountId, data, userId) {
+    try {
+      const updates = [];
+      const params = [];
+
+      Object.keys(data).forEach(key => {
+        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
+          updates.push(`${key} = ?`);
+          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        }
+      });
+
+      updates.push('updated_at = ?');
+      params.push(new Date().toISOString());
+      params.push(companyId);
+      params.push(accountId);
+
+      const query = `UPDATE univ_re_escrow_accounts SET ${updates.join(', ')} 
+                     WHERE company_id = ? AND id = ?`;
+      
+      await powerSync.execute(query, params);
+    } catch (e) {
+      console.error('[RE API] updateEscrowAccount failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteEscrowAccount(companyId, accountId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_escrow_accounts WHERE company_id = ? AND id = ?',
+        [companyId, accountId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteEscrowAccount failed:', e);
       throw e;
     }
   },
