@@ -26,9 +26,9 @@ CREATE TABLE IF NOT EXISTS univ_re_trust_accounts (
   metadata JSONB
 );
 
-CREATE INDEX idx_trust_accounts_company ON univ_re_trust_accounts(company_id);
-CREATE INDEX idx_trust_accounts_holder ON univ_re_trust_accounts(account_holder_id);
-CREATE INDEX idx_trust_accounts_type ON univ_re_trust_accounts(account_type);
+CREATE INDEX IF NOT EXISTS idx_trust_accounts_company ON univ_re_trust_accounts(company_id);
+CREATE INDEX IF NOT EXISTS idx_trust_accounts_holder ON univ_re_trust_accounts(account_holder_id);
+CREATE INDEX IF NOT EXISTS idx_trust_accounts_type ON univ_re_trust_accounts(account_type);
 
 CREATE TABLE IF NOT EXISTS univ_re_trust_ledger (
   id TEXT PRIMARY KEY,
@@ -47,10 +47,10 @@ CREATE TABLE IF NOT EXISTS univ_re_trust_ledger (
   metadata JSONB
 );
 
-CREATE INDEX idx_trust_ledger_account ON univ_re_trust_ledger(trust_account_id);
-CREATE INDEX idx_trust_ledger_company ON univ_re_trust_ledger(company_id);
-CREATE INDEX idx_trust_ledger_type ON univ_re_trust_ledger(transaction_type);
-CREATE INDEX idx_trust_ledger_date ON univ_re_trust_ledger(transaction_date);
+CREATE INDEX IF NOT EXISTS idx_trust_ledger_account ON univ_re_trust_ledger(trust_account_id);
+CREATE INDEX IF NOT EXISTS idx_trust_ledger_company ON univ_re_trust_ledger(company_id);
+CREATE INDEX IF NOT EXISTS idx_trust_ledger_type ON univ_re_trust_ledger(transaction_type);
+CREATE INDEX IF NOT EXISTS idx_trust_ledger_date ON univ_re_trust_ledger(transaction_date);
 
 CREATE TABLE IF NOT EXISTS univ_re_escrow_accounts (
   id TEXT PRIMARY KEY,
@@ -73,9 +73,9 @@ CREATE TABLE IF NOT EXISTS univ_re_escrow_accounts (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_escrow_transaction ON univ_re_escrow_accounts(transaction_id);
-CREATE INDEX idx_escrow_company ON univ_re_escrow_accounts(company_id);
-CREATE INDEX idx_escrow_property ON univ_re_escrow_accounts(property_id);
+CREATE INDEX IF NOT EXISTS idx_escrow_transaction ON univ_re_escrow_accounts(transaction_id);
+CREATE INDEX IF NOT EXISTS idx_escrow_company ON univ_re_escrow_accounts(company_id);
+CREATE INDEX IF NOT EXISTS idx_escrow_property ON univ_re_escrow_accounts(property_id);
 
 -- ========================================
 -- 2. DOCUMENTS & DIGITAL TRANSACTIONS
@@ -97,8 +97,8 @@ CREATE TABLE IF NOT EXISTS univ_re_document_templates (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_doc_templates_company ON univ_re_document_templates(company_id);
-CREATE INDEX idx_doc_templates_type ON univ_re_document_templates(document_type);
+CREATE INDEX IF NOT EXISTS idx_doc_templates_company ON univ_re_document_templates(company_id);
+CREATE INDEX IF NOT EXISTS idx_doc_templates_type ON univ_re_document_templates(document_type);
 
 CREATE TABLE IF NOT EXISTS univ_re_documents (
   id TEXT PRIMARY KEY,
@@ -119,10 +119,10 @@ CREATE TABLE IF NOT EXISTS univ_re_documents (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_documents_company ON univ_re_documents(company_id);
-CREATE INDEX idx_documents_property ON univ_re_documents(property_id);
-CREATE INDEX idx_documents_transaction ON univ_re_documents(transaction_id);
-CREATE INDEX idx_documents_type ON univ_re_documents(document_type);
+CREATE INDEX IF NOT EXISTS idx_documents_company ON univ_re_documents(company_id);
+CREATE INDEX IF NOT EXISTS idx_documents_property ON univ_re_documents(property_id);
+CREATE INDEX IF NOT EXISTS idx_documents_transaction ON univ_re_documents(transaction_id);
+CREATE INDEX IF NOT EXISTS idx_documents_type ON univ_re_documents(document_type);
 
 CREATE TABLE IF NOT EXISTS univ_re_e_signatures (
   id TEXT PRIMARY KEY,
@@ -141,8 +141,8 @@ CREATE TABLE IF NOT EXISTS univ_re_e_signatures (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_e_signatures_document ON univ_re_e_signatures(document_id);
-CREATE INDEX idx_e_signatures_signer ON univ_re_e_signatures(signer_id);
+CREATE INDEX IF NOT EXISTS idx_e_signatures_document ON univ_re_e_signatures(document_id);
+CREATE INDEX IF NOT EXISTS idx_e_signatures_signer ON univ_re_e_signatures(signer_id);
 
 -- ========================================
 -- 3. ENHANCED OFFERS & COMMISSION SYSTEM
@@ -167,8 +167,8 @@ CREATE TABLE IF NOT EXISTS univ_re_counter_offers (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_counter_offers_original ON univ_re_counter_offers(original_offer_id);
-CREATE INDEX idx_counter_offers_company ON univ_re_counter_offers(company_id);
+CREATE INDEX IF NOT EXISTS idx_counter_offers_original ON univ_re_counter_offers(original_offer_id);
+CREATE INDEX IF NOT EXISTS idx_counter_offers_company ON univ_re_counter_offers(company_id);
 
 CREATE TABLE IF NOT EXISTS univ_re_commission_rules (
   id TEXT PRIMARY KEY,
@@ -188,7 +188,7 @@ CREATE TABLE IF NOT EXISTS univ_re_commission_rules (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_commission_rules_company ON univ_re_commission_rules(company_id);
+CREATE INDEX IF NOT EXISTS idx_commission_rules_company ON univ_re_commission_rules(company_id);
 
 CREATE TABLE IF NOT EXISTS univ_re_commission_details (
   id TEXT PRIMARY KEY,
@@ -213,9 +213,9 @@ CREATE TABLE IF NOT EXISTS univ_re_commission_details (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_commission_details_transaction ON univ_re_commission_details(transaction_id);
-CREATE INDEX idx_commission_details_company ON univ_re_commission_details(company_id);
-CREATE INDEX idx_commission_details_payout_status ON univ_re_commission_details(payout_status);
+CREATE INDEX IF NOT EXISTS idx_commission_details_transaction ON univ_re_commission_details(transaction_id);
+CREATE INDEX IF NOT EXISTS idx_commission_details_company ON univ_re_commission_details(company_id);
+CREATE INDEX IF NOT EXISTS idx_commission_details_payout_status ON univ_re_commission_details(payout_status);
 
 -- ========================================
 -- 4. CONTRACTORS & VENDOR MANAGEMENT
@@ -252,9 +252,9 @@ CREATE TABLE IF NOT EXISTS univ_re_contractors (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_contractors_company ON univ_re_contractors(company_id);
-CREATE INDEX idx_contractors_type ON univ_re_contractors(contractor_type);
-CREATE INDEX idx_contractors_licensed ON univ_re_contractors(is_licensed);
+CREATE INDEX IF NOT EXISTS idx_contractors_company ON univ_re_contractors(company_id);
+CREATE INDEX IF NOT EXISTS idx_contractors_type ON univ_re_contractors(contractor_type);
+CREATE INDEX IF NOT EXISTS idx_contractors_licensed ON univ_re_contractors(is_licensed);
 
 CREATE TABLE IF NOT EXISTS univ_re_contractor_reviews (
   id TEXT PRIMARY KEY,
@@ -272,8 +272,8 @@ CREATE TABLE IF NOT EXISTS univ_re_contractor_reviews (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_contractor_reviews_contractor ON univ_re_contractor_reviews(contractor_id);
-CREATE INDEX idx_contractor_reviews_company ON univ_re_contractor_reviews(company_id);
+CREATE INDEX IF NOT EXISTS idx_contractor_reviews_contractor ON univ_re_contractor_reviews(contractor_id);
+CREATE INDEX IF NOT EXISTS idx_contractor_reviews_company ON univ_re_contractor_reviews(company_id);
 
 -- ========================================
 -- 5. ENHANCED LEASE MANAGEMENT
@@ -296,8 +296,8 @@ CREATE TABLE IF NOT EXISTS univ_re_lease_renewals (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_lease_renewals_lease ON univ_re_lease_renewals(lease_id);
-CREATE INDEX idx_lease_renewals_company ON univ_re_lease_renewals(company_id);
+CREATE INDEX IF NOT EXISTS idx_lease_renewals_lease ON univ_re_lease_renewals(lease_id);
+CREATE INDEX IF NOT EXISTS idx_lease_renewals_company ON univ_re_lease_renewals(company_id);
 
 CREATE TABLE IF NOT EXISTS univ_re_rent_payment_schedules (
   id TEXT PRIMARY KEY,
@@ -316,8 +316,8 @@ CREATE TABLE IF NOT EXISTS univ_re_rent_payment_schedules (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_rent_schedules_lease ON univ_re_rent_payment_schedules(lease_id);
-CREATE INDEX idx_rent_schedules_company ON univ_re_rent_payment_schedules(company_id);
+CREATE INDEX IF NOT EXISTS idx_rent_schedules_lease ON univ_re_rent_payment_schedules(lease_id);
+CREATE INDEX IF NOT EXISTS idx_rent_schedules_company ON univ_re_rent_payment_schedules(company_id);
 
 CREATE TABLE IF NOT EXISTS univ_re_rent_payment_history (
   id TEXT PRIMARY KEY,
@@ -336,10 +336,10 @@ CREATE TABLE IF NOT EXISTS univ_re_rent_payment_history (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_rent_history_lease ON univ_re_rent_payment_history(lease_id);
-CREATE INDEX idx_rent_history_company ON univ_re_rent_payment_history(company_id);
-CREATE INDEX idx_rent_history_status ON univ_re_rent_payment_history(payment_status);
-CREATE INDEX idx_rent_history_date ON univ_re_rent_payment_history(payment_due_date);
+CREATE INDEX IF NOT EXISTS idx_rent_history_lease ON univ_re_rent_payment_history(lease_id);
+CREATE INDEX IF NOT EXISTS idx_rent_history_company ON univ_re_rent_payment_history(company_id);
+CREATE INDEX IF NOT EXISTS idx_rent_history_status ON univ_re_rent_payment_history(payment_status);
+CREATE INDEX IF NOT EXISTS idx_rent_history_date ON univ_re_rent_payment_history(payment_due_date);
 
 -- ========================================
 -- 6. MARKET INTELLIGENCE & DATA
@@ -366,8 +366,8 @@ CREATE TABLE IF NOT EXISTS univ_re_market_data (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_market_data_region ON univ_re_market_data(market_region, data_date);
-CREATE INDEX idx_market_data_company ON univ_re_market_data(company_id);
+CREATE INDEX IF NOT EXISTS idx_market_data_region ON univ_re_market_data(market_region, data_date);
+CREATE INDEX IF NOT EXISTS idx_market_data_company ON univ_re_market_data(company_id);
 
 CREATE TABLE IF NOT EXISTS univ_re_comparable_properties (
   id TEXT PRIMARY KEY,
@@ -390,8 +390,8 @@ CREATE TABLE IF NOT EXISTS univ_re_comparable_properties (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_comparable_subject ON univ_re_comparable_properties(subject_property_id);
-CREATE INDEX idx_comparable_company ON univ_re_comparable_properties(company_id);
+CREATE INDEX IF NOT EXISTS idx_comparable_subject ON univ_re_comparable_properties(subject_property_id);
+CREATE INDEX IF NOT EXISTS idx_comparable_company ON univ_re_comparable_properties(company_id);
 
 -- ========================================
 -- 7. AGENT & CLIENT INTELLIGENCE
@@ -416,9 +416,9 @@ CREATE TABLE IF NOT EXISTS univ_re_agent_metrics (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_agent_metrics_agent ON univ_re_agent_metrics(agent_id);
-CREATE INDEX idx_agent_metrics_company ON univ_re_agent_metrics(company_id);
-CREATE INDEX idx_agent_metrics_period ON univ_re_agent_metrics(metric_date);
+CREATE INDEX IF NOT EXISTS idx_agent_metrics_agent ON univ_re_agent_metrics(agent_id);
+CREATE INDEX IF NOT EXISTS idx_agent_metrics_company ON univ_re_agent_metrics(company_id);
+CREATE INDEX IF NOT EXISTS idx_agent_metrics_period ON univ_re_agent_metrics(metric_date);
 
 CREATE TABLE IF NOT EXISTS univ_re_client_scoring (
   id TEXT PRIMARY KEY,
@@ -438,9 +438,9 @@ CREATE TABLE IF NOT EXISTS univ_re_client_scoring (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_client_scoring_client ON univ_re_client_scoring(client_id);
-CREATE INDEX idx_client_scoring_company ON univ_re_client_scoring(company_id);
-CREATE INDEX idx_client_scoring_category ON univ_re_client_scoring(score_category);
+CREATE INDEX IF NOT EXISTS idx_client_scoring_client ON univ_re_client_scoring(client_id);
+CREATE INDEX IF NOT EXISTS idx_client_scoring_company ON univ_re_client_scoring(company_id);
+CREATE INDEX IF NOT EXISTS idx_client_scoring_category ON univ_re_client_scoring(score_category);
 
 CREATE TABLE IF NOT EXISTS univ_re_agent_recommendations (
   id TEXT PRIMARY KEY,
@@ -457,9 +457,9 @@ CREATE TABLE IF NOT EXISTS univ_re_agent_recommendations (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_recommendations_client ON univ_re_agent_recommendations(client_id);
-CREATE INDEX idx_recommendations_agent ON univ_re_agent_recommendations(recommended_agent_id);
-CREATE INDEX idx_recommendations_company ON univ_re_agent_recommendations(company_id);
+CREATE INDEX IF NOT EXISTS idx_recommendations_client ON univ_re_agent_recommendations(client_id);
+CREATE INDEX IF NOT EXISTS idx_recommendations_agent ON univ_re_agent_recommendations(recommended_agent_id);
+CREATE INDEX IF NOT EXISTS idx_recommendations_company ON univ_re_agent_recommendations(company_id);
 
 -- ========================================
 -- 8. AUDIT & COMPLIANCE LOGGING
@@ -478,10 +478,10 @@ CREATE TABLE IF NOT EXISTS univ_re_audit_log (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_audit_log_company ON univ_re_audit_log(company_id);
-CREATE INDEX idx_audit_log_user ON univ_re_audit_log(user_id);
-CREATE INDEX idx_audit_log_resource ON univ_re_audit_log(resource_type, resource_id);
-CREATE INDEX idx_audit_log_date ON univ_re_audit_log(created_at);
+CREATE INDEX IF NOT EXISTS idx_audit_log_company ON univ_re_audit_log(company_id);
+CREATE INDEX IF NOT EXISTS idx_audit_log_user ON univ_re_audit_log(user_id);
+CREATE INDEX IF NOT EXISTS idx_audit_log_resource ON univ_re_audit_log(resource_type, resource_id);
+CREATE INDEX IF NOT EXISTS idx_audit_log_date ON univ_re_audit_log(created_at);
 
 -- ========================================
 -- 9. MAINTENANCE & SERVICE TRACKING
