@@ -447,7 +447,7 @@ export const RealEstateAPI = {
     }
   },
 
-  // ──────────────���───────�����������─────────────────────────────────
+  // ──────────────���───────�������������─────────────────────────────────
   // LEASES
   // ────────────────────────────────────────────────────────
 
@@ -1141,7 +1141,7 @@ export const RealEstateAPI = {
       const now = new Date().toISOString();
 
       await powerSync.execute(
-        `INSERT INTO univ_re_trust_ledger (id, company_id, account_id, transaction_type, amount, 
+        `INSERT INTO univ_re_trust_ledger (id, company_id, trust_account_id, transaction_type, amount, 
          description, reference_number, transaction_date, created_at) 
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [id, companyId, data.accountId, data.transactionType, data.amount, data.description, 
@@ -1335,12 +1335,14 @@ export const RealEstateAPI = {
       const now = new Date().toISOString();
 
       await powerSync.execute(
-        `INSERT INTO univ_re_counter_offers (id, company_id, original_offer_id, counter_price, counter_amount, 
-         earnest_money, contingencies, expiration_date, notes, status, property_address, created_at, updated_at) 
+        `INSERT INTO univ_re_counter_offers (id, company_id, original_offer_id, counter_offer_price, 
+         earnest_money_change, contingencies, inspection_period_days, appraisal_contingency, 
+         financing_contingency, additional_terms, counter_offer_status, created_at, updated_at) 
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [id, companyId, data.originalOfferId, data.counterPrice, data.counterAmount || 0, 
-         data.earnestMoney || 0, data.contingencies || '', data.expirationDate, data.notes || '', 
-         data.status || 'pending', data.propertyAddress || '', now, now]
+        [id, companyId, data.originalOfferId, data.counterPrice, data.earnestMoney || 0, 
+         data.contingencies || '', data.inspectionPeriodDays || 0, data.appraisalContingency || false,
+         data.financingContingency || false, data.additionalTerms || '', 
+         data.status || 'pending', now, now]
       );
 
       powerSync.execute(
@@ -1711,13 +1713,16 @@ export const RealEstateAPI = {
       const now = new Date().toISOString();
 
       await powerSync.execute(
-        `INSERT INTO univ_re_escrow_accounts (id, company_id, escrow_type, escrow_amount, buyer_id, 
-         seller_id, property_id, escrow_agent_name, escrow_agent_company, escrow_agent_email, 
-         escrow_agent_phone, release_date, release_conditions, release_status, created_at, updated_at) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [id, companyId, data.escrowType, data.escrowAmount, data.buyerId, data.sellerId, data.propertyId, 
-         data.escrowAgentName, data.escrowAgentCompany, data.escrowAgentEmail, data.escrowAgentPhone, 
-         data.releaseDate, data.releaseConditions, data.releaseStatus || 'held', now, now]
+        `INSERT INTO univ_re_escrow_accounts (id, company_id, transaction_id, buyer_id, seller_id, 
+         agent_id, property_id, escrow_amount, escrow_type, escrow_agent_company, escrow_agent_name, 
+         escrow_agent_email, escrow_agent_phone, conditions_for_release, release_status, release_date, 
+         created_at, updated_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.transactionId || '', data.buyerId, data.sellerId, data.agentId || null, 
+         data.propertyId, data.escrowAmount, data.escrowType, data.escrowAgentCompany || '', 
+         data.escrowAgentName || '', data.escrowAgentEmail || '', data.escrowAgentPhone || '', 
+         data.releaseConditions ? JSON.stringify(data.releaseConditions) : null, 
+         data.releaseStatus || 'held', data.releaseDate, now, now]
       );
 
       powerSync.execute(
