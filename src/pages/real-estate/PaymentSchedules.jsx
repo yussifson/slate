@@ -46,7 +46,7 @@ export default function PaymentSchedules() {
     const fetchSchedules = async () => {
       try {
         const res = await powerSync.execute(
-          'SELECT * FROM univ_re_payment_schedules WHERE company_id = ? ORDER BY created_at DESC',
+          'SELECT * FROM univ_re_rent_payment_schedules WHERE company_id = ? ORDER BY created_at DESC',
           [companyId]
         );
         const data = res.rows._array || Array.from(res.rows);
@@ -104,7 +104,7 @@ export default function PaymentSchedules() {
       });
 
       const res = await powerSync.execute(
-        'SELECT * FROM univ_re_payment_schedules WHERE company_id = ? ORDER BY created_at DESC',
+        'SELECT * FROM univ_re_rent_payment_schedules WHERE company_id = ? ORDER BY created_at DESC',
         [companyId]
       );
       setSchedules(res.rows._array || Array.from(res.rows));
@@ -139,7 +139,7 @@ export default function PaymentSchedules() {
       await RealEstateAPI.deletePaymentSchedule(companyId, id, user.id);
       toast.success('Payment schedule deleted successfully');
       const res = await powerSync.execute(
-        'SELECT * FROM univ_re_payment_schedules WHERE company_id = ? ORDER BY created_at DESC',
+        'SELECT * FROM univ_re_rent_payment_schedules WHERE company_id = ? ORDER BY created_at DESC',
         [companyId]
       );
       setSchedules(res.rows._array || Array.from(res.rows));

@@ -42,7 +42,7 @@ export default function ESignatures() {
     const fetchSignatures = async () => {
       try {
         const res = await powerSync.execute(
-          'SELECT * FROM univ_re_esignatures WHERE company_id = ? ORDER BY created_at DESC',
+          'SELECT * FROM univ_re_e_signatures WHERE company_id = ? ORDER BY created_at DESC',
           [companyId]
         );
         const data = res.rows._array || Array.from(res.rows);
@@ -97,7 +97,7 @@ export default function ESignatures() {
       });
 
       const res = await powerSync.execute(
-        'SELECT * FROM univ_re_esignatures WHERE company_id = ? ORDER BY created_at DESC',
+        'SELECT * FROM univ_re_e_signatures WHERE company_id = ? ORDER BY created_at DESC',
         [companyId]
       );
       setSignatures(res.rows._array || Array.from(res.rows));
@@ -128,7 +128,7 @@ export default function ESignatures() {
       await RealEstateAPI.deleteESignature(companyId, id, user.id);
       toast.success('Signature request deleted successfully');
       const res = await powerSync.execute(
-        'SELECT * FROM univ_re_esignatures WHERE company_id = ? ORDER BY created_at DESC',
+        'SELECT * FROM univ_re_e_signatures WHERE company_id = ? ORDER BY created_at DESC',
         [companyId]
       );
       setSignatures(res.rows._array || Array.from(res.rows));
