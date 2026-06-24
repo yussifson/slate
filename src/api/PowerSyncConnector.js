@@ -44,7 +44,7 @@ class SupabaseConnector {
               if (realEstatateTables.includes(op.table)) {
                 // For Real Estate tables, ensure ID exists and is valid
                 if (!op.id || op.id === '' || op.id === null || op.id === undefined) {
-                  console.error('[PowerSync] CRITICAL: Skipping PUT with empty ID for RE table:', op.table, 'op.id:', op.id);
+                  console.error('[v0] PowerSync SKIPPED: Empty ID for table:', op.table, {id: op.id, data: op.opData});
                   continue; // Skip this operation to prevent UUID errors
                 }
                 // For RE tables, build payload without the potentially-empty id from opData
@@ -132,7 +132,7 @@ class SupabaseConnector {
 
           // TIER 3: Hard errors (403, 404, 422, or 400 with PG code)
           if ([403, 404, 422, 400].includes(opEx.status) || (opEx.code && typeof opEx.code === 'string')) {
-            console.error(`[PowerSync] Hard error uploading operation ${op.op} on ${op.table}:`, opEx);
+            console.error(`[v0] PowerSync hard error ${op.op} on ${op.table}:`, {status: opEx.status, code: opEx.code, msg: opEx.message, data: op.opData});
             
             // Write to sync_errors table
             if (op.table !== 'sync_errors') {

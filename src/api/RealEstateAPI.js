@@ -154,6 +154,43 @@ export const RealEstateAPI = {
     }
   },
 
+  async updateClient(companyId, clientId, data, userId) {
+    try {
+      const updates = [];
+      const params = [];
+
+      Object.keys(data).forEach(key => {
+        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
+          updates.push(`${key} = ?`);
+          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        }
+      });
+
+      params.push(companyId);
+      params.push(clientId);
+
+      const query = `UPDATE univ_re_clients SET ${updates.join(', ')} 
+                     WHERE company_id = ? AND id = ?`;
+      
+      await powerSync.execute(query, params);
+    } catch (e) {
+      console.error('[RE API] updateClient failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteClient(companyId, clientId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_clients WHERE company_id = ? AND id = ?',
+        [companyId, clientId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteClient failed:', e);
+      throw e;
+    }
+  },
+
   // ────────────────────────────────────────────────────────
   // VIEWINGS
   // ────────────────────────────────────────────────────────
@@ -207,6 +244,43 @@ export const RealEstateAPI = {
     }
   },
 
+  async updateViewing(companyId, viewingId, data, userId) {
+    try {
+      const updates = [];
+      const params = [];
+
+      Object.keys(data).forEach(key => {
+        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
+          updates.push(`${key} = ?`);
+          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        }
+      });
+
+      params.push(companyId);
+      params.push(viewingId);
+
+      const query = `UPDATE univ_re_viewings SET ${updates.join(', ')} 
+                     WHERE company_id = ? AND id = ?`;
+      
+      await powerSync.execute(query, params);
+    } catch (e) {
+      console.error('[RE API] updateViewing failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteViewing(companyId, viewingId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_viewings WHERE company_id = ? AND id = ?',
+        [companyId, viewingId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteViewing failed:', e);
+      throw e;
+    }
+  },
+
   // ────────────────────────────────────────────────────────
   // OFFERS
   // ────────────────────────────────────────────────────────
@@ -255,6 +329,43 @@ export const RealEstateAPI = {
     }
   },
 
+  async updateOffer(companyId, offerId, data, userId) {
+    try {
+      const updates = [];
+      const params = [];
+
+      Object.keys(data).forEach(key => {
+        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
+          updates.push(`${key} = ?`);
+          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        }
+      });
+
+      params.push(companyId);
+      params.push(offerId);
+
+      const query = `UPDATE univ_re_offers SET ${updates.join(', ')} 
+                     WHERE company_id = ? AND id = ?`;
+      
+      await powerSync.execute(query, params);
+    } catch (e) {
+      console.error('[RE API] updateOffer failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteOffer(companyId, offerId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_offers WHERE company_id = ? AND id = ?',
+        [companyId, offerId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteOffer failed:', e);
+      throw e;
+    }
+  },
+
   // ────────────────────────────────────────────────────────
   // TRANSACTIONS
   // ────────────────────────────────────────────────────────
@@ -295,6 +406,43 @@ export const RealEstateAPI = {
       return id;
     } catch (e) {
       console.error('[RE API] createTransaction failed:', e);
+      throw e;
+    }
+  },
+
+  async updateTransaction(companyId, transactionId, data, userId) {
+    try {
+      const updates = [];
+      const params = [];
+
+      Object.keys(data).forEach(key => {
+        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
+          updates.push(`${key} = ?`);
+          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        }
+      });
+
+      params.push(companyId);
+      params.push(transactionId);
+
+      const query = `UPDATE univ_re_transactions SET ${updates.join(', ')} 
+                     WHERE company_id = ? AND id = ?`;
+      
+      await powerSync.execute(query, params);
+    } catch (e) {
+      console.error('[RE API] updateTransaction failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteTransaction(companyId, transactionId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_transactions WHERE company_id = ? AND id = ?',
+        [companyId, transactionId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteTransaction failed:', e);
       throw e;
     }
   },
@@ -343,6 +491,43 @@ export const RealEstateAPI = {
     }
   },
 
+  async updateLease(companyId, leaseId, data, userId) {
+    try {
+      const updates = [];
+      const params = [];
+
+      Object.keys(data).forEach(key => {
+        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
+          updates.push(`${key} = ?`);
+          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        }
+      });
+
+      params.push(companyId);
+      params.push(leaseId);
+
+      const query = `UPDATE univ_re_leases SET ${updates.join(', ')} 
+                     WHERE company_id = ? AND id = ?`;
+      
+      await powerSync.execute(query, params);
+    } catch (e) {
+      console.error('[RE API] updateLease failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteLease(companyId, leaseId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_leases WHERE company_id = ? AND id = ?',
+        [companyId, leaseId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteLease failed:', e);
+      throw e;
+    }
+  },
+
   // ────────────────────────────────────────────────────────
   // RENT PAYMENTS
   // ────────────────────────────────────────────────────────
@@ -386,6 +571,43 @@ export const RealEstateAPI = {
       return id;
     } catch (e) {
       console.error('[RE API] recordRentPayment failed:', e);
+      throw e;
+    }
+  },
+
+  async updateRentPayment(companyId, paymentId, data, userId) {
+    try {
+      const updates = [];
+      const params = [];
+
+      Object.keys(data).forEach(key => {
+        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
+          updates.push(`${key} = ?`);
+          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        }
+      });
+
+      params.push(companyId);
+      params.push(paymentId);
+
+      const query = `UPDATE univ_re_rent_payments SET ${updates.join(', ')} 
+                     WHERE company_id = ? AND id = ?`;
+      
+      await powerSync.execute(query, params);
+    } catch (e) {
+      console.error('[RE API] updateRentPayment failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteRentPayment(companyId, paymentId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_rent_payments WHERE company_id = ? AND id = ?',
+        [companyId, paymentId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteRentPayment failed:', e);
       throw e;
     }
   },
@@ -456,9 +678,20 @@ export const RealEstateAPI = {
                      WHERE company_id = ? AND id = ?`;
       
       await powerSync.execute(query, params);
-      await auditLog(companyId, userId, 'update', 'maintenance', requestId, '', JSON.stringify(data));
     } catch (e) {
       console.error('[RE API] updateMaintenanceRequest failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteMaintenanceRequest(companyId, requestId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_maintenance_requests WHERE company_id = ? AND id = ?',
+        [companyId, requestId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteMaintenanceRequest failed:', e);
       throw e;
     }
   },
