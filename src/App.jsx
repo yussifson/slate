@@ -771,6 +771,7 @@ function PlatformRoutes() {
       <Route path="/real-estate/document-templates" element={<RealEstateDocumentTemplates />} />
       <Route path="/real-estate/e-signatures" element={<RealEstateESignatures />} />
       <Route path="/real-estate/escrow-accounts" element={<RealEstateEscrowAccounts />} />
+      <Route path="/real-estate/escrow" element={<RealEstateEscrowAccounts />} />
       <Route path="/real-estate/lease-renewals" element={<RealEstateLeaseRenewals />} />
       <Route path="/real-estate/market-data" element={<RealEstateMarketData />} />
       <Route path="/real-estate/market-intelligence" element={<RealEstateMarketIntelligence />} />
