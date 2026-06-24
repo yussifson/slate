@@ -71,12 +71,12 @@ export default function RentPayments() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-              <div className="p-2 bg-indigo-100 rounded-lg"><CreditCard className="w-7 h-7 text-indigo-600" /></div>
+              <div className="p-2 bg-orange-100 rounded-lg"><CreditCard className="w-7 h-7 text-orange-600" /></div>
               Rent Collection
             </h1>
             <p className="text-gray-600 mt-1">Track and manage tenant rent payments</p>
           </div>
-          <Button onClick={() => setShowForm(true)} className="bg-indigo-600 hover:bg-indigo-700 gap-2">
+          <Button onClick={() => setShowForm(true)} className="bg-orange-600 hover:bg-orange-700 gap-2">
             <Plus className="w-4 h-4" /> Record Payment
           </Button>
         </div>
@@ -137,7 +137,7 @@ export default function RentPayments() {
                 </select></div>
               <div><label className="text-xs font-semibold mb-1 block">Notes</label>
                 <textarea id="rent-notes" placeholder="Additional notes" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" rows="3"></textarea></div>
-              <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700">Record Payment</Button>
+              <Button type="submit" className="w-full bg-orange-600 hover:bg-orange-700">Record Payment</Button>
             </form>
             </div>
           </SheetContent>
@@ -158,39 +158,39 @@ export default function RentPayments() {
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
+          <Card className="border-0 shadow bg-gradient-to-br from-orange-500 to-orange-600 text-white">
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-blue-100 text-xs font-semibold uppercase mb-1">Pending</p>
+                  <p className="text-orange-100 text-xs font-semibold uppercase mb-1">Pending</p>
                   <p className="text-3xl font-bold">${(stats.totalPending / 1000000).toFixed(2)}M</p>
-                  <p className="text-xs text-blue-200 mt-2">Due soon</p>
+                  <p className="text-xs text-orange-200 mt-2">Due soon</p>
                 </div>
                 <Clock className="w-8 h-8 opacity-80" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-red-500 to-orange-600 text-white">
+          <Card className="border-0 shadow bg-gradient-to-br from-orange-500 to-orange-600 text-white">
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-red-100 text-xs font-semibold uppercase mb-1">Overdue</p>
+                  <p className="text-orange-100 text-xs font-semibold uppercase mb-1">Overdue</p>
                   <p className="text-3xl font-bold">${(stats.totalOverdue / 1000000).toFixed(2)}M</p>
-                  <p className="text-xs text-red-200 mt-2">{overDuePayments.length} payments</p>
+                  <p className="text-xs text-orange-200 mt-2">{overDuePayments.length} payments</p>
                 </div>
                 <AlertTriangle className="w-8 h-8 opacity-80" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-500 to-pink-600 text-white">
+          <Card className="border-0 shadow bg-gradient-to-br from-green-500 to-green-600 text-white">
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-purple-100 text-xs font-semibold uppercase mb-1">Collection Rate</p>
+                  <p className="text-green-100 text-xs font-semibold uppercase mb-1">Collection Rate</p>
                   <p className="text-3xl font-bold">{stats.collectionRate.toFixed(0)}%</p>
-                  <p className="text-xs text-purple-200 mt-2">On-time payments</p>
+                  <p className="text-xs text-green-200 mt-2">On-time payments</p>
                 </div>
                 <TrendingUp className="w-8 h-8 opacity-80" />
               </div>
@@ -200,8 +200,8 @@ export default function RentPayments() {
 
         <div className="grid grid-cols-3 gap-6 mb-8">
           {/* Upcoming Payments */}
-          <Card className="border-0 shadow-lg">
-            <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+          <Card className="border-0 shadow">
+            <CardHeader className="bg-gradient-to-r from-green-600 to-green-700 text-white">
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="w-5 h-5" />
                 Upcoming Payments
@@ -216,11 +216,17 @@ export default function RentPayments() {
                   </div>
                 ) : (
                   upcomingPayments.map((payment) => (
-                    <div key={payment.id} className="p-4 border-b border-gray-100 hover:bg-blue-50 transition-colors cursor-pointer">
+                    <div key={payment.id} className="p-4 border-b border-gray-100 hover:bg-green-50 transition-colors cursor-pointer">
                       <div className="flex items-start justify-between mb-2">
                         <p className="font-semibold text-gray-900 text-sm">{payment.tenant_name}</p>
-                        <Badge className="bg-blue-100 text-blue-800 text-xs">Due Soon</Badge>
+                        <Badge className="bg-orange-100 text-orange-800 text-xs">Due Soon</Badge>
                       </div>
+                      <p className="text-xs text-gray-600 mb-2">{payment.property_address || 'Property'}</p>
+                      <div className="flex justify-between items-end">
+                        <p className="text-xs text-gray-600">{new Date(payment.due_date).toLocaleDateString()}</p>
+                        <span className="text-sm font-bold text-green-600">${payment.amount?.toLocaleString()}</span>
+                      </div>
+                    </div>
                       <p className="text-xs text-gray-600 mb-2">{payment.property_address || 'Property'}</p>
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-bold text-indigo-600">${payment.amount?.toLocaleString()}</span>
@@ -250,11 +256,17 @@ export default function RentPayments() {
                   </div>
                 ) : (
                   overDuePayments.map((payment) => (
-                    <div key={payment.id} className="p-4 border-b border-red-100 bg-red-50 hover:bg-red-100 transition-colors cursor-pointer">
+                    <div key={payment.id} className="p-4 border-b border-orange-100 bg-orange-50 hover:bg-orange-100 transition-colors cursor-pointer">
                       <div className="flex items-start justify-between mb-2">
                         <p className="font-semibold text-gray-900 text-sm">{payment.tenant_name}</p>
-                        <Badge className="bg-red-200 text-red-900 text-xs">OVERDUE</Badge>
+                        <Badge className="bg-orange-200 text-orange-900 text-xs">OVERDUE</Badge>
                       </div>
+                      <p className="text-xs text-gray-600 mb-2">{payment.property_address || 'Property'}</p>
+                      <div className="flex justify-between items-end">
+                        <p className="text-xs text-gray-600">{new Date(payment.due_date).toLocaleDateString()}</p>
+                        <span className="text-sm font-bold text-orange-600">${payment.amount?.toLocaleString()}</span>
+                      </div>
+                    </div>
                       <p className="text-xs text-gray-600 mb-2">{payment.property_address || 'Property'}</p>
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-bold text-red-600">${payment.amount?.toLocaleString()}</span>

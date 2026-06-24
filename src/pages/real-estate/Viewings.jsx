@@ -208,7 +208,11 @@ export default function Viewings() {
                   ...formData,
                   viewingTime: formData.viewingTime || '09:00'
                 };
-                await RealEstateAPI.createViewing(companyId, submitData, user?.id);
+                const viewingId = await RealEstateAPI.createViewing(companyId, submitData, user?.id);
+                
+                // Wait a moment for PowerSync to sync
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
                 const res = await powerSync.execute(
                   'SELECT * FROM univ_re_viewings WHERE company_id = ? ORDER BY viewing_date DESC',
                   [companyId]

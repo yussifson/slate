@@ -184,7 +184,7 @@ export default function Offers() {
                   <span className="font-bold">${Number(offer.offer_amount || 0).toLocaleString()}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <DollarSign className="w-4 h-4 text-blue-600" />
+                  <DollarSign className="w-4 h-4 text-orange-600" />
                   <span>Earnest: ${Number(offer.earnest_money || 0).toLocaleString()}</span>
                 </div>
               </div>

@@ -110,13 +110,13 @@ export default function Commissions() {
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-amber-500 to-orange-600 text-white">
+          <Card className="border-0 shadow bg-gradient-to-br from-orange-500 to-orange-600 text-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-amber-100 text-sm font-semibold mb-1">Pending</p>
+                  <p className="text-orange-100 text-sm font-semibold mb-1">Pending</p>
                   <p className="text-3xl font-bold">${(stats.totalPending / 1000000).toFixed(2)}M</p>
-                  <p className="text-xs text-amber-200 mt-2">Awaiting payment</p>
+                  <p className="text-xs text-orange-200 mt-2">Awaiting payment</p>
                 </div>
                 <div className="p-4 bg-white bg-opacity-20 rounded-lg">
                   <ArrowUpRight className="w-8 h-8" />
@@ -125,13 +125,13 @@ export default function Commissions() {
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
+          <Card className="border-0 shadow bg-gradient-to-br from-green-500 to-green-600 text-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-blue-100 text-sm font-semibold mb-1">Average</p>
+                  <p className="text-green-100 text-sm font-semibold mb-1">Average</p>
                   <p className="text-3xl font-bold">${(stats.avgCommission / 1000).toFixed(0)}K</p>
-                  <p className="text-xs text-blue-200 mt-2">Per commission</p>
+                  <p className="text-xs text-green-200 mt-2">Per commission</p>
                 </div>
                 <div className="p-4 bg-white bg-opacity-20 rounded-lg">
                   <Percent className="w-8 h-8" />
@@ -264,7 +264,7 @@ export default function Commissions() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Commission Rate</p>
-                      <p className="text-2xl font-bold text-blue-600">{(selectedCommission.commission_rate * 100).toFixed(1)}%</p>
+                      <p className="text-2xl font-bold text-green-600">{(selectedCommission.commission_rate * 100).toFixed(1)}%</p>
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Payment Date</p>
