@@ -770,7 +770,7 @@ export const INDUSTRIES = {
       { label: 'Transactions', path: '/real-estate/transactions', icon: 'Banknote' },
       
       { section: 'Financial Management', label: 'Trust Accounting', path: '/real-estate/trust-accounting', icon: 'Wallet' },
-      { label: 'Escrow Accounts', path: '/real-estate/escrow', icon: 'Lock' },
+      { label: 'Escrow Accounts', path: '/real-estate/escrow-accounts', icon: 'Lock' },
       { label: 'Commissions', path: '/real-estate/commissions', icon: 'TrendingUp' },
       { label: 'Commission Rules', path: '/real-estate/commission-rules', icon: 'Settings' },
       
@@ -787,13 +787,16 @@ export const INDUSTRIES = {
       { label: 'Document Templates', path: '/real-estate/document-templates', icon: 'FileText' },
       { label: 'E-Signatures', path: '/real-estate/e-signatures', icon: 'PenTool' },
       
-      { section: 'Intelligence & Analytics', label: 'Market Intelligence', path: '/real-estate/market-data', icon: 'Globe' },
+      { section: 'CRM', label: 'CRM Leads', path: '/real-estate/crm-leads', icon: 'Users' },
+      
+      { section: 'Intelligence & Analytics', label: 'Market Data', path: '/real-estate/market-data', icon: 'Globe' },
+      { label: 'Market Intelligence', path: '/real-estate/market-intelligence', icon: 'Lightbulb' },
       { label: 'Comparable Properties', path: '/real-estate/comparable-properties', icon: 'Layers' },
       { label: 'Agent Metrics', path: '/real-estate/agent-metrics', icon: 'BarChart2' },
       { label: 'Client Scoring', path: '/real-estate/client-scoring', icon: 'Target' },
       { label: 'Recommendations', path: '/real-estate/recommendations', icon: 'Brain' },
       
-      { section: 'Administration', label: 'Analytics', path: '/real-estate/analytics', icon: 'LineChart' },
+      { section: 'Administration', label: 'Team Management', path: '/real-estate/team-management', icon: 'Users2' },
       { label: 'Reports', path: '/reports', icon: 'FileText' },
       { label: 'Audit Log', path: '/real-estate/audit-log', icon: 'ClipboardList' },
       { label: 'Tasks', path: '/tasks', icon: 'CheckSquare' },
