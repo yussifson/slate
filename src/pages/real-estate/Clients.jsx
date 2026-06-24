@@ -84,7 +84,7 @@ export default function Clients() {
     e.preventDefault();
     try {
       if (editingId) {
-        await RealEstateAPI.updateProperty(companyId, editingId, formData, user.id);
+        await RealEstateAPI.updateClient(companyId, editingId, formData, user.id);
         toast.success('Client updated successfully');
       } else {
         await RealEstateAPI.createClient(companyId, formData, user.id);
