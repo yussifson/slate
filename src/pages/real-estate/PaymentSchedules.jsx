@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useRealEstateAPI } from '../../hooks/useRealEstateAPI';
+import { useCompanyId } from '../../hooks/useCompanyId';
 import { formatCurrency } from '../../utils/formatters';
 import LeaseAPI from '../../api/RealEstateLeaseAutomation';
 
 export default function PaymentSchedules() {
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { companyId } = useRealEstateAPI();
+  const companyId = useCompanyId();
 
   useEffect(() => {
     const loadData = async () => {

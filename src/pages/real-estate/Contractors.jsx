@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useRealEstateAPI } from '../../hooks/useRealEstateAPI';
+import { useCompanyId } from '../../hooks/useCompanyId';
 import ContractorsAPI from '../../api/RealEstateContractors';
 
 export default function Contractors() {
   const [contractors, setContractors] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { companyId } = useRealEstateAPI();
+  const companyId = useCompanyId();
 
   useEffect(() => {
     const loadData = async () => {
