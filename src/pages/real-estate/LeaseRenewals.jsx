@@ -1,92 +1,512 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { RefreshCw, Plus, Edit, Trash2, Search, DollarSign, Calendar, CheckCircle2, Clock } from 'lucide-react';
+import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { formatCurrency } from '@/lib/constants';
-import { RealEstateLeaseAutomation } from '@/api/RealEstateLeaseAutomation';
+import { useAuth } from '@/lib/AuthContext';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RealEstateAPI } from '@/api/RealEstateAPI';
+import { toast } from 'react-hot-toast';
 
 export default function LeaseRenewals() {
-  const [renewals, setRenewals] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
   const companyId = useCompanyId();
+  const { user } = useAuth();
+  const powerSync = usePowerSync();
 
+  const [renewals, setRenewals] = useState([]);
+  const [filteredRenewals, setFilteredRenewals] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [formData, setFormData] = useState({
+    leaseId: '',
+    tenantId: '',
+    propertyId: '',
+    renewalOfferDate: new Date().toISOString().split('T')[0],
+    responseDeadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    newRentAmount: 0,
+    rentIncreasePercentage: 0,
+    renewalTermMonths: 12,
+    renewalStatus: 'pending',
+    tenantResponseDate: '',
+    tenantResponse: '',
+    renewalTermStartDate: '',
+  });
+
+  // Fetch lease renewals
   useEffect(() => {
-    const loadData = async () => {
+    const fetchRenewals = async () => {
       try {
-        setLoading(true);
-        const data = await RealEstateLeaseAutomation.getLeaseRenewals(companyId);
+        const res = await powerSync.execute(
+          'SELECT * FROM univ_re_lease_renewals WHERE company_id = ? ORDER BY created_at DESC',
+          [companyId]
+        );
+        const data = res.rows._array || Array.from(res.rows);
         setRenewals(data);
-      } catch (error) {
-        console.error('Error loading lease renewals:', error);
-      } finally {
-        setLoading(false);
+      } catch (e) {
+        console.error('[LeaseRenewals] Fetch failed:', e);
+        toast.error('Failed to load lease renewals');
       }
+      setIsLoading(false);
     };
-    loadData();
+
+    if (companyId) fetchRenewals();
   }, [companyId]);
 
-  if (loading) return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  // Filter renewals
+  useEffect(() => {
+    let filtered = renewals;
+    if (search) {
+      filtered = filtered.filter(r =>
+        r.lease_id?.toLowerCase().includes(search.toLowerCase()) ||
+        r.tenant_id?.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(r => r.renewal_status === statusFilter);
+    }
+    setFilteredRenewals(filtered);
+  }, [renewals, search, statusFilter]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (editingId) {
+        await RealEstateAPI.updateLeaseRenewal(companyId, editingId, formData, user.id);
+        toast.success('Lease renewal updated successfully');
+      } else {
+        await RealEstateAPI.createLeaseRenewal(companyId, formData, user.id);
+        toast.success('Lease renewal created successfully');
+      }
+      setShowForm(false);
+      setEditingId(null);
+      setFormData({
+        leaseId: '',
+        tenantId: '',
+        propertyId: '',
+        renewalOfferDate: new Date().toISOString().split('T')[0],
+        responseDeadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        newRentAmount: 0,
+        rentIncreasePercentage: 0,
+        renewalTermMonths: 12,
+        renewalStatus: 'pending',
+        tenantResponseDate: '',
+        tenantResponse: '',
+        renewalTermStartDate: '',
+      });
+
+      const res = await powerSync.execute(
+        'SELECT * FROM univ_re_lease_renewals WHERE company_id = ? ORDER BY created_at DESC',
+        [companyId]
+      );
+      setRenewals(res.rows._array || Array.from(res.rows));
+    } catch (e) {
+      console.error('[LeaseRenewals] Submit failed:', e);
+      toast.error('Failed to save lease renewal');
+    }
+  };
+
+  const handleEdit = (renewal) => {
+    setFormData({
+      leaseId: renewal.lease_id || '',
+      tenantId: renewal.tenant_id || '',
+      propertyId: renewal.property_id || '',
+      renewalOfferDate: renewal.renewal_offer_date ? new Date(renewal.renewal_offer_date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+      responseDeadline: renewal.response_deadline ? new Date(renewal.response_deadline).toISOString().split('T')[0] : '',
+      newRentAmount: renewal.new_rent_amount || 0,
+      rentIncreasePercentage: renewal.rent_increase_percentage || 0,
+      renewalTermMonths: renewal.renewal_term_months || 12,
+      renewalStatus: renewal.renewal_status || 'pending',
+      tenantResponseDate: renewal.tenant_response_date ? new Date(renewal.tenant_response_date).toISOString().split('T')[0] : '',
+      tenantResponse: renewal.tenant_response || '',
+      renewalTermStartDate: renewal.renewal_term_start_date ? new Date(renewal.renewal_term_start_date).toISOString().split('T')[0] : '',
+    });
+    setEditingId(renewal.id);
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this lease renewal?')) return;
+    try {
+      await RealEstateAPI.deleteLeaseRenewal(companyId, id, user.id);
+      toast.success('Lease renewal deleted successfully');
+      const res = await powerSync.execute(
+        'SELECT * FROM univ_re_lease_renewals WHERE company_id = ? ORDER BY created_at DESC',
+        [companyId]
+      );
+      setRenewals(res.rows._array || Array.from(res.rows));
+    } catch (e) {
+      console.error('[LeaseRenewals] Delete failed:', e);
+      toast.error('Failed to delete lease renewal');
+    }
+  };
+
+  // KPI calculations
+  const totalRenewals = renewals.length;
+  const pendingRenewals = renewals.filter(r => r.renewal_status === 'pending').length;
+  const acceptedRenewals = renewals.filter(r => r.renewal_status === 'accepted').length;
+  const totalIncomeIncrease = renewals.reduce((sum, r) => sum + (r.rent_increase_percentage || 0), 0);
+
+  const getStatusColor = (status) => {
+    switch(status) {
+      case 'pending': return 'bg-yellow-100 text-yellow-800';
+      case 'accepted': return 'bg-green-100 text-green-800';
+      case 'rejected': return 'bg-red-100 text-red-800';
+      case 'completed': return 'bg-blue-100 text-blue-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+  }
 
   return (
-    <div className="p-6 bg-background min-h-screen">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-foreground mb-2">Lease Renewals</h1>
-        <p className="text-muted-foreground">Manage lease renewal offers and track tenant responses</p>
+    <div className="space-y-6 p-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Lease Renewals</h1>
+          <p className="text-sm text-muted-foreground mt-1">Manage lease renewal offers and track tenant responses</p>
+        </div>
+        <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
+          leaseId: '',
+          tenantId: '',
+          propertyId: '',
+          renewalOfferDate: new Date().toISOString().split('T')[0],
+          responseDeadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          newRentAmount: 0,
+          rentIncreasePercentage: 0,
+          renewalTermMonths: 12,
+          renewalStatus: 'pending',
+          tenantResponseDate: '',
+          tenantResponse: '',
+          renewalTermStartDate: '',
+        }); }} className="gap-2">
+          <Plus className="w-4 h-4" /> Add Renewal
+        </Button>
       </div>
 
-      <div className="grid grid-cols-1 gap-6">
-        {renewals.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground bg-card rounded-lg border border-border">
-            No lease renewals found
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <RefreshCw className="w-4 h-4" />
+              Total Renewals
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalRenewals}</div>
+            <p className="text-xs text-muted-foreground mt-1">Active renewals</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              Pending
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-yellow-600">{pendingRenewals}</div>
+            <p className="text-xs text-muted-foreground mt-1">Awaiting response</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4" />
+              Accepted
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">{acceptedRenewals}</div>
+            <p className="text-xs text-muted-foreground mt-1">Confirmed renewals</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <DollarSign className="w-4 h-4" />
+              Avg Increase
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">{(totalIncomeIncrease / Math.max(totalRenewals, 1)).toFixed(1)}%</div>
+            <p className="text-xs text-muted-foreground mt-1">Rent increase</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Filters */}
+      <div className="flex gap-4 flex-wrap">
+        <div className="flex-1 min-w-64">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by lease ID or tenant..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10"
+            />
           </div>
-        ) : (
-          renewals.map(renewal => (
-            <div key={renewal.id} className="border border-border rounded-lg p-6 bg-card">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground">Lease ID: {renewal.lease_id}</h3>
-                  <p className="text-sm text-muted-foreground">Status: {renewal.renewal_status}</p>
+        </div>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-40">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="pending">Pending</SelectItem>
+            <SelectItem value="sent">Sent</SelectItem>
+            <SelectItem value="accepted">Accepted</SelectItem>
+            <SelectItem value="rejected">Rejected</SelectItem>
+            <SelectItem value="completed">Completed</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Renewals Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {filteredRenewals.map(renewal => (
+          <Card key={renewal.id} className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <RefreshCw className="w-4 h-4" />
+                    {renewal.lease_id?.substring(0, 20)}
+                  </CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1">Tenant: {renewal.tenant_id?.substring(0, 20)}</p>
                 </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-primary">{formatCurrency(renewal.new_rent_amount)}</div>
-                  {renewal.rent_increase_percentage && (
-                    <p className="text-sm text-muted-foreground">+{renewal.rent_increase_percentage}% increase</p>
-                  )}
+                <Badge className={getStatusColor(renewal.renewal_status)}>
+                  {renewal.renewal_status}
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="p-3 bg-blue-50 rounded">
+                <p className="text-xs text-muted-foreground mb-1">New Rent Amount</p>
+                <p className="text-2xl font-bold text-blue-600">${(renewal.new_rent_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                {renewal.rent_increase_percentage && (
+                  <p className="text-sm text-blue-600 mt-1">+{renewal.rent_increase_percentage}% increase</p>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div className="p-2 bg-muted/50 rounded">
+                  <p className="text-muted-foreground mb-1">Offer Date</p>
+                  <p className="font-medium">{renewal.renewal_offer_date ? new Date(renewal.renewal_offer_date).toLocaleDateString() : 'N/A'}</p>
+                </div>
+                <div className="p-2 bg-muted/50 rounded">
+                  <p className="text-muted-foreground mb-1">Deadline</p>
+                  <p className="font-medium">{renewal.response_deadline ? new Date(renewal.response_deadline).toLocaleDateString() : 'N/A'}</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4 text-sm mb-4 p-4 bg-accent rounded">
+              <div className="grid grid-cols-2 gap-2 text-sm">
                 <div>
-                  <span className="text-muted-foreground">Offer Date</span>
-                  <p className="font-medium">{new Date(renewal.renewal_offer_date).toLocaleDateString()}</p>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Deadline</span>
-                  <p className="font-medium">{new Date(renewal.response_deadline).toLocaleDateString()}</p>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Term</span>
+                  <p className="text-muted-foreground">Term</p>
                   <p className="font-medium">{renewal.renewal_term_months} months</p>
                 </div>
+                <div>
+                  <p className="text-muted-foreground">Property</p>
+                  <p className="font-medium">{renewal.property_id?.substring(0, 15)}</p>
+                </div>
               </div>
 
-              {renewal.tenant_response_date && (
-                <div className="text-sm mb-4 p-3 bg-green-50 border border-green-200 rounded">
-                  <span className="text-muted-foreground">Tenant Response:</span>
-                  <p className="font-medium">{new Date(renewal.tenant_response_date).toLocaleDateString()}</p>
+              {renewal.tenant_response && (
+                <div className="text-sm p-2 bg-green-50 rounded">
+                  <p className="text-muted-foreground mb-1">Tenant Response</p>
+                  <p className="text-sm">{renewal.tenant_response}</p>
                 </div>
               )}
 
-              <div className="flex gap-2">
-                <button className="flex-1 px-3 py-2 bg-primary text-primary-foreground rounded text-sm hover:opacity-90">
-                  View Details
-                </button>
-                <button className="flex-1 px-3 py-2 border border-border rounded text-sm hover:bg-accent">
-                  Send Reminder
-                </button>
+              <div className="flex gap-2 pt-2 border-t">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleEdit(renewal)}
+                  className="flex-1"
+                >
+                  <Edit className="w-4 h-4 mr-1" /> Edit
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => handleDelete(renewal.id)}
+                  className="text-destructive"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {filteredRenewals.length === 0 && (
+        <Card className="text-center py-12">
+          <RefreshCw className="w-12 h-12 mx-auto text-muted-foreground mb-4 opacity-50" />
+          <p className="text-muted-foreground">No lease renewals found. Create your first renewal!</p>
+        </Card>
+      )}
+
+      {/* Renewal Form Modal */}
+      <Sheet open={showForm} onOpenChange={setShowForm}>
+        <SheetContent className="w-full max-w-md overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>{editingId ? 'Edit Lease Renewal' : 'Create Lease Renewal'}</SheetTitle>
+            <SheetDescription>Manage lease renewal offers and terms</SheetDescription>
+          </SheetHeader>
+
+          <form onSubmit={handleSubmit} className="space-y-4 mt-6">
+            <div>
+              <label className="text-sm font-medium">Lease ID</label>
+              <Input
+                value={formData.leaseId}
+                onChange={(e) => setFormData({ ...formData, leaseId: e.target.value })}
+                placeholder="e.g., LEASE-123"
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-sm font-medium">Tenant ID</label>
+                <Input
+                  value={formData.tenantId}
+                  onChange={(e) => setFormData({ ...formData, tenantId: e.target.value })}
+                  placeholder="Tenant ID"
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Property ID</label>
+                <Input
+                  value={formData.propertyId}
+                  onChange={(e) => setFormData({ ...formData, propertyId: e.target.value })}
+                  placeholder="Property ID"
+                />
               </div>
             </div>
-          ))
-        )}
-      </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-sm font-medium">Offer Date</label>
+                <Input
+                  type="date"
+                  value={formData.renewalOfferDate}
+                  onChange={(e) => setFormData({ ...formData, renewalOfferDate: e.target.value })}
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Response Deadline</label>
+                <Input
+                  type="date"
+                  value={formData.responseDeadline}
+                  onChange={(e) => setFormData({ ...formData, responseDeadline: e.target.value })}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-sm font-medium">New Rent Amount ($)</label>
+                <Input
+                  type="number"
+                  step="1"
+                  min="0"
+                  value={formData.newRentAmount}
+                  onChange={(e) => setFormData({ ...formData, newRentAmount: parseFloat(e.target.value) })}
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Increase %</label>
+                <Input
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  value={formData.rentIncreasePercentage}
+                  onChange={(e) => setFormData({ ...formData, rentIncreasePercentage: parseFloat(e.target.value) })}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-sm font-medium">Term (Months)</label>
+                <Input
+                  type="number"
+                  min="1"
+                  value={formData.renewalTermMonths}
+                  onChange={(e) => setFormData({ ...formData, renewalTermMonths: parseInt(e.target.value) })}
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Status</label>
+                <Select value={formData.renewalStatus} onValueChange={(value) => setFormData({ ...formData, renewalStatus: value })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="sent">Sent</SelectItem>
+                    <SelectItem value="accepted">Accepted</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Tenant Response (Optional)</label>
+              <textarea
+                value={formData.tenantResponse}
+                onChange={(e) => setFormData({ ...formData, tenantResponse: e.target.value })}
+                placeholder="Tenant feedback or response..."
+                className="w-full p-2 border rounded text-sm"
+                rows="2"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Term Start Date (Optional)</label>
+              <Input
+                type="date"
+                value={formData.renewalTermStartDate}
+                onChange={(e) => setFormData({ ...formData, renewalTermStartDate: e.target.value })}
+              />
+            </div>
+
+            <div className="flex gap-2 pt-4">
+              <Button type="submit" className="flex-1">
+                {editingId ? 'Update' : 'Create'} Renewal
+              </Button>
+              <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
