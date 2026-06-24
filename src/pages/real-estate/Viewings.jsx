@@ -223,12 +223,24 @@ export default function Viewings() {
               }
             }} className="space-y-4 mt-6">
               <div>
+                <label className="text-xs font-semibold text-gray-600 mb-1 block">Property ID</label>
+                <input type="text" placeholder="Property ID" value={formData.propertyId} onChange={(e) => setFormData({...formData, propertyId: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+              </div>
+              <div>
                 <label className="text-xs font-semibold text-gray-600 mb-1 block">Property Address *</label>
                 <input type="text" placeholder="Property Address" value={formData.propertyAddress} onChange={(e) => setFormData({...formData, propertyAddress: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required />
               </div>
               <div>
+                <label className="text-xs font-semibold text-gray-600 mb-1 block">Client ID</label>
+                <input type="text" placeholder="Client ID" value={formData.clientId} onChange={(e) => setFormData({...formData, clientId: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+              </div>
+              <div>
                 <label className="text-xs font-semibold text-gray-600 mb-1 block">Client Name *</label>
                 <input type="text" placeholder="Client Name" value={formData.clientName} onChange={(e) => setFormData({...formData, clientName: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-gray-600 mb-1 block">Agent ID</label>
+                <input type="text" placeholder="Agent ID" value={formData.agentId} onChange={(e) => setFormData({...formData, agentId: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
               </div>
               <div>
                 <label className="text-xs font-semibold text-gray-600 mb-1 block">Agent Name</label>

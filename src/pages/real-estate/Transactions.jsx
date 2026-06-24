@@ -136,7 +136,7 @@ export default function Transactions() {
   };
 
   const KanbanColumn = ({ stage, transactions }) => (
-    <div className="bg-gray-50 rounded-lg p-4 min-h-96 flex flex-col border border-gray-200">
+    <div className="bg-gray-50 rounded-lg p-4 min-h-[500px] flex flex-col border border-gray-200 flex-shrink-0 w-80">
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
           <h3 className="font-semibold text-gray-900 text-sm flex items-center gap-2">
@@ -150,7 +150,7 @@ export default function Transactions() {
         </div>
       </div>
       
-      <div className="flex-1 space-y-3 overflow-y-auto">
+      <div className="flex-1 space-y-3 overflow-y-auto pr-2">
         {transactions.length === 0 ? (
           <div className="text-center py-8 text-gray-400">
             <AlertCircle className="w-6 h-6 mx-auto mb-2" />
@@ -161,15 +161,15 @@ export default function Transactions() {
             <div
               key={transaction.id}
               onClick={() => setSelectedTransaction(transaction)}
-              className={`p-3 rounded-lg border-l-4 border-l-purple-500 cursor-pointer transform transition-all hover:shadow-md hover:scale-105 ${pipelineStages.find(s => s.id === stage)?.color} border`}
+              className={`p-4 rounded-lg border-l-4 border-l-purple-500 cursor-pointer transform transition-all hover:shadow-md hover:scale-105 ${pipelineStages.find(s => s.id === stage)?.color} border`}
             >
               <div className="flex items-start justify-between mb-2">
-                <p className="font-semibold text-gray-900 text-sm truncate">{transaction.property_address}</p>
-                <MoreVertical className="w-3 h-3 text-gray-400" />
+                <p className="font-semibold text-gray-900 text-sm break-words">{transaction.property_address}</p>
+                <MoreVertical className="w-4 h-4 text-gray-400 flex-shrink-0 ml-2" />
               </div>
-              <div className="space-y-1 mb-3">
-                <p className="text-xs text-gray-600 truncate">Buyer: {transaction.buyer_name}</p>
-                <p className="text-xs text-gray-600 truncate">Agent: {transaction.agent_name}</p>
+              <div className="space-y-1 mb-3 text-sm">
+                <p className="text-xs text-gray-600">Buyer: {transaction.buyer_name}</p>
+                <p className="text-xs text-gray-600">Agent: {transaction.agent_name}</p>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm font-bold text-gray-900">${(transaction.sale_price / 1000).toFixed(0)}K</span>
@@ -239,14 +239,16 @@ export default function Transactions() {
         </div>
 
         {/* Kanban Board */}
-        <div className="grid grid-cols-1 lg:grid-cols-6 gap-4">
-          {pipelineStages.map(stage => (
-            <KanbanColumn
-              key={stage.id}
-              stage={stage.id}
-              transactions={getTransactionsByStage(stage.id)}
-            />
-          ))}
+        <div className="overflow-x-auto pb-4">
+          <div className="flex gap-4 min-w-min">
+            {pipelineStages.map(stage => (
+              <KanbanColumn
+                key={stage.id}
+                stage={stage.id}
+                transactions={getTransactionsByStage(stage.id)}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Transaction Details Sheet */}
