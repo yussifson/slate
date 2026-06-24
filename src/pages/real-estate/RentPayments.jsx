@@ -83,10 +83,11 @@ export default function RentPayments() {
 
         {/* Form Sheet */}
         <Sheet open={showForm} onOpenChange={setShowForm}>
-          <SheetContent side="right" className="w-full sm:w-96">
-            <SheetHeader>
+          <SheetContent side="right" className="w-full sm:w-96 flex flex-col overflow-hidden">
+            <SheetHeader className="flex-shrink-0">
               <SheetTitle>Record Rent Payment</SheetTitle>
             </SheetHeader>
+            <div className="flex-1 overflow-y-auto pr-4">
             <form onSubmit={async (e) => {
               e.preventDefault();
               try {
@@ -138,6 +139,7 @@ export default function RentPayments() {
                 <textarea id="rent-notes" placeholder="Additional notes" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" rows="3"></textarea></div>
               <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700">Record Payment</Button>
             </form>
+            </div>
           </SheetContent>
         </Sheet>
 
