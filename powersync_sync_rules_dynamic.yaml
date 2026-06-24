@@ -167,6 +167,25 @@ bucket_definitions:
   - SELECT * FROM univ_re_leases WHERE company_id = bucket.company_id
   - SELECT * FROM univ_re_rent_payments WHERE company_id = bucket.company_id
   - SELECT * FROM univ_re_maintenance_requests WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_agent_metrics WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_agent_recommendations WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_audit_log WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_client_scoring WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_commission_details WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_commission_rules WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_comparable_properties WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_contractor_reviews WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_contractors WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_counter_offers WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_document_templates WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_e_signatures WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_escrow_accounts WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_lease_renewals WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_market_data WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_rent_payment_history WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_rent_payment_schedules WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_trust_accounts WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_trust_ledger WHERE company_id = bucket.company_id
 
   # -------------------------------------------------------------
   # RETAIL MODULE
