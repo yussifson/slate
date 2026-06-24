@@ -175,8 +175,8 @@ export default function Leases() {
               const status = getLeaseStatus(lease);
               const statusColors = {
                 'active': 'bg-green-100 text-green-800',
-                'expiring-soon': 'bg-yellow-100 text-yellow-800',
-                'expired': 'bg-red-100 text-red-800',
+                'expiring-soon': 'bg-orange-100 text-orange-800',
+                'expired': 'bg-orange-100 text-orange-800',
               };
               
               return (

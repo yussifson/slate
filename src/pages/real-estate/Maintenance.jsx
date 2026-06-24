@@ -13,17 +13,17 @@ import RealEstateAPI from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
 
 const priorityMatrix = {
-  critical: { color: 'text-red-600', bg: 'bg-red-50', border: 'border-red-300', badge: 'bg-red-100 text-red-800', label: 'Critical' },
+  critical: { color: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-300', badge: 'bg-orange-100 text-orange-800', label: 'Critical' },
   high: { color: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-300', badge: 'bg-orange-100 text-orange-800', label: 'High' },
-  medium: { color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-300', badge: 'bg-amber-100 text-amber-800', label: 'Medium' },
-  low: { color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-300', badge: 'bg-blue-100 text-blue-800', label: 'Low' }
+  medium: { color: 'text-green-600', bg: 'bg-green-50', border: 'border-green-300', badge: 'bg-green-100 text-green-800', label: 'Medium' },
+  low: { color: 'text-green-600', bg: 'bg-green-50', border: 'border-green-300', badge: 'bg-green-100 text-green-800', label: 'Low' }
 };
 
 const statusConfig = {
-  open: { color: 'text-red-600', bg: 'bg-red-50', badge: 'bg-red-100 text-red-800', icon: AlertTriangle },
-  in_progress: { color: 'text-blue-600', bg: 'bg-blue-50', badge: 'bg-blue-100 text-blue-800', icon: Clock },
+  open: { color: 'text-orange-600', bg: 'bg-orange-50', badge: 'bg-orange-100 text-orange-800', icon: AlertTriangle },
+  in_progress: { color: 'text-green-600', bg: 'bg-green-50', badge: 'bg-green-100 text-green-800', icon: Clock },
   completed: { color: 'text-green-600', bg: 'bg-green-50', badge: 'bg-green-100 text-green-800', icon: CheckCircle },
-  scheduled: { color: 'text-amber-600', bg: 'bg-amber-50', badge: 'bg-amber-100 text-amber-800', icon: Clock }
+  scheduled: { color: 'text-orange-600', bg: 'bg-orange-50', badge: 'bg-orange-100 text-orange-800', icon: Clock }
 };
 
 export default function Maintenance() {

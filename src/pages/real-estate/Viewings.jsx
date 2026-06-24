@@ -14,10 +14,10 @@ import RealEstateAPI from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
 
 const statusColors = {
-  scheduled: { bg: 'bg-blue-50', border: 'border-blue-200', badge: 'bg-blue-100 text-blue-800' },
+  scheduled: { bg: 'bg-orange-50', border: 'border-orange-200', badge: 'bg-orange-100 text-orange-800' },
   completed: { bg: 'bg-green-50', border: 'border-green-200', badge: 'bg-green-100 text-green-800' },
-  cancelled: { bg: 'bg-red-50', border: 'border-red-200', badge: 'bg-red-100 text-red-800' },
-  rescheduled: { bg: 'bg-amber-50', border: 'border-amber-200', badge: 'bg-amber-100 text-amber-800' }
+  cancelled: { bg: 'bg-orange-50', border: 'border-orange-200', badge: 'bg-orange-100 text-orange-800' },
+  rescheduled: { bg: 'bg-green-50', border: 'border-green-200', badge: 'bg-green-100 text-green-800' }
 };
 
 export default function Viewings() {
@@ -78,7 +78,7 @@ export default function Viewings() {
       });
       
       days.push(
-        <div key={day} className="min-h-24 p-2 border border-gray-200 hover:bg-blue-50 transition-colors cursor-pointer bg-white">
+        <div key={day} className="min-h-24 p-2 border border-gray-200 hover:bg-green-50 transition-colors cursor-pointer bg-white">
           <div className="text-sm font-semibold text-gray-700 mb-1">{day}</div>
           <div className="space-y-1">
             {dayViewings.slice(0, 2).map(v => (
@@ -204,7 +204,11 @@ export default function Viewings() {
                   toast.error('Please fill in all required fields');
                   return;
                 }
-                await RealEstateAPI.createViewing(companyId, formData, user?.id);
+                const submitData = {
+                  ...formData,
+                  viewingTime: formData.viewingTime || '09:00'
+                };
+                await RealEstateAPI.createViewing(companyId, submitData, user?.id);
                 const res = await powerSync.execute(
                   'SELECT * FROM univ_re_viewings WHERE company_id = ? ORDER BY viewing_date DESC',
                   [companyId]
