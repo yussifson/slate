@@ -11,7 +11,7 @@ export default function ESignatures() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await DocumentsAPI.getESignatures(companyId);
+        const data = await RealEstateDocuments.getESignatures(companyId);
         setSignatures(data);
       } catch (error) {
         console.error('Error loading e-signatures:', error);

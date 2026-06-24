@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { formatCurrency } from '@/lib/constants';
-import LeaseAPI from '@/api/RealEstateLeaseAutomation';
+import { RealEstateLeaseAutomation } from '@/api/RealEstateLeaseAutomation';
 
 export default function LeaseRenewals() {
   const [renewals, setRenewals] = useState([]);
@@ -12,7 +12,7 @@ export default function LeaseRenewals() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await LeaseAPI.getLeaseRenewals(companyId);
+        const data = await RealEstateLeaseAutomation.getLeaseRenewals(companyId);
         setRenewals(data);
       } catch (error) {
         console.error('Error loading lease renewals:', error);

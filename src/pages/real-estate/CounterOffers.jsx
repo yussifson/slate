@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { formatCurrency } from '@/lib/constants';
-import OffersAPI from '@/api/RealEstateOffers';
+import { RealEstateOffers } from '@/api/RealEstateOffers';
 
 export default function CounterOffers() {
   const [offers, setOffers] = useState([]);
@@ -12,7 +12,7 @@ export default function CounterOffers() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await OffersAPI.getCounterOffers(companyId);
+        const data = await RealEstateAPI.getCounterOffers(companyId);
         setOffers(data);
       } catch (error) {
         console.error('Error loading counter offers:', error);

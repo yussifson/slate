@@ -11,7 +11,7 @@ export default function ClientScoring() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await AnalyticsAPI.getClientScoring(companyId);
+        const data = await RealEstateAnalytics.getClientScoring(companyId);
         setScores(data);
       } catch (error) {
         console.error('Error loading client scores:', error);

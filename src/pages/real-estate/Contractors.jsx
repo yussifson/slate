@@ -11,7 +11,7 @@ export default function Contractors() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await ContractorsAPI.getContractors(companyId);
+        const data = await RealEstateContractors.getContractors(companyId);
         setContractors(data);
       } catch (error) {
         console.error('Error loading contractors:', error);

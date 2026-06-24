@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { formatCurrency } from '@/lib/constants';
-import IntelligenceAPI from '@/api/RealEstateIntelligence';
+import { RealEstateIntelligence } from '@/api/RealEstateIntelligence';
 
 export default function ComparableProperties() {
   const [comparables, setComparables] = useState([]);
@@ -12,7 +12,7 @@ export default function ComparableProperties() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await IntelligenceAPI.getComparableProperties(companyId);
+        const data = await RealEstateIntelligence.getComparableProperties(companyId);
         setComparables(data);
       } catch (error) {
         console.error('Error loading comparable properties:', error);

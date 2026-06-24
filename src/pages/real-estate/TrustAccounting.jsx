@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { formatCurrency } from '@/lib/constants';
-import TrustAccountingAPI from '@/api/RealEstateTrustAccounting';
+import { RealEstateTrustAccounting } from '@/api/RealEstateTrustAccounting';
 
 export default function TrustAccounting() {
   const [accounts, setAccounts] = useState([]);
@@ -14,8 +14,8 @@ export default function TrustAccounting() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const accountsData = await TrustAccountingAPI.getTrustAccounts(companyId);
-        const ledgerData = await TrustAccountingAPI.getTrustLedger(companyId);
+        const accountsData = await RealEstateTrustAccounting.getTrustAccounts(companyId);
+        const ledgerData = await RealEstateTrustAccounting.getTrustLedger(companyId);
         setAccounts(accountsData);
         setLedger(ledgerData);
       } catch (error) {

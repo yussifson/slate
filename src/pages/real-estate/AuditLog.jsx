@@ -15,7 +15,7 @@ export default function AuditLog() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await AnalyticsAPI.getAuditLog(companyId, filters);
+        const data = await RealEstateAnalytics.getAuditLog(companyId, filters);
         setLogs(data);
       } catch (error) {
         console.error('Error loading audit log:', error);

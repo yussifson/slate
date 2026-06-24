@@ -11,7 +11,7 @@ export default function Recommendations() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await AnalyticsAPI.getAgentRecommendations(companyId);
+        const data = await RealEstateAnalytics.getAgentRecommendations(companyId);
         setRecommendations(data);
       } catch (error) {
         console.error('Error loading recommendations:', error);

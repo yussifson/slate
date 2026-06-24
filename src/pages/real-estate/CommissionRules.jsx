@@ -11,7 +11,7 @@ export default function CommissionRules() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await OffersAPI.getCommissionRules(companyId);
+        const data = await RealEstateAPI.getCommissionRules(companyId);
         setRules(data);
       } catch (error) {
         console.error('Error loading commission rules:', error);
