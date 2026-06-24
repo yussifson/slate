@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useCompanyId } from '../../hooks/useCompanyId';
-import { formatCurrency } from '../../utils/formatters';
-import LeaseAPI from '../../api/RealEstateLeaseAutomation';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { formatCurrency } from '@/lib/constants';
+import LeaseAPI from '@/api/RealEstateLeaseAutomation';
 
 export default function LeaseRenewals() {
   const [renewals, setRenewals] = useState([]);

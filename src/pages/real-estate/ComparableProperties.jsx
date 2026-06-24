@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useCompanyId } from '../../hooks/useCompanyId';
-import { formatCurrency } from '../../utils/formatters';
-import IntelligenceAPI from '../../api/RealEstateIntelligence';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { formatCurrency } from '@/lib/constants';
+import IntelligenceAPI from '@/api/RealEstateIntelligence';
 
 export default function ComparableProperties() {
   const [comparables, setComparables] = useState([]);

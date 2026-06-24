@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useCompanyId } from '../../hooks/useCompanyId';
-import { formatCurrency } from '../../utils/formatters';
-import TrustAccountingAPI from '../../api/RealEstateTrustAccounting';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { formatCurrency } from '@/lib/constants';
+import TrustAccountingAPI from '@/api/RealEstateTrustAccounting';
 
 export default function TrustAccounting() {
   const [accounts, setAccounts] = useState([]);
