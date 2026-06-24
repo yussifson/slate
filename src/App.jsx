@@ -223,6 +223,25 @@ import RealEstateOffers from './pages/real-estate/Offers';
 import RealEstateCommissions from './pages/real-estate/Commissions';
 import RealEstateRentPayments from './pages/real-estate/RentPayments';
 import RealEstateMaintenance from './pages/real-estate/Maintenance';
+import RealEstateCRMLeads from './pages/real-estate/CRMLeads';
+import RealEstateAgentMetrics from './pages/real-estate/AgentMetrics';
+import RealEstateAuditLog from './pages/real-estate/AuditLog';
+import RealEstateClientScoring from './pages/real-estate/ClientScoring';
+import RealEstateCommissionRules from './pages/real-estate/CommissionRules';
+import RealEstateComparableProperties from './pages/real-estate/ComparableProperties';
+import RealEstateContractorReviews from './pages/real-estate/ContractorReviews';
+import RealEstateContractors from './pages/real-estate/Contractors';
+import RealEstateCounterOffers from './pages/real-estate/CounterOffers';
+import RealEstateDocumentTemplates from './pages/real-estate/DocumentTemplates';
+import RealEstateESignatures from './pages/real-estate/ESignatures';
+import RealEstateEscrowAccounts from './pages/real-estate/EscrowAccounts';
+import RealEstateLeaseRenewals from './pages/real-estate/LeaseRenewals';
+import RealEstateMarketData from './pages/real-estate/MarketData';
+import RealEstateMarketIntelligence from './pages/real-estate/MarketIntelligence';
+import RealEstatePaymentSchedules from './pages/real-estate/PaymentSchedules';
+import RealEstateRecommendations from './pages/real-estate/Recommendations';
+import RealEstateTeamManagement from './pages/real-estate/TeamManagement';
+import RealEstateTrustAccounting from './pages/real-estate/TrustAccounting';
 
 // Religion Pages
 import ReligionMembers from './pages/religion/Members';
@@ -738,6 +757,25 @@ function PlatformRoutes() {
       <Route path="/real-estate/commissions" element={<RealEstateCommissions />} />
       <Route path="/real-estate/rent-payments" element={<RealEstateRentPayments />} />
       <Route path="/real-estate/maintenance" element={<RealEstateMaintenance />} />
+      <Route path="/real-estate/crm-leads" element={<RealEstateCRMLeads />} />
+      <Route path="/real-estate/agent-metrics" element={<RealEstateAgentMetrics />} />
+      <Route path="/real-estate/audit-log" element={<RealEstateAuditLog />} />
+      <Route path="/real-estate/client-scoring" element={<RealEstateClientScoring />} />
+      <Route path="/real-estate/commission-rules" element={<RealEstateCommissionRules />} />
+      <Route path="/real-estate/comparable-properties" element={<RealEstateComparableProperties />} />
+      <Route path="/real-estate/contractor-reviews" element={<RealEstateContractorReviews />} />
+      <Route path="/real-estate/contractors" element={<RealEstateContractors />} />
+      <Route path="/real-estate/counter-offers" element={<RealEstateCounterOffers />} />
+      <Route path="/real-estate/document-templates" element={<RealEstateDocumentTemplates />} />
+      <Route path="/real-estate/e-signatures" element={<RealEstateESignatures />} />
+      <Route path="/real-estate/escrow-accounts" element={<RealEstateEscrowAccounts />} />
+      <Route path="/real-estate/lease-renewals" element={<RealEstateLeaseRenewals />} />
+      <Route path="/real-estate/market-data" element={<RealEstateMarketData />} />
+      <Route path="/real-estate/market-intelligence" element={<RealEstateMarketIntelligence />} />
+      <Route path="/real-estate/payment-schedules" element={<RealEstatePaymentSchedules />} />
+      <Route path="/real-estate/recommendations" element={<RealEstateRecommendations />} />
+      <Route path="/real-estate/team-management" element={<RealEstateTeamManagement />} />
+      <Route path="/real-estate/trust-accounting" element={<RealEstateTrustAccounting />} />
 
       {/* Religion Suite */}
       <Route path="/members" element={<Clients />} />
