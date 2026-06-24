@@ -53,6 +53,7 @@ class SupabaseConnector {
                   for (const [k, v] of Object.entries(op.opData)) {
                     // Skip empty id fields from opData, we'll use op.id instead
                     if (k === 'id' && (!v || v === '')) continue;
+                    // For fields that end in _id, allow them even if they're not valid UUIDs (now stored as TEXT)
                     payload[k] = v;
                   }
                 }

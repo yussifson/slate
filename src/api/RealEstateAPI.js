@@ -394,14 +394,14 @@ export const RealEstateAPI = {
       const id = generateUUID();
       const now = new Date().toISOString();
 
-      await powerSync.execute(
-        `INSERT INTO univ_re_transactions (id, company_id, property_id, property_address, seller_id, seller_name, 
-         buyer_id, buyer_name, sale_price, closing_date, status, agent_id, agent_name, documents, notes, created_at) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [id, companyId, data.propertyId, data.propertyAddress, data.sellerId, data.sellerName, 
-         data.buyerId, data.buyerName, data.salePrice, data.closingDate, 'pending', 
-         data.agentId, data.agentName, JSON.stringify(data.documents || []), data.notes, now]
-      );
+  await powerSync.execute(
+  `INSERT INTO univ_re_transactions (id, company_id, property_id, property_address, seller_id, seller_name,
+  buyer_id, buyer_name, sale_price, closing_date, status, agent_id, agent_name, documents, notes, created_at)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+  [id, companyId, data.propertyId, data.propertyAddress, data.sellerId, data.sellerName,
+  data.buyerId, data.buyerName, data.salePrice, data.closingDate, data.status || 'offer_accepted',
+  data.agentId, data.agentName, JSON.stringify(data.documents || []), data.notes, now]
+  );
       // Audit logged inline during transaction creation
       return id;
     } catch (e) {
@@ -447,7 +447,7 @@ export const RealEstateAPI = {
     }
   },
 
-  // ────────────────────────────────────────────────────────
+  // ──────────────���─────────────────────────────────────────
   // LEASES
   // ────────────────────────────────────────────────────────
 

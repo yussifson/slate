@@ -34,6 +34,7 @@ export default function RentPayments() {
     totalOverdue: 0,
     collectionRate: 0
   });
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -75,10 +76,70 @@ export default function RentPayments() {
             </h1>
             <p className="text-gray-600 mt-1">Track and manage tenant rent payments</p>
           </div>
-          <Button className="bg-indigo-600 hover:bg-indigo-700 gap-2">
+          <Button onClick={() => setShowForm(true)} className="bg-indigo-600 hover:bg-indigo-700 gap-2">
             <Plus className="w-4 h-4" /> Record Payment
           </Button>
         </div>
+
+        {/* Form Sheet */}
+        <Sheet open={showForm} onOpenChange={setShowForm}>
+          <SheetContent side="right" className="w-full sm:w-96">
+            <SheetHeader>
+              <SheetTitle>Record Rent Payment</SheetTitle>
+            </SheetHeader>
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              try {
+                const formData = {
+                  leaseId: document.getElementById('rent-lease-id')?.value || '',
+                  propertyId: document.getElementById('rent-property-id')?.value || '',
+                  tenantId: document.getElementById('rent-tenant-id')?.value || '',
+                  tenantName: document.getElementById('rent-tenant-name')?.value || '',
+                  amount: parseFloat(document.getElementById('rent-amount')?.value) || 0,
+                  dueDate: document.getElementById('rent-due-date')?.value || '',
+                  paymentMethod: document.getElementById('rent-method')?.value || '',
+                  notes: document.getElementById('rent-notes')?.value || ''
+                };
+                await RealEstateAPI.recordRentPayment(companyId, formData, user?.id);
+                const res = await powerSync.execute(
+                  'SELECT * FROM univ_re_rent_payments WHERE company_id = ? ORDER BY due_date DESC',
+                  [companyId]
+                );
+                const data = res.rows._array || Array.from(res.rows);
+                setPayments(data);
+                toast.success('Rent payment recorded');
+                setShowForm(false);
+              } catch (error) {
+                console.error('Error recording payment:', error);
+                toast.error('Failed to record payment');
+              }
+            }} className="space-y-4 mt-6">
+              <div><label className="text-xs font-semibold mb-1 block">Lease ID</label>
+                <input id="rent-lease-id" type="text" placeholder="Lease ID" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" /></div>
+              <div><label className="text-xs font-semibold mb-1 block">Property ID</label>
+                <input id="rent-property-id" type="text" placeholder="Property ID" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" /></div>
+              <div><label className="text-xs font-semibold mb-1 block">Tenant ID</label>
+                <input id="rent-tenant-id" type="text" placeholder="Tenant ID" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" /></div>
+              <div><label className="text-xs font-semibold mb-1 block">Tenant Name *</label>
+                <input id="rent-tenant-name" type="text" placeholder="Tenant Name" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required /></div>
+              <div><label className="text-xs font-semibold mb-1 block">Amount *</label>
+                <input id="rent-amount" type="number" placeholder="0.00" step="0.01" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required /></div>
+              <div><label className="text-xs font-semibold mb-1 block">Due Date *</label>
+                <input id="rent-due-date" type="date" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required /></div>
+              <div><label className="text-xs font-semibold mb-1 block">Payment Method</label>
+                <select id="rent-method" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                  <option value="">Select method</option>
+                  <option value="bank_transfer">Bank Transfer</option>
+                  <option value="check">Check</option>
+                  <option value="cash">Cash</option>
+                  <option value="credit_card">Credit Card</option>
+                </select></div>
+              <div><label className="text-xs font-semibold mb-1 block">Notes</label>
+                <textarea id="rent-notes" placeholder="Additional notes" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" rows="3"></textarea></div>
+              <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700">Record Payment</Button>
+            </form>
+          </SheetContent>
+        </Sheet>
 
         {/* Financial Overview */}
         <div className="grid grid-cols-4 gap-4 mb-8">
