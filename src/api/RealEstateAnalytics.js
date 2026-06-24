@@ -130,6 +130,55 @@ export const RealEstateAnalytics = {
   },
 
   // ────────────────────────────────────────────────────────
+  // AGENT METRICS
+  // ────────────────────────────────────────────────────────
+
+  async getAgentMetrics(companyId) {
+    try {
+      // Get agent performance data
+      const result = await powerSync.execute(
+        `SELECT 
+           u.id,
+           u.full_name as agent_name,
+           COUNT(DISTINCT CASE WHEN t.transaction_type = 'sale' THEN t.id END) as listings_sold_count,
+           COUNT(DISTINCT CASE WHEN p.agent_id = u.id THEN p.id END) as listings_taken_count,
+           COUNT(DISTINCT c.id) as client_count,
+           COALESCE(SUM(CASE WHEN t.transaction_type = 'sale' THEN t.transaction_amount ELSE 0 END), 0) as sales_volume,
+           COALESCE(AVG(CASE WHEN t.transaction_type = 'sale' THEN t.transaction_amount ELSE 0 END), 0) as average_sale_price,
+           COALESCE(SUM(cd.total_commission_amount), 0) as commission_earned,
+           ROUND(COALESCE(COUNT(DISTINCT CASE WHEN c.repeat_client = true THEN c.id END) * 100.0 / NULLIF(COUNT(DISTINCT c.id), 0), 0), 2) as return_client_rate,
+           'monthly' as metric_period
+         FROM univ_re_team_members u
+         LEFT JOIN univ_re_properties p ON u.id = p.agent_id AND p.company_id = ?
+         LEFT JOIN univ_re_clients c ON u.id = c.primary_agent_id AND c.company_id = ?
+         LEFT JOIN univ_re_transactions t ON u.id = t.agent_id AND t.company_id = ?
+         LEFT JOIN univ_re_commission_details cd ON u.id = cd.agent_id AND cd.company_id = ?
+         WHERE u.company_id = ? AND u.role IN ('agent', 'team_lead')
+         GROUP BY u.id, u.full_name
+         ORDER BY sales_volume DESC`,
+        [companyId, companyId, companyId, companyId, companyId]
+      );
+
+      return (result.rows._array || []).map(row => ({
+        id: row.id,
+        agent_id: row.id,
+        agent_name: row.agent_name,
+        listings_sold_count: row.listings_sold_count || 0,
+        listings_taken_count: row.listings_taken_count || 0,
+        client_count: row.client_count || 0,
+        sales_volume: row.sales_volume || 0,
+        average_sale_price: row.average_sale_price || 0,
+        commission_earned: row.commission_earned || 0,
+        return_client_rate: row.return_client_rate || 0,
+        metric_period: row.metric_period
+      }));
+    } catch (e) {
+      console.error('[Analytics] getAgentMetrics failed:', e);
+      return [];
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
   // TRANSACTION ANALYTICS
   // ────────────────────────────────────────────────────────
 
