@@ -14,8 +14,8 @@ import RealEstateAPI from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
 
 const typeColors = {
-  'buyer': 'bg-blue-100 text-blue-800',
-  'seller': 'bg-purple-100 text-purple-800',
+  'buyer': 'bg-orange-100 text-orange-800',
+  'seller': 'bg-green-100 text-green-800',
   'tenant': 'bg-green-100 text-green-800',
   'landlord': 'bg-orange-100 text-orange-800',
 };
@@ -179,7 +179,7 @@ export default function Clients() {
                 {client.email && (
                   <div className="flex items-center gap-2 text-sm">
                     <Mail className="w-4 h-4 text-muted-foreground" />
-                    <a href={`mailto:${client.email}`} className="text-blue-600 hover:underline">
+                    <a href={`mailto:${client.email}`} className="text-green-600 hover:underline">
                       {client.email}
                     </a>
                   </div>
@@ -187,7 +187,7 @@ export default function Clients() {
                 {client.phone && (
                   <div className="flex items-center gap-2 text-sm">
                     <Phone className="w-4 h-4 text-muted-foreground" />
-                    <a href={`tel:${client.phone}`} className="text-blue-600 hover:underline">
+                    <a href={`tel:${client.phone}`} className="text-green-600 hover:underline">
                       {client.phone}
                     </a>
                   </div>

@@ -13,7 +13,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { generateText } from '@/lib/cloudflareAI';
 import { OrbitLoader } from '@/components/ui/orbit-loader';
 
-const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+const COLORS = ['#10b981', '#f97316', '#10b981', '#f97316', '#10b981'];
 
 export default function RealEstateDashboard() {
   const { t } = useTranslation();
@@ -195,7 +195,7 @@ export default function RealEstateDashboard() {
 
       {/* AI Insight */}
       {aiInsight && (
-        <Card className="border-blue-200 bg-blue-50">
+        <Card className="border-green-200 bg-green-50">
           <CardHeader>
             <CardTitle className="text-sm flex items-center gap-2">
               <TrendingUp className="w-4 h-4" /> Market Insight

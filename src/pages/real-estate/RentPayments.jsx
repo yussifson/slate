@@ -12,10 +12,10 @@ import RealEstateAPI from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
 
 const statusConfig = {
-  pending: { color: 'text-blue-600', bg: 'bg-blue-50', badge: 'bg-blue-100 text-blue-800', icon: Clock },
+  pending: { color: 'text-orange-600', bg: 'bg-orange-50', badge: 'bg-orange-100 text-orange-800', icon: Clock },
   paid: { color: 'text-green-600', bg: 'bg-green-50', badge: 'bg-green-100 text-green-800', icon: CheckCircle },
-  overdue: { color: 'text-red-600', bg: 'bg-red-50', badge: 'bg-red-100 text-red-800', icon: AlertTriangle },
-  partial: { color: 'text-amber-600', bg: 'bg-amber-50', badge: 'bg-amber-100 text-amber-800', icon: Clock }
+  overdue: { color: 'text-orange-600', bg: 'bg-orange-50', badge: 'bg-orange-100 text-orange-800', icon: AlertTriangle },
+  partial: { color: 'text-green-600', bg: 'bg-green-50', badge: 'bg-green-100 text-green-800', icon: Clock }
 };
 
 export default function RentPayments() {

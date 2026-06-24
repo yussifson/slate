@@ -14,12 +14,12 @@ import RealEstateAPI from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
 
 const pipelineStages = [
-  { id: 'offer_accepted', label: 'Offer Accepted', color: 'bg-purple-100 border-purple-300', badge: 'bg-purple-200 text-purple-900' },
-  { id: 'inspection', label: 'Under Inspection', color: 'bg-blue-100 border-blue-300', badge: 'bg-blue-200 text-blue-900' },
-  { id: 'appraisal', label: 'Appraisal', color: 'bg-cyan-100 border-cyan-300', badge: 'bg-cyan-200 text-cyan-900' },
-  { id: 'financing', label: 'Financing', color: 'bg-indigo-100 border-indigo-300', badge: 'bg-indigo-200 text-indigo-900' },
-  { id: 'ready_close', label: 'Ready to Close', color: 'bg-green-100 border-green-300', badge: 'bg-green-200 text-green-900' },
-  { id: 'closed', label: 'Closed', color: 'bg-emerald-100 border-emerald-300', badge: 'bg-emerald-200 text-emerald-900' }
+  { id: 'offer_accepted', label: 'Offer Accepted', color: 'bg-orange-100 border-orange-300', badge: 'bg-orange-200 text-orange-900' },
+  { id: 'inspection', label: 'Under Inspection', color: 'bg-orange-50 border-orange-200', badge: 'bg-orange-100 text-orange-800' },
+  { id: 'appraisal', label: 'Appraisal', color: 'bg-green-100 border-green-300', badge: 'bg-green-200 text-green-900' },
+  { id: 'financing', label: 'Financing', color: 'bg-green-50 border-green-200', badge: 'bg-green-100 text-green-800' },
+  { id: 'ready_close', label: 'Ready to Close', color: 'bg-orange-100 border-orange-300', badge: 'bg-orange-200 text-orange-900' },
+  { id: 'closed', label: 'Closed', color: 'bg-green-100 border-green-300', badge: 'bg-green-200 text-green-900' }
 ];
 
 export default function Transactions() {
@@ -136,44 +136,48 @@ export default function Transactions() {
   };
 
   const KanbanColumn = ({ stage, transactions }) => (
-    <div className="bg-gray-50 rounded-lg p-4 min-h-[500px] flex flex-col border border-gray-200 flex-shrink-0 w-80">
-      <div className="mb-4">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="font-semibold text-gray-900 text-sm flex items-center gap-2">
-            <span className={`w-3 h-3 rounded-full ${pipelineStages.find(s => s.id === stage)?.badge}`}></span>
+    <div className="bg-white rounded-lg p-5 min-h-[600px] flex flex-col border-2 border-gray-100 flex-shrink-0 w-96 shadow-sm hover:shadow-md transition-shadow">
+      <div className="mb-5 pb-4 border-b-2 border-gray-100">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-bold text-gray-900 text-base flex items-center gap-2">
+            <span className={`w-4 h-4 rounded-full ${pipelineStages.find(s => s.id === stage)?.badge}`}></span>
             {pipelineStages.find(s => s.id === stage)?.label}
           </h3>
-          <Badge variant="secondary" className="text-xs">{transactions.length}</Badge>
+          <Badge className="bg-green-600 text-white text-xs px-2 py-1">{transactions.length}</Badge>
         </div>
-        <div className="w-full bg-gray-300 rounded-full h-1">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 h-1 rounded-full" style={{ width: `${(transactions.length / Math.max(...pipelineStages.map(() => 3), 1)) * 100}%` }}></div>
+        <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="bg-gradient-to-r from-green-500 to-orange-500 h-2 rounded-full" style={{ width: `${(transactions.length / Math.max(...pipelineStages.map(() => 3), 1)) * 100}%` }}></div>
         </div>
       </div>
       
-      <div className="flex-1 space-y-3 overflow-y-auto pr-2">
+      <div className="flex-1 space-y-4 overflow-y-auto pr-2">
         {transactions.length === 0 ? (
-          <div className="text-center py-8 text-gray-400">
-            <AlertCircle className="w-6 h-6 mx-auto mb-2" />
-            <p className="text-xs">No transactions</p>
+          <div className="text-center py-12 text-gray-400">
+            <AlertCircle className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+            <p className="text-sm font-medium">No transactions</p>
           </div>
         ) : (
           transactions.map(transaction => (
             <div
               key={transaction.id}
               onClick={() => setSelectedTransaction(transaction)}
-              className={`p-4 rounded-lg border-l-4 border-l-purple-500 cursor-pointer transform transition-all hover:shadow-md hover:scale-105 ${pipelineStages.find(s => s.id === stage)?.color} border`}
+              className={`p-5 rounded-lg border-l-4 cursor-pointer transform transition-all hover:shadow-lg hover:-translate-y-1 ${pipelineStages.find(s => s.id === stage)?.color} border border-gray-100`}
+              style={{ borderLeftColor: stage === 'offer_accepted' || stage === 'ready_close' ? '#f97316' : '#10b981' }}
             >
-              <div className="flex items-start justify-between mb-2">
-                <p className="font-semibold text-gray-900 text-sm break-words">{transaction.property_address}</p>
-                <MoreVertical className="w-4 h-4 text-gray-400 flex-shrink-0 ml-2" />
+              <div className="flex items-start justify-between mb-3 gap-2">
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-gray-900 text-sm leading-snug break-words line-clamp-2">{transaction.property_address}</p>
+                </div>
+                <MoreVertical className="w-5 h-5 text-gray-400 flex-shrink-0" />
               </div>
-              <div className="space-y-1 mb-3 text-sm">
-                <p className="text-xs text-gray-600">Buyer: {transaction.buyer_name}</p>
-                <p className="text-xs text-gray-600">Agent: {transaction.agent_name}</p>
+              <div className="space-y-2 mb-4 bg-white bg-opacity-50 -mx-5 px-5 py-3 rounded">
+                <p className="text-xs text-gray-700"><span className="font-semibold">Buyer:</span> {transaction.buyer_name || 'N/A'}</p>
+                <p className="text-xs text-gray-700"><span className="font-semibold">Seller:</span> {transaction.seller_name || 'N/A'}</p>
+                <p className="text-xs text-gray-700"><span className="font-semibold">Agent:</span> {transaction.agent_name || 'N/A'}</p>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-bold text-gray-900">${(transaction.sale_price / 1000).toFixed(0)}K</span>
-                <span className="text-xs bg-white px-2 py-1 rounded text-gray-700">{transaction.status}</span>
+              <div className="flex items-end justify-between pt-2 border-t border-gray-200">
+                <span className="text-base font-bold text-green-700">${(transaction.sale_price / 1000).toFixed(0)}K</span>
+                <span className="text-xs font-semibold bg-white px-3 py-1 rounded-full text-gray-700 border border-gray-200">{transaction.status}</span>
               </div>
             </div>
           ))
