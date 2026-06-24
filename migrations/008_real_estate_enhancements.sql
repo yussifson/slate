@@ -1,6 +1,5 @@
--- Real Estate Vertical Enhancements
+-- Real Estate Vertical Enhancements - FIXED VERSION
 -- Comprehensive schema for trust accounting, documents, contractors, intelligence, and more
--- Run this migration in your Supabase project
 
 -- ========================================
 -- 1. TRUST ACCOUNTING & ESCROW MANAGEMENT
@@ -10,15 +9,15 @@ CREATE TABLE IF NOT EXISTS univ_re_trust_accounts (
   id TEXT PRIMARY KEY,
   company_id TEXT NOT NULL,
   account_name VARCHAR(255) NOT NULL,
-  account_type VARCHAR(50) NOT NULL, -- client_trust, company_operating, earnest_money, security_deposit
+  account_type VARCHAR(50) NOT NULL,
   bank_name VARCHAR(255),
-  account_number VARCHAR(50), -- encrypted
-  routing_number VARCHAR(20), -- encrypted
+  account_number VARCHAR(50),
+  routing_number VARCHAR(20),
   account_holder_name VARCHAR(255),
-  account_holder_id TEXT, -- agent/broker id
+  account_holder_id TEXT,
   balance DECIMAL(15, 2) DEFAULT 0,
   currency VARCHAR(3) DEFAULT 'USD',
-  reconciliation_status VARCHAR(50) DEFAULT 'pending', -- pending, reconciled, discrepancy
+  reconciliation_status VARCHAR(50) DEFAULT 'pending',
   last_reconciliation_at TIMESTAMP,
   is_active BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -33,10 +32,10 @@ CREATE INDEX IF NOT EXISTS idx_trust_accounts_type ON univ_re_trust_accounts(acc
 CREATE TABLE IF NOT EXISTS univ_re_trust_ledger (
   id TEXT PRIMARY KEY,
   company_id TEXT NOT NULL,
-  trust_account_id TEXT NOT NULL REFERENCES univ_re_trust_accounts(id),
-  transaction_type VARCHAR(50) NOT NULL, -- deposit, withdrawal, transfer, interest, fee
+  trust_account_id TEXT NOT NULL,
+  transaction_type VARCHAR(50) NOT NULL,
   amount DECIMAL(15, 2) NOT NULL,
-  related_entity_type VARCHAR(50), -- transaction, offer, lease, commission, security_deposit
+  related_entity_type VARCHAR(50),
   related_entity_id TEXT,
   description TEXT,
   transaction_date TIMESTAMP NOT NULL,
@@ -55,19 +54,19 @@ CREATE INDEX IF NOT EXISTS idx_trust_ledger_date ON univ_re_trust_ledger(transac
 CREATE TABLE IF NOT EXISTS univ_re_escrow_accounts (
   id TEXT PRIMARY KEY,
   company_id TEXT NOT NULL,
-  transaction_id TEXT NOT NULL REFERENCES univ_re_transactions(id),
-  buyer_id TEXT NOT NULL REFERENCES univ_re_clients(id),
-  seller_id TEXT NOT NULL REFERENCES univ_re_clients(id),
+  transaction_id TEXT NOT NULL,
+  buyer_id TEXT NOT NULL,
+  seller_id TEXT NOT NULL,
   agent_id TEXT,
-  property_id TEXT NOT NULL REFERENCES univ_re_properties(id),
+  property_id TEXT NOT NULL,
   escrow_amount DECIMAL(15, 2) NOT NULL,
-  escrow_type VARCHAR(50) NOT NULL, -- earnest_money, deposit, closing_costs, other
+  escrow_type VARCHAR(50) NOT NULL,
   escrow_agent_company VARCHAR(255),
   escrow_agent_name VARCHAR(255),
   escrow_agent_email VARCHAR(255),
   escrow_agent_phone VARCHAR(20),
-  conditions_for_release JSONB, -- array of conditions to be met before release
-  release_status VARCHAR(50) DEFAULT 'held', -- held, conditional_hold, released, forfeited
+  conditions_for_release JSONB,
+  release_status VARCHAR(50) DEFAULT 'held',
   release_date TIMESTAMP,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -85,10 +84,10 @@ CREATE TABLE IF NOT EXISTS univ_re_document_templates (
   id TEXT PRIMARY KEY,
   company_id TEXT NOT NULL,
   template_name VARCHAR(255) NOT NULL,
-  document_type VARCHAR(50) NOT NULL, -- contract, offer, lease, disclosure, inspection_report, appraisal
-  document_category VARCHAR(50), -- purchase, sale, rental, legal
-  template_content TEXT NOT NULL, -- HTML or markdown template
-  template_variables JSONB, -- array of placeholder variables
+  document_type VARCHAR(50) NOT NULL,
+  document_category VARCHAR(50),
+  template_content TEXT NOT NULL,
+  template_variables JSONB,
   required_signatures INTEGER DEFAULT 0,
   created_by TEXT,
   is_active BOOLEAN DEFAULT TRUE,
@@ -100,41 +99,17 @@ CREATE TABLE IF NOT EXISTS univ_re_document_templates (
 CREATE INDEX IF NOT EXISTS idx_doc_templates_company ON univ_re_document_templates(company_id);
 CREATE INDEX IF NOT EXISTS idx_doc_templates_type ON univ_re_document_templates(document_type);
 
-CREATE TABLE IF NOT EXISTS univ_re_documents (
-  id TEXT PRIMARY KEY,
-  company_id TEXT NOT NULL,
-  property_id TEXT REFERENCES univ_re_properties(id),
-  transaction_id TEXT REFERENCES univ_re_transactions(id),
-  lease_id TEXT REFERENCES univ_re_leases(id),
-  document_type VARCHAR(50) NOT NULL, -- contract, offer, lease, disclosure, inspection_report, appraisal
-  document_title VARCHAR(255) NOT NULL,
-  document_url VARCHAR(500), -- blob storage URL
-  document_size_bytes INTEGER,
-  mime_type VARCHAR(50),
-  generated_from_template_id TEXT REFERENCES univ_re_document_templates(id),
-  version INTEGER DEFAULT 1,
-  status VARCHAR(50) DEFAULT 'draft', -- draft, sent_for_signature, signed, executed, archived
-  created_by TEXT,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE INDEX IF NOT EXISTS idx_documents_company ON univ_re_documents(company_id);
-CREATE INDEX IF NOT EXISTS idx_documents_property ON univ_re_documents(property_id);
-CREATE INDEX IF NOT EXISTS idx_documents_transaction ON univ_re_documents(transaction_id);
-CREATE INDEX IF NOT EXISTS idx_documents_type ON univ_re_documents(document_type);
-
 CREATE TABLE IF NOT EXISTS univ_re_e_signatures (
   id TEXT PRIMARY KEY,
   company_id TEXT NOT NULL,
-  document_id TEXT NOT NULL REFERENCES univ_re_documents(id),
-  signer_id TEXT, -- user ID or client ID
-  signer_name VARCHAR(255) NOT NULL,
-  signer_email VARCHAR(255) NOT NULL,
+  document_id TEXT NOT NULL,
+  signer_id TEXT NOT NULL,
+  signer_name VARCHAR(255),
+  signer_email VARCHAR(255),
   signer_phone VARCHAR(20),
   signature_date TIMESTAMP,
-  signature_url VARCHAR(500), -- blob storage URL
-  signature_status VARCHAR(50) DEFAULT 'pending', -- pending, signed, declined, expired
+  signature_url TEXT,
+  signature_status VARCHAR(50),
   signing_ip_address VARCHAR(45),
   signing_timestamp TIMESTAMP,
   expiration_date TIMESTAMP,
@@ -145,23 +120,23 @@ CREATE INDEX IF NOT EXISTS idx_e_signatures_document ON univ_re_e_signatures(doc
 CREATE INDEX IF NOT EXISTS idx_e_signatures_signer ON univ_re_e_signatures(signer_id);
 
 -- ========================================
--- 3. ENHANCED OFFERS & COMMISSION SYSTEM
+-- 3. ENHANCED OFFERS & COMMISSIONS
 -- ========================================
 
 CREATE TABLE IF NOT EXISTS univ_re_counter_offers (
   id TEXT PRIMARY KEY,
   company_id TEXT NOT NULL,
-  original_offer_id TEXT NOT NULL REFERENCES univ_re_offers(id),
-  counter_offer_by TEXT NOT NULL, -- buyer_id or seller_id
+  original_offer_id TEXT NOT NULL,
+  counter_offer_by TEXT NOT NULL,
   counter_offer_price DECIMAL(15, 2),
-  closing_date DATE,
-  contingencies JSONB, -- array of contingencies
+  closing_date TIMESTAMP,
+  contingencies TEXT,
   inspection_period_days INTEGER,
   appraisal_contingency BOOLEAN,
   financing_contingency BOOLEAN,
   earnest_money_change DECIMAL(15, 2),
-  additional_terms JSONB,
-  counter_offer_status VARCHAR(50) DEFAULT 'pending', -- pending, accepted, rejected, expired, withdrawn
+  additional_terms TEXT,
+  counter_offer_status VARCHAR(50),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   responded_at TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -174,15 +149,15 @@ CREATE TABLE IF NOT EXISTS univ_re_commission_rules (
   id TEXT PRIMARY KEY,
   company_id TEXT NOT NULL,
   rule_name VARCHAR(255) NOT NULL,
-  rule_type VARCHAR(50), -- percentage_based, flat_fee, tiered, property_type_based
-  property_types TEXT[], -- array of property types this rule applies to
+  rule_type VARCHAR(50),
+  property_types TEXT,
   price_range_min DECIMAL(15, 2),
   price_range_max DECIMAL(15, 2),
   commission_percentage DECIMAL(5, 2),
   flat_fee DECIMAL(15, 2),
-  tier_config JSONB, -- tiered structure if applicable
-  applies_to_buyer_side BOOLEAN DEFAULT TRUE,
-  applies_to_seller_side BOOLEAN DEFAULT TRUE,
+  tier_config JSONB,
+  applies_to_buyer_side BOOLEAN,
+  applies_to_seller_side BOOLEAN,
   is_active BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -193,11 +168,11 @@ CREATE INDEX IF NOT EXISTS idx_commission_rules_company ON univ_re_commission_ru
 CREATE TABLE IF NOT EXISTS univ_re_commission_details (
   id TEXT PRIMARY KEY,
   company_id TEXT NOT NULL,
-  transaction_id TEXT NOT NULL REFERENCES univ_re_transactions(id),
-  commission_rule_id TEXT REFERENCES univ_re_commission_rules(id),
-  buyer_agent_id TEXT REFERENCES univ_re_clients(id),
-  seller_agent_id TEXT REFERENCES univ_re_clients(id),
-  sale_price DECIMAL(15, 2) NOT NULL,
+  transaction_id TEXT NOT NULL,
+  commission_rule_id TEXT,
+  buyer_agent_id TEXT,
+  seller_agent_id TEXT,
+  sale_price DECIMAL(15, 2),
   buyer_commission_percentage DECIMAL(5, 2),
   seller_commission_percentage DECIMAL(5, 2),
   buyer_commission_amount DECIMAL(15, 2),
@@ -205,10 +180,10 @@ CREATE TABLE IF NOT EXISTS univ_re_commission_details (
   total_commission_amount DECIMAL(15, 2),
   broker_commission DECIMAL(15, 2),
   agent_commission DECIMAL(15, 2),
-  adjustments JSONB, -- array of adjustment entries
-  payout_status VARCHAR(50) DEFAULT 'pending', -- pending, scheduled, paid, rejected
+  adjustments JSONB,
+  payout_status VARCHAR(50),
   payout_date TIMESTAMP,
-  trust_account_id TEXT REFERENCES univ_re_trust_accounts(id),
+  trust_account_id TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -218,33 +193,33 @@ CREATE INDEX IF NOT EXISTS idx_commission_details_company ON univ_re_commission_
 CREATE INDEX IF NOT EXISTS idx_commission_details_payout_status ON univ_re_commission_details(payout_status);
 
 -- ========================================
--- 4. CONTRACTORS & VENDOR MANAGEMENT
+-- 4. CONTRACTORS & VENDORS
 -- ========================================
 
 CREATE TABLE IF NOT EXISTS univ_re_contractors (
   id TEXT PRIMARY KEY,
   company_id TEXT NOT NULL,
   contractor_name VARCHAR(255) NOT NULL,
-  contractor_type VARCHAR(50) NOT NULL, -- inspector, appraiser, electrician, plumber, general, other
-  service_categories TEXT[], -- array of service categories
+  contractor_type VARCHAR(50),
+  service_categories TEXT,
   business_license_number VARCHAR(100),
-  business_license_expiration DATE,
-  insurance_type VARCHAR(100), -- e.g., general_liability, workers_comp
-  insurance_expiration DATE,
-  is_licensed BOOLEAN DEFAULT FALSE,
-  is_insured BOOLEAN DEFAULT FALSE,
-  email VARCHAR(255) NOT NULL,
+  business_license_expiration TIMESTAMP,
+  insurance_type VARCHAR(100),
+  insurance_expiration TIMESTAMP,
+  is_licensed BOOLEAN,
+  is_insured BOOLEAN,
+  email VARCHAR(255),
   phone VARCHAR(20),
-  website VARCHAR(500),
-  address TEXT,
+  website VARCHAR(255),
+  address VARCHAR(255),
   city VARCHAR(100),
-  state VARCHAR(2),
-  zip_code VARCHAR(10),
+  state VARCHAR(50),
+  zip_code VARCHAR(20),
   average_rating DECIMAL(3, 2),
   total_reviews INTEGER DEFAULT 0,
   total_jobs_completed INTEGER DEFAULT 0,
   hourly_rate DECIMAL(10, 2),
-  is_verified BOOLEAN DEFAULT FALSE,
+  is_verified BOOLEAN,
   verification_date TIMESTAMP,
   verified_by TEXT,
   is_active BOOLEAN DEFAULT TRUE,
@@ -259,16 +234,16 @@ CREATE INDEX IF NOT EXISTS idx_contractors_licensed ON univ_re_contractors(is_li
 CREATE TABLE IF NOT EXISTS univ_re_contractor_reviews (
   id TEXT PRIMARY KEY,
   company_id TEXT NOT NULL,
-  contractor_id TEXT NOT NULL REFERENCES univ_re_contractors(id),
-  reviewer_id TEXT, -- user/agent who hired
-  maintenance_request_id TEXT REFERENCES univ_re_maintenance_requests(id),
-  rating INTEGER NOT NULL, -- 1-5
+  contractor_id TEXT NOT NULL,
+  reviewer_id TEXT NOT NULL,
+  maintenance_request_id TEXT,
+  rating INTEGER,
   review_title VARCHAR(255),
   review_text TEXT,
-  punctuality_rating INTEGER, -- 1-5
-  quality_rating INTEGER, -- 1-5
-  professionalism_rating INTEGER, -- 1-5
-  would_rehire BOOLEAN DEFAULT TRUE,
+  punctuality_rating INTEGER,
+  quality_rating INTEGER,
+  professionalism_rating INTEGER,
+  would_rehire BOOLEAN,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -276,22 +251,22 @@ CREATE INDEX IF NOT EXISTS idx_contractor_reviews_contractor ON univ_re_contract
 CREATE INDEX IF NOT EXISTS idx_contractor_reviews_company ON univ_re_contractor_reviews(company_id);
 
 -- ========================================
--- 5. ENHANCED LEASE MANAGEMENT
+-- 5. LEASE MANAGEMENT
 -- ========================================
 
 CREATE TABLE IF NOT EXISTS univ_re_lease_renewals (
   id TEXT PRIMARY KEY,
   company_id TEXT NOT NULL,
-  lease_id TEXT NOT NULL REFERENCES univ_re_leases(id),
-  renewal_status VARCHAR(50) DEFAULT 'pending', -- pending, offered, accepted, declined, expired
+  lease_id TEXT NOT NULL,
+  renewal_status VARCHAR(50),
   renewal_offer_date TIMESTAMP,
   response_deadline TIMESTAMP,
   new_rent_amount DECIMAL(15, 2),
   rent_increase_percentage DECIMAL(5, 2),
   renewal_term_months INTEGER,
-  renewal_lease_document_url VARCHAR(500),
+  renewal_lease_document_url TEXT,
   tenant_response_date TIMESTAMP,
-  renewal_lease_id TEXT, -- new lease ID if accepted
+  renewal_lease_id TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -302,17 +277,17 @@ CREATE INDEX IF NOT EXISTS idx_lease_renewals_company ON univ_re_lease_renewals(
 CREATE TABLE IF NOT EXISTS univ_re_rent_payment_schedules (
   id TEXT PRIMARY KEY,
   company_id TEXT NOT NULL,
-  lease_id TEXT NOT NULL REFERENCES univ_re_leases(id),
-  payment_due_date INTEGER DEFAULT 1, -- day of month (1-31)
-  payment_amount DECIMAL(15, 2) NOT NULL,
+  lease_id TEXT NOT NULL,
+  payment_due_date INTEGER,
+  payment_amount DECIMAL(15, 2),
   late_fee_amount DECIMAL(15, 2),
   late_fee_percentage DECIMAL(5, 2),
-  grace_period_days INTEGER DEFAULT 5,
-  is_recurring BOOLEAN DEFAULT TRUE,
-  payment_method VARCHAR(50), -- bank_transfer, check, paystack, cash
-  auto_debit_enabled BOOLEAN DEFAULT FALSE,
-  recurring_start_date DATE,
-  recurring_end_date DATE,
+  grace_period_days INTEGER,
+  is_recurring BOOLEAN,
+  payment_method VARCHAR(50),
+  auto_debit_enabled BOOLEAN,
+  recurring_start_date TIMESTAMP,
+  recurring_end_date TIMESTAMP,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -322,16 +297,16 @@ CREATE INDEX IF NOT EXISTS idx_rent_schedules_company ON univ_re_rent_payment_sc
 CREATE TABLE IF NOT EXISTS univ_re_rent_payment_history (
   id TEXT PRIMARY KEY,
   company_id TEXT NOT NULL,
-  lease_id TEXT NOT NULL REFERENCES univ_re_leases(id),
-  scheduled_payment_id TEXT REFERENCES univ_re_rent_payment_schedules(id),
+  lease_id TEXT NOT NULL,
+  scheduled_payment_id TEXT,
   payment_date TIMESTAMP,
-  payment_due_date DATE,
+  payment_due_date TIMESTAMP,
   amount_due DECIMAL(15, 2),
   amount_paid DECIMAL(15, 2),
   payment_method VARCHAR(50),
-  payment_status VARCHAR(50) DEFAULT 'pending', -- pending, paid, overdue, partial
+  payment_status VARCHAR(50),
   transaction_reference VARCHAR(100),
-  late_fee_charged DECIMAL(15, 2) DEFAULT 0,
+  late_fee_charged DECIMAL(15, 2),
   notes TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -342,15 +317,15 @@ CREATE INDEX IF NOT EXISTS idx_rent_history_status ON univ_re_rent_payment_histo
 CREATE INDEX IF NOT EXISTS idx_rent_history_date ON univ_re_rent_payment_history(payment_due_date);
 
 -- ========================================
--- 6. MARKET INTELLIGENCE & DATA
+-- 6. MARKET INTELLIGENCE
 -- ========================================
 
 CREATE TABLE IF NOT EXISTS univ_re_market_data (
   id TEXT PRIMARY KEY,
   company_id TEXT NOT NULL,
-  market_region VARCHAR(255) NOT NULL, -- city, neighborhood, zip code, etc.
-  market_level VARCHAR(50) NOT NULL, -- neighborhood, city, county, state
-  data_date DATE NOT NULL,
+  market_region VARCHAR(255),
+  market_level VARCHAR(50),
+  data_date TIMESTAMP,
   average_price DECIMAL(15, 2),
   median_price DECIMAL(15, 2),
   price_per_sqft DECIMAL(10, 2),
@@ -359,9 +334,9 @@ CREATE TABLE IF NOT EXISTS univ_re_market_data (
   active_listings_count INTEGER,
   price_change_month_percentage DECIMAL(5, 2),
   price_change_year_percentage DECIMAL(5, 2),
-  market_trend VARCHAR(50), -- appreciation, depreciation, stable
-  market_absorption_rate DECIMAL(5, 2), -- months
-  inventory_level VARCHAR(50), -- low, normal, high
+  market_trend VARCHAR(50),
+  market_absorption_rate DECIMAL(5, 2),
+  inventory_level VARCHAR(50),
   data_source VARCHAR(100),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -372,21 +347,21 @@ CREATE INDEX IF NOT EXISTS idx_market_data_company ON univ_re_market_data(compan
 CREATE TABLE IF NOT EXISTS univ_re_comparable_properties (
   id TEXT PRIMARY KEY,
   company_id TEXT NOT NULL,
-  subject_property_id TEXT NOT NULL REFERENCES univ_re_properties(id),
-  comparable_property_id TEXT REFERENCES univ_re_properties(id),
-  comparable_address VARCHAR(500), -- for external comparables
+  subject_property_id TEXT NOT NULL,
+  comparable_property_id TEXT,
+  comparable_address VARCHAR(255),
   price DECIMAL(15, 2),
   price_per_sqft DECIMAL(10, 2),
   square_footage DECIMAL(10, 2),
   bedrooms INTEGER,
-  bathrooms DECIMAL(4, 1),
-  lot_size DECIMAL(15, 2),
+  bathrooms DECIMAL(3, 1),
+  lot_size DECIMAL(10, 2),
   year_built INTEGER,
   days_on_market INTEGER,
-  sale_date DATE,
-  similarity_score DECIMAL(3, 2), -- 0-1 rating
+  sale_date TIMESTAMP,
+  similarity_score DECIMAL(5, 2),
   price_adjustment_reason TEXT,
-  adjustments JSONB, -- array of adjustments made
+  adjustments JSONB,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -400,19 +375,19 @@ CREATE INDEX IF NOT EXISTS idx_comparable_company ON univ_re_comparable_properti
 CREATE TABLE IF NOT EXISTS univ_re_agent_metrics (
   id TEXT PRIMARY KEY,
   company_id TEXT NOT NULL,
-  agent_id TEXT NOT NULL REFERENCES univ_re_clients(id),
-  metric_period VARCHAR(50) NOT NULL, -- month, quarter, year
-  metric_date DATE NOT NULL,
-  listings_taken_count INTEGER DEFAULT 0,
-  listings_sold_count INTEGER DEFAULT 0,
-  sales_volume DECIMAL(15, 2) DEFAULT 0,
+  agent_id TEXT NOT NULL,
+  metric_period VARCHAR(50),
+  metric_date TIMESTAMP,
+  listings_taken_count INTEGER,
+  listings_sold_count INTEGER,
+  sales_volume DECIMAL(15, 2),
   average_sale_price DECIMAL(15, 2),
-  average_days_on_market DECIMAL(10, 2),
-  commission_earned DECIMAL(15, 2) DEFAULT 0,
-  client_count INTEGER DEFAULT 0,
-  return_client_rate DECIMAL(5, 2), -- percentage
+  average_days_on_market DECIMAL(5, 2),
+  commission_earned DECIMAL(15, 2),
+  client_count INTEGER,
+  return_client_rate DECIMAL(5, 2),
   average_client_rating DECIMAL(3, 2),
-  response_time_hours DECIMAL(10, 2),
+  response_time_hours DECIMAL(5, 2),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -423,12 +398,12 @@ CREATE INDEX IF NOT EXISTS idx_agent_metrics_period ON univ_re_agent_metrics(met
 CREATE TABLE IF NOT EXISTS univ_re_client_scoring (
   id TEXT PRIMARY KEY,
   company_id TEXT NOT NULL,
-  client_id TEXT NOT NULL REFERENCES univ_re_clients(id),
-  score INTEGER DEFAULT 0, -- 0-100
-  score_category VARCHAR(50), -- hot, warm, cold, inactive
-  score_breakdown JSONB, -- component scores
-  purchase_propensity DECIMAL(3, 2), -- 0-1
-  engagement_level VARCHAR(50), -- high, medium, low
+  client_id TEXT NOT NULL,
+  score INTEGER,
+  score_category VARCHAR(50),
+  score_breakdown JSONB,
+  purchase_propensity DECIMAL(5, 2),
+  engagement_level VARCHAR(50),
   transaction_history_count INTEGER,
   last_interaction_date TIMESTAMP,
   days_since_last_contact INTEGER,
@@ -445,14 +420,14 @@ CREATE INDEX IF NOT EXISTS idx_client_scoring_category ON univ_re_client_scoring
 CREATE TABLE IF NOT EXISTS univ_re_agent_recommendations (
   id TEXT PRIMARY KEY,
   company_id TEXT NOT NULL,
-  client_id TEXT NOT NULL REFERENCES univ_re_clients(id),
-  recommended_agent_id TEXT REFERENCES univ_re_clients(id),
-  recommendation_type VARCHAR(50), -- new_listings, buyer_match, investment_opportunity
+  client_id TEXT NOT NULL,
+  recommended_agent_id TEXT,
+  recommendation_type VARCHAR(50),
   recommendation_reason TEXT,
-  recommendation_score DECIMAL(5, 2), -- 0-100
-  property_id TEXT REFERENCES univ_re_properties(id),
+  recommendation_score DECIMAL(5, 2),
+  property_id TEXT,
   recommendation_date TIMESTAMP,
-  client_action VARCHAR(50), -- viewed, contacted, interested, not_interested
+  client_action VARCHAR(50),
   action_date TIMESTAMP,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -462,17 +437,17 @@ CREATE INDEX IF NOT EXISTS idx_recommendations_agent ON univ_re_agent_recommenda
 CREATE INDEX IF NOT EXISTS idx_recommendations_company ON univ_re_agent_recommendations(company_id);
 
 -- ========================================
--- 8. AUDIT & COMPLIANCE LOGGING
+-- 8. AUDIT LOGGING
 -- ========================================
 
 CREATE TABLE IF NOT EXISTS univ_re_audit_log (
   id TEXT PRIMARY KEY,
   company_id TEXT NOT NULL,
-  user_id TEXT,
-  action VARCHAR(50) NOT NULL, -- create, update, delete, view, export, sign
-  resource_type VARCHAR(50), -- property, transaction, document, etc.
+  user_id TEXT NOT NULL,
+  action VARCHAR(100),
+  resource_type VARCHAR(100),
   resource_id TEXT,
-  changes JSONB, -- before/after values
+  changes JSONB,
   ip_address VARCHAR(45),
   user_agent TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -482,53 +457,3 @@ CREATE INDEX IF NOT EXISTS idx_audit_log_company ON univ_re_audit_log(company_id
 CREATE INDEX IF NOT EXISTS idx_audit_log_user ON univ_re_audit_log(user_id);
 CREATE INDEX IF NOT EXISTS idx_audit_log_resource ON univ_re_audit_log(resource_type, resource_id);
 CREATE INDEX IF NOT EXISTS idx_audit_log_date ON univ_re_audit_log(created_at);
-
--- ========================================
--- 9. MAINTENANCE & SERVICE TRACKING
--- ========================================
-
-CREATE TABLE IF NOT EXISTS univ_re_maintenance_requests (
-  id TEXT PRIMARY KEY,
-  company_id TEXT NOT NULL,
-  property_id TEXT NOT NULL REFERENCES univ_re_properties(id),
-  lease_id TEXT REFERENCES univ_re_leases(id),
-  tenant_id TEXT REFERENCES univ_re_clients(id),
-  request_type VARCHAR(50) NOT NULL, -- routine, emergency, preventive, repair
-  service_category VARCHAR(50), -- plumbing, electrical, hvac, appliance, structural, other
-  description TEXT NOT NULL,
-  priority_level VARCHAR(20) DEFAULT 'normal', -- low, normal, high, emergency
-  status VARCHAR(50) DEFAULT 'open', -- open, assigned, in_progress, completed, closed, cancelled
-  contractor_id TEXT REFERENCES univ_re_contractors(id),
-  contractor_quote_amount DECIMAL(15, 2),
-  contractor_actual_amount DECIMAL(15, 2),
-  scheduled_date TIMESTAMP,
-  completion_date TIMESTAMP,
-  completion_notes TEXT,
-  request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE INDEX idx_maintenance_property ON univ_re_maintenance_requests(property_id);
-CREATE INDEX idx_maintenance_company ON univ_re_maintenance_requests(company_id);
-CREATE INDEX idx_maintenance_status ON univ_re_maintenance_requests(status);
-CREATE INDEX idx_maintenance_date ON univ_re_maintenance_requests(request_date);
-
--- Add foreign key constraints for real estate base tables if they don't exist
-ALTER TABLE univ_re_documents
-ADD CONSTRAINT fk_documents_transaction
-FOREIGN KEY (transaction_id) REFERENCES univ_re_transactions(id) ON DELETE SET NULL;
-
-ALTER TABLE univ_re_documents
-ADD CONSTRAINT fk_documents_lease
-FOREIGN KEY (lease_id) REFERENCES univ_re_leases(id) ON DELETE SET NULL;
-
--- ========================================
--- FINAL: GRANT PERMISSIONS
--- ========================================
-
--- Ensure RLS is enabled on all tables (if using Supabase)
--- Run these in the Supabase SQL editor to enable row level security:
--- ALTER TABLE univ_re_trust_accounts ENABLE ROW LEVEL SECURITY;
--- ALTER TABLE univ_re_trust_ledger ENABLE ROW LEVEL SECURITY;
--- ... and so on for all new tables
