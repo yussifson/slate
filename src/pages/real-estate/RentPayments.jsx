@@ -227,12 +227,6 @@ export default function RentPayments() {
                         <span className="text-sm font-bold text-green-600">${payment.amount?.toLocaleString()}</span>
                       </div>
                     </div>
-                      <p className="text-xs text-gray-600 mb-2">{payment.property_address || 'Property'}</p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-bold text-indigo-600">${payment.amount?.toLocaleString()}</span>
-                        <span className="text-xs text-gray-500">{payment.due_date}</span>
-                      </div>
-                    </div>
                   ))
                 )}
               </div>
