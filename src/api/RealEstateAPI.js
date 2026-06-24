@@ -447,7 +447,7 @@ export const RealEstateAPI = {
     }
   },
 
-  // ──────────────���───────�����─────────────────────────────────
+  // ──────────────���───────���������─────────────────────────────────
   // LEASES
   // ────────────────────────────────────────────────────────
 
@@ -852,7 +852,7 @@ export const RealEstateAPI = {
 
   // ────────────────────────────────────────────────────────
   // CRM LEAD MANAGEMENT
-  // ────────────────────────────────────────────────────────
+  // ──────────────────────────────────────────────��─────────
 
   async createLead(companyId, data, userId) {
     try {
@@ -1072,7 +1072,7 @@ export const RealEstateAPI = {
 
   // ────────────────────────────────────────────────────────
   // TRUST ACCOUNTING
-  // ────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────��──────────
 
   async getTrustAccounts(companyId, filters = {}) {
     try {
@@ -1674,6 +1674,352 @@ export const RealEstateAPI = {
       );
     } catch (e) {
       console.error('[RE API] deleteMarketData failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // ESCROW ACCOUNTS
+  // ────────────────────────────────────────────────────────
+
+  async getEscrowAccounts(companyId, filters = {}) {
+    try {
+      let query = 'SELECT * FROM univ_re_escrow_accounts WHERE company_id = ?';
+      const params = [companyId];
+
+      if (filters.releaseStatus) {
+        query += ' AND release_status = ?';
+        params.push(filters.releaseStatus);
+      }
+      if (filters.escrowType) {
+        query += ' AND escrow_type = ?';
+        params.push(filters.escrowType);
+      }
+
+      query += ' ORDER BY created_at DESC';
+      const res = await powerSync.execute(query, params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getEscrowAccounts failed:', e);
+      throw e;
+    }
+  },
+
+  async createEscrowAccount(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_escrow_accounts (id, company_id, escrow_type, escrow_amount, buyer_id, 
+         seller_id, property_id, escrow_agent_name, escrow_agent_company, escrow_agent_email, 
+         escrow_agent_phone, release_date, release_conditions, release_status, created_at, updated_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.escrowType, data.escrowAmount, data.buyerId, data.sellerId, data.propertyId, 
+         data.escrowAgentName, data.escrowAgentCompany, data.escrowAgentEmail, data.escrowAgentPhone, 
+         data.releaseDate, data.releaseConditions, data.releaseStatus || 'held', now, now]
+      );
+
+      powerSync.execute(
+        'INSERT INTO audit_logs (user_id, action, record_type, record_id, changes, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+        [userId, 'create', 'escrow_account', id, JSON.stringify(data), now]
+      ).catch(e => console.warn('Audit log error:', e));
+
+      return id;
+    } catch (e) {
+      console.error('[RE API] createEscrowAccount failed:', e);
+      throw e;
+    }
+  },
+
+  async updateEscrowAccount(companyId, accountId, data, userId) {
+    try {
+      const updates = [];
+      const params = [];
+
+      Object.keys(data).forEach(key => {
+        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
+          updates.push(`${key} = ?`);
+          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+        }
+      });
+
+      updates.push('updated_at = ?');
+      params.push(new Date().toISOString());
+      params.push(companyId);
+      params.push(accountId);
+
+      const query = `UPDATE univ_re_escrow_accounts SET ${updates.join(', ')} 
+                     WHERE company_id = ? AND id = ?`;
+      
+      await powerSync.execute(query, params);
+    } catch (e) {
+      console.error('[RE API] updateEscrowAccount failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteEscrowAccount(companyId, accountId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_escrow_accounts WHERE company_id = ? AND id = ?',
+        [companyId, accountId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteEscrowAccount failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // RECOMMENDATIONS
+  // ────────────────────────────────────────────────────────
+
+  async createRecommendation(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_recommendations (id, company_id, client_id, recommended_agent_id, property_id,
+         recommendation_type, recommendation_score, recommendation_reason, client_action, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.clientId, data.recommendedAgentId, data.propertyId,
+         data.recommendationType, data.recommendationScore, data.recommendationReason, data.clientAction, now, now]
+      );
+      return id;
+    } catch (e) {
+      console.error('[RE API] createRecommendation failed:', e);
+      throw e;
+    }
+  },
+
+  async updateRecommendation(companyId, recId, data, userId) {
+    try {
+      await powerSync.execute(
+        `UPDATE univ_re_recommendations SET recommendation_reason = ?, recommendation_score = ?, 
+         client_action = ?, updated_at = ? WHERE company_id = ? AND id = ?`,
+        [data.recommendationReason, data.recommendationScore, data.clientAction, new Date().toISOString(), companyId, recId]
+      );
+    } catch (e) {
+      console.error('[RE API] updateRecommendation failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteRecommendation(companyId, recId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_recommendations WHERE company_id = ? AND id = ?',
+        [companyId, recId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteRecommendation failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // COMPARABLE PROPERTIES
+  // ────────────────────────────────────────────────────────
+
+  async createComparableProperty(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_comparable_properties (id, company_id, comparable_address, price, price_per_sqft,
+         bedrooms, bathrooms, year_built, square_footage, days_on_market, sale_date, similarity_score, notes, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.address, data.salePrice, data.pricePerSqft, data.bedrooms, data.bathrooms,
+         data.yearBuilt, data.squareFootage, data.daysOnMarket, data.saleDate, data.similarityScore, data.notes, now, now]
+      );
+      return id;
+    } catch (e) {
+      console.error('[RE API] createComparableProperty failed:', e);
+      throw e;
+    }
+  },
+
+  async updateComparableProperty(companyId, propId, data, userId) {
+    try {
+      await powerSync.execute(
+        `UPDATE univ_re_comparable_properties SET comparable_address = ?, price = ?, price_per_sqft = ?,
+         bedrooms = ?, bathrooms = ?, year_built = ?, square_footage = ?, days_on_market = ?, 
+         sale_date = ?, similarity_score = ?, notes = ?, updated_at = ?
+         WHERE company_id = ? AND id = ?`,
+        [data.address, data.salePrice, data.pricePerSqft, data.bedrooms, data.bathrooms, data.yearBuilt,
+         data.squareFootage, data.daysOnMarket, data.saleDate, data.similarityScore, data.notes, new Date().toISOString(), companyId, propId]
+      );
+    } catch (e) {
+      console.error('[RE API] updateComparableProperty failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteComparableProperty(companyId, propId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_comparable_properties WHERE company_id = ? AND id = ?',
+        [companyId, propId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteComparableProperty failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // CONTRACTORS
+  // ────────────────────────────────────────────────────────
+
+  async createContractor(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_contractors (id, company_id, contractor_name, contractor_type, email, phone,
+         city, state, zip_code, is_licensed, is_insured, license_name, hourly_rate, total_jobs_completed, average_rating, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.contractorName, data.contractorType, data.email, data.phone, data.city, data.state,
+         data.zipCode, data.isLicensed ? 1 : 0, data.isInsured ? 1 : 0, data.licenseName, data.hourlyRate, data.totalJobsCompleted, data.averageRating, now, now]
+      );
+      return id;
+    } catch (e) {
+      console.error('[RE API] createContractor failed:', e);
+      throw e;
+    }
+  },
+
+  async updateContractor(companyId, contractorId, data, userId) {
+    try {
+      await powerSync.execute(
+        `UPDATE univ_re_contractors SET contractor_name = ?, contractor_type = ?, email = ?, phone = ?,
+         city = ?, state = ?, zip_code = ?, is_licensed = ?, is_insured = ?, license_name = ?, 
+         hourly_rate = ?, total_jobs_completed = ?, average_rating = ?, updated_at = ?
+         WHERE company_id = ? AND id = ?`,
+        [data.contractorName, data.contractorType, data.email, data.phone, data.city, data.state, data.zipCode,
+         data.isLicensed ? 1 : 0, data.isInsured ? 1 : 0, data.licenseName, data.hourlyRate, data.totalJobsCompleted, data.averageRating, new Date().toISOString(), companyId, contractorId]
+      );
+    } catch (e) {
+      console.error('[RE API] updateContractor failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteContractor(companyId, contractorId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_contractors WHERE company_id = ? AND id = ?',
+        [companyId, contractorId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteContractor failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // CONTRACTOR REVIEWS
+  // ────────────────────────────────────────────────────────
+
+  async createContractorReview(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_contractor_reviews (id, company_id, contractor_id, review_title, review_text, rating,
+         punctuality_rating, quality_rating, professionalism_rating, would_rehire, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.contractorId, data.reviewTitle, data.reviewText, data.rating,
+         data.punctualityRating, data.qualityRating, data.professionalismRating, data.wouldRehire ? 1 : 0, now, now]
+      );
+      return id;
+    } catch (e) {
+      console.error('[RE API] createContractorReview failed:', e);
+      throw e;
+    }
+  },
+
+  async updateContractorReview(companyId, reviewId, data, userId) {
+    try {
+      await powerSync.execute(
+        `UPDATE univ_re_contractor_reviews SET review_title = ?, review_text = ?, rating = ?,
+         punctuality_rating = ?, quality_rating = ?, professionalism_rating = ?, would_rehire = ?, updated_at = ?
+         WHERE company_id = ? AND id = ?`,
+        [data.reviewTitle, data.reviewText, data.rating, data.punctualityRating, data.qualityRating,
+         data.professionalismRating, data.wouldRehire ? 1 : 0, new Date().toISOString(), companyId, reviewId]
+      );
+    } catch (e) {
+      console.error('[RE API] updateContractorReview failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteContractorReview(companyId, reviewId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_contractor_reviews WHERE company_id = ? AND id = ?',
+        [companyId, reviewId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteContractorReview failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // LEASE RENEWALS
+  // ────────────────────────────────────────────────────────
+
+  async createLeaseRenewal(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = new Date().toISOString();
+
+      await powerSync.execute(
+        `INSERT INTO univ_re_lease_renewals (id, company_id, lease_id, tenant_id, property_id, renewal_offer_date,
+         response_deadline, new_rent_amount, rent_increase_percentage, renewal_term_months, renewal_status,
+         tenant_response_date, tenant_response, renewal_term_start_date, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.leaseId, data.tenantId, data.propertyId, data.renewalOfferDate, data.responseDeadline,
+         data.newRentAmount, data.rentIncreasePercentage, data.renewalTermMonths, data.renewalStatus,
+         data.tenantResponseDate, data.tenantResponse, data.renewalTermStartDate, now, now]
+      );
+      return id;
+    } catch (e) {
+      console.error('[RE API] createLeaseRenewal failed:', e);
+      throw e;
+    }
+  },
+
+  async updateLeaseRenewal(companyId, renewalId, data, userId) {
+    try {
+      await powerSync.execute(
+        `UPDATE univ_re_lease_renewals SET renewal_offer_date = ?, response_deadline = ?, new_rent_amount = ?,
+         rent_increase_percentage = ?, renewal_term_months = ?, renewal_status = ?, tenant_response_date = ?,
+         tenant_response = ?, renewal_term_start_date = ?, updated_at = ?
+         WHERE company_id = ? AND id = ?`,
+        [data.renewalOfferDate, data.responseDeadline, data.newRentAmount, data.rentIncreasePercentage,
+         data.renewalTermMonths, data.renewalStatus, data.tenantResponseDate, data.tenantResponse, data.renewalTermStartDate, new Date().toISOString(), companyId, renewalId]
+      );
+    } catch (e) {
+      console.error('[RE API] updateLeaseRenewal failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteLeaseRenewal(companyId, renewalId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_lease_renewals WHERE company_id = ? AND id = ?',
+        [companyId, renewalId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteLeaseRenewal failed:', e);
       throw e;
     }
   },
