@@ -144,46 +144,46 @@ export default function Maintenance() {
 
         {/* Key Metrics */}
         <div className="grid grid-cols-4 gap-4 mb-8">
-          <Card className="border-0 shadow-md bg-gradient-to-br from-slate-500 to-slate-700 text-white">
+          <Card className="border-0 border-t-2 border-t-orange-500 bg-white text-gray-900">
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-slate-200 text-xs font-semibold uppercase mb-1">Total Requests</p>
+                  <p className="text-orange-600 text-xs font-semibold uppercase mb-1">Total Requests</p>
                   <p className="text-3xl font-bold">{stats.total}</p>
-                  <p className="text-xs text-slate-300 mt-2">All time</p>
+                  <p className="text-xs text-gray-600 mt-2">All time</p>
                 </div>
-                <Wrench className="w-8 h-8 opacity-70" />
+                <Wrench className="w-8 h-8 text-orange-400" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-md bg-gradient-to-br from-red-500 to-orange-600 text-white">
+          <Card className="border-0 shadow bg-gradient-to-br from-orange-500 to-orange-600 text-white">
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-red-100 text-xs font-semibold uppercase mb-1">Critical</p>
+                  <p className="text-orange-100 text-xs font-semibold uppercase mb-1">Critical</p>
                   <p className="text-3xl font-bold">{stats.critical}</p>
-                  <p className="text-xs text-red-200 mt-2">Urgent attention</p>
+                  <p className="text-xs text-orange-200 mt-2">Urgent attention</p>
                 </div>
                 <AlertTriangle className="w-8 h-8 opacity-70" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-md bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
+          <Card className="border-0 border-t-2 border-t-green-600 bg-white text-gray-900">
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-blue-100 text-xs font-semibold uppercase mb-1">In Progress</p>
+                  <p className="text-green-700 text-xs font-semibold uppercase mb-1">In Progress</p>
                   <p className="text-3xl font-bold">{stats.inProgress}</p>
-                  <p className="text-xs text-blue-200 mt-2">Being worked on</p>
+                  <p className="text-xs text-gray-600 mt-2">Being worked on</p>
                 </div>
-                <Clock className="w-8 h-8 opacity-70" />
+                <Clock className="w-8 h-8 text-green-400" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-md bg-gradient-to-br from-green-500 to-emerald-600 text-white">
+          <Card className="border-0 shadow bg-gradient-to-br from-green-500 to-green-600 text-white">
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div>
