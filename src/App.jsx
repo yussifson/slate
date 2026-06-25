@@ -212,6 +212,16 @@ import HotelGuestRequests from './pages/hotel/GuestRequests';
 import HotelGuestPortal from './pages/hotel/GuestPortal';
 import HotelGuests from './pages/hotel/Guests';
 
+// Pharmacy Pages
+import PharmacyDashboard from './pages/pharmacy/Dashboard';
+import PharmacyPOS from './pages/pharmacy/POS';
+import PharmacyPrescriptions from './pages/pharmacy/Prescriptions';
+import PharmacyCustomers from './pages/pharmacy/Customers';
+import PharmacyDrugs from './pages/pharmacy/Drugs';
+import PharmacyInventory from './pages/pharmacy/Inventory';
+import PharmacyClaims from './pages/pharmacy/Claims';
+import PharmacyReports from './pages/pharmacy/Reports';
+
 // Real Estate Pages
 import RealEstateDashboard from './pages/real-estate/RealEstateDashboard';
 import RealEstateProperties from './pages/real-estate/Properties';
@@ -746,6 +756,16 @@ function PlatformRoutes() {
       <Route path="/revenue" element={<HotelRevenueManagement />} />
       <Route path="/loyalty" element={<HotelLoyalty />} />
       <Route path="/guests" element={<HotelGuests />} />
+
+      {/* Pharmacy Suite */}
+      <Route path="/pharmacy/dashboard" element={<PharmacyDashboard />} />
+      <Route path="/pharmacy/pos" element={<PharmacyPOS />} />
+      <Route path="/pharmacy/prescriptions" element={<PharmacyPrescriptions />} />
+      <Route path="/pharmacy/customers" element={<PharmacyCustomers />} />
+      <Route path="/pharmacy/drugs" element={<PharmacyDrugs />} />
+      <Route path="/pharmacy/inventory" element={<PharmacyInventory />} />
+      <Route path="/pharmacy/claims" element={<PharmacyClaims />} />
+      <Route path="/pharmacy/reports" element={<PharmacyReports />} />
 
       {/* Real Estate Suite */}
       <Route path="/real-estate" element={<RealEstateDashboard />} />
