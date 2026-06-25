@@ -149,29 +149,29 @@ export default function Drivers() {
  return (
  <div className="space-y-6 school-page-enter font-dmsans">
  {/* Header */}
- <div className="flex items-center justify-between">
- <div>
- <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("driver_management", "Driver Management")}</h1>
- <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t(
+ <div className="flex items-end justify-between gap-4">
+ <div className="flex-1">
+ <h1 className="text-3xl font-bold text-card-foreground tracking-tight mb-1">{t("driver_management", "Driver Management")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400">{t(
  "manage_and_monitor_all_registe",
- "Manage and monitor all registered drivers"
+ "Manage, monitor and track all registered drivers and their performance"
  )}</p>
  </div>
- <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white">
+ <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white shrink-0 transition-all duration-150">
  <Plus className="w-4 h-4" /> {t("add_driver", "Add Driver")}
  </Button>
  </div>
  {/* Stats */}
- <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+ <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
  {stats.map(s => {
  return (
- <div key={s.label} className={`stat-card-premium bg-card rounded-xl border ${s.border} p-4 flex items-center gap-3`}>
- <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${s.color}`}>
- <s.icon className="w-5 h-5" />
- </div>
+ <div key={s.label} className={`bg-card rounded-xl border ${s.border} p-5 flex items-center justify-between hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all duration-200`}>
  <div>
- <p className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{s.value}</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{s.label}</p>
+ <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">{s.label}</p>
+ <p className="text-3xl font-bold text-card-foreground tracking-tight mt-1">{s.value}</p>
+ </div>
+ <div className={`w-12 h-12 rounded-full flex items-center justify-center ${s.color}`}>
+ <s.icon className="w-6 h-6" />
  </div>
  </div>
  );

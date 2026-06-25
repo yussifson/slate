@@ -17,11 +17,11 @@ import { useCompanyId} from '@/hooks/useCompanyId';
 import { useNotifications} from "@/hooks/integrations/useNotifications";
 import { MessageSquare} from "lucide-react";
 
-const statusColors = {
- 'Checked-in': 'bg-slate-100 text-primary/90',
- 'Confirmed': 'bg-slate-100 text-primary/90',
- 'Checked-out': 'bg-muted text-foreground',
- 'Cancelled': 'bg-red-100 text-red-700'
+ const statusColors = {
+ 'Checked-in': 'inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-green-50 dark:bg-green-950/20 text-green-700 dark:text-green-400 border-[0.5px] border-green-200/50 dark:border-green-900/50 text-xs font-semibold uppercase tracking-[0.04em]',
+ 'Confirmed': 'inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-blue-50 dark:bg-blue-950/20 text-blue-700 dark:text-blue-400 border-[0.5px] border-blue-200/50 dark:border-blue-900/50 text-xs font-semibold uppercase tracking-[0.04em]',
+ 'Checked-out': 'inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/30 text-slate-700 dark:text-slate-400 border-[0.5px] border-slate-200/50 dark:border-slate-700/50 text-xs font-semibold uppercase tracking-[0.04em]',
+ 'Cancelled': 'inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 border-[0.5px] border-red-200/50 dark:border-red-900/50 text-xs font-semibold uppercase tracking-[0.04em]'
 };
 
 export default function Reservations() {
@@ -370,19 +370,19 @@ Format your response exactly as valid JSON ONLY:
 
  return (
  <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
- <div className="flex items-center justify-between">
- <div>
- <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("reservations", "Reservations & Events")}</h1>
- <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">Manage room bookings and events</p>
+ <div className="flex items-end justify-between gap-4">
+ <div className="flex-1">
+ <h1 className="text-3xl font-bold text-card-foreground tracking-tight mb-1">{t("reservations", "Reservations & Events")}</h1>
+ <p className="text-sm text-[#71717a] dark:text-gray-400">Manage room bookings, group blocks, and events with real-time updates across all channels</p>
  </div>
-  <div className="flex gap-2">
-  <Button onClick={() => setShowChannelSync(true)} variant="outline" className="gap-2 border-primary/30 text-primary hover:bg-primary/10">
+  <div className="flex gap-2 shrink-0">
+  <Button onClick={() => setShowChannelSync(true)} variant="outline" className="gap-2 border-primary/30 text-primary hover:bg-primary/10 transition-all duration-150">
     <RefreshCcw className="w-4 h-4" /> Channel Sync
   </Button>
-  <Button onClick={handleDemandForecast} disabled={isForecasting} variant="outline" className="gap-2 border-primary/30 text-primary hover:bg-primary/10">
+  <Button onClick={handleDemandForecast} disabled={isForecasting} variant="outline" className="gap-2 border-primary/30 text-primary hover:bg-primary/10 transition-all duration-150">
     <Activity className="w-4 h-4" /> Demand Forecast
   </Button>
-  <Button onClick={handleSmartPricing} disabled={isAnalyzing} variant="outline" className="gap-2 border-primary/30 text-primary hover:bg-primary/10">
+  <Button onClick={handleSmartPricing} disabled={isAnalyzing} variant="outline" className="gap-2 border-primary/30 text-primary hover:bg-primary/10 transition-all duration-150">
     <Sparkles className="w-4 h-4" /> AI Smart Pricing
   </Button>
   {activeTab === 'reservations' ? (
@@ -396,10 +396,10 @@ Format your response exactly as valid JSON ONLY:
   )}
   </div>
  </div>
- <div className="flex gap-4 border-b border-border mt-4 mb-4">
-   <button onClick={() => setActiveTab('reservations')} className={`pb-2 px-1 text-sm font-medium border-b-2 transition-colors ${activeTab === 'reservations' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>Reservations</button>
-   <button onClick={() => setActiveTab('events')} className={`pb-2 px-1 text-sm font-medium border-b-2 transition-colors ${activeTab === 'events' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>Events & Banquets</button>
-   <button onClick={() => setActiveTab('groups')} className={`pb-2 px-1 text-sm font-medium border-b-2 transition-colors ${activeTab === 'groups' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>Group Blocks</button>
+ <div className="flex gap-1 border-b border-border/40 mt-6 mb-4">
+   <button onClick={() => setActiveTab('reservations')} className={`pb-2.5 px-3 text-sm font-medium border-b-2 transition-all duration-200 ${activeTab === 'reservations' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>Reservations</button>
+   <button onClick={() => setActiveTab('events')} className={`pb-2.5 px-3 text-sm font-medium border-b-2 transition-all duration-200 ${activeTab === 'events' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>Events & Banquets</button>
+   <button onClick={() => setActiveTab('groups')} className={`pb-2.5 px-3 text-sm font-medium border-b-2 transition-all duration-200 ${activeTab === 'groups' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>Group Blocks</button>
  </div>
  <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 bg-muted/50">
@@ -411,35 +411,35 @@ Format your response exactly as valid JSON ONLY:
  <div className="overflow-x-auto">
  {activeTab === 'reservations' ? (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <thead className="bg-muted/40 border-b-2 border-primary/20">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("res_id", "Res ID")}</th>
- <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("guest", "Guest")}</th>
- <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("dates", "Dates")}</th>
- <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("room_details", "Room Details")}</th>
- <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</th>
- <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("amount", "Amount")}</th>
- <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("action", "Action")}</th>
+ <th className="px-6 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em] letter-spacing-tight">{t("res_id", "Res ID")}</th>
+ <th className="px-6 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">{t("guest", "Guest")}</th>
+ <th className="px-6 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">{t("dates", "Dates")}</th>
+ <th className="px-6 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">{t("room_details", "Room Details")}</th>
+ <th className="px-6 py-3 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">{t("status", "Status")}</th>
+ <th className="px-6 py-3 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">{t("amount", "Amount")}</th>
+ <th className="px-6 py-3 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">{t("action", "Action")}</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-border">
+ <tbody className="divide-y divide-border/50">
  {filtered.map(res => {
  return (
- <tr key={res.id} className="hover:bg-muted/50 transition-colors">
- <td className="px-6 py-4 font-mono text-xs font-semibold text-primary tracking-[0.04em]">{res.resId}</td>
- <td className="px-6 py-4 font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Link to={`/clients`} className="text-primary hover:underline">{res.guest}</Link>
+ <tr key={res.id} className="group hover:bg-muted/60 transition-all duration-150 border-b-[0.5px] border-border/40 last:border-b-0">
+ <td className="px-6 py-3.5 font-mono text-xs font-semibold text-primary/80 tracking-[0.04em] group-hover:text-primary transition-colors">{res.resId}</td>
+ <td className="px-6 py-3.5 font-semibold text-card-foreground group-hover:text-primary transition-colors">
+ <Link to={`/clients`} className="hover:underline transition-colors">{res.guest}</Link>
  </td>
- <td className="px-6 py-4">
- <p className="text-foreground font-medium">{res.checkIn} → {res.checkOut}</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 flex items-center gap-2 mt-0.5 tracking-[0.04em]"><Clock className="w-3 h-3"/> {res.nights} {t("nights", "Nights")}</p>
+ <td className="px-6 py-3.5">
+ <p className="text-foreground font-medium">{res.checkIn} <span className="text-muted-foreground text-xs mx-1">→</span> {res.checkOut}</p>
+ <p className="text-xs text-[#71717a] dark:text-gray-400 flex items-center gap-2 mt-0.5 tracking-[0.04em]"><Clock className="w-3 h-3"/> {res.nights} night{res.nights !== 1 ? 's' : ''}</p>
  </td>
- <td className="px-6 py-4 text-[#71717a] dark:text-gray-400 font-medium">{res.roomType}</td>
- <td className="px-6 py-4 text-center">
- <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusColors[res.status] || 'bg-slate-100 text-primary/90'}`}>{res.status}</span>
+ <td className="px-6 py-3.5 text-[#71717a] dark:text-gray-400 font-medium group-hover:text-foreground transition-colors">{res.roomType}</td>
+ <td className="px-6 py-3.5 text-center">
+ <span className={statusColors[res.status] || 'inline-flex items-center px-2.5 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold uppercase'}>{res.status}</span>
  </td>
- <td className="px-6 py-4 text-center font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${res.total}</td>
- <td className="px-6 py-4 text-right flex justify-end gap-2">
+ <td className="px-6 py-3.5 text-right font-semibold text-card-foreground tabular-nums group-hover:text-primary transition-colors">${res.total}</td>
+ <td className="px-6 py-3.5 text-right flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
  {res.status === 'Confirmed' && (
  <Button onClick={() => handleStatusChange(res, 'Checked-in')} size="sm" className="h-8 bg-primary hover:bg-primary/90 text-white">{t("check_in", "Check In")}</Button>
  )}
@@ -478,13 +478,13 @@ Format your response exactly as valid JSON ONLY:
  </table>
  ) : activeTab === 'events' ? (
  <table className="w-full text-sm">
- <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <thead className="bg-muted/40 border-b-2 border-primary/20">
  <tr>
- <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Event Name</th>
- <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Hall</th>
- <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Date</th>
- <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Attendees</th>
- <th className="px-6 py-4 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">Price</th>
+ <th className="px-6 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">Event Name</th>
+ <th className="px-6 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">Hall</th>
+ <th className="px-6 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">Date</th>
+ <th className="px-6 py-3 text-center text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">Attendees</th>
+ <th className="px-6 py-3 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">Price</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-border">
