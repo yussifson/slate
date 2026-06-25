@@ -1,0 +1,53 @@
+bucket_definitions:
+  global:
+    data:
+      - SELECT * FROM companies
+      - SELECT * FROM subscription_plans
+      - SELECT * FROM firm_settings
+      - SELECT * FROM component_registry
+      - SELECT * FROM industry_templates
+
+  super_admin_workspace:
+    parameters:
+      - SELECT 1 AS is_admin FROM profiles WHERE id = request.user_id() AND role = 'super_admin'
+    data:
+      - SELECT * FROM profiles WHERE bucket.is_admin = 1
+
+  user_workspace:
+    parameters:
+      - SELECT company_id AS user_company_id FROM profiles WHERE id = request.user_id()
+    data:
+      - SELECT * FROM profiles WHERE company_id = bucket.user_company_id
+      - SELECT * FROM audit_logs WHERE company_id = bucket.user_company_id
+      - SELECT * FROM case_emails WHERE company_id = bucket.user_company_id
+      - SELECT * FROM case_messages WHERE company_id = bucket.user_company_id
+      - SELECT * FROM case_outcomes WHERE company_id = bucket.user_company_id
+      - SELECT * FROM case_pipelines WHERE company_id = bucket.user_company_id
+      - SELECT * FROM case_pipeline_states WHERE company_id = bucket.user_company_id
+      - SELECT * FROM clients WHERE company_id = bucket.user_company_id
+      - SELECT * FROM client_checklists WHERE company_id = bucket.user_company_id
+      - SELECT * FROM client_messages WHERE company_id = bucket.user_company_id
+      - SELECT * FROM documents WHERE company_id = bucket.user_company_id
+      - SELECT * FROM expenses WHERE company_id = bucket.user_company_id
+      - SELECT * FROM hearings WHERE company_id = bucket.user_company_id
+      - SELECT * FROM h_r_complaints WHERE company_id = bucket.user_company_id
+      - SELECT * FROM invoices WHERE company_id = bucket.user_company_id
+      - SELECT * FROM leads WHERE company_id = bucket.user_company_id
+      - SELECT * FROM leave_requests WHERE company_id = bucket.user_company_id
+      - SELECT * FROM legal_cases WHERE company_id = bucket.user_company_id
+      - SELECT * FROM linked_emails WHERE company_id = bucket.user_company_id
+      - SELECT * FROM notifications WHERE company_id = bucket.user_company_id
+      - SELECT * FROM payroll_slips WHERE company_id = bucket.user_company_id
+      - SELECT * FROM promotions WHERE company_id = bucket.user_company_id
+      - SELECT * FROM retainers WHERE company_id = bucket.user_company_id
+      - SELECT * FROM signature_requests WHERE company_id = bucket.user_company_id
+      - SELECT * FROM staff_permissions WHERE company_id = bucket.user_company_id
+      - SELECT * FROM staff_records WHERE company_id = bucket.user_company_id
+      - SELECT * FROM subscription_invoices WHERE company_id = bucket.user_company_id
+      - SELECT * FROM tasks WHERE company_id = bucket.user_company_id
+      - SELECT * FROM time_entries WHERE company_id = bucket.user_company_id
+      - SELECT * FROM industry_records WHERE company_id = bucket.user_company_id
+      - SELECT * FROM univ_pharmacy_sales WHERE company_id::text = bucket.user_company_id::text
+      - SELECT * FROM univ_pharmacy_sale_items WHERE company_id::text = bucket.user_company_id::text
+      - SELECT * FROM univ_pharmacy_prescriptions WHERE company_id::text = bucket.user_company_id::text
+      - SELECT * FROM univ_pharmacy_customers WHERE company_id::text = bucket.user_company_id::text

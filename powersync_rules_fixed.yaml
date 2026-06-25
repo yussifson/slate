@@ -1,0 +1,58 @@
+Syntax error at line 1 col 75:
+
+1  SELECT * FROM univ_pharmacy_sales WHERE company_id::text = bucket.user_company_id::text
+                                                                             ^
+2  SELECT * FROM univ_pharmacy_sale_items WHERE company_id::text = bucket.user_company_id::text SELECT * FROM univ_pharmacy_prescriptions WHERE company_id::text = bucket.user_company_id::text
+3  SELECT * FROM univ_pharmacy_customers WHERE company_id::text = bucket.user_company_id::text
+Unexpected kw_select token: "select". Instead, I was expecting to see one of the following:
+
+    - A "lparen" token
+    - A "dot" token
+    - A "op_cast" token
+    - A "lbracket" token
+    - A "op_member" token
+    - A "op_membertext" token
+    - A "kw_array" token
+    - A "lbracket" token
+    - A "string" token
+    - A "eString" token
+    - A "word" token
+    - A "word" token
+    - A "op_exp" token
+    - A "star" token
+    - A "op_div" token
+    - A "op_mod" token
+    - A "op_plus" token
+    - A "op_minus" token
+    - A "op_additive" token
+    - A "kw_not" token
+    - A "kw_in" token
+    - A "kw_not" token
+    - A "op_like" token
+    - A "op_ilike" token
+    - A "op_not_like" token
+    - A "op_not_ilike" token
+    - A "kw_like" token
+    - A "kw_ilike" token
+    - A "ops_others" token
+    - A "kw_not" token
+    - A "kw_is" token
+    - A "kw_notnull" token
+    - A "kw_is" token
+    - A "kw_isnull" token
+    - A "kw_is" token
+    - A "word" token
+    - A "op_compare" token
+    - A "op_eq" token
+    - A "op_neq" token
+    - A "kw_and" token
+    - A "kw_or" token
+    - A "kw_group" token
+    - A "kw_order" token
+    - A "kw_offset" token
+    - A "kw_for" token
+    - A "kw_limit" token
+    - A "kw_fetch" token
+    - A "kw_union" token
+    - A "semicolon" token
+

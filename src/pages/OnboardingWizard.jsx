@@ -600,6 +600,7 @@ export default function OnboardingWizard() {
  <SelectItem value="retail">{t("retail_pos", "Retail / POS")}</SelectItem>
  <SelectItem value="school">{t("school_education", "School & Education")}</SelectItem>
  <SelectItem value="hospital">{t("hospital_healthcare", "Hospital & Healthcare")}</SelectItem>
+ <SelectItem value="pharmacy">{t("pharmacy", "Pharmacy")}</SelectItem>
  <SelectItem value="hotel">{t("hotel_hospitality", "Hotel & Hospitality")}</SelectItem>
  <SelectItem value="logistics">{t("logistics_delivery", "Logistics & Delivery")}</SelectItem>
  <SelectItem value="insurance">{t("insurance", "Insurance Agency")}</SelectItem>

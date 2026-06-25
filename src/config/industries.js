@@ -672,6 +672,44 @@ export const INDUSTRIES = {
       { label: 'Settings', path: '/settings', icon: 'Settings' },
     ],
   },
+
+  pharmacy: {
+    name: 'Pharmacy',
+    icon: '💊',
+    terms: {
+      client: 'Customer', clients: 'Customers',
+      case: 'Sale', cases: 'Sales',
+      staff: 'Pharmacist', staffPlural: 'Pharmacists',
+      venue: 'Store', intake: 'Prescription Registration',
+      hearing: 'Consultation', hearings: 'Consultations',
+    },
+    roles: [
+      { value: 'company_admin', label: 'Pharmacy Manager' },
+      { value: 'pharmacist', label: 'Pharmacist' },
+      { value: 'pharmacy_technician', label: 'Pharmacy Technician' },
+      { value: 'cashier', label: 'Cashier' },
+      { value: 'inventory_manager', label: 'Inventory Manager' },
+      { value: 'finance', label: 'Finance Officer' },
+    ],
+    nav: [
+      { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+      { label: 'Inventory', path: '/pharmacy', icon: 'Package' },
+      { label: 'Prescriptions', path: '/pharmacy/prescriptions', icon: 'FileText' },
+      { label: 'Sales', path: '/pharmacy/sales', icon: 'ShoppingCart' },
+      { label: 'Customers', path: '/pharmacy/customers', icon: 'Users' },
+      { label: 'Suppliers', path: '/pharmacy/suppliers', icon: 'Truck' },
+      { label: 'Pricing', path: '/pharmacy/pricing', icon: 'Tag' },
+      { label: 'Stock Alerts', path: '/pharmacy/alerts', icon: 'AlertTriangle' },
+      { label: 'Billing', path: '/billing', icon: 'Receipt' },
+      { label: 'Staff', path: '/team', icon: 'UserCog' },
+      { label: 'Documents', path: '/documents', icon: 'FolderOpen' },
+      { label: 'Reports', path: '/reports', icon: 'BarChart2' },
+      { label: 'HR & Leave', path: '/hr', icon: 'HeartHandshake' },
+      { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
+      { label: 'Automations', path: '/automations', icon: 'Zap' },
+      { label: 'Settings', path: '/settings', icon: 'Settings' },
+    ],
+  },
 };
 
 import { EDUCATION_LEVELS } from './educationLevels';
