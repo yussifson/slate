@@ -24,7 +24,7 @@ export const RealEstateTrustAccounting = {
   async createTrustAccount(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_trust_accounts 
@@ -71,7 +71,7 @@ export const RealEstateTrustAccounting = {
 
   async updateTrustAccountBalance(companyId, accountId, newBalance) {
     try {
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
       await powerSync.execute(
         `UPDATE univ_re_trust_accounts SET balance = ?, updated_at = ? WHERE id = ? AND company_id = ?`,
         [newBalance, now, accountId, companyId]
@@ -89,7 +89,7 @@ export const RealEstateTrustAccounting = {
   async recordTrustTransaction(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       // Insert ledger entry
       await powerSync.execute(
@@ -163,7 +163,7 @@ export const RealEstateTrustAccounting = {
   async createEscrowAccount(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_escrow_accounts 
@@ -190,7 +190,7 @@ export const RealEstateTrustAccounting = {
 
   async releaseEscrow(companyId, escrowId, userId) {
     try {
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
       
       await powerSync.execute(
         `UPDATE univ_re_escrow_accounts SET release_status = ?, release_date = ?, updated_at = ? 
@@ -235,7 +235,7 @@ export const RealEstateTrustAccounting = {
   async createCommissionRule(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_commission_rules 
@@ -305,7 +305,7 @@ export const RealEstateTrustAccounting = {
   async recordCommissionPayout(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       const commissionDetails = await this.calculateCommission(companyId, data);
 
@@ -414,13 +414,13 @@ export const RealEstateTrustAccounting = {
         await powerSync.execute(
           `UPDATE univ_re_commission_details SET payout_status = ?, payout_date = ? 
            WHERE id = ? AND company_id = ?`,
-          ['paid', new Date().toISOString(), paymentData.entityId, companyId]
+          ['paid', getSafeISO8601(), paymentData.entityId, companyId]
         );
       } else if (paymentData.entityType === 'rent_payment') {
         await powerSync.execute(
           `UPDATE univ_re_rent_payment_history SET payment_status = ?, payment_date = ? 
            WHERE id = ? AND company_id = ?`,
-          ['paid', new Date().toISOString(), paymentData.entityId, companyId]
+          ['paid', getSafeISO8601(), paymentData.entityId, companyId]
         );
       }
 
@@ -446,7 +446,7 @@ export const RealEstateTrustAccounting = {
   async logAudit(companyId, userId, action, resourceType, resourceId, changes) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_audit_log 
@@ -481,7 +481,7 @@ export const RealEstateTrustAccounting = {
       const variance = Math.abs(bankBalance - calculatedBalance);
       const status = variance < 0.01 ? 'reconciled' : 'discrepancy';
 
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
       await powerSync.execute(
         `UPDATE univ_re_trust_accounts SET reconciliation_status = ?, last_reconciliation_at = ? 
          WHERE id = ? AND company_id = ?`,

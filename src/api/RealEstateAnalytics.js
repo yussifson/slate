@@ -22,7 +22,7 @@ export const RealEstateAnalytics = {
   async logAuditEvent(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_audit_log 
@@ -267,7 +267,7 @@ export const RealEstateAnalytics = {
   async recordKPI(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
       const kpiDate = now.split('T')[0];
 
       await powerSync.execute(
@@ -373,7 +373,7 @@ export const RealEstateAnalytics = {
   async generateCompanyReport(companyId, reportType = 'monthly', dateRange = {}) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       // Gather all analytics data
       const portfolio = await this.getPortfolioAnalytics(companyId);
@@ -430,7 +430,7 @@ export const RealEstateAnalytics = {
   async trackUserActivity(companyId, userId, activityData) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_user_activity 
@@ -469,7 +469,7 @@ export const RealEstateAnalytics = {
   async recordSystemMetric(companyId, metricData) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_system_metrics 

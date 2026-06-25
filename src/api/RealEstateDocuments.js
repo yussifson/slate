@@ -22,7 +22,7 @@ export const RealEstateDocuments = {
   async createDocumentTemplate(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_document_templates 
@@ -68,7 +68,7 @@ export const RealEstateDocuments = {
   async generateDocumentFromTemplate(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       // Get template
       const templateResult = await powerSync.execute(
@@ -157,7 +157,7 @@ export const RealEstateDocuments = {
 
   async updateDocumentStatus(companyId, documentId, newStatus, userId) {
     try {
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `UPDATE univ_re_documents SET status = ?, updated_at = ? WHERE id = ? AND company_id = ?`,
@@ -178,7 +178,7 @@ export const RealEstateDocuments = {
   async requestSignature(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
       const expirationDate = new Date();
       expirationDate.setDate(expirationDate.getDate() + (data.expirationDays || 30));
 
@@ -224,7 +224,7 @@ export const RealEstateDocuments = {
 
   async recordSignature(companyId, signatureRequestId, signatureData) {
     try {
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       // Parse signature data (usually base64-encoded from digital signature pad)
       const signatureUrl = signatureData.signatureUrl || ''; // Store URL to signature image
@@ -313,7 +313,7 @@ export const RealEstateDocuments = {
 
       const original = origResult.rows._array[0];
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
       const newVersion = (original.version || 1) + 1;
 
       await powerSync.execute(
@@ -345,7 +345,7 @@ export const RealEstateDocuments = {
 
   async executeDocument(companyId, documentId, executionData, userId) {
     try {
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       // Verify all signatures are complete
       const sigStatus = await this.getSignatureStatus(companyId, documentId);
@@ -377,7 +377,7 @@ export const RealEstateDocuments = {
 
   async archiveDocument(companyId, documentId, archiveReason, userId) {
     try {
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `UPDATE univ_re_documents SET status = ?, updated_at = ? WHERE id = ? AND company_id = ?`,
@@ -405,7 +405,7 @@ export const RealEstateDocuments = {
   async logDocumentActivity(companyId, documentId, activityType, details = {}) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_audit_log 
