@@ -10,7 +10,6 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'react-hot-toast';
 import PharmacyAPI from '@/api/PharmacyAPI';
-import { DataTable } from '@/components/ui/data-table';
 
 export default function Inventory() {
   const { user } = useAuth();
