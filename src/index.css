@@ -41,6 +41,26 @@
     --sidebar-border: 214 32% 91%;
     --sidebar-ring: 152 76% 41%;
     --bg-base-rgb: 255, 255, 255;
+
+    /* ────────────────────────────────── */
+    /* HOTEL VERTICAL — Premium Hospitality Palette */
+    /* ────────────────────────────────── */
+    --hotel-primary: 12 100% 50%;      /* Luxe Deep Burgundy */
+    --hotel-secondary: 342 92% 54%;    /* Rose Accent */
+    --hotel-accent: 34 100% 50%;       /* Gold Highlight */
+    --hotel-success: 152 76% 41%;      /* Emerald (standard) */
+    --hotel-alert: 38 92% 50%;         /* Warm Amber */
+    --hotel-critical: 0 84% 60%;       /* Red (standard) */
+
+    /* ────────────────────────────────── */
+    /* LOGISTICS VERTICAL — Professional Transport Palette */
+    /* ────────────────────────────────── */
+    --logistics-primary: 210 100% 45%;    /* Ocean Blue */
+    --logistics-secondary: 200 60% 45%;   /* Sky Teal */
+    --logistics-accent: 160 84% 39%;      /* Mint Green */
+    --logistics-success: 152 76% 41%;     /* Emerald (standard) */
+    --logistics-alert: 38 92% 50%;        /* Warm Amber */
+    --logistics-critical: 0 84% 60%;      /* Red (standard) */
   }
 
   .dark {
@@ -164,9 +184,11 @@
   @keyframes card-enter {
     from {
       opacity: 0;
+      transform: scale(0.95);
     }
     to {
       opacity: 1;
+      transform: scale(1);
     }
   }
 
@@ -174,6 +196,66 @@
     from {
       opacity: 0;
       transform: translateX(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Premium entrance animations */
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slide-down {
+    from {
+      opacity: 0;
+      transform: translateY(-16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.92);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  @keyframes slide-right {
+    from {
+      opacity: 0;
+      transform: translateX(-16px);
     }
     to {
       opacity: 1;
@@ -204,11 +286,11 @@
   }
 
   .card-enter {
-    animation: card-enter 300ms ease-out;
+    animation: card-enter 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   .card-enter-stagger {
-    animation: card-enter 300ms ease-out;
+    animation: card-enter 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   .list-item-enter {
@@ -218,6 +300,44 @@
   .list-item-enter-stagger {
     animation: list-item-enter 300ms ease-out;
   }
+
+  /* Premium animation utility classes */
+  .animate-fade-in {
+    animation: fade-in 400ms ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .animate-slide-down {
+    animation: slide-down 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .animate-scale-in {
+    animation: scale-in 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-pulse-soft {
+    animation: pulse-soft 2s ease-in-out infinite;
+  }
+
+  .animate-slide-right {
+    animation: slide-right 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Stagger delays */
+  .animation-delay-0 { animation-delay: 0ms; }
+  .animation-delay-75 { animation-delay: 75ms; }
+  .animation-delay-100 { animation-delay: 100ms; }
+  .animation-delay-150 { animation-delay: 150ms; }
+  .animation-delay-200 { animation-delay: 200ms; }
+  .animation-delay-300 { animation-delay: 300ms; }
+  .animation-delay-500 { animation-delay: 500ms; }
 
   .count-up {
     animation: count-up 1000ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
