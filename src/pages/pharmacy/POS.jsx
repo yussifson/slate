@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ShoppingCart, Plus, Minus, X, CreditCard, Banknote, Print } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, X, CreditCard, Banknote, Printer } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { usePowerSync } from '@powersync/react';
@@ -341,7 +341,7 @@ export default function POS() {
               </div>
 
               <Button onClick={() => window.print()} className="w-full" variant="outline">
-                <Print className="w-4 h-4 mr-2" />
+                <Printer className="w-4 h-4 mr-2" />
                 Print Receipt
               </Button>
             </div>
