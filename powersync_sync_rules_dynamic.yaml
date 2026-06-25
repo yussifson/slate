@@ -215,3 +215,22 @@ bucket_definitions:
   - SELECT * FROM univ_retail_picking_waves WHERE company_id = bucket.company_id
   - SELECT * FROM univ_retail_b2b_accounts WHERE company_id = bucket.company_id
   - SELECT * FROM univ_retail_franchises WHERE company_id = bucket.company_id
+
+  # -------------------------------------------------------------
+  # PHARMACY MODULE
+  # -------------------------------------------------------------
+  - SELECT * FROM univ_pharmacy_drugs WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_pharmacy_inventory WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_pharmacy_sales WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_pharmacy_sale_items WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_pharmacy_prescriptions WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_pharmacy_customers WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_pharmacy_insurance_claims WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_pharmacy_suppliers WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_pharmacy_purchase_orders WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_pharmacy_controlled_substances WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_pharmacy_shifts WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_pharmacy_reconciliations WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_pharmacy_expiry_alerts WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_pharmacy_audit_log WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_pharmacy_analytics WHERE company_id = bucket.company_id
