@@ -21,7 +21,7 @@ export const RealEstateOffers = {
 
   async updateOfferStatus(companyId, offerId, newStatus, data = {}, userId) {
     try {
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
       
       await powerSync.execute(
         `UPDATE univ_re_offers SET status = ?, notes = ?, last_updated = ? 
@@ -77,7 +77,7 @@ export const RealEstateOffers = {
   async createCounterOffer(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_counter_offers 
@@ -128,7 +128,7 @@ export const RealEstateOffers = {
 
   async respondToCounterOffer(companyId, counterOfferId, response, responderId, data = {}) {
     try {
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
       
       // Update counter offer status
       await powerSync.execute(
@@ -240,7 +240,7 @@ export const RealEstateOffers = {
   async applyCommissionAdjustments(companyId, commissionId, adjustments, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       // Get current commission
       const result = await powerSync.execute(
@@ -379,7 +379,7 @@ export const RealEstateOffers = {
   async logOfferActivity(companyId, offerId, activityType, details = {}) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       // This could be extended to a separate offer_activities table
       // For now, we log via audit system

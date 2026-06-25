@@ -16,6 +16,20 @@ function generateUUID() {
   });
 }
 
+// Safe date formatting - handles invalid dates
+function getSafeISO8601() {
+  try {
+    const date = new Date();
+    if (isNaN(date.getTime())) {
+      return new Date(Date.now()).toISOString();
+    }
+    return date.toISOString();
+  } catch (e) {
+    console.warn('[RE API] Date formatting error:', e);
+    return new Date(Date.now()).toISOString();
+  }
+}
+
 export const RealEstateAPI = {
   // ────────────────────────────────────────────────────────
   // PROPERTIES
@@ -51,7 +65,7 @@ export const RealEstateAPI = {
   async createProperty(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_properties (id, company_id, address, city, state, country, zip_code, property_type, 
@@ -87,7 +101,7 @@ export const RealEstateAPI = {
       });
 
       updates.push('last_updated = ?');
-      params.push(new Date().toISOString());
+      params.push(getSafeISO8601());
       params.push(companyId);
       params.push(propertyId);
 
@@ -136,7 +150,7 @@ export const RealEstateAPI = {
   async createClient(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_clients (id, company_id, name, email, phone, type, address, city, state, 
@@ -225,7 +239,7 @@ export const RealEstateAPI = {
   async createViewing(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_viewings (id, company_id, property_id, property_address, client_id, client_name, 
@@ -311,7 +325,7 @@ export const RealEstateAPI = {
   async createOffer(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_offers (id, company_id, property_id, property_address, buyer_id, buyer_name, 
@@ -392,7 +406,7 @@ export const RealEstateAPI = {
   async createTransaction(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
   await powerSync.execute(
   `INSERT INTO univ_re_transactions (id, company_id, property_id, property_address, seller_id, seller_name,
@@ -447,7 +461,7 @@ export const RealEstateAPI = {
     }
   },
 
-  // ──────────────���───────�������������─────────────────────────────────
+  // ──────────────���───────���������������─────────────────────────────────
   // LEASES
   // ────────────────────────────────────────────────────────
 
@@ -473,7 +487,7 @@ export const RealEstateAPI = {
   async createLease(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_leases (id, company_id, property_id, property_address, tenant_id, tenant_name, 
@@ -558,7 +572,7 @@ export const RealEstateAPI = {
   async recordRentPayment(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_rent_payments (id, company_id, lease_id, property_id, tenant_id, tenant_name, 
@@ -642,7 +656,7 @@ export const RealEstateAPI = {
   async createMaintenanceRequest(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_maintenance_requests (id, company_id, property_id, property_address, reported_by, 
@@ -703,7 +717,7 @@ export const RealEstateAPI = {
   async createTeamMember(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
       
       await powerSync.execute(
         `INSERT INTO univ_re_team_members (id, company_id, user_id, name, email, phone, role, status, 
@@ -712,7 +726,7 @@ export const RealEstateAPI = {
         [id, companyId, data.userId || null, data.name, data.email, data.phone || null, 
          data.role || 'agent', 'active', data.avatarUrl || null, data.bio || null, 
          data.licenseNumber || null, data.licenseExpiry || null, data.commissionRate || 0, 
-         data.joinDate || new Date().toISOString().split('T')[0], now, now]
+         data.joinDate || getSafeISO8601().split('T')[0], now, now]
       );
       return id;
     } catch (e) {
@@ -746,7 +760,7 @@ export const RealEstateAPI = {
         }
       });
       
-      params.push(new Date().toISOString());
+      params.push(getSafeISO8601());
       params.push(companyId);
       params.push(memberId);
       
@@ -766,7 +780,7 @@ export const RealEstateAPI = {
   async createMLSListing(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
       
       await powerSync.execute(
         `INSERT INTO univ_re_mls_listings (id, company_id, mls_id, property_address, city, state, zip_code,
@@ -815,11 +829,11 @@ export const RealEstateAPI = {
          comparable_3_address, comparable_3_price, comparable_3_adjustment,
          estimated_value, confidence_level, notes, created_by, created_at)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [id, companyId, data.propertyId || null, data.analysisDate || new Date().toISOString().split('T')[0],
+        [id, companyId, data.propertyId || null, data.analysisDate || getSafeISO8601().split('T')[0],
          data.subjectAddress, data.subjectPrice, data.comp1Address, data.comp1Price, data.comp1Adjustment,
          data.comp2Address, data.comp2Price, data.comp2Adjustment,
          data.comp3Address, data.comp3Price, data.comp3Adjustment,
-         data.estimatedValue, data.confidenceLevel || 80, data.notes, userId, new Date().toISOString()]
+         data.estimatedValue, data.confidenceLevel || 80, data.notes, userId, getSafeISO8601()]
       );
       return id;
     } catch (e) {
@@ -857,7 +871,7 @@ export const RealEstateAPI = {
   async createLead(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
       
       await powerSync.execute(
         `INSERT INTO univ_re_leads (id, company_id, first_name, last_name, email, phone, source,
@@ -914,7 +928,7 @@ export const RealEstateAPI = {
         }
       });
       
-      params.push(new Date().toISOString());
+      params.push(getSafeISO8601());
       params.push(companyId);
       params.push(leadId);
       
@@ -937,7 +951,7 @@ export const RealEstateAPI = {
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [id, companyId, leadId, data.activityType, data.subject || null,
          data.description || null, data.durationMinutes || null, data.outcome || null,
-         data.nextAction || null, userId, new Date().toISOString()]
+         data.nextAction || null, userId, getSafeISO8601()]
       );
       return id;
     } catch (e) {
@@ -1007,7 +1021,7 @@ export const RealEstateAPI = {
   async createCommissionRule(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_commission_rules (id, company_id, rule_name, rule_type, commission_percentage, 
@@ -1044,7 +1058,7 @@ export const RealEstateAPI = {
       });
 
       updates.push('updated_at = ?');
-      params.push(new Date().toISOString());
+      params.push(getSafeISO8601());
       params.push(companyId);
       params.push(ruleId);
 
@@ -1070,7 +1084,7 @@ export const RealEstateAPI = {
     }
   },
 
-  // ────────────────────────────────────────────────────────
+  // ───────────────────────────────��────────────────────────
   // TRUST ACCOUNTING
   // ─────────────────────────────────────────────��──────────
 
@@ -1096,7 +1110,7 @@ export const RealEstateAPI = {
   async createTrustAccount(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_trust_accounts (id, company_id, account_name, account_type, bank_name, 
@@ -1138,7 +1152,7 @@ export const RealEstateAPI = {
   async createTrustLedgerEntry(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_trust_ledger (id, company_id, trust_account_id, transaction_type, amount, 
@@ -1241,7 +1255,7 @@ export const RealEstateAPI = {
   async createDocumentTemplate(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_document_templates (id, company_id, template_name, document_type, document_category, 
@@ -1276,7 +1290,7 @@ export const RealEstateAPI = {
       });
 
       updates.push('updated_at = ?');
-      params.push(new Date().toISOString());
+      params.push(getSafeISO8601());
       params.push(companyId);
       params.push(templateId);
 
@@ -1302,7 +1316,7 @@ export const RealEstateAPI = {
     }
   },
 
-  // ────────────────────────────────────────────────────────
+  // ─────────────────────────────��──────────────────────────
   // COUNTER OFFERS
   // ────────────────────────────────────────────────────────
 
@@ -1332,7 +1346,7 @@ export const RealEstateAPI = {
   async createCounterOffer(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_counter_offers (id, company_id, original_offer_id, counter_offer_price, 
@@ -1370,7 +1384,7 @@ export const RealEstateAPI = {
       });
 
       updates.push('updated_at = ?');
-      params.push(new Date().toISOString());
+      params.push(getSafeISO8601());
       params.push(companyId);
       params.push(offerId);
 
@@ -1426,17 +1440,16 @@ export const RealEstateAPI = {
   async createPaymentSchedule(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
-        `INSERT INTO univ_re_rent_payment_schedules (id, company_id, lease_id, payment_amount, payment_due_date, 
-         grace_period_days, late_fee_type, late_fee_amount, late_fee_percentage, payment_method, auto_debit_enabled, 
-         auto_debit_day, reminder_days_before, is_active, created_at, updated_at) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [id, companyId, data.leaseId, data.paymentAmount, data.paymentDueDate, data.gracePeriodDays, 
-         data.lateFeesType, data.lateFeeAmount || 0, data.lateFeePercentage || 0, data.paymentMethod, 
-         data.autoDebitEnabled !== false, data.autoDebitDay || 1, data.reminderDaysBefore || 5, 
-         data.isActive !== false, now, now]
+        `INSERT INTO univ_re_rent_payment_schedules (id, company_id, lease_id, payment_due_date, payment_amount, 
+         late_fee_amount, late_fee_percentage, grace_period_days, late_fee_type, is_recurring, payment_method, 
+         auto_debit_enabled, recurring_start_date, recurring_end_date, created_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.leaseId, data.paymentDueDate, data.paymentAmount, data.lateFeeAmount || 0, 
+         data.lateFeePercentage || 0, data.gracePeriodDays || 0, data.lateFeesType || '', data.isRecurring !== false, 
+         data.paymentMethod, data.autoDebitEnabled !== false, data.recurringStartDate, data.recurringEndDate, now]
       );
 
       powerSync.execute(
@@ -1464,7 +1477,7 @@ export const RealEstateAPI = {
       });
 
       updates.push('updated_at = ?');
-      params.push(new Date().toISOString());
+      params.push(getSafeISO8601());
       params.push(companyId);
       params.push(scheduleId);
 
@@ -1520,7 +1533,7 @@ export const RealEstateAPI = {
   async createESignature(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_e_signatures (id, company_id, document_id, document_name, signer_name, signer_email, 
@@ -1556,7 +1569,7 @@ export const RealEstateAPI = {
       });
 
       updates.push('updated_at = ?');
-      params.push(new Date().toISOString());
+      params.push(getSafeISO8601());
       params.push(companyId);
       params.push(signatureId);
 
@@ -1616,7 +1629,7 @@ export const RealEstateAPI = {
   async createMarketData(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_market_data (id, company_id, market_region, market_city, market_level, 
@@ -1654,7 +1667,7 @@ export const RealEstateAPI = {
       });
 
       updates.push('updated_at = ?');
-      params.push(new Date().toISOString());
+      params.push(getSafeISO8601());
       params.push(companyId);
       params.push(dataId);
 
@@ -1710,7 +1723,7 @@ export const RealEstateAPI = {
   async createEscrowAccount(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_escrow_accounts (id, company_id, transaction_id, buyer_id, seller_id, 
@@ -1750,7 +1763,7 @@ export const RealEstateAPI = {
       });
 
       updates.push('updated_at = ?');
-      params.push(new Date().toISOString());
+      params.push(getSafeISO8601());
       params.push(companyId);
       params.push(accountId);
 
@@ -1783,7 +1796,7 @@ export const RealEstateAPI = {
   async createRecommendation(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_agent_recommendations (id, company_id, client_id, recommended_agent_id, property_id,
@@ -1804,7 +1817,7 @@ export const RealEstateAPI = {
       await powerSync.execute(
         `UPDATE univ_re_agent_recommendations SET recommendation_reason = ?, recommendation_score = ?, 
          client_action = ?, updated_at = ? WHERE company_id = ? AND id = ?`,
-        [data.recommendationReason, data.recommendationScore, data.clientAction, new Date().toISOString(), companyId, recId]
+        [data.recommendationReason, data.recommendationScore, data.clientAction, getSafeISO8601(), companyId, recId]
       );
     } catch (e) {
       console.error('[RE API] updateRecommendation failed:', e);
@@ -1831,7 +1844,7 @@ export const RealEstateAPI = {
   async createComparableProperty(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_comparable_properties (id, company_id, comparable_address, price, price_per_sqft,
@@ -1855,7 +1868,7 @@ export const RealEstateAPI = {
          sale_date = ?, similarity_score = ?, notes = ?, updated_at = ?
          WHERE company_id = ? AND id = ?`,
         [data.address, data.salePrice, data.pricePerSqft, data.bedrooms, data.bathrooms, data.yearBuilt,
-         data.squareFootage, data.daysOnMarket, data.saleDate, data.similarityScore, data.notes, new Date().toISOString(), companyId, propId]
+         data.squareFootage, data.daysOnMarket, data.saleDate, data.similarityScore, data.notes, getSafeISO8601(), companyId, propId]
       );
     } catch (e) {
       console.error('[RE API] updateComparableProperty failed:', e);
@@ -1882,7 +1895,7 @@ export const RealEstateAPI = {
   async createContractor(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_contractors (id, company_id, contractor_name, contractor_type, email, phone,
@@ -1906,7 +1919,7 @@ export const RealEstateAPI = {
          hourly_rate = ?, total_jobs_completed = ?, average_rating = ?, updated_at = ?
          WHERE company_id = ? AND id = ?`,
         [data.contractorName, data.contractorType, data.email, data.phone, data.city, data.state, data.zipCode,
-         data.isLicensed ? 1 : 0, data.isInsured ? 1 : 0, data.licenseName, data.hourlyRate, data.totalJobsCompleted, data.averageRating, new Date().toISOString(), companyId, contractorId]
+         data.isLicensed ? 1 : 0, data.isInsured ? 1 : 0, data.licenseName, data.hourlyRate, data.totalJobsCompleted, data.averageRating, getSafeISO8601(), companyId, contractorId]
       );
     } catch (e) {
       console.error('[RE API] updateContractor failed:', e);
@@ -1933,7 +1946,7 @@ export const RealEstateAPI = {
   async createContractorReview(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
         `INSERT INTO univ_re_contractor_reviews (id, company_id, contractor_id, review_title, review_text, rating,
@@ -1956,7 +1969,7 @@ export const RealEstateAPI = {
          punctuality_rating = ?, quality_rating = ?, professionalism_rating = ?, would_rehire = ?, updated_at = ?
          WHERE company_id = ? AND id = ?`,
         [data.reviewTitle, data.reviewText, data.rating, data.punctualityRating, data.qualityRating,
-         data.professionalismRating, data.wouldRehire ? 1 : 0, new Date().toISOString(), companyId, reviewId]
+         data.professionalismRating, data.wouldRehire ? 1 : 0, getSafeISO8601(), companyId, reviewId]
       );
     } catch (e) {
       console.error('[RE API] updateContractorReview failed:', e);
@@ -1983,16 +1996,16 @@ export const RealEstateAPI = {
   async createLeaseRenewal(companyId, data, userId) {
     try {
       const id = generateUUID();
-      const now = new Date().toISOString();
+      const now = getSafeISO8601();
 
       await powerSync.execute(
-        `INSERT INTO univ_re_lease_renewals (id, company_id, lease_id, tenant_id, property_id, renewal_offer_date,
-         response_deadline, new_rent_amount, rent_increase_percentage, renewal_term_months, renewal_status,
-         tenant_response_date, tenant_response, renewal_term_start_date, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [id, companyId, data.leaseId, data.tenantId, data.propertyId, data.renewalOfferDate, data.responseDeadline,
-         data.newRentAmount, data.rentIncreasePercentage, data.renewalTermMonths, data.renewalStatus,
-         data.tenantResponseDate, data.tenantResponse, data.renewalTermStartDate, now, now]
+        `INSERT INTO univ_re_lease_renewals (id, company_id, lease_id, tenant_id, renewal_status, renewal_offer_date,
+         response_deadline, new_rent_amount, rent_increase_percentage, renewal_term_months, renewal_lease_document_url,
+         tenant_response_date, renewal_lease_id, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.leaseId, data.tenantId, data.renewalStatus || 'pending', data.renewalOfferDate, 
+         data.responseDeadline, data.newRentAmount, data.rentIncreasePercentage, data.renewalTermMonths, 
+         data.renewalLeaseDocumentUrl || null, data.tenantResponseDate, data.renewalLeaseId || null, now, now]
       );
       return id;
     } catch (e) {
@@ -2009,7 +2022,7 @@ export const RealEstateAPI = {
          tenant_response = ?, renewal_term_start_date = ?, updated_at = ?
          WHERE company_id = ? AND id = ?`,
         [data.renewalOfferDate, data.responseDeadline, data.newRentAmount, data.rentIncreasePercentage,
-         data.renewalTermMonths, data.renewalStatus, data.tenantResponseDate, data.tenantResponse, data.renewalTermStartDate, new Date().toISOString(), companyId, renewalId]
+         data.renewalTermMonths, data.renewalStatus, data.tenantResponseDate, data.tenantResponse, data.renewalTermStartDate, getSafeISO8601(), companyId, renewalId]
       );
     } catch (e) {
       console.error('[RE API] updateLeaseRenewal failed:', e);
