@@ -72,10 +72,10 @@ export default function Guests() {
 
   return (
     <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("guest_directory", "Guest Profiles & History")}</h1>
-          <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("manage_guest_history", "View guest expenditure, past stays, and preferences")}</p>
+      <div className="flex items-end justify-between gap-4">
+        <div className="flex-1">
+          <h1 className="text-3xl font-bold text-card-foreground tracking-tight mb-1">{t("guest_directory", "Guest Profiles & History")}</h1>
+          <p className="text-sm text-[#71717a] dark:text-gray-400">{t("manage_guest_history", "Access guest expenditure, stay history, and loyalty profile across all properties")}</p>
         </div>
       </div>
 

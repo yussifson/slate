@@ -171,10 +171,10 @@ export default function Rooms() {
 
   return (
     <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh" }}>
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("room_management", "Room Management")}</h1>
-          <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("configure_rooms_pricing_and_am", "Configure rooms, pricing, and amenities")}</p>
+      <div className="flex items-end justify-between gap-4">
+        <div className="flex-1">
+          <h1 className="text-3xl font-bold text-card-foreground tracking-tight mb-1">{t("room_management", "Room Management")}</h1>
+          <p className="text-sm text-[#71717a] dark:text-gray-400">{t("configure_rooms_pricing_and_am", "Set up room inventory, pricing, floors, and amenities")}</p>
         </div>
         <div className="flex gap-2">
           {selectedRoomIds.length > 0 && (
@@ -200,35 +200,35 @@ export default function Rooms() {
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-card border-b border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+            <thead className="bg-muted/40 border-b-2 border-primary/20">
               <tr>
-                <th className="px-6 py-4 w-12">
-                  <input type="checkbox" checked={selectedRoomIds.length === filtered.length && filtered.length > 0} onChange={() => setSelectedRoomIds(selectedRoomIds.length === filtered.length ? [] : filtered.map(r => r.id))} className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"/>
+                <th className="px-6 py-3 w-12">
+                  <input type="checkbox" checked={selectedRoomIds.length === filtered.length && filtered.length > 0} onChange={() => setSelectedRoomIds(selectedRoomIds.length === filtered.length ? [] : filtered.map(r => r.id))} className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"/>
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("room_number", "Room Number")}</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("type_floor", "Type & Floor")}</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("rate_night", "Rate/Night")}</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("status", "Status")}</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("amenities", "Amenities")}</th>
-                <th className="px-6 py-4 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("action", "Action")}</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">{t("room_number", "Room Number")}</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">{t("type_floor", "Type & Floor")}</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">{t("rate_night", "Rate/Night")}</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">{t("status", "Status")}</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">{t("amenities", "Amenities")}</th>
+                <th className="px-6 py-3 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">{t("action", "Action")}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
+            <tbody className="divide-y divide-border/50">
               {filtered.map(room => {
                 return (
-                  <tr key={room.id} className="hover:bg-muted/50 transition-colors">
-                    <td className="px-6 py-4">
-                      <input type="checkbox" checked={selectedRoomIds.includes(room.id)} onChange={() => toggleSelectRoom(room.id)} className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"/>
+                  <tr key={room.id} className="group hover:bg-muted/60 transition-all duration-150 border-b-[0.5px] border-border/40">
+                    <td className="px-6 py-3.5">
+                      <input type="checkbox" checked={selectedRoomIds.includes(room.id)} onChange={() => toggleSelectRoom(room.id)} className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"/>
                     </td>
-                    <td className="px-6 py-4 font-semibold text-card-foreground text-lg flex items-center gap-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                      <Bed className={`w-5 h-5 ${room.status === 'Maintenance' ? 'text-red-500' : 'text-primary'}`}/> 
+                    <td className="px-6 py-3.5 font-semibold text-card-foreground text-lg flex items-center gap-2 group-hover:text-primary transition-colors">
+                      <Bed className={`w-5 h-5 transition-colors ${room.status === 'Maintenance' ? 'text-red-500' : 'text-primary/70 group-hover:text-primary'}`}/> 
                       {room.roomNumber}
                     </td>
-                    <td className="px-6 py-4">
-                      <p className="font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{room.type}</p>
+                    <td className="px-6 py-3.5">
+                      <p className="font-semibold text-card-foreground group-hover:text-primary transition-colors">{room.type}</p>
                       <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{room.floor}</p>
                     </td>
-                    <td className="px-6 py-4 font-semibold text-card-foreground hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">${room.rate}</td>
+                    <td className="px-6 py-3.5 font-semibold text-card-foreground tabular-nums group-hover:text-primary transition-colors">${room.rate}</td>
                     <td className="px-6 py-4">
                       {room.status === 'Maintenance' ? (
                         <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-semibold bg-red-100 text-red-700 uppercase tracking-wider animate-pulse tracking-[0.04em]">

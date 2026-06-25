@@ -288,10 +288,10 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
  return (
  <div className="space-y-6" style={{ background: "linear-gradient(135deg, rgba(68,49,153,0.08) 0%, rgba(255,255,255,0) 100%)", minHeight: "100vh"}}>
   {/* Header */}
-  <div className="flex justify-between items-start">
-  <div>
-  <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{t("front_desk", "Front Desk")}</h1>
-  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-0.5">{t("live_property_overview", "Live property overview —")} {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}</p>
+  <div className="flex justify-between items-end gap-4">
+  <div className="flex-1">
+  <h1 className="text-3xl font-bold text-card-foreground tracking-tight mb-1">{t("front_desk", "Front Desk")}</h1>
+  <p className="text-sm text-[#71717a] dark:text-gray-400">{t("live_property_overview", "Live property overview —")} {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}</p>
   </div>
   <div className="flex gap-2">
     <Button onClick={handleNightAudit} disabled={isNightAuditRunning} variant="outline" className="gap-2 border-primary/20 hover:bg-primary/5">
@@ -303,48 +303,48 @@ Please briefly identify the highest risk/highest value guests and suggest 2-3 sp
   </div>
   </div>
  {/* Stats */}
- <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 border-l-4 border-l-violet-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
- <TrendingUp className="w-5 h-5 text-primary" />
- </div>
+ <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 border-l-4 border-l-violet-500 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all duration-200">
+ <div className="flex items-center justify-between">
  <div>
- <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("occupancy", "Occupancy")}</p>
- <p className="text-2xl font-semibold text-primary tracking-[-0.02em]">{occupancyRate}%</p>
+ <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">{t("occupancy", "Occupancy")}</p>
+ <p className="text-3xl font-bold text-primary tracking-tight mt-1">{occupancyRate}%</p>
+ </div>
+ <div className="w-12 h-12 rounded-full bg-violet-50 dark:bg-violet-950/20 flex items-center justify-center">
+ <TrendingUp className="w-6 h-6 text-violet-600" />
  </div>
  </div>
  </div>
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 border-l-4 border-l-green-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
- <LogIn className="w-5 h-5 text-primary" />
- </div>
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 border-l-4 border-l-green-500 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all duration-200">
+ <div className="flex items-center justify-between">
  <div>
- <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("arrivals_today", "Arrivals Today")}</p>
- <p className="text-2xl font-semibold text-primary tracking-[-0.02em]">{todayArrivals.length}</p>
+ <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">{t("arrivals_today", "Arrivals Today")}</p>
+ <p className="text-3xl font-bold text-green-600 tracking-tight mt-1">{todayArrivals.length}</p>
+ </div>
+ <div className="w-12 h-12 rounded-full bg-green-50 dark:bg-green-950/20 flex items-center justify-center">
+ <LogIn className="w-6 h-6 text-green-600" />
  </div>
  </div>
  </div>
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 border-l-4 border-l-red-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
- <LogOut className="w-5 h-5 text-red-600" />
- </div>
+ <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 border-l-4 border-l-red-500 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all duration-200">
+ <div className="flex items-center justify-between">
  <div>
- <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("departures_today", "Departures Today")}</p>
- <p className="text-2xl font-semibold text-red-600 tracking-[-0.02em]">{todayDepartures.length}</p>
+ <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">{t("departures_today", "Departures Today")}</p>
+ <p className="text-3xl font-bold text-red-600 tracking-tight mt-1">{todayDepartures.length}</p>
+ </div>
+ <div className="w-12 h-12 rounded-full bg-red-50 dark:bg-red-950/20 flex items-center justify-center">
+ <LogOut className="w-6 h-6 text-red-600" />
  </div>
  </div>
  </div>
-  <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 border-l-4 border-l-violet-500 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-  <div className="flex items-center gap-3">
-  <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
-  <Users className="w-5 h-5 text-primary" />
-  </div>
+  <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 border-l-4 border-l-blue-500 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all duration-200">
+  <div className="flex items-center justify-between">
   <div>
-  <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.04em]">{t("guests_in_house", "Guests In-House")}</p>
-  <p className="text-2xl font-semibold text-primary tracking-[-0.02em]">{checkedIn.length}</p>
+  <p className="text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-[0.05em]">{t("guests_in_house", "Guests In-House")}</p>
+  <p className="text-3xl font-bold text-blue-600 tracking-tight mt-1">{checkedIn.length}</p>
+  </div>
+  <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-950/20 flex items-center justify-center">
+  <Users className="w-6 h-6 text-blue-600" />
   </div>
   </div>
   </div>
