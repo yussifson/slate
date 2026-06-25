@@ -74,7 +74,7 @@ class PharmacyAPI {
 
       // Get old value for audit
       const oldResult = await powerSync.execute(
-        'SELECT * FROM univ_pharmacy_drugs WHERE id = ?',
+        'SELECT * FROM univ_pharmacy_drugs WHERE id = ?::text',
         [drugId]
       );
       const oldValue = oldResult.rows._array?.[0] || {};
@@ -163,14 +163,14 @@ class PharmacyAPI {
 
       // Get current quantity
       const result = await powerSync.execute(
-        'SELECT quantity_in_stock, quantity_reserved FROM univ_pharmacy_inventory WHERE id = ?',
+        'SELECT quantity_in_stock, quantity_reserved FROM univ_pharmacy_inventory WHERE id = ?::text',
         [inventoryId]
       );
       const current = result.rows._array?.[0] || {};
       const newQuantity = (current.quantity_in_stock || 0) + quantityChange;
 
       await powerSync.execute(
-        'UPDATE univ_pharmacy_inventory SET quantity_in_stock = ?, updated_at = ? WHERE id = ?',
+        'UPDATE univ_pharmacy_inventory SET quantity_in_stock = ?, updated_at = ? WHERE id = ?::text',
         [Math.max(0, newQuantity), now, inventoryId]
       );
 
