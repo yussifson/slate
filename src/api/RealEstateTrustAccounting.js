@@ -16,6 +16,19 @@ function generateUUID() {
   });
 }
 
+function getSafeISO8601() {
+  try {
+    const date = new Date();
+    if (isNaN(date.getTime())) {
+      return new Date(Date.now()).toISOString();
+    }
+    return date.toISOString();
+  } catch (e) {
+    console.warn('[Trust Accounting] Date formatting error:', e);
+    return new Date(Date.now()).toISOString();
+  }
+}
+
 export const RealEstateTrustAccounting = {
   // ────────────────────────────────────────────────────────
   // TRUST ACCOUNT MANAGEMENT

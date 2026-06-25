@@ -27,7 +27,17 @@ export default function TrustAccounting() {
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [showTransactionForm, setShowTransactionForm] = useState(false);
+  const [showAccountForm, setShowAccountForm] = useState(false);
   const [editingTransactionId, setEditingTransactionId] = useState(null);
+  const [accountFormData, setAccountFormData] = useState({
+    accountName: '',
+    accountType: 'operating',
+    bankName: '',
+    accountNumber: '',
+    routingNumber: '',
+    accountHolderName: '',
+    currency: 'USD',
+  });
   const [transactionFormData, setTransactionFormData] = useState({
     accountId: '',
     transactionType: 'deposit',
@@ -75,6 +85,33 @@ export default function TrustAccounting() {
     }
     setFilteredLedger(filtered);
   }, [ledger, search, typeFilter]);
+
+  const handleAccountSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await RealEstateAPI.createTrustAccount(companyId, accountFormData, user.id);
+      toast.success('Trust account created successfully');
+      setShowAccountForm(false);
+      setAccountFormData({
+        accountName: '',
+        accountType: 'operating',
+        bankName: '',
+        accountNumber: '',
+        routingNumber: '',
+        accountHolderName: '',
+        currency: 'USD',
+      });
+
+      const accountsRes = await powerSync.execute(
+        'SELECT * FROM univ_re_trust_accounts WHERE company_id = ? ORDER BY created_at DESC',
+        [companyId]
+      );
+      setAccounts(accountsRes.rows._array || Array.from(accountsRes.rows));
+    } catch (e) {
+      console.error('[TrustAccounting] Account creation failed:', e);
+      toast.error('Failed to create trust account');
+    }
+  };
 
   const handleTransactionSubmit = async (e) => {
     e.preventDefault();
@@ -142,9 +179,14 @@ export default function TrustAccounting() {
           <h1 className="text-3xl font-bold text-foreground">Trust Accounting</h1>
           <p className="text-sm text-muted-foreground mt-1">Manage trust accounts, escrow, and ledger transactions</p>
         </div>
-        <Button onClick={() => { setShowTransactionForm(true); setEditingTransactionId(null); }} className="gap-2">
-          <Plus className="w-4 h-4" /> Record Transaction
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={() => setShowAccountForm(true)} variant="outline" className="gap-2">
+            <Plus className="w-4 h-4" /> Create Account
+          </Button>
+          <Button onClick={() => { setShowTransactionForm(true); setEditingTransactionId(null); }} className="gap-2">
+            <Plus className="w-4 h-4" /> Record Transaction
+          </Button>
+        </div>
       </div>
 
       {/* KPI Cards */}
@@ -360,6 +402,103 @@ export default function TrustAccounting() {
           </Card>
         </div>
       )}
+
+      {/* Create Trust Account Modal */}
+      <Sheet open={showAccountForm} onOpenChange={setShowAccountForm}>
+        <SheetContent className="w-full max-w-md overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>Create Trust Account</SheetTitle>
+            <SheetDescription>Add a new trust account for holding client funds</SheetDescription>
+          </SheetHeader>
+
+          <form onSubmit={handleAccountSubmit} className="space-y-4 mt-6">
+            <div>
+              <label className="text-sm font-medium">Account Name</label>
+              <Input
+                value={accountFormData.accountName}
+                onChange={(e) => setAccountFormData({ ...accountFormData, accountName: e.target.value })}
+                placeholder="e.g., Client Trust Account A"
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-sm font-medium">Account Type</label>
+                <Select value={accountFormData.accountType} onValueChange={(value) => setAccountFormData({ ...accountFormData, accountType: value })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="operating">Operating</SelectItem>
+                    <SelectItem value="escrow">Escrow</SelectItem>
+                    <SelectItem value="commission">Commission</SelectItem>
+                    <SelectItem value="reserve">Reserve</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Currency</label>
+                <Input
+                  value={accountFormData.currency}
+                  onChange={(e) => setAccountFormData({ ...accountFormData, currency: e.target.value })}
+                  placeholder="USD"
+                  maxLength="3"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Bank Name</label>
+              <Input
+                value={accountFormData.bankName}
+                onChange={(e) => setAccountFormData({ ...accountFormData, bankName: e.target.value })}
+                placeholder="Bank name"
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-sm font-medium">Account Number</label>
+                <Input
+                  value={accountFormData.accountNumber}
+                  onChange={(e) => setAccountFormData({ ...accountFormData, accountNumber: e.target.value })}
+                  placeholder="****1234"
+                  type="password"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Routing Number</label>
+                <Input
+                  value={accountFormData.routingNumber}
+                  onChange={(e) => setAccountFormData({ ...accountFormData, routingNumber: e.target.value })}
+                  placeholder="Routing #"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Account Holder Name</label>
+              <Input
+                value={accountFormData.accountHolderName}
+                onChange={(e) => setAccountFormData({ ...accountFormData, accountHolderName: e.target.value })}
+                placeholder="Full name"
+                required
+              />
+            </div>
+
+            <div className="flex gap-2 pt-4">
+              <Button type="submit" className="flex-1">
+                Create Account
+              </Button>
+              <Button type="button" variant="outline" onClick={() => setShowAccountForm(false)}>
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </SheetContent>
+      </Sheet>
 
       {/* Transaction Form Modal */}
       <Sheet open={showTransactionForm} onOpenChange={setShowTransactionForm}>
