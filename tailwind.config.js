@@ -111,12 +111,43 @@ module.exports = {
   			},
 			shimmer: {
 				'100%': { transform: 'translateX(100%)' },
+			},
+			'page-enter': {
+				from: {
+					opacity: '0',
+					transform: 'translateY(12px)'
+				},
+				to: {
+					opacity: '1',
+					transform: 'translateY(0)'
+				}
+			},
+			'card-enter': {
+				from: {
+					opacity: '0'
+				},
+				to: {
+					opacity: '1'
+				}
+			},
+			'list-item-enter': {
+				from: {
+					opacity: '0',
+					transform: 'translateX(-8px)'
+				},
+				to: {
+					opacity: '1',
+					transform: 'translateX(0)'
+				}
 			}
   		},
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out',
 			'shimmer': 'shimmer 2.5s infinite',
+			'page-enter': 'page-enter 300ms ease-out',
+			'card-enter': 'card-enter 300ms ease-out',
+			'list-item-enter': 'list-item-enter 300ms ease-out'
   		}
   	}
   },

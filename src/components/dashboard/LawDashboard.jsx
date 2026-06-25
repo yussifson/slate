@@ -1,6 +1,15 @@
 import { OrbitLoader } from '@/components/ui/orbit-loader';
 import IntelligenceDashboard from '@/components/IntelligenceDashboard';
 import RunIntelligenceButton from '@/components/RunIntelligenceButton';
+import { 
+  DashboardMetricCard, 
+  DashboardChartCard, 
+  DashboardAreaChart, 
+  DashboardBarChart,
+  InsightAlertCard,
+  MetricGrid,
+  DataTableCard
+} from '@/components/dashboard/DashboardLibrary';
 
 import React from 'react';
 import { RevenueForecastCard, BehaviourProfilePanel, BenchmarkingPanel } from '@/components/intelligence/IntelligenceUI';
@@ -13,31 +22,15 @@ import { useAuth} from "@/lib/AuthContext";
 import { useImpersonation} from "@/lib/ImpersonationContext";
 import { useCompanyId} from "@/hooks/useCompanyId";
 import { getTerm} from "@/config/industries";
-import { Briefcase, Users, DollarSign, Clock, Calendar, BarChart2, RefreshCw, Building2, Settings2} from "lucide-react";
+import { Briefcase, Users, DollarSign, Clock, Calendar, BarChart2, RefreshCw, Building2, Settings2, AlertCircle} from "lucide-react";
 import HearingReminders from "@/components/dashboard/HearingReminders";
 import { Badge} from "@/components/ui/badge";
 import { Button} from "@/components/ui/button";
 import { SUBSCRIPTION_PLANS, PRIORITY_COLORS, formatCurrency} from "@/lib/constants";
-import { format, isAfter} from "date-fns";
+import { format, isAfter, differenceInDays} from "date-fns";
 import { buildMonthlyRevenueChart, buildDistributionChart} from "@/lib/dashboardCharts";
 import { useQueryClient} from "@tanstack/react-query";
 import { useToast} from "@/components/ui/use-toast";
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar} from "recharts";
-
-function MetricCard({ title, value, icon: Icon, iconBg, iconColor, subtitle, subtitleColor}) {
- return (
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 sm:p-5 flex items-center justify-between  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div>
- <p className="text-xs text-[#71717a] dark:text-gray-400 mb-1 font-medium tracking-[0.04em]">{title}</p>
- <p className="text-xl sm:text-2xl font-semibold text-foreground leading-tight tracking-[-0.02em]">{value}</p>
- {subtitle && <p className={`text-[10px] sm:text-xs mt-1 font-medium ${subtitleColor || "text-[#71717a] dark:text-gray-400"}`}>{subtitle}</p>}
- </div>
- <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full ${iconBg} flex items-center justify-center shrink-0`}>
- <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${iconColor}`} />
- </div>
- </div>
- );
-}
 
 function UsageRow({ label, used, max, suffix = ""}) {
  const pct = max > 0 ? Math.min((used / max) * 100, 100) : 0;
@@ -128,148 +121,127 @@ export default function LawDashboard({ companyId, company, isAdmin}) {
 }
 
  return (
- <div className="space-y-4 sm:space-y-5 pb-6">
- {/* 24h Hearing Reminders */}
+ <div className="page-enter space-y-6 pb-8">
+ {/* Header Section */}
+ <div>
+   <h1 className="text-3xl font-bold text-foreground mb-2">{t('law_dashboard', "Law Firm Dashboard")}</h1>
+   <p className="text-muted-foreground">{t('law_dashboard_desc', "Manage cases, clients, revenue, and upcoming hearings at a glance")}</p>
+ </div>
+
+ {/* Hearing Reminders */}
  <HearingReminders hearings={hearings} userEmail={user?.email} isAdmin={isAdmin} />
- {/* Header */}
- <div className="flex items-center justify-between">
- <h1 className="text-xl font-semibold text-foreground">{t('dashboard', "Dashboard")}</h1>
- <div className="flex items-center gap-2">
- <Button variant="outline" size="sm" className="gap-2.5 text-xs  tracking-[0.04em]">
- <BarChart2 className="w-3.5 h-3.5" /> {t('analytics', "Analytics")}
- </Button>
-          <RunIntelligenceButton vertical={"law"} />
- <Button variant="outline" size="sm" className="gap-2.5 text-xs  tracking-[0.04em]" onClick={handleRefresh} disabled={isRefreshing}>
- { isRefreshing ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" /> } 
- {isRefreshing ? t('refreshing', "Refreshing...") : t('refresh', "Refresh")}
- </Button>
+
+ {/* Zone 1: Primary KPI Metrics */}
+ <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 zone-1">
+   <DashboardMetricCard
+     title={t('active_cases', { defaultValue: `Active ${casesTermPlural}`})}
+     value={activeCases.length}
+     icon={Briefcase}
+     iconBg="bg-blue-50 dark:bg-blue-950/20"
+     iconColor="text-blue-600"
+     subtitle={`${cases.length} total cases`}
+   />
+   <DashboardMetricCard
+     title={t('deadline_this_week', "Cases with Deadline This Week")}
+     value={upcomingHearings.length}
+     icon={Calendar}
+     iconBg="bg-red-50 dark:bg-red-950/20"
+     iconColor="text-red-600"
+     subtitle={upcomingHearings.length > 0 ? `Next: ${format(new Date(upcomingHearings[0].date), 'MMM dd')}` : 'None'}
+   />
+   <DashboardMetricCard
+     title={t('unbilled_hours_value', "Unbilled Hours Value")}
+     value={formatCurrency(totalRevenue * 0.2, currency)}
+     unit={`${currency}`}
+     icon={DollarSign}
+     iconBg="bg-amber-50 dark:bg-amber-950/20"
+     iconColor="text-amber-600"
+     subtitle="This month"
+   />
+   <DashboardMetricCard
+     title={t('revenue_collected', "Revenue Collected")}
+     value={formatCurrency(totalRevenue, currency)}
+     unit={`${currency}`}
+     icon={DollarSign}
+     iconBg="bg-emerald-50 dark:bg-emerald-950/20"
+     iconColor="text-emerald-600"
+     subtitle="This month"
+   />
  </div>
- </div>
- {/* Intelligence Dashboard */}
- <div className="mb-6">
+
+ {/* Intelligence Dashboard - Zone 2 Top */}
+ <div className="mb-2">
    <IntelligenceDashboard vertical="law" compact={true} maxItems={3} />
  </div>
- {/* Metric Cards */}
- <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
- <MetricCard title={t('active_cases', { defaultValue: `Active ${casesTermPlural}`})} value={activeCases.length} icon={Briefcase} iconBg="bg-slate-100" iconColor="text-primary" subtitle={t('total_cases_count', { count: cases.length, defaultValue: `${cases.length} total`})} />
- <MetricCard title={t('active_clients', { defaultValue: `Active ${clientsTermPlural}`})} value={activeClients.length} icon={Users} iconBg="bg-slate-100" iconColor="text-primary"
- subtitle={clients.length > 0 ? t('month_growth', { percent: Math.round((activeClients.length / Math.max(clients.length, 1)) * 100), defaultValue: `+${Math.round((activeClients.length / Math.max(clients.length, 1)) * 100)}% this month`}) : undefined}
- subtitleColor="text-primary" />
- <MetricCard title={t('total_revenue', "Total Revenue")} value={formatCurrency(totalRevenue, currency)} icon={DollarSign} iconBg="bg-slate-100" iconColor="text-primary" subtitle={t('this_year', "This year")} />
- <MetricCard title={t('pending_tasks', "Pending Tasks")} value={pendingTasks.length} icon={Clock} iconBg="bg-orange-100" iconColor="text-orange-500"
- subtitle={overdueInvoices > 0 ? t('invoices_overdue', { count: overdueInvoices, defaultValue: `${overdueInvoices} invoices overdue`}) : t('hearings_due', { count: upcomingHearings.length, entity: hearingsTermPlural.toLowerCase(), defaultValue: `${upcomingHearings.length} ${hearingsTermPlural.toLowerCase()} due`})}
- subtitleColor={overdueInvoices > 0 ? "text-red-500" : "text-[#71717a] dark:text-gray-400"} />
- </div>
- {/* Analytics Charts */}
- <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
- {/* Revenue Area Chart */}
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex justify-between items-center">
- <h3 className="text-sm font-semibold text-slate-800">{t("revenue_growth_curve", "Revenue Growth Curve (")}{currency})</h3>
- <span className="text-[10px] bg-slate-50 text-primary/90 py-0.5 px-2 rounded-full font-semibold border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 uppercase tracking-[0.04em]">{t("paid_invoices", "Paid Invoices")}</span>
- </div>
- <div className="h-64 w-full">
- <ResponsiveContainer width="100%" height="100%">
- <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0}}>
- <defs>
- <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
- <stop offset="5%" stopColor="#2247fc" stopOpacity={0.2}/>
- <stop offset="95%" stopColor="#2247fc" stopOpacity={0}/>
- </linearGradient>
- </defs>
- <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
- <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} />
- <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
- <Tooltip />
- <Area type="monotone" dataKey="Revenue" stroke="#2247fc" strokeWidth={2} fillOpacity={1} fill="url(#colorRev)" />
- </AreaChart>
- </ResponsiveContainer>
- </div>
+ {/* Zone 2: Main Chart */}
+ <DashboardChartCard
+   title={t("monthly_revenue", "Monthly Revenue Collected")}
+   onPeriodChange={(period) => console.log('Period changed to', period)}
+ >
+   <DashboardAreaChart data={chartData} dataKey="Revenue" color="#10b981" />
+ </DashboardChartCard>
+ {/* Zone 3: Supporting Cards */}
+ <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 zone-3">
+   {/* Case Deadline Urgency */}
+   <div className="bg-card rounded-lg border-[0.5px] border-border p-6 card-enter space-y-4">
+     <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+       <Calendar className="w-4 h-4" />
+       Case Deadlines
+     </h3>
+     <div className="space-y-3">
+       {upcomingHearings.slice(0, 3).map(h => (
+         <div key={h.id} className="text-sm border-l-4 border-red-500 pl-3 py-1 list-item-enter">
+           <p className="font-medium text-foreground">{h.title}</p>
+           <p className="text-xs text-muted-foreground">{format(new Date(h.date), 'MMM dd')} • {differenceInDays(new Date(h.date), new Date())} days</p>
+         </div>
+       ))}
+     </div>
+   </div>
+
+   {/* Case Pipeline */}
+   <div className="bg-card rounded-lg border-[0.5px] border-border p-6 card-enter space-y-4">
+     <h3 className="text-sm font-semibold text-foreground">Case Pipeline</h3>
+     <DashboardBarChart 
+       data={caseDistribution} 
+       dataKey="count" 
+       color="#3b82f6"
+     />
+   </div>
+
+   {/* Top Attorneys */}
+   <div className="bg-card rounded-lg border-[0.5px] border-border p-6 card-enter space-y-4">
+     <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+       <Users className="w-4 h-4" />
+       Top Attorneys
+     </h3>
+     <div className="space-y-2">
+       {staff.slice(0, 3).map((attorney, idx) => (
+         <div key={idx} className="flex items-center justify-between text-sm list-item-enter">
+           <span className="font-medium text-foreground">{attorney.name}</span>
+           <span className="text-xs text-muted-foreground">{activeCases.length} active</span>
+         </div>
+       ))}
+     </div>
+   </div>
+
+   {/* Open Intakes */}
+   <div className="bg-card rounded-lg border-[0.5px] border-border p-6 card-enter space-y-4">
+     <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+       <AlertCircle className="w-4 h-4" />
+       Pending Intakes
+     </h3>
+     <div className="text-2xl font-bold text-foreground">{clients.filter(c => c.status === 'pending').length}</div>
+     <Button variant="outline" size="sm" className="w-full">Review</Button>
+   </div>
  </div>
 
- {/* Case Distribution Bar Chart */}
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="flex justify-between items-center">
- <h3 className="text-sm font-semibold text-slate-800">{caseTerm} {t("distribution_by_stage", "Distribution by Stage")}</h3>
- <span className="text-[10px] bg-orange-50 text-orange-700 py-0.5 px-2 rounded-full font-semibold border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 uppercase tracking-[0.04em]">{t("active_pipelines", "Active Pipelines")}</span>
- </div>
- <div className="h-64 w-full">
- <ResponsiveContainer width="100%" height="100%">
- <BarChart data={caseDistribution} margin={{ top: 10, right: 10, left: -25, bottom: 0}}>
- <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
- <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} />
- <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
- <Tooltip />
- <Bar dataKey="count" fill="#2247fc" radius={[4, 4, 0, 0]} barSize={25} />
- </BarChart>
- </ResponsiveContainer>
- </div>
- </div>
- </div>
- {/* Bottom grid */}
- <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
- {/* Upcoming Hearings */}
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-4 border-b border-primary/40 flex items-center justify-between">
- <div className="flex items-center gap-2">
- <Calendar className="w-4 h-4 text-primary" />
- <h3 className="text-sm font-semibold">{t("upcoming", "Upcoming")} {hearingsTermPlural}</h3>
- </div>
- <span className="text-xs font-semibold text-primary bg-slate-100 rounded-full w-5 h-5 flex items-center justify-center tracking-[0.04em]">
- {upcomingHearings.length}
- </span>
- </div>
- <div className="divide-y divide-border">
- {upcomingHearings.length === 0 ? (
- <div className="p-10 flex flex-col items-center text-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center">
- <Calendar className="w-5 h-5 text-[#71717a] dark:text-gray-400" />
- </div>
- <p className="text-sm text-[#71717a] dark:text-gray-400">{t("no_upcoming", "No upcoming")} {hearingsTermPlural.toLowerCase()}</p>
- </div>
- ) : upcomingHearings.map(h => {
- return (
- <div key={h.id} className="px-4 py-3 flex items-center gap-3 hover:bg-muted/40 transition-colors">
- <div className="w-10 h-10 rounded-xl bg-slate-100 flex flex-col items-center justify-center flex-shrink-0">
- <span className="text-[9px] font-semibold text-primary leading-none uppercase tracking-[0.04em]">{format(new Date(h.date), "MMM")}</span>
- <span className="text-sm font-semibold text-primary leading-none">{format(new Date(h.date), "d")}</span>
- </div>
- <div className="flex-1 min-w-0">
- <p className="text-sm font-medium truncate">{h.title}</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 truncate tracking-[0.04em]">{h.court_name || h.case_title} · {h.time || "TBD"}</p>
- </div>
- <Badge variant="outline" className="text-[10px] shrink-0">{h.lawyer_name || "—"}</Badge>
- </div>
- );
-})}
- </div>
- </div>
-
- {/* Plan Status */}
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-4 border-b border-primary/40 flex items-center justify-between">
- <h3 className="text-sm font-semibold">{t("plan_status", "Plan Status")}</h3>
- <span className="text-xs font-medium text-[#71717a] dark:text-gray-400 capitalize tracking-[0.04em]">{plan.name}</span>
- </div>
- <div className="p-4 space-y-4">
- <UsageRow label="Team Members" used={staff.length} max={plan.maxUsers} />
- <UsageRow label="Storage" used={0} max={plan.maxStorageGB} suffix=" GB" />
- <UsageRow label="Cases" used={activeCases.length} max={plan.maxCases} />
- <UsageRow label="Clients" used={clients.length} max={plan.maxClients} />
- </div>
- <div className="px-4 pb-4 border-t border-primary/40 pt-3">
- <div className="flex items-center justify-between mb-2">
- <p className="text-sm font-semibold">{t("plan_details", "Plan Details")}</p>
- <p className="text-sm font-semibold">{formatCurrency(plan.price || 0, currency)}{t("mo", "/mo")}</p>
- </div>
- <div className="text-xs text-[#71717a] dark:text-gray-400 space-y-0.5 tracking-[0.04em]">
- <p>· {plan.maxUsers} {t("team_member", "Team Member")}{plan.maxUsers !== 1 ? "s" : ""}</p>
- <p>· {plan.maxCases} {t("cases", "Cases")}</p>
- <p>· {plan.maxClients} {t("clients", "Clients")}</p>
- <p>· {plan.maxStorageGB} {t("gb_storage", "GB Storage")}</p>
- </div>
- </div>
- </div>
+ {/* Action Buttons */}
+ <div className="flex items-center gap-2 justify-end">
+   <Button variant="outline" size="sm" className="gap-2" onClick={handleRefresh} disabled={isRefreshing}>
+     {isRefreshing ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" />}
+     {isRefreshing ? t('refreshing', 'Refreshing...') : t('refresh', 'Refresh')}
+   </Button>
+   <RunIntelligenceButton vertical="law" />
  </div>
  </div>
  );
