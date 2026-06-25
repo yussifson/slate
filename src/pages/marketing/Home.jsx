@@ -869,9 +869,10 @@ return (
 
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
  {testimonials.map((item, idx) => {
+ const delayClass = ['delay-0', 'delay-100', 'delay-200'][idx % 3];
  return (
- <FadeIn key={idx} delay={`delay-[${idx * 120}ms]`}>
- <div className="bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[2rem] p-10 flex flex-col justify-between hover:border-primary/30 -emerald-900/5 transition-all duration-300 h-full group relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <FadeIn key={idx} delay={delayClass}>
+ <div className="bg-white border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-[2rem] p-10 flex flex-col justify-between hover:border-primary/30 hover:shadow-[0_8px_24px_rgba(16,185,129,0.08)] transition-all duration-300 h-full group relative overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  <div className="absolute top-0 right-0 p-8 opacity-5 text-[8rem] font-serif leading-none font-black text-primary/70 group-hover:text-primary group-hover:opacity-10 transition-colors duration-500">"</div>
  
  <div className="relative z-10">
