@@ -1,25 +1,37 @@
 -- Pharmacy Vertical - PowerSync Configuration
--- Register pharmacy tables for offline sync
+-- Register pharmacy tables for offline sync with proper type casting
 
 -- ========================================
 -- POWERSYNC TABLE REGISTRATION
 -- ========================================
 
--- Only sync essential tables for offline access
--- Drugs - read-only catalog
--- SELECT * FROM univ_pharmacy_drugs WHERE company_id = bucket.user_company_id
+-- Only sync essential tables for offline access (4 tables)
+-- All queries use ::text casting for UUID fields to prevent type mismatches
 
--- Inventory - critical for availability checking
--- SELECT * FROM univ_pharmacy_inventory WHERE company_id = bucket.user_company_id
+-- 1. Drugs - read-only catalog
+-- SELECT * FROM univ_pharmacy_drugs 
+-- WHERE company_id = bucket.user_company_id::text
 
--- Sales - transaction history
--- SELECT * FROM univ_pharmacy_sales WHERE company_id = bucket.user_company_id
+-- 2. Inventory - critical for availability checking
+-- SELECT * FROM univ_pharmacy_inventory 
+-- WHERE company_id = bucket.user_company_id::text
 
--- Sale Items - line items for transactions
--- SELECT * FROM univ_pharmacy_sale_items WHERE company_id = bucket.user_company_id
+-- 3. Sales - transaction history
+-- SELECT * FROM univ_pharmacy_sales 
+-- WHERE company_id = bucket.user_company_id::text
 
+-- 4. Sale Items - line items for transactions
+-- SELECT * FROM univ_pharmacy_sale_items 
+-- WHERE company_id = bucket.user_company_id::text
+
+-- Extended tables for full offline access (if needed):
 -- Prescriptions - for verification
--- SELECT * FROM univ_pharmacy_prescriptions WHERE company_id = bucket.user_company_id
+-- SELECT * FROM univ_pharmacy_prescriptions 
+-- WHERE company_id = bucket.user_company_id::text
+
+-- Customers - for customer lookup
+-- SELECT * FROM univ_pharmacy_customers 
+-- WHERE company_id = bucket.user_company_id::text
 
 -- ========================================
 -- SUPABASE ROW LEVEL SECURITY POLICIES
@@ -30,30 +42,30 @@ ALTER TABLE univ_pharmacy_drugs ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "pharmacy_drugs_read" ON univ_pharmacy_drugs
   FOR SELECT USING (company_id = auth.jwt() ->> 'company_id' OR
-    EXISTS (SELECT 1 FROM companies WHERE id = company_id AND id = auth.jwt() ->> 'company_id'));
+    EXISTS (SELECT 1 FROM companies WHERE id::text = company_id AND id::text = auth.jwt() ->> 'company_id'));
 
 CREATE POLICY "pharmacy_drugs_write" ON univ_pharmacy_drugs
   FOR INSERT WITH CHECK (company_id = auth.jwt() ->> 'company_id' OR
-    EXISTS (SELECT 1 FROM companies WHERE id = company_id AND admin_user_id = auth.uid()));
+    EXISTS (SELECT 1 FROM companies WHERE id::text = company_id AND admin_user_id::text = auth.uid()));
 
 CREATE POLICY "pharmacy_drugs_update" ON univ_pharmacy_drugs
   FOR UPDATE USING (company_id = auth.jwt() ->> 'company_id' OR
-    EXISTS (SELECT 1 FROM companies WHERE id = company_id AND admin_user_id = auth.uid()));
+    EXISTS (SELECT 1 FROM companies WHERE id::text = company_id AND admin_user_id::text = auth.uid()));
 
 -- Inventory Table
 ALTER TABLE univ_pharmacy_inventory ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "pharmacy_inventory_read" ON univ_pharmacy_inventory
   FOR SELECT USING (company_id = auth.jwt() ->> 'company_id' OR
-    EXISTS (SELECT 1 FROM companies WHERE id = company_id AND id = auth.jwt() ->> 'company_id'));
+    EXISTS (SELECT 1 FROM companies WHERE id::text = company_id AND id::text = auth.jwt() ->> 'company_id'));
 
 CREATE POLICY "pharmacy_inventory_write" ON univ_pharmacy_inventory
   FOR INSERT WITH CHECK (company_id = auth.jwt() ->> 'company_id' OR
-    EXISTS (SELECT 1 FROM companies WHERE id = company_id AND admin_user_id = auth.uid()));
+    EXISTS (SELECT 1 FROM companies WHERE id::text = company_id AND admin_user_id::text = auth.uid()));
 
 CREATE POLICY "pharmacy_inventory_update" ON univ_pharmacy_inventory
   FOR UPDATE USING (company_id = auth.jwt() ->> 'company_id' OR
-    EXISTS (SELECT 1 FROM companies WHERE id = company_id AND admin_user_id = auth.uid()));
+    EXISTS (SELECT 1 FROM companies WHERE id::text = company_id AND admin_user_id::text = auth.uid()));
 
 -- Sales Table
 ALTER TABLE univ_pharmacy_sales ENABLE ROW LEVEL SECURITY;
