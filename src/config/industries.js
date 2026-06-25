@@ -805,6 +805,55 @@ export const INDUSTRIES = {
       { label: 'Settings', path: '/settings', icon: 'Settings' },
     ]},
 
+  pharmacy: {
+    name: 'Pharmacy',
+    icon: '💊',
+    terms: {
+      client: 'Patient', clients: 'Patients',
+      case: 'Prescription', cases: 'Prescriptions',
+      staff: 'Pharmacist', staffPlural: 'Pharmacists',
+      venue: 'Branch', intake: 'Prescription Input',
+      hearing: 'Refill', hearings: 'Refills'},
+    roles: [
+      { value: 'company_admin', label: 'Pharmacy Manager' },
+      { value: 'pharmacist', label: 'Pharmacist' },
+      { value: 'pharmacy_technician', label: 'Pharmacy Technician' },
+      { value: 'cashier', label: 'Cashier' },
+      { value: 'inventory_manager', label: 'Inventory Manager' },
+      { value: 'finance', label: 'Finance Officer' },
+    ],
+
+    departments: [
+      { value: 'admin', label: 'Administration' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'hr', label: 'Human Resources' },
+      { value: 'operations', label: 'Operations' },
+      { value: 'tech', label: 'IT & Support' }
+    ],    nav: [
+      { label: 'Dashboard', path: '/pharmacy/dashboard', icon: 'LayoutDashboard' },
+      
+      { section: 'Core Operations' },
+      { label: 'Point of Sale', path: '/pharmacy/pos', icon: 'ShoppingCart' },
+      { label: 'Prescriptions', path: '/pharmacy/prescriptions', icon: 'FileText' },
+      { label: 'Patients', path: '/pharmacy/customers', icon: 'Users' },
+      
+      { section: 'Inventory & Stock' },
+      { label: 'Drug Catalog', path: '/pharmacy/drugs', icon: 'Pill' },
+      { label: 'Inventory', path: '/pharmacy/inventory', icon: 'Package' },
+      
+      { section: 'Financial & Claims' },
+      { label: 'Insurance Claims', path: '/pharmacy/claims', icon: 'FileCheck' },
+      { label: 'Reports', path: '/pharmacy/reports', icon: 'BarChart2' },
+      
+      { section: 'Administration' },
+      { label: 'HR & Leave', path: '/hr', icon: 'HeartHandshake' },
+      { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
+      { label: 'Automations', path: '/automations', icon: 'Zap' },
+      { label: 'Roles', path: '/roles', icon: 'ShieldCheck' },
+      { label: 'Departments', path: '/departments', icon: 'Building' },
+      { label: 'Settings', path: '/settings', icon: 'Settings' },
+    ]},
+
   slate: {
     name: 'Slate Admin',
     icon: '⚙️',
