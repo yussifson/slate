@@ -189,6 +189,7 @@ bucket_definitions:
   - SELECT * FROM univ_re_rent_payment_schedules WHERE company_id = bucket.company_id
   - SELECT * FROM univ_re_trust_accounts WHERE company_id = bucket.company_id
   - SELECT * FROM univ_re_trust_ledger WHERE company_id = bucket.company_id
+  - SELECT * FROM univ_re_agentic_conversations WHERE company_id = bucket.company_id
 
   # -------------------------------------------------------------
   # RETAIL MODULE
@@ -234,3 +235,4 @@ bucket_definitions:
   - SELECT * FROM univ_pharmacy_expiry_alerts WHERE company_id = bucket.company_id
   - SELECT * FROM univ_pharmacy_audit_log WHERE company_id = bucket.company_id
   - SELECT * FROM univ_pharmacy_analytics WHERE company_id = bucket.company_id
+  - SELECT * FROM sync_errors WHERE company_id = bucket.company_id
