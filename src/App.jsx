@@ -151,6 +151,8 @@ import CustomPageViewer from './pages/CustomPageViewer';
 import OrbitComponentTester from './pages/admin/OrbitComponentTester';
 const MasterPortalRouter = React.lazy(() => import('./components/portal/MasterPortalRouter'));
 
+import PortalManagement from './pages/settings/PortalManagement';
+
 // School Pages
 import SchoolStudents from './pages/school/Students';
 import StudentProfile from './pages/school/StudentProfile';
@@ -523,10 +525,10 @@ function PlatformRoutes() {
       <Route path="/documents" element={<UnivDocument />} />
       <Route path="/team" element={<UnivHREmployee />} />
       <Route path="/settings" element={<Settings />} />
-          <Route path="/roles" element={<Roles />} />
-          <Route path="/departments" element={<Departments />} />
-
+      <Route path="/settings/portal" element={<PortalManagement />} />
       <Route path="/settings/custom-fields" element={<CustomFieldsSettings />} />
+      <Route path="/roles" element={<Roles />} />
+      <Route path="/departments" element={<Departments />} />
       <Route path="/integrations" element={<AppIntegrations />} />
       <Route path="/automations" element={<Automations />} />
       <Route path="/notifications" element={<NotificationsInbox />} />
@@ -1022,8 +1024,25 @@ function ProtectedRoute() {
     );
   }
 
+
   if (user?.company_status === 'onboarding' && window.location.pathname !== '/onboarding') {
     return <Navigate to="/onboarding" replace />;
+  }
+
+  // ── PORTAL USER REDIRECT ──────────────────────────────────────────────────
+  // If the logged-in user has a portal role (client/patient/student/tenant etc.)
+  // they should ONLY see /portal. Bounce them there if they try to access any
+  // other route in the main workspace.
+  const PORTAL_ROLES = [
+    'client', 'patient', 'student', 'parent', 'guardian', 'tenant',
+    'landlord', 'owner', 'guest', 'member', 'policyholder', 'trainee',
+    'learner', 'employee', 'portal_user',
+  ];
+  const isPortalUser = user?.role && PORTAL_ROLES.includes(user.role.toLowerCase());
+  const isOnPortalRoute = window.location.pathname.startsWith('/portal');
+
+  if (isPortalUser && !isOnPortalRoute) {
+    return <Navigate to="/portal" replace />;
   }
 
   return <Outlet />;

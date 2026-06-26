@@ -29,7 +29,7 @@ export default function OnlineAssessments() {
  const { data: assessments = [], isLoading } = useQuery({
    queryKey: ["online_assessments", companyId],
    queryFn: async () => {
-     const { rows } = await powerSync.execute(`SELECT * FROM online_assessments WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
+     const rows = await powerSync.getAll(`SELECT * FROM online_assessments WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
      return rows || [];
    },
    enabled: !!companyId
@@ -38,7 +38,7 @@ export default function OnlineAssessments() {
  const { data: results = [] } = useQuery({
    queryKey: ["online_assessment_results", companyId, user?.id],
    queryFn: async () => {
-     const { rows } = await powerSync.execute(`SELECT * FROM online_assessment_results WHERE company_id = ? AND student_id = ?`, [companyId, user?.id]);
+     const rows = await powerSync.getAll(`SELECT * FROM online_assessment_results WHERE company_id = ? AND student_id = ?`, [companyId, user?.id]);
      return rows || [];
    },
    enabled: !!companyId && !!user?.id

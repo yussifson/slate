@@ -6,6 +6,7 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
+import { useIndustryRecords, useMutateIndustryRecord } from '@/hooks/useIndustryData';
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { useAuth } from '@/lib/AuthContext';

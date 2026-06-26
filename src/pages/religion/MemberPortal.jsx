@@ -26,11 +26,11 @@ export default function MemberPortal() {
    const fetchData = async () => {
      setIsLoading(true);
      try {
-       const evRes = await powerSync.execute('SELECT * FROM univ_religion_events WHERE company_id = ? ORDER BY date ASC LIMIT 10', [companyId]);
-       if(active) setEvents(evRes.rows._array || Array.from(evRes.rows));
+       const evData = await powerSync.getAll('SELECT * FROM univ_religion_events WHERE company_id = ? ORDER BY date ASC LIMIT 10', [companyId]);
+       if(active) setEvents(evData || []);
 
-       const donRes = await powerSync.execute('SELECT * FROM univ_religion_donations WHERE company_id = ? AND member_name = ?', [companyId, user?.name || '']);
-       if(active) setMyDonations(donRes.rows._array || Array.from(donRes.rows));
+       const donData = await powerSync.getAll('SELECT * FROM univ_religion_donations WHERE company_id = ? AND member_name = ?', [companyId, user?.name || '']);
+       if(active) setMyDonations(donData || []);
      } catch(e){}
      setIsLoading(false);
    };

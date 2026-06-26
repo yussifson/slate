@@ -41,12 +41,12 @@ export default function PolicyholderPortal() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [policiesRes, claimsRes] = await Promise.all([
-        powerSync.execute(`SELECT * FROM univ_insurancepolicy WHERE company_id = ? ORDER BY created_at DESC`, [companyId]),
-        powerSync.execute(`SELECT * FROM insurance_claims WHERE company_id = ? ORDER BY created_at DESC`, [companyId])
+      const [policiesData, claimsData] = await Promise.all([
+        powerSync.getAll(`SELECT * FROM univ_insurancepolicy WHERE company_id = ? ORDER BY created_at DESC`, [companyId]),
+        powerSync.getAll(`SELECT * FROM insurance_claims WHERE company_id = ? ORDER BY created_at DESC`, [companyId])
       ]);
-      setPolicies(policiesRes.rows ? (policiesRes.rows._array || Array.from(policiesRes.rows)) : []);
-      setClaims(claimsRes.rows ? (claimsRes.rows._array || Array.from(claimsRes.rows)) : []);
+      setPolicies(policiesData || []);
+      setClaims(claimsData || []);
     } catch (err) {
       console.error(err);
       toast.error('Failed to load coverage details');

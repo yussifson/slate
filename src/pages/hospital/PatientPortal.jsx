@@ -24,12 +24,12 @@ export default function PatientPortal() {
     queryKey: ['portal_patient', companyId, user?.email],
     queryFn: async () => {
       if (!companyId || !user?.email) return null;
-      const res = await powerSync.execute(
+      const rows = await powerSync.getAll(
         `SELECT id, COALESCE(first_name, '') || ' ' || COALESCE(last_name, '') as name, date_of_birth, blood_type, gender 
          FROM univ_patients WHERE company_id = ? AND email = ? LIMIT 1`,
         [companyId, user.email]
       );
-      return res.rows.item(0) || null;
+      return rows?.[0] || null;
     },
     enabled: !!companyId && !!user?.email
   });
@@ -38,11 +38,11 @@ export default function PatientPortal() {
   const { data: appts = [] } = useQuery({
     queryKey: ['portal_appts', companyId, patientProfile?.name],
     queryFn: async () => {
-      const res = await powerSync.execute(
+      const rows = await powerSync.getAll(
         `SELECT date, time, type, status, doctor_id as doctor FROM univ_appointments WHERE company_id = ? AND client_name = ? ORDER BY date DESC, time ASC LIMIT 3`,
         [companyId, patientProfile.name]
       );
-      return res.rows._array;
+      return rows || [];
     },
     enabled: !!patientProfile?.name
   });
@@ -51,11 +51,11 @@ export default function PatientPortal() {
   const { data: prescriptions = [] } = useQuery({
     queryKey: ['portal_prescriptions', companyId, patientProfile?.id],
     queryFn: async () => {
-      const res = await powerSync.execute(
+      const rows = await powerSync.getAll(
         `SELECT medication, dosage FROM univ_prescriptions WHERE company_id = ? AND patient_id = ? AND status = 'Active'`,
         [companyId, patientProfile.id]
       );
-      return res.rows._array;
+      return rows || [];
     },
     enabled: !!patientProfile?.id
   });
@@ -64,11 +64,11 @@ export default function PatientPortal() {
   const { data: labResults = [] } = useQuery({
     queryKey: ['portal_labs', companyId, patientProfile?.id],
     queryFn: async () => {
-      const res = await powerSync.execute(
+      const rows = await powerSync.getAll(
         `SELECT test_name, status, result_value FROM univ_lab_results WHERE company_id = ? AND patient_id = ? ORDER BY test_date DESC LIMIT 5`,
         [companyId, patientProfile.id]
       );
-      return res.rows._array;
+      return rows || [];
     },
     enabled: !!patientProfile?.id
   });

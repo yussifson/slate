@@ -950,6 +950,13 @@ export const getIndustryNav = (industryKey, educationLevel) => {
     nav.splice(insertIndex, 0, { label: 'HR & Leave', path: '/hr', icon: 'HeartHandshake' });
   }
 
+  // ── CLIENT PORTAL ─────────────────────────────────────────────────────────
+  // Inject the Portal Management link globally for every vertical (admin only)
+  if (!nav.find(n => n.path === '/settings/portal')) {
+    const insertIndex = Math.max(0, nav.length - 1); // just before Settings
+    nav.splice(insertIndex, 0, { label: 'Client Portal', path: '/settings/portal', icon: 'Globe' });
+  }
+
   return nav;
 };
 

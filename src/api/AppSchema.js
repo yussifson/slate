@@ -5493,6 +5493,201 @@ export const AppSchema = new Schema({
         description: column.text,
         outcome: column.text,
         next_action: column.text,
+        days_on_market: column.integer,
+        sale_date: column.text,
+        similarity_score: column.real,
+        price_adjustment_reason: column.text,
+        adjustments: column.text,
+        created_at: column.text
+    }),
+
+    // Agent & Client Intelligence
+    univ_re_agent_metrics: new Table({
+        id: column.text,
+        company_id: column.text,
+        agent_id: column.text,
+        metric_period: column.text,
+        metric_date: column.text,
+        listings_taken_count: column.integer,
+        listings_sold_count: column.integer,
+        sales_volume: column.real,
+        average_sale_price: column.real,
+        average_days_on_market: column.real,
+        commission_earned: column.real,
+        client_count: column.integer,
+        return_client_rate: column.real,
+        average_client_rating: column.real,
+        response_time_hours: column.real,
+        created_at: column.text
+    }),
+    univ_re_client_scoring: new Table({
+        id: column.text,
+        company_id: column.text,
+        client_id: column.text,
+        score: column.integer,
+        score_category: column.text,
+        score_breakdown: column.text,
+        purchase_propensity: column.real,
+        engagement_level: column.text,
+        transaction_history_count: column.integer,
+        last_interaction_date: column.text,
+        days_since_last_contact: column.integer,
+        recommended_agent_id: column.text,
+        recommendation_reason: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_re_agent_recommendations: new Table({
+        id: column.text,
+        company_id: column.text,
+        client_id: column.text,
+        recommended_agent_id: column.text,
+        recommendation_type: column.text,
+        recommendation_reason: column.text,
+        recommendation_score: column.real,
+        property_id: column.text,
+        recommendation_date: column.text,
+        client_action: column.text,
+        action_date: column.text,
+        created_at: column.text
+    }),
+
+    // Audit Logging
+    univ_re_audit_log: new Table({
+        id: column.text,
+        company_id: column.text,
+        user_id: column.text,
+        action: column.text,
+        resource_type: column.text,
+        resource_id: column.text,
+        changes: column.text,
+        ip_address: column.text,
+        user_agent: column.text,
+        created_at: column.text
+    }),
+
+    // Team Members
+    univ_re_team_members: new Table({
+        id: column.text,
+        company_id: column.text,
+        user_id: column.text,
+        name: column.text,
+        email: column.text,
+        phone: column.text,
+        role: column.text,
+        status: column.text,
+        avatar_url: column.text,
+        bio: column.text,
+        license_number: column.text,
+        license_expiry: column.text,
+        commission_rate: column.real,
+        join_date: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+
+    // MLS Listings
+    univ_re_mls_listings: new Table({
+        id: column.text,
+        company_id: column.text,
+        mls_id: column.text,
+        property_address: column.text,
+        city: column.text,
+        state: column.text,
+        zip_code: column.text,
+        price: column.real,
+        list_date: column.text,
+        sold_date: column.text,
+        days_on_market: column.integer,
+        bedrooms: column.integer,
+        bathrooms: column.real,
+        square_feet: column.real,
+        lot_size: column.real,
+        property_type: column.text,
+        status: column.text,
+        agent_name: column.text,
+        brokerage: column.text,
+        description: column.text,
+        source: column.text,
+        last_updated: column.text,
+        created_at: column.text
+    }),
+
+    // Comparable Analysis
+    univ_re_comparable_analysis: new Table({
+        id: column.text,
+        company_id: column.text,
+        property_id: column.text,
+        analysis_date: column.text,
+        subject_address: column.text,
+        subject_price: column.real,
+        comparable_1_address: column.text,
+        comparable_1_price: column.real,
+        comparable_1_adjustment: column.real,
+        comparable_2_address: column.text,
+        comparable_2_price: column.real,
+        comparable_2_adjustment: column.real,
+        comparable_3_address: column.text,
+        comparable_3_price: column.real,
+        comparable_3_adjustment: column.real,
+        estimated_value: column.real,
+        confidence_level: column.integer,
+        notes: column.text,
+        created_by: column.text,
+        created_at: column.text
+    }),
+
+    // Market Trends
+    univ_re_market_trends: new Table({
+        id: column.text,
+        company_id: column.text,
+        city: column.text,
+        state: column.text,
+        metric_date: column.text,
+        avg_price: column.real,
+        median_price: column.real,
+        avg_days_on_market: column.integer,
+        total_listings: column.integer,
+        sold_listings: column.integer,
+        absorption_rate: column.real,
+        price_per_sqft: column.real,
+        yoy_price_change: column.real,
+        created_at: column.text
+    }),
+
+    // CRM Leads
+    univ_re_leads: new Table({
+        id: column.text,
+        company_id: column.text,
+        first_name: column.text,
+        last_name: column.text,
+        email: column.text,
+        phone: column.text,
+        source: column.text,
+        property_interest: column.text,
+        budget_min: column.real,
+        budget_max: column.real,
+        lead_type: column.text,
+        status: column.text,
+        stage: column.text,
+        assigned_agent_id: column.text,
+        lead_score: column.integer,
+        next_followup: column.text,
+        notes: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+
+    // Lead Activities
+    univ_re_lead_activities: new Table({
+        id: column.text,
+        company_id: column.text,
+        lead_id: column.text,
+        activity_type: column.text,
+        subject: column.text,
+        description: column.text,
+        outcome: column.text,
+        next_action: column.text,
         next_action_date: column.text,
         created_by: column.text,
         created_at: column.text
@@ -5509,5 +5704,56 @@ export const AppSchema = new Schema({
         created_by: column.text,
         created_at: column.text,
         updated_at: column.text
+    }),
+
+    // Online Learning System
+    online_courses: new Table({
+        id: column.text,
+        company_id: column.text,
+        title: column.text,
+        description: column.text,
+        price: column.text,
+        level: column.text,
+        duration_hours: column.real,
+        status: column.text,
+        thumbnail_url: column.text,
+        total_students: column.integer,
+        rating: column.real,
+        total_reviews: column.integer,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    online_lessons: new Table({
+        id: column.text,
+        company_id: column.text,
+        course_id: column.text,
+        title: column.text,
+        order_index: column.integer,
+        video_url: column.text,
+        duration_minutes: column.integer,
+        created_at: column.text
+    }),
+    online_enrollments: new Table({
+        id: column.text,
+        company_id: column.text,
+        course_id: column.text,
+        student_id: column.text,
+        student_name: column.text,
+        student_email: column.text,
+        enrollment_date: column.text,
+        progress_percent: column.real,
+        last_accessed: column.text,
+        status: column.text
+    }),
+    online_media: new Table({
+        id: column.text,
+        company_id: column.text,
+        name: column.text,
+        type: column.text,
+        size: column.text,
+        url: column.text,
+        folder: column.text,
+        uploaded_by: column.text,
+        created_at: column.text
     })
 });

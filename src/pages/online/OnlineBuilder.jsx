@@ -39,8 +39,8 @@ export default function OnlineBuilder() {
    queryKey: ["online_course", courseId],
    queryFn: async () => {
      if (!courseId) return null;
-     const { data } = await powerSync.execute(`SELECT * FROM online_courses WHERE id = ?`, [courseId]);
-     return data?.[0] || null;
+     const rows = await powerSync.getAll(`SELECT * FROM online_courses WHERE id = ?`, [courseId]);
+     return rows?.[0] || null;
    },
    enabled: !!courseId && !!companyId
  });
@@ -48,8 +48,8 @@ export default function OnlineBuilder() {
  const { data: totalCourses } = useQuery({
    queryKey: ["online_courses_count", companyId],
    queryFn: async () => {
-     const { data } = await powerSync.execute(`SELECT count(*) as count FROM online_courses WHERE company_id = ?`, [companyId]);
-     return data?.[0]?.count || 0;
+     const rows = await powerSync.getAll(`SELECT count(*) as count FROM online_courses WHERE company_id = ?`, [companyId]);
+     return rows?.[0]?.count || 0;
    },
    enabled: !!companyId
  });
@@ -58,8 +58,8 @@ export default function OnlineBuilder() {
    queryKey: ["online_lessons", courseId],
    queryFn: async () => {
      if (!courseId) return [];
-     const { data } = await powerSync.execute(`SELECT * FROM online_lessons WHERE course_id = ? ORDER BY order_index ASC`, [courseId]);
-     return data || [];
+     const rows = await powerSync.getAll(`SELECT * FROM online_lessons WHERE course_id = ? ORDER BY order_index ASC`, [courseId]);
+     return rows || [];
    },
    enabled: !!courseId
  });

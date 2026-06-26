@@ -125,7 +125,7 @@ export default function LawDashboard({ companyId, company, isAdmin }) {
       <HearingReminders hearings={hearings} userEmail={user?.email} isAdmin={isAdmin} />
 
       {/* ── Hero Header ── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-700 via-green-600 to-orange-500 p-8 text-white">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#16a34a] to-[#f97316] p-8 text-white">
         <div className="absolute inset-0 bg-black/10" />
         <div className="absolute -top-6 -right-6 w-40 h-40 bg-white/10 rounded-full" />
         <div className="absolute -bottom-10 -right-16 w-56 h-56 bg-white/5 rounded-full" />

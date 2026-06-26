@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
 import { Calendar, Bell, FileText, CheckCircle, Clock, BookOpen, User, CreditCard, Download, LayoutDashboard, GraduationCap, ArrowRight, Upload } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
+import { useIndustryRecords } from '@/hooks/useIndustryData';
 import { UploadDocumentDialog } from "@/components/cases/CaseDocumentRepo";
 import { Button } from "@/components/ui/button";
 import { toast } from 'react-hot-toast';
@@ -21,7 +22,7 @@ export default function ParentPortal() {
   // Real Database Hooks
   const { data: studentRecords = [], isLoading: isStudentsLoading } = useQuery({
     queryKey: ['clients', companyId],
-    queryFn: () => powerSync.execute('SELECT * FROM school_students WHERE company_id = ?', [companyId]).then(r => r.rows._array),
+    queryFn: () => powerSync.getAll('SELECT * FROM school_students WHERE company_id = ?', [companyId]),
     enabled: !!companyId
   });
   const { data: exams = [] } = useIndustryRecords('exam');
@@ -56,7 +57,7 @@ export default function ParentPortal() {
 
   const { data: documents = [] } = useQuery({
     queryKey: ["student-docs", activeStudent?.id],
-    queryFn: () => powerSync.execute('SELECT * FROM school_notices WHERE company_id = ?', [companyId]).then(r => r.rows._array),
+    queryFn: () => powerSync.getAll('SELECT * FROM school_notices WHERE company_id = ?', [companyId]),
     enabled: !!activeStudent?.id});
 
   const createDocMutation = useMutation({

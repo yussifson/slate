@@ -17,15 +17,17 @@ export default function MediaManager() {
  const [isUploading, setIsUploading] = useState(false);
  const fileInputRef = useRef(null);
 
- const { data: assets = [], isLoading } = useQuery({
-   queryKey: ['online_media', companyId],
-   queryFn: async () => {
-     if (!companyId) return [];
-     const res = await powerSync.execute('SELECT * FROM online_media WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
-     return res.rows._array || [];
-   },
-   enabled: !!companyId
- });
+  const { data: assets = [], isLoading } = useQuery({
+    queryKey: ['online_media', companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      try {
+        const data = await powerSync.getAll('SELECT * FROM online_media WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+        return data || [];
+      } catch { return []; }
+    },
+    enabled: !!companyId
+  });
 
  const filteredAssets = assets.filter(a => 
    (activeFolder === 'All Assets' || a.folder === activeFolder) &&

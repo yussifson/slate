@@ -21,8 +21,8 @@ export default function LessonBuilder() {
    queryKey: ["online_lesson", moduleId],
    queryFn: async () => {
      if (!moduleId) return null;
-     const { data } = await powerSync.execute(`SELECT * FROM online_lessons WHERE id = ?`, [moduleId]);
-     return data?.[0] || null;
+     const rows = await powerSync.getAll(`SELECT * FROM online_lessons WHERE id = ?`, [moduleId]);
+     return rows?.[0] || null;
    },
    enabled: !!moduleId
  });

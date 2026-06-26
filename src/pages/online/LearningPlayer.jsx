@@ -23,8 +23,8 @@ export default function LearningPlayer() {
  const { data: course} = useQuery({
  queryKey: ["online_course", courseId],
  queryFn: async () => {
-   const { data } = await powerSync.execute(`SELECT * FROM online_courses WHERE id = ?`, [courseId]);
-   return data?.[0] || null;
+   const rows = await powerSync.getAll(`SELECT * FROM online_courses WHERE id = ?`, [courseId]);
+   return rows?.[0] || null;
  },
  enabled: !!courseId && !!companyId
  });
@@ -32,8 +32,8 @@ export default function LearningPlayer() {
  const { data: lessons = []} = useQuery({
    queryKey: ["online_lessons", courseId],
    queryFn: async () => {
-     const { data } = await powerSync.execute(`SELECT * FROM online_lessons WHERE course_id = ? ORDER BY order_index ASC`, [courseId]);
-     return data || [];
+     const rows = await powerSync.getAll(`SELECT * FROM online_lessons WHERE course_id = ? ORDER BY order_index ASC`, [courseId]);
+     return rows || [];
    },
    enabled: !!courseId
  });
@@ -41,17 +41,17 @@ export default function LearningPlayer() {
  const { data: enrollment } = useQuery({
    queryKey: ["online_enrollment", courseId, studentId],
    queryFn: async () => {
-     let { data } = await powerSync.execute(`SELECT * FROM online_enrollments WHERE course_id = ? AND student_id = ?`, [courseId, studentId]);
-     if (!data || data.length === 0) {
+     let rows = await powerSync.getAll(`SELECT * FROM online_enrollments WHERE course_id = ? AND student_id = ?`, [courseId, studentId]);
+     if (!rows || rows.length === 0) {
        // Auto-enroll if not enrolled
        const newId = `enr_${Math.random().toString(36).substr(2, 9)}`;
        await powerSync.execute(
          `INSERT INTO online_enrollments (id, company_id, course_id, student_id, student_name, student_email, enrollment_date, progress_percent, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
          [newId, companyId, courseId, studentId, user?.user_metadata?.full_name || 'Student', user?.email || '', new Date().toISOString(), '0', 'in_progress', new Date().toISOString()]
        );
-       data = [{ id: newId, progress_percent: '0', status: 'in_progress' }];
+       rows = [{ id: newId, progress_percent: '0', status: 'in_progress' }];
      }
-     return data[0];
+     return rows[0];
    },
    enabled: !!courseId && !!studentId
  });
