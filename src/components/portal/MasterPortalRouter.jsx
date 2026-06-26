@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { useAuth } from '@/lib/AuthContext';
 import { PageLoader } from '@/components/ui/orbit-loader';
-import ErrorBoundary from '@/components/ErrorBoundary';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ShieldAlert } from 'lucide-react';
 
 // ─── LAW / LEGAL ────────────────────────────────────────────────────────────
