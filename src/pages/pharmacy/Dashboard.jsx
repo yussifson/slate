@@ -1,14 +1,21 @@
 import { useState, useEffect } from 'react';
-import { BarChart3, Pill, Users, TrendingUp, AlertCircle, DollarSign, Package, Clock } from 'lucide-react';
+import {
+  BarChart3, Pill, Users, TrendingUp, AlertCircle, DollarSign,
+  Package, Clock, ArrowUpRight, ArrowDownRight, ChevronRight,
+  ShoppingCart, Activity, Sparkles
+} from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { usePowerSync } from '@powersync/react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import PharmacyAPI from '@/api/PharmacyAPI';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import {
+  LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  Tooltip, ResponsiveContainer, PieChart, Pie, Cell
+} from 'recharts';
 
-const COLORS = ['#6F00FF', '#9400FF', '#cd99ff', '#e1ccff'];
+const COLORS = ['#7c3aed', '#06b6d4', '#f59e0b', '#ef4444'];
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -20,188 +27,255 @@ export default function Dashboard() {
   const [inventoryStatus, setInventoryStatus] = useState({ total: 0, lowStock: 0, expiring: 0 });
   const [topProducts, setTopProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [chartPeriod, setChartPeriod] = useState('7D');
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
-
-        // Get analytics
         const analyticsResult = await PharmacyAPI.getAnalytics(companyId);
         setAnalytics(analyticsResult);
 
-        // Get inventory overview
         const inventoryResult = await powerSync.execute(
           'SELECT COUNT(*) as total, COUNT(CASE WHEN quantity_available <= reorder_level THEN 1 END) as low_stock FROM univ_pharmacy_inventory WHERE company_id = ?',
           [companyId]
         );
         const invData = inventoryResult.rows._array?.[0] || {};
-        setInventoryStatus({
-          total: invData.total || 0,
-          lowStock: invData.low_stock || 0,
-          expiring: 0
-        });
+        setInventoryStatus({ total: invData.total || 0, lowStock: invData.low_stock || 0, expiring: 0 });
 
-        // Get recent sales
         const salesResult = await powerSync.execute(
           'SELECT DATE(sale_date) as date, SUM(grand_total) as total FROM univ_pharmacy_sales WHERE company_id = ? GROUP BY DATE(sale_date) ORDER BY date DESC LIMIT 7',
           [companyId]
         );
-        setSalesData((salesResult.rows._array || []).reverse());
+        setSalesData((salesResult.rows._array || []).reverse().map(d => ({
+          name: d.date ? new Date(d.date).toLocaleDateString('en-US', { weekday: 'short' }) : d.date,
+          sales: parseFloat(d.total || 0)
+        })));
 
-        // Get top products
         const productsResult = await powerSync.execute(
           'SELECT d.drug_name, COUNT(si.id) as sales_count FROM univ_pharmacy_sale_items si JOIN univ_pharmacy_drugs d ON si.drug_id = d.id WHERE si.company_id = ? GROUP BY d.id ORDER BY sales_count DESC LIMIT 5',
           [companyId]
         );
         setTopProducts(productsResult.rows._array || []);
-
       } catch (e) {
         console.error('[Dashboard] Error:', e);
       } finally {
         setLoading(false);
       }
     };
-
-    if (companyId) {
-      fetchDashboardData();
-    }
+    if (companyId) fetchDashboardData();
   }, [companyId, powerSync]);
 
-  const StatCard = ({ icon: Icon, title, value, trend, color }) => (
-    <div className="bg-card border border-border rounded-xl p-6 hover:shadow-md transition-shadow">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm text-muted-foreground font-medium">{title}</p>
-          <p className="text-3xl font-bold text-foreground mt-2">{value}</p>
-          {trend && (
-            <p className={`text-sm mt-2 ${trend > 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {trend > 0 ? '↑' : '↓'} {Math.abs(trend)}% vs last period
-            </p>
-          )}
-        </div>
-        <div className={`p-3 rounded-lg ${color}`}>
-          <Icon className="w-6 h-6 text-white" />
-        </div>
+  const pieData = [
+    { name: 'Healthy', value: Math.max(inventoryStatus.total - inventoryStatus.lowStock, 0) },
+    { name: 'Low Stock', value: inventoryStatus.lowStock },
+    { name: 'Expiring', value: inventoryStatus.expiring },
+  ].filter(d => d.value > 0);
+
+  const kpis = [
+    { label: "Today's Sales", value: `$${parseFloat(analytics?.total_sales || 0).toFixed(2)}`, sub: 'vs yesterday', icon: DollarSign, from: 'from-purple-500', to: 'to-purple-600', trend: '+12%', up: true },
+    { label: 'Transactions', value: analytics?.total_transactions || 0, sub: 'completed sales', icon: ShoppingCart, from: 'from-violet-500', to: 'to-indigo-600', trend: '+8%', up: true },
+    { label: 'Inventory Items', value: inventoryStatus.total, sub: 'total SKUs tracked', icon: Package, from: 'from-blue-500', to: 'to-indigo-600', trend: '', up: true },
+    { label: 'Low Stock Alerts', value: inventoryStatus.lowStock, sub: 'need reordering', icon: AlertCircle, from: 'from-orange-500', to: 'to-red-600', trend: '-5%', up: false },
+  ];
+
+  const quickNav = [
+    { label: 'Drugs', href: '/pharmacy/drugs', icon: Pill, from: 'from-purple-500', to: 'to-purple-600' },
+    { label: 'Inventory', href: '/pharmacy/inventory', icon: Package, from: 'from-blue-500', to: 'to-indigo-600' },
+    { label: 'Customers', href: '/pharmacy/customers', icon: Users, from: 'from-emerald-500', to: 'to-teal-600' },
+    { label: 'POS', href: '/pharmacy/pos', icon: ShoppingCart, from: 'from-amber-500', to: 'to-orange-600' },
+    { label: 'Prescriptions', href: '/pharmacy/prescriptions', icon: Activity, from: 'from-pink-500', to: 'to-rose-600' },
+    { label: 'Reports', href: '/pharmacy/reports', icon: BarChart3, from: 'from-slate-500', to: 'to-gray-600' },
+  ];
+
+  if (loading) {
+    return (
+      <div className="space-y-6 p-6 animate-pulse">
+        <div className="h-44 bg-muted rounded-2xl" />
+        <div className="grid grid-cols-4 gap-4">{[1,2,3,4].map(i => <div key={i} className="h-32 bg-muted rounded-2xl" />)}</div>
+        <div className="grid grid-cols-2 gap-4">{[1,2].map(i => <div key={i} className="h-64 bg-muted rounded-2xl" />)}</div>
       </div>
-    </div>
-  );
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-2">Pharmacy Dashboard</h1>
-          <p className="text-muted-foreground">Welcome back, {user?.email}. Here's your pharmacy performance overview.</p>
+    <div className="space-y-6 p-6">
+
+      {/* ── Hero Header ── */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-700 p-8 text-white">
+        <div className="absolute inset-0 bg-black/10" />
+        <div className="absolute -top-6 -right-6 w-40 h-40 bg-white/10 rounded-full" />
+        <div className="absolute -bottom-10 -right-16 w-56 h-56 bg-white/5 rounded-full" />
+        <div className="absolute top-6 right-32 w-20 h-20 bg-white/5 rounded-full" />
+        <div className="relative z-10 flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
+                <Pill className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight">Pharmacy Dashboard</h1>
+                <p className="text-purple-100 text-sm">Welcome back, {user?.email?.split('@')[0]} 👋</p>
+              </div>
+            </div>
+            <p className="text-purple-200 text-xs mt-1">
+              {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="text-right">
+              <p className="text-white/60 text-xs">Today's Revenue</p>
+              <p className="text-2xl font-bold">${parseFloat(analytics?.total_sales || 0).toFixed(0)}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── KPI Cards ── */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {kpis.map((kpi, i) => (
+          <div key={i} className="bg-card rounded-2xl border border-border/50 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+            <div className="flex items-start justify-between mb-4">
+              <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${kpi.from} ${kpi.to} flex items-center justify-center shadow-md`}>
+                <kpi.icon className="w-5 h-5 text-white" />
+              </div>
+              {kpi.trend && (
+                <span className={`text-xs font-semibold px-2 py-1 rounded-full flex items-center gap-1 ${kpi.up ? 'text-emerald-700 bg-emerald-50' : 'text-red-600 bg-red-50'}`}>
+                  {kpi.up ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                  {kpi.trend}
+                </span>
+              )}
+            </div>
+            <p className="text-2xl font-bold text-foreground mb-1">{kpi.value}</p>
+            <p className="text-sm font-medium text-foreground mb-0.5">{kpi.label}</p>
+            <p className="text-xs text-muted-foreground">{kpi.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Charts ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Sales Trend */}
+        <div className="lg:col-span-2 bg-card rounded-2xl border border-border/50 p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-base font-semibold text-foreground">Sales Trend</h3>
+              <p className="text-xs text-muted-foreground mt-0.5">Daily revenue overview</p>
+            </div>
+            <div className="flex gap-1">
+              {['7D','30D'].map(p => (
+                <button key={p} onClick={() => setChartPeriod(p)}
+                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${chartPeriod === p ? 'bg-purple-600 text-white' : 'text-muted-foreground hover:bg-muted'}`}>
+                  {p}
+                </button>
+              ))}
+            </div>
+          </div>
+          <ResponsiveContainer width="100%" height={220}>
+            <LineChart data={salesData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="pharmaSalesGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#7c3aed" stopOpacity={0.2} />
+                  <stop offset="95%" stopColor="#7c3aed" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+              <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} />
+              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} tickFormatter={v => `$${v}`} />
+              <Tooltip formatter={v => [`$${Number(v).toFixed(2)}`, 'Sales']} contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8 }} />
+              <Line type="monotone" dataKey="sales" stroke="#7c3aed" strokeWidth={2.5} dot={{ fill: '#7c3aed', r: 4 }} activeDot={{ r: 6 }} />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
 
-        {/* Top Statistics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <StatCard
-            icon={DollarSign}
-            title="Total Sales (Today)"
-            value={`$${(analytics?.total_sales || 0).toFixed(2)}`}
-            trend={12}
-            color="bg-gradient-to-br from-purple-600 to-purple-700"
-          />
-          <StatCard
-            icon={TrendingUp}
-            title="Transactions"
-            value={analytics?.total_transactions || 0}
-            trend={8}
-            color="bg-gradient-to-br from-insurance-600 to-insurance-700"
-          />
-          <StatCard
-            icon={Package}
-            title="Inventory Items"
-            value={inventoryStatus.total}
-            color="bg-gradient-to-br from-blue-600 to-blue-700"
-          />
-          <StatCard
-            icon={AlertCircle}
-            title="Low Stock Items"
-            value={inventoryStatus.lowStock}
-            trend={-5}
-            color="bg-gradient-to-br from-orange-600 to-orange-700"
-          />
-        </div>
-
-        {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* Sales Trend */}
-          <Card className="lg:col-span-2 p-6 border border-border bg-card">
-            <div className="mb-6">
-              <h2 className="text-xl font-bold text-foreground">Sales Trend (Last 7 Days)</h2>
-              <p className="text-sm text-muted-foreground mt-1">Daily revenue overview</p>
-            </div>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={salesData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="date" stroke="#6b7280" />
-                <YAxis stroke="#6b7280" />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#1f2937',
-                    border: '1px solid #374151',
-                    borderRadius: '8px'
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="total"
-                  stroke="#6F00FF"
-                  strokeWidth={3}
-                  dot={{ fill: '#6F00FF', r: 5 }}
-                  activeDot={{ r: 7 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </Card>
-
-          {/* Top Products */}
-          <Card className="p-6 border border-border bg-card">
-            <div className="mb-6">
-              <h2 className="text-xl font-bold text-foreground">Top Products</h2>
-              <p className="text-sm text-muted-foreground mt-1">Most sold drugs</p>
-            </div>
-            <div className="space-y-4">
-              {topProducts.slice(0, 5).map((product, idx) => (
-                <div key={idx} className="flex items-center justify-between p-3 bg-muted rounded-lg hover:bg-muted/80 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[idx % COLORS.length] }} />
-                    <span className="text-sm font-medium text-foreground truncate">{product.drug_name}</span>
+        {/* Inventory Status Pie */}
+        <div className="bg-card rounded-2xl border border-border/50 p-6">
+          <div className="mb-6">
+            <h3 className="text-base font-semibold text-foreground">Inventory Health</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">Stock status breakdown</p>
+          </div>
+          {pieData.length > 0 ? (
+            <>
+              <ResponsiveContainer width="100%" height={160}>
+                <PieChart>
+                  <Pie data={pieData} cx="50%" cy="50%" innerRadius={45} outerRadius={70} paddingAngle={4} dataKey="value">
+                    {pieData.map((_, i) => <Cell key={i} fill={COLORS[i]} />)}
+                  </Pie>
+                  <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8 }} />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="space-y-2 mt-4">
+                {pieData.map((d, i) => (
+                  <div key={i} className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <span className="w-3 h-3 rounded-full" style={{ background: COLORS[i] }} />
+                      <span className="text-muted-foreground">{d.name}</span>
+                    </div>
+                    <span className="font-semibold text-foreground">{d.value}</span>
                   </div>
-                  <span className="text-sm font-bold text-primary">{product.sales_count}</span>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-10 text-center">
+              <Package className="w-12 h-12 text-muted-foreground/20 mb-3" />
+              <p className="text-sm text-muted-foreground">No inventory data yet</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── Top Products + Quick Actions ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Top Products */}
+        <div className="bg-card rounded-2xl border border-border/50 p-6">
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="text-base font-semibold text-foreground">Top Products</h3>
+            <Link to="/pharmacy/drugs"><button className="text-xs text-purple-600 hover:underline flex items-center gap-1">View all <ChevronRight className="w-3 h-3" /></button></Link>
+          </div>
+          {topProducts.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-10">
+              <Pill className="w-12 h-12 text-muted-foreground/20 mb-3" />
+              <p className="text-sm text-muted-foreground">No sales data yet</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {topProducts.map((p, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <span className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold text-white shrink-0 ${
+                    i === 0 ? 'bg-amber-500' : i === 1 ? 'bg-slate-400' : 'bg-orange-400'
+                  }`}>#{i + 1}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">{p.drug_name}</p>
+                    <div className="h-1.5 bg-muted rounded-full mt-1">
+                      <div className="h-full bg-purple-500 rounded-full" style={{ width: `${Math.min((p.sales_count / Math.max(topProducts[0]?.sales_count || 1, 1)) * 100, 100)}%` }} />
+                    </div>
+                  </div>
+                  <span className="text-sm font-bold text-purple-600 shrink-0">{p.sales_count}</span>
                 </div>
               ))}
             </div>
-          </Card>
+          )}
         </div>
 
-        {/* Quick Actions */}
-        <Card className="p-6 border border-border bg-card">
-          <h2 className="text-xl font-bold text-foreground mb-6">Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Button className="h-12 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-medium">
-              <Pill className="w-4 h-4 mr-2" />
-              Manage Drugs
-            </Button>
-            <Button variant="outline" className="h-12">
-              <Package className="w-4 h-4 mr-2" />
-              Check Inventory
-            </Button>
-            <Button variant="outline" className="h-12">
-              <Users className="w-4 h-4 mr-2" />
-              Add Customer
-            </Button>
-            <Button variant="outline" className="h-12">
-              <BarChart3 className="w-4 h-4 mr-2" />
-              View Reports
-            </Button>
+        {/* Quick Nav */}
+        <div className="bg-card rounded-2xl border border-border/50 p-6">
+          <h3 className="text-base font-semibold text-foreground mb-5">Quick Access</h3>
+          <div className="grid grid-cols-3 gap-3">
+            {quickNav.map((item, i) => (
+              <Link key={i} to={item.href}>
+                <div className="rounded-xl border border-border/50 p-4 text-center hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer group">
+                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.from} ${item.to} flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform shadow-sm`}>
+                    <item.icon className="w-5 h-5 text-white" />
+                  </div>
+                  <p className="text-xs font-medium text-foreground">{item.label}</p>
+                </div>
+              </Link>
+            ))}
           </div>
-        </Card>
+        </div>
       </div>
+
     </div>
   );
 }
