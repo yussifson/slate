@@ -13,6 +13,8 @@ import ReligionDashboard from "@/components/dashboard/ReligionDashboard";
 import RetailDashboard from "@/components/dashboard/RetailDashboard";
 import LogisticsDashboard from "@/components/dashboard/LogisticsDashboard";
 import GenericDashboard from "@/components/dashboard/GenericDashboard";
+import RealEstateDashboard from "@/pages/real-estate/RealEstateDashboard";
+import PharmacyDashboard from "@/pages/pharmacy/Dashboard";
 
 export default function CompanyDashboard() {
   const { user } = useAuth();
@@ -61,6 +63,10 @@ export default function CompanyDashboard() {
     return <RetailDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
   } else if (industry === 'logistics') {
     return <LogisticsDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
+  } else if (industry === 'real_estate' || industry === 'realestate') {
+    return <RealEstateDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
+  } else if (industry === 'pharmacy') {
+    return <PharmacyDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
   } else {
     return <GenericDashboard companyId={companyId} company={company} isAdmin={isAdmin} industry={industry} />;
   }

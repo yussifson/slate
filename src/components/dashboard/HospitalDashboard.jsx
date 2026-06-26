@@ -5,10 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { powerSync } from '@/api/PowerSyncConnector';
 import {
   Users, Activity, Bed, Beaker, Calendar, Clock,
-  ArrowRight, ShieldAlert, Heart, Stethoscope,
-  TrendingUp, ArrowUpRight, ChevronRight, AlertCircle
+  Heart, Stethoscope, ArrowUpRight, ShieldAlert, BarChart2
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Link } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
@@ -55,30 +53,29 @@ export default function HospitalDashboard({ companyId }) {
   });
 
   const kpis = [
-    { label: 'Total Patients', value: stats?.patients || 0, sub: 'lifetime records', icon: Users, from: 'from-cyan-500', to: 'to-teal-600', trend: '+6%', up: true },
-    { label: 'Appointments', value: stats?.appointments || 0, sub: 'upcoming (7 days)', icon: Calendar, from: 'from-teal-500', to: 'to-emerald-600', trend: '+14%', up: true },
-    { label: 'Available Beds', value: stats?.availableBeds || 0, sub: 'ready for admission', icon: Bed, from: 'from-emerald-500', to: 'to-green-600', trend: '', up: true },
-    { label: 'OPD Queue', value: stats?.waitingQueue || 0, sub: 'currently waiting', icon: Clock, from: 'from-amber-500', to: 'to-orange-600', trend: stats?.waitingQueue > 10 ? 'High' : 'Normal', up: false },
+    { label: 'Total Patients', value: stats?.patients || 0, sub: 'lifetime records', icon: Users, trend: '+6%' },
+    { label: 'Appointments', value: stats?.appointments || 0, sub: 'upcoming (7 days)', icon: Calendar, trend: '+14%' },
+    { label: 'Available Beds', value: stats?.availableBeds || 0, sub: 'ready for admission', icon: Bed, trend: '' },
+    { label: 'OPD Queue', value: stats?.waitingQueue || 0, sub: 'currently waiting', icon: Clock, trend: stats?.waitingQueue > 10 ? 'High' : 'Normal' },
   ];
 
+  // Quick nav uses actual routes from App.jsx
   const quickNav = [
-    { label: 'Patients', href: '/hospital/patients', icon: Users, from: 'from-cyan-500', to: 'to-teal-600' },
-    { label: 'Appointments', href: '/appointments', icon: Calendar, from: 'from-teal-500', to: 'to-emerald-600' },
-    { label: 'Wards', href: '/hospital/wards', icon: Bed, from: 'from-emerald-500', to: 'to-green-600' },
-    { label: 'Lab Results', href: '/lab-results', icon: Beaker, from: 'from-blue-500', to: 'to-indigo-600' },
-    { label: 'Prescriptions', href: '/prescriptions', icon: Activity, from: 'from-purple-500', to: 'to-violet-600' },
-    { label: 'Claims', href: '/hospital-claims', icon: ShieldAlert, from: 'from-orange-500', to: 'to-red-500' },
+    { label: 'Patients', href: '/patients', icon: Users },
+    { label: 'Appointments', href: '/appointments', icon: Calendar },
+    { label: 'Wards', href: '/wards', icon: Bed },
+    { label: 'Lab Results', href: '/lab-results', icon: Beaker },
+    { label: 'Prescriptions', href: '/prescriptions', icon: Activity },
+    { label: 'Claims', href: '/hospital-claims', icon: ShieldAlert },
   ];
 
   return (
     <div className="space-y-6 p-6">
-
       {/* ── Hero Header ── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-cyan-600 via-teal-600 to-emerald-700 p-8 text-white">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-emerald-600 to-green-700 p-8 text-white">
         <div className="absolute inset-0 bg-black/10" />
         <div className="absolute -top-6 -right-6 w-40 h-40 bg-white/10 rounded-full" />
         <div className="absolute -bottom-10 -right-16 w-56 h-56 bg-white/5 rounded-full" />
-        <div className="absolute top-4 right-40 w-24 h-24 bg-white/5 rounded-full" />
         <div className="relative z-10 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3 mb-2">
@@ -87,20 +84,18 @@ export default function HospitalDashboard({ companyId }) {
               </div>
               <div>
                 <h1 className="text-2xl font-bold tracking-tight">Hospital Command Center</h1>
-                <p className="text-cyan-100 text-sm">Live operational overview & predictive analytics</p>
+                <p className="text-green-100 text-sm">Live operational overview & predictive analytics</p>
               </div>
             </div>
-            <p className="text-cyan-200 text-xs mt-1">
+            <p className="text-green-200 text-xs mt-1">
               {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-white/60 text-xs">System Status</p>
-              <div className="flex items-center gap-2 mt-1">
-                <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-                <p className="text-sm font-semibold text-emerald-300">All Systems Normal</p>
-              </div>
+          <div className="text-right">
+            <p className="text-white/60 text-xs">System Status</p>
+            <div className="flex items-center gap-2 mt-1 justify-end">
+              <span className="w-2 h-2 bg-orange-400 rounded-full animate-pulse" />
+              <p className="text-sm font-semibold text-orange-200">All Systems Normal</p>
             </div>
           </div>
         </div>
@@ -111,13 +106,11 @@ export default function HospitalDashboard({ companyId }) {
         {kpis.map((kpi, i) => (
           <div key={i} className="bg-card rounded-2xl border border-border/50 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
             <div className="flex items-start justify-between mb-4">
-              <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${kpi.from} ${kpi.to} flex items-center justify-center shadow-md`}>
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center shadow-md ${i % 2 === 0 ? 'bg-gradient-to-br from-green-500 to-emerald-600' : 'bg-gradient-to-br from-orange-500 to-orange-600'}`}>
                 <kpi.icon className="w-5 h-5 text-white" />
               </div>
               {kpi.trend && (
-                <span className={`text-xs font-semibold px-2 py-1 rounded-full ${kpi.up ? 'text-emerald-700 bg-emerald-50' : (kpi.trend === 'High' ? 'text-red-600 bg-red-50' : 'text-amber-700 bg-amber-50')}`}>
-                  {kpi.trend}
-                </span>
+                <span className="text-xs font-semibold px-2 py-1 rounded-full text-green-700 bg-green-50">{kpi.trend}</span>
               )}
             </div>
             <p className="text-2xl font-bold text-foreground mb-1">{kpi.value}</p>
@@ -129,17 +122,16 @@ export default function HospitalDashboard({ companyId }) {
 
       {/* ── Charts ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Admissions Trend */}
         <div className="lg:col-span-2 bg-card rounded-2xl border border-border/50 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-base font-semibold text-foreground">Patient Admissions</h3>
-              <p className="text-xs text-muted-foreground mt-0.5">Daily admission volume this week</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Daily volume this week</p>
             </div>
             <div className="flex gap-1">
               {['7D','30D','90D'].map(p => (
                 <button key={p} onClick={() => setChartPeriod(p)}
-                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${chartPeriod === p ? 'bg-teal-600 text-white' : 'text-muted-foreground hover:bg-muted'}`}>
+                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${chartPeriod === p ? 'bg-green-600 text-white' : 'text-muted-foreground hover:bg-muted'}`}>
                   {p}
                 </button>
               ))}
@@ -149,20 +141,19 @@ export default function HospitalDashboard({ companyId }) {
             <AreaChart data={ADMIT_DATA} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="hospAdmitGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#0d9488" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#0d9488" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#16a34a" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#16a34a" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
               <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} />
               <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} />
               <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8 }} />
-              <Area type="monotone" dataKey="admissions" stroke="#0d9488" strokeWidth={2.5} fill="url(#hospAdmitGrad)" />
+              <Area type="monotone" dataKey="admissions" stroke="#16a34a" strokeWidth={2.5} fill="url(#hospAdmitGrad)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Department Load */}
         <div className="bg-card rounded-2xl border border-border/50 p-6">
           <div className="mb-6">
             <h3 className="text-base font-semibold text-foreground">Department Load</h3>
@@ -174,46 +165,35 @@ export default function HospitalDashboard({ companyId }) {
               <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} />
               <YAxis dataKey="name" type="category" stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} width={70} />
               <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8 }} />
-              <Bar dataKey="patients" fill="#0d9488" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="patients" fill="#f97316" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      {/* ── Alerts + Intelligence ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-card rounded-2xl border border-border/50 p-5">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                  <ShieldAlert className="w-4 h-4 text-green-600" />
-                </div>
-                <h3 className="text-sm font-semibold text-foreground">Infection Alerts</h3>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-emerald-500 rounded-full" />
-                <p className="text-sm text-muted-foreground">No active outbreaks detected in the last 48 hours. Standard protocols active.</p>
-              </div>
+      {/* ── Alert Cards + Intelligence ── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-card rounded-2xl border border-border/50 p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+              <ShieldAlert className="w-4 h-4 text-green-600" />
             </div>
-            <div className="bg-card rounded-2xl border border-border/50 p-5">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Beaker className="w-4 h-4 text-blue-600" />
-                </div>
-                <h3 className="text-sm font-semibold text-foreground">Lab Turnaround</h3>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-foreground">45<span className="text-sm font-normal text-muted-foreground ml-1">min avg</span></p>
-                <p className="text-xs text-emerald-600 mt-1">✓ Within optimal range (&lt;60 min)</p>
-              </div>
-            </div>
+            <h3 className="text-sm font-semibold text-foreground">Infection Alerts</h3>
           </div>
-          <RevenueForecastCard companyId={companyId} />
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 bg-green-500 rounded-full" />
+            <p className="text-sm text-muted-foreground">No active outbreaks detected in last 48 hrs. Standard protocols active.</p>
+          </div>
         </div>
-        <div className="space-y-4">
-          <BehaviourProfilePanel profile={{ churn_risk: "low", payment_reliability: "reliable", engagement_trend: "stable", profile_confidence: 90 }} entityType="patient" />
-          <BenchmarkingPanel companyId={companyId} industry="hospital" />
+        <div className="bg-card rounded-2xl border border-border/50 p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+              <Beaker className="w-4 h-4 text-orange-600" />
+            </div>
+            <h3 className="text-sm font-semibold text-foreground">Lab Turnaround</h3>
+          </div>
+          <p className="text-2xl font-bold text-foreground">45<span className="text-sm font-normal text-muted-foreground ml-1">min avg</span></p>
+          <p className="text-xs text-green-600 mt-1">✓ Within optimal range (&lt;60 min)</p>
         </div>
       </div>
 
@@ -224,7 +204,7 @@ export default function HospitalDashboard({ companyId }) {
           {quickNav.map((item, i) => (
             <Link key={i} to={item.href}>
               <div className="bg-card rounded-2xl border border-border/50 p-4 text-center hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer group">
-                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.from} ${item.to} flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform shadow-sm`}>
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform shadow-sm ${i % 2 === 0 ? 'bg-gradient-to-br from-green-500 to-emerald-600' : 'bg-gradient-to-br from-orange-500 to-orange-600'}`}>
                   <item.icon className="w-5 h-5 text-white" />
                 </div>
                 <p className="text-xs font-medium text-foreground">{item.label}</p>
@@ -233,7 +213,6 @@ export default function HospitalDashboard({ companyId }) {
           ))}
         </div>
       </div>
-
     </div>
   );
 }

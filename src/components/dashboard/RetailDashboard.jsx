@@ -1,261 +1,266 @@
 import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { useTranslation } from "react-i18next";
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
-import { useCompanyId } from "@/hooks/useCompanyId";
-import { getTerm } from "@/config/industries";
-import { ShoppingCart, Users, Package, DollarSign, Clock, Calendar, BarChart2, RefreshCw, Building2, Settings2 } from "lucide-react";
-import HearingReminders from "@/components/dashboard/HearingReminders";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { SUBSCRIPTION_PLANS, formatCurrency } from "@/lib/constants";
-import { format, isAfter } from "date-fns";
-import { buildMonthlyRevenueChart, buildDistributionChart } from "@/lib/dashboardCharts";
-import { useToast } from "@/components/ui/use-toast";
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar } from "recharts";
 import IntelligenceDashboard from '@/components/IntelligenceDashboard';
 import RunIntelligenceButton from '@/components/RunIntelligenceButton';
-
-
-function MetricCard({ title, value, icon: Icon, iconBg, iconColor, subtitle, subtitleColor }) {
-  return (
-    <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-5 flex items-center justify-between hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-      <div>
-        <p className="text-[11px] font-medium text-[#71717a] dark:text-gray-400 mb-1 tracking-[0.05em] uppercase">{title}</p>
-        <p className="text-2xl font-semibold text-foreground tracking-[-0.03em] tabular-nums">{value}</p>
-        {subtitle && <p className={`text-xs mt-1 ${subtitleColor || "text-[#71717a] dark:text-gray-400"}`}>{subtitle}</p>}
-      </div>
-      <div className={`w-11 h-11 rounded-full ${iconBg} flex items-center justify-center`}>
-        <Icon className={`w-5 h-5 ${iconColor}`} />
-      </div>
-    </div>
-  );
-}
+import {
+  ShoppingBag, Package, Users, DollarSign, BarChart2,
+  RefreshCw, Settings2, Tag, TrendingUp, CreditCard,
+  ShoppingCart, ArrowUpRight, Store
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { SUBSCRIPTION_PLANS, formatCurrency } from "@/lib/constants";
+import { buildMonthlyRevenueChart } from "@/lib/dashboardCharts";
+import { useToast } from "@/components/ui/use-toast";
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar } from "recharts";
+import { Link } from 'react-router-dom';
 
 function UsageRow({ label, used, max, suffix = "" }) {
   const pct = max > 0 ? Math.min((used / max) * 100, 100) : 0;
-  const isHigh = pct > 80;
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between text-sm">
         <span className="text-foreground font-medium">{label}</span>
-        <span className="text-[#71717a] dark:text-gray-400 text-xs tabular-nums tracking-[0.04em]">{used}{suffix} / {max}{suffix}</span>
+        <span className="text-muted-foreground text-xs">{used}{suffix} / {max}{suffix}</span>
       </div>
       <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-        <div
-          className={`h-full rounded-full transition-all ${isHigh ? "bg-amber-500" : "bg-primary"}`}
-          style={{ width: `${pct}%` }}
-        />
+        <div className={`h-full rounded-full transition-all ${pct > 80 ? "bg-orange-500" : "bg-green-600"}`} style={{ width: `${pct}%` }} />
       </div>
     </div>
   );
 }
 
+const SALES_DATA = [
+  { day: 'Mon', sales: 3200 }, { day: 'Tue', sales: 4100 },
+  { day: 'Wed', sales: 3800 }, { day: 'Thu', sales: 5200 },
+  { day: 'Fri', sales: 6800 }, { day: 'Sat', sales: 7400 },
+  { day: 'Sun', sales: 4900 },
+];
+
+const TOP_CATS = [
+  { cat: 'Electronics', value: 42 }, { cat: 'Clothing', value: 28 },
+  { cat: 'Food & Bev', value: 18 }, { cat: 'Home', value: 12 },
+];
+
 export default function RetailDashboard({ companyId, company, isAdmin }) {
-  const industry = "retail";
   const { t } = useTranslation();
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const [chartPeriod, setChartPeriod] = useState('7D');
 
-  const { data: cases = [] } = useQuery({ queryKey: ["cases", companyId], queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: clients = [] } = useQuery({ queryKey: ["clients", companyId], queryFn: () => base44.entities.Client.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: hearings = [] } = useQuery({ queryKey: ["hearings", companyId], queryFn: () => base44.entities.Hearing.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: tasks = [] } = useQuery({ queryKey: ["tasks", companyId], queryFn: () => base44.entities.Task.filter({ company_id: companyId }), enabled: !!companyId });
-  const { data: invoices = [] } = useQuery({ queryKey: ["invoices", companyId], queryFn: () => base44.entities.Invoice.filter({ company_id: companyId }), enabled: !!companyId });
+  const { data: orders = [] } = useQuery({ queryKey: ["cases", companyId], queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }), enabled: !!companyId });
+  const { data: customers = [] } = useQuery({ queryKey: ["clients", companyId], queryFn: () => base44.entities.Client.filter({ company_id: companyId }), enabled: !!companyId });
   const { data: staff = [] } = useQuery({ queryKey: ["staff", companyId], queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId }), enabled: !!companyId });
+  const { data: invoices = [] } = useQuery({ queryKey: ["invoices", companyId], queryFn: () => base44.entities.Invoice.filter({ company_id: companyId }), enabled: !!companyId });
 
-  const activeOrders = cases.filter(c => ["open", "in_progress", "pending_hearing"].includes(c.status));
-  const activeCustomers = clients.filter(c => c.status === "active");
-  const lowInventory = tasks.filter(item => ["pending", "in_progress"].includes(item.status));
-  const totalSales = invoices.filter(i => i.status === "paid").reduce((s, i) => s + (i.total_amount || 0), 0);
-  const currency = company?.currency || "GHS";
+  const activeOrders = orders.filter(o => o.status === "in_progress");
+  const totalRevenue = invoices.filter(i => i.status === "paid").reduce((s, i) => s + (i.total_amount || 0), 0);
+  const pendingOrders = orders.filter(o => o.status === "open");
+  const currency = company?.currency || "USD";
   const planKey = company?.subscription_plan === 'free' ? 'free_trial' : company?.subscription_plan;
   const plan = SUBSCRIPTION_PLANS[planKey] || SUBSCRIPTION_PLANS.free_trial;
-
   const chartData = buildMonthlyRevenueChart(invoices);
-  const orderDistribution = buildDistributionChart(cases, "stage");
-
-  const upcomingAppointments = hearings
-    .filter(h => h.status === "scheduled" && h.date && isAfter(new Date(h.date), new Date()))
-    .sort((a, b) => new Date(a.date) - new Date(b.date))
-    .slice(0, 5);
-
-  const overdueInvoices = invoices.filter(i => i.status === "overdue").length;
 
   const { toast } = useToast();
   const [isRefreshing, setIsRefreshing] = useState(false);
-
   const handleRefresh = async () => {
     setIsRefreshing(true);
     await queryClient.invalidateQueries();
-    setTimeout(() => {
-      setIsRefreshing(false);
-      toast({ title: "Dashboard refreshed", description: "All data is up to date." });
-    }, 500);
+    setTimeout(() => { setIsRefreshing(false); toast({ title: "Dashboard refreshed" }); }, 500);
   };
 
   if (!companyId) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh] text-center space-y-6">
-        <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center">
-          <Building2 className="w-12 h-12 text-primary" />
+        <div className="w-24 h-24 bg-orange-50 rounded-full flex items-center justify-center">
+          <Store className="w-12 h-12 text-orange-600" />
         </div>
-        <div className="max-w-md space-y-2">
-          <h1 className="text-3xl font-semibold text-slate-900 tracking-tight tracking-[-0.02em]">{t("welcome_to_your_workslate", "Welcome to your workslate")}</h1>
-          <p className="text-slate-500 text-lg">{t(
-            "you_haven_t_set_up_your_firm_y",
-            "You haven't set up your firm yet. Configure your details to unlock your dashboard and features."
-          )}</p>
-        </div>
-        <Button onClick={() => window.location.href = '/onboarding'} size="lg" className="mt-4 px-8 h-12 text-md">
-          <Settings2 className="w-5 h-5 mr-2" />
-          {t("setup_now", "Setup Now")}
+        <Button onClick={() => window.location.href = '/onboarding'} size="lg">
+          <Settings2 className="w-5 h-5 mr-2" /> {t("setup_now", "Setup Now")}
         </Button>
       </div>
     );
   }
 
+  const kpis = [
+    { label: 'Active Orders', value: activeOrders.length, sub: `${orders.length} total`, icon: ShoppingCart, alt: false, trend: '+9%' },
+    { label: 'Total Customers', value: customers.length, sub: 'registered', icon: Users, alt: true, trend: '+22%' },
+    { label: 'Revenue', value: formatCurrency(totalRevenue, currency), sub: 'collected this period', icon: DollarSign, alt: false, trend: '+31%' },
+    { label: 'Pending Orders', value: pendingOrders.length, sub: 'awaiting processing', icon: Package, alt: true, trend: pendingOrders.length > 15 ? 'High' : 'Normal' },
+  ];
+
+  // Correct routes from App.jsx retail suite
+  const quickNav = [
+    { label: 'Products', href: '/products', icon: Package, alt: false },
+    { label: 'POS', href: '/pos', icon: CreditCard, alt: true },
+    { label: 'Orders', href: '/orders', icon: ShoppingCart, alt: false },
+    { label: 'Inventory', href: '/retail-inventory', icon: ShoppingBag, alt: true },
+    { label: 'Promotions', href: '/promotions', icon: Tag, alt: false },
+    { label: 'Analytics', href: '/analytics', icon: BarChart2, alt: true },
+  ];
+
   return (
-    <div className="space-y-5">
-      <HearingReminders hearings={hearings} userEmail={user?.email} isAdmin={isAdmin} />
-      
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-foreground">{t("dashboard", "Dashboard")}</h1>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="gap-2.5 text-xs tracking-[0.04em]">
-            <BarChart2 className="w-3.5 h-3.5" /> {t("analytics", "Analytics")}
-          </Button>
-          <RunIntelligenceButton vertical={industry} />
-          <Button variant="outline" size="sm" className="gap-2.5 text-xs tracking-[0.04em]" onClick={handleRefresh} disabled={isRefreshing}>
-            { isRefreshing ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" /> } 
-            {isRefreshing ? "Refreshing..." : "Refresh"}
-          </Button>
-        </div>
-      </div>
-
-      <div className="mb-6">
-        <IntelligenceDashboard vertical={industry} compact={true} maxItems={3} />
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title="Active Orders" value={activeOrders.length} icon={ShoppingCart} iconBg="bg-blue-100" iconColor="text-blue-600" subtitle={`${cases.length} total`} />
-        <MetricCard title="Active Customers" value={activeCustomers.length} icon={Users} iconBg="bg-emerald-100" iconColor="text-emerald-600"
-          subtitle={clients.length > 0 ? `+${Math.round((activeCustomers.length / Math.max(clients.length, 1)) * 100)}% this month` : undefined}
-          subtitleColor="text-emerald-600" />
-        <MetricCard title="Total Sales" value={formatCurrency(totalSales, currency)} icon={DollarSign} iconBg="bg-violet-100" iconColor="text-violet-600" subtitle="This year" />
-        <MetricCard title="Low Inventory" value={lowInventory.length} icon={Package} iconBg="bg-orange-100" iconColor="text-orange-500"
-          subtitle={overdueInvoices > 0 ? `${overdueInvoices} invoices overdue` : `Stock alerts active`}
-          subtitleColor={overdueInvoices > 0 ? "text-red-500" : "text-[#71717a] dark:text-gray-400"} />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-          <div className="flex justify-between items-center">
-            <h3 className="text-sm font-semibold text-slate-800">{t("sales_growth_curve", "Sales Growth Curve (")}{currency})</h3>
-            <span className="text-[10px] bg-slate-100 text-primary py-0.5 px-2 rounded-full font-semibold border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 uppercase tracking-[0.04em]">{t("paid_invoices", "Paid Invoices")}</span>
-          </div>
-          <div className="h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0}}>
-                <defs>
-                  <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.2}/>
-                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} />
-                <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
-                <Tooltip />
-                <Area type="monotone" dataKey="Revenue" stroke="hsl(var(--primary))" strokeWidth={2} fillOpacity={1} fill="url(#colorRev)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-4 space-y-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-          <div className="flex justify-between items-center">
-            <h3 className="text-sm font-semibold text-slate-800">{t("order_distribution", "Order Distribution by Stage")}</h3>
-            <span className="text-[10px] bg-slate-100 text-primary py-0.5 px-2 rounded-full font-semibold border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 uppercase tracking-[0.04em]">{t("active_pipelines", "Active Pipelines")}</span>
-          </div>
-          <div className="h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={orderDistribution} margin={{ top: 10, right: 10, left: -25, bottom: 0}}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} />
-                <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
-                <Tooltip />
-                <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} barSize={25} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-          <div className="p-4 border-b border-primary/40 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-primary" />
-              <h3 className="text-sm font-semibold">{t("upcoming_appointments", "Upcoming Appointments")}</h3>
-            </div>
-            <span className="text-xs font-semibold text-primary bg-slate-100 rounded-full w-5 h-5 flex items-center justify-center tracking-[0.04em]">
-              {upcomingAppointments.length}
-            </span>
-          </div>
-          <div className="divide-y divide-border">
-            {upcomingAppointments.length === 0 ? (
-              <div className="p-10 flex flex-col items-center text-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center">
-                  <Calendar className="w-5 h-5 text-[#71717a] dark:text-gray-400" />
-                </div>
-                <p className="text-sm text-[#71717a] dark:text-gray-400">{t("no_upcoming", "No upcoming appointments")}</p>
+    <div className="space-y-6 p-6">
+      {/* ── Hero Header ── */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 p-8 text-white">
+        <div className="absolute inset-0 bg-black/10" />
+        <div className="absolute -top-6 -right-6 w-40 h-40 bg-white/10 rounded-full" />
+        <div className="absolute -bottom-10 -right-16 w-56 h-56 bg-white/5 rounded-full" />
+        <div className="relative z-10 flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
+                <Store className="w-6 h-6 text-white" />
               </div>
-            ) : upcomingAppointments.map(h => {
-              return (
-                <div key={h.id} className="px-4 py-3 flex items-center gap-3 hover:bg-muted/40 transition-colors">
-                  <div className="w-10 h-10 rounded-xl bg-slate-100 flex flex-col items-center justify-center flex-shrink-0">
-                    <span className="text-[9px] font-semibold text-primary leading-none uppercase tracking-[0.04em]">{format(new Date(h.date), "MMM")}</span>
-                    <span className="text-sm font-semibold text-primary leading-none">{format(new Date(h.date), "d")}</span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{h.title}</p>
-                    <p className="text-xs text-[#71717a] dark:text-gray-400 truncate tracking-[0.04em]">{h.court_name || h.case_title} · {h.time || "TBD"}</p>
-                  </div>
-                  <Badge variant="outline" className="text-[10px] shrink-0">{h.lawyer_name || "—"}</Badge>
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight">Retail Operations</h1>
+                <p className="text-orange-100 text-sm">Welcome back, {user?.email?.split('@')[0]} 👋</p>
+              </div>
+            </div>
+            <p className="text-orange-200 text-xs mt-1">
+              {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <RunIntelligenceButton vertical="retail" />
+            <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isRefreshing}
+              className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur gap-2">
+              {isRefreshing ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" />}
+              {isRefreshing ? "Refreshing..." : "Refresh"}
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Intelligence ── */}
+      <IntelligenceDashboard vertical="retail" compact={true} maxItems={3} />
+
+      {/* ── KPI Cards ── */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {kpis.map((kpi, i) => (
+          <div key={i} className="bg-card rounded-2xl border border-border/50 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+            <div className="flex items-start justify-between mb-4">
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center shadow-md ${kpi.alt ? 'bg-gradient-to-br from-orange-500 to-orange-600' : 'bg-gradient-to-br from-green-500 to-emerald-600'}`}>
+                <kpi.icon className="w-5 h-5 text-white" />
+              </div>
+              <span className={`text-xs font-semibold px-2 py-1 rounded-full ${kpi.alt ? 'text-orange-700 bg-orange-50' : 'text-green-700 bg-green-50'}`}>
+                <ArrowUpRight className="w-3 h-3 inline" />{kpi.trend}
+              </span>
+            </div>
+            <p className="text-2xl font-bold text-foreground mb-1">{kpi.value}</p>
+            <p className="text-sm font-medium text-foreground mb-0.5">{kpi.label}</p>
+            <p className="text-xs text-muted-foreground">{kpi.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Charts ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 bg-card rounded-2xl border border-border/50 p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-base font-semibold text-foreground">Revenue ({currency})</h3>
+              <p className="text-xs text-muted-foreground mt-0.5">Monthly sales performance</p>
+            </div>
+            <div className="flex gap-1">
+              {['7D','30D','90D'].map(p => (
+                <button key={p} onClick={() => setChartPeriod(p)}
+                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${chartPeriod === p ? 'bg-orange-500 text-white' : 'text-muted-foreground hover:bg-muted'}`}>
+                  {p}
+                </button>
+              ))}
+            </div>
+          </div>
+          <ResponsiveContainer width="100%" height={220}>
+            <AreaChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="retailRevGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#f97316" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+              <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} />
+              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} />
+              <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8 }} />
+              <Area type="monotone" dataKey="Revenue" stroke="#f97316" strokeWidth={2.5} fill="url(#retailRevGrad)" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-card rounded-2xl border border-border/50 p-6">
+          <div className="mb-6">
+            <h3 className="text-base font-semibold text-foreground">Daily Sales Volume</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">Sales trend this week</p>
+          </div>
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={SALES_DATA} margin={{ top: 0, right: 5, left: -25, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+              <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} />
+              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} />
+              <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8 }} />
+              <Bar dataKey="sales" fill="#16a34a" radius={[4, 4, 0, 0]} name="Sales" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* ── Top Categories + Plan Status ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-card rounded-2xl border border-border/50 p-6">
+          <h3 className="text-base font-semibold text-foreground mb-5">Top Categories</h3>
+          <div className="space-y-4">
+            {TOP_CATS.map((cat, i) => (
+              <div key={i}>
+                <div className="flex items-center justify-between text-sm mb-1.5">
+                  <span className="text-foreground font-medium">{cat.cat}</span>
+                  <span className="text-muted-foreground">{cat.value}%</span>
                 </div>
-              );
-            })}
+                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                  <div className={`h-full rounded-full ${i % 2 === 0 ? 'bg-green-600' : 'bg-orange-500'}`} style={{ width: `${cat.value}%` }} />
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
-        <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-          <div className="p-4 border-b border-primary/40 flex items-center justify-between">
-            <h3 className="text-sm font-semibold">{t("plan_status", "Plan Status")}</h3>
-            <span className="text-xs font-medium text-[#71717a] dark:text-gray-400 capitalize tracking-[0.04em]">{plan.name}</span>
+        <div className="bg-card rounded-2xl border border-border/50 p-6">
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="text-base font-semibold text-foreground">{t("plan_status", "Plan Status")}</h3>
+            <span className="text-xs font-medium text-muted-foreground capitalize">{plan.name}</span>
           </div>
-          <div className="p-4 space-y-4">
-            <UsageRow label="Team Members" used={staff.length} max={plan.maxUsers} />
+          <div className="space-y-4 mb-5">
+            <UsageRow label="Staff" used={staff.length} max={plan.maxUsers} />
             <UsageRow label="Storage" used={0} max={plan.maxStorageGB} suffix=" GB" />
-            <UsageRow label="Orders" used={activeOrders.length} max={plan.maxCases} />
-            <UsageRow label="Customers" used={clients.length} max={plan.maxClients} />
+            <UsageRow label="Orders" used={orders.length} max={plan.maxCases} />
+            <UsageRow label="Customers" used={customers.length} max={plan.maxClients} />
           </div>
-          <div className="px-4 pb-4 border-t border-primary/40 pt-3">
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-sm font-semibold">{t("plan_details", "Plan Details")}</p>
-              <p className="text-sm font-semibold">{formatCurrency(plan.price || 0, currency)}{t("mo", "/mo")}</p>
-            </div>
-            <div className="text-xs text-[#71717a] dark:text-gray-400 space-y-0.5 tracking-[0.04em]">
-              <p>· {plan.maxUsers} {t("team_member", "Team Member")}{plan.maxUsers !== 1 ? "s" : ""}</p>
-              <p>· {plan.maxCases} {t("orders", "Orders")}</p>
-              <p>· {plan.maxClients} {t("customers", "Customers")}</p>
-              <p>· {plan.maxStorageGB} {t("gb_storage", "GB Storage")}</p>
+          <div className="pt-4 border-t border-border">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-semibold">Plan Details</p>
+              <p className="text-sm font-bold text-orange-600">{formatCurrency(plan.price || 0, currency)}/mo</p>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* ── Quick Nav ── */}
+      <div>
+        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">Quick Navigation</h3>
+        <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+          {quickNav.map((item, i) => (
+            <Link key={i} to={item.href}>
+              <div className="bg-card rounded-2xl border border-border/50 p-4 text-center hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer group">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform shadow-sm ${item.alt ? 'bg-gradient-to-br from-orange-500 to-orange-600' : 'bg-gradient-to-br from-green-500 to-emerald-600'}`}>
+                  <item.icon className="w-5 h-5 text-white" />
+                </div>
+                <p className="text-xs font-medium text-foreground">{item.label}</p>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </div>
