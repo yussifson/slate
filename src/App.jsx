@@ -475,7 +475,7 @@ import SHSAttendanceAnalytics from './pages/highschool/SHSAttendanceAnalytics';
 import SHSFinancialAnalytics from './pages/highschool/SHSFinancialAnalytics';
 
 import MarketingLayout from './components/layout/MarketingLayout';
-import Home from './pages/marketing/HomeEnhanced';
+import Home from './pages/marketing/Home';
 import Features from './pages/marketing/Features';
 import Pricing from './pages/marketing/Pricing';
 import About from './pages/marketing/About';
