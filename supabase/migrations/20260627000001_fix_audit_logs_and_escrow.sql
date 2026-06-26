@@ -55,20 +55,5 @@ ALTER TABLE public.univ_re_escrow_accounts ADD COLUMN IF NOT EXISTS escrow_agent
 ALTER TABLE public.univ_re_escrow_accounts ADD COLUMN IF NOT EXISTS conditions_for_release TEXT;
 ALTER TABLE public.univ_re_escrow_accounts ADD COLUMN IF NOT EXISTS release_status TEXT DEFAULT 'pending';
 
--- Sync deposited_amount -> escrow_amount where escrow_amount is null
-UPDATE public.univ_re_escrow_accounts
-SET escrow_amount = deposited_amount
-WHERE escrow_amount IS NULL AND deposited_amount IS NOT NULL;
-
--- Sync release_conditions -> conditions_for_release where null
-UPDATE public.univ_re_escrow_accounts
-SET conditions_for_release = release_conditions
-WHERE conditions_for_release IS NULL AND release_conditions IS NOT NULL;
-
--- Sync status -> release_status where null
-UPDATE public.univ_re_escrow_accounts
-SET release_status = status
-WHERE release_status IS NULL AND status IS NOT NULL;
-
 -- Notify schema cache to refresh
 NOTIFY pgrst, 'reload schema';
