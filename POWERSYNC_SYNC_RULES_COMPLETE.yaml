@@ -15,8 +15,9 @@ bucket_definitions:
 
   staff_workspace:
     parameters:
-      - SELECT company_id FROM profiles WHERE id = request.user_id() AND role NOT IN ('client', 'student', 'patient', 'customer', 'policyholder', 'tenant', 'landlord', 'learner', 'employee')
+      - SELECT company_id FROM profiles WHERE id = request.user_id() AND role != 'client' AND role != 'student' AND role != 'patient' AND role != 'customer' AND role != 'policyholder' AND role != 'tenant' AND role != 'landlord' AND role != 'learner' AND role != 'employee'
     data:
+      - SELECT * FROM profiles WHERE company_id = bucket.company_id
       - SELECT * FROM module_definitions WHERE company_id = bucket.company_id
       - SELECT * FROM field_definitions WHERE company_id = bucket.company_id
       - SELECT * FROM dynamic_records WHERE company_id = bucket.company_id
@@ -134,7 +135,7 @@ bucket_definitions:
 
   client_workspace:
     parameters:
-      - SELECT company_id, id AS user_id FROM profiles WHERE id = request.user_id() AND role IN ('client', 'student', 'patient', 'customer', 'policyholder', 'tenant', 'landlord', 'learner', 'employee')
+      - SELECT company_id, id AS user_id FROM profiles WHERE id = request.user_id() AND (role = 'client' OR role = 'student' OR role = 'patient' OR role = 'customer' OR role = 'policyholder' OR role = 'tenant' OR role = 'landlord' OR role = 'learner' OR role = 'employee')
     data:
       - SELECT * FROM uni_students WHERE id = bucket.user_id AND company_id = bucket.company_id
       - SELECT * FROM school_students WHERE id = bucket.user_id AND company_id = bucket.company_id
@@ -144,7 +145,7 @@ bucket_definitions:
 
   client_shared_workspace:
     parameters:
-      - SELECT company_id FROM profiles WHERE id = request.user_id() AND role IN ('client', 'student', 'patient', 'customer', 'policyholder', 'tenant', 'landlord', 'learner', 'employee')
+      - SELECT company_id FROM profiles WHERE id = request.user_id() AND (role = 'client' OR role = 'student' OR role = 'patient' OR role = 'customer' OR role = 'policyholder' OR role = 'tenant' OR role = 'landlord' OR role = 'learner' OR role = 'employee')
     data:
       - SELECT * FROM module_definitions WHERE company_id = bucket.company_id
       - SELECT * FROM field_definitions WHERE company_id = bucket.company_id
