@@ -15,7 +15,7 @@ import {
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell
 } from 'recharts';
 
-const COLORS = ['#7c3aed', '#06b6d4', '#f59e0b', '#ef4444'];
+const COLORS = ['#16a34a', '#f97316', '#22c55e', '#fb923c'];
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -73,19 +73,19 @@ export default function Dashboard() {
   ].filter(d => d.value > 0);
 
   const kpis = [
-    { label: "Today's Sales", value: `$${parseFloat(analytics?.total_sales || 0).toFixed(2)}`, sub: 'vs yesterday', icon: DollarSign, from: 'from-purple-500', to: 'to-purple-600', trend: '+12%', up: true },
-    { label: 'Transactions', value: analytics?.total_transactions || 0, sub: 'completed sales', icon: ShoppingCart, from: 'from-violet-500', to: 'to-indigo-600', trend: '+8%', up: true },
-    { label: 'Inventory Items', value: inventoryStatus.total, sub: 'total SKUs tracked', icon: Package, from: 'from-blue-500', to: 'to-indigo-600', trend: '', up: true },
-    { label: 'Low Stock Alerts', value: inventoryStatus.lowStock, sub: 'need reordering', icon: AlertCircle, from: 'from-orange-500', to: 'to-red-600', trend: '-5%', up: false },
+    { label: "Today's Sales", value: `$${parseFloat(analytics?.total_sales || 0).toFixed(2)}`, sub: 'vs yesterday', icon: DollarSign, from: 'from-green-500', to: 'to-emerald-600', trend: '+12%', up: true },
+    { label: 'Transactions', value: analytics?.total_transactions || 0, sub: 'completed sales', icon: ShoppingCart, from: 'from-orange-500', to: 'to-orange-600', trend: '+8%', up: true },
+    { label: 'Inventory Items', value: inventoryStatus.total, sub: 'total SKUs tracked', icon: Package, from: 'from-green-500', to: 'to-green-600', trend: '', up: true },
+    { label: 'Low Stock Alerts', value: inventoryStatus.lowStock, sub: 'need reordering', icon: AlertCircle, from: 'from-orange-500', to: 'to-orange-600', trend: '-5%', up: false },
   ];
 
   const quickNav = [
-    { label: 'Drugs', href: '/pharmacy/drugs', icon: Pill, from: 'from-purple-500', to: 'to-purple-600' },
-    { label: 'Inventory', href: '/pharmacy/inventory', icon: Package, from: 'from-blue-500', to: 'to-indigo-600' },
-    { label: 'Customers', href: '/pharmacy/customers', icon: Users, from: 'from-emerald-500', to: 'to-teal-600' },
-    { label: 'POS', href: '/pharmacy/pos', icon: ShoppingCart, from: 'from-amber-500', to: 'to-orange-600' },
-    { label: 'Prescriptions', href: '/pharmacy/prescriptions', icon: Activity, from: 'from-pink-500', to: 'to-rose-600' },
-    { label: 'Reports', href: '/pharmacy/reports', icon: BarChart3, from: 'from-slate-500', to: 'to-gray-600' },
+    { label: 'Drugs', href: '/pharmacy/drugs', icon: Pill, from: 'from-green-500', to: 'to-emerald-600' },
+    { label: 'Inventory', href: '/pharmacy/inventory', icon: Package, from: 'from-orange-500', to: 'to-orange-600' },
+    { label: 'Customers', href: '/pharmacy/customers', icon: Users, from: 'from-green-500', to: 'to-green-600' },
+    { label: 'POS', href: '/pharmacy/pos', icon: ShoppingCart, from: 'from-orange-500', to: 'to-orange-600' },
+    { label: 'Prescriptions', href: '/pharmacy/prescriptions', icon: Activity, from: 'from-green-500', to: 'to-emerald-600' },
+    { label: 'Reports', href: '/pharmacy/reports', icon: BarChart3, from: 'from-orange-500', to: 'to-orange-600' },
   ];
 
   if (loading) {
@@ -102,7 +102,7 @@ export default function Dashboard() {
     <div className="space-y-6 p-6">
 
       {/* ── Hero Header ── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-700 p-8 text-white">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-emerald-600 to-orange-500 p-8 text-white">
         <div className="absolute inset-0 bg-black/10" />
         <div className="absolute -top-6 -right-6 w-40 h-40 bg-white/10 rounded-full" />
         <div className="absolute -bottom-10 -right-16 w-56 h-56 bg-white/5 rounded-full" />
@@ -115,10 +115,10 @@ export default function Dashboard() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold tracking-tight">Pharmacy Dashboard</h1>
-                <p className="text-purple-100 text-sm">Welcome back, {user?.email?.split('@')[0]} 👋</p>
+                <p className="text-green-100 text-sm">Welcome back, {user?.email?.split('@')[0]} 👋</p>
               </div>
             </div>
-            <p className="text-purple-200 text-xs mt-1">
+            <p className="text-green-200 text-xs mt-1">
               {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           </div>
@@ -140,7 +140,7 @@ export default function Dashboard() {
                 <kpi.icon className="w-5 h-5 text-white" />
               </div>
               {kpi.trend && (
-                <span className={`text-xs font-semibold px-2 py-1 rounded-full flex items-center gap-1 ${kpi.up ? 'text-emerald-700 bg-emerald-50' : 'text-red-600 bg-red-50'}`}>
+                <span className={`text-xs font-semibold px-2 py-1 rounded-full flex items-center gap-1 ${kpi.up ? 'text-green-700 bg-green-50' : 'text-red-600 bg-red-50'}`}>
                   {kpi.up ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
                   {kpi.trend}
                 </span>
@@ -165,7 +165,7 @@ export default function Dashboard() {
             <div className="flex gap-1">
               {['7D','30D'].map(p => (
                 <button key={p} onClick={() => setChartPeriod(p)}
-                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${chartPeriod === p ? 'bg-purple-600 text-white' : 'text-muted-foreground hover:bg-muted'}`}>
+                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${chartPeriod === p ? 'bg-green-600 text-white' : 'text-muted-foreground hover:bg-muted'}`}>
                   {p}
                 </button>
               ))}
@@ -175,15 +175,15 @@ export default function Dashboard() {
             <LineChart data={salesData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="pharmaSalesGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#7c3aed" stopOpacity={0.2} />
-                  <stop offset="95%" stopColor="#7c3aed" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#16a34a" stopOpacity={0.2} />
+                  <stop offset="95%" stopColor="#16a34a" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
               <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} />
               <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} tickFormatter={v => `$${v}`} />
               <Tooltip formatter={v => [`$${Number(v).toFixed(2)}`, 'Sales']} contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8 }} />
-              <Line type="monotone" dataKey="sales" stroke="#7c3aed" strokeWidth={2.5} dot={{ fill: '#7c3aed', r: 4 }} activeDot={{ r: 6 }} />
+              <Line type="monotone" dataKey="sales" stroke="#16a34a" strokeWidth={2.5} dot={{ fill: '#16a34a', r: 4 }} activeDot={{ r: 6 }} />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -231,7 +231,7 @@ export default function Dashboard() {
         <div className="bg-card rounded-2xl border border-border/50 p-6">
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-base font-semibold text-foreground">Top Products</h3>
-            <Link to="/pharmacy/drugs"><button className="text-xs text-purple-600 hover:underline flex items-center gap-1">View all <ChevronRight className="w-3 h-3" /></button></Link>
+            <Link to="/pharmacy/drugs"><button className="text-xs text-green-600 hover:underline flex items-center gap-1">View all <ChevronRight className="w-3 h-3" /></button></Link>
           </div>
           {topProducts.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10">
@@ -248,10 +248,10 @@ export default function Dashboard() {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-foreground truncate">{p.drug_name}</p>
                     <div className="h-1.5 bg-muted rounded-full mt-1">
-                      <div className="h-full bg-purple-500 rounded-full" style={{ width: `${Math.min((p.sales_count / Math.max(topProducts[0]?.sales_count || 1, 1)) * 100, 100)}%` }} />
+                      <div className="h-full bg-green-500 rounded-full" style={{ width: `${Math.min((p.sales_count / Math.max(topProducts[0]?.sales_count || 1, 1)) * 100, 100)}%` }} />
                     </div>
                   </div>
-                  <span className="text-sm font-bold text-purple-600 shrink-0">{p.sales_count}</span>
+                  <span className="text-sm font-bold text-green-600 shrink-0">{p.sales_count}</span>
                 </div>
               ))}
             </div>

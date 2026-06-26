@@ -19,7 +19,7 @@ import {
 import { generateText } from '@/lib/cloudflareAI';
 import { OrbitLoader } from '@/components/ui/orbit-loader';
 
-const PIE_COLORS = ['#10b981', '#f59e0b', '#64748b'];
+const PIE_COLORS = ['#16a34a', '#f97316', '#6b7280'];
 
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
@@ -121,22 +121,22 @@ export default function RealEstateDashboard() {
   };
 
   const kpis = [
-    { label: 'Active Properties', value: activeProperties, sub: `${properties.length} total`, icon: Building2, from: 'from-blue-500', to: 'to-blue-600', trend: '+5%', up: true },
-    { label: 'Active Buyers', value: activeBuyers, sub: `${clients.length} total clients`, icon: Users, from: 'from-indigo-500', to: 'to-purple-600', trend: '+12%', up: true },
-    { label: 'Viewings This Month', value: thisMonthViewings, sub: 'scheduled & completed', icon: Eye, from: 'from-violet-500', to: 'to-purple-600', trend: '+8%', up: true },
-    { label: 'Monthly Revenue', value: `$${(monthlyRevenue / 1000).toFixed(0)}K`, sub: 'closed this month', icon: DollarSign, from: 'from-emerald-500', to: 'to-green-600', trend: '+22%', up: true },
-    { label: 'Active Leases', value: activeLeases, sub: `${pendingOffers} pending offers`, icon: Home, from: 'from-teal-500', to: 'to-cyan-600', trend: '+3%', up: true },
+    { label: 'Active Properties', value: activeProperties, sub: `${properties.length} total`, icon: Building2, from: 'from-green-500', to: 'to-emerald-600', trend: '+5%', up: true },
+    { label: 'Active Buyers', value: activeBuyers, sub: `${clients.length} total clients`, icon: Users, from: 'from-orange-500', to: 'to-orange-600', trend: '+12%', up: true },
+    { label: 'Viewings This Month', value: thisMonthViewings, sub: 'scheduled & completed', icon: Eye, from: 'from-green-500', to: 'to-green-600', trend: '+8%', up: true },
+    { label: 'Monthly Revenue', value: `$${(monthlyRevenue / 1000).toFixed(0)}K`, sub: 'closed this month', icon: DollarSign, from: 'from-orange-500', to: 'to-orange-600', trend: '+22%', up: true },
+    { label: 'Active Leases', value: activeLeases, sub: `${pendingOffers} pending offers`, icon: Home, from: 'from-green-500', to: 'to-emerald-600', trend: '+3%', up: true },
   ];
 
   const quickNav = [
-    { label: 'Properties', href: '/real-estate/properties', icon: Building2, count: properties.length, from: 'from-blue-500', to: 'to-indigo-600' },
-    { label: 'Clients', href: '/real-estate/clients', icon: Users, count: clients.length, from: 'from-indigo-500', to: 'to-purple-600' },
-    { label: 'Viewings', href: '/real-estate/viewings', icon: Calendar, count: viewings.length, from: 'from-violet-500', to: 'to-purple-600' },
-    { label: 'Offers', href: '/real-estate/offers', icon: FileText, count: offers.length, from: 'from-amber-500', to: 'to-orange-600' },
-    { label: 'Transactions', href: '/real-estate/transactions', icon: DollarSign, count: transactions.length, from: 'from-emerald-500', to: 'to-green-600' },
-    { label: 'Leases', href: '/real-estate/leases', icon: Home, count: leases.length, from: 'from-teal-500', to: 'to-cyan-600' },
-    { label: 'Maintenance', href: '/real-estate/maintenance', icon: Wrench, count: 0, from: 'from-orange-500', to: 'to-red-500' },
-    { label: 'Market Data', href: '/real-estate/market-data', icon: BarChart3, count: 0, from: 'from-slate-500', to: 'to-gray-600' },
+    { label: 'Properties', href: '/real-estate/properties', icon: Building2, count: properties.length, from: 'from-green-500', to: 'to-emerald-600' },
+    { label: 'Clients', href: '/real-estate/clients', icon: Users, count: clients.length, from: 'from-orange-500', to: 'to-orange-600' },
+    { label: 'Viewings', href: '/real-estate/viewings', icon: Calendar, count: viewings.length, from: 'from-green-500', to: 'to-green-600' },
+    { label: 'Offers', href: '/real-estate/offers', icon: FileText, count: offers.length, from: 'from-orange-500', to: 'to-orange-600' },
+    { label: 'Transactions', href: '/real-estate/transactions', icon: DollarSign, count: transactions.length, from: 'from-green-500', to: 'to-emerald-600' },
+    { label: 'Leases', href: '/real-estate/leases', icon: Home, count: leases.length, from: 'from-orange-500', to: 'to-orange-600' },
+    { label: 'Maintenance', href: '/real-estate/maintenance', icon: Wrench, count: 0, from: 'from-green-500', to: 'to-green-600' },
+    { label: 'Market Data', href: '/real-estate/market-data', icon: BarChart3, count: 0, from: 'from-orange-500', to: 'to-orange-600' },
   ];
 
   if (isLoading) {
@@ -158,7 +158,7 @@ export default function RealEstateDashboard() {
     <div className="space-y-6 p-6">
 
       {/* ── Hero Header ── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 p-8 text-white">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-emerald-600 to-green-700 p-8 text-white">
         <div className="absolute inset-0 bg-black/10" />
         <div className="absolute -top-6 -right-6 w-40 h-40 bg-white/10 rounded-full" />
         <div className="absolute -bottom-10 -right-16 w-56 h-56 bg-white/5 rounded-full" />
@@ -170,10 +170,10 @@ export default function RealEstateDashboard() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold tracking-tight">Real Estate Dashboard</h1>
-                <p className="text-blue-100 text-sm">Welcome back, {user?.email?.split('@')[0]} 👋</p>
+                <p className="text-green-100 text-sm">Welcome back, {user?.email?.split('@')[0]} 👋</p>
               </div>
             </div>
-            <p className="text-blue-200 text-xs mt-1">
+            <p className="text-green-200 text-xs mt-1">
               {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           </div>
@@ -214,7 +214,7 @@ export default function RealEstateDashboard() {
               <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${kpi.from} ${kpi.to} flex items-center justify-center shadow-md`}>
                 <kpi.icon className="w-5 h-5 text-white" />
               </div>
-              <span className={`text-xs font-semibold px-2 py-1 rounded-full flex items-center gap-1 ${kpi.up ? 'text-emerald-700 bg-emerald-50' : 'text-red-600 bg-red-50'}`}>
+              <span className={`text-xs font-semibold px-2 py-1 rounded-full flex items-center gap-1 ${kpi.up ? 'text-green-700 bg-green-50' : 'text-red-600 bg-red-50'}`}>
                 {kpi.up ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
                 {kpi.trend}
               </span>
@@ -238,7 +238,7 @@ export default function RealEstateDashboard() {
             <div className="flex gap-1">
               {['3M','6M','1Y'].map(p => (
                 <button key={p} onClick={() => setChartPeriod(p)}
-                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${chartPeriod === p ? 'bg-blue-600 text-white' : 'text-muted-foreground hover:bg-muted'}`}>
+                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${chartPeriod === p ? 'bg-green-600 text-white' : 'text-muted-foreground hover:bg-muted'}`}>
                   {p}
                 </button>
               ))}
@@ -248,15 +248,15 @@ export default function RealEstateDashboard() {
             <AreaChart data={revenueChart} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="reRevGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#16a34a" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#16a34a" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
               <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} />
               <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} tickFormatter={v => `$${v/1000}K`} />
               <Tooltip formatter={v => [`$${Number(v).toLocaleString()}`, 'Revenue']} contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8 }} />
-              <Area type="monotone" dataKey="revenue" stroke="#6366f1" strokeWidth={2.5} fill="url(#reRevGrad)" />
+              <Area type="monotone" dataKey="revenue" stroke="#16a34a" strokeWidth={2.5} fill="url(#reRevGrad)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -296,7 +296,7 @@ export default function RealEstateDashboard() {
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-base font-semibold text-foreground">Recent Sales</h3>
             <Link to="/real-estate/transactions">
-              <button className="text-xs text-blue-600 hover:underline flex items-center gap-1">View all <ChevronRight className="w-3 h-3" /></button>
+              <button className="text-xs text-green-600 hover:underline flex items-center gap-1">View all <ChevronRight className="w-3 h-3" /></button>
             </Link>
           </div>
           {transactions.length === 0 ? (
@@ -308,7 +308,7 @@ export default function RealEstateDashboard() {
             <div className="space-y-3">
               {transactions.slice(0, 5).map(txn => (
                 <div key={txn.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted/40 transition-colors">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
                     {(txn.buyer_name || 'T')[0].toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -316,8 +316,8 @@ export default function RealEstateDashboard() {
                     <p className="text-xs text-muted-foreground truncate">{txn.buyer_name || '—'}</p>
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="text-sm font-bold text-emerald-600">${Number(txn.sale_price || 0).toLocaleString()}</p>
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${txn.status === 'completed' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
+                    <p className="text-sm font-bold text-green-600">${Number(txn.sale_price || 0).toLocaleString()}</p>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${txn.status === 'completed' ? 'bg-green-50 text-green-700' : 'bg-orange-50 text-orange-700'}`}>
                       {txn.status || 'pending'}
                     </span>
                   </div>
@@ -332,7 +332,7 @@ export default function RealEstateDashboard() {
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-base font-semibold text-foreground">Upcoming Viewings</h3>
             <Link to="/real-estate/viewings">
-              <button className="text-xs text-blue-600 hover:underline flex items-center gap-1">View all <ChevronRight className="w-3 h-3" /></button>
+              <button className="text-xs text-green-600 hover:underline flex items-center gap-1">View all <ChevronRight className="w-3 h-3" /></button>
             </Link>
           </div>
           {viewings.length === 0 ? (
@@ -344,7 +344,7 @@ export default function RealEstateDashboard() {
             <div className="space-y-3">
               {viewings.slice(0, 5).map(v => (
                 <div key={v.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted/40 transition-colors">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex flex-col items-center justify-center text-white shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex flex-col items-center justify-center text-white shrink-0">
                     <span className="text-[9px] font-bold uppercase leading-none">
                       {v.viewing_date ? new Date(v.viewing_date).toLocaleDateString('en-US', { month: 'short' }) : '—'}
                     </span>
@@ -357,9 +357,9 @@ export default function RealEstateDashboard() {
                     <p className="text-xs text-muted-foreground">{v.viewing_time || ''} · {v.client_name || 'Client'}</p>
                   </div>
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${
-                    v.status === 'completed' ? 'bg-emerald-50 text-emerald-700' :
+                    v.status === 'completed' ? 'bg-green-50 text-green-700' :
                     v.status === 'cancelled' ? 'bg-red-50 text-red-700' :
-                    'bg-blue-50 text-blue-700'
+                    'bg-orange-50 text-orange-700'
                   }`}>{v.status || 'scheduled'}</span>
                 </div>
               ))}
