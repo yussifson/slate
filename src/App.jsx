@@ -1068,6 +1068,15 @@ function ProtectedRoute() {
   return <Outlet />;
 }
 
+function SuperAdminRoute() {
+  const { user } = useAuth();
+  // Protect super admin routes
+  if (user?.role !== 'super_admin') {
+    return <Navigate to="/" replace />;
+  }
+  return <Outlet />;
+}
+
 function App() {
   const { currentSubdomain } = getSubdomainAndBase();
   const isBaseDomain = currentSubdomain === null;
