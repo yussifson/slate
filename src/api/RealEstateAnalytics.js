@@ -139,7 +139,7 @@ export const RealEstateAnalytics = {
       const result = await powerSync.execute(
         `SELECT 
            u.id,
-           u.full_name as agent_name,
+           u.name as agent_name,
            COUNT(DISTINCT CASE WHEN t.transaction_type = 'sale' THEN t.id END) as listings_sold_count,
            COUNT(DISTINCT CASE WHEN p.agent_id = u.id THEN p.id END) as listings_taken_count,
            COUNT(DISTINCT c.id) as client_count,
@@ -154,7 +154,7 @@ export const RealEstateAnalytics = {
          LEFT JOIN univ_re_transactions t ON u.id = t.agent_id AND t.company_id = ?
          LEFT JOIN univ_re_commission_details cd ON u.id = cd.agent_id AND cd.company_id = ?
          WHERE u.company_id = ? AND u.role IN ('agent', 'team_lead')
-         GROUP BY u.id, u.full_name
+         GROUP BY u.id, u.name
          ORDER BY sales_volume DESC`,
         [companyId, companyId, companyId, companyId, companyId]
       );

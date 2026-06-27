@@ -5103,6 +5103,7 @@ export const AppSchema = new Schema({
         signature_date: column.text,
         signature_url: column.text,
         signature_status: column.text,
+        signing_order: column.integer,
         signing_ip_address: column.text,
         signing_timestamp: column.text,
         expiration_date: column.text,
@@ -5214,7 +5215,8 @@ export const AppSchema = new Schema({
         quality_rating: column.integer,
         professionalism_rating: column.integer,
         would_rehire: column.integer,
-        created_at: column.text
+        created_at: column.text,
+        updated_at: column.text
     }),
 
     // Enhanced Lease Management
@@ -5243,6 +5245,7 @@ export const AppSchema = new Schema({
         payment_amount: column.real,
         late_fee_amount: column.real,
         late_fee_percentage: column.real,
+        late_fee_type: column.text,
         grace_period_days: column.integer,
         is_recurring: column.integer,
         payment_method: column.text,
