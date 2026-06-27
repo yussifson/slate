@@ -5095,6 +5095,7 @@ export const AppSchema = new Schema({
         id: column.text,
         company_id: column.text,
         document_id: column.text,
+        document_name: column.text,
         signer_id: column.text,
         signer_name: column.text,
         signer_email: column.text,
@@ -5141,6 +5142,7 @@ export const AppSchema = new Schema({
         applies_to_buyer_side: column.integer,
         applies_to_seller_side: column.integer,
         is_active: column.integer,
+        description: column.text,
         created_at: column.text,
         updated_at: column.text
     }),
@@ -5172,6 +5174,7 @@ export const AppSchema = new Schema({
         id: column.text,
         company_id: column.text,
         contractor_name: column.text,
+        license_name: column.text,
         contractor_type: column.text,
         service_categories: column.text,
         business_license_number: column.text,
@@ -5219,6 +5222,7 @@ export const AppSchema = new Schema({
         id: column.text,
         company_id: column.text,
         lease_id: column.text,
+        tenant_id: column.text,
         renewal_status: column.text,
         renewal_offer_date: column.text,
         response_deadline: column.text,
@@ -5498,6 +5502,7 @@ export const AppSchema = new Schema({
         similarity_score: column.real,
         price_adjustment_reason: column.text,
         adjustments: column.text,
+        notes: column.text,
         created_at: column.text
     }),
 
@@ -5549,7 +5554,8 @@ export const AppSchema = new Schema({
         recommendation_date: column.text,
         client_action: column.text,
         action_date: column.text,
-        created_at: column.text
+        created_at: column.text,
+        updated_at: column.text
     }),
 
     // Audit Logging
