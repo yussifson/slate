@@ -177,9 +177,9 @@ export default function Offers() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {filteredOffers.map(offer => (
-          <Card key={offer.id} className="group overflow-hidden border-transparent shadow-sm hover:shadow-xl hover:-translate-y-1 dark:border-white/10 dark:bg-slate-900/50 bg-white/70 backdrop-blur-md transition-all duration-300 flex flex-col">
+          <Card key={offer.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
             <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 to-teal-500" />
-            <CardHeader className="pb-4">
+            <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
               <div className="flex items-start justify-between">
                 <div className="flex-1 pr-4">
                   <CardTitle className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 line-clamp-1">{offer.property_address || 'No address'}</CardTitle>
@@ -193,7 +193,7 @@ export default function Offers() {
                 <Badge className={`${statusColors[offer.status] || 'bg-slate-100 text-slate-800 dark:bg-slate-800/50 dark:text-slate-300'} px-2.5 py-0.5 shadow-sm font-medium border-0 capitalize`}>{offer.status}</Badge>
               </div>
             </CardHeader>
-            <CardContent className="space-y-5 flex-1 flex flex-col pt-0">
+            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="p-4 bg-gradient-to-br from-emerald-50 to-teal-50/50 dark:from-emerald-950/30 dark:to-teal-900/10 rounded-xl border border-emerald-100/50 dark:border-emerald-800/30">
                 <p className="text-xs text-emerald-600/70 dark:text-emerald-400/70 font-semibold uppercase tracking-wider mb-1">Offer Amount</p>
                 <p className="text-2xl font-extrabold text-emerald-700 dark:text-emerald-400 tracking-tight">
@@ -232,7 +232,7 @@ export default function Offers() {
       </div>
 
       {filteredOffers.length === 0 && (
-        <Card className="text-center py-20 bg-white/40 dark:bg-slate-900/20 backdrop-blur-md border-dashed border-2 border-slate-200 dark:border-slate-800 shadow-sm">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
           <div className="w-20 h-20 mx-auto bg-slate-100 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-6">
             <TrendingUp className="w-10 h-10 text-slate-400 dark:text-slate-500" />
           </div>

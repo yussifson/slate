@@ -179,8 +179,8 @@ export default function CRMLeads() {
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-4">
-        <Card className="border-0 border-t-2 border-t-green-600">
-          <CardContent className="p-6">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-green-700 text-xs font-semibold uppercase mb-1">Total Leads</p>
@@ -191,8 +191,8 @@ export default function CRMLeads() {
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow bg-gradient-to-br from-orange-500 to-orange-600 text-white">
-          <CardContent className="p-6">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-orange-100 text-xs font-semibold uppercase mb-1">Qualified</p>
@@ -203,8 +203,8 @@ export default function CRMLeads() {
           </CardContent>
         </Card>
 
-        <Card className="border-0 border-t-2 border-t-green-600">
-          <CardContent className="p-6">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-green-700 text-xs font-semibold uppercase mb-1">Avg Lead Score</p>
@@ -215,8 +215,8 @@ export default function CRMLeads() {
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow bg-gradient-to-br from-green-500 to-green-600 text-white">
-          <CardContent className="p-6">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-green-100 text-xs font-semibold uppercase mb-1">Contacted</p>
@@ -251,8 +251,8 @@ export default function CRMLeads() {
       {/* Leads Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredLeads.map(lead => (
-          <Card key={lead.id} className="hover:shadow transition-shadow">
-            <CardHeader>
+          <Card key={lead.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+            <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <CardTitle className="text-base">{lead.first_name} {lead.last_name}</CardTitle>
@@ -263,7 +263,7 @@ export default function CRMLeads() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="space-y-2">
                 {lead.email && (
                   <div className="flex items-center gap-2 text-sm">
@@ -303,7 +303,7 @@ export default function CRMLeads() {
       </div>
 
       {filteredLeads.length === 0 && (
-        <Card className="text-center py-12">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
           <Users className="w-12 h-12 mx-auto text-muted-foreground mb-4 opacity-50" />
           <p className="text-muted-foreground">No leads found. Create your first lead!</p>
         </Card>

@@ -169,53 +169,53 @@ export default function Recommendations() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Lightbulb className="w-4 h-4" />
               Total Recs
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold">{totalRecs}</div>
             <p className="text-xs text-muted-foreground mt-1">Recommendations generated</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4" />
               Accepted
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold text-green-600">{acceptedRecs}</div>
             <p className="text-xs text-muted-foreground mt-1">Clients approved</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <AlertCircle className="w-4 h-4" />
               Pending
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold text-yellow-600">{pendingRecs}</div>
             <p className="text-xs text-muted-foreground mt-1">Awaiting response</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <TrendingUp className="w-4 h-4" />
               Avg Score
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold">{(avgScore * 100).toFixed(0)}%</div>
             <p className="text-xs text-muted-foreground mt-1">Match confidence</p>
           </CardContent>
@@ -252,8 +252,8 @@ export default function Recommendations() {
       {/* Recommendations Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filteredRecs.map(rec => (
-          <Card key={rec.id} className="hover:shadow-lg transition-shadow">
-            <CardHeader>
+          <Card key={rec.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+            <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <CardTitle className="text-base flex items-center gap-2">
@@ -267,7 +267,7 @@ export default function Recommendations() {
                 </Badge>
               </div>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="p-3 bg-blue-50 rounded">
                 <p className="text-xs text-muted-foreground mb-1">Match Score</p>
                 <p className="text-2xl font-bold text-blue-600">{(rec.recommendation_score * 100).toFixed(0)}%</p>
@@ -316,7 +316,7 @@ export default function Recommendations() {
       </div>
 
       {filteredRecs.length === 0 && (
-        <Card className="text-center py-12">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
           <Lightbulb className="w-12 h-12 mx-auto text-muted-foreground mb-4 opacity-50" />
           <p className="text-muted-foreground">No recommendations found. Create your first recommendation!</p>
         </Card>

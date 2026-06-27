@@ -159,8 +159,8 @@ export default function Leases() {
       </div>
 
       {/* Filters */}
-      <Card className="border-border/50 bg-background/50 backdrop-blur-sm dark:bg-slate-900/50 dark:border-white/10 shadow-sm transition-all duration-300 ease-in-out">
-        <CardContent className="p-4 flex gap-4 flex-wrap items-center">
+      <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+        <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
           <div className="flex-1 min-w-[240px]">
             <div className="relative group">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors duration-300" />
@@ -203,9 +203,9 @@ export default function Leases() {
             };
             
             return (
-              <Card key={lease.id} className="group overflow-hidden border-transparent shadow-sm hover:shadow-xl hover:-translate-y-1 dark:border-white/10 dark:bg-slate-900/50 bg-white/70 backdrop-blur-md transition-all duration-300 flex flex-col">
+              <Card key={lease.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
                 <div className={`h-1.5 w-full bg-gradient-to-r ${statusColors[status]}`} />
-                <CardHeader className="pb-4">
+                <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
                   <div className="flex items-start justify-between">
                     <div className="flex-1 pr-4">
                       <CardTitle className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 line-clamp-1">{lease.property_address || 'No address'}</CardTitle>
@@ -221,7 +221,7 @@ export default function Leases() {
                     </Badge>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-5 flex-1 flex flex-col pt-0">
+                <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
                   <div className="p-4 bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-800/40 dark:to-slate-900/40 rounded-xl border border-slate-200/60 dark:border-slate-700/50">
                     <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-1">Monthly Rent</p>
                     <p className="text-2xl font-extrabold text-slate-800 dark:text-slate-200 tracking-tight">
@@ -263,8 +263,8 @@ export default function Leases() {
       )}
 
       {filteredLeases.length === 0 && !isLoading && (
-        <Card className="text-center py-16 border-dashed border-2 border-border/60 bg-background/50 backdrop-blur-sm dark:bg-slate-900/50 dark:border-white/10 hover:border-primary/50 hover:shadow-xl transition-all duration-300 ease-in-out">
-          <CardContent>
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-4 transition-transform duration-300 hover:scale-110">
               <Home className="w-8 h-8 text-primary" />
             </div>

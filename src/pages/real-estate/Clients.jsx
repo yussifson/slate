@@ -201,14 +201,14 @@ export default function Clients() {
       {/* Clients Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredClients.map(client => (
-          <Card key={client.id} className="group overflow-hidden border-transparent shadow-sm hover:shadow-xl hover:-translate-y-1 dark:border-white/10 dark:bg-slate-900/50 bg-white/70 backdrop-blur-md transition-all duration-300 ease-in-out flex flex-col">
+          <Card key={client.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
             <div className={`h-1.5 w-full ${
               client.type === 'buyer' ? 'bg-gradient-to-r from-orange-400 to-amber-500' :
               client.type === 'seller' ? 'bg-gradient-to-r from-emerald-400 to-teal-500' :
               client.type === 'tenant' ? 'bg-gradient-to-r from-blue-400 to-indigo-500' :
               'bg-gradient-to-r from-purple-400 to-pink-500'
             }`} />
-            <CardHeader className="pb-4">
+            <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <CardTitle className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">{client.name}</CardTitle>
@@ -217,7 +217,7 @@ export default function Clients() {
                 <Badge className={`${typeColors[client.type]} px-2.5 py-0.5 shadow-sm font-medium border-0 capitalize`}>{client.type}</Badge>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4 flex-1 flex flex-col pt-0">
+            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="space-y-3 flex-1 bg-slate-50/50 dark:bg-slate-800/30 p-3 rounded-xl border border-slate-100 dark:border-slate-800/50">
                 {client.email && (
                   <div className="flex items-center gap-3 text-sm group/link">
@@ -264,7 +264,7 @@ export default function Clients() {
       </div>
 
       {filteredClients.length === 0 && (
-        <Card className="text-center py-20 border-dashed border-2 dark:border-white/10 dark:bg-slate-900/30 bg-slate-50/50 transition-all duration-300 col-span-full">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
           <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-6 shadow-inner">
             <Users className="w-8 h-8 text-muted-foreground opacity-50" />
           </div>

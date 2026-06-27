@@ -186,9 +186,8 @@ export default function Properties() {
       {/* Properties Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {filteredProperties.map(property => (
-          <Card key={property.id} className="group hover:shadow-xl transition-all duration-300 ease-in-out hover:-translate-y-1 dark:border-white/10 dark:bg-slate-900/50 backdrop-blur-sm overflow-hidden flex flex-col">
-            <CardHeader className="relative pb-5 border-b border-border/50 dark:border-white/5 bg-gradient-to-br from-slate-50 to-white dark:from-slate-800/40 dark:to-slate-900/40 overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-10 -mt-10"></div>
+          <Card key={property.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+            <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
               <div className="flex items-start justify-between relative z-10">
                 <div className="flex-1 pr-4">
                   <CardTitle className="text-xl font-extrabold flex items-center gap-2 group-hover:text-primary transition-colors tracking-tight">
@@ -202,7 +201,7 @@ export default function Properties() {
                 <Badge variant="secondary" className={`${statusColors[property.status]} shadow-sm border-0 font-bold px-3 py-1 uppercase tracking-wider text-[10px] rounded-full`}>{property.status}</Badge>
               </div>
             </CardHeader>
-            <CardContent className="space-y-5 pt-5 flex-1 flex flex-col relative z-10 bg-white/50 dark:bg-slate-900/20">
+            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="grid grid-cols-3 gap-3">
                 <div className="text-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 hover:border-primary/30 transition-colors shadow-sm">
                   <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">Beds</p>
@@ -250,7 +249,7 @@ export default function Properties() {
       </div>
 
       {filteredProperties.length === 0 && (
-        <Card className="text-center py-16 dark:border-white/10 dark:bg-slate-900/50 backdrop-blur-sm shadow-sm border-dashed border-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
           <div className="flex flex-col items-center justify-center space-y-4">
             <div className="p-4 bg-muted/50 rounded-full dark:bg-slate-800/50 ring-1 ring-border/50">
               <Building2 className="w-10 h-10 text-muted-foreground/60" />

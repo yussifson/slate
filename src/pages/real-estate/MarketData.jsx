@@ -103,53 +103,53 @@ export default function MarketData() {
 
       {/* Aggregate KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <DollarSign className="w-4 h-4" />
               Avg Price
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold">${(avgPrice / 1000000).toFixed(1)}M</div>
             <p className="text-xs text-muted-foreground mt-1">Across all markets</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Calendar className="w-4 h-4" />
               Days on Market
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold">{avgDaysOnMarket}</div>
             <p className="text-xs text-muted-foreground mt-1">Average days</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Home className="w-4 h-4" />
               Active Listings
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold">{totalActiveListing}</div>
             <p className="text-xs text-muted-foreground mt-1">For sale</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <BarChart3 className="w-4 h-4" />
               Sold Listings
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold">{totalSoldListings}</div>
             <p className="text-xs text-muted-foreground mt-1">This period</p>
           </CardContent>
@@ -198,14 +198,14 @@ export default function MarketData() {
       {/* Market Data Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filteredData.length === 0 ? (
-          <Card className="text-center col-span-full py-12">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
             <BarChart3 className="w-12 h-12 mx-auto text-muted-foreground mb-4 opacity-50" />
             <p className="text-muted-foreground">No market data found matching your criteria</p>
           </Card>
         ) : (
           filteredData.map(market => (
-            <Card key={market.id} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
+            <Card key={market.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+              <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <CardTitle className="text-base flex items-center gap-2">
@@ -222,7 +222,7 @@ export default function MarketData() {
                   </Badge>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
                 <div className="grid grid-cols-2 gap-3">
                   <div className="p-2 bg-blue-50 rounded">
                     <p className="text-xs text-muted-foreground mb-1">Average Price</p>
@@ -275,11 +275,11 @@ export default function MarketData() {
 
       {/* Table View for Detailed Analysis */}
       {filteredData.length > 0 && (
-        <Card className="overflow-hidden">
-          <CardHeader>
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
             <CardTitle>Detailed Market Comparison</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="border-b border-border bg-muted/50">

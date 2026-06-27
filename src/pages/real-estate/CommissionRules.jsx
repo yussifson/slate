@@ -176,40 +176,40 @@ export default function CommissionRules() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <TrendingUp className="w-4 h-4" />
               Total Rules
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold">{totalRules}</div>
             <p className="text-xs text-muted-foreground mt-1">Commission configurations</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4" />
               Active Rules
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold text-green-600">{activeRules}</div>
             <p className="text-xs text-muted-foreground mt-1">Currently in use</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Percent className="w-4 h-4" />
               Avg Commission
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold">{avgCommission}%</div>
             <p className="text-xs text-muted-foreground mt-1">Across all rules</p>
           </CardContent>
@@ -244,8 +244,8 @@ export default function CommissionRules() {
       {/* Rules Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filteredRules.map(rule => (
-          <Card key={rule.id} className="hover:shadow-lg transition-shadow">
-            <CardHeader>
+          <Card key={rule.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+            <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <CardTitle className="text-base flex items-center gap-2">
@@ -259,7 +259,7 @@ export default function CommissionRules() {
                 </Badge>
               </div>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="grid grid-cols-2 gap-3">
                 {rule.commission_percentage > 0 && (
                   <div className="flex items-center gap-2 p-2 bg-blue-50 rounded">
@@ -322,7 +322,7 @@ export default function CommissionRules() {
       </div>
 
       {filteredRules.length === 0 && (
-        <Card className="text-center py-12">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
           <Percent className="w-12 h-12 mx-auto text-muted-foreground mb-4 opacity-50" />
           <p className="text-muted-foreground">No commission rules found. Create your first rule!</p>
         </Card>

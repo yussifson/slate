@@ -192,40 +192,40 @@ export default function Contractors() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Hammer className="w-4 h-4" />
               Total Contractors
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold">{totalContractors}</div>
             <p className="text-xs text-muted-foreground mt-1">In your network</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Badge className="w-4 h-4" />
               Licensed
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold text-green-600">{licensed}</div>
             <p className="text-xs text-muted-foreground mt-1">{((licensed / totalContractors) * 100 || 0).toFixed(0)}% licensed</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Star className="w-4 h-4" />
               Avg Rating
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold text-yellow-600">{avgRating} ⭐</div>
             <p className="text-xs text-muted-foreground mt-1">Out of 5</p>
           </CardContent>
@@ -266,8 +266,8 @@ export default function Contractors() {
       {/* Contractors Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filteredContractors.map(c => (
-          <Card key={c.id} className="hover:shadow-lg transition-shadow">
-            <CardHeader>
+          <Card key={c.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+            <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <CardTitle className="text-base flex items-center gap-2">
@@ -283,7 +283,7 @@ export default function Contractors() {
                 )}
               </div>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="flex items-center gap-2 text-sm">
                 <Mail className="w-4 h-4 text-muted-foreground" />
                 <a href={`mailto:${c.email}`} className="text-blue-600 hover:underline">{c.email}</a>
@@ -333,7 +333,7 @@ export default function Contractors() {
       </div>
 
       {filteredContractors.length === 0 && (
-        <Card className="text-center py-12">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
           <Hammer className="w-12 h-12 mx-auto text-muted-foreground mb-4 opacity-50" />
           <p className="text-muted-foreground">No contractors found. Add your first contractor!</p>
         </Card>

@@ -186,40 +186,40 @@ export default function ComparableProperties() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Home className="w-4 h-4" />
               Total Comparables
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold">{totalComps}</div>
             <p className="text-xs text-muted-foreground mt-1">Properties in analysis</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <DollarSign className="w-4 h-4" />
               Average Price
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold">${avgPrice}</div>
             <p className="text-xs text-muted-foreground mt-1">Across all comps</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <TrendingUp className="w-4 h-4" />
               Avg Similarity
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold">{avgSimilarity}%</div>
             <p className="text-xs text-muted-foreground mt-1">Match score</p>
           </CardContent>
@@ -254,7 +254,7 @@ export default function ComparableProperties() {
       </div>
 
       {/* Comparables Table */}
-      <Card className="overflow-hidden">
+      <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="border-b border-border bg-muted/50">

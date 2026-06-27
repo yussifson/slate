@@ -108,8 +108,8 @@ export default function MarketIntelligence() {
 
       {/* Market Stats */}
       <div className="grid grid-cols-3 gap-4">
-        <Card className="border-0 border-t-2 border-t-green-600">
-          <CardContent className="p-6">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-green-700 text-xs font-semibold uppercase mb-1">Avg Price</p>
@@ -120,8 +120,8 @@ export default function MarketIntelligence() {
           </CardContent>
         </Card>
 
-        <Card className="border-0 border-t-2 border-t-orange-500">
-          <CardContent className="p-6">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-orange-600 text-xs font-semibold uppercase mb-1">Median Price</p>
@@ -132,8 +132,8 @@ export default function MarketIntelligence() {
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow bg-gradient-to-br from-green-500 to-green-600 text-white">
-          <CardContent className="p-6">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-green-100 text-xs font-semibold uppercase mb-1">Price Trend</p>
@@ -149,20 +149,20 @@ export default function MarketIntelligence() {
       <div>
         <h2 className="text-xl font-bold text-foreground mb-4">Comparable Analysis</h2>
         {comparables.length === 0 ? (
-          <Card className="text-center py-12">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
             <Home className="w-12 h-12 mx-auto text-muted-foreground mb-4 opacity-50" />
             <p className="text-muted-foreground">No comparable analysis yet</p>
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {comparables.map((comp) => (
-              <Card key={comp.id} className="hover:shadow transition-shadow">
-                <CardHeader>
+              <Card key={comp.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+                <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
                   <CardTitle className="text-base flex items-center gap-2">
                     <MapPin className="w-4 h-4" /> {comp.subject_address}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
                   <div className="grid grid-cols-2 gap-2">
                     <div>
                       <p className="text-xs text-muted-foreground">Subject Price</p>
@@ -198,14 +198,14 @@ export default function MarketIntelligence() {
       <div>
         <h2 className="text-xl font-bold text-foreground mb-4">Market Trends (Last 12 Months)</h2>
         {trends.length === 0 ? (
-          <Card className="text-center py-8">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
             <p className="text-muted-foreground">No trend data available</p>
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {trends.slice(0, 6).map((trend) => (
-              <Card key={trend.id} className="hover:shadow transition-shadow">
-                <CardContent className="p-4">
+              <Card key={trend.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+                <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
                   <div className="flex items-start justify-between mb-3">
                     <div>
                       <p className="font-semibold text-sm">{trend.city}, {trend.state}</p>

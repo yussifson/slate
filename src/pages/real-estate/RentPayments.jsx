@@ -145,8 +145,8 @@ export default function RentPayments() {
 
         {/* Financial Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-emerald-500 to-green-600 dark:from-emerald-600/40 dark:to-green-700/40 dark:border dark:border-white/10 dark:backdrop-blur-sm text-white hover:-translate-y-1 transition-all duration-300">
-            <CardContent className="p-6">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-green-100 dark:text-green-200 text-xs font-semibold uppercase mb-1 tracking-wider">Collected</p>
@@ -158,8 +158,8 @@ export default function RentPayments() {
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-orange-500 to-orange-600 dark:from-orange-600/40 dark:to-orange-700/40 dark:border dark:border-white/10 dark:backdrop-blur-sm text-white hover:-translate-y-1 transition-all duration-300">
-            <CardContent className="p-6">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-orange-100 dark:text-orange-200 text-xs font-semibold uppercase mb-1 tracking-wider">Pending</p>
@@ -171,8 +171,8 @@ export default function RentPayments() {
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-red-500 to-red-600 dark:from-red-600/40 dark:to-red-700/40 dark:border dark:border-white/10 dark:backdrop-blur-sm text-white hover:-translate-y-1 transition-all duration-300">
-            <CardContent className="p-6">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-red-100 dark:text-red-200 text-xs font-semibold uppercase mb-1 tracking-wider">Overdue</p>
@@ -184,8 +184,8 @@ export default function RentPayments() {
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600/40 dark:to-blue-700/40 dark:border dark:border-white/10 dark:backdrop-blur-sm text-white hover:-translate-y-1 transition-all duration-300">
-            <CardContent className="p-6">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-blue-100 dark:text-blue-200 text-xs font-semibold uppercase mb-1 tracking-wider">Collection Rate</p>
@@ -200,14 +200,14 @@ export default function RentPayments() {
 
         <div className="grid grid-cols-3 gap-6 mb-8">
           {/* Upcoming Payments */}
-          <Card className="border-transparent shadow-lg dark:bg-slate-900/50 bg-white/70 backdrop-blur-md flex flex-col overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-emerald-500 to-green-600 text-white pb-4">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+            <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <div className="p-1.5 bg-white/20 rounded-md backdrop-blur-sm"><Calendar className="w-5 h-5" /></div>
                 Upcoming
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-0 flex-1">
+            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="max-h-96 overflow-y-auto">
                 {upcomingPayments.length === 0 ? (
                   <div className="p-8 text-center text-slate-500 dark:text-slate-400">
@@ -234,14 +234,14 @@ export default function RentPayments() {
           </Card>
 
           {/* Overdue Alerts */}
-          <Card className="border-transparent shadow-lg dark:bg-slate-900/50 bg-white/70 backdrop-blur-md flex flex-col overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-red-500 to-orange-500 text-white pb-4">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+            <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <div className="p-1.5 bg-white/20 rounded-md backdrop-blur-sm"><AlertTriangle className="w-5 h-5" /></div>
                 Overdue
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-0 flex-1">
+            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="max-h-96 overflow-y-auto">
                 {overDuePayments.length === 0 ? (
                   <div className="p-8 text-center text-slate-500 dark:text-slate-400">
@@ -268,14 +268,14 @@ export default function RentPayments() {
           </Card>
 
           {/* Recent Payments */}
-          <Card className="border-transparent shadow-lg dark:bg-slate-900/50 bg-white/70 backdrop-blur-md flex flex-col overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white pb-4">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+            <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <div className="p-1.5 bg-white/20 rounded-md backdrop-blur-sm"><CheckCircle className="w-5 h-5" /></div>
                 Recent
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-0 flex-1">
+            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="max-h-96 overflow-y-auto">
                 {payments.filter(p => p.status === 'paid').slice(0, 5).length === 0 ? (
                   <div className="p-8 text-center text-slate-500 dark:text-slate-400">
@@ -303,14 +303,14 @@ export default function RentPayments() {
         </div>
 
         {/* All Payments Table */}
-        <Card className="border-0 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
             <CardTitle className="flex items-center gap-2">
               <CreditCard className="w-5 h-5" />
               All Payments
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">

@@ -144,8 +144,8 @@ export default function Maintenance() {
 
         {/* Key Metrics */}
         <div className="grid grid-cols-4 gap-4 mb-8">
-          <Card className="border-0 border-t-2 border-t-orange-500 bg-white text-gray-900">
-            <CardContent className="p-6">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-orange-600 text-xs font-semibold uppercase mb-1">Total Requests</p>
@@ -157,8 +157,8 @@ export default function Maintenance() {
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow bg-gradient-to-br from-orange-500 to-orange-600 text-white">
-            <CardContent className="p-6">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-orange-100 text-xs font-semibold uppercase mb-1">Critical</p>
@@ -170,8 +170,8 @@ export default function Maintenance() {
             </CardContent>
           </Card>
 
-          <Card className="border-0 border-t-2 border-t-green-600 bg-white text-gray-900">
-            <CardContent className="p-6">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-green-700 text-xs font-semibold uppercase mb-1">In Progress</p>
@@ -183,8 +183,8 @@ export default function Maintenance() {
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow bg-gradient-to-br from-green-500 to-green-600 text-white">
-            <CardContent className="p-6">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-green-100 text-xs font-semibold uppercase mb-1">Total Cost</p>
@@ -235,7 +235,7 @@ export default function Maintenance() {
             const requestsInPriority = filteredRequests.filter(r => r.priority === priority);
             return (
               <Card key={priority} className={`border-2 ${config.border} ${config.bg}`}>
-                <CardHeader>
+                <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
                   <CardTitle className="flex items-center gap-2 text-sm">
                     <span className={`w-3 h-3 rounded-full ${config.color}`}></span>
                     {config.label}
