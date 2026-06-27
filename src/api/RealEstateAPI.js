@@ -1305,7 +1305,7 @@ export const RealEstateAPI = {
 
       await powerSync.execute(
         `INSERT INTO univ_re_document_templates (id, company_id, template_name, document_type, document_category, 
-         required_signatures, version, content, description, is_active, created_at, updated_at) 
+         required_signatures, version, template_content, description, is_active, created_at, updated_at) 
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [id, companyId, data.templateName, data.documentType, data.documentCategory, data.requiredSignatures, 
          data.version, data.content, data.description || '', data.isActive !== false, now, now]

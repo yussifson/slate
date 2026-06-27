@@ -179,8 +179,8 @@ export default function CRMLeads() {
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-4">
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-green-700 text-xs font-semibold uppercase mb-1">Total Leads</p>
@@ -191,8 +191,8 @@ export default function CRMLeads() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-orange-100 text-xs font-semibold uppercase mb-1">Qualified</p>
@@ -203,8 +203,8 @@ export default function CRMLeads() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-green-700 text-xs font-semibold uppercase mb-1">Avg Lead Score</p>
@@ -215,8 +215,8 @@ export default function CRMLeads() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-green-100 text-xs font-semibold uppercase mb-1">Contacted</p>
@@ -249,10 +249,10 @@ export default function CRMLeads() {
       </div>
 
       {/* Leads Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         {filteredLeads.map(lead => (
-          <Card key={lead.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-            <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+          <Card key={lead.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+            <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <CardTitle className="text-base">{lead.first_name} {lead.last_name}</CardTitle>
@@ -263,7 +263,7 @@ export default function CRMLeads() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
+            <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <div className="space-y-2">
                 {lead.email && (
                   <div className="flex items-center gap-2 text-sm">
@@ -303,7 +303,7 @@ export default function CRMLeads() {
       </div>
 
       {filteredLeads.length === 0 && (
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
           <Users className="w-12 h-12 mx-auto text-muted-foreground mb-4 opacity-50" />
           <p className="text-muted-foreground">No leads found. Create your first lead!</p>
         </Card>

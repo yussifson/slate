@@ -93,67 +93,67 @@ export default function Analytics() {
 
       {/* KPI Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Home className="w-4 h-4" />
               Properties
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
-            <div className="text-2xl font-bold">{analytics.totalProperties}</div>
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+            <div className="text-sm font-bold">{analytics.totalProperties}</div>
             <p className="text-xs text-muted-foreground mt-1">Total in system</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Users className="w-4 h-4" />
               Clients
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
-            <div className="text-2xl font-bold">{analytics.totalClients}</div>
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+            <div className="text-sm font-bold">{analytics.totalClients}</div>
             <p className="text-xs text-muted-foreground mt-1">Active clients</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <DollarSign className="w-4 h-4" />
               Transactions
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
-            <div className="text-2xl font-bold">{analytics.totalTransactions}</div>
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+            <div className="text-sm font-bold">{analytics.totalTransactions}</div>
             <p className="text-xs text-muted-foreground mt-1">Completed deals</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <TrendingUp className="w-4 h-4" />
               Commissions
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
-            <div className="text-2xl font-bold">${(analytics.totalCommissions / 1000).toFixed(1)}K</div>
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+            <div className="text-sm font-bold">${(analytics.totalCommissions / 1000).toFixed(1)}K</div>
             <p className="text-xs text-muted-foreground mt-1">Total earned</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <LineChartIcon className="w-4 h-4" />
               Avg Deal Value
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
-            <div className="text-2xl font-bold">${(analytics.avgTransactionValue / 1000).toFixed(0)}K</div>
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+            <div className="text-sm font-bold">${(analytics.avgTransactionValue / 1000).toFixed(0)}K</div>
             <p className="text-xs text-muted-foreground mt-1">Per transaction</p>
           </CardContent>
         </Card>
@@ -161,14 +161,14 @@ export default function Analytics() {
 
       {/* Performance Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-            <CardTitle className="text-base flex items-center gap-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <BarChart3 className="w-4 h-4" />
               Market Performance
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
             <div>
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm font-medium">Active Listings</span>
@@ -199,37 +199,37 @@ export default function Analytics() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-            <CardTitle className="text-base flex items-center gap-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <Calendar className="w-4 h-4" />
               Revenue Summary
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
-            <div className="p-3 bg-green-50 rounded">
-              <p className="text-xs text-muted-foreground mb-1">Commission Income</p>
-              <p className="text-2xl font-bold text-green-600">${(analytics.totalCommissions / 1000).toFixed(1)}K</p>
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+            <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
+              <p className="text-xs font-medium text-muted-foreground">Commission Income</p>
+              <p className="text-sm font-bold text-green-600 dark:text-green-400">${(analytics.totalCommissions / 1000).toFixed(1)}K</p>
             </div>
-            <div className="p-3 bg-blue-50 rounded">
-              <p className="text-xs text-muted-foreground mb-1">Transaction Volume</p>
-              <p className="text-2xl font-bold text-blue-600">${(analytics.avgTransactionValue * analytics.totalTransactions / 1000000).toFixed(1)}M</p>
+            <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
+              <p className="text-xs font-medium text-muted-foreground">Transaction Volume</p>
+              <p className="text-sm font-bold text-blue-600 dark:text-blue-400">${(analytics.avgTransactionValue * analytics.totalTransactions / 1000000).toFixed(1)}M</p>
             </div>
-            <div className="p-3 bg-purple-50 rounded">
-              <p className="text-xs text-muted-foreground mb-1">Avg per Deal</p>
-              <p className="text-2xl font-bold text-purple-600">${(analytics.avgTransactionValue / 1000).toFixed(0)}K</p>
+            <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
+              <p className="text-xs font-medium text-muted-foreground">Avg per Deal</p>
+              <p className="text-sm font-bold text-purple-600 dark:text-purple-400">${(analytics.avgTransactionValue / 1000).toFixed(0)}K</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-            <CardTitle className="text-base flex items-center gap-2">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <PieChartIcon className="w-4 h-4" />
               Business Health
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
             <div>
               <div className="text-sm font-medium mb-2">Client Retention</div>
               <div className="flex gap-2">
@@ -256,12 +256,12 @@ export default function Analytics() {
       </div>
 
       {/* Detailed Analytics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-base">Top Performing Agents</CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
             <div className="space-y-3">
               {[1, 2, 3].map(i => (
                 <div key={i} className="flex items-center justify-between p-2 border rounded">
@@ -278,11 +278,11 @@ export default function Analytics() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-base">Property Types Distribution</CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
             <div className="space-y-3">
               {['Residential', 'Commercial', 'Industrial', 'Land'].map((type, i) => (
                 <div key={i} className="flex items-center justify-between">

@@ -186,41 +186,41 @@ export default function PaymentSchedules() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Calendar className="w-4 h-4" />
               Total Schedules
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
-            <div className="text-2xl font-bold">{totalSchedules}</div>
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+            <div className="text-sm font-bold">{totalSchedules}</div>
             <p className="text-xs text-muted-foreground mt-1">Active payment plans</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Zap className="w-4 h-4" />
               Automated
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
-            <div className="text-2xl font-bold text-green-600">{automatedSchedules}</div>
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+            <div className="text-sm font-bold text-green-600 dark:text-green-400">{automatedSchedules}</div>
             <p className="text-xs text-muted-foreground mt-1">Auto-debit enabled</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <DollarSign className="w-4 h-4" />
               Monthly Total
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
-            <div className="text-2xl font-bold">${(totalMonthlyAmount / 1000000).toFixed(1)}M</div>
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+            <div className="text-sm font-bold">${(totalMonthlyAmount / 1000000).toFixed(1)}M</div>
             <p className="text-xs text-muted-foreground mt-1">Total rent collected</p>
           </CardContent>
         </Card>
@@ -252,7 +252,7 @@ export default function PaymentSchedules() {
       </div>
 
       {/* Schedules Table */}
-      <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+      <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="border-b border-border bg-muted/50">

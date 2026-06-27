@@ -181,54 +181,54 @@ export default function ESignatures() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <FileSignature className="w-4 h-4" />
               Total Requests
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
-            <div className="text-2xl font-bold">{totalSignatures}</div>
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+            <div className="text-sm font-bold">{totalSignatures}</div>
             <p className="text-xs text-muted-foreground mt-1">All signatures</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4" />
               Completed
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
-            <div className="text-2xl font-bold text-green-600">{completedSignatures}</div>
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+            <div className="text-sm font-bold text-green-600 dark:text-green-400">{completedSignatures}</div>
             <p className="text-xs text-muted-foreground mt-1">Signed documents</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Clock className="w-4 h-4" />
               Pending
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
-            <div className="text-2xl font-bold text-yellow-600">{pendingSignatures}</div>
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+            <div className="text-sm font-bold text-yellow-600 dark:text-yellow-400">{pendingSignatures}</div>
             <p className="text-xs text-muted-foreground mt-1">Awaiting signature</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <AlertCircle className="w-4 h-4" />
               Expired
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
-            <div className="text-2xl font-bold text-red-600">{expiredSignatures}</div>
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+            <div className="text-sm font-bold text-red-600 dark:text-red-400">{expiredSignatures}</div>
             <p className="text-xs text-muted-foreground mt-1">Signature requests</p>
           </CardContent>
         </Card>
@@ -261,7 +261,7 @@ export default function ESignatures() {
       </div>
 
       {/* Signatures Table */}
-      <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+      <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="border-b border-border bg-muted/50">

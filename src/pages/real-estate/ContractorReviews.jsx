@@ -179,41 +179,41 @@ export default function ContractorReviews() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <MessageCircle className="w-4 h-4" />
               Total Reviews
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
-            <div className="text-2xl font-bold">{totalReviews}</div>
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+            <div className="text-sm font-bold">{totalReviews}</div>
             <p className="text-xs text-muted-foreground mt-1">Reviews posted</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Star className="w-4 h-4" />
               Avg Rating
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
-            <div className="text-2xl font-bold text-yellow-600">{avgRating} ⭐</div>
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+            <div className="text-sm font-bold text-yellow-600 dark:text-yellow-400">{avgRating} ⭐</div>
             <p className="text-xs text-muted-foreground mt-1">Out of 5</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <ThumbsUp className="w-4 h-4" />
               Would Rehire
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
-            <div className="text-2xl font-bold text-green-600">{wouldRehire}/{totalReviews}</div>
+          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
+            <div className="text-sm font-bold text-green-600 dark:text-green-400">{wouldRehire}/{totalReviews}</div>
             <p className="text-xs text-muted-foreground mt-1">{totalReviews > 0 ? ((wouldRehire / totalReviews) * 100).toFixed(0) : 0}% positive</p>
           </CardContent>
         </Card>
@@ -250,8 +250,8 @@ export default function ContractorReviews() {
       {/* Reviews */}
       <div className="space-y-4">
         {filteredReviews.map(review => (
-          <Card key={review.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-            <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+          <Card key={review.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+            <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <CardTitle className="text-base">{review.review_title}</CardTitle>
@@ -262,24 +262,24 @@ export default function ContractorReviews() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
+            <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
               <p className="text-sm text-foreground">{review.review_text}</p>
 
               <div className="grid grid-cols-4 gap-2 p-3 bg-muted/50 rounded">
                 <div>
-                  <p className="text-xs text-muted-foreground mb-1">Punctuality</p>
+                  <p className="text-xs font-medium text-muted-foreground">Punctuality</p>
                   <div className="flex gap-0.5">{renderStars(review.punctuality_rating)}</div>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground mb-1">Quality</p>
+                  <p className="text-xs font-medium text-muted-foreground">Quality</p>
                   <div className="flex gap-0.5">{renderStars(review.quality_rating)}</div>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground mb-1">Professionalism</p>
+                  <p className="text-xs font-medium text-muted-foreground">Professionalism</p>
                   <div className="flex gap-0.5">{renderStars(review.professionalism_rating)}</div>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground mb-1">Rehire?</p>
+                  <p className="text-xs font-medium text-muted-foreground">Rehire?</p>
                   <Badge variant={review.would_rehire ? 'default' : 'outline'}>
                     {review.would_rehire ? 'Yes' : 'No'}
                   </Badge>
@@ -310,7 +310,7 @@ export default function ContractorReviews() {
       </div>
 
       {filteredReviews.length === 0 && (
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
           <Star className="w-12 h-12 mx-auto text-muted-foreground mb-4 opacity-50" />
           <p className="text-muted-foreground">No reviews found. Add your first review!</p>
         </Card>

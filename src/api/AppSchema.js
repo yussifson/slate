@@ -5116,7 +5116,6 @@ export const AppSchema = new Schema({
         document_type: column.text,
         document_category: column.text,
         template_content: column.text,
-        content: column.text,
         description: column.text,
         template_variables: column.text,
         required_signatures: column.integer,
@@ -5142,6 +5141,7 @@ export const AppSchema = new Schema({
         signing_ip_address: column.text,
         signing_timestamp: column.text,
         expiration_date: column.text,
+        require_initials: column.integer,
         created_at: column.text
     }),
 
@@ -5345,6 +5345,7 @@ export const AppSchema = new Schema({
         similarity_score: column.real,
         price_adjustment_reason: column.text,
         adjustments: column.text,
+        notes: column.text,
         created_at: column.text
     }),
 

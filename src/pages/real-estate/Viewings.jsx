@@ -119,8 +119,8 @@ export default function Viewings() {
         {/* Calendar View */}
         <div className="grid grid-cols-3 gap-6 mb-8">
           <div className="col-span-2">
-            <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-              <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+            <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+              <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2.5 text-lg font-bold tracking-wide">
                     <Calendar className="w-5 h-5 text-blue-600 dark:text-blue-400" />
@@ -136,7 +136,7 @@ export default function Viewings() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
+              <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="grid grid-cols-7 gap-0">
                   {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
                     <div key={day} className="py-3 px-2 text-center text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900 border-r border-b border-slate-200 dark:border-slate-800">
@@ -151,8 +151,8 @@ export default function Viewings() {
 
           {/* Upcoming Viewings Sidebar */}
           <div>
-            <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
-              <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
+            <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
+              <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
                 <CardTitle className="flex items-center gap-2.5 text-lg font-bold text-slate-900 dark:text-white tracking-wide">
                   <div className="p-1.5 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg border border-indigo-200 dark:border-indigo-800/50 shadow-sm">
                     <Eye className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
@@ -160,7 +160,7 @@ export default function Viewings() {
                   Upcoming
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
+              <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="overflow-y-auto flex-1 custom-scrollbar scrollbar-green">
                   {upcomingViewings.length === 0 ? (
                     <div className="p-8 text-center text-slate-500 dark:text-slate-400 flex flex-col items-center justify-center h-full min-h-[200px]">
