@@ -1126,6 +1126,52 @@ export const RealEstateAPI = {
     }
   },
 
+  async updateTrustAccount(companyId, accountId, data, userId) {
+    try {
+      const updates = [];
+      const params = [];
+
+      const dbData = {
+        account_name: data.accountName,
+        account_type: data.accountType,
+        bank_name: data.bankName,
+        account_number: data.accountNumber,
+      };
+
+      Object.keys(dbData).forEach(key => {
+        if (dbData[key] !== undefined) {
+          updates.push(`${key} = ?`);
+          params.push(dbData[key]);
+        }
+      });
+
+      updates.push('updated_at = ?');
+      params.push(getSafeISO8601());
+      params.push(companyId);
+      params.push(accountId);
+
+      const query = `UPDATE univ_re_trust_accounts SET ${updates.join(', ')} 
+                     WHERE company_id = ? AND id = ?`;
+      
+      await powerSync.execute(query, params);
+    } catch (e) {
+      console.error('[RE API] updateTrustAccount failed:', e);
+      throw e;
+    }
+  },
+
+  async deleteTrustAccount(companyId, accountId, userId) {
+    try {
+      await powerSync.execute(
+        'DELETE FROM univ_re_trust_accounts WHERE company_id = ? AND id = ?',
+        [companyId, accountId]
+      );
+    } catch (e) {
+      console.error('[RE API] deleteTrustAccount failed:', e);
+      throw e;
+    }
+  },
+
   async getTrustLedger(companyId, filters = {}) {
     try {
       let query = 'SELECT * FROM univ_re_trust_ledger WHERE company_id = ?';
@@ -1349,14 +1395,14 @@ export const RealEstateAPI = {
       const now = getSafeISO8601();
 
       await powerSync.execute(
-        `INSERT INTO univ_re_counter_offers (id, company_id, original_offer_id, counter_offer_price, 
+        `INSERT INTO univ_re_counter_offers (id, company_id, original_offer_id, counter_offer_by, counter_price, 
          earnest_money_change, contingencies, inspection_period_days, appraisal_contingency, 
-         financing_contingency, additional_terms, counter_offer_status, created_at, updated_at) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [id, companyId, data.originalOfferId, data.counterPrice, data.earnestMoney || 0, 
+         financing_contingency, additional_terms, counter_offer_status, closing_date, created_at, updated_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.originalOfferId || '', userId, data.counterPrice || 0, data.earnestMoney || 0, 
          data.contingencies || '', data.inspectionPeriodDays || 0, data.appraisalContingency || false,
-         data.financingContingency || false, data.additionalTerms || '', 
-         data.status || 'pending', now, now]
+         data.financingContingency || false, data.notes || '', 
+         data.status || 'pending', data.expirationDate || now, now, now]
       );
 
       powerSync.execute(
@@ -1373,13 +1419,23 @@ export const RealEstateAPI = {
 
   async updateCounterOffer(companyId, offerId, data, userId) {
     try {
+      const dbData = {
+        original_offer_id: data.originalOfferId,
+        counter_price: data.counterPrice,
+        earnest_money_change: data.earnestMoney,
+        contingencies: data.contingencies,
+        additional_terms: data.notes,
+        counter_offer_status: data.status,
+        closing_date: data.expirationDate
+      };
+
       const updates = [];
       const params = [];
 
-      Object.keys(data).forEach(key => {
-        if (key !== 'id' && key !== 'company_id' && key !== 'created_at') {
+      Object.keys(dbData).forEach(key => {
+        if (dbData[key] !== undefined) {
           updates.push(`${key} = ?`);
-          params.push(typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]);
+          params.push(dbData[key]);
         }
       });
 

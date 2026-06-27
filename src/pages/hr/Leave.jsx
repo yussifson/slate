@@ -256,8 +256,8 @@ export default function Leave() {
  <Link to="/employees" className="hover:underline text-primary">{req.employeeName}</Link>
  </h3>
  <span className={`text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-sm ${
- req.status === 'Pending' ? 'bg-amber-100 text-amber-700' : 
- req.status === 'Approved' ? 'bg-slate-100 text-primary/90' : 'bg-red-100 text-red-700'
+ req.status === 'Pending' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400' : 
+ req.status === 'Approved' ? 'bg-slate-100 text-primary/90 dark:bg-primary/20 dark:text-primary-foreground' : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400'
 }`}>{req.status}</span>
  </div>
  
@@ -275,7 +275,7 @@ export default function Leave() {
  </div>
  {req.status === 'Pending' && (
  <div className="p-4 bg-muted border-t border-primary/40 grid grid-cols-2 gap-3 mt-auto">
- <Button onClick={() => handleUpdateStatus(req, 'Rejected')} variant="outline" className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 gap-2"><X className="w-4 h-4"/> {t("reject", "Reject")}</Button>
+ <Button onClick={() => handleUpdateStatus(req, 'Rejected')} variant="outline" className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30 dark:border-red-800/50 border-red-200 gap-2"><X className="w-4 h-4"/> {t("reject", "Reject")}</Button>
  <Button onClick={() => handleUpdateStatus(req, 'Approved')} className="w-full bg-primary hover:bg-primary/90 text-white gap-2"><Check className="w-4 h-4"/> {t("approve", "Approve")}</Button>
  </div>
  )}

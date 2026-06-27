@@ -838,3 +838,18 @@ select:not([class*="hidden"]):not([multiple]) {
     stroke-dashoffset: 14;
   }
 }
+
+/* Custom Green Scrollbar for Sidebar */
+.scrollbar-green::-webkit-scrollbar {
+  width: 6px;
+}
+.scrollbar-green::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-green::-webkit-scrollbar-thumb {
+  background: #10b981; /* Tailwind emerald-500 */
+  border-radius: 4px;
+}
+.scrollbar-green::-webkit-scrollbar-thumb:hover {
+  background: #059669; /* Tailwind emerald-600 */
+}

@@ -29,6 +29,8 @@ export default function TrustAccounting() {
   const [showTransactionForm, setShowTransactionForm] = useState(false);
   const [showAccountForm, setShowAccountForm] = useState(false);
   const [editingTransactionId, setEditingTransactionId] = useState(null);
+  const [editingAccountId, setEditingAccountId] = useState(null);
+  const [viewingHistoryId, setViewingHistoryId] = useState(null);
   const [accountFormData, setAccountFormData] = useState({
     accountName: '',
     accountType: 'operating',
@@ -89,9 +91,15 @@ export default function TrustAccounting() {
   const handleAccountSubmit = async (e) => {
     e.preventDefault();
     try {
-      await RealEstateAPI.createTrustAccount(companyId, accountFormData, user.id);
-      toast.success('Trust account created successfully');
+      if (editingAccountId) {
+        await RealEstateAPI.updateTrustAccount(companyId, editingAccountId, accountFormData, user.id);
+        toast.success('Trust account updated successfully');
+      } else {
+        await RealEstateAPI.createTrustAccount(companyId, accountFormData, user.id);
+        toast.success('Trust account created successfully');
+      }
       setShowAccountForm(false);
+      setEditingAccountId(null);
       setAccountFormData({
         accountName: '',
         accountType: 'operating',
@@ -108,20 +116,56 @@ export default function TrustAccounting() {
       );
       setAccounts(accountsRes.rows._array || Array.from(accountsRes.rows));
     } catch (e) {
-      console.error('[TrustAccounting] Account creation failed:', e);
-      toast.error('Failed to create trust account');
+      console.error('[TrustAccounting] Account submit failed:', e);
+      toast.error('Failed to save trust account');
+    }
+  };
+
+  const handleEditAccount = (account) => {
+    setAccountFormData({
+      accountName: account.account_name || '',
+      accountType: account.account_type || 'operating',
+      bankName: account.bank_name || '',
+      accountNumber: account.account_number || '',
+      routingNumber: account.routing_number || '',
+      accountHolderName: account.account_holder_name || '',
+      currency: account.currency || 'USD',
+    });
+    setEditingAccountId(account.id);
+    setShowAccountForm(true);
+  };
+
+  const handleDeleteAccount = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this trust account?')) return;
+    try {
+      await RealEstateAPI.deleteTrustAccount(companyId, id, user.id);
+      toast.success('Trust account deleted successfully');
+      setAccounts(prev => prev.filter(a => a.id !== id));
+    } catch (e) {
+      console.error('[TrustAccounting] Delete account failed:', e);
+      toast.error('Failed to delete trust account');
     }
   };
 
   const handleTransactionSubmit = async (e) => {
     e.preventDefault();
     try {
+      const amount = Number(transactionFormData.amount);
       if (editingTransactionId) {
         await RealEstateAPI.updateTrustLedgerEntry(companyId, editingTransactionId, transactionFormData, user.id);
         toast.success('Transaction updated successfully');
       } else {
         await RealEstateAPI.createTrustLedgerEntry(companyId, transactionFormData, user.id);
         toast.success('Transaction recorded successfully');
+        
+        // Optimistically update the local account balance
+        const balanceAdjustment = transactionFormData.transactionType === 'deposit' || transactionFormData.transactionType === 'transfer' ? amount : -amount;
+        setAccounts(prev => prev.map(acc => {
+          if (acc.id === transactionFormData.accountId) {
+            return { ...acc, balance: (acc.balance || 0) + balanceAdjustment };
+          }
+          return acc;
+        }));
       }
       setShowTransactionForm(false);
       setEditingTransactionId(null);
@@ -266,52 +310,69 @@ export default function TrustAccounting() {
 
       {/* Trust Accounts Tab */}
       {activeTab === 'overview' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {accounts.length === 0 ? (
-            <Card className="text-center col-span-full py-12">
-              <Wallet className="w-12 h-12 mx-auto text-muted-foreground mb-4 opacity-50" />
-              <p className="text-muted-foreground">No trust accounts configured</p>
+            <Card className="text-center col-span-full py-16 border-dashed bg-slate-50/50 dark:bg-slate-900/30">
+              <Wallet className="w-16 h-16 mx-auto text-muted-foreground mb-4 opacity-30" />
+              <p className="text-muted-foreground text-lg font-medium">No trust accounts configured</p>
+              <Button onClick={() => setShowAccountForm(true)} variant="outline" className="mt-6 gap-2 rounded-full">
+                <Plus className="w-4 h-4" /> Add Your First Account
+              </Button>
             </Card>
           ) : (
             accounts.map(account => (
-              <Card key={account.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
+              <Card key={account.id} className="group overflow-hidden border-transparent shadow-sm hover:shadow-xl hover:-translate-y-1 dark:border-white/10 dark:bg-slate-900/50 bg-white/70 backdrop-blur-md transition-all duration-300 flex flex-col">
+                <div className="h-1.5 w-full bg-gradient-to-r from-blue-500 to-indigo-500" />
+                <CardHeader className="pb-4">
                   <div className="flex items-start justify-between">
                     <div>
-                      <CardTitle className="text-base flex items-center gap-2">
-                        <Wallet className="w-4 h-4" />
+                      <CardTitle className="text-lg font-bold flex items-center gap-2">
+                        <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
+                          <Wallet className="w-4 h-4" />
+                        </div>
                         {account.account_name}
                       </CardTitle>
-                      <p className="text-sm text-muted-foreground mt-1 capitalize">{account.account_type}</p>
+                      <p className="text-sm text-muted-foreground mt-2 font-medium capitalize">{account.account_type} Account</p>
                     </div>
-                    <Badge variant={account.reconciliation_status === 'reconciled' ? 'default' : 'secondary'}>
+                    <Badge variant={account.reconciliation_status === 'reconciled' ? 'default' : 'secondary'} className="shadow-sm">
                       {account.reconciliation_status}
                     </Badge>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="p-3 bg-blue-50 rounded">
-                    <p className="text-xs text-muted-foreground mb-1">Current Balance</p>
-                    <p className="text-2xl font-bold text-blue-600">${(account.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                <CardContent className="space-y-5 flex-1 flex flex-col">
+                  <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50/50 dark:from-blue-950/30 dark:to-indigo-900/10 rounded-xl border border-blue-100/50 dark:border-blue-800/30">
+                    <p className="text-xs text-blue-600/70 dark:text-blue-400/70 font-semibold uppercase tracking-wider mb-1">Current Balance</p>
+                    <p className="text-3xl font-extrabold text-blue-700 dark:text-blue-400 tracking-tight">
+                      ${(account.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                    </p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div>
-                      <p className="text-muted-foreground">Bank</p>
-                      <p className="font-medium">{account.bank_name}</p>
+                  <div className="grid grid-cols-2 gap-4 text-sm flex-1">
+                    <div className="space-y-1">
+                      <p className="text-muted-foreground text-xs uppercase tracking-wider font-medium">Bank</p>
+                      <p className="font-semibold text-foreground line-clamp-1">{account.bank_name}</p>
                     </div>
-                    <div>
-                      <p className="text-muted-foreground">Account Type</p>
-                      <p className="font-medium capitalize">{account.account_type}</p>
-                    </div>
+                    {account.account_number && (
+                      <div className="space-y-1">
+                        <p className="text-muted-foreground text-xs uppercase tracking-wider font-medium">Account #</p>
+                        <p className="font-mono text-sm font-medium bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded w-fit">
+                          ****{account.account_number.slice(-4)}
+                        </p>
+                      </div>
+                    )}
                   </div>
 
-                  {account.account_number && (
-                    <div className="text-sm p-2 bg-gray-50 rounded">
-                      <p className="text-muted-foreground">Account #</p>
-                      <p className="font-mono text-sm">****{account.account_number.slice(-4)}</p>
-                    </div>
-                  )}
+                  <div className="flex gap-2 pt-4 mt-auto border-t border-border/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <Button size="sm" variant="outline" className="flex-1 transition-colors dark:hover:bg-white/5 dark:border-white/10" onClick={() => setViewingHistoryId(account.id)}>
+                      <Eye className="w-4 h-4 mr-1" /> History
+                    </Button>
+                    <Button size="sm" variant="outline" className="transition-colors dark:hover:bg-white/5 dark:border-white/10" onClick={() => handleEditAccount(account)}>
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button size="sm" variant="ghost" className="text-destructive hover:bg-destructive/10 transition-colors" onClick={() => handleDeleteAccount(account.id)}>
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))
@@ -585,13 +646,61 @@ export default function TrustAccounting() {
 
             <div className="flex gap-2 pt-4">
               <Button type="submit" className="flex-1">
-                {editingTransactionId ? 'Update' : 'Record'} Transaction
+                {editingTransactionId ? 'Update Transaction' : 'Record Transaction'}
               </Button>
               <Button type="button" variant="outline" onClick={() => setShowTransactionForm(false)}>
                 Cancel
               </Button>
             </div>
           </form>
+        </SheetContent>
+      </Sheet>
+
+      {/* History Modal */}
+      <Sheet open={!!viewingHistoryId} onOpenChange={(open) => !open && setViewingHistoryId(null)}>
+        <SheetContent className="w-full max-w-lg overflow-y-auto sm:max-w-xl">
+          <SheetHeader className="mb-6">
+            <SheetTitle>Transaction History</SheetTitle>
+            <SheetDescription>
+              {accounts.find(a => a.id === viewingHistoryId)?.account_name || 'Account'} Ledger
+            </SheetDescription>
+          </SheetHeader>
+          <div className="space-y-4">
+            {ledger.filter(t => t.account_id === viewingHistoryId).length === 0 ? (
+              <div className="text-center py-12 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-dashed">
+                <p className="text-muted-foreground">No transactions recorded yet.</p>
+              </div>
+            ) : (
+              <div className="relative border-l border-border ml-3 space-y-6">
+                {ledger.filter(t => t.account_id === viewingHistoryId).map(entry => (
+                  <div key={entry.id} className="relative pl-6">
+                    <span className={`absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full border-2 border-background ring-4 ring-background ${
+                      entry.transaction_type === 'deposit' ? 'bg-green-500' : 'bg-red-500'
+                    }`} />
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-start justify-between">
+                        <span className="font-semibold text-sm">{entry.description}</span>
+                        <span className={`font-bold text-sm ${entry.transaction_type === 'deposit' ? 'text-green-600' : 'text-red-600'}`}>
+                          {entry.transaction_type === 'deposit' ? '+' : '-'}${Math.abs(entry.amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <span>{new Date(entry.transaction_date).toLocaleDateString()}</span>
+                        <span>•</span>
+                        <span className="capitalize">{entry.transaction_type}</span>
+                        {entry.reference_number && (
+                          <>
+                            <span>•</span>
+                            <span className="font-mono">Ref: {entry.reference_number}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </SheetContent>
       </Sheet>
     </div>

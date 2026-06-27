@@ -117,6 +117,36 @@ export default function Clients() {
     }
   };
 
+  const handleEdit = (client) => {
+    setFormData({
+      name: client.name || '',
+      email: client.email || '',
+      phone: client.phone || '',
+      type: client.type || 'buyer',
+      address: client.address || '',
+      city: client.city || '',
+      state: client.state || '',
+      country: client.country || '',
+      budget: client.budget || 0,
+      preferences: client.preferences ? (typeof client.preferences === 'string' ? JSON.parse(client.preferences) : client.preferences) : [],
+      notes: client.notes || '',
+    });
+    setEditingId(client.id);
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this client?')) return;
+    try {
+      await RealEstateAPI.deleteClient(companyId, id, user.id);
+      toast.success('Client deleted successfully');
+      setClients(prev => prev.filter(c => c.id !== id));
+    } catch (e) {
+      console.error('[Clients] Delete failed:', e);
+      toast.error('Failed to delete client');
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -169,36 +199,42 @@ export default function Clients() {
       </div>
 
       {/* Clients Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredClients.map(client => (
           <Card key={client.id} className="group overflow-hidden border-transparent shadow-sm hover:shadow-xl hover:-translate-y-1 dark:border-white/10 dark:bg-slate-900/50 bg-white/70 backdrop-blur-md transition-all duration-300 ease-in-out flex flex-col">
-            <CardHeader>
+            <div className={`h-1.5 w-full ${
+              client.type === 'buyer' ? 'bg-gradient-to-r from-orange-400 to-amber-500' :
+              client.type === 'seller' ? 'bg-gradient-to-r from-emerald-400 to-teal-500' :
+              client.type === 'tenant' ? 'bg-gradient-to-r from-blue-400 to-indigo-500' :
+              'bg-gradient-to-r from-purple-400 to-pink-500'
+            }`} />
+            <CardHeader className="pb-4">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <CardTitle className="text-base font-semibold">{client.name}</CardTitle>
-                  <p className="text-sm text-muted-foreground mt-1">{client.city || 'Location not set'}</p>
+                  <CardTitle className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">{client.name}</CardTitle>
+                  <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">{client.city || 'Location not set'}</p>
                 </div>
-                <Badge className={typeColors[client.type]}>{client.type}</Badge>
+                <Badge className={`${typeColors[client.type]} px-2.5 py-0.5 shadow-sm font-medium border-0 capitalize`}>{client.type}</Badge>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4 flex-1 flex flex-col">
-              <div className="space-y-3 flex-1">
+            <CardContent className="space-y-4 flex-1 flex flex-col pt-0">
+              <div className="space-y-3 flex-1 bg-slate-50/50 dark:bg-slate-800/30 p-3 rounded-xl border border-slate-100 dark:border-slate-800/50">
                 {client.email && (
                   <div className="flex items-center gap-3 text-sm group/link">
-                    <div className="p-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-muted-foreground group-hover/link:text-primary transition-colors">
+                    <div className="p-1.5 rounded-md bg-white dark:bg-slate-900 text-slate-400 dark:text-slate-500 group-hover/link:text-primary transition-colors shadow-sm border border-slate-100 dark:border-slate-800">
                       <Mail className="w-3.5 h-3.5" />
                     </div>
-                    <a href={`mailto:${client.email}`} className="text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors truncate">
+                    <a href={`mailto:${client.email}`} className="text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors truncate font-medium">
                       {client.email}
                     </a>
                   </div>
                 )}
                 {client.phone && (
                   <div className="flex items-center gap-3 text-sm group/link">
-                    <div className="p-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-muted-foreground group-hover/link:text-primary transition-colors">
+                    <div className="p-1.5 rounded-md bg-white dark:bg-slate-900 text-slate-400 dark:text-slate-500 group-hover/link:text-primary transition-colors shadow-sm border border-slate-100 dark:border-slate-800">
                       <Phone className="w-3.5 h-3.5" />
                     </div>
-                    <a href={`tel:${client.phone}`} className="text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors">
+                    <a href={`tel:${client.phone}`} className="text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors font-medium">
                       {client.phone}
                     </a>
                   </div>
@@ -206,19 +242,19 @@ export default function Clients() {
               </div>
 
               {client.budget > 0 && (
-                <div className="flex items-center gap-3 text-sm pt-4 border-t dark:border-white/10 mt-auto">
-                  <div className="p-1.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
-                    <DollarSign className="w-3.5 h-3.5" />
+                <div className="flex items-center justify-between gap-3 text-sm pt-3 border-t border-slate-100 dark:border-slate-800/60 mt-auto">
+                  <span className="font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-xs">Budget</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-extrabold text-emerald-600 dark:text-emerald-400">${Number(client.budget).toLocaleString()}</span>
                   </div>
-                  <span className="font-medium text-slate-700 dark:text-slate-200">Budget: <span className="font-bold text-emerald-600 dark:text-emerald-400">${Number(client.budget).toLocaleString()}</span></span>
                 </div>
               )}
 
-              <div className="flex gap-2 pt-4 mt-2 border-t dark:border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <Button size="sm" variant="outline" className="flex-1 dark:hover:bg-white/5 dark:border-white/10 transition-colors">
-                  <Edit className="w-4 h-4 mr-1" /> Edit
+              <div className="flex gap-2 pt-4 mt-2 border-t border-slate-100 dark:border-slate-800/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <Button size="sm" variant="outline" className="flex-1 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" onClick={() => handleEdit(client)}>
+                  <Edit className="w-3.5 h-3.5 mr-1.5" /> Edit
                 </Button>
-                <Button size="sm" variant="ghost" className="text-destructive hover:bg-destructive/10 transition-colors">
+                <Button size="sm" variant="ghost" className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-700 dark:hover:text-red-300 transition-colors" onClick={() => handleDelete(client.id)}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

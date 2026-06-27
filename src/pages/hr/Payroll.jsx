@@ -255,8 +255,8 @@ export default function Payroll() {
  value={pay.status}
  onChange={e => handleUpdateStatus(pay, e.target.value)}
  className={`rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input px-2 py-1 text-xs font-semibold ${
- pay.status === 'Processed' ? 'bg-slate-100 text-primary/90' : 
- pay.status === 'Failed' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
+ pay.status === 'Processed' ? 'bg-slate-100 text-primary/90 dark:bg-primary/20 dark:text-primary-foreground' : 
+ pay.status === 'Failed' ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400'
 }`}
  >
  <option value="Pending">{t("pending", "Pending")}</option>

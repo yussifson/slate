@@ -131,6 +131,26 @@ export default function Transactions() {
     setShowForm(true);
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this transaction?')) return;
+    try {
+      await RealEstateAPI.deleteTransaction(companyId, id, user.id);
+      toast.success('Transaction deleted');
+      setTransactions(prev => prev.filter(t => t.id !== id));
+      setStats(prev => {
+        const t = transactions.find(tx => tx.id === id);
+        return {
+          total: prev.total - 1,
+          value: prev.value - (t?.sale_price || 0),
+          closed: prev.closed - (t?.status === 'closed' ? 1 : 0)
+        };
+      });
+    } catch (e) {
+      console.error('[Transactions] Delete failed:', e);
+      toast.error('Failed to delete transaction');
+    }
+  };
+
   const getTransactionsByStage = (stage) => {
     return filteredTransactions.filter(t => t.status === stage);
   };
@@ -162,18 +182,14 @@ export default function Transactions() {
           transactions.map(transaction => (
             <div
               key={transaction.id}
-              onClick={() => setSelectedTransaction(transaction)}
-              className={`p-5 rounded-xl border cursor-pointer transform transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 ${pipelineStages.find(s => s.id === stage)?.color}`}
+              className={`p-5 rounded-xl border cursor-pointer transform transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 ${pipelineStages.find(s => s.id === stage)?.color} group relative`}
             >
               <div className="flex items-start justify-between mb-3 gap-2">
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm leading-snug break-words line-clamp-2">{transaction.property_address}</p>
-                </div>
-                <div className="bg-white/50 dark:bg-black/20 p-1.5 rounded-lg hover:bg-white dark:hover:bg-black/40 transition-colors">
-                  <MoreVertical className="w-4 h-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                <div className="flex-1 min-w-0" onClick={() => setSelectedTransaction(transaction)}>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm leading-snug break-words line-clamp-2 hover:text-primary transition-colors">{transaction.property_address}</p>
                 </div>
               </div>
-              <div className="space-y-2.5 mb-4 bg-white/40 dark:bg-black/20 backdrop-blur-sm -mx-5 px-5 py-3 border-y border-white/20 dark:border-white/5">
+              <div className="space-y-2.5 mb-4 bg-white/40 dark:bg-black/20 backdrop-blur-sm -mx-5 px-5 py-3 border-y border-white/20 dark:border-white/5" onClick={() => setSelectedTransaction(transaction)}>
                 <div className="flex items-center gap-2">
                   <User className="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
                   <p className="text-xs text-gray-700 dark:text-gray-300"><span className="font-medium text-gray-500 dark:text-gray-400">Buyer:</span> {transaction.buyer_name || 'N/A'}</p>
@@ -183,12 +199,20 @@ export default function Transactions() {
                   <p className="text-xs text-gray-700 dark:text-gray-300"><span className="font-medium text-gray-500 dark:text-gray-400">Seller:</span> {transaction.seller_name || 'N/A'}</p>
                 </div>
               </div>
-              <div className="flex items-center justify-between pt-1">
-                <div className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 bg-emerald-100/50 dark:bg-emerald-900/30 px-2.5 py-1 rounded-md font-bold">
+              <div className="flex items-center justify-between pt-1" onClick={() => setSelectedTransaction(transaction)}>
+                <div className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 bg-emerald-100/50 dark:bg-emerald-900/30 px-2.5 py-1 rounded-md font-bold shadow-sm border border-emerald-200/50 dark:border-emerald-800/30">
                   <DollarSign className="w-3.5 h-3.5" />
                   <span className="text-sm">${(transaction.sale_price / 1000).toFixed(0)}K</span>
                 </div>
                 <span className="text-[10px] font-bold bg-white/80 dark:bg-gray-800/80 px-2.5 py-1 rounded-full text-gray-700 dark:text-gray-300 border border-gray-200/50 dark:border-gray-700/50 uppercase tracking-wider shadow-sm">{transaction.status.replace('_', ' ')}</span>
+              </div>
+              <div className="flex gap-2 pt-4 mt-2 border-t border-gray-200/50 dark:border-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <Button size="sm" variant="outline" className="flex-1 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" onClick={(e) => { e.stopPropagation(); handleEdit(transaction); }}>
+                  <Edit className="w-3.5 h-3.5 mr-1.5" /> Edit
+                </Button>
+                <Button size="sm" variant="ghost" className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-700 dark:hover:text-red-300 transition-colors" onClick={(e) => { e.stopPropagation(); handleDelete(transaction.id); }}>
+                  <Trash2 className="w-4 h-4" />
+                </Button>
               </div>
             </div>
           ))

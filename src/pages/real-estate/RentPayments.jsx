@@ -200,31 +200,31 @@ export default function RentPayments() {
 
         <div className="grid grid-cols-3 gap-6 mb-8">
           {/* Upcoming Payments */}
-          <Card className="border-0 shadow">
-            <CardHeader className="bg-gradient-to-r from-green-600 to-green-700 text-white">
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="w-5 h-5" />
-                Upcoming Payments
+          <Card className="border-transparent shadow-lg dark:bg-slate-900/50 bg-white/70 backdrop-blur-md flex flex-col overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-emerald-500 to-green-600 text-white pb-4">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="p-1.5 bg-white/20 rounded-md backdrop-blur-sm"><Calendar className="w-5 h-5" /></div>
+                Upcoming
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className="p-0 flex-1">
               <div className="max-h-96 overflow-y-auto">
                 {upcomingPayments.length === 0 ? (
-                  <div className="p-6 text-center text-gray-500">
-                    <Clock className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">No upcoming payments</p>
+                  <div className="p-8 text-center text-slate-500 dark:text-slate-400">
+                    <Clock className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                    <p className="text-sm font-medium">No upcoming payments</p>
                   </div>
                 ) : (
                   upcomingPayments.map((payment) => (
-                    <div key={payment.id} className="p-4 border-b border-gray-100 hover:bg-green-50 transition-colors cursor-pointer">
+                    <div key={payment.id} className="p-4 border-b border-slate-100 dark:border-white/5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors cursor-pointer group">
                       <div className="flex items-start justify-between mb-2">
-                        <p className="font-semibold text-gray-900 text-sm">{payment.tenant_name}</p>
-                        <Badge className="bg-orange-100 text-orange-800 text-xs">Due Soon</Badge>
+                        <p className="font-bold text-slate-900 dark:text-slate-100 text-sm group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{payment.tenant_name}</p>
+                        <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-400 text-xs border-0 shadow-sm">Due Soon</Badge>
                       </div>
-                      <p className="text-xs text-gray-600 mb-2">{payment.property_address || 'Property'}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 truncate">{payment.property_address || 'Property'}</p>
                       <div className="flex justify-between items-end">
-                        <p className="text-xs text-gray-600">{new Date(payment.due_date).toLocaleDateString()}</p>
-                        <span className="text-sm font-bold text-green-600">${payment.amount?.toLocaleString()}</span>
+                        <p className="text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{new Date(payment.due_date).toLocaleDateString()}</p>
+                        <span className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400">${payment.amount?.toLocaleString()}</span>
                       </div>
                     </div>
                   ))
@@ -234,31 +234,31 @@ export default function RentPayments() {
           </Card>
 
           {/* Overdue Alerts */}
-          <Card className="border-0 shadow-lg">
-            <CardHeader className="bg-gradient-to-r from-red-600 to-orange-600 text-white">
-              <CardTitle className="flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5" />
-                Overdue Payments
+          <Card className="border-transparent shadow-lg dark:bg-slate-900/50 bg-white/70 backdrop-blur-md flex flex-col overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-red-500 to-orange-500 text-white pb-4">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="p-1.5 bg-white/20 rounded-md backdrop-blur-sm"><AlertTriangle className="w-5 h-5" /></div>
+                Overdue
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className="p-0 flex-1">
               <div className="max-h-96 overflow-y-auto">
                 {overDuePayments.length === 0 ? (
-                  <div className="p-6 text-center text-gray-500">
-                    <CheckCircle className="w-8 h-8 mx-auto mb-2 opacity-50 text-green-500" />
-                    <p className="text-sm">No overdue payments</p>
+                  <div className="p-8 text-center text-slate-500 dark:text-slate-400">
+                    <CheckCircle className="w-10 h-10 mx-auto mb-3 opacity-50 text-emerald-500" />
+                    <p className="text-sm font-medium">No overdue payments</p>
                   </div>
                 ) : (
                   overDuePayments.map((payment) => (
-                    <div key={payment.id} className="p-4 border-b border-orange-100 bg-orange-50 hover:bg-orange-100 transition-colors cursor-pointer">
+                    <div key={payment.id} className="p-4 border-b border-red-100 dark:border-red-900/30 bg-red-50/50 dark:bg-red-900/10 hover:bg-red-100/50 dark:hover:bg-red-900/20 transition-colors cursor-pointer group">
                       <div className="flex items-start justify-between mb-2">
-                        <p className="font-semibold text-gray-900 text-sm">{payment.tenant_name}</p>
-                        <Badge className="bg-orange-200 text-orange-900 text-xs">OVERDUE</Badge>
+                        <p className="font-bold text-slate-900 dark:text-slate-100 text-sm group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">{payment.tenant_name}</p>
+                        <Badge className="bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400 text-xs border-0 shadow-sm">OVERDUE</Badge>
                       </div>
-                      <p className="text-xs text-gray-600 mb-2">{payment.property_address || 'Property'}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 truncate">{payment.property_address || 'Property'}</p>
                       <div className="flex justify-between items-end">
-                        <p className="text-xs text-gray-600">{new Date(payment.due_date).toLocaleDateString()}</p>
-                        <span className="text-sm font-bold text-orange-600">${payment.amount?.toLocaleString()}</span>
+                        <p className="text-xs font-medium text-red-600/70 dark:text-red-400/70 bg-red-100/50 dark:bg-red-900/30 px-2 py-0.5 rounded">{new Date(payment.due_date).toLocaleDateString()}</p>
+                        <span className="text-sm font-extrabold text-red-600 dark:text-red-400">${payment.amount?.toLocaleString()}</span>
                       </div>
                     </div>
                   ))
@@ -268,31 +268,31 @@ export default function RentPayments() {
           </Card>
 
           {/* Recent Payments */}
-          <Card className="border-0 shadow-lg">
-            <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
-              <CardTitle className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5" />
-                Recent Payments
+          <Card className="border-transparent shadow-lg dark:bg-slate-900/50 bg-white/70 backdrop-blur-md flex flex-col overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white pb-4">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="p-1.5 bg-white/20 rounded-md backdrop-blur-sm"><CheckCircle className="w-5 h-5" /></div>
+                Recent
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className="p-0 flex-1">
               <div className="max-h-96 overflow-y-auto">
                 {payments.filter(p => p.status === 'paid').slice(0, 5).length === 0 ? (
-                  <div className="p-6 text-center text-gray-500">
-                    <CreditCard className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">No recent payments</p>
+                  <div className="p-8 text-center text-slate-500 dark:text-slate-400">
+                    <CreditCard className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                    <p className="text-sm font-medium">No recent payments</p>
                   </div>
                 ) : (
                   payments.filter(p => p.status === 'paid').slice(0, 5).map((payment) => (
-                    <div key={payment.id} className="p-4 border-b border-gray-100 hover:bg-green-50 transition-colors cursor-pointer">
+                    <div key={payment.id} className="p-4 border-b border-slate-100 dark:border-white/5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors cursor-pointer group">
                       <div className="flex items-start justify-between mb-2">
-                        <p className="font-semibold text-gray-900 text-sm">{payment.tenant_name}</p>
-                        <Badge className="bg-green-100 text-green-800 text-xs">Paid</Badge>
+                        <p className="font-bold text-slate-900 dark:text-slate-100 text-sm group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{payment.tenant_name}</p>
+                        <Badge className="bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-400 text-xs border-0 shadow-sm">Paid</Badge>
                       </div>
-                      <p className="text-xs text-gray-600 mb-2">{payment.payment_method || 'Bank Transfer'}</p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-bold text-green-600">${payment.amount?.toLocaleString()}</span>
-                        <span className="text-xs text-gray-500">{payment.payment_date}</span>
+                      <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2 truncate bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded w-fit capitalize">{payment.payment_method?.replace('_', ' ') || 'Bank Transfer'}</p>
+                      <div className="flex items-center justify-between mt-3">
+                        <span className="text-sm font-extrabold text-indigo-600 dark:text-indigo-400">${payment.amount?.toLocaleString()}</span>
+                        <span className="text-xs font-medium text-slate-400 dark:text-slate-500">{new Date(payment.payment_date).toLocaleDateString()}</span>
                       </div>
                     </div>
                   ))

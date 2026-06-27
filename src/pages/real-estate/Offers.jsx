@@ -128,6 +128,18 @@ export default function Offers() {
     setShowForm(true);
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this offer?')) return;
+    try {
+      await RealEstateAPI.deleteOffer(companyId, id, user.id);
+      toast.success('Offer deleted successfully');
+      setOffers(prev => prev.filter(o => o.id !== id));
+    } catch (e) {
+      console.error('[Offers] Delete failed:', e);
+      toast.error('Failed to delete offer');
+    }
+  };
+
   if (isLoading) {
     return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
@@ -165,51 +177,52 @@ export default function Offers() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {filteredOffers.map(offer => (
-          <Card key={offer.id} className="group hover:shadow-xl transition-all duration-300 ease-in-out hover:-translate-y-1 bg-white/70 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200/60 dark:border-white/10 overflow-hidden">
+          <Card key={offer.id} className="group overflow-hidden border-transparent shadow-sm hover:shadow-xl hover:-translate-y-1 dark:border-white/10 dark:bg-slate-900/50 bg-white/70 backdrop-blur-md transition-all duration-300 flex flex-col">
+            <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 to-teal-500" />
             <CardHeader className="pb-4">
               <div className="flex items-start justify-between">
                 <div className="flex-1 pr-4">
-                  <CardTitle className="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100 line-clamp-1">{offer.property_address || 'No address'}</CardTitle>
-                  <div className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1.5 flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-300">
+                  <CardTitle className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 line-clamp-1">{offer.property_address || 'No address'}</CardTitle>
+                  <div className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-md bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-xs font-bold text-emerald-700 dark:text-emerald-400 shadow-sm">
                       {(offer.buyer_name || '?')[0].toUpperCase()}
                     </div>
                     {offer.buyer_name || 'No buyer'}
                   </div>
                 </div>
-                <Badge className={`${statusColors[offer.status] || 'bg-slate-100 text-slate-800 dark:bg-slate-800/50 dark:text-slate-300'} px-2.5 py-0.5 rounded-full font-medium border-0 capitalize shadow-sm`}>{offer.status}</Badge>
+                <Badge className={`${statusColors[offer.status] || 'bg-slate-100 text-slate-800 dark:bg-slate-800/50 dark:text-slate-300'} px-2.5 py-0.5 shadow-sm font-medium border-0 capitalize`}>{offer.status}</Badge>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4 pt-0">
-              <div className="grid grid-cols-2 gap-4 p-3 rounded-xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-800/50">
+            <CardContent className="space-y-5 flex-1 flex flex-col pt-0">
+              <div className="p-4 bg-gradient-to-br from-emerald-50 to-teal-50/50 dark:from-emerald-950/30 dark:to-teal-900/10 rounded-xl border border-emerald-100/50 dark:border-emerald-800/30">
+                <p className="text-xs text-emerald-600/70 dark:text-emerald-400/70 font-semibold uppercase tracking-wider mb-1">Offer Amount</p>
+                <p className="text-2xl font-extrabold text-emerald-700 dark:text-emerald-400 tracking-tight">
+                  ${Number(offer.offer_amount || 0).toLocaleString()}
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 text-sm flex-1">
                 <div className="space-y-1">
-                  <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Offer Amount</p>
-                  <div className="flex items-center gap-1.5">
-                    <div className="p-1 rounded-md bg-emerald-100/50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
-                      <DollarSign className="w-3.5 h-3.5" />
-                    </div>
-                    <span className="font-semibold text-slate-900 dark:text-slate-100">${Number(offer.offer_amount || 0).toLocaleString()}</span>
-                  </div>
+                  <p className="text-muted-foreground text-xs uppercase tracking-wider font-medium">Earnest Money</p>
+                  <p className="font-semibold text-foreground flex items-center gap-1">
+                    <DollarSign className="w-3.5 h-3.5 text-muted-foreground" />
+                    {Number(offer.earnest_money || 0).toLocaleString()}
+                  </p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Earnest</p>
-                  <div className="flex items-center gap-1.5">
-                    <div className="p-1 rounded-md bg-amber-100/50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
-                      <DollarSign className="w-3.5 h-3.5" />
-                    </div>
-                    <span className="font-semibold text-slate-900 dark:text-slate-100">${Number(offer.earnest_money || 0).toLocaleString()}</span>
-                  </div>
+                  <p className="text-muted-foreground text-xs uppercase tracking-wider font-medium">Expires</p>
+                  <p className="font-semibold text-foreground flex items-center gap-1">
+                    <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
+                    {offer.expiration_date ? new Date(offer.expiration_date).toLocaleDateString() : 'N/A'}
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 text-sm pt-2 border-t border-slate-100 dark:border-slate-800/60">
-                <Calendar className="w-4 h-4 text-slate-400 dark:text-slate-500" />
-                <span className="text-slate-600 dark:text-slate-400 font-medium">Expires: {offer.expiration_date ? new Date(offer.expiration_date).toLocaleDateString() : 'N/A'}</span>
-              </div>
-              <div className="flex gap-2 pt-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
-                <Button size="sm" variant="outline" onClick={() => handleEdit(offer)} className="flex-1 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+
+              <div className="flex gap-2 pt-4 mt-auto border-t border-border/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <Button size="sm" variant="outline" onClick={() => handleEdit(offer)} className="flex-1 transition-colors dark:hover:bg-white/5 dark:border-white/10">
                   <Edit className="w-3.5 h-3.5 mr-1.5" /> Edit
                 </Button>
-                <Button size="sm" variant="ghost" className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-700 dark:hover:text-red-300 transition-colors">
+                <Button size="sm" variant="ghost" onClick={() => handleDelete(offer.id)} className="text-destructive hover:bg-destructive/10 transition-colors">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

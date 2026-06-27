@@ -5114,7 +5114,7 @@ export const AppSchema = new Schema({
         company_id: column.text,
         original_offer_id: column.text,
         counter_offer_by: column.text,
-        counter_offer_price: column.real,
+        counter_price: column.real,
         closing_date: column.text,
         contingencies: column.text,
         inspection_period_days: column.integer,

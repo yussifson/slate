@@ -67,7 +67,7 @@ export default function CounterOffers() {
       );
     }
     if (statusFilter !== 'all') {
-      filtered = filtered.filter(o => o.status === statusFilter);
+      filtered = filtered.filter(o => o.counter_offer_status === statusFilter);
     }
     setFilteredOffers(filtered);
   }, [counterOffers, search, statusFilter]);
@@ -110,12 +110,12 @@ export default function CounterOffers() {
     setFormData({
       originalOfferId: offer.original_offer_id || '',
       counterPrice: offer.counter_price || 0,
-      counterAmount: offer.counter_amount || 0,
-      earnestMoney: offer.earnest_money || 0,
+      counterAmount: offer.counter_price || 0,
+      earnestMoney: offer.earnest_money_change || 0,
       contingencies: offer.contingencies || '',
-      expirationDate: new Date(offer.expiration_date).toISOString().split('T')[0],
-      notes: offer.notes || '',
-      status: offer.status || 'pending',
+      expirationDate: offer.closing_date ? new Date(offer.closing_date).toISOString().split('T')[0] : new Date(Date.now() + 7*24*60*60*1000).toISOString().split('T')[0],
+      notes: offer.additional_terms || '',
+      status: offer.counter_offer_status || 'pending',
     });
     setEditingId(offer.id);
     setShowForm(true);
@@ -139,8 +139,8 @@ export default function CounterOffers() {
 
   // KPI calculations
   const totalCounters = counterOffers.length;
-  const pendingCounters = counterOffers.filter(o => o.status === 'pending').length;
-  const acceptedCounters = counterOffers.filter(o => o.status === 'accepted').length;
+  const pendingCounters = counterOffers.filter(o => o.counter_offer_status === 'pending').length;
+  const acceptedCounters = counterOffers.filter(o => o.counter_offer_status === 'accepted').length;
   const totalValue = counterOffers.reduce((sum, o) => sum + (o.counter_price || 0), 0);
 
   const getStatusColor = (status) => {
@@ -284,19 +284,19 @@ export default function CounterOffers() {
                 </tr>
               ) : (
                 filteredOffers.map(offer => {
-                  const isExpired = new Date(offer.expiration_date) < new Date();
+                  const isExpired = offer.closing_date && new Date(offer.closing_date) < new Date();
                   return (
                     <tr key={offer.id} className="border-b border-border hover:bg-muted/50 transition-colors">
                       <td className="py-3 px-4 font-medium">{offer.original_offer_id}</td>
-                      <td className="py-3 px-4 text-sm">{offer.property_address}</td>
+                      <td className="py-3 px-4 text-sm">{offer.property_address || offer.original_offer_id}</td>
                       <td className="py-3 px-4 text-right font-bold">${(offer.counter_price || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
                       <td className="py-3 px-4">
-                        <Badge className={getStatusColor(isExpired ? 'expired' : offer.status)}>
-                          {isExpired ? 'Expired' : offer.status}
+                        <Badge className={getStatusColor(isExpired ? 'expired' : offer.counter_offer_status)}>
+                          {isExpired ? 'Expired' : offer.counter_offer_status}
                         </Badge>
                       </td>
                       <td className="py-3 px-4 text-sm text-muted-foreground">
-                        {new Date(offer.expiration_date).toLocaleDateString()}
+                        {offer.closing_date ? new Date(offer.closing_date).toLocaleDateString() : 'N/A'}
                       </td>
                       <td className="py-3 px-4 text-center">
                         <div className="flex justify-center gap-2">

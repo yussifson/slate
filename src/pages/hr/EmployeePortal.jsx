@@ -61,10 +61,10 @@ export default function EmployeePortal() {
   });
 
   const statusColor = (s) => ({
-    approved: 'bg-green-100 text-green-700',
-    pending: 'bg-yellow-100 text-yellow-700',
-    rejected: 'bg-red-100 text-red-700',
-  }[s] || 'bg-gray-100 text-gray-600');
+    approved: 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400',
+    pending: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
+    rejected: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400',
+  }[s] || 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400');
 
   return (
     <div className="p-6 space-y-8">
@@ -81,10 +81,10 @@ export default function EmployeePortal() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <PortalCard icon={Banknote} label="Payslips Available" value={payslips.length} color="bg-green-100 text-green-700" />
-        <PortalCard icon={Calendar} label="Leave Requests" value={leaveRequests.length} color="bg-blue-100 text-blue-700" />
-        <PortalCard icon={Award} label="Leave Balance" value={`${employee?.leave_balance ?? 0} days`} color="bg-purple-100 text-purple-700" />
-        <PortalCard icon={TrendingUp} label="Performance" value={employee?.performance_rating || '—'} color="bg-orange-100 text-orange-700" />
+        <PortalCard icon={Banknote} label="Payslips Available" value={payslips.length} color="bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400" />
+        <PortalCard icon={Calendar} label="Leave Requests" value={leaveRequests.length} color="bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400" />
+        <PortalCard icon={Award} label="Leave Balance" value={`${employee?.leave_balance ?? 0} days`} color="bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400" />
+        <PortalCard icon={TrendingUp} label="Performance" value={employee?.performance_rating || '—'} color="bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-400" />
       </div>
 
       {/* Payslips */}

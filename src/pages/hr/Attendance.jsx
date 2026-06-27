@@ -134,16 +134,16 @@ export default function Attendance() {
                       <td className="px-6 py-4">{todayStr}</td>
                       <td className="px-6 py-4">
                         {todaysAtt ? (
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400">
                             <CheckCircle2 className="w-3 h-3 mr-1" /> Present
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400">
                             <XCircle className="w-3 h-3 mr-1" /> Absent
                           </span>
                         )}
                       </td>
-                      <td className="px-6 py-4 text-[#71717a]">
+                      <td className="px-6 py-4 text-[#71717a] dark:text-gray-400">
                         {todaysAtt?.clock_in ? new Date(todaysAtt.clock_in).toLocaleTimeString() : '-'}
                       </td>
                       <td className="px-6 py-4 text-[#71717a]">
@@ -151,15 +151,15 @@ export default function Attendance() {
                       </td>
                       <td className="px-6 py-4 text-right">
                         {!todaysAtt ? (
-                          <Button size="sm" variant="outline" className="text-green-600 hover:text-green-700 hover:bg-green-50" onClick={() => handleClockIn(emp.id)}>
+                          <Button size="sm" variant="outline" className="text-green-600 hover:text-green-700 hover:bg-green-50 dark:text-green-400 dark:hover:text-green-300 dark:hover:bg-green-900/30 dark:border-green-800/50" onClick={() => handleClockIn(emp.id)}>
                             Clock In
                           </Button>
                         ) : !todaysAtt.clock_out ? (
-                          <Button size="sm" variant="outline" className="text-amber-600 hover:text-amber-700 hover:bg-amber-50" onClick={() => handleClockOut(todaysAtt.id)}>
+                          <Button size="sm" variant="outline" className="text-amber-600 hover:text-amber-700 hover:bg-amber-50 dark:text-amber-400 dark:hover:text-amber-300 dark:hover:bg-amber-900/30 dark:border-amber-800/50" onClick={() => handleClockOut(todaysAtt.id)}>
                             Clock Out
                           </Button>
                         ) : (
-                          <span className="text-xs text-[#71717a]">Completed</span>
+                          <span className="text-xs text-[#71717a] dark:text-gray-400">Completed</span>
                         )}
                       </td>
                     </tr>
@@ -167,7 +167,7 @@ export default function Attendance() {
                 })}
                 {filteredEmployees.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="px-6 py-8 text-center text-[#71717a]">No employees found.</td>
+                    <td colSpan={6} className="px-6 py-8 text-center text-[#71717a] dark:text-gray-400">No employees found.</td>
                   </tr>
                 )}
               </tbody>

@@ -114,6 +114,33 @@ export default function Leases() {
     return lease.status;
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this lease?')) return;
+    try {
+      await RealEstateAPI.deleteLease(companyId, id, user.id);
+      toast.success('Lease deleted successfully');
+      setLeases(prev => prev.filter(l => l.id !== id));
+    } catch (e) {
+      console.error('[Leases] Delete failed:', e);
+      toast.error('Failed to delete lease');
+    }
+  };
+
+  const handleEdit = (lease) => {
+    setFormData({
+      propertyAddress: lease.property_address || '',
+      tenantName: lease.tenant_name || '',
+      monthlyRent: lease.monthly_rent || 0,
+      securityDeposit: lease.security_deposit || 0,
+      startDate: lease.start_date || '',
+      endDate: lease.end_date || '',
+      paymentDay: lease.payment_day || 1,
+      notes: lease.notes || '',
+    });
+    setEditingId(lease.id);
+    setShowForm(true);
+  };
+
   if (isLoading) {
     return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
@@ -159,60 +186,80 @@ export default function Leases() {
         </CardContent>
       </Card>
 
-      {/* Leases Table */}
+      {/* Leases Grid */}
       {filteredLeases.length > 0 && (
-        <Card className="border-border/50 bg-background/50 backdrop-blur-sm dark:bg-slate-900/50 dark:border-white/10 shadow-sm hover:shadow-xl transition-all duration-300 ease-in-out overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead>
-                <tr className="border-b border-border/50 bg-muted/20">
-                  <th className="p-4 font-medium text-muted-foreground">Property</th>
-                  <th className="p-4 font-medium text-muted-foreground">Tenant</th>
-                  <th className="p-4 font-medium text-muted-foreground">Rent</th>
-                  <th className="p-4 font-medium text-muted-foreground">Start Date</th>
-                  <th className="p-4 font-medium text-muted-foreground">End Date</th>
-                  <th className="p-4 font-medium text-muted-foreground">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border/50">
-                {filteredLeases.map(lease => {
-                  const status = getLeaseStatus(lease);
-                  const statusColors = {
-                    'active': 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border-green-200 dark:border-green-800/30',
-                    'expiring-soon': 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800/30',
-                    'expired': 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 border-red-200 dark:border-red-800/30',
-                  };
-                  
-                  return (
-                    <tr key={lease.id} className="hover:bg-muted/30 transition-colors duration-200 group">
-                      <td className="p-4">
-                        <div className="font-medium text-foreground group-hover:text-primary transition-colors">{lease.property_address}</div>
-                      </td>
-                      <td className="p-4">
-                        <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-medium">
-                            {lease.tenant_name?.charAt(0) || '?'}
-                          </div>
-                          <span className="text-foreground">{lease.tenant_name}</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {filteredLeases.map(lease => {
+            const status = getLeaseStatus(lease);
+            const statusColors = {
+              'active': 'from-emerald-400 to-green-500',
+              'expiring-soon': 'from-amber-400 to-orange-500',
+              'expired': 'from-red-400 to-rose-500',
+            };
+            const badgeColors = {
+              'active': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-400',
+              'expiring-soon': 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-400',
+              'expired': 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400',
+            };
+            
+            return (
+              <Card key={lease.id} className="group overflow-hidden border-transparent shadow-sm hover:shadow-xl hover:-translate-y-1 dark:border-white/10 dark:bg-slate-900/50 bg-white/70 backdrop-blur-md transition-all duration-300 flex flex-col">
+                <div className={`h-1.5 w-full bg-gradient-to-r ${statusColors[status]}`} />
+                <CardHeader className="pb-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 pr-4">
+                      <CardTitle className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 line-clamp-1">{lease.property_address || 'No address'}</CardTitle>
+                      <div className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-md bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-700 dark:text-slate-300 shadow-sm border border-slate-200 dark:border-slate-700">
+                          {(lease.tenant_name || '?')[0].toUpperCase()}
                         </div>
-                      </td>
-                      <td className="p-4 font-semibold text-foreground">
-                        ${Number(lease.monthly_rent).toLocaleString()}<span className="text-muted-foreground font-normal text-xs">/mo</span>
-                      </td>
-                      <td className="p-4 text-muted-foreground">{new Date(lease.start_date).toLocaleDateString()}</td>
-                      <td className="p-4 text-muted-foreground">{new Date(lease.end_date).toLocaleDateString()}</td>
-                      <td className="p-4">
-                        <Badge variant="outline" className={`border ${statusColors[status]}`}>
-                          {status.replace('-', ' ').charAt(0).toUpperCase() + status.slice(1)}
-                        </Badge>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </Card>
+                        {lease.tenant_name || 'No tenant'}
+                      </div>
+                    </div>
+                    <Badge className={`${badgeColors[status]} px-2.5 py-0.5 shadow-sm font-medium border-0 capitalize whitespace-nowrap`}>
+                      {status.replace('-', ' ')}
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-5 flex-1 flex flex-col pt-0">
+                  <div className="p-4 bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-800/40 dark:to-slate-900/40 rounded-xl border border-slate-200/60 dark:border-slate-700/50">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-1">Monthly Rent</p>
+                    <p className="text-2xl font-extrabold text-slate-800 dark:text-slate-200 tracking-tight">
+                      ${Number(lease.monthly_rent || 0).toLocaleString()}
+                      <span className="text-sm font-medium text-slate-500 dark:text-slate-500 ml-1">/mo</span>
+                    </p>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4 text-sm flex-1">
+                    <div className="space-y-1">
+                      <p className="text-muted-foreground text-xs uppercase tracking-wider font-medium">Start Date</p>
+                      <p className="font-semibold text-foreground flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
+                        {new Date(lease.start_date).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-muted-foreground text-xs uppercase tracking-wider font-medium">End Date</p>
+                      <p className="font-semibold text-foreground flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
+                        {new Date(lease.end_date).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2 pt-4 mt-auto border-t border-border/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <Button size="sm" variant="outline" onClick={() => handleEdit(lease)} className="flex-1 transition-colors dark:hover:bg-white/5 dark:border-white/10">
+                      <Edit className="w-3.5 h-3.5 mr-1.5" /> Edit
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => handleDelete(lease.id)} className="text-destructive hover:bg-destructive/10 transition-colors">
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
       )}
 
       {filteredLeases.length === 0 && !isLoading && (
