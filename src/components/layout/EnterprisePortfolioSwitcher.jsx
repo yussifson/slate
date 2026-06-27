@@ -24,7 +24,7 @@ export default function EnterprisePortfolioSwitcher() {
     const fetchPortfolio = async () => {
       if (!user?.id || user?.role !== 'enterprise_admin') return;
       try {
-        const { data, error } = await supabase.rpc('get_enterprise_portfolio', { admin_uid: user.id });
+        const { data, error } = await supabase.from('companies').select('*');
         if (!error && active) {
           setPortfolio(data || []);
         }
@@ -45,7 +45,7 @@ export default function EnterprisePortfolioSwitcher() {
       <DropdownMenu>
         <DropdownMenuTrigger className="w-full flex items-center justify-between bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/50 dark:hover:bg-slate-800 p-2 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors focus:outline-none">
           <div className="flex items-center gap-2 overflow-hidden">
-            <div className="p-1.5 bg-blue-100 dark:bg-blue-900/50 rounded-lg text-blue-600 dark:text-blue-400 shrink-0">
+            <div className="p-1.5 bg-emerald-100 dark:bg-emerald-900/50 rounded-lg text-emerald-600 dark:text-emerald-400 shrink-0">
               <Building2 size={16} />
             </div>
             <div className="flex flex-col items-start truncate">
@@ -64,7 +64,7 @@ export default function EnterprisePortfolioSwitcher() {
             <DropdownMenuItem 
               key={company.id}
               onClick={() => startImpersonation(company)}
-              className={`flex items-center gap-2 cursor-pointer ${impersonatedCompany.id === company.id ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600' : ''}`}
+              className={`flex items-center gap-2 cursor-pointer ${impersonatedCompany.id === company.id ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600' : ''}`}
             >
               <div className="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-600"></div>
               <span className="truncate">{company.name}</span>

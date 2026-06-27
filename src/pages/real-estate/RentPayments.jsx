@@ -145,8 +145,8 @@ export default function RentPayments() {
 
         {/* Financial Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+            <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-green-100 dark:text-green-200 text-xs font-semibold uppercase mb-1 tracking-wider">Collected</p>
@@ -158,8 +158,8 @@ export default function RentPayments() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+            <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-orange-100 dark:text-orange-200 text-xs font-semibold uppercase mb-1 tracking-wider">Pending</p>
@@ -171,8 +171,8 @@ export default function RentPayments() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+            <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-red-100 dark:text-red-200 text-xs font-semibold uppercase mb-1 tracking-wider">Overdue</p>
@@ -184,8 +184,8 @@ export default function RentPayments() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+            <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-blue-100 dark:text-blue-200 text-xs font-semibold uppercase mb-1 tracking-wider">Collection Rate</p>
@@ -200,14 +200,14 @@ export default function RentPayments() {
 
         <div className="grid grid-cols-3 gap-6 mb-8">
           {/* Upcoming Payments */}
-          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-            <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+            <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <div className="p-1.5 bg-white/20 rounded-md backdrop-blur-sm"><Calendar className="w-5 h-5" /></div>
                 Upcoming
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+            <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="max-h-96 overflow-y-auto">
                 {upcomingPayments.length === 0 ? (
                   <div className="p-8 text-center text-slate-500 dark:text-slate-400">
@@ -234,14 +234,14 @@ export default function RentPayments() {
           </Card>
 
           {/* Overdue Alerts */}
-          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-            <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+            <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <div className="p-1.5 bg-white/20 rounded-md backdrop-blur-sm"><AlertTriangle className="w-5 h-5" /></div>
                 Overdue
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+            <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="max-h-96 overflow-y-auto">
                 {overDuePayments.length === 0 ? (
                   <div className="p-8 text-center text-slate-500 dark:text-slate-400">
@@ -268,14 +268,14 @@ export default function RentPayments() {
           </Card>
 
           {/* Recent Payments */}
-          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-            <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+            <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <div className="p-1.5 bg-white/20 rounded-md backdrop-blur-sm"><CheckCircle className="w-5 h-5" /></div>
                 Recent
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+            <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="max-h-96 overflow-y-auto">
                 {payments.filter(p => p.status === 'paid').slice(0, 5).length === 0 ? (
                   <div className="p-8 text-center text-slate-500 dark:text-slate-400">
@@ -303,14 +303,14 @@ export default function RentPayments() {
         </div>
 
         {/* All Payments Table */}
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="flex items-center gap-2">
               <CreditCard className="w-5 h-5" />
               All Payments
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">

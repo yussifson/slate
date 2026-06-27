@@ -95,8 +95,8 @@ export default function Commissions() {
 
         {/* Key Metrics */}
         <div className="grid grid-cols-3 gap-6 mb-8">
-          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+            <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-green-100 text-sm font-semibold mb-1">Total Earned</p>
@@ -110,8 +110,8 @@ export default function Commissions() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+            <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-orange-100 text-sm font-semibold mb-1">Pending</p>
@@ -125,8 +125,8 @@ export default function Commissions() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+          <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+            <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-green-100 text-sm font-semibold mb-1">Average</p>
@@ -146,12 +146,12 @@ export default function Commissions() {
           {stats.agents.map((agent) => {
             const agentStats = getAgentStats(agent);
             return (
-              <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col"
+              <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col"
                 key={agent}
                 onClick={() => setSelectedAgent(selectedAgent === agent ? 'all' : agent)}
                 className={`border-2 cursor-pointer transition-all ${selectedAgent === agent ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-green-300'}`}
               >
-                <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+                <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
                   <div className="flex items-center justify-between mb-3">
                     <div className="p-2 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full">
                       <User className="w-4 h-4 text-green-600" />
@@ -176,8 +176,8 @@ export default function Commissions() {
         </div>
 
         {/* Commissions List */}
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp className="w-5 h-5" />
@@ -188,7 +188,7 @@ export default function Commissions() {
               </span>
             </div>
           </CardHeader>
-          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">

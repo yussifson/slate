@@ -241,8 +241,8 @@ export default function Transactions() {
 
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-              <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+            <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+              <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1 group-hover:text-primary transition-colors">Total Transactions</p>
@@ -252,8 +252,8 @@ export default function Transactions() {
                 </div>
               </CardContent>
             </Card>
-            <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-              <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+            <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+              <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1 group-hover:text-emerald-500 transition-colors">Total Value</p>
@@ -263,8 +263,8 @@ export default function Transactions() {
                 </div>
               </CardContent>
             </Card>
-            <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-              <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+            <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+              <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1 group-hover:text-blue-500 transition-colors">Closed Deals</p>

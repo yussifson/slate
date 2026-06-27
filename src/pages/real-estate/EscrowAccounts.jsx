@@ -197,53 +197,53 @@ export default function EscrowAccounts() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <DollarSign className="w-4 h-4" />
               Total in Escrow
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold">${(totalEscrow / 1000000).toFixed(2)}M</div>
             <p className="text-xs text-muted-foreground mt-1">Total holdings</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Lock className="w-4 h-4" />
               Held Accounts
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold text-blue-600">{heldEscrow}</div>
             <p className="text-xs text-muted-foreground mt-1">Currently held</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4" />
               Released
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold text-green-600">{releasedEscrow}</div>
             <p className="text-xs text-muted-foreground mt-1">Funds released</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-          <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+          <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Lock className="w-4 h-4" />
               Total Accounts
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+          <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
             <div className="text-2xl font-bold">{escrowAccounts.length}</div>
             <p className="text-xs text-muted-foreground mt-1">Active escrows</p>
           </CardContent>
@@ -280,8 +280,8 @@ export default function EscrowAccounts() {
       {/* Escrow Accounts Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filteredAccounts.map(account => (
-          <Card key={account.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-            <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
+          <Card key={account.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+            <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <CardTitle className="text-base flex items-center gap-2">
@@ -295,7 +295,7 @@ export default function EscrowAccounts() {
                 </Badge>
               </div>
             </CardHeader>
-            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+            <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="p-3 bg-blue-50 rounded">
                 <p className="text-xs text-muted-foreground mb-1">Escrow Amount</p>
                 <p className="text-2xl font-bold text-blue-600">${(account.escrow_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
@@ -349,7 +349,7 @@ export default function EscrowAccounts() {
       </div>
 
       {filteredAccounts.length === 0 && (
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
           <Lock className="w-12 h-12 mx-auto text-muted-foreground mb-4 opacity-50" />
           <p className="text-muted-foreground">No escrow accounts found. Create your first escrow!</p>
         </Card>

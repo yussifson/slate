@@ -186,8 +186,8 @@ export default function Properties() {
       {/* Properties Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {filteredProperties.map(property => (
-          <Card key={property.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
-            <CardHeader className="relative p-5 border-b border-slate-100 dark:border-slate-800 bg-transparent overflow-hidden">
+          <Card key={property.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+            <CardHeader className="relative p-6 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
               <div className="flex items-start justify-between relative z-10">
                 <div className="flex-1 pr-4">
                   <CardTitle className="text-xl font-extrabold flex items-center gap-2 group-hover:text-primary transition-colors tracking-tight">
@@ -201,19 +201,19 @@ export default function Properties() {
                 <Badge variant="secondary" className={`${statusColors[property.status]} shadow-sm border-0 font-bold px-3 py-1 uppercase tracking-wider text-[10px] rounded-full`}>{property.status}</Badge>
               </div>
             </CardHeader>
-            <CardContent className="p-5 flex-1 flex flex-col relative z-10 bg-transparent">
+            <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-transparent">
               <div className="grid grid-cols-3 gap-3">
-                <div className="text-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 hover:border-primary/30 transition-colors shadow-sm">
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">Beds</p>
-                  <p className="font-extrabold text-foreground text-lg">{property.bedrooms}</p>
+                <div className="flex flex-col mb-4">
+                  <p className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-semibold mb-1">Beds</p>
+                  <p className="text-lg font-bold text-slate-900 dark:text-white">{property.bedrooms}</p>
                 </div>
-                <div className="text-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 hover:border-primary/30 transition-colors shadow-sm">
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">Baths</p>
-                  <p className="font-extrabold text-foreground text-lg">{property.bathrooms}</p>
+                <div className="flex flex-col mb-4">
+                  <p className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-semibold mb-1">Baths</p>
+                  <p className="text-lg font-bold text-slate-900 dark:text-white">{property.bathrooms}</p>
                 </div>
-                <div className="text-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 hover:border-primary/30 transition-colors shadow-sm">
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">Sq Ft</p>
-                  <p className="font-extrabold text-foreground text-lg">{Number(property.square_feet).toLocaleString()}</p>
+                <div className="flex flex-col mb-4">
+                  <p className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-semibold mb-1">Sq Ft</p>
+                  <p className="text-lg font-bold text-slate-900 dark:text-white">{Number(property.square_feet).toLocaleString()}</p>
                 </div>
               </div>
               
@@ -249,7 +249,7 @@ export default function Properties() {
       </div>
 
       {filteredProperties.length === 0 && (
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow transition-all duration-200 overflow-hidden flex flex-col">
+        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
           <div className="flex flex-col items-center justify-center space-y-4">
             <div className="p-4 bg-muted/50 rounded-full dark:bg-slate-800/50 ring-1 ring-border/50">
               <Building2 className="w-10 h-10 text-muted-foreground/60" />
