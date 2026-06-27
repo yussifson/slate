@@ -4754,6 +4754,41 @@ export const AppSchema = new Schema({
         previous_gpa: column.real,
         status: column.text,
         created_at: column.text}),
+    time_entries: new Table({
+        id: column.text,
+        company_id: column.text,
+        staff_id: column.text,
+        date: column.text,
+        hours: column.real,
+        description: column.text,
+        is_billable: column.integer,
+        hourly_rate: column.real,
+        related_entity_type: column.text,
+        related_entity_id: column.text,
+        created_at: column.text
+    }),
+    portal_invitations: new Table({
+        id: column.text,
+        company_id: column.text,
+        email: column.text,
+        full_name: column.text,
+        role: column.text,
+        token: column.text,
+        status: column.text,
+        expires_at: column.text,
+        invited_by: column.text,
+        created_at: column.text
+    }),
+    portal_users: new Table({
+        id: column.text,
+        company_id: column.text,
+        email: column.text,
+        full_name: column.text,
+        role: column.text,
+        status: column.text,
+        last_login: column.text,
+        created_at: column.text
+    }),
     uni_fees: new Table({
         id: column.text,
         company_id: column.text,

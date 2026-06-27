@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '@/lib/AuthContext';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/api/supabaseClient';
+import { powerSync } from '@/api/PowerSyncConnector';
 import {
   Users, UserPlus, Mail, Copy, CheckCircle, Clock, XCircle,
   Link2, Settings, Shield, Globe, Trash2, RefreshCw, Eye, EyeOff
@@ -70,7 +71,7 @@ function InviteDialog({ industry, companyId, onSuccess }) {
       const token = crypto.randomUUID();
       const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
-      const { error: inviteErr } = await supabase.from('portal_invitations').insert({
+      const invitePayload = {
         company_id: companyId,
         email: email.toLowerCase().trim(),
         full_name: name,
@@ -78,10 +79,14 @@ function InviteDialog({ industry, companyId, onSuccess }) {
         token,
         status: 'pending',
         expires_at: expiresAt,
-        invited_by: (await supabase.auth.getUser()).data.user?.id,
-      });
-
-      if (inviteErr) throw inviteErr;
+        invited_by: (await supabase.auth.getUser()).data.user?.id || '',
+        created_at: new Date().toISOString()
+      };
+      
+      await powerSync.execute(
+        `INSERT INTO portal_invitations (id, company_id, email, full_name, role, token, status, expires_at, invited_by, created_at) VALUES (uuid(), ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [invitePayload.company_id, invitePayload.email, invitePayload.full_name, invitePayload.role, invitePayload.token, invitePayload.status, invitePayload.expires_at, invitePayload.invited_by, invitePayload.created_at]
+      );
 
       // Step 2: Use Supabase Admin invite (or magic link as fallback)
       const { error: authErr } = await supabase.auth.admin?.inviteUserByEmail
@@ -169,13 +174,11 @@ export default function PortalManagement() {
   const { data: invitations = [], isLoading: loadingInvites, refetch: refetchInvites } = useQuery({
     queryKey: ['portal-invitations', companyId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('portal_invitations')
-        .select('*')
-        .eq('company_id', companyId)
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      return data || [];
+      const result = await powerSync.execute(
+        'SELECT * FROM portal_invitations WHERE company_id = ? ORDER BY created_at DESC',
+        [companyId]
+      );
+      return result.rows._array || [];
     },
     enabled: !!companyId,
   });
@@ -183,24 +186,21 @@ export default function PortalManagement() {
   const { data: portalUsers = [], isLoading: loadingUsers } = useQuery({
     queryKey: ['portal-users', companyId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('portal_users')
-        .select('*')
-        .eq('company_id', companyId)
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      return data || [];
+      const result = await powerSync.execute(
+        'SELECT * FROM portal_users WHERE company_id = ? ORDER BY created_at DESC',
+        [companyId]
+      );
+      return result.rows._array || [];
     },
     enabled: !!companyId,
   });
 
   const revokeInvite = useMutation({
     mutationFn: async (inviteId) => {
-      const { error } = await supabase
-        .from('portal_invitations')
-        .update({ status: 'revoked' })
-        .eq('id', inviteId);
-      if (error) throw error;
+      await powerSync.execute(
+        'UPDATE portal_invitations SET status = ? WHERE id = ?',
+        ['revoked', inviteId]
+      );
     },
     onSuccess: () => {
       refetchInvites();

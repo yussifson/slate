@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { OrbitIcon } from '@/components/ui/OrbitIcon';
+import { supabase } from '@/api/supabaseClient';
 import { useQuery } from '@tanstack/react-query';
 import { getTerm } from '@/config/industries';
 import { SCHEMA_COLUMNS } from '@/api/schemaColumns';
@@ -468,7 +469,7 @@ export default function Automations() {
   const loadAutomations = async () => {
     try {
       setIsLoading(true);
-      const { data, error } = await base44.supabase.from('automations').select('*').eq('company_id', companyId);
+      const { data, error } = await supabase.from('automation_rules').select('*').eq('company_id', companyId);
       if (error) throw error;
       setAutomations(data || []);
     } catch (e) {
@@ -571,11 +572,11 @@ export default function Automations() {
 
       let ruleRes;
       if (editingRuleId) {
-        const { data, error } = await base44.supabase.from('automations').update(payload).eq('id', editingRuleId).select().single();
+        const { data, error } = await supabase.from('automation_rules').update(payload).eq('id', editingRuleId).select().single();
         if (error) throw error;
         ruleRes = data;
       } else {
-        const { data, error } = await base44.supabase.from('automations').insert(payload).select().single();
+        const { data, error } = await supabase.from('automation_rules').insert(payload).select().single();
         if (error) throw error;
         ruleRes = data;
       }
@@ -591,7 +592,7 @@ export default function Automations() {
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this automation?")) return;
     try {
-      await base44.supabase.from('automations').delete().eq('id', id);
+      await supabase.from('automation_rules').delete().eq('id', id);
       toast.success("Automation Deleted");
       loadAutomations();
     } catch(e) {
