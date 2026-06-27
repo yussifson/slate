@@ -546,7 +546,7 @@ function PlatformRoutes() {
       <Route path="/documents" element={<UnivDocument />} />
       <Route path="/team" element={<UnivHREmployee />} />
       <Route path="/settings" element={<Settings />} />
-      <Route path="/settings/portal" element={<PortalManagement />} />
+      <Route path="/portal" element={<PortalManagement />} />
       <Route path="/settings/custom-fields" element={<CustomFieldsSettings />} />
       <Route path="/roles" element={<Roles />} />
       <Route path="/departments" element={<Departments />} />
