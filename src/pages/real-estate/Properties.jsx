@@ -231,12 +231,6 @@ export default function Properties() {
         </REGridShell>
       </div>
 
-              <Plus className="w-4 h-4 mr-2" /> Add Property
-            </Button>
-          </div>
-        </Card>
-      )}
-
       {/* Form Modal */}
       <Sheet open={showForm} onOpenChange={setShowForm}>
         <SheetContent className="w-full max-w-md overflow-y-auto">
