@@ -11,9 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
 import { REPageHeader, REStatCard, REDataCard, REGridShell } from '@/components/real-estate/RealEstateViewKit';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RealEstateAPI } from '@/api/RealEstateAPI';
-import { toast } from 'react-hot-toast';
+
 
 export default function Recommendations() {
   const { t } = useTranslation();
