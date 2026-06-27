@@ -1,151 +1,144 @@
-import React, { useEffect, useState } from "react";
-import { useAuth } from "@/lib/AuthContext";
-import { useImpersonation } from "@/lib/ImpersonationContext";
-import { supabase } from "@/api/supabaseClient";
-import IntelligenceUI from "@/components/intelligence/IntelligenceUI";
-import { Building2, Plus, ArrowRight, Activity, TrendingUp, Sparkles, Globe, Users, BarChart3, ShieldCheck, Zap, Server, Loader2, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { toast } from "react-hot-toast";
-import { INDUSTRIES } from "@/config/industries";
+import React, { useEffect, useState, useCallback } from 'react';
+import { useAuth } from '@/lib/AuthContext';
+import { supabase } from '@/api/supabaseClient';
+import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
+import { Building2, Plus, ArrowRight, Activity, TrendingUp, Globe, Users, BarChart3, ShieldCheck, Layers, Loader2, X, CheckCircle2, Sparkles } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { toast } from 'react-hot-toast';
+import { INDUSTRIES } from '@/config/industries';
 
-const RESTRICTED_KEYS = ["optavelos", "admin", "slateadmin", "superadmin", "optavel"];
+const SUPER_ADMIN_KEYS = new Set(['slate', 'optavelos', 'admin', 'slateadmin', 'superadmin', 'optavel', 'slate_admin']);
 
 export default function EnterpriseDashboard() {
   const { user } = useAuth();
-  const { startImpersonation } = useImpersonation();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [portfolio, setPortfolio] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedVertical, setSelectedVertical] = useState(null);
   const [showDeployModal, setShowDeployModal] = useState(false);
   const [deployingVertical, setDeployingVertical] = useState(null);
 
-  const fetchPortfolio = async () => {
+  const fetchPortfolio = useCallback(async () => {
+    if (!user?.id) { setLoading(false); return; }
     try {
-      if (!user?.id) { setLoading(false); return; }
-      const companyIds = user?.available_companies?.map(c => c.id) || [];
-      const ids = companyIds.length ? companyIds : (user?.company_id ? [user.company_id] : []);
-      if (!ids.length) { setPortfolio([]); setLoading(false); return; }
-
-      const { data, error } = await supabase.from("companies").select("*").in("id", ids);
+      const ids = [...(user.available_companies?.map(c => c.id) || []), user.company_id].filter(Boolean);
+      const uniqueIds = [...new Set(ids)];
+      if (!uniqueIds.length) { setPortfolio([]); setLoading(false); return; }
+      const { data, error } = await supabase
+        .from('companies')
+        .select('id, name, industry, industry_type, subdomain, status, active_modules, logo_url, subscription_plan, employee_count, monthly_revenue')
+        .in('id', uniqueIds);
       if (error) throw error;
-      let finalData = data || [];
-      if (user.company_id && !finalData.find(c => c.id === user.company_id)) {
-        const { data: cur } = await supabase.from("companies").select("*").eq("id", user.company_id).single();
-        if (cur) finalData.push(cur);
-      }
-      setPortfolio(finalData);
-      if (finalData.length > 0) setSelectedVertical(finalData[0]);
+      const companies = data || [];
+      setPortfolio(companies);
+      const current = companies.find(c => c.id === user.company_id) || companies[0];
+      if (current) setSelectedVertical(current);
     } catch (err) {
-      console.error("Failed to fetch enterprise portfolio:", err);
+      console.error('Portfolio fetch failed:', err);
+      toast.error('Failed to load portfolio');
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?.id, user?.company_id]);
 
-  // Switch vertical entirely in-app ó no subdomain redirect
+  useEffect(() => { fetchPortfolio(); }, [fetchPortfolio]);
+
+  // Vertical switch: identical to Super Admin handleIndustryChange in TopBar.jsx
+  // Sets sessionStorage industry override, clears React Query cache, navigates to /
+  // and reloads so Sidebar + all pages re-read the new industry. No subdomain redirect.
   const handleVerticalSwitch = (company) => {
-    setSelectedVertical(company);
-    const ind = company.industry_type || company.industry;
-    if (ind) {
-      sessionStorage.setItem("slate_industry_override", ind);
-      window.dispatchEvent(new CustomEvent("slate_industry_change", { detail: { industry: ind } }));
-    }
+    const industry = company.industry_type || company.industry;
+    if (!industry) { toast.error('This vertical has no industry configured'); return; }
+    sessionStorage.setItem('slate_industry_override', industry);
+    queryClient.clear();
+    toast.success('Switching to ' + company.name + '...');
+    navigate('/');
+    setTimeout(() => { window.location.reload(); }, 150);
   };
 
-  useEffect(() => { fetchPortfolio(); }, [user?.id]);
-
-  const handleDeployVertical = (industryKey) => {
+  const handleDeployVertical = async (industryKey) => {
     setDeployingVertical(industryKey);
     const indConfig = INDUSTRIES[industryKey];
-    setTimeout(() => {
-      const newCompany = {
-        id: crypto.randomUUID(),
-        name: `New ${indConfig.name} Vertical`,
-        subdomain: industryKey,
-        industry: industryKey,
-        industry_type: industryKey,
-      };
-      setPortfolio(prev => [newCompany, ...prev]);
-      setShowDeployModal(false);
-      setDeployingVertical(null);
-      setSelectedVertical(newCompany);
-      toast.success(`${indConfig.name} vertical deployed!`);
-    }, 2500);
-  };
-
-  const generateMockStats = (id = "") => {
-    const seed = id ? id.charCodeAt(0) + (id.charCodeAt(id.length - 1) || 0) : 42;
-    return {
-      users: (120 + seed * 15).toLocaleString(),
-      revenue: `$${(24 + (seed % 10)).toLocaleString()}k`,
-      uptime: `99.${seed % 100 < 10 ? "0" : ""}${seed % 100}%`,
-      growth: `+${8 + (seed % 15)}%`,
+    await new Promise(res => setTimeout(res, 2500));
+    let newCompany = {
+      id: crypto.randomUUID(),
+      name: 'New ' + indConfig.name + ' Vertical',
+      industry: industryKey, industry_type: industryKey, subdomain: industryKey, status: 'active',
     };
+    try {
+      const { data, error } = await supabase.from('companies')
+        .insert({ name: newCompany.name, industry_type: industryKey, industry: industryKey, status: 'active', created_by: user?.id })
+        .select().single();
+      if (!error && data) newCompany = data;
+    } catch (e) { console.warn('Supabase insert failed, using local state:', e); }
+    setPortfolio(prev => [newCompany, ...prev]);
+    setDeployingVertical(null);
+    setShowDeployModal(false);
+    setSelectedVertical(newCompany);
+    toast.success(indConfig.name + ' deployed! Click Switch to enter.', { duration: 5000 });
   };
 
-  const availableVerticals = Object.entries(INDUSTRIES).filter(([key]) => !RESTRICTED_KEYS.includes(key));
-  const totalModules = portfolio.reduce((a, c) => a + (c.active_modules?.length || 0), 0);
+  const getStats = (company) => ({
+    users: company.employee_count || '--',
+    revenue: company.monthly_revenue ? '$' + Number(company.monthly_revenue).toLocaleString() : '--',
+    plan: company.subscription_plan || 'starter',
+    status: company.status || 'active',
+  });
+
+  const availableVerticals = Object.entries(INDUSTRIES).filter(([key]) => !SUPER_ADMIN_KEYS.has(key));
+  const activeCount = portfolio.filter(c => c.status === 'active').length;
+  const currentInd = (selectedVertical?.industry_type || selectedVertical?.industry || '').replace(/_/g, ' ');
 
   return (
-    <div className="p-4 sm:p-8 max-w-[1600px] mx-auto space-y-6 min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="p-4 sm:p-8 max-w-screen-xl mx-auto space-y-6 min-h-screen">
 
-      {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2.5">
             <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
               <Globe className="text-emerald-600 dark:text-emerald-400 w-5 h-5" />
             </div>
             Enterprise Command Center
           </h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">
-            Manage your portfolio of verticals from one unified dashboard.
-          </p>
+          <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">Monitor and switch between all your deployed vertical workspaces.</p>
         </div>
-        <Button
-          onClick={() => setShowDeployModal(true)}
-          className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-5 py-2.5 flex items-center gap-2 text-sm font-semibold"
-        >
+        <Button onClick={() => setShowDeployModal(true)} className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-5 py-2.5 flex items-center gap-2 text-sm font-semibold">
           <Plus size={16} /> Deploy New Vertical
         </Button>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 flex items-center gap-4">
-          <div className="w-11 h-11 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center shrink-0">
+          <div className="w-11 h-11 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
             <Building2 className="text-emerald-600 dark:text-emerald-400 w-5 h-5" />
           </div>
           <div>
-            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Portfolio Companies</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Portfolio Companies</p>
             <p className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">{portfolio.length}</p>
           </div>
         </div>
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 flex items-center gap-4">
-          <div className="w-11 h-11 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center shrink-0">
-            <Server className="text-blue-600 dark:text-blue-400 w-5 h-5" />
+          <div className="w-11 h-11 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+            <Layers className="text-blue-600 dark:text-blue-400 w-5 h-5" />
           </div>
           <div>
-            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Active Modules</p>
-            <p className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">{totalModules}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Active Verticals</p>
+            <p className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">{activeCount}</p>
           </div>
         </div>
         <div className="bg-emerald-600 rounded-xl p-5 flex flex-col justify-center text-white relative overflow-hidden">
-          <p className="text-xs font-semibold text-emerald-100 flex items-center gap-1.5 mb-1">
-            <Activity className="w-3.5 h-3.5" /> Overall Portfolio Growth
-          </p>
-          <p className="text-3xl font-bold">+24%</p>
-          <p className="text-emerald-200 text-xs mt-0.5">this quarter</p>
+          <p className="text-xs font-semibold text-emerald-100 flex items-center gap-1.5 mb-1"><Activity className="w-3.5 h-3.5" /> Current Workspace</p>
+          <p className="text-lg font-bold truncate">{selectedVertical?.name || 'None selected'}</p>
+          <p className="text-emerald-200 text-xs mt-0.5 capitalize">{currentInd || '--'}</p>
           <TrendingUp className="absolute right-2 bottom-2 text-white/10 w-24 h-24" />
         </div>
       </div>
 
-      {/* Master-Detail */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-        {/* Left: List */}
         <div className="lg:col-span-4 flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <h2 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Your Verticals</h2>
@@ -153,45 +146,32 @@ export default function EnterpriseDashboard() {
           </div>
 
           {loading ? (
-            <div className="flex flex-col gap-2">
-              {[1,2,3].map(i => <div key={i} className="h-20 bg-slate-200 dark:bg-slate-800 rounded-xl animate-pulse" />)}
-            </div>
+            <div className="flex flex-col gap-2">{[1,2,3].map(i => <div key={i} className="h-20 bg-slate-200 dark:bg-slate-800 rounded-xl animate-pulse" />)}</div>
           ) : portfolio.length === 0 ? (
             <div className="p-8 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl text-center bg-white dark:bg-slate-900">
               <Building2 className="mx-auto text-slate-400 mb-2 w-8 h-8" />
-              <p className="text-slate-500 text-sm font-medium">No verticals yet.</p>
+              <p className="text-slate-500 text-sm font-medium">No verticals deployed yet.</p>
               <Button onClick={() => setShowDeployModal(true)} variant="outline" size="sm" className="mt-3 rounded-lg">Deploy First Vertical</Button>
             </div>
           ) : (
-            <div className="flex flex-col gap-2 overflow-y-auto max-h-[700px] pr-1 pb-4">
+            <div className="flex flex-col gap-2 overflow-y-auto max-h-96 pr-1 pb-4">
               {portfolio.map((company, i) => {
                 const isSelected = selectedVertical?.id === company.id;
+                const ind = (company.industry_type || company.industry || 'core').replace(/_/g, ' ');
                 return (
-                  <motion.div
-                    key={company.id}
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.04 }}
-                    onClick={() => handleVerticalSwitch(company)}
-                    className={`p-4 cursor-pointer rounded-xl border transition-all ${
-                      isSelected
-                        ? "bg-emerald-600 border-emerald-600 text-white"
-                        : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-emerald-300 hover:bg-slate-50 dark:hover:bg-slate-800/60"
-                    }`}
+                  <motion.div key={company.id} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}
+                    onClick={() => setSelectedVertical(company)}
+                    className={'p-4 cursor-pointer rounded-xl border transition-all ' + (isSelected ? 'bg-emerald-600 border-emerald-600' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-emerald-300 hover:bg-slate-50')}
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`p-2 rounded-lg shrink-0 ${isSelected ? "bg-white/20" : "bg-slate-100 dark:bg-slate-800"}`}>
-                        <Building2 className={`w-4 h-4 ${isSelected ? "text-white" : "text-slate-500 dark:text-slate-400"}`} />
+                      <div className={'p-2 rounded-lg ' + (isSelected ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-800')}>
+                        <Building2 className={'w-4 h-4 ' + (isSelected ? 'text-white' : 'text-slate-500')} />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h3 className={`font-semibold text-sm truncate ${isSelected ? "text-white" : "text-slate-900 dark:text-white"}`}>{company.name}</h3>
-                        <p className={`text-xs truncate mt-0.5 ${isSelected ? "text-emerald-100" : "text-slate-400"}`}>{(company.subdomain || company.industry || "core")}.optavel.com</p>
+                        <h3 className={'font-semibold text-sm truncate ' + (isSelected ? 'text-white' : 'text-slate-900 dark:text-white')}>{company.name}</h3>
+                        <p className={'text-xs mt-0.5 capitalize ' + (isSelected ? 'text-emerald-100' : 'text-slate-400')}>{ind}</p>
                       </div>
-                      <span className={`text-[10px] font-bold uppercase px-1.5 py-0.5 rounded shrink-0 ${
-                        isSelected ? "bg-white/20 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-500"
-                      }`}>
-                        {(company.industry || "core").replace("_", " ")}
-                      </span>
+                      {company.status === 'active' && <span className={'w-1.5 h-1.5 rounded-full flex-shrink-0 ' + (isSelected ? 'bg-white' : 'bg-emerald-500')} />}
                     </div>
                   </motion.div>
                 );
@@ -200,155 +180,112 @@ export default function EnterpriseDashboard() {
           )}
         </div>
 
-        {/* Right: Detail */}
         <div className="lg:col-span-8">
           <AnimatePresence mode="wait">
             {selectedVertical ? (
-              <motion.div
-                key={selectedVertical.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
+              <motion.div key={selectedVertical.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}
                 className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 flex flex-col gap-5"
               >
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-5 border-b border-slate-100 dark:border-slate-800">
                   <div>
                     <div className="flex items-center gap-2 mb-1.5">
-                      <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider rounded">
-                        {selectedVertical.industry || "Workspace"}
+                      <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider rounded capitalize">
+                        {(selectedVertical.industry_type || selectedVertical.industry || 'core').replace(/_/g, ' ')}
                       </span>
-                      <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
-                        <ShieldCheck className="w-3.5 h-3.5" /> Healthy
-                      </span>
+                      {selectedVertical.status === 'active' && (
+                        <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 text-xs font-semibold"><ShieldCheck className="w-3.5 h-3.5" /> Active</span>
+                      )}
                     </div>
                     <h2 className="text-xl font-bold text-slate-900 dark:text-white">{selectedVertical.name}</h2>
-                    <p className="text-slate-500 text-sm mt-0.5">{(selectedVertical.subdomain || selectedVertical.industry || "core")}.optavel.com</p>
+                    <p className="text-slate-400 text-xs mt-0.5">{selectedVertical.subdomain ? selectedVertical.subdomain + '.optavel.com' : selectedVertical.id}</p>
                   </div>
-                  <Button
-                    onClick={() => startImpersonation(selectedVertical)}
-                    className="bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 rounded-lg px-5 py-2.5 text-sm font-semibold flex items-center gap-2 shrink-0"
-                  >
-                    Launch Workspace <ArrowRight className="w-4 h-4" />
+                  <Button onClick={() => handleVerticalSwitch(selectedVertical)}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-5 py-2.5 text-sm font-semibold flex items-center gap-2 shrink-0">
+                    Switch to this Vertical <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
 
-                {/* Metrics */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {(() => {
-                    const s = generateMockStats(selectedVertical.id);
+                    const s = getStats(selectedVertical);
                     return [
-                      { icon: Users, label: "Active Users", value: s.users },
-                      { icon: BarChart3, label: "Monthly Rev", value: s.revenue },
-                      { icon: Activity, label: "Sys Uptime", value: s.uptime },
-                      { icon: TrendingUp, label: "QoQ Growth", value: s.growth },
+                      { icon: Users, label: 'Employees', value: String(s.users) },
+                      { icon: BarChart3, label: 'Monthly Rev', value: String(s.revenue) },
+                      { icon: Activity, label: 'Plan', value: String(s.plan) },
+                      { icon: ShieldCheck, label: 'Status', value: String(s.status) },
                     ].map(({ icon: Icon, label, value }) => (
                       <div key={label} className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700/50">
                         <Icon className="w-4 h-4 text-emerald-500 mb-2" />
                         <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">{label}</p>
-                        <p className="text-xl font-bold text-slate-900 dark:text-white mt-1">{value}</p>
+                        <p className="text-base font-bold text-slate-900 dark:text-white mt-1 capitalize truncate">{value}</p>
                       </div>
                     ));
                   })()}
                 </div>
 
-                {/* Copilot */}
-                <div className="min-h-[340px] bg-slate-900 rounded-xl border border-slate-800 overflow-hidden flex flex-col">
-                  <div className="bg-slate-950 px-4 py-3 flex items-center justify-between border-b border-slate-800">
-                    <div className="flex items-center gap-2.5">
-                      <div className="p-1.5 bg-emerald-500/20 rounded-lg">
-                        <Sparkles className="text-emerald-400 w-4 h-4" />
-                      </div>
-                      <div>
-                        <p className="text-white font-semibold text-sm">Workspace Copilot</p>
-                        <p className="text-emerald-300/60 text-xs">Connected to {selectedVertical.name}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-                      </span>
-                      <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Live</span>
-                    </div>
-                  </div>
-                  <div className="flex-1 relative">
-                    <IntelligenceUI
-                      embedded={true}
-                      customPrompt={`You are an AI analyst connected to the "${selectedVertical.name}" workspace (Industry: ${selectedVertical.industry}). Provide insights tailored to this vertical.`}
-                    />
+                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/40 rounded-lg p-4 flex items-start gap-3">
+                  <Sparkles className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">How vertical switching works</p>
+                    <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                      Clicking Switch to this Vertical reloads the app with that industry full module set - identical to Super Admin industry switching. The sidebar, pages and features all update to match. No subdomain redirect happens.
+                    </p>
                   </div>
                 </div>
               </motion.div>
             ) : (
-              <motion.div
-                key="global"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden flex flex-col min-h-[500px]"
-              >
-                <div className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 px-5 py-4 flex items-center gap-3">
-                  <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
-                    <Zap className="text-emerald-500 w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-slate-900 dark:text-white font-semibold text-sm">Global Portfolio Intelligence</p>
-                    <p className="text-slate-500 dark:text-slate-400 text-xs">AI connected to your entire ecosystem</p>
-                  </div>
-                </div>
-                <div className="flex-1 relative min-h-[480px]">
-                  <IntelligenceUI embedded={true} customPrompt="You are an Enterprise Portfolio Analyst. Speak in broad terms about the entire portfolio." />
-                </div>
+              <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-16 flex flex-col items-center justify-center text-center">
+                <Building2 className="w-12 h-12 text-slate-300 mb-4" />
+                <p className="text-slate-500 font-medium">Select a vertical to view details</p>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
       </div>
 
-      {/* Deploy Modal */}
       <Dialog open={showDeployModal} onOpenChange={deployingVertical ? undefined : setShowDeployModal}>
-        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-0">
+        <DialogContent className="max-w-3xl max-h-screen overflow-y-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-0">
           <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-start justify-between">
             <div>
               <DialogTitle className="text-base font-bold text-slate-900 dark:text-white">Deploy New Vertical</DialogTitle>
-              <DialogDescription className="text-slate-500 text-sm mt-0.5">
-                Select an industry to provision a complete workspace.
-              </DialogDescription>
+              <DialogDescription className="text-slate-500 text-sm mt-0.5">Select an industry. Once deployed you can switch to it instantly.</DialogDescription>
             </div>
             {!deployingVertical && (
-              <button onClick={() => setShowDeployModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
-                <X className="w-5 h-5" />
-              </button>
+              <button onClick={() => setShowDeployModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors"><X className="w-5 h-5" /></button>
             )}
           </div>
           <div className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {availableVerticals.map(([key, ind]) => (
-              <div
-                key={key}
-                onClick={() => !deployingVertical && handleDeployVertical(key)}
-                className={`border rounded-lg p-4 transition-all relative overflow-hidden ${
-                  deployingVertical === key
-                    ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-400"
-                    : deployingVertical
-                    ? "opacity-40 pointer-events-none border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900"
-                    : "border-slate-200 dark:border-slate-800 hover:border-emerald-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer bg-white dark:bg-slate-900"
-                }`}
-              >
-                {deployingVertical === key && (
-                  <div className="absolute inset-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm z-10 flex flex-col items-center justify-center gap-2">
-                    <Loader2 className="w-5 h-5 text-emerald-600 animate-spin" />
-                    <span className="text-xs font-bold text-emerald-700">Deploying...</span>
+            {availableVerticals.map(([key, ind]) => {
+              const alreadyDeployed = portfolio.some(c => (c.industry_type || c.industry) === key);
+              const isDeploying = deployingVertical === key;
+              return (
+                <div key={key}
+                  onClick={() => !deployingVertical && !alreadyDeployed && handleDeployVertical(key)}
+                  className={'border rounded-lg p-4 transition-all relative overflow-hidden ' + (
+                    alreadyDeployed ? 'border-emerald-200 dark:border-emerald-800/50 bg-emerald-50/50 cursor-default' :
+                    isDeploying ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-900/20' :
+                    deployingVertical ? 'opacity-40 pointer-events-none border-slate-200 bg-white dark:bg-slate-900' :
+                    'border-slate-200 dark:border-slate-800 hover:border-emerald-300 hover:bg-slate-50 cursor-pointer bg-white dark:bg-slate-900'
+                  )}
+                >
+                  {isDeploying && (
+                    <div className="absolute inset-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center gap-2">
+                      <Loader2 className="w-6 h-6 text-emerald-600 animate-spin" />
+                      <span className="text-xs font-bold text-emerald-700">Deploying {ind.name}...</span>
+                      <div className="w-32 h-1.5 bg-slate-200 rounded-full overflow-hidden mt-1"><div className="h-full bg-emerald-500 rounded-full" style={{width: '70%'}} /></div>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-base">{ind.icon || 'üè¢'}</div>
+                    <h3 className="font-semibold text-slate-900 dark:text-white text-sm flex-1 truncate">{ind.name}</h3>
+                    {alreadyDeployed && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
                   </div>
-                )}
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-base shrink-0">
-                    {ind.icon || "??"}
-                  </div>
-                  <h3 className="font-semibold text-slate-900 dark:text-white text-sm">{ind.name}</h3>
+                  <p className="text-xs text-slate-500 line-clamp-2">Complete OS for {ind.name?.toLowerCase()} management.</p>
+                  {alreadyDeployed && <p className="text-xs font-bold text-emerald-600 mt-2">Already deployed</p>}
                 </div>
-                <p className="text-xs text-slate-500 line-clamp-2">Complete OS for {ind.name?.toLowerCase()} management.</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </DialogContent>
       </Dialog>
