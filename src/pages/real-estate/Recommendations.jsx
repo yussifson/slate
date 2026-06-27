@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Lightbulb, Plus, Edit, Trash2, Search, TrendingUp, CheckCircle2, AlertCircle, Send } from 'lucide-react';
+import { Lightbulb, Plus, Edit, Trash2, Search, TrendingUp, CheckCircle2, AlertCircle } from 'lucide-react';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RealEstateAPI } from '@/api/RealEstateAPI';
+import { toast } from 'react-hot-toast';
+import { REPageHeader, REStatCard, REDataCard, REGridShell } from '@/components/real-estate/RealEstateViewKit';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
@@ -148,179 +150,75 @@ export default function Recommendations() {
 
   return (
     <div className="space-y-6 p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">AI Recommendations</h1>
-          <p className="text-sm text-muted-foreground mt-1">AI-powered recommendations matching clients with agents</p>
-        </div>
-        <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
-          clientId: '',
-          recommendedAgentId: '',
-          propertyId: '',
-          recommendationType: 'agent_match',
-          recommendationScore: 0.85,
-          recommendationReason: '',
-          clientAction: 'pending',
-        }); }} className="gap-2">
-          <Plus className="w-4 h-4" /> Add Recommendation
-        </Button>
-      </div>
+      <REPageHeader 
+        title="AI Recommendations" 
+        subtitle="AI-powered recommendations matching clients with agents"
+        actions={
+          <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
+            clientId: '',
+            recommendedAgentId: '',
+            propertyId: '',
+            recommendationType: 'agent_match',
+            recommendationScore: 0.85,
+            recommendationReason: '',
+            clientAction: 'pending',
+          }); }} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+            <Plus className="w-4 h-4" /> Add Recommendation
+          </Button>
+        }
+      />
 
-      {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <Lightbulb className="w-4 h-4" />
-              Total Recs
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-            <div className="text-sm font-bold">{totalRecs}</div>
-            <p className="text-xs text-muted-foreground mt-1">Recommendations generated</p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4" />
-              Accepted
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-            <div className="text-sm font-bold text-green-600 dark:text-green-400">{acceptedRecs}</div>
-            <p className="text-xs text-muted-foreground mt-1">Clients approved</p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <AlertCircle className="w-4 h-4" />
-              Pending
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-            <div className="text-sm font-bold text-yellow-600 dark:text-yellow-400">{pendingRecs}</div>
-            <p className="text-xs text-muted-foreground mt-1">Awaiting response</p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <TrendingUp className="w-4 h-4" />
-              Avg Score
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-            <div className="text-sm font-bold">{(avgScore * 100).toFixed(0)}%</div>
-            <p className="text-xs text-muted-foreground mt-1">Match confidence</p>
-          </CardContent>
-        </Card>
+        <REStatCard label="Total Recs" value={totalRecs} hint="Recommendations generated" icon={Lightbulb} />
+        <REStatCard label="Accepted" value={acceptedRecs} hint="Clients approved" icon={CheckCircle2} variant="success" />
+        <REStatCard label="Pending" value={pendingRecs} hint="Awaiting response" icon={AlertCircle} variant="warning" />
+        <REStatCard label="Avg Score" value={`${(avgScore * 100).toFixed(0)}%`} hint="Match confidence" icon={TrendingUp} />
       </div>
 
-      {/* Filters */}
-      <div className="flex gap-4 flex-wrap">
-        <div className="flex-1 min-w-64">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+      <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-emerald-600/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="p-4 border-b border-emerald-600/40 bg-muted/50 flex flex-wrap gap-4 items-center">
+          <div className="relative max-w-md flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
             <Input
               placeholder="Search by client, property..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10"
+              className="pl-9 bg-card"
             />
           </div>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-40 bg-card">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="sent">Sent</SelectItem>
+              <SelectItem value="accepted">Accepted</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-40">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="sent">Sent</SelectItem>
-            <SelectItem value="accepted">Accepted</SelectItem>
-            <SelectItem value="rejected">Rejected</SelectItem>
-          </SelectContent>
-        </Select>
+
+        <REGridShell empty={filteredRecs.length === 0 && <div className="py-12 text-center text-[#71717a] dark:text-gray-400"><Lightbulb className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse" /><p className="font-semibold">No recommendations found.</p></div>}>
+          {filteredRecs.map(rec => (
+            <REDataCard 
+              key={rec.id}
+              title={`Client: ${rec.client_id?.substring(0, 20)}`}
+              subtitle={`Agent: ${rec.recommended_agent_id?.substring(0, 20)}`}
+              iconText={<Lightbulb className="w-6 h-6" />}
+              badge={rec.client_action}
+              badgeColor={rec.client_action === 'accepted' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-700 border-slate-200'}
+              onEdit={() => handleEdit(rec)}
+              onDelete={() => handleDelete(rec.id)}
+              metrics={[
+                { label: "Score", value: `${(rec.recommendation_score * 100).toFixed(0)}%` },
+                { label: "Type", value: rec.recommendation_type?.replace('_', ' ') }
+              ]}
+            />
+          ))}
+        </REGridShell>
       </div>
-
-      {/* Recommendations Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {filteredRecs.map(rec => (
-          <Card key={rec.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-            <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                    <Lightbulb className="w-4 h-4" />
-                    Client: {rec.client_id?.substring(0, 20)}
-                  </CardTitle>
-                  <p className="text-sm text-muted-foreground mt-1 capitalize">{rec.recommendation_type?.replace('_', ' ')}</p>
-                </div>
-                <Badge variant={rec.client_action === 'accepted' ? 'default' : rec.client_action === 'pending' ? 'secondary' : 'outline'}>
-                  {rec.client_action}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-              <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
-                <p className="text-xs font-medium text-muted-foreground">Match Score</p>
-                <p className="text-sm font-bold text-blue-600 dark:text-blue-400">{(rec.recommendation_score * 100).toFixed(0)}%</p>
-              </div>
-
-              <div>
-                <p className="text-xs font-medium text-muted-foreground">Recommended Agent</p>
-                <p className="font-medium text-sm">{rec.recommended_agent_id?.substring(0, 20)}</p>
-              </div>
-
-              {rec.property_id && (
-                <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
-                  <p className="text-xs font-medium text-muted-foreground">Property</p>
-                  <p className="font-medium text-sm">{rec.property_id?.substring(0, 20)}</p>
-                </div>
-              )}
-
-              {rec.recommendation_reason && (
-                <div className="flex flex-col gap-1 p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
-                  <p className="text-xs font-medium text-muted-foreground">Reason</p>
-                  <p className="text-sm">{rec.recommendation_reason}</p>
-                </div>
-              )}
-
-              <div className="flex gap-2 pt-2 border-t">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handleEdit(rec)}
-                  className="flex-1"
-                >
-                  <Edit className="w-4 h-4 mr-1" /> Edit
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => handleDelete(rec.id)}
-                  className="text-destructive"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {filteredRecs.length === 0 && (
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <Lightbulb className="w-12 h-12 mx-auto text-muted-foreground mb-4 opacity-50" />
-          <p className="text-muted-foreground">No recommendations found. Create your first recommendation!</p>
-        </Card>
-      )}
 
       {/* Recommendation Form Modal */}
       <Sheet open={showForm} onOpenChange={setShowForm}>

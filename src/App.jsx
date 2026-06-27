@@ -1045,7 +1045,6 @@ function ProtectedRoute() {
     );
   }
 
-
   if (user?.company_status === 'onboarding' && window.location.pathname !== '/onboarding') {
     return <Navigate to="/onboarding" replace />;
   }
@@ -1115,18 +1114,20 @@ function App() {
                         
                         {/* Super Admin Base Domain Dashboard */}
                         <Route element={<AppLayout />}>
-                          <Route path="/admin" element={<AdminOverview />} />
-                          <Route path="/admin/intelligence" element={<AdminIntelligence />} />
-                          <Route path="/admin/rollout" element={<AdminRollout />} />
-                          <Route path="/admin/quotas" element={<AdminQuotas />} />
-                          <Route path="/admin/firms" element={<AdminFirms />} />
-                          <Route path="/admin/users" element={<AdminUsers />} />
-                          <Route path="/admin/billing" element={<AdminBilling />} />
-                          <Route path="/admin/pricing" element={<SuperAdminBilling title="Pricing Engine" />} />
-                          <Route path="/admin/security" element={<AdminSecurity />} />
-                          <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
-                          <Route path="/admin/enterprise-requests" element={<AdminEnterpriseRequests />} />
-                          <Route path="/admin/partners" element={<AdminPartners />} />
+                          <Route element={<SuperAdminRoute />}>
+                            <Route path="/admin" element={<AdminOverview />} />
+                            <Route path="/admin/intelligence" element={<AdminIntelligence />} />
+                            <Route path="/admin/rollout" element={<AdminRollout />} />
+                            <Route path="/admin/quotas" element={<AdminQuotas />} />
+                            <Route path="/admin/firms" element={<AdminFirms />} />
+                            <Route path="/admin/users" element={<AdminUsers />} />
+                            <Route path="/admin/billing" element={<AdminBilling />} />
+                            <Route path="/admin/pricing" element={<SuperAdminBilling title="Pricing Engine" />} />
+                            <Route path="/admin/security" element={<AdminSecurity />} />
+                            <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
+                            <Route path="/admin/enterprise-requests" element={<AdminEnterpriseRequests />} />
+                            <Route path="/admin/partners" element={<AdminPartners />} />
+                          </Route>
 
                           {PlatformRoutes()}
                         </Route>
@@ -1145,18 +1146,20 @@ function App() {
                       
                       <Route element={<ProtectedRoute />}>
                         <Route element={<AppLayout />}>
-                          <Route path="/admin" element={<AdminOverview />} />
-                          <Route path="/admin/intelligence" element={<AdminIntelligence />} />
-                          <Route path="/admin/rollout" element={<AdminRollout />} />
-                          <Route path="/admin/quotas" element={<AdminQuotas />} />
-                          <Route path="/admin/firms" element={<AdminFirms />} />
-                          <Route path="/admin/users" element={<AdminUsers />} />
-                          <Route path="/admin/billing" element={<AdminBilling />} />
-                          <Route path="/admin/pricing" element={<SuperAdminBilling title="Pricing Engine" />} />
-                          <Route path="/admin/security" element={<AdminSecurity />} />
-                          <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
-                          <Route path="/admin/enterprise-requests" element={<AdminEnterpriseRequests />} />
-                          <Route path="/admin/partners" element={<AdminPartners />} />
+                          <Route element={<SuperAdminRoute />}>
+                            <Route path="/admin" element={<AdminOverview />} />
+                            <Route path="/admin/intelligence" element={<AdminIntelligence />} />
+                            <Route path="/admin/rollout" element={<AdminRollout />} />
+                            <Route path="/admin/quotas" element={<AdminQuotas />} />
+                            <Route path="/admin/firms" element={<AdminFirms />} />
+                            <Route path="/admin/users" element={<AdminUsers />} />
+                            <Route path="/admin/billing" element={<AdminBilling />} />
+                            <Route path="/admin/pricing" element={<SuperAdminBilling title="Pricing Engine" />} />
+                            <Route path="/admin/security" element={<AdminSecurity />} />
+                            <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
+                            <Route path="/admin/enterprise-requests" element={<AdminEnterpriseRequests />} />
+                            <Route path="/admin/partners" element={<AdminPartners />} />
+                          </Route>
 
                           {PlatformRoutes()}
                         </Route>

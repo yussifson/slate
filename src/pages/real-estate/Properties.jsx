@@ -12,6 +12,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
+import { REPageHeader, REStatCard, REDataCard, REGridShell } from '@/components/real-estate/RealEstateViewKit';
 
 const statusColors = {
   'active': 'bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-400',
@@ -145,17 +146,16 @@ export default function Properties() {
   }
 
   return (
-    <div className="space-y-8 p-6 max-w-7xl mx-auto animate-in fade-in duration-500">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-extrabold tracking-tight text-foreground">Properties</h1>
-          <p className="text-base text-muted-foreground mt-1 font-medium">Manage and track your property listings</p>
-        </div>
-        <Button onClick={() => { setShowForm(true); setEditingId(null); }} className="gap-2 shadow-md hover:shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-0.5">
-          <Plus className="w-4 h-4" /> Add Property
-        </Button>
-      </div>
+    <div className="space-y-6 p-6">
+      <REPageHeader 
+        title="Properties" 
+        subtitle="Manage and track your property listings"
+        actions={
+          <Button onClick={() => { setShowForm(true); setEditingId(null); }} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+            <Plus className="w-4 h-4" /> Add Property
+          </Button>
+        }
+      />
 
       {/* Filters */}
       <div className="flex gap-4 flex-wrap bg-card/50 p-4 rounded-xl shadow-sm border border-border/50 dark:border-white/5 dark:bg-slate-900/40 backdrop-blur-md transition-all duration-300">
@@ -183,82 +183,54 @@ export default function Properties() {
         </Select>
       </div>
 
-      {/* Properties Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {filteredProperties.map(property => (
-          <Card key={property.id} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-            <CardHeader className="relative p-4 border-b border-slate-100 dark:border-slate-800/50 bg-transparent overflow-hidden">
-              <div className="flex items-start justify-between relative z-10">
-                <div className="flex-1 pr-4">
-                  <CardTitle className="text-xl font-extrabold flex items-center gap-2 group-hover:text-primary transition-colors tracking-tight">
-                    <div className="p-1.5 bg-primary/10 rounded-lg text-primary">
-                      <MapPin className="w-4 h-4" />
-                    </div>
-                    {property.city || 'Unknown'}
-                  </CardTitle>
-                  <p className="text-sm text-muted-foreground mt-2 line-clamp-1 font-medium">{property.address}</p>
-                </div>
-                <Badge variant="secondary" className={`${statusColors[property.status]} shadow-sm border-0 font-bold px-3 py-1 uppercase tracking-wider text-[10px] rounded-full`}>{property.status}</Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="p-4 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
-              <div className="grid grid-cols-3 gap-3">
-                <div className="flex flex-col mb-4">
-                  <p className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-semibold mb-1">Beds</p>
-                  <p className="text-lg font-bold text-slate-900 dark:text-white">{property.bedrooms}</p>
-                </div>
-                <div className="flex flex-col mb-4">
-                  <p className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-semibold mb-1">Baths</p>
-                  <p className="text-lg font-bold text-slate-900 dark:text-white">{property.bathrooms}</p>
-                </div>
-                <div className="flex flex-col mb-4">
-                  <p className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-semibold mb-1">Sq Ft</p>
-                  <p className="text-lg font-bold text-slate-900 dark:text-white">{Number(property.square_feet).toLocaleString()}</p>
-                </div>
-              </div>
-              
-              <div className="flex-1" />
+      <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-emerald-600/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="p-4 border-b border-emerald-600/40 bg-muted/50 flex flex-wrap gap-4 items-center">
+          <div className="relative max-w-md flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
+            <Input
+              placeholder="Search by address, city..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-9 bg-card"
+            />
+          </div>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-40 bg-card">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="sold">Sold</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-              <div className="flex items-center justify-between pt-4 mt-auto border-t border-border/50 dark:border-white/5">
-                <div className="flex flex-col">
-                  <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-0.5">Asking Price</span>
-                  <div className="flex items-center gap-1">
-                    <span className="font-black text-2xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500 dark:from-emerald-400 dark:to-teal-300">
-                      ${Number(property.price).toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex gap-2 pt-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handleEdit(property)}
-                  className="flex-1 hover:bg-primary hover:text-primary-foreground transition-colors"
-                >
-                  <Edit className="w-4 h-4 mr-2" /> Edit
-                </Button>
-                <Button size="sm" variant="ghost" className="text-destructive hover:bg-destructive/10 hover:text-destructive transition-colors">
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        <REGridShell empty={filteredProperties.length === 0 && <div className="py-12 text-center text-[#71717a] dark:text-gray-400"><Building2 className="w-12 h-12 mx-auto mb-3 opacity-30 animate-pulse" /><p className="font-semibold">No properties found.</p></div>}>
+          {filteredProperties.map(property => (
+            <REDataCard 
+              key={property.id}
+              title={property.city || 'Unknown'}
+              subtitle={property.address}
+              iconText={<MapPin className="w-6 h-6" />}
+              badge={property.status}
+              badgeColor={
+                property.status === 'active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                property.status === 'pending' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                'bg-slate-100 text-slate-700 border-slate-200'
+              }
+              onEdit={() => handleEdit(property)}
+              onDelete={() => {}} // Assuming delete is handled elsewhere or you can add it
+              metrics={[
+                { label: "Beds/Baths", value: `${property.bedrooms}/${property.bathrooms}` },
+                { label: "Price", value: `$${Number(property.price).toLocaleString()}` }
+              ]}
+            />
+          ))}
+        </REGridShell>
       </div>
 
-      {filteredProperties.length === 0 && (
-        <Card className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col hover:border-slate-300 dark:hover:border-slate-700">
-          <div className="flex flex-col items-center justify-center space-y-4">
-            <div className="p-4 bg-muted/50 rounded-full dark:bg-slate-800/50 ring-1 ring-border/50">
-              <Building2 className="w-10 h-10 text-muted-foreground/60" />
-            </div>
-            <div className="space-y-1">
-              <h3 className="text-xl font-semibold tracking-tight">No properties found</h3>
-              <p className="text-muted-foreground max-w-sm mx-auto text-sm">Get started by creating your first property listing. It only takes a few minutes.</p>
-            </div>
-            <Button onClick={() => { setShowForm(true); setEditingId(null); }} className="mt-4 shadow-md hover:shadow-lg transition-all duration-300">
               <Plus className="w-4 h-4 mr-2" /> Add Property
             </Button>
           </div>

@@ -30,7 +30,7 @@ export default function EnterpriseDashboard() {
       if (!uniqueIds.length) { setPortfolio([]); setLoading(false); return; }
       const { data, error } = await supabase
         .from('companies')
-        .select('id, name, industry, industry_type, subdomain, status, active_modules, logo_url, subscription_plan, employee_count, monthly_revenue')
+        .select('id, name, industry, industry_type, subdomain, status, active_modules, logo_url, subscription_plan')
         .in('id', uniqueIds);
       if (error) throw error;
       const companies = data || [];
@@ -83,8 +83,8 @@ export default function EnterpriseDashboard() {
   };
 
   const getStats = (company) => ({
-    users: company.employee_count || '--',
-    revenue: company.monthly_revenue ? '$' + Number(company.monthly_revenue).toLocaleString() : '--',
+    users: '--',
+    revenue: '--',
     plan: company.subscription_plan || 'starter',
     status: company.status || 'active',
   });

@@ -261,6 +261,7 @@ export const AppSchema = new Schema({
         drug_id: column.text,
         batch_number: column.text,
         expiry_date: column.text,
+        reorder_level: column.integer,
         quantity_in_stock: column.integer,
         quantity_reserved: column.integer,
         quantity_available: column.integer,
