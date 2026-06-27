@@ -14,9 +14,9 @@ import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
 
 const statusColors = {
-  'active': 'bg-green-100 text-green-800',
-  'pending': 'bg-orange-100 text-orange-800',
-  'sold': 'bg-gray-100 text-gray-800',
+  'active': 'bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-400',
+  'pending': 'bg-orange-100 text-orange-800 dark:bg-orange-500/20 dark:text-orange-400',
+  'sold': 'bg-gray-100 text-gray-800 dark:bg-gray-500/20 dark:text-gray-400',
 };
 
 export default function Properties() {
@@ -145,33 +145,33 @@ export default function Properties() {
   }
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-8 p-6 max-w-7xl mx-auto animate-in fade-in duration-500">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Properties</h1>
-          <p className="text-sm text-muted-foreground mt-1">Manage your property listings</p>
+          <h1 className="text-4xl font-extrabold tracking-tight text-foreground">Properties</h1>
+          <p className="text-base text-muted-foreground mt-1 font-medium">Manage and track your property listings</p>
         </div>
-        <Button onClick={() => { setShowForm(true); setEditingId(null); }} className="gap-2">
+        <Button onClick={() => { setShowForm(true); setEditingId(null); }} className="gap-2 shadow-md hover:shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-0.5">
           <Plus className="w-4 h-4" /> Add Property
         </Button>
       </div>
 
       {/* Filters */}
-      <div className="flex gap-4 flex-wrap">
+      <div className="flex gap-4 flex-wrap bg-card/50 p-4 rounded-xl shadow-sm border border-border/50 dark:border-white/5 dark:bg-slate-900/40 backdrop-blur-md transition-all duration-300">
         <div className="flex-1 min-w-64">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <div className="relative group">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
             <Input
               placeholder="Search by address, city..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10"
+              className="pl-10 bg-background/50 backdrop-blur-sm border-muted-foreground/20 focus:border-primary transition-colors"
             />
           </div>
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-40">
+          <SelectTrigger className="w-40 bg-background/50 backdrop-blur-sm border-muted-foreground/20">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -184,40 +184,44 @@ export default function Properties() {
       </div>
 
       {/* Properties Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {filteredProperties.map(property => (
-          <Card key={property.id} className="hover:shadow-lg transition-shadow">
-            <CardHeader>
+          <Card key={property.id} className="group hover:shadow-xl transition-all duration-300 ease-in-out hover:-translate-y-1 dark:border-white/10 dark:bg-slate-900/50 backdrop-blur-sm overflow-hidden flex flex-col">
+            <CardHeader className="pb-4 border-b border-border/50 dark:border-white/5 bg-muted/20 dark:bg-transparent transition-colors group-hover:bg-muted/40">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <MapPin className="w-4 h-4" /> {property.city || 'Unknown'}
+                  <CardTitle className="text-lg font-bold flex items-center gap-2 group-hover:text-primary transition-colors">
+                    <MapPin className="w-4 h-4 text-primary/70" /> {property.city || 'Unknown'}
                   </CardTitle>
-                  <p className="text-sm text-muted-foreground mt-1">{property.address}</p>
+                  <p className="text-sm text-muted-foreground mt-1.5 line-clamp-1">{property.address}</p>
                 </div>
-                <Badge className={statusColors[property.status]}>{property.status}</Badge>
+                <Badge variant="secondary" className={`${statusColors[property.status]} ml-2 shadow-sm border-0 font-semibold px-2.5 py-0.5`}>{property.status}</Badge>
               </div>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="grid grid-cols-3 gap-2 text-sm">
-                <div>
-                  <p className="text-muted-foreground">Beds</p>
-                  <p className="font-bold">{property.bedrooms}</p>
+            <CardContent className="space-y-4 pt-5 flex-1 flex flex-col">
+              <div className="grid grid-cols-3 gap-4 text-sm bg-background/50 dark:bg-slate-800/30 p-3 rounded-lg border border-border/50">
+                <div className="text-center">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-1">Beds</p>
+                  <p className="font-semibold text-foreground text-base">{property.bedrooms}</p>
                 </div>
-                <div>
-                  <p className="text-muted-foreground">Baths</p>
-                  <p className="font-bold">{property.bathrooms}</p>
+                <div className="text-center border-l border-r border-border/50">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-1">Baths</p>
+                  <p className="font-semibold text-foreground text-base">{property.bathrooms}</p>
                 </div>
-                <div>
-                  <p className="text-muted-foreground">Sq Ft</p>
-                  <p className="font-bold">{Number(property.square_feet).toLocaleString()}</p>
+                <div className="text-center">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-1">Sq Ft</p>
+                  <p className="font-semibold text-foreground text-base">{Number(property.square_feet).toLocaleString()}</p>
                 </div>
               </div>
               
-              <div className="flex items-center justify-between pt-2 border-t">
-                <div className="flex items-center gap-2">
-                  <DollarSign className="w-4 h-4 text-green-600" />
-                  <span className="font-bold text-lg">${Number(property.price).toLocaleString()}</span>
+              <div className="flex-1" />
+
+              <div className="flex items-center justify-between pt-4 border-t border-border/50 dark:border-white/5">
+                <div className="flex items-center gap-1.5">
+                  <div className="p-1.5 bg-green-100 dark:bg-green-500/20 rounded-full">
+                    <DollarSign className="w-4 h-4 text-green-600 dark:text-green-400" />
+                  </div>
+                  <span className="font-extrabold text-xl tracking-tight">${Number(property.price).toLocaleString()}</span>
                 </div>
               </div>
 
@@ -226,11 +230,11 @@ export default function Properties() {
                   size="sm"
                   variant="outline"
                   onClick={() => handleEdit(property)}
-                  className="flex-1"
+                  className="flex-1 hover:bg-primary hover:text-primary-foreground transition-colors"
                 >
-                  <Edit className="w-4 h-4 mr-1" /> Edit
+                  <Edit className="w-4 h-4 mr-2" /> Edit
                 </Button>
-                <Button size="sm" variant="ghost" className="text-destructive">
+                <Button size="sm" variant="ghost" className="text-destructive hover:bg-destructive/10 hover:text-destructive transition-colors">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>
@@ -240,9 +244,19 @@ export default function Properties() {
       </div>
 
       {filteredProperties.length === 0 && (
-        <Card className="text-center py-12">
-          <Building2 className="w-12 h-12 mx-auto text-muted-foreground mb-4 opacity-50" />
-          <p className="text-muted-foreground">No properties found. Create your first property!</p>
+        <Card className="text-center py-16 dark:border-white/10 dark:bg-slate-900/50 backdrop-blur-sm shadow-sm border-dashed border-2">
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <div className="p-4 bg-muted/50 rounded-full dark:bg-slate-800/50 ring-1 ring-border/50">
+              <Building2 className="w-10 h-10 text-muted-foreground/60" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-xl font-semibold tracking-tight">No properties found</h3>
+              <p className="text-muted-foreground max-w-sm mx-auto text-sm">Get started by creating your first property listing. It only takes a few minutes.</p>
+            </div>
+            <Button onClick={() => { setShowForm(true); setEditingId(null); }} className="mt-4 shadow-md hover:shadow-lg transition-all duration-300">
+              <Plus className="w-4 h-4 mr-2" /> Add Property
+            </Button>
+          </div>
         </Card>
       )}
 
@@ -365,7 +379,7 @@ export default function Properties() {
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full p-2 border rounded text-sm"
+                className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 rows="3"
               />
             </div>

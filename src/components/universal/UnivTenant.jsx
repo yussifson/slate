@@ -50,16 +50,19 @@ export default function UnivTenant() {
 };
 
  const handleAdd = async () => {
- const newItem = {
+ const newTenant = {
  company_id: companyId,
- tenant_name: 'New Tenant',
- property_id: 'Sample Data',
- lease_end: 'Sample Data',
- status: 'Active'
-};
+ unit_number: `UNIT-${Math.floor(100 + Math.random() * 900)}`,
+ first_name: 'New',
+ last_name: 'Tenant',
+ email: `tenant${Math.floor(Math.random() * 10000)}@example.com`,
+ phone: '555-0199',
+ status: 'Active',
+ lease_start: new Date().toISOString().split('T')[0] || null
+ };
  try {
  const { error} = await (async () => {
- const _payload = { ...newItem, id: crypto.randomUUID(), company_id: companyId};
+ const _payload = { ...newTenant, id: crypto.randomUUID(), company_id: companyId};
  const _keys = Object.keys(_payload);
  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
  const _plhdr = _keys.map(()=>'?').join(', ');
@@ -72,13 +75,35 @@ export default function UnivTenant() {
 }
 };
 
- const filtered = data.filter(item => 
- String(item.tenant_name || '').toLowerCase().includes(searchTerm.toLowerCase())
+ const handleInviteTenant = async (tenant) => {
+ if (!tenant.email) {
+ toast.error("This tenant does not have an email address.");
+ return;
+ }
+ toast.loading(`Inviting ${tenant.first_name} to the Tenant Portal...`, { id: "invite" });
+ try {
+ const tempPassword = Math.random().toString(36).slice(-8) + 'A1!';
+ const { registerSchoolUser } = await import('@/api/authUtils');
+ const res = await registerSchoolUser(tenant.email, tempPassword, 'tenant', companyId, `${tenant.first_name} ${tenant.last_name}`);
+ 
+ if (res.error) throw res.error;
+ 
+ await powerSync.execute(`UPDATE univ_tenant SET portal_invited = true, portal_status = 'active' WHERE id = ?`, [tenant.id]);
+ fetchData();
+ toast.success(`Invite Sent! Temp password: ${tempPassword}`, { id: "invite", duration: 10000 });
+ } catch (err) {
+ console.error(err);
+ toast.error(err.message || 'Invite Failed', { id: "invite" });
+ }
+ };
+
+ const filtered = data.filter(t => 
+ `${t.first_name || ''} ${t.last_name || ''} ${t.unit_number || ''} ${t.email || ''}`.toLowerCase().includes(searchTerm.toLowerCase())
  );
 
  
  const handleExport = () => {
- const exportData = (typeof records !== 'undefined' ? records : (typeof data !== 'undefined' ? data : []));
+ const exportData = (typeof data !== 'undefined' ? data : []);
  if (!exportData || exportData.length === 0) return alert('No data to export');
  const keys = Object.keys(exportData[0]).filter(k => k !== 'company_id' && k !== 'id');
  const csv = [keys.join(','), ...exportData.map(r => keys.map(k => '"' + (r[k]||'').toString().replace(/"/g, '""') + '"').join(','))].join('\n');
@@ -89,16 +114,13 @@ export default function UnivTenant() {
 };
 
  return (
- <div className="flex flex-col h-full bg-background overflow-hidden ${view !== 'Default' ? 'hide-default' : ''}">
+ <div className="flex flex-col h-full bg-background overflow-hidden">
  <div className="view-header flex items-center justify-between mb-6 shrink-0 pt-2 px-1">
  <div>
  <h2 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">Tenant</h2>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Manage your tenant records.</p>
  </div>
  <div className="flex gap-3">
- <button className="flex items-center gap-2 px-4 py-2 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl text-sm font-medium hover:bg-muted/50 transition-colors hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <Download className="w-4 h-4" /> Export
- </button>
  <div className="flex items-center gap-2">
 
  
@@ -113,12 +135,12 @@ export default function UnivTenant() {
  </button>
  ))}
  </div>
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
+<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 transition-all active:scale-95">
  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
  Export CSV
  </button>
 
- <button onClick={handleAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors -primary/20">
+ <button onClick={handleAdd} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors">
  <Plus className="w-4 h-4" /> Add Tenant
  </button>
  </div>
@@ -160,7 +182,13 @@ export default function UnivTenant() {
  className="hover:bg-muted/30 transition-colors group cursor-pointer"
  >
  <td className="p-4 font-semibold text-foreground">
- <div className="flex items-center gap-2"><User className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> {item.tenant_name}</div>
+ <div className="flex items-center gap-2">
+ <User className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> 
+ <div>
+ <div className="font-semibold text-foreground">{item.first_name} {item.last_name}</div>
+ <div className="text-[11px] text-[#71717a] dark:text-gray-400">{item.email || 'No email'}</div>
+ </div>
+ </div>
  </td>
  <td className="p-4 text-[#71717a] dark:text-gray-400 font-medium">
  <div className="flex items-center gap-2"><Home className="w-4 h-4 text-[#71717a] dark:text-gray-400" /> {item.property_id}</div>

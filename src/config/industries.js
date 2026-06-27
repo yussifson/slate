@@ -889,7 +889,57 @@ export const INDUSTRIES = {
       { label: 'Roles', path: '/roles', icon: 'ShieldCheck' },
       { label: 'Departments', path: '/departments', icon: 'Building' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
-    ]}};
+    ]
+  },
+
+  optavel: {
+    name: 'Optavel OS',
+    icon: '🚀',
+    terms: {
+      client: 'Customer', clients: 'Customers',
+      case: 'Project', cases: 'Projects',
+      staff: 'Team Member', staffPlural: 'Team Members',
+      venue: 'Workspace', intake: 'Onboarding',
+      hearing: 'Milestone', hearings: 'Milestones'},
+    roles: [
+      { value: 'company_admin', label: 'CEO' },
+      { value: 'cto', label: 'CTO / Engineering' },
+      { value: 'pm', label: 'Product Manager' },
+      { value: 'growth_partner', label: 'Founding Growth Partner' },
+      { value: 'sales', label: 'Sales' },
+      { value: 'marketing', label: 'Marketing' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'hr', label: 'HR' },
+      { value: 'support', label: 'Support' }
+    ],
+    departments: [
+      { value: 'executive', label: 'Executive' },
+      { value: 'product_eng', label: 'Product & Engineering' },
+      { value: 'marketing', label: 'Marketing' },
+      { value: 'sales', label: 'Sales' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'hr', label: 'Human Resources' },
+      { value: 'support', label: 'Customer Support' },
+      { value: 'partnerships', label: 'Partnerships & Growth' }
+    ],
+    nav: [
+      { label: 'Command Center', path: '/optavel', icon: 'LayoutDashboard' },
+      { label: 'Executive', path: '/optavel/executive', icon: 'BarChart2' },
+      { label: 'Product & Eng', path: '/optavel/product', icon: 'Code' },
+      { label: 'Marketing', path: '/optavel/marketing', icon: 'Megaphone' },
+      { label: 'Sales', path: '/optavel/sales', icon: 'TrendingUp' },
+      { label: 'Finance', path: '/optavel/finance', icon: 'DollarSign' },
+      { label: 'HR & Team', path: '/optavel/hr', icon: 'Users' },
+      { label: 'Support', path: '/optavel/support', icon: 'LifeBuoy' },
+      { label: 'Partnerships', path: '/optavel/partnerships', icon: 'Handshake' },
+      { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
+      { label: 'Automations', path: '/automations', icon: 'Zap' },
+      { label: 'Roles', path: '/roles', icon: 'ShieldCheck' },
+      { label: 'Departments', path: '/departments', icon: 'Building' },
+      { label: 'Settings', path: '/settings', icon: 'Settings' }
+    ]
+  }
+};
 
 import { EDUCATION_LEVELS } from './educationLevels';
 

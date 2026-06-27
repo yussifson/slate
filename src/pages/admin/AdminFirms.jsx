@@ -95,8 +95,9 @@ export default function AdminFirms() {
   const INDUSTRIES = [
     'firm', 'school', 'hospital', 'retail', 'logistics', 'restaurant', 'legal', 
     'insurance', 'vocational', 'cleaning', 'freelancer', 'construction', 'salon', 
-    'fitness', 'realestate', 'church'
+    'fitness', 'realestate', 'church', 'optavel'
   ];
+
 
   const handleToggleStatus = async (company) => {
     const nextStatus = company.status === 'active' ? 'suspended' : 'active';

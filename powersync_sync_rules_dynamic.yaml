@@ -236,3 +236,19 @@ bucket_definitions:
   - SELECT * FROM univ_pharmacy_audit_log WHERE company_id = bucket.company_id
   - SELECT * FROM univ_pharmacy_analytics WHERE company_id = bucket.company_id
   - SELECT * FROM sync_errors WHERE company_id = bucket.company_id
+
+  # -------------------------------------------------------------
+  # OPTAVEL OS MODULE
+  # -------------------------------------------------------------
+  - SELECT * FROM optavel_okrs WHERE company_id = bucket.company_id
+  - SELECT * FROM optavel_decisions WHERE company_id = bucket.company_id
+  - SELECT * FROM optavel_campaigns WHERE company_id = bucket.company_id
+  - SELECT * FROM optavel_marketing_reports WHERE company_id = bucket.company_id
+  - SELECT * FROM optavel_seo_tracking WHERE company_id = bucket.company_id
+  - SELECT * FROM optavel_sprints WHERE company_id = bucket.company_id
+  - SELECT * FROM optavel_bugs WHERE company_id = bucket.company_id
+  - SELECT * FROM optavel_deal_rooms WHERE company_id = bucket.company_id
+  - SELECT * FROM optavel_commissions WHERE company_id = bucket.company_id
+  - SELECT * FROM optavel_cap_table WHERE company_id = bucket.company_id
+  - SELECT * FROM optavel_summit_registrations WHERE company_id = bucket.company_id
+

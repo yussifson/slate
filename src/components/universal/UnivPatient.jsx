@@ -54,6 +54,7 @@ export default function UnivPatient() {
  patient_number: `PT-${Math.floor(1000 + Math.random() * 9000)}`,
  first_name: 'New',
  last_name: 'Patient',
+ email: `patient${Math.floor(Math.random() * 10000)}@example.com`,
  date_of_birth: '2000-01-01',
  status: 'Active'
 };
@@ -73,8 +74,30 @@ export default function UnivPatient() {
 }
 };
 
+ const handleInvitePatient = async (patient) => {
+ if (!patient.email) {
+ toast.error("This patient does not have an email address.");
+ return;
+ }
+ toast.loading(`Inviting ${patient.first_name} to the Patient Portal...`, { id: "invite" });
+ try {
+ const tempPassword = Math.random().toString(36).slice(-8) + 'A1!';
+ const { registerSchoolUser } = await import('@/api/authUtils');
+ const res = await registerSchoolUser(patient.email, tempPassword, 'patient', companyId, `${patient.first_name} ${patient.last_name}`);
+ 
+ if (res.error) throw res.error;
+ 
+ await powerSync.execute(`UPDATE univ_patients SET portal_invited = true, portal_status = 'active' WHERE id = ?`, [patient.id]);
+ fetchPatients();
+ toast.success(`Invite Sent! Temp password: ${tempPassword}`, { id: "invite", duration: 10000 });
+ } catch (err) {
+ console.error(err);
+ toast.error(err.message || 'Invite Failed', { id: "invite" });
+ }
+ };
+
  const filtered = patients.filter(p => 
- `${p.first_name} ${p.last_name} ${p.patient_number}`.toLowerCase().includes(searchTerm.toLowerCase())
+ `${p.first_name} ${p.last_name} ${p.patient_number} ${p.email || ''}`.toLowerCase().includes(searchTerm.toLowerCase())
  );
 
  
@@ -188,7 +211,7 @@ export default function UnivPatient() {
  </div>
  <div>
  <div className="font-semibold text-foreground">{p.first_name} {p.last_name}</div>
- <div className="text-[11px] text-[#71717a] dark:text-gray-400">{p.gender || 'U'} • {p.phone || 'No phone'}</div>
+ <div className="text-[11px] text-[#71717a] dark:text-gray-400">{p.email || 'No email'} • {p.phone || 'No phone'}</div>
  </div>
  </div>
  </td>
@@ -214,6 +237,7 @@ export default function UnivPatient() {
  </td>
  <td className="p-4 text-right">
  <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+ <button onClick={(e) => { e.stopPropagation(); handleInvitePatient(p); }} className="text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors p-1.5 rounded-md bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" title="Invite to Portal"><User className="w-3.5 h-3.5" /></button>
  <button className="text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors p-1.5 rounded-md bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" title="View EMR"><FileText className="w-3.5 h-3.5" /></button>
  </div>
  </td>

@@ -85,6 +85,15 @@ const UnivTelemedicine = React.lazy(() => import('@/components/universal/UnivTel
 const UnivTimeline = React.lazy(() => import('@/components/universal/UnivTimeline'));
 const UnivWard = React.lazy(() => import('@/components/universal/UnivWard'));
 const UnivWarehouse = React.lazy(() => import('@/components/universal/UnivWarehouse'));
+const OptavelCommandCenter = React.lazy(() => import('@/pages/optavel/OptavelCommandCenter'));
+const OptavelExecutive = React.lazy(() => import('@/pages/optavel/OptavelExecutive'));
+const OptavelProductEng = React.lazy(() => import('@/pages/optavel/OptavelProductEng'));
+const OptavelMarketing = React.lazy(() => import('@/pages/optavel/OptavelMarketing'));
+const OptavelSales = React.lazy(() => import('@/pages/optavel/OptavelSales'));
+const OptavelFinance = React.lazy(() => import('@/pages/optavel/OptavelFinance'));
+const OptavelHR = React.lazy(() => import('@/pages/optavel/OptavelHR'));
+const OptavelSupport = React.lazy(() => import('@/pages/optavel/OptavelSupport'));
+const OptavelPartnerships = React.lazy(() => import('@/pages/optavel/OptavelPartnerships'));
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -514,6 +523,18 @@ function PlatformRoutes() {
       {/* Core / Shared Pages */}
       <Route path="/ob/:pageName" element={<OrbitBuildPage />} />
       <Route path="/" element={<Dashboard />} />
+      
+      {/* Optavel OS Routes */}
+      <Route path="/optavel" element={<OptavelCommandCenter />} />
+      <Route path="/optavel/executive" element={<OptavelExecutive />} />
+      <Route path="/optavel/product" element={<OptavelProductEng />} />
+      <Route path="/optavel/marketing" element={<OptavelMarketing />} />
+      <Route path="/optavel/sales" element={<OptavelSales />} />
+      <Route path="/optavel/finance" element={<OptavelFinance />} />
+      <Route path="/optavel/hr" element={<OptavelHR />} />
+      <Route path="/optavel/support" element={<OptavelSupport />} />
+      <Route path="/optavel/partnerships" element={<OptavelPartnerships />} />
+
       <Route path="/super-admin" element={<GlobalAnalyticsDashboard />} />
       <Route path="/enterprise-admin" element={<EnterpriseDashboard />} />
       <Route path="/intelligence" element={<Intelligence />} />

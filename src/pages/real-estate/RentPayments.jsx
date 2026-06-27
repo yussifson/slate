@@ -12,10 +12,10 @@ import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
 
 const statusConfig = {
-  pending: { color: 'text-orange-600', bg: 'bg-orange-50', badge: 'bg-orange-100 text-orange-800', icon: Clock },
-  paid: { color: 'text-green-600', bg: 'bg-green-50', badge: 'bg-green-100 text-green-800', icon: CheckCircle },
-  overdue: { color: 'text-orange-600', bg: 'bg-orange-50', badge: 'bg-orange-100 text-orange-800', icon: AlertTriangle },
-  partial: { color: 'text-green-600', bg: 'bg-green-50', badge: 'bg-green-100 text-green-800', icon: Clock }
+  pending: { color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-900/20', badge: 'bg-orange-100 text-orange-800 dark:bg-orange-500/20 dark:text-orange-400', icon: Clock },
+  paid: { color: 'text-green-600 dark:text-green-400', bg: 'bg-green-50 dark:bg-green-900/20', badge: 'bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-400', icon: CheckCircle },
+  overdue: { color: 'text-red-600 dark:text-red-400', bg: 'bg-red-50 dark:bg-red-900/20', badge: 'bg-red-100 text-red-800 dark:bg-red-500/20 dark:text-red-400', icon: AlertTriangle },
+  partial: { color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/20', badge: 'bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-400', icon: Clock }
 };
 
 export default function RentPayments() {
@@ -65,18 +65,18 @@ export default function RentPayments() {
   const overDuePayments = payments.filter(p => p.status === 'overdue');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 p-6 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-              <div className="p-2 bg-orange-100 rounded-lg"><CreditCard className="w-7 h-7 text-orange-600" /></div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+              <div className="p-2 bg-orange-100 dark:bg-orange-500/20 rounded-lg"><CreditCard className="w-7 h-7 text-orange-600 dark:text-orange-400" /></div>
               Rent Collection
             </h1>
-            <p className="text-gray-600 mt-1">Track and manage tenant rent payments</p>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">Track and manage tenant rent payments</p>
           </div>
-          <Button onClick={() => setShowForm(true)} className="bg-orange-600 hover:bg-orange-700 gap-2">
+          <Button onClick={() => setShowForm(true)} className="bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600 gap-2 shadow-lg hover:shadow-orange-500/25 transition-all duration-300 hover:-translate-y-0.5">
             <Plus className="w-4 h-4" /> Record Payment
           </Button>
         </div>
@@ -114,83 +114,83 @@ export default function RentPayments() {
                 console.error('Error recording payment:', error);
                 toast.error('Failed to record payment');
               }
-            }} className="space-y-4 mt-6">
-              <div><label className="text-xs font-semibold mb-1 block">Lease ID</label>
-                <input id="rent-lease-id" type="text" placeholder="Lease ID" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" /></div>
-              <div><label className="text-xs font-semibold mb-1 block">Property ID</label>
-                <input id="rent-property-id" type="text" placeholder="Property ID" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" /></div>
-              <div><label className="text-xs font-semibold mb-1 block">Tenant ID</label>
-                <input id="rent-tenant-id" type="text" placeholder="Tenant ID" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" /></div>
-              <div><label className="text-xs font-semibold mb-1 block">Tenant Name *</label>
-                <input id="rent-tenant-name" type="text" placeholder="Tenant Name" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required /></div>
-              <div><label className="text-xs font-semibold mb-1 block">Amount *</label>
-                <input id="rent-amount" type="number" placeholder="0.00" step="0.01" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required /></div>
-              <div><label className="text-xs font-semibold mb-1 block">Due Date *</label>
-                <input id="rent-due-date" type="date" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" required /></div>
-              <div><label className="text-xs font-semibold mb-1 block">Payment Method</label>
-                <select id="rent-method" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+              <div className="space-y-4 mt-6">
+              <div><label className="text-xs font-semibold mb-1 block dark:text-gray-300">Lease ID</label>
+                <input id="rent-lease-id" type="text" placeholder="Lease ID" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-slate-900/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" /></div>
+              <div><label className="text-xs font-semibold mb-1 block dark:text-gray-300">Property ID</label>
+                <input id="rent-property-id" type="text" placeholder="Property ID" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-slate-900/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" /></div>
+              <div><label className="text-xs font-semibold mb-1 block dark:text-gray-300">Tenant ID</label>
+                <input id="rent-tenant-id" type="text" placeholder="Tenant ID" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-slate-900/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" /></div>
+              <div><label className="text-xs font-semibold mb-1 block dark:text-gray-300">Tenant Name *</label>
+                <input id="rent-tenant-name" type="text" placeholder="Tenant Name" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-slate-900/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" required /></div>
+              <div><label className="text-xs font-semibold mb-1 block dark:text-gray-300">Amount *</label>
+                <input id="rent-amount" type="number" placeholder="0.00" step="0.01" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-slate-900/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" required /></div>
+              <div><label className="text-xs font-semibold mb-1 block dark:text-gray-300">Due Date *</label>
+                <input id="rent-due-date" type="date" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-slate-900/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" required /></div>
+              <div><label className="text-xs font-semibold mb-1 block dark:text-gray-300">Payment Method</label>
+                <select id="rent-method" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-slate-900/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500">
                   <option value="">Select method</option>
                   <option value="bank_transfer">Bank Transfer</option>
                   <option value="check">Check</option>
                   <option value="cash">Cash</option>
                   <option value="credit_card">Credit Card</option>
                 </select></div>
-              <div><label className="text-xs font-semibold mb-1 block">Notes</label>
-                <textarea id="rent-notes" placeholder="Additional notes" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" rows="3"></textarea></div>
-              <Button type="submit" className="w-full bg-orange-600 hover:bg-orange-700">Record Payment</Button>
+              <div><label className="text-xs font-semibold mb-1 block dark:text-gray-300">Notes</label>
+                <textarea id="rent-notes" placeholder="Additional notes" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-slate-900/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" rows="3"></textarea></div>
+              <Button type="submit" className="w-full bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600 shadow-lg hover:shadow-orange-500/25 transition-all duration-300">Record Payment</Button>
             </form>
             </div>
           </SheetContent>
         </Sheet>
 
         {/* Financial Overview */}
-        <div className="grid grid-cols-4 gap-4 mb-8">
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-emerald-500 to-green-600 text-white">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-emerald-500 to-green-600 dark:from-emerald-600/40 dark:to-green-700/40 dark:border dark:border-white/10 dark:backdrop-blur-sm text-white hover:-translate-y-1 transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-green-100 text-xs font-semibold uppercase mb-1">Collected</p>
-                  <p className="text-3xl font-bold">${(stats.totalCollected / 1000000).toFixed(2)}M</p>
-                  <p className="text-xs text-green-200 mt-2">This period</p>
+                  <p className="text-green-100 dark:text-green-200 text-xs font-semibold uppercase mb-1 tracking-wider">Collected</p>
+                  <p className="text-3xl font-bold">${(stats.totalCollected / 1000).toFixed(1)}k</p>
+                  <p className="text-xs text-green-200 dark:text-green-300 mt-2">This period</p>
                 </div>
                 <CheckCircle className="w-8 h-8 opacity-80" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow bg-gradient-to-br from-orange-500 to-orange-600 text-white">
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-orange-500 to-orange-600 dark:from-orange-600/40 dark:to-orange-700/40 dark:border dark:border-white/10 dark:backdrop-blur-sm text-white hover:-translate-y-1 transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-orange-100 text-xs font-semibold uppercase mb-1">Pending</p>
-                  <p className="text-3xl font-bold">${(stats.totalPending / 1000000).toFixed(2)}M</p>
-                  <p className="text-xs text-orange-200 mt-2">Due soon</p>
+                  <p className="text-orange-100 dark:text-orange-200 text-xs font-semibold uppercase mb-1 tracking-wider">Pending</p>
+                  <p className="text-3xl font-bold">${(stats.totalPending / 1000).toFixed(1)}k</p>
+                  <p className="text-xs text-orange-200 dark:text-orange-300 mt-2">Due soon</p>
                 </div>
                 <Clock className="w-8 h-8 opacity-80" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow bg-gradient-to-br from-orange-500 to-orange-600 text-white">
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-red-500 to-red-600 dark:from-red-600/40 dark:to-red-700/40 dark:border dark:border-white/10 dark:backdrop-blur-sm text-white hover:-translate-y-1 transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-orange-100 text-xs font-semibold uppercase mb-1">Overdue</p>
-                  <p className="text-3xl font-bold">${(stats.totalOverdue / 1000000).toFixed(2)}M</p>
-                  <p className="text-xs text-orange-200 mt-2">{overDuePayments.length} payments</p>
+                  <p className="text-red-100 dark:text-red-200 text-xs font-semibold uppercase mb-1 tracking-wider">Overdue</p>
+                  <p className="text-3xl font-bold">${(stats.totalOverdue / 1000).toFixed(1)}k</p>
+                  <p className="text-xs text-red-200 dark:text-red-300 mt-2">{overDuePayments.length} payments</p>
                 </div>
                 <AlertTriangle className="w-8 h-8 opacity-80" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow bg-gradient-to-br from-green-500 to-green-600 text-white">
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600/40 dark:to-blue-700/40 dark:border dark:border-white/10 dark:backdrop-blur-sm text-white hover:-translate-y-1 transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-green-100 text-xs font-semibold uppercase mb-1">Collection Rate</p>
+                  <p className="text-blue-100 dark:text-blue-200 text-xs font-semibold uppercase mb-1 tracking-wider">Collection Rate</p>
                   <p className="text-3xl font-bold">{stats.collectionRate.toFixed(0)}%</p>
-                  <p className="text-xs text-green-200 mt-2">On-time payments</p>
+                  <p className="text-xs text-blue-200 dark:text-blue-300 mt-2">On-time payments</p>
                 </div>
                 <TrendingUp className="w-8 h-8 opacity-80" />
               </div>

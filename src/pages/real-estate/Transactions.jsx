@@ -14,12 +14,12 @@ import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
 
 const pipelineStages = [
-  { id: 'offer_accepted', label: 'Offer Accepted', color: 'bg-orange-100 border-orange-300', badge: 'bg-orange-200 text-orange-900' },
-  { id: 'inspection', label: 'Under Inspection', color: 'bg-orange-50 border-orange-200', badge: 'bg-orange-100 text-orange-800' },
-  { id: 'appraisal', label: 'Appraisal', color: 'bg-green-100 border-green-300', badge: 'bg-green-200 text-green-900' },
-  { id: 'financing', label: 'Financing', color: 'bg-green-50 border-green-200', badge: 'bg-green-100 text-green-800' },
-  { id: 'ready_close', label: 'Ready to Close', color: 'bg-orange-100 border-orange-300', badge: 'bg-orange-200 text-orange-900' },
-  { id: 'closed', label: 'Closed', color: 'bg-green-100 border-green-300', badge: 'bg-green-200 text-green-900' }
+  { id: 'offer_accepted', label: 'Offer Accepted', color: 'bg-orange-50/80 border-orange-200/60 dark:bg-orange-950/30 dark:border-orange-900/40 border-l-4 border-l-orange-500 dark:border-l-orange-500', badge: 'bg-orange-500 text-white shadow-sm shadow-orange-500/20' },
+  { id: 'inspection', label: 'Under Inspection', color: 'bg-amber-50/80 border-amber-200/60 dark:bg-amber-950/30 dark:border-amber-900/40 border-l-4 border-l-amber-500 dark:border-l-amber-500', badge: 'bg-amber-500 text-white shadow-sm shadow-amber-500/20' },
+  { id: 'appraisal', label: 'Appraisal', color: 'bg-blue-50/80 border-blue-200/60 dark:bg-blue-950/30 dark:border-blue-900/40 border-l-4 border-l-blue-500 dark:border-l-blue-500', badge: 'bg-blue-500 text-white shadow-sm shadow-blue-500/20' },
+  { id: 'financing', label: 'Financing', color: 'bg-indigo-50/80 border-indigo-200/60 dark:bg-indigo-950/30 dark:border-indigo-900/40 border-l-4 border-l-indigo-500 dark:border-l-indigo-500', badge: 'bg-indigo-500 text-white shadow-sm shadow-indigo-500/20' },
+  { id: 'ready_close', label: 'Ready to Close', color: 'bg-purple-50/80 border-purple-200/60 dark:bg-purple-950/30 dark:border-purple-900/40 border-l-4 border-l-purple-500 dark:border-l-purple-500', badge: 'bg-purple-500 text-white shadow-sm shadow-purple-500/20' },
+  { id: 'closed', label: 'Closed', color: 'bg-emerald-50/80 border-emerald-200/60 dark:bg-emerald-950/30 dark:border-emerald-900/40 border-l-4 border-l-emerald-500 dark:border-l-emerald-500', badge: 'bg-emerald-500 text-white shadow-sm shadow-emerald-500/20' }
 ];
 
 export default function Transactions() {
@@ -136,24 +136,26 @@ export default function Transactions() {
   };
 
   const KanbanColumn = ({ stage, transactions }) => (
-    <div className="bg-white rounded-lg p-5 min-h-[600px] flex flex-col border-2 border-gray-100 flex-shrink-0 w-96 shadow-sm hover:shadow-md transition-shadow">
-      <div className="mb-5 pb-4 border-b-2 border-gray-100">
+    <div className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl p-5 min-h-[600px] flex flex-col border border-gray-200/50 dark:border-white/10 flex-shrink-0 w-96 shadow-sm hover:shadow-xl transition-all duration-300 ease-in-out">
+      <div className="mb-5 pb-4 border-b border-gray-100 dark:border-white/10">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-bold text-gray-900 text-base flex items-center gap-2">
-            <span className={`w-4 h-4 rounded-full ${pipelineStages.find(s => s.id === stage)?.badge}`}></span>
+          <h3 className="font-semibold text-gray-900 dark:text-white text-base flex items-center gap-2">
+            <span className={`w-2.5 h-2.5 rounded-full ${pipelineStages.find(s => s.id === stage)?.badge}`}></span>
             {pipelineStages.find(s => s.id === stage)?.label}
           </h3>
-          <Badge className="bg-green-600 text-white text-xs px-2 py-1">{transactions.length}</Badge>
+          <Badge className="bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-foreground text-xs px-2.5 py-0.5 rounded-full font-medium border-0">{transactions.length}</Badge>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div className="bg-gradient-to-r from-green-500 to-orange-500 h-2 rounded-full" style={{ width: `${(transactions.length / Math.max(...pipelineStages.map(() => 3), 1)) * 100}%` }}></div>
+        <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-1.5 overflow-hidden">
+          <div className="bg-gradient-to-r from-primary to-purple-500 h-full rounded-full transition-all duration-500 ease-out" style={{ width: `${(transactions.length / Math.max(...pipelineStages.map(() => 3), 1)) * 100}%` }}></div>
         </div>
       </div>
       
-      <div className="flex-1 space-y-4 overflow-y-auto pr-2">
+      <div className="flex-1 space-y-4 overflow-y-auto pr-2 custom-scrollbar">
         {transactions.length === 0 ? (
-          <div className="text-center py-12 text-gray-400">
-            <AlertCircle className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+          <div className="text-center py-12 text-gray-400 dark:text-gray-500 flex flex-col items-center justify-center h-full opacity-70">
+            <div className="bg-gray-50 dark:bg-slate-800/50 p-4 rounded-full mb-3 shadow-inner">
+              <AlertCircle className="w-6 h-6 text-gray-400 dark:text-gray-500" />
+            </div>
             <p className="text-sm font-medium">No transactions</p>
           </div>
         ) : (
@@ -161,23 +163,32 @@ export default function Transactions() {
             <div
               key={transaction.id}
               onClick={() => setSelectedTransaction(transaction)}
-              className={`p-5 rounded-lg border-l-4 cursor-pointer transform transition-all hover:shadow-lg hover:-translate-y-1 ${pipelineStages.find(s => s.id === stage)?.color} border border-gray-100`}
-              style={{ borderLeftColor: stage === 'offer_accepted' || stage === 'ready_close' ? '#f97316' : '#10b981' }}
+              className={`p-5 rounded-xl border cursor-pointer transform transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 ${pipelineStages.find(s => s.id === stage)?.color}`}
             >
               <div className="flex items-start justify-between mb-3 gap-2">
                 <div className="flex-1 min-w-0">
-                  <p className="font-bold text-gray-900 text-sm leading-snug break-words line-clamp-2">{transaction.property_address}</p>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm leading-snug break-words line-clamp-2">{transaction.property_address}</p>
                 </div>
-                <MoreVertical className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                <div className="bg-white/50 dark:bg-black/20 p-1.5 rounded-lg hover:bg-white dark:hover:bg-black/40 transition-colors">
+                  <MoreVertical className="w-4 h-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                </div>
               </div>
-              <div className="space-y-2 mb-4 bg-white bg-opacity-50 -mx-5 px-5 py-3 rounded">
-                <p className="text-xs text-gray-700"><span className="font-semibold">Buyer:</span> {transaction.buyer_name || 'N/A'}</p>
-                <p className="text-xs text-gray-700"><span className="font-semibold">Seller:</span> {transaction.seller_name || 'N/A'}</p>
-                <p className="text-xs text-gray-700"><span className="font-semibold">Agent:</span> {transaction.agent_name || 'N/A'}</p>
+              <div className="space-y-2.5 mb-4 bg-white/40 dark:bg-black/20 backdrop-blur-sm -mx-5 px-5 py-3 border-y border-white/20 dark:border-white/5">
+                <div className="flex items-center gap-2">
+                  <User className="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
+                  <p className="text-xs text-gray-700 dark:text-gray-300"><span className="font-medium text-gray-500 dark:text-gray-400">Buyer:</span> {transaction.buyer_name || 'N/A'}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Home className="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
+                  <p className="text-xs text-gray-700 dark:text-gray-300"><span className="font-medium text-gray-500 dark:text-gray-400">Seller:</span> {transaction.seller_name || 'N/A'}</p>
+                </div>
               </div>
-              <div className="flex items-end justify-between pt-2 border-t border-gray-200">
-                <span className="text-base font-bold text-green-700">${(transaction.sale_price / 1000).toFixed(0)}K</span>
-                <span className="text-xs font-semibold bg-white px-3 py-1 rounded-full text-gray-700 border border-gray-200">{transaction.status}</span>
+              <div className="flex items-center justify-between pt-1">
+                <div className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 bg-emerald-100/50 dark:bg-emerald-900/30 px-2.5 py-1 rounded-md font-bold">
+                  <DollarSign className="w-3.5 h-3.5" />
+                  <span className="text-sm">${(transaction.sale_price / 1000).toFixed(0)}K</span>
+                </div>
+                <span className="text-[10px] font-bold bg-white/80 dark:bg-gray-800/80 px-2.5 py-1 rounded-full text-gray-700 dark:text-gray-300 border border-gray-200/50 dark:border-gray-700/50 uppercase tracking-wider shadow-sm">{transaction.status.replace('_', ' ')}</span>
               </div>
             </div>
           ))
@@ -187,55 +198,55 @@ export default function Transactions() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50 p-6">
-      <div className="max-w-full mx-auto">
+    <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-purple-50/50 via-white to-indigo-50/50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 p-6 md:p-8 transition-colors duration-300 ease-in-out">
+      <div className="max-w-[1600px] mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
+        <div className="mb-10">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                <div className="p-2 bg-purple-100 rounded-lg"><Banknote className="w-7 h-7 text-purple-600" /></div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3 tracking-tight">
+                <div className="p-2.5 bg-primary/10 dark:bg-primary/20 rounded-xl"><Banknote className="w-7 h-7 text-primary dark:text-primary-foreground" /></div>
                 Sales Pipeline
               </h1>
-              <p className="text-gray-600 mt-1">Track property transactions through the sales pipeline</p>
+              <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm md:text-base font-medium">Track property transactions through the sales pipeline</p>
             </div>
-            <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({ propertyAddress: '', buyerName: '', sellerName: '', salePrice: 0, closingDate: '', agentName: '', status: 'offer_accepted', notes: '' }); }} className="bg-purple-600 hover:bg-purple-700 gap-2">
-              <Plus className="w-4 h-4" /> New Transaction
+            <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({ propertyAddress: '', buyerName: '', sellerName: '', salePrice: 0, closingDate: '', agentName: '', status: 'offer_accepted', notes: '' }); }} className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 dark:shadow-primary/10 gap-2 rounded-xl transition-all duration-300 hover:scale-105">
+              <Plus className="w-5 h-5" /> New Transaction
             </Button>
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-4">
-            <Card className="border-0 shadow-md bg-white hover:shadow-lg transition-shadow">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="border-0 shadow-sm hover:shadow-xl dark:shadow-none bg-white/80 dark:bg-slate-900/50 backdrop-blur-xl dark:border dark:border-white/10 transition-all duration-300 ease-in-out group rounded-2xl">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-600 text-sm mb-1">Total Transactions</p>
-                    <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1 group-hover:text-primary transition-colors">Total Transactions</p>
+                    <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{stats.total}</p>
                   </div>
-                  <div className="p-3 bg-purple-100 rounded-lg"><Banknote className="w-6 h-6 text-purple-600" /></div>
+                  <div className="p-4 bg-primary/10 dark:bg-primary/20 rounded-2xl group-hover:scale-110 transition-transform duration-300"><Banknote className="w-7 h-7 text-primary dark:text-primary-foreground" /></div>
                 </div>
               </CardContent>
             </Card>
-            <Card className="border-0 shadow-md bg-white hover:shadow-lg transition-shadow">
+            <Card className="border-0 shadow-sm hover:shadow-xl dark:shadow-none bg-white/80 dark:bg-slate-900/50 backdrop-blur-xl dark:border dark:border-white/10 transition-all duration-300 ease-in-out group rounded-2xl">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-600 text-sm mb-1">Total Value</p>
-                    <p className="text-2xl font-bold text-gray-900">${(stats.value / 1000000).toFixed(1)}M</p>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1 group-hover:text-emerald-500 transition-colors">Total Value</p>
+                    <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">${(stats.value / 1000000).toFixed(1)}M</p>
                   </div>
-                  <div className="p-3 bg-green-100 rounded-lg"><DollarSign className="w-6 h-6 text-green-600" /></div>
+                  <div className="p-4 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl group-hover:scale-110 transition-transform duration-300"><DollarSign className="w-7 h-7 text-emerald-600 dark:text-emerald-400" /></div>
                 </div>
               </CardContent>
             </Card>
-            <Card className="border-0 shadow-md bg-white hover:shadow-lg transition-shadow">
+            <Card className="border-0 shadow-sm hover:shadow-xl dark:shadow-none bg-white/80 dark:bg-slate-900/50 backdrop-blur-xl dark:border dark:border-white/10 transition-all duration-300 ease-in-out group rounded-2xl">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-600 text-sm mb-1">Closed Deals</p>
-                    <p className="text-2xl font-bold text-gray-900">{stats.closed}</p>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1 group-hover:text-blue-500 transition-colors">Closed Deals</p>
+                    <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{stats.closed}</p>
                   </div>
-                  <div className="p-3 bg-emerald-100 rounded-lg"><CheckCircle className="w-6 h-6 text-emerald-600" /></div>
+                  <div className="p-4 bg-blue-100 dark:bg-blue-900/30 rounded-2xl group-hover:scale-110 transition-transform duration-300"><CheckCircle className="w-7 h-7 text-blue-600 dark:text-blue-400" /></div>
                 </div>
               </CardContent>
             </Card>
@@ -243,8 +254,8 @@ export default function Transactions() {
         </div>
 
         {/* Kanban Board */}
-        <div className="overflow-x-auto pb-4">
-          <div className="flex gap-4 min-w-min">
+        <div className="overflow-x-auto pb-4 custom-scrollbar">
+          <div className="flex gap-6 min-w-min">
             {pipelineStages.map(stage => (
               <KanbanColumn
                 key={stage.id}
@@ -257,42 +268,66 @@ export default function Transactions() {
 
         {/* Transaction Details Sheet */}
         <Sheet open={!!selectedTransaction} onOpenChange={(open) => !open && setSelectedTransaction(null)}>
-          <SheetContent side="right" className="w-full sm:w-96">
-            <SheetHeader>
-              <SheetTitle>Transaction Details</SheetTitle>
+          <SheetContent side="right" className="w-full sm:w-[450px] border-l border-gray-200 dark:border-white/10 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl">
+            <SheetHeader className="border-b border-gray-100 dark:border-white/10 pb-6">
+              <SheetTitle className="text-2xl font-bold dark:text-white">Transaction Details</SheetTitle>
             </SheetHeader>
             {selectedTransaction && (
-              <div className="space-y-6 mt-6">
-                <div className="space-y-3">
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Property</p>
-                    <p className="text-lg font-semibold text-gray-900">{selectedTransaction.property_address}</p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Buyer</p>
-                      <p className="font-medium text-gray-900">{selectedTransaction.buyer_name}</p>
+              <div className="space-y-8 mt-8">
+                <div className="bg-gray-50 dark:bg-slate-900/50 rounded-2xl p-6 border border-gray-100 dark:border-white/5">
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 bg-primary/10 dark:bg-primary/20 rounded-xl mt-1">
+                      <Home className="w-6 h-6 text-primary dark:text-primary-foreground" />
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Seller</p>
-                      <p className="font-medium text-gray-900">{selectedTransaction.seller_name}</p>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Sale Price</p>
-                    <p className="text-2xl font-bold text-purple-600">${selectedTransaction.sale_price?.toLocaleString()}</p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Agent</p>
-                      <p className="font-medium text-gray-900">{selectedTransaction.agent_name}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Status</p>
-                      <Badge className="mt-1">{selectedTransaction.status}</Badge>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider mb-1">Property</p>
+                      <p className="text-xl font-bold text-gray-900 dark:text-white leading-snug">{selectedTransaction.property_address}</p>
                     </div>
                   </div>
                 </div>
+                
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="bg-white dark:bg-slate-900 rounded-xl p-4 border border-gray-100 dark:border-white/10 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <User className="w-4 h-4 text-gray-400" />
+                      <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">Buyer</p>
+                    </div>
+                    <p className="font-semibold text-gray-900 dark:text-white">{selectedTransaction.buyer_name}</p>
+                  </div>
+                  <div className="bg-white dark:bg-slate-900 rounded-xl p-4 border border-gray-100 dark:border-white/10 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <User className="w-4 h-4 text-gray-400" />
+                      <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">Seller</p>
+                    </div>
+                    <p className="font-semibold text-gray-900 dark:text-white">{selectedTransaction.seller_name}</p>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 rounded-2xl p-6 border border-emerald-100 dark:border-emerald-900/30">
+                  <p className="text-xs text-emerald-600 dark:text-emerald-400 uppercase font-bold tracking-wider mb-2">Sale Price</p>
+                  <p className="text-4xl font-black text-emerald-700 dark:text-emerald-400">${selectedTransaction.sale_price?.toLocaleString()}</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-1">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">Agent</p>
+                    <p className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs text-primary font-bold">{selectedTransaction.agent_name?.charAt(0) || '?'}</div>
+                      {selectedTransaction.agent_name}
+                    </p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">Status</p>
+                    <Badge className="mt-1 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-0">{selectedTransaction.status.replace('_', ' ')}</Badge>
+                  </div>
+                </div>
+                
+                {selectedTransaction.notes && (
+                  <div className="space-y-2 pt-4 border-t border-gray-100 dark:border-white/10">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">Notes</p>
+                    <p className="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-slate-900 p-4 rounded-xl italic border border-gray-100 dark:border-white/5">{selectedTransaction.notes}</p>
+                  </div>
+                )}
               </div>
             )}
           </SheetContent>
@@ -300,47 +335,47 @@ export default function Transactions() {
 
         {/* Form Modal */}
         <Sheet open={showForm} onOpenChange={setShowForm}>
-          <SheetContent className="w-full max-w-md overflow-y-auto">
-            <SheetHeader>
-              <SheetTitle>{editingId ? 'Edit Transaction' : 'New Transaction'}</SheetTitle>
-              <SheetDescription>Fill in the transaction details</SheetDescription>
+          <SheetContent className="w-full sm:w-[500px] border-l border-gray-200 dark:border-white/10 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl overflow-y-auto custom-scrollbar">
+            <SheetHeader className="border-b border-gray-100 dark:border-white/10 pb-6">
+              <SheetTitle className="text-2xl font-bold dark:text-white">{editingId ? 'Edit Transaction' : 'New Transaction'}</SheetTitle>
+              <SheetDescription className="dark:text-gray-400">Fill in the transaction details below</SheetDescription>
             </SheetHeader>
-            <form onSubmit={handleSubmit} className="space-y-4 mt-6">
-              <div>
-                <label className="text-sm font-medium">Property Address *</label>
-                <Input value={formData.propertyAddress} onChange={(e) => setFormData({ ...formData, propertyAddress: e.target.value })} required />
+            <form onSubmit={handleSubmit} className="space-y-6 mt-8">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Property Address <span className="text-red-500">*</span></label>
+                <Input className="dark:bg-slate-900 dark:border-white/10 dark:text-white" value={formData.propertyAddress} onChange={(e) => setFormData({ ...formData, propertyAddress: e.target.value })} required />
               </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="text-sm font-medium">Buyer *</label>
-                  <Input value={formData.buyerName} onChange={(e) => setFormData({ ...formData, buyerName: e.target.value })} required />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Buyer <span className="text-red-500">*</span></label>
+                  <Input className="dark:bg-slate-900 dark:border-white/10 dark:text-white" value={formData.buyerName} onChange={(e) => setFormData({ ...formData, buyerName: e.target.value })} required />
                 </div>
-                <div>
-                  <label className="text-sm font-medium">Seller</label>
-                  <Input value={formData.sellerName} onChange={(e) => setFormData({ ...formData, sellerName: e.target.value })} />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="text-sm font-medium">Sale Price *</label>
-                  <Input type="number" value={formData.salePrice} onChange={(e) => setFormData({ ...formData, salePrice: parseFloat(e.target.value) })} required />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Closing Date *</label>
-                  <Input type="date" value={formData.closingDate} onChange={(e) => setFormData({ ...formData, closingDate: e.target.value })} required />
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Seller</label>
+                  <Input className="dark:bg-slate-900 dark:border-white/10 dark:text-white" value={formData.sellerName} onChange={(e) => setFormData({ ...formData, sellerName: e.target.value })} />
                 </div>
               </div>
-              <div>
-                <label className="text-sm font-medium">Agent</label>
-                <Input value={formData.agentName} onChange={(e) => setFormData({ ...formData, agentName: e.target.value })} />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Sale Price <span className="text-red-500">*</span></label>
+                  <Input className="dark:bg-slate-900 dark:border-white/10 dark:text-white font-medium text-emerald-600 dark:text-emerald-400" type="number" value={formData.salePrice} onChange={(e) => setFormData({ ...formData, salePrice: parseFloat(e.target.value) })} required />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Closing Date <span className="text-red-500">*</span></label>
+                  <Input className="dark:bg-slate-900 dark:border-white/10 dark:text-white" type="date" value={formData.closingDate} onChange={(e) => setFormData({ ...formData, closingDate: e.target.value })} required />
+                </div>
               </div>
-              <div>
-                <label className="text-sm font-medium">Status</label>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Agent</label>
+                <Input className="dark:bg-slate-900 dark:border-white/10 dark:text-white" value={formData.agentName} onChange={(e) => setFormData({ ...formData, agentName: e.target.value })} />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Status</label>
                 <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
-                  <SelectTrigger>
+                  <SelectTrigger className="dark:bg-slate-900 dark:border-white/10 dark:text-white">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="dark:bg-slate-900 dark:border-white/10">
                     <SelectItem value="offer_accepted">Offer Accepted</SelectItem>
                     <SelectItem value="inspection">Under Inspection</SelectItem>
                     <SelectItem value="appraisal">Appraisal</SelectItem>
@@ -350,15 +385,15 @@ export default function Transactions() {
                   </SelectContent>
                 </Select>
               </div>
-              <div>
-                <label className="text-sm font-medium">Notes</label>
-                <textarea value={formData.notes} onChange={(e) => setFormData({ ...formData, notes: e.target.value })} className="w-full p-2 border rounded text-sm" rows="2" />
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Notes</label>
+                <textarea value={formData.notes} onChange={(e) => setFormData({ ...formData, notes: e.target.value })} className="w-full p-3 border rounded-xl text-sm dark:bg-slate-900 dark:border-white/10 dark:text-white resize-none focus:outline-none focus:ring-2 focus:ring-primary/50" rows="3" placeholder="Add any additional notes here..." />
               </div>
-              <div className="flex gap-2 pt-4">
-                <Button type="submit" className="flex-1">
+              <div className="flex gap-3 pt-6 border-t border-gray-100 dark:border-white/10">
+                <Button type="submit" className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 dark:shadow-primary/10 rounded-xl transition-all duration-300">
                   {editingId ? 'Update' : 'Create'} Transaction
                 </Button>
-                <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
+                <Button type="button" variant="outline" onClick={() => setShowForm(false)} className="rounded-xl dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5">
                   Cancel
                 </Button>
               </div>

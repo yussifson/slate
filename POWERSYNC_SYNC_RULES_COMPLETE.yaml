@@ -269,10 +269,6 @@ bucket_definitions:
       - SELECT * FROM fleet_metrics WHERE company_id = bucket.company_id
       - SELECT * FROM workspace_insights WHERE company_id = bucket.company_id
       - SELECT * FROM intelligence_runs WHERE company_id = bucket.company_id
-      - SELECT * FROM insight_feedback WHERE company_id = bucket.company_id
-      - SELECT * FROM engine_accuracy WHERE company_id = bucket.company_id
-      - SELECT * FROM workspace_modules WHERE company_id = bucket.company_id
-      - SELECT * FROM marketplace_review_requests WHERE company_id = bucket.company_id
       - SELECT * FROM univ_patient_allergies WHERE company_id = bucket.company_id
       - SELECT * FROM univ_patient_problems WHERE company_id = bucket.company_id
       - SELECT * FROM univ_patient_immunizations WHERE company_id = bucket.company_id
@@ -335,15 +331,9 @@ bucket_definitions:
       - SELECT * FROM univ_re_agent_metrics WHERE company_id = bucket.company_id
       - SELECT * FROM univ_re_audit_log WHERE company_id = bucket.company_id
 
-      - SELECT * FROM entity_behaviour_profiles WHERE company_id = bucket.company_id
-      - SELECT * FROM entity_intelligence WHERE company_id = bucket.company_id
-      - SELECT * FROM online_media WHERE company_id = bucket.company_id
-      - SELECT * FROM online_orders WHERE company_id = bucket.company_id
-      - SELECT * FROM online_settings WHERE company_id = bucket.company_id
       - SELECT * FROM platform_departments WHERE company_id = bucket.company_id
       - SELECT * FROM platform_role_permissions WHERE company_id = bucket.company_id
       - SELECT * FROM platform_roles WHERE company_id = bucket.company_id
-      - SELECT * FROM revenue_forecasts WHERE company_id = bucket.company_id
       - SELECT * FROM school_assignments WHERE company_id = bucket.company_id
       - SELECT * FROM school_attendance WHERE company_id = bucket.company_id
       - SELECT * FROM school_canteen WHERE company_id = bucket.company_id
@@ -398,7 +388,6 @@ bucket_definitions:
       - SELECT * FROM univ_medicalclaims WHERE company_id = bucket.company_id
       - SELECT * FROM univ_opd_queues WHERE company_id = bucket.company_id
       - SELECT * FROM univ_pharmacy WHERE company_id = bucket.company_id
-      - SELECT * FROM univ_school_assignment_submissions WHERE company_id = bucket.company_id
       - SELECT * FROM univ_school_assignments WHERE company_id = bucket.company_id
       - SELECT * FROM univ_school_attendance WHERE company_id = bucket.company_id
       - SELECT * FROM univ_school_course_registrations WHERE company_id = bucket.company_id

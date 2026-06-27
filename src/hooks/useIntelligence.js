@@ -23,6 +23,8 @@ import analyzeInsurance from '@/lib/intelligence/engines/insurance';
 import analyzeReligion from '@/lib/intelligence/engines/religion';
 import analyzeMarketing from '@/lib/intelligence/engines/marketing';
 import analyzeUniversity from '@/lib/intelligence/engines/university';
+import analyzeOptavel from '@/lib/intelligence/engines/optavel-engine';
+
 
 const ENGINE_MAP = {
   universal: { fn: analyzeUniversal, name: 'universal-intelligence' },
@@ -43,6 +45,7 @@ const ENGINE_MAP = {
   religion: { fn: analyzeReligion, name: 'religion-intelligence' },
   church: { fn: analyzeReligion, name: 'religion-intelligence' },
   marketing: { fn: analyzeMarketing, name: 'marketing-intelligence' },
+  optavel: { fn: analyzeOptavel, name: 'optavel-intelligence' },
 };
 
 /**

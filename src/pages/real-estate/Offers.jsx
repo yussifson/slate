@@ -14,10 +14,10 @@ import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
 
 const statusColors = {
-  'pending': 'bg-orange-100 text-orange-800',
-  'accepted': 'bg-green-100 text-green-800',
-  'rejected': 'bg-orange-100 text-orange-800',
-  'expired': 'bg-gray-100 text-gray-800',
+  'pending': 'bg-orange-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-300 dark:border-orange-500/30',
+  'accepted': 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300 dark:border-green-500/30',
+  'rejected': 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300 dark:border-red-500/30',
+  'expired': 'bg-slate-100 text-slate-800 dark:bg-slate-800/50 dark:text-slate-300 dark:border-slate-500/30',
 };
 
 export default function Offers() {
@@ -133,29 +133,27 @@ export default function Offers() {
   }
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-8 p-6 md:p-8 max-w-7xl mx-auto">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Offers</h1>
-          <p className="text-sm text-muted-foreground mt-1">Track and manage property offers</p>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">Offers</h1>
+          <p className="text-base text-slate-500 dark:text-slate-400 mt-1">Track and manage property negotiations</p>
         </div>
-        <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({ propertyAddress: '', buyerName: '', offerAmount: 0, earnestMoney: 0, contingencies: '', expirationDate: '', agentName: '', notes: '', status: 'pending' }); }} className="gap-2">
-          <Plus className="w-4 h-4" /> New Offer
+        <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({ propertyAddress: '', buyerName: '', offerAmount: 0, earnestMoney: 0, contingencies: '', expirationDate: '', agentName: '', notes: '', status: 'pending' }); }} className="gap-2 shadow-lg shadow-primary/25 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+          <Plus className="w-5 h-5" /> New Offer
         </Button>
       </div>
 
-      <div className="flex gap-4 flex-wrap">
-        <div className="flex-1 min-w-64">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Search by property, buyer..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
-          </div>
+      <div className="flex flex-col sm:flex-row gap-4 items-center bg-white/50 dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-200/60 dark:border-white/10 backdrop-blur-xl shadow-sm">
+        <div className="flex-1 w-full relative group">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
+          <Input placeholder="Search by property, buyer..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10 w-full bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 focus-visible:ring-primary/20 transition-all rounded-xl h-11" />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-40">
+          <SelectTrigger className="w-full sm:w-[180px] h-11 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-xl focus:ring-primary/20 transition-all">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="rounded-xl border-slate-200 dark:border-slate-800">
             <SelectItem value="all">All Status</SelectItem>
             <SelectItem value="pending">Pending</SelectItem>
             <SelectItem value="accepted">Accepted</SelectItem>
@@ -165,38 +163,53 @@ export default function Offers() {
         </Select>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {filteredOffers.map(offer => (
-          <Card key={offer.id} className="hover:shadow-lg transition-shadow">
-            <CardHeader>
+          <Card key={offer.id} className="group hover:shadow-xl transition-all duration-300 ease-in-out hover:-translate-y-1 bg-white/70 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200/60 dark:border-white/10 overflow-hidden">
+            <CardHeader className="pb-4">
               <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <CardTitle className="text-base">{offer.property_address || 'No address'}</CardTitle>
-                  <p className="text-sm text-muted-foreground mt-1">{offer.buyer_name || 'No buyer'}</p>
+                <div className="flex-1 pr-4">
+                  <CardTitle className="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100 line-clamp-1">{offer.property_address || 'No address'}</CardTitle>
+                  <div className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1.5 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-300">
+                      {(offer.buyer_name || '?')[0].toUpperCase()}
+                    </div>
+                    {offer.buyer_name || 'No buyer'}
+                  </div>
                 </div>
-                <Badge className={statusColors[offer.status] || 'bg-gray-100 text-gray-800'}>{offer.status}</Badge>
+                <Badge className={`${statusColors[offer.status] || 'bg-slate-100 text-slate-800 dark:bg-slate-800/50 dark:text-slate-300'} px-2.5 py-0.5 rounded-full font-medium border-0 capitalize shadow-sm`}>{offer.status}</Badge>
               </div>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm">
-                  <DollarSign className="w-4 h-4 text-green-600" />
-                  <span className="font-bold">${Number(offer.offer_amount || 0).toLocaleString()}</span>
+            <CardContent className="space-y-4 pt-0">
+              <div className="grid grid-cols-2 gap-4 p-3 rounded-xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-800/50">
+                <div className="space-y-1">
+                  <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Offer Amount</p>
+                  <div className="flex items-center gap-1.5">
+                    <div className="p-1 rounded-md bg-emerald-100/50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
+                      <DollarSign className="w-3.5 h-3.5" />
+                    </div>
+                    <span className="font-semibold text-slate-900 dark:text-slate-100">${Number(offer.offer_amount || 0).toLocaleString()}</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <DollarSign className="w-4 h-4 text-orange-600" />
-                  <span>Earnest: ${Number(offer.earnest_money || 0).toLocaleString()}</span>
+                <div className="space-y-1">
+                  <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Earnest</p>
+                  <div className="flex items-center gap-1.5">
+                    <div className="p-1 rounded-md bg-amber-100/50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
+                      <DollarSign className="w-3.5 h-3.5" />
+                    </div>
+                    <span className="font-semibold text-slate-900 dark:text-slate-100">${Number(offer.earnest_money || 0).toLocaleString()}</span>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2 text-sm pt-2 border-t">
-                <Calendar className="w-4 h-4 text-muted-foreground" />
-                <span>Expires: {offer.expiration_date ? new Date(offer.expiration_date).toLocaleDateString() : 'N/A'}</span>
+              <div className="flex items-center gap-2 text-sm pt-2 border-t border-slate-100 dark:border-slate-800/60">
+                <Calendar className="w-4 h-4 text-slate-400 dark:text-slate-500" />
+                <span className="text-slate-600 dark:text-slate-400 font-medium">Expires: {offer.expiration_date ? new Date(offer.expiration_date).toLocaleDateString() : 'N/A'}</span>
               </div>
-              <div className="flex gap-2 pt-2">
-                <Button size="sm" variant="outline" onClick={() => handleEdit(offer)} className="flex-1">
-                  <Edit className="w-4 h-4 mr-1" /> Edit
+              <div className="flex gap-2 pt-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+                <Button size="sm" variant="outline" onClick={() => handleEdit(offer)} className="flex-1 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                  <Edit className="w-3.5 h-3.5 mr-1.5" /> Edit
                 </Button>
-                <Button size="sm" variant="ghost" className="text-destructive">
+                <Button size="sm" variant="ghost" className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-700 dark:hover:text-red-300 transition-colors">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>
@@ -206,58 +219,70 @@ export default function Offers() {
       </div>
 
       {filteredOffers.length === 0 && (
-        <Card className="text-center py-12">
-          <TrendingUp className="w-12 h-12 mx-auto text-muted-foreground mb-4 opacity-50" />
-          <p className="text-muted-foreground">No offers found. Create your first offer!</p>
+        <Card className="text-center py-20 bg-white/40 dark:bg-slate-900/20 backdrop-blur-md border-dashed border-2 border-slate-200 dark:border-slate-800 shadow-sm">
+          <div className="w-20 h-20 mx-auto bg-slate-100 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-6">
+            <TrendingUp className="w-10 h-10 text-slate-400 dark:text-slate-500" />
+          </div>
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">No Offers Found</h3>
+          <p className="text-slate-500 dark:text-slate-400 max-w-sm mx-auto mb-6 leading-relaxed">It looks like you don't have any active offers at the moment. Create your first offer to start tracking!</p>
+          <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({ propertyAddress: '', buyerName: '', offerAmount: 0, earnestMoney: 0, contingencies: '', expirationDate: '', agentName: '', notes: '', status: 'pending' }); }} className="gap-2 shadow-lg shadow-primary/20 transition-all hover:scale-105 active:scale-95">
+            <Plus className="w-4 h-4" /> Create New Offer
+          </Button>
         </Card>
       )}
 
       <Sheet open={showForm} onOpenChange={setShowForm}>
-        <SheetContent className="w-full max-w-md overflow-y-auto">
-          <SheetHeader>
-            <SheetTitle>{editingId ? 'Edit Offer' : 'Create New Offer'}</SheetTitle>
-            <SheetDescription>Fill in the offer details below</SheetDescription>
+        <SheetContent className="w-full max-w-md overflow-y-auto border-l-slate-200 dark:border-l-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl">
+          <SheetHeader className="mb-6">
+            <SheetTitle className="text-2xl font-bold">{editingId ? 'Edit Offer' : 'Create New Offer'}</SheetTitle>
+            <SheetDescription className="text-slate-500 dark:text-slate-400">Fill in the offer details below</SheetDescription>
           </SheetHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-4 mt-6">
-            <div>
-              <label className="text-sm font-medium">Property Address *</label>
-              <Input value={formData.propertyAddress} onChange={(e) => setFormData({ ...formData, propertyAddress: e.target.value })} required />
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Property Address <span className="text-red-500">*</span></label>
+              <Input className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus-visible:ring-primary/30" value={formData.propertyAddress} onChange={(e) => setFormData({ ...formData, propertyAddress: e.target.value })} required />
             </div>
 
-            <div>
-              <label className="text-sm font-medium">Buyer Name *</label>
-              <Input value={formData.buyerName} onChange={(e) => setFormData({ ...formData, buyerName: e.target.value })} required />
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Buyer Name <span className="text-red-500">*</span></label>
+              <Input className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus-visible:ring-primary/30" value={formData.buyerName} onChange={(e) => setFormData({ ...formData, buyerName: e.target.value })} required />
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label className="text-sm font-medium">Offer Amount *</label>
-                <Input type="number" step="0.01" value={formData.offerAmount} onChange={(e) => setFormData({ ...formData, offerAmount: parseFloat(e.target.value) })} required />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Offer Amount <span className="text-red-500">*</span></label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+                  <Input className="pl-7 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus-visible:ring-primary/30" type="number" step="0.01" value={formData.offerAmount} onChange={(e) => setFormData({ ...formData, offerAmount: parseFloat(e.target.value) })} required />
+                </div>
               </div>
-              <div>
-                <label className="text-sm font-medium">Earnest Money</label>
-                <Input type="number" step="0.01" value={formData.earnestMoney} onChange={(e) => setFormData({ ...formData, earnestMoney: parseFloat(e.target.value) })} />
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Earnest Money</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+                  <Input className="pl-7 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus-visible:ring-primary/30" type="number" step="0.01" value={formData.earnestMoney} onChange={(e) => setFormData({ ...formData, earnestMoney: parseFloat(e.target.value) })} />
+                </div>
               </div>
             </div>
 
-            <div>
-              <label className="text-sm font-medium">Expiration Date *</label>
-              <Input type="date" value={formData.expirationDate} onChange={(e) => setFormData({ ...formData, expirationDate: e.target.value })} required />
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Expiration Date <span className="text-red-500">*</span></label>
+              <Input className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus-visible:ring-primary/30" type="date" value={formData.expirationDate} onChange={(e) => setFormData({ ...formData, expirationDate: e.target.value })} required />
             </div>
 
-            <div>
-              <label className="text-sm font-medium">Agent Name</label>
-              <Input value={formData.agentName} onChange={(e) => setFormData({ ...formData, agentName: e.target.value })} />
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Agent Name</label>
+              <Input className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus-visible:ring-primary/30" value={formData.agentName} onChange={(e) => setFormData({ ...formData, agentName: e.target.value })} />
             </div>
 
-            <div>
-              <label className="text-sm font-medium">Status</label>
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Status</label>
               <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
-                <SelectTrigger>
+                <SelectTrigger className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:ring-primary/30">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="border-slate-200 dark:border-slate-800">
                   <SelectItem value="pending">Pending</SelectItem>
                   <SelectItem value="accepted">Accepted</SelectItem>
                   <SelectItem value="rejected">Rejected</SelectItem>
@@ -266,22 +291,22 @@ export default function Offers() {
               </Select>
             </div>
 
-            <div>
-              <label className="text-sm font-medium">Contingencies</label>
-              <textarea value={formData.contingencies} onChange={(e) => setFormData({ ...formData, contingencies: e.target.value })} className="w-full p-2 border rounded text-sm" rows="2" placeholder="e.g., Home inspection, financing, appraisal" />
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Contingencies</label>
+              <textarea value={formData.contingencies} onChange={(e) => setFormData({ ...formData, contingencies: e.target.value })} className="w-full p-3 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-transparent transition-all resize-none placeholder:text-slate-400 dark:placeholder:text-slate-600" rows="2" placeholder="e.g., Home inspection, financing, appraisal" />
             </div>
 
-            <div>
-              <label className="text-sm font-medium">Notes</label>
-              <textarea value={formData.notes} onChange={(e) => setFormData({ ...formData, notes: e.target.value })} className="w-full p-2 border rounded text-sm" rows="2" />
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Notes</label>
+              <textarea value={formData.notes} onChange={(e) => setFormData({ ...formData, notes: e.target.value })} className="w-full p-3 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-transparent transition-all resize-none placeholder:text-slate-400 dark:placeholder:text-slate-600" rows="2" placeholder="Additional details..." />
             </div>
 
-            <div className="flex gap-2 pt-4">
-              <Button type="submit" className="flex-1">
-                {editingId ? 'Update' : 'Create'} Offer
-              </Button>
-              <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
+            <div className="flex gap-3 pt-6 mt-6 border-t border-slate-200 dark:border-slate-800">
+              <Button type="button" variant="outline" onClick={() => setShowForm(false)} className="flex-1 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800">
                 Cancel
+              </Button>
+              <Button type="submit" className="flex-1 shadow-lg shadow-primary/25 hover:-translate-y-0.5 transition-transform">
+                {editingId ? 'Update' : 'Create'} Offer
               </Button>
             </div>
           </form>
