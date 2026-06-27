@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Activity, ShieldAlert, CheckCircle2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useCompanyId } from '@/hooks/useCompanyId';
+import { useCompany } from '@/hooks/useCompanyId';
 import { powerSync } from '@/api/PowerSyncConnector';
 
 export default function AnomalyScanner() {
-  const companyId = useCompanyId();
+  const { company } = useCompany();
+  const companyId = company?.id || null;
   const [isScanning, setIsScanning] = useState(false);
   const [anomalies, setAnomalies] = useState([]);
 

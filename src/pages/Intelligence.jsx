@@ -7,16 +7,18 @@ export default function Intelligence() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect if not an admin/manager with access
+  // Redirect to login if unauthenticated
   React.useEffect(() => {
-    if (!user || !['super_admin', 'company_admin', 'managing_partner'].includes(user.role)) {
-      navigate('/dashboard');
+    if (!user) {
+      navigate('/login');
     }
   }, [user, navigate]);
 
   return (
-    <div className="p-6">
-      <IntelligenceDashboard />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 p-6 transition-all duration-300 ease-in-out">
+      <div className="max-w-7xl mx-auto">
+        <IntelligenceDashboard />
+      </div>
     </div>
   );
 }

@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { FileText, Download, Sparkles, Loader2, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useCompanyId } from '@/hooks/useCompanyId';
+import { useCompany } from '@/hooks/useCompanyId';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { invokeCloudflareAi } from '@/lib/cloudflareAI';
 import { useToast } from '@/components/ui/use-toast';
 
 export default function ReportGenerator() {
-  const companyId = useCompanyId();
+  const { company } = useCompany();
+  const companyId = company?.id || null;
   const { toast } = useToast();
   const [isGenerating, setIsGenerating] = useState(false);
   const [report, setReport] = useState(null);

@@ -119,46 +119,53 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
 
   // Full dashboard mode with Tabs for powerful tools
   return (
-    <div className="space-y-6 pb-20">
+    <div className="space-y-8 pb-20 animate-in fade-in duration-500">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 border border-primary/20 backdrop-blur-sm flex items-center justify-center shadow-lg shadow-primary/20">
-            <Brain className="w-5 h-5 text-white" />
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary via-emerald-500 to-teal-600 border border-white/20 backdrop-blur-xl flex items-center justify-center shadow-2xl shadow-primary/30 relative overflow-hidden">
+            <div className="absolute inset-0 bg-white/20 opacity-0 hover:opacity-100 transition-opacity"></div>
+            <Brain className="w-7 h-7 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-semibold text-card-foreground tracking-[-0.02em]">
+            <h1 className="text-3xl font-extrabold text-foreground tracking-tight">
               AI Intelligence Hub
             </h1>
-            <p className="text-sm text-[#71717a] mt-0.5">
-              Powerful active AI tools and passive data insights
+            <p className="text-sm text-muted-foreground font-medium mt-1">
+              Powerful active AI tools and continuous passive data insights
             </p>
           </div>
         </div>
       </div>
 
       <Tabs defaultValue="insights" className="w-full">
-        <TabsList className="mb-6 grid w-full grid-cols-4 max-w-[800px] bg-slate-100 dark:bg-slate-800 p-1">
-          <TabsTrigger value="insights" className="gap-2"><Sparkles className="w-4 h-4"/> Insights Engine</TabsTrigger>
-          <TabsTrigger value="oracle" className="gap-2"><Bot className="w-4 h-4"/> Data Oracle</TabsTrigger>
-          <TabsTrigger value="report" className="gap-2"><FileText className="w-4 h-4"/> Report Generator</TabsTrigger>
-          <TabsTrigger value="anomaly" className="gap-2"><Activity className="w-4 h-4"/> Anomaly Scanner</TabsTrigger>
+        <TabsList className="mb-8 flex flex-wrap sm:grid w-full sm:grid-cols-4 max-w-4xl bg-slate-100/50 dark:bg-slate-900/50 backdrop-blur-md p-1.5 rounded-xl border border-slate-200/50 dark:border-white/5 shadow-inner">
+          <TabsTrigger value="insights" className="gap-2 rounded-lg data-[state=active]:bg-white data-[state=active]:dark:bg-slate-800 data-[state=active]:text-primary data-[state=active]:shadow-md transition-all font-semibold"><Sparkles className="w-4 h-4"/> Insights Engine</TabsTrigger>
+          <TabsTrigger value="oracle" className="gap-2 rounded-lg data-[state=active]:bg-white data-[state=active]:dark:bg-slate-800 data-[state=active]:text-blue-500 data-[state=active]:shadow-md transition-all font-semibold"><Bot className="w-4 h-4"/> Data Oracle</TabsTrigger>
+          <TabsTrigger value="report" className="gap-2 rounded-lg data-[state=active]:bg-white data-[state=active]:dark:bg-slate-800 data-[state=active]:text-purple-500 data-[state=active]:shadow-md transition-all font-semibold"><FileText className="w-4 h-4"/> Report Generator</TabsTrigger>
+          <TabsTrigger value="anomaly" className="gap-2 rounded-lg data-[state=active]:bg-white data-[state=active]:dark:bg-slate-800 data-[state=active]:text-red-500 data-[state=active]:shadow-md transition-all font-semibold"><Activity className="w-4 h-4"/> Anomaly Scanner</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="insights" className="space-y-6">
-          <div className="flex justify-between items-center bg-card p-4 rounded-xl border">
-            <div>
-              <h3 className="font-semibold text-lg">Passive Insights Engine</h3>
-              <p className="text-sm text-slate-500">Continuous AI scanning of your data</p>
+        <TabsContent value="insights" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-card p-6 rounded-2xl border-[0.5px] border-slate-200 dark:border-white/10 shadow-lg shadow-slate-200/20 dark:shadow-none bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950/50 relative overflow-hidden gap-4">
+            <div className="absolute right-0 top-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+            <div className="relative z-10">
+              <h3 className="font-extrabold text-xl text-foreground tracking-tight flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+                Passive Insights Engine
+              </h3>
+              <p className="text-sm text-muted-foreground mt-1 ml-10 font-medium">Continuous AI scanning of your data for hidden patterns</p>
             </div>
             <Button
               onClick={() => runEngine(effectiveVertical)}
               disabled={isRunning}
-              className="gap-2 bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-500/20 border-0"
+              className="relative z-10 gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-xl shadow-orange-500/25 border-0 font-bold px-6 py-5 rounded-xl transition-all hover:scale-105 active:scale-95"
             >
               {isRunning ? (
-                <><RefreshCw className="w-4 h-4 animate-spin" /> Analyzing Data...</>
+                <><RefreshCw className="w-5 h-5 animate-spin" /> Analyzing Workspace...</>
               ) : (
-                <><Zap className="w-4 h-4" /> Run Full Analysis</>
+                <><Zap className="w-5 h-5 fill-current" /> Run Full Analysis</>
               )}
             </Button>
           </div>

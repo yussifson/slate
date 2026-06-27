@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { Send, Bot, Database, Sparkles, Loader2, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useCompanyId } from '@/hooks/useCompanyId';
+import { useCompany } from '@/hooks/useCompanyId';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { invokeCloudflareAi } from '@/lib/cloudflareAI';
 
 export default function DataOracle() {
-  const companyId = useCompanyId();
+  const { company } = useCompany();
+  const companyId = company?.id || null;
   const [query, setQuery] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [messages, setMessages] = useState([

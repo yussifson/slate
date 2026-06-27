@@ -28,6 +28,7 @@ export const INDUSTRIES = {
       { value: 'operations', label: 'Operations' },
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
+      { label: \'AI Intelligence\', path: \'/intelligence\', icon: \'Brain\' },
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       { label: 'Cases', path: '/cases', icon: 'Briefcase' },
       { label: 'Clients', path: '/clients', icon: 'Users' },
@@ -78,6 +79,7 @@ export const INDUSTRIES = {
       { value: 'operations', label: 'Operations' },
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
+      { label: \'AI Intelligence\', path: \'/intelligence\', icon: \'Brain\' },
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       { label: 'Students', path: '/students', icon: 'Users' },
       { label: 'Parents & Guardians', path: '/parents', icon: 'HeartHandshake' },
@@ -139,6 +141,7 @@ export const INDUSTRIES = {
       { value: 'tech', label: 'IT & Support' }
     ],
     nav: [
+      { label: \'AI Intelligence\', path: \'/intelligence\', icon: \'Brain\' },
       { label: 'Dashboard', path: '/s/', icon: 'LayoutDashboard' },
       
       { section: 'Administration', label: 'Directory', path: '/s/students', icon: 'Users' },
@@ -235,6 +238,7 @@ export const INDUSTRIES = {
       { value: 'operations', label: 'Operations' },
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
+      { label: \'AI Intelligence\', path: \'/intelligence\', icon: \'Brain\' },
       { label: 'Dashboard', path: '/u/', icon: 'LayoutDashboard' },
       
       { section: 'Executive Pages', label: 'Enrollment', path: '/u/enrollment', icon: 'Users' },
@@ -286,6 +290,7 @@ export const INDUSTRIES = {
       { value: 'operations', label: 'Operations' },
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
+      { label: \'AI Intelligence\', path: \'/intelligence\', icon: \'Brain\' },
       { label: 'Dashboard', path: '/o/', icon: 'LayoutDashboard' },
       { label: 'Learners', path: '/o/learners', icon: 'Users' },
       { label: 'Courses', path: '/o/courses', icon: 'BookOpen' },
@@ -333,6 +338,7 @@ export const INDUSTRIES = {
       { value: 'operations', label: 'Operations' },
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
+      { label: \'AI Intelligence\', path: \'/intelligence\', icon: \'Brain\' },
       { label: 'Dashboard', path: '/v/', icon: 'LayoutDashboard' },
       
       { section: 'Programs', label: 'Trades', path: '/v/trades', icon: 'BookOpen' },
@@ -399,6 +405,7 @@ export const INDUSTRIES = {
       { value: 'operations', label: 'Operations' },
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
+      { label: \'AI Intelligence\', path: \'/intelligence\', icon: \'Brain\' },
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       { label: 'Patients', path: '/patients', icon: 'Users' },
       { label: 'Appointments', path: '/appointments', icon: 'Calendar' },
@@ -455,6 +462,7 @@ export const INDUSTRIES = {
       { value: 'operations', label: 'Operations' },
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
+      { label: \'AI Intelligence\', path: \'/intelligence\', icon: \'Brain\' },
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       { label: 'Front Desk', path: '/front-desk', icon: 'Building2' },
       { label: 'Reservations', path: '/reservations', icon: 'Calendar' },
@@ -502,6 +510,7 @@ export const INDUSTRIES = {
       { value: 'operations', label: 'Operations' },
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
+      { label: \'AI Intelligence\', path: \'/intelligence\', icon: \'Brain\' },
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       { label: 'Members', path: '/members', icon: 'Users' },
       { label: 'Groups', path: '/groups', icon: 'Layers' },
@@ -548,6 +557,7 @@ export const INDUSTRIES = {
       { value: 'operations', label: 'Operations' },
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
+      { label: \'AI Intelligence\', path: \'/intelligence\', icon: \'Brain\' },
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       { label: 'Policies', path: '/policies', icon: 'Shield' },
       { label: 'Claims', path: '/claims', icon: 'AlertCircle' },
@@ -592,6 +602,7 @@ export const INDUSTRIES = {
       { value: 'operations', label: 'Operations' },
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
+      { label: \'AI Intelligence\', path: \'/intelligence\', icon: \'Brain\' },
       { label: 'Overview', path: '/retail-dashboard', icon: 'LayoutDashboard' },
       { label: 'Enterprise HQ', path: '/retail-hq', icon: 'Building2' },
       
@@ -659,6 +670,7 @@ export const INDUSTRIES = {
       { value: 'operations', label: 'Operations' },
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
+      { label: \'AI Intelligence\', path: \'/intelligence\', icon: \'Brain\' },
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       
       { section: 'Shipments', label: 'Shipments', path: '/shipments', icon: 'Package' },
@@ -715,6 +727,7 @@ export const INDUSTRIES = {
       { value: 'operations', label: 'Operations' },
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
+      { label: \'AI Intelligence\', path: \'/intelligence\', icon: \'Brain\' },
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       { label: 'Employees', path: '/employees', icon: 'Users' },
       { label: 'Recruitment', path: '/recruitment', icon: 'UserPlus' },
@@ -760,6 +773,7 @@ export const INDUSTRIES = {
       { value: 'operations', label: 'Operations' },
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
+      { label: \'AI Intelligence\', path: \'/intelligence\', icon: \'Brain\' },
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       
       { section: 'Properties & Transactions', label: 'Properties', path: '/real-estate/properties', icon: 'Home' },
@@ -830,6 +844,7 @@ export const INDUSTRIES = {
       { value: 'operations', label: 'Operations' },
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
+      { label: \'AI Intelligence\', path: \'/intelligence\', icon: \'Brain\' },
       { label: 'Dashboard', path: '/pharmacy/dashboard', icon: 'LayoutDashboard' },
       
       { section: 'Core Operations' },
@@ -874,6 +889,7 @@ export const INDUSTRIES = {
       { value: 'operations', label: 'Operations' },
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
+      { label: \'AI Intelligence\', path: \'/intelligence\', icon: \'Brain\' },
       { label: 'Platform Overview', path: '/admin', icon: 'LayoutDashboard' },
       { label: 'Firms & Quotas', path: '/admin/firms', icon: 'Building2' },
       { label: 'System Users', path: '/admin/users', icon: 'Users2' },
@@ -923,6 +939,7 @@ export const INDUSTRIES = {
       { value: 'partnerships', label: 'Partnerships & Growth' }
     ],
     nav: [
+      { label: \'AI Intelligence\', path: \'/intelligence\', icon: \'Brain\' },
       { label: 'Command Center', path: '/optavel', icon: 'LayoutDashboard' },
       { label: 'Executive', path: '/optavel/executive', icon: 'BarChart2' },
       { label: 'Product & Eng', path: '/optavel/product', icon: 'Code' },
