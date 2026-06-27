@@ -187,41 +187,47 @@ export default function Properties() {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {filteredProperties.map(property => (
           <Card key={property.id} className="group hover:shadow-xl transition-all duration-300 ease-in-out hover:-translate-y-1 dark:border-white/10 dark:bg-slate-900/50 backdrop-blur-sm overflow-hidden flex flex-col">
-            <CardHeader className="pb-4 border-b border-border/50 dark:border-white/5 bg-muted/20 dark:bg-transparent transition-colors group-hover:bg-muted/40">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <CardTitle className="text-lg font-bold flex items-center gap-2 group-hover:text-primary transition-colors">
-                    <MapPin className="w-4 h-4 text-primary/70" /> {property.city || 'Unknown'}
+            <CardHeader className="relative pb-5 border-b border-border/50 dark:border-white/5 bg-gradient-to-br from-slate-50 to-white dark:from-slate-800/40 dark:to-slate-900/40 overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-10 -mt-10"></div>
+              <div className="flex items-start justify-between relative z-10">
+                <div className="flex-1 pr-4">
+                  <CardTitle className="text-xl font-extrabold flex items-center gap-2 group-hover:text-primary transition-colors tracking-tight">
+                    <div className="p-1.5 bg-primary/10 rounded-lg text-primary">
+                      <MapPin className="w-4 h-4" />
+                    </div>
+                    {property.city || 'Unknown'}
                   </CardTitle>
-                  <p className="text-sm text-muted-foreground mt-1.5 line-clamp-1">{property.address}</p>
+                  <p className="text-sm text-muted-foreground mt-2 line-clamp-1 font-medium">{property.address}</p>
                 </div>
-                <Badge variant="secondary" className={`${statusColors[property.status]} ml-2 shadow-sm border-0 font-semibold px-2.5 py-0.5`}>{property.status}</Badge>
+                <Badge variant="secondary" className={`${statusColors[property.status]} shadow-sm border-0 font-bold px-3 py-1 uppercase tracking-wider text-[10px] rounded-full`}>{property.status}</Badge>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4 pt-5 flex-1 flex flex-col">
-              <div className="grid grid-cols-3 gap-4 text-sm bg-background/50 dark:bg-slate-800/30 p-3 rounded-lg border border-border/50">
-                <div className="text-center">
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-1">Beds</p>
-                  <p className="font-semibold text-foreground text-base">{property.bedrooms}</p>
+            <CardContent className="space-y-5 pt-5 flex-1 flex flex-col relative z-10 bg-white/50 dark:bg-slate-900/20">
+              <div className="grid grid-cols-3 gap-3">
+                <div className="text-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 hover:border-primary/30 transition-colors shadow-sm">
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">Beds</p>
+                  <p className="font-extrabold text-foreground text-lg">{property.bedrooms}</p>
                 </div>
-                <div className="text-center border-l border-r border-border/50">
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-1">Baths</p>
-                  <p className="font-semibold text-foreground text-base">{property.bathrooms}</p>
+                <div className="text-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 hover:border-primary/30 transition-colors shadow-sm">
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">Baths</p>
+                  <p className="font-extrabold text-foreground text-lg">{property.bathrooms}</p>
                 </div>
-                <div className="text-center">
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-1">Sq Ft</p>
-                  <p className="font-semibold text-foreground text-base">{Number(property.square_feet).toLocaleString()}</p>
+                <div className="text-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 hover:border-primary/30 transition-colors shadow-sm">
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">Sq Ft</p>
+                  <p className="font-extrabold text-foreground text-lg">{Number(property.square_feet).toLocaleString()}</p>
                 </div>
               </div>
               
               <div className="flex-1" />
 
-              <div className="flex items-center justify-between pt-4 border-t border-border/50 dark:border-white/5">
-                <div className="flex items-center gap-1.5">
-                  <div className="p-1.5 bg-green-100 dark:bg-green-500/20 rounded-full">
-                    <DollarSign className="w-4 h-4 text-green-600 dark:text-green-400" />
+              <div className="flex items-center justify-between pt-4 mt-auto border-t border-border/50 dark:border-white/5">
+                <div className="flex flex-col">
+                  <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-0.5">Asking Price</span>
+                  <div className="flex items-center gap-1">
+                    <span className="font-black text-2xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500 dark:from-emerald-400 dark:to-teal-300">
+                      ${Number(property.price).toLocaleString()}
+                    </span>
                   </div>
-                  <span className="font-extrabold text-xl tracking-tight">${Number(property.price).toLocaleString()}</span>
                 </div>
               </div>
 

@@ -134,10 +134,19 @@
     background-repeat: repeat;
   }
   
-  .scrollbar-hide::-webkit-scrollbar { width: 5px; height: 5px; }
+  .scrollbar-hide::-webkit-scrollbar { width: 5px; height: 5px; display: none; }
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+  
+  .scrollbar-green::-webkit-scrollbar { width: 6px; height: 6px; }
+  .scrollbar-green::-webkit-scrollbar-track { background: transparent; }
+  .scrollbar-green::-webkit-scrollbar-thumb { background: #22c55e; border-radius: 999px; }
+  .scrollbar-green::-webkit-scrollbar-thumb:hover { background: #16a34a; }
+  .scrollbar-green {
+    scrollbar-width: thin;
+    scrollbar-color: #22c55e transparent;
   }
   
   /* Premium Global Custom Scrollbar */

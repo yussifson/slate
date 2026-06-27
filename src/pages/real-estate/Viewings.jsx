@@ -120,17 +120,17 @@ export default function Viewings() {
         <div className="grid grid-cols-3 gap-6 mb-8">
           <div className="col-span-2">
             <Card className="border border-slate-200 dark:border-white/10 shadow-xl dark:bg-slate-900/50 backdrop-blur-sm overflow-hidden transition-all duration-300">
-              <CardHeader className="bg-gradient-to-r from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-900 text-white border-b border-slate-700 dark:border-slate-700/50">
+              <CardHeader className="bg-gradient-to-r from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-700/50">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2.5 text-lg font-bold tracking-wide">
-                    <Calendar className="w-5 h-5 text-blue-400" />
+                    <Calendar className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                     {currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                   </CardTitle>
-                  <div className="flex gap-1 bg-slate-800/50 dark:bg-slate-900/50 rounded-lg p-1 border border-slate-700 dark:border-slate-600/30">
-                    <Button variant="ghost" size="sm" onClick={handlePrevMonth} className="text-slate-300 hover:text-white hover:bg-slate-700 dark:hover:bg-slate-800 h-8 w-8 p-0 rounded-md transition-colors">
+                  <div className="flex gap-1 bg-slate-100 dark:bg-slate-900/50 rounded-lg p-1 border border-slate-200 dark:border-slate-600/30">
+                    <Button variant="ghost" size="sm" onClick={handlePrevMonth} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 h-8 w-8 p-0 rounded-md transition-colors shadow-sm">
                       <ChevronLeft className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={handleNextMonth} className="text-slate-300 hover:text-white hover:bg-slate-700 dark:hover:bg-slate-800 h-8 w-8 p-0 rounded-md transition-colors">
+                    <Button variant="ghost" size="sm" onClick={handleNextMonth} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 h-8 w-8 p-0 rounded-md transition-colors shadow-sm">
                       <ChevronRight className="w-4 h-4" />
                     </Button>
                   </div>
@@ -151,20 +151,20 @@ export default function Viewings() {
 
           {/* Upcoming Viewings Sidebar */}
           <div>
-            <Card className="border border-slate-200 dark:border-white/10 shadow-xl dark:bg-slate-900/50 backdrop-blur-sm h-full flex flex-col transition-all duration-300">
-              <CardHeader className="bg-white/50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 backdrop-blur-md">
+            <Card className="border border-slate-200 dark:border-white/10 shadow-xl bg-white dark:bg-slate-900/50 backdrop-blur-sm h-full flex flex-col transition-all duration-300">
+              <CardHeader className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 backdrop-blur-md">
                 <CardTitle className="flex items-center gap-2.5 text-lg font-bold text-slate-900 dark:text-white tracking-wide">
-                  <div className="p-1.5 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg border border-indigo-200 dark:border-indigo-800/50">
+                  <div className="p-1.5 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg border border-indigo-200 dark:border-indigo-800/50 shadow-sm">
                     <Eye className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                   </div>
                   Upcoming
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0 flex-1 overflow-hidden flex flex-col">
-                <div className="overflow-y-auto flex-1 custom-scrollbar">
+                <div className="overflow-y-auto flex-1 custom-scrollbar scrollbar-green">
                   {upcomingViewings.length === 0 ? (
                     <div className="p-8 text-center text-slate-500 dark:text-slate-400 flex flex-col items-center justify-center h-full min-h-[200px]">
-                      <div className="w-16 h-16 mb-4 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center shadow-inner">
+                      <div className="w-16 h-16 mb-4 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center shadow-inner border border-slate-100 dark:border-slate-700">
                         <AlertCircle className="w-8 h-8 text-slate-400 dark:text-slate-500" />
                       </div>
                       <p className="font-medium">No upcoming viewings</p>
