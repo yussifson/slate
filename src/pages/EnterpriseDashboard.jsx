@@ -3,13 +3,14 @@ import { useAuth } from "@/lib/AuthContext";
 import { useImpersonation } from "@/lib/ImpersonationContext";
 import { supabase } from "@/api/supabaseClient";
 import IntelligenceUI from "@/components/intelligence/IntelligenceUI";
-import { Building2, Plus, ArrowRight, Activity, TrendingUp, Sparkles, Globe, ChevronDown, Users, BarChart3, ShieldCheck, Zap, Server, Loader2, LayoutGrid } from "lucide-react";
+import { Building2, Plus, ArrowRight, Activity, TrendingUp, Sparkles, Globe, Users, BarChart3, ShieldCheck, Zap, Server, Loader2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { toast } from "react-hot-toast";
 import { INDUSTRIES } from "@/config/industries";
+
+const RESTRICTED_KEYS = ["optavelos", "admin", "slateadmin", "superadmin", "optavel"];
 
 export default function EnterpriseDashboard() {
   const { user } = useAuth();
@@ -22,282 +23,175 @@ export default function EnterpriseDashboard() {
 
   const fetchPortfolio = async () => {
     try {
-      if (!user?.id || !user?.available_companies?.length) {
-        setPortfolio([]);
-        setLoading(false);
-        return;
-      }
-      
-      const companyIds = user.available_companies.map(c => c.id);
-      const { data, error } = await supabase
-        .from('companies')
-        .select('*')
-        .in('id', companyIds);
-        
+      if (!user?.id) { setLoading(false); return; }
+      const companyIds = user?.available_companies?.map(c => c.id) || [];
+      const ids = companyIds.length ? companyIds : (user?.company_id ? [user.company_id] : []);
+      if (!ids.length) { setPortfolio([]); setLoading(false); return; }
+
+      const { data, error } = await supabase.from("companies").select("*").in("id", ids);
       if (error) throw error;
-      
-      // Ensure current company is always in the list if not fetched
       let finalData = data || [];
       if (user.company_id && !finalData.find(c => c.id === user.company_id)) {
-         const { data: currentCompany } = await supabase.from('companies').select('*').eq('id', user.company_id).single();
-         if (currentCompany) finalData.push(currentCompany);
+        const { data: cur } = await supabase.from("companies").select("*").eq("id", user.company_id).single();
+        if (cur) finalData.push(cur);
       }
-      
       setPortfolio(finalData);
-      setLoading(false);
+      if (finalData.length > 0) setSelectedVertical(finalData[0]);
     } catch (err) {
       console.error("Failed to fetch enterprise portfolio:", err);
+    } finally {
       setLoading(false);
     }
   };
 
-  
+  // Switch vertical entirely in-app ó no subdomain redirect
   const handleVerticalSwitch = (company) => {
     setSelectedVertical(company);
-    // Behave like Super Admin: override industry and reload
-    const newIndustry = company.industry_type || company.industry;
-    if (newIndustry) {
-      sessionStorage.setItem('slate_industry_override', newIndustry);
-      toast.success(`Switched to ${newIndustry} vertical`);
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
+    const ind = company.industry_type || company.industry;
+    if (ind) {
+      sessionStorage.setItem("slate_industry_override", ind);
+      window.dispatchEvent(new CustomEvent("slate_industry_change", { detail: { industry: ind } }));
     }
   };
 
-  useEffect(() => {
-    fetchPortfolio();
-  }, [user?.id]);
+  useEffect(() => { fetchPortfolio(); }, [user?.id]);
 
-  const changeWorkspace = async (e, companyId, newIndustry) => {
-    e.stopPropagation();
-    try {
-      const { error } = await supabase.from('companies').update({ industry_type: newIndustry, industry: newIndustry }).eq('id', companyId);
-      if (error) throw error;
-      toast.success(`Workspace updated to ${newIndustry}!`);
-      
-      setPortfolio(prev => prev.map(c => c.id === companyId ? { ...c, industry: newIndustry, industry_type: newIndustry } : c));
-      if (selectedVertical && selectedVertical.id === companyId) {
-        setSelectedVertical(prev => ({ ...prev, industry: newIndustry, industry_type: newIndustry }));
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to update workspace.");
-    }
-  };
-
-  const handleDeployVertical = async (industryKey) => {
+  const handleDeployVertical = (industryKey) => {
     setDeployingVertical(industryKey);
     const indConfig = INDUSTRIES[industryKey];
-    
-    // Simulate 4 second deployment
     setTimeout(() => {
       const newCompany = {
-        id: Math.random().toString(36).substr(2, 9),
+        id: crypto.randomUUID(),
         name: `New ${indConfig.name} Vertical`,
         subdomain: industryKey,
         industry: industryKey,
-        industry_type: industryKey
+        industry_type: industryKey,
       };
-      
       setPortfolio(prev => [newCompany, ...prev]);
       setShowDeployModal(false);
       setDeployingVertical(null);
       setSelectedVertical(newCompany);
-      toast.success(`${indConfig.name} vertical deployed successfully!`);
-    }, 4000);
+      toast.success(`${indConfig.name} vertical deployed!`);
+    }, 2500);
   };
 
-  const totalModulesActive = portfolio.reduce((acc, curr) => acc + (curr.active_modules ? curr.active_modules.length : 0), 0);
-
-  const generateMockStats = (id) => {
-    const seed = id ? id.charCodeAt(0) + id.charCodeAt(id.length - 1) : 0;
+  const generateMockStats = (id = "") => {
+    const seed = id ? id.charCodeAt(0) + (id.charCodeAt(id.length - 1) || 0) : 42;
     return {
-      users: 120 + (seed * 15),
+      users: (120 + seed * 15).toLocaleString(),
       revenue: `$${(24 + (seed % 10)).toLocaleString()}k`,
-      uptime: `${99 + ((seed % 100) / 100)}%`,
-      growth: `+${8 + (seed % 15)}%`
+      uptime: `99.${seed % 100 < 10 ? "0" : ""}${seed % 100}%`,
+      growth: `+${8 + (seed % 15)}%`,
     };
   };
 
-  const availableVerticals = Object.entries(INDUSTRIES).filter(([key]) => key !== 'optavelos' && key !== 'admin' && key !== 'slateadmin');
+  const availableVerticals = Object.entries(INDUSTRIES).filter(([key]) => !RESTRICTED_KEYS.includes(key));
+  const totalModules = portfolio.reduce((a, c) => a + (c.active_modules?.length || 0), 0);
 
   return (
-    <div className="p-4 sm:p-8 max-w-[1600px] mx-auto space-y-8 min-h-screen bg-slate-50/50 dark:bg-slate-950/20 font-dmsans">
+    <div className="p-4 sm:p-8 max-w-[1600px] mx-auto space-y-6 min-h-screen bg-slate-50 dark:bg-slate-950">
+
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
-            <div className="p-2.5 bg-emerald-500/10 dark:bg-emerald-500/20 rounded-xl">
-              <Globe className="text-emerald-600 dark:text-emerald-400 w-7 h-7" />
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
+            <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
+              <Globe className="text-emerald-600 dark:text-emerald-400 w-5 h-5" />
             </div>
             Enterprise Command Center
           </h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium">
-            Manage your entire portfolio of businesses and verticals from a unified dashboard.
+          <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">
+            Manage your portfolio of verticals from one unified dashboard.
           </p>
         </div>
-        
-        <div className="flex items-center gap-3">
-          {/* Select Vertical Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="rounded-full px-6 py-5 flex items-center gap-2 border-emerald-200 dark:border-emerald-900/50 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all">
-                <LayoutGrid size={18} className="text-emerald-600 dark:text-emerald-400" /> 
-                <span className="font-semibold text-slate-700 dark:text-slate-300">Select Vertical</span>
-                <ChevronDown size={16} className="text-slate-400 ml-1" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-64">
-              <DropdownMenuLabel>Deployed Verticals</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {portfolio.map((company) => (
-                <DropdownMenuItem 
-                  key={company.id} 
-                  onClick={() => handleVerticalSwitch(company)}
-                  className={`cursor-pointer flex flex-col items-start gap-1 p-3 ${selectedVertical?.id === company.id ? 'bg-emerald-50 dark:bg-emerald-900/20' : ''}`}
-                >
-                  <div className="flex items-center justify-between w-full">
-                    <span className={`font-bold ${selectedVertical?.id === company.id ? 'text-emerald-600 dark:text-emerald-400' : ''}`}>{company.name}</span>
-                    {selectedVertical?.id === company.id && <span className="w-2 h-2 rounded-full bg-emerald-500"></span>}
-                  </div>
-                  <span className="text-xs text-slate-500 capitalize">{company.industry?.replace('_', ' ')}</span>
-                </DropdownMenuItem>
-              ))}
-              {portfolio.length === 0 && (
-                <div className="p-4 text-center text-sm text-slate-500">No verticals deployed yet.</div>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <Button
+          onClick={() => setShowDeployModal(true)}
+          className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-5 py-2.5 flex items-center gap-2 text-sm font-semibold"
+        >
+          <Plus size={16} /> Deploy New Vertical
+        </Button>
+      </div>
 
-          <Button onClick={() => setShowDeployModal(true)} className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-6 py-5 flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition-all active:scale-95">
-            <Plus size={18} /> Deploy New Vertical
-          </Button>
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 flex items-center gap-4">
+          <div className="w-11 h-11 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center shrink-0">
+            <Building2 className="text-emerald-600 dark:text-emerald-400 w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Portfolio Companies</p>
+            <p className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">{portfolio.length}</p>
+          </div>
+        </div>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 flex items-center gap-4">
+          <div className="w-11 h-11 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center shrink-0">
+            <Server className="text-blue-600 dark:text-blue-400 w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Active Modules</p>
+            <p className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">{totalModules}</p>
+          </div>
+        </div>
+        <div className="bg-emerald-600 rounded-xl p-5 flex flex-col justify-center text-white relative overflow-hidden">
+          <p className="text-xs font-semibold text-emerald-100 flex items-center gap-1.5 mb-1">
+            <Activity className="w-3.5 h-3.5" /> Overall Portfolio Growth
+          </p>
+          <p className="text-3xl font-bold">+24%</p>
+          <p className="text-emerald-200 text-xs mt-0.5">this quarter</p>
+          <TrendingUp className="absolute right-2 bottom-2 text-white/10 w-24 h-24" />
         </div>
       </div>
 
-      {/* High Level Global Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 flex items-center gap-5 shadow-sm hover:shadow-md transition-shadow">
-          <div className="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
-            <Building2 className="text-emerald-600 dark:text-emerald-400 w-6 h-6" />
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Total Portfolio Companies</p>
-            <p className="text-3xl font-black text-slate-900 dark:text-white mt-1">{portfolio.length}</p>
-          </div>
-        </div>
-        
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 flex items-center gap-5 shadow-sm hover:shadow-md transition-shadow">
-          <div className="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
-            <Server className="text-emerald-600 dark:text-emerald-400 w-6 h-6" />
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Total Active Modules</p>
-            <p className="text-3xl font-black text-slate-900 dark:text-white mt-1">{totalModulesActive}</p>
-          </div>
-        </div>
+      {/* Master-Detail */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        <div className="bg-gradient-to-br from-emerald-600 to-green-700 rounded-3xl p-6 flex flex-col justify-center text-white border-0 relative overflow-hidden shadow-xl shadow-emerald-900/20">
-          <div className="relative z-10">
-            <p className="text-sm font-semibold text-emerald-100 flex items-center gap-2">
-              <Activity className="w-4 h-4" /> Overall Portfolio Growth
-            </p>
-            <div className="flex items-end gap-3 mt-1">
-              <p className="text-4xl font-black">+24%</p>
-              <span className="text-emerald-200 font-medium mb-1 shrink-0">this quarter</span>
-            </div>
-          </div>
-          <TrendingUp className="absolute right-0 bottom-0 text-white opacity-10 w-40 h-40 translate-x-8 translate-y-8" />
-        </div>
-      </div>
-
-      {/* Main Layout: Master-Detail Vertical Switcher */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-4">
-        
-        {/* Left Column: Vertical List (Master) */}
-        <div className="lg:col-span-4 flex flex-col gap-4">
-          <div className="flex items-center justify-between px-1">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white">Your Verticals</h2>
-            <span className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold px-2.5 py-1 rounded-full">
-              {portfolio.length}
-            </span>
+        {/* Left: List */}
+        <div className="lg:col-span-4 flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Your Verticals</h2>
+            <span className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 text-xs font-bold px-2 py-0.5 rounded-full">{portfolio.length}</span>
           </div>
 
           {loading ? (
-            <div className="text-slate-500 text-sm animate-pulse flex flex-col gap-3">
-              {[1,2,3].map(i => <div key={i} className="h-24 bg-slate-200 dark:bg-slate-800 rounded-2xl w-full"></div>)}
+            <div className="flex flex-col gap-2">
+              {[1,2,3].map(i => <div key={i} className="h-20 bg-slate-200 dark:bg-slate-800 rounded-xl animate-pulse" />)}
             </div>
           ) : portfolio.length === 0 ? (
-            <div className="p-8 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-3xl text-center bg-white dark:bg-slate-900">
-              <Building2 className="mx-auto text-slate-400 mb-3 w-10 h-10" />
-              <p className="text-slate-600 dark:text-slate-400 font-medium">No companies in your portfolio yet.</p>
-              <Button onClick={() => setShowDeployModal(true)} variant="outline" className="mt-4 rounded-full">Deploy First Vertical</Button>
+            <div className="p-8 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl text-center bg-white dark:bg-slate-900">
+              <Building2 className="mx-auto text-slate-400 mb-2 w-8 h-8" />
+              <p className="text-slate-500 text-sm font-medium">No verticals yet.</p>
+              <Button onClick={() => setShowDeployModal(true)} variant="outline" size="sm" className="mt-3 rounded-lg">Deploy First Vertical</Button>
             </div>
           ) : (
-            <div className="flex flex-col gap-3 overflow-y-auto max-h-[800px] pr-2 custom-scrollbar pb-10">
+            <div className="flex flex-col gap-2 overflow-y-auto max-h-[700px] pr-1 pb-4">
               {portfolio.map((company, i) => {
                 const isSelected = selectedVertical?.id === company.id;
                 return (
-                  <motion.div 
-                    initial={{ opacity: 0, x: -20 }}
+                  <motion.div
+                    key={company.id}
+                    initial={{ opacity: 0, x: -8 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                    key={company.id} 
+                    transition={{ delay: i * 0.04 }}
                     onClick={() => handleVerticalSwitch(company)}
-                    className={`p-5 cursor-pointer rounded-2xl border transition-all duration-200 group relative overflow-hidden ${
-                      isSelected 
-                      ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/30 ring-2 ring-emerald-600 ring-offset-2 dark:ring-offset-slate-950' 
-                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-emerald-400 hover:shadow-md'
+                    className={`p-4 cursor-pointer rounded-xl border transition-all ${
+                      isSelected
+                        ? "bg-emerald-600 border-emerald-600 text-white"
+                        : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-emerald-300 hover:bg-slate-50 dark:hover:bg-slate-800/60"
                     }`}
                   >
-                    {isSelected && (
-                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-green-600 opacity-20"></div>
-                    )}
-                    
-                    <div className="relative z-10 flex justify-between items-start mb-3">
-                      <div className="flex items-center gap-3">
-                        <div className={`p-2.5 rounded-xl transition-colors ${
-                          isSelected 
-                          ? 'bg-white/20 text-white' 
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:bg-emerald-50 dark:group-hover:bg-emerald-900/30 group-hover:text-emerald-600 dark:group-hover:text-emerald-400'
-                        }`}>
-                          <Building2 className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <h3 className={`font-bold truncate max-w-[160px] ${isSelected ? 'text-white' : 'text-slate-900 dark:text-white group-hover:text-emerald-600 transition-colors'}`}>
-                            {company.name}
-                          </h3>
-                          <p className={`text-xs truncate ${isSelected ? 'text-emerald-100' : 'text-slate-500'}`}>
-                            {company.subdomain}.optavel.com
-                          </p>
-                        </div>
+                    <div className="flex items-center gap-3">
+                      <div className={`p-2 rounded-lg shrink-0 ${isSelected ? "bg-white/20" : "bg-slate-100 dark:bg-slate-800"}`}>
+                        <Building2 className={`w-4 h-4 ${isSelected ? "text-white" : "text-slate-500 dark:text-slate-400"}`} />
                       </div>
-                      
-                      <div onClick={(e) => e.stopPropagation()}>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className={`h-7 px-2 text-[10px] font-bold uppercase tracking-widest rounded-lg border-0 transition-colors ${
-                                isSelected 
-                                ? 'bg-white/10 hover:bg-white/20 text-white' 
-                                : 'bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700'
-                              }`}
-                            >
-                              {company.industry || 'core'} <ChevronDown className="ml-1 w-3 h-3" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-48">
-                            {['law_firm', 'hospital', 'school', 'university', 'vocational', 'hotel', 'hr', 'retail', 'logistics', 'insurance', 'religion', 'marketing_agency', 'core'].map(ind => (
-                              <DropdownMenuItem key={ind} onClick={(e) => changeWorkspace(e, company.id, ind)}>
-                                {ind.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                              </DropdownMenuItem>
-                            ))}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                      <div className="min-w-0 flex-1">
+                        <h3 className={`font-semibold text-sm truncate ${isSelected ? "text-white" : "text-slate-900 dark:text-white"}`}>{company.name}</h3>
+                        <p className={`text-xs truncate mt-0.5 ${isSelected ? "text-emerald-100" : "text-slate-400"}`}>{(company.subdomain || company.industry || "core")}.optavel.com</p>
                       </div>
+                      <span className={`text-[10px] font-bold uppercase px-1.5 py-0.5 rounded shrink-0 ${
+                        isSelected ? "bg-white/20 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-500"
+                      }`}>
+                        {(company.industry || "core").replace("_", " ")}
+                      </span>
                     </div>
                   </motion.div>
                 );
@@ -306,125 +200,104 @@ export default function EnterpriseDashboard() {
           )}
         </div>
 
-        {/* Right Column: Detail View (Detail) */}
-        <div className="lg:col-span-8 flex flex-col h-full">
+        {/* Right: Detail */}
+        <div className="lg:col-span-8">
           <AnimatePresence mode="wait">
             {selectedVertical ? (
-              <motion.div 
+              <motion.div
                 key={selectedVertical.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-8 shadow-xl shadow-slate-200/40 dark:shadow-none flex flex-col h-full relative overflow-hidden"
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 flex flex-col gap-5"
               >
-                {/* Decorative Background Blur */}
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/5 dark:bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/3"></div>
-
-                <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-100 dark:border-slate-800 pb-8 mb-8">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-5 border-b border-slate-100 dark:border-slate-800">
                   <div>
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className="px-3 py-1 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 text-xs font-bold uppercase tracking-widest rounded-full">
-                        {selectedVertical.industry || 'Workspace'}
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider rounded">
+                        {selectedVertical.industry || "Workspace"}
                       </span>
-                      <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 text-xs font-bold bg-emerald-50 dark:bg-emerald-900/20 px-2.5 py-1 rounded-full">
+                      <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
                         <ShieldCheck className="w-3.5 h-3.5" /> Healthy
                       </span>
                     </div>
-                    <h2 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">{selectedVertical.name}</h2>
-                    <p className="text-slate-500 dark:text-slate-400 mt-2 text-lg">
-                      {selectedVertical.subdomain}.optavel.com
-                    </p>
+                    <h2 className="text-xl font-bold text-slate-900 dark:text-white">{selectedVertical.name}</h2>
+                    <p className="text-slate-500 text-sm mt-0.5">{(selectedVertical.subdomain || selectedVertical.industry || "core")}.optavel.com</p>
                   </div>
-                  
-                  <Button 
+                  <Button
                     onClick={() => startImpersonation(selectedVertical)}
-                    className="bg-slate-900 hover:bg-black dark:bg-white dark:hover:bg-slate-200 text-white dark:text-slate-900 rounded-full px-8 py-6 text-base font-bold flex items-center gap-2 shadow-lg shadow-slate-900/20 transition-all active:scale-95 w-full md:w-auto shrink-0"
+                    className="bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 rounded-lg px-5 py-2.5 text-sm font-semibold flex items-center gap-2 shrink-0"
                   >
-                    Launch Workspace <ArrowRight className="w-5 h-5" />
+                    Launch Workspace <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
 
-                {/* Vertical Specific Stats */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 relative z-10">
+                {/* Metrics */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {(() => {
-                    const stats = generateMockStats(selectedVertical.id);
-                    return (
-                      <>
-                        <div className="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-emerald-200 transition-colors">
-                          <Users className="w-5 h-5 text-emerald-500 mb-3" />
-                          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Active Users</p>
-                          <p className="text-2xl font-black text-slate-900 dark:text-white">{stats.users}</p>
-                        </div>
-                        <div className="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-emerald-200 transition-colors">
-                          <BarChart3 className="w-5 h-5 text-emerald-500 mb-3" />
-                          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Monthly Rev</p>
-                          <p className="text-2xl font-black text-slate-900 dark:text-white">{stats.revenue}</p>
-                        </div>
-                        <div className="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-emerald-200 transition-colors">
-                          <Activity className="w-5 h-5 text-emerald-500 mb-3" />
-                          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Sys Uptime</p>
-                          <p className="text-2xl font-black text-slate-900 dark:text-white">{stats.uptime}</p>
-                        </div>
-                        <div className="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-emerald-200 transition-colors">
-                          <TrendingUp className="w-5 h-5 text-emerald-500 mb-3" />
-                          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">QoQ Growth</p>
-                          <p className="text-2xl font-black text-slate-900 dark:text-white">{stats.growth}</p>
-                        </div>
-                      </>
-                    );
+                    const s = generateMockStats(selectedVertical.id);
+                    return [
+                      { icon: Users, label: "Active Users", value: s.users },
+                      { icon: BarChart3, label: "Monthly Rev", value: s.revenue },
+                      { icon: Activity, label: "Sys Uptime", value: s.uptime },
+                      { icon: TrendingUp, label: "QoQ Growth", value: s.growth },
+                    ].map(({ icon: Icon, label, value }) => (
+                      <div key={label} className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700/50">
+                        <Icon className="w-4 h-4 text-emerald-500 mb-2" />
+                        <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">{label}</p>
+                        <p className="text-xl font-bold text-slate-900 dark:text-white mt-1">{value}</p>
+                      </div>
+                    ));
                   })()}
                 </div>
 
-                {/* Intelligence specific to the vertical */}
-                <div className="flex-1 min-h-[400px] bg-slate-900 rounded-2xl border border-slate-800 shadow-xl overflow-hidden flex flex-col relative z-10">
-                  <div className="bg-slate-950 p-4 flex items-center justify-between border-b border-slate-800">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-emerald-500/20 rounded-xl">
-                        <Sparkles className="text-emerald-400 w-5 h-5 animate-pulse" />
+                {/* Copilot */}
+                <div className="min-h-[340px] bg-slate-900 rounded-xl border border-slate-800 overflow-hidden flex flex-col">
+                  <div className="bg-slate-950 px-4 py-3 flex items-center justify-between border-b border-slate-800">
+                    <div className="flex items-center gap-2.5">
+                      <div className="p-1.5 bg-emerald-500/20 rounded-lg">
+                        <Sparkles className="text-emerald-400 w-4 h-4" />
                       </div>
                       <div>
-                        <h2 className="text-white font-bold tracking-tight">Workspace Copilot</h2>
-                        <p className="text-emerald-200/60 text-xs">Connected to {selectedVertical.name}</p>
+                        <p className="text-white font-semibold text-sm">Workspace Copilot</p>
+                        <p className="text-emerald-300/60 text-xs">Connected to {selectedVertical.name}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="flex h-2.5 w-2.5 relative">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                       </span>
-                      <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Online</span>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Live</span>
                     </div>
                   </div>
                   <div className="flex-1 relative">
-                    <IntelligenceUI embedded={true} customPrompt={`You are an AI analyst specifically connected to the '${selectedVertical.name}' workspace (Industry: ${selectedVertical.industry}). Provide insights tailored to this vertical.`} />
+                    <IntelligenceUI
+                      embedded={true}
+                      customPrompt={`You are an AI analyst connected to the "${selectedVertical.name}" workspace (Industry: ${selectedVertical.industry}). Provide insights tailored to this vertical.`}
+                    />
                   </div>
                 </div>
               </motion.div>
             ) : (
-              <motion.div 
-                key="global-intelligence"
+              <motion.div
+                key="global"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="bg-white dark:bg-emerald-950/20 border border-slate-200 dark:border-emerald-800/30 rounded-3xl overflow-hidden shadow-xl shadow-slate-200/40 dark:shadow-none h-full flex flex-col"
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden flex flex-col min-h-[500px]"
               >
-                <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/40 dark:to-teal-900/40 border-b border-emerald-100 dark:border-emerald-800/30 p-5 flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-emerald-500/20 rounded-xl">
-                      <Zap className="text-emerald-400 w-6 h-6 animate-pulse" />
-                    </div>
-                    <div>
-                      <h2 className="text-emerald-900 dark:text-emerald-100 text-lg font-bold tracking-tight">Global Portfolio Intelligence</h2>
-                      <p className="text-emerald-600/80 dark:text-emerald-400/80 text-sm">AI Agent connected to your entire multi-vertical ecosystem</p>
-                    </div>
+                <div className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 px-5 py-4 flex items-center gap-3">
+                  <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
+                    <Zap className="text-emerald-500 w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-slate-900 dark:text-white font-semibold text-sm">Global Portfolio Intelligence</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-xs">AI connected to your entire ecosystem</p>
                   </div>
                 </div>
-                <div className="flex-1 bg-white dark:bg-transparent relative min-h-[600px]">
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03]">
-                    <Globe className="w-96 h-96 text-emerald-900" />
-                  </div>
-                  <IntelligenceUI embedded={true} customPrompt="You are an Enterprise Portfolio Analyst. Summarize metrics across all my child companies. I have not selected a specific vertical yet, so speak in broad terms about the whole portfolio." />
+                <div className="flex-1 relative min-h-[480px]">
+                  <IntelligenceUI embedded={true} customPrompt="You are an Enterprise Portfolio Analyst. Speak in broad terms about the entire portfolio." />
                 </div>
               </motion.div>
             )}
@@ -432,45 +305,48 @@ export default function EnterpriseDashboard() {
         </div>
       </div>
 
-      {/* Deploy Vertical Modal */}
+      {/* Deploy Modal */}
       <Dialog open={showDeployModal} onOpenChange={deployingVertical ? undefined : setShowDeployModal}>
-        <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto p-0 rounded-3xl border-0">
-          <div className="bg-gradient-to-br from-emerald-600 to-green-700 p-8 text-white">
-            <DialogTitle className="text-3xl font-black mb-2 flex items-center gap-3">
-              <Sparkles className="text-emerald-300" />
-              Deploy New Vertical
-            </DialogTitle>
-            <DialogDescription className="text-emerald-100 text-lg">
-              Select an industry vertical to automatically provision a complete workspace for your organization.
-            </DialogDescription>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-0">
+          <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-start justify-between">
+            <div>
+              <DialogTitle className="text-base font-bold text-slate-900 dark:text-white">Deploy New Vertical</DialogTitle>
+              <DialogDescription className="text-slate-500 text-sm mt-0.5">
+                Select an industry to provision a complete workspace.
+              </DialogDescription>
+            </div>
+            {!deployingVertical && (
+              <button onClick={() => setShowDeployModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            )}
           </div>
-          
-          <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {availableVerticals.map(([key, ind]) => (
-              <div 
+              <div
                 key={key}
                 onClick={() => !deployingVertical && handleDeployVertical(key)}
-                className={`border border-slate-200 dark:border-slate-800 rounded-2xl p-5 transition-all duration-300 relative overflow-hidden ${
-                  deployingVertical === key 
-                  ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-500 shadow-lg shadow-emerald-500/20 ring-2 ring-emerald-500' 
-                  : deployingVertical ? 'opacity-50 grayscale pointer-events-none' : 'hover:border-emerald-400 hover:shadow-md cursor-pointer bg-white dark:bg-slate-950'
+                className={`border rounded-lg p-4 transition-all relative overflow-hidden ${
+                  deployingVertical === key
+                    ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-400"
+                    : deployingVertical
+                    ? "opacity-40 pointer-events-none border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900"
+                    : "border-slate-200 dark:border-slate-800 hover:border-emerald-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer bg-white dark:bg-slate-900"
                 }`}
               >
                 {deployingVertical === key && (
-                  <div className="absolute inset-0 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
-                    <Loader2 className="w-8 h-8 text-emerald-600 animate-spin mb-2" />
-                    <span className="font-bold text-emerald-700 dark:text-emerald-400 animate-pulse">Deploying...</span>
+                  <div className="absolute inset-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm z-10 flex flex-col items-center justify-center gap-2">
+                    <Loader2 className="w-5 h-5 text-emerald-600 animate-spin" />
+                    <span className="text-xs font-bold text-emerald-700">Deploying...</span>
                   </div>
                 )}
-                <div className="flex items-center gap-4 mb-3">
-                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xl shrink-0">
-                    {ind.icon || 'üè¢'}
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-base shrink-0">
+                    {ind.icon || "??"}
                   </div>
-                  <h3 className="font-bold text-lg text-slate-900 dark:text-white leading-tight">{ind.name}</h3>
+                  <h3 className="font-semibold text-slate-900 dark:text-white text-sm">{ind.name}</h3>
                 </div>
-                <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">
-                  Complete operating system optimized for {ind.name.toLowerCase()} management.
-                </p>
+                <p className="text-xs text-slate-500 line-clamp-2">Complete OS for {ind.name?.toLowerCase()} management.</p>
               </div>
             ))}
           </div>
