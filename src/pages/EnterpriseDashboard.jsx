@@ -22,22 +22,46 @@ export default function EnterpriseDashboard() {
 
   const fetchPortfolio = async () => {
     try {
-      if (!user?.id) return;
-      // Fetch directly from companies table instead of broken RPC
-      const { data, error } = await supabase.from('companies').select('*');
+      if (!user?.id || !user?.available_companies?.length) {
+        setPortfolio([]);
+        setLoading(false);
+        return;
+      }
+      
+      const companyIds = user.available_companies.map(c => c.id);
+      const { data, error } = await supabase
+        .from('companies')
+        .select('*')
+        .in('id', companyIds);
+        
       if (error) throw error;
-      setPortfolio(data || []);
+      
+      // Ensure current company is always in the list if not fetched
+      let finalData = data || [];
+      if (user.company_id && !finalData.find(c => c.id === user.company_id)) {
+         const { data: currentCompany } = await supabase.from('companies').select('*').eq('id', user.company_id).single();
+         if (currentCompany) finalData.push(currentCompany);
+      }
+      
+      setPortfolio(finalData);
       setLoading(false);
     } catch (err) {
       console.error("Failed to fetch enterprise portfolio:", err);
-      // Mock some data if offline/failed
-      if (portfolio.length === 0) {
-        setPortfolio([
-          { id: '1', name: 'Acme Corp', subdomain: 'acme', industry: 'law_firm' },
-          { id: '2', name: 'Global Logistics', subdomain: 'gl', industry: 'logistics' },
-        ]);
-      }
       setLoading(false);
+    }
+  };
+
+  
+  const handleVerticalSwitch = (company) => {
+    setSelectedVertical(company);
+    // Behave like Super Admin: override industry and reload
+    const newIndustry = company.industry_type || company.industry;
+    if (newIndustry) {
+      sessionStorage.setItem('slate_industry_override', newIndustry);
+      toast.success(`Switched to ${newIndustry} vertical`);
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     }
   };
 
@@ -130,7 +154,7 @@ export default function EnterpriseDashboard() {
               {portfolio.map((company) => (
                 <DropdownMenuItem 
                   key={company.id} 
-                  onClick={() => setSelectedVertical(company)}
+                  onClick={() => handleVerticalSwitch(company)}
                   className={`cursor-pointer flex flex-col items-start gap-1 p-3 ${selectedVertical?.id === company.id ? 'bg-emerald-50 dark:bg-emerald-900/20' : ''}`}
                 >
                   <div className="flex items-center justify-between w-full">
@@ -220,7 +244,7 @@ export default function EnterpriseDashboard() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05 }}
                     key={company.id} 
-                    onClick={() => setSelectedVertical(company)}
+                    onClick={() => handleVerticalSwitch(company)}
                     className={`p-5 cursor-pointer rounded-2xl border transition-all duration-200 group relative overflow-hidden ${
                       isSelected 
                       ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/30 ring-2 ring-emerald-600 ring-offset-2 dark:ring-offset-slate-950' 
@@ -383,22 +407,22 @@ export default function EnterpriseDashboard() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-xl shadow-slate-200/40 dark:shadow-none h-full flex flex-col"
+                className="bg-white dark:bg-emerald-950/20 border border-slate-200 dark:border-emerald-800/30 rounded-3xl overflow-hidden shadow-xl shadow-slate-200/40 dark:shadow-none h-full flex flex-col"
               >
-                <div className="bg-gradient-to-r from-slate-900 to-emerald-950 p-5 flex items-center justify-between">
+                <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/40 dark:to-teal-900/40 border-b border-emerald-100 dark:border-emerald-800/30 p-5 flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="p-3 bg-emerald-500/20 rounded-xl">
                       <Zap className="text-emerald-400 w-6 h-6 animate-pulse" />
                     </div>
                     <div>
-                      <h2 className="text-white text-lg font-bold tracking-tight">Global Portfolio Intelligence</h2>
-                      <p className="text-emerald-200/60 text-sm">AI Agent connected to your entire multi-vertical ecosystem</p>
+                      <h2 className="text-emerald-900 dark:text-emerald-100 text-lg font-bold tracking-tight">Global Portfolio Intelligence</h2>
+                      <p className="text-emerald-600/80 dark:text-emerald-400/80 text-sm">AI Agent connected to your entire multi-vertical ecosystem</p>
                     </div>
                   </div>
                 </div>
-                <div className="flex-1 bg-slate-50 dark:bg-slate-950 relative min-h-[600px]">
+                <div className="flex-1 bg-white dark:bg-transparent relative min-h-[600px]">
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03]">
-                    <Globe className="w-96 h-96" />
+                    <Globe className="w-96 h-96 text-emerald-900" />
                   </div>
                   <IntelligenceUI embedded={true} customPrompt="You are an Enterprise Portfolio Analyst. Summarize metrics across all my child companies. I have not selected a specific vertical yet, so speak in broad terms about the whole portfolio." />
                 </div>
@@ -410,7 +434,7 @@ export default function EnterpriseDashboard() {
 
       {/* Deploy Vertical Modal */}
       <Dialog open={showDeployModal} onOpenChange={deployingVertical ? undefined : setShowDeployModal}>
-        <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto p-0 rounded-3xl border-0 overflow-hidden">
+        <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto p-0 rounded-3xl border-0">
           <div className="bg-gradient-to-br from-emerald-600 to-green-700 p-8 text-white">
             <DialogTitle className="text-3xl font-black mb-2 flex items-center gap-3">
               <Sparkles className="text-emerald-300" />
