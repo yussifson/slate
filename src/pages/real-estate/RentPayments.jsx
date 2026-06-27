@@ -114,7 +114,7 @@ export default function RentPayments() {
                 console.error('Error recording payment:', error);
                 toast.error('Failed to record payment');
               }
-              <div className="space-y-4 mt-6">
+            }} className="space-y-4 mt-6">
               <div><label className="text-xs font-semibold mb-1 block dark:text-gray-300">Lease ID</label>
                 <input id="rent-lease-id" type="text" placeholder="Lease ID" className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 dark:bg-slate-900/50 dark:text-white rounded-lg text-sm transition-all focus:ring-2 focus:ring-orange-500" /></div>
               <div><label className="text-xs font-semibold mb-1 block dark:text-gray-300">Property ID</label>
