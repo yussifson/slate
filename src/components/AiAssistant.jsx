@@ -854,7 +854,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  isOpen ? "max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-t-[32px] max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] max-md:translate-y-0 max-md:opacity-100 max-md:shadow-[0_-10px_40px_rgba(0,0,0,0.1)] dark:max-md:shadow-[0_-10px_40px_rgba(0,0,0,0.5)]" : "max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:h-0 max-md:translate-y-full max-md:opacity-0 max-md:pointer-events-none"
  } ${
  // Desktop: Side Panel
- isOpen ? (isExpanded ? "md:relative md:h-full md:shrink-0 md:w-[680px] md:opacity-100 md:border-l md:border-black/[0.08] dark:md:border-white/[0.08] shadow-[-12px_0_40px_rgba(0,0,0,0.04)] dark:shadow-[-12px_0_40px_rgba(0,0,0,0.3)]" : "md:relative md:h-full md:shrink-0 md:w-[420px] md:opacity-100 md:border-l md:border-black/[0.08] dark:md:border-white/[0.08] shadow-[-12px_0_40px_rgba(0,0,0,0.04)] dark:shadow-[-12px_0_40px_rgba(0,0,0,0.3)]") : "md:h-full md:w-0 md:opacity-0 md:border-none md:pointer-events-none"
+ isOpen ? (isExpanded ? "md:relative md:h-full md:shrink-0 md:w-[680px] md:opacity-100 md:border-l-2 md:border-l-primary/30 shadow-[-12px_0_40px_rgba(0,0,0,0.04)] dark:shadow-[-12px_0_40px_rgba(0,0,0,0.3)]" : "md:relative md:h-full md:shrink-0 md:w-[420px] md:opacity-100 md:border-l-2 md:border-l-primary/30 shadow-[-12px_0_40px_rgba(0,0,0,0.04)] dark:shadow-[-12px_0_40px_rgba(0,0,0,0.3)]") : "md:h-full md:w-0 md:opacity-0 md:border-none md:pointer-events-none"
  }`}
  >
  {/* Mobile Drag Handle */}
@@ -878,7 +878,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  </button>
  </div>
  </div>
- <div className="flex-1 overflow-y-auto p-2 space-y-1">
+ <div className="flex-1 overflow-y-auto p-2 space-y-1 scrollbar-primary">
  {sessions.map(s => {
  return (
  <div
@@ -949,7 +949,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  </div>
 
  {/* Messages */}
- <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 relative bg-slate-50/50 dark:bg-transparent">
+ <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 relative bg-slate-50/50 dark:bg-transparent scrollbar-primary">
  <div className="relative z-10 space-y-6">
  {messages.filter(m => m.role !== 'system').map((msg, i) => {
  return (

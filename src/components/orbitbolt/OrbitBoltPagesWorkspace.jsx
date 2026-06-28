@@ -252,7 +252,7 @@ export default function OrbitBoltPagesWorkspace({ onClose, onApplySchema}) {
 };
 
  const workspaceContent = (
- <div className="max-md:fixed z-[9999] bg-card transition-all duration-300 overflow-hidden flex max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-md-t-[32px] max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] md:relative md:h-full md:shrink-0 md:border-l-2 md:border-l-amber-500/30 md:w-[400px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="max-md:fixed z-[9999] bg-card transition-all duration-300 overflow-hidden flex max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-md-t-[32px] max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] md:relative md:h-full md:shrink-0 md:border-l-2 md:border-l-primary/30 md:w-[400px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  
  {/* History Sidebar */}
  <AnimatePresence>
@@ -274,7 +274,7 @@ export default function OrbitBoltPagesWorkspace({ onClose, onApplySchema}) {
  </button>
  </div>
  </div>
- <div className="flex-1 overflow-y-auto p-2 space-y-1 scrollbar-thin">
+ <div className="flex-1 overflow-y-auto p-2 space-y-1 scrollbar-primary">
  {sessions.map(s => (
  <div
  key={s.id}
@@ -334,7 +334,7 @@ export default function OrbitBoltPagesWorkspace({ onClose, onApplySchema}) {
  </div>
 
  {/* Chat Area */}
- <div className="flex-1 overflow-y-auto p-4 space-y-5 scrollbar-thin bg-card/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="flex-1 overflow-y-auto p-4 space-y-5 scrollbar-primary bg-card/50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {activeSession?.messages?.map((m, i) => (
  <motion.div 
  initial={{ opacity: 0, y: 8}}

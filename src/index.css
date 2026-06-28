@@ -134,19 +134,155 @@
     background-repeat: repeat;
   }
   
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root, .light {
+    --font-inter: 'Inter', sans-serif;
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 152 76% 41%; /* Vibrant Emerald Green */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 152 76% 41%;
+    --chart-1: 152 76% 41%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 38 92% 50%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --radius: 0.75rem;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 15%;
+    --sidebar-primary: 152 76% 41%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222 47% 15%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 152 76% 41%;
+    --bg-base-rgb: 255, 255, 255;
+
+    /* ────────────────────────────────── */
+    /* HOTEL VERTICAL — Premium Hospitality Palette */
+    /* ────────────────────────────────── */
+    --hotel-primary: 12 100% 50%;      /* Luxe Deep Burgundy */
+    --hotel-secondary: 342 92% 54%;    /* Rose Accent */
+    --hotel-accent: 34 100% 50%;       /* Gold Highlight */
+    --hotel-success: 152 76% 41%;      /* Emerald (standard) */
+    --hotel-alert: 38 92% 50%;         /* Warm Amber */
+    --hotel-critical: 0 84% 60%;       /* Red (standard) */
+
+    /* ────────────────────────────────── */
+    /* LOGISTICS VERTICAL — Professional Transport Palette */
+    /* ────────────────────────────────── */
+    --logistics-primary: 210 100% 45%;    /* Ocean Blue */
+    --logistics-secondary: 200 60% 45%;   /* Sky Teal */
+    --logistics-accent: 160 84% 39%;      /* Mint Green */
+    --logistics-success: 152 76% 41%;     /* Emerald (standard) */
+    --logistics-alert: 38 92% 50%;        /* Warm Amber */
+    --logistics-critical: 0 84% 60%;      /* Red (standard) */
+  }
+
+  .dark {
+    --bg-base-rgb-dark: 20, 25, 40;
+
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+    /* Rich Midnight Blue Base (#0B1120) */
+    --background: 222 47% 8%;
+    
+    /* Soft Blue-White Typography */
+    --foreground: 214 32% 91%;
+    
+    /* Slightly lighter navy for cards (#0F172A) */
+    --card: 222 47% 11%;
+    --card-foreground: 214 32% 91%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 214 32% 91%;
+    
+    /* Vivid Primary Emerald */
+    --primary: 152 76% 50%;
+    --primary-foreground: 210 40% 98%;
+    
+    /* Indigo-tinted secondary/muted elements */
+    --secondary: 217 32% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 32% 17%;
+    --muted-foreground: 215 20% 65%;
+    
+    --accent: 217 32% 17%;
+    --accent-foreground: 210 40% 98%;
+    
+    /* Destructive Accents */
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 40% 98%;
+    
+    /* Soft Indigo-Navy Borders */
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 152 76% 50%;
+    
+    --chart-1: 152 76% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 38 92% 50%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    
+    /* Sidebar */
+    --sidebar-background: 222 47% 8%;
+    --sidebar-foreground: 214 32% 91%;
+    --sidebar-primary: 152 76% 50%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 217 32% 17%;
+    --sidebar-accent-foreground: 214 32% 91%;
+    --sidebar-border: 217 32% 17%;
+    --sidebar-ring: 152 76% 50%;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/5 backdrop-blur-md border border-white/10;
+  }
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+  }
+  
+  .bg-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+  
   .scrollbar-hide::-webkit-scrollbar { width: 5px; height: 5px; display: none; }
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
   
-  .scrollbar-green::-webkit-scrollbar { width: 6px; height: 6px; }
-  .scrollbar-green::-webkit-scrollbar-track { background: transparent; }
-  .scrollbar-green::-webkit-scrollbar-thumb { background: #22c55e; border-radius: 999px; }
-  .scrollbar-green::-webkit-scrollbar-thumb:hover { background: #16a34a; }
-  .scrollbar-green {
+  .scrollbar-primary::-webkit-scrollbar { width: 6px; height: 6px; }
+  .scrollbar-primary::-webkit-scrollbar-track { background: transparent; }
+  .scrollbar-primary::-webkit-scrollbar-thumb { background: hsl(var(--primary)); border-radius: 999px; }
+  .scrollbar-primary::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary) / 0.8); }
+  .scrollbar-primary {
     scrollbar-width: thin;
-    scrollbar-color: #22c55e transparent;
+    scrollbar-color: hsl(var(--primary)) transparent;
   }
   
   /* Premium Global Custom Scrollbar */
@@ -839,17 +975,17 @@ select:not([class*="hidden"]):not([multiple]) {
   }
 }
 
-/* Custom Green Scrollbar for Sidebar */
-.scrollbar-green::-webkit-scrollbar {
+/* Custom Primary Scrollbar for Sidebar and Panels */
+.scrollbar-primary::-webkit-scrollbar {
   width: 6px;
 }
-.scrollbar-green::-webkit-scrollbar-track {
+.scrollbar-primary::-webkit-scrollbar-track {
   background: transparent;
 }
-.scrollbar-green::-webkit-scrollbar-thumb {
-  background: #10b981; /* Tailwind emerald-500 */
+.scrollbar-primary::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary));
   border-radius: 4px;
 }
-.scrollbar-green::-webkit-scrollbar-thumb:hover {
-  background: #059669; /* Tailwind emerald-600 */
+.scrollbar-primary::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.8);
 }

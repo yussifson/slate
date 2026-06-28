@@ -309,7 +309,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  {/* Mobile Backdrop */}
  <div className="md:hidden fixed inset-0 z-[9998] bg-slate-900/50 backdrop-blur-[2px] transition-opacity" onClick={onClose} />
  
-  <div className={`max-md:fixed z-[9999] bg-white dark:bg-[#0A0F1C] transition-all duration-300 overflow-hidden flex max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-t-[32px] max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] md:relative md:h-full md:shrink-0 md:w-[420px] max-md:shadow-[0_-10px_40px_rgba(0,0,0,0.1)] dark:max-md:shadow-[0_-10px_40px_rgba(0,0,0,0.5)] md:border-l md:border-black/[0.08] dark:md:border-white/[0.08] shadow-[-12px_0_40px_rgba(0,0,0,0.04)] dark:shadow-[-12px_0_40px_rgba(0,0,0,0.3)]`}>
+  <div className={`max-md:fixed z-[9999] bg-white dark:bg-[#0A0F1C] transition-all duration-300 overflow-hidden flex max-md:inset-x-0 max-md:bottom-0 max-md:h-[85vh] max-md:rounded-t-[32px] max-md:flex-col max-md:pb-[env(safe-area-inset-bottom)] md:relative md:h-full md:shrink-0 md:w-[420px] max-md:shadow-[0_-10px_40px_rgba(0,0,0,0.1)] dark:max-md:shadow-[0_-10px_40px_rgba(0,0,0,0.5)] md:border-l-2 md:border-l-primary/30 shadow-[-12px_0_40px_rgba(0,0,0,0.04)] dark:shadow-[-12px_0_40px_rgba(0,0,0,0.3)]`}>
  
  {/* Mobile Drag Handle */}
  <div className="md:hidden flex justify-center pt-3 pb-1 shrink-0">
@@ -337,7 +337,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  </button>
  </div>
  </div>
- <div className="flex-1 overflow-y-auto p-2 space-y-1 scrollbar-thin">
+ <div className="flex-1 overflow-y-auto p-2 space-y-1 scrollbar-primary">
  {sessions.map(s => (
  <div
  key={s.id}
@@ -400,7 +400,7 @@ export default function OrbitBoltWorkspace({ onClose, onApplySchema, currentSche
  </div>
 
  {/* Chat Area */}
- <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 scrollbar-thin bg-slate-50/50 dark:bg-transparent relative z-10">
+ <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 scrollbar-primary bg-slate-50/50 dark:bg-transparent relative z-10">
  {activeSession?.messages?.map((m, i) => (
  <motion.div 
  initial={{ opacity: 0, y: 8}}
