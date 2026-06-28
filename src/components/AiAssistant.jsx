@@ -284,7 +284,7 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
  setSessions(prev => {
  const updated = prev.map(s => {
  if (s.id !== sid) return s;
- const upMsgs = [...s.messages, ...newMsgs];
+ const upMsgs = [...(s.messages || []), ...newMsgs];
  const firstUser = upMsgs.find(m => m.role === 'user');
  const title = firstUser
  ? firstUser.content.replace(/\[Attached:.*?\]/g, '').trim().slice(0, 42)
@@ -736,7 +736,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  const confirmPendingAction = async (action, msgIndex) => {
  setSessions(prev => prev.map(s => {
  if (s.id !== activeId) return s;
- const msgs = [...s.messages];
+ const msgs = [...(s.messages || [])];
  msgs[msgIndex] = { ...msgs[msgIndex], isConfirmation: false};
  return { ...s, messages: msgs};
 }));
@@ -754,7 +754,7 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  const cancelPendingAction = (msgIndex) => {
  setSessions(prev => prev.map(s => {
  if (s.id !== activeId) return s;
- const msgs = [...s.messages];
+ const msgs = [...(s.messages || [])];
  msgs[msgIndex] = { ...msgs[msgIndex], isConfirmation: false};
  return { ...s, messages: msgs};
 }));
